@@ -29,12 +29,14 @@
 class LinearColorMapPoint
 {
   double pos;
-  wxColour colour;
+  wxColour left_colour;
+  wxColour right_colour;
 
 public:
   LinearColorMapPoint( const double& p=0, const wxColour& c = *wxBLACK ) {
     pos = p;
-    colour = c;
+    left_colour =  c;
+    right_colour =  c;
   }
 
   void SetPosition(const double& position)
@@ -46,10 +48,22 @@ public:
 
   void SetColour(const wxColour& c)
   {
-    colour = c;
+    left_colour = c;
+    right_colour = c;
   }
 
-  wxColour GetColour() const { return colour; }
+  void SetLeftColour(const wxColour& c)
+  {
+    left_colour = c;
+  }
+
+  void SetRightColour(const wxColour& c)
+  {
+    right_colour = c;
+  }
+
+  wxColour GetLeftColour()  const { return left_colour;  }
+  wxColour GetRightColour() const { return right_colour; }
   
   bool operator<(const LinearColorMapPoint& p) const {
    return pos<p.GetPosition();
@@ -91,18 +105,23 @@ class LinearColorMap
   
       int n = points.size();
       if (n==0) return *wxBLACK;
-      if (n==1) return points[0].GetColour();
+      if (n==1) {
+        if (pos<=points[0].GetPosition())
+          return points[0].GetLeftColour();
+        else 
+          return points[0].GetRightColour();
+      }
       
-      if (pos<=points[0].  GetPosition()) return points[0].  GetColour();
-      if (pos>=points[n-1].GetPosition()) return points[n-1].GetColour();
+      if (pos<=points[0].  GetPosition()) return points[0].  GetLeftColour();
+      if (pos>=points[n-1].GetPosition()) return points[n-1].GetRightColour();
       
       int i=0;
       while ((i<n)&&(pos>points[i].GetPosition())) i++;
       // interpolate colour between point i-1 and i
       double pos1 = points[i-1].GetPosition();
-      wxColour c1 = points[i-1].GetColour();
+      wxColour c1 = points[i-1].GetRightColour();
       double pos2 = points[i].GetPosition();
-      wxColour c2 = points[i].GetColour();
+      wxColour c2 = points[i].GetLeftColour();
       
       if (fabsf(pos2-pos1)<=1E-5) return c1;
       

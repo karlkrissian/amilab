@@ -22,7 +22,6 @@ if (!exists(ImageHistoClass)) {
       ::minval = 0, "minimal value of the histogram"
       ::maxval = 255, "maximal value of the histogram"
       ::step = 1, "histogram step"
-      ::mode = INT(1), "0: transfer function, 1: min-max from black to white"
       ::InitColours()
       ::Gui()
     }
@@ -30,11 +29,12 @@ if (!exists(ImageHistoClass)) {
     #---------------------------
     proc ::DrawIsoContours() \
     {
-      nc = ::dw.GetNumberOfCtrlPoints()
+      ctrlpts = ::dw.GetControlPoints()
+      nc = ctrlpts.size()
       nb_iso = 0
       if (exists(::input)) {
         for k=0 to nc-1 {
-          cp = ::dw.GetCtrlPoint(k)
+          cp = ctrlpts[k]
           if (exists(::input_draw)) {
             if (nb_iso<3)&&(cp.GetVerticalLine()) {
               ::input_draw.SetIsoContour(nb_iso,&::input,cp.GetX())
@@ -59,69 +59,22 @@ if (!exists(ImageHistoClass)) {
       }
     }
 
-    #---------------------------
-    proc ::DrawTransferFunction() \
-    {
-      nc = ::dw.GetNumberOfCtrlPoints()
-
-      if (exists(::input)) {
-        curve_id = ::input.vdim;
-      } else {
-        curve_id = 0
-      }
-
-      nbpoints=0;
-      for k=0 to nc-1 {
-        cp = ::dw.GetCtrlPoint(k)
-        if (cp.GetType()==0)&&(cp.GetVerticalLine()==0) {
-          nbpoints++;
-        }
-      }
-      FuncCurve = Image(FLOAT,nbpoints,1,1,2)
-      n = 0
-      for k=0 to nc-1 {
-        cp = ::dw.GetCtrlPoint(k)
-        if (cp.GetType()==0)&&(cp.GetVerticalLine()==0) {
-          xpos = cp.GetX()
-          ypos = cp.GetY()
-          FuncCurve.setpos(n,0,0)
-          FuncCurve.set(0,xpos)
-          FuncCurve.set(1,ypos)
-          n++
-        }
-      }
-      ::dw->SetCurve(FuncCurve,curve_id)
-      ::dw->SetCurveProperties(curve_id,"#009900")
-
-      ::dw._Paint()
-      ::dw.Refresh()
-    }
 
     #---------------------------
     proc ::DrawMinMax() \
     {
+      SetStatusText("DrawMinMax")
       ::ColormapMinMax()
-      nc = ::dw.GetNumberOfCtrlPoints()
-      if (exists(::input))&&(nc>=2) {
+      if exists(::input) {
         # force Y position in the middle
-        hmax = max(::h[0])
-        for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
-          cp = ::dw.GetCtrlPoint(k)
-          if (cp.GetType()==1) {
-            cp.SetY(hmax/2.0)
-            ::dw.SetCtrlPoint(k,&cp)
-          }
-        }
-        FuncCurve = Image(FLOAT,2,1,1,2)
-        FuncCurve.setpos(0,0,0)
-        FuncCurve.set(0,::cm_min)
-        FuncCurve.set(1,hmax/2.0)
-        FuncCurve.setpos(1,0,0)
-        FuncCurve.set(0,::cm_max)
-        FuncCurve.set(1,hmax/2.0)
-
-        ::dw->SetCurve(FuncCurve,::input.vdim)
-        ::dw->SetCurveProperties(::input.vdim,"#000000")
+        #hmax = max(::h[0])
+        #for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
+        #  cp = ::dw.GetCtrlPoint(k)
+          #if (cp.GetType()==1) {
+          #  cp.SetY(hmax/2.0)
+          #  ::dw.SetCtrlPoint(k,&cp)
+          #}
+        #}
         if (exists(::input_draw)) {
           ::input_draw.SetIntensityRange( ::cm_min, ::cm_max)
         }
@@ -139,12 +92,7 @@ if (!exists(ImageHistoClass)) {
     proc ::OnCtrlPoint() \
     {
       ::DrawIsoContours();
-      if (::mode==0) {
-        ::DrawTransferFunction();
-      }
-      if (::mode==1) {
-        ::DrawMinMax();
-      }
+      ::DrawMinMax();
     }
 
     #---------------------------
@@ -193,6 +141,7 @@ if (!exists(ImageHistoClass)) {
       ::win.FloatConstraints(::minval_id,Imin,Imax,::minval)
       ::win.FloatConstraints(::maxval_id,Imin,Imax,::maxval)
       ::win.FloatConstraints(::step_id,  0,(Imax-Imin)/20,::step)
+printn "4"
     }
 
     #-------------------------------------------------------------------
@@ -214,6 +163,8 @@ if (!exists(ImageHistoClass)) {
 
         # clear control points and add standard colormap
         hmax = max(::h[0])
+        curve = ami.dwControlledCurve()
+
         cp0 = ami.dwControlPoint(::minval,hmax/2)
         cp0.SetColour(wx.wxColour(0,0,0))
         cp0.SetType(1)
@@ -221,29 +172,33 @@ if (!exists(ImageHistoClass)) {
         cp1.SetColour(wx.wxColour(255,255,255))
         cp1.SetType(1)
         # remove all control points
-        ::dw.GetControlPoints().clear()
-        ::dw.AddControlPoint(&cp0)
-        ::dw.AddControlPoint(&cp1)
-
+        curve.GetControlPoints().push_back(&cp0)
+        curve.GetControlPoints().push_back(&cp1)
+        ::dw.GetControlledCurves().clear()
+        ::dw.GetControlledCurves().push_back(&curve)
       }
     }
 
     #--------------------------------------------------
     proc ::ColormapMinMax() \
     {
-      ctrlpts = ::dw.GetControlPoints()
-      for k=0 to ctrlpts.size()-1 {
-        cp = ctrlpts[k]
-        if (cp.GetType()==1) {
-          if (!exists(xmin)) {
-            xmin = cp.GetX();
-          } else {
-            xmin = -max(-xmin,-cp.GetX())
-          }
-          if (!exists(xmax)) {
-            xmax = cp.GetX();
-          } else {
-            xmax = max(xmax,cp.GetX())
+      printn "::ColormapMinMax()"
+      curves = ::dw.GetControlledCurves()
+      for c=0 to curves.size()-1 {
+        ctrlpts = curves[c].GetControlPoints()
+        for k=0 to ctrlpts.size()-1 {
+          cp = ctrlpts[k]
+          if (cp.GetType()==1) {
+            if (!exists(xmin)) {
+              xmin = cp.GetX();
+            } else {
+              xmin = -max(-xmin,-cp.GetX())
+            }
+            if (!exists(xmax)) {
+              xmax = cp.GetX();
+            } else {
+              xmax = max(xmax,cp.GetX())
+            }
           }
         }
       }
@@ -254,6 +209,7 @@ if (!exists(ImageHistoClass)) {
     #--------------------------------------------------
     proc ::UpdateCM() \
     {
+      printn "::UpdateCM()"
       ::cm.SetXLimits(-1,256)
       ::cm.SetYLimits(-1,256)
       # remove all control points
@@ -269,10 +225,8 @@ if (!exists(ImageHistoClass)) {
         printn "nb points %1% " % points.size()
         for k=0 to points.size()-1 {
           cp = points[k]
-          print " point %1% " % k; printn " x = %1% " % cp.GetX()
           newpos = (cp.GetX()-::cm_min)/cm_range*255
           cp.SetX(newpos)
-          print " point %1% " % k; printn " new x = %1% " % cp.GetX()
           if (cp.GetType()==1) {
             cp.SetY(127)
           } else {
@@ -352,10 +306,6 @@ if (!exists(ImageHistoClass)) {
             ::win.SetPositionProp(-1,0)
           ::win.EndHorizontal()
 
-          ::mode_id = ::win.AddEnum( &::mode,"mode")
-            ::win.AddEnumChoice(::mode_id,"Transfer Function")
-            ::win.AddEnumChoice(::mode_id,"Min-Max")
-          #::win.SetCallback( &::EqModeEvent)
 
           # add Drawing Window
           d = ::win.CurrentParent()

@@ -553,10 +553,27 @@ void wxDrawingWindow::DrawAxes(  )
 
 }
 
+inline wxColour InterpolateColour( const wxColour& c1, const double& w1, 
+                            const wxColour& c2, const double& w2)
+{
+  double sum = w1+w2;
+  if (sum==0) return *wxBLACK;
+  return wxColour(  (unsigned char) ((w1*c1.Red()  +w2*c2.Red()  )/sum),
+                    (unsigned char) ((w1*c1.Green()+w2*c2.Green())/sum),
+                    (unsigned char) ((w1*c1.Blue() +w2*c2.Blue() )/sum)  );
+}
+
 
 //------------------------------------------------
 void wxDrawingWindow::DrawLinearCM(  )
 {
+  wxColour c1;
+  wxColour c2;
+  double coeff1;
+  double coeff2;
+  double w1;
+  double w2;
+
   if (!_draw_linearCM) return;
 
   wxSize _sz = GetClientSize();
@@ -567,12 +584,86 @@ void wxDrawingWindow::DrawLinearCM(  )
 
   // Add 2 points to the linearcolormap
   _linearCM.clear();
-  // use current control points ...
-  for(int i = 0; i<(int)_controlpoints->size(); i++) 
-  {  
-    if ((*_controlpoints)[i].GetType() == colormap_point)
-      _linearCM.AddPoint(LinearColorMapPoint((*_controlpoints)[i].GetX(),
-                                            (*_controlpoints)[i].GetColour()));
+  // first fill the current colormap control points with their positions
+  for(int c=0; c<(int) _controlled_curves->size();c++)
+  {
+    boost::shared_ptr<vector_dwControlPoint> points = (*_controlled_curves)[c].GetControlPoints();
+    for(int i = 0; i<(int) points->size(); i++) 
+    {  
+      if ((*points)[i].GetType() == colormap_point)
+        _linearCM.AddPoint(LinearColorMapPoint((*points)[i].GetX(),
+                                              (*points)[i].GetColour()));
+    }
+  }
+  // second compute the left and right colours of each point
+  int cm_size = _linearCM.size();
+  std::cout<< "cm_size = " << cm_size << std::endl;
+  std::vector<wxColour> left_colours(cm_size,*wxBLACK);
+  std::vector<wxColour> right_colours(cm_size,*wxBLACK);
+  std::vector<double> weights(cm_size,0.0);
+  for(int c=0; c<(int) _controlled_curves->size();c++)
+  {
+    //std::cout<< "c = " << c << std::endl;
+    boost::shared_ptr<vector_dwControlPoint> points = (*_controlled_curves)[c].GetControlPoints();
+
+    int cmpt_id   = 0; // colormap point id
+    int curvpt_id = 0; // curve point id
+    // while it is possible:
+    // get the current segment
+    // fill all the points within the current segment
+    while ((curvpt_id+1 < points->size())&&(cmpt_id<cm_size)) {
+      //std::cout<< "curvpt_id = " << curvpt_id << std::endl;
+      // current segment is between points[curvpt_id] and points[curvpt_id+1]
+      dwControlPoint p1 = (*points)[curvpt_id];
+      dwControlPoint p2 = (*points)[curvpt_id+1];
+      double pos = _linearCM.GetPoint(cmpt_id).GetPosition();
+      //std::cout<< "p1.GetX() = " << p1.GetX() << endl;
+      //std::cout<< "p2.GetX() = " << p2.GetX() << endl;
+      //std::cout<< "pos = " << pos << endl;
+      while ((pos<p1.GetX())&&(cmpt_id<cm_size)) {
+        cmpt_id++;
+        pos = _linearCM.GetPoint(cmpt_id).GetPosition();
+      }
+      //std::cout<< "cmpt_id = " << cmpt_id << std::endl;
+      //std::cout<< "pos = " << pos << std::endl;
+      if (cmpt_id<cm_size) {
+        while ((pos<=p2.GetX())&&(cmpt_id<cm_size)) {
+          // pos is within p1 and p2, interpolate colour and weight
+          c1 = p1.GetColour();
+          c2 = p2.GetColour();
+          coeff1 = p2.GetX()-pos;
+          coeff2 = pos-p1.GetX();
+          w1 = p1.GetY();
+          w2 = p2.GetY();
+          if (w1<0) w1=0;
+          if (w2<0) w2=0;
+          wxColour current_colour = InterpolateColour(c1,coeff1,c2,coeff2);
+          double current_weight = (w1*coeff1+w2*coeff2)/(coeff1+coeff2);
+          //std::cout << "cmpt_id = " << cmpt_id << std::endl;
+          //std::cout<< "current_colour = " << current_colour.GetAsString().ToAscii() << std::endl;
+          left_colours[cmpt_id] =
+              InterpolateColour(current_colour,current_weight,
+                                left_colours[cmpt_id], weights[cmpt_id]);
+          //std::cout<< "left_colour = " << left_colours[cmpt_id].GetAsString().ToAscii() << std::endl;
+          right_colours[cmpt_id] =
+              InterpolateColour(current_colour,current_weight,
+                                right_colours[cmpt_id], weights[cmpt_id]);
+          //std::cout<< "right_colour = " << right_colours[cmpt_id].GetAsString().ToAscii() << std::endl;
+          weights[cmpt_id] += current_weight;
+
+          cmpt_id++;
+          pos = _linearCM.GetPoint(cmpt_id).GetPosition();
+        }
+      }
+      curvpt_id++;
+    }
+  }
+
+  // now fill the colours
+  for (int c=0; c<cm_size; c++)
+  {
+    _linearCM.GetPoint(c).SetLeftColour (left_colours [c]);
+    _linearCM.GetPoint(c).SetRightColour(right_colours[c]);
   }
   
   // the points are already sorted
@@ -582,7 +673,6 @@ void wxDrawingWindow::DrawLinearCM(  )
   if (_linearCM.size()>=2) {
     // just need x1 and x2 here
     wxCoord x1,x2;
-    wxColour current_colour,previous_colour;
     
     for (int i=0;i<_linearCM.size(); i++)
     {
@@ -600,16 +690,14 @@ void wxDrawingWindow::DrawLinearCM(  )
         current_colour = _linearCM.GetPoint(i).GetColour();
       }
 */
-      current_colour = _linearCM.GetPoint(i).GetColour();
       if (i>0) {
         _memory_dc->GradientFillLinear(
           wxRect( wxPoint(x1,_sz.y-_linearCM_margin_size.GetHeight()),
                   wxPoint(x2,_sz.y-1)),
-          previous_colour,
-          current_colour);
+          _linearCM.GetPoint(i-1).GetRightColour(),
+          _linearCM.GetPoint(i).GetLeftColour());
       }
       x1 = x2;
-      previous_colour = current_colour;
     }
   }
 
@@ -1036,8 +1124,8 @@ void wxDrawingWindow::OnAddControlledCurve(wxCommandEvent& event)
 {
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
-  double x1 = x+(_xmax-x)/2.0;
-  double x2 = x+(_xmin-x)/2.0;
+  double x1 = x+(_xmin-x)/2.0;
+  double x2 = x+(_xmax-x)/2.0;
   dwControlledCurve c;
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x1,y)));
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x2,y)));
