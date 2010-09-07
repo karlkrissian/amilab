@@ -35,10 +35,10 @@ void ImageDraw_VolRenParam::CreateParameters ()
   
   //-------------------- Volume Rendering Format
   AddEnumeration(&_id_volren_mode,3,_volren_mode,
-                   "Volume Rendering Mode");
+                   "Mode", EnumOptionMenu, "Volume Rendering mode: RGBA or Intensity or Intensity Alpha.");
   AddEnumChoice(_id_volren_mode,&_id_volren_RGBA,"RGBA");
-  AddEnumChoice(_id_volren_mode,&_id_volren_Intensity,"Intensity");
-  AddEnumChoice(_id_volren_mode,&_id_volren_IntensityAlpha,"IntensityAlpha");
+  AddEnumChoice(_id_volren_mode,&_id_volren_Intensity,"Int.");
+  AddEnumChoice(_id_volren_mode,&_id_volren_IntensityAlpha,"Int. Alpha");
 
 
   ChangedValueCallback( _id_volren_mode,
@@ -68,8 +68,9 @@ void ImageDraw_VolRenParam::CreateParameters ()
   //-------------------- Boutton Dessin
   AddBoolean( &_id_volren_power2dim,
                   _volren_power2dim,
-                  "Enforce power 2 dimensions",
-                  CaractereToggle);
+                  "Power 2 dim.",
+                  CaractereToggle,
+                  "Enforce power 2 dimensions.");
 
 
   ChangedValueCallback( _id_volren_power2dim,
@@ -103,7 +104,6 @@ void ImageDraw_VolRenParam::CB_ResetVOLREN (void* cd)
   int* _volren_planes = di->Get_volren_planes();
   unsigned char* _volren_texture = di->Get_volren_texture();
   unsigned char* _volren_power2dim = di->Get_volren_power2dim();
-  InrImage* _volren_opacity = di->Get_volren_opacity();
   
   if (!(di->Call_CheckGLWindow()))
     return;
@@ -113,7 +113,7 @@ void ImageDraw_VolRenParam::CB_ResetVOLREN (void* cd)
                  di->GetMinIntensity(),
                  di->GetMaxIntensity(),
                  di,
-                 _volren_opacity);
+                 di->Get_volren_opacity());
   
   glwin->GetCanvas()->GetVolRen()->SetPower2Dim(*_volren_power2dim);
   glwin->GetCanvas()->GetVolRen()->SetTexture(*_volren_texture);
@@ -147,9 +147,10 @@ void ImageDraw_VolRenParam::CB_DessineVOLREN (void* cd)
 
   Viewer3D_ptr glwin = di->Lock_GLWindow();
   glwin->GetCanvas()->InitVolRen( _image.get(),
-                 di->GetMinIntensity(),
-                 di->GetMaxIntensity(),
-                 di);
+                                  di->GetMinIntensity(),
+                                  di->GetMaxIntensity(),
+                                  di,
+                                  di->Get_volren_opacity());
 
 
   glwin->GetCanvas()->GetVolRen()->SetPower2Dim(*_volren_power2dim);

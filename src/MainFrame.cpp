@@ -568,7 +568,7 @@ bool MainFrame::RemoveParamPage(wxWindow* page)
 
 
 //--------------------------------------------------------
-bool MainFrame::AddParamPanelPage(ParamPanel::ptr& page, const wxString& caption,
+bool MainFrame::AddParamPanelPage(const ParamPanel::ptr& page, const wxString& caption,
                             bool select, const wxBitmap& bitmap)
 {
   bool res;
@@ -583,7 +583,7 @@ bool MainFrame::AddParamPanelPage(ParamPanel::ptr& page, const wxString& caption
 } // AddParamPanelPage()
 
 //--------------------------------------------------------
-bool MainFrame::RemoveParamPanelPage(ParamPanel::ptr& page)
+bool MainFrame::RemoveParamPanelPage(const ParamPanel::ptr& page)
 {
   if (page.get()) {
     page->Hide();

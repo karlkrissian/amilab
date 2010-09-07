@@ -35,6 +35,7 @@
 #include "itkFastMarchingImageFilter.h"
 #endif // _WITHOUT_ITK_
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkFastMarchingImageFilter.h"

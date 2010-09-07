@@ -20,48 +20,49 @@
 #include "ami_function.h"
 #include <wx/string.h>
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxStcFrame(  WrapClass_wxStcFrame::ptr& objectptr)
+
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxStcFrame>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("wxStcFrame");
-
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-
-  return amiobject;
+  WrapClass_wxStcFrame::wrap_wxStcFrame construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_wxStcFrame( wxStcFrame* si)
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxStcFrame);
+
+//
+// static member for creating a variable from a pointer to wxStcFrame
+//
+Variable<AMIObject>::ptr WrapClass_wxStcFrame::CreateVar( wxStcFrame* sp)
 {
-  // here wxStcFrame can be deleted
-  boost::shared_ptr<wxStcFrame> _si_ptr( 
-        si,
-        wxwindow_nodeleter<wxStcFrame>() // deletion will be done by wxwidgets
-      );
-
-  WrapClass_wxStcFrame::ptr sip( new WrapClass_wxStcFrame(_si_ptr) );
-  AMIObject::ptr amiobject(AddWrap_wxStcFrame(sip));
-
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+  return 
+    WrapClass<wxStcFrame>::CreateVar(
+      new WrapClass_wxStcFrame(
+        boost::shared_ptr<wxStcFrame>(sp,
+        wxwindow_nodeleter<wxStcFrame>() 
+        // deletion will be done by wxwidgets
+        ))
+    );
 }
+
+
 
 //---------------------------------------------------
 //  wxStcFrame Constructor
 //---------------------------------------------------
-void  wrap_wxStcFrame::SetParametersComments() 
+void WrapClass_wxStcFrame::
+wrap_wxStcFrame::SetParametersComments() 
 {
   ADDPARAMCOMMENT("wxWindow: parent");
   ADDPARAMCOMMENT("string: title");
   return_comments = "A wrapped wxStcFrame object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxStcFrame::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_wxStcFrame::
+wrap_wxStcFrame::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
 
@@ -71,7 +72,7 @@ BasicVariable::ptr wrap_wxStcFrame::CallMember( ParamList* p)
   if (!get_val_ptr_param<string>( title, p, n))   ClassHelpAndReturn;
 
   if (parent.get() && title!=NULL)
-    return CreateVar_wxStcFrame(
+    return WrapClass_wxStcFrame::CreateVar(
       new wxStcFrame(parent.get(), wxString(title->c_str(),wxConvUTF8)));
   else
     ClassHelpAndReturn;
@@ -91,7 +92,7 @@ BasicVariable::ptr WrapClass_wxStcFrame::
       wrap_GetActiveEditor::CallMember( ParamList* p)
 {
   wxEditor* editor = this->_objectptr->_obj->GetActiveEditor();
-  return CreateVar_wxEditor(editor);
+  return WrapClass_wxEditor::CreateVar(editor);
 }
 
 //---------------------------------------------------

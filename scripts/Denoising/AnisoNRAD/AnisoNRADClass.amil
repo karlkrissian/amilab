@@ -60,6 +60,8 @@ if (!exists(AnisoNRADClass)) {
         ::scheme = INT(1), "Numerical scheme: explicit or semi-implicit"
     
         ::run_on_roi = UCHAR(0), "Run only on the selected region-of-interest"
+
+        ::remove_bias = UCHAR(1), "Remove bias due to Rician noise model"
   
         ::result_imagename = "global::AnisoNRAD_result", "Name of the resulting global variable."
         ::result_filename = "AnisoNRAD_result.ami.gz", "Disk filename for the resulting image."
@@ -86,6 +88,12 @@ if (!exists(AnisoNRADClass)) {
       }
     }
   
+
+    #------------------------------------
+    proc ::SetNoiseStandardDeviation(NUM nsd) {
+      ::exact_noise_sd = nsd
+    }
+
     
 
     #------------------------------------
@@ -115,7 +123,7 @@ if (!exists(AnisoNRADClass)) {
         if (exists(::roi)) { del ::roi; }
         if (exists(::imbox)) { del ::imbox; }
       }
-      ::load_input
+      ::load_input()
       ::Display()
     }
     Comments( ::ReloadInput, "Reload input image.")
@@ -147,7 +155,8 @@ if (!exists(AnisoNRADClass)) {
         ::load_input
       }
       numit = ::t/::dt
-      local::input1 = ::input*::input
+      # running on the squared image
+      input1 = ::input*::input
       if (::run_on_roi) {
         input1 <<= input1[::roi.GetExtent]
       }
@@ -186,28 +195,59 @@ if (!exists(AnisoNRADClass)) {
       } else {
         ::res <<= sqrt(::res0)
       }
+
+      # Output estimated noise standard deviation
+      noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&input1)
+      printn " ------------------------"
+      printn " Noise Standard Deviation  = %1% " % sqrt(noise_variance)
+      printn " Variance = %1%" % noise_variance
+      printn " ------------------------"
+
+      noisefile = open(::result_filename+"_noise.txt","w")
+      noisefile.print "noise SD = %1% \n" % sqrt(noise_variance)
+      
+      if (exists(::exact_noise_sd)) {
+        noise_variance = ::exact_noise_sd*::exact_noise_sd
+        printn " Using Given Variance = %1%" % noise_variance
+        noisefile.print "exact noise SD = %1% \n" % sqrt(noise_variance)
+      }
+      del noisefile
+
     #  show ::res
     #  ::input_draw.compare(::res)
       SetProgress(0)
-      InitTime
+      RestartTime; InitTime
       for k=1 to numit {
-        ::NRADfilter.Iterate
+        ::NRADfilter.Iterate()
         ::res0 = ::NRADfilter.GetOutput()
         ::res0 = ::res0*(::res0>0)
         if (::run_on_roi) {
-          ::res0 = sqrt(::res0)
+          if (::remove_bias) {
+            ::res0 = ::res0 - 2*noise_variance
+            ::res0 = ::res0*(::res0>0)
+            ::res0 = sqrt(::res0)
+          } else {
+            ::res0 = sqrt(::res0)
+          }
           ::res.putimage(::res0)
         } else {
-          ::res = sqrt(::res0)
+          if (::remove_bias) {
+            ::res0 = ::res0 - 2*noise_variance
+            ::res0 = ::res0*(::res0>0)
+            ::res = sqrt(::res0)
+          } else {
+            ::res = sqrt(::res0)
+          }
         }
         if (exists(::groundtruth)) {
           ComputeMSE(::res);
         }
-        SetProgress(k/numit*100)
+        SetProgress((FLOAT)k/numit*100)
         show ::res
         ProcessXEvents(50)
       }
       EndTime
+      SetStatusText( "processing time: "+TimeSpent)
       SetProgress(0)
     
     //  ::NRADfilter.end
@@ -385,6 +425,7 @@ if (!exists(AnisoNRADClass)) {
               ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
             ::win.AddBoolean( &::run_on_roi,"Run on ROI")
+            ::win.AddBoolean( &::remove_bias,"Remove Bias")
             ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
             ::win.BeginBoxPanel("Result --> disk")
               ::win.BeginHorizontal()
@@ -422,22 +463,3 @@ if (!exists(AnisoNRADClass)) {
 
 }#End of if
 
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(aniNRAD)) {
-
-  AnisoNRADClass aniNRAD  
-   
-  if (argc>=1) {
-    printn "reading image"
-    input_arg = Image($1)
-    ::input_image = "input_arg"
-    ::win.Update(-1)
-    #NRAD_CreateParams( input)
-    #NRAD_CreateWindow()
-  }
-} else {
-  InfoDialog "The script seems to be already loaded." 
-}

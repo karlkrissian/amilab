@@ -84,7 +84,7 @@ InrImage* wrap_ImTranslate(ParamList* p)
   int incx,incy,incz;
   input->GetBufferIncrements(incx,incy,incz);
 
-  int displ = dx*incx+dy*incy+dz*incz;
+  //int displ = dx*incx+dy*incy+dz*incz;
   //cout << "displ = " << displ << endl;
 
   if (input->ScalarFormat()) {

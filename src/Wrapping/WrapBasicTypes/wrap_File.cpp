@@ -14,6 +14,7 @@
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
+#include "wrapfunction_class.h"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
@@ -23,58 +24,38 @@
 //#include "Func_ReadCTALine.h"
 //#include "fonctions.h"
 
-#define GET_PARAM(type,varname,defaultval) \
-  type varname = defaultval; \
-  if (!get_val_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
+// #define GET_PARAM(type,varname,defaultval) \
+//   type varname = defaultval; \
+//   if (!get_val_param<type>( varname, p, n)) \
+//     ClassHelpAndReturn;
 
-#define GET_SMTPTR_PARAM(type,varname) \
-  boost::shared_ptr<type> varname; \
-  if (!get_val_smtptr_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
+// #define GET_SMTPTR_PARAM(type,varname) \
+//   boost::shared_ptr<type> varname; \
+//   if (!get_val_smtptr_param<type>( varname, p, n)) \
+//     ClassHelpAndReturn;
 
 #include "driver.h"
-//#include "MainFrame.h"
-#include "CallBackAMIFunction.h"
 
 extern yyip::Driver GB_driver;
-//extern MainFrame* GB_main_wxFrame;
-//extern wxApp* GB_wxApp;
 
-//extern void CB_delete_variable( void* var);
-//extern void CB_delete_varlist( void* var);
-
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_File(  WrapClass_File::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<FILE>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("File");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  WrapClass_File::wrap_File construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_File( FILE* _obj)
-{
-  // Create smart pointer with own deleter
-  FILE_ptr _obj_ptr(_obj,file_deleter());
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(FILE);
 
-  WrapClass_File::ptr _objp(new WrapClass_File(_obj_ptr));
-  AMIObject::ptr amiobject(AddWrap_File(_objp));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
-}
 
 //---------------------------------------------------
 // Method that adds wrapping of File
 //---------------------------------------------------
 
-void  wrap_File::SetParametersComments() 
+void  WrapClass_File::wrap_File::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(string,"The name of the file to be opened.");
   ADDPARAMCOMMENT_TYPE(string,"The file access modes (def: w).");
@@ -82,22 +63,25 @@ void  wrap_File::SetParametersComments()
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_File::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_File::wrap_File::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(string,sFileName,"");
   GET_PARAM(string,sMode,"w");
 
-  if ((sMode == "") || (sFileName == ""))
-    ClassHelpAndReturn
+  if ((sMode == "") || (sFileName == "")) {
+    ClassHelpAndReturn;
+  }
   else
   {
     FILE* file = fopen(sFileName.c_str(),sMode.c_str());
+    // Create smart pointer with own deleter
+    FILE_ptr file_ptr(file,file_deleter());
 
-    if (file)
+    if (file_ptr.get())
     {
-      return CreateVar_File(file);
+      return WrapClass<FILE>::CreateVar(new WrapClass_File(file_ptr));
     }
     else
     {
@@ -273,7 +257,7 @@ BasicVariable::ptr WrapClass_File::
   BasicVariable::ptr param;
   if (!get_generic_var_param(param,p,n,true)) ClassHelpAndReturn;
 
-  if (param->GetTypeName()==to_string<int>::value()) {
+  if (param->GetTypeName()==AMILabType<int>::name_as_string()) {
     DYNAMIC_CAST_VARIABLE(int,param,intparam);
     if (file.get())
     {
@@ -286,7 +270,7 @@ BasicVariable::ptr WrapClass_File::
         *intparam->Pointer() =  res;
     }
   } else 
-  if (param->GetTypeName()==to_string<float>::value()) {
+  if (param->GetTypeName()==AMILabType<float>::name_as_string()) {
     DYNAMIC_CAST_VARIABLE(float,param,floatparam);
     if (file.get())
     {
@@ -299,11 +283,11 @@ BasicVariable::ptr WrapClass_File::
         *floatparam->Pointer() =  res;
     }
   } else 
-  if (param->GetTypeName()==to_string<std::string>::value()) {
+  if (param->GetTypeName()==AMILabType<std::string>::name_as_string()) {
     DYNAMIC_CAST_VARIABLE(std::string,param,stringparam);
     char res[512];
     //setlocale(LC_NUMERIC, "C");
-    if (fscanf(file.get(),"%s",&res) == 0)
+    if (fscanf(file.get(),"%s",res) == 0)
       GB_driver.err_print("Unable to read string value from file");
     else
         *stringparam->Pointer() =  res;
@@ -362,9 +346,9 @@ BasicVariable::ptr WrapClass_File::
 
   if (file.get())
   {
-    char res[100];
+    char res[512];
     //setlocale(LC_NUMERIC, "C");
-    if (fscanf(file.get(),"%s",&res) == 0)
+    if (fscanf(file.get(),"%s",res) == 0)
       GB_driver.err_print("Unable to read value from file (needs string variable)");
     else
       val = res;

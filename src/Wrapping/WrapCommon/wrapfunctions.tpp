@@ -63,37 +63,37 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
 /**
  * Function used to parse a variable of generic type and to give back its value.
  */
-template<class T>
-bool get_val(T& arg, BasicVariable::ptr var)
-{
-  if (var.get()) {
-    if (var->Type()!=GetVarType<T>()) {
-      // Try to convert to the requested type:
-      BasicVariable::ptr converted = var->TryCast(to_string<T>::value());
-      if (!converted.get()) {
-        FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % to_string<T>::value());
-        return false;
-      } else
-        var = converted;
-    }
-    boost::shared_ptr<Variable<T> > temp1(
-      boost::dynamic_pointer_cast<Variable<T> >(var));
-    if (temp1.get()) {
-      arg= * (temp1->Pointer().get());
-      return true;
-    } 
-    else
-    {
-      FILE_ERROR(boost::format("Conversion to %1% problem ") % to_string<T>::value());
-      return false;
-    }
-  }
-  else
-  {
-    FILE_ERROR(boost::format("Variable not found "));
-    return false;
-  }
-}
+// template<class T>
+// bool get_val(T& arg, BasicVariable::ptr var)
+// {
+//   if (var.get()) {
+//     if (var->Type()!=GetVarType<T>()) {
+//       // Try to convert to the requested type:
+//       BasicVariable::ptr converted = var->TryCast(AMILabType<T>::name_as_string());
+//       if (!converted.get()) {
+//         FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<T>::name_as_string());
+//         return false;
+//       } else
+//         var = converted;
+//     }
+//     boost::shared_ptr<Variable<T> > temp1(
+//       boost::dynamic_pointer_cast<Variable<T> >(var));
+//     if (temp1.get()) {
+//       arg= * (temp1->Pointer().get());
+//       return true;
+//     } 
+//     else
+//     {
+//       FILE_ERROR(boost::format("Conversion to %1% problem ") % AMILabType<T>::name_as_string());
+//       return false;
+//     }
+//   }
+//   else
+//   {
+//     FILE_ERROR(boost::format("Variable not found "));
+//     return false;
+//   }
+// }
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.
@@ -107,13 +107,14 @@ bool get_val_param(T& arg, ParamList*p, int& num)
     FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
     return true;
   }
-
-  BasicVariable::ptr temp( p->GetParam(num++));
-  if (!get_val(arg, temp)) {
+  BasicVariable::ptr varparam( p->GetParam(num++));
+  boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(varparam);
+  if (!val_ptr.get()) {
     FILE_ERROR(boost::format("Problem with %1% parameter.") % num);
     return false;
+  } else {
+    arg = *val_ptr;
   }
-
   return true;
 }
 
@@ -191,6 +192,40 @@ bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool
   }
 }
 
+
+/**
+ * Returning the wrapped object of the given type and its corresponding variable
+ */
+template<class T> bool get_obj_param( Variable<AMIObject>::ptr& var, boost::shared_ptr<T>& arg, 
+                       ParamList*p, int& num)
+{
+  bool ok = false; 
+  ok = get_var_param<AMIObject>(var, p, num);  
+  if (!ok) { 
+    num--;
+    BasicVariable::ptr genericvar;
+    if (get_generic_var_param(genericvar,p,num)) { 
+      ParamList::ptr param(new ParamList()); 
+      param->AddParam(genericvar); 
+      /* Call the constructor */ 
+      BasicVariable::ptr constr_res = WrapClass<T>::CreateVar(param.get());
+      var = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);
+      ok = var.get(); 
+    } 
+  } 
+  if (ok) { 
+    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());
+    boost::shared_ptr<WrapClass<T> > wc( boost::dynamic_pointer_cast<WrapClass<T> >(object));
+    if (wc.get()) {
+      arg = wc->GetObj();
+    } else {
+      FILE_ERROR("Could not cast dynamically the variable.")
+    }
+  }  else {
+    FILE_ERROR("Need a wrapped object or compatible variable as parameter.")
+  }
+  return ok;
+}
 
 
 /**

@@ -9,7 +9,7 @@ filt_dir = "Denoising/"
 
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &GS",        filt_dir+"AnisoGS_gui")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &SRAD",      filt_dir+"AnisoSRAD_gui")
-ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &NRAD",      filt_dir+"AnisoNRAD/AnisoNRAD_gui")
+ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &NRAD",      filt_dir+"AnisoNRAD/AnisoNRADGui")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Non-Local &Means", filt_dir+"NLmeans_gui")
 #ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Non-Local &Means", filt_dir+"itkNLMeans")
 

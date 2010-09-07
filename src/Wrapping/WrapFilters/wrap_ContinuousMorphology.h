@@ -28,12 +28,12 @@ class WrapClass_ContinuousMorphology: public WrapClassBase
   protected:
     // for nested classes
     typedef WrapClass_ContinuousMorphology::ptr _parentclass_ptr;
-    typedef ContinuousMorphology _obj_type;
+    typedef ContinuousMorphology ObjectType;
 
   public:
     /// Stores a pointer to an object of type ContinuousMorphology.
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
+    boost::shared_ptr<ObjectType> _obj;
+    const boost::shared_ptr<ObjectType>& GetObj() const { return _obj; }
 
     /// Constructor
     WrapClass_ContinuousMorphology(boost::shared_ptr<ContinuousMorphology > si):  _obj(si)

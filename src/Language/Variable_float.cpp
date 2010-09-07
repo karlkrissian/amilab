@@ -336,15 +336,15 @@ BasicVariable::ptr Variable<float>::TryCast(
   try
   {
     // cast to double
-    if (type_string==to_string<double>::value()) {
+    if (type_string==AMILabType<double>::name_as_string()) {
       RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
     } else 
     // cast to int
-    if (type_string==to_string<int>::value()) {
+    if (type_string==AMILabType<int>::name_as_string()) {
       RETURN_VARPTR(int, boost::numeric_cast<int>(Value()));
     } else 
     // cast to unsigned char
-    if (type_string==to_string<unsigned char>::value()) {
+    if (type_string==AMILabType<unsigned char>::name_as_string()) {
       RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
     } else 
     {
@@ -356,6 +356,7 @@ BasicVariable::ptr Variable<float>::TryCast(
     CLASS_ERROR(boost::format("%1%, for variable %2% from float to %3%") % e.what() % _name % type_string);
     return BasicVariable::ptr();
   }
+  return BasicVariable::ptr();
 }
 
 

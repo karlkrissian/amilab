@@ -19,70 +19,64 @@
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxHtmlWindow(  WrapClass_wxHtmlWindow::ptr& objectptr)
+
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxHtmlWindow>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("HtmlWindow");
+  WrapClass_wxHtmlWindow::wrap_wxHtmlWindow construct;
+  return construct.CallMember(p);
+}
 
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxHtmlWindow);
 
-  objectptr->AddVar_LoadFile(        objectptr);
-  objectptr->AddVar_HistoryBack(     objectptr);
-  objectptr->AddVar_HistoryForward(  objectptr);
+//
+// static member for creating a variable from a pointer to wxHtmlWindow
+//
+Variable<AMIObject>::ptr WrapClass_wxHtmlWindow::CreateVar( wxHtmlWindow* sp)
+{
+  
+  boost::shared_ptr<wxHtmlWindow> obj_ptr(sp,
+        // deletion will be done by wxwidgets
+        wxwindow_nodeleter<wxHtmlWindow>());
 
-  return amiobject;
+  return 
+    WrapClass<wxHtmlWindow>::CreateVar(
+      new WrapClass_wxHtmlWindow( obj_ptr));
+}
+
+
+
+//---------------------------------------------------
+// Method that adds wrapping of wxHtmlWindow
+//---------------------------------------------------
+
+void  WrapClass_wxHtmlWindow::
+      wrap_wxHtmlWindow::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(wxWindow,"Parent window.");
+  return_comments = "A wrapped wxHtmlWindow object.";
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxHtmlWindow( ParamList* p)
+BasicVariable::ptr WrapClass_wxHtmlWindow::
+      wrap_wxHtmlWindow::CallMember( ParamList* p)
 {
-    char functionname[] = "HtmlWindow";
-    char description[]=" \n\
-      Wrapped wxHtmlWindow class. \n\
-            ";
-    char parameters[] =" \n\
-      - Parent window ... \n\
-            ";
-
   int n = 0;
   std::string* title = NULL;
 
-  Variable<AMIObject>::ptr var;
-  wxWindow* parent = NULL;
+  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
 
-  if (get_var_param<AMIObject>(var, p, n)) 
-  {
-    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());
-    WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
-    if (obj.get()) {
-      parent = obj->_obj.get();
-    } else {
-      FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
-      HelpAndReturnVarPtr;
-    }
-  }  else {
-    FILE_ERROR("Need a wrapped wxWindow object as parameter.")
-    HelpAndReturnVarPtr;
+  if (parent.get()){
+    return WrapClass_wxHtmlWindow::CreateVar(
+      new wxHtmlWindow(parent.get(), wxID_ANY));
   }
-
-  boost::shared_ptr<wxHtmlWindow> wxw_ptr(
-    new wxHtmlWindow( parent),
-      wxwindow_nodeleter<wxHtmlWindow>() // deletion will be done by wxwidgets
-    );
-
-  WrapClass_wxHtmlWindow::ptr wp(new WrapClass_wxHtmlWindow(wxw_ptr));
-
-
-  AMIObject::ptr amiobject (AddWrap_wxHtmlWindow(wp));
-
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-
-  return varres;
+  else
+    ClassHelpAndReturn;
 }
+
 
 
 //---------------------------------------------------

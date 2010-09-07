@@ -12,6 +12,8 @@
 
 #endif // AMI_USE_ITK
 
+#include "paramlist.h"
+
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.h"
 #include "wrapitkIsoContourDist.h"

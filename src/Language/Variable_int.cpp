@@ -335,24 +335,24 @@ template<> AMI_DLLEXPORT
 BasicVariable::ptr Variable<int>::TryCast(
     const std::string& type_string) const
 {
-  if (type_string==to_string<int>::value()) 
+  if (type_string==AMILabType<int>::name_as_string()) 
     return NewCopy();
   try
   {
     // cast to double
-    if (type_string==to_string<double>::value()) {
+    if (type_string==AMILabType<double>::name_as_string()) {
       RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
     } else 
     // cast to float
-    if (type_string==to_string<float>::value()) {
+    if (type_string==AMILabType<float>::name_as_string()) {
       RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
     } else 
     // cast to long
-    if (type_string==to_string<long>::value()) {
+    if (type_string==AMILabType<long>::name_as_string()) {
       RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
     } else 
     // cast to unsigned char
-    if (type_string==to_string<unsigned char>::value()) {
+    if (type_string==AMILabType<unsigned char>::name_as_string()) {
       RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
     } else 
     {
@@ -364,6 +364,7 @@ BasicVariable::ptr Variable<int>::TryCast(
     CLASS_ERROR(boost::format("%1%, for variable %2% from int to %3%") % e.what() % _name % type_string);
     return BasicVariable::ptr();
   }
+  return BasicVariable::ptr();
 }
 
 

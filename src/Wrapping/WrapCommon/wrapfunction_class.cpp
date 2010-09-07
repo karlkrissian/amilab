@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 #include "wrapfunction_class.h"
 
 #include <wx/msgdlg.h>
@@ -31,7 +32,7 @@ void WrapClassMember::ShowHelp()
   mess += "\n";
   if (return_comments!="") 
     mess += "Variable ";
-  mess += (boost::format("%1%(%2%)\n")% functionname % paramlist_str).str();
+  mess += (boost::format("%1%(%2%)\n")% GetFunctionName() % paramlist_str).str();
   mess += "\n"; 
   if (nb_param>0) {
     //mess +=  "\n  Parameters:\n"; 
@@ -40,7 +41,7 @@ void WrapClassMember::ShowHelp()
     }
   }
   mess += "\n"; 
-  mess +=  (boost::format("    %s\n") % description).str(); 
+  mess +=  (boost::format("    %s\n") % GetDescription()).str(); 
 
   if (return_comments!="") {
     mess += "\n";

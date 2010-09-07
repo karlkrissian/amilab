@@ -41,6 +41,7 @@
 
 #endif // AMI_USE_ITK
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp"
 #include "wrapitkRead.h"
 

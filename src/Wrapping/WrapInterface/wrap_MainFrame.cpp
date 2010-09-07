@@ -19,46 +19,43 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_MainFrame(  MainFrame* mf)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<MainFrame>::CreateVar( ParamList* p)
 {
-  // here MainFrame cannot be deleted
-  boost::shared_ptr<MainFrame> mf_ptr( 
-        mf,
-        wxwindow_nodeleter<MainFrame>() // deletion will be done by wxwidgets
-      );
-
-  WrapClass_MainFrame::ptr objectptr( new WrapClass_MainFrame(mf_ptr) );
-
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("MainFrame");
-
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-
-  return amiobject;
+  WrapClass_MainFrame::wrap_MainFrame construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_MainFrame( MainFrame* si)
-{
-  AMIObject::ptr amiobject(AddWrap_MainFrame(si));
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(MainFrame);
 
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+//
+// static member for creating a variable from a pointer to MainFrame
+//
+Variable<AMIObject>::ptr WrapClass_MainFrame::CreateVar( MainFrame* sp)
+{
+  return 
+    WrapClass<MainFrame>::CreateVar(
+      new WrapClass_MainFrame(
+        boost::shared_ptr<MainFrame>(sp,
+        wxwindow_nodeleter<MainFrame>() 
+        // deletion will be done by wxwidgets
+        ))
+    );
 }
 
 //---------------------------------------------------
 //  MainFrame Constructor
 //---------------------------------------------------
-void  wrap_MainFrame::SetParametersComments() 
+void  WrapClass_MainFrame::
+  wrap_MainFrame::SetParametersComments() 
 {
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_MainFrame::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_MainFrame::
+  wrap_MainFrame::CallMember( ParamList* p)
 {
   ClassHelpAndReturn;
 }
@@ -76,7 +73,7 @@ BasicVariable::ptr WrapClass_MainFrame::
       wrap_GetAmilabEditor::CallMember( ParamList* p)
 {
   wxStcFrame* editor = this->_objectptr->_obj->GetAmilabEditor();
-  return CreateVar_wxStcFrame(editor);
+  return WrapClass_wxStcFrame::CreateVar(editor);
 }
 
 //---------------------------------------------------

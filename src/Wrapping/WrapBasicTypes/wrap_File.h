@@ -21,25 +21,21 @@
 
 #include "amilab_boost.h"
 
-//TO_STRING(File);
+AMI_DECLARE_TYPE(FILE);
 
-class WrapClass_File: public WrapClassBase
+class WrapClass_File: public WrapClass<FILE>
 {
   DEFINE_CLASS(WrapClass_File);
 
-  protected:
-    // for nested classes
-    typedef WrapClass_File::ptr _parentclass_ptr;
-
   public:
-    /// Stores a pointer to an object of type File.
-    FILE_ptr _obj;
-    const FILE_ptr& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_File(FILE_ptr si):  _obj(si)
-    {}
+    WrapClass_File(FILE_ptr si): WrapClass<FILE>(si) { }
 
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR( File, "Wrapping of File." );
+
+    // wrapping of other methods
     ADD_CLASS_METHOD(rewind,      "Sets the position indicator to the beginning of the file.");
     ADD_CLASS_METHOD(print,       "Write the contents of a variable in a file.");
     ADD_CLASS_METHOD(printn,      "Write the contents of a variable in a file (generates a line break).");
@@ -49,7 +45,7 @@ class WrapClass_File: public WrapClassBase
     ADD_CLASS_METHOD(read_float,  "Read a float number from a file.");
     ADD_CLASS_METHOD(read_string, "Read a string from a file.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<FILE>::ptr this_ptr )
     {
       AddVar_rewind(      this_ptr);
       AddVar_print(       this_ptr, "_print");
@@ -63,22 +59,5 @@ class WrapClass_File: public WrapClassBase
 
 };
 
-/**
- * Create a Wrapped object around File
- * @param objectptr input smart pointer to a WrapClass_File
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_File(  WrapClass_File::ptr& objectptr);
-
-/**
- * Create a Wrapped object around File
- * @param si_ptr input smart pointer to a File
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_File( FILE* si);
-
-/** Method that adds wrapping of File
- */
-ADD_CLASS_FUNCTION( File, "Wrapping of File." );
 
 #endif // _wrap_File_h

@@ -3002,10 +3002,10 @@ void DessinImageBase :: DessinePlanXIsoContour(
 
             // If a and f have the same sign, connect a to d
             Si ((val00>0)Et(f>0)) Ou ((val00<0)Et(f<0)) Alors
-          Ligne( P1z,P1y,P3z,P3y);
+              Ligne( P1z,P1y,P3z,P3y);
               Ligne( P2z,P2y,P4z,P4y);
             Sinon
-          Ligne( P1z,P1y,P2z,P2y);
+              Ligne( P1z,P1y,P2z,P2y);
               Ligne( P3z,P3y,P4z,P4y);
             FinSi
           FinSi

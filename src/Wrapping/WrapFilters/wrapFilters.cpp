@@ -1051,7 +1051,7 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
 
 //  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
 
-  return CreateVar_SurfacePoly(Func_SmoothLinesToSplines( objsurf.get(),
+  return WrapClass_SurfacePoly::CreateVar(Func_SmoothLinesToSplines( objsurf.get(),
                                   samplingstep ));
 //Variable<SurfacePoly>::ptr varres(
 //    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));

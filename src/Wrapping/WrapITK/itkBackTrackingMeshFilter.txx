@@ -70,7 +70,7 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   double step;
   double vx,vy,vz,nv;
   double vpx,vpy,vpz;
-  double I,Ixp,Ixm,Iyp,Iym,Izp,Izm;
+  double I=0,Ixp=0,Ixm=0,Iyp=0,Iym=0,Izp=0,Izm=0;
   double closest_point_intensity;
   
   p[0] = m_startX;
@@ -247,7 +247,7 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
       if (input->GetImageDimension() == 3) zpos = round(vpz);
       float valmin = I;
       bool minfound = false;
-      int xmin,ymin,zmin;
+      int xmin=0,ymin=0,zmin=0;
       for (int i=-1;i<=1;i++)
       {
         for (int j=-1;j<=1;j++)

@@ -328,7 +328,7 @@ public:
   int* Get_volren_planes()                                { return &_volren_planes; }
   unsigned char* Get_volren_texture()                     { return &_volren_texture; }
   unsigned char* Get_volren_power2dim()                   { return &_volren_power2dim; }
-  InrImage* Get_volren_opacity()                          { return _volren_opacity; }
+  InrImage::ptr Get_volren_opacity()                      { return _volren_opacity; }
   
   //ImageDraw__GLMIPParam
   float* Get_GLMIP_seuilbas()                             { return &_GLMIP_seuilbas; }
@@ -731,7 +731,7 @@ protected:
   unsigned char _volren_texture;
   unsigned char _volren_power2dim;
 
-  InrImage* _volren_opacity;
+  InrImage::ptr _volren_opacity;
 
 /** @name     Param�res Sections3D
  */
@@ -1117,8 +1117,11 @@ public:
 
   ~DessinImage();
 
+  /// Sets the intensity range
+  void SetIntensityRange(float imin, float imax);
+
   //
-  void     SetVolRenOpacity(InrImage* volren_opacity)
+  void SetVolRenOpacity(InrImage::ptr volren_opacity)
   {
     _volren_opacity = volren_opacity;
   }
@@ -1337,8 +1340,14 @@ public:
 
 
   //
-  void  SetUserColormap(const InrImage::ptr& image, float center, float extent)
+  void  SetUserColormap(const InrImage::ptr& image, float center, float extent);
   //    ---------------
+
+  /// Recomputes the colormap
+  void UpdateColormap();
+  //   --------------
+
+/*
   {
     if ((image->_format==WT_RGB)&&
     (image->DimX()==256)&&(image->DimY()==1)&&(image->DimZ()==1)) {
@@ -1348,7 +1357,7 @@ public:
       Param._I._colorspace = COLORSPACE_USER;
     }
   }
-
+*/
 
   //
   void DrawContour( int i, int size=-1, int style=-1);

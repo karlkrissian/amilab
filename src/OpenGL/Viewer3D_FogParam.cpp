@@ -1,6 +1,8 @@
 
 
 #include "Viewer3D.hpp"
+#include "ParamPanel.hpp"
+#include "Viewer3D_FogParam.h"
 
 
 //----------------------------------------------------

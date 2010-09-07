@@ -1,7 +1,8 @@
 
 
 #include "Viewer3D.hpp"
-
+#include "ParamPanel.hpp"
+#include "Viewer3D_PointParam.h"
 
 //----------------------------------------------------
 Viewer3D_PointParam::Viewer3D_PointParam(Viewer3D* parent): ParamPanel(parent, "Point Parameters")

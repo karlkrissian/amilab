@@ -223,8 +223,7 @@ if (!exists(LevelSetsClass)) {
           ::exp_curve = Image(FLOAT,::inputmax-::inputmin+1,1,1)
           ::exp_curve.settranslation(::inputmin,0,0)
           
-          ::exp_curve = ((FLOAT) Xpos(::exp_curve))-\
-            ::Imean
+          ::exp_curve = SpacePos(::exp_curve)[0]- ::Imean
           
           ::exp_curve = \
             (exp(-::exp_curve*::exp_curve/(2*::Isd*::Isd))\
@@ -652,7 +651,7 @@ if (!exists(LevelSetsClass)) {
       ::s1 = isosurf(::inls,0.01)
       ::s0_draw += ::s1
       if (exists(::input_draw)) {
-        ::input_draw.setGLwin(::s0_draw)
+        ::input_draw.setGLwin(&::s0_draw)
       }
     
     }

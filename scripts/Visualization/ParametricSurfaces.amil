@@ -77,13 +77,13 @@ if (!exists(ParametricSurfaceClass)) {
     ::phi   <<= (DOUBLE)Ypos(::pos)
 
     if (::type==0)||(::type==2) {
-      printn "type in {0,2}"
+      #printn "type in {0,2}"
       # limits of the parameters
       ::theta = ::theta/(::theta.tx-1)*2*Pi
       ::phi   = (::phi/(::phi.ty-1)-0.5)*Pi
     }
     if (::type==1) {
-      printn "type is 1"
+      #printn "type is 1"
       # limits of the parameters
       ::theta = ::theta/(::theta.tx-1)*2*Pi
       ::phi   = ::phi/(::phi.ty-1)*2*Pi
@@ -124,12 +124,12 @@ if (!exists(ParametricSurfaceClass)) {
         ::UpdateResolution()
 #		printn "Return from update resolution"
       }else {
-        printn "::theta_dim = %1%"%::theta_dim
-        printn "::pos.tx=%1%"%::pos.tx
-        printn "::phi_dim = %1%"%::phi_dim
-        printn "::pos.ty=%1%"%::pos.ty
-        printn "::theta_dim!=::pos.tx --> %1%" % (::theta_dim!=::pos.tx)
-        printn "::phi_dim!=::pos.ty --> %1%" % (::phi_dim!=::pos.ty)
+        #printn "::theta_dim = %1%"%::theta_dim
+        #printn "::pos.tx=%1%"%::pos.tx
+        #printn "::phi_dim = %1%"%::phi_dim
+        #printn "::pos.ty=%1%"%::pos.ty
+        #printn "::theta_dim!=::pos.tx --> %1%" % (::theta_dim!=::pos.tx)
+        #printn "::phi_dim!=::pos.ty --> %1%" % (::phi_dim!=::pos.ty)
         if ((::theta_dim!=::pos.tx)||(::phi_dim!=::pos.ty)) {
           ::UpdateResolution()
         }
@@ -390,7 +390,7 @@ if (!exists(ParametricSurfaceClass)) {
           ::win.EndHorizontal()
         ::win.EndBoxPanel()
         
-        ::win.AddString( &::eq_filename,"Eq. filename")
+        ::win.AddFilename( &::eq_filename,"Eq. filename", ".", "*.amil" )
         ::win.BeginHorizontal()
           ::win.AddButton("Save", ::SaveEquation)
           ::win.AddButton("Read", ::ReadEquation)

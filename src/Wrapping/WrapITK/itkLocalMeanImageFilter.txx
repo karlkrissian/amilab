@@ -37,6 +37,8 @@
 #include "math.h"
 #include "stdio.h"
 
+#include "paramlist.h"
+
 namespace itk
 {
 

@@ -22,23 +22,24 @@
 
 #include <wx/filename.h>
 
-TO_STRING(wxFileName);
-class WrapClass_wxFileName : public WrapClassBase
+AMI_DECLARE_TYPE(wxFileName)
+
+class WrapClass_wxFileName : public WrapClass<wxFileName>
 {
   DEFINE_CLASS(WrapClass_wxFileName);
 
-  protected:
-    // for nested classes
-    typedef WrapClass_wxFileName::ptr _parentclass_ptr;
-    typedef wxFileName _obj_type;
-
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_wxFileName(boost::shared_ptr<wxFileName> si): _obj(si)
+    WrapClass_wxFileName(boost::shared_ptr<wxFileName> si): WrapClass<wxFileName>(si)
     {}
+
+/*
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( wxFileName* sp);
+*/
+
+    ADD_CLASS_CONSTRUCTOR( wxFileName, "Wrapping of wxFileName (see http://docs.wxwidgets.org/)." );
 
     ADD_CLASS_METHOD(Assign,             "Creates the file name from the parameters.");
     ADD_CLASS_METHOD(AssignCwd,          "Makes this object refer to the current working directory on the specified volume (or current volume if volume is empty).");
@@ -95,7 +96,7 @@ class WrapClass_wxFileName : public WrapClassBase
     ADD_CLASS_METHOD(equal,              "Operator ==, compare a wxFileName objects with the current.");
     ADD_CLASS_METHOD(not_equal,          "Operator !=, compare a wxFileName objects with the current.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods( WrapClass<wxFileName>::ptr this_ptr )
     {
       AddVar_AppendDir(          this_ptr);
       AddVar_Assign(             this_ptr);
@@ -151,23 +152,5 @@ class WrapClass_wxFileName : public WrapClassBase
     }
 
 };
-
-/**
- * Create a Wrapped object around wxFileName
- * @param objectptr input smart pointer to a WrapClass_wxFileName
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_wxFileName(  WrapClass_wxFileName::ptr& objectptr);
-
-/**
- * Create a Wrapped object around wxFileName
- * @param si_ptr input smart pointer to a wxFileName
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_wxFileName( wxFileName* si);
-
-/** Method that adds wrapping of wxFileName
- */
-ADD_CLASS_FUNCTION( wxFileName, "Wrapping of wxFileName (see http://docs.wxwidgets.org/)." );
 
 #endif // _wrap_wxFileName_h_

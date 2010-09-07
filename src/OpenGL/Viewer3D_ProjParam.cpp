@@ -1,6 +1,8 @@
 
 
 #include "Viewer3D.hpp"
+#include "ParamPanel.hpp"
+#include "Viewer3D_ProjParam.h"
 
 #include "proj_ortho.xpm"
 #include "proj_persp.xpm"

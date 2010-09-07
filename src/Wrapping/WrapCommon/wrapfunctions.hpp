@@ -18,11 +18,26 @@
 
 class InrImage;
 //#include "inrimage.hpp"
-#include "paramlist.h"
+
+class ParamList;
+//#include "paramlist.h"
 #include <boost/shared_ptr.hpp>
 
 #include "BasicVariable.h"
-#include "Variable.hpp"
+//#include "Variable.hpp"
+
+/// type: pointer to a C wrapping procedure
+typedef void      (C_wrap_procedure)(ParamList*);
+/// type: pointer to a C wrapping image function
+//typedef InrImage* (C_wrap_imagefunction)(ParamList*);
+/// type: pointer to a C wrapping variable function
+typedef BasicVariable::ptr (C_wrap_varfunction)(ParamList*);
+
+#include "wrapfunction_class.h"
+
+
+
+
 //#include "DessinImage.hpp"
 //class BasicVariable;
 
@@ -65,6 +80,8 @@ class CreateSmartPointer<C_wrap_imagefunction>
 
 class WrapClassMember;
 
+
+
 /** Macro for adding a class that wraps a function.
   * requires:
   *  a AMIObject:ptr amiobject member pointing to the corresponding wrapped object class
@@ -77,12 +94,13 @@ class wrap_##methodname : public WrapClassMember { \
   public: \
     wrap_##methodname()  \
     { \
-      functionname = #methodname; \
-      description=description_str; \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
     BasicVariable::ptr CallMember(ParamList*); \
+    static const std::string StaticDescription()  { return description_str; }\
+    static const std::string StaticFunctionName() { return #methodname; }\
+    STATIC_HELP\
 }; \
 \
 inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
@@ -182,9 +200,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
     \brief returns a variable of the given type, after creating a new smart pointer to the given value
 */
 #define RETURN_VAR(type,val)             \
-  boost::shared_ptr<type> return_var(new type(val));\
-  Variable<type>::ptr varres( new Variable<type>(return_var));\
-  return varres; \
+  return AMILabType<type>::CreateVar(val);
 
 
 /*! \def GET_OBJECT_PARAM
@@ -228,6 +244,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
     CLASS_ERROR("Need a wrapped object as parameter.")\
   }
 */
+/*
 #define CLASS_GET_OBJECT_PARAM(type,varname,objname) \
   Variable<AMIObject>::ptr varname; \
   boost::shared_ptr<type> objname; \
@@ -239,7 +256,6 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
     if (get_generic_var_param(genericvar,p,n)) { \
       ParamList::ptr param(new ParamList()); \
       param->AddParam(genericvar); \
-      /* Call the constructor */ \
       wrap_##type obj_constr; \
       BasicVariable::ptr constr_res = obj_constr.CallMember(param.get());\
       varname = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);\
@@ -257,6 +273,15 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
   }  else {\
     CLASS_ERROR("Need a wrapped object or compatible variable as parameter.")\
   }
+*/
+
+/*! \def CLASS_GET_OBJECT_PARAM
+    \brief new version of the macro
+*/
+#define CLASS_GET_OBJECT_PARAM(type,varname,objname) \
+  Variable<AMIObject>::ptr varname; \
+  boost::shared_ptr<type> objname; \
+  get_obj_param<type>(varname,objname,p,n)
 
 /*! \def FUNC_GET_OBJECT_PARAM
     \brief try to convert the next parameter to the wrapped given type and gets a smart pointer to this type in the variable 'name', macro working within a class member
@@ -304,8 +329,8 @@ bool get_var_param( BasicVariable::ptr& var,
 /**
  * Function used to parse a variable of generic type and to give back its value.
  */
-template<class T>
-bool get_val(T& arg, BasicVariable::ptr var);
+//template<class T>
+//bool get_val(T& arg, BasicVariable::ptr var);
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.
@@ -341,7 +366,13 @@ template<class T> bool get_val_smtptr_param( boost::shared_ptr<T>& arg,
                        ParamList*p, int& num, 
                        bool required=true);
 
-
+/**
+ * Returning the wrapped object of the given type and its corresponding variable
+ */
+template<class T> bool get_obj_param( Variable<AMIObject>::ptr& var, boost::shared_ptr<T>& arg, 
+                       ParamList*p, int& num);
+                       
+                       
 /**
  * Function used to parse a several variables of the same generic type in a list of parameters, and to give back the values in the arg parameter which should be of type T[nb].
  */

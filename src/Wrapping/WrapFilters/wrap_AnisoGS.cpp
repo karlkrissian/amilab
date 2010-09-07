@@ -500,3 +500,25 @@ BasicVariable::ptr WrapClass_AnisoGS::
   }
 }
 
+//---------------------------------------------------
+//  Compute_sigma2_MRI_mode
+//---------------------------------------------------
+void WrapClass_AnisoGS::
+      wrap_Compute_sigma2_MRI_mode::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("The input image to estimate the noise variance.");
+  return_comments = "The estimated noise variance as a float variable.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_AnisoGS::
+      wrap_Compute_sigma2_MRI_mode::CallMember( ParamList* p)
+{
+  int n = 0;
+  InrImage::ptr inputim;
+  if (!get_val_smtptr_param<InrImage>
+                           (  inputim,   p, n)) ClassHelpAndReturn;
+
+  float variance = this->_objectptr->_obj->Compute_sigma2_MRI_mode(inputim.get());
+  RETURN_VAR(float,variance);
+}
+

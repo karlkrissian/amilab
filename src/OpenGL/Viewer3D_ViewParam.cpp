@@ -1,6 +1,8 @@
 
 //#include "3DViewParameters.h"
 #include "Viewer3D.hpp"
+#include "ParamPanel.hpp"
+#include "Viewer3D_ViewParam.h"
 
 // Pixmaps for setting 3D view
 #include "center.xpm"

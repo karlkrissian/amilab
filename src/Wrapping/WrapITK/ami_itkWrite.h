@@ -16,5 +16,9 @@
 
 bool itkWrite(InrImage* input, const std::string& fname);
 
+/*
+std::vector<std::string> itkWriteGetExtensions( InrImage* input);
+*/
+
 #endif 
 // _ami_itkWrite_h_

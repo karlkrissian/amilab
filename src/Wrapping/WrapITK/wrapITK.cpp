@@ -30,6 +30,7 @@
 
 #include "AMILabConfig.h"
 
+#include "paramlist.h"
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "wrapITK.h"

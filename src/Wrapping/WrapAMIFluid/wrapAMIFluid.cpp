@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 #include "namespace.h"
 #include "file_uv.h"
 

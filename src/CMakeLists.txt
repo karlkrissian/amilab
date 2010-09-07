@@ -6,7 +6,7 @@ project (AMILab)
 
 MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.6.4)
 
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
@@ -559,8 +559,8 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   wxParams
   ${OPENGL_LIBRARIES}
   ${OPENGL_glu_LIBRARY}
-  ${PTHREADS_LIBRARY}
-#  /usr/lib/libpthread.so
+#  ${PTHREADS_LIBRARY}
+  /usr/lib/libpthread.so
   ${wxWidgets_LIBRARIES}
 # should be included in wxWdigets_LIBRARIES already ...
 #  ${WX_gl}

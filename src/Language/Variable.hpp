@@ -64,6 +64,157 @@
         objname = wrapped_obj->GetObj(); \
     }
 
+/**
+ * This class will be specialized for each variable type used by amilab, either builtin type or wrapped type, allowing more flexible wrapping code.
+ */
+template<typename T> 
+class AMILabType {
+    public:
+    static char const* name_as_string() { return "unknown"; }
+    static boost::shared_ptr<T> GetValue(BasicVariable::ptr var)
+    { return boost::shared_ptr<T>(); }
+
+    static BasicVariable::ptr CreateVarFromSmtPtr(boost::shared_ptr<T>& val);
+
+    static BasicVariable::ptr CreateVar(const T& val)
+    { return BasicVariable::ptr(); }
+
+    static BasicVariable::ptr CreateVar(T* val)
+    { return BasicVariable::ptr(); }
+};
+
+// forward declaration of the specialization
+#define AMI_DECLARE_TYPE(type) \
+  template<> class AMILabType<type> \
+  { \
+    public: \
+    static char const* name_as_string();\
+    static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
+    static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+    static BasicVariable::ptr CreateVar(type* val);\
+    static BasicVariable::ptr CreateVar(const type& val);\
+  };
+
+#define AMI_DEFINE_BASICTYPE(type) \
+    char const* AMILabType<type>::name_as_string() { return #type; } \
+    \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    { \
+      if (!var.get()) \
+      {\
+        FILE_ERROR("Variable not found");\
+        return boost::shared_ptr<type>();\
+      }\
+      boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(var)); \
+      if (tmp.get()) \
+        return tmp->Pointer(); \
+      else {\
+        BasicVariable::ptr converted = var->TryCast(AMILabType<type>::name_as_string());\
+        if (!converted.get()) {\
+          FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<type>::name_as_string());\
+          return boost::shared_ptr<type>(); \
+        } else { \
+          boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(converted)); \
+          if (tmp.get()) \
+            return tmp->Pointer(); \
+          else \
+            return boost::shared_ptr<type>(); \
+        }\
+      }\
+    } \
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr( boost::shared_ptr<type>& valptr)\
+    {\
+      return Variable<type>::ptr( new Variable<type>(valptr));\
+    }\
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar(type* val)  \
+    { \
+      boost::shared_ptr<type> valptr(val);\
+      return CreateVarFromSmtPtr(valptr); \
+    } \
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return AMILabType<type>::CreateVar(new type(val));\
+    } 
+
+
+#define AMI_DEFINE_WRAPPEDTYPE_COMMON(type) \
+    char const* AMILabType<type>::name_as_string() { \
+       std::string name = std::string("wrap_")+#type; \
+       return name.c_str(); \
+    } \
+    \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    { \
+      if (!var.get()) \
+      {\
+        FILE_ERROR("Variable not found");\
+        return boost::shared_ptr<type>();\
+      }\
+      boost::shared_ptr<Variable<AMIObject> > tmp( boost::dynamic_pointer_cast<Variable<AMIObject> >(var)); \
+      if (!tmp.get()) {\
+        /* Try with the constructor */ \
+        ParamList::ptr param(new ParamList()); \
+        param->AddParam(var); \
+        BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get());\
+        tmp = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);\
+      } \
+      if (tmp.get()) { \
+        WrapClassBase::ptr object( tmp->Pointer()->GetWrappedObject()); \
+        boost::shared_ptr<WrapClass<type> > wc( boost::dynamic_pointer_cast<WrapClass<type> >(object));\
+        if (wc.get()) { \
+          return wc->GetObj(); \
+        } else { \
+          FILE_ERROR("Could not cast dynamically the variable.")\
+        } \
+      }  else { \
+        FILE_ERROR("Need a wrapped object or compatible variable as parameter.") \
+      } \
+      return boost::shared_ptr<type>();\
+    } 
+
+
+#define AMI_DEFINE_WRAPPEDTYPE_NOCOPY(type) \
+    AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return BasicVariable::ptr(); \
+    } 
+
+#define AMI_DEFINE_WRAPPEDTYPE_HASCOPY(type) \
+    AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    { \
+      boost::shared_ptr<type> obj_ptr(val);\
+      return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
+    } \
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return AMILabType<type>::CreateVar(new type(val));\
+    } 
+
+#define AMI_DEFINE_VARFROMSMTPTR(type) \
+  BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr(boost::shared_ptr<type>& obj_ptr) \
+  { \
+    return \
+      WrapClass<type>::CreateVar( \
+        new WrapClass_##type(obj_ptr));\
+  } 
+
+#define AMI_DEFINE_VARFROMSMTPTR_TEMPLATE(type1,name1,type2) \
+  BasicVariable::ptr AMILabType<type1<type2> >::CreateVarFromSmtPtr(boost::shared_ptr<type1<type2> >& obj_ptr) \
+  { \
+    return \
+      WrapClass<type1<type2> >::CreateVar( \
+        new WrapClass_##name1<type2>(obj_ptr));\
+  } 
+
+
 template<typename> 
 struct to_string {
     // optionally, add other information, like the size
@@ -102,38 +253,32 @@ typedef BasicVariable::ptr (C_wrap_varfunction)(ParamList*);
 
 
 
-#define TO_STRING(type) \
-  template<> struct to_string<type> { \
-      static char const* value() { return #type; } \
-  }; \
-
-TO_STRING(float);
-TO_STRING(double);
-TO_STRING(long);
-TO_STRING(int);
-TO_STRING(unsigned char);
-class InrImage;
-TO_STRING(InrImage);
-TO_STRING(std::string);
 class FloatMatrix;
-TO_STRING(FloatMatrix);
-TO_STRING(FILE);
-TO_STRING(C_wrap_procedure);
+class InrImage;
 class WrapClassMember;
-TO_STRING(WrapClassMember);
-TO_STRING(C_wrap_imagefunction);
-TO_STRING(C_wrap_varfunction);
 class AMIFunction;
-TO_STRING(AMIFunction);
 class AMIClass;
-TO_STRING(AMIClass);
 class AMIObject;
-TO_STRING(AMIObject);
-//class GLTransfMatrix;
-//TO_STRING( GLTransfMatrix);
 class VarArray;
-TO_STRING( VarArray);
 
+AMI_DECLARE_TYPE(float);
+AMI_DECLARE_TYPE(double);
+AMI_DECLARE_TYPE(long);
+AMI_DECLARE_TYPE(int);
+AMI_DECLARE_TYPE(unsigned char);
+AMI_DECLARE_TYPE(InrImage);
+AMI_DECLARE_TYPE(std::string);
+AMI_DECLARE_TYPE(FloatMatrix);
+AMI_DECLARE_TYPE(C_wrap_procedure);
+AMI_DECLARE_TYPE(C_wrap_imagefunction);
+AMI_DECLARE_TYPE(C_wrap_varfunction);
+AMI_DECLARE_TYPE(AMIFunction);
+AMI_DECLARE_TYPE(AMIClass);
+AMI_DECLARE_TYPE(AMIObject);
+AMI_DECLARE_TYPE( VarArray);
+
+// abstract classes
+AMI_DECLARE_TYPE(WrapClassMember)
 
 //----------------------------------------------------------------------
 /**
@@ -236,7 +381,7 @@ public:
 
   virtual const std::string GetTypeName() const
   {
-    return to_string<T>::value();
+    return AMILabType<T>::name_as_string();
   };
 
 

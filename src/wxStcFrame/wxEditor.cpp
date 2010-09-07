@@ -314,7 +314,10 @@ FindAndReplace::FindAndReplace (wxEditor* openEditor) : wxFrame(openEditor,wxID_
   wxStaticText* findLabel    = new wxStaticText(panel, -1, wxT("Text to Find: "));
 
   wxStaticText* replaceLabel = new wxStaticText(panel, wxID_ANY, wxT("Replacement Text: "));
-  findBox                    = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_LEFT | wxTE_PROCESS_ENTER);
+  findBox                    = new wxTextCtrl(panel, wxID_ANY, 
+                                              //wxT(""),
+                                              openEditor->GetSelectedText(),
+                                              wxPoint(-1, -1), wxSize(-1, -1), wxTE_LEFT | wxTE_PROCESS_ENTER);
   replaceBox                 = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_LEFT | wxTE_PROCESS_ENTER);
 
   wholeWord                  = new wxCheckBox(panel, wxID_ANY, wxT("Whole word"));
@@ -648,6 +651,8 @@ void wxEditor::OnFindNext (wxCommandEvent &WXUNUSED(event)) {
 }
 
 void wxEditor::OnReplace (wxCommandEvent &WXUNUSED(event)) {
+  //Pass to the constructor a reference to editor ('this' pointer)
+  FindAndReplace* findWindow = new FindAndReplace(this);
 }
 
 void wxEditor::OnReplaceNext (wxCommandEvent &WXUNUSED(event)) {

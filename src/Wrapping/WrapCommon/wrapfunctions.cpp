@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp"
 #include "DefineClass.hpp"
 #include "amilab_messages.h"

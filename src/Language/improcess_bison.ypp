@@ -13,6 +13,8 @@
   //#include <stdlib.h>
   //#include <stdio.h>
 
+#include "MainFrame.h"
+
 // use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
 #define NOMINMAX
 
@@ -42,7 +44,6 @@
 #include "driver.h"
 
 #include "CoutwxString.h"
-#include "MainFrame.h"
 #include "fonctions.h"
 #include "func_isoline.hpp"
 
@@ -1961,7 +1962,7 @@ command:
       std::string titre;
       GET_VARSTACK_VAR_VAL(InrImage, imagevar, im);
       BasicVariable::ptr var;
-      int var_context = Vars.GetContext(imagevar);
+//      int var_context = Vars.GetContext(imagevar);
       Variables::ptr context = imagevar->GetContext();
 
 /*
@@ -1996,7 +1997,7 @@ command:
         // Call constructor from DessinImage constructor function
         ParamList* p = new ParamList();
         p->AddParam(imagevar);
-        BasicVariable::ptr newvar = wrap_DessinImage().CallMember(p);
+        BasicVariable::ptr newvar = WrapClass<DessinImage>::CreateVar(p);
         FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
         if (newvar.get()) {
           newvar->Rename(titre.c_str());
@@ -2067,7 +2068,7 @@ command:
               Variable<string>::ptr Title(new Variable<string>(string_ptr(new string(titre))));
               ParamList* p = new ParamList();
               p->AddParam(Title);
-              BasicVariable::ptr newvar = wrap_Viewer3D().CallMember(p);
+              BasicVariable::ptr newvar = WrapClass<Viewer3D>::CreateVar(p);
               FILE_MESSAGE(boost::format("SHOW var_ami_object creating title %s ") % titre);
 
               if (newvar.get()) {
@@ -3221,18 +3222,6 @@ command:
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
           draw->AllContoursParam(  $5 , $7 );
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetOpacityImage T_OP_PAR var_image T_CL_PAR
-        {
-        /**
-         Description:
-            Setting the opacity image for the volume rendering.
-            This image should have unsigned char values.
-         ** /
-          GET_VARSTACK_VALUE(InrImage,    im);
-          GET_VARSTACK_VALUE(DessinImage, imdraw);
-
-          imdraw->SetVolRenOpacity( im.get());
         }*/
         | var_image T_POINT TInit
         {
@@ -9051,7 +9040,7 @@ primary_var:
           Kept for compatibility.
        **/
       int initial_size = $3;
-      BasicVariable::ptr v = CreateVar_SurfacePoly( new SurfacePoly());
+      BasicVariable::ptr v = WrapClass_SurfacePoly::CreateVar( new SurfacePoly());
 
       // Now create the vector 
       VarVector* vv = new VarVector();
@@ -9059,7 +9048,7 @@ primary_var:
         for (int i=0; i<initial_size; i++)
           vv->push_back(v->NewCopy());
       }
-      BasicVariable::ptr new_var = CreateVar_VarVector(vv);
+      BasicVariable::ptr new_var = AMILabType<VarVector>::CreateVar(vv);
       driver.var_stack.AddVar(new_var);
     }
     |
@@ -9959,7 +9948,7 @@ surface:
         driver.err_print("Isosurface failed!");
         YYABORT;
       }
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -9971,7 +9960,7 @@ surface:
               $5,
               NULL,
               2);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -9993,7 +9982,7 @@ surface:
               $5,
               mask.get());
       if (surf==NULL) driver.err_print("Isosurface failed!");
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10027,7 +10016,7 @@ surface:
         YYABORT;
       }
 
-      BasicVariable::ptr res(CreateVar_SurfacePoly(lines));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(lines));
       driver.var_stack.AddVar(res);
 
       delete crestlines;
@@ -10038,7 +10027,7 @@ surface:
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
       SurfacePoly* surf;
       surf = Func_decimate( varsurf.get());
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10048,7 +10037,7 @@ surface:
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
 
       newsurf = Func_decimate( varsurf.get(), $5 );
-      BasicVariable::ptr res(CreateVar_SurfacePoly(newsurf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(newsurf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10057,7 +10046,7 @@ surface:
       SurfacePoly* surf;
       GET_VARSTACK_VALUE(InrImage, im);
       surf = Func_vtkMarchingCubes(im.get(),$5);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10067,7 +10056,7 @@ surface:
       GET_VARSTACK_OBJECT(SurfacePoly,surf)
 
       newsurf = Func_vtkSmooth(surf.get(), (int) $5);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(newsurf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(newsurf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10081,14 +10070,14 @@ surface:
         driver.err_print("vtkWindowedSinc failed!");
         YYABORT;
       }
-      BasicVariable::ptr res(CreateVar_SurfacePoly(newsurf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(newsurf));
       driver.var_stack.AddVar(res);
     }
     |
     T_Surface T_OP_PAR T_CL_PAR
     {
       SurfacePoly* surf = new SurfacePoly();
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10097,7 +10086,7 @@ surface:
       boost::shared_array<char> filename( $2);
       SurfacePoly* surf = new SurfacePoly();
       surf->Read(filename.get());
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
         |
@@ -10113,7 +10102,7 @@ surface:
         boost::shared_array<char> filename( $3);
         SurfacePoly* surf;
         surf = Func_ReadCTALine(filename.get());
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
       |
@@ -10132,7 +10121,7 @@ surface:
         boost::shared_array<char> filename( $3);
 
         surf = Func_ReadCTALine(filename.get(), (int) $5);
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
       |
@@ -10151,7 +10140,7 @@ surface:
           driver.err_print("Skeleton2lines() error ... \n");
           YYABORT;
         } else {
-          BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+          BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
           driver.var_stack.AddVar(res);
         }
     }
@@ -10181,7 +10170,7 @@ surface:
         driver.err_print("SmoothLines() error ... \n");
         YYABORT;
       } else {
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
     }
@@ -10210,7 +10199,7 @@ surface:
         driver.err_print("SmoothLines() error ... \n");
         YYABORT;
       } else {
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
     }
@@ -10227,7 +10216,7 @@ surface:
         driver.err_print("ResampleLines() error ... \n");
         YYABORT;
       } else {
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
     }
@@ -10254,7 +10243,7 @@ surface:
         driver.err_print("Func_shortestpath () error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10288,7 +10277,7 @@ surface:
         driver.err_print("Func_shortestpath_image () error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10320,7 +10309,7 @@ surface:
         driver.err_print("Func_path_from_displ() error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10367,7 +10356,7 @@ surface:
         driver.err_print("Func_path_from_vectfield() error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10409,7 +10398,7 @@ surface:
         driver.err_print("Func_path_from_vectfield() error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_CL_PAR
@@ -10418,7 +10407,7 @@ surface:
       SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get());
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_CL_PAR
@@ -10440,7 +10429,7 @@ surface:
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get(), (int) $5 );
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
@@ -10451,7 +10440,7 @@ surface:
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get(),minth,maxth);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_vtkCreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
@@ -10462,7 +10451,7 @@ surface:
       float maxth = $7;
 
       surf = AMIFluid::Func_vtkCreateFlatMesh(im.get(),minth,maxth);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_CL_PAR
@@ -10498,7 +10487,7 @@ surface:
       float maxth = $7;
 
       surf = AMIFluid::Func_CreateVolume(input.get(), minth, maxth, lowpos.get(), highpos.get());
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
@@ -10540,7 +10529,7 @@ surface:
 
       surf = AMIFluid::Func_CreateVolume(input.get(), minth, maxth, 
                                           lowpos.get(), highpos.get(), colors.get(), alpha);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
@@ -10586,7 +10575,7 @@ surface:
 
       surf = AMIFluid::Func_CreateVectors(alt1.get(),displ.get(),alt2.get(), 
                                           stepx, stepy, scale, type);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -10636,7 +10625,7 @@ surface:
       surf = AMIFluid::Func_CreateVectors(alt1.get(),
           displ.get(),
           alt2.get(), stepx, stepy, scale, type,style);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_CL_PAR
@@ -10678,7 +10667,7 @@ surface:
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateVectors(alt1.get(),displ.get(),alt2.get(), stepx, stepy, scale);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateVectorsFromField T_OP_PAR expr_image  T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr  T_COMMA expr T_CL_PAR
@@ -10709,7 +10698,7 @@ surface:
       stepz = macro_max(stepz,1);
       surf = AMIFluid::Func_CreateVectors(displ.get(), 
               stepx, stepy, stepz,  scale, style);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
@@ -10741,7 +10730,7 @@ surface:
               v2.get(),
               v3.get(),
               stepx,stepy,stepz,res);
-      BasicVariable::ptr varres(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr varres(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(varres);
     }
     | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr_image T_COMMA  expr_image T_CL_PAR
@@ -10779,7 +10768,7 @@ surface:
                                     v3.get(),stepx,stepy,stepz,res,
                                     colors.get(),
                                     mask.get());
-      BasicVariable::ptr varres(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr varres(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(varres);
     }
 ;

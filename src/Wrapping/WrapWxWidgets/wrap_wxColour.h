@@ -21,23 +21,29 @@
 
 #include <wx/colour.h>
 
-TO_STRING(wxColour); //New: Added 13-07-2010
-class WrapClass_wxColour : public WrapClassBase
+AMI_DECLARE_TYPE(wxColour)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxColour>::CreateVar( ParamList* p);
+
+
+class WrapClass_wxColour : public WrapClass<wxColour>
 {
   DEFINE_CLASS(WrapClass_wxColour);
 
-  protected:
-    // for nested classes
-    typedef WrapClass_wxColour::ptr _parentclass_ptr;
-    typedef wxColour _obj_type;
-
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_wxColour(boost::shared_ptr<wxColour> val): _obj(val)
-    {}
+    WrapClass_wxColour(boost::shared_ptr<wxColour> sp): 
+      WrapClass<wxColour>(sp) { }
+
+/*
+    /// Create a variable from a standard pointer
+     static Variable<AMIObject>::ptr CreateVar( wxColour* sp);
+*/
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR( wxColour,  "Wrapping of wxColour (see http://docs.wxwidgets.org/).");
 
     ADD_CLASS_METHOD(Alpha,       "Returns the alpha value, on platforms where alpha is not yet supported, this always returns wxALPHA_OPAQUE.");
     ADD_CLASS_METHOD(Blue,        "Returns the blue intensity.");
@@ -48,8 +54,9 @@ class WrapClass_wxColour : public WrapClassBase
     ADD_CLASS_METHOD(Red,         "Returns the red intensity.");
     ADD_CLASS_METHOD(Set,         "Sets the RGB intensity values using the given values (first overload), extracting them from the packed long (second overload), using the given string (third overloard). When using third form, Set() accepts: colour names (those listed in wxTheColourDatabase), the CSS-like \"RGB(r,g,b)\" syntax (case insensitive) and the HTML-like syntax (i.e. \"#\" followed by 6 hexadecimal digits for red, green, blue components).Returns true if the conversion was successful, false otherwise.");
     ADD_CLASS_METHOD(copy,        "Copy constructor.");
+    ADD_CLASS_METHOD(assign,    "assign operation.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<wxColour>::ptr this_ptr )
     {
       AddVar_Alpha(       this_ptr);
       AddVar_Blue(        this_ptr);
@@ -60,27 +67,9 @@ class WrapClass_wxColour : public WrapClassBase
       AddVar_Red(         this_ptr);
       AddVar_Set(         this_ptr);
       AddVar_copy(        this_ptr);
+      AddVar_assign(      this_ptr);
     }
 
 };
-
-/**
- * Create a Wrapped object around _wxColour
- * @param objectptr input smart pointer to a WrapClass_wxColour
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_wxColour(  WrapClass_wxColour::ptr& objectptr);
-
-/**
- * Create a Wrapped object around wxColour
- * @param si_ptr input smart pointer to a wxColour
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_wxColour( wxColour* si);
-
-/** function that add wrapping of the wxColour window
- */
-//BasicVariable::ptr wrap_wxColour( ParamList* p); DEPRECATED
-ADD_CLASS_FUNCTION( wxColour, "Wrapping of wxColour (see http://docs.wxwidgets.org/)." );
 
 #endif // _wrap_wxColour_h_

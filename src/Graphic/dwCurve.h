@@ -1,5 +1,5 @@
 //
-// C++ Interface: dw_Curve
+// C++ Interface: dwCurve
 //
 // Description: 2D curve as a list of points.
 //
@@ -10,12 +10,21 @@
 //
 //
 
-#ifndef _dw_Curve_h
-#define _dw_Curve_h
+#ifndef _dwCurve_h
+#define _dwCurve_h
 
-#include "dw_Point2D.h"
+#include "dwPoint2D.h"
 #include <vector>
 
+#include "wx/wxprec.h"
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+#include <wx/colour.h>
 
 #if ((wxMAJOR_VERSION==2)&&(wxMINOR_VERSION>=9))||(wxMAJOR_VERSION>=3)
   #define PENSTYLE_SOLID wxPENSTYLE_SOLID 
@@ -23,13 +32,18 @@
   #define PENSTYLE_SOLID wxSOLID 
 #endif
 
+#include "DefineClass.hpp"
+#include <vector>
+
 /**
  * 2D Curve for wxDrawingWindow class.
  */
-class dw_Curve {
+class dwCurve {
 
-    //! curve points as a vetor of 2D points dw_Point2D
-    std::vector<dw_Point2D> points;
+  DEFINE_CLASS(dwCurve);
+
+    //! curve points as a vetor of 2D points dwPoint2D
+    std::vector<dwPoint2D> points;
 
     //! Colour of the curve
     wxColour color;
@@ -56,7 +70,7 @@ class dw_Curve {
   public:
     //! simple Constructor
 
-    dw_Curve() : 
+    dwCurve() : 
         color(*wxRED), 
           style(PENSTYLE_SOLID), 
           width(1), 
@@ -73,13 +87,13 @@ class dw_Curve {
      * 
      * @param c , color of the curve
      */
-    void SetColor( const wxColour& c)    { color = c; }
+    void SetColour( const wxColour& c)    { color = c; }
 
     /**
      * 
      * @return Curve color
      */
-    const wxColour& GetColor() const { return color; }
+    const wxColour& GetColour() const { return color; }
 
     /**
      * @param s , style of the curve see wxPen documentation
@@ -108,7 +122,7 @@ class dw_Curve {
      * 
      * @return the vector of points
      */
-    std::vector<dw_Point2D>& GetPoints() { return points; }
+    std::vector<dwPoint2D>& GetPoints() { return points; }
 
     /**
      * 
@@ -124,7 +138,7 @@ class dw_Curve {
      * @param i 
      * @return the point number i
      */
-    dw_Point2D GetPoint(int i) const
+    dwPoint2D GetPoint(int i) const
     {
       if (i<GetNumberOfPoints()) 
         return points[i];
@@ -134,10 +148,13 @@ class dw_Curve {
      * Add a point to the curve.
      * @param p 
      */
-    void AddPoint(const dw_Point2D& p )
+    void AddPoint(const dwPoint2D& p )
     {
       points.push_back(p);
     }
 };
 
-#endif // _dw_Curve_h
+typedef std::vector<dwCurve>           vector_dwCurve;
+
+
+#endif // _dwCurve_h

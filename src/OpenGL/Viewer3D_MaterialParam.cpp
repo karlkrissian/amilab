@@ -1,7 +1,8 @@
 
 
 #include "Viewer3D.hpp"
-
+#include "ParamPanel.hpp"
+#include "Viewer3D_MaterialParam.h"
 
 Viewer3D_MaterialParam::Viewer3D_MaterialParam(
   Viewer3D* parent): 

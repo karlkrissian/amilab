@@ -1,5 +1,5 @@
 //
-// C++ Interface: dw_Point2D
+// C++ Interface: dwPoint2D
 //
 // Description: 
 //
@@ -10,15 +10,18 @@
 //
 //
 
-#ifndef _dw_Point2D_h
-#define _dw_Point2D_h
+#ifndef _dwPoint2D_h
+#define _dwPoint2D_h
 
+#include "DefineClass.hpp"
 
 /**
   *  A Class for 2D Points in wxDrawingWindow.
   *  Points a stored in World coordinates and not in the displayed image coordinates.
   */
-class dw_Point2D {
+class dwPoint2D {
+
+  DEFINE_CLASS(dwPoint2D);
 
   protected:
     //! X position
@@ -30,14 +33,14 @@ class dw_Point2D {
     /**
      * Constructor, initialize the point to (0,0).
      */
-    dw_Point2D() :_x(0),_y(0) {}
+    dwPoint2D() :_x(0),_y(0) {}
 
     /**
      * Constructor.
      * @param x 
      * @param y 
      */
-    dw_Point2D(double x, double y) :_x(x),_y(y) {}
+    dwPoint2D(double x, double y) :_x(x),_y(y) {}
 
     /**
      * 
@@ -67,10 +70,10 @@ class dw_Point2D {
      * Copy of points
      * @param pt 
      */
-    void operator = (const dw_Point2D& pt) {
+    void operator = (const dwPoint2D& pt) {
       _x = pt._x;
       _y = pt._y;
     }
 };
 
-#endif // _dw_Point2D_h
+#endif // _dwPoint2D_h

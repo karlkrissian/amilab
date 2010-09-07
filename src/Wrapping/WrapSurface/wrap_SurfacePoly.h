@@ -26,22 +26,29 @@ class SurfacePoly;
 
 using namespace amilab;
 
-class WrapClass_SurfacePoly : public WrapClassBase
+AMI_DECLARE_TYPE(SurfacePoly)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p);
+
+
+class WrapClass_SurfacePoly : public WrapClass<SurfacePoly>
 {
   DEFINE_CLASS(WrapClass_SurfacePoly);
 
-  protected:
-    // for nested classes
-    typedef WrapClass_SurfacePoly::ptr _parentclass_ptr;
-    typedef amilab::SurfacePoly _obj_type;
 
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_SurfacePoly(boost::shared_ptr<amilab::SurfacePoly > si): _obj(si)
-    {}
+    WrapClass_SurfacePoly(boost::shared_ptr<SurfacePoly> sp): 
+      WrapClass<SurfacePoly>(sp) { }
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( SurfacePoly* sp);
+
+   /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR( SurfacePoly, "Wrapping of SurfacePoly." );
+
 
     ADD_CLASS_METHOD(info,             "Prints information about the polygonal surface");
     ADD_CLASS_METHOD(save,             "Saves to disk.");
@@ -112,7 +119,7 @@ class WrapClass_SurfacePoly : public WrapClassBase
     ADD_CLASS_METHOD(left_assign,     "Operator <<=, forces assignation of a new surface.");
     ADD_CLASS_METHOD(assign,          "Operator =, copy assignment.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<SurfacePoly>::ptr this_ptr )
     {
       AddVar_info(   this_ptr, "_info"); // avoid pb with token 'info'
       AddVar_save(   this_ptr, "_save"); // avoid pb with token 'save'
@@ -172,24 +179,6 @@ class WrapClass_SurfacePoly : public WrapClassBase
 
     }
 };
-
-/**
- * Create a Wrapped object around SurfacePoly
- * @param objectptr input smart pointer to a WrapClass_SurfacePoly
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_SurfacePoly(  WrapClass_SurfacePoly::ptr& objectptr);
-
-/**
- * Create a Wrapped object around SurfacePoly
- * @param si_ptr input smart pointer to a SurfacePoly
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_SurfacePoly( amilab::SurfacePoly* si);
-
-/** Method that adds wrapping of SurfacePoly 
- */
-ADD_CLASS_FUNCTION( SurfacePoly, "Wrapping of SurfacePoly." );
 
 
 #endif // _wrap_SurfacePoly_h_

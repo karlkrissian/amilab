@@ -160,7 +160,13 @@
 //
 // Sophia Antipolis le 08-12-96
 //
+#include "wx/wxprec.h"
+#include <wx/version.h>
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
 
+#include "MainFrame.h"
 #include "DessinImage.hpp"
 #include "CompareImage.hpp"
 #include "ficparam.hpp"
@@ -179,7 +185,6 @@
 
 typedef  unsigned long Dimension;
 
-#include "MainFrame.h"
 extern MainFrame*   GB_main_wxFrame;
 
 //extern XtAppContext GB_contexte;
@@ -280,6 +285,39 @@ void DessinImage::InitMinMax( InrImage::ptr& image)
   _intensite_entier_max = (int) _val_max;
 
 } // InitMinMax()
+
+
+//----------------------------------------------------------------
+void DessinImage::SetIntensityRange( float imin, float imax)
+//                ----------
+{
+  int     int_max,int_min;
+  float   float_max,float_min;
+
+  int_min =   *(Get_intensite_entier_min());
+  float_min = *(Get_intensite_float_min());
+  int_max =   *(Get_intensite_entier_max());
+  float_max = *(Get_intensite_float_max());
+
+  Set_intensite_entier_min(imin);
+  Set_intensite_entier_max(imax);
+  Set_intensite_float_min( imin);
+  Set_intensite_float_max( imax);
+
+  if (!(VerifyMinMax()))
+  {
+    Set_intensite_entier_min(int_min);
+    Set_intensite_float_min(float_min);
+    Set_intensite_entier_max(int_max);
+    Set_intensite_float_max(float_max);
+  }
+
+  MinMaxChecker();
+  Param._MAJ._intensite = true;
+  Param._MAJ.MAJCoupes();
+  Paint();
+  _param_intensity->MAJ();
+}
 
 
 //----------------------------------------------------------------
@@ -754,7 +792,7 @@ void DessinImage::IncreaseZoomArea( )
     int h_margin[3]; // horizontal margin for each slice view
     int v_margin[3]; // vertical margin for each slice view
     int largeur,hauteur;
-    int inc_x, inc_y, inc_z; // possible increases in each dimension
+    int inc_x, inc_y; // possible increases in each dimension
 
   largeur = _largeur - _colorbar_width;
   hauteur = _hauteur;
@@ -2786,7 +2824,6 @@ void DessinImage::InitParametres()
 {
   // not executing Paint()
   _in_paint          = 0;
-  _volren_opacity    = NULL;
   _imsurf_zscale     = 1.0;
   _sectionXY_visible =
   _sectionXZ_visible =
@@ -3366,7 +3403,7 @@ void DessinImage::SauveFichierParametres(  char* nom_fichier)
     FILE*      pfic;
         int     Pos_x, Pos_y;
         int     Hauteur, Largeur;
-        int     i;
+//        int     i;
 
   Recupere_fenetre_position(   &Pos_x,   &Pos_y  );
   Recupere_fenetre_dimensions( &Largeur, &Hauteur);
@@ -4428,6 +4465,94 @@ void DessinImage::DeplaceSourisBout3()
 
 // ---------------------------------------------------------
 //
+void  DessinImage::SetUserColormap(const InrImage::ptr& image, float center, float extent)
+//    ---------------
+{
+  if ((image->_format==WT_RGB)&&
+  (image->DimX()==256)&&(image->DimY()==1)&&(image->DimZ()==1)) {
+    _user_colormap = image;
+    _colormap_center = center;
+    _colormap_extent = extent;
+    Param._I._colorspace = COLORSPACE_USER;
+  }
+}
+
+
+//-------------------------------------------------
+void DessinImage::UpdateColormap()
+{
+  DessinImageParametres* Param = GetParam();
+  InrImage::ptr _image = Get_image();
+
+  switch ( Param->_I._colorspace ){
+
+    case COLORSPACE_GREY:
+      SetPaletteGrey(PALETTE_RGB);
+    break;
+
+
+    case COLORSPACE_RAINBOW:
+      unsigned char rainbow[256*3];
+      unsigned char pattern[192];
+
+      for (int i = 0; i <= 63; i++)
+      {
+        pattern[i]= (unsigned char) (i/63.0*255.0);
+      }
+
+      for (int i = 64; i <= 127; i++)
+      {
+        pattern[i]= (unsigned char) 255;
+      }
+
+      for (int i = 128; i <= 191; i++)
+      {
+        pattern[i]= (unsigned char) (255.0-(i-128.0)/64.0*255.0);
+      }
+
+      for (int i = 0; i <= 256*3-1; i++)
+      {
+        rainbow[i]     = 0;
+      }
+
+      for (int i = 0; i <= 255; i++)
+      {
+        if (i<192-32)
+          rainbow[i+512] = pattern[32+i];
+
+        if (i<192)
+          rainbow[i+256+32] = pattern[i];
+
+        if ((i<192)&&((i+96)<256))
+          rainbow[i+96] = pattern[i];
+      }
+
+      SetPaletteRU(rainbow);
+    break;
+
+    case COLORSPACE_USER:
+      InrImage::ptr _user_colormap = Get_user_colormap();
+      if (_user_colormap.get()) {
+        unsigned char colmap[256*3];
+        for(int i=0;i<256;i++) {
+          colmap[i]    =(unsigned char)(*_user_colormap)(i,0,0,0);
+          colmap[i+256]=(unsigned char)(*_user_colormap)(i,0,0,1);
+          colmap[i+512]=(unsigned char)(*_user_colormap)(i,0,0,2);
+        }
+        SetPaletteRU(colmap);
+      }
+      else
+        fprintf(stderr,"DessinImage::CB_colorspace() \t no user defined colormap ! \n");
+    break;
+
+  } // end switch
+
+  Param->_MAJ._intensite = true;
+  Param->_MAJ.MAJCoupes();
+}
+
+// ---------------------------------------------------------
+//
 void DessinImage::DrawContour( int i, int size, int style)
 //                -----------
 {
@@ -5172,7 +5297,7 @@ void DessinImage::CB_relire(  wxCommandEvent& event)
 void DessinImage::CB_comparer( wxCommandEvent& event)
 //                            -----------
 {
-    DessinImage*    di = this;
+//    DessinImage*    di = this;
 /* Deprecated
   di->_param_nom_image->AfficheDialogue();
 */
@@ -5207,7 +5332,7 @@ void DessinImage::(  wxCommandEvent&)
 void DessinImage::CB_sauver_image( wxCommandEvent&)
 //                ---------------
 {
-    DessinImage*    di = (DessinImage*) this;
+//    DessinImage*    di = (DessinImage*) this;
 
   //di->_param_sauve_image->AfficheDialogue();
 
@@ -5459,7 +5584,7 @@ void DessinImage::CB_VOLREN( wxCommandEvent&)
                  min,
                  max,
                  di,
-                             this->_volren_opacity);
+                 this->Get_volren_opacity());
 
   if (init)
   {

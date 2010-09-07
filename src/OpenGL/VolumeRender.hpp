@@ -100,7 +100,7 @@ class VolumeRender {
   InrImage* _im;
   float     _minI,_maxI;
   DessinImageBase* _di;
-  InrImage* _opacity_image;
+  InrImage::ptr _opacity_image;
 
   int      _size_x, _size_y,_size_z;
   int      _planes;
@@ -145,7 +145,7 @@ public:
     _di = di;
   }
 
-  void SetOpacityImage(InrImage* op)
+  void SetOpacityImage(InrImage::ptr op)
   {
     _opacity_image = op;
   }

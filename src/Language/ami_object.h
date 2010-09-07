@@ -90,10 +90,7 @@ private:
   /**
    * Destructor : empties the list of variables
    */
-  virtual ~AMIObject() 
-    {
-    _vars->EmptyVariables();
-    }
+  virtual ~AMIObject() ;
 
   /**
    * Associates the class to the object

@@ -18,21 +18,33 @@
 #include "ami_object.h"
 
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxBitmap(  WrapClass_wxBitmap::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxBitmap>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("wxBitmap");
-
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-
-  objectptr->AddMethods(objectptr);
-
-  return amiobject;
+  WrapClass_wxBitmap::wrap_wxBitmap construct;
+  return construct.CallMember(p);
 }
 
+
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxBitmap)
+
+//
+// static member for creating a variable from a pointer to wxColour
+//
+Variable<AMIObject>::ptr WrapClass_wxBitmap::CreateVar( wxBitmap* sp)
+{
+  boost::shared_ptr<wxBitmap> _obj_ptr( 
+    sp,
+    wxwindow_nodeleter<wxBitmap>() // deletion will be done by wxwidgets
+  );
+  return WrapClass<wxBitmap>::CreateVar( new WrapClass_wxBitmap(_obj_ptr));
+}
+
+
+/*
 //----------------------------------------------------------
 Variable<AMIObject>::ptr CreateVar_wxBitmap( wxBitmap* si)
 {
@@ -49,24 +61,28 @@ Variable<AMIObject>::ptr CreateVar_wxBitmap( wxBitmap* si)
       new Variable<AMIObject>( amiobject));
   return varres;
 }
+*/
+
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxBitmap( ParamList* p)
+// Method that adds wrapping of wxBitmap
+//---------------------------------------------------
+
+void WrapClass_wxBitmap::
+      wrap_wxBitmap::SetParametersComments() 
 {
-    char functionname[] = "wxBitmap";
-    char description[]=" \n\
-      Wrapped wxBitmap class. \n\
-      See http://docs.wxwidgets.org/stable/wx_wximage.html for details \n\
-            ";
-    char parameters[] =" wrapped constructors: \n\
-        - wxBitmap(): default constructor\n\
-        - wxBitmap(const wxImage& img, int depth = -1)\n\
-            Creates bitmap object from the image. This has to be done to actually display an image as you cannot draw an image directly on a window. The resulting bitmap will use the provided colour depth (or that of the current system if depth is -1) which entails that a colour reduction has to take place.\n";
+  ADDPARAMCOMMENT("A wxBitmap (MODE 1) or a wxImage (MODE 2).");
+  ADDPARAMCOMMENT("The image depth (def:-1) (MODE 2).");
+  return_comments = "A wrapped wxBitmap object.";
+}
 
-  if (!p) HelpAndReturnVarPtr;
-
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxBitmap::
+      wrap_wxBitmap::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
   if (p->GetNumParam()==0) 
-    return CreateVar_wxBitmap(new wxBitmap());
+    return WrapClass_wxBitmap::CreateVar(new wxBitmap());
 
   if (p->GetNumParam()>=1) 
   {
@@ -74,19 +90,20 @@ BasicVariable::ptr wrap_wxBitmap( ParamList* p)
     int depth  = -1;
   
     GET_OBJECT_PARAM(wxImage,image,_obj);
-    if (!image.get())  HelpAndReturnVarPtr;
+    if (!image.get())  ClassHelpAndReturn;
     get_int_param(depth, p, n,false);
 
     if (image->IsOk()) {
-      return CreateVar_wxBitmap(new wxBitmap( *image, depth));
+      return WrapClass_wxBitmap::CreateVar(new wxBitmap( *image, depth));
     }
     else {
       FILE_ERROR("Input wxImage is not valid.");
-      return CreateVar_wxBitmap(new wxBitmap());
+      return WrapClass_wxBitmap::CreateVar(new wxBitmap());
     }
   }
   return BasicVariable::ptr();
 }
+
 
 //---------------------------------------------------
 //  GetWidth
@@ -150,5 +167,5 @@ BasicVariable::ptr WrapClass_wxBitmap::
       wrap_copy::CallMember( ParamList* p)
 {
   // not a real copy ...
-  return CreateVar_wxBitmap( new wxBitmap(*(_objectptr->_obj)));
+  return WrapClass_wxBitmap::CreateVar( new wxBitmap(*(_objectptr->_obj)));
 }

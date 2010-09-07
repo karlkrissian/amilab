@@ -21,34 +21,46 @@
 
 #include "DessinImage.hpp"
 #include "wrap_FenetreDessin.h"
+#include "wrap_wxWindow.h"
 #include "wrap_Viewer3D.h"
 
-TO_STRING(DessinImage);
+AMI_DECLARE_TYPE(DessinImage);
 
-class WrapClass_DessinImage  : public WrapClass_FenetreDessin
-//: public WrapClass_wxWindow
+class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual WrapClass_FenetreDessin
 {
   DEFINE_CLASS(WrapClass_DessinImage);
 
   protected:
-    // for nested classes
-    typedef WrapClass_DessinImage::ptr _parentclass_ptr;
-    typedef DessinImage _obj_type;
+    typedef WrapClass<DessinImage>::ptr _parentclass_ptr;
+    typedef DessinImage ObjectType;
 
   public:
-    /// Stores a pointer to an object of type DessinImage.
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
+    // resolve ambiguity
+    const boost::shared_ptr<DessinImage>& GetObj() const { return WrapClass<DessinImage>::GetObj(); }
 
     /// Constructor
-    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si): WrapClass_FenetreDessin(si),  _obj(si)
+    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si): WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si)
     {}
+
+    /// Destructor
+    ~WrapClass_DessinImage()
+    {
+      std::cout << "~WrapClass_DessinImage()" << std::endl;
+      CLASS_MESSAGE("*** Destroying ***");
+    }
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(DessinImage, "Wrapping of DessinImage." );
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( DessinImage*);
 
     ADD_CLASS_METHOD(reference,       "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
 
     ADD_CLASS_METHOD(setpos,                 "Set the cursor position on a imagedraw window");
     ADD_CLASS_METHOD(showcursor,             "Displays or hides the cursor of a imagedraw window");
-    ADD_CLASS_METHOD(update,                 "Updates the image that is drawn in the specified window");
+    ADD_CLASS_METHOD(update,                 "Redraw all the slices");
+    ADD_CLASS_METHOD(Paint,                  "Calls the Paint method");
     ADD_CLASS_METHOD(compare,                "Put a comparison image for the imagedraw window");
     ADD_CLASS_METHOD(SetCompareDisplacement, "Defines a displacement to apply to the cursor of the window in parameter, when comparing 2 image drawing windows");
     ADD_CLASS_METHOD(SetCompTransf,          "SetCompTransf is not available at the moment.");
@@ -62,7 +74,8 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
     ADD_CLASS_METHOD(SetZoom,                "Zooms in on an area of the image.");
     ADD_CLASS_METHOD(SetWindowSize,          "Sets the dimension of the drawing window, for either images or surfaces");
     ADD_CLASS_METHOD(drawcircle,             "Draws a circle at coordinates: X, Y and Z with a specific color.");
-    ADD_CLASS_METHOD(SetColormap,           "Sets color map of an image.");
+    ADD_CLASS_METHOD(SetUserColormap,       "Sets color map of an image.");
+    ADD_CLASS_METHOD(UpdateColormap,        "Updates the colormap value.");
     ADD_CLASS_METHOD(setGLwin,              "Associates a 3D surface viewer to this image viewer.");
     ADD_CLASS_METHOD(SetIsoContour,         "Sets the image and intensity value of an isocontour in an 'image_draw' window");
     ADD_CLASS_METHOD(SetIsoContourParam,    "Sets the parameters (line style and thickeness) of an isocontour in an 'image_draw' window");
@@ -86,16 +99,20 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
 
     ADD_CLASS_METHOD(DrawLineZ,  "Draws a line on XY plane.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    ADD_CLASS_METHOD(SetIntensityRange, "Sets the lower and upper limits of the intensity look-up table.");
+
+    void AddMethods(WrapClass<DessinImage>::ptr this_ptr )
     {
       // Add members from wxWindow
-      WrapClass_FenetreDessin::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
+      WrapClass_FenetreDessin::ptr parent_obj(
+        boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
       parent_obj->AddMethods(parent_obj);
 
       AddVar_reference(             this_ptr);
       AddVar_setpos(                this_ptr, "_setpos");
       AddVar_showcursor(            this_ptr);
       AddVar_update(                this_ptr);
+      AddVar_Paint(                 this_ptr);
       AddVar_compare(               this_ptr);
       AddVar_SetCompareDisplacement(this_ptr);
       AddVar_SetCompTransf(         this_ptr);
@@ -109,7 +126,8 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
       AddVar_SetZoom(               this_ptr);
       AddVar_SetWindowSize(         this_ptr);
       AddVar_drawcircle(            this_ptr);
-      AddVar_SetColormap(           this_ptr);
+      AddVar_SetUserColormap(       this_ptr);
+      AddVar_UpdateColormap(        this_ptr);
       AddVar_setGLwin(              this_ptr);
       AddVar_SetIsoContour(         this_ptr);
       AddVar_SetIsoContourParam(    this_ptr);
@@ -130,25 +148,9 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
       AddVar_GetZPos(               this_ptr);
       AddVar_getimage(              this_ptr);
       AddVar_DrawLineZ(             this_ptr);
+      AddVar_SetIntensityRange(     this_ptr);
     };
 };
 
-/**
- * Create a Wrapped object around DessinImage
- * @param objectptr input smart pointer to a WrapClass_DessinImage
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_DessinImage(  WrapClass_DessinImage::ptr& objectptr);
-
-/**
- * Create a Wrapped object around DessinImage
- * @param si_ptr input smart pointer to a DessinImage
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_DessinImage( DessinImage* si);
-
-/** Method that adds wrapping of DessinImage
- */
-ADD_CLASS_FUNCTION( DessinImage, "Wrapping of DessinImage." );
 
 #endif // _wrap_DessinImage_h

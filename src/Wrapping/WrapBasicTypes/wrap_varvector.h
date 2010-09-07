@@ -24,23 +24,27 @@
 
 typedef std::vector<BasicVariable::ptr> VarVector;
 
+AMI_DECLARE_TYPE(VarVector);
+
+
 // varvector type
-class WrapClass_VarVector : public WrapClassBase
+class WrapClass_VarVector : public WrapClass<VarVector>
 {
   DEFINE_CLASS(WrapClass_VarVector);
 
-  // for nested classes
-  typedef WrapClass_VarVector::ptr _parentclass_ptr;
-  typedef VarVector _obj_type;
-
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
-    
 
     /// Constructor
-    WrapClass_VarVector( boost::shared_ptr<VarVector>& vv): _obj(vv)
+    WrapClass_VarVector( boost::shared_ptr<VarVector>& vv): WrapClass<VarVector>(vv)
     {}
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR( VarVector, "Wrapping of VarVector (std::vector<BasicVariable::ptr>)." );
+
+/*
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( VarVector* vv);
+*/
 
     ADD_CLASS_METHOD( push_back,    "Add element at the end.");
     ADD_CLASS_METHOD( pop_back,     "Deletes the element at the end of a list.");
@@ -55,7 +59,7 @@ class WrapClass_VarVector : public WrapClassBase
     ADD_CLASS_METHOD( left_assign,  "Reassign operator <<=");
     ADD_CLASS_METHOD( assign,       "Assign operator =");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<VarVector>::ptr this_ptr )
     {
       AddVar_push_back(  this_ptr);
       AddVar_pop_back(   this_ptr);
@@ -72,49 +76,6 @@ class WrapClass_VarVector : public WrapClassBase
     }
 
 };
-
-/**
- * Create a Wrapped object around VarVector
- * @param this_ptr input smart pointer to a WrapClass_VarVector
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_VarVector(  WrapClass_VarVector::ptr& this_ptr);
-
-/**
- * Create a Wrapped object around VarVector
- * @param si_ptr input smart pointer to a VarVector
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_VarVector( VarVector* si);
-
-
-/*
-#define ADD_CLASS_FUNCTION2(methodname,description_str) \
-/**\
- * description_str\
- ** / \
-class wrap_##methodname : public WrapClassMember { \
-  public: \
-    wrap_##methodname()  \
-    { \
-      functionname = #methodname; \
-      description=description_str; \
-      SetParametersComments(); \
-    } \
-    void SetParametersComments(); \
-    BasicVariable::ptr CallMember(ParamList*); \
-}; \
-\
-inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
-  _context->AddVar<WrapClassMember>(newname, tmp, _context); \
-}
-*/
-
-/** Method that adds wrapping of VarVector 
- */
-ADD_CLASS_FUNCTION(VarVector,"Wrapping of std::vector<BasicVariable::ptr>." );
-
 
 
 #endif

@@ -9,7 +9,8 @@ for dir in  "BasicFilters","Filtering","Denoising",\
             "Visualization","IO","Centerlines",\
             "QualityMeasures", "Fitting", "Optimization", \
             "OpticFlow", \
-            "CarotidBifurcationWorkshop2009" \
+            "CarotidBifurcationWorkshop2009", \
+            "Utils" \
 {
   if FileExists(GetScriptsDir+"/"+dir+"/Add2Menu.amil") {
     func dir+"/Add2Menu.amil"

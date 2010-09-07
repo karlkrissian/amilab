@@ -33,44 +33,47 @@ extern MainFrame* GB_main_wxFrame;
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
 
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_DessinImage(  WrapClass_DessinImage::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<DessinImage>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("DessinImage");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  WrapClass_DessinImage::wrap_DessinImage construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_DessinImage( DessinImage* _si)
-{
-  // Create smart pointer with own deleter
-  DessinImage::ptr _si_ptr = DessinImage::Create_ptr(_si);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(DessinImage);
 
-  WrapClass_DessinImage::ptr sip(new WrapClass_DessinImage(_si_ptr));
-  AMIObject::ptr amiobject(AddWrap_DessinImage(sip));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+//
+// static member for creating a variable from a pointer to DessinImage
+//
+Variable<AMIObject>::ptr WrapClass_DessinImage::CreateVar( DessinImage* sp)
+{
+  DessinImage::ptr di_ptr = DessinImage::Create_ptr(sp);
+  Variable<AMIObject>::ptr res = 
+    WrapClass<DessinImage>::CreateVar(
+      // Create smart pointer with own deleter
+      new WrapClass_DessinImage(di_ptr)
+    );
+  return res;
 }
+
 
 //---------------------------------------------------
 // Method that adds wrapping of DessinImage
 //---------------------------------------------------
 
-void  wrap_DessinImage::SetParametersComments() 
+void WrapClass_DessinImage::
+      wrap_DessinImage::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(InrImage,"Input image.");
   return_comments = "A wrapped DessinImage object.";
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_DessinImage::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_DessinImage::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   Variable<InrImage>::ptr varim;
@@ -94,7 +97,7 @@ BasicVariable::ptr wrap_DessinImage::CallMember( ParamList* p)
                                               400,
                                               CREATE_TOPLEVEL_SHELL);
 
-  BasicVariable::ptr res = CreateVar_DessinImage(oDessinImage);
+  BasicVariable::ptr res = WrapClass_DessinImage::CreateVar(oDessinImage);
 
   // Create a list of weak pointers to the variables that are refering to the drawing window
   std::list<BasicVariable::wptr>* refvarlist = new std::list<BasicVariable::wptr>;
@@ -220,6 +223,21 @@ BasicVariable::ptr WrapClass_DessinImage::
   param->_MAJ.MAJCoupes();
   draw->Paint();
 
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Paint
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_Paint::SetParametersComments() 
+{ }
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_Paint::CallMember( ParamList* p)
+{
+  DessinImage::ptr draw(this->_objectptr->_obj);
+  draw->Paint();
   return BasicVariable::ptr();
 }
 
@@ -608,10 +626,10 @@ BasicVariable::ptr WrapClass_DessinImage::
 }
 
 //---------------------------------------------------
-//  SetColormap
+//  SetUserColormap
 //---------------------------------------------------
 void WrapClass_DessinImage::
-      wrap_SetColormap::SetParametersComments() 
+      wrap_SetUserColormap::SetParametersComments() 
 {
   //TODO
   ADDPARAMCOMMENT_TYPE(InrImage,"image to use");
@@ -621,7 +639,7 @@ void WrapClass_DessinImage::
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
-      wrap_SetColormap::CallMember( ParamList* p)
+      wrap_SetUserColormap::CallMember( ParamList* p)
 {
   DessinImage::ptr di(this->_objectptr->_obj);
 
@@ -643,6 +661,21 @@ BasicVariable::ptr WrapClass_DessinImage::
   //di->SetUserColormap(image.get(),center,extent);
   di->SetUserColormap(image,center,extent);
 
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  UpdateColormap
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_UpdateColormap::SetParametersComments() 
+{}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_UpdateColormap::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->_obj);
+  di->UpdateColormap();
   return BasicVariable::ptr();
 }
 
@@ -950,7 +983,7 @@ BasicVariable::ptr WrapClass_DessinImage::
     return BasicVariable::ptr();
   }
 
-  di->SetVolRenOpacity(image.get());
+  di->SetVolRenOpacity(image);
 
   return BasicVariable::ptr();
 }
@@ -1214,6 +1247,29 @@ BasicVariable::ptr WrapClass_DessinImage::
   if (!get_val_param<float>( y2, p, n)) ClassHelpAndReturn;
 
   di->DrawLineZ(x1,y1,x2,y2);
+  return BasicVariable::ptr();
+}
+
+
+//---------------------------------------------------
+//  SetIntensityRange
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_SetIntensityRange::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(float, "minimal intensity for LUT.");
+  ADDPARAMCOMMENT_TYPE(float, "maximal intensity for LUT.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_SetIntensityRange::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  int n=0;
+  GET_PARAM(float,Imin,0)
+  GET_PARAM(float,Imax,255)
+
+  di->SetIntensityRange(Imin,Imax);
   return BasicVariable::ptr();
 }
 
