@@ -58,6 +58,9 @@ using namespace amilab;
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
+//dnd operation
+#include "wxDragAndDrop.h"
+
 extern wxString        GB_help_dir;
 extern wxString        GB_scripts_dir;
 extern VarContexts  Vars;
@@ -759,6 +762,8 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
 
   sbox_sizer->Add(buttons_sizer, 0, wxEXPAND , 5);
   sbox_sizer->Add(TC.get(), 1, wxEXPAND | wxALL, 2);
+
+  this->TC->SetDropTarget(new TextControlTextDropTarget(this->TC));
 
 } // CreateConsoleText()
 

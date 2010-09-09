@@ -3,6 +3,8 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${AMILAB_SOURCE_DIR}
+  ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Zinrimage
   ${AMILAB_SOURCE_DIR}/Images
@@ -14,6 +16,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/../Pixmaps
+  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   )
 
 INCLUDE(${wxWidgets_USE_FILE})
@@ -30,6 +33,7 @@ SET(Graphic_HDRS
     dwControlledCurve.h
     dwPoint2D.h
     LinearColorMap.h
+    wxDragAndDrop.h
 )
 
 SET(Graphic_SRCS
@@ -40,6 +44,7 @@ SET(Graphic_SRCS
     wxDrawingWindow.cpp
     LinearColorMap.cpp
     dwControlledCurve.cpp
+    wxDragAndDrop.cpp
 )
 
 SET(Graphic_SRCS

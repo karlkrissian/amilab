@@ -52,7 +52,7 @@ namespace itk
  *  point accuracy and arithmetic operations.
  *
  *  \par Parameters
- *  Set/Get Searching window, this is "t" window. It´s bigger than pattern
+ *  Set/Get Searching window, this is "t" window. Itï¿½s bigger than pattern
  *  window. Define a window of size (2t+1)^n used to search for similar 
  *  pixels/voxels. "n" is the dimension of the image.
  *
