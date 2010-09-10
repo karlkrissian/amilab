@@ -180,8 +180,8 @@ private:
 
 public:
   //Constructor
-  AnalyticStraightVessel2D(float x = 50, float y = 50, float g = 4, 
-                           float alpha = 20);
+  AnalyticStraightVessel2D(float x = 50.0, float y = 50.0, float g = 4.0, 
+                           float alpha = 20.0);
   //Destructor
   ~AnalyticStraightVessel2D();
   //Operador paréntesis (obtención de la imagen de la ecuación)

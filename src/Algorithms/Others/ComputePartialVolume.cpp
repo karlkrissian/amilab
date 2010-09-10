@@ -109,10 +109,22 @@ double AnalyticStraightVessel2D::operator () (const double& x, const double& y,
 {
   double ux = -ny;
   double uy = nx;
-  double vx = x - 50;
-  double vy = y - 50;
+  double vx = x - center[0];
+  double vy = y - center[1];
   double d = fabs(ux*vy-vx*uy) / sqrt(ux*ux+uy*uy);
-  return ((d>thickness/2) ? 0 : 1);
+//  int aux = (d>thickness/2) ? 0 : 1;
+//  cout << "result = " << aux << endl;
+//  double dx = x-center[0];
+//  double dy = y-center[1];
+//  double d = sqrt(dx*dx + dy*dy);
+  if (d<thickness)
+  {
+    cout << "punto(" << x << ", " << y << ")" << endl;
+    cout << "distancia = " << d << endl;
+    cout << "grosor = " << thickness << endl;
+  }
+ 
+  return ((d>thickness) ? 0 : 1);
 }
 
 float* AnalyticStraightVessel2D::getCenter()
