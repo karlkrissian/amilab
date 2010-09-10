@@ -291,12 +291,31 @@ void SubPixel2D::drawBorder(DessinImage* viewer, InrImage* inside,
     else
       viewer->SetLineParameters(nthickness, wxDOT);
     //Draw normals
+    double a,b;
     for(int i=0; i<norm_pts->DimX(); i++)
     {
       if ((*inside)(i,0,0))
       {
         viewer->DrawLineZ((*norm_pts)(i,0,0,0), (*norm_pts)(i,0,0,1), 
                           (*norm_pts)(i,0,0,2), (*norm_pts)(i,0,0,3));
+        
+        //double theta = atan(((*norm_pts)(i,0,0,1)-(*norm_pts)(i,0,0,3))/
+//                            ((*norm_pts)(i,0,0,0)-(*norm_pts)(i,0,0,2)));
+//        theta = theta*180 / M_PI;
+        //double ty = (double)-((*norm_pts)(i,0,0,1)-(*norm_pts)(i,0,0,3));
+//        double tx = (double)((*norm_pts)(i,0,0,0)-(*norm_pts)(i,0,0,2));
+//        double theta = (double)atan(ty/tx);
+//        if (tx < 0) {
+//          theta += M_PI;
+//        }
+//        double alpha = 45.0*M_PI/180.0;
+//        double dist = 0.5;
+//        double xr = (*norm_pts)(i,0,0,2) + dist * cos(theta - alpha);
+//        double yr = (*norm_pts)(i,0,0,3) - dist * cos(theta - alpha);
+//        double xl = (*norm_pts)(i,0,0,2) + dist * cos(theta + alpha);
+//        double yl = (*norm_pts)(i,0,0,3) - dist * cos(theta + alpha);
+//        viewer->DrawLineZ((*norm_pts)(i,0,0,2), (*norm_pts)(i,0,0,3), xr, yr);
+//        viewer->DrawLineZ((*norm_pts)(i,0,0,2), (*norm_pts)(i,0,0,3), xl, yl);
       }
     }
   }

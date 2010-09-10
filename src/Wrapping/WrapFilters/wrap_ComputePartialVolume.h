@@ -129,6 +129,48 @@ ADD_CLASS_FUNCTION(AnalyticLine, "Wrapping of AnalyticLine.");
 
 
 //---------------------------------------------------
+//AnalyticStraightVessel2D Wrapping
+class WrapClass_AnalyticStraightVessel2D : public WrapClass_AnalyticFunctionBase {
+  DEFINE_CLASS(WrapClass_AnalyticStraightVessel2D);
+  
+  // for nested classes
+  typedef WrapClass_AnalyticStraightVessel2D::ptr _parentclass_ptr;
+  typedef AnalyticStraightVessel2D _obj_type;
+  
+public:
+  boost::shared_ptr<_obj_type> _obj;
+  const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
+  
+  //Constructor
+  WrapClass_AnalyticStraightVessel2D(boost::shared_ptr<AnalyticStraightVessel2D> si):
+                          WrapClass_AnalyticFunctionBase(si), _obj(si)
+  {}
+  
+  ADD_CLASS_METHOD(getCenter,    "Get vessel center.");
+  ADD_CLASS_METHOD(setCenter,    "Set vessel center.");
+  ADD_CLASS_METHOD(getThickness, "Get vessel thickness.");
+  ADD_CLASS_METHOD(setThickness, "Set vessel thickness.");
+  ADD_CLASS_METHOD(getAngle,     "Get vessel angle.");
+  ADD_CLASS_METHOD(setAngle,     "Set vessel angle.");
+  
+  void AddMethods(_parentclass_ptr& this_ptr)
+  {
+    AddVar_getCenter(   this_ptr);
+    AddVar_setCenter(   this_ptr);
+    AddVar_getThickness(this_ptr);
+    AddVar_setThickness(this_ptr);
+    AddVar_getAngle(    this_ptr);
+    AddVar_setAngle(    this_ptr);
+  }
+};
+
+AMIObject::ptr AddWrap_AnalyticStraightVessel2D(WrapClass_AnalyticStraightVessel2D::ptr& objectptr);
+
+Variable<AMIObject>::ptr CreateVar_AnalyticStraightVessel2D(AnalyticStraightVessel2D* si);
+
+ADD_CLASS_FUNCTION(AnalyticStraightVessel2D, "Wrapping of AnalyticStraightVessel2D.");
+
+//---------------------------------------------------
 //AnalyticSphere Wrapping
 class WrapClass_AnalyticSphere : public WrapClass_AnalyticFunctionBase {
   DEFINE_CLASS(WrapClass_AnalyticSphere);

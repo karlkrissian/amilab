@@ -162,6 +162,44 @@ public:
   float get_n();
 };
 
+//******** NUEVO! 09/09/2010 *******
+//Nueva clase para la creación de venas sintéticas rectas en 2D
+class AnalyticStraightVessel2D : public AnalyticFunctionBase {
+  DEFINE_CLASS(AnalyticStraightVessel2D);
+
+private:
+  //El centro
+  float center[2];
+  //El grosor del vaso
+  float thickness;
+  //angulo
+  float angle;
+  //Pendientes
+  double nx;
+  double ny;
+
+public:
+  //Constructor
+  AnalyticStraightVessel2D(float x = 50, float y = 50, float g = 4, 
+                           float alpha = 20);
+  //Destructor
+  ~AnalyticStraightVessel2D();
+  //Operador paréntesis (obtención de la imagen de la ecuación)
+  double operator () (const double& x, const double& y, const double& z) const;
+  //Obtener el centro
+  float* getCenter();
+  //Asignar centro
+  void setCenter(float x, float y);
+  //Obtener grosor
+  float getThickness();
+  //Asignar grosor
+  void setThickness(float g);
+  //Obtener ángulo
+  float getAngle();
+  //Asignar ángulo
+  void setAngle(float alpha);
+};
+
 /**
  *  AnalyticSphere class.
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
