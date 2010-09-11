@@ -70,7 +70,7 @@
 template<typename T> 
 class AMILabType {
     public:
-    static char const* name_as_string() { return "unknown"; }
+    static std::string name_as_string() { return std::string("unknown"); }
     static boost::shared_ptr<T> GetValue(BasicVariable::ptr var)
     { return boost::shared_ptr<T>(); }
 
@@ -88,7 +88,7 @@ class AMILabType {
   template<> class AMILabType<type> \
   { \
     public: \
-    static char const* name_as_string();\
+	static std::string name_as_string();\
     static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
     static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
     static BasicVariable::ptr CreateVar(type* val);\
@@ -96,7 +96,7 @@ class AMILabType {
   };
 
 #define AMI_DEFINE_BASICTYPE(type) \
-    char const* AMILabType<type>::name_as_string() { return #type; } \
+	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
     \
     boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
     { \
@@ -141,9 +141,9 @@ class AMILabType {
 
 
 #define AMI_DEFINE_WRAPPEDTYPE_COMMON(type) \
-    char const* AMILabType<type>::name_as_string() { \
-       std::string name = std::string("wrap_")+#type; \
-       return name.c_str(); \
+	std::string AMILabType<type>::name_as_string() { \
+	  std::string name = std::string("wrap_")+std::string(#type); \
+      return name; \
     } \
     \
     boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \

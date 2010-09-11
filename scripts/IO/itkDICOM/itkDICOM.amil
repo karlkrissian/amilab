@@ -15,9 +15,9 @@ if (!exists(DICOMClass)) {
     proc ::Init() {
       
       ::dicom_folder = "", "Dicom Path Folder"
-      ::image_name = "", "Name of the resulting image variable"
-      ::dicom_save = "", "Dicom Save Path Folder"
-      ::image_save = "", "Name of the save image"
+      ::image_name = "dicomim", "Name of the resulting image variable"
+      ::dicom_save = "dicomim", "Dicom Save Path Folder"
+      ::image_save = "dicomim", "Name of the save image"
       
      # ::help1 = "http://www.itk.org/Doxygen316/html/classitk_1_1DICOMImageIO2.html" 
      # ::help2 = "http://www.itk.org/Doxygen316/html/classitk_1_1DICOMSeriesFileNames.html"

@@ -202,7 +202,7 @@ ENDIF( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" )
 #=====================================================================
 IF(wxWidgets_FIND_STYLE STREQUAL "win32")
   # Useful common wx libs needed by almost all components.
-  SET(wxWidgets_COMMON_LIBRARIES png tiff jpeg zlib regex expat scintilla)
+  SET(wxWidgets_COMMON_LIBRARIES png tiff jpeg zlib regex expat )
 
   # DEPRECATED: Use FIND_PACKAGE(wxWidgets COMPONENTS mono) instead.
   IF(NOT wxWidgets_FIND_COMPONENTS)

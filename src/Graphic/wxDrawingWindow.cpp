@@ -652,7 +652,8 @@ void wxDrawingWindow::DrawLinearCM(  )
           weights[cmpt_id] += current_weight;
 
           cmpt_id++;
-          pos = _linearCM.GetPoint(cmpt_id).GetPosition();
+		  if (cmpt_id<cm_size)
+	        pos = _linearCM.GetPoint(cmpt_id).GetPosition();
         }
       }
       curvpt_id++;
