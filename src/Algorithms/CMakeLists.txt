@@ -71,6 +71,10 @@ SET(Algorithms_SRCS
   Vaisseaux/IsoLigne2.cpp
   Vaisseaux/Voxel.cpp
 
+  # from SplineThevenaz
+  SplineThevenaz/coeff.c 
+  SplineThevenaz/interpol.c
+
 )
 
 
@@ -119,6 +123,9 @@ SET(Algorithms_HDRS
   include/Vaisseau.hpp
   include/Voxel.hpp
 
+  # from SplineThevenaz
+  include/coeff.h
+  include/interpol.h
 )
 
 SET(OpenGL_SRCS

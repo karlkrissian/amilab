@@ -13,7 +13,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/myVTK4
-  ${AMILAB_SOURCE_DIR}/SplineThevenaz
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${OPTICFLOW_INCLUDE_DIR}

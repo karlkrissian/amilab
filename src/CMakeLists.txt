@@ -362,7 +362,6 @@ IF(AMI_USE_VTK)
   add_subdirectory (myVTK4)
 ENDIF(AMI_USE_VTK)
 
-add_subdirectory (SplineThevenaz)
 #add_subdirectory (libamiFluid)
 add_subdirectory (Graph)
 
@@ -385,7 +384,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/SplineThevenaz
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
@@ -481,7 +479,6 @@ SET(amilab_ownlibs
   OpenGL
   Graphic
   wxParams
-  SplineThevenaz
   Graph
   Common
 # wrapped wxwidgets samples
