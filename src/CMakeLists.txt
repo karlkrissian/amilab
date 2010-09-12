@@ -348,7 +348,6 @@ include_directories (
 SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )
 
 add_subdirectory (Common)
-add_subdirectory (Math)
 #add_subdirectory (Zinrimage)
 add_subdirectory (AMImage)
 add_subdirectory (DistTransf)
@@ -356,7 +355,6 @@ add_subdirectory (Images)
 add_subdirectory (Coordonnees)
 add_subdirectory (Contours)
 add_subdirectory (Vaisseaux)
-add_subdirectory (Filtering)
 add_subdirectory (Crest)
 add_subdirectory (ImageTool)
 add_subdirectory (Graphic)
@@ -365,14 +363,12 @@ add_subdirectory (OpenGL)
 add_subdirectory (wxSamples/penguin)
 add_subdirectory (wxStcFrame)
 add_subdirectory (wxCode/wxTreeListCtrl)
-add_subdirectory (Voxels)
 add_subdirectory (AMILab)
 
 IF(AMI_USE_VTK)
   add_subdirectory (myVTK4)
 ENDIF(AMI_USE_VTK)
 
-add_subdirectory (Line)
 add_subdirectory (SplineThevenaz)
 #add_subdirectory (libamiFluid)
 add_subdirectory (Graph)
@@ -389,23 +385,18 @@ add_subdirectory (Algorithms)
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/Math
   ${AMILAB_SOURCE_DIR}/AMImage
-  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
+  ${AMILAB_SOURCE_DIR}/Algorithms
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Coordonnees
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/ImageTool
   ${AMILAB_SOURCE_DIR}/OpenGL
   ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/Voxels
   ${AMILAB_SOURCE_DIR}/Crest
   ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Filtering
-  ${AMILAB_SOURCE_DIR}/Line
   ${AMILAB_SOURCE_DIR}/SplineThevenaz
   ${AMILAB_SOURCE_DIR}/Contours
   ${AMILAB_SOURCE_DIR}/DistTransf
@@ -505,11 +496,8 @@ SET(amilab_ownlibs
   Crest
 #  DistTransf
   Algorithms
-  Filtering
   ImageTool
   Images
-  Line
-  Math
   OpenGL
   Graphic
   wxParams
@@ -517,7 +505,6 @@ SET(amilab_ownlibs
   Graph
   Vessels
   Common
-  Voxels
 # wrapped wxwidgets samples
   penguin
   wxStcFrame

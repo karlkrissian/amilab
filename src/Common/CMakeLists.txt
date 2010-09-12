@@ -13,6 +13,13 @@ SET(Common_SRCS
   ficparam.cpp  
   StringUtils.cpp
   message_dialog.cpp
+
+  # coming from previous Math dir
+  CurvaturasPrincipales.cpp
+  Eigen.cpp
+  FloatMatrix.cpp
+  math1.cpp
+
 )
 
 SET(Common_HDRS
@@ -33,6 +40,14 @@ SET(Common_HDRS
 	Timing.hpp
 	Voisins27.hpp
   amilab_boost.h
+
+  # coming from previous Math dir
+  complex.hpp
+  Coordonnees.hpp
+  CurvaturasPrincipales.hpp
+  Eigen.hpp
+  FloatMatrix.hpp
+  math1.hpp
 )
 
 SET (Common_SRCS

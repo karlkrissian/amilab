@@ -7,10 +7,8 @@ INCLUDE( ${USE_VTK_FILE} )
 
 include_directories ( 
   ${AMILAB_SOURCE_DIR}/Common 
-  ${AMILAB_SOURCE_DIR}/Math 
   ${AMILAB_SOURCE_DIR}/Images 
   ${AMILAB_SOURCE_DIR}/AMImage 
-  ${AMILAB_SOURCE_DIR}/Zinrimage 
   ${AMILAB_SOURCE_DIR}/Coordonnees)
 
 
