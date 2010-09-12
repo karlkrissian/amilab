@@ -5,12 +5,10 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}
   ${AMIFLUID_INCLUDE_DIR}
@@ -73,7 +71,9 @@ SET(Algorithms_SRCS
   # from SplineThevenaz
   SplineThevenaz/coeff.c 
   SplineThevenaz/interpol.c
-
+  
+  # from Graph
+  Graph/dijkstra.cpp
 )
 
 
@@ -125,6 +125,9 @@ SET(Algorithms_HDRS
   # from SplineThevenaz
   include/coeff.h
   include/interpol.h
+
+  # from Graph
+  include/dijkstra.h
 )
 
 SET(OpenGL_SRCS

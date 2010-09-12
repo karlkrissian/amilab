@@ -7,7 +7,6 @@ include_directories (
   )
 
 SET( Graph_SRCS
-  dijkstra.cpp
 )
 
 SET(Graph_HDRS

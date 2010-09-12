@@ -7,9 +7,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${AMILAB_SOURCE_DIR}/OpenGL
   ${AMILAB_SOURCE_DIR}/wxParams
-  ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/libamiFluid

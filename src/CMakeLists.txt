@@ -351,7 +351,6 @@ add_subdirectory (Common)
 #add_subdirectory (DistTransf)
 add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
-add_subdirectory (OpenGL)
 add_subdirectory (wxSamples/penguin)
 add_subdirectory (wxStcFrame)
 add_subdirectory (wxCode/wxTreeListCtrl)
@@ -362,7 +361,6 @@ IF(AMI_USE_VTK)
 ENDIF(AMI_USE_VTK)
 
 #add_subdirectory (libamiFluid)
-add_subdirectory (Graph)
 
 #add_subdirectory (WrapITK)
 add_subdirectory (Wrapping)
@@ -378,9 +376,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic/include
-  ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
@@ -473,10 +468,8 @@ SET(amilab_ownlibs
   AMILab
   Language
   Algorithms
-  OpenGL
   Graphic
   wxParams
-  Graph
   Common
 # wrapped wxwidgets samples
   penguin

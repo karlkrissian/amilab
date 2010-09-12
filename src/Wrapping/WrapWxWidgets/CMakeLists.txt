@@ -5,7 +5,6 @@
 include_directories (
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/Graphic/include
-  ${AMILAB_SOURCE_DIR}/OpenGL
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
