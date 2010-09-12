@@ -14,15 +14,15 @@
 #include "namespace.h"
 #include "file_uv.h"
 
-#include "OpticalFlow/inverse/inverse_optic_flow.h"
-#include "OpticalFlow/inverse/inverse_optic_flow_3d.h"
+#include "inverse/inverse_optic_flow.h"
+#include "inverse/inverse_optic_flow_3d.h"
 
 typedef float real;
-#include "OpticalFlow/Horn_Schunck/horn_schunck.h"
-#include "OpticalFlow/Horn_Schunck/horn_schunck_sym.h"
-#include "OpticalFlow/io_routines_yosemite.h"
+#include "Horn_Schunck/horn_schunck.h"
+#include "Horn_Schunck/horn_schunck_sym.h"
+#include "io_routines_yosemite.h"
 
-#include "OpticalFlow/simple/optic_flow_video.h"
+#include "simple/optic_flow_video.h"
 
 
 #include "ami_prototypes.h"

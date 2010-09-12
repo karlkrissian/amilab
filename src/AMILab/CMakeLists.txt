@@ -5,17 +5,15 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/ImageTool
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${OPTICFLOW_INCLUDE_DIR}
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow/src
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl

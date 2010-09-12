@@ -9,12 +9,11 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
-  ${OPTICFLOW_INCLUDE_DIR}
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow/src
   ${AMILAB_SOURCE_DIR}

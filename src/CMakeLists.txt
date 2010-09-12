@@ -349,7 +349,6 @@ SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )
 
 add_subdirectory (Common)
 #add_subdirectory (DistTransf)
-add_subdirectory (ImageTool)
 add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (OpenGL)
@@ -378,10 +377,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/ImageTool
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
@@ -475,7 +473,6 @@ SET(amilab_ownlibs
   AMILab
   Language
   Algorithms
-  ImageTool
   OpenGL
   Graphic
   wxParams

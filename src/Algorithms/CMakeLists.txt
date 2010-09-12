@@ -4,8 +4,7 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/Graphic
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
