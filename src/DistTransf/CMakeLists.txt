@@ -5,8 +5,6 @@
 include_directories (
 ${AMILAB_SOURCE_DIR}/Common 
 ${AMILAB_SOURCE_DIR}/DistTransf 
-${AMILAB_SOURCE_DIR}/Images 
-${AMILAB_SOURCE_DIR}/AMImage 
 )
 
 SET(DistTransf_SRCS dist_squared.cpp)

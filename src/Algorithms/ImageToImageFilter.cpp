@@ -30,7 +30,7 @@ void* ImageToImageFilter::Process_thread(void* threadarg)
   thread_info<ImageToImageFilter>* args = (thread_info<ImageToImageFilter>*) threadarg;
 
   int   thread_id     = args->thread_id;
-  int   total_threads = args->total_threads;
+//  int   total_threads = args->total_threads;
 
   ImageToImageFilter* _this = args->_this;
 

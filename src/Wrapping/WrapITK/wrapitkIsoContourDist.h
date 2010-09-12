@@ -1,7 +1,7 @@
 #ifndef _wrapitkIsoContourDist_h_
 #define _wrapitkIsoContourDist_h_
 
-#include "paramlist.h"
+class ParamList;
 
 InrImage* wrap_itkIsoContourDist2D(ParamList*);
 InrImage* wrap_itkIsoContourDist3D(ParamList*);

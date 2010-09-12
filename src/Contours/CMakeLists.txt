@@ -7,33 +7,17 @@ INCLUDE( ${VTK_USE_FILE} )
 
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/AMImage
-  ${AMILAB_SOURCE_DIR}/Coordonnees
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/Crest
   ${AMILAB_SOURCE_DIR}/Algorithms
-  ${AMILAB_SOURCE_DIR}/Contours
   ${Boost_INCLUDE_DIR}
   )
 
 
 SET(Contours_SRCS
-      CalculAireSection.cpp
-      IsoContour2.cpp
-      IsoContour2D.cpp
-      IsoContour.cpp
-      PointContour.cpp
 )
 
 SET(Contours_HDRS
-	CalculAireSection.hpp
-	IsoContour.hpp
-	IsoContour2.hpp
-	IsoContour2D.hpp
-	PointContour.hpp
-	PropagePoints.hpp
 )
 
 SET(Contours_SRCS

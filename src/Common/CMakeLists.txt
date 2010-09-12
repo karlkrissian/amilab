@@ -2,9 +2,18 @@
 # The extension is already found.  Any number of sources could be listed here.
 
 # Make sure the compiler can find include files from our Hello library.
-include_directories (${AMILAB_SOURCE_DIR}/Common)
+include_directories (
+  ${AMILAB_SOURCE_DIR}/Common
+  ${AMILAB_SOURCE_DIR}/Vaisseaux
+  ${AMILAB_SOURCE_DIR}/Graphic
+  ${AMILAB_SOURCE_DIR}/Algorithms
+  ${AMILAB_SOURCE_DIR}/Language
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
+)
 
 INCLUDE( ${wxWidgets_USE_FILE})
+
+INCLUDE( ${VTK_USE_FILE} )
 
 SET(Common_SRCS
   chaine.cpp 
@@ -20,6 +29,25 @@ SET(Common_SRCS
   FloatMatrix.cpp
   math1.cpp
 
+  # from AMImage
+  amimage.cpp
+
+  # from Coordonnees
+  coord_image.cpp  
+  Point3D.cpp
+
+  # from Crest
+  Crest/CreeCrest.cpp
+  Crest/Crest.cpp
+  Crest/MultiCrest2.cpp
+  Crest/MultiCrest.cpp
+
+  # from Images
+  Images/inrimage.cpp
+  Images/ImageLinearInterpolator.cpp
+  #      inrimage_base.cpp
+  #      inrimage_compressee.cpp
+  #      inrimage_all.cpp
 )
 
 SET(Common_HDRS
@@ -48,6 +76,33 @@ SET(Common_HDRS
   Eigen.hpp
   FloatMatrix.hpp
   math1.hpp
+
+  # from AMImage
+  amimage.hpp
+
+  # from Coordonnees
+  coord_image.hpp
+  coord_op.hpp
+  Point3D.hpp
+
+  # from Crest
+  CreeCrest.hpp
+  Crest.hpp
+  MultiCrest.hpp
+  MultiCrest2.hpp
+
+  # from Images
+  imageextent.h
+  inrimage.hpp
+  ImageLinearInterpolator.h
+  ImagePositionsBase.h
+  ImagePositions.h
+  ImagePositions.tpp
+  InrImageIteratorBase.h
+  InrImageIterator.h
+  InrImageIterator.tpp
+  InrImageConstIterator.h
+  InrImageConstIterator.tpp
 )
 
 SET (Common_SRCS

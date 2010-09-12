@@ -81,7 +81,7 @@ void     Func_localmean2( InrImage* im, InrImage*& res,
                           InrImage*& tmp, int size)
 {
   //InrImage* tmp1;
-  //#define swap_pointers(p1,p2) \
+  //#define swap_pointers(p1,p2) 
   //  { tmp1=p1; p1 = p2; p2 = tmp1; }
   int numpoints;
   

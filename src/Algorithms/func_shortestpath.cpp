@@ -539,7 +539,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
   SurfacePoly* res = new SurfacePoly();
   res->NewLine();
 
-  bool line1_included = false;
+//  bool line1_included = false;
   cout << "Selecting the path " << endl;
   while (current_point!=startpos) {
     previous_point = path.previous[current_point];

@@ -5,14 +5,9 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/Crest
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/AMImage
-  ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Filtering
   ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
@@ -59,6 +54,13 @@ SET(Algorithms_SRCS
 
   # files coming from previous Line directory
   reponse_cercle.cpp
+
+  # from Contours
+  CalculAireSection.cpp
+  IsoContour2.cpp
+  IsoContour2D.cpp
+  IsoContour.cpp
+  PointContour.cpp
 )
 
 
@@ -87,6 +89,15 @@ SET(Algorithms_HDRS
 
   # files coming from previous Line directory
   reponse_cercle.hpp
+
+  # from Contours
+  CalculAireSection.hpp
+  IsoContour.hpp
+  IsoContour2.hpp
+  IsoContour2D.hpp
+  PointContour.hpp
+  PropagePoints.hpp
+
 )
 
 SET(OpenGL_SRCS

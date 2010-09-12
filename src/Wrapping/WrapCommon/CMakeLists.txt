@@ -4,15 +4,9 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Images
   ${AMILAB_SOURCE_DIR}/ImageTool
   ${AMILAB_SOURCE_DIR}/OpenGL
   ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/Crest
-  ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
-  ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/Crest
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}

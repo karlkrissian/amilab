@@ -67,7 +67,7 @@ void ImageAddScalar::TemplateProcess( int threadid)
 
   CLASS_MESSAGE(boost::format("mode = %1%") % _mode);
 
-  int nt = params.GetNumberOfThreads();
+//  int nt = params.GetNumberOfThreads();
   extenttype extent = extents[threadid];
   int x,y,z;
   InrImage::ptr in = params.GetInput();

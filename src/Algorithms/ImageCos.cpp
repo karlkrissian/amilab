@@ -62,7 +62,7 @@ template <class T>
 void ImageCos::TemplateProcess( int threadid)
 {
   // process using precomputed extent number threadid
-  int nt = params.GetNumberOfThreads();
+//  int nt = params.GetNumberOfThreads();
 
   extenttype extent = extents[threadid];
   int x,y,z;

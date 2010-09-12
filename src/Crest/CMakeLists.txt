@@ -7,9 +7,6 @@ INCLUDE( ${VTK_USE_FILE} )
 include_directories (
   ${Boost_INCLUDE_DIR}
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/AMImage
-  ${AMILAB_SOURCE_DIR}/Coordonnees
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/Crest
@@ -17,17 +14,9 @@ include_directories (
   )
 
 SET(Crest_SRCS
-    CreeCrest.cpp
-    Crest.cpp
-    MultiCrest2.cpp
-    MultiCrest.cpp
 )
 
 SET(Crest_HDRS
-	CreeCrest.hpp
-	Crest.hpp
-	MultiCrest.hpp
-	MultiCrest2.hpp
 )
 
 SET(Crest_SRCS

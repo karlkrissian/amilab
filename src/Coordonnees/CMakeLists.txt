@@ -7,20 +7,13 @@ INCLUDE( ${USE_VTK_FILE} )
 
 include_directories ( 
   ${AMILAB_SOURCE_DIR}/Common 
-  ${AMILAB_SOURCE_DIR}/Images 
-  ${AMILAB_SOURCE_DIR}/AMImage 
-  ${AMILAB_SOURCE_DIR}/Coordonnees)
+)
 
 
 SET(Coordinates_SRCS
-  coord_image.cpp  
-  Point3D.cpp
 )
 
 SET(Coordinates_HDRS
-	coord_image.hpp
-	coord_op.hpp
-	Point3D.hpp
 )
 
 SET(Coordinates_SRCS

@@ -5,7 +5,6 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Images
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
