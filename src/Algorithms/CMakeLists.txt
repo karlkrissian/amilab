@@ -5,14 +5,13 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Algorithms
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}
   ${AMIFLUID_INCLUDE_DIR}
@@ -61,42 +60,64 @@ SET(Algorithms_SRCS
   IsoContour2D.cpp
   IsoContour.cpp
   PointContour.cpp
+
+  # from Vaisseaux
+  Vaisseaux/CalculBoules.cpp
+  Vaisseaux/IntersectIsosurf.cpp
+  Vaisseaux/IsoLigne.cpp
+  Vaisseaux/Vaisseau.cpp
+  Vaisseaux/CalculIsoLignes.cpp
+  Vaisseaux/ImageVaisseaux.cpp
+  Vaisseaux/IsoLigne2.cpp
+  Vaisseaux/Voxel.cpp
+
 )
 
 
 SET(Algorithms_HDRS
-  ImageToImageFilter.h
-  ImageAddScalar.h
-  ImageCos.h
-  localstats.h
-  func_shortestpath.h
+  include/ImageToImageFilter.h
+  include/ImageAddScalar.h
+  include/ImageCos.h
+  include/localstats.h
+  include/func_shortestpath.h
 
-  AnisoGS.h
-  WrapOld_AnisoGS.h
-  NLmeans.h
+  include/AnisoGS.h
+  include/WrapOld_AnisoGS.h
+  include/NLmeans.h
 
-  RegionGrowingTest.h
+  include/RegionGrowingTest.h
 
-  ComputePartialVolume.h
+  include/ComputePartialVolume.h
 
   # files coming from previous Filtering directory
-  bruit.hpp
-  DeriveesLissees.hpp
-  GaussianFilter.h
-  filtrage_rec.hpp
-  GeneralGaussianFilter.h
-  filtre_param.hpp
+  include/bruit.hpp
+  include/DeriveesLissees.hpp
+  include/GaussianFilter.h
+  include/filtrage_rec.hpp
+  include/GeneralGaussianFilter.h
+  include/filtre_param.hpp
 
   # files coming from previous Line directory
-  reponse_cercle.hpp
+  include/reponse_cercle.hpp
 
   # from Contours
-  CalculAireSection.hpp
-  IsoContour.hpp
-  IsoContour2.hpp
-  IsoContour2D.hpp
-  PointContour.hpp
-  PropagePoints.hpp
+  include/CalculAireSection.hpp
+  include/IsoContour.hpp
+  include/IsoContour2.hpp
+  include/IsoContour2D.hpp
+  include/PointContour.hpp
+  include/PropagePoints.hpp
+
+  # from Vaisseaux
+  include/CalculBoules.hpp
+  include/CalculIsoLignes.hpp
+  include/ImageVaisseaux.hpp
+  include/InrViewIsoLignes.hpp
+  include/IntersectIsosurf.hpp
+  include/IsoLigne.hpp
+  include/IsoLigne2.hpp
+  include/Vaisseau.hpp
+  include/Voxel.hpp
 
 )
 

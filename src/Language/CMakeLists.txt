@@ -5,7 +5,6 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/ImageTool
   ${AMILAB_SOURCE_DIR}/OpenGL
@@ -20,7 +19,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/JavierHornSchunck
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
-  ${AMILAB_SOURCE_DIR}/DistTransf
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
@@ -39,7 +37,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
-  ${AMILAB_SOURCE_DIR}/Algorithms
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/
   )
 

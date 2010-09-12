@@ -12,7 +12,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/myVTK4
-  ${AMILAB_SOURCE_DIR}/Algorithms
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${OPTICFLOW_INCLUDE_DIR}
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow
