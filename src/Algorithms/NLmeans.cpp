@@ -15,7 +15,7 @@
 #include "AMILabConfig.h"
 #include "fonctions.h"
 #include <pthread.h>
-#include "wrapfunctions.hpp"
+//#include "wrapfunctions.hpp"
 
 
 //------------------------------------------------------------------
