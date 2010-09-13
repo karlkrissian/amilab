@@ -14,6 +14,7 @@
 
 #include "Variable.hpp"
 #include "driver.h"
+#include <wx/filename.h>
 
 extern yyip::Driver GB_driver;
 

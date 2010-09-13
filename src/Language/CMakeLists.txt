@@ -15,21 +15,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/JavierHornSchunck
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapFilters
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSystem
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapAMIFluid
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWII
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapImage
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapBasicTypes
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapDessinImage
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapViewer3D
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapGLTransfMatrix
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl

@@ -12,6 +12,11 @@
 
 #include "MainFrame.h"
 
+#include "wx/app.h"
+#include "wx/grid.h"
+#include "wx/spinctrl.h"
+#include "wx/artprov.h"
+#include "wx/clipbrd.h"
 #include <wx/dirctrl.h>
 #include <wx/stattext.h>
 #include <wx/utils.h>

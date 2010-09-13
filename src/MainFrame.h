@@ -19,18 +19,20 @@
 #pragma hdrstop
 #endif
 
-#include "wx/app.h"
-#include "wx/grid.h"
+
 #include "wx/treectrl.h"
-#include "wx/spinctrl.h"
-#include "wx/artprov.h"
-#include "wx/clipbrd.h"
+
+//#include "wx/app.h"
+//#include "wx/grid.h"
+//#include "wx/spinctrl.h"
+//#include "wx/artprov.h"
+//#include "wx/clipbrd.h"
 #include "wx/image.h"
 #include "wx/colordlg.h"
 #include "wx/wxhtml.h"
-#include "wx/imaglist.h"
-#include "wx/dataobj.h"
-#include "wx/dcclient.h"
+//#include "wx/imaglist.h"
+//#include "wx/dataobj.h"
+//#include "wx/dcclient.h"
 #include "wx/bmpbuttn.h"
 #include "wx/menu.h"
 #include "wx/toolbar.h"
@@ -39,7 +41,8 @@
 #include "wx/textdlg.h"
 #include "wx/aui/aui.h"
 
-#include "myTreeCtrl.h"
+class myTreeCtrl;
+//#include "myTreeCtrl.h"
 
 #include "wx/listctrl.h"
 #include "wx/wxhtml.h"

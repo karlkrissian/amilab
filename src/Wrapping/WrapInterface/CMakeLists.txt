@@ -6,11 +6,10 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapBasicTypes
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
+  ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -34,17 +33,17 @@ SET(  WrapInterface_SRCS
 )
 
 SET(WrapInterface_HDRS
-  wrap_MainFrame.h
+  ../include/wrap_MainFrame.h
 #  wrap_imagedraw.h
-  wrap_parampanel.h 
-  wrap_wxDrawingWindow.h
-  wrap_wxEditor.h
-  wrap_wxStcFrame.h 
-  wrap_FenetreDessin.h
-  wrap_dwControlPoint.h
-  wrap_dwPoint2D.h
-  wrap_dwCurve.h
-  wrap_dwControlledCurve.h
+  ../include/wrap_parampanel.h 
+  ../include/wrap_wxDrawingWindow.h
+  ../include/wrap_wxEditor.h
+  ../include/wrap_wxStcFrame.h 
+  ../include/wrap_FenetreDessin.h
+  ../include/wrap_dwControlPoint.h
+  ../include/wrap_dwPoint2D.h
+  ../include/wrap_dwCurve.h
+  ../include/wrap_dwControlledCurve.h
 )
 
 SET(WrapInterface_SRCS

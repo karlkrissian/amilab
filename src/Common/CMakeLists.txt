@@ -7,7 +7,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})

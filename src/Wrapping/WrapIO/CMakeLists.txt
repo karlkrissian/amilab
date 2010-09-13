@@ -4,8 +4,7 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapIO
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -19,7 +18,7 @@ SET(  WrapIO_SRCS
 )
 
 SET(WrapIO_HDRS
-  wrap_ReadRawImages.h
+  ../include/wrap_ReadRawImages.h
 )
 
 SET(WrapIO_SRCS

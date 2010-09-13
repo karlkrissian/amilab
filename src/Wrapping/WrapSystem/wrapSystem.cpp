@@ -12,11 +12,13 @@
 
 
 
-#include "fonctions.h"
+//#include "fonctions.h"
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "wrapSystem.h"
 #include "driver.h"
+
+#include <wx/filename.h>
 
 extern yyip::Driver GB_driver;
 

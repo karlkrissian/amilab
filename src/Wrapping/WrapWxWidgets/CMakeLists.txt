@@ -9,9 +9,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
-  ${Boost_INCLUDE_DIR}
+  ${AMILAB_SOURCE_DIR}/AMILab
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${PTHREADS_INCLUDE_DIR}
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})
@@ -31,17 +30,17 @@ SET(  WrapWxWidgets_SRCS
 )
 
 SET(WrapWxWidgets_HDRS
-  wrap_wxsamples.h
-  wrap_wxfunctions.h
-  wrap_wxWindow.h
-  wrap_wxHtmlWindow.h
-  wrap_wxSizerItem.h
-  wrap_wxSize.h
-  wrap_wxColour.h
-  wrap_wxImage.h
-  wrap_wxBitmap.h
-  wrap_wxString.h
-  wrap_wxFileName.h
+  ../include/wrap_wxsamples.h
+  ../include/wrap_wxfunctions.h
+  ../include/wrap_wxWindow.h
+  ../include/wrap_wxHtmlWindow.h
+  ../include/wrap_wxSizerItem.h
+  ../include/wrap_wxSize.h
+  ../include/wrap_wxColour.h
+  ../include/wrap_wxImage.h
+  ../include/wrap_wxBitmap.h
+  ../include/wrap_wxString.h
+  ../include/wrap_wxFileName.h
 )
 
 SET(WrapWxWidgets_SRCS

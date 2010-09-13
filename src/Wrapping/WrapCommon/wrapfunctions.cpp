@@ -14,7 +14,7 @@
 #include "wrapfunctions.hpp"
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
-#include "DessinImage.hpp"
+//#include "DessinImage.hpp"
 #include "ami_function.h"
 
 #include <string>

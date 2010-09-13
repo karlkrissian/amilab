@@ -17,7 +17,7 @@ SET(  WrapImage_SRCS
 )
 
 SET(WrapImage_HDRS
-  wrap_ImageExtent.h
+  ../include/wrap_ImageExtent.h
 )
 
 SET(WrapImage_SRCS

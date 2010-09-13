@@ -377,9 +377,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}

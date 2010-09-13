@@ -8,7 +8,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${PTHREADS_INCLUDE_DIR}
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})
@@ -21,9 +20,9 @@ SET(  WrapCommon_SRCS
 
 SET(WrapCommon_HDRS
 #	wrapfunctions_draw.h
-  wrapfunctions.hpp
-  wrapfunctions.tpp
-  wrapfunction_class.h
+  ../include/wrapfunctions.hpp
+  ../include/wrapfunctions.tpp
+  ../include/wrapfunction_class.h
 )
 
 SET(WrapCommon_SRCS
