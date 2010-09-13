@@ -91,9 +91,6 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator &&(const BasicVa
 
 template<> BasicVariable::ptr Variable<unsigned char>::operator ||(const BasicVariable::ptr& b);
 
-// Mathematical functions, 
-#define VAR_DECL_FUNC(type,fname) \
-template<> BasicVariable::ptr Variable<type>::m_##fname();
 
 // TODO: don t define trigonometry for int, it should be floating point
 // and these functions should not be operators ...

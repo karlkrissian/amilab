@@ -188,7 +188,7 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
     return NULL;
   }
 
-  int vdim = image_io->GetNumberOfComponents();
+//  int vdim = image_io->GetNumberOfComponents();
   const unsigned int image_dim = image_io->GetNumberOfDimensions();
 
 #define READ_IMAGE(imdim) \

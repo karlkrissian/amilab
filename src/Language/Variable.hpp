@@ -739,6 +739,9 @@ class GLTransfMatrix;
 class VarArray;
 */
 
+// Mathematical functions, 
+#define VAR_DECL_FUNC(type,fname) \
+template<> BasicVariable::ptr Variable<type>::m_##fname();
 
 #include "Variable_float.h"
 #include "Variable_double.h" /// New (added: 24/05/2010)
