@@ -82,6 +82,7 @@ void AddWrapImports()
   AddVar_AnalyticCircle(           amiobject->GetContext());
   AddVar_AnalyticLine(             amiobject->GetContext());
   AddVar_AnalyticStraightVessel2D( amiobject->GetContext());
+  AddVar_AnalyticRing2D(           amiobject->GetContext());
   AddVar_AnalyticSphere(           amiobject->GetContext());
   AddVar_AnalyticTorus(            amiobject->GetContext());
   AddVar_ComputePV(                amiobject->GetContext());

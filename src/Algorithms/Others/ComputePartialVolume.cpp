@@ -111,18 +111,14 @@ double AnalyticStraightVessel2D::operator () (const double& x, const double& y,
   double uy = nx;
   double vx = x - center[0];
   double vy = y - center[1];
-  double d = fabs(ux*vy-vx*uy) / sqrt(ux*ux+uy*uy);
-//  int aux = (d>thickness/2) ? 0 : 1;
-//  cout << "result = " << aux << endl;
-//  double dx = x-center[0];
-//  double dy = y-center[1];
-//  double d = sqrt(dx*dx + dy*dy);
-  if (d<thickness)
-  {
-    cout << "punto(" << x << ", " << y << ")" << endl;
-    cout << "distancia = " << d << endl;
-    cout << "grosor = " << thickness << endl;
-  }
+  //double d = fabs(ux*vy-vx*uy) / sqrt(ux*ux+uy*uy);
+  double d = (fabs(ux*x + uy*y)) / (sqrt(ux*ux + uy*uy));
+//  if (d<thickness)
+//  {
+//    cout << "punto(" << x << ", " << y << ")" << endl;
+//    cout << "distancia = " << d << endl;
+//    cout << "grosor = " << thickness << endl;
+//  }
  
   return ((d>thickness) ? 0 : 1);
 }
@@ -214,6 +210,73 @@ void AnalyticStraightVessel2D::setAngle(float alpha)
       }
     }
   }
+}
+
+//---------------------------------------------------
+//Ring 2D
+//---------------------------------------------------
+AnalyticRing2D::AnalyticRing2D(float x, float y, float r, float g)
+{
+  center[0] = x;
+  center[1] = y;
+  radius    = r;
+  thickness = g;
+}
+
+AnalyticRing2D::~AnalyticRing2D(){}
+
+double AnalyticRing2D::operator () (const double& x, const double& y, 
+                                              const double& z) const
+{
+  double d;
+  
+  //Calculate distance to the ring center
+  d = sqrt((x-center[0])*(x-center[0]) + (y-center[1])*(y-center[1]));
+  
+  //If is between radius and radius+thickness is inside. Else, is outside of the 
+  //ring
+//  return (fabs(d-radius)<thickness/2) ? 1 : 0;
+  int res = 0;
+//  cout << "Point (" << x << ", " << y << ")" << endl;
+//  cout << "Radius: " << radius << endl;
+//  cout << "Thickness: " << thickness << endl;
+//  cout << "Distance : " << d << endl;
+//  return (d >= radius && d <= radius+thickness) ? 1 : 0;
+  
+  if (d>radius && d<radius+thickness)
+    res = 1;
+  return res;
+}
+
+float* AnalyticRing2D::getCenter()
+{
+  return center;
+}
+
+void AnalyticRing2D::setCenter(float x, float y)
+{
+  center[0] = x;
+  center[1] = y;
+}
+
+float AnalyticRing2D::getRadius()
+{
+  return radius;
+}
+
+void AnalyticRing2D::setRadius(float r)
+{
+  radius = r;
+}
+
+float AnalyticRing2D::getThickness()
+{
+  return thickness;
+}
+
+void AnalyticRing2D::setThickness(float g)
+{
+  thickness = g;
 }
 
 //---------------------------------------------------

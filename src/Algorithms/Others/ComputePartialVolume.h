@@ -200,6 +200,41 @@ public:
   void setAngle(float alpha);
 };
 
+class AnalyticRing2D : public AnalyticFunctionBase {
+  //Ash Nazg durbatulûk, ash Nazg gimbatul, 
+  //ash Nazg thrakatulûk agh burzum-ishi krimpatul
+  DEFINE_CLASS(AnalyticRing2D);
+  
+private:
+  //Center
+  float center[2];
+  //Central radius
+  float radius;
+  //Ring thickness
+  float thickness;
+  
+public:
+  //Constructor
+  AnalyticRing2D(float x = 50.0, float y = 50.0, float r = 30.0, float g = 2.0);
+  //Destructor
+  ~AnalyticRing2D();
+  //Operador paréntesis
+  double operator () (const double& x, const double& y, const double& z) const;
+  //Obtener centro
+  float* getCenter();
+  //Asignar centro
+  void setCenter(float x, float y);
+  //Obtener radio central
+  float getRadius();
+  //Asignar radio central
+  void setRadius(float r);
+  //Obtener grosor
+  float getThickness();
+  //Asignar grosor
+  void setThickness(float g);
+  
+};
+
 /**
  *  AnalyticSphere class.
  *  @author Karl Krissian (krissian@dis.ulpgc.es)

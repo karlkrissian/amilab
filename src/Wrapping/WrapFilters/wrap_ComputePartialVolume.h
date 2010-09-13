@@ -171,6 +171,48 @@ Variable<AMIObject>::ptr CreateVar_AnalyticStraightVessel2D(AnalyticStraightVess
 ADD_CLASS_FUNCTION(AnalyticStraightVessel2D, "Wrapping of AnalyticStraightVessel2D.");
 
 //---------------------------------------------------
+//AnalyticRing2D Wrapping
+class WrapClass_AnalyticRing2D : public WrapClass_AnalyticFunctionBase {
+  DEFINE_CLASS(WrapClass_AnalyticRing2D);
+  
+  // for nested classes
+  typedef WrapClass_AnalyticRing2D::ptr _parentclass_ptr;
+  typedef AnalyticRing2D _obj_type;
+  
+public:
+  boost::shared_ptr<_obj_type> _obj;
+  const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
+  
+  //Constructor
+  WrapClass_AnalyticRing2D(boost::shared_ptr<AnalyticRing2D> si):
+                          WrapClass_AnalyticFunctionBase(si), _obj(si)
+  {}
+  
+  ADD_CLASS_METHOD(getCenter,    "Get ring center.");
+  ADD_CLASS_METHOD(setCenter,    "Set ring center.");
+  ADD_CLASS_METHOD(getRadius,    "Get ring radius.");
+  ADD_CLASS_METHOD(setRadius,    "Set ring radius.");
+  ADD_CLASS_METHOD(getThickness, "Get ring thickness.");
+  ADD_CLASS_METHOD(setThickness, "Set ring thickness.");
+  
+  void AddMethods(_parentclass_ptr& this_ptr)
+  {
+    AddVar_getCenter(   this_ptr);
+    AddVar_setCenter(   this_ptr);
+    AddVar_getRadius(   this_ptr);
+    AddVar_setRadius(   this_ptr);
+    AddVar_getThickness(this_ptr);
+    AddVar_setThickness(this_ptr);
+  }
+};
+
+AMIObject::ptr AddWrap_AnalyticRing2D(WrapClass_AnalyticRing2D::ptr& objectptr);
+
+Variable<AMIObject>::ptr CreateVar_AnalyticRing2D(AnalyticRing2D* si);
+
+ADD_CLASS_FUNCTION(AnalyticRing2D, "Wrapping of AnalyticRing2D.");
+
+//---------------------------------------------------
 //AnalyticSphere Wrapping
 class WrapClass_AnalyticSphere : public WrapClass_AnalyticFunctionBase {
   DEFINE_CLASS(WrapClass_AnalyticSphere);
