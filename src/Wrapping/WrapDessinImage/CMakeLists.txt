@@ -3,15 +3,11 @@
 include_directories (
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/Graphic/include
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapViewer3D
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapGLTransfMatrix
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -24,7 +20,7 @@ SET(  WrapDessinImage_SRCS
 )
 
 SET(WrapDessinImage_HDRS
-  wrap_DessinImage.h
+  ../include/wrap_DessinImage.h
 )
 
 SET(WrapDessinImage_SRCS
