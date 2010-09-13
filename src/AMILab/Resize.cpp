@@ -348,6 +348,7 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
   out->SetTranslation(tr_x, tr_y, tr_z);
 
   if ((interpolate == 2) && (in->DimZ() == 1))
+  {
     if (in->ScalarFormat()) {
       delete im_splinecoeff;
     } else {
@@ -355,6 +356,7 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
       delete im_splinecoeff_g;
       delete im_splinecoeff_b;
     }
+  }
 
   return out;
 

@@ -163,7 +163,7 @@ void ImageDraw_VectorsParam::CB_AfficheVecteurs (void* cd)
   std::vector<vectorfield_info>* _vector_fields = di->Get_vector_fields();
   
   int          x,y,z;
-  int          x0,y0,z0;
+  int          x0=0,y0=0,z0=0;
 
   x = Param->_pos._x;
   y = Param->_pos._y;

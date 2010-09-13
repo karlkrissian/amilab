@@ -4,6 +4,9 @@
 
 #ifdef AMI_USE_VTK
 
+#include "surface.hpp"
+using namespace amilab;
+
 // all the needed vtk files
 
 // standard VTK

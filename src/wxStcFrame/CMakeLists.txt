@@ -1,10 +1,12 @@
 
+INCLUDE(${wxWidgets_USE_FILE})
+
 include_directories (
+  ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${GLEXT_INCLUDE_DIR}
   )
 
-INCLUDE(${wxWidgets_USE_FILE})
 
 SET(wxStcFrame_SRCS
   wxEditor.cpp

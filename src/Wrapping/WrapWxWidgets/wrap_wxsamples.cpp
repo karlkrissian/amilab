@@ -49,13 +49,14 @@ void AddWrapWXSamples()
  */
 void wrap_wxsamples( ParamList* p)
 {
+/*
     char functionname[] = "wx";
     char description[]=" \n\
       Adds wrapping for the wxwidgets samples and functions. \n\
             ";
     char parameters[] =" \n\
             ";
-
+*/
   AddWrapWXSamples();
 }
 
@@ -66,15 +67,15 @@ void wrap_wxsamples( ParamList* p)
  */
 void wrap_penguin( ParamList* p)
 {
+/*
     char functionname[] = "penguin";
     char description[]=" \n\
       Runs the penguin wxwidgets sample. \n\
             ";
     char parameters[] =" \n\
             ";
-
   int n=0;
-
+*/
   // Create the main frame window
   PenguinFrame *frame = new PenguinFrame(GB_main_wxFrame, wxT("wxWidgets Penguin Sample"),
       wxDefaultPosition, wxDefaultSize);

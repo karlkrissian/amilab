@@ -60,6 +60,7 @@ using namespace amilab;
 
 #include "ami_object.h"
 #include "wxStcFrame.h"
+#include "ParamPanel.hpp"
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 

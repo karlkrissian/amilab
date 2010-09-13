@@ -35,12 +35,14 @@ AMIObject::ptr AddWrap_wxfunctions()
 
 BasicVariable::ptr wrap_wxfunctions( ParamList* p)
 {
+/*
     char functionname[] = "wx";
     char description[]=" \n\
       Adds wrapping for the wxwidgets samples and functions. \n\
             ";
     char parameters[] =" \n\
             ";
+*/
 
   AMIObject::ptr amiobject (AddWrap_wxfunctions());
 

@@ -130,7 +130,7 @@ bool checkExtension( const char* checkFor)
    {
       idx = strcspn(checkFor, " ");
 
-      if ( (strlen(extensions) == idx) &&
+      if ( ((int)strlen(extensions) == idx) &&
            (strncmp(extensions, checkFor, idx) == 0))
          return true;
 

@@ -55,7 +55,8 @@ class myTreeCtrl;
 
 #include "xmtext.hpp"
 
-#include "ParamPanel.hpp"
+//#include "ParamPanel.hpp"
+class ParamPanel;
 
 #include "Variables.hpp"
 
@@ -121,9 +122,9 @@ public:
   bool RemoveParamPage(wxWindow* page);
 
   // Deal with ParamPanel::ptr pages
-  bool AddParamPanelPage(const ParamPanel::ptr& panel, const wxString& caption,
+  bool AddParamPanelPage(const boost::shared_ptr<ParamPanel>& panel, const wxString& caption,
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
-  bool RemoveParamPanelPage(const ParamPanel::ptr& panel);
+  bool RemoveParamPanelPage(const boost::shared_ptr<ParamPanel>& panel);
 
   void OnFileOpenImage         ( wxCommandEvent& event );
   void OnFileOpenImageHistory  ( wxCommandEvent& event );
@@ -225,7 +226,7 @@ protected:
   wxAuiNotebook* _param_book;
   wxString       _initial_perspective;
   // store the smart pointers of the used param panels for protection
-  std::list<ParamPanel::ptr> _parampanel_ptrs;
+  std::list<boost::shared_ptr<ParamPanel> > _parampanel_ptrs;
 
   wxPanel*     _prompt_panel;
 

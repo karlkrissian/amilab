@@ -65,7 +65,7 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
       wrap_wxHtmlWindow::CallMember( ParamList* p)
 {
   int n = 0;
-  std::string* title = NULL;
+//  std::string* title = NULL;
 
   CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
 

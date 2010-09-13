@@ -47,7 +47,7 @@ void WrapClass_wxWindow::wrap_wxWindow::SetParametersComments()
 BasicVariable::ptr WrapClass_wxWindow::wrap_wxWindow::CallMember( ParamList* p)
 {
   int n = 0;
-  std::string* title = NULL;
+//  std::string* title = NULL;
 
   if (!p) ClassHelpAndReturn;
   CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);

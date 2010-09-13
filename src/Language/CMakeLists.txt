@@ -20,6 +20,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}/
+  ${wxParams_INCLUDE_DIRS}
   )
 
 INCLUDE( ${VTK_USE_FILE} )

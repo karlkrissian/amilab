@@ -204,7 +204,7 @@ void vtkConvexHull::InitializeDirections(int dim)
       }
       break;
     default:
-      fprintf(stderr,"Angle directions not available for dimension $d \n",dim);
+      fprintf(stderr,"Angle directions not available for dimension %d \n",dim);
     }
 
   }

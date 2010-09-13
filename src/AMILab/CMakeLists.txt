@@ -11,13 +11,13 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow
-  ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow/src
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}
   ${AMIFLUID_INCLUDE_DIR}
   ${PTHREADS_INCLUDE_DIR}
-  ${Boost_INCLUDE_DIR}
+  ${wxParams_INCLUDE_DIRS}
+  ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow
+  ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow/src
+  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
 )
 
 

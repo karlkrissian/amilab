@@ -123,13 +123,14 @@ void AddWrapFilters(){
  */
 void wrap_Filters( ParamList* p)
 {
+/*
   char functionname[] = "Filters";
   char description[]=" \n\
     Adds wrapping for Filters. \n\
           ";
   char parameters[] =" \n\
           ";
-
+*/
   AddWrapFilters();
 }
 
@@ -1039,7 +1040,7 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
               Resulting polydata as interpolated lines\n\
       ";
 
-    SurfacePoly* input;
+//    SurfacePoly* input;
     float samplingstep = 0.1f;
     int n=0;
 

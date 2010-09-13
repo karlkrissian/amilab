@@ -91,8 +91,8 @@ void wxDrawingArea::OnMouseEvent(wxMouseEvent& event)
 
     bool drag  = event.Dragging();
     bool shift = event.ShiftDown();
-    bool ctrl  = event.ControlDown();
-    bool alt   = event.AltDown();
+//unused    bool ctrl  = event.ControlDown();
+//unused    bool alt   = event.AltDown();
 
     int wr = event.GetWheelRotation();
 

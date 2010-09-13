@@ -5,6 +5,7 @@ MESSAGE("***** Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/wxParams

@@ -50,11 +50,10 @@ void BasicNLMeansFilter< TInputImage, TOutputImage >
   int                 j;
   int                 p;
   int                 k;
-  int                 f;
+  int                 f = m_Pattern[0];
   double              sum = 0;
   double              sigma = f/2.0;
   static unsigned int dimen;
-  f = m_Pattern[0];
   p = 0;
 
   typename TInputImage::ConstPointer input = this->GetInput();

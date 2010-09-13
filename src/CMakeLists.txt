@@ -312,10 +312,6 @@ INCLUDE (CheckIncludeFiles)
 CHECK_INCLUDE_FILES (malloc.h HAVE_MALLOC_H)
 
 
-include_directories (
-  ${Boost_INCLUDE_DIR}
-  ${OPENGL_INCLUDE_DIR}
-)
 
 
 #SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../CMAKE)
@@ -336,10 +332,12 @@ MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
 
 include_directories (
   ${Boost_INCLUDE_DIR}
-  ${OPENGL_INCLUDE_DIR}
-  ${wxParams_INCLUDE_DIRS}
+#  ${OPENGL_INCLUDE_DIR}
+#  ${Boost_INCLUDE_DIR}
+#  ${OPENGL_INCLUDE_DIR}
+#  ${wxParams_INCLUDE_DIRS}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${FLEX_INCLUDE_DIR}
+#  ${FLEX_INCLUDE_DIR}
 )
 
 #INCLUDE(${wxWidgets_USE_FILE})
@@ -372,6 +370,7 @@ add_subdirectory (Algorithms)
 #ENDIF(AMI_USE_FASTNLMEANS)
 
 include_directories (
+  ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
@@ -386,8 +385,6 @@ include_directories (
   ${Boost_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
   ${OPTICFLOW_INCLUDE_DIR}
-  ${AMILAB_SOURCE_DIR}/../wxParams/src
-#  ${wxParams_INCLUDE_DIRS}
   )
 
 IF(AMI_USE_VTK)

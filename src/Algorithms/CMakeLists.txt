@@ -14,6 +14,7 @@ include_directories (
   ${AMIFLUID_INCLUDE_DIR}
   ${PTHREADS_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
+  ${wxParams_INCLUDE_DIRS}
   )
 
 INCLUDE( ${VTK_USE_FILE} )

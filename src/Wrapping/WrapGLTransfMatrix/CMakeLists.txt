@@ -1,6 +1,8 @@
 
+INCLUDE( ${wxWidgets_USE_FILE})
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
@@ -10,7 +12,6 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-INCLUDE( ${wxWidgets_USE_FILE})
 
 SET(  WrapGLTransfMatrix_SRCS
   wrap_GLTransfMatrix.cpp

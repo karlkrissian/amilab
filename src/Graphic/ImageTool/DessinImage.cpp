@@ -2277,7 +2277,7 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
 void DessinImage::Comparaisons_Paint( )
 //                           ------------------
 {
-    int i;
+//    int i;
     DessinImage::ptr di;
 
   _comparison_lock=true;
@@ -2297,7 +2297,6 @@ void DessinImage::Comparaisons_Paint( )
        Iter != _tab_compare2_image.end()  ; Iter++ )
   {
     if ((*Iter).di.use_count()) {
-      if (GB_debug) fprintf(stderr,"ComparisonPaint updating %d \n",i);
       di = (*Iter).di.lock();
       if (di->_comparison_lock) continue;
 

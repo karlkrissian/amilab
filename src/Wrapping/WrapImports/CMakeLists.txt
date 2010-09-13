@@ -14,6 +14,7 @@ include_directories (
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
+  ${wxParams_INCLUDE_DIRS}
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})

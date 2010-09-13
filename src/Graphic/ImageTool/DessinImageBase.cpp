@@ -764,7 +764,6 @@ DessinImageBase:: DessinImageBase(
         FenetreDessin( parent, ATitle, l, h, type ),
         _isocontours(3)
 {
-    char*  method = "DessinImageBase";
 
   if (GB_debug) printf("FenetreDessin::DessinImageBase title = %s \n",ATitle.c_str());
 
@@ -827,7 +826,7 @@ DessinImageBase:: DessinImageBase(
 
   _MIP_parametres_visibles = 0;
 
-  Si GB_debug AlorsFait printf("Fin DessinImageBase::%s\n",method);
+  CLASS_MESSAGE("end");
 
 } // Constructor
 

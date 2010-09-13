@@ -152,7 +152,7 @@ void wxEnumerationParameter::SetChoices( const boost::shared_ptr<wxArrayString>&
   // get the current selected name
   wxString currentselection = GetStringSelection();
   this->_choice->Clear();
-  for(int i=0;i<choices->GetCount();i++) {
+  for(int i=0;i<(int)choices->GetCount();i++) {
     this->_choice->Append((*choices)[i]);
   }
 

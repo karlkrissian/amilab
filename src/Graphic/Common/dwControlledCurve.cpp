@@ -15,7 +15,7 @@
 void dwControlledCurve::ComputeCurve()
 {
   dwCurve::ptr curve(new dwCurve());
-  for(int i=0; i<_controlpoints->size(); i++)
+  for(int i=0; i<(int)_controlpoints->size(); i++)
   {
     curve->AddPoint(dwPoint2D((*_controlpoints)[i].GetX(),(*_controlpoints)[i].GetY()));
   }

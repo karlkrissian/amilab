@@ -13,19 +13,20 @@
 #ifndef _VTKWRAP_H
 #define _VTKWRAP_H
 
-#include "Viewer3D.hpp"
-
+//#include "surface.hpp"
+class InrImage;
+#include "surface.hpp"
 
 InrImage*    Func_vtkMedianFilter3D( InrImage* im, int kx, int ky, int kz);
 
-SurfacePoly* Func_vtkMarchingCubes( InrImage* im, float Threshold);
+amilab::SurfacePoly* Func_vtkMarchingCubes( InrImage* im, float Threshold);
 
-SurfacePoly* Func_decimate( SurfacePoly* , float target_reduction=0.9);
+amilab::SurfacePoly* Func_decimate( amilab::SurfacePoly* , float target_reduction=0.9);
 
-SurfacePoly* Func_vtkSmooth( SurfacePoly*, int numiter );
-SurfacePoly* Func_vtkWindowedSinc( SurfacePoly*, int numiter );
+amilab::SurfacePoly* Func_vtkSmooth( amilab::SurfacePoly*, int numiter );
+amilab::SurfacePoly* Func_vtkWindowedSinc( amilab::SurfacePoly*, int numiter );
 
-void         Func_ApplyvtkSmooth( SurfacePoly* surf , int numiter);
+void         Func_ApplyvtkSmooth( amilab::SurfacePoly* surf , int numiter);
 
 InrImage*    Func_vtkDist( InrImage* im);
 
