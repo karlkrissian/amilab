@@ -13,6 +13,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}
+  ${GLEXT_INCLUDE_DIR}
   )
 
 
