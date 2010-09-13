@@ -1,7 +1,7 @@
 //
 // C++ Interface: DragAndDrop
 //
-// Description: Drag and drop operation
+// Description: Drag and drop operation for wxTreeCtrl.
 //
 //
 // Author:  <Karl Krissian>, (C) 2009

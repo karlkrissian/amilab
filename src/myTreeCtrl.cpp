@@ -59,6 +59,7 @@ wxTreeListCtrl(parent,id,pos,size,style,validator,name)
   Connect
   (
     wxEVT_COMMAND_TREE_BEGIN_DRAG,
+    //wxEVT_COMMAND_LIST_BEGIN_DRAG,
     wxTreeEventHandler(myTreeCtrl::OnBeginDrag),
     NULL,
     this
@@ -201,7 +202,7 @@ void myTreeCtrl::OnBeginDrag(wxTreeEvent& event)
   wxTextDataObject dragData(data); //Create data object.
   wxDropSource dragSource( this ); //Create data source
   dragSource.SetData( dragData );  //Assign the data
-  wxDragResult result = dragSource.DoDragDrop( TRUE ); //Begin the drag operation.
+  wxDragResult result = dragSource.DoDragDrop( ); //Begin the drag operation.
 
   //event.Allow();
   

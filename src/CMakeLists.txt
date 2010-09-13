@@ -437,13 +437,17 @@ MESSAGE( "*** USE_ITK_FILE = ${USE_ITK_FILE}")
 
 
 
-SET(amilab_bin_SRCS
+SET(amilab_bin_SRCS 
+  myDataViewModels.cpp
+  myDataViewCtrl.cpp
   amilab.cpp
   myTreeCtrl.cpp
   MainFrame.cpp
 )
 
 SET(amilab_bin_HDRS
+  myDataViewModels.h
+  myDataViewCtrl.h
   guicon.h
   MainFrame.h
   myTreeCtrl.h
