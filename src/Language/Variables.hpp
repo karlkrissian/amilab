@@ -28,7 +28,7 @@ class Variables{
 protected:
   // TODO: avoid pointers here !!!
   std::list<BasicVariable::ptr>  _vars;
-  string                    _context_name;
+  std::string                  _context_name;
   bool                      _global_new;
 
  public:
@@ -43,7 +43,7 @@ protected:
 //  Variable* operator [](int i) {  return _vars[i];  }
 
   std::string GetName() const { return _context_name; }
-  void SetName( const string& name ) { _context_name = name; }
+  void SetName( const std::string& name ) { _context_name = name; }
 
   bool GetGlobalNew() const { return _global_new; }
   void SetGlobalNew( const bool& gn ) { _global_new = gn; }
@@ -75,9 +75,9 @@ protected:
 {
   CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
 
-  string resname = this->CheckVarName(name.c_str());
+  std::string resname = this->CheckVarName(name.c_str());
   boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val->Pointer()));
-  //std::cout << "  **  newvar =  " << newvar << endl;
+  //std::cout << "  **  newvar =  " << newvar << std::endl;
 
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
@@ -101,9 +101,9 @@ protected:
   {
     CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
   
-    string resname = this->CheckVarName(name.c_str());
+    std::string resname = this->CheckVarName(name.c_str());
     boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val));
-    //std::cout << "  **  newvar =  " << newvar << endl;
+    //std::cout << "  **  newvar =  " << newvar << std::endl;
   
     newvar->Rename(resname.c_str());
     newvar->SetContext(context);
@@ -177,7 +177,7 @@ boost::shared_ptr<Variable<T> > Variables::AddVar(
 
   string resname = this->CheckVarName(name.c_str());
   boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val->Pointer()));
-  //std::cout << "  **  newvar =  " << newvar << endl;
+  //std::cout << "  **  newvar =  " << newvar << std::endl;
 
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);

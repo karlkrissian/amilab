@@ -42,7 +42,7 @@
 #include "CompareImage.hpp"
 #include <iostream.h>
 
-//extern ostream         cout;
+//extern ostream        std::cout;
 
 //============================================================================
 /**
@@ -111,7 +111,7 @@ public:
       liste_points = crest_lignes2->ListePoints( im_x, im_y, im_z);
 
       Pour( i, 0, liste_points.NbElts()-1)
-        cout << " Point " << i << "\t" << liste_points[i] << "\n";
+       std::cout << " Point " << i << "\t" << liste_points[i] << "\n";
 //        printf(" Point %d (%f %f %f) \n", i, liste_points[i]);
       FinPour
 

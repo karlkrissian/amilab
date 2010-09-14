@@ -95,11 +95,11 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
     MeshType::Pointer output = MeshType::New();
 
     // Convert from InrImage to ITK
-    cout << "Converting image to ITK format " << endl;
+   std::cout << "Converting image to ITK format " << std::endl;
 
     image = InrToITK<InternalPixelType,Dimension>(input,region);
 
-    cout << "Conversion done" << endl;
+   std::cout << "Conversion done" << std::endl;
 
     typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
     BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
@@ -188,11 +188,11 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
     MeshType::Pointer output = MeshType::New();
 
     // Convert from InrImage to ITK
-    cout << "Converting image to ITK format " << endl;
+   std::cout << "Converting image to ITK format " << std::endl;
 
     image = InrToITK<InternalPixelType,Dimension>(input,region);
 
-    cout << "Conversion done" << endl;
+   std::cout << "Conversion done" << std::endl;
 
     typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
     BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();

@@ -143,8 +143,8 @@ unsigned char InrImageBase::Read()
 //-----------------------------------------------------------------------
 unsigned char InrImageBase::Alloue()
 {
-  cout << _tx << ";" << _ty << ";" << _tz << endl;
-  cout << _format << ";" << TailleFormat[_format] << endl;
+ std::cout << _tx << ";" << _ty << ";" << _tz << std::endl;
+ std::cout << _format << ";" << TailleFormat[_format] << std::endl;
   printf("allocation de %s \t taille = %d \n", (char*) _nom, 
          _tx*_ty*_tz*TailleFormat[_format]*_vdim);
   _inrimage = createInrimage( _tx, _ty, _tz, VectorDim[_format], 

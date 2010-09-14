@@ -114,7 +114,7 @@ DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
 void CB_ParamWin(void* cd)
 {
   AMIFunction* func_ptr = (AMIFunction*) (cd);
-  //cout << "CB_ParamWin pointer is " << func_ptr << endl;
+  //cout << "CB_ParamWin pointer is " << func_ptr << std::endl;
   GB_driver.yyip_call_function(func_ptr);
 } // CB_ParamWin( void* cd )
 
@@ -176,19 +176,19 @@ class MyApp: public wxApp
 
   void OnChar(wxKeyEvent& event)
   {
-    //std::cout << "MyApp::OnChar()" << endl;
+    //std::cout << "MyApp::OnChar()" << std::endl;
     switch( event.GetKeyCode() )
     {
     case 'h': 
       if (event.ControlDown()) {
-        std::cout << "should hide window" << endl;
+        std::cout << "should hide window" << std::endl;
       }
       else
         event.Skip();
     break;
     case 'i': 
       if (event.AltDown()) {
-        std::cout << "should iconize window" << endl;
+        std::cout << "should iconize window" << std::endl;
         GB_main_wxFrame->Iconize(!GB_main_wxFrame->IsIconized());
       }
       else
@@ -241,10 +241,10 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
   // Looking for the environment variable
   bool foundenv = wxGetEnv(envname,&res);
   if (!foundenv) {
-    cerr << "Environment variable " << envname << " not defined. " << endl;
+    std::cerr << "Environment variable " << envname << " not defined. " << std::endl;
   } else
   if (!wxDir::Exists(res)) {
-    cerr << "Error accessing directory " << res.mb_str();
+    std::cerr << "Error accessing directory " << res.mb_str();
   } else
     return true;
 
@@ -258,7 +258,7 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
       execpath.AppendDir(GetwxStr("amilab-")+GetwxStr(AMILAB_VERSION));
   }
   res = execpath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-  cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << endl;
+ std::cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << std::endl;
   wxDir directory(res);
   if (lookforfile != wxEmptyString) {
     wxString path = directory.FindFirst(res,lookforfile);
@@ -269,16 +269,16 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
   }
 
 
-  cerr << "file not found, set the path manually from the interface." << endl;
+  std::cerr << "file not found, set the path manually from the interface." << std::endl;
 
   res=::wxGetCwd();
-  cerr << " , set to " << res << endl
-        << "check the environment variable " << envname.mb_str() << endl;
+  std::cerr << " , set to " << res << std::endl
+        << "check the environment variable " << envname.mb_str() << std::endl;
   return false;
 
   // look  for the file needed
   /*
-  cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << endl;
+ std::cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << std::endl;
   wxDir directory(res);
   if (lookforfile != wxEmptyString) {
     wxString path = directory.FindFirst(res,lookforfile);
@@ -350,14 +350,14 @@ bool MyApp::OnInit()
     }
   cmd_line += "\n";
 
-  cout << argc << endl;
-  cout << cmd_line << endl;
+ std::cout << argc << std::endl;
+ std::cout << cmd_line << std::endl;
 
   GB_num_arg_parsed = 1;
   Si  argc>GB_num_arg_parsed Et
       strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-debug")==0
   Alors
-    cout << "Debug On" << endl;
+   std::cout << "Debug On" << std::endl;
     GB_debug = true;
     GB_num_arg_parsed++;
   FinSi
@@ -373,7 +373,7 @@ bool MyApp::OnInit()
   Si  argc>GB_num_arg_parsed Et
       strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-quit")==0
   Alors
-    cout << "Quit without console interation" << endl;
+   std::cout << "Quit without console interation" << std::endl;
     no_interaction = true;
     GB_num_arg_parsed++;
   FinSi
@@ -382,8 +382,8 @@ bool MyApp::OnInit()
   CheckEnvDir( _T("AMI_HELP"),    GB_help_dir,    _T("tokens.html"));
   CheckEnvDir( _T("AMI_SCRIPTS"), GB_scripts_dir, _T("scripts.amil"));
 
-  cout << "GB_help_dir = " << GB_help_dir.mb_str() << endl;
-  cout << "GB_scripts_dir = " << GB_scripts_dir.mb_str() << endl;
+ std::cout << "GB_help_dir = " << GB_help_dir.mb_str() << std::endl;
+ std::cout << "GB_scripts_dir = " << GB_scripts_dir.mb_str() << std::endl;
 
 
   GB_driver.ws_print(cmd_line.c_str());
@@ -458,7 +458,7 @@ bool MyApp::OnInit()
           GB_main_wxFrame->GetConsole()->ProcessReturn();
       }
       catch (char * str ) {
-          cerr << "Error catched ! " << str << endl;
+          std::cerr << "Error catched ! " << str << std::endl;
       }
 
     // check for existence of Menus for scripts
@@ -472,7 +472,7 @@ bool MyApp::OnInit()
         GB_main_wxFrame->GetConsole()->ProcessReturn();
     }
     catch (char * str ) {
-        cerr << "Error catched ! " << str << endl;
+        std::cerr << "Error catched ! " << str << std::endl;
     }
 
     Si argc>GB_num_arg_parsed  Alors
@@ -495,11 +495,11 @@ bool MyApp::OnInit()
             GB_main_wxFrame->GetConsole()->ProcessReturn();
         }
       } catch (char * str ) {
-        cerr << "Error catched ! " << str << endl;
+        std::cerr << "Error catched ! " << str << std::endl;
       }
     FinSi
     #ifdef __UNICODE__
-      cout << "USING UNICODE ..." << endl;
+     std::cout << "USING UNICODE ..." << std::endl;
     #endif
   }
 
@@ -514,7 +514,7 @@ int MyApp::OnExit()
  // mainframe->Close();
   delete config;
   Vars.EmptyVariables();
-  cout << "MyApp::OnExit()" << endl;
+ std::cout << "MyApp::OnExit()" << std::endl;
   return 0;
 }
 

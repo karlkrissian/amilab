@@ -66,7 +66,7 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
 //       -----------
 {
   if (v.Type()==type_void) { o << "deleted"; return o;}
-  o << format("%1%\t<%2%>") % v.Name() % v.GetTypeName();
+  o << boost::format("%1%\t<%2%>") % v.Name() % v.GetTypeName();
 // TODO: take care of this functionality
 //  o << ;
 /*  switch(v.Type()) {
@@ -126,7 +126,7 @@ template <class T, class U>
 BasicVariable::ptr operator +(const boost::shared_ptr<Variable<T> >& a, 
                               const boost::shared_ptr<Variable<U> >& b)
 {
-  std::cout << "Method a+b ..." << endl;
+  std::cout << "Method a+b ..." << std::endl;
   // right now only float operations
   if ((std::numeric_limits<T>::is_specialized) && (std::numeric_limits<U>::is_specialized))
   {
@@ -136,7 +136,7 @@ BasicVariable::ptr operator +(const boost::shared_ptr<Variable<T> >& a,
   }
   else
   {
-    cout << "Operation not defined, returning null float variable" << endl;
+   std::cout << "Operation not defined, returning null float variable" << std::endl;
     return boost::shared_ptr<Variable<T> >();
   }
 }
@@ -150,7 +150,7 @@ template <class T>
 template <class U>
 BasicVariable::ptr Variable<T>::operator +(const Variable<U>& b)
 {
-  std::cout << __func__ << endl;
+  std::cout << __func__ << std::endl;
   // right now only float operations
   if (std::numeric_limits<T>::is_specialized && std::numeric_limits<U>::is_specialized)
   {
@@ -160,7 +160,7 @@ BasicVariable::ptr Variable<T>::operator +(const Variable<U>& b)
   }
   else
   {
-    cout << "Operation not defined, returning null float variable" << endl;
+   std::cout << "Operation not defined, returning null float variable" << std::endl;
     return Variable<float>::ptr();
   }
 }

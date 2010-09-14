@@ -292,12 +292,12 @@ void IsoContour2D :: RechercheContours( )
    _max_points = 0;
 
     Si GB_debug AlorsFait
-      cout << " RechercheContours \n";
+     std::cout << " RechercheContours \n";
 
     num = 0;
 
     Si GB_debug AlorsFait
-      cout << " InitImage \n";
+     std::cout << " InitImage \n";
 
 
     _propage = new PropagePoints(500000);
@@ -355,7 +355,7 @@ void IsoContour2D :: ParcoursContour( int x, int y, int z,
   max_points = 0;
 
 //  Si verbose AlorsFait
-//    cout << "Parcours du contour numero " << num << endl;
+//   std::cout << "Parcours du contour numero " << num << std::endl;
 
 
   prop0 = 0;
@@ -420,7 +420,7 @@ void IsoContour2D :: ParcoursContour( int x, int y, int z,
 
         // cas ambigu ??
         Si n!=3 AlorsFait
-  	  cout << "IsoContour2D::ParcoursContour() \t"
+  	 std::cout << "IsoContour2D::ParcoursContour() \t"
        	       << "Probleme: points mal initialises ...\n";
 
         val[1] = (*_image_contours)(pt[1].x,pt[1].y,pt[1].z);
@@ -475,7 +475,7 @@ void IsoContour2D :: ParcoursContour( int x, int y, int z,
   Si max_points > _max_points Alors
     _max_points = max_points;
     Si Non(_silencieux) AlorsFait
-      cout << " max points " << max_points << endl;
+     std::cout << " max points " << max_points << std::endl;
   FinSi
 
 } // ParcoursContour()
@@ -553,9 +553,9 @@ void IsoContour2D :: PropageContour( )
 		   _tab_contenance[_contour_choisi])
                Alors
                  Si Non(_silencieux) AlorsFait
-  	         cerr << "IsoContour2D::PropageContour() \t Probleme : point "
+  	         std::cerr << "IsoContour2D::PropageContour() \t Probleme : point "
     	              << x << "," << y << "," << z << " \t "
-                      << " voisins de signes differents " << endl;
+                      << " voisins de signes differents " << std::endl;
                FinSi
                nb_voisins++;
                moy += val;
@@ -576,20 +576,20 @@ void IsoContour2D :: PropageContour( )
       FinPour
 
       Si GB_debug AlorsFait
-        cout << "Fin de parcours" << endl;
+       std::cout << "Fin de parcours" << std::endl;
 
       Si Non(_silencieux) Ou GB_debug AlorsFait
-        cout << "*** Nb points a zero = " <<  pts_zero <<"\n";
+       std::cout << "*** Nb points a zero = " <<  pts_zero <<"\n";
 
     JusquA (pts_zero == 0) Ou (pts_zero == pts_zero_prec) FinRepeter
 
   Si pts_zero != 0 Alors
-    cerr << "IsoContour2D::PropageContour()\t il reste " << pts_zero
+    std::cerr << "IsoContour2D::PropageContour()\t il reste " << pts_zero
     << " points nuls \n";
   FinSi
 
   Si GB_debug AlorsFait
-    cout << "Fin de PropageContour" << endl;
+   std::cout << "Fin de PropageContour" << std::endl;
 
 } // PropageContour()
 
@@ -641,7 +641,7 @@ void IsoContour2D :: DefinitInterieur( float max_fond)
 
     Si ( x0 >  _image_initiale->_tx-1) Ou
        ((*_image_initiale)(x0,y0,z0) >= max_fond ) Alors
-       cerr << "IsoContour2D::DefinitInterieur() \t "
+       std::cerr << "IsoContour2D::DefinitInterieur() \t "
             << "point exterieur non trouve \n";
       x0 = y0 = 0;
     FinSi
@@ -682,9 +682,9 @@ void IsoContour2D :: DefinitInterieur( float max_fond)
             _tab_signe[nouv_contour] = point_suivant.Signe();
           Sinon
             Si point_suivant.Signe() != _tab_signe[nouv_contour] AlorsFait
-  	      cerr << "IsoContour2D::DefinitInterieur() \t "
+  	      std::cerr << "IsoContour2D::DefinitInterieur() \t "
 	           << "probleme de signe du contour "
- 	           << nouv_contour << endl;
+ 	           << nouv_contour << std::endl;
           FinSi
 
           // Traitement de l'appartenance
@@ -692,9 +692,9 @@ void IsoContour2D :: DefinitInterieur( float max_fond)
             _tab_contenance[nouv_contour] = contour_courant;
           Sinon
             Si contour_courant != _tab_contenance[nouv_contour] AlorsFait
-  	      cerr << "IsoContour2D::DefinitInterieur() \t "
+  	      std::cerr << "IsoContour2D::DefinitInterieur() \t "
                    << "probleme d'appartenance du contour "
- 	           << nouv_contour << endl;
+ 	           << nouv_contour << std::endl;
           FinSi
 
           point_courant   = point_suivant;
@@ -804,7 +804,7 @@ float IsoContour2D :: CalculAire( float resolution )
 {
 
     Si GB_debug AlorsFait
-      cout << " IsoContour2D::CalculAire() \t variables locales\n";
+     std::cout << " IsoContour2D::CalculAire() \t variables locales\n";
 
 
       float           surf_inf[1];
@@ -820,14 +820,14 @@ float IsoContour2D :: CalculAire( float resolution )
 
 
     Si GB_debug AlorsFait
-      cout << " Debut CalculAire \n";
+     std::cout << " Debut CalculAire \n";
 
     surf_inf[0] = surf_sup[0] = surf_interp[0] = 0.0;
     // initialisation des quadrillages
 
 
     Si GB_debug AlorsFait
-      cout << " initialisation de _calcul_aire \n";
+     std::cout << " initialisation de _calcul_aire \n";
 
     Si _calcul_aire != (CalculAireSection*) NULL Alors
       _calcul_aire->ChangeImage( _image_contour );
@@ -861,7 +861,7 @@ float IsoContour2D :: CalculAire( float resolution )
 	       0);
 
     Si GB_debug AlorsFait
-      cout << " _calcul_aire->Aire \n";
+     std::cout << " _calcul_aire->Aire \n";
 
   _calcul_aire->Aire( 0, point, v1, v2,
 		     surf_inf, surf_sup, surf_interp);
@@ -878,7 +878,7 @@ float IsoContour2D :: CalculAire( float resolution )
 
 
     Si GB_debug AlorsFait
-      cout << " Fin CalculAire() \n";
+     std::cout << " Fin CalculAire() \n";
 
   return surf_interp[0];
 
@@ -1008,7 +1008,7 @@ float IsoContour2D :: EstimeRayon( float sigma,
   MAJContourRef();
 
   Si GB_debug AlorsFait
-    cout << " IsoContour2D::EstimeRayon() \t Etape 4: PropageContour()\n";
+   std::cout << " IsoContour2D::EstimeRayon() \t Etape 4: PropageContour()\n";
   // 4. Creation d'une image negative a l'interieur, positive a l'exterieur
   //    calcul de _image_contour
   PropageContour( );
@@ -1017,14 +1017,14 @@ float IsoContour2D :: EstimeRayon( float sigma,
   //    Il faut changer image_ref
 
   Si GB_debug AlorsFait
-    cout << " IsoContour2D::EstimeRayon() \t Etape 5: calcul de l'aire\n";
+   std::cout << " IsoContour2D::EstimeRayon() \t Etape 5: calcul de l'aire\n";
 
   aire = CalculAire( resolution );
 
 
   rayon = sqrt(aire/PI);
 
-  cout << "\t Sigma = " << sigma << "\t Rayon = " << rayon << endl;
+ std::cout << "\t Sigma = " << sigma << "\t Rayon = " << rayon << std::endl;
 
   return rayon;
 
@@ -1066,8 +1066,8 @@ float IsoContour2D :: CorrigeEstimation(
   FinTantQue
 
   Si (r1>r0) Alors
-    cerr << "IsoContour2D::CorrigeEstimation() \t "
-         << " Attention, rayon < " << r0 << endl;
+    std::cerr << "IsoContour2D::CorrigeEstimation() \t "
+         << " Attention, rayon < " << r0 << std::endl;
     return r0;
   FinSi
 
@@ -1085,9 +1085,9 @@ float IsoContour2D :: CorrigeEstimation(
     FinTantQue
 
     Si sigma >= sigma_max Alors
-      cerr << "IsoContour2D::CorrigeEstimation() \t "
+      std::cerr << "IsoContour2D::CorrigeEstimation() \t "
            << " Attention, minimum non atteint, rayon > "
-           << r2 << endl;
+           << r2 << std::endl;
       return r2;
     Sinon
       Si (r0-r1)<precision Et (r2-r1)<precision Alors
@@ -1099,15 +1099,15 @@ float IsoContour2D :: CorrigeEstimation(
         r1 = EstimeRayon( sigma-pas_sigma,
 			  image2Dref, resolution) / coeff_corr;
         Si r1 > r0 Alors
-          cerr << "IsoContour2D::CorrigeEstimation() \t "
-	       << " Probleme : r1 > r0 ... " << endl;
+          std::cerr << "IsoContour2D::CorrigeEstimation() \t "
+	       << " Probleme : r1 > r0 ... " << std::endl;
         FinSi
       FinSi
     FinSi
 
   JusquA (pas_sigma < 0.05) FinRepeter
 
-  cerr << "IsoContour2D::CorrigeEstimation() \t "
+  std::cerr << "IsoContour2D::CorrigeEstimation() \t "
        << " Pb ? pas_sigma < 0.05 ... ";
 
   return r1;
@@ -1151,12 +1151,12 @@ float IsoContour2D :: CorrigeEstimation2(
 
   TantQue (sigma>sigma_min) Et (sigma<sigma_max) Faire
 
-  //  cout << "sigma " << sigma << " pas_sigma " << pas_sigma << endl;
-  //  cout << "sigma min " << sigma_min << " rmin " << rmin << endl;
+  // std::cout << "sigma " << sigma << " pas_sigma " << pas_sigma << std::endl;
+  // std::cout << "sigma min " << sigma_min << " rmin " << rmin << std::endl;
 
     /* cas 1 : probleme */
     Si r1>r0 Et r1>r2 Alors
-      cerr << "IsoContour2D::CorrigeEstimation2() "
+      std::cerr << "IsoContour2D::CorrigeEstimation2() "
            << "\t Probleme maximum local \n";
       sigma += pas_sigma;
       r0 = r1;
@@ -1175,7 +1175,7 @@ float IsoContour2D :: CorrigeEstimation2(
                  / coeff_corr;
         FinSi
         Si fabsf(rmax - r1) < precision Alors
-  	  cerr << "IsoContour2D::CorrigeEstimation2() "
+  	  std::cerr << "IsoContour2D::CorrigeEstimation2() "
                << "\t sigma max atteint \n";
           return rmax;
         Sinon
@@ -1198,7 +1198,7 @@ float IsoContour2D :: CorrigeEstimation2(
                  / coeff_corr;
         FinSi
         Si fabsf(rmin - r1) < precision Alors
-  	  cerr << "IsoContour2D::CorrigeEstimation2() "
+  	  std::cerr << "IsoContour2D::CorrigeEstimation2() "
                << "\t sigma min atteint \n";
           return rmin;
         Sinon
@@ -1216,7 +1216,7 @@ float IsoContour2D :: CorrigeEstimation2(
       Si (r0-r1) < precision Et (r2-r1) < precision Et
          pas_sigma < _precision_sigma
       Alors
-    //    cout << "pas sigma = " << pas_sigma << endl;
+    //   std::cout << "pas sigma = " << pas_sigma << std::endl;
         return r0;
       Sinon
         pas_sigma /= 2.0;
@@ -1241,8 +1241,8 @@ float IsoContour2D :: CorrigeEstimation2(
       FinSi
       // Cas non traite: s0 < r1 > s2
       Si s0 < r1 Et r1 > s2 Alors
-        cerr << "IsoContour2D::CorrigeEstimation2()";
-        cerr << "\t maximum local s0 < r1 > s2 \n";
+        std::cerr << "IsoContour2D::CorrigeEstimation2()";
+        std::cerr << "\t maximum local s0 < r1 > s2 \n";
         return r1;
       FinSi
     FinSi

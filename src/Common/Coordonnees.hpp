@@ -804,7 +804,7 @@ public:
       z = z/norme;
     Sinon
       throw NormeFaible();
-      cout << "Vect3D<T>::Normalise\t norme <= 1E-2..\n";
+     std::cout << "Vect3D<T>::Normalise\t norme <= 1E-2..\n";
     FinSi
     return(*this);
 

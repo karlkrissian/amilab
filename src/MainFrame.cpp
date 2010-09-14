@@ -996,7 +996,7 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
           );
 
   _settings_panel->SetSizer(settingspanel_sizer);
-//  cout << GB_scripts_dir << endl;
+// std::cout << GB_scripts_dir << std::endl;
 
   wxStaticText* scripts_label = new wxStaticText(_settings_panel,wxID_ANY,GetwxStr("Scripts path:"));
 
@@ -1091,7 +1091,7 @@ void MainFrame::OnClose(wxCloseEvent& event)
   Vars.EmptyVariables();
   Destroy();
   GB_main_wxFrame = NULL;
-/*  cout << "OnClose " << endl;
+/* std::cout << "OnClose " << std::endl;
 
     if ( event.CanVeto()  )
     {
@@ -1133,7 +1133,7 @@ void MainFrame::UpdateVarList()
 
 
   for(int i=0;i<(int)variables->GetCount();i++) {
-    //cout << "set item variable " << i << endl;
+    //cout << "set item variable " << i << std::endl;
 
     Variable* var;
     wxString type_str;
@@ -1247,7 +1247,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   unsigned long total_image_size = 0;
 
   for(int i=0;i<(int)variables->GetCount();i++) {
-    //cout << "set item variable " << i << endl;
+    //cout << "set item variable " << i << std::endl;
 
     wxString type_str;
     BasicVariable::ptr var = context->GetVar((*variables)[i].mb_str());
@@ -1268,7 +1268,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
                             % im->DimZ()
                             % im->GetVDim()
                             % (im->GetDataSize()/1000000)).str();
-        //cout << text << endl;
+        //cout << text << std::endl;
         append_id = vartree_images;
         total_image_size += im->GetDataSize();
       } else
@@ -1280,7 +1280,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
                             % var->Name()
                             % surf->GetNumberOfPoints()
                             % surf->GetNumberOfPolys()).str();
-        //cout << text << endl;
+        //cout << text << std::endl;
         itemid = _var_tree->AppendItem(
               vartree_surfaces,
               wxString(text.c_str(), wxConvUTF8),
@@ -1445,7 +1445,7 @@ void MainFrame::OnViewReset( wxCommandEvent& event )
 
   m_mgr.LoadPerspective(_initial_perspective);
 
-//  cout << _param_book->GetPageCount()>0 << endl;
+// std::cout << _param_book->GetPageCount()>0 << std::endl;
   m_mgr.GetPane(_param_book).Show(_param_book->GetPageCount()>0);
   m_mgr.Update();
 }
@@ -1461,7 +1461,7 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
 
   res=AskImage(name);
   if (!res) {
-    cerr << " Image not found " << endl;
+    std::cerr << " Image not found " << std::endl;
     return;
   }
 
@@ -1471,7 +1471,7 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
                   string("i"),
                   varname);
   if (!res) {
-    cerr << " Var name error " << endl;
+    std::cerr << " Var name error " << std::endl;
     return;
   }
 
@@ -1505,7 +1505,7 @@ void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
                   string("i"),
                   varname);
   if (!res) {
-    cerr << " Var name error " << endl;
+    std::cerr << " Var name error " << std::endl;
     return;
   }
 
@@ -1550,7 +1550,7 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
 
   res=AskSurface(name);
   if (!res) {
-    cerr << " Surface not found " << endl;
+    std::cerr << " Surface not found " << std::endl;
     return;
   }
 
@@ -1560,7 +1560,7 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
         string("s"),
         varname);
   if (!res) {
-    cerr << " Var name error " << endl;
+    std::cerr << " Var name error " << std::endl;
     return;
   }
 
@@ -1581,14 +1581,14 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
 //-----------------------------------------------------
 void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
 {
-  //cout << "Load script" << endl;
+  //cout << "Load script" << std::endl;
   int res;
   string name;
   string cmd; // increment the command line string
 
   res=AskScript(name);
   if (!res) {
-    cerr << " Script filename not found " << endl;
+    std::cerr << " Script filename not found " << std::endl;
     return;
   }
 
@@ -1732,20 +1732,20 @@ void MainFrame::OnToolHelp( wxCommandEvent& event)
 //--------------------------------------------------
 void MainFrame::VarListRightClick( wxListEvent& event)
 {
-  cout << "Right click on item \n";
+ std::cout << "Right click on item \n";
 }
 
 //--------------------------------------------------
 void MainFrame::OnScriptsPath( wxFileDirPickerEvent& event)
 {
-  cout << "Scripts path changed" << endl;
+ std::cout << "Scripts path changed" << std::endl;
   GB_scripts_dir = event.GetPath();
 }
 
 //--------------------------------------------------
 void MainFrame::OnHelpPath   ( wxFileDirPickerEvent& event)
 {
-  cout << "Help path changed" << endl;
+ std::cout << "Help path changed" << std::endl;
   GB_help_dir = event.GetPath();
 }
 
@@ -1851,8 +1851,8 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
 void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
 {
   //cout << "MainFrame::OnUserMenuScript() ";
-  //cout << "GetId() = "<< event.GetId() << endl;
-  //cout << "script = " << usermenu_scripts[event.GetId()] << endl;
+  //cout << "GetId() = "<< event.GetId() << std::endl;
+  //cout << "script = " << usermenu_scripts[event.GetId()] << std::endl;
   string cmd; // increment the command line string
 
   

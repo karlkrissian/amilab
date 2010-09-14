@@ -151,10 +151,10 @@ void TextControl::UpdateText()
   this->SetInsertionPointEnd();
   _protect = 1;
   if (GB_debug) {
-    cerr << "TextControl::Update() text ="
+    std::cerr << "TextControl::Update() text ="
          << text.Len()
          << "Is ASCII ?" << text.IsAscii()
-         << endl;
+         << std::endl;
   }
 }
 
@@ -181,9 +181,9 @@ void TextControl::OnUpdate(wxCommandEvent&  event)
     event.Skip(); return;}
 
   if (GB_debug)
-    cerr  << " insertion position "
+    std::cerr  << " insertion position "
           << (int) this->GetInsertionPoint()
-          << " " << lastprompt_position << endl;
+          << " " << lastprompt_position << std::endl;
 }
 
 //--------------------------------------------------
@@ -217,8 +217,8 @@ void TextControl::ProcessTab()
   completion_lastword = completion_lastword.AfterLast('.');
   //completion_lastword.RemoveLast();
 
-  cout << "last word to complete "
-       << completion_lastword << endl;
+ std::cout << "last word to complete "
+       << completion_lastword << std::endl;
   completions = Vars.SearchCompletions(completion_lastword);
 
   // add keywords
@@ -231,7 +231,7 @@ void TextControl::ProcessTab()
   }
 
   if (GB_debug)
-    cout << "going for it " << completions->GetCount() << endl;
+   std::cout << "going for it " << completions->GetCount() << std::endl;
   if (completions->GetCount()>0) {
     int last_command_size = this->GetValue().Length()-this->text.Length()-completion_lastword.Length();
     completion_lastcommand = this->GetValue().Mid ( this->text.Len(), last_command_size );
@@ -240,7 +240,7 @@ void TextControl::ProcessTab()
     DisplayCompletion();
     printf("Found %d completions \n",(int)completions->GetCount());
     for(int i=0;i<(int)completions->GetCount();i++) {
-      cout << (*completions)[i].mb_str() << endl;
+     std::cout << (*completions)[i].mb_str() << std::endl;
     }
   }
 } // ProcessTab()
@@ -310,11 +310,11 @@ void TextControl::OnChar(wxKeyEvent& event)
 
    if (this->GetInsertionPoint()<lastprompt_position) {
      this->SetInsertionPoint(this->text.Len());
-    if (GB_debug) cerr << format("TextControl::OnChar  insertion point %1% <  last position %2% ")
+    if (GB_debug) std::cerr << format("TextControl::OnChar  insertion point %1% <  last position %2% ")
         % GetInsertionPoint()
         % lastprompt_position
         << "text = [" << this->text << "]"
-        << endl;
+        << std::endl;
      return;
    }
 
@@ -331,7 +331,7 @@ void TextControl::OnChar(wxKeyEvent& event)
       char c[2];
       c[0] = keycode;
       c[1] = 0;
-      if (GB_debug) cerr << format(" OnChar() \t non ASCII character %s") % c << endl;
+      if (GB_debug) std::cerr << format(" OnChar() \t non ASCII character %s") % c << std::endl;
     }
 
     {
@@ -344,7 +344,7 @@ void TextControl::OnChar(wxKeyEvent& event)
 
             case WXK_RETURN: //key = _T("RETURN"); break;
               // process the new line
-              //cout << "OnChar return" << endl;
+              //cout << "OnChar return" << std::endl;
               if (in_changed_value)
                 event.Skip();
               else
@@ -354,7 +354,7 @@ void TextControl::OnChar(wxKeyEvent& event)
 
             case WXK_BACK:
                 // Don't allow deleting the prompt ...
-                if (GB_debug) cerr << "OnChar BACK" << endl;
+                if (GB_debug) std::cerr << "OnChar BACK" << std::endl;
                 if (this->GetInsertionPoint()==lastprompt_position)
                   this->SetInsertionPoint(this->text.Len());
                 if ((int)this->GetInsertionPoint()>lastprompt_position) event.Skip();
@@ -489,7 +489,7 @@ void TextControl::OnChar(wxKeyEvent& event)
         }
     }
 
-    if (GB_debug) cerr <<  key << endl;
+    if (GB_debug) std::cerr <<  key << std::endl;
     event.Skip();
 } // OnChar()
 

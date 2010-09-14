@@ -70,7 +70,7 @@ BasicVariable::ptr wrap_LaunchDefaultBrowser( ParamList* p)
   int n=0;
   std::string* webpage = NULL;
   
-  if (!get_val_ptr_param<string>( webpage,    p, n)) HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<std::string>( webpage,    p, n)) HelpAndReturnVarPtr;
 
   int res = wxLaunchDefaultBrowser(wxString::FromAscii(webpage->c_str()));
 

@@ -76,7 +76,7 @@ public:
 ///
 void new_unexpected()
 {
-  cerr << "new_unexpected()" << endl;
+  std::cerr << "new_unexpected()" << std::endl;
   //  throw unexpected();
 }
 
@@ -105,7 +105,7 @@ public:
 ///
 void new_terminate()
 {
-  cout << "new_terminate()" << endl;
+ std::cout << "new_terminate()" << std::endl;
   //  throw uncaught();
 }
 

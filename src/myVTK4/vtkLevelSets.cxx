@@ -387,7 +387,7 @@ void vtkLevelSets::DistanceMap()
   }
 
 
-    cout << "DistanceMap() 1.1" << endl;
+   std::cout << "DistanceMap() 1.1" << std::endl;
 
   switch (DMmethod) {
     case DISTMAP_CURVES      : DistanceMapCurves();    break;
@@ -396,7 +396,7 @@ void vtkLevelSets::DistanceMap()
     case DISTMAP_SHAPE       : DistanceMapShape();    break;
   }
 
-    cout << "DistanceMap() 1.2" << endl;
+   std::cout << "DistanceMap() 1.2" << std::endl;
 
   // swap the images
   this->current=1-this->current;
@@ -1226,11 +1226,11 @@ void vtkLevelSets::CheckConvergenceNew( )
   int* loghisto = new int[5];
   int logdiff;
 
-  //cout << "bnd size = " << bnd.size() << endl;
-  //cout << "bnd initialvalues = " << bnd_initialvalues.size() << endl;
+  //cout << "bnd size = " << bnd.size() << std::endl;
+  //cout << "bnd initialvalues = " << bnd_initialvalues.size() << std::endl;
   VTK_CLASS_MESSAGE("1.1");
   for(i=0;i<5;i++) {
-//    cout << "i= " << i << endl;
+//   std::cout << "i= " << i << std::endl;
     loghisto[i]=0;
   }
 
@@ -1238,7 +1238,7 @@ void vtkLevelSets::CheckConvergenceNew( )
   // Loop over the Narrow Band and check the intensity change
   for(b=0;b<this->bnd.size();b++) {
     double tmp = fabs(bnd_initialvalues[b]-U[this->bnd[b]]);
-//    cout << "b = " << b << "; tmp = " << tmp << endl;
+//   std::cout << "b = " << b << "; tmp = " << tmp << std::endl;
     if (tmp>1E-5) {
       logdiff = (int) log(tmp);
       if (-logdiff<=0) loghisto[0]++;
@@ -2008,7 +2008,7 @@ void vtkLevelSets::Evolve2D()
         switch (velocity_type) {
           case 0: ut -= vel;      break;
           case 1: ut *= fabsf(vel); break;
-          default: cerr << "velocity type not available " << endl;
+          default: std::cerr << "velocity type not available " << std::endl;
         }
       }
 
@@ -2702,7 +2702,7 @@ void vtkLevelSets::Evolve3D( int first_band, int last_band)
       switch (velocity_type) {
         case 0: ut -= vel;      break;
         case 1: ut *= fabsf(vel); break;
-        default: cerr << "velocity type not available " << endl;
+        default: std::cerr << "velocity type not available " << std::endl;
       }
 
     }
@@ -3012,7 +3012,7 @@ void vtkLevelSets::InitEvolution()
         (data_attach_x.empty()) )
     PreComputeDataAttachment();
 
-    cout << "InitEvolution DMethod = " << DMmethod << endl;
+   std::cout << "InitEvolution DMethod = " << DMmethod << std::endl;
 
   if ( DMmethod == 0 ) {
 
@@ -3026,7 +3026,7 @@ void vtkLevelSets::InitEvolution()
 
   } else {
 
-    cout << "InitEvolution 2.0" << endl;
+   std::cout << "InitEvolution 2.0" << std::endl;
     this->DistanceMap();
 
     VTK_CLASS_MESSAGE( "copy");
@@ -3301,7 +3301,7 @@ void vtkLevelSets::PreComputeDataAttachment()
 
   max_normgrad = sqrt(maxnorm);
 
-  cout << "PreComputeDataAttachment 1" << endl;
+ std::cout << "PreComputeDataAttachment 1" << std::endl;
   if (advection_scheme == ADVECTION_MORPHO) {
     NormalizeSecDerGrad();
     delete [] this->normgrad;
@@ -3309,13 +3309,13 @@ void vtkLevelSets::PreComputeDataAttachment()
     ADDMEMORY("vtkLevelSets::PreComputeDataAttachment()  delete normgrad",-1.0*sizeof(float)*this->imsize);
   }
 
-  cout << "PreComputeDataAttachment 2" << endl;
+ std::cout << "PreComputeDataAttachment 2" << std::endl;
   //
   // Save secdergrad
   //
 
   if (savesecdergrad)  {
-    cout << "PreComputeDataAttachment savesecdergrad" << endl;
+   std::cout << "PreComputeDataAttachment savesecdergrad" << std::endl;
 
     vtkStructuredPointsWriter *writer = vtkStructuredPointsWriter::New();
     vtkImageData* copyImage = vtkImageData::New();
@@ -3345,7 +3345,7 @@ void vtkLevelSets::PreComputeDataAttachment()
     writer->Delete();
   }
 
-  cout << "PreComputeDataAttachment 3" << endl;
+ std::cout << "PreComputeDataAttachment 3" << std::endl;
 
 } // PreComputeDataAttachment()
 
@@ -3515,7 +3515,7 @@ void vtkLevelSets::NormalizeSecDerGrad()
   printf("NormalizeSecDerGrad() maxnorm %.2f threshold %.2f +/- %.2f \n",
      max_normgrad,threshold,max_normgrad/histosize);
 
-  cout << "1" << endl;
+ std::cout << "1" << std::endl;
 
   for(vector_size p=0;p<this->imsize;p++) {
     if (normgrad[p]>EPSILON)
@@ -3536,7 +3536,7 @@ void vtkLevelSets::NormalizeSecDerGrad()
   delete [] tmp;
   ADDMEMORY("vtkLevelSets::NormalizeSecDerGrad() tmp",-1.0*sizeof(float)*this->imsize);
 
-  cout << "end NormalizeSecDerGrad()" << endl;
+ std::cout << "end NormalizeSecDerGrad()" << std::endl;
 
 } // NormalizeSecDerGrad()
 
@@ -3576,7 +3576,7 @@ int vtkLevelSets::UpdateResult(){
   if ((float*) u[this->current].get() != (float*) outputImage->GetScalarPointer())
     {
       if (verbose)
-        cout << "Updating result ... " << 1-current <<"\n" ;
+       std::cout << "Updating result ... " << 1-current <<"\n" ;
         memcpy(
               u[1-current].get(),
               u[current].get(),
@@ -3747,57 +3747,57 @@ void vtkLevelSets::PrintParameters()
 {
   int i;
 
-  cout << "------------- Level Set Parameters ---------------\n";
-  cout << "--- Input Parameters \n";
-  cout << "RescaleImage: "         << this->RescaleImage     << "\n";
-  cout << "UseLowThreshold: "      << this->UseLowThreshold  << "\n";
-  cout << "LowThreshold: "         << this->LowThreshold     << "\n";
-  cout << "UseHighThreshold: "     << this->UseHighThreshold << "\n";
-  cout << "HighThreshold: "        << this->HighThreshold    << "\n";
-  cout << "--- Initial Level Set Parameters \n";
-  cout << "Initial threshold: "    << this->InitThreshold    << "\n";
-  cout << "NumInitPoints: "        << this->NumInitPoints    << "\n";
+ std::cout << "------------- Level Set Parameters ---------------\n";
+ std::cout << "--- Input Parameters \n";
+ std::cout << "RescaleImage: "         << this->RescaleImage     << "\n";
+ std::cout << "UseLowThreshold: "      << this->UseLowThreshold  << "\n";
+ std::cout << "LowThreshold: "         << this->LowThreshold     << "\n";
+ std::cout << "UseHighThreshold: "     << this->UseHighThreshold << "\n";
+ std::cout << "HighThreshold: "        << this->HighThreshold    << "\n";
+ std::cout << "--- Initial Level Set Parameters \n";
+ std::cout << "Initial threshold: "    << this->InitThreshold    << "\n";
+ std::cout << "NumInitPoints: "        << this->NumInitPoints    << "\n";
   for(i=0;i<NumInitPoints;i++)
-    cout << "Point " << i << " ( "
+   std::cout << "Point " << i << " ( "
      << InitPoints[i][0] << " , "
      << InitPoints[i][1] << " , "
      << InitPoints[i][2] << " ) "
      << InitPoints[i][3] << "\n ";
-  cout << "--- Narrow Band Parameters \n";
-  cout << "Band: "                 << this->Band             << "\n";
-  cout << "Tube: "                 << this->Tube             << "\n";
-  cout << "--- Distance Map Parameters \n";
-  cout << "DMmethod: "             << this->DMmethod          << "\n";
-  cout << "IsoContourBin: "        << this->IsoContourBin    << "\n";
-  cout << "--- PDE Parameters \n";
-  cout << "Dimension:"             << this->Dimension        << "\n";
-  cout << "NumIters: "             << this->NumIters         << "\n";
-  cout << "check freq.: "          << this->CheckFreq        << "\n";
-  cout << "Reinit Freq.: "         << this->ReinitFreq       << "\n";
-  cout << "Converged Threshold: "  << this->ConvergedThresh  << "\n";
-  cout << "Step in t (StepDt): "   << this->StepDt           << "\n";
-  cout << "Init dt (step): "       << this->init_dt          << "\n";
-  cout << "EvolveThreads: "        << this->EvolveThreads    << "\n";
-  cout << "--- Curvature Parameters \n";
-  cout << "DoMean: "               << this->DoMean           << "\n";
-  cout << "coeff_curvature: "      << this->coeff_curvature  << "\n";
-  cout << "--- Advection Parameters \n";
-  cout << "Advection coeff: "          << this->AdvectionCoeff              << "\n";
-  cout << "HistoGradThreshold:"    << this->HistoGradThreshold   << "\n";
-  cout << "advection_scheme:"<<this->advection_scheme<<"\n";
+ std::cout << "--- Narrow Band Parameters \n";
+ std::cout << "Band: "                 << this->Band             << "\n";
+ std::cout << "Tube: "                 << this->Tube             << "\n";
+ std::cout << "--- Distance Map Parameters \n";
+ std::cout << "DMmethod: "             << this->DMmethod          << "\n";
+ std::cout << "IsoContourBin: "        << this->IsoContourBin    << "\n";
+ std::cout << "--- PDE Parameters \n";
+ std::cout << "Dimension:"             << this->Dimension        << "\n";
+ std::cout << "NumIters: "             << this->NumIters         << "\n";
+ std::cout << "check freq.: "          << this->CheckFreq        << "\n";
+ std::cout << "Reinit Freq.: "         << this->ReinitFreq       << "\n";
+ std::cout << "Converged Threshold: "  << this->ConvergedThresh  << "\n";
+ std::cout << "Step in t (StepDt): "   << this->StepDt           << "\n";
+ std::cout << "Init dt (step): "       << this->init_dt          << "\n";
+ std::cout << "EvolveThreads: "        << this->EvolveThreads    << "\n";
+ std::cout << "--- Curvature Parameters \n";
+ std::cout << "DoMean: "               << this->DoMean           << "\n";
+ std::cout << "coeff_curvature: "      << this->coeff_curvature  << "\n";
+ std::cout << "--- Advection Parameters \n";
+ std::cout << "Advection coeff: "          << this->AdvectionCoeff              << "\n";
+ std::cout << "HistoGradThreshold:"    << this->HistoGradThreshold   << "\n";
+ std::cout << "advection_scheme:"<<this->advection_scheme<<"\n";
   printf("advection_scheme = %d \n",this->advection_scheme);
-  cout << "--- Expansion Parameters \n";
-  cout << "balloon_coeff: "        << this->balloon_coeff        << "\n";
-  cout << "ProbabilityThreshold: " << this->ProbabilityThreshold << "\n";
-  cout << "ProbabilityHighThreshold: " << this->ProbabilityHighThreshold << "\n";
-  cout << "NumGaussians: "         << this->NumGaussians         << "\n";
+ std::cout << "--- Expansion Parameters \n";
+ std::cout << "balloon_coeff: "        << this->balloon_coeff        << "\n";
+ std::cout << "ProbabilityThreshold: " << this->ProbabilityThreshold << "\n";
+ std::cout << "ProbabilityHighThreshold: " << this->ProbabilityHighThreshold << "\n";
+ std::cout << "NumGaussians: "         << this->NumGaussians         << "\n";
   for(i=0;i<NumGaussians;i++)
-    cout << "Gaussian " << i << " mean="
+   std::cout << "Gaussian " << i << " mean="
      << Gaussians[i][0] << " SD="
      << Gaussians[i][1] << "\n ";
-  cout << "--- Velocity Parameters \n";
-  cout << "coeff_velocity: "       << this->coeff_velocity       << "\n";
-  cout << "--------------------------------------------------\n";
+ std::cout << "--- Velocity Parameters \n";
+ std::cout << "coeff_velocity: "       << this->coeff_velocity       << "\n";
+ std::cout << "--------------------------------------------------\n";
 
 } // PrintParameters()
 

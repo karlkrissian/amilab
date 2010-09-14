@@ -175,6 +175,14 @@ int InrImage::TailleFormat[NB_FORMATS]  = { 1,   // WT_UNSIGNED_CHAR
   fprintf(stderr,"Allocation of %03.2f Mb \n", 1.0*size*sizeof(type)/1000000);
 
 
+InrImage::DepassementLimites::DepassementLimites( const std::string message)
+{
+  std::cout << "InrImage "
+          << " Out of image limits"
+      << "\t " << message  << std::endl;
+}
+
+
 //==========================================================================
 // MEMBRES PRIVES
 //==========================================================================
@@ -224,7 +232,7 @@ int IM_WriteImage ( const char *name,
     ImageInfo image_info;
     int       succeed;
     
-    //    cout << "guardando: " << name << " size:" << w << "*" << h << endl;
+    //   std::cout << "guardando: " << name << " size:" << w << "*" << h << std::endl;
     
     GetImageInfo(&image_info);
 
@@ -558,23 +566,23 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
   CLASS_MESSAGE("begin");
 
   shared_ptr<vtkImageReader2Factory> create_reader = vtk_new<vtkImageReader2Factory>()();
-//cout << "0.1" << endl;
+//cout << "0.1" << std::endl;
   vtkImageReader2* imreader = create_reader->CreateImageReader2( _nom.c_str()); 
-//cout << "0.2" << endl;
+//cout << "0.2" << std::endl;
   if (imreader==NULL) {
     CLASS_MESSAGE("No reader found from vtkImageReader2Factory")
     return false;
   }
-//cout << "1" << endl;
+//cout << "1" << std::endl;
   shared_ptr<vtkImageReader2> reader = vtk_new<vtkImageReader2>()(imreader);
 
-//  cout << "2" << endl;
+// std::cout << "2" << std::endl;
 
   reader->SetFileName(_nom.c_str());
   reader->Update();
 
-  cout << "GetFileLowerLeft() = " << reader->GetFileLowerLeft() << endl;
-  cout << "Reader is [" << reader->GetDescriptiveName() << "]" << endl;
+ std::cout << "GetFileLowerLeft() = " << reader->GetFileLowerLeft() << std::endl;
+ std::cout << "Reader is [" << reader->GetDescriptiveName() << "]" << std::endl;
 
   in = reader->GetOutput();
 
@@ -582,7 +590,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
   if (readername.compare("TIFF")) {
     // get specific tiff information?
     vtkTIFFReader* tiffreader = (dynamic_cast<vtkTIFFReader*> (reader.get()));
-    //cout << "GetOrientationType =" << tiffreader->GetOrientationType() << endl;
+    //cout << "GetOrientationType =" << tiffreader->GetOrientationType() << std::endl;
   }
 
   if (reader->GetErrorCode()!=0) { 
@@ -808,7 +816,7 @@ unsigned char InrImage :: Read( ) throw (ErreurLecture)
 
   // try with the vtk image reader factory
   if (!res) {
-    cout << "Trying reading with VTK image factory" << endl;  
+   std::cout << "Trying reading with VTK image factory" << std::endl;  
     res = ReadVTKImage();
   }
 
@@ -819,7 +827,7 @@ unsigned char InrImage :: Read( ) throw (ErreurLecture)
 
 
   if ( !res ) {
-    cerr << " Error reading image " << endl;
+    std::cerr << " Error reading image " << std::endl;
     throw ErreurLecture();
   } // end if
 
@@ -882,11 +890,11 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 //                           ------ 
 {
 
-//  cout << "allocation de "  <<  _nom << " \t taille = "
+// std::cout << "allocation de "  <<  _nom << " \t taille = "
 //       <<  (long int ) _tx*_ty*_tz*TailleFormat[_format]  
 //       << "( " << _tx << ", " << _ty << ", " << _tz << ")"
 //       << " " <<  TailleFormat[_format]  
-//       << endl;
+//       << std::endl;
 
   if ( _vdim == 1 ) {
     switch ( (WORDTYPE) _format ){
@@ -1261,7 +1269,7 @@ unsigned char InrImage :: InitPositions( )
 //                        -------------
 {
 
-  //cout << "InitPositions() for " << GetName() << endl;
+  //cout << "InitPositions() for " << GetName() << std::endl;
 
   // here we will initialize the ImagePositionBase* _positions member
   switch (_format) {
@@ -1321,7 +1329,7 @@ unsigned char InrImage :: FreePositions( )
 //                           ---------------
 {
 
-  //cout << "FreePositions() for " << GetName() << endl;
+  //cout << "FreePositions() for " << GetName() << std::endl;
 
   // here we will initialize the ImagePositionBase* _positions member
   switch (_format) {
@@ -2045,7 +2053,7 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz,
 //  _inrimage = initInrimage( _tx, _ty, _tz, 1, (WORDTYPE) _format );
 // ----- Debut init image
   if ( !_amimage.get()  ) {
-  //    cout << "*"<< endl;
+  //   std::cout << "*"<< std::endl;
     _amimage = boost::shared_ptr<amimage>(new amimage());
     //_amimage_allocated = true;
   } // end if
@@ -2093,7 +2101,7 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz, int vdim,
 //  _inrimage = initInrimage( _tx, _ty, _tz, 1, (WORDTYPE) _format );
 // ----- Debut init image
   if ( !_amimage.get() ) {
-  //    cout << "*"<< endl;
+  //   std::cout << "*"<< std::endl;
     _amimage = boost::shared_ptr<amimage>(new amimage());
   } // end if
 
@@ -2187,7 +2195,7 @@ void InrImage::InitImage( double* val, int size)
 
 
 //----------------------------------------------------------------
-const string InrImage :: FormatName()
+const std::string InrImage :: FormatName()
 //
 {
 
@@ -2624,7 +2632,7 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
       ( i1.DimZ() != i2.DimZ())) 
   {
     FILE_ERROR("different dimensions");
-    cout << "*" << endl;
+   std::cout << "*" << std::endl;
     return NULL;
   }
 

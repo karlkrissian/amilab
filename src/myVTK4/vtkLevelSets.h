@@ -327,7 +327,7 @@ public:
     advection_scheme = ADVECTION_UPWIND_VECTORS;
     // here make a copy
     if (imsize==0) {
-      cerr << "SetAdvectionVectorField() \t imsize==0! " << endl;
+      std::cerr << "SetAdvectionVectorField() \t imsize==0! " << std::endl;
       return;
     }
     data_attach_x = float_vec( DAx, DAx + imsize );
@@ -351,7 +351,7 @@ public:
       // In this case, just return the second order derivatives in the gradient direction (normalized)
       // and the norm of the gradient
     case ADVECTION_MORPHO:
-      cerr << "GetDataAttach() not available with ADVECTION_MORPHO, todo ... " << endl;
+      std::cerr << "GetDataAttach() not available with ADVECTION_MORPHO, todo ... " << std::endl;
 /* TODO:
       DAx = secdergrad;
       DAy = normgrad;

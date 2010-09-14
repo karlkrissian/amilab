@@ -178,7 +178,7 @@ void ImageDraw_VectorsParam::CB_AfficheVecteurs (void* cd)
     x0 = x; y0 = y; z0 = z;
   }
 
-  cout << x0 << ";" << y0 << ";" << z0  << endl;
+ std::cout << x0 << ";" << y0 << ";" << z0  << std::endl;
 
   int i = 0;
   std::vector<vectorfield_info>::iterator Iter;
@@ -188,10 +188,10 @@ void ImageDraw_VectorsParam::CB_AfficheVecteurs (void* cd)
     vectorfield_info vf = (*Iter);
     if  (vf.visible) {
         InrImage::ptr v(vf.vector);
-        cout << "Vector " << i << " :"
+       std::cout << "Vector " << i << " :"
                 << "x = " << v->GetValue(x0,y0,z0,0) << ";"
                 << "y = " << v->GetValue(x0,y0,z0,1) << ";"
-                << "z = " << v->GetValue(x0,y0,z0,2) << endl;
+                << "z = " << v->GetValue(x0,y0,z0,2) << std::endl;
      }
   }
 

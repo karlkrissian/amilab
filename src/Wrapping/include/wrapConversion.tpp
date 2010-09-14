@@ -52,7 +52,7 @@ InrImage* ITKToInr(typename itk::Image<TPixel,Dimension>::Pointer image,
   InrImage* res = NULL;
 
   ConstIteratorType inputIt( image, region);
-  cout << "1 " << endl;
+  std::cout << "1 " << std::endl;
   // size 
   int dimx = region.GetSize(0);
   int dimy = region.GetSize(1);
@@ -60,7 +60,7 @@ InrImage* ITKToInr(typename itk::Image<TPixel,Dimension>::Pointer image,
   if (Dimension==3) dimz = region.GetSize(2);
   res = new InrImage(dimx,dimy,dimz,1,WT_FLOAT,"Image_itk.ami.gz");
 
-  cout << "2 " << endl;
+  //std::cout << "2 " << std::endl;
   res->SetTranslation(image->GetOrigin()[0],
             image->GetOrigin()[1],
             image->GetOrigin()[2]);
@@ -69,7 +69,7 @@ InrImage* ITKToInr(typename itk::Image<TPixel,Dimension>::Pointer image,
             image->GetSpacing()[2]);
 
 
-  cout << "3 " << endl;
+  //cout << "3 " << std::endl;
   int i=0;
   res->InitBuffer();
   inputIt.SetDirection(0);
@@ -81,7 +81,7 @@ InrImage* ITKToInr(typename itk::Image<TPixel,Dimension>::Pointer image,
       res->FixeValeur( inputIt.Get() );
       ++inputIt;
       if (!res->IncBuffer()) 
-        cout << "! res->IncBuffer()" << endl;
+        std::cout << "! res->IncBuffer()" << std::endl;
     }
     i++;
   }

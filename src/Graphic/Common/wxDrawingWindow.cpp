@@ -427,9 +427,9 @@ void wxDrawingWindow::DrawAxes(  )
   int xsizelog = floor(log10(_xmax-_xmin));
   double xbigstep = pow(10.0,xsizelog);
   double xstep    = xbigstep/10.0;
-  //cout << "xstep = " << xstep << endl;
+  //cout << "xstep = " << xstep << std::endl;
   double xmintic = floor(_xmin/xstep)*xstep;
-  //cout << "xmintic = " << xmintic << endl;
+  //cout << "xmintic = " << xmintic << std::endl;
 
   // automatic step computation
   int ysizelog = floor(log10(_ymax-_ymin));
@@ -449,8 +449,8 @@ void wxDrawingWindow::DrawAxes(  )
     while (xpos<=_xmax) {
       World2Window(xpos,_yaxis,x1,y1);
       double tmp = xpos/xbigstep;
-      //cout << " tmp " << tmp << endl;
-      //cout << " tmp -round(tmp)" << tmp - round(tmp) << endl;
+      //cout << " tmp " << tmp << std::endl;
+      //cout << " tmp -round(tmp)" << tmp - round(tmp) << std::endl;
       if (tmp!=0) {
         if (fabs(tmp - round(tmp))<epsilon) {
           World2Window(xpos,_ymin,x1,y1);
@@ -513,8 +513,8 @@ void wxDrawingWindow::DrawAxes(  )
   while (xpos<=_xmax) {
     World2Window(xpos,_yaxis,x1,y1);
     double tmp = xpos/xbigstep;
-    //cout << " tmp " << tmp << endl;
-    //cout << " tmp -round(tmp)" << tmp - round(tmp) << endl;
+    //cout << " tmp " << tmp << std::endl;
+    //cout << " tmp -round(tmp)" << tmp - round(tmp) << std::endl;
     if ( fabs(tmp - round(tmp))<epsilon ) {
       DrawLine(x1,y1-bigticsize,x1,y1+bigticsize);
     }
@@ -617,9 +617,9 @@ void wxDrawingWindow::DrawLinearCM(  )
       dwControlPoint p1 = (*points)[curvpt_id];
       dwControlPoint p2 = (*points)[curvpt_id+1];
       double pos = _linearCM.GetPoint(cmpt_id).GetPosition();
-      //std::cout<< "p1.GetX() = " << p1.GetX() << endl;
-      //std::cout<< "p2.GetX() = " << p2.GetX() << endl;
-      //std::cout<< "pos = " << pos << endl;
+      //std::cout<< "p1.GetX() = " << p1.GetX() << std::endl;
+      //std::cout<< "p2.GetX() = " << p2.GetX() << std::endl;
+      //std::cout<< "pos = " << pos << std::endl;
       while ((pos<p1.GetX())&&(cmpt_id<cm_size)) {
         cmpt_id++;
         pos = _linearCM.GetPoint(cmpt_id).GetPosition();
@@ -850,6 +850,15 @@ void wxDrawingWindow::OnSize(wxSizeEvent& event)
 }
 
 //-------------------------------------------------
+void wxDrawingWindow::OnLeftUp( wxMouseEvent& event)
+{
+  _left_down = false; 
+  _previous_crosshair = false;
+  DrawingAreaDisplay();
+  event.Skip(); 
+}
+
+//-------------------------------------------------
 void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
 {
   wxClientDC dc(this);
@@ -951,11 +960,11 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
   _mouse_x = (int)event.GetX();
   _mouse_y = (int)event.GetY();
 
-  //cout << "leftdown " << _left_down << endl;
+  //cout << "leftdown " << _left_down << std::endl;
   if (_left_down) {
     if ((_focus_point.get())&&(_left_down)) {
       // displace the current point
-      //cout << "Displace ??" << endl;
+      //cout << "Displace ??" << std::endl;
       double new_x,new_y;
       Window2World(_mouse_x,_mouse_y,new_x,new_y);
 

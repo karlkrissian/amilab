@@ -12,6 +12,7 @@
 //
 
 #include "ComputePartialVolume.h"
+#include <iostream>
 
 
 // volume is the volume of cube
@@ -100,7 +101,7 @@ InrImage* ComputePartialVolumeSubdiv(InrImage* input, int subdiv)
 
 
   if (input->GetFormat()!=WT_FLOAT) {
-    cerr << "ComputePartialVolume only for float images for now !" << endl;
+    std::cerr << "ComputePartialVolume only for float images for now !" << std::endl;
     return NULL;
   }
 
@@ -118,8 +119,8 @@ InrImage* ComputePartialVolumeSubdiv(InrImage* input, int subdiv)
     {
       if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
         previous_percentage += percentage_step;
-        cout << boost::format(" %1%%% ") % previous_percentage;
-        cout.flush();
+       std::cout << boost::format(" %1%%% ") % previous_percentage;
+       std::cout.flush();
       }
       for (x=0;x<input->DimX()-1;x++,count++)
       {
@@ -143,7 +144,7 @@ InrImage* ComputePartialVolumeSubdiv(InrImage* input, int subdiv)
       } // end for x
     } // end fory
   } // end for z
-  cout << endl;
+ std::cout << std::endl;
 
   return res;
 } // ComputePartialVolumeSubdiv()
@@ -186,7 +187,7 @@ InrImage* ComputePartialVolume(InrImage* input, int resolution)
 
 
   if (input->GetFormat()!=WT_FLOAT) {
-    cerr << "ComputePartialVolume only for float images for now !" << endl;
+    std::cerr << "ComputePartialVolume only for float images for now !" << std::endl;
     return NULL;
   }
 
@@ -204,8 +205,8 @@ InrImage* ComputePartialVolume(InrImage* input, int resolution)
     {
       if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
         previous_percentage += percentage_step;
-        cout << boost::format(" %1%%% ") % previous_percentage;
-        cout.flush();
+       std::cout << boost::format(" %1%%% ") % previous_percentage;
+       std::cout.flush();
       }
       for (x=0;x<input->DimX()-1;x++,count++)
       {
@@ -250,7 +251,7 @@ InrImage* ComputePartialVolume(InrImage* input, int resolution)
       } // end for x
     } // end fory
   } // end for z
-  cout << endl;
+ std::cout << std::endl;
 
   return res;
 } // ComputePartialVolume

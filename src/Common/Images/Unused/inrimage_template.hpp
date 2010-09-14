@@ -121,7 +121,7 @@ public:
       _format = GetFormat();
       _vdim   = VectorDim[_format];
       Si (long) sizeof(T)*VectorDim[_format] != (long) TailleFormat[_format]*_vdim Alors
-        cout << "probleme entre le format et le type donne...\n";
+       std::cout << "probleme entre le format et le type donne...\n";
       FinSi
       Alloue();
       InitPositions();    

@@ -108,11 +108,11 @@ public:
 
       this->_format = GetFormat();
       this->_vdim   = VectorDim[this->_format];
-      cout << TailleFormat[this->_format] << endl;
-      cout << this->_vdim << endl;
-      cout << sizeof(T) << endl;
+     std::cout << TailleFormat[this->_format] << std::endl;
+     std::cout << this->_vdim << std::endl;
+     std::cout << sizeof(T) << std::endl;
       Si sizeof(T)*this->_vdim != TailleFormat[this->_format]*this->_vdim Alors
-        cout << "probleme entre le format et le type donne...\n";
+       std::cout << "probleme entre le format et le type donne...\n";
       FinSi
       this->Alloue();
       this->InitPositions();    

@@ -436,7 +436,7 @@ ostream& operator << (ostream& os, const TableauDyn<T>& p)
     if (i < p._nbelts_utilises-1) {
       os  << " ; ";
     } else {
-      os  << " }" << endl;
+      os  << " }" << std::endl;
     }
   }
 

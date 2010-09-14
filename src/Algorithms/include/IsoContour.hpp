@@ -107,7 +107,7 @@ public:
     class OutOfRange
     {
     public:
-      OutOfRange() {  cerr << "IsoContour\t Exception OutOfRange \n"; }
+      OutOfRange() {  std::cerr << "IsoContour\t Exception OutOfRange \n"; }
     };
 
   //@}

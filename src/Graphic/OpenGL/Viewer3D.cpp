@@ -631,7 +631,7 @@ void Viewer3D::CreateParamBook(wxWindow* parent)
 bool Viewer3D::AddParamPage(wxWindow* page, const wxString& caption,
                             bool select, const wxBitmap& bitmap)
 {
-  cout << "Viewer3D::AddParamPage()" << endl;
+ std::cout << "Viewer3D::AddParamPage()" << std::endl;
   bool result = _param_book->AddPage( page,caption,select,bitmap );
    m_mgr.GetPane(_param_book).Show();
    m_mgr.Update();
@@ -957,7 +957,7 @@ void Viewer3D::CB_ViewParam(wxAuiToolBarEvent&)
 //----------------------------------------------------------
 void Viewer3D::CB_PixmapCenterNormalize(wxCommandEvent&)
 {
-  cout << "starts Viewer3D::CB_PixmapCenterNormalize() " << endl;
+ std::cout << "starts Viewer3D::CB_PixmapCenterNormalize() " << std::endl;
   // Check is shift is down in ToolBar
   m_canvas->Center();
   m_canvas->Normalize();
@@ -996,7 +996,7 @@ void Viewer3D::CB_redessine( void* cd)
 //-------------------------------------------------------------
 void Viewer3D::OnClose(wxCloseEvent& event)
 {
-  cout << "Viewer3D::OnClose" << endl;
+ std::cout << "Viewer3D::OnClose" << std::endl;
   if (event.CanVeto())
     CloseWindow();
 }

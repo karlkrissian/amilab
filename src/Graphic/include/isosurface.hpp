@@ -213,7 +213,7 @@ public:
       FinSi      
     FinSi
 
-    cout << "VoisinDiffDe() \t nb_voisins != 2" << endl;
+   std::cout << "VoisinDiffDe() \t nb_voisins != 2" << std::endl;
 
     return -1;
     
@@ -423,7 +423,7 @@ public:
      
       float   a,b,c,d,S,f;
 
-//    cout << "ResoudAmbiguite()" << endl;
+//   std::cout << "ResoudAmbiguite()" << std::endl;
 
 
 // segment 0 = [a,b]

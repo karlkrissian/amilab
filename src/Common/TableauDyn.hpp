@@ -496,7 +496,7 @@ ostream& operator << (ostream& os, const TableauDyn<T>& p)
     Si i < p._nbelts_utilises-1 Alors
       os  << " ; ";
     Sinon
-      os  << " }" << endl;
+      os  << " }" << std::endl;
     FinSi
   FinPour
 

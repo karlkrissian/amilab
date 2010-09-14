@@ -69,13 +69,14 @@ void AddWrapSystem(){
  */
 void wrap_System(ParamList* p)
 {
+/*
     char functionname[] = "System";
     char description[]=" \n\
       Adds wrapping for Operating System operations. \n\
             ";
     char parameters[] =" \n\
             ";
-
+*/
   AddWrapSystem();
 }
 
@@ -97,7 +98,7 @@ BasicVariable::ptr wrap_GetFreeMemory(ParamList* p)
 
   if (p->get_num_param()!=0)  HelpAndReturnVarPtr;
   long long val = ::wxGetFreeMemory();
-  cout << (boost::format("Free Memory = %1%") % val).str() << endl;
+ std::cout << (boost::format("Free Memory = %1%") % val).str() << std::endl;
 
   // cast not compiling, why ???
   //  float* value = new float(FreeMemory);
@@ -264,7 +265,7 @@ BasicVariable::ptr wrap_GetCurrentScriptDir(ParamList* p)
             ";
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
-  cout << "GB_driver.GetCurrentFilename()=" << GB_driver.GetCurrentFilename() << endl;
+ std::cout << "GB_driver.GetCurrentFilename()=" << GB_driver.GetCurrentFilename() << std::endl;
   wxFileName filename(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8));
   filename.MakeAbsolute();
   wxString wxvalue = filename.GetPath();

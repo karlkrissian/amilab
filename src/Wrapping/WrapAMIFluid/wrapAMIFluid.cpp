@@ -137,13 +137,14 @@ void AddWrapFluid(){
  */
 void wrap_AMIFluid(ParamList* p)
 {
+/*
   char functionname[] = "AMIFluid";
   char description[]=" \n\
     Adds wrapping for AMIFLuid library. \n\
           ";
   char parameters[] =" \n\
           ";
-
+*/
   AddWrapFluid();
 }
 

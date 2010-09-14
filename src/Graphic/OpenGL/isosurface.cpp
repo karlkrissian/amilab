@@ -738,7 +738,7 @@ void IsoSurface :: CalculSurface(float seuil,
     _seuil = seuil;
 
 
-//cout << "format de l'image " << _image->_format << endl;
+//cout << "format de l'image " << _image->_format << std::endl;
 
 //  tx = _image->_tx;
 //  txy = _image->_txy;
@@ -862,11 +862,11 @@ void IsoSurface :: CalculSurface(float seuil,
 
   printf("\b\b\b\b\b\b\b\b");
 
-//  cout << endl;
+// std::cout << std::endl;
 
 //  temps_calcul.Fin();
 //  temps_calcul.AddCumul();
-//  cout << endl << temps_calcul << endl;
+// std::cout << std::endl << temps_calcul << std::endl;
 
   // 2e Parcours: creation des polygones
 //  printf("Calcul Polygones \n");
@@ -911,20 +911,20 @@ void IsoSurface :: CalculSurface(float seuil,
     FinPour
   FinPour
 
-    //  cout << endl;
+    // std::cout << std::endl;
 
     //  temps_calcul.Fin();
     //  temps_calcul.AddCumul();
-    //  cout << endl << temps_calcul << endl;
+    // std::cout << std::endl << temps_calcul << std::endl;
 
 
-    //  cout << "Calcul IsoSurface " << endl;
+    // std::cout << "Calcul IsoSurface " << std::endl;
     //  temps_calcul.AfficheCumul(cout);
 
   printf("\b\b\b\b\b\b\b\b");
 
-  cout << "Number of points   " << _image_points->NbPoints() << endl;
-  cout << "Number of polygons " << tabPoly.NbElts() << endl;
+ std::cout << "Number of points   " << _image_points->NbPoints() << std::endl;
+ std::cout << "Number of polygons " << tabPoly.NbElts() << std::endl;
 
 } // CalculSurface()
 

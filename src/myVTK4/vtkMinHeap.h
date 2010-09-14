@@ -357,14 +357,14 @@ ostream& operator << (ostream& os, const vtkMinHeap<T>& p)
         if (n < i)
           os  << " - ";
         else
-          os   << endl;
+          os   << std::endl;
     
       } // end if
     } // end for
     i <<=1;
   }
 
-  os   << endl;
+  os   << std::endl;
   return os;
 
 } // operator << ( , const vtkMinHeap<T>&)

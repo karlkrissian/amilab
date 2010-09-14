@@ -391,12 +391,12 @@ void IsoContour2 :: RechercheContours( InrImage* image)
    _max_points = 0;
 
     Si _debug AlorsFait
-      cout << " RechercheContours \n";
+     std::cout << " RechercheContours \n";
 
     num = 0;
 
     Si _debug AlorsFait
-      cout << " InitImage \n";
+     std::cout << " InitImage \n";
 
     image->InitImage(0.0);
 
@@ -452,7 +452,7 @@ void IsoContour2 :: ParcoursContour( int x, int y, int z,
   max_points = 0;
 
 //  Si _verbose AlorsFait
-//    cout << "Parcours du contour numero " << num << endl;
+//   std::cout << "Parcours du contour numero " << num << std::endl;
 
 
   prop0 = 0;
@@ -527,7 +527,7 @@ void IsoContour2 :: ParcoursContour( int x, int y, int z,
         Si dist == 2 Alors
          // cas ambigu ??
         Si n!=3 AlorsFait
-  	  cout << "IsoContour2::ParcoursContour() \t"
+  	 std::cout << "IsoContour2::ParcoursContour() \t"
        	       << "Probleme: points mal initialises ...\n";
 
         val[1] = (*_image)(pt[1].x,pt[1].y,pt[1].z);
@@ -619,7 +619,7 @@ void IsoContour2 :: ParcoursContour( int x, int y, int z,
 
   Si max_points > _max_points Alors
     _max_points = max_points;
-    cout << " max points " << max_points << endl;
+   std::cout << " max points " << max_points << std::endl;
   FinSi
 
 } // ParcoursContour()
@@ -711,9 +711,9 @@ if (_image_un_contour!=NULL) {
                Si (nb_voisins > 0) Et (moy*val < 0) Et
 	          ((*_image_num_contour)(x1,y1,z1) != num_contour)
                Alors
-  	         cerr << "IsoContour2::PropageContour() \t Probleme : point " 
+  	         std::cerr << "IsoContour2::PropageContour() \t Probleme : point " 
                       << x << "," << y << "," << z 
-                      << " voisins de signes differents " << endl;
+                      << " voisins de signes differents " << std::endl;
                FinSi
                nb_voisins++;
                moy += val;
@@ -735,7 +735,7 @@ if (_image_un_contour!=NULL) {
       FinPour
       FinPour
 
-      cout << "*** il reste " << pts_zero << " points nuls \n";
+     std::cout << "*** il reste " << pts_zero << " points nuls \n";
 
     JusquA (pts_zero == 0)Ou (pts_zero == pts_zero_prec) 
     FinRepeter    
@@ -799,7 +799,7 @@ if (_lignes!=NULL) {
     FinPour
 
     if (!found) {
-      cerr<< "IsoContour2::DefinitInterieur() \t point a zero non trouve \n"; 
+      std::cerr<< "IsoContour2::DefinitInterieur() \t point a zero non trouve \n"; 
       return;
     }
 
@@ -837,9 +837,9 @@ if (_lignes!=NULL) {
             _tab_ccinfo[nouv_contour].sign = point_suivant.Signe();
           Sinon
             Si point_suivant.Signe() != _tab_ccinfo[nouv_contour].sign AlorsFait
-  	      cerr << "IsoContour2::DefinitInterieur() \t "
+  	      std::cerr << "IsoContour2::DefinitInterieur() \t "
 	           << "probleme de signe du contour "
- 	           << nouv_contour << endl;
+ 	           << nouv_contour << std::endl;
           FinSi
 
           // Traitement de l'appartenance
@@ -847,9 +847,9 @@ if (_lignes!=NULL) {
             _tab_ccinfo[nouv_contour].contenance = contour_courant;
           Sinon
             Si contour_courant != _tab_ccinfo[nouv_contour].contenance AlorsFait
-  	      cerr << "IsoContour2::DefinitInterieur() \t "
+  	      std::cerr << "IsoContour2::DefinitInterieur() \t "
 	           << "probleme d'appartenance du contour "
- 	           << nouv_contour << endl;
+ 	           << nouv_contour << std::endl;
           FinSi
 
           point_courant   = point_suivant;
@@ -889,7 +889,7 @@ if (_lignes!=NULL) {
       Si _centre_sphere != (int*) NULL Alors
         _nbpts_ligne = (int) (4.0/3.0*PI*_rayon_sphere*
 			   _rayon_sphere*_rayon_sphere);
-        cout << "nbpts_ligne = " << _nbpts_ligne << endl;
+       std::cout << "nbpts_ligne = " << _nbpts_ligne << std::endl;
       FinSi
 
 
@@ -928,7 +928,7 @@ if (_lignes!=NULL) {
 cout << " contour " << i 
      << " " << _tab_signe[i]
      << " " << _tab_contenance[i]
-     << " " << pourcent_total << endl;
+     << " " << pourcent_total << std::endl;
       */
 
 //      fflush(stdout);
@@ -946,7 +946,7 @@ cout << " contour " << i
       Si (_tab_ccinfo[i].ptsline_total> 0.6*_nbpts_ligne) Et 
          (_tab_ccinfo[i].sign==signe) 
       Alors
-        cout << n << " " << i << endl;
+       std::cout << n << " " << i << std::endl;
         Si n>0 Alors
 
           // Si plusieurs contours negatifs contiennent toute la ligne
@@ -1180,7 +1180,7 @@ if (_image_un_contour==NULL)
     Si _verbose Alors
       temps_calcul.Fin();
       temps_calcul.AddCumul();
-      cout << "Calcul Section " << temps_calcul << endl;
+     std::cout << "Calcul Section " << temps_calcul << std::endl;
     FinSi
 
     // Sauvegarde du wireframe

@@ -159,8 +159,8 @@ void DessinImageBase::FixeImageCourante( int id_image )
       CLASS_MESSAGE(boost::format( "_tab_slices[id_image].image.get() =  %1%") % _tab_slices[id_image].image.get());
       CLASS_MESSAGE(boost::format( "pointer =  %1%") % _current_slice.get());
   } else {
-      cerr << "DessinImageBase::FixeImageCourante( " << id_image
-          << "\t image not allocated " << endl;
+      std::cerr << "DessinImageBase::FixeImageCourante( " << id_image
+          << "\t image not allocated " << std::endl;
   }
 
   CLASS_MESSAGE("end")
@@ -219,14 +219,14 @@ inline void DessinImageBase::FastImageRectangle(
   #ifdef _SAFETY_CHECK_
   if (_current_slice.use_count()) {
     if (GB_debug)
-      cerr  << "drawing rectangle at "
+      std::cerr  << "drawing rectangle at "
             << format("(%d,%d) size (%d x %d) ")
                 % x_min % y_min % (x_max-x_min) % (y_max-y_min)
             << format(" color %d %d %d ")
                 % (int) intensite.Red()
                 % (int) intensite.Green()
                 % (int) intensite.Blue()
-            << endl;
+            << std::endl;
   #endif
 
 /*
@@ -250,7 +250,7 @@ inline void DessinImageBase::FastImageRectangle(
 
   #ifdef _SAFETY_CHECK_
   } else {
-    cerr << "FastImageRectangle() no drawing context!" << endl;
+    std::cerr << "FastImageRectangle() no drawing context!" << std::endl;
   }
   #endif
 
@@ -269,14 +269,14 @@ inline void DessinImageBase::FastImagePoint(
   #ifdef _SAFETY_CHECK_
   if (_current_slice.use_count()) {
     if (GB_debug)
-      cerr  << "drawing rectangle at "
+      std::cerr  << "drawing rectangle at "
             << format("(%d,%d) size (%d x %d) ")
                 % x_min % y_min % (x_max-x_min) % (y_max-y_min)
             << format(" color %d %d %d ")
                 % (int) intensite.Red()
                 % (int) intensite.Green()
                 % (int) intensite.Blue()
-            << endl;
+            << std::endl;
   #endif
 
     // TODO: use wxImage ?
@@ -284,7 +284,7 @@ inline void DessinImageBase::FastImagePoint(
 
   #ifdef _SAFETY_CHECK_
   } else {
-    cerr << "FastImageRectangle() no drawing context!" << endl;
+    std::cerr << "FastImageRectangle() no drawing context!" << std::endl;
   }
   #endif
 
@@ -439,8 +439,8 @@ void DessinImageBase::UpdateStatusIntensity( int x, int y, int z)
 //                    ---------------------
 {
   if (!_image->CoordOK(x,y,z)) {
-    cerr << format("%1%::UpdateStatusIntensity( %2%, %3%, %4%)") % get_name() % x % y % z;
-    cerr << format("\t position out of image definition \n");
+    std::cerr << format("%1%::UpdateStatusIntensity( %2%, %3%, %4%)") % get_name() % x % y % z;
+    std::cerr << format("\t position out of image definition \n");
     return;
   }
 
@@ -561,7 +561,7 @@ void DessinImageBase::InitCouleurs( )
 //                    ------------
 {
 
-  if (GB_debug) cerr << "DessinImageBase::InitCouleurs() begin " << endl;
+  if (GB_debug) std::cerr << "DessinImageBase::InitCouleurs() begin " << std::endl;
     int i;
 
   for(  i = 0 ;  i<=255 ;  i++ Faire
@@ -582,12 +582,12 @@ void DessinImageBase::InitCouleurs( )
 
     } // end switch
     if (GB_debug)
-      cerr << " position " << i
+      std::cerr << " position " << i
             << " color " << (int) _tab_intensite_couleur[i].Red()
             << " , " << (int)_tab_intensite_couleur[i].Green()
             << " , " << (int)_tab_intensite_couleur[i].Blue()
             << ": " << (int) _tab_intensite_couleur[i].GetPixel()
-            << endl;
+            << std::endl;
 
   } // end for // i
 
@@ -598,7 +598,7 @@ void DessinImageBase::InitCouleurs( )
     case TYPE_COURBE_PENTE2: _couleur_inf = 0; _couleur_sup = 0;    break;
   } // end switch // Param._I._type_courbe
 
-  if (GB_debug) cerr << "DessinImageBase::InitCouleurs() end " << endl;
+  if (GB_debug) std::cerr << "DessinImageBase::InitCouleurs() end " << std::endl;
 } // InitCouleurs()
 
 
@@ -1171,8 +1171,8 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
     drawcontext = _memory_dc.get();
   else {
     if (!dc.IsOk()) {
-      cerr  << "DessinImageBase::DessineCurseur()"
-            << "\t bad client dc" << endl;
+      std::cerr  << "DessinImageBase::DessineCurseur()"
+            << "\t bad client dc" << std::endl;
       return;
     } else
       drawcontext = &dc;
@@ -1331,7 +1331,7 @@ void DessinImageBase ::  MemoriseCoupesXY( unsigned char activation )
 
   Si activation == _memorise_coupes_XY AlorsRetourne; // pas de changement
 
-  cerr << "MemoriseCoupesXY() not yet available in this platform" << endl;
+  std::cerr << "MemoriseCoupesXY() not yet available in this platform" << std::endl;
 
 } // MemoriseCoupesXY()
 
@@ -1604,7 +1604,7 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
         double range = ceil(log((posmax-posmin)*unit)/log(10.0));
         unit_scale = 2-(int) range;
         unit = unit*exp(log(10.0)*unit_scale);
-        //cout << "unit " << axis << "scaled by 10^" << unit_scale << endl;
+        //cout << "unit " << axis << "scaled by 10^" << unit_scale << std::endl;
       }
     break;
   }
@@ -1970,7 +1970,7 @@ void DessinImageBase :: DrawColorBar( )
   val = valmin;
   val_step = (valmax-valmin)/255.0;
 
-  //cout << "steps = " << step << endl;
+  //cout << "steps = " << step << std::endl;
 
   Pour(i,0,255)
    couleur = _tab_intensite_couleur[IntensiteBuffer(val)];
@@ -1998,7 +1998,7 @@ void DessinImageBase :: DrawColorBar( )
      SetLineParameters(1,wxSHORT_DASH);
      SetPenColor(*wxBLACK);
      //cout << "drawing line for " << Istring
-     //     << " at " << (int) (vpos2+step/2) << endl;
+     //     << " at " << (int) (vpos2+step/2) << std::endl;
      Ligne(
             l,
             (int) (vpos2+step/2),
@@ -2271,8 +2271,8 @@ void DessinImageBase::DessinePlanZ( )
 
 //  _current_slice->SetPen(*wxTRANSPARENT_PEN);
   if (!_image) {
-    cerr << "DessinImageBase::DessinePlanZ( )"
-        << "\t image not allocated !" << endl;
+    std::cerr << "DessinImageBase::DessinePlanZ( )"
+        << "\t image not allocated !" << std::endl;
     return;
   }
 
@@ -3252,9 +3252,9 @@ void DessinImageBase::DessinePlanInterpZ( )
        Si n < 1 AlorsFait n = 1;
     break;
     default:
-       cerr << "DessinImageBase::DessinePlanInterpZ() \t";
-       cerr << " _interpole_subdivision a une valeur inconnue ... : ";
-       cerr << _interpole_subdivision  << endl;
+       std::cerr << "DessinImageBase::DessinePlanInterpZ() \t";
+       std::cerr << " _interpole_subdivision a une valeur inconnue ... : ";
+       std::cerr << _interpole_subdivision  << std::endl;
        n = 2;
   } // end switch
 
@@ -3360,9 +3360,9 @@ void DessinImageBase :: DessinePlanInterpY( )
        Si n < 1 AlorsFait n = 1;
     break;
     default:
-       cerr << "DessinImageBase::DessinePlanInterpY() \t";
-       cerr << " _interpole_subdivision a une valeur inconnue ... : ";
-       cerr << _interpole_subdivision  << endl;
+       std::cerr << "DessinImageBase::DessinePlanInterpY() \t";
+       std::cerr << " _interpole_subdivision a une valeur inconnue ... : ";
+       std::cerr << _interpole_subdivision  << std::endl;
        n = 2;
   } // end switch
 
@@ -3447,9 +3447,9 @@ void DessinImageBase::DessinePlanInterpX( )
        Si n < 1 AlorsFait n = 1;
     break;
     default:
-       cerr << "DessinImageBase::DessinePlanInterpX() \t";
-       cerr << " _interpole_subdivision a une valeur inconnue ... : ";
-       cerr << _interpole_subdivision  << endl;
+       std::cerr << "DessinImageBase::DessinePlanInterpX() \t";
+       std::cerr << " _interpole_subdivision a une valeur inconnue ... : ";
+       std::cerr << _interpole_subdivision  << std::endl;
        n = 2;
   } // end switch
 
@@ -3462,8 +3462,8 @@ void DessinImageBase::DessinePlanInterpX( )
   FixeImageCourante( IMAGE_ZY);
 
   if (!_current_slice.use_count()) {
-    cerr  << "DessinImageBase::DessinePlanInterpX() \t pb with current slicer pointer "
-          << endl;
+    std::cerr  << "DessinImageBase::DessinePlanInterpX() \t pb with current slicer pointer "
+          << std::endl;
     return;
   }
 
@@ -3584,7 +3584,7 @@ void DessinImageBase :: IncCoupe()
     int etat;
 
   CursorToImage(_souris_x, _souris_y, pt.x,pt.y,pt.z,etat);
-  //  cout << pt << endl;
+  // std::cout << pt << std::endl;
   Si etat != -1 Alors
     switch ( etat ){
 
@@ -3625,7 +3625,7 @@ void DessinImageBase :: DecCoupe()
     int etat;
 
   CursorToImage(_souris_x, _souris_y, pt.x,pt.y,pt.z,etat);
-  //  cout << pt << endl;
+  // std::cout << pt << std::endl;
   Si etat != -1 Alors
     switch ( etat ){
 
@@ -3705,7 +3705,7 @@ void DessinImageBase::OnChar(wxKeyEvent& event)
         Si ((type+1) & (TYPE_COUPE_ZY+1)) == 0  AlorsFait
           Param._type_coupe += TYPE_COUPE_ZY+1;
         Param._type_coupe -= 1;
-        cout << " type " <<  Param._type_coupe << endl;
+       std::cout << " type " <<  Param._type_coupe << std::endl;
         Param._MAJ.MAJCoupes();
         EffaceEcran( false);
         Paint();
@@ -3723,7 +3723,7 @@ void DessinImageBase::OnChar(wxKeyEvent& event)
         Si ((type+1) & (TYPE_COUPE_XZ+1)) == 0  AlorsFait
           Param._type_coupe += TYPE_COUPE_XZ+1;
         Param._type_coupe -= 1;
-        cout << " type " <<  Param._type_coupe << endl;
+       std::cout << " type " <<  Param._type_coupe << std::endl;
         Param._MAJ.MAJCoupes();
         EffaceEcran( false);
         Paint();
@@ -3741,7 +3741,7 @@ void DessinImageBase::OnChar(wxKeyEvent& event)
         Si ((type+1) & (TYPE_COUPE_XY+1)) == 0  AlorsFait
           Param._type_coupe += TYPE_COUPE_XY+1;
         Param._type_coupe -= 1;
-        cout << " type " <<  Param._type_coupe << endl;
+       std::cout << " type " <<  Param._type_coupe << std::endl;
         Param._MAJ.MAJCoupes();
         EffaceEcran( false);
         Paint();

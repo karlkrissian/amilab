@@ -177,7 +177,7 @@ public:
   public:
 
     BadLineNumber( int l) {
-      cout << "Exception: BadLineNumber, "<< l << endl;
+     std::cout << "Exception: BadLineNumber, "<< l << std::endl;
     }
   };
 

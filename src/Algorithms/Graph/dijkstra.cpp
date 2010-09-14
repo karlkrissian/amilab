@@ -46,7 +46,7 @@ graph_ptr CreateUndirectedGraph(
                      )
 {
   if (weights.size()!=edges.size()) {
-    cerr << "ShortestPath() \t edges and weights have different sizes, aborting ..." << endl;
+    std::cerr << "ShortestPath() \t edges and weights have different sizes, aborting ..." << std::endl;
     return graph_ptr();
   }
 
@@ -97,7 +97,7 @@ void ShortestPath(
   for (tie(vi, vend) = vertices(g); vi != vend; ++vi) {
     std::cout << "distance(" << name[*vi] << ") = " << result.distance[*vi] << ", ";
     std::cout << "parent(" << name[*vi] << ") = " << name[result.previous[*vi]] << std::
-      endl;
+      std::endl;
   }
   std::cout << std::endl;
 */

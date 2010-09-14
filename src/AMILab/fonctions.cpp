@@ -1220,7 +1220,7 @@ int AskFilename(std::string& name)
         format_choices << wxString::FromAscii("|");
       format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
     }
-    if (GB_debug) cerr << format_choices << endl;
+    if (GB_debug) std::cerr << format_choices << std::endl;
 
     wxString filename = wxFileSelector(
                                     _T("Select the filename"),
@@ -1279,7 +1279,7 @@ int AskImage(std::string& name)
         format_choices << wxString::FromAscii("|");
       format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
     }
-    if (GB_debug) cerr << format_choices << endl;
+    if (GB_debug) std::cerr << format_choices << std::endl;
 
 /*
     format_choices  << "Amilab (*.ami;*.ami.gz)|*.ami;*.ami.gz"
@@ -1391,7 +1391,7 @@ int AskScript(std::string& name)
         format_choices << wxString::FromAscii("|");
       format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
     }
-    if (GB_debug) cerr << format_choices << endl;
+    if (GB_debug) std::cerr << format_choices << std::endl;
 
     wxString filename = wxFileSelector(
                                     _T("Select the script to load"),

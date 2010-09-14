@@ -34,7 +34,8 @@
 #define _DefineClass_hpp_
 
 //--- string formatting using boost
-#include <iostream>
+//#include <iostream>
+#include <string>
 // need these includes to prevent conflicts with boost iostream ...
 #include <iomanip>
 #include <cassert>
@@ -99,6 +100,7 @@ public:\
 
  
 
+/*
 namespace MyNS_ForOutput {
   using std::cout; using std::cerr;
   using std::string;
@@ -108,6 +110,7 @@ namespace MyNS_ForOutput {
   using boost::io::group;
 }
 using namespace MyNS_ForOutput;
+*/
 
 #ifdef  _MSC_VER
   #define AMI_DLLEXPORT __declspec( dllexport )

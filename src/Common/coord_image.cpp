@@ -127,7 +127,7 @@ void CoordImage :: CalculVecteursOrthogonaux( const Vect3D<float>& v1_prec,
 {
 
   Si Norme(v) < 1E-2 Alors
-    cerr << "CalculVecteursOrthogonaux \t norme trop faible \n";
+    std::cerr << "CalculVecteursOrthogonaux \t norme trop faible \n";
   FinSi
 
 
@@ -159,7 +159,7 @@ void CoordImage :: CalculVecteursOrthogonaux( const Vect3D<float>& v,
 // et on prend un vecteur orthogonal dans le plan forme par les 2 autres directions
 
   Si Norme(v) < 1E-2 Alors
-    cerr << "CalculVecteursOrthogonaux \t norme trop faible \n";
+    std::cerr << "CalculVecteursOrthogonaux \t norme trop faible \n";
   FinSi
 
   Si fabsf(v.x)<=fabsf(v.y) Et fabsf(v.x)<=fabsf(v.z) Alors

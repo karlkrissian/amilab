@@ -146,7 +146,7 @@ void Fonction2D :: Sauve( Chaine nom)
     FinPour
     fclose( fic_donnees);
   Sinon
-    cerr << " Fonction2D::Sauve() \t Erreur dans l'ouverture du fichier de donnees\n";
+    std::cerr << " Fonction2D::Sauve() \t Erreur dans l'ouverture du fichier de donnees\n";
     return;
   FinSi
 
@@ -372,7 +372,7 @@ float Fonction2D :: operator()( float x)
   c  = _points[i].x-_points[i-1].x;
 
   Si fabsf(c) < 1E-5 Alors
-    cerr << " Points successifs de meme abscisse \n";
+    std::cerr << " Points successifs de meme abscisse \n";
     return 0;
   FinSi
 

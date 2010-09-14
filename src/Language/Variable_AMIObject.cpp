@@ -110,14 +110,14 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +()
 /// prefix ++ operator ++a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++()
 {
-  std::cout << "**" << endl;
+  std::cout << "**" << std::endl;
   RETURN_VARPTR(AMIObject,++RefValue());
 }
 
 /// postfix ++ operator a++
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++(int)
 {
-  std::cout << "**" << endl;
+  std::cout << "**" << std::endl;
   RETURN_VARPTR(AMIObject,RefValue()++);
 }
 

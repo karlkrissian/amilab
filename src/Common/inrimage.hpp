@@ -311,12 +311,14 @@ public:
     class DepassementLimites
     {
     public:
-        DepassementLimites( const std::string message)
+        DepassementLimites( const std::string message);
+/*
      {
        std::cout << "InrImage "
                 << " Out of image limits"
             << "\t " << message  << std::endl;
      }
+*/
     };
   //@}
 

@@ -68,7 +68,7 @@ public:
   public:
     ErreurLecture( Chaine message)
       {
-	cerr << "Fonction2D Erreur de Lecture " << message << endl;
+	std::cerr << "Fonction2D Erreur de Lecture " << message << std::endl;
       }
   };
 

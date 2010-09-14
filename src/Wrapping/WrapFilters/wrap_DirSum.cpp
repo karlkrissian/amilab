@@ -42,7 +42,7 @@ InrImage* wrap_DirSum(ParamList* p)
         // TODO: use IncBuffer, ValeurBuffer ...
         for(x=0;x<=input->DimX()-1;x++)
           sum +=(*input)(x,y,z);
-        //cout << boost::format(" ( %1%, %2%, %3%) sum=%4%")%x%y%z%sum << endl;
+        //cout << boost::format(" ( %1%, %2%, %3%) sum=%4%")%x%y%z%sum << std::endl;
         result->BufferPos(0,y,z);
         result->FixeValeur(sum);
       }
@@ -74,7 +74,7 @@ InrImage* wrap_DirSum(ParamList* p)
       }
     break;
     default:
-      cerr << "DirSum() Invalid argument" << endl;
+      std::cerr << "DirSum() Invalid argument" << std::endl;
   }
 
   return result;

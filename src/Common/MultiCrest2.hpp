@@ -246,8 +246,8 @@ protected:
       }
       catch (ExceptionBadPointNumber& e)
       {
-        cerr << "BadPointNumber " << p.mpoint << "\t" << pt << endl;
-        cerr << e._p << e._lmax << endl;
+        std::cerr << "BadPointNumber " << p.mpoint << "\t" << pt << std::endl;
+        std::cerr << e._p << e._lmax << std::endl;
       }
     FinSi
   } 

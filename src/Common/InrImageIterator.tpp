@@ -152,7 +152,7 @@ inline void InrImageIterator<T>::SetDoubleVectorValues( const double& valx, cons
     _datapos[1]   = (T) valy;
     _datapos[2]   = (T) valz;
   }
-  else cerr <<  "InrImageIterator<T>::SetDoubleVectorValues()  _vdim!=3 \n";
+  else std::cerr <<  "InrImageIterator<T>::SetDoubleVectorValues()  _vdim!=3 \n";
 }
 
 template<class T>

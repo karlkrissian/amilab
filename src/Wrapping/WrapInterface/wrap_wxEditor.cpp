@@ -85,7 +85,7 @@ BasicVariable::ptr WrapClass_wxEditor::
 {
   std::string* filename = NULL;
   int n = 0;
-  if (!get_val_ptr_param<string>( filename,  p, n))  ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( filename,  p, n))  ClassHelpAndReturn;
 
   int res = this->_objectptr->_obj->LoadFile(wxString::FromAscii(filename->c_str()));
   RETURN_VAR(int,res);

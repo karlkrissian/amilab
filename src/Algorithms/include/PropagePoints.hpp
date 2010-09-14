@@ -67,9 +67,9 @@ public:
   public:
     TropDePoints( char* message, int max)
       {
-	cerr << " PropagePoints Exception\t trop de points" 
-             << " max = " << max << endl;
-        cerr << message << endl;
+	std::cerr << " PropagePoints Exception\t trop de points" 
+             << " max = " << max << std::endl;
+        std::cerr << message << std::endl;
       }
   };
 
@@ -173,7 +173,7 @@ public:
     point_traite = new unsigned char[_taille_max];
 
     Si GB_debug AlorsFait
-      cout << " PropagePoints() constructeur\n";
+     std::cout << " PropagePoints() constructeur\n";
 
     PtsATraiter = 0;
     posx[0] = 0;
@@ -234,7 +234,7 @@ public:
     FinTantQue
 
     Si _depart > _fin Alors
-      cerr << " _depart > _fin  \n";
+      std::cerr << " _depart > _fin  \n";
       return false;
     FinSi
 
@@ -256,7 +256,7 @@ public:
     Si _pos_fin == _taille_max AlorsFait _pos_fin = 0;
 
     Si  _fin-_depart == _taille_max Alors
-      cout << "_depart " << _depart << " _fin " << _fin << endl;
+     std::cout << "_depart " << _depart << " _fin " << _fin << std::endl;
       Resize();
     FinSi
  
@@ -266,7 +266,7 @@ public:
     point_traite[_pos_fin] = false;
     PtsATraiter++;
 
-//    Si (_fin%100 == 0) AlorsFait cout << "_fin = " << _fin << endl;
+//    Si (_fin%100 == 0) AlorsFaitstd::cout << "_fin = " << _fin << std::endl;
 
 
     return true;

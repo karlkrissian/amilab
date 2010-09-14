@@ -380,7 +380,7 @@ void vtkLevelSetFastMarching::ExecuteData(vtkDataObject *outData)
   bool use_target_points;
   bool stop_evolution;
   use_target_points = (!target_points.empty());
-  cout << " use_target_points " << use_target_points << endl;
+ std::cout << " use_target_points " << use_target_points << std::endl;
 
   if (initimage == NULL) 
     Init(cx,cy,cz, (int) radius);
@@ -407,13 +407,13 @@ void vtkLevelSetFastMarching::ExecuteData(vtkDataObject *outData)
     if (track!=NULL) {
       if (p.impos != p.x + tx*p.y+txy*p.z)
       {
-        cout << "p.impos != p.x + tx*p.y+txy*p.z " << endl;
+       std::cout << "p.impos != p.x + tx*p.y+txy*p.z " << std::endl;
       }
       if (p.impos==p.track) {
-        cout << "Pb .." 
+       std::cout << "Pb .." 
             << " at position " << p.x << "," << p.y << "," << p.z
             << " p.impos == p.track"
-            << endl;
+            << std::endl;
       }
       int* track_buf = (int*)track->GetScalarPointer();
       track_buf[p.impos] = (int) p.track;
@@ -444,7 +444,7 @@ void vtkLevelSetFastMarching::ExecuteData(vtkDataObject *outData)
 
     } // end if
     
-    //      cout << this->mh << endl;
+    //     std::cout << this->mh << std::endl;
   
     stop_evolution =  (p.value>=this->maxTime) || 
                       (this->mh.Size() == 0)   ||
@@ -531,7 +531,7 @@ void vtkLevelSetFastMarching::AddAcceptedPoint( short x, short y, short z, int p
         if ((Iter->x == x)&&(Iter->y == y)&&(Iter->z==z)) {
           // remove point from target list
           Iter = target_points.erase(Iter);
-          cout << " removed target point " << x << " " << y << " " << z << endl;
+         std::cout << " removed target point " << x << " " << y << " " << z << std::endl;
         } else
         Iter++;
       }
@@ -1408,7 +1408,7 @@ void vtkLevelSetFastMarching::Init2D(int cx, int cy, int radius)
 
     //this->T     ->Sauve("T-init.ami.gz");
     //this->status->Sauve("status-init.ami.gz");
-  cout << mh << endl;
+ std::cout << mh << std::endl;
 
       //  delete surf;
 
@@ -1579,7 +1579,7 @@ void vtkLevelSetFastMarching::Init3D(int cx, int cy, int cz, int radius)
   }    
   
 
-  cout << mh << endl;
+ std::cout << mh << std::endl;
 
   fprintf(stderr,"Init3D() end \n");
 

@@ -233,7 +233,7 @@ public:
     //     ---------
     {
 
-      cerr<< " InrImageCompressee:BufferPtr   ErreurMethodeNonGeree \n";
+      std::cerr<< " InrImageCompressee:BufferPtr   ErreurMethodeNonGeree \n";
       throw ErreurMethodeNonGeree();
 //      return NULL;
 
@@ -424,7 +424,7 @@ public:
         _nom = nom;
       FinSi
 
-      cout << " Sauvegarde de " << _nom << "\n";
+     std::cout << " Sauvegarde de " << _nom << "\n";
 
       image      = new InrImage( _format, _nom, this );
       image->InitBuffer();
@@ -457,7 +457,7 @@ public:
     //     ---------
     {
 
-      cerr<< " InrImageCompressee:t_Image*...   ErreurMethodeNonGeree \n";
+      std::cerr<< " InrImageCompressee:t_Image*...   ErreurMethodeNonGeree \n";
       throw ErreurMethodeNonGeree();
 
 //      return (t_Image*) NULL;
@@ -471,7 +471,7 @@ public:
     //     ---------
     {
 
-      cerr<< " InrImageCompressee:t_Image...   ErreurMethodeNonGeree \n";
+      std::cerr<< " InrImageCompressee:t_Image...   ErreurMethodeNonGeree \n";
       throw ErreurMethodeNonGeree();
 
 
@@ -483,7 +483,7 @@ public:
     //     ---------
     {
 
-      cerr<< " InrImageCompressee:inrimage*...   ErreurMethodeNonGeree \n";
+      std::cerr<< " InrImageCompressee:inrimage*...   ErreurMethodeNonGeree \n";
       throw ErreurMethodeNonGeree();
 
 //     return (inrimage*) NULL;
@@ -496,7 +496,7 @@ public:
     //     ---------
     {
 
-      cerr<< " InrImageCompressee:inrimage...   ErreurMethodeNonGeree \n";
+      std::cerr<< " InrImageCompressee:inrimage...   ErreurMethodeNonGeree \n";
       throw ErreurMethodeNonGeree();
 
     } // ()

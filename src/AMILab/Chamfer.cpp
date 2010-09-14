@@ -163,7 +163,7 @@ InrImage* Func_Chamfer(InrImage* im, float a, float b, float c)
   duree.Fin();
   
 
-  cout << duree << endl;
+ std::cout << duree << std::endl;
 
   return res;
   
@@ -336,7 +336,7 @@ InrImage* Func_Chamfer2(InrImage* im, float a, float b, float c, float dmax)
     }
 
   duree.Fin();
-  cout << duree << endl;
+ std::cout << duree << std::endl;
 
   fprintf(stderr,"Func_Chamfer() \t borders \n");
 
@@ -678,7 +678,7 @@ InrImage* Func_Chamfer2Signed(InrImage* im, float a, float b, float c, float dma
     }
 
   duree.Fin();
-  cout << duree << endl;
+ std::cout << duree << std::endl;
 
   fprintf(stderr,"Func_Chamfer() \t borders \n");
 

@@ -452,7 +452,7 @@ T& Pile<T> :: operator[](int n)
 
 //      MethodeCourante("Operator[]");
 //     AfficheErreur(ERREUR_DIVERS,
-       cerr << " Pile<T> operator[]\t Indice incorrect ... "
+       std::cerr << " Pile<T> operator[]\t Indice incorrect ... "
             << n << "[0 " <<  _nbelts_utilises-1 << "]\n";
 //      FinMethode();
       return Pile<T>::_defaut;
@@ -475,7 +475,7 @@ T& Pile<T> :: Top()
 
     Si (_nbelts_utilises==0) Alors
 
-      cerr << " Pile<T>::Top()\t Pile vide ... " << endl;
+      std::cerr << " Pile<T>::Top()\t Pile vide ... " << std::endl;
       return Pile<T>::_defaut;
     Sinon
       return _tableau[_nbelts_utilises-1];
@@ -520,7 +520,7 @@ ostream& operator << (ostream& os, const Pile<T>& p)
     Si i < p._nbelts_utilises-1 Alors
       os  << " ; ";
     Sinon
-      os  << " }" << endl;
+      os  << " }" << std::endl;
     FinSi
   FinPour
 

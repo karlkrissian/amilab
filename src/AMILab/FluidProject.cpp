@@ -935,7 +935,7 @@ int InitCoordinates( int& i_offset, int& j_offset, TNavig& nav, std::string type
     }
   else
     {
-      cerr << "No se reconoce el tipo de la imagen de entrada. Debe ser AfGG o NAtl" << endl;
+      std::cerr << "No se reconoce el tipo de la imagen de entrada. Debe ser AfGG o NAtl" << std::endl;
       return 0;
     }
   

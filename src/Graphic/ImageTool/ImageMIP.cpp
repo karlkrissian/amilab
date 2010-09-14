@@ -672,7 +672,7 @@ InrImage::ptr ImageMIP ::  CreeMIPRapide( )
   _image_masque -> InitBuffer();
 
   Pour( z, _zmin, _zmax)
-    //cout << "z = " << z << endl;
+    //cout << "z = " << z << std::endl;
     x_yinit = x2;
     y_yinit = y2;
     z_yinit = z2;
@@ -728,9 +728,9 @@ InrImage::ptr ImageMIP ::  CreeMIPRapide( )
 
   FinPour // z
 
-  //  cout <<  "Nombre de points traites = " << nb_points << endl;
-  //  cout <<  "Pourcentage = " << nb_points/(_zmax-_zmin+1.0)/(_ymax-_ymin+1.0)/(_xmax-_xmin+1.0)*100.0 
-  //       << endl;
+  // std::cout <<  "Nombre de points traites = " << nb_points << std::endl;
+  // std::cout <<  "Pourcentage = " << nb_points/(_zmax-_zmin+1.0)/(_ymax-_ymin+1.0)/(_xmax-_xmin+1.0)*100.0 
+  //       << std::endl;
 
   return _imageMIP;
 
@@ -773,7 +773,7 @@ InrImage::ptr ImageMIP ::  CreeMIP( )
 
   z1 = ( _zmin - (_image->_tz / 2.0))*_voxel_size_z;
   Pour( z, _zmin, _zmax)
-    //cout << "z = " << z << endl;
+    //cout << "z = " << z << std::endl;
     y1 = ( _ymin - (_image->_ty / 2.0))*_voxel_size_y;
     Pour( y, _ymin, _ymax)
       x1 = ( _xmin - (_image->_tx / 2.0))*_voxel_size_x;

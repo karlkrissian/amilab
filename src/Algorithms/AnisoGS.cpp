@@ -1688,12 +1688,12 @@ float AnisoGS::Itere2D ( InrImage* im )
 
   ( *im ) = ( *this->im_tmp );
 
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", "
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", "
   << erreur_y << ", "
-  << erreur_z << " )" << endl;
-  cout << "nb de points variables " << nb_points_instables << endl;
+  << erreur_z << " )" << std::endl;
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 
 
 
@@ -2503,16 +2503,16 @@ float AnisoGS::Itere3D( InrImage* im )
   (*im) = (*this->im_tmp);
 
 /*
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", " 
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
                << erreur_y << ", " 
-               << erreur_z << " )" << endl; 
-  cout << "nb de points variables " << nb_points_instables << endl;
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 */
   diff /= txy*tz;
 
-  cout << "diff =" << sqrt(diff) << endl;
+ std::cout << "diff =" << sqrt(diff) << std::endl;
 
   return erreur;
 
@@ -3117,23 +3117,23 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
   } // endfor
 
   if (outoflimits>0) {
-    cout << " Number of pixels out of the intensity range :" << outoflimits << endl;
+   std::cout << " Number of pixels out of the intensity range :" << outoflimits << std::endl;
   }
 
   ExtendBoundariesVonNeumann(im_tmp);
   (*im) = (*this->im_tmp);
 
 /*
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", " 
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
                << erreur_y << ", " 
-               << erreur_z << " )" << endl; 
-  cout << "nb de points variables " << nb_points_instables << endl;
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 */
   diff /= txy*tz;
 
-  cout << "\t diff =" << sqrt(diff) << "\t";
+ std::cout << "\t diff =" << sqrt(diff) << "\t";
 
   if (noise_standard_deviation <0) {
 /*    fprintf(stderr,"noise SD <0 ?\n");
@@ -3609,10 +3609,10 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
       val1div += alpha1_x + alpha_x;
 
       if (!ispositivevalue(fabs(val1)))  {
-        cout << "pb 1: " << val1 << endl;
-        cout << boost::format("at %1%,%2%,%3% ") % x % y % z  << endl;
+       std::cout << "pb 1: " << val1 << std::endl;
+       std::cout << boost::format("at %1%,%2%,%3% ") % x % y % z  << std::endl;
 
-        cout << boost::format(" alpha1_x = %1%, *(in+xp) = %2%, alpha_x = %3%, *(in+xm) = %4%, gamma1_x = %5%, gamma_x = %6%") % alpha1_x % *(in+xp) % alpha_x % *(in+xm  ) % gamma1_x % gamma_x << endl;
+       std::cout << boost::format(" alpha1_x = %1%, *(in+xp) = %2%, alpha_x = %3%, *(in+xm) = %4%, gamma1_x = %5%, gamma_x = %6%") % alpha1_x % *(in+xp) % alpha_x % *(in+xm  ) % gamma1_x % gamma_x << std::endl;
       }
 
       val1    += alpha1_y     * (*(in+yp )) +
@@ -3623,7 +3623,7 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
 
       if (!ispositivevalue(fabs(val1)))  {
-        cout << "pb 2" << endl;
+       std::cout << "pb 2" << std::endl;
       }
 
       val1    += alpha1_z      * (*(in+zp  )) +
@@ -3633,7 +3633,7 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
       val1div += alpha1_z + alpha_z[x][y];
 
       if (!ispositivevalue(fabs(val1)))  {
-        cout << "pb 3" << endl;
+       std::cout << "pb 3" << std::endl;
       }
 
     switch ( noise_type )
@@ -3666,12 +3666,12 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
                 val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
 if (val1<0)
 if (sqrt(val1)>300) {
-  cout << "beta = " << this->beta << endl;
-  cout << "image_entree (x,y,z) = " << ( *image_entree ) ( x,y,z ) << endl;
-  cout << boost::format("lambda0,1,2 = %1% %2% %3%") % lambda0 % lambda1 % lambda2 << endl;
-  cout << "val1prev = " << val1prev << endl;
-  cout << boost::format("at %1%,%2%,%3%  --> sqrt(in) = %4% dt = %5% val1prev = %6% sqrt(val1) = %7%") % x % y % z 
-    % sqrt(*in) % dt % val1prev % sqrt(val1) << endl;
+ std::cout << "beta = " << this->beta << std::endl;
+ std::cout << "image_entree (x,y,z) = " << ( *image_entree ) ( x,y,z ) << std::endl;
+ std::cout << boost::format("lambda0,1,2 = %1% %2% %3%") % lambda0 % lambda1 % lambda2 << std::endl;
+ std::cout << "val1prev = " << val1prev << std::endl;
+ std::cout << boost::format("at %1%,%2%,%3%  --> sqrt(in) = %4% dt = %5% val1prev = %6% sqrt(val1) = %7%") % x % y % z 
+    % sqrt(*in) % dt % val1prev % sqrt(val1) << std::endl;
 }
                 break;
         }
@@ -3806,7 +3806,7 @@ if (sqrt(val1)>300) {
 
 
   if (outoflimits>0) {
-    cout << " Number of pixels out of the intensity range :" << outoflimits << endl;
+   std::cout << " Number of pixels out of the intensity range :" << outoflimits << std::endl;
   }
 
   // backup previous image in image_c
@@ -3817,16 +3817,16 @@ if (sqrt(val1)>300) {
   printf(" speedup %3.3f %% \n",speedup_counter/(1.0*txy*tz)*100.0);
 
 /*
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", " 
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
                << erreur_y << ", " 
-               << erreur_z << " )" << endl; 
-  cout << "nb de points variables " << nb_points_instables << endl;
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 */
   diff /= txy*tz;
 
-  cout << "\t diff =" << sqrt(diff) << "\t";
+ std::cout << "\t diff =" << sqrt(diff) << "\t";
 
   
   // This code is somehow messy since it combines different types of filters
@@ -4074,14 +4074,14 @@ val1 = *in + 0.1*(dxx+dyy+dzz-meancurv);
 
   (*im) = (*this->im_tmp);
 
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", " 
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
                << erreur_y << ", " 
-               << erreur_z << " )" << endl; 
-  cout << "nb de points variables " << nb_points_instables << endl;
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 
-  cout << "diff =" << sqrt(diff) << endl;
+ std::cout << "diff =" << sqrt(diff) << std::endl;
 
   return erreur;
 
@@ -4318,14 +4318,14 @@ alpha1_z = 0;
 
   (*im) = (*this->im_tmp);
 
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", " 
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
                << erreur_y << ", " 
-               << erreur_z << " )" << endl; 
-  cout << "nb de points variables " << nb_points_instables << endl;
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 
-  cout << "diff =" << sqrt(diff) << endl;
+ std::cout << "diff =" << sqrt(diff) << std::endl;
 
   return erreur;
 
@@ -4547,16 +4547,16 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
 
   (*im) = (*this->im_tmp);
 
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", " 
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
                << erreur_y << ", " 
-               << erreur_z << " )" << endl; 
-  cout << "nb de points variables " << nb_points_instables << endl;
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 
   diff /= txy*tz;
 
-  cout << "diff =" << sqrt(diff) << endl;
+ std::cout << "diff =" << sqrt(diff) << std::endl;
 
   return erreur;
 
@@ -4873,16 +4873,16 @@ float  AnisoGS::Itere3D_3( InrImage* im )
 
   (*im) = (*this->im_tmp);
 
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", " 
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
                << erreur_y << ", " 
-               << erreur_z << " )" << endl; 
-  cout << "nb de points variables " << nb_points_instables << endl;
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 
   diff /= txy*tz;
 
-  cout << "diff =" << sqrt(diff) << endl;
+ std::cout << "diff =" << sqrt(diff) << std::endl;
 
   return erreur;
 
@@ -5003,7 +5003,7 @@ float AnisoGS::Iterate()
   float       erreur = 0;
 
   if ( this->image_resultat==NULL ) {
-    cerr << __func__ << " image_resultat==NULL, AnisoGS not initialized " << endl;
+    std::cerr << __func__ << " image_resultat==NULL, AnisoGS not initialized " << std::endl;
     return 0.0;
   } // end if
 

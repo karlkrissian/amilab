@@ -99,8 +99,8 @@ public:
   public:
     LimitesAtteintes(Chaine message)
       {
-	cerr << " On touche le bord de l'image \t";
-        cerr << message << endl;
+	std::cerr << " On touche le bord de l'image \t";
+        std::cerr << message << std::endl;
       }
   };
 

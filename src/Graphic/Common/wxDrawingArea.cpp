@@ -44,7 +44,7 @@ void wxDrawingArea::OnPaint( wxPaintEvent& event)
   wxPaintDC pdc(this);
   PrepareDC(pdc);
 
-  //cout << "wxDrawingArea::OnPaint()" << endl;
+  //cout << "wxDrawingArea::OnPaint()" << std::endl;
   _parent_window->Paint();
 
 } // OnPaint()
@@ -52,10 +52,10 @@ void wxDrawingArea::OnPaint( wxPaintEvent& event)
 //-------------------------------------------------
 void wxDrawingArea::OnSize(wxSizeEvent& event)
 {
-  if (GB_debug) cerr << "wxDrawingArea::OnSize()" << endl;
+  if (GB_debug) std::cerr << "wxDrawingArea::OnSize()" << std::endl;
   if (_parent_window->UpdateDrawingDimensions()) {
     //_parent_window->EffaceEcran( false);
-    if (GB_debug) cerr << "Calling ReDimensionne()" << endl;
+    if (GB_debug) std::cerr << "Calling ReDimensionne()" << std::endl;
     _parent_window->ReDimensionne();
   }
 } // OnSize()
@@ -98,10 +98,10 @@ void wxDrawingArea::OnMouseEvent(wxMouseEvent& event)
 
     _parent_window->SetMousePosition(_mouse_x,_mouse_y);
 
-    //  cout << "wheel rotation " << wr << endl;
+    // std::cout << "wheel rotation " << wr << std::endl;
     if (wr != 0) {
-      //cout << "wheel rotation " << wr << endl;
-      //cout << " mouse "<< _mouse_x << " " << _mouse_y << endl;
+      //cout << "wheel rotation " << wr << std::endl;
+      //cout << " mouse "<< _mouse_x << " " << _mouse_y << std::endl;
       _parent_window->OnWheel(event);
     }
 

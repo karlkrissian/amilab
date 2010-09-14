@@ -100,44 +100,44 @@ extern unsigned char      GB_verbose;
 #define my_glGenLists(a,b) \
   { \
     if (GB_debug) \
-      cerr << format("%1% = glGenLists( %2% ); // value %3% ") % #a %b % a << endl; \
+      std::cerr << format("%1% = glGenLists( %2% ); // value %3% ") % #a %b % a << std::endl; \
     a=glGenLists(b);\
   }
 
 #define my_glNewLists(a,b) \
   { \
     if (GB_debug) \
-      cerr << format("%1% = glNewLists( %2%); // value %3% ") % #a %b % a << endl; \
+      std::cerr << format("%1% = glNewLists( %2%); // value %3% ") % #a %b % a << std::endl; \
     a=glNewLists(b);\
   }
 
 #define my_glNewList(a,b) \
   { \
     if (GB_debug) \
-      cerr << format("glNewList( %1%, %2%);") % #a %b << endl; \
+      std::cerr << format("glNewList( %1%, %2%);") % #a %b << std::endl; \
     glNewList(a,b); \
   }
 
 #define my_glDeleteLists(a,b) \
   { \
     if (GB_debug) \
-      cerr << format("glDeleteLists(%1%,%2%);") % a % b << endl; \
+      std::cerr << format("glDeleteLists(%1%,%2%);") % a % b << std::endl; \
       glDeleteLists(a,b);\
   }
 
 #define my_glBegin_GL_TRIANGLE_FAN  {\
   if (GB_debug) \
-     cerr << "glBegin(GL_TRIANGLE_FAN);" << endl; \
+     std::cerr << "glBegin(GL_TRIANGLE_FAN);" << std::endl; \
   glBegin(GL_TRIANGLE_FAN); }
  
 #define my_glEnd  {\
   if (GB_debug) \
-     cerr << "glEnd();" << endl; \
+     std::cerr << "glEnd();" << std::endl; \
   glEnd(); }
  
 #define my_glEndList  {\
   if (GB_debug) \
-     cerr << "glEndList();" << endl; \
+     std::cerr << "glEndList();" << std::endl; \
   glEndList(); }
  
 
@@ -166,11 +166,11 @@ static const std::string glErrorString( GLenum err)
     /* for help debugging, report any OpenGL errors that occur per frame */ \
         GLenum error; \
         while((error = glGetError()) != GL_NO_ERROR) { \
-            if (GB_debug) cerr << "!!! GL error at " \
+            if (GB_debug) std::cerr << "!!! GL error at " \
               << __FILE__  \
               << " function " << __func__ \
               <<" line " << __LINE__ \
-              << ": " << glErrorString(error) << endl; \
+              << ": " << glErrorString(error) << std::endl; \
         } \
   }
 
@@ -186,10 +186,10 @@ int  GLObject::MakeContextCurrent()
 
   GLint render_mode;
 
-  if (GB_debug) cerr << " begin GLObject::MakeContextCurrent() " << endl;
+  if (GB_debug) std::cerr << " begin GLObject::MakeContextCurrent() " << std::endl;
 //  if (_context==NULL) return 0;
   if (!_wxGL_canvas) {
-    cerr << "GLObject::MakeContextCurrent() \t_wxGL_canvas not initialized " << endl;
+    std::cerr << "GLObject::MakeContextCurrent() \t_wxGL_canvas not initialized " << std::endl;
     return 0;
   }
 
@@ -204,24 +204,24 @@ int  GLObject::MakeContextCurrent()
 
       bool res = _wxGL_canvas->SetCurrentContext();
 
-      if (GB_debug) cerr << " end 1 GLObject::MakeContextCurrent() " << endl;
+      if (GB_debug) std::cerr << " end 1 GLObject::MakeContextCurrent() " << std::endl;
       return res;
     }
     break;
   case GL_SELECT: return 1;
-  default: cerr << "GLObject::MakeCurrentContext()"
+  default: std::cerr << "GLObject::MakeCurrentContext()"
                 << " render mode " << render_mode
                 << " not treated "
                 << " GL_RENDER =  " << GL_RENDER
                 << " GL_SELECT =  " << GL_SELECT
-                << endl;
+                << std::endl;
           glRenderMode(GL_RENDER);
           bool res = _wxGL_canvas->SetCurrentContext();
-          if (GB_debug) cerr << " end 2 GLObject::MakeContextCurrent() " << endl;
+          if (GB_debug) std::cerr << " end 2 GLObject::MakeContextCurrent() " << std::endl;
           return res;
   }
 
-  if (GB_debug) cerr << " end 3 GLObject::MakeContextCurrent() " << endl;
+  if (GB_debug) std::cerr << " end 3 GLObject::MakeContextCurrent() " << std::endl;
   return 0;
 
   
@@ -444,7 +444,7 @@ void  Surface :: LitDonnees( Chaine nom_fic)
   FinSi
 
 
-  cout << "Lecture du fichier " << nom_fic << endl;
+ std::cout << "Lecture du fichier " << nom_fic << std::endl;
 
   fichier = fopen( nom_fic, "r");
   Si fichier == NULL Alors
@@ -628,7 +628,7 @@ unsigned char  Surface :: LitImageCouleurs( Chaine nom_image)
     _image_couleurs_allouee = true;
   }
   catch(InrImage::ErreurLecture){
-    cout << "Erreur de lecture de l'image" << endl;
+   std::cout << "Erreur de lecture de l'image" << std::endl;
     _image_couleurs         = NULL;
     _image_couleurs_allouee = false;
     return false;
@@ -742,12 +742,12 @@ int Surface :: BColor( int u, int v)
 
 #define my_glNormal3f(a,b,c) \
   if (GB_debug) \
-    cerr << format(" glNormal3f(%1%, %2%, %3%);") %a %b %c << endl; \
+    std::cerr << format(" glNormal3f(%1%, %2%, %3%);") %a %b %c << std::endl; \
     glNormal3f(a, b, c);
 
 #define my_glVertex3f(a,b,c) \
   if (GB_debug) \
-    cerr << format(" glVertex3f(%1%, %2%, %3%);") %a %b %c << endl; \
+    std::cerr << format(" glVertex3f(%1%, %2%, %3%);") %a %b %c << std::endl; \
     glVertex3f(a, b, c);
 
 
@@ -1603,7 +1603,7 @@ void SurfacePoly :: EndGLSurface()
               try{ pt.AddGLPolygon();  }
               catch (NormeFaible) { 
                 Si GB_verbose AlorsFait
-                  cerr << "Poly " << i << "Norme faible pour la normale" << endl;
+                  std::cerr << "Poly " << i << "Norme faible pour la normale" << std::endl;
               }
             FinPour
             my_glEnd
@@ -1616,7 +1616,7 @@ void SurfacePoly :: EndGLSurface()
                 try{ pt.AddGLPolygon( 0.9,0.5,0); }
                 catch (NormeFaible) { 
                   Si GB_verbose AlorsFait
-                    cerr << "Poly " << i << "Norme faible pour la normale" << endl;
+                    std::cerr << "Poly " << i << "Norme faible pour la normale" << std::endl;
                 }
               FinPour
               my_glEnd
@@ -1627,7 +1627,7 @@ void SurfacePoly :: EndGLSurface()
                 try{ pt.AddGLPolygon();  }
                 catch (NormeFaible) { 
                   Si GB_verbose AlorsFait
-                    cerr << "Poly " << i << "Norme faible pour la normale" << endl;
+                    std::cerr << "Poly " << i << "Norme faible pour la normale" << std::endl;
                 }
               FinPour
               my_glEnd
@@ -1710,7 +1710,7 @@ void SurfacePoly :: EndGLSurface()
     Si _tab_poly.NbElts() == 0 Et _tab_lines.NbElts() == 0 Alors
   
       glBegin(GL_POINTS);
-      //cout << "_tab_pts.NbElts()()" << _tab_pts.NbElts() << endl;
+      //cout << "_tab_pts.NbElts()()" << _tab_pts.NbElts() << std::endl;
       Pour(i,0,_tab_pts.NbElts()-1)
         _tab_pts[i].AddGLPoint();
       FinPour
@@ -2107,7 +2107,7 @@ void SurfacePoly :: GLRecomputeList( )
           }
           catch (NormeFaible)
           { 
-            cerr << "Poly " << i << "Norme faible pour la normale" << endl;
+            std::cerr << "Poly " << i << "Norme faible pour la normale" << std::endl;
           }
         FinPour
         glEnd();
@@ -4324,7 +4324,7 @@ void SurfacePoly::SelectMinPath(int pt)
 
   if ( _selected_points.NbElts() ==0 )
   {
-    cerr << "SurfacePoly::SelectMinPath()\t no seletec point" << endl;
+    std::cerr << "SurfacePoly::SelectMinPath()\t no seletec point" << std::endl;
     return;
   }
 
@@ -4342,7 +4342,7 @@ void SurfacePoly::SelectMinPath(int pt)
     if (line.NbElts()>=2) {
 
       edges.push_back(Edge(line[0],line[line.NbElts()-1]));
-      cout << "Adding Edge " << line[0] << " " << line.NbElts()-1 << endl;
+     std::cout << "Adding Edge " << line[0] << " " << line.NbElts()-1 << std::endl;
 
       double length=0;
       Point_3D<float> p0,p1;
@@ -4358,15 +4358,15 @@ void SurfacePoly::SelectMinPath(int pt)
   }
 
   if (selected_line==-1) {
-    cerr << "Selected line not found, aborting " << endl;
+    std::cerr << "Selected line not found, aborting " << std::endl;
     return;
   } else
-    cout << "selected line = " << selected_line << endl;
+   std::cout << "selected line = " << selected_line << std::endl;
   if (initial_line==-1) {
-    cerr << "Initial line not found, aborting " << endl;
+    std::cerr << "Initial line not found, aborting " << std::endl;
     return;
   } else
-    cout << "initial line = " << initial_line << endl;
+   std::cout << "initial line = " << initial_line << std::endl;
 
   // Create the graph
   graph_ptr graph = CreateUndirectedGraph(
@@ -4393,14 +4393,14 @@ void SurfacePoly::SelectMinPath(int pt)
   if (path.distance[current_point]==
       numeric_limits<weight_type>::max())
   {
-    cerr << "SurfacePoly::SelectMinPath() \tNo path between points " << endl;
+    std::cerr << "SurfacePoly::SelectMinPath() \tNo path between points " << std::endl;
     return;
   }
 
   // backup the current line configuration
   BackupLines();
 
-  cout << "Selecting the path " << endl;
+ std::cout << "Selecting the path " << std::endl;
   while (current_point!=_tab_lines[initial_line][0]) {
     previous_point = path.previous[current_point];
 
@@ -4416,7 +4416,7 @@ void SurfacePoly::SelectMinPath(int pt)
         break;
     }
     if (p==_tab_lines.NbElts()) {
-      cerr << "Not able to follow path: should not happen! " << endl;
+      std::cerr << "Not able to follow path: should not happen! " << std::endl;
       return;
     }
     int pos = _selected_lines.Position(p);

@@ -80,11 +80,11 @@ static const std::string glErrorString( GLenum err)
     /* for help debugging, report any OpenGL errors that occur per frame */ \
         GLenum error; \
         while((error = glGetError()) != GL_NO_ERROR) { \
-            if (GB_debug) cerr << "!!! GL error at " \
+            if (GB_debug) std::cerr << "!!! GL error at " \
               << __FILE__  \
               << " function " << __func__ \
               <<" line " << __LINE__ \
-              << ": " << glErrorString(error) << endl; \
+              << ": " << glErrorString(error) << std::endl; \
         } \
   }
 
@@ -93,11 +93,11 @@ static const std::string glErrorString( GLenum err)
     /* for help debugging, report any OpenGL errors that occur per frame */ \
         GLenum error = glGetError(); \
         if (error!=GL_NO_ERROR) \
-            if (GB_debug) cerr << "!!! GL error at " \
+            if (GB_debug) std::cerr << "!!! GL error at " \
               << __FILE__  \
               << " function " << __func__ \
               <<" line " << __LINE__ \
-              << ": " << glErrorString(error) << endl; \
+              << ": " << glErrorString(error) << std::endl; \
   }
 
 /*
@@ -468,7 +468,7 @@ void ami_wxGLCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
 {
   CLASS_MESSAGE("begin");
 
-  // This is a dummy, to avoid an endless succession of paint messages.
+  // This is a dummy, to avoid an std::endless succession of paint messages.
   // OnPaint handlers must always create a wxPaintDC.
   wxPaintDC dc(this);
 
@@ -569,15 +569,15 @@ void ami_wxGLCanvas::OnMouseEvent(wxMouseEvent& event)
 
     int wr = event.GetWheelRotation();
     if (wr != 0) {
-      //cout << "wheel rotation " << wr << endl;
+      //cout << "wheel rotation " << wr << std::endl;
       ApplyZoomFactor(exp((1.0*wr)/(10.0*event.GetWheelDelta())));
     }
 
-    //if (ctrl) cout << "ctrl " << endl;
-    //if (shift) cout << "shift " << endl;
-    //if (ld) cout << "ld " << endl;
-    //if (lu) cout << "lu " << endl;
-    //if (lid) cout << "lid " << endl;
+    //if (ctrl)std::cout << "ctrl " << std::endl;
+    //if (shift)std::cout << "shift " << std::endl;
+    //if (ld)std::cout << "ld " << std::endl;
+    //if (lu)std::cout << "lu " << std::endl;
+    //if (lid)std::cout << "lid " << std::endl;
 
     // Deal first with Shift and Control
     if (shift && drag && lid ) AnimateRotation();
@@ -697,7 +697,7 @@ void ami_wxGLCanvas::AddSurface( SurfacePoly::ptr surf)
 
 //   if (GB_debug) {
 //     char t;
-//     cout << "Press a key then press enter: ";
+//    std::cout << "Press a key then press enter: ";
 //     cin  >> t;
 //   }
 
@@ -708,7 +708,7 @@ void ami_wxGLCanvas::AddSurface( SurfacePoly::ptr surf)
 
 
   if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 2\n");
-  if (GB_debug) cerr << " _globjects.size " << _globject.size() << endl;
+  if (GB_debug) std::cerr << " _globjects.size " << _globject.size() << std::endl;
 
   _globject.push_back(surf);
   _current_globject = surf;
@@ -757,7 +757,7 @@ void ami_wxGLCanvas::RemoveSurface( SurfacePoly::ptr surf)
   }
 
   _globject.erase(Iter);
-  //cout << "_globject.size() = " << _globject.size() << endl;
+  //cout << "_globject.size() = " << _globject.size() << std::endl;
   if (_current_globject==surf)
     if (_globject.size()>0)
       _current_globject = _globject.front();
@@ -782,8 +782,8 @@ void ami_wxGLCanvas::SetVectors1(InrImage::ptr v)
         NewVolumeVectors1();
         Refresh(false);
     Sinon
-        cerr << "ami_wxGLCanvas::SetVectors1()"
-            << "\t Image not vectorial " << endl;
+        std::cerr << "ami_wxGLCanvas::SetVectors1()"
+            << "\t Image not vectorial " << std::endl;
     FinSi
 
 } // SetVectors1()
@@ -806,8 +806,8 @@ void ami_wxGLCanvas::SetVectors2(InrImage::ptr v)
         NewVolumeVectors2();
         Refresh(false);
     Sinon
-        cerr << "ami_wxGLCanvas::SetVectors2()"
-            << "\t Image not vectorial " << endl;
+        std::cerr << "ami_wxGLCanvas::SetVectors2()"
+            << "\t Image not vectorial " << std::endl;
     FinSi
 
 } // SetVectors2()
@@ -1212,7 +1212,7 @@ void ami_wxGLCanvas::InitProprietes( )
 {
 
     if (GB_debug)
-      cerr << "ami_wxGLCanvas::InitProprietes( ) begin" << endl;
+      std::cerr << "ami_wxGLCanvas::InitProprietes( ) begin" << std::endl;
     int i;
 
     glReportError();
@@ -2110,7 +2110,7 @@ void ami_wxGLCanvas :: TranslationEnd()
   switch ( _mouse_action ){
     case MOUSE_MOVE_OBJECT:
       /*
-      if (GB_debug) cout << "  Setting new translation " <<  matrix[3][0]<< " ; " <<  matrix[3][1] << " ;" <<  matrix[3][2]<< endl;
+      if (GB_debug)std::cout << "  Setting new translation " <<  matrix[3][0]<< " ; " <<  matrix[3][1] << " ;" <<  matrix[3][2]<< std::endl;
       */
       _Tobject.SetTranslation(matrix[3][0],
                   matrix[3][1],
@@ -2137,7 +2137,7 @@ void ami_wxGLCanvas :: TranslationEnd()
 void ami_wxGLCanvas :: TranslationMotion()
 //                         ------------------
 {
-  //cout << __func__ << endl;
+  //cout << __func__ << std::endl;
   TranslationEnd();
 
 /*
@@ -2161,7 +2161,7 @@ void ami_wxGLCanvas :: TranslationMotion()
 void ami_wxGLCanvas :: RotationStart()
 //                     --------------
 {
-  //cout << __func__ << endl;
+  //cout << __func__ << std::endl;
   _souris_position_initiale_x = _souris_x;
   _souris_position_initiale_y = _souris_y;
 
@@ -2184,7 +2184,7 @@ void ami_wxGLCanvas :: RotationStart()
 void ami_wxGLCanvas :: AnimateRotation()
 //                         -----------------------
 {
-  //cout << __func__ << endl;
+  //cout << __func__ << std::endl;
   _souris_position_initiale_x = (int) (_largeur/2.0);
   _souris_position_initiale_y = (int) (_hauteur/2.0);
 
@@ -2311,7 +2311,7 @@ void ami_wxGLCanvas :: UserRotate( float rotX, float rotY, float rotZ)
 void ami_wxGLCanvas :: RotationEnd()
 //                     ----------------
 {
-  //cout << __func__ << endl;
+  //cout << __func__ << std::endl;
   if (_animation_timer.use_count())
     if (_animation_timer->IsRunning())
       _animation_timer->Stop();
@@ -2786,7 +2786,7 @@ void ami_wxGLCanvas :: PickObjects()
   FinSi
 
 #else // ifndef __APPLE__
-  cerr << "Picking not working on mac for the moment " << endl;
+  std::cerr << "Picking not working on mac for the moment " << std::endl;
 #endif // ifndef __APPLE__
 
 } // PickObjects()

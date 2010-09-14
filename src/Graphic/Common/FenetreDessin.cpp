@@ -250,7 +250,7 @@ InrImage* FenetreDessin :: GetInrImage()
 
   return result;
 #else
-  cerr << "FenetreDessin::GetInrImage() \t not yet available in this platform :( ..." << endl;
+  std::cerr << "FenetreDessin::GetInrImage() \t not yet available in this platform :( ..." << std::endl;
   return NULL;
 #endif
 } // GetInrImage()
@@ -474,15 +474,15 @@ void FenetreDessin::DrawingAreaInit( )
 //                  --------------
 {
   if (GB_debug)
-    cerr << "FenetreDessin::DrawingAreaInit( )" << endl;
+    std::cerr << "FenetreDessin::DrawingAreaInit( )" << std::endl;
 
   if (!this->IsShown()) {
-    cout << "FenetreDessin::DrawingAreaInit( ) \t window not shown " << endl;
+   std::cout << "FenetreDessin::DrawingAreaInit( ) \t window not shown " << std::endl;
     return;
   }
 
   if (this->IsIconized()) {
-    cout << "FenetreDessin::DrawingAreaInit( ) \t window is iconized " << endl;
+   std::cout << "FenetreDessin::DrawingAreaInit( ) \t window is iconized " << std::endl;
     return;
   }
 
@@ -494,9 +494,9 @@ void FenetreDessin::DrawingAreaInit( )
   scoped_ptr<wxMemoryDC> memory_dc(new wxMemoryDC);
   /*
   if (!memory_dc->IsOk()) {
-    cerr  << "FenetreDessin::DrawingAreaInit( )"
+    std::cerr  << "FenetreDessin::DrawingAreaInit( )"
           << "\t failed to create memory DC"
-          << endl;
+          << std::endl;
     return;
   }
   */
@@ -533,7 +533,7 @@ void FenetreDessin::DrawingAreaDisplay( )
 
     wxClientDC dc(_drawing_window);
     if (dc.IsOk()) {
-      //cout << "drawing bitmap " << endl;
+      //cout << "drawing bitmap " << std::endl;
       //dc.SetBackgroundMode(wxTRANSPARENT);
       //dc.DrawBitmap(*_bitmap,0,0,false);
 
@@ -544,12 +544,12 @@ void FenetreDessin::DrawingAreaDisplay( )
         0,0);
 
     } else 
-      cerr  << "FenetreDessin::DrawingAreaDisplay( )\t"
-            << "DC not OK" << endl;
+      std::cerr  << "FenetreDessin::DrawingAreaDisplay( )\t"
+            << "DC not OK" << std::endl;
 
   } else {
-    cerr << "FenetreDessin::DrawingAreaDisplay( )"
-          << "\t context not allocated" << endl;
+    std::cerr << "FenetreDessin::DrawingAreaDisplay( )"
+          << "\t context not allocated" << std::endl;
   }
 
 
@@ -709,11 +709,11 @@ void  FenetreDessin::PutSlice(  int pos_x, int pos_y,
                                 const wxImage_ptr& slice)
 {
   if (!_bitmap) {
-    cerr << "FenetreDessin::PutSlice() _bitmap not allocated " << endl;
+    std::cerr << "FenetreDessin::PutSlice() _bitmap not allocated " << std::endl;
     return;
   }
   if (!slice.use_count()) {
-    cerr << "FenetreDessin::PutSlice() slice not allocated " << endl;
+    std::cerr << "FenetreDessin::PutSlice() slice not allocated " << std::endl;
     return;
   }
   //_memory_dc->SelectObject(*_bitmap);
@@ -738,7 +738,7 @@ void  FenetreDessin::PutSlice(  int pos_x, int pos_y,
 void FenetreDessin::EffaceEcran( unsigned char expose)
 //                              -----------
 {
-  if (GB_debug) cerr << "++++++  FenetreDessin::EffaceEcran +++++++++" << endl;
+  if (GB_debug) std::cerr << "++++++  FenetreDessin::EffaceEcran +++++++++" << std::endl;
 //  _drawing_window->ClearBackground( );
 
 } // EffaceEcran()
@@ -766,7 +766,7 @@ void FenetreDessin::CloseWindow()
   if (GB_debug) fprintf(stderr,"FenetreDessin::CloseWindow() \n");
   if (CloseFunction != NULL)
   {
-    if (GB_debug) cerr << "calling closing function " << endl;
+    if (GB_debug) std::cerr << "calling closing function " << std::endl;
 
     void (*func)( void*) = (void (*)( void*)) CloseFunction;
     func( (void*) CloseData);

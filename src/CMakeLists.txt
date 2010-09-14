@@ -322,6 +322,9 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/AMILabConfig.h.in ${CMAKE_CURRENT_BIN
 
 
 include(amilab_macros)
+
+include(PCH_GCC4_v2)
+
 InitPrintSources()
 
 set(  wxParams_INCLUDE_DIRS

@@ -13,6 +13,7 @@
 #include "ImageCos.h"
 #include "imageextent.h"
 #include "amilab_messages.h"
+#include <iostream>
 
 void ImageCos::Init()
 {

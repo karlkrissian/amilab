@@ -746,8 +746,8 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   if (block_level==0) {
     ami_block = new AmiInstructionBlock();
     ami_block->SetStartingLine(GB_driver.yyiplineno);
-    if (GB_debug )cerr << "Starting block at " <<  GB_driver.yyiplineno << endl;
-    if (GB_debug )cerr << "Starting block at " << *yylloc << endl;
+    if (GB_debug )std::cerr << "Starting block at " <<  GB_driver.yyiplineno << std::endl;
+    if (GB_debug )std::cerr << "Starting block at " << *yylloc << std::endl;
     block_level++;
     BEGIN(block);
   }
@@ -844,8 +844,8 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   //GB_driver.yyiplineno++;
 //  printf("end comment from %d \n",comment_caller);
   // use unput to accept the end of the command if any
-//  cout << "<comment>\n [" << YYText() << "]" << endl;
-//  cout << "length = " << strlen(YYText()) << endl;
+// std::cout << "<comment>\n [" << YYText() << "]" << std::endl;
+// std::cout << "length = " << strlen(YYText()) << std::endl;
   if (strlen(YYText())==1) {
     unput(YYText()[0]);
   }
@@ -914,14 +914,14 @@ this::([A-Za-z0-9_])*   {
 //
 //============================ Parse variable in a given context ====================
 //
-  //cout << "::XX->XX variable in object ?" << endl;
+  //cout << "::XX->XX variable in object ?" << std::endl;
   string text(YYText());
   size_t pos = text.find("->");
   string contextname = text.substr(2,pos-2);
 
 
   // check if contextname is really a context
-  //cout << "looking for "<< contextname << endl;
+  //cout << "looking for "<< contextname << std::endl;
   BasicVariable::ptr var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
   if (var.get()) 
   {
@@ -949,7 +949,7 @@ this::([A-Za-z0-9_])*   {
 //
 //============================ Parse variable in a given context ====================
 //
-  //cout << "variable in object ?" << endl;
+  //cout << "variable in object ?" << std::endl;
   string text(YYText());
   size_t pos = text.find("->");
   string contextname = text.substr(0,pos);
@@ -995,14 +995,14 @@ this::([A-Za-z0-9_])*   {
                   }
 
 \\(\r\n|[\n\r])              {
-      //cout << "\\NEWLINE \n" << endl;
+      //cout << "\\NEWLINE \n" << std::endl;
       // allow multiline command
       GB_driver.yyiplineno++;
     }
 
 \r\n|[\n\r]                {
-          //cout << "NEWLINE \n" << endl;
-//          if (yyleng!=1) cout << " ******* yyleng = " << yyleng << "************" << endl; 
+          //cout << "NEWLINE \n" << std::endl;
+//          if (yyleng!=1)std::cout << " ******* yyleng = " << yyleng << "************" << std::endl; 
           yylloc->lines(1); yylloc->step();
           GB_driver.yyiplineno++;
           return(token::END_INSTRUCTION);
@@ -1053,7 +1053,7 @@ yyip::Parser::token::yytokentype checkvar(
 {
 
   BasicVariable::ptr var = Vars.GetVar(varname,context);
-  //cout << "res = " << res << endl;
+  //cout << "res = " << res << std::endl;
   if  ((!GB_driver.procedure_declaration) && var.get())   {
 
     // add the variable to the stack

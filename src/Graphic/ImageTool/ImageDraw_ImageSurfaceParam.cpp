@@ -101,7 +101,7 @@ void ImageDraw_ImageSurfaceParam::CB_imagesurface (void* cd)
 
   Viewer3D_ptr glwin = di->Lock_GLWindow();
 
-  cout << "di->Param._pos._z = " << Param->_pos._z << endl;
+ std::cout << "di->Param._pos._z = " << Param->_pos._z << std::endl;
 
   glwin->GetCanvas()->CreeImageSurface(
         _image,

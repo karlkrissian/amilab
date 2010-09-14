@@ -270,7 +270,7 @@ unsigned char Crest ::  AlloueCrest( )
         fflush(stdout);
 //      FinSi
 //    Si i%100 == 0 AlorsFait
-//      cout << "ligne " << i+1 << " / " << _nb_lignes << endl;
+//     std::cout << "ligne " << i+1 << " / " << _nb_lignes << std::endl;
   FinPour // i
 
   //---------------------------------------------
@@ -1394,7 +1394,7 @@ unsigned char Crest :: Proche( Point3D p1, Point3D p2)
       (p1.y - p2.y)*(p1.y - p2.y) +
       (p1.z - p2.z)*(p1.z - p2.z);
 
-// cout << " distance " << d << "\t max " << _connexion_dist_max << endl;
+//std::cout << " distance " << d << "\t max " << _connexion_dist_max << std::endl;
   return (d < _connexion_dist_max);
 
 } // Proche() 
@@ -1418,7 +1418,7 @@ unsigned char Crest :: Proche( Vect3D<float> v1, Vect3D<float> v2)
     return 0;
   }
 
-// cout << " distance " << r << "\t max " << _connexion_tangent_max << endl;
+//std::cout << " distance " << r << "\t max " << _connexion_tangent_max << std::endl;
   return ( (v1+v2)*(v1+v2) < _connexion_tangent_max);
 
 } // Proche() 
@@ -1888,16 +1888,16 @@ int Crest ::  ConnecteJonction( )
 
       /*
     Si n1>2 Alors
-      cout << " Point " << p1 << " nb liens " 
-           << n1 << "ligne " << l << endl;
+     std::cout << " Point " << p1 << " nb liens " 
+           << n1 << "ligne " << l << std::endl;
       _CREST_tab_points[NumPoint(l,0)].jonction = n1;
     Sinon
       _CREST_tab_points[NumPoint(l,0)].jonction = 0;
     FinSi
 
     Si n2>2 Alors
-      cout << " Point " << p2 << " nb liens " 
-           << n2 << "ligne " << l << endl;
+     std::cout << " Point " << p2 << " nb liens " 
+           << n2 << "ligne " << l << std::endl;
       _CREST_tab_points[NumPoint(l,NbPoints(l)-1)].jonction = n2;
     Sinon
       _CREST_tab_points[NumPoint(l,NbPoints(l)-1)].jonction = 0;
@@ -1905,12 +1905,12 @@ int Crest ::  ConnecteJonction( )
       */
 
     Si n1==2 Alors
-      cout << " Point " << p1 << " 2 liens "  << endl;
+     std::cout << " Point " << p1 << " 2 liens "  << std::endl;
       _CREST_tab_points[NumPoint(l,0)].jonction = n1;
 //      RegroupeLignesConnectees(l,l1);
     FinSi
     Si n2==2 Alors
-      cout << " Point " << p2 << " 2 liens "  << endl;
+     std::cout << " Point " << p2 << " 2 liens "  << std::endl;
       _CREST_tab_points[NumPoint(l,NbPoints(l)-1)].jonction = n2;
 //      RegroupeLignesConnectees(l,l2);
     FinSi

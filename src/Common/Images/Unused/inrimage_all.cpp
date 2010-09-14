@@ -65,11 +65,11 @@ InrImageBase* new_image( char* nom)
   INRIMAGE_HEADER* ptr;
   inrimage*        ptr_image;
 
-  cout << "lecture de l'ent�e de " << nom << endl;
+ std::cout << "lecture de l'ent�e de " << nom << std::endl;
 
   Si (strcmp(nom,"-")==0) Alors
     // entree standard
-    cout << "InrImage::LitEntete()\t on ne lit pas que "
+   std::cout << "InrImage::LitEntete()\t on ne lit pas que "
 	 << "l'entete sur l'entree standard\n";
     ptr_image = readZInrimage( NULL);
   Sinon

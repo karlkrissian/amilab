@@ -73,13 +73,13 @@ ostream& operator<<(ostream& os, const ExceptionErreur& e)
            <<  GB_mess_erreur[(int)e._type] << "\t"
            <<  *methode << "\t"
            <<  (char*) e._message
-           << endl;
+           << std::endl;
   Sinon
     methode = new NomMethode("classe inconnue ","fichier inconnu","methode inconnue");
     return os
            <<  GB_mess_erreur[(int)e._type] << "\t"
            <<  *methode << "\t"
-           <<  e._message << endl;
+           <<  e._message << std::endl;
     delete methode;
   FinSi
 
@@ -101,13 +101,13 @@ ostream& operator<<(ostream& os, const ExceptionWarning& w)
     return os
            <<  GB_mess_warning[(int)w._type] << "\t"
            <<  *methode << "\t"
-           <<  w._message << endl;
+           <<  w._message << std::endl;
   Sinon
     methode = new NomMethode("classe inconnue ","fichier inconnu","methode inconnue");
     return os
            <<  GB_mess_warning[(int)w._type] << "\t"
            <<  *methode << "\t"
-           <<  w._message << endl;
+           <<  w._message << std::endl;
     delete methode;
   FinSi
 
@@ -145,7 +145,7 @@ void GestionErreurs :: MethodeCourante( const Chaine& nom, const Chaine& fic)
   _nom_methode_courante = nom;
 
   Si _debug AlorsFait
-    cerr << "Debut " <<  _nom_methode_courante << endl;
+    std::cerr << "Debut " <<  _nom_methode_courante << std::endl;
 
   GB_pile_nom_methode += new NomMethode( _nom_classe,
            fic,
@@ -162,7 +162,7 @@ void GestionErreurs :: FinMethode( )
   int      n;
 
   Si _debug AlorsFait
-    cerr << "Fin " <<  _nom_methode_courante << endl;
+    std::cerr << "Fin " <<  _nom_methode_courante << std::endl;
 
   last = GB_pile_nom_methode--;
   delete last;
@@ -184,12 +184,12 @@ void GestionErreurs :: AfficheWarning( type_warning type, const Chaine& mess)
 {
 
   Si GB_AfficheWarning AlorsFait
-  cerr
+  std::cerr
        <<  GB_mess_warning[(int)type] << "\t"
        <<  _nom_fichier << "\t"
        <<  _nom_classe << "::"
        <<  _nom_methode_courante << "\t"
-       <<  mess << endl;
+       <<  mess << std::endl;
 
 } // AfficheWarning()
 
@@ -202,12 +202,12 @@ void GestionErreurs :: AfficheErreur( type_erreur type, const Chaine& mess)
 //   int n,i;
 
   Si GB_AfficheErreur AlorsFait
-  cerr
+  std::cerr
        <<  GB_mess_erreur[(int)type] << "\t"
        <<  _nom_fichier << "\t"
        <<  _nom_classe << "::"
        <<  _nom_methode_courante << "\t"
-       <<  mess << endl;
+       <<  mess << std::endl;
 
 } // AfficheErreur()
 
@@ -222,11 +222,11 @@ void AffichePileNomMethode()
   n = GB_pile_nom_methode.NbElts();
 
   Pour(i,0,n-1)
-    cerr <<  *(GB_pile_nom_methode[i]);
+    std::cerr <<  *(GB_pile_nom_methode[i]);
     Si i!= n-1 Alors
-      cerr << "-->";
+      std::cerr << "-->";
     Sinon
-      cerr << "." << endl;
+      std::cerr << "." << std::endl;
     FinSi
   FinPour
 

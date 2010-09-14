@@ -33,6 +33,8 @@
 
 extern unsigned char       GB_debug;
 
+using namespace std;
+
 //======================================================================
 // PUBLIC MEMBERS
 //======================================================================
@@ -69,7 +71,7 @@ Variables::ptr VarContexts::NewContext(const char* name) {
   _context.push_back(newcontext);
 
   if (GB_debug) 
-    cerr << "New context " << name << endl;
+    std::cerr << "New context " << name << std::endl;
 
   return newcontext;
 }
@@ -98,7 +100,7 @@ bool VarContexts::DeleteLastContext() {
 //--------------------------------------------------
 void VarContexts::display() {
 
-  cout  << "\n"
+ std::cout  << "\n"
         << "Builtin Context "
         << "\n ------------- \n",
   _builtin_context->display();
@@ -106,7 +108,7 @@ void VarContexts::display() {
 
   for (int i=_context.size()-1; i>=0; i--)
   {
-    cout  << "\n"
+   std::cout  << "\n"
           << "Context " << i 
           << " " << _context[i]->GetName()
           << "\n ------------- \n",
@@ -244,7 +246,7 @@ bool VarContexts::deleteVar(const char* varname)
   for(i=_current_context;i>=0;i--)
     if (_context[i]->deleteVar(varname)) {
       if (GB_debug) 
-        cerr << "Deleted Var in context number " << i << endl;
+        std::cerr << "Deleted Var in context number " << i << std::endl;
       return true;
     }
   return false;
@@ -278,7 +280,7 @@ bool VarContexts::deleteVar(BasicVariable::ptr var)
   for(int i=_current_context;i>=0;i--)
     if (_context[i]->ExistVar(var)) {
       if (GB_debug) 
-        cerr << "Deleted Var in context number " << i << endl;
+        std::cerr << "Deleted Var in context number " << i << std::endl;
       // TODO: improve efficiency by not going twice through the variables
       _context[i]->deleteVar(var->Name().c_str());
       return true;
@@ -299,7 +301,7 @@ bool VarContexts::deleteVar(BasicVariable* var)
   for(int i=_current_context;i>=0;i--)
     if (_context[i]->ExistVar(var)) {
       if (GB_debug) 
-        cerr << "Deleted Var in context number " << i << endl;
+        std::cerr << "Deleted Var in context number " << i << std::endl;
       // TODO: improve efficiency by not going twice through the variables
       _context[i]->deleteVar(var->Name().c_str());
       return true;

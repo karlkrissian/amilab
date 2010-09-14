@@ -11,6 +11,7 @@
 //
 
 #include "RegionGrowingTest.h"
+#include <iostream>
 
 RegionGrowingTest::RegionGrowingTest(InrImage::ptr& input, InrImage::ptr& init): _input(input)
 {
@@ -50,7 +51,7 @@ void RegionGrowingTest::ProcessNextPoint()
 {
   PointType point = _growinglist.front();
   _growinglist.pop_front();
-  //cout << boost::format("processing (%1%,%2%,%3%) from the list") % point.X() % point.Y() % point.Z() << endl;
+  //cout << boost::format("processing (%1%,%2%,%3%) from the list") % point.X() % point.Y() % point.Z() << std::endl;
   // 1. check if the point is accepted
   stateit->BufferPos(point.X(),point.Y(),point.Z());
   bool accept = AcceptPoint(point);
@@ -76,7 +77,7 @@ void RegionGrowingTest::ProcessNextPoint()
           if ((*_state)(x,y,z)==UNPROCESSED) {
             // Add point to the list
             _growinglist.push_back(PointType(x,y,z));
-            //cout << boost::format("adding (%1%,%2%,%3%) to the list") % x % y % z << endl;
+            //cout << boost::format("adding (%1%,%2%,%3%) to the list") % x % y % z << std::endl;
             // change the state of the point
             stateit->BufferPos(x,y,z);
             stateit->SetDoubleValue(TOBEPROCESSED);

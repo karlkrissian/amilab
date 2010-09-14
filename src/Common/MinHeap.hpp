@@ -311,14 +311,14 @@ ostream& operator << (ostream& os, const MinHeap<T>& p)
         Si n < i Alors
           os  << " - ";
         Sinon
-          os   << endl;
+          os   << std::endl;
         FinSi
       FinSi
     FinPour
     i <<=1;
   }
 
-  os   << endl;
+  os   << std::endl;
   return os;
 
 } // operator << ( , const MinHeap<T>&)

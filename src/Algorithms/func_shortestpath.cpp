@@ -96,7 +96,7 @@ SurfacePoly* Func_shortestpath( SurfacePoly* lines,
     if (line.NbElts()>=2) {
 
       edges.push_back(Edge(line[0],line[line.NbElts()-1]));
-      //cout << "Adding Edge " << line[0] << " " << line.NbElts()-1 << endl;
+      //cout << "Adding Edge " << line[0] << " " << line.NbElts()-1 << std::endl;
 
       double length=0;
       Point_3D<float> p0,p1;
@@ -113,8 +113,8 @@ SurfacePoly* Func_shortestpath( SurfacePoly* lines,
     FILE_ERROR("Selected lines not found, aborting.");
     return NULL;
   }  else {
-    cout << "initial line = " << selected_line1 << endl;
-    cout << "final   line = " << selected_line2 << endl;
+   std::cout << "initial line = " << selected_line1 << std::endl;
+   std::cout << "final   line = " << selected_line2 << std::endl;
   }
 
   // Create the graph
@@ -151,7 +151,7 @@ SurfacePoly* Func_shortestpath( SurfacePoly* lines,
   res->NewLine();
 
   bool line1_included = false;
-  cout << "Selecting the path " << endl;
+ std::cout << "Selecting the path " << std::endl;
   while (current_point!=lines->GetLine(selected_line1)[0]) {
     previous_point = path.previous[current_point];
 
@@ -169,7 +169,7 @@ SurfacePoly* Func_shortestpath( SurfacePoly* lines,
       }
     }
     if (p==num_lines) {
-      cerr << "Not able to follow path: should not happen! " << endl;
+      std::cerr << "Not able to follow path: should not happen! " << std::endl;
       return NULL;
     }
 
@@ -257,19 +257,19 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
   start[0] = (int) round(imweights->SpaceToVoxelX(pt1_x));
   start[1] = (int) round(imweights->SpaceToVoxelY(pt1_y));
   start[2] = (int) round(imweights->SpaceToVoxelZ(pt1_z));
-  cout  << "start " 
+ std::cout  << "start " 
         << start[0] << " "
         << start[1] << " "
-        << start[2] << endl;
+        << start[2] << std::endl;
 
   int end[3];
   end[0] = (int) round(imweights->SpaceToVoxelX(pt2_x));
   end[1] = (int) round(imweights->SpaceToVoxelY(pt2_y));
   end[2] = (int) round(imweights->SpaceToVoxelZ(pt2_z));
-  cout  << "end " 
+ std::cout  << "end " 
         << end[0] << " "
         << end[1] << " "
-        << end[2] << endl;
+        << end[2] << std::endl;
 
   if  (
         (start[0]<0)||(start[0]>imweights->DimX()-2) 
@@ -279,7 +279,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
         (start[2]<0)||(start[2]>imweights->DimZ()-2) 
       )
   {
-    cerr << "Func_shortestpath() \t Wrong position for the first point" << endl;
+    std::cerr << "Func_shortestpath() \t Wrong position for the first point" << std::endl;
     return NULL;
   }
 
@@ -291,7 +291,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
       (end[2]<0)||(end[2]>imweights->DimZ()-2) 
       )
   {
-    cerr << "Func_shortestpath() \t Wrong position for the second point" << endl;
+    std::cerr << "Func_shortestpath() \t Wrong position for the second point" << std::endl;
     return NULL;
   }
     
@@ -310,7 +310,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
   for(int x=0;x<imweights->DimX();x++) {
     if (imweights->ValeurBuffer()<threshold) {
       if (num_vertices==std::numeric_limits<int>::max()) {
-        cerr << "too many points within graph " << endl;
+        std::cerr << "too many points within graph " << std::endl;
       } else {
         num_vertices++;
         inside_voxels->FixeValeur(num_vertices);
@@ -325,11 +325,11 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
   int startpos = (int) (*inside_voxels)(start[0],start[1],start[2]);
   int endpos   = (int) (*inside_voxels)(end[0],  end[1],  end[2]);
   if ((startpos==0)||(endpos==0)) {
-    cerr << "Problem with start or end point " << endl;
+    std::cerr << "Problem with start or end point " << std::endl;
     return NULL;
   }
 
-  cout << "Func_shortestpath_image() total vertices " << num_vertices << endl;
+ std::cout << "Func_shortestpath_image() total vertices " << num_vertices << std::endl;
 
   // Get the last selected point
   // Compute the number of edges (lines):
@@ -509,7 +509,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
 
   }
 
-  cout << "Func_shortestpath_image() edges created " << endl;
+ std::cout << "Func_shortestpath_image() edges created " << std::endl;
 
   // Create the graph
   graph_ptr graph = CreateUndirectedGraph(
@@ -517,7 +517,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
       edges,
       weights);
 
-  cout << "Func_shortestpath_image() starting shortest path algo "  << endl;
+ std::cout << "Func_shortestpath_image() starting shortest path algo "  << std::endl;
 
   // run Dijkstra
   PathInfo path;
@@ -531,7 +531,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
   if (path.distance[current_point]==
       numeric_limits<weight_type>::max())
   {
-    cerr << "SurfacePoly::SelectMinPath() \tNo path between points " << endl;
+    std::cerr << "SurfacePoly::SelectMinPath() \tNo path between points " << std::endl;
     return NULL;
   }
 
@@ -540,7 +540,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
   res->NewLine();
 
 //  bool line1_included = false;
-  cout << "Selecting the path " << endl;
+ std::cout << "Selecting the path " << std::endl;
   while (current_point!=startpos) {
     previous_point = path.previous[current_point];
 
@@ -566,7 +566,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
 
   res->EndLine();
 
-  cout << "finished !" << endl;
+ std::cout << "finished !" << std::endl;
   return res;
 
 } // Func_shortestpath_image()
@@ -585,8 +585,8 @@ SurfacePoly* Func_path_from_displ( InrImage* displ,
   bool end_reached=false;
 
   if (!displ->CoordOK(px,py,pz)) {
-    cerr << "Func_path_from_displ() \t initial point not within image domain "
-          << endl;
+    std::cerr << "Func_path_from_displ() \t initial point not within image domain "
+          << std::endl;
     return NULL;
   }
 
@@ -607,7 +607,7 @@ SurfacePoly* Func_path_from_displ( InrImage* displ,
     dy -= py;
     dz -= pz;
 
-    cout  << " point " << num_points
+   std::cout  << " point " << num_points
           << " track " << track
           << " p:"
           << "  " << px
@@ -616,7 +616,7 @@ SurfacePoly* Func_path_from_displ( InrImage* displ,
           << " d:  "  << dx
           << "  "     << dy
           << "  "     << dz
-          << endl;
+          << std::endl;
     end_reached = ((track==0)||((dx==0)&&(dy==0)&&(dz==0)));
     if (!end_reached) {
       res->AddPoint(displ->SpacePosX(px),
@@ -669,9 +669,9 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
   if (!displ->CoordOK((int)vox_p[0],
                       (int)vox_p[1],
                       (int)vox_p[2])) {
-    cerr  << "Func_path_from_vectfield() \t "
+    std::cerr  << "Func_path_from_vectfield() \t "
           << "initial point not within image domain "
-          << endl;
+          << std::endl;
     return NULL;
   }
 
@@ -859,7 +859,7 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
   res->EndLine();
 
   // cannot check for end point here
-  cout  << " Finished point " << num_points 
+ std::cout  << " Finished point " << num_points 
         << format(" ( %0.2f, %0.2f %0.2f )") 
               % p[0] % p[1] % p[2]
         << format(" ( %0.2f, %0.2f %0.2f )") 
@@ -871,7 +871,7 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
           % displ->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
           % closest_point_intensity
         << format("  d= %0.3f mm") %  distance
-        << endl;
+        << std::endl;
 
   return res;
 
@@ -917,11 +917,11 @@ SurfacePoly* Func_path_from_vectfield( InrImage::ptr displ,
                           displ->VoxSizeZ()*displ->VoxSizeZ() 
                         );
     if (dist_end<voxdis) {
-      cout << "*** Could Add reached end point ***" << endl;
+     std::cout << "*** Could Add reached end point ***" << std::endl;
     } else
-      cout << "*** End point not reached  ***" 
+     std::cout << "*** End point not reached  ***" 
             << format(" %1% > %2% ") % dist_end % voxdis
-            << endl;
+            << std::endl;
   
   } else
     FILE_ERROR("Resulting line has no point");

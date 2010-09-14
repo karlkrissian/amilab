@@ -73,7 +73,7 @@ public:
   public:
     ErreurLecture( Chaine message)
       {
-	cerr << "GnuPlot Erreur de Lecture " << message << endl;
+	std::cerr << "GnuPlot Erreur de Lecture " << message << std::endl;
       }
   };
 

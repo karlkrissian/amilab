@@ -57,11 +57,11 @@ extern Timing localmeanZ;
       timer.Fin(); \
       timer.AddCumul(); \
       timer.AfficheCumul(cout); \
-      cout << " Time per million voxels: "; \
-      cout << timer.GetCumulTimer()/(1.0*imsize)*1000000; \
-      cout << endl;
+     std::cout << " Time per million voxels: "; \
+     std::cout << timer.GetCumulTimer()/(1.0*imsize)*1000000; \
+     std::cout << std::endl;
 /*\
-      cout << " Time per million voxels: " \
+     std::cout << " Time per million voxels: " \
           << timer.GetCumulTimer()/(1.0*imsize)*1000000 \
           << " /Megavoxel"<< end;
 */
@@ -137,14 +137,14 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
   // along dir0
   for ( p0=p0_min; p0<=p0_max; p0++ )
   {
-    //cout << "p0 = " << p0 << endl;
+    //cout << "p0 = " << p0 << std::endl;
     p1 = p1_min;
     p2 = p2_min;
     long displ  = p2*dirinc[2] +p1*dirinc[1]+p0*dirinc[0];
     for ( ; p1<=p1_max; p1++, displ += dirinc[1] )
     {
 
-      //cout << "p1 = " << p1 << endl;
+      //cout << "p1 = " << p1 << std::endl;
       buf = bufmax = bufmin  = ( T* ) in_data  + displ;
       // begin of line within extent
       res_buf = ( T* ) out_data + displ;
@@ -272,8 +272,8 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
   short xmin_input = macro_max(input_extent.GetMin(0),xmin-size);
   short xmax_input = macro_min(input_extent.GetMax(0),xmax+size);
 
-  //cout << "xmin_input=" << xmin_input << ", xmin=" << xmin << endl;
-  //cout << "xmax_input=" << xmax_input << ", xmax=" << xmax << endl;
+  //cout << "xmin_input=" << xmin_input << ", xmin=" << xmin << std::endl;
+  //cout << "xmax_input=" << xmax_input << ", xmax=" << xmax << std::endl;
 
   // 2*size+1 needs to be smaller than the extent in X !!
   // now need to go line by line
@@ -419,7 +419,7 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
       in_buf = (T*) in->BufferPtr(0,ymin+i,z);
       for(x=xmin;x<=xmax;x++) {
         //if ((z==zmin)&&(x==xmin))
-        // cout << boost::format(" value at %1% %2% %3% : %4%") % x % (ymin+i) % z % in_buf[x] << endl;
+        //std::cout << boost::format(" value at %1% %2% %3% : %4%") % x % (ymin+i) % z % in_buf[x] << std::endl;
         sum[x] += in_buf[x];
       }
     }
@@ -432,7 +432,7 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
     for (y=ymin;y<=ymin+size;y++) {
       for(x=xmin;x<=xmax;x++) {
         vres_buf[x] = sum[x];
-        //if (vres_buf[x]<0) { cout << "*1"; cout.flush(); }
+        //if (vres_buf[x]<0) {std::cout << "*1";std::cout.flush(); }
       }
       vres_buf += incy; 
     }
@@ -447,8 +447,8 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
         sum[x] += vmax_buf[x]-vmin_buf[x];
         vres_buf[x] = sum[x];
        //if (vres_buf[x]<0) { 
-       //   cout << boost::format("%1%,%2%,%3%-->%4%") % x % y % z % vres_buf[x] << endl; 
-       //   cout.flush();
+       //  std::cout << boost::format("%1%,%2%,%3%-->%4%") % x % y % z % vres_buf[x] << std::endl; 
+       //  std::cout.flush();
        // }
       }
 
@@ -480,7 +480,7 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
     while (y<=ymax) {
       for(x=xmin;x<=xmax;x++) {
         vres_buf[x] = sum[x];
-        //if (vres_buf[x]<0) { cout << "*3"; cout.flush(); }
+        //if (vres_buf[x]<0) {std::cout << "*3";std::cout.flush(); }
       }
       vres_buf += incy; 
       y++;
@@ -531,10 +531,10 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
 
 
   int line_size = xmax-xmin+1;
-  //cout << "line_size = " << line_size << endl;
+  //cout << "line_size = " << line_size << std::endl;
   // ensure multiple of 4 to help alignment of the beginning of each line
   line_size = floor((double)((line_size+3.0)/4.0))*4;
-  //cout << "line_size = " << line_size << endl;
+  //cout << "line_size = " << line_size << std::endl;
   float** sum;
   // allocation of sum
   sum = new float*[dy];
@@ -941,7 +941,7 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
     case 1: dir[0] = 2; dir[1] = 0; break;
     case 2: dir[0] = 1; dir[1] = 0; break;
     default:
-      cerr << __func__ << " axis should be 1 or 2 " << endl;
+      std::cerr << __func__ << " axis should be 1 or 2 " << std::endl;
   }
   
   //int dim0 = dim[dir[0]];
@@ -1098,7 +1098,7 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
 
   // 1. check increment value
   if (axis==0) {
-    cerr << "\t Calling FastLocalSumDirNonX along X axis ! cancelled ..." << endl;
+    std::cerr << "\t Calling FastLocalSumDirNonX along X axis ! cancelled ..." << std::endl;
     return;
   }
   long inc = in->DimX();

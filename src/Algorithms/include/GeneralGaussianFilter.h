@@ -362,13 +362,13 @@ public:
   //   -----------
   {
     Si Non(_silencieux) AlorsFait 
-      cout << "_utilise_image = " << _utilise_image << endl;
+     std::cout << "_utilise_image = " << _utilise_image << std::endl;
     Si  _utilise_image Alors
       _OptFiltrage = optimise;
     Sinon
       _OptFiltrage = false;
       Si Non(_silencieux) AlorsFait 
-        cerr << "Pas d'optimisation "
+        std::cerr << "Pas d'optimisation "
              << "si  _utilise_image = false ...\n";
     FinSi
   }

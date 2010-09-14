@@ -89,12 +89,12 @@ InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
   InternalImageType::Pointer outimage;
  
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+ std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<InternalPixelType,Dimension>(input,region);
   imageS = InrToITK<InternalPixelType,Dimension>(edge,region2);
 
-  cout << "Conversion done" << endl;
+ std::cout << "Conversion done" << std::endl;
   
   typedef itk::GeodesicActiveContourLevelSetImageFilter < InternalImageType, InternalImageType > GeodesicFilterType;
   GeodesicFilterType::Pointer geodesic = GeodesicFilterType::New();  
@@ -112,7 +112,7 @@ InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
   outimage = geodesic->GetOutput();
 
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<InternalPixelType,Dimension>(outimage, region);
 
@@ -173,12 +173,12 @@ InrImage* wrap_itkLevelSetFilter3D(ParamList* p)
   InternalImageType::Pointer outimage;
  
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+ std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<InternalPixelType,Dimension>(input,region);
   imageS = InrToITK<InternalPixelType,Dimension>(edge,region2);
 
-  cout << "Conversion done" << endl;
+ std::cout << "Conversion done" << std::endl;
   
   typedef itk::GeodesicActiveContourLevelSetImageFilter < InternalImageType, InternalImageType > GeodesicFilterType;
   //typedef  itk::ShapeDetectionLevelSetImageFilter ShapeDetectionFilterType;
@@ -197,7 +197,7 @@ InrImage* wrap_itkLevelSetFilter3D(ParamList* p)
   outimage = geodesic->GetOutput();
 
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<InternalPixelType,Dimension>(outimage, region);
 

@@ -223,34 +223,34 @@ _vz = image->VoxSizeZ();
 GeneralGaussianFilter :: ~GeneralGaussianFilter() 
   {
 
-    //    cout << " ~Filtre Rec " << endl;
+    //   std::cout << " ~Filtre Rec " << std::endl;
     /*
     Si _InrImage_initiale  != (InrImage*) NULL Alors
-      //       cout << "delete _InrImage_initiale;" << endl;
+      //      std::cout << "delete _InrImage_initiale;" << std::endl;
        delete _InrImage_initiale;
        _InrImage_initiale = (InrImage*) NULL;
     FinSi
     */
 
     Si _image_tmp  != (InrImage*) NULL Alors
-      //cout << "delete _image_tmp;" << endl;
+      //cout << "delete _image_tmp;" << std::endl;
        delete _image_tmp;
        _image_tmp = (InrImage*) NULL;
     FinSi
 
     Si _image_tmp1 != (InrImage*) NULL Alors
-      //cout << "delete _image_tmp1;" << endl;
+      //cout << "delete _image_tmp1;" << std::endl;
        delete _image_tmp1;
        _image_tmp1 = (InrImage*) NULL;
     FinSi
 
     Si _image_tmp2 != (InrImage*) NULL Alors 
-      //cout << "delete _image_tmp2;" << endl;
+      //cout << "delete _image_tmp2;" << std::endl;
        delete _image_tmp2;
        _image_tmp2 = (InrImage*) NULL;
     FinSi
 
-      //cout << "LibereDerivees();" << endl;
+      //cout << "LibereDerivees();" << std::endl;
     LibereDerivees();
 
     //cout << " Fin ~Filtre Rec \n";
@@ -275,8 +275,8 @@ void GeneralGaussianFilter ::  InitFiltre(float sigma, int type)
     Si sigma < _sigma Alors
       sigma_utilise = sigma;
       _OptFiltrage = false;
-      cerr << " Pas d'optimisation possible si le nouveau sigma est ";
-      cerr << " inferieur a l'ancien ...\n";
+      std::cerr << " Pas d'optimisation possible si le nouveau sigma est ";
+      std::cerr << " inferieur a l'ancien ...\n";
     Sinon
 
       Si fabs(_sigma) < 1E-5 Alors
@@ -285,8 +285,8 @@ void GeneralGaussianFilter ::  InitFiltre(float sigma, int type)
 
       sigma_utilise = sqrt( sigma*sigma - _sigma*_sigma);
       Si Non(_silencieux) AlorsFait 
-        cout << " sigma " << sigma << " _sigma " << _sigma 
-             << " sigma_utilise " << sigma_utilise << endl;
+       std::cout << " sigma " << sigma << " _sigma " << _sigma 
+             << " sigma_utilise " << sigma_utilise << std::endl;
       _sigma = sigma;
 
     FinSi
@@ -306,9 +306,9 @@ void GeneralGaussianFilter ::  InitFiltre(float sigma, int type)
   FinSi
 
   Si verbose Et Non(_silencieux) AlorsFait
-  cout << " sigma x = " << _sigmax 
+ std::cout << " sigma x = " << _sigmax 
        << " sigma y = " << _sigmay 
-       << " sigma z = " << _sigmaz  << endl;
+       << " sigma z = " << _sigmaz  << std::endl;
 
   Si _gamma_normalisation Alors
     _normx = pow(_sigmax,_gamma);
@@ -432,7 +432,7 @@ void GeneralGaussianFilter ::  InitFiltre(float sigma, int type)
 
     default:
       Si Non(_silencieux) AlorsFait
-        cout << " GeneralGaussianFilter::InitFiltre() \t"
+       std::cout << " GeneralGaussianFilter::InitFiltre() \t"
     << " type de filtrage non gere " << _type << "\n";
 
   } // end switch
@@ -472,7 +472,7 @@ void GeneralGaussianFilter ::  MyFiltre( InrImage* im,
   Si (_image_tmp == NULL) 
   Alors
     Si Non(_silencieux) AlorsFait
-      cout << " GeneralGaussianFilter::MyFiltre() \t"
+     std::cout << " GeneralGaussianFilter::MyFiltre() \t"
            << " filtre non initialise \n";
     return;
   FinSi
@@ -524,7 +524,7 @@ void GeneralGaussianFilter ::  MyFiltre( InrImage* im,
               imageIn = _image_tmp; imageOut = res;
             FinSi
           Sinon
-      cerr<< "GeneralGaussianFilter::MyFilre()\t GaussianFilter en Y en mode < 2D.\n";
+      std::cerr<< "GeneralGaussianFilter::MyFilre()\t GaussianFilter en Y en mode < 2D.\n";
           FinSi
 
         FinSi
@@ -544,14 +544,14 @@ void GeneralGaussianFilter ::  MyFiltre( InrImage* im,
             FinSi
 
           Sinon
-//      cerr<< "GeneralGaussianFilter::MyFilre()\t GaussianFilter en Z en mode non 3D.\n";
+//      std::cerr<< "GeneralGaussianFilter::MyFilre()\t GaussianFilter en Z en mode non 3D.\n";
           FinSi
 
         FinSi
 
         Si (imageIn == im)Et(im!=res) Alors
           Si Non(_silencieux) AlorsFait        
-          cout << " GeneralGaussianFilter::MyFiltre() \t "
+         std::cout << " GeneralGaussianFilter::MyFiltre() \t "
            << " aucun filtrage n'a ete realise ... \n";
         FinSi
         
@@ -572,19 +572,19 @@ void GeneralGaussianFilter ::  MyFiltre( InrImage* im,
       catch (GaussianFilter::OrdreNonTraite )
       {
         Si Non(_silencieux) AlorsFait        
-      cout << " GeneralGaussianFilter::MyFiltre() \t "
+     std::cout << " GeneralGaussianFilter::MyFiltre() \t "
          << " ordre non traite \n";
       }
       catch (GaussianFilter::BadImageType )
       {
         Si Non(_silencieux) AlorsFait        
-    cout << " GeneralGaussianFilter::MyFiltre() \t "
+   std::cout << " GeneralGaussianFilter::MyFiltre() \t "
                << " mauvais format d'image \n";
       }
       catch (GaussianFilter::ImagesDiffDim )
       {
         Si Non(_silencieux) AlorsFait        
-      cout << " GeneralGaussianFilter::MyFiltre() \t "
+     std::cout << " GeneralGaussianFilter::MyFiltre() \t "
                << " images de differentes dimensions \n";
       }
 
@@ -592,7 +592,7 @@ void GeneralGaussianFilter ::  MyFiltre( InrImage* im,
 
     default:
       Si Non(_silencieux) AlorsFait        
-        cout << " GeneralGaussianFilter::MyFiltre() \t"
+       std::cout << " GeneralGaussianFilter::MyFiltre() \t"
              << " type non traite \n";
 
   } // end switch
@@ -752,12 +752,12 @@ void GeneralGaussianFilter ::  LibereDerivees( )
   
     int i;
 
-// cout << "Libere Derivees " << endl;
+//std::cout << "Libere Derivees " << std::endl;
 
   Pour(i,0,NB_IMAGES-1)
     Si _utilise_Image_sigma[i] Alors
       Si _InrImage_sigma[i] != (InrImage*) NULL Alors 
-      //  cout << " delete _InrImage_sigma " << i << endl;
+      // std::cout << " delete _InrImage_sigma " << i << std::endl;
         delete _InrImage_sigma[i];
         _InrImage_sigma[i] = (InrImage*) NULL;
       FinSi
@@ -996,7 +996,7 @@ void GeneralGaussianFilter ::  CalculMyFiltresCompressees( InrImage* image_depar
   Si (_image_tmp1 == (InrImage*) NULL) Ou 
      (_image_tmp2 == (InrImage*) NULL)  Alors
     Si Non(_silencieux) AlorsFait 
-      cout << " GeneralGaussianFilter::CalculMyFiltresCompressees() \t"
+     std::cout << " GeneralGaussianFilter::CalculMyFiltresCompressees() \t"
            << " filtre non initialise \n";
     return;
   FinSi

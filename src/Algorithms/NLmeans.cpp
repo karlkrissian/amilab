@@ -107,7 +107,7 @@ double probability_weight2(InrImage* in, InrImage* smoothed,
                           x+dx+fi_max,y+dy+fj_max,z+dz+fk_max));
 
   if (!sub2) {
-    cerr << "pb getting the subwindow sub ar x+dx,y+dy,z+dz" << endl;
+    std::cerr << "pb getting the subwindow sub ar x+dx,y+dy,z+dz" << std::endl;
     return 0;
   }
 
@@ -115,7 +115,7 @@ double probability_weight2(InrImage* in, InrImage* smoothed,
   sub2diff = (*sub2)-(*sub1_smoothed);
 
   if (!sub2diff) {
-    cerr << "pb sub2 null" << endl;
+    std::cerr << "pb sub2 null" << std::endl;
     return 0;
   }
 
@@ -125,7 +125,7 @@ double probability_weight2(InrImage* in, InrImage* smoothed,
 
 
   if (!sub2diff) {
-    cerr << "pb sub2 null" << endl;
+    std::cerr << "pb sub2 null" << std::endl;
     return 0;
   }
 
@@ -553,7 +553,7 @@ void* thread_NLmeans( void* threadarg)
 
   printf("Thread %d / %d \n",args->thread_id+1,args->total_threads);
 
-  cout << "smoothed_image.use_count() " << smoothed_image.use_count() << endl;
+ std::cout << "smoothed_image.use_count() " << smoothed_image.use_count() << std::endl;
 
   if (tz>1)
     create_weights_3d(dist_weights,f,pattern_weight_factor);
@@ -659,9 +659,9 @@ This difference is based on the square euclidean distance of the two windows and
               dist_weights,f, check_limits);
           w = exp(-dist/(h*h));
 /*          if ((x==5)&&(y==5)) {
-            cout << boost::format("dist_input(5,5) = %1%") % (*dist_input)(5,5) << endl;
-            cout << boost::format("dx %1% dy %2% dist=%3% w=%4%")
-                    %dx %dy %dist %w << endl;
+           std::cout << boost::format("dist_input(5,5) = %1%") % (*dist_input)(5,5) << std::endl;
+           std::cout << boost::format("dx %1% dy %2% dist=%3% w=%4%")
+                    %dx %dy %dist %w << std::endl;
           }*/
         } else 
         if (probability_variant==1) {
@@ -696,11 +696,11 @@ This difference is based on the square euclidean distance of the two windows and
         intensity = (*input_float)(x+dx,y+dy,z+dz);
         /*
         if ((x==40)&&(y==20)) {
-          cout  << __func__ 
+         std::cout  << __func__ 
                 << boost::format(" (x,y) = (%1%,%2%) ") %x %y
                 << boost::format(" (dx,dy,dz) = (%1%,%2%,%3%) ") %dx %dy %dz
                 << boost::format(" (w,val) = (%1%,%2%) ") %w %intensity
-                << endl;
+                << std::endl;
         }
         */
         // check if within the maximal weights

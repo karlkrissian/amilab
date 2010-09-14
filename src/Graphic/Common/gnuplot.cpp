@@ -116,7 +116,7 @@ int GnuPlot :: AddCourbe( int nb_points, float* tabx, float* taby, Chaine nom, C
 
   _nb_courbes++;
   Si _nb_courbes>_nb_courbes_max Alors
-    cerr << "GnuPlot::AddCourbe() \t Trop de courbes \n";
+    std::cerr << "GnuPlot::AddCourbe() \t Trop de courbes \n";
     return 0;
   FinSi
 
@@ -158,7 +158,7 @@ int GnuPlot :: ReadData( Chaine nom_donnees, Chaine title) throw ( ErreurLecture
 
   _nb_courbes++;
   Si _nb_courbes>_nb_courbes_max Alors
-    cerr << "GnuPlot::AddCourbe() \t Trop de courbes \n";
+    std::cerr << "GnuPlot::AddCourbe() \t Trop de courbes \n";
     return 0;
   FinSi
 
@@ -217,7 +217,7 @@ void GnuPlot :: SaveData( int num_courbe, int type)
     int i;
 
   Si (num_courbe < 0) Ou (num_courbe>_nb_courbes-1) Alors
-    cerr << "GnuPlot::SaveData()\t Erreur numero de courbe non valide ...\n";
+    std::cerr << "GnuPlot::SaveData()\t Erreur numero de courbe non valide ...\n";
     return;
   FinSi
 
@@ -255,7 +255,7 @@ void GnuPlot :: SaveData( int num_courbe, int type)
     fclose( fic_donnees);
 
   Sinon
-    cerr << " GnuPlot::XPlot() \t Erreur dans l'ouverture du fichier de donnees\n";
+    std::cerr << " GnuPlot::XPlot() \t Erreur dans l'ouverture du fichier de donnees\n";
     return;
 
   FinSi
@@ -295,12 +295,12 @@ void GnuPlot :: XPlot( Chaine nom, int pause)
     fprintf( fic_script, "pause %d\n",pause);
     fclose( fic_script);
   Sinon
-    cerr << " GnuPlot::XPlot() \t ";
-    cerr << " Erreur dans l'ouverture du fichier gnuplot\n";
+    std::cerr << " GnuPlot::XPlot() \t ";
+    std::cerr << " Erreur dans l'ouverture du fichier gnuplot\n";
     return;
   FinSi
   
-  cout << "nom_script = " << nom_script << endl;
+ std::cout << "nom_script = " << nom_script << std::endl;
   commande  = "gnuplot  -geometry 700x200+50+600 ";
   commande += nom_script;
   commande += "&";
@@ -353,12 +353,12 @@ void GnuPlot :: PSPlot( Chaine nom)
     fprintf( fic_script, "pause 2\n");
     fclose( fic_script);
   Sinon
-    cerr << " GnuPlot::PSPlot() \t ";
-    cerr << " Erreur dans l'ouverture du fichier gnuplot " << nom_script << "\n";
+    std::cerr << " GnuPlot::PSPlot() \t ";
+    std::cerr << " Erreur dans l'ouverture du fichier gnuplot " << nom_script << "\n";
     return;
   FinSi
   
-  cout << "nom_script = " << nom_script << endl;
+ std::cout << "nom_script = " << nom_script << std::endl;
   commande  = "gnuplot " + nom_script;
 //  commande += "&";
   system( commande);

@@ -132,14 +132,14 @@ void Timing::AfficheCumul(ostream& o)
     << name << " is: \t ";
   /*      << heures << "h" 
   << minutes << "min" 
-  << secondes << "s. " << endl
+  << secondes << "s. " << std::endl
 
-  << cumul_diff_microsec/1000.0 << " msec." << endl
+  << cumul_diff_microsec/1000.0 << " msec." << std::endl
 
   << "OMP: " */
   if (cumul_timer>1)
-    o << cumul_timer << " sec." << endl;
+    o << cumul_timer << " sec." << std::endl;
   else
-    o << cumul_timer*1000.0 << " msec." << endl;
+    o << cumul_timer*1000.0 << " msec." << std::endl;
 
 }

@@ -85,7 +85,7 @@ void InitMasque( InrImage* image_mask, InrImage*& image_mask2, long& nbpoints)
 //   ----------
 {
 
-//  cout << " Initialisation du masque \n"; 
+// std::cout << " Initialisation du masque \n"; 
 
   image_mask2 = new InrImage( WT_SIGNED_INT, "mask2", image_mask);
 
@@ -104,7 +104,7 @@ void InitMasque( InrImage* image_mask, InrImage*& image_mask2, long& nbpoints)
     image_mask2->IncBuffer();
   JusquA Non(image_mask->IncBuffer()) FinRepeter
 
-  //  cout << " Nb Points " << nbpoints << endl;
+  // std::cout << " Nb Points " << nbpoints << std::endl;
   
 } // InitMasque()
 
@@ -234,7 +234,7 @@ InrImageCompressee ::  InrImageCompressee(  WORDTYPE format,
   FinSi
 
   Si image->_format != WT_SIGNED_INT Alors
-    cerr << " ImrImageCompressee " << nom 
+    std::cerr << " ImrImageCompressee " << nom 
          << " le masque n'est pas au bon format \n";
   FinSi
 

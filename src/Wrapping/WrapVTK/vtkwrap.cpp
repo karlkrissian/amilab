@@ -865,7 +865,7 @@ InrImage*    Func_vtkAnisoGS(   InrImage* in, float sigma, float k, float beta, 
 {
 #ifdef AMI_USE_VTK
 
-  cerr << "deprecated: use import_vtk and corresponding function" << endl;
+  std::cerr << "deprecated: use import_vtk and corresponding function" << std::endl;
   return NULL;
 /*
   vtkImageData*         vtk_image;

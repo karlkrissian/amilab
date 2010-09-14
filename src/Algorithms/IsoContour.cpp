@@ -317,12 +317,12 @@ void IsoContour :: RechercheContours( InrImage* image)
    _max_points = 0;
 
     Si GB_debug AlorsFait
-      cout << " RechercheContours \n";
+     std::cout << " RechercheContours \n";
 
     num = 0;
 
     Si GB_debug AlorsFait
-      cout << " InitImage \n";
+     std::cout << " InitImage \n";
 
     image->InitImage(0.0);
 
@@ -336,22 +336,22 @@ void IsoContour :: RechercheContours( InrImage* image)
 
         Si ExisteContour(x,y,z) Alors
           Si GB_debug AlorsFait
-	    cout << "existe contour"  << endl;
+	   std::cout << "existe contour"  << std::endl;
           num++;
           Si GB_debug AlorsFait
-  	    cout << "ParcoursContour"
+  	   std::cout << "ParcoursContour"
 	         << x << "," << y <<"," << z <<","
-	         << num  << endl;
+	         << num  << std::endl;
           ParcoursContour(x,y,z,num,&taille);
           Si GB_debug AlorsFait
-	    cout << "Fin ParcoursContour"  << endl;
+	   std::cout << "Fin ParcoursContour"  << std::endl;
         FinSi
       Sinon
 	/*
         Si GB_debug AlorsFait
-  	  cout << "image_num_contour"
+  	 std::cout << "image_num_contour"
                << (*image_num_contour)(x,y,z)
-               << endl;
+               << std::endl;
 	*/
       FinSi
 
@@ -389,7 +389,7 @@ void IsoContour :: ParcoursContour( int x, int y, int z,  int num,  int* taille)
   max_points = 0;
 
 //  Si verbose AlorsFait
-//    cout << "Parcours du contour numero " << num << endl;
+//   std::cout << "Parcours du contour numero " << num << std::endl;
 
   propage.Init( x,y,z);
   *taille = 0;
@@ -459,7 +459,7 @@ void IsoContour :: ParcoursContour( int x, int y, int z,  int num,  int* taille)
 
   Si max_points > _max_points Alors
     _max_points = max_points;
-    cout << " max points " << max_points << endl;
+   std::cout << " max points " << max_points << std::endl;
   FinSi
 
 } // ParcoursContour()
@@ -521,9 +521,9 @@ void IsoContour :: PropageContour( InrImage* image_contour, int num_contour)
                Si (nb_voisins > 0) Et (moy*val < 0) Et
 	          ((*image_num_contour)(x1,y1,z1) != num_contour)
                Alors
-  	         cerr << "IsoContour::PropageContour() \t Probleme : point "
+  	         std::cerr << "IsoContour::PropageContour() \t Probleme : point "
                       << x << "," << y << "," << z
-                      << " voisins de signes differents " << endl;
+                      << " voisins de signes differents " << std::endl;
                FinSi
                nb_voisins++;
                moy += val;
@@ -545,7 +545,7 @@ void IsoContour :: PropageContour( InrImage* image_contour, int num_contour)
       FinPour
       FinPour
 
-      cout << "*** il reste " << pts_zero << " points nuls \n";
+     std::cout << "*** il reste " << pts_zero << " points nuls \n";
 
     JusquA pts_zero == 0 FinRepeter
 
@@ -592,7 +592,7 @@ void IsoContour :: DefinitInterieur( )
 
     Si ( x0 >  image_contours->_tx-1) Ou ( y0> image_contours->_ty-1) Ou
        ((*image)(x0,y0,z0) >= max_fond ) Alors
-      cerr<< "IsoContour::DefinitInterieur() \t point a zero non trouve \n";
+      std::cerr<< "IsoContour::DefinitInterieur() \t point a zero non trouve \n";
       return;
     FinSi
 
@@ -625,8 +625,8 @@ void IsoContour :: DefinitInterieur( )
             _tab_signe[nouv_contour] = point_suivant.Signe();
           Sinon
             Si point_suivant.Signe() != _tab_signe[nouv_contour] AlorsFait
-  	      cerr << "IsoContour::DefinitInterieur() \t probleme de signe du contour "
- 	           << nouv_contour << endl;
+  	      std::cerr << "IsoContour::DefinitInterieur() \t probleme de signe du contour "
+ 	           << nouv_contour << std::endl;
           FinSi
 
           // Traitement de l'appartenance
@@ -634,8 +634,8 @@ void IsoContour :: DefinitInterieur( )
             _tab_contenance[nouv_contour] = contour_courant;
           Sinon
             Si contour_courant != _tab_contenance[nouv_contour] AlorsFait
-  	      cerr << "IsoContour::DefinitInterieur() \t probleme d'appartenance du contour "
- 	           << nouv_contour << endl;
+  	      std::cerr << "IsoContour::DefinitInterieur() \t probleme d'appartenance du contour "
+ 	           << nouv_contour << std::endl;
           FinSi
 
           point_courant   = point_suivant;
@@ -676,12 +676,12 @@ void IsoContour :: DefinitInterieur( )
     FinSi
 
     Si nbpts_ligne != 0 AlorsFait
-    cout << " contour 0 : " << (100.0*_tab_ptsligne      [0])/(nbpts_ligne) << endl;
+   std::cout << " contour 0 : " << (100.0*_tab_ptsligne      [0])/(nbpts_ligne) << std::endl;
 
     CalculTotalPointsLigne();
 
     Si nbpts_ligne != 0 AlorsFait
-    cout << " contour 0 : " << (100.0*_tab_ptsligne      [0])/(nbpts_ligne) << endl;
+   std::cout << " contour 0 : " << (100.0*_tab_ptsligne      [0])/(nbpts_ligne) << std::endl;
 
     n = 0;
 
@@ -708,7 +708,7 @@ void IsoContour :: DefinitInterieur( )
       Si (_tab_ptsligne_total[i]> 0.6*nbpts_ligne) Et
          (_tab_signe[i]==-1)
       Alors
-        cout << n << " " << i << endl;
+       std::cout << n << " " << i << std::endl;
         Si n>0 Alors
 
           // Si plusieurs contours negatifs contiennent toute la ligne
@@ -853,10 +853,10 @@ catch (CalculAireSection::LimitesAtteintes)
       rayon      = sqrt(surf_interp[p]/PI);
 
       Si verbose Alors
-        cout << "=============================" << endl;
-        cout << " z = " << p << "\t";
-        cout << " rayon 3D = " << rayon << endl;
-        cout << endl;
+       std::cout << "=============================" << std::endl;
+       std::cout << " z = " << p << "\t";
+       std::cout << " rayon 3D = " << rayon << std::endl;
+       std::cout << std::endl;
       FinSi
 
       Si corrige Alors
@@ -869,11 +869,11 @@ catch (CalculAireSection::LimitesAtteintes)
         FinSi
 
         Si verbose Alors
-          cout << endl;
-          cout << " diam initial = " << diam_3D[p]
+         std::cout << std::endl;
+         std::cout << " diam initial = " << diam_3D[p]
     	       << " diam corrige = " << diam_2D[p]
     	       << " sigma0 = " << sigma0[p]
-	       << endl;
+	       << std::endl;
         FinSi
       FinSi
 
@@ -1075,7 +1075,7 @@ catch (CalculAireSection::LimitesAtteintes)
     Sinon
       sigma0 = 0;
     FinSi
-    cout << endl;
+   std::cout << std::endl;
   FinSi
 
 

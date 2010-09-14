@@ -21,7 +21,8 @@
 #include "itkImageFileReader.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
 #include <itkRGBAPixel.h>
-
+#include <iostream>
+using namespace std;
 
 
 template<class TPixel, unsigned int Dimension>
@@ -31,12 +32,12 @@ class itkReadClass {
 
   
   private:
-    InrImage* CreateImage( int dimx, int dimy, int dimz, WORDTYPE type, const string& name) {
+    InrImage* CreateImage( int dimx, int dimy, int dimz, WORDTYPE type, const std::string& name) {
       return new InrImage(dimx,dimy,dimz,1,type,"Image_itk.ami.gz");
     }
 
   public: 
-    InrImage* operator()(const string& filename, WORDTYPE type, int vdim=1) 
+    InrImage* operator()(const std::string& filename, WORDTYPE type, int vdim=1) 
     { 
     #ifdef AMI_USE_ITK
 
@@ -74,7 +75,7 @@ class itkReadClass {
       for (unsigned int i=0; i<Dimension; i++) {
         tr[i] = inputImage->GetOrigin()[i];
         vs[i] = inputImage->GetSpacing()[i];
-        cout << "vs["<<i<<"] = " << vs[i] << endl;
+        std::cout << "vs["<<i<<"] = " << vs[i] << std::endl;
       }
       res->SetTranslation( tr[0], tr[1], tr[2]);
       res->SetVoxelSize(   vs[0], vs[1], vs[2]);
@@ -102,7 +103,7 @@ class itkReadClass {
     }  
 
 
-    static InrImage* ConvertVector(const string& filename, WORDTYPE type, int vdim) 
+    static InrImage* ConvertVector(const std::string& filename, WORDTYPE type, int vdim) 
     { 
     #ifdef AMI_USE_ITK
 
@@ -194,11 +195,11 @@ InrImage* itkRead(const std::string& fname)
     image_io= reader->GetImageIO();
     image_component_type = image_io->GetComponentType();
     image_pixel_type = image_io->GetPixelType();
-    cout << "  Component Type = " << image_io->GetComponentTypeAsString(image_component_type) << endl;
-    cout << "  Pixel Type = "     << image_io->GetPixelTypeAsString(image_pixel_type) << endl;
-    cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << endl;
+    std::cout << "  Component Type = " << image_io->GetComponentTypeAsString(image_component_type) << std::endl;
+    std::cout << "  Pixel Type = "     << image_io->GetPixelTypeAsString(image_pixel_type) << std::endl;
+    std::cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << std::endl;
     int vdim = image_io->GetNumberOfComponents();
-    cout << "  Number of Components = "<< vdim << endl;
+    std::cout << "  Number of Components = "<< vdim << std::endl;
 //->PrintSelf(cout,itk::Indent(2));
 
   } catch( itk::ExceptionObject & err ) {
@@ -223,7 +224,7 @@ InrImage* itkRead(const std::string& fname)
     case itk::ImageIOBase::CHAR:    \
     case itk::ImageIOBase::UNKNOWNPIXELTYPE:  \
     default:  \
-      cerr << "Format not supported in InrImage class "<< endl;  \
+      std::cerr << "Format not supported in InrImage class "<< std::endl;  \
   }
 
 #define READ_VECTOR_IMAGE(imdim,vdim) \
@@ -254,13 +255,13 @@ InrImage* itkRead(const std::string& fname)
             ConvertVector(fname,WT_DOUBLE,vdim);          break; \
     case itk::ImageIOBase::UNKNOWNPIXELTYPE:\
     default:  \
-      cerr << "Format not supported in InrImage class "<< endl;  \
+      std::cerr << "Format not supported in InrImage class "<< std::endl;  \
   }
 
 /*
     case itk::ImageIOBase::CHAR:    \
     case itk::ImageIOBase::UNKNOWNPIXELTYPE:  \
-      cerr << "Format not supported in InrImage class "<< endl;  \
+      std::cerr << "Format not supported in InrImage class "<< std::endl;  \
   }
 */
 
@@ -269,7 +270,7 @@ InrImage* itkRead(const std::string& fname)
     case itk::ImageIOBase::UCHAR:  res = itkReadClass<itk::RGBPixel<unsigned char>,  imdim>::ConvertVector(fname,WT_RGB,3);   break; \
     case itk::ImageIOBase::USHORT: res = itkReadClass<itk::RGBPixel<unsigned short>, imdim>::ConvertVector(fname,WT_UNSIGNED_SHORT,3);  break; \
     default: \
-      cerr << "Format not supported in InrImage class "<< endl;  \
+      std::cerr << "Format not supported in InrImage class "<< std::endl;  \
   }
 
 #define READ_RGBA_IMAGE(imdim) \
@@ -277,7 +278,7 @@ InrImage* itkRead(const std::string& fname)
     case itk::ImageIOBase::UCHAR:  res = itkReadClass<itk::RGBAPixel<unsigned char>,  imdim>::ConvertVector(fname,WT_RGBA,4);   break; \
     case itk::ImageIOBase::USHORT: res = itkReadClass<itk::RGBAPixel<unsigned short>, imdim>::ConvertVector(fname,WT_UNSIGNED_SHORT,4);  break; \
     default: \
-      cerr << "Format not supported in InrImage class "<< endl;  \
+      std::cerr << "Format not supported in InrImage class "<< std::endl;  \
   }
 
   switch (image_pixel_type) {
@@ -287,7 +288,7 @@ InrImage* itkRead(const std::string& fname)
         case 2: READ_IMAGE(2); break;
         case 3: READ_IMAGE(3); break;
         default:
-          cerr << " InrImage format does not support images of dimension " << image_dim << endl;
+          std::cerr << " InrImage format does not support images of dimension " << image_dim << std::endl;
       }
     break;
 
@@ -299,7 +300,7 @@ InrImage* itkRead(const std::string& fname)
               case 2: READ_VECTOR_IMAGE(2,2); break;
               case 3: READ_VECTOR_IMAGE(3,2); break;
               default:
-                cerr << " InrImage format does not support images of dimension " << image_dim << endl;
+                std::cerr << " InrImage format does not support images of dimension " << image_dim << std::endl;
             }
           }
          break;
@@ -309,7 +310,7 @@ InrImage* itkRead(const std::string& fname)
             case 2: READ_VECTOR_IMAGE(2,3); break;
             case 3: READ_VECTOR_IMAGE(3,3); break;
             default:
-              cerr << " InrImage format does not support images of dimension " << image_dim << endl;
+              std::cerr << " InrImage format does not support images of dimension " << image_dim << std::endl;
           }
           } break;
         default:
@@ -323,7 +324,7 @@ InrImage* itkRead(const std::string& fname)
         case 2: READ_RGB_IMAGE(2); break;
         case 3: READ_RGB_IMAGE(3); break;
         default:
-          cerr << " InrImage format does not support images of dimension " << image_dim << endl;
+          std::cerr << " InrImage format does not support images of dimension " << image_dim << std::endl;
       }
     break;
     case itk::ImageIOBase::RGBA:
@@ -332,19 +333,19 @@ InrImage* itkRead(const std::string& fname)
         case 2: READ_RGBA_IMAGE(2); break;
         case 3: READ_RGBA_IMAGE(3); break;
         default:
-          cerr << " InrImage format does not support images of dimension " << image_dim << endl;
+          std::cerr << " InrImage format does not support images of dimension " << image_dim << std::endl;
       }
     break;
     default:
-        cerr << boost::format(" itkRead() \t pixel type %s% not supported in this release") % image_io->GetPixelTypeAsString(image_pixel_type)
-              << endl;
+        std::cerr << boost::format(" itkRead() \t pixel type %s% not supported in this release") % image_io->GetPixelTypeAsString(image_pixel_type)
+              << std::endl;
     return NULL;
   }
 
 
 
-cout << image_component_type << endl;
-cout << itk::ImageIOBase::USHORT << endl;
+cout << image_component_type << std::endl;
+cout << itk::ImageIOBase::USHORT << std::endl;
 // compilation pb with long: don't know why
 // /home/karl/projects/Sourceforge/amilab/src/WrapITK/wrapITK.cpp:216: error: expected unqualified-id before 'long'
 //    case itk::ImageIOBase::LONG:   res = itkReadClass<signed long,    imdim>()(*fname,WT_SIGNED_LONG);     break; 

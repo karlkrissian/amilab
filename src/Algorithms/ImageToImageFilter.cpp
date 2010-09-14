@@ -12,6 +12,7 @@
 
 #include "ImageToImageFilter.h"
 #include <pthread.h>
+#include <iostream>
 
 template <class T>
 struct thread_info {
@@ -73,9 +74,9 @@ void ImageToImageFilter::Run_multithreads()
                           Process_thread,
                           (void *) &thread_info_array[i]);
       if (rc) {
-        cerr  << __func__ 
+        std::cerr  << __func__ 
               << " \t ERROR; return code from pthread_create()"
-              << "is " <<  rc << endl;
+              << "is " <<  rc << std::endl;
         return;
       }
     } // end for
@@ -86,9 +87,9 @@ void ImageToImageFilter::Run_multithreads()
     {
         rc = (int) pthread_join((pthread_t)threads[i], (void **)&status);
         if (rc)
-          cerr  << __func__ 
+          std::cerr  << __func__ 
                 <<  "\t ERROR; return code from pthread_join()"
-                <<  "is " <<  rc << endl;
+                <<  "is " <<  rc << std::endl;
     }
   
     delete [] thread_info_array;

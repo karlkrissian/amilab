@@ -83,13 +83,13 @@ InrImage* wrap_itkRecursiveGaussianImageFilter2D(ParamList* p)
   ImageType::Pointer image;
   
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+  std::cout << "Converting image to ITK format " << std::endl;
     
   image = InrToITK<PixelType,Dimension>(input,region);
 
   // Apply the filter
   // Set up  image filter
-  cout << "Applying filter " << endl;
+  std::cout << "Applying filter " << std::endl;
 
   try {
     typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >  FilterType;
@@ -123,7 +123,7 @@ InrImage* wrap_itkRecursiveGaussianImageFilter2D(ParamList* p)
     }
 
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
 
@@ -174,13 +174,13 @@ InrImage* wrap_itkRecursiveGaussianImageFilter3D(ParamList* p)
   ImageType::Pointer image;
   
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+  std::cout << "Converting image to ITK format " << std::endl;
     
   image = InrToITK<PixelType,Dimension>(input,region);
 
   // Apply the filter
   // Set up  image filter
-  cout << "Applying filter " << endl;
+  std::cout << "Applying filter " << std::endl;
 
   try {
     typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >  FilterType;
@@ -220,7 +220,7 @@ InrImage* wrap_itkRecursiveGaussianImageFilter3D(ParamList* p)
     }
 
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
 

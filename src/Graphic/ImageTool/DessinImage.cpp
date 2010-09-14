@@ -872,14 +872,14 @@ void DessinImage::InitPositionImages( )
   largeur = _largeur - _colorbar_width;
   hauteur = _hauteur;
 
-  if (GB_debug) cerr << format(" (%d %d) --> (%d %d ) ") %_largeur %_hauteur % largeur%hauteur << endl;
+  if (GB_debug) std::cerr << format(" (%d %d) --> (%d %d ) ") %_largeur %_hauteur % largeur%hauteur << std::endl;
 
   Pour(i,0,2)
     h_margin[i] = _right_margin[i]  + _left_margin[i];
     v_margin[i] = _top_margin[i]    + _bottom_margin[i];
 
-  if (GB_debug) cerr << format("i= %d  hmargin %d vmargin %d ")
-      % i % h_margin[i]% v_margin[i] << endl;
+  if (GB_debug) std::cerr << format("i= %d  hmargin %d vmargin %d ")
+      % i % h_margin[i]% v_margin[i] << std::endl;
 
   FinPour
 
@@ -1475,7 +1475,7 @@ void DessinImage::CreeBoitesParametres()
 
   posx = macro_max( 0, posx-dimx-15);
   posy = macro_max( 0, posy);
-//  cout << "pos x " << posx << "  pos y " << posy << endl;
+// std::cout << "pos x " << posx << "  pos y " << posy << std::endl;
   _param_dialog->FixePosition( posx, posy);
 */
 
@@ -2102,7 +2102,7 @@ void DessinImage::DessineStereo( )
 //                           -------------
 //  Dessine une MIP en stereo
 {
-  cerr << "DessinImage::DessineStereo( ) feature disabled " << endl;
+  std::cerr << "DessinImage::DessineStereo( ) feature disabled " << std::endl;
 
 /* TODO: decide if I keep this feature ...
 
@@ -2559,7 +2559,7 @@ void DessinImage::CreateParamBook(wxWindow* parent)
 bool DessinImage::AddParamPage(wxWindow* page, const wxString& caption,
                             bool select, const wxBitmap& bitmap)
 {
-  cout << "DessinImage::AddParamPage()" << endl;
+ std::cout << "DessinImage::AddParamPage()" << std::endl;
   bool result = _param_book->AddPage( page,caption,select,bitmap );
   manager.GetPane(_param_book).Show();
   manager.Update();
@@ -3034,7 +3034,7 @@ int  DessinImage::CreeCompare2Image( DessinImage::ptr di)
 void DessinImage::SetCompareDisplacement( DessinImage::ptr compare_win, InrImage::ptr displ) {
 
   if (!displ->VectorialFormat()) {
-    cerr << "DessinImage::SetCompareDisplacement() Image not in vectorial format \n";
+    std::cerr << "DessinImage::SetCompareDisplacement() Image not in vectorial format \n";
     return;
   }
 
@@ -3049,7 +3049,7 @@ void DessinImage::SetCompareDisplacement( DessinImage::ptr compare_win, InrImage
     }
   }
 
-  cerr << "DessinImage::SetCompareDisplacement() comparing window not found \n";
+  std::cerr << "DessinImage::SetCompareDisplacement() comparing window not found \n";
 
 }
 
@@ -3643,7 +3643,7 @@ void DessinImage::SauveImagePS( const char* nom_image)
 //                ------------
 {
 
-  cerr << "DessinImage::SauveImagePS()\t not available anymore " << endl;
+  std::cerr << "DessinImage::SauveImagePS()\t not available anymore " << std::endl;
 
 } // SauveImagePS()
 
@@ -3815,7 +3815,7 @@ void DessinImage::OnWheel(wxMouseEvent& event)
     _initial_zoom = Param._Zoom;
 
     float step  = ((float)wr)/(5*(float)event.GetWheelDelta());
-    //cout << " wr = " << wr << " wheeldata = "<< event.GetWheelDelta() << " step = " << step << endl;
+    //cout << " wr = " << wr << " wheeldata = "<< event.GetWheelDelta() << " step = " << step << std::endl;
 
     Si step > 7  AlorsFait step = 7;
     Si step < -7 AlorsFait step = -7;
@@ -3875,7 +3875,7 @@ void DessinImage::Boutton_Presse()
                           _zoom_x2-_zoom_x1, _zoom_y2-_zoom_y1);
         dc.SetLogicalFunction(wxCOPY);
       } else
-        cerr << "DC not OK " << endl;
+        std::cerr << "DC not OK " << std::endl;
     Sinon
       Si Param._curseur._ON AlorsFait DessineCurseurs( _curseur_x, _curseur_y, _curseur_z);
       _curseur_x = im.x;
@@ -3921,7 +3921,7 @@ void DessinImage::Boutton_Relache()
                           _zoom_x2-_zoom_x1, _zoom_y2-_zoom_y1);
         dc.SetLogicalFunction(wxCOPY);
       } else
-        cerr << "DC not OK" << endl;
+        std::cerr << "DC not OK" << std::endl;
 
         _souris_x = _zoom_x1;
         _souris_y = _zoom_y1;
@@ -4008,7 +4008,7 @@ void DessinImage::DeplaceSourisBout1()
                           _zoom_x2-_zoom_x1, _zoom_y2-_zoom_y1);
         dc.SetLogicalFunction(wxCOPY);
       } else
-        cerr << "DC not OK" << endl;
+        std::cerr << "DC not OK" << std::endl;
 
 
     FinSi
@@ -4610,8 +4610,8 @@ void DessinImage::DrawAllContours()
   aff_err("DrawAllContours() \t begin \n");
 
   if (_isocontours.size()==0) {
-    cerr << "DessinImage::DrawAllContours()"
-          << "\t no isocontour 0 ..." << endl;
+    std::cerr << "DessinImage::DrawAllContours()"
+          << "\t no isocontour 0 ..." << std::endl;
     return;
   }
 
@@ -4700,11 +4700,11 @@ void DessinImage::Paint( unsigned char affiche)
 {
   //wxPaintDC pdc(_drawing_area);
   if (!this->IsShown()) {
-    cout << "DessinImage::Paint( ) \t window not shown " << endl;
+   std::cout << "DessinImage::Paint( ) \t window not shown " << std::endl;
     return;
   }
   if (this->IsIconized()) {
-    cout << "DessinImage::Paint( ) \t window is iconized " << endl;
+   std::cout << "DessinImage::Paint( ) \t window is iconized " << std::endl;
     return;
   }
 
@@ -4722,11 +4722,11 @@ void DessinImage::Paint( unsigned char affiche)
   _in_paint=1;
 
   Si GB_debug AlorsFait
-    cerr << format("\n **********\n \t DessinImage::Paint(%s)\t begin %d %d \n")
+    std::cerr << format("\n **********\n \t DessinImage::Paint(%s)\t begin %d %d \n")
              % (char*)_name
              % _hauteur
              % _largeur
-          << endl;
+          << std::endl;
 
   Si Non(_vecteur_ON) Alors
   //    curseur = XCreateFontCursor( display, XC_watch);

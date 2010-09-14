@@ -292,7 +292,7 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
     
     if (n>2) {
     
-      cout<<x<<" "<<y<<" "<<z<<"--->n="<<n<<endl;
+     std::cout<<x<<" "<<y<<" "<<z<<"--->n="<<n<<std::endl;
       //compute the mean and store the id point
       meanx = meany = meanz = 0;
       for (z1 = z; z1<=z+1;z1++)

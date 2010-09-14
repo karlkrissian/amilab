@@ -167,7 +167,7 @@ class wxScheduleTimer : public wxTimer
 
     ~wxScheduleTimer()
     { 
-      //cout << "~wxScheduleTimer()" << endl; 
+      //cout << "~wxScheduleTimer()" << std::endl; 
     }
 
     //Called each time the timer's timeout expires
@@ -897,7 +897,7 @@ loop_inst :
       // create the variable
       string_ptr tmp(new string());
       Variable<string>::ptr var = Vars.AddVar<string>(ident,tmp);
-      //cout << " *** Create temporary variable " << ident->GetName() << endl;
+      //cout << " *** Create temporary variable " << ident->GetName() << std::endl;
 
       std::list<std::string>::iterator sl_it;
       for (sl_it=sl->begin(); sl_it!=sl->end(); sl_it++) {
@@ -913,11 +913,11 @@ loop_inst :
       }
       // should not delete based on the name !!!
       bool res = Vars.deleteVar(ident->GetName().c_str());
-      //cout << " *** Delete temporary variable " << ident->GetName() << endl;
+      //cout << " *** Delete temporary variable " << ident->GetName() << std::endl;
       if (!res) {
-        cout << "**********" << endl;
-        cout << "**** Could not delete variable in loop"  << ident->GetName() << endl;
-        cout << "**********" << endl;
+       std::cout << "**********" << std::endl;
+       std::cout << "**** Could not delete variable in loop"  << ident->GetName() << std::endl;
+       std::cout << "**********" << std::endl;
       }
       driver.yyiplineno=previous_lineno;
 
@@ -1034,9 +1034,9 @@ proc_decl:
       amifunc->SetBody(     body);
 
       if (GB_debug)
-        cout  << ident->GetName()
+       std::cout  << ident->GetName()
               << " body = "
-              << body->GetBody()  << endl;
+              << body->GetBody()  << std::endl;
 
       BasicVariable::ptr newvar = Vars.AddVar<AMIFunction>( ident, amifunc);
       if (newvar.get())
@@ -1166,13 +1166,13 @@ func_inst :
           string name;
           string inc_cmd; // increment the command line string
 
-          //cout << "current wd = "  <<  wxGetCwd() << endl;
+          //cout << "current wd = "  <<  wxGetCwd() << std::endl;
           res=AskScript(name);
           if (!res) {
             driver.yyiperror(" Need script \n");
             YYABORT;
           }
-          //cout << "current wd = "  <<  wxGetCwd() << endl;
+          //cout << "current wd = "  <<  wxGetCwd() << std::endl;
 
         driver.res_print(name.c_str());
         driver.res_print("\n");
@@ -1214,7 +1214,7 @@ command:
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           if (var.get()) {
             // TODO: only do it from the command line ???
-            //cout << "display var info" << endl;
+            //cout << "display var info" << std::endl;
             if (driver.InConsole())
               var->display();
           }
@@ -1246,7 +1246,7 @@ command:
               break;
               default:;
                 // TODO: only do it from the command line ???
-                //cout << "display var info" << endl;
+                //cout << "display var info" << std::endl;
                 if (driver.InConsole())
                   var->display();
             }
@@ -1386,9 +1386,9 @@ command:
         IdentifierInfo::ptr ident($1);
         if (var.get() && (var->HasPointer())  ) {
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
-            //cout << "var.use_count() = " << var.use_count() << endl;
+            //cout << "var.use_count() = " << var.use_count() << std::endl;
             Vars.AddVar(ident,var);
-            //cout << "var.use_count() = " << var.use_count() << endl;
+            //cout << "var.use_count() = " << var.use_count() << std::endl;
           } else {
             BasicVariable::ptr newvar( var->NewReference());
             Vars.AddVar(ident,newvar);
@@ -1412,8 +1412,8 @@ command:
         IdentifierInfo::ptr ident($1);
         // check counter of the value, not of the variable ...
         if (var.get() && (var->HasPointer())  ) {
-          //cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< endl;
-          //cout << "use_count() == " <<  var.use_count() << endl;
+          //cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< std::endl;
+          //cout << "use_count() == " <<  var.use_count() << std::endl;
           // only if both reference counters are equal to 1, we can avoid copy the variable
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
             //BasicVariable::ptr ref = var->NewReference();
@@ -2095,7 +2095,7 @@ command:
                 YYABORT;
               }
             } else
-              cerr << " variable " << titre << " already exists " << endl;
+              std::cerr << " variable " << titre << " already exists " << std::endl;
           }
 /*
             if (!var.get()) {
@@ -2118,7 +2118,7 @@ command:
               surfdraw->GetCanvas()->Normalize();
               surfdraw->GetCanvas()->Center();
             } else
-              cerr << " variable " << titre << " already exists " << endl;
+              std::cerr << " variable " << titre << " already exists " << std::endl;
           } // var_context >=0
 */
           // Restore the object context
@@ -3279,9 +3279,9 @@ command:
           GET_VARSTACK_VAR_VAL(AMIObject,varamio,o);
           
           if (o.get()) {
-            cout << "var   name = " << varamio->Name() <<endl;
+           std::cout << "var   name = " << varamio->Name() <<std::endl;
             if (o->GetClass().get()) {
-              cout << "class name = " << o->GetClass()->GetName() <<endl;
+             std::cout << "class name = " << o->GetClass()->GetName() <<std::endl;
             }
             o->GetContext()->display();
           }
@@ -4797,7 +4797,7 @@ command:
         Pour(x,0,image->_tx-1)
           tabx[x] = image->SpacePosX(x);
           taby[x] = (*image)(x,y,0);
-          //cout << boost::format("%1%,%2% --> %3%")%x%y%taby[x] << endl;
+          //cout << boost::format("%1%,%2% --> %3%")%x%y%taby[x] << std::endl;
         FinPour
         name =  (boost::format("%s_%02d")%$5%y).str();
         num_courbe = gnuplot.AddCourbe( image->_tx, tabx, taby, name.c_str());
@@ -4813,7 +4813,7 @@ command:
     | T_DisplayHisto T_OP_PAR var_image  T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
-      cerr << "Feature not available, needs to be updated ! " << endl;
+      std::cerr << "Feature not available, needs to be updated ! " << std::endl;
       /*
             InrImage::ptr   image = *(InrImage::ptr*) $3->Pointer();
             Histogramme* histo;
@@ -4890,7 +4890,7 @@ command:
     T_EndTime
     {
       driver.IP_time.Fin();
-      cout << "time spent = " << driver.IP_time << endl;
+     std::cout << "time spent = " << driver.IP_time << std::endl;
     }
     |
     T_SaveStructuredGrid T_OP_PAR var_image T_COMMA expr_string T_CL_PAR
@@ -5196,8 +5196,8 @@ param_list_decl:
     | T_NUM IDENTIFIER
     {
       IdentifierInfo::ptr ident($2);
-      cout << "param_list_decl: T_NUM IDENTIFIER" << endl;
-      cout << ident->GetName().c_str() << endl;
+     std::cout << "param_list_decl: T_NUM IDENTIFIER" << std::endl;
+     std::cout << ident->GetName().c_str() << std::endl;
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_float);
       $$ = pl;
@@ -5469,9 +5469,9 @@ instr_block: begin_block
           {
         $$=$2;
         if (GB_debug)
-          cerr << format("ablock : %s")
+          std::cerr << format("ablock : %s")
                   % $2->GetBody()
-                << endl;
+                << std::endl;
           };
 
 begin_block: ;
@@ -7221,8 +7221,8 @@ image:
       extent->SetRelative(im.get());
   
       //extent->print();
-      //cout << "xmax = " << (int)  extent->Xmax() << endl;
-      //cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
+      //cout << "xmax = " << (int)  extent->Xmax() << std::endl;
+      //cout << "xmax = " << (int)  round((double)extent->Xmax()) << std::endl;
       InrImage::ptr res ( Func_SubImage( im.get(),
                   (int)  round((double)extent->Xmin()),
                   (int)  round((double)extent->Ymin()),
@@ -8016,7 +8016,7 @@ image:
         FinPour
         FinPour
         FinPour
-        //cout << "(*res)(10,20,0)=" << (*res)(10,20,0) << endl;
+        //cout << "(*res)(10,20,0)=" << (*res)(10,20,0) << std::endl;
         ADD_VARSTACK_PTR(InrImage,res);
         }
         | T_Ypos T_OP_PAR expr_var  T_CL_PAR
@@ -8617,7 +8617,7 @@ image:
             Repeter
               //pos = (int) im2->ValeurBuffer();
               int pos = (int) (im1->SpaceToVoxelX(im2->ValeurBuffer())+0.5);
-              //cout << boost::format(" im2->ValeurBuffer() = %1% pos = %2%")%im2->ValeurBuffer() % pos << endl;
+              //cout << boost::format(" im2->ValeurBuffer() = %1% pos = %2%")%im2->ValeurBuffer() % pos << std::endl;
               Si (pos<0)  AlorsFait pos = 0;
               Si (pos>=im1->DimX()) 
                           AlorsFait pos = im1->DimX()-1;
@@ -9122,7 +9122,7 @@ primary_var:
           Description: 
             Call to a function, returning a variable
         ** /
-        //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
+        //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << std::endl;
         // 1. check the variable type
         GET_CHECK_VARSTACK(var)
         ParamList::ptr param($3);
@@ -9220,7 +9220,7 @@ postfix_var:
             object->GetContext()->GetVar(ident->GetName().c_str()));
     
           if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
-            //cout << "returning variable" << endl;
+            //cout << "returning variable" << std::endl;
             //newvar->display();
             driver.var_stack.AddVar(newvar);
           } else {
@@ -9237,7 +9237,7 @@ postfix_var:
           Description: 
             Call to a function, returning a variable
         **/
-        //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
+        //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << std::endl;
         // 1. check the variable type
         GET_CHECK_VARSTACK(var)
         ParamList::ptr param($3);
@@ -9362,8 +9362,8 @@ postfix_var:
     extent->SetRelative(im.get());
 
     //extent->print();
-    //cout << "xmax = " << (int)  extent->Xmax() << endl;
-    //cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
+    //cout << "xmax = " << (int)  extent->Xmax() << std::endl;
+    //cout << "xmax = " << (int)  round((double)extent->Xmax()) << std::endl;
     InrImage::ptr res ( Func_SubImage( im.get(),
                 (int)  round((double)extent->Xmin()),
                 (int)  round((double)extent->Ymin()),
@@ -9409,7 +9409,7 @@ prefix_var:
   }
   | T_SUB  prefix_var %prec prefix
   {
-    //cout << "T_SUB  cast_var  " << endl;
+    //cout << "T_SUB  cast_var  " << std::endl;
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(-(*var));
   }
@@ -9678,7 +9678,7 @@ assignment_var:
   conditional_var %prec SHIFT_THERE
   | conditional_var ASSIGN_OP assignment_var
   {
-    //cout << "assignment_var" << endl;
+    //cout << "assignment_var" << std::endl;
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
     if (var1->GetPtrCounter()==1) {
@@ -9688,7 +9688,7 @@ assignment_var:
   }
   | conditional_var LEFT_ASSIGN assignment_var
   {
-    //cout << "assignment_var" << endl;
+    //cout << "assignment_var" << std::endl;
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1).left_assign(var2));
@@ -10933,7 +10933,7 @@ image_extent:
   
       comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
           % xmin % xmax % ymin % ymax % zmin % zmax);
-      if (GB_debug) cerr << "********* extent ****" << endl;
+      if (GB_debug) std::cerr << "********* extent ****" << std::endl;
       if (driver.InConsole()) GB_main_wxFrame->GetConsole()->IncCommand(comment);
   
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
@@ -10977,7 +10977,7 @@ void CB_update_imagelist( void* imagelist_gui)
 void wxScheduleTimer::Notify()
 //   -----------------------
 {
-  //cout << "Notify()" << endl;
+  //cout << "Notify()" << std::endl;
   GB_driver.yyip_call_function(var->Pointer().get());
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;

@@ -24,6 +24,7 @@ include_directories (
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
 
+
 SET(Language_SRCS
     driver.cc
     CallBackAMIFunction.cpp
@@ -84,6 +85,7 @@ SET(Language_BISONFLEX_SRCS
   improcess_flex.lpp
 )
 
+
 IF(AMI_USE_FLEXBISON)
 
 
@@ -137,5 +139,10 @@ ELSE(AMI_USE_FLEXBISON)
  
 
 ENDIF(AMI_USE_FLEXBISON)
+
+
+ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Language/Variable.hpp Language_SRCS)
+ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/amilab_messages.h Language_SRCS)
+ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/DefineClass.hpp Language_SRCS)
 
 my_add_library ( Language)

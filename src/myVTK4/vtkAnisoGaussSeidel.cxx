@@ -276,7 +276,7 @@ void vtkAnisoGaussSeidel::Init( )
 void vtkAnisoGaussSeidel::InitCoefficients()
 //                        -----------------
 {
-  //cout << "vtkAnisoGaussSeidel::InitCoefficients()" << endl;
+  //cout << "vtkAnisoGaussSeidel::InitCoefficients()" << std::endl;
     int x;
 
   _alpha_y.resize(tx);
@@ -318,7 +318,7 @@ void vtkAnisoGaussSeidel::InitCoefficients(
       int sx, int sy)
 {
 
-  //cout << "vtkAnisoGaussSeidel::InitCoefficients(...)" << endl;
+  //cout << "vtkAnisoGaussSeidel::InitCoefficients(...)" << std::endl;
 
     int x;
 
@@ -413,7 +413,7 @@ void vtkAnisoGaussSeidel::ResetCoefficients(
 void vtkAnisoGaussSeidel::DeleteCoefficients()
 //                        ------------------
 {
-  //cout << "vtkAnisoGaussSeidel::DeleteCoefficients()" << endl;
+  //cout << "vtkAnisoGaussSeidel::DeleteCoefficients()" << std::endl;
 /*
     Si mode == MODE_3D Alors
       int i;
@@ -441,7 +441,7 @@ void vtkAnisoGaussSeidel::DeleteCoefficients(
         int sx)
 {
 
-  //cout << "vtkAnisoGaussSeidel::InitCoefficients(...)" << endl;
+  //cout << "vtkAnisoGaussSeidel::InitCoefficients(...)" << std::endl;
 
 /*
     Si mode == MODE_3D Alors
@@ -697,12 +697,12 @@ float vtkAnisoGaussSeidel::Iterate2D()
   im_tmp1->CopyAndCastFrom(this->im_tmp2.get(),
                this->im_tmp2->GetExtent());
 
-  //  cout << endl;
-  //  cout << " Erreur = " << erreur << endl;
-  //  cout << "( " << erreur_x << ", " 
+  // std::cout << std::endl;
+  // std::cout << " Erreur = " << erreur << std::endl;
+  // std::cout << "( " << erreur_x << ", " 
   //              << erreur_y << ", " 
-  //               << erreur_z << " )" << endl; 
-  //  cout << "nb de points variables " << nb_points_instables << endl;
+  //               << erreur_z << " )" << std::endl; 
+  // std::cout << "nb de points variables " << nb_points_instables << std::endl;
 
 
   return erreur;
@@ -1156,16 +1156,16 @@ float vtkAnisoGaussSeidel::Iterate3D()
     /*
   fprintf(stderr," Pourcentage of isotropic points = %2.5f \n",
       nbpts_isotropic/(1.0*(nbpts_isotropic+nbpts_anisotropic))*100.0);
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", " 
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
                << erreur_y << ", " 
-               << erreur_z << " )" << endl; 
-  cout << "nb de points variables " << nb_points_instables << endl;
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 
   diff /= txy*tz;
 
-  cout << "diff =" << sqrt(diff) << endl;
+ std::cout << "diff =" << sqrt(diff) << std::endl;
     */
 
   return erreur;
@@ -1706,16 +1706,16 @@ float vtkAnisoGaussSeidel::Iterate3D( vtkImageData *inData,  int inExt[6],
     /*    
   fprintf(stderr," Pourcentage of isotropic points = %2.5f \n",
       nbpts_isotropic/(1.0*(nbpts_isotropic+nbpts_anisotropic))*100.0);
-  cout << endl;
-  cout << " Erreur = " << erreur << endl;
-  cout << "( " << erreur_x << ", " 
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
                << erreur_y << ", " 
-               << erreur_z << " )" << endl; 
-  cout << "nb de points variables " << nb_points_instables << endl;
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
 
   diff /= txy*tz;
 
-  cout << "diff =" << sqrt(diff) << endl;
+ std::cout << "diff =" << sqrt(diff) << std::endl;
     */
 
   DeleteCoefficients(

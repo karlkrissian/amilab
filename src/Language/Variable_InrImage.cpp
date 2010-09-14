@@ -147,14 +147,14 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator +()
 /// prefix ++ operator ++a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator ++()
 {
-  std::cout << "**" << endl;
+  std::cout << "**" << std::endl;
   RETURN_VARPTR(InrImage,++RefValue());
 }
 
 /// postfix ++ operator a++
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator ++(int)
 {
-  std::cout << "**" << endl;
+  std::cout << "**" << std::endl;
   RETURN_VARPTR(InrImage,RefValue()++);
 }
 */

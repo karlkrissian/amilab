@@ -16,6 +16,8 @@
 #include "inrimage.hpp"
 #include "StringUtils.hpp"
 
+using namespace std;
+
 //------------------------------------------------------
 //------- Variable<string>
 //------------------------------------------------------
@@ -23,7 +25,7 @@
 
 
 /// Copy contents to new variable
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::NewCopy() const
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<std::string>::NewCopy() const
 {
   string_ptr newval( new string(Value()));
   Variable<string>::ptr newvar(new Variable<string>(newval));
@@ -36,7 +38,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::NewCopy() const
 
 
 /// a+b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator +(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<std::string>::operator +(const BasicVariable::ptr& b)
 {
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);

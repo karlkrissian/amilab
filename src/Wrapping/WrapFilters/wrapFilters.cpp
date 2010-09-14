@@ -251,14 +251,14 @@ void NSim2(ParamList* p)
       (input->DimY()!=local_mean->DimY())||
       (input->DimZ()!=local_mean->DimZ()) )
   {
-    cerr << "NSim2 input and local_mean images have different dimensions" << endl;
+    std::cerr << "NSim2 input and local_mean images have different dimensions" << std::endl;
     return;
   }
   if ((input->DimX()!=local_var->DimX())||
       (input->DimY()!=local_var->DimY())||
       (input->DimZ()!=local_var->DimZ()) )
   {
-    cerr << "NSim2 input and local_var images have different dimensions" << endl;
+    std::cerr << "NSim2 input and local_var images have different dimensions" << std::endl;
     return;
   }
 

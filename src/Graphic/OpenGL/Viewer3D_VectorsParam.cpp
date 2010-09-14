@@ -225,7 +225,7 @@ void Viewer3D_VectorsParam::CB_vect1_image( void* cd)
     im = InrImage::ptr(new InrImage( (char*)glc->_GLParam._vect1_image_name.c_str()));
   }
   catch (InrImage::ErreurLecture) {
-    cerr << "Error in reading file " << glc->_GLParam._vect1_image_name << endl;
+    std::cerr << "Error in reading file " << glc->_GLParam._vect1_image_name << std::endl;
     im = InrImage::ptr();
   }
 
@@ -235,7 +235,7 @@ void Viewer3D_VectorsParam::CB_vect1_image( void* cd)
       surf_poly->NewVectors1();
       glc->Paint();
     Sinon
-      cerr << " Image not vectorial " << endl;
+      std::cerr << " Image not vectorial " << std::endl;
     FinSi
   FinSi
 
@@ -263,7 +263,7 @@ void Viewer3D_VectorsParam :: CB_vect2_image( void* cd)
     im = InrImage::ptr(new InrImage( (char*)glc->_GLParam._vect2_image_name.c_str()));
   }
   catch (InrImage::ErreurLecture) {
-    cerr << "Error in reading file " << glc->_GLParam._vect2_image_name << endl;
+    std::cerr << "Error in reading file " << glc->_GLParam._vect2_image_name << std::endl;
     im = InrImage::ptr();
   }
 
@@ -273,7 +273,7 @@ void Viewer3D_VectorsParam :: CB_vect2_image( void* cd)
       surf_poly->NewVectors2();
       glc->Paint();
     Sinon
-      cerr << " Image not vectorial " << endl;
+      std::cerr << " Image not vectorial " << std::endl;
     FinSi
   FinSi
 

@@ -77,7 +77,7 @@ InrImage* Func_MeanHalfSize( InrImage* in, int dimension)
     dimz = in->DimZ();
   FinSi
 
-  cout << dimx << ":" << dimy << ":" << dimz << ":\n";
+  std::cout << dimx << ":" << dimy << ":" << dimz << ":\n";
   sprintf(newname,"%s-div2.ami.gz",in->GetName());
   out = new InrImage( dimx, dimy, dimz, WT_FLOAT, newname);
   out->InitImage( 0.0);

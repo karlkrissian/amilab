@@ -132,7 +132,7 @@ float CalculAireSection :: InterpoleSurface( float* val)
     i = 0;
     TantQue (Signe(val[i])>=0)Et(i<4) Faire i++; FinTantQue
     Si i==4 Alors
-      cerr << "CalculAireSection::InterpoleSurface() \t _negatifs==1 Valeur negative non trouvee\n";
+      std::cerr << "CalculAireSection::InterpoleSurface() \t _negatifs==1 Valeur negative non trouvee\n";
       return 0;
     FinSi
     return SurfaceTriangle( val, i);
@@ -143,8 +143,8 @@ float CalculAireSection :: InterpoleSurface( float* val)
     i = 0;
     TantQue (Signe(val[i])<0)Et(i<4) Faire i++; FinTantQue
     Si i==4 Alors
-      cerr << "CalculAireSection::InterpoleSurface() \t _negatifs==3 Valeur positive non trouvee\n";
-      cerr << val[0] << " , "  << val[1] << " , "  << val[2] << " , "  << val[3] << endl;
+      std::cerr << "CalculAireSection::InterpoleSurface() \t _negatifs==3 Valeur positive non trouvee\n";
+      std::cerr << val[0] << " , "  << val[1] << " , "  << val[2] << " , "  << val[3] << std::endl;
       return 0;
     FinSi
     return (1.0-SurfaceTriangle( val, i));
@@ -156,7 +156,7 @@ float CalculAireSection :: InterpoleSurface( float* val)
     i = 0;
     TantQue (Signe(val[i])<0)Et(i<4) Faire i++; FinTantQue
     Si i==4 Alors
-      cerr << "CalculAireSection::InterpoleSurface() \t negatifs=2 Valeur positive non trouvee\n";
+      std::cerr << "CalculAireSection::InterpoleSurface() \t negatifs=2 Valeur positive non trouvee\n";
       return 0;
     FinSi
 
@@ -164,7 +164,7 @@ float CalculAireSection :: InterpoleSurface( float* val)
     j = 0;
     TantQue (Signe(val[i])>=0)Et(j<4) Faire i=(i+1)%4; j++; FinTantQue
     Si j==4 Alors
-      cerr << "CalculAireSection::InterpoleSurface() \t negatifs=2 Valeur negative non trouvee\n";
+      std::cerr << "CalculAireSection::InterpoleSurface() \t negatifs=2 Valeur negative non trouvee\n";
       return 0;
     FinSi
      
@@ -191,13 +191,13 @@ float CalculAireSection :: InterpoleSurface( float* val)
       FinSi
     //
     Sinon
-      cerr << "CalculAireSection::InterpoleSurface() \t Probleme dans l'algo ? \n";
+      std::cerr << "CalculAireSection::InterpoleSurface() \t Probleme dans l'algo ? \n";
     FinSi
 
   FinSi // _negatifs == 2
 
-  cerr << "CalculAireSection::InterpoleSurface() \t la valeur de _negatifs n'est pas";
-  cerr << " comprise entre 1 et 4 ...\n";
+  std::cerr << "CalculAireSection::InterpoleSurface() \t la valeur de _negatifs n'est pas";
+  std::cerr << " comprise entre 1 et 4 ...\n";
 
   return 0.5;
 
@@ -320,7 +320,7 @@ void CalculAireSection :: AjoutePropage( int i, int j)
 {
 
   Si GB_debug AlorsFait
-    cout << "CalculAireSection  \n";  
+   std::cout << "CalculAireSection  \n";  
 
 
   
@@ -355,7 +355,7 @@ CalculAireSection :: ~CalculAireSection( )
 {
 
   Si GB_debug AlorsFait
-    cout << "CalculAireSection ~\n";  
+   std::cout << "CalculAireSection ~\n";  
 
   delete _propage;
 
@@ -373,7 +373,7 @@ void CalculAireSection :: ChangeImage( InrImage* image)
 
 
   Si GB_debug AlorsFait
-    cout << "CalculAireSection::ChangeImage() \n";  
+   std::cout << "CalculAireSection::ChangeImage() \n";  
 
   _image_contour = image;
 
@@ -446,10 +446,10 @@ int CalculAireSection :: CalculSigne( int i, int j, int p, const Point3D point, 
     FinSi
     
     Si signe >= 0  Alors
-    //    cout << " val pos: " << val << " ";
+    //   std::cout << " val pos: " << val << " ";
        _positifs++;
     Sinon 
-    //    cout << " val neg: " << val << " ";
+    //   std::cout << " val neg: " << val << " ";
        _negatifs++;
     FinSi
 
@@ -650,11 +650,11 @@ catch (LimitesAtteintes)
   FinTantQue
 
   /*
-  cout << "********** "<< endl << endl;
-  cout << p << " " << surf_inf[p] << ":" 
+ std::cout << "********** "<< std::endl << std::endl;
+ std::cout << p << " " << surf_inf[p] << ":" 
                    << surf_sup[p] 
-                   << " interp " <<  surf_interp[p] << endl;
-  cout << "********** "<< endl << endl;
+                   << " interp " <<  surf_interp[p] << std::endl;
+ std::cout << "********** "<< std::endl << std::endl;
   */
 
   return surf_interp[p];

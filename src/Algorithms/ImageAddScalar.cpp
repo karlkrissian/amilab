@@ -73,7 +73,7 @@ void ImageAddScalar::TemplateProcess( int threadid)
   InrImage::ptr in = params.GetInput();
 
   if (_mode == 1) {
-    cout << "version 1" << endl;
+   std::cout << "version 1" << std::endl;
     // Version 1
     InrImageIteratorBase::ptr iter = in->CreateIterator();
     InrImageIterator<T>* iter1 = (InrImageIterator<T>*) iter.get();
@@ -93,7 +93,7 @@ void ImageAddScalar::TemplateProcess( int threadid)
 
   // Version 2
   if (_mode==2) {
-    cout << "version 2" << endl;
+   std::cout << "version 2" << std::endl;
     int incx,incy,incz;
     in->GetBufferIncrements(incx,incy,incz);
     T* in_data = (T*) in->GetData();

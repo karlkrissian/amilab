@@ -136,8 +136,8 @@ void CalculRepCercle :: FixeRayon( double rayon, float coeff_rayon)
 
     nb_points   = 2*nb_points2;
 
-    cout << "Rayon    = " << _rayon << endl;
-    cout << "NbPoints = " << nb_points << endl;
+   std::cout << "Rayon    = " << _rayon << std::endl;
+   std::cout << "NbPoints = " << nb_points << std::endl;
 
     coeff_cos      = new double[ nb_points2];
     coeff_sin      = new double[ nb_points2];

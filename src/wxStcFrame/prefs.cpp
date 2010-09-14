@@ -73,7 +73,7 @@ const wxChar* CppWordlist2 =
 const wxChar* CppWordlist3 =
     _T("a addindex addtogroup anchor arg attention author b brief bug c ")
     _T("class code date def defgroup deprecated dontinclude e em endcode ")
-    _T("endhtmlonly endif endlatexonly endlink endverbatim enum example ")
+    _T("endhtmlonly endif std::endlatexonly std::endlink endverbatim enum example ")
     _T("exception f$ f[ f] file fn hideinitializer htmlinclude ")
     _T("htmlonly if image include ingroup internal invariant interface ")
     _T("latexonly li line link mainpage name namespace nosubgrouping note ")

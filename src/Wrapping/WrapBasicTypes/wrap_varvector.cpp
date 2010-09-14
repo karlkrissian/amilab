@@ -100,7 +100,7 @@ BasicVariable::ptr WrapClass_VarVector::wrap_push_back::CallMember( ParamList* p
   // probably still "naive" implementation, need to check for the permanence of the smart pointer ?
   // or is it ok?
   // do we want explicit copy or reference of the variable contents ??
-  cout << "_objectptr" << _objectptr << endl; 
+ std::cout << "_objectptr" << _objectptr << std::endl; 
 
   this->_objectptr->_obj->push_back(var);
 

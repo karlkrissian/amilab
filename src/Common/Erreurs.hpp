@@ -250,7 +250,7 @@ public:
    WarningDivers( const Chaine& mess) :   ExceptionWarning(mess)
   {
    _type = WARNING_DIVERS;
-    Si GB_AfficheWarning AlorsFait cerr << *this;
+    Si GB_AfficheWarning AlorsFait std::cerr << *this;
   }
 
 }; // WarningDivers
@@ -269,7 +269,7 @@ public:
     ExceptionErreur(mess)
   {
     _type = ERREUR_DIVERS; 
-    Si GB_AfficheErreur AlorsFait cerr << *this;
+    Si GB_AfficheErreur AlorsFait std::cerr << *this;
   }
 
 }; // ErreurDivers
@@ -288,7 +288,7 @@ public:
     ExceptionErreur(mess)
   {
     _type = ERREUR_PARAMETRES;
-    Si GB_AfficheErreur AlorsFait cerr << *this;
+    Si GB_AfficheErreur AlorsFait std::cerr << *this;
   }
 
 }; // ErreurParametres
@@ -307,7 +307,7 @@ public:
     ExceptionErreur(mess)
   {
     _type = ERREUR_ALLOCATION;
-    Si GB_AfficheErreur AlorsFait cerr << *this;
+    Si GB_AfficheErreur AlorsFait std::cerr << *this;
   }
 
 }; // ErreurParametres
@@ -326,7 +326,7 @@ public:
     ExceptionErreur(mess)
   {
      _type = ERREUR_CALCUL;
-    Si GB_AfficheErreur AlorsFait cerr << *this;
+    Si GB_AfficheErreur AlorsFait std::cerr << *this;
   }
 
 }; // ErreurParametres

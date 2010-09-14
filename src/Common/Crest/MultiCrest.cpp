@@ -162,7 +162,7 @@ float MultiCrest :: Distance( const multipoint& p1, const multipoint& p2)
   }
   catch (OutOfArray)
   {
-    cout << " Distance " << p1 << "<-->" << p2 << endl;
+   std::cout << " Distance " << p1 << "<-->" << p2 << std::endl;
   }
 
   return Norme( CoordReelles(pt2-pt1)); 
@@ -253,9 +253,9 @@ void MultiCrest :: AddPoint( int x, int y, int z,
       }
       catch(OutOfArray)
       {
-        cout << "k=" << k << endl;
-        cout << "pt =" << pt << endl;
-        cout << "liste1=" << (TableauDyn<multipoint>) liste1 << endl;
+       std::cout << "k=" << k << std::endl;
+       std::cout << "pt =" << pt << std::endl;
+       std::cout << "liste1=" << (TableauDyn<multipoint>) liste1 << std::endl;
       }
     FinSi
     k++;
@@ -336,20 +336,20 @@ float MultiCrest :: Projection( const multipoint& p,
   v1.Normalise();
   }
   catch (NormeFaible) { 
-    cerr << "Projection: distance entre p1 et p2 trop faible \n";
+    std::cerr << "Projection: distance entre p1 et p2 trop faible \n";
     return PAS_DE_PROJECTION;
   }
 
   ps = v1*v2;
 
-//  cout << "Projection coeff " << ps/norme_p1p2 << endl;
+// std::cout << "Projection coeff " << ps/norme_p1p2 << std::endl;
   Si ps/norme_p1p2 < -5E-2   AlorsRetourne PROJETTE_AVANT;
   Si ps/norme_p1p2 > 1+5E-2  AlorsRetourne PROJETTE_APRES;
 
   proj.Init( p1, ps/norme_p1p2);
-//  cout << proj << endl;
-//  cout << Point(proj) << endl;
-//  cout << pt << endl;
+// std::cout << proj << std::endl;
+// std::cout << Point(proj) << std::endl;
+// std::cout << pt << std::endl;
   return Norme( CoordReelles( Point(proj)-pt));
 
 } // Projection()
@@ -380,8 +380,8 @@ float MultiCrest :: Projection( const multipoint& p,
     dist2 = Projection( p, p1, p2, proj2);
   FinSi
 
-  //  cout << "Projection " << Point(p1) <<" dist1 = " << dist1;
-  //  cout << "\t dist2 = " << dist2 << endl;
+  // std::cout << "Projection " << Point(p1) <<" dist1 = " << dist1;
+  // std::cout << "\t dist2 = " << dist2 << std::endl;
 
   Si (dist1<-0.5) Alors
     Si (dist2<-0.5) Alors
@@ -496,7 +496,7 @@ float MultiCrest :: ProjectionPlusProche( multipoint p1,
     multipoint_ligne proj;
 
   Si EstConnecte(p1) Alors
-    cout << "ProjectionPlusProche  le point est d��connecte \n";
+   std::cout << "ProjectionPlusProche  le point est d��connecte \n";
     return -1;
   FinSi
 
@@ -507,7 +507,7 @@ float MultiCrest :: ProjectionPlusProche( multipoint p1,
   y1 = (int) pt1.y;
   z1 = (int) pt1.z;
 
-//  cout << "ProjectionPlusProche()\t"
+// std::cout << "ProjectionPlusProche()\t"
 //       << pt1 << "\n";
 
   // Parcours des voxels voisins
@@ -534,7 +534,7 @@ float MultiCrest :: ProjectionPlusProche( multipoint p1,
         // Si le point est �al �un point de l'ensemble 2,
         // la ligne se prolonge et on ignore les projection �entuelles
         Si (mpt.num == 2) Et (Distance(mpt,p1) < 1E-5) Alors
-  	  cout << "Le point sur prolonge sur l'ensemble 2\n";
+  	 std::cout << "Le point sur prolonge sur l'ensemble 2\n";
           return -1;
         FinSi
 
@@ -581,7 +581,7 @@ float MultiCrest :: ProjectionPlusProche2( multipoint p1,
 
 /*
   Si EstConnecte(p1) Alors
-    cout << "ProjectionPlusProche2 le point est d��connecte \n";
+   std::cout << "ProjectionPlusProche2 le point est d��connecte \n";
     return -1;
   FinSi
 */
@@ -593,10 +593,10 @@ float MultiCrest :: ProjectionPlusProche2( multipoint p1,
   y1 = (int) pt1.y;
   z1 = (int) pt1.z;
 
-//  cout << "ProjectionPlusProche()\t"
+// std::cout << "ProjectionPlusProche()\t"
 //       << pt1 << "\n";
 
-      cout << p1 <<  endl;
+     std::cout << p1 <<  std::endl;
 
   // Parcours des voxels voisins
   Pour(x,x1-8,x1+8)
@@ -630,16 +630,16 @@ float MultiCrest :: ProjectionPlusProche2( multipoint p1,
           continue;
         FinSi
 
-//        cout << mpt <<  endl;
-//	cout <<" i="<< i << " ";
+//       std::cout << mpt <<  std::endl;
+//std::cout <<" i="<< i << " ";
 
         // Si le multipoint courant n'appartient pas a l'ensemble de
         // lignes de p1, calcul de sa distance avec p1
         dist = Projection( p1, mpt, proj);  
         Si dist>-1E-5 Alors
-	//  	  cout << " dist=" << dist << " distmin=" << distmin <<" |";
+	//  	 std::cout << " dist=" << dist << " distmin=" << distmin <<" |";
           Si (distmin==-1)Ou(dist<distmin) Alors
-	//    cout << " OK ? ";
+	//   std::cout << " OK ? ";
             distmin=dist;
             p2 = proj;
           FinSi
@@ -648,7 +648,7 @@ float MultiCrest :: ProjectionPlusProche2( multipoint p1,
       FinPour
       
 	  //      Si points.NbElts()>0 AlorsFait 
-	  //        cout << endl;
+	  //       std::cout << std::endl;
 
     FinSi
 
@@ -657,7 +657,7 @@ float MultiCrest :: ProjectionPlusProche2( multipoint p1,
   FinPour
   
 	  //  Si distmin > 0 AlorsFait
-	  //    cout << "\n distmin = " << distmin << "\n";
+	  //   std::cout << "\n distmin = " << distmin << "\n";
   return distmin;
 
 } // ProjectionPlusProche2()
@@ -728,7 +728,7 @@ void MultiCrest :: EffaceLigne( const multiligne& ligne)
     int           x,y,z;
     tab_multipoints  points;
 
-//  cout << "EffaceLigne " << num << "; " << ligne << endl;
+// std::cout << "EffaceLigne " << num << "; " << ligne << std::endl;
 
   Pour(p,0,NbPoints(ligne)-1)
 
@@ -785,7 +785,7 @@ void MultiCrest :: AjouteLigne( int num, const LigneCrest& ligne_crest)
 
   Pour( p, 0, ligne_crest.nb_points -1)
 
-    //    cout << "p=" << p << "numligne="<< numligne <<"\n";
+    //   std::cout << "p=" << p << "numligne="<< numligne <<"\n";
     multi_pt.Init( num, numligne, p);
     pt = Point( multi_pt);
 
@@ -795,8 +795,8 @@ void MultiCrest :: AjouteLigne( int num, const LigneCrest& ligne_crest)
     }
     catch(OutOfArray)
     {
-      cout << "pt=" << pt << endl;
-      cout << "multi_pt=" << multi_pt  << endl;
+     std::cout << "pt=" << pt << std::endl;
+     std::cout << "multi_pt=" << multi_pt  << std::endl;
     }
 
   FinPour
@@ -854,7 +854,7 @@ Point3D  MultiCrest :: CombLineaire( const Point3D& p1,
   
     Point3D res;
 
-//  cout << "CombLineaire " << p1 << p2 << coeff << endl;
+// std::cout << "CombLineaire " << p1 << p2 << coeff << std::endl;
 
   res.x = p1.x*coeff + p2.x*(1-coeff);
   res.y = p1.y*coeff + p2.y*(1-coeff);
@@ -896,17 +896,17 @@ void  MultiCrest :: AjouteCombLineaire
 
     double d1,d2;
 
-//  cout << "AjouteCombLineaire\t" 
+// std::cout << "AjouteCombLineaire\t" 
 //  << ligne1 << ": " << pos12 << "->" << pos11 << "\t"
-//  << ligne2 << ": " << pos22 << "->" << pos21 << endl;
+//  << ligne2 << ": " << pos22 << "->" << pos21 << std::endl;
 
   // Calculer la taille de chaque partie de ligne
   longueur1 = LongueurLigne( ligne1, pos12, pos11);
   longueur2 = LongueurLigne( ligne2, pos22, pos21);
 
-//  cout 
+// std::cout 
 //    << "longueur1 = " << longueur1
-//    << "longueur2 = " << longueur2 << endl;
+//    << "longueur2 = " << longueur2 << std::endl;
 
 
   Si longueur1>longueur2 Alors 
@@ -933,7 +933,7 @@ void  MultiCrest :: AjouteCombLineaire
     pas2=0;
   FinSi
 
-  //  cout << "pas1 " << pas1 << "pas2 " << pas2 << endl;
+  // std::cout << "pas1 " << pas1 << "pas2 " << pas2 << std::endl;
 
   nb_points = 2*((int)(lmax+1));
   dt1 = longueur1/nb_points;
@@ -986,7 +986,7 @@ void  MultiCrest :: AjouteCombLineaire
       point2 = Point(ligne2,n2);
     FinSi
 
-      //    cout << "COEFF=" << coeff1+(coeff2-coeff1)*i/nb_points << endl;
+      //   std::cout << "COEFF=" << coeff1+(coeff2-coeff1)*i/nb_points << std::endl;
     point = CombLineaire( point1, point2, coeff1+(coeff2-coeff1)*i/nb_points);
 
     // Ajout du nouveau point
@@ -999,9 +999,9 @@ void  MultiCrest :: AjouteCombLineaire
   }
   catch(OutOfArray)
   {
-    cout << "\ti= " << i << " nb_points=" << nb_points <<endl;
-    cout << "\tn1=" << n1 << "\tpas1=" << pas1 << endl;
-    cout << "\tn2=" << n2 << "\tpas2=" << pas2 << endl;
+   std::cout << "\ti= " << i << " nb_points=" << nb_points <<std::endl;
+   std::cout << "\tn1=" << n1 << "\tpas1=" << pas1 << std::endl;
+   std::cout << "\tn2=" << n2 << "\tpas2=" << pas2 << std::endl;
   } 
   FinPour
 
@@ -1035,10 +1035,10 @@ void MultiCrest :: AjouteDebutLigne( int num, LigneCrest& ligne_crest,
     pas=1;
   FinSi
 
-  //  cout << "pos11 " << pos11 << "\t pos12 " << pos12 << "\t pas " << pas << endl;
+  // std::cout << "pos11 " << pos11 << "\t pos12 " << pos12 << "\t pas " << pas << std::endl;
 
   TantQue (pos!=pos12+pas) Faire
-  //    cout << "pos = " << pos << "\n"; 
+  //   std::cout << "pos = " << pos << "\n"; 
     nouv_pt = lignes[num]->AddPoint( Point(ligne1,pos) );
     ligne_crest.liste_points += nouv_pt;
     ligne_crest.nb_points++;
@@ -1077,7 +1077,7 @@ void MultiCrest :: AjouteFinLigne( int num, LigneCrest& ligne_crest,
     posfin=0;
     pas=-1;
   Sinon
-    cerr << "Erreur \t AjouteFinLigne,  pos21 n'est pas une extremite\n";
+    std::cerr << "Erreur \t AjouteFinLigne,  pos21 n'est pas une extremite\n";
     return;
   FinSi
 
@@ -1150,16 +1150,16 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
     Point3D    p1,p2,pt_jonction;
     int     n;
 
-  cout << endl;
-  cout << "Fusionne() {\n";
-  cout << "pos11 " << pos11 << " pos12 " << pos12 << endl;
-  cout << "pos21 " << pos21 << " pos22 " << pos22 << endl;
+ std::cout << std::endl;
+ std::cout << "Fusionne() {\n";
+ std::cout << "pos11 " << pos11 << " pos12 " << pos12 << std::endl;
+ std::cout << "pos21 " << pos21 << " pos22 " << pos22 << std::endl;
 
   // Si pos21 et pos22 sont les 2 extremites de ligne2,
   // on supprime la ligne2
   Si (macro_abs(pos22-pos21)+1) == NbPoints(ligne2) Alors
 
-    cout << "cas 1\n";
+   std::cout << "cas 1\n";
     try{
 
     EffaceLigne(ligne2);
@@ -1176,18 +1176,18 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
   Si (pos21==0) Ou (pos21==NbPoints(ligne2)-1)
   Alors
 
-    cout << "cas 2\n";
+   std::cout << "cas 2\n";
     try{
 
     // Creation de la 1ere ligne
     // -----------------------------
 
     // Portion de la ligne ligne1
-    // cout << "AjouteDebutLigne \n";
+    //std::cout << "AjouteDebutLigne \n";
     AjouteDebutLigne( ligne1.Ensemble(), lr1, ligne1, pos11, pos12);
  
     // Point de jonction
-    //   cout << "jonction \n";
+    //  std::cout << "jonction \n";
     p1 = Point( ligne1, pos12);
     p2 = Point( ligne2, pos22);
     pt_jonction = CombLineaire( p1, p2, 0.5);
@@ -1206,28 +1206,28 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
 
 
     // Portion de la ligne ligne2
-    //  cout << "AjouteFinLigne \n";
+    // std::cout << "AjouteFinLigne \n";
     AjouteFinLigne( ligne2.Ensemble(), lr3, ligne2, pos21, pos22 );
 
     // Creation de la 2eme ligne
     // -----------------------------
-    //   cout << "2eme ligne, AjouteCombLineaire \n";
+    //  std::cout << "2eme ligne, AjouteCombLineaire \n";
     Si pos12 != pos11 AlorsFait
       AjouteCombLineaire( 2, lr4,
 	 		  ligne1, pos12, pos11, 0.5,
 			  ligne2, pos22, pos21, 0.5 );
     // Suppression des lignes initiales
-    //   cout << "EffaceLignes \n";
+    //  std::cout << "EffaceLignes \n";
     EffaceLigne( ligne1);
     EffaceLigne( ligne2);
 
     // Ajout des nouvelles lignes dans E0
-    //   cout << "AjouteLigne1 \n";
+    //  std::cout << "AjouteLigne1 \n";
     AjouteLigne( ligne1.Ensemble(), lr1 );
     AjouteLigne( 2,                 lr2 );
     AjouteLigne( ligne2.Ensemble(), lr3 );
 
-    //    cout << "AjouteLigne2 \n";
+    //   std::cout << "AjouteLigne2 \n";
     Si pos12 != pos11 AlorsFait
       AjouteLigne( 2, lr4);
 
@@ -1241,30 +1241,30 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
   Si (pos22==0) Ou (pos22==NbPoints(ligne2)-1)
   Alors
 
-    cout << "cas 3\n";
+   std::cout << "cas 3\n";
     try{
 
     // Portion de la ligne ligne1
-    //   cout << "AjouteDebutLigne \n";
+    //  std::cout << "AjouteDebutLigne \n";
     AjouteDebutLigne( ligne1.Ensemble(), lr1, ligne1, pos11, pos12);
 
     // Portion Commune
-    //   cout << "AjouteCombLineaire \n";
+    //  std::cout << "AjouteCombLineaire \n";
     AjouteCombLineaire( 2, lr2,
 			ligne1, pos12, pos11, 1.0,
 			ligne2, pos22, pos21, 0.0);
 
     // Portion de la ligne ligne2
-    //    cout << "AjouteFinLigne \n";
+    //   std::cout << "AjouteFinLigne \n";
     AjouteFinLigne( ligne2.Ensemble(), lr3, ligne2, pos22, pos21);
 
     // Suppression des lignes initiales
-    //   cout << " Suppression \n";
+    //  std::cout << " Suppression \n";
     EffaceLigne( ligne1);
     EffaceLigne( ligne2);
 
     // Ajout des nouvelles lignes dans E1
-    //   cout << " AjouteLigne\n";
+    //  std::cout << " AjouteLigne\n";
     AjouteLigne( ligne1.Ensemble(), lr1);
     AjouteLigne( 2, lr2);
     AjouteLigne( ligne2.Ensemble(), lr3);
@@ -1276,7 +1276,7 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
   // ---------------------------------------------------------
   Sinon
 
-    cout << "cas 4\n";
+   std::cout << "cas 4\n";
 //    cin >> n;
     try{
 
@@ -1290,7 +1290,7 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
 
     
     // Portion de la ligne ligne2
-    //    cout << "AjouteFinLigne \n";
+    //   std::cout << "AjouteFinLigne \n";
     Si pos21>pos22 Alors
       AjoutePartieLigne( ligne2.Ensemble(), lr3, ligne2, pos21, NbPoints(ligne2)-1);
       AjoutePartieLigne( ligne2.Ensemble(), lr4, ligne2, pos22, 0);
@@ -1311,7 +1311,7 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
     lr5.nb_points++;
 
     } 
-    catch (OutOfArray) {  cout << "creation lignes\n"; cin >> n;    }
+    catch (OutOfArray) { std::cout << "creation lignes\n"; cin >> n;    }
 
     try{
     
@@ -1327,11 +1327,11 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
     AjouteLigne( ligne2.Ensemble(), lr4);
     AjouteLigne( 2, lr5);
 
-    } catch (OutOfArray) {  cout << "efface - ajoute lignes\n"; cin >> n;    }
+    } catch (OutOfArray) { std::cout << "efface - ajoute lignes\n"; cin >> n;    }
 
   FinSi
 
-  cout << "} // Fusionne()\n";
+ std::cout << "} // Fusionne()\n";
 
 } // Fusionne() 
 
@@ -1405,7 +1405,7 @@ void MultiCrest :: CreeLiens( float seuil)
     float       seuil_local;
 
   Pour(l,0,lignes[0]->NbLignes()-1)
-    cout << "{ " ;
+   std::cout << "{ " ;
     Pour(p,0,lignes[0]->NbPoints(l)-1)
 
       multi_pt.num=0;
@@ -1450,9 +1450,9 @@ void MultiCrest :: CreeJonctions( )
 
 cout << "Debut CreeJonctions \n";
 
-  cout << " size x = " << _image->_size_x 
+ std::cout << " size x = " << _image->_size_x 
        << " size y = " << _image->_size_y 
-       << " size z = " << _image->_size_z << endl;
+       << " size z = " << _image->_size_z << std::endl;
 
   Pour(l,0,lignes[0]->NbLignes()-1)
 
@@ -1478,7 +1478,7 @@ cout << "Debut CreeJonctions \n";
     nouvelle_ligne = Crest::AjouteLigne( (const Crest&) (*lignes[0]),l);
 
 
-    cout << " l = " << l+1  << " / " << lignes[0]->NbLignes() << "\n";
+   std::cout << " l = " << l+1  << " / " << lignes[0]->NbLignes() << "\n";
     CreeJonction( nouvelle_ligne, l, 0);
     CreeJonction( nouvelle_ligne, l, lignes[0]->NbPoints(l)-1);
   FinPour
@@ -1512,14 +1512,14 @@ void MultiCrest :: CreeJonction( int nouv_l, int l , int pos)
 
   C3 = distance = ProjectionPlusProche2( multi_pt, proj);
   Si distance>0 Alors
-    cout << "E2 ... d=" << distance << endl;
+   std::cout << "E2 ... d=" << distance << std::endl;
     try {
       pt  = Point(proj);
       pt2 = Point(multi_pt);
     }
     catch (ExceptionBadPointNumber)
     {
-      cerr << "CreeProjections : probleme .. \n";
+      std::cerr << "CreeProjections : probleme .. \n";
       cin >> n;
       return;
     }
@@ -1527,10 +1527,10 @@ void MultiCrest :: CreeJonction( int nouv_l, int l , int pos)
 //    Si distance < pt.rayon*1.1 + 1.7 Alors
     Si distance < pt.rayon Alors
 
-      cout << "Nouvelle jonction  ligne " << nouv_l << " Points "<< pt << "||" << pt2 << endl;
+     std::cout << "Nouvelle jonction  ligne " << nouv_l << " Points "<< pt << "||" << pt2 << std::endl;
 
       Si pos == 0 Alors
-        cout << "Reorientation \n";
+       std::cout << "Reorientation \n";
         ReOrienteLigne( nouv_l);
       FinSi
 
@@ -1546,9 +1546,9 @@ void MultiCrest :: CreeJonction( int nouv_l, int l , int pos)
 
     Sinon
 
-      cerr << "distance = "    << distance 
+      std::cerr << "distance = "    << distance 
            << " proj.rayon = " << pt.rayon 
-           << " point.rayon = " << pt2.rayon << endl;
+           << " point.rayon = " << pt2.rayon << std::endl;
 
 //      AjouteSegment( Point(multi_pt), pt);
 
@@ -1570,12 +1570,12 @@ void MultiCrest :: CreeProjections( )
     float                distance;
     Point3D             pt;
 
-  cout << " size x = " << _image->_size_x 
+ std::cout << " size x = " << _image->_size_x 
        << " size y = " << _image->_size_y 
-       << " size z = " << _image->_size_z << endl;
+       << " size z = " << _image->_size_z << std::endl;
 
   Pour(l,0,lignes[0]->NbLignes()-1)
-    cout << "{ " ;
+   std::cout << "{ " ;
     Pour(p,0,lignes[0]->NbPoints(l)-1)
 
       multi_pt.num=0;
@@ -1589,14 +1589,14 @@ void MultiCrest :: CreeProjections( )
         }
         catch (ExceptionBadPointNumber)
         {
-          cerr << "CreeProjections : probleme .. \n";
+          std::cerr << "CreeProjections : probleme .. \n";
           cin >> n;
           continue;
         }
         Si distance < pt.rayon Alors
           AjouteSegment( Point(multi_pt), pt);
         Sinon
-  	  cerr << "distance = " << distance << " proj.rayon = " << pt.rayon << endl;
+  	  std::cerr << "distance = " << distance << " proj.rayon = " << pt.rayon << std::endl;
           AjouteSegment( Point(multi_pt), pt);
         FinSi
       FinSi
@@ -1624,7 +1624,7 @@ void MultiCrest :: CreeResultat( )
   l.Init(0,0);
   Repeter
 
-  //    cout << "ligne =" << l.ligne << "\t";
+  //   std::cout << "ligne =" << l.ligne << "\t";
     connection_trouvee = false;
 
     // ---------------------------------------
@@ -1760,14 +1760,14 @@ void MultiCrest :: Projete(
 //    char             nom_fichier[100];
     unsigned char          modif = false;
 
-  cout << endl;
-  cout << "lignes de l'ensemble " << e1 << "\n";
-  cout << "--------------------\n";
-  cout << endl;
+ std::cout << std::endl;
+ std::cout << "lignes de l'ensemble " << e1 << "\n";
+ std::cout << "--------------------\n";
+ std::cout << std::endl;
   l.Init( e1,  0);
   Repeter
 
-  //    cout << "Repeter\n";
+  //   std::cout << "Repeter\n";
   //  Si modif Alors
   //    sprintf(nom_fichier,"etape%d.0.crest",l);
   //    lignes[0]->Sauve(nom_fichier);
@@ -1785,11 +1785,11 @@ void MultiCrest :: Projete(
       break;
     FinSi
 
-    cout << "l=" << l << "/" << lignes[e1]->NbLignes() << endl;
+   std::cout << "l=" << l << "/" << lignes[e1]->NbLignes() << std::endl;
 //    cin >> n;
 
    Si (l.num ==1)Et (l.ligne == 88) Alors
-     cout << "break\n";
+    std::cout << "break\n";
    FinSi
 
 	
@@ -1805,10 +1805,10 @@ void MultiCrest :: Projete(
     Si distance2>0 AlorsFait
       Si distance2 > Point(proj_e2).rayon AlorsFait distance2 = -1;
 
-    cout
+   std::cout
          << "distance1 " << distance1
         << "\tdistance2 " << distance2
-         << endl;
+         << std::endl;
 //    cin >> n;
 
     // Cas 1: Aucune extremite ne se projette,
@@ -1830,7 +1830,7 @@ void MultiCrest :: Projete(
       EffaceLigne( l);
       // Desactiver les points de la ligne dans l'image ...
 
-      cout << "Suppression de la ligne "<<  l << endl;
+     std::cout << "Suppression de la ligne "<<  l << std::endl;
       continue;
     FinSi
 
@@ -1863,11 +1863,11 @@ void MultiCrest :: Projete(
       n1--;
     }
     catch (OutOfArray) {
-      cout << "pb\n";
+     std::cout << "pb\n";
     }
 
       Fusionne( l,n0,n1, Ligne(proj_e1), m0, m1, e3 );
-//  cout << "continue\n";
+// std::cout << "continue\n";
       modif=true;
       continue;
     FinSi
@@ -1906,7 +1906,7 @@ void MultiCrest :: Projete(
   JusquA (l.ligne>lignes[e1]->NbLignes()-1)  
   FinRepeter
 
-  cout << "fin\n";
+ std::cout << "fin\n";
 
 } // Projete()
 

@@ -341,14 +341,16 @@ public:
     _left_down = true;  event.Skip(); 
   }
 
-  void OnLeftUp(        wxMouseEvent& event) 
+  void OnLeftUp(        wxMouseEvent& event);
+/*
   {
-    cout << "OnLeftUp" << endl;
+   std::cout << "OnLeftUp" << std::endl;
     _left_down = false; 
     _previous_crosshair = false;
     DrawingAreaDisplay();
     event.Skip(); 
   }
+*/
 
   void OnRightDown(     wxMouseEvent& event);
   void OnMotion(        wxMouseEvent& event);

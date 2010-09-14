@@ -92,9 +92,9 @@ void Func_LevelSets_InitParam(
   
 
   curv = vtk_new<vtkLevelSets> ()();
-  cout  << "curv reference count (just after constructor)"
+ std::cout  << "curv reference count (just after constructor)"
         << curv->GetReferenceCount()
-        << endl;
+        << std::endl;
 
   //  curv->SetConvergedThresh( conv_th);
 
@@ -205,29 +205,29 @@ InrImage* Func_LevelSets_Init(InrImage* in,
   // Initialize the evolution
   image_input  = (vtkImageData_ptr) (*in);
 
-  cout  << "input reference count "
+ std::cout  << "input reference count "
         << image_input->GetReferenceCount()
-        << endl;
+        << std::endl;
 
   image_output = vtk_new<vtkImageData>()();
 
   curv->InitParam( image_input.get(), image_output.get());
 
   if (!initimage.use_count()) {
-    cout << " ************************** " << endl;
-    cout << " ************************** " << endl;
-    cout << " ************************** " << endl;
+   std::cout << " ************************** " << std::endl;
+   std::cout << " ************************** " << std::endl;
+   std::cout << " ************************** " << std::endl;
     initimage = (vtkImageData_ptr) (*initImage);
-  cout  << "initimage reference count "
+ std::cout  << "initimage reference count "
         << initimage->GetReferenceCount()
-        << endl;
+        << std::endl;
   }
 
   curv->SetinitImage(initimage.get());
 
-  cout  << "initimage reference count "
+ std::cout  << "initimage reference count "
         << initimage->GetReferenceCount()
-        << endl;
+        << std::endl;
 
   curv->SetInitThreshold(0);
   curv->InitEvolution();
@@ -624,7 +624,7 @@ void      Func_LevelSetsVelocity( InrImage* vel, float coeff)
     curv->Setvelocity(velocity.get());
     curv->Setcoeff_velocity(coeff);
   } else {
-    cerr << "Func_LevelSetsVelocity() level set class not allocated ! " << endl;
+    std::cerr << "Func_LevelSetsVelocity() level set class not allocated ! " << std::endl;
     return;
   }
 #else
@@ -668,21 +668,21 @@ void     Func_LevelSets_End()
 
   curv->EndEvolution();
 
-  cout  << "curv reference count "
+ std::cout  << "curv reference count "
         << curv->GetReferenceCount()
-        << endl;
+        << std::endl;
   
   curv            .reset();
-  cout  << "input reference count "
+ std::cout  << "input reference count "
         << image_input->GetReferenceCount()
-        << endl;
+        << std::endl;
   image_input           .reset();
   velocity        .reset();
   expansion_image .reset();
   image_output          .reset();
-  cout  << "initimage reference count "
+ std::cout  << "initimage reference count "
         << initimage->GetReferenceCount()
-        << endl;
+        << std::endl;
   initimage       .reset();
 
   // should probably copy the resulting data

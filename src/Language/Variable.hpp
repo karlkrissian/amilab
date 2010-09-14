@@ -307,7 +307,7 @@ private:
   bool FreeMemory()
   {
     if ((_pointer.use_count()>1)&&(GB_debug)) {
-      CLASS_ERROR( format("variable %1% is referenced %2% times")  % _name % _pointer.use_count() );
+      CLASS_ERROR( boost::format("variable %1% is referenced %2% times")  % _name % _pointer.use_count() );
     }
     _pointer.reset();
     return true;

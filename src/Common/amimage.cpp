@@ -241,8 +241,8 @@ bool check_value( const string& line,
   bool result=false;
 
   // get rid of lower cases on the left side of '='
-  //cout << "**" << line2 << "**" << endl;
-  //cout << st + string(" = ")+format << endl;
+  //cout << "**" << line2 << "**" << std::endl;
+  //cout << st + string(" = ")+format << std::endl;
   try {
     boost::regex e(string("(\\w+)\\s*=\\s*")+format);
     result = boost::regex_search(line, what, e);
@@ -254,23 +254,23 @@ bool check_value( const string& line,
     string line2= regex_replace(first_part, lower_case, "",
                                 boost::match_default | boost::format_sed);
     if (line2.compare(st)!=0) {
-      //cout << "no match for " << st << endl;
+      //cout << "no match for " << st << std::endl;
       return false;
     }
   } catch (boost::regex_error& e)
   {
-      cout << " not a valid regular expression: \""
-          << e.what() << "\"" << endl;
+     std::cout << " not a valid regular expression: \""
+          << e.what() << "\"" << std::endl;
   }
 
   if (result) {
     stringstream ssout(what[2]);
     ssout>>val;
-    cout << st << " = " << val << endl;
+   std::cout << st << " = " << val << std::endl;
     found = true;
     return true;
   }
-  cout << "no match for " << st << endl;
+ std::cout << "no match for " << st << std::endl;
   return false;
 }
 
@@ -301,13 +301,13 @@ bool check_enum( const string&   line,
     string line2= regex_replace(first_part, lower_case, "",
                                 boost::match_default | boost::format_sed);
     if (line2.compare(st)!=0) {
-      //cout << "no match for " << st << endl;
+      //cout << "no match for " << st << std::endl;
       return false;
     }
   } catch (boost::regex_error& e)
   {
-      cout << " not a valid regular expression: \""
-          << e.what() << "\"" << endl;
+     std::cout << " not a valid regular expression: \""
+          << e.what() << "\"" << std::endl;
   }
 
   if (result) {
@@ -317,13 +317,13 @@ bool check_enum( const string&   line,
       if ((*i).compare(what[2])==0) {
         int val_int = i-enum_strings.begin();
         val = T(val_int);
-//        cout << st << " = " << enum_strings[val] << endl;
+//       std::cout << st << " = " << enum_strings[val] << std::endl;
         found = true;
         return true;
       }
     }
   }
-  cout << "no match for " << st << endl;
+ std::cout << "no match for " << st << std::endl;
   return false;
 }
 
@@ -571,8 +571,8 @@ void amimage::displayinfo()
   printf(" Translation = ( %f %f %f )\n",
      transl_x, transl_y, transl_z);
 
-  cout << boost::format(" representation = %s\n")% repres_string[repres];
-  cout << boost::format(" type = %s\n") % type_string[type];
+ std::cout << boost::format(" representation = %s\n")% repres_string[repres];
+ std::cout << boost::format(" type = %s\n") % type_string[type];
 
 }
 
@@ -762,7 +762,7 @@ unsigned char  amimage::readheader( const char* filename)
         boost::regex e("\\)");
         end_header = boost::regex_search(string(line), what, e);
         if (!end_header)
-          cerr << "amimage::readheader() line not recognized \n" << endl;
+          std::cerr << "amimage::readheader() line not recognized \n" << std::endl;
       }
 
     } // end_header
@@ -919,7 +919,7 @@ unsigned char  amimage::readdata_ext( )
       // Use file prefix, kept for compatibility ...
       fname = (boost::format("%s.%03d")%file_prefix
                                 %(first_slice+z)).str();
-      cout << "fname = " << fname << endl;
+     std::cout << "fname = " << fname << std::endl;
       // check for existence of the file
       if( !bf::exists(bf::path(fname)) )  {
         fname = fname+".gz";
@@ -929,9 +929,9 @@ unsigned char  amimage::readdata_ext( )
           if( !bf::exists(bf::path(fname)) )  {
             fname = fname+".gz";
             if (!bf::exists(bf::path(fname))) {
-              cerr  << " File with prefix " << file_prefix
+              std::cerr  << " File with prefix " << file_prefix
                     << " number " << first_slice+z
-                    << " not found ..." << endl;
+                    << " not found ..." << std::endl;
               return 0;
             }
           }
@@ -953,25 +953,25 @@ unsigned char  amimage::readdata_ext( )
         // try compressed file
         fname = fname + ".gz";
         if( !bf::exists(bf::path(fname)) ) {
-          cerr  << " File with prefix " << file_format
+          std::cerr  << " File with prefix " << file_format
                 << " number " << first_slice+z
-                << " not found ..." << endl;
+                << " not found ..." << std::endl;
           return 0;
         }
       }
     }
 
     if (!open_file(fname.c_str())) {
-      cerr << " File " << fname << " could not be openned" << endl;
+      std::cerr << " File " << fname << " could not be openned" << std::endl;
     }
     if ( z==0 )
     {
       // figure out the header size
       file_str->seekg (0, ios::end);
       header_size = (int)(file_str->tellg())-slice_size;
-      cout << " stream pos  = " << file_str->tellg() << endl;
-      cout << " header size = " << header_size << endl;
-      cout << " slice_size  = " << slice_size << endl;
+     std::cout << " stream pos  = " << file_str->tellg() << std::endl;
+     std::cout << " header size = " << header_size << std::endl;
+     std::cout << " slice_size  = " << slice_size << std::endl;
     }
 
     // read the header
@@ -991,7 +991,7 @@ unsigned char  amimage::readdata_ext( )
     // Go back to the beginning of the data
     file_str->seekg (-((int)slice_size), ios::end);
     file_str->read ( (char*) ptr,slice_size );
-    cout << " size read " << file_str->gcount() << endl;
+   std::cout << " size read " << file_str->gcount() << std::endl;
 
     if ( GB_debug ) fprintf ( stderr,"amimage::readdata_ext( ) open STD finished\n" );
     close_file();
@@ -1076,8 +1076,8 @@ unsigned char  amimage::readdata3D_ext( )
     if( !bf::exists(bf::path(fname)) )  {
       fname = fname+".gz";
       if (!bf::exists(bf::path(fname))) {
-            cerr  << " File " << file_prefix
-                  << " not found ..." << endl;
+            std::cerr  << " File " << file_prefix
+                  << " not found ..." << std::endl;
             return 0;
       }
     }
@@ -1090,8 +1090,8 @@ unsigned char  amimage::readdata3D_ext( )
     if( !bf::exists(bf::path(fname)) )  {
       fname = fname+".gz";
       if (!bf::exists(bf::path(fname))) {
-            cerr  << " File " << file_format
-                  << " not found ..." << endl;
+            std::cerr  << " File " << file_format
+                  << " not found ..." << std::endl;
             return 0;
       }
     }
@@ -1099,7 +1099,7 @@ unsigned char  amimage::readdata3D_ext( )
 
 
   if (!open_file(fname.c_str())) {
-    cerr << " File " << fname << " could not be openned" << endl;
+    std::cerr << " File " << fname << " could not be openned" << std::endl;
   }
 
   // figure out the header size
@@ -1160,18 +1160,18 @@ unsigned char  amimage::readdata( )
 
   allocate();
 
-  cerr << "pos=" << file_str->tellg() << endl;
+  std::cerr << "pos=" << file_str->tellg() << std::endl;
   streamoff offset = -streamoff(data_size);
-  cerr << "off=" << offset << endl;
+  std::cerr << "off=" << offset << std::endl;
   file_str->seekg(offset, ios::end);
-  cerr << "pos=" << file_str->tellg() << endl;
+  std::cerr << "pos=" << file_str->tellg() << std::endl;
   file_str->read((char*) data, data_size);
-  cerr << "pos=" << file_str->tellg() << endl;
+  std::cerr << "pos=" << file_str->tellg() << std::endl;
 
   if(file_str->gcount() != (streamsize) data_size) {
-    cerr << "amimage::readdata()\t Error reading data \n";
-    cerr << "\t "<< file_str->gcount() << " characters have been read";
-    cerr << "\t "<< data_size << " was expected.";
+    std::cerr << "amimage::readdata()\t Error reading data \n";
+    std::cerr << "\t "<< file_str->gcount() << " characters have been read";
+    std::cerr << "\t "<< data_size << " was expected.";
     return false;
   }
 
@@ -1194,7 +1194,7 @@ void  amimage::swap_bytes( )
   register unsigned char  tmp;
   register unsigned char  b;
 
-  cout << "swapping bytes " << endl;
+ std::cout << "swapping bytes " << std::endl;
 
   if (!this->data_allocated) {
     fprintf(stderr,"amimage::swap_bytes() \t Error: data not allocated \n");
@@ -1258,7 +1258,7 @@ unsigned char  amimage::writeheader( const char* filename,
   int i = strlen(filename);
   #ifdef AMI_USE_ZLIB
     if(!strncmp(filename+i-3, ".gz", 3)) {
-      cout << "adding gzip compressor" << endl;
+     std::cout << "adding gzip compressor" << std::endl;
       out.push(gzip_compressor());
     }
   #endif
@@ -1310,7 +1310,7 @@ unsigned char  amimage::writedata(filtering_ostream& out)
   out.write((char*)data, data_size);
 
   if (out.bad()) {
-    cerr << "amimage::writedata() \t error writting data !";
+    std::cerr << "amimage::writedata() \t error writting data !";
     //  << format("%d bytes written out of %d \n") % written %data_size);
   }
 
