@@ -1414,40 +1414,40 @@ InrImageIteratorBase::ptr InrImage::CreateIterator()
     case WT_RGB: 
     case WT_RGBA: 
     case WT_UNSIGNED_CHAR: 
-      return InrImageIteratorBase::ptr(
+      return InrImageIterator<unsigned char>::ptr(
           new InrImageIterator<unsigned char>(this));
     break;
     case WT_UNSIGNED_SHORT:
-      return InrImageIteratorBase::ptr(
+      return InrImageIterator<unsigned short>::ptr(
           new InrImageIterator<unsigned short>(this));
     break;
     case WT_SIGNED_SHORT  : 
-      return InrImageIteratorBase::ptr(
+      return InrImageIterator<short>::ptr(
           new InrImageIterator<short>(this));
     break;
     case WT_UNSIGNED_INT  :
-      return InrImageIteratorBase::ptr(
+      return InrImageIterator<unsigned int>::ptr(
           new InrImageIterator<unsigned int>(this));
     break;
     case WT_SIGNED_INT  : 
-      return InrImageIteratorBase::ptr(
+      return InrImageIterator<int>::ptr(
           new InrImageIterator<int>(this));
     break;
     case WT_UNSIGNED_LONG  :
-      return InrImageIteratorBase::ptr(
+      return InrImageIterator<unsigned long>::ptr(
           new InrImageIterator<unsigned long>(this));
     break;
     case WT_SIGNED_LONG  : 
-      return InrImageIteratorBase::ptr(
+      return InrImageIterator<long>::ptr(
           new InrImageIterator<long>(this));
     break;
     case WT_FLOAT : 
     case WT_FLOAT_VECTOR :
-      return InrImageIteratorBase::ptr(
+      return InrImageIterator<float>::ptr(
           new InrImageIterator<float>(this));
     break;
     case WT_DOUBLE :
-      return InrImageIteratorBase::ptr(
+      return InrImageIterator<double>::ptr(
           new InrImageIterator<double>(this));
     default:
       CLASS_ERROR(boost::format(" format not processed ... (%1%) \n")%_format);

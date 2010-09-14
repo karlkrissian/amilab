@@ -23,6 +23,8 @@ template<class T>
 class InrImageIterator : public InrImageIteratorBase
 {
 
+  DEFINE_TEMPLATE_CLASS1(InrImageIterator,T);
+
 protected:
   // image format
   // pointer to image data

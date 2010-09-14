@@ -37,6 +37,7 @@
 #include "FenetreDessin.hpp"
 #include "StringUtils.hpp"
 #include "amilab_messages.h"
+#include "InrImageIterator.h"
 
 // TODO: get rid of the need of the X11 display
 
@@ -214,9 +215,10 @@ void FenetreDessin::AfficheFenetre( )
 
 
 //-------------------------------------------------------------------------
-InrImage* FenetreDessin :: GetInrImage()
-//                                   -----------
+InrImage* FenetreDessin ::GetInrImage()
+//                        -----------
 {
+/*
 #if defined(__WXMOTIF__)
     XImage*   image;
     unsigned char   image_recuperee = false;
@@ -249,10 +251,37 @@ InrImage* FenetreDessin :: GetInrImage()
   Si image_recuperee AlorsFait XDestroyImage(image);
 
   return result;
-#else
-  std::cerr << "FenetreDessin::GetInrImage() \t not yet available in this platform :( ..." << std::endl;
-  return NULL;
-#endif
+*/
+
+  if (_bitmap.get()) {
+    // convert bitmap to wximage
+    wxImage image(_bitmap->ConvertToImage());
+
+    wxCoord x,y;
+    wxColour color;
+    InrImage* result=new InrImage(image.GetWidth(),
+                                  image.GetHeight(),1,
+                                  WT_RGB);
+    unsigned char* data = image.GetData();
+
+    InrImageIterator<unsigned char>::ptr it = boost::dynamic_pointer_cast<InrImageIterator<unsigned char> >(result->CreateIterator());
+
+    it->InitBuffer();
+    for (y=0; y< result->DimY(); y++) {
+      for (x=0; x< result->DimX() ; x++) {
+        it->SetValue(0,*(data++));
+        it->SetValue(1,*(data++));
+        it->SetValue(2,*(data++));
+        (*it)++;
+      }
+    }
+    return result;
+    
+  } else 
+  {
+    CLASS_ERROR("Window not ready for capture ...");
+    return NULL;
+  }
 } // GetInrImage()
 
 
