@@ -10,6 +10,8 @@
 
 #include "amilab_messages.h"
 
+using namespace amilab;
+
 #define MAX_ISOCONTOURS 3
 
 //----------------------------------------------------

@@ -35,6 +35,7 @@
 #include "IsoContour2.hpp"
 #include "VarContexts.hpp"
 #include "Viewer3D.hpp"
+#include "isosurface.hpp"
 
 #include <wx/textdlg.h>
 

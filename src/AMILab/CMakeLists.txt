@@ -17,7 +17,6 @@ include_directories (
   ${wxParams_INCLUDE_DIRS}
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow/src
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
 )
 
 

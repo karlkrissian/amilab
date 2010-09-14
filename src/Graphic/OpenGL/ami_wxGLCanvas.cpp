@@ -12,6 +12,9 @@
 #include "Voxels.h"
 #include "VolumeRender.hpp"
 #include "Viewer3D.hpp"
+using namespace amilab;
+
+#include "isosurface.hpp"
 
 #include "Viewer3D_PointParam.h"
 

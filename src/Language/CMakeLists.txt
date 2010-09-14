@@ -7,18 +7,16 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
+  ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
+  ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/libamiFluid
   ${AMILAB_SOURCE_DIR}/libamiFluid/opticflow/
   ${AMILAB_SOURCE_DIR}/JavierHornSchunck
-  ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
-  ${AMILAB_SOURCE_DIR}/Wrapping/include
-  ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}/
   ${wxParams_INCLUDE_DIRS}
   )

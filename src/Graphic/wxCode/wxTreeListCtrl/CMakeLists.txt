@@ -1,6 +1,6 @@
 
 include_directories (
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   )
 
 INCLUDE(${wxWidgets_USE_FILE})
@@ -10,7 +10,7 @@ SET(wxTreeListCtrl_SRCS
 )
 
 SET(wxTreeListCtrl_HDRS
-  treelistctrl.h
+  ../../include/treelistctrl.h
 )
 
 SET(wxTreeListCtrl_SRCS

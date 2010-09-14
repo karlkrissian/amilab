@@ -8,8 +8,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/include
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
-  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 

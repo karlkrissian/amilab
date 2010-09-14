@@ -35,16 +35,16 @@
 
 //--- string formatting using boost
 #include <iostream>
-#include <iomanip>
-#include <cassert>
+//#include <iomanip>
+//#include <cassert>
 #include "boost/format.hpp"
 
 #include <boost/shared_ptr.hpp>
-#include <boost/shared_array.hpp>
+//#include <boost/shared_array.hpp>
 #include <boost/weak_ptr.hpp>
 #include <list>
 #include <vector>
-#include <stdio.h>
+//#include <stdio.h>
  
 // TODO: deal with templates here ...
 #define DEFINE_CLASS(class) \

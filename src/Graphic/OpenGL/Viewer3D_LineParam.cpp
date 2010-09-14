@@ -3,6 +3,7 @@
 #include "Viewer3D.hpp"
 #include "ParamPanel.hpp"
 #include "Viewer3D_LineParam.h"
+using namespace amilab;
 
 //----------------------------------------------------
 Viewer3D_LineParam::Viewer3D_LineParam(Viewer3D* parent): ParamPanel(parent, "Line Parameters")

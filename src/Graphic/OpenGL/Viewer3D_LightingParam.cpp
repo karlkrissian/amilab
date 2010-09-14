@@ -4,6 +4,7 @@
 #include "ParamPanel.hpp"
 #include "Viewer3D_LightingParam.h"
 
+using namespace amilab;
 
 Viewer3D_LightingParam::Viewer3D_LightingParam(Viewer3D* parent): 
       ParamPanel(parent->GetParamBook(), 

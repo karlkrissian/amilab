@@ -6,19 +6,19 @@
 //#include "DessinImage.hpp"
 //#include "Viewer3D.hpp"
 //#include "paramlist.h"
-#include <string>
-#include <iostream>
 
 #include "DefineClass.hpp"
 
+#include <string>
+#include <iostream>
 #include "amilab_messages.h"
 #include "vartype.h"
 //#include "paramlist.h"
 #include "BasicVariable.h"
 #include <limits>
 
-#include <vector>
-#include <list>
+//#include <vector>
+//#include <list>
 #include <boost/pointer_cast.hpp>
 
 // forward definition of Variables

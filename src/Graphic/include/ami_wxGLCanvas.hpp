@@ -16,7 +16,8 @@
   #include <windows.h>
 #endif
 
-#include "inrimage.hpp"
+class InrImage;
+//#include "inrimage.hpp"
 
 #include "DefineClass.hpp"
 #include <list>
@@ -49,14 +50,16 @@
     #error "OpenGL required: set wxUSE_GLCANVAS to 1 and rebuild the library"
 #endif
 
-#include "wx/glcanvas.h"
-#include "wx/sizer.h"
 
 #if wxUSE_GLCANVAS
 #include "wx/glcanvas.h"
 #include "wx/sizer.h"
 
 
+#include "surface.hpp"
+#include "GLparam.hpp"
+//#include "inrimage.hpp"
+//#include "isosurface.hpp"
 
 // disabled because this has apparently changed in OpenGL 1.2, so doesn't link
 // correctly if this is on...
@@ -65,11 +68,6 @@
 #endif
 
 
-#include "GLparam.hpp"
-#include "inrimage.hpp"
-#include "isosurface.hpp"
-#include "surface.hpp"
-using namespace amilab;
 
 
 #include <fstream>
@@ -268,10 +266,10 @@ public:
 
    //-----------------------------------------------------
 
-   Surface       _surf;
+   amilab::Surface       _surf;
 
-   GLObject::ptr_list  _globject;
-   GLObject::ptr       _current_globject;
+   amilab::GLObject::ptr_list  _globject;
+   amilab::GLObject::ptr       _current_globject;
 
    int        _type_surface;
 
@@ -334,20 +332,20 @@ public:
 
   void UpdateObjectList();
 
-  GLObject::ptr  GetGLObject(int i);
+  amilab::GLObject::ptr  GetGLObject(int i);
   int           GetCurrentObjectNum();
   int           SetCurrentObject( int i);
 //  void ChargeIsosurface( Chaine nom_fichier);
 
-  void AddSurface   ( SurfacePoly::ptr surf);
+  void AddSurface   ( boost::shared_ptr<amilab::SurfacePoly> surf);
 
-  void RemoveSurface( SurfacePoly::ptr surf);
+  void RemoveSurface( boost::shared_ptr<amilab::SurfacePoly> surf);
 
   void SetVectors1( InrImage::ptr v1);
   void SetVectors2( InrImage::ptr v2);
 
 //  void LitVRML( Chaine nom_fichier);
-  SurfacePoly::ptr CreeIsosurface(  InrImage::ptr image, float seuil, InrImage* mask = NULL );
+  boost::shared_ptr<amilab::SurfacePoly> CreeIsosurface(  InrImage::ptr image, float seuil, InrImage* mask = NULL );
   void SetColors(  InrImage* image, float min, float max);
 
   void CreeImageSurface(  InrImage::ptr image, int planZ, float zscale,
@@ -422,7 +420,7 @@ public:
   void DessineSurface();
   void DessineSurface2();
 
-  void DisplayObject(GLObject::ptr& obj);
+  void DisplayObject(amilab::GLObject::ptr& obj);
   void DisplayObjects();
 
   void NewVolumeVectors1();

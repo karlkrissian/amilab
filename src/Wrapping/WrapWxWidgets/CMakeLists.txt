@@ -7,11 +7,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})

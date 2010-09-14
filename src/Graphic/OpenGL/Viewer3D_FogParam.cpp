@@ -4,6 +4,7 @@
 #include "ParamPanel.hpp"
 #include "Viewer3D_FogParam.h"
 
+using namespace amilab;
 
 //----------------------------------------------------
 Viewer3D_FogParam::Viewer3D_FogParam(Viewer3D* parent): ParamPanel(parent, "Fog")

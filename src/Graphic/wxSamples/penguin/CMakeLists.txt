@@ -3,7 +3,7 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/wxSamples/penguin
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${GLEXT_INCLUDE_DIR}
   )
 
@@ -16,9 +16,9 @@ SET(penguin_SRCS
 )
 
 SET(penguin_HDRS
-	dxfrenderer.h
-	penguin.h
-	trackball.h
+  ../../include/dxfrenderer.h
+  ../../include/penguin.h
+  ../../include/trackball.h
 )
 
 SET(penguin_SRCS

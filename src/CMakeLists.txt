@@ -349,9 +349,7 @@ add_subdirectory (Common)
 #add_subdirectory (DistTransf)
 add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
-add_subdirectory (wxSamples/penguin)
 add_subdirectory (wxStcFrame)
-add_subdirectory (wxCode/wxTreeListCtrl)
 add_subdirectory (AMILab)
 
 IF(AMI_USE_VTK)
@@ -378,7 +376,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/wxStcFrame
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}

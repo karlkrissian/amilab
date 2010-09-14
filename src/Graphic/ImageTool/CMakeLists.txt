@@ -10,7 +10,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/ImageTool
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${wxParams_INCLUDE_DIRS}
   )
 

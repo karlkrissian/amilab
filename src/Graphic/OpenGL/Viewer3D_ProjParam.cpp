@@ -7,6 +7,7 @@
 #include "proj_ortho.xpm"
 #include "proj_persp.xpm"
 
+using namespace amilab;
 
 Viewer3D_ProjParam::Viewer3D_ProjParam(Viewer3D* parent): 
   ParamPanel(parent->GetParamBook(),"Proj")
