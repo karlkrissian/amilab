@@ -658,7 +658,7 @@ void vtkImagePropagateDist2::PropagateDanielsson2D( )
   register int       ny[8];
   register int       l;
   register int       tp;
-  register int       p, k, pn;
+  register int       p,pn; //, k
 
   int                x0, y0, x1, y1;
   float                dxp, dyp;
@@ -1650,7 +1650,7 @@ void vtkImagePropagateDist2::PropagateDanielsson3D_new( )
     list_remaining_trial.clear();
     i = 0;
 
-    printf ( "list1_size = %9d \n", list1.size() );
+    printf ( "list1_size = %9d \n", (int)list1.size() );
 
     for ( int_list_it it = list1.begin();
           it != list1.end();

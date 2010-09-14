@@ -7,7 +7,6 @@ MESSAGE("***** Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
 include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
 )

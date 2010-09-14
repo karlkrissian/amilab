@@ -4,7 +4,7 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}
-  ${AMILAB_SOURCE_DIR}/Common
+  ${AMILAB_SOURCE_DIR}/Common/include
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}

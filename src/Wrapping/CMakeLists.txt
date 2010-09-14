@@ -5,7 +5,7 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/include
-  ${AMILAB_SOURCE_DIR}/Common
+  ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Language
   ${Boost_INCLUDE_DIR}
   )

@@ -39,7 +39,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
     const boost::shared_ptr<DessinImage>& GetObj() const { return WrapClass<DessinImage>::GetObj(); }
 
     /// Constructor
-    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si): WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si)
+    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass_FenetreDessin(si), WrapClass<DessinImage>(si)
     {}
 
     /// Destructor

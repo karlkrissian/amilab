@@ -3,7 +3,7 @@ INCLUDE(${wxWidgets_USE_FILE})
 
 include_directories (
   ${wxParams_INCLUDE_DIRS}
-  ${AMILAB_SOURCE_DIR}/wxStcFrame
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${GLEXT_INCLUDE_DIR}
   )
 
@@ -15,9 +15,9 @@ SET(wxStcFrame_SRCS
 )
 
 SET(wxStcFrame_HDRS
-  defsext.h
-  wxEditor.h
-  prefs.h
+  ../include/defsext.h
+  ../include/wxEditor.h
+  ../include/prefs.h
 )
 
 SET(wxStcFrame_SRCS

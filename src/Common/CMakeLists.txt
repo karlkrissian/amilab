@@ -3,7 +3,7 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/Common
+  ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
@@ -50,58 +50,58 @@ SET(Common_SRCS
 )
 
 SET(Common_HDRS
-	amilab_messages.h
-	std_common.h
-	vtk_common.h
-	chaine.hpp
-	DefineClass.hpp
-	ensemble.hpp
-	Erreurs.hpp
-	Erreurs.Main.hpp
-	ficparam.hpp
-	MinHeap.hpp
-	Pile.hpp
-	StringUtils.hpp
-	style.hpp
-	TableauDyn.hpp
-	Timing.hpp
-	Voisins27.hpp
-  amilab_boost.h
+  include/amilab_messages.h
+	include/std_common.h
+	include/vtk_common.h
+	include/chaine.hpp
+	include/DefineClass.hpp
+	include/ensemble.hpp
+	include/Erreurs.hpp
+	include/Erreurs.Main.hpp
+	include/ficparam.hpp
+	include/MinHeap.hpp
+	include/Pile.hpp
+	include/StringUtils.hpp
+	include/style.hpp
+	include/TableauDyn.hpp
+	include/Timing.hpp
+	include/Voisins27.hpp
+  include/amilab_boost.h
 
   # coming from previous Math dir
-  complex.hpp
-  Coordonnees.hpp
-  CurvaturasPrincipales.hpp
-  Eigen.hpp
-  FloatMatrix.hpp
-  math1.hpp
+  include/complex.hpp
+  include/Coordonnees.hpp
+  include/CurvaturasPrincipales.hpp
+  include/Eigen.hpp
+  include/FloatMatrix.hpp
+  include/math1.hpp
 
   # from AMImage
-  amimage.hpp
+  include/amimage.hpp
 
   # from Coordonnees
-  coord_image.hpp
-  coord_op.hpp
-  Point3D.hpp
+  include/coord_image.hpp
+  include/coord_op.hpp
+  include/Point3D.hpp
 
   # from Crest
-  CreeCrest.hpp
-  Crest.hpp
-  MultiCrest.hpp
-  MultiCrest2.hpp
+  include/CreeCrest.hpp
+  include/Crest.hpp
+  include/MultiCrest.hpp
+  include/MultiCrest2.hpp
 
   # from Images
-  imageextent.h
-  inrimage.hpp
-  ImageLinearInterpolator.h
-  ImagePositionsBase.h
-  ImagePositions.h
-  ImagePositions.tpp
-  InrImageIteratorBase.h
-  InrImageIterator.h
-  InrImageIterator.tpp
-  InrImageConstIterator.h
-  InrImageConstIterator.tpp
+  include/imageextent.h
+  include/inrimage.hpp
+  include/ImageLinearInterpolator.h
+  include/ImagePositionsBase.h
+  include/ImagePositions.h
+  include/ImagePositions.tpp
+  include/InrImageIteratorBase.h
+  include/InrImageIterator.h
+  include/InrImageIterator.tpp
+  include/InrImageConstIterator.h
+  include/InrImageConstIterator.tpp
 )
 
 SET (Common_SRCS

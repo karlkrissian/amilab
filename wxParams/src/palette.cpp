@@ -69,7 +69,7 @@
 CPalette::CPalette( wxWindow* window, int num )
 //                                 --------
 {
-    char    nom_classe[6][20];
+//    char    nom_classe[6][20];
 
 //    XWindowAttributes w_attrib;
 

@@ -644,7 +644,8 @@ void FindAndReplace::OnReplaceAllButtonClick( wxCommandEvent &event) {
 
 void wxEditor::OnFind (wxCommandEvent &WXUNUSED(event)) {
   //Pass to the constructor a reference to editor ('this' pointer)
-  FindAndReplace* findWindow = new FindAndReplace(this);
+  //FindAndReplace* findWindow = 
+  new FindAndReplace(this);
 }
 
 void wxEditor::OnFindNext (wxCommandEvent &WXUNUSED(event)) {
@@ -652,7 +653,8 @@ void wxEditor::OnFindNext (wxCommandEvent &WXUNUSED(event)) {
 
 void wxEditor::OnReplace (wxCommandEvent &WXUNUSED(event)) {
   //Pass to the constructor a reference to editor ('this' pointer)
-  FindAndReplace* findWindow = new FindAndReplace(this);
+  //FindAndReplace* findWindow = 
+  new FindAndReplace(this);
 }
 
 void wxEditor::OnReplaceNext (wxCommandEvent &WXUNUSED(event)) {

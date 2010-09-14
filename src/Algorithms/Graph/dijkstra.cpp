@@ -50,12 +50,12 @@ graph_ptr CreateUndirectedGraph(
     return graph_ptr();
   }
 
-  int num_arcs = edges.size();
+  std::size_t num_arcs = edges.size();
 
   graph_ptr g = graph_ptr(new graph_t(num_nodes));
 
   property_map<graph_t, edge_weight_t>::type weightmap = get(edge_weight, *g);
-  for (std::size_t j = 0; j < num_arcs; ++j) {
+  for (std::size_t j = 0; j <  num_arcs; ++j) {
     edge_descriptor e; 
     bool inserted;
     tie(e, inserted) = add_edge(edges[j].first, edges[j].second, *g);

@@ -79,7 +79,8 @@ int CurvaturasPrincipales(float H[3][3],
      //float umbral;       /* UMBRAL MINIMO DE LA NORMA CUADRADO DEL GRADIENTE PARA HACER EL CALCULO */
 {
   float P[3][3],A[3][3],p1[3],p2[3],p3[3],paso[3];
-  double a,b,c,d,e,p2norm,cp;
+  double a,b,c,d,e,p2norm;
+//,cp;
   int i,j,k,k1,k2;
   double pnorm=p[0]*p[0]+p[1]*p[1]+p[2]*p[2];
 
@@ -232,8 +233,10 @@ int CurvaturasPrincipales(float H[3][3],
      //float *lmax,*lmin;  /* CURVATURAS PRINCIPALES */
      //float umbral;       /* UMBRAL MINIMO DE LA NORMA CUADRADO DEL GRADIENTE PARA HACER EL CALCULO */
 {
-  float P[3][3],PASO[3][3],A[3][3],p1[3],p2[3],p3[3],paso[3];
-  double a,b,c,d,e,p2norm,ap,cp;
+  float P[3][3],
+//PASO[3][3],
+        A[3][3],p1[3],p2[3],p3[3],paso[3];
+  double a,b,c,d,e,p2norm; //,ap,cp;
   int i,j,k,k1,k2;
   double pnorm=p[0]*p[0]+p[1]*p[1]+p[2]*p[2];
 

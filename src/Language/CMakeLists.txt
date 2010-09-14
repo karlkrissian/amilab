@@ -4,7 +4,7 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/Common
+  ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/include
@@ -12,11 +12,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/libamiFluid
   ${AMILAB_SOURCE_DIR}/libamiFluid/opticflow/
   ${AMILAB_SOURCE_DIR}/JavierHornSchunck
-  ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/
   ${wxParams_INCLUDE_DIRS}
   )
@@ -141,8 +139,8 @@ ELSE(AMI_USE_FLEXBISON)
 ENDIF(AMI_USE_FLEXBISON)
 
 
-ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Language/Variable.hpp Language_SRCS)
-ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/amilab_messages.h Language_SRCS)
-ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/DefineClass.hpp Language_SRCS)
+#ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Language/Variable.hpp Language_SRCS)
+#ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/amilab_messages.h Language_SRCS)
+#ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/DefineClass.hpp Language_SRCS)
 
 my_add_library ( Language)

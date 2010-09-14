@@ -708,7 +708,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddDirname::CallMember( ParamList*
 {
   Variable<string>::ptr var;
   std::string* label = NULL;
-  std::string* defpath = NULL;
+//  std::string* defpath = NULL;
   int  n = 0;
   int  var_id;
 
@@ -965,7 +965,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_SetDragCallback::CallMember( Param
 
   int nbp = this->_objectptr->GetObj()->NbParameters();
 
-  if ((paramid>=0)&&(paramid<n))
+  if ((paramid>=0)&&(paramid<nbp))
     this->_objectptr->GetObj()->SetDragCallback(paramid,activate);
   else
     FILE_ERROR(boost::format("bad parameter number %1%") % paramid);

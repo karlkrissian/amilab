@@ -215,7 +215,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   DessinImage::ptr draw(this->_objectptr->_obj);
 
   if (!p) ClassHelpAndReturn;
-  int n=0;
+//  int n=0;
 
   DessinImageParametres* param;
 

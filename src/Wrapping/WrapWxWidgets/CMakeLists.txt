@@ -7,7 +7,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/AMILab
 )
 

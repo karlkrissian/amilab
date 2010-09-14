@@ -352,12 +352,8 @@ add_subdirectory (Common)
 #add_subdirectory (DistTransf)
 add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
-add_subdirectory (wxStcFrame)
 add_subdirectory (AMILab)
 
-IF(AMI_USE_VTK)
-  add_subdirectory (myVTK4)
-ENDIF(AMI_USE_VTK)
 
 #add_subdirectory (libamiFluid)
 
@@ -372,13 +368,12 @@ add_subdirectory (Algorithms)
 
 include_directories (
   ${wxParams_INCLUDE_DIRS}
-  ${AMILAB_SOURCE_DIR}/Common
+  ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/include
-  ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
@@ -388,9 +383,6 @@ include_directories (
   )
 
 IF(AMI_USE_VTK)
-  include_directories (
-    ${AMILAB_SOURCE_DIR}/myVTK4
-  )
   INCLUDE( ${USE_VTK_FILE} )
 ENDIF(AMI_USE_VTK)
 
