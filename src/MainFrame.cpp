@@ -400,7 +400,7 @@ MainFrame::MainFrame( const wxString& title,
   /// @cond wxCHECK
 
     // create some toolbars
-  #if (wxCHECK_VERSION(2,9,0)) && !WIN32
+  #if (wxCHECK_VERSION(2,9,0)) && !WIN32 && (!__WXMAC__)
     wxToolBar* tb1 = new wxToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize);
   #else

@@ -1294,11 +1294,12 @@ int AskImage(std::string& name)
                                     wxEmptyString, // default path
                                     wxEmptyString, // default filename
                                     s_extDef, // default extension
-                                    wxString::Format // wildcard
-                                    ( format_choices,
-                                        wxFileSelectorDefaultWildcardStr,
-                                        wxFileSelectorDefaultWildcardStr
-                                    ),
+                                    //wxString::Format // wildcard
+                                    //( format_choices,
+                                    //    wxFileSelectorDefaultWildcardStr,
+                                    //    wxFileSelectorDefaultWildcardStr
+                                    //),
+                                    format_choices,
                                       wxFD_OPEN
                                     //|wxFD_CHANGE_DIR
                                     |wxFD_PREVIEW

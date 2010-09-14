@@ -90,7 +90,7 @@ void Parametres :: LitUCHAR( unsigned char* n)
 //                             ---------
 {
   int i;
-  fscanf( pfichier, "%d", i);
+  fscanf( pfichier, "%d", &i);
   *n = (unsigned char) i;
   printf("%d",(int) *n);
 

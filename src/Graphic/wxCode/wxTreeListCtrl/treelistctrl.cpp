@@ -1852,7 +1852,7 @@ void wxTreeListMainWindow::Init() {
 
     m_findTimer = new wxTimer (this, -1);
 
-#if defined( __WXMAC__ ) && defined(__WXMAC_CARBON__)
+#if defined( __WXMAC__ ) && defined(__WXMAC_CARBON__) && wxCHECK_VERSION(2,9,0)
     m_normalFont.MacCreateThemeFont (kThemeViewsFont);
 #else
     m_normalFont = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);

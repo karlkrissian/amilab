@@ -67,6 +67,7 @@ class ParamPanel;
 class wxStcFrame;
 
 #include "DefineClass.hpp"
+#include "wx/aui/aui.h"
 
 class CustomStatusBar : public wxStatusBar
 {

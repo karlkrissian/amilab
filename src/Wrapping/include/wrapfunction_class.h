@@ -322,7 +322,7 @@ class WrapClass: public virtual WrapClassBase
     */
     static Variable<AMIObject>::ptr CreateVar( WrapClass<T>* _objp)
     {
-      WrapClass<T>::ptr obj_smtptr(_objp);
+      boost::shared_ptr<WrapClass<T> > obj_smtptr(_objp);
       AMIObject::ptr amiobject(AddWrap(obj_smtptr));
       boost::shared_ptr<Variable<AMIObject> > varres(
           new Variable<AMIObject>( amiobject));

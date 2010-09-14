@@ -800,6 +800,8 @@ void wxDrawingWindow::DrawingAreaDisplay( )
 void wxDrawingWindow::Paint()
 {
 
+  if (!_curves.get()) return;
+  
   if (!_memory_dc.get()) DrawingAreaInit( );
   // Clip the drawing
   wxRect rect(_memory_dc->GetSize());

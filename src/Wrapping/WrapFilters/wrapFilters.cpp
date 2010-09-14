@@ -99,7 +99,7 @@ void AddWrapFilters(){
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
   
   //2D SUBPIXEL METHOD
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
+ // ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
   ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
 
   // Add AnisoGS

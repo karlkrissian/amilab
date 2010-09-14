@@ -733,7 +733,8 @@ void gotoLine::OnNumTextEnter (wxCommandEvent &event) {
 
 
 void wxEditor::OnGoto (wxCommandEvent &WXUNUSED(event)) {
-  gotoLine* gt = new gotoLine(this);
+  //gotoLine* gt = 
+  new gotoLine(this);
 }
 
 void wxEditor::OnEditIndentInc (wxCommandEvent &WXUNUSED(event)) {

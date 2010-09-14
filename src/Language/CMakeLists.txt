@@ -98,6 +98,7 @@ IF(AMI_USE_FLEXBISON)
     ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
     ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
   )
+    #COMPILE_FLAGS ${bison_options}
 
   FLEX_TARGET(improcessflex
   ${AMILAB_SOURCE_DIR}/Language/improcess_flex.lpp

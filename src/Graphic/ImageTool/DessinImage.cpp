@@ -6419,7 +6419,7 @@ void DessinImage::Create_Toolbar()
                         wxAUI_TB_OVERFLOW);
   #endif
   */
-  #if !WIN32
+  #if (!WIN32)&&(!__WXMAC__)
     ViewParameters = new wxToolBar(this, wxID_ANY,
                           wxDefaultPosition, wxDefaultSize);
                        //   wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW );
@@ -6503,7 +6503,7 @@ void DessinImage::Create_Toolbar()
   
   
   //View style toolbar
-  #if !WIN32
+  #if (!WIN32) &&(!__WXMAC__)
     ViewStyle = new wxToolBar(this, wxID_ANY,
                           wxDefaultPosition, wxDefaultSize );
                 //          wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW);

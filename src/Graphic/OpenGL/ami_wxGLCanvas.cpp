@@ -7,6 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
+#include "inrimage.hpp"
 #include "ami_wxGLCanvas.hpp"
 //#include "DessinImageParam.hpp"
 #include "Voxels.h"

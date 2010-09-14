@@ -375,7 +375,7 @@ protected:
   
   wxAuiManager manager;
   wxAuiNotebook* _param_book;
-  #if !WIN32
+  #if (!WIN32) && (!__WXMAC__)
     wxToolBar* ViewStyle;
     wxToolBar* ViewParameters;
   #else
