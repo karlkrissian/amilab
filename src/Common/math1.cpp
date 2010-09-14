@@ -879,7 +879,7 @@ void ExprMath::PuisTerm()
         return;
 
       case '\'' :
-      case '�' :
+//      case '�' :
       //   ---
 	pos ++;
 	AjouteInstruction( Tok_degre);
