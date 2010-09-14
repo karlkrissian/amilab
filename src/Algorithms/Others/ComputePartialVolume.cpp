@@ -98,7 +98,6 @@ AnalyticStraightVessel2D::AnalyticStraightVessel2D(float x, float y, float g,
   center[0] = x;
   center[1] = y;
   thickness = g;
-  angle     = alpha;
   setAngle(alpha);
 }
 
@@ -111,16 +110,9 @@ double AnalyticStraightVessel2D::operator () (const double& x, const double& y,
   double uy = nx;
   double vx = x - center[0];
   double vy = y - center[1];
-  //double d = fabs(ux*vy-vx*uy) / sqrt(ux*ux+uy*uy);
-  double d = (fabs(ux*x + uy*y)) / (sqrt(ux*ux + uy*uy));
-//  if (d<thickness)
-//  {
-//    cout << "punto(" << x << ", " << y << ")" << endl;
-//    cout << "distancia = " << d << endl;
-//    cout << "grosor = " << thickness << endl;
-//  }
- 
-  return ((d>thickness) ? 0 : 1);
+  double d = fabs(ux*vy-vx*uy) / sqrt(ux*ux+uy*uy);
+  //Inside or outside of the vessel
+  return ((d>thickness/2) ? -1 : 1);
 }
 
 float* AnalyticStraightVessel2D::getCenter()
@@ -151,6 +143,7 @@ float AnalyticStraightVessel2D::getAngle()
 
 void AnalyticStraightVessel2D::setAngle(float alpha)
 {
+  angle = alpha;
   //Calculate normal components based on angle
   if (alpha<45)
   {
@@ -235,17 +228,8 @@ double AnalyticRing2D::operator () (const double& x, const double& y,
   
   //If is between radius and radius+thickness is inside. Else, is outside of the 
   //ring
-//  return (fabs(d-radius)<thickness/2) ? 1 : 0;
-  int res = 0;
-//  cout << "Point (" << x << ", " << y << ")" << endl;
-//  cout << "Radius: " << radius << endl;
-//  cout << "Thickness: " << thickness << endl;
-//  cout << "Distance : " << d << endl;
-//  return (d >= radius && d <= radius+thickness) ? 1 : 0;
-  
-  if (d>radius && d<radius+thickness)
-    res = 1;
-  return res;
+  //return (fabs(d-radius)<thickness/2) ? 1 : 0;
+  return (d>radius && d<radius+thickness) ? 1 : -1;
 }
 
 float* AnalyticRing2D::getCenter()

@@ -200,6 +200,7 @@ public:
   void setAngle(float alpha);
 };
 
+
 class AnalyticRing2D : public AnalyticFunctionBase {
   //Ash Nazg durbatulûk, ash Nazg gimbatul, 
   //ash Nazg thrakatulûk agh burzum-ishi krimpatul
