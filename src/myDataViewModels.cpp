@@ -13,3 +13,245 @@
 
 #include "myDataViewModels.h"
 
+// ----------------------------------------------------------------------------
+// MyMusicTreeModel
+// ----------------------------------------------------------------------------
+
+AMILabTreeModel::AMILabTreeModel()
+{
+    m_root = new AMILabTreeModelNode( NULL, "Root" );
+    m_global = new AMILabTreeModelNode( m_root, "Global" );
+    m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
+}
+
+wxString AMILabTreeModel::GetName( const wxDataViewItem &item ) const
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)      // happens if item.IsOk()==false
+      return wxEmptyString;
+
+  return node->m_Name;
+}
+
+wxString AMILabTreeModel::GetType( const wxDataViewItem &item ) const
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)      // happens if item.IsOk()==false
+      return wxEmptyString;
+
+  return node->m_Type;
+}
+
+wxString AMILabTreeModel::GetVal(  const wxDataViewItem &item ) const
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)      // happens if item.IsOk()==false
+      return wxEmptyString;
+
+  return node->m_Val;
+}
+
+wxString AMILabTreeModel::GetDetails( const wxDataViewItem &item ) const
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)      // happens if item.IsOk()==false
+      return wxEmptyString;
+
+  return node->m_Details;
+}
+
+boost::weak_ptr<BasicVariable> AMILabTreeModel::GetVar( const wxDataViewItem &item) const
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)      // happens if item.IsOk()==false
+      return 2000;
+
+  return node->m_Var;
+}
+
+void AMILabTreeModel::SetVar (const wxDataViewItem &item, unsigned int col,
+  boost::shared_ptr<BasicVariable> var)
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)      // happens if item.IsOk()==false
+      return 2000;
+
+  if (col == 4)
+    node->m_Var = var;
+}
+
+void AMILabTreeModel::Delete( const wxDataViewItem &item )
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)      // happens if item.IsOk()==false
+      return;
+
+  wxDataViewItem parent( node->GetParent() );
+  if (!parent.IsOk())
+  {
+      wxASSERT(node == m_root);
+
+      // don't make the control completely empty:
+      wxLogError( "Cannot remove the root item!" );
+      return;
+  }
+
+  // is the node one of those we keep stored in special pointers?
+  if (node == m_pop)
+      m_pop = NULL;
+  else if (node == m_classical)
+      m_classical = NULL;
+  else if (node == m_ninth)
+      m_ninth = NULL;
+
+  // first remove the node from the parent's array of children;
+  // NOTE: MyMusicTreeModelNodePtrArray is only an array of _pointers_
+  //       thus removing the node from it doesn't result in freeing it
+  node->GetParent()->GetChildren().Remove( node );
+
+  // free the node
+  delete node;
+
+  // notify control
+  ItemDeleted( parent, item );
+}
+
+int AMILabTreeModel::Compare( const wxDataViewItem &item1, const wxDataViewItem &item2,
+  unsigned int column, bool ascending ) const
+{
+  wxASSERT(item1.IsOk() && item2.IsOk());
+      // should never happen
+
+  if (IsContainer(item1) && IsContainer(item2))
+  {
+      wxVariant value1, value2;
+      GetValue( value1, item1, 0 );
+      GetValue( value2, item2, 0 );
+
+      wxString str1 = value1.GetString();
+      wxString str2 = value2.GetString();
+      int res = str1.Cmp( str2 );
+      if (res) return res;
+
+      // items must be different
+      wxUIntPtr litem1 = (wxUIntPtr) item1.GetID();
+      wxUIntPtr litem2 = (wxUIntPtr) item2.GetID();
+
+      return litem1-litem2;
+  }
+
+  return wxDataViewModel::Compare( item1, item2, column, ascending );
+}
+
+void AMILabTreeModel::GetValue( wxVariant &variant,
+  const wxDataViewItem &item, unsigned int col ) const
+{
+  wxASSERT(item.IsOk());
+
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+  switch (col)
+  {
+    case 0:
+      variant = node->m_Name;
+      break;
+    case 1:
+      variant = node->m_Type;
+      break;
+    case 2:
+      variant = node->m_Val;
+      break;
+    case 3:
+      variant = node->m_Details;
+      break;
+    default:
+      std::cout << "AMILabTreeModel::GetValue: wrong column "
+                << col
+                << std::endl;
+  }
+}
+
+bool AMILabTreeModel::SetValue( const wxVariant &variant,
+  const wxDataViewItem &item, unsigned int col )
+{
+  wxASSERT(item.IsOk());
+
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+  switch (col)
+  {
+    case 0:
+      node->m_Name = variant.GetString();
+      return true;
+    case 1:
+      node->m_Type = variant.GetString();
+      return true;
+    case 2:
+      node->m_Val = variant.GetLong();
+      return true;
+    case 3:
+      node->m_Details = variant.GetString();
+      return true;
+    default:
+      std::cout << "AMILabTreeModel::SetValue: wrong column" << std::endl;
+  }
+  return false;
+}
+
+wxDataViewItem AMILabTreeModel::GetParent( const wxDataViewItem &item ) const
+{
+  // the invisible root node has no parent
+  if (!item.IsOk())
+    return wxDataViewItem(0);
+
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  // "Root" also has no parent
+  if (node == m_root)
+    return wxDataViewItem(0);
+
+  return wxDataViewItem( (void*) node->GetParent() );
+}
+
+bool AMILabTreeModel::IsContainer( const wxDataViewItem &item ) const
+{
+  // the invisble root node can have children
+  // (in our model always "Root")
+  if (!item.IsOk())
+    return true;
+
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  return node->IsContainer();
+}
+
+unsigned int AMILabTreeModel::GetChildren( const wxDataViewItem &parent,
+  wxDataViewItemArray &array ) const
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) parent.GetID();
+
+  if (!node)
+  {
+    array.Add( wxDataViewItem( (void*) m_root ) );
+    return 1;
+  }
+
+  if (node->GetChildCount() == 0)
+  {
+    return 0;
+  }
+
+  unsigned int count = node->GetChildren().GetCount();
+  for (unsigned int pos = 0; pos < count; pos++)
+  {
+    AMILabTreeModelNode *child = node->GetChildren().Item( pos );
+    array.Add( wxDataViewItem( (void*) child ) );
+  }
+
+  return count;
+}

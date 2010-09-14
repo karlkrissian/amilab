@@ -46,7 +46,7 @@ class MyDataViewItemData : public wxDataViewItem
   private:
     /// weak pointer to the Variable
     boost::weak_ptr<BasicVariable> _var;
-};
+}
 
 //=======================================================
 
@@ -60,6 +60,8 @@ class myDataViewCtrl: public wxDataViewCtrl
       const wxValidator& validator = wxDefaultValidator);
 
   protected:
+    void ShowMenu(MyDataViewItemData id, const wxPoint& pt);
+
     void OnContextMenu( wxDataViewEvent &event );
 
     void OnBeginDrag( wxDataViewEvent &event );
@@ -91,6 +93,13 @@ class myDataViewCtrl: public wxDataViewCtrl
 
   private:
     boost::weak_ptr<BasicVariable> _currentmenu_var;
+    wxDataViewCtrl* m_ctrl; //Data view control.
+    wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
+
+    // other data:
+    wxDataViewColumn* m_col;
+    wxDataViewColumn* m_attributes;
+    
     DECLARE_EVENT_TABLE();
 }
 

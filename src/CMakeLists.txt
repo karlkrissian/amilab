@@ -446,6 +446,7 @@ SET(amilab_bin_SRCS
 )
 
 SET(amilab_bin_HDRS
+  myDataViewNodes.h
   myDataViewModels.h
   myDataViewCtrl.h
   guicon.h

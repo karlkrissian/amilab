@@ -57,24 +57,108 @@ BEGIN_EVENT_TABLE(myDataViewCtrl, wxDataViewCtrl)
 
 END_EVENT_TABLE()
 
-myDataViewCtrl::myDataViewCtrl(wxWindow* parent, wxWindowID id,
-      const wxPoint& pos = wxDefaultPosition,
-      const wxSize& size = wxDefaultSize,
-      long style = wxTR_HAS_BUTTONS,
-      const wxValidator& validator = wxDefaultValidator) :
-  myDataViewCtrl(parent,id,pos,size,style,validator)
+myDataViewCtrl::myDataViewCtrl( wxWindow* parent, wxWindowID id,
+  const wxPoint& pos = wxDefaultPosition,
+  const wxSize& size = wxDefaultSize,
+  long style = wxTR_HAS_BUTTONS,
+  const wxValidator& validator = wxDefaultValidator)
 {
   // CONSTRUCTOR DEFINITION.
-}
+  wxASSERT(!m_ctrl && !m_amilab_model);
+  m_ctrl = new wxDataViewCtrl(parent, id, pos, size, style, validator);
 
+  m_amilab_model = new AMILabTreeModel();
+  m_ctrl->AssociateModel( m_amilab_model.get() );
+
+  m_ctrl->EnableDragSource( wxDF_UNICODETEXT );
+  m_ctrl->EnableDropTarget( wxDF_UNICODETEXT );
+
+  // column 0 of the view control: Name
+  wxDataViewTextRenderer *tr =
+    new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
+
+  wxDataViewColumn *column0 =
+    new wxDataViewColumn( "Name", tr, 0, 250, wxALIGN_LEFT,
+      wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_RESIZABLE );
+  column0->SetMinWidth(150);
+  m_ctrl->AppendColumn( column0 );
+
+  // column 1 of the view control: Type
+  wxDataViewColumn *column1 =
+      new wxDataViewColumn( "Type", tr, 1, 100, wxALIGN_LEFT,
+                            wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE |
+                            wxDATAVIEW_COL_RESIZABLE );
+  column1->SetMinWidth(100); // this column can't be resized to be smaller
+  m_ctrl->AppendColumn( column1 );
+
+  // column 2 of the view control: Val
+  wxDataViewColumn *column2 =
+      new wxDataViewColumn( "Val", tr, 2, 60, wxALIGN_LEFT,
+                            wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE |
+                            wxDATAVIEW_COL_RESIZABLE );
+  column2->SetMinWidth(60); // this column can't be resized to be smaller
+  m_ctrl->AppendColumn( column2 );
+
+  // column 3 of the view control: Details
+  wxDataViewColumn *column3 =
+      new wxDataViewColumn( "Details", tr, 3, 250, wxALIGN_LEFT,
+                            wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE |
+                            wxDATAVIEW_COL_RESIZABLE );
+  column3->SetMinWidth(250); // this column can't be resized to be smaller
+  m_ctrl->AppendColumn( column3 );
+}
 
 void myDataViewCtrl::OnContextMenu( wxDataViewEvent &event )
 {
-      wxMenu menu;
-    menu.Append( 1, "menuitem 1" );
-    menu.Append( 2, "menuitem 2" );
-    menu.Append( 3, "menuitem 3" );
+  MyDataViewItemData item( event.GetItem() );
+
+  wxPoint clientpt = event.GetPosition();
+  wxPoint screenpt = ClientToScreen(clientpt);
+
+  ShowMenu(item, clientpt);
+  event.Skip();
 }
+
+void myDataViewCtrl::ShowMenu(MyDataViewItemData id, const wxPoint& pt)
+{
+  if ( id.IsOk() )
+  {
+    wxMenu menu(m_amilab_model->GetName(id));
+    BasicVariable::ptr var = m_amilab_model->GetVar(id).lock();
+    _currentmenu_var = var;
+
+    if (var.get()) {
+      std::string com = var->GetComments();
+      if (com.compare("")!=0) {
+        wxString comments(com.c_str(), wxConvUTF8);
+        menu.Append(wxID_ANY, comments);
+      }
+    }
+
+    // Write in console menu
+    wxMenuItem* item1 = new wxMenuItem(&menu,wxMENU_ID_ToConsole,wxT("Write in console"),
+      wxT("write name in the console"));
+    wxBitmap bitmap1 = wxArtProvider::GetBitmap(wxART_PASTE, wxART_OTHER, wxDefaultSize);
+    if (bitmap1.Ok()) item1->SetBitmap(bitmap1);
+    menu.Append(item1 );
+
+    //Put a book icon in the &About item
+    wxMenuItem* item2 = new wxMenuItem(&menu,wxMENU_ID_myABOUT,wxT("&About..."),
+      wxT("more information about this variable"));
+    wxBitmap bitmap2 = wxArtProvider::GetBitmap(wxART_HELP_BOOK, wxART_OTHER, wxDefaultSize);
+    if (bitmap2.Ok())
+      item2->SetBitmap(bitmap2);
+    menu.Append(item2 );
+    PopupMenu(&menu, pt);
+  }
+  else
+  {
+    wxMenu menu(wxT("No particular item"));
+    PopupMenu(&menu, pt);
+  }
+}
+
+
 
 void myDataViewCtrl::OnBeginDrag( wxDataViewEvent &event )
 {
