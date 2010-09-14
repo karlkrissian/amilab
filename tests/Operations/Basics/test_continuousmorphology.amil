@@ -5,6 +5,9 @@
 
 NoMessageDialog(1)
 
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # test_continuousmorphology.amil
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -64,14 +67,14 @@ printn "\t fg=%1%" % FG
 printn "\t R=%1%"  % R
 printn "\t r=%1%"  % r
 
-ctobject->dimx = 100
-ctobject->dimy = 100
-ctobject->dimz = 100
+ctobject->dimx = 60
+ctobject->dimy = 60
+ctobject->dimz = 30
 ctobject->bg = 0
 ctobject->fg = 100
 ctobject->R = 20
 ctobject->r = 4
-ctobject->Create
+ctobject->Create()
 
 LOWERLIMIT=0
 UPPERLIMIT=100
