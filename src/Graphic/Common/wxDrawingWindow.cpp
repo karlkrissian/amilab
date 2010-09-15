@@ -45,7 +45,6 @@ BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_PAINT(        wxDrawingWindow::OnPaint)
   EVT_SIZE        ( wxDrawingWindow::OnSize      )
   EVT_RIGHT_DOWN(   wxDrawingWindow::OnRightDown )
-  EVT_RIGHT_UP(     wxDrawingWindow::OnRightUp )
   EVT_LEFT_DOWN(    wxDrawingWindow::OnLeftDown )
   EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp )
   EVT_MOTION(       wxDrawingWindow::OnMotion )
@@ -600,7 +599,7 @@ void wxDrawingWindow::DrawLinearCM(  )
   }
   // second compute the left and right colours of each point
   int cm_size = _linearCM.size();
-  std::cout<< "cm_size = " << cm_size << std::endl;
+  //std::cout<< "cm_size = " << cm_size << std::endl;
   std::vector<wxColour> left_colours(cm_size,*wxBLACK);
   std::vector<wxColour> right_colours(cm_size,*wxBLACK);
   std::vector<double> weights(cm_size,0.0);
@@ -903,14 +902,8 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
    }
    _within_popupmenu = true;
    PopupMenu(&menu, _mouse_x,_mouse_y);
-   event.Skip();
-}
-
-//-------------------------------------------------
-void wxDrawingWindow::OnRightUp(wxMouseEvent& event)
-{
   _within_popupmenu = false;
-  event.Skip();
+   event.Skip();
 }
 
 //-------------------------------------------------
@@ -1208,7 +1201,8 @@ void wxDrawingWindow::OnControlColour(wxCommandEvent& event)
 
   if ( dialog.ShowModal() == wxID_OK )
   {
-    _focus_point->SetColour( dialog.GetColourData().GetColour());
+    if (_focus_point.get())
+      _focus_point->SetColour( dialog.GetColourData().GetColour());
   }
   Refresh(false);
 }

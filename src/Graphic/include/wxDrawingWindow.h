@@ -355,7 +355,6 @@ public:
 */
 
   void OnRightDown(     wxMouseEvent& event);
-  void OnRightUp(       wxMouseEvent& event);
   void OnMotion(        wxMouseEvent& event);
   void OnWheel(         wxMouseEvent& event);
 
