@@ -82,6 +82,8 @@ class wxDrawingWindow : public wxScrolledWindow
   boost::shared_ptr<vector_dwControlPoint> _focus_pointset;
   int _focus_controlledcurve;
 
+  bool _within_popupmenu;
+  
   int _mouse_x;
   int _mouse_y;
   bool _left_down;
@@ -353,6 +355,7 @@ public:
 */
 
   void OnRightDown(     wxMouseEvent& event);
+  void OnRightUp(       wxMouseEvent& event);
   void OnMotion(        wxMouseEvent& event);
   void OnWheel(         wxMouseEvent& event);
 

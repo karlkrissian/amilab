@@ -45,6 +45,7 @@ BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_PAINT(        wxDrawingWindow::OnPaint)
   EVT_SIZE        ( wxDrawingWindow::OnSize      )
   EVT_RIGHT_DOWN(   wxDrawingWindow::OnRightDown )
+  EVT_RIGHT_UP(     wxDrawingWindow::OnRightUp )
   EVT_LEFT_DOWN(    wxDrawingWindow::OnLeftDown )
   EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp )
   EVT_MOTION(       wxDrawingWindow::OnMotion )
@@ -95,6 +96,8 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
   _controlpoints = boost::shared_ptr<vector_dwControlPoint>(new vector_dwControlPoint());
   _curves = boost::shared_ptr<vector_dwCurve>(new vector_dwCurve());
   _controlled_curves = boost::shared_ptr<vector_dwControlledCurve>(new vector_dwControlledCurve());
+  
+  _within_popupmenu = false;
 }
 
 
@@ -898,9 +901,16 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
 
     menu.Append(wxID_SetControlColour, wxT("&Colour"));
    }
-  PopupMenu(&menu, _mouse_x,_mouse_y);
-  event.Skip();
+   _within_popupmenu = true;
+   PopupMenu(&menu, _mouse_x,_mouse_y);
+   event.Skip();
+}
 
+//-------------------------------------------------
+void wxDrawingWindow::OnRightUp(wxMouseEvent& event)
+{
+  _within_popupmenu = false;
+  event.Skip();
 }
 
 //-------------------------------------------------
@@ -953,6 +963,8 @@ void wxDrawingWindow::CheckCtrlPoint()
 //-------------------------------------------------
 void wxDrawingWindow::OnMotion(wxMouseEvent& event)
 {
+  if (_within_popupmenu) return;
+  
   wxClientDC dc(this);
 
   int oldmouse_x = _mouse_x;
