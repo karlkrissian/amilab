@@ -35,52 +35,53 @@ Root
 class AMILabTreeModel: public wxDataViewModel
 {
   public:
-  AMILabTreeModel();
-  ~AMILabTreeModel()
-  {
-    delete m_root;
-  }
+    AMILabTreeModel();
 
-  wxString GetName( const wxDataViewItem &item ) const;
-  wxString GetType( const wxDataViewItem &item ) const;
-  wxString GetVal(  const wxDataViewItem &item ) const;
-  wxString GetDetails( const wxDataViewItem &item ) const;
-  
-  boost::weak_ptr<BasicVariable> GetVar( const wxDataViewItem &item) const;
-  void SetVar (const wxDataViewItem &item, unsigned int col,
-    boost::shared_ptr<BasicVariable> var);
+    ~AMILabTreeModel()
+    {
+      delete m_root;
+    }
 
-  void Delete( const wxDataViewItem &item );
+    wxString GetName( const wxDataViewItem &item ) const;
+    wxString GetType( const wxDataViewItem &item ) const;
+    wxString GetVal(  const wxDataViewItem &item ) const;
+    wxString GetDetails( const wxDataViewItem &item ) const;
 
-  // override sorting to always sort branches ascendingly
+    boost::weak_ptr<BasicVariable> GetVar( const wxDataViewItem &item) const;
+    void SetVar (const wxDataViewItem &item, unsigned int col,
+      boost::shared_ptr<BasicVariable> var);
 
-  int Compare( const wxDataViewItem &item1, const wxDataViewItem &item2,
-    unsigned int column, bool ascending ) const;
+    void Delete( const wxDataViewItem &item );
 
-  // implementation of base class virtuals to define model
+    // override sorting to always sort branches ascendingly
 
-  virtual unsigned int GetColumnCount() const
-  {
-    return 5;
-  }
+    int Compare( const wxDataViewItem &item1, const wxDataViewItem &item2,
+      unsigned int column, bool ascending ) const;
 
-  virtual wxString GetColumnType( unsigned int col ) const
-  {
-    if (col == 4)
-      return wxT("BasicVariable");
+    // implementation of base class virtuals to define model
 
-    return wxT("string");
-  }
+    virtual unsigned int GetColumnCount() const
+    {
+      return 5;
+    }
 
-  virtual void GetValue( wxVariant &variant,
-    const wxDataViewItem &item, unsigned int col ) const;
-  virtual bool SetValue( const wxVariant &variant,
-    const wxDataViewItem &item, unsigned int col );
+    virtual wxString GetColumnType( unsigned int col ) const
+    {
+  //     if (col == 4)
+  //       return wxT("BasicVariable");
 
-  virtual wxDataViewItem GetParent( const wxDataViewItem &item ) const;
-  virtual bool IsContainer( const wxDataViewItem &item ) const;
-  virtual unsigned int GetChildren( const wxDataViewItem &parent,
-    wxDataViewItemArray &array ) const;
+      return wxT("string");
+    }
+
+    virtual void GetValue( wxVariant &variant,
+      const wxDataViewItem &item, unsigned int col ) const;
+    virtual bool SetValue( const wxVariant &variant,
+      const wxDataViewItem &item, unsigned int col );
+
+    virtual wxDataViewItem GetParent( const wxDataViewItem &item ) const;
+    virtual bool IsContainer( const wxDataViewItem &item ) const;
+    virtual unsigned int GetChildren( const wxDataViewItem &parent,
+      wxDataViewItemArray &array ) const;
 
   private:
     AMILabTreeModelNode*   m_root;

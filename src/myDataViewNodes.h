@@ -36,13 +36,13 @@ class Variable;
 // ----------------------------------------------------------------------------
 // AMILabTreeModelNode: a node inside AMILabTreeModel
 //  Columns:
-//    - Name: wxString of 250 characters (Node name).
-//    - Type: wxString of 100 characters (Node type).
-//    - Val: wxString of 60 characters (Node value).
-//    - Details: wxString of 250 characters (Node details).
+//    - Name: wxString of 250 characters wide (Node name).
+//    - Type: wxString of 100 characters wide(Node type).
+//    - Val: wxString of 60 characters wide (Node value).
+//    - Details: wxString of 250 characters wide (Node details).
 //    - Var: boost::weak_ptr to BasicVariable.
 //  There are two types of nodes:
-//    - Node branch: Node with child nodes.
+//    - Branch node: Node with child nodes.
 //    - Leaf node: Node that has zero child nodes.
 // ----------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ class AMILabTreeModelNode
       m_Type = wxT("");
       m_Val = wxT("");
       m_Details = wxT("");
-      m_Var = NULL;
+      m_Var = boost::weak_ptr<BasicVariable>();
 
       m_container = true;
     }

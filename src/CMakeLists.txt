@@ -238,7 +238,7 @@ SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
 
 FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
 #SET(Boost_USE_STATIC_LIBS ON)
-MESSAGE( "BOOST_LIBRARIES = $(BOOST_LIBRARIES)")
+MESSAGE( "BOOST_LIBRARIES = ${BOOST_LIBRARIES}")
 
 
 OPTION(AMI_USE_ZLIB "Use zlib" ON)
@@ -564,8 +564,7 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   wxParams
   ${OPENGL_LIBRARIES}
   ${OPENGL_glu_LIBRARY}
-#  ${PTHREADS_LIBRARY}
-  /usr/lib/libpthread.so
+  ${PTHREADS_LIBRARY}
   ${wxWidgets_LIBRARIES}
 # should be included in wxWdigets_LIBRARIES already ...
 #  ${WX_gl}

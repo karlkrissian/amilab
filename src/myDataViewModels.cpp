@@ -9,12 +9,11 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#define MYDATAVIEWMODELS_H
 
 #include "myDataViewModels.h"
 
 // ----------------------------------------------------------------------------
-// MyMusicTreeModel
+// AMILabTreeModel
 // ----------------------------------------------------------------------------
 
 AMILabTreeModel::AMILabTreeModel()
@@ -69,7 +68,7 @@ boost::weak_ptr<BasicVariable> AMILabTreeModel::GetVar( const wxDataViewItem &it
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
 
   if (!node)      // happens if item.IsOk()==false
-      return 2000;
+      return boost::weak_ptr<BasicVariable>();
 
   return node->m_Var;
 }
@@ -78,9 +77,6 @@ void AMILabTreeModel::SetVar (const wxDataViewItem &item, unsigned int col,
   boost::shared_ptr<BasicVariable> var)
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
-
-  if (!node)      // happens if item.IsOk()==false
-      return 2000;
 
   if (col == 4)
     node->m_Var = var;
@@ -104,12 +100,13 @@ void AMILabTreeModel::Delete( const wxDataViewItem &item )
   }
 
   // is the node one of those we keep stored in special pointers?
-  if (node == m_pop)
-      m_pop = NULL;
-  else if (node == m_classical)
-      m_classical = NULL;
-  else if (node == m_ninth)
-      m_ninth = NULL;
+  //MIRAR
+  if (node == m_root)
+      m_root = NULL;
+  else if (node == m_global)
+      m_global = NULL;
+  else if (node == m_builtin)
+      m_builtin = NULL;
 
   // first remove the node from the parent's array of children;
   // NOTE: MyMusicTreeModelNodePtrArray is only an array of _pointers_
@@ -192,7 +189,7 @@ bool AMILabTreeModel::SetValue( const wxVariant &variant,
       node->m_Type = variant.GetString();
       return true;
     case 2:
-      node->m_Val = variant.GetLong();
+      node->m_Val = variant.GetString();
       return true;
     case 3:
       node->m_Details = variant.GetString();

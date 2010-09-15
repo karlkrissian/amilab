@@ -9,7 +9,6 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#define MYDATAVIEWCTRL_H
 
 #include "Variable.hpp"
 #include "paramlist.h"
