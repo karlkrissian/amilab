@@ -23,7 +23,10 @@ template<class T>
 class InrImageIterator : public InrImageIteratorBase
 {
 
-  DEFINE_TEMPLATE_CLASS1(InrImageIterator,T);
+public:
+ // DEFINE_TEMPLATE_CLASS1(InrImageIterator,T);
+  typedef InrImageIterator<T> ClassType; 
+  typedef typename boost::shared_ptr<ClassType >    ptr;
 
 protected:
   // image format

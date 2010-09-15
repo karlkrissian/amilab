@@ -18,7 +18,7 @@
 
 #include <wx/cmndata.h>
 #include <wx/colordlg.h>
-
+#include <iostream>
 
 #define macro_max(a,b) ((a)>(b)?(a):(b))
 
@@ -366,7 +366,7 @@ void wxDrawingWindow::DrawCurve( dwCurve& curve )
   std::vector<dwPoint2D>& _points = curve.GetPoints();
   // iterate through the curves
   std::vector<dwPoint2D>::iterator it;
-  wxCoord x1,y1,x2,y2;
+  wxCoord x1=0,y1=0,x2=0,y2=0;
 
   for(it=_points.begin();it!=_points.end();it++)
   {
@@ -611,7 +611,7 @@ void wxDrawingWindow::DrawLinearCM(  )
     // while it is possible:
     // get the current segment
     // fill all the points within the current segment
-    while ((curvpt_id+1 < points->size())&&(cmpt_id<cm_size)) {
+    while ((curvpt_id+1 < (int)points->size())&&(cmpt_id<cm_size)) {
       //std::cout<< "curvpt_id = " << curvpt_id << std::endl;
       // current segment is between points[curvpt_id] and points[curvpt_id+1]
       dwControlPoint p1 = (*points)[curvpt_id];
@@ -673,7 +673,7 @@ void wxDrawingWindow::DrawLinearCM(  )
   // 
   if (_linearCM.size()>=2) {
     // just need x1 and x2 here
-    wxCoord x1,x2;
+    wxCoord x1=0,x2=0;
     
     for (int i=0;i<_linearCM.size(); i++)
     {
