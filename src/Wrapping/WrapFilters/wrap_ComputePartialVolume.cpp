@@ -217,58 +217,45 @@ BasicVariable::ptr wrap_AnalyticLine::CallMember(ParamList* p)
   return CreateVar_AnalyticLine((new AnalyticLine()));
 }
 //---------------------------------------------------
-//setM
-void WrapClass_AnalyticLine::wrap_setM::SetParametersComments()
+//setAngle
+void WrapClass_AnalyticLine::wrap_setAngle::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE(float, "X component of line's normal.");
-  ADDPARAMCOMMENT_TYPE(float, "Y component of line's normal.");
+  ADDPARAMCOMMENT_TYPE(float, "The angle of the line.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_AnalyticLine::
-                   wrap_setM::CallMember (ParamList* p)
+                   wrap_setAngle::CallMember (ParamList* p)
 {
   AnalyticLine::ptr fd(this->_objectptr->GetObj());
   
-  float m1;
-  float m2;
+  float alpha;
   int   n = 0;
   
-  if (!get_val_param<float>(m1, p, n)) ClassHelpAndReturn;
-  if (!get_val_param<float>(m2, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<float>(alpha, p, n)) ClassHelpAndReturn;
   
-  fd->setM(m1,m2);
+  fd->setAngle(alpha);
   return BasicVariable::ptr();
 }
 
 //---------------------------------------------------
-//getM
-void WrapClass_AnalyticLine::wrap_getM::SetParametersComments()
+//getAngle
+void WrapClass_AnalyticLine::wrap_getAngle::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE(float, "X component of line's normal.");
-  ADDPARAMCOMMENT_TYPE(float, "Y component of line's normal.");
+  return_comments = "The angle of the line.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_AnalyticLine::
-                   wrap_getM::CallMember (ParamList* p)
+                   wrap_getAngle::CallMember (ParamList* p)
 {
   AnalyticLine::ptr fd(this->_objectptr->GetObj());
-  int n=0;
-  Variable<float>::ptr varc1;
-  Variable<float>::ptr varc2;
-  if (!get_var_param<float>(varc1,p,n)) ClassHelpAndReturn;
-  if (!get_var_param<float>(varc2,p,n)) ClassHelpAndReturn;
-  if (!varc1->Pointer().get()) ClassHelpAndReturn;
-  if (!varc2->Pointer().get()) ClassHelpAndReturn;
-  (*varc1->Pointer()) = fd->getM()[0];
-  (*varc2->Pointer()) = fd->getM()[1];
-  return BasicVariable::ptr();
+  RETURN_VAR(float, fd->getAngle());
 }
 
 //---------------------------------------------------
 //set_n
 void WrapClass_AnalyticLine::wrap_set_n::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE(float, "Cut point on 'y' axis");
+  ADDPARAMCOMMENT_TYPE(float, "Cut point on the Y axis");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_AnalyticLine::
@@ -288,7 +275,7 @@ BasicVariable::ptr WrapClass_AnalyticLine::
 //get_n
 void WrapClass_AnalyticLine::wrap_get_n::SetParametersComments()
 {
-  return_comments = "The line's y axis cut point.";
+  return_comments = "The value of the cut point on the Y axis.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_AnalyticLine::

@@ -107,15 +107,15 @@ public:
                           WrapClass_AnalyticFunctionBase(si), _obj(si)
   {}
   
-  ADD_CLASS_METHOD(setM,  "Set line's normal.");
-  ADD_CLASS_METHOD(getM,  "Get line's normal.");
-  ADD_CLASS_METHOD(set_n, "Set y axis cut point.");
-  ADD_CLASS_METHOD(get_n, "Get y axis cut point.");
+  ADD_CLASS_METHOD(setAngle,  "Set line's angle.");
+  ADD_CLASS_METHOD(getAngle,  "Get line's angle.");
+  ADD_CLASS_METHOD(set_n,     "Set y axis cut point.");
+  ADD_CLASS_METHOD(get_n,     "Get y axis cut point.");
   
   void AddMethods(_parentclass_ptr& this_ptr)
   {
-    AddVar_setM( this_ptr);
-    AddVar_getM( this_ptr);
+    AddVar_setAngle( this_ptr);
+    AddVar_getAngle( this_ptr);
     AddVar_set_n(this_ptr);
     AddVar_get_n(this_ptr);
   }

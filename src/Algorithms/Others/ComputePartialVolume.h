@@ -113,16 +113,15 @@ class AnalyticLine : public AnalyticFunctionBase {
   
 private:
   /** Line's normal and cut point on y axis */
-  float m[2], _n;
+  float m[2], _n, angle;
   
 public:
   /**
    *  Creates an analytic line.
-   *  @param mx X normal component. Default 1.
-   *  @param my Y normal component. Default 1.
-   *  @param n Cut point value. Default 0.
+   *  @param angle Line angle. Default 45.0.
+   *  @param n Cut point value. Default 50.0.
    */
-  AnalyticLine(float mx = 1, float my = 1, float n = 0);
+  AnalyticLine(float angle = 45.0, float n = 50.0);
   
   ~AnalyticLine();
   
@@ -137,17 +136,16 @@ public:
   double operator () (const double& x, const double& y, const double& z) const;
   
   /**
-   *  Set line normal.
-   *  @param m1 X component of the normal.
-   *  @param m2 Y component of the normal.
+   *  Set line angle.
+   *  @param alpha Line angle.
    */
-  void setM(float m1, float m2);
+  void setAngle(float alpha);
   
   /**
    *  Get line normal.
-   *  @return float* A pointer to a vector with normal value.
+   *  @return float Line angle value (grades).
    */
-  float* getM();
+  float getAngle();
   
   /**
    *  Set y axis cut point value.

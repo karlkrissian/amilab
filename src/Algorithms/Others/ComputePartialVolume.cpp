@@ -55,11 +55,10 @@ float AnalyticCircle::getRadius()
 //---------------------------------------------------
 //Line
 //---------------------------------------------------
-AnalyticLine::AnalyticLine(float mx, float my, float n)
+AnalyticLine::AnalyticLine(float alpha, float n)
 {
-  m[0] = mx;
-  m[1] = my;
   _n   = n;
+  setAngle(alpha);
 }
 
 AnalyticLine::~AnalyticLine(){}
@@ -70,14 +69,73 @@ double AnalyticLine::operator () (const double& x, const double& y, const double
   return m[0]*xaux + m[1]*(y - _n);
 }
 
-void AnalyticLine::setM(float m1, float m2)
+void AnalyticLine::setAngle(float alpha)
 {
-  m[0] = m1;
-  m[1] = m2;
+  angle = alpha;
+  //Calculate normal components based on angle
+  if (alpha<45)
+  {
+    m[0]=tan(alpha*M_PI/180);
+    m[1]=1.0;
+  }
+  else
+  {
+    if (alpha<90)
+    {
+      m[1]=tan((90-alpha)*M_PI/180);
+      m[0]=1.0;
+    }
+    else
+    {
+      if (alpha<135)
+      {
+        m[1]=-tan((alpha-90)*M_PI/180);
+        m[0]=1.0;
+      }
+      else
+      {
+        if (alpha<180)
+        {
+          m[0]=tan((180-alpha)*M_PI/180);
+          m[1]=-1.0;
+        }
+        else
+        {
+          if (alpha<225) 
+          {
+            m[0]=-tan((alpha-180)*M_PI/180);
+            m[1]=-1.0;
+          }
+          else
+          {
+            if (alpha<270) 
+            {
+              m[1]=-tan((270-alpha)*M_PI/180);
+              m[0]=-1.0;
+            }
+            else
+            {
+              if (alpha<315) 
+              {
+                m[1]=tan((alpha-270)*M_PI/180);
+                m[0]=-1.0;
+              }
+              else
+              {
+                m[0]=-tan((360-alpha)*M_PI/180);
+                m[1]=1.0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
-float* AnalyticLine::getM()
+
+float AnalyticLine::getAngle()
 {
-  return m;
+  return angle;
 }
 
 void AnalyticLine::set_n(float n)

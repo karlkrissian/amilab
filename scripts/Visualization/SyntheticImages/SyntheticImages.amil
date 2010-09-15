@@ -13,10 +13,12 @@ if (!exists(SyntheticImagesClass)) {
     ::subdiv     = INT(6), "Subdivision level for recursive functions"
     ::output_name= "synthetic_res", "Output image name"
     
-    ::reloadLine   = UCHAR(0), "Reload the image created with an analytic line"
-    ::reloadCircle = UCHAR(0), "Reload the image created with an analytic circle"
-    ::reloadSphere = UCHAR(0), "Reload the image created with an analytic sphere"
-    ::reloadTorus  = UCHAR(0), "Reload the image created with an analytic torus"
+    ::reloadLine     = UCHAR(0), "Reload the analytic line"
+    ::reloadCircle   = UCHAR(0), "Reload the analytic circle"
+    ::reloadVessel2D = UCHAR(0), "Reload the analytic vessel2D"
+    ::reloadRing2D   = UCHAR(0), "Reload the analytic ring"
+    ::reloadSphere   = UCHAR(0), "Reload the analytic sphere"
+    ::reloadTorus    = UCHAR(0), "Reload the analytic torus"
     
     #Input image parameters
     ::dimx = INT(100), "Input image X size"
@@ -24,14 +26,25 @@ if (!exists(SyntheticImagesClass)) {
     ::dimz = INT(100), "Input image Z size"
     
     #Circle parameters
-    ::cx = 50.0, "X component of circle's center"
-    ::cy = 50.0, "Y component of circle's center"
+    ::cx = 50.0, "X component of the center of the circle"
+    ::cy = 50.0, "Y component of the center of the circle"
     ::cr = 20.0, "Circle's radius"
     
     #Line parameters
-    ::mx = 1.0,  "X component of line's normal"
-    ::my = 1.0,  "Y component of line's normal"
-    ::n  = 50.0, "Y axis cut point"
+    ::line_angle = 45.0, "Angle of the line"
+    ::n          = 50.0, "Y axis cut point"
+    
+    #Straight Vessel 2D parameters
+    ::vessel_cx    = 50.0, "X component of the center of the vessel"
+    ::vessel_cy    = 50.0, "Y component of the center of the vessel"
+    ::vessel_angle = 45.0, "Angle of the vessel"
+    ::vessel_thick =  4.0, "Thickness of the vessel"
+    
+    #Ring 2D parameters
+    ::ring_cx     = 50.0, "X component of the center of the ring"
+    ::ring_cy     = 50.0, "Y component of the center of the ring"
+    ::ring_radius = 30.0, "Ring internal radius"
+    ::ring_thick  = 2.0, "Thickness of the ring"
     
     #Sphere parameters
     ::sx = 50.0, "X component of sphere's center"
@@ -65,10 +78,12 @@ if (!exists(SyntheticImagesClass)) {
     ::page_vec = VarVector();
     ::page_vec.push_back(::page_line)
     ::page_vec.push_back(::page_circle)
+    ::page_vec.push_back(::page_vessel2D)
+    ::page_vec.push_back(::page_ring2D)
     ::page_vec.push_back(::page_sphere)
     ::page_vec.push_back(::page_torus)
 
-    for n=0 to 3 {
+    for n=0 to 4 {
       ::win.EnablePanel(::page_vec[n], ::type==n)
     }
     ::win.SelectPage(::book,::type)
@@ -104,8 +119,9 @@ if (!exists(SyntheticImagesClass)) {
       #Analytic function recursive for a surface
       if(::pv_type == 0) {
         if(::dimz == 1) {
-          if(!exists(::line) && !exists(::circle)) {
-            InfoDialog "You must create a 2D analytic object (line or circle)"
+          if(!exists(::line) && !exists(::circle) && \
+             !exists(::vessel2D) && !exists(::ring2D)) {
+            InfoDialog "You must create a 2D analytic object (line, circle or vessel)"
           } else {
             ::pv->setInputImage(&::input)
             ::pv->setSubdiv(::subdiv)
@@ -115,6 +131,14 @@ if (!exists(SyntheticImagesClass)) {
             }
             if(::type == 1) {
               ::pv->setAnalyticFunction(&::circle)
+              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+            }
+            if(::type == 2) {
+              ::pv->setAnalyticFunction(&::vessel2D)
+              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+            }
+            if(::type == 3) {
+              ::pv->setAnalyticFunction(&::ring2D)
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
             }
           }
@@ -131,11 +155,11 @@ if (!exists(SyntheticImagesClass)) {
           ::pv->setInputImage(&::input)
           ::pv->setSubdiv(::subdiv)
           if(::dimz > 1) {
-            if(::type == 2) {
+            if(::type == 4) {
               ::pv->setAnalyticFunction(&::sphere)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
             }
-            if(::type == 3) {
+            if(::type == 5) {
               ::pv->setAnalyticFunction(&::torus)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
             }
@@ -168,7 +192,7 @@ if (!exists(SyntheticImagesClass)) {
   proc ::GenerateLine() {
     import = &global::ami_import;
     ::line = import->AnalyticLine()
-    ::line->setM(::mx,::my)
+    ::line->setAngle(::line_angle)
     ::line->set_n(::n)
     ::win.EnablePanel(::cm_id, 1)
   }
@@ -183,6 +207,9 @@ if (!exists(SyntheticImagesClass)) {
     ::angle = abs(::angle*360)/(2*Pi)
     ::s_angle = sprint("%f",::angle)
     ::win.Update(-1)
+    if(::reloadLine == 1) {
+      ::RecomputeLine()
+    }
   }
   Comments(::ResetLine, "Reset analytic line parameters")
   
@@ -202,8 +229,57 @@ if (!exists(SyntheticImagesClass)) {
     ::cy = 50.0
     ::cr = 20.0
     ::win.Update(-1)
+    if(::reloadCircle == 1){
+      ::RecomputeCircle()
+    }
   }
   Comments(::ResetCircle, "Reset analytic circle parameters")
+  
+  #VESSEL 2D
+  #--------------------------------------------------------------
+  proc ::GenerateVessel2D() {
+    import = &global::ami_import;
+    ::vessel2D = import->AnalyticStraightVessel2D()
+    ::vessel2D->setCenter(::vessel_cx, ::vessel_cy)
+    ::vessel2D->setAngle(::vessel_angle)
+    ::vessel2D->setThickness(::vessel_thick)
+    ::win.EnablePanel(::cm_id, 1)
+  }
+  Comments(::GenerateVessel2D, "Generate an analytic 2D straight vessel")
+  #--------------------------------------------------------------
+  proc ::ResetVessel2D() {
+    ::vessel_cx    = 50.0
+    ::vessel_cy    = 50.0
+    ::vessel_angle = 45.0
+    ::vessel_thick =  4.0
+    ::win.Update(-1)
+    if (::reloadVessel2D == 1){
+      ::RecomputeVessel2D()
+    }
+  }
+  
+  #RING
+  #--------------------------------------------------------------
+  proc ::GenerateRing2D() {
+    import = &global::ami_import;
+    ::ring2D = import->AnalyticRing2D()
+    ::ring2D->setCenter(::ring_cx, ::ring_cy)
+    ::ring2D->setRadius(::ring_radius)
+    ::ring2D->setThickness(::ring_thick)
+    ::win.EnablePanel(::cm_id, 1)
+  }
+  Comments(::GenerateRing2D, "Generate an analytic 2D ring")
+  #--------------------------------------------------------------
+  proc ::ResetRing2D() {
+    ::ring_cx = 50.0
+    ::ring_cy = 50.0
+    ::ring_radius = 30.0
+    ::ring_thick = 2.0
+    ::win.Update(-1)
+    if (::reloadRing2D) {
+      ::RecomputeRing2D()
+    }
+  }
   
   #SPHERE
   #--------------------------------------------------------------
@@ -222,6 +298,9 @@ if (!exists(SyntheticImagesClass)) {
     ::sz = 50.0
     ::sr = 20.0
     ::win.Update(-1)
+    if(::reloadSphere == 1){
+      ::RecomputeSphere()
+    }
   }
   Comments(::ResetSphere, "Reset analytic sphere parameters")
   
@@ -244,6 +323,9 @@ if (!exists(SyntheticImagesClass)) {
     ::tr = 2.0
     ::tR = 10.0
     ::win.Update(-1)
+    if(::reloadTorus == 1){
+      ::RecomputeTorus()
+    }
   }
   Comments(::ResetTorus, "Reset analytic torus parameters")
 
@@ -251,7 +333,7 @@ if (!exists(SyntheticImagesClass)) {
   proc ::RecomputeLine() {
     if(::reloadLine == 1) {
       if(exists(::line)) {
-        ::line->setM(::mx,::my)
+        ::line->setAngle(::line_angle)
         ::line->set_n(::n)
         if(exists(::pv)) {
           ::pv->setAnalyticFunction(&::line)
@@ -260,34 +342,6 @@ if (!exists(SyntheticImagesClass)) {
         }
       }
     }
-    ::angle = ::mx / ::my
-    ::angle = atan ::angle
-    ::angle = abs(::angle*360)/(2*Pi)
-    if(::mx<0 && ::my>0) {
-      ::angle = ::angle+90
-    }
-    if(::mx<0 && ::my<0) {
-      ::angle = ::angle+180
-    }
-    if(::mx>0 && ::my<0) {
-      ::angle = ::angle+270
-    }
-    if(::mx==0) {
-      if(::my>0) {
-        ::angle = 90
-      } else {
-        ::angle = 270
-      }
-    }
-    if(::my==0) {
-      if(::mx>0) {
-        ::angle = 0
-      } else {
-        ::angle = 180
-      }
-    }
-    ::s_angle = sprint("%f",::angle)
-    ::win.Update(-1)
   }
   #--------------------------------------------------------------
   proc ::RecomputeCircle() {
@@ -301,6 +355,36 @@ if (!exists(SyntheticImagesClass)) {
             ::Display()
           }
         }
+    }
+  }  
+  #--------------------------------------------------------------
+  proc ::RecomputeVessel2D() {
+    if(::reloadVessel2D == 1) {
+      if(exists(::vessel2D)) {
+        ::vessel2D->setCenter(::vessel_cx, ::vessel_cy)
+        ::vessel2D->setAngle(::vessel_angle)
+        ::vessel2D->setThickness(::vessel_thick)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::vessel2D)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeRing2D() {
+    if(::reloadRing2D == 1) {
+      if(exists(::ring2D)) {
+        ::ring2D->setCenter(::ring_cx, ::ring_cy)
+        ::ring2D->setRadius(::ring_radius)
+        ::ring2D->setThickness(::ring_thick)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::ring2D)
+          ::Compute()
+          ::Display()
+        }
+      }
     }
   }
   #--------------------------------------------------------------
@@ -332,7 +416,7 @@ if (!exists(SyntheticImagesClass)) {
       }
     }
   }
-
+  #--------------------------------------------------------------
   proc ::Save() {
     if(exists(::res)) {
       eval "global::" + ::output_name + "<<=::res;"
@@ -391,6 +475,8 @@ if (!exists(SyntheticImagesClass)) {
         ::type_id = ::win.AddEnum(&::type, "Function type")
           ::win.AddEnumChoice(::type_id, "Line")
           ::win.AddEnumChoice(::type_id, "Circle")
+          ::win.AddEnumChoice(::type_id, "Vessel")
+          ::win.AddEnumChoice(::type_id, "Ring")
           ::win.AddEnumChoice(::type_id, "Sphere")
           ::win.AddEnumChoice(::type_id, "Torus")
         ::win.SetCallback(&::NewType)
@@ -398,19 +484,10 @@ if (!exists(SyntheticImagesClass)) {
         #Functions notebook
         ::book = ::win.BeginBook()
         
-          ::page_line   = ::win.AddPage("Line")
+          ::page_line   = ::win.AddPage("Li.")
             ::win.BeginBoxPanel("Line parameters")
-              ::win.BeginBoxPanel("Normal")
-                ::win.AddFloat(&::mx, "x", -1, 1)
-                ::win.SetCallback(&::RecomputeLine)
-                ::win.AddFloat(&::my, "y", -1, 1)
-                ::win.SetCallback(&::RecomputeLine)
-                ::angle = ::mx / ::my
-                ::angle = atan ::angle
-                ::angle = (::angle*360)/(2*Pi)
-                ::s_angle = sprint("%f",::angle)
-                ::win.AddString(&::s_angle, "Angle")
-              ::win.EndBoxPanel()
+              ::win.AddFloat(&::line_angle, "Angle", 0, 360)
+              ::win.SetCallback(&::RecomputeLine)
               ::win.AddFloat(&::n, "Cut point", 1,100)
               ::win.SetCallback(&::RecomputeLine)
             ::win.EndBoxPanel()
@@ -420,7 +497,7 @@ if (!exists(SyntheticImagesClass)) {
               ::win.AddBoolean(&::reloadLine, "Reload")
             ::win.EndHorizontal()
             
-          ::page_circle = ::win.AddPage("Circle")
+          ::page_circle = ::win.AddPage("Cir.")
             ::win.BeginBoxPanel("Circle parameters")
               ::win.BeginBoxPanel("Center")
                 ::win.AddFloat(&::cx, "x", 0, 100)
@@ -437,7 +514,45 @@ if (!exists(SyntheticImagesClass)) {
               ::win.AddBoolean(&::reloadCircle, "Reload")
             ::win.EndHorizontal()
             
-          ::page_sphere = ::win.AddPage("Sphere")
+          ::page_vessel2D = ::win.AddPage("Ves.")
+            ::win.BeginBoxPanel("Straight Vessel 2D parameters")
+              ::win.BeginBoxPanel("Center")
+                ::win.AddFloat(&::vessel_cx, "x", 0, 100)
+                ::win.SetCallback(&::RecomputeVessel2D)
+                ::win.AddFloat(&::vessel_cy, "y", 0, 100)
+                ::win.SetCallback(&::RecomputeVessel2D)
+              ::win.EndBoxPanel()
+              ::win.AddFloat(&::vessel_angle, "Angle", 0, 360)
+              ::win.SetCallback(&::RecomputeVessel2D)
+              ::win.AddFloat(&::vessel_thick, "Thick.", 1, 10)
+              ::win.SetCallback(&::RecomputeVessel2D)
+            ::win.EndBoxPanel()
+            ::win.BeginHorizontal()
+              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateVessel2D")
+              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetVessel2D")
+              ::win.AddBoolean(&::reloadVessel2D, "Reload")
+            ::win.EndHorizontal()
+            
+          ::page_ring2D = ::win.AddPage("Ring")
+            ::win.BeginBoxPanel("Ring 2D parameters")
+              ::win.BeginBoxPanel("Center")
+                ::win.AddFloat(&::ring_cx, "x", 0, 100)
+                ::win.SetCallback(&::RecomputeRing2D)
+                ::win.AddFloat(&::ring_cy, "y", 0, 100)
+                ::win.SetCallback(&::RecomputeRing2D)
+              ::win.EndBoxPanel()
+              ::win.AddFloat(&::ring_radius, "r", 1, 100)
+              ::win.SetCallback(&::RecomputeRing2D)
+              ::win.AddFloat(&::ring_thick, "Thick.", 1, 6)
+              ::win.SetCallback(&::RecomputeRing2D)
+            ::win.EndBoxPanel()
+            ::win.BeginHorizontal()
+              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateRing2D")
+              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetRing2D")
+              ::win.AddBoolean(&::reloadRing2D, "Reload")
+            ::win.EndHorizontal()
+            
+          ::page_sphere = ::win.AddPage("Sph.")
             ::win.BeginBoxPanel("Sphere parameters")
               ::win.BeginBoxPanel("Center")
                 ::win.AddFloat(&::sx, "x", 0, 100)
@@ -456,7 +571,7 @@ if (!exists(SyntheticImagesClass)) {
               ::win.AddBoolean(&::reloadSphere, "Reload")
             ::win.EndHorizontal()
           
-          ::page_torus  = ::win.AddPage("Torus")
+          ::page_torus  = ::win.AddPage("Tor.")
             ::win.BeginBoxPanel("Torus parameters")
               ::win.BeginBoxPanel("Center")
                 ::win.AddFloat(&::tx, "x", 0, 100)
