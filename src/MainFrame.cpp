@@ -693,7 +693,16 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   _var_tree->AddColumn (_T("Details"), 250, wxALIGN_CENTER);
   _var_tree->SetColumnEditable (_vartree_col_desc, false);
 
+  // TODO/FIXME:
+  // Problems with GetWindowStyle method.
+  
+/// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1))
+  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+#else
   _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+#endif
+/// @endcond
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
 
   wxFont font(10,wxMODERN,wxNORMAL,wxNORMAL);
