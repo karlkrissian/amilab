@@ -82,8 +82,6 @@ if (!exists(SyntheticImagesClass)) {
     ::page_vec2D.push_back(::page_circle)
     ::page_vec2D.push_back(::page_vessel2D)
     ::page_vec2D.push_back(::page_ring2D)
-    #::page_vec.push_back(::page_sphere)
-    #::page_vec.push_back(::page_torus)
 
     for n=0 to 3 {
       ::win.EnablePanel(::page_vec2D[n], ::type2D==n)
@@ -162,7 +160,7 @@ if (!exists(SyntheticImagesClass)) {
         }
       }
       
-      #Analytic  function recursive for a volume
+      #Analytic function recursive for a volume
       if(::pv_type == 1) {
         if(!exists(::sphere) && !exists(::torus)) {
           InfoDialog "You must create a 3D analytic object (sphere or torus)"

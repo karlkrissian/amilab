@@ -28,6 +28,7 @@ class AnalyticFunctionBase {
   DEFINE_CLASS(AnalyticFunctionBase);
   
 public:
+  virtual ~AnalyticFunctionBase(){}
   /**
    *  Defines a virtual double operator (). It evaluates a point with  the function
    of the image.
@@ -50,17 +51,17 @@ class AnalyticCircle : public AnalyticFunctionBase {
   DEFINE_CLASS(AnalyticCircle);
   
 private:
-  /** Circle's center */
+  //Center of the circle
   float center[2];
-  /** Circle's radius */
+  //Radius of the circle
   float radius;
   
 public:
   /**
    *  Creates an analytic circle.
-   *  @param x Component of the circle's center. Default 50.
-   *  @param y Component of the circle's center. Default 50.
-   *  @param r Circle's radius. Default 20.
+   *  @param x Component of the center. Default 50.
+   *  @param y Component of the center. Default 50.
+   *  @param r Radius of the circle. Default 20.
    */
   AnalyticCircle(float x = 50, float y = 50, float r = 20);
   
@@ -77,26 +78,26 @@ public:
   double operator () (const double& x, const double& y, const double& z) const;
   
   /**
-   *  Set the circle's center.
-   *  @param c1 X component of the circle's center.
-   *  @param c2 Y component of the circle's center.
+   *  Set the center of the circle.
+   *  @param c1 X component of the center.
+   *  @param c2 Y component of the center.
    */
   void setCenter(float c1, float c2);
   
   /**
-   *  Get the circle's center.
+   *  Get the center of the circle.
    *  @return float* A pointer to a vector with the center value.
    */
   float* getCenter();
   
   /**
-   *  Set the circle's radius.
-   *  @param r The value of circle's radius.
+   *  Set the radius of the circle.
+   *  @param r The value of the radius.
    */
   void setRadius(float r);
   
   /**
-   *  Get the circle's radius.
+   *  Get the radius of the circle.
    *  @return float The radius value.
    */
   float getRadius();
@@ -105,6 +106,7 @@ public:
 /**
  *  AnalyticLine class.
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
+ *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
  *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  */
 class AnalyticLine : public AnalyticFunctionBase {
@@ -112,7 +114,7 @@ class AnalyticLine : public AnalyticFunctionBase {
   DEFINE_CLASS(AnalyticLine);
   
 private:
-  /** Line's normal and cut point on y axis */
+  /** Normal of the line, cut point on 'y' axis and angle */
   float m[2], _n, angle;
   
 public:
@@ -137,13 +139,13 @@ public:
   
   /**
    *  Set line angle.
-   *  @param alpha Line angle.
+   *  @param alpha The new angle value.
    */
   void setAngle(float alpha);
   
   /**
    *  Get line normal.
-   *  @return float Line angle value (grades).
+   *  @return float The value of the angle.
    */
   float getAngle();
   
@@ -160,45 +162,94 @@ public:
   float get_n();
 };
 
-//******** NUEVO! 09/09/2010 *******
-//Nueva clase para la creación de venas sintéticas rectas en 2D
+/**
+ *  AnalyticStraightVessel2D class.
+ *  @author Karl Krissian (krissian@dis.ulpgc.es)
+ *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
+ *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
+ */
 class AnalyticStraightVessel2D : public AnalyticFunctionBase {
   DEFINE_CLASS(AnalyticStraightVessel2D);
 
 private:
-  //El centro
+  //Center of the vessel
   float center[2];
-  //El grosor del vaso
+  //Thickness
   float thickness;
-  //angulo
+  //Angle 
   float angle;
-  //Pendientes
+  //Components of the normal
   double nx;
   double ny;
 
 public:
-  //Constructor
+  /**
+   *  Creates a 2D analytic straight vessel.
+   *  @param x Component of the center. Default 50.0.
+   *  @param y Component of the center. Default 50.0.
+   *  @param g Thickness of the vessel. Default 4.0.
+   *  @param alpha Angle of the vessel. Default 20.0.
+   */
   AnalyticStraightVessel2D(float x = 50.0, float y = 50.0, float g = 4.0, 
                            float alpha = 20.0);
-  //Destructor
+  
   ~AnalyticStraightVessel2D();
-  //Operador paréntesis (obtención de la imagen de la ecuación)
+
+  /**
+   *  Operator () redefinition. Evaluates if a point is inside the vessel.
+   *  @param x Component of the point.
+   *  @param y Component of the point.
+   *  @param z Unused.
+   *  @return double A double number that represents the value of the point in the
+   *  vessel image.
+   */
   double operator () (const double& x, const double& y, const double& z) const;
-  //Obtener el centro
+  
+  /**
+   *  Get the center of the vessel.
+   *  @return float* A pointer to a float vector with the two components of the
+   *  center.
+   */
   float* getCenter();
-  //Asignar centro
+  
+  /**
+   *  Set the center of the vessel.
+   *  @param x Component of the center.
+   *  @param y Component of the center.
+   */
   void setCenter(float x, float y);
-  //Obtener grosor
+  
+  /**
+   *  Get the thickness of the vessel.
+   *  @return float The value of the thickness.
+   */
   float getThickness();
-  //Asignar grosor
+  
+  /**
+   *  Set the thickness of the vessel.
+   *  @param g The new thickness value.
+   */
   void setThickness(float g);
-  //Obtener ángulo
+  
+  /**
+   *  Get the angle of the vessel.
+   *  @return float The value of the angle.
+   */
   float getAngle();
-  //Asignar ángulo
+  
+  /**
+   *  Set the angle of the vessel.
+   *  @param alpha The new value of the angle.
+   */
   void setAngle(float alpha);
 };
 
-
+/**
+ *  AnalyticRing2D class.
+ *  @author Karl Krissian (krissian@dis.ulpgc.es)
+ *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
+ *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
+ */
 class AnalyticRing2D : public AnalyticFunctionBase {
   //Ash Nazg durbatulûk, ash Nazg gimbatul, 
   //ash Nazg thrakatulûk agh burzum-ishi krimpatul
@@ -209,27 +260,67 @@ private:
   float center[2];
   //Central radius
   float radius;
-  //Ring thickness
+  //Thickness of the ring
   float thickness;
   
 public:
-  //Constructor
+  /**
+   *  Creates a 2D analytic ring.
+   *  @param x Component of the center. Default 50.0.
+   *  @param y Component of the center. Default 50.0.
+   *  @param r Central radius. Default 30.0.
+   *  @param g Thickness of the ring. Default 2.0.
+   */
   AnalyticRing2D(float x = 50.0, float y = 50.0, float r = 30.0, float g = 2.0);
-  //Destructor
+  
   ~AnalyticRing2D();
-  //Operador paréntesis
+
+  /**
+   *  Operator () redefinition. Evaluates if a point is inside the ring.
+   *  @param x Component of the point.
+   *  @param y Component of the point.
+   *  @param z Unused.
+   *  @return double A double number that represents the value of the point in the
+   *  ring image.
+   */
   double operator () (const double& x, const double& y, const double& z) const;
-  //Obtener centro
+  
+  /**
+   *  Get the center of the ring.
+   *  @return float* A pointer to a float vector with the two components of the
+   *  center.
+   */
   float* getCenter();
-  //Asignar centro
+  
+  /**
+   *  Set the center of the ring.
+   *  @param x Component of the center.
+   *  @param y Component of the center.
+   */
   void setCenter(float x, float y);
-  //Obtener radio central
+  
+  /**
+   *  Get the central radius of the ring.
+   *  @return float The value of the radius.
+   */
   float getRadius();
-  //Asignar radio central
+  
+  /**
+   *  Set the central radius of the ring.
+   *  @param r The new value for the radius.
+   */
   void setRadius(float r);
-  //Obtener grosor
+  
+  /**
+   *  Get the thickness of the ring.
+   *  @return float The value of the thickness.
+   */
   float getThickness();
-  //Asignar grosor
+  
+  /**
+   *  Set the thickness of the ring.
+   *  @param g The new value for the thickness.
+   */
   void setThickness(float g);
   
 };
@@ -244,18 +335,18 @@ class AnalyticSphere : public AnalyticFunctionBase {
   DEFINE_CLASS(AnalyticSphere);
   
 private:
-  /** Sphere center */
+  //The center of the sphere
   float center[3];
-  /** Sphere radius */
+  //Radius
   float radius;
   
 public:
   /**
    *  Creates an analytic sphere.
-   *  @param x Component of sphere's center. Default 50.
-   *  @param y Component of sphere's center. Default 50.
-   *  @param z Component of sphere's center. Default 50.
-   *  @param r Sphere's radius. Default 20.
+   *  @param x Component of the center. Default 50.
+   *  @param y Component of the center. Default 50.
+   *  @param z Component of the center. Default 50.
+   *  @param r Radius. Default 20.
    */
   AnalyticSphere(float x = 50, float y = 50, float z = 50, float r = 20);
   
@@ -272,28 +363,28 @@ public:
   double operator () (const double& x, const double& y, const double& z) const;
   
   /**
-   *  Set sphere's center.
-   *  @param c1 X component of sphere's center.
-   *  @param c2 Y component of sphere's center.
-   *  @param c3 Z component of sphere's center.
+   *  Set the center of the sphere.
+   *  @param c1 X component of the center.
+   *  @param c2 Y component of the center.
+   *  @param c3 Z component of the center.
    */
   void setCenter(float c1, float c2, float c3);
   
   /**
-   *  Get sphere's center.
-   *  @return float* A pointer to a vector with sphere's center value.
+   *  Get the center of the sphere.
+   *  @return float* A pointer to a vector with the center value.
    */
   float* getCenter();
   
   /**
-   *  Set sphere's radius.
-   *  @param r Sphere's radius value.
+   *  Set the radius of the sphere.
+   *  @param r The new radius value.
    */
   void setRadius(float r);
   
   /**
-   *  Get sphere's radius.
-   *  @return float Sphere's radius value.
+   *  Get the radius of the sphere.
+   *  @return float The radius value.
    */
   float getRadius();
 };
@@ -308,20 +399,20 @@ class AnalyticTorus : public AnalyticFunctionBase {
   DEFINE_CLASS(AnalyticTorus);
   
 private:
-  /** Torus' center */
+  //The center of the torus
   float center[3];
-  /** Minimum torus' radius */
+  // Minimum radius
   float rmin;
-  /** Maximum torus' radius */
+  // Maximum radius
   float rmax;
 public:
   /**
    *  Creates an analytic torus.
-   *  @param x Component of torus' center. Default 50.
-   *  @param y Component of torus' center. Default 50.
-   *  @param z Component of torus' center. Default 50.
-   *  @param r Minimum torus' radius. Default 3.
-   *  @param R Maximum torus' radius. Default 20.
+   *  @param x Component of the center. Default 50.
+   *  @param y Component of the center. Default 50.
+   *  @param z Component of the center. Default 50.
+   *  @param r Minimum radius. Default 3.
+   *  @param R Maximum radius. Default 20.
    */
   AnalyticTorus(float x = 50, float y = 50, float z = 50,
                 float r = 3, float R = 20);
@@ -339,40 +430,40 @@ public:
   double operator () (const double& x, const double& y, const double& z) const;
   
   /**
-   *  Set torus' center.
-   *  @param c1 X component of torus' center.
-   *  @param c2 Y component of torus' center.
-   *  @param c3 Z component of torus' center.
+   *  Set the center of the torus.
+   *  @param c1 X component of the center.
+   *  @param c2 Y component of the center.
+   *  @param c3 Z component of the center.
    */
   void setCenter(float c1, float c2, float c3);
   
   /**
-   *  Get torus' center.
-   *  @return float* A pointer to a vector with the torus' center value.
+   *  Get the center of the torus.
+   *  @return float* A pointer to a vector with the center value.
    */
   float* getCenter();
   
   /**
-   *  Set minimum torus' radius.
-   *  @param rm Minimum torus' radius value.
+   *  Set the minimum radius of the torus.
+   *  @param rm The new minimum radius value.
    */
   void set_rmin(float rm);
   
   /**
-   *  Get minimum torus' radius.
-   *  @return float Minimum torus' radius value.
+   *  Get the minimum radius of the torus.
+   *  @return float The minimum radius value.
    */
   float get_rmin();
   
   /**
-   *  Set maximum torus' radius.
-   *  @param rM Maximum torus' radius value.
+   *  Set the maximum radius of the torus.
+   *  @param rM The new maximum radius value.
    */
   void set_rmax(float rM);
   
   /**
-   *  Get maximum torus' radius.
-   *  @return float Maximum torus' radius value.
+   *  Get the maximum radius of the torus.
+   *  @return float The maximum radius value.
    */
   float get_rmax();
 };
