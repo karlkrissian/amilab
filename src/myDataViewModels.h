@@ -48,8 +48,7 @@ class AMILabTreeModel: public wxDataViewModel
     wxString GetDetails( const wxDataViewItem &item ) const;
 
     boost::weak_ptr<BasicVariable> GetVar( const wxDataViewItem &item) const;
-    void SetVar (const wxDataViewItem &item, unsigned int col,
-      boost::shared_ptr<BasicVariable> var);
+    void SetVar (const wxDataViewItem &item, boost::shared_ptr<BasicVariable> var);
 
     void Delete( const wxDataViewItem &item );
 

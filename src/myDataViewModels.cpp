@@ -73,13 +73,12 @@ boost::weak_ptr<BasicVariable> AMILabTreeModel::GetVar( const wxDataViewItem &it
   return node->m_Var;
 }
 
-void AMILabTreeModel::SetVar (const wxDataViewItem &item, unsigned int col,
+void AMILabTreeModel::SetVar (const wxDataViewItem &item,
   boost::shared_ptr<BasicVariable> var)
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
 
-  if (col == 4)
-    node->m_Var = var;
+  node->m_Var = var;
 }
 
 void AMILabTreeModel::Delete( const wxDataViewItem &item )
@@ -109,7 +108,7 @@ void AMILabTreeModel::Delete( const wxDataViewItem &item )
       m_builtin = NULL;
 
   // first remove the node from the parent's array of children;
-  // NOTE: MyMusicTreeModelNodePtrArray is only an array of _pointers_
+  // NOTE: AMILabTreeModelNodePtrArray is only an array of _pointers_
   //       thus removing the node from it doesn't result in freeing it
   node->GetParent()->GetChildren().Remove( node );
 
