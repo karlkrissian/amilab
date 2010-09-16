@@ -69,7 +69,7 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   double distance = 0.0;
   double step;
   double vx,vy,vz,nv;
-  double vpx,vpy,vpz;
+  double vpx = 0.0,vpy = 0.0,vpz = 0.0;
   double I=0,Ixp=0,Ixm=0,Iyp=0,Iym=0,Izp=0,Izm=0;
   double closest_point_intensity;
   
@@ -276,7 +276,7 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
         // Move toward the neighbor point with lower intensity
         vx = (xmin-vpx)*input->GetSpacing()[0];
         vy = (ymin-vpy)*input->GetSpacing()[1];
-        vz = (zmin-vpz)*input->GetSpacing()[2];
+        if (input->GetImageDimension() == 3) vz = (zmin-vpz)*input->GetSpacing()[2];
         nv = sqrt(vx*vx+vy*vy);
         if (input->GetImageDimension() == 3) nv = sqrt(vx*vx+vy*vy+vz*vz);
       }
@@ -313,7 +313,8 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
     
     end_reached = !input->GetLargestPossibleRegion().IsInside(pos) || (nv<1E-5) || (distance>m_maxLength) || (closest_point_intensity<0);
     // Small fix for stopping vessel int CTA challenge
-    end_reached = end_reached || (vox_p[0]<0) || (vox_p[1]<0) || (vox_p[2]<0);
+    end_reached = end_reached || (vox_p[0]<0) || (vox_p[1]<0) ;
+    if (input->GetImageDimension() == 3) end_reached = end_reached || (vox_p[2]<0);
   }
 }
 

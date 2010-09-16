@@ -82,7 +82,7 @@
 #include "vtkPolyDataReader.h"
 
 #endif // _WITHOUT_VTK_
-
+#include "AMILabConfig.h"
 
 #include "Crest.hpp"
 

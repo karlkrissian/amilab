@@ -1047,9 +1047,9 @@ float IsoContour2D :: CorrigeEstimation(
     float r0,r1,r2;
     float coeff_corr;
 
-  coeff_corr = 0.9015625;
+  coeff_corr = 0.9015625f;
 
-  sigma_min = 0.8;
+  sigma_min = 0.8f;
   sigma_max = rayon_estime  / resolution;
   sigma     = sigma_min;
   pas_sigma = 1;
@@ -1133,7 +1133,7 @@ float IsoContour2D :: CorrigeEstimation2(
     float r0,r1,r2, rmin, rmax, s0, s2;
     float coeff_corr;
 
-  coeff_corr = 0.9015625;
+  coeff_corr = 0.9015625f;
 
   sigma_min = 0.8 * resolution;
   sigma_max = rayon_estime ;

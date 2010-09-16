@@ -17,6 +17,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/JavierHornSchunck
   ${AMILAB_SOURCE_DIR}/
   ${wxParams_INCLUDE_DIRS}
+  ${FLEX_INCLUDE_DIR}
   )
 
 INCLUDE( ${VTK_USE_FILE} )

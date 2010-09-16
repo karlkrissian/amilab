@@ -33,6 +33,8 @@
 #ifndef _DefineClass_hpp_
 #define _DefineClass_hpp_
 
+#include "AMILabConfig.h"
+
 //--- string formatting using boost
 //#include <iostream>
 #include <string>
