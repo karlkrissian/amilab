@@ -8,7 +8,8 @@ if (!exists(SyntheticImagesClass)) {
   #---------------------------------------------
   proc ::Init() \
   {
-    ::type       = INT(0), "Analytic function type"
+    ::type2D     = INT(0), "Analytic 2D function type"
+    ::type3D     = INT(0), "Analytic 3D function type"
     ::pv_type    = INT(0), "Compute partial effect function"
     ::subdiv     = INT(6), "Subdivision level for recursive functions"
     ::output_name= "synthetic_res", "Output image name"
@@ -67,30 +68,44 @@ if (!exists(SyntheticImagesClass)) {
     ::B = 100.0
     
     ::Gui()
-    ::NewType()
+    ::NewType2D()
+    ::NewType3D()
     
   }
 
 
   #----------------------------------------------------------
-  proc ::NewType() {
-    if (exists(::page_vec)) { del ::page_vec; }
-    ::page_vec = VarVector();
-    ::page_vec.push_back(::page_line)
-    ::page_vec.push_back(::page_circle)
-    ::page_vec.push_back(::page_vessel2D)
-    ::page_vec.push_back(::page_ring2D)
-    ::page_vec.push_back(::page_sphere)
-    ::page_vec.push_back(::page_torus)
+  proc ::NewType2D() {
+    if (exists(::page_vec2D)) { del ::page_vec2D; }
+    ::page_vec2D = VarVector();
+    ::page_vec2D.push_back(::page_line)
+    ::page_vec2D.push_back(::page_circle)
+    ::page_vec2D.push_back(::page_vessel2D)
+    ::page_vec2D.push_back(::page_ring2D)
+    #::page_vec.push_back(::page_sphere)
+    #::page_vec.push_back(::page_torus)
 
-    for n=0 to 4 {
-      ::win.EnablePanel(::page_vec[n], ::type==n)
+    for n=0 to 3 {
+      ::win.EnablePanel(::page_vec2D[n], ::type2D==n)
     }
-    ::win.SelectPage(::book,::type)
+    ::win.SelectPage(::book2D,::type2D)
+  }
+  #----------------------------------------------------------
+  proc ::NewType3D() {
+    if (exists(::page_vec3D)) { del ::page_vec3D; }
+    ::page_vec3D = VarVector();
+    ::page_vec3D.push_back(::page_sphere)
+    ::page_vec3D.push_back(::page_torus)
+    
+    for n=0 to 1 {
+      ::win.EnablePanel(::page_vec3D[n], ::type3D==n)
+    }
+    ::win.SelectPage(::book3D,::type3D)
   }
   
   #----------------------------------------------------------
   proc ::CreateInputImage() {
+    if(exists(::res_draw)) { del ::res_draw; }
     #Create the image with the parameters and enable the compute method panel
     ::input <<= Image(FLOAT,::dimx,::dimy,::dimz)
     ::input = 0
@@ -125,19 +140,19 @@ if (!exists(SyntheticImagesClass)) {
           } else {
             ::pv->setInputImage(&::input)
             ::pv->setSubdiv(::subdiv)
-            if(::type == 0){
+            if(::type2D == 0){
               ::pv->setAnalyticFunction(&::line)
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
             }
-            if(::type == 1) {
+            if(::type2D == 1) {
               ::pv->setAnalyticFunction(&::circle)
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
             }
-            if(::type == 2) {
+            if(::type2D == 2) {
               ::pv->setAnalyticFunction(&::vessel2D)
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
             }
-            if(::type == 3) {
+            if(::type2D == 3) {
               ::pv->setAnalyticFunction(&::ring2D)
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
             }
@@ -155,11 +170,11 @@ if (!exists(SyntheticImagesClass)) {
           ::pv->setInputImage(&::input)
           ::pv->setSubdiv(::subdiv)
           if(::dimz > 1) {
-            if(::type == 4) {
+            if(::type3D == 0) {
               ::pv->setAnalyticFunction(&::sphere)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
             }
-            if(::type == 5) {
+            if(::type3D == 1) {
               ::pv->setAnalyticFunction(&::torus)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
             }
@@ -472,127 +487,140 @@ if (!exists(SyntheticImagesClass)) {
       
       #Function tab
       ::functions_page = ::win.AddPage("Func")
-        ::type_id = ::win.AddEnum(&::type, "Function type")
-          ::win.AddEnumChoice(::type_id, "Line")
-          ::win.AddEnumChoice(::type_id, "Circle")
-          ::win.AddEnumChoice(::type_id, "Vessel")
-          ::win.AddEnumChoice(::type_id, "Ring")
-          ::win.AddEnumChoice(::type_id, "Sphere")
-          ::win.AddEnumChoice(::type_id, "Torus")
-        ::win.SetCallback(&::NewType)
-        
-        #Functions notebook
-        ::book = ::win.BeginBook()
-        
-          ::page_line   = ::win.AddPage("Li.")
-            ::win.BeginBoxPanel("Line parameters")
-              ::win.AddFloat(&::line_angle, "Angle", 0, 360)
-              ::win.SetCallback(&::RecomputeLine)
-              ::win.AddFloat(&::n, "Cut point", 1,100)
-              ::win.SetCallback(&::RecomputeLine)
-            ::win.EndBoxPanel()
-            ::win.BeginHorizontal()
-              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateLine")
-              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetLine")
-              ::win.AddBoolean(&::reloadLine, "Reload")
-            ::win.EndHorizontal()
+        ::win.BeginBook()
+          ::win.AddPage("2D")
+            ::type_id2D = ::win.AddEnum(&::type2D, "Function type")
+              ::win.AddEnumChoice(::type_id2D, "Line")
+              ::win.AddEnumChoice(::type_id2D, "Circle")
+              ::win.AddEnumChoice(::type_id2D, "Vessel")
+              ::win.AddEnumChoice(::type_id2D, "Ring")
+            ::win.SetCallback(&::NewType2D)
             
-          ::page_circle = ::win.AddPage("Cir.")
-            ::win.BeginBoxPanel("Circle parameters")
-              ::win.BeginBoxPanel("Center")
-                ::win.AddFloat(&::cx, "x", 0, 100)
-                ::win.SetCallback(&::RecomputeCircle)
-                ::win.AddFloat(&::cy, "y", 0, 100)
-                ::win.SetCallback(&::RecomputeCircle)
-              ::win.EndBoxPanel()
-              ::win.AddFloat(&::cr, "Radius", 1, 100)
-              ::win.SetCallback(&::RecomputeCircle)
-            ::win.EndBoxPanel()
-            ::win.BeginHorizontal()
-              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateCircle")
-              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetCircle")
-              ::win.AddBoolean(&::reloadCircle, "Reload")
-            ::win.EndHorizontal()
+            #Functions2D notebook
+            ::book2D = ::win.BeginBook()
             
-          ::page_vessel2D = ::win.AddPage("Ves.")
-            ::win.BeginBoxPanel("Straight Vessel 2D parameters")
-              ::win.BeginBoxPanel("Center")
-                ::win.AddFloat(&::vessel_cx, "x", 0, 100)
-                ::win.SetCallback(&::RecomputeVessel2D)
-                ::win.AddFloat(&::vessel_cy, "y", 0, 100)
-                ::win.SetCallback(&::RecomputeVessel2D)
-              ::win.EndBoxPanel()
-              ::win.AddFloat(&::vessel_angle, "Angle", 0, 360)
-              ::win.SetCallback(&::RecomputeVessel2D)
-              ::win.AddFloat(&::vessel_thick, "Thick.", 1, 10)
-              ::win.SetCallback(&::RecomputeVessel2D)
-            ::win.EndBoxPanel()
-            ::win.BeginHorizontal()
-              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateVessel2D")
-              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetVessel2D")
-              ::win.AddBoolean(&::reloadVessel2D, "Reload")
-            ::win.EndHorizontal()
+              ::page_line   = ::win.AddPage("Line")
+                ::win.BeginBoxPanel("Line parameters")
+                  ::win.AddFloat(&::line_angle, "Angle", 0, 360)
+                  ::win.SetCallback(&::RecomputeLine)
+                  ::win.AddFloat(&::n, "Cut point", 1,100)
+                  ::win.SetCallback(&::RecomputeLine)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateLine")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetLine")
+                  ::win.AddBoolean(&::reloadLine, "Reload")
+                ::win.EndHorizontal()
+                
+              ::page_circle = ::win.AddPage("Circle")
+                ::win.BeginBoxPanel("Circle parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::cx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeCircle)
+                    ::win.AddFloat(&::cy, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeCircle)
+                  ::win.EndBoxPanel()
+                  ::win.AddFloat(&::cr, "Radius", 1, 100)
+                  ::win.SetCallback(&::RecomputeCircle)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateCircle")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetCircle")
+                  ::win.AddBoolean(&::reloadCircle, "Reload")
+                ::win.EndHorizontal()
+                
+              ::page_vessel2D = ::win.AddPage("Vessel")
+                ::win.BeginBoxPanel("Straight Vessel 2D parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::vessel_cx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeVessel2D)
+                    ::win.AddFloat(&::vessel_cy, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeVessel2D)
+                  ::win.EndBoxPanel()
+                  ::win.AddFloat(&::vessel_angle, "Angle", 0, 360)
+                  ::win.SetCallback(&::RecomputeVessel2D)
+                  ::win.AddFloat(&::vessel_thick, "Thick.", 1, 10)
+                  ::win.SetCallback(&::RecomputeVessel2D)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateVessel2D")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetVessel2D")
+                  ::win.AddBoolean(&::reloadVessel2D, "Reload")
+                ::win.EndHorizontal()
+                
+              ::page_ring2D = ::win.AddPage("Ring")
+                ::win.BeginBoxPanel("Ring 2D parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::ring_cx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeRing2D)
+                    ::win.AddFloat(&::ring_cy, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeRing2D)
+                  ::win.EndBoxPanel()
+                  ::win.AddFloat(&::ring_radius, "r", 1, 100)
+                  ::win.SetCallback(&::RecomputeRing2D)
+                  ::win.AddFloat(&::ring_thick, "Thick.", 1, 6)
+                  ::win.SetCallback(&::RecomputeRing2D)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateRing2D")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetRing2D")
+                  ::win.AddBoolean(&::reloadRing2D, "Reload")
+                ::win.EndHorizontal()
+                
+              ::win.EndBook()
+              
+          ::win.AddPage("3D")
             
-          ::page_ring2D = ::win.AddPage("Ring")
-            ::win.BeginBoxPanel("Ring 2D parameters")
-              ::win.BeginBoxPanel("Center")
-                ::win.AddFloat(&::ring_cx, "x", 0, 100)
-                ::win.SetCallback(&::RecomputeRing2D)
-                ::win.AddFloat(&::ring_cy, "y", 0, 100)
-                ::win.SetCallback(&::RecomputeRing2D)
-              ::win.EndBoxPanel()
-              ::win.AddFloat(&::ring_radius, "r", 1, 100)
-              ::win.SetCallback(&::RecomputeRing2D)
-              ::win.AddFloat(&::ring_thick, "Thick.", 1, 6)
-              ::win.SetCallback(&::RecomputeRing2D)
-            ::win.EndBoxPanel()
-            ::win.BeginHorizontal()
-              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateRing2D")
-              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetRing2D")
-              ::win.AddBoolean(&::reloadRing2D, "Reload")
-            ::win.EndHorizontal()
+            ::type_id3D = ::win.AddEnum(&::type3D, "Function type")
+              ::win.AddEnumChoice(::type_id3D, "Sphere")
+              ::win.AddEnumChoice(::type_id3D, "Torus")
+            ::win.SetCallback(&::NewType3D)
             
-          ::page_sphere = ::win.AddPage("Sph.")
-            ::win.BeginBoxPanel("Sphere parameters")
-              ::win.BeginBoxPanel("Center")
-                ::win.AddFloat(&::sx, "x", 0, 100)
-                ::win.SetCallback(&::RecomputeSphere)
-                ::win.AddFloat(&::sy, "y", 0, 100)
-                ::win.SetCallback(&::RecomputeSphere)
-                ::win.AddFloat(&::sz, "z", 0, 100)
-                ::win.SetCallback(&::RecomputeSphere)
-              ::win.EndBoxPanel()
-              ::win.AddFloat(&::sr, "Radius", 1, 100)
-              ::win.SetCallback(&::RecomputeSphere)
-            ::win.EndBoxPanel()
-            ::win.BeginHorizontal()
-              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateSphere")
-              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetSphere")
-              ::win.AddBoolean(&::reloadSphere, "Reload")
-            ::win.EndHorizontal()
-          
-          ::page_torus  = ::win.AddPage("Tor.")
-            ::win.BeginBoxPanel("Torus parameters")
-              ::win.BeginBoxPanel("Center")
-                ::win.AddFloat(&::tx, "x", 0, 100)
-                ::win.SetCallback(&::RecomputeTorus)
-                ::win.AddFloat(&::ty, "y", 0, 100)
-                ::win.SetCallback(&::RecomputeTorus)
-                ::win.AddFloat(&::tz, "z", 0, 100)
-                ::win.SetCallback(&::RecomputeTorus)
-              ::win.EndBoxPanel()
-              ::win.BeginBoxPanel("Radius")
-                ::win.AddFloat(&::tr, "Rmin", 1, 100)
-                ::win.SetCallback(&::RecomputeTorus)
-                ::win.AddFloat(&::tR, "Rmax", 1, 100)
-                ::win.SetCallback(&::RecomputeTorus)
-              ::win.EndBoxPanel()
-            ::win.EndBoxPanel()
-            ::win.BeginHorizontal()
-              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateTorus")
-              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetTorus")
-              ::win.AddBoolean(&::reloadTorus, "Reload")
-            ::win.EndHorizontal()
+            #Functions3D notebook
+            ::book3D = ::win.BeginBook()
+              ::page_sphere = ::win.AddPage("Sphere")
+                ::win.BeginBoxPanel("Sphere parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::sx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeSphere)
+                    ::win.AddFloat(&::sy, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeSphere)
+                    ::win.AddFloat(&::sz, "z", 0, 100)
+                    ::win.SetCallback(&::RecomputeSphere)
+                  ::win.EndBoxPanel()
+                  ::win.AddFloat(&::sr, "Radius", 1, 100)
+                  ::win.SetCallback(&::RecomputeSphere)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateSphere")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetSphere")
+                  ::win.AddBoolean(&::reloadSphere, "Reload")
+                ::win.EndHorizontal()
+              
+              ::page_torus  = ::win.AddPage("Torus")
+                ::win.BeginBoxPanel("Torus parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::tx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                    ::win.AddFloat(&::ty, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                    ::win.AddFloat(&::tz, "z", 0, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                  ::win.EndBoxPanel()
+                  ::win.BeginBoxPanel("Radius")
+                    ::win.AddFloat(&::tr, "Rmin", 1, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                    ::win.AddFloat(&::tR, "Rmax", 1, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                  ::win.EndBoxPanel()
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateTorus")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetTorus")
+                  ::win.AddBoolean(&::reloadTorus, "Reload")
+                ::win.EndHorizontal()
+                
+              ::win.EndBook()
         
         ::win.EnablePanel(::functions_page, 0)
         ::win.EndBook()
