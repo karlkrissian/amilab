@@ -541,7 +541,7 @@ public:
     resolution   = 3;
   }
   
-  ~ComputePV(){}
+  virtual ~ComputePV(){}
   
   //Analytic functions
   /**

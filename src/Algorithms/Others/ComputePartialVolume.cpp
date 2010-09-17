@@ -286,7 +286,6 @@ double AnalyticRing2D::operator () (const double& x, const double& y,
   
   //If is between radius and radius+thickness is inside. Else, is outside of the 
   //ring
-  //return (fabs(d-radius)<thickness/2) ? 1 : 0;
   return (d>radius && d<radius+thickness) ? 1 : -1;
 }
 
@@ -466,6 +465,7 @@ double ComputePV::AnalyticRecursivePositiveSurface( double val[4], double subvol
     } else
       return num_pos*volume/4.0;
   }
+  return 0;
 }
 
 
@@ -549,6 +549,7 @@ InrImage::ptr ComputePV::ComputeAnalyticPartialSurfaceSubdiv(float ipos, float i
     cerr << "It isn't posible to get the image smart pointer." << endl;
     return InrImage::ptr();
   }
+  return InrImage::ptr();
 } // ComputePartialVolumeSubdiv()
 
 
@@ -613,6 +614,7 @@ double ComputePV::AnalyticRecursivePositiveVolume( double val[8], double subvols
     } else
       return num_pos*volume/8.0;
   }
+  return 0;
 }
 
 
@@ -707,6 +709,7 @@ InrImage::ptr ComputePV::ComputeAnalyticPartialVolumeSubdiv(float ipos, float in
     cerr << "It isn't posible to get the image smart pointer." << endl;
     return InrImage::ptr();
   }
+  return InrImage::ptr();
 } // ComputePartialVolumeSubdiv()
 
 
