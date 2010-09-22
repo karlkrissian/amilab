@@ -31,56 +31,23 @@ enum
 
 myDataViewCtrl::myDataViewCtrl( wxWindow* parent, wxWindowID id,
   const wxPoint& pos, const wxSize& size, long style,
-  const wxValidator& validator)
+  const wxValidator& validator):wxDataViewCtrl(parent, id, pos, size, style, validator)
 {
   // CONSTRUCTOR DEFINITION.
-  wxASSERT(!m_ctrl && !m_amilab_model);
-
-  m_ctrl = new wxDataViewCtrl(parent, id, pos, size, style, validator);
-
-  m_amilab_model = new AMILabTreeModel();
-  m_ctrl->AssociateModel( m_amilab_model.get() );
-
-  m_ctrl->EnableDragSource( wxDF_UNICODETEXT );
-  m_ctrl->EnableDropTarget( wxDF_UNICODETEXT );
-
-  _CreateDataViewColumns();
+  Connect(wxEVT_CHAR,
+          wxKeyEventHandler(myDataViewCtrl::OnDataViewChar),
+          NULL, this);
 }
 
-void myDataViewCtrl::_CreateDataViewColumns()
+void myDataViewCtrl::OnDataViewChar(wxKeyEvent& event)
 {
-  if (m_ctrl)
-  {
-    // column 0 of the view control: Name
-    wxDataViewTextRenderer *tr =
-      new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
-
-    // column 1 of the view control: Type
-    wxDataViewColumn *column1 =
-        new wxDataViewColumn( "Type", tr, 1, 100, wxALIGN_LEFT,
-                              wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE |
-                              wxDATAVIEW_COL_RESIZABLE );
-    column1->SetMinWidth(100); // this column can't be resized to be smaller
-    m_ctrl->AppendColumn( column1 );
-
-    // column 2 of the view control: Val
-    wxDataViewColumn *column2 =
-        new wxDataViewColumn( "Val", tr, 2, 60, wxALIGN_LEFT,
-                              wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE |
-                              wxDATAVIEW_COL_RESIZABLE );
-    column2->SetMinWidth(60); // this column can't be resized to be smaller
-    m_ctrl->AppendColumn( column2 );
-
-    // column 3 of the view control: Details
-    wxDataViewColumn *column3 =
-        new wxDataViewColumn( "Details", tr, 3, 250, wxALIGN_LEFT,
-                              wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE |
-                              wxDATAVIEW_COL_RESIZABLE );
-    column3->SetMinWidth(250); // this column can't be resized to be smaller
-    m_ctrl->AppendColumn( column3 );
-  }
+//     if ( event.GetKeyCode() == WXK_DELETE )
+//         //DeleteSelectedItems();
+//     else
+        event.Skip();
 }
 
+/*
 void myDataViewCtrl::_ShowMenu(MyDataViewItemData id, const wxPoint& pt)
 {
   /*
@@ -119,8 +86,8 @@ void myDataViewCtrl::_ShowMenu(MyDataViewItemData id, const wxPoint& pt)
     wxMenu menu(wxT("No particular item"));
     PopupMenu(&menu, pt);
   }
-  */
-}
+  *
+}*/
 
 BEGIN_EVENT_TABLE(myDataViewCtrl, wxDataViewCtrl)
   EVT_MENU(wxMENU_ID_myABOUT,   myDataViewCtrl::OnAbout)

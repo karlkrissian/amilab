@@ -27,26 +27,63 @@
 
 #include <wx/dataview.h>
 #include "myDataViewModels.h"
-#include <boost/weak_ptr.hpp>
 
-class BasicVariable;
+// #include <wx/any.h>
 
-template <class T>
-class Variable;
+// //=======================================================
+// 
+// class MyDataViewItemData : public wxDataViewItem
+// {
+//   public:
+//     MyDataViewItemData(boost::shared_ptr<BasicVariable> lvar) : _var(lvar) { }
+// 
+//     boost::weak_ptr<BasicVariable> GetVar() const { return _var; }
+// 
+//   private:
+//     /// weak pointer to the Variable
+//     boost::weak_ptr<BasicVariable> _var;
+// };
 
 //=======================================================
 
-class MyDataViewItemData : public wxDataViewItem
-{
-  public:
-    MyDataViewItemData(boost::shared_ptr<BasicVariable> lvar) : _var(lvar) { }
+// ---------------------------------------------------------
+// wxDataViewAnyRenderer
+// ---------------------------------------------------------
 
-    boost::weak_ptr<BasicVariable> GetVar() const { return _var; }
-
-  private:
-    /// weak pointer to the Variable
-    boost::weak_ptr<BasicVariable> _var;
-};
+// class wxDataViewAnyRenderer: public wxDataViewCustomRenderer
+// {
+//   public:
+//     wxDataViewAnyRenderer(): wxDataViewCustomRenderer("string",
+//                                    wxDATAVIEW_CELL_ACTIVATABLE,
+//                                    wxALIGN_CENTER)
+//        { }
+// 
+//     virtual bool SetValue( const wxVariant &value )
+//     {
+//       m_value = value;
+//       return true;
+//     }
+// 
+//     virtual bool GetValue( wxVariant &value ) const
+//     {
+//       value = m_value;
+// 
+//       return true;
+//     }
+// 
+//     virtual wxSize GetSize() const
+//     {
+//         return wxSize();
+//     }
+// 
+//     virtual bool Render( wxRect rect, wxDC *dc, int state )
+//     {
+//         return true;
+//     }
+// 
+//   private:
+//     wxVariant m_value;
+// };
 
 //=======================================================
 
@@ -84,17 +121,11 @@ class myDataViewCtrl: public wxDataViewCtrl
     void OnHeaderRightClick( wxDataViewEvent &event );
     void OnSorted( wxDataViewEvent &event );
 
-  private:
-    void _CreateDataViewColumns();
-    void _ShowMenu( MyDataViewItemData id, const wxPoint& pt );
-    
-    boost::weak_ptr<BasicVariable> _currentmenu_var;
-    wxDataViewCtrl* m_ctrl; //Data view control.
-    wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
+    void OnDataViewChar(wxKeyEvent& event);
 
-    // other data:
-    wxDataViewColumn* m_col;
-    wxDataViewColumn* m_attributes;
+  private:
+    boost::weak_ptr<BasicVariable> _currentmenu_var;
+//     void _ShowMenu( MyDataViewItemData id, const wxPoint& pt );
     
     DECLARE_EVENT_TABLE();
 };

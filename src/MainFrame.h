@@ -40,6 +40,7 @@
 #include "wx/aui/aui.h"
 
 #include "myTreeCtrl.h"
+#include "myDataViewCtrl.h"
 
 #include "wx/listctrl.h"
 #include "wx/wxhtml.h"
@@ -209,10 +210,10 @@ protected:
   wxMenu *menuFile;
   wxMenu *menuView;
   wxMenu *menuScripts;
-    wxMenu *menuSegmentation;
-    wxMenu *menuNoiseReduction;
-    wxMenu *menuVisualization;
-    wxMenu *menuSyntheticImages;
+  wxMenu *menuSegmentation;
+  wxMenu *menuNoiseReduction;
+  wxMenu *menuVisualization;
+  wxMenu *menuSyntheticImages;
 
   int usermenu_id;
   std::map<int,string> usermenu_scripts; // Scripts added to the menu by the user
@@ -232,6 +233,9 @@ protected:
 
   wxPanel*     _vartree_panel;
   wxBoxSizer*  vartreepanel_sizer;
+
+  wxPanel*     _vardataview_panel;
+  wxBoxSizer*  vardataviewpanel_sizer;
 
   boost::shared_ptr<wxTextValidator> _textcontrol_validator;
   TextControl::ptr TC;
@@ -257,6 +261,10 @@ protected:
   wxTreeItemId _vartree_root;
   wxTreeItemId _vartree_global;
   wxTreeItemId _vartree_builtin;
+
+  myDataViewCtrl* _var_dataview;
+  wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
+
 //  wxTreeItemId _vartree_images;
 //  wxTreeItemId _vartree_surfaces;
 //  wxTreeItemId _vartree_numbers;
@@ -269,20 +277,21 @@ protected:
 
   void CreateMenu();
 
-  wxToolBar* CreateToolbar ( wxWindow* parent );
+  wxToolBar* CreateToolbar    ( wxWindow* parent );
 
-  void CreateMainBook     ( wxWindow*);
-  void CreateParamBook    ( wxWindow*);
+  void CreateMainBook         ( wxWindow*);
+  void CreateParamBook        ( wxWindow*);
 
-  void CreateConsoleText  ( wxWindow*);
-  void CreateVarListPanel ( wxWindow*);
-  void CreateVarTreePanel ( wxWindow*);
-  void CreateLogText      ( wxWindow*);
-  void CreateKeywordsPanel( wxWindow*);
-  void CreateVarPanel     ( wxWindow*);
-  void CreateHtmlPanel    ( wxWindow*);
-  void CreateDrawingPanel ( wxWindow*);
-  void CreateSettingsPanel( wxWindow*);
+  void CreateConsoleText      ( wxWindow*);
+  void CreateVarListPanel     ( wxWindow*);
+  void CreateVarTreePanel     ( wxWindow*);
+  void CreateVarDataViewPanel ( wxWindow*);
+  void CreateLogText          ( wxWindow*);
+  void CreateKeywordsPanel    ( wxWindow*);
+  void CreateVarPanel         ( wxWindow*);
+  void CreateHtmlPanel        ( wxWindow*);
+  void CreateDrawingPanel     ( wxWindow*);
+  void CreateSettingsPanel    ( wxWindow*);
 
 private:
   wxAuiManager m_mgr;

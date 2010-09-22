@@ -11,6 +11,7 @@
 //
 
 #include "myDataViewModels.h"
+//#include <wx/any.h>
 
 // ----------------------------------------------------------------------------
 // AMILabTreeModel
@@ -21,6 +22,30 @@ AMILabTreeModel::AMILabTreeModel()
     m_root = new AMILabTreeModelNode( NULL, "Root" );
     m_global = new AMILabTreeModelNode( m_root, "Global" );
     m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
+
+/*
+    m_global->Append(
+        new AMILabTreeModelNode( m_global,
+                                  wxT("First"),
+                                  wxT("string"),
+                                  wxT("Hola"),
+                                  wxT("esto es lo que ")/*,
+                                 boost::shared_ptr<BasicVariable>()*
+                                 )
+                    );
+
+    m_global->Append(
+        new AMILabTreeModelNode( m_global,
+                                  wxT("Second"),
+                                  wxT("string"),
+                                  wxT("Mundo"),
+                                  wxT("esto es lo que pone")/*,
+                                 boost::shared_ptr<BasicVariable>()*
+                                 )
+                    );
+std::cout<< m_global->GetNthChild(1)->m_Name <<std::endl;
+                        m_root->Append( m_global );
+    m_root->Append( m_builtin );*/
 }
 
 wxString AMILabTreeModel::GetName( const wxDataViewItem &item ) const
@@ -62,7 +87,7 @@ wxString AMILabTreeModel::GetDetails( const wxDataViewItem &item ) const
 
   return node->m_Details;
 }
-
+/*
 boost::weak_ptr<BasicVariable> AMILabTreeModel::GetVar( const wxDataViewItem &item) const
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -80,7 +105,7 @@ void AMILabTreeModel::SetVar (const wxDataViewItem &item,
 
   node->m_Var = var;
 }
-
+*/
 void AMILabTreeModel::Delete( const wxDataViewItem &item )
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -166,6 +191,16 @@ void AMILabTreeModel::GetValue( wxVariant &variant,
     case 3:
       variant = node->m_Details;
       break;
+      
+//     case 4: {
+//        //wxWeakRef<BasicVariable> any = node->m_Var.lock().get();
+// //       BasicVariable::ptr vari(node->m_Var.lock());
+// //       wxString s = vari->Name().c_str();
+// //       variant = vari->Name();
+//       variant = node->m_Var;
+//       //std::cout<<vari->Name()<<std::endl;
+//       }
+//       break;
     default:
       std::cout << "AMILabTreeModel::GetValue: wrong column "
                 << col

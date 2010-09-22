@@ -365,7 +365,16 @@ MainFrame::MainFrame( const wxString& title,
                   .Left().Layer(1)
                   .MinimizeButton(true));
 */
-
+/// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0))
+  CreateVarDataViewPanel(this);
+  m_mgr.AddPane(_vardataview_panel,
+                  wxAuiPaneInfo()
+                  .Name(wxT("VariablesTree"))
+                  .Caption(wxT("Variables Tree"))
+                  .Left().Layer(1)
+                  .MaximizeButton(true));
+#else
   CreateVarTreePanel(this);
   m_mgr.AddPane(_vartree_panel,
                   wxAuiPaneInfo()
@@ -373,6 +382,8 @@ MainFrame::MainFrame( const wxString& title,
                   .Caption(wxT("Variables Tree"))
                   .Left().Layer(1)
                   .MaximizeButton(true));
+#endif
+/// @endcond
 
   CreateLogText(this);
   m_mgr.AddPane(_log_text,
@@ -690,7 +701,13 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   _var_tree->AddColumn (_T("Details"), 250, wxALIGN_CENTER);
   _var_tree->SetColumnEditable (_vartree_col_desc, false);
 
+/// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1))
+  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+#else
   _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+#endif
+/// @endcond
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
 
   wxFont font(10,wxMODERN,wxNORMAL,wxNORMAL);
@@ -708,6 +725,99 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   vartreepanel_sizer->Fit(_vartree_panel);
 
 } // CreateVarTreePanel()
+
+//--------------------------------------------------------
+void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
+{
+  _vardataview_panel = new wxPanel(parent);
+
+  vardataviewpanel_sizer  = new wxBoxSizer( wxVERTICAL );
+
+  _vardataview_panel->SetSizer(vardataviewpanel_sizer);
+  
+  _var_dataview = new myDataViewCtrl( _vardataview_panel,
+                              wxID_ANY,
+                              wxDefaultPosition,
+                              wxDefaultSize,
+                              wxDV_ROW_LINES
+                            );
+
+  m_amilab_model = new AMILabTreeModel();
+  _var_dataview->AssociateModel( m_amilab_model.get() );
+  _var_dataview->EnableDragSource( wxDF_UNICODETEXT );
+  _var_dataview->EnableDropTarget( wxDF_UNICODETEXT );
+
+  wxDataViewTextRenderer *tr =
+    new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
+
+  // column 0 of the view control: Name
+  // wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE | wxDATAVIEW_COL_RESIZABLE
+  wxDataViewColumn *column0 =
+  new wxDataViewColumn( "Name", tr, 0, 250, wxALIGN_LEFT,
+                        wxDATAVIEW_COL_RESIZABLE );
+  column0->SetMinWidth(200); // this column can't be resized to be smaller
+  _var_dataview->AppendColumn( column0 );
+
+  // column 1 of the view control: Type
+  wxDataViewTextRenderer *tr1 =
+    new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
+    
+  wxDataViewColumn *column1 =
+      new wxDataViewColumn( "Type", tr1, 1, 100, wxALIGN_LEFT,
+                            wxDATAVIEW_COL_RESIZABLE );
+  column1->SetMinWidth(100); // this column can't be resized to be smaller
+  _var_dataview->AppendColumn( column1 );
+
+  // column 2 of the view control: Val
+  wxDataViewTextRenderer *tr2 =
+    new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
+
+  wxDataViewColumn *column2 =
+      new wxDataViewColumn( "Val", tr2, 2, 60, wxALIGN_LEFT,
+                            wxDATAVIEW_COL_RESIZABLE );
+  column2->SetMinWidth(60); // this column can't be resized to be smaller
+  _var_dataview->AppendColumn( column2 );
+
+  // column 3 of the view control: Details
+  wxDataViewTextRenderer *tr3 =
+    new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
+
+  wxDataViewColumn *column3 =
+      new wxDataViewColumn( "Details", tr3, 3, 250, wxALIGN_LEFT,
+                            wxDATAVIEW_COL_RESIZABLE );
+  column3->SetMinWidth(250); // this column can't be resized to be smaller
+  _var_dataview->AppendColumn( column3 );
+
+  // column 4 of the view control: Var
+//   wxDataViewAnyRenderer *tr4 =
+//     new wxDataViewAnyRenderer(  );
+// 
+//   wxDataViewColumn *column4 =
+//       new wxDataViewColumn( "Variable", tr4, 4, 250, wxALIGN_LEFT,
+//                             wxDATAVIEW_COL_HIDDEN );
+//   column4->SetMinWidth(250); // this column can't be resized to be smaller
+//   //column4->SetHidden(true);
+//     _var_dataview->AppendColumn( column4 );
+
+  _var_dataview->SetWindowStyle(_var_dataview->GetWindowStyle());
+
+  wxFont font(10,wxMODERN,wxNORMAL,wxNORMAL);
+  if (font.IsOk())
+    _var_dataview->SetFont(font ); // try a fixed pitch font
+  else
+    _var_dataview->SetFont(*wxSMALL_FONT);
+  _var_dataview->SetIndent(2);
+
+  vardataviewpanel_sizer->Add(_var_dataview,
+                              1,
+                              wxEXPAND,   // make vertically stretchable and make border all around
+                              5);             // set border width to 5
+
+  vardataviewpanel_sizer->Fit(_vardataview_panel);
+  
+  //_var_tree->SetToolTip(_T("Tree Control for current variables"));
+
+} // CreateVarDataViewPanel()
 
 //--------------------------------------------------------
 void MainFrame::CreateConsoleText( wxWindow* parent)
@@ -1697,7 +1807,11 @@ void MainFrame::ConsoleClear( wxCommandEvent& event)
 void MainFrame::UpdateVarsDisplay()
 {
   //UpdateVarList();
-
+/// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0))
+  //AQUI PONER UPDATE DATAVIEW
+  std::cout << "\nMainFrame::UpdateVarsDisplay"<< std::endl;
+#else
   wxFont root_font = _var_tree->GetItemFont(_vartree_root);
   root_font.SetStyle(wxFONTSTYLE_ITALIC);
   root_font.SetWeight(wxFONTWEIGHT_BOLD);
@@ -1713,7 +1827,8 @@ void MainFrame::UpdateVarsDisplay()
 
   UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext());
   _var_tree->Expand(  _vartree_builtin);
-
+#endif
+/// @endcond
 }
 
 //--------------------------------------------------

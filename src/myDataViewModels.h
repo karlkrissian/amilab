@@ -12,8 +12,9 @@
 #ifndef MYDATAVIEWMODELS_H
 #define MYDATAVIEWMODELS_H
 
-#include "myDataViewNodes.h"
 #include <wx/dataview.h>
+
+#include "myDataViewNodes.h"
 
 /*******************************************************************************
 Implement this data model:
@@ -47,8 +48,8 @@ class AMILabTreeModel: public wxDataViewModel
     wxString GetVal(  const wxDataViewItem &item ) const;
     wxString GetDetails( const wxDataViewItem &item ) const;
 
-    boost::weak_ptr<BasicVariable> GetVar( const wxDataViewItem &item) const;
-    void SetVar (const wxDataViewItem &item, boost::shared_ptr<BasicVariable> var);
+//     boost::weak_ptr<BasicVariable> GetVar( const wxDataViewItem &item) const;
+//     void SetVar (const wxDataViewItem &item, boost::shared_ptr<BasicVariable> var);
 
     void Delete( const wxDataViewItem &item );
 
@@ -61,7 +62,7 @@ class AMILabTreeModel: public wxDataViewModel
 
     virtual unsigned int GetColumnCount() const
     {
-      return 5;
+      return 4;//The VAR column is not visible.
     }
 
     virtual wxString GetColumnType( unsigned int col ) const
@@ -74,6 +75,7 @@ class AMILabTreeModel: public wxDataViewModel
 
     virtual void GetValue( wxVariant &variant,
       const wxDataViewItem &item, unsigned int col ) const;
+
     virtual bool SetValue( const wxVariant &variant,
       const wxDataViewItem &item, unsigned int col );
 

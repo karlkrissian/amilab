@@ -28,6 +28,8 @@
 #include <boost/weak_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
+#include "Variable.hpp"
+
 class BasicVariable;
 
 template <class T>
@@ -56,17 +58,21 @@ class AMILabTreeModelNode
     // AMILabTreeModelNode: Constructor definition for leaf nodes
     // -------------------------------------------------------------------------
     AMILabTreeModelNode(AMILabTreeModelNode* parent, const wxString &name,
-      const wxString &type, const wxString &val,  const wxString &details,
-      boost::shared_ptr<BasicVariable> var)
+      const wxString &type, const wxString &val,  const wxString &details/*,
+      boost::shared_ptr<BasicVariable> var)*/
+      )
     {
       m_parent = parent;
 
+      //std::cout <<"Name: "<<name<<" Type: "<<type<<" Val: "<<val<<" Details: "<<details<<std::endl;
       m_Name = name;
       m_Type = type;
       m_Val = val;
       m_Details = details;
-      m_Var = var;
+//      m_Var = var;
 
+     // std::cout <<"Name: "<<m_Name<<" Type: "<<m_Type<<" Val: "<<m_Val<<" Details: "<<m_Details<<std::endl;
+      
       m_container = false;
     }
 
@@ -81,7 +87,7 @@ class AMILabTreeModelNode
       m_Type = wxT("");
       m_Val = wxT("");
       m_Details = wxT("");
-      m_Var = boost::weak_ptr<BasicVariable>();
+//      m_Var = boost::weak_ptr<BasicVariable>();
 
       m_container = true;
     }
@@ -126,7 +132,7 @@ public:     // public to avoid getters/setters
     wxString                        m_Type;
     wxString                        m_Val;
     wxString                        m_Details;
-    boost::weak_ptr<BasicVariable>  m_Var;
+//    boost::weak_ptr<BasicVariable>  m_Var;
 
     // TODO/FIXME:
     // the GTK version of wxDVC (in particular wxDataViewCtrlInternal::ItemAdded)
