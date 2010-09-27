@@ -96,6 +96,8 @@ class myDataViewCtrl: public wxDataViewCtrl
       long style = 0,
       const wxValidator& validator = wxDefaultValidator);
 
+    void InternalAssociateModel( AMILabTreeModel *model );
+
   protected:
     void OnContextMenu( wxDataViewEvent &event );
     void OnAbout( wxCommandEvent& event );
@@ -105,27 +107,13 @@ class myDataViewCtrl: public wxDataViewCtrl
     void OnDropPossible( wxDataViewEvent &event );
     void OnDrop( wxDataViewEvent &event );
 
-    void OnActivated( wxDataViewEvent &event );
-    void OnExpanding( wxDataViewEvent &event );
-    void OnExpanded( wxDataViewEvent &event );
-    void OnCollapsing( wxDataViewEvent &event );
-    void OnCollapsed( wxDataViewEvent &event );
-    void OnSelectionChanged( wxDataViewEvent &event );
-
-    void OnStartEditing( wxDataViewEvent &event );
-    void OnEditingStarted( wxDataViewEvent &event );
-    void OnEditingDone( wxDataViewEvent &event );
-    void OnValueChanged( wxDataViewEvent &event );
-
-    void OnHeaderClick( wxDataViewEvent &event );
-    void OnHeaderRightClick( wxDataViewEvent &event );
-    void OnSorted( wxDataViewEvent &event );
-
     void OnDataViewChar(wxKeyEvent& event);
 
   private:
     boost::weak_ptr<BasicVariable> _currentmenu_var;
-//     void _ShowMenu( MyDataViewItemData id, const wxPoint& pt );
+    wxObjectDataPtr<AMILabTreeModel> _amilab_model;
+
+    void _ShowMenu( const wxDataViewItem &item, const wxPoint& pt );
     
     DECLARE_EVENT_TABLE();
 };

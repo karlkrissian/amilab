@@ -16,36 +16,14 @@
 // ----------------------------------------------------------------------------
 // AMILabTreeModel
 // ----------------------------------------------------------------------------
-
 AMILabTreeModel::AMILabTreeModel()
 {
-    m_root = new AMILabTreeModelNode( NULL, "Root" );
-    m_global = new AMILabTreeModelNode( m_root, "Global" );
-    m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
+  m_root = new AMILabTreeModelNode( NULL, "Root" );
+  m_global = new AMILabTreeModelNode( m_root, "Global" );
+  m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
 
-/*
-    m_global->Append(
-        new AMILabTreeModelNode( m_global,
-                                  wxT("First"),
-                                  wxT("string"),
-                                  wxT("Hola"),
-                                  wxT("esto es lo que ")/*,
-                                 boost::shared_ptr<BasicVariable>()*
-                                 )
-                    );
-
-    m_global->Append(
-        new AMILabTreeModelNode( m_global,
-                                  wxT("Second"),
-                                  wxT("string"),
-                                  wxT("Mundo"),
-                                  wxT("esto es lo que pone")/*,
-                                 boost::shared_ptr<BasicVariable>()*
-                                 )
-                    );
-std::cout<< m_global->GetNthChild(1)->m_Name <<std::endl;
-                        m_root->Append( m_global );
-    m_root->Append( m_builtin );*/
+  m_root->Append(m_global);
+  m_root->Append(m_builtin);
 }
 
 wxString AMILabTreeModel::GetName( const wxDataViewItem &item ) const
@@ -119,18 +97,23 @@ void AMILabTreeModel::Delete( const wxDataViewItem &item )
       wxASSERT(node == m_root);
 
       // don't make the control completely empty:
-      wxLogError( "Cannot remove the root item!" );
+      std::cout << "AMILabTreeModel::Delete Cannot remove the root item!" << std::endl;
       return;
   }
 
   // is the node one of those we keep stored in special pointers?
-  //MIRAR
+  //LOOK AT THIS!!!
   if (node == m_root)
       m_root = NULL;
   else if (node == m_global)
       m_global = NULL;
   else if (node == m_builtin)
       m_builtin = NULL;
+
+  std::cout << std::endl
+            << "AMILabTreeModel::Delete: delete node: " << node->m_Name
+            << " (parent: " << node->GetParent()->m_Name << ")"
+            << std::endl;  
 
   // first remove the node from the parent's array of children;
   // NOTE: AMILabTreeModelNodePtrArray is only an array of _pointers_
@@ -141,7 +124,7 @@ void AMILabTreeModel::Delete( const wxDataViewItem &item )
   delete node;
 
   // notify control
-  ItemDeleted( parent, item );
+//  ItemDeleted( parent, item );
 }
 
 int AMILabTreeModel::Compare( const wxDataViewItem &item1, const wxDataViewItem &item2,
@@ -236,13 +219,12 @@ bool AMILabTreeModel::SetValue( const wxVariant &variant,
 
 wxDataViewItem AMILabTreeModel::GetParent( const wxDataViewItem &item ) const
 {
-  // the invisible root node has no parent
   if (!item.IsOk())
     return wxDataViewItem(0);
 
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
 
-  // "Root" also has no parent
+  // The root node has no parent
   if (node == m_root)
     return wxDataViewItem(0);
 
@@ -251,8 +233,6 @@ wxDataViewItem AMILabTreeModel::GetParent( const wxDataViewItem &item ) const
 
 bool AMILabTreeModel::IsContainer( const wxDataViewItem &item ) const
 {
-  // the invisble root node can have children
-  // (in our model always "Root")
   if (!item.IsOk())
     return true;
 
@@ -285,4 +265,121 @@ unsigned int AMILabTreeModel::GetChildren( const wxDataViewItem &parent,
   }
 
   return count;
+}
+
+void AMILabTreeModel::DeleteChildren( const wxDataViewItem &item )
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)
+    std::cout << "AMILabTreeModel::DeleteChildren Cannot remove the children nodes!"
+              << std::endl;
+  else
+  {
+    unsigned int count = node->GetChildren().GetCount();
+    for (unsigned int pos = 0; pos < count; pos++)
+    {
+      AMILabTreeModelNode *child = node->GetChildren().Item( pos );
+      Delete( wxDataViewItem( (void*) child ) );
+    }
+  }
+}
+
+wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
+  const wxString &name, const wxString &type, const wxString &val,
+  const wxString &details)
+{
+  AMILabTreeModelNode *parent_node = (AMILabTreeModelNode*) parent.GetID();
+
+  if (!parent_node)
+  {
+    std::cout << "AMILabTreeModel::CreateLeafNode Cannot create the new leaf node!"
+              << std::endl;
+    return parent;
+  }
+  else
+  {
+    AMILabTreeModelNode* child_node =  new AMILabTreeModelNode( parent_node,
+      name, type, val, details );
+    parent_node->Append (child_node);
+
+    std::cout << std::endl
+              << "\nAMILabTreeModel::CreateLeafNode - "
+              << " parent: " << parent_node->m_Name
+              << " child: " << child_node->m_Name << "("<< name << ")";
+    if (!parent_node->GetParent())
+      std::cout << std::endl;
+    else
+      std::cout << " grandfather: " << parent_node->GetParent()->m_Name
+                << std::endl;
+
+    // notify control
+     wxDataViewItem Child( (void*) child_node );
+//     wxDataViewItem Parent( (void*) parent_node );
+//    ItemAdded( Parent, Child );
+
+    return Child;
+  }
+}
+
+wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
+  const wxString &branch)
+{
+  AMILabTreeModelNode *parent_node = (AMILabTreeModelNode*) parent.GetID();
+
+  if (!parent_node)
+  {
+    std::cout << "AMILabTreeModel::CreateBranchNode Cannot create the new branch node!"
+              << std::endl;
+    return parent;
+  }
+  else
+  {
+    AMILabTreeModelNode* child_node =  new AMILabTreeModelNode( parent_node,
+      branch );
+    parent_node->Append (child_node);
+
+    std::cout << std::endl
+              << "\nAMILabTreeModel::CreateBranchNode - "
+              << " parent: " << parent_node->m_Name
+              << " child: " << child_node->m_Name << "("<< branch << ")";
+
+    if (!parent_node->GetParent())
+      std::cout << std::endl;
+    else
+      std::cout << " grandfather: " << parent_node->GetParent()->m_Name
+                << std::endl;
+
+    wxDataViewItem Child( (void*) child_node );
+    return Child;
+  }
+}
+
+bool AMILabTreeModel::HasChildren(const wxDataViewItem &item) const
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)
+  {
+    std::cout << "AMILabTreeModel::HasChildren Cannot determine if the node has children!"
+              << std::endl;
+    return false;
+  }
+  else
+    return (node->GetChildren().GetCount() > 0);
+}
+
+wxDataViewItem AMILabTreeModel::GetRootNode() const
+{
+  return wxDataViewItem( (void*) m_root );
+}
+
+wxDataViewItem AMILabTreeModel::GetGlobalNode() const
+{
+  return wxDataViewItem( (void*) m_global );
+}
+
+wxDataViewItem AMILabTreeModel::GetBuiltinNode() const
+{
+  return wxDataViewItem( (void*) m_builtin );
 }

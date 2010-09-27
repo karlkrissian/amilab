@@ -39,6 +39,11 @@ myDataViewCtrl::myDataViewCtrl( wxWindow* parent, wxWindowID id,
           NULL, this);
 }
 
+void myDataViewCtrl::InternalAssociateModel( AMILabTreeModel *model )
+{
+  this->_amilab_model = model;
+}
+
 void myDataViewCtrl::OnDataViewChar(wxKeyEvent& event)
 {
 //     if ( event.GetKeyCode() == WXK_DELETE )
@@ -47,23 +52,22 @@ void myDataViewCtrl::OnDataViewChar(wxKeyEvent& event)
         event.Skip();
 }
 
-/*
-void myDataViewCtrl::_ShowMenu(MyDataViewItemData id, const wxPoint& pt)
-{
-  /*
-  if ( id.IsOk() )
-  {
-    wxMenu menu(m_amilab_model->GetName(id));
-    BasicVariable::ptr var = m_amilab_model->GetVar(id).lock();
-    _currentmenu_var = var;
 
-    if (var.get()) {
-      std::string com = var->GetComments();
-      if (com.compare("")!=0) {
-        wxString comments(com.c_str(), wxConvUTF8);
-        menu.Append(wxID_ANY, comments);
-      }
-    }
+void myDataViewCtrl::_ShowMenu(const wxDataViewItem &item, const wxPoint& pt)
+{
+  if ( item.IsOk() )
+  {
+    wxMenu menu(_amilab_model->GetName(item));
+//     BasicVariable::ptr var = m_amilab_model->GetVar(id).lock();
+//     _currentmenu_var = var;
+// 
+//     if (var.get()) {
+//       std::string com = var->GetComments();
+//       if (com.compare("")!=0) {
+//         wxString comments(com.c_str(), wxConvUTF8);
+//         menu.Append(wxID_ANY, comments);
+//       }
+//     }
 
     // Write in console menu
     wxMenuItem* item1 = new wxMenuItem(&menu,wxMENU_ID_ToConsole,wxT("Write in console"),
@@ -86,8 +90,8 @@ void myDataViewCtrl::_ShowMenu(MyDataViewItemData id, const wxPoint& pt)
     wxMenu menu(wxT("No particular item"));
     PopupMenu(&menu, pt);
   }
-  *
-}*/
+
+}
 
 BEGIN_EVENT_TABLE(myDataViewCtrl, wxDataViewCtrl)
   EVT_MENU(wxMENU_ID_myABOUT,   myDataViewCtrl::OnAbout)
@@ -98,34 +102,23 @@ BEGIN_EVENT_TABLE(myDataViewCtrl, wxDataViewCtrl)
   EVT_DATAVIEW_ITEM_DROP_POSSIBLE( wxID_ANY, myDataViewCtrl::OnDropPossible )
   EVT_DATAVIEW_ITEM_DROP( wxID_ANY, myDataViewCtrl::OnDrop )
 
-  EVT_DATAVIEW_ITEM_ACTIVATED(wxID_ANY, myDataViewCtrl::OnActivated )
-  EVT_DATAVIEW_ITEM_EXPANDING(wxID_ANY, myDataViewCtrl::OnExpanding)
-  EVT_DATAVIEW_ITEM_EXPANDED(wxID_ANY, myDataViewCtrl::OnExpanded)
-  EVT_DATAVIEW_ITEM_COLLAPSING(wxID_ANY, myDataViewCtrl::OnCollapsing)
-  EVT_DATAVIEW_ITEM_COLLAPSED(wxID_ANY, myDataViewCtrl::OnCollapsed)
-  EVT_DATAVIEW_SELECTION_CHANGED(wxID_ANY, myDataViewCtrl::OnSelectionChanged)
-
-  EVT_DATAVIEW_ITEM_START_EDITING(wxID_ANY, myDataViewCtrl::OnStartEditing)
-  EVT_DATAVIEW_ITEM_EDITING_STARTED(wxID_ANY, myDataViewCtrl::OnEditingStarted)
-  EVT_DATAVIEW_ITEM_EDITING_DONE(wxID_ANY, myDataViewCtrl::OnEditingDone)
-
-  EVT_DATAVIEW_COLUMN_HEADER_CLICK(wxID_ANY, myDataViewCtrl::OnHeaderClick)
-  EVT_DATAVIEW_COLUMN_HEADER_RIGHT_CLICKED(wxID_ANY, myDataViewCtrl::OnHeaderRightClick)
-  EVT_DATAVIEW_COLUMN_SORTED(wxID_ANY, myDataViewCtrl::OnSorted)
-
 END_EVENT_TABLE()
 
 void myDataViewCtrl::OnContextMenu( wxDataViewEvent &event )
 {
-  /*
-  MyDataViewItemData item( event.GetItem() );
+  wxDataViewItem item( event.GetItem() );
 
+  if (_amilab_model->IsContainer( item ) )
+  {
+      event.Veto();
+      return;
+  }
+  
   wxPoint clientpt = event.GetPosition();
   wxPoint screenpt = ClientToScreen(clientpt);
 
   _ShowMenu(item, clientpt);
   event.Skip();
-  */
 }
 
 void myDataViewCtrl::OnAbout( wxCommandEvent& event )
@@ -141,79 +134,63 @@ void myDataViewCtrl::ToConsole( wxCommandEvent& event )
 
 void myDataViewCtrl::OnBeginDrag( wxDataViewEvent &event )
 {
+  wxDataViewItem item( event.GetItem() );
 
+  wxDataViewItem *node1 = (wxDataViewItem*) item.GetID();
+
+  // only allow drags for item, not containers
+  if (_amilab_model->IsContainer( item ) )
+  {
+      event.Veto();
+      return;
+  }
+
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+  wxTextDataObject *obj = new wxTextDataObject;
+  obj->SetText( node->m_Name );
+  event.SetDataObject( obj );
+
+  std::cout << std::endl
+          << "myDataViewCtrl::OnBeginDrag - Drag text: "
+          << node->m_Name
+          << std::endl;
 }
 
 void myDataViewCtrl::OnDropPossible( wxDataViewEvent &event )
 {
+  wxDataViewItem item( event.GetItem() );
+
+  // only allow drags for item, not containers
+  if (_amilab_model->IsContainer( item ) )
+      event.Veto();
+
+  if (event.GetDataFormat() != wxDF_UNICODETEXT)
+      event.Veto();
 
 }
 
 void myDataViewCtrl::OnDrop( wxDataViewEvent &event )
 {
+  wxDataViewItem item( event.GetItem() );
 
-}
+  // only allow drops for item, not containers
+  if (_amilab_model->IsContainer( item ) )
+  {
+      event.Veto();
+      return;
+  }
 
-void myDataViewCtrl::OnActivated( wxDataViewEvent &event )
-{
+  if (event.GetDataFormat() != wxDF_UNICODETEXT)
+  {
+      event.Veto();
+      return;
+  }
 
-}
+  wxTextDataObject obj;
+  obj.SetData( wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer() );
 
-void myDataViewCtrl::OnExpanding( wxDataViewEvent &event )
-{
-
-}
-void myDataViewCtrl::OnExpanded( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnCollapsing( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnCollapsed( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnSelectionChanged( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnStartEditing( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnEditingStarted( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnEditingDone( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnValueChanged( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnHeaderClick( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnHeaderRightClick( wxDataViewEvent &event )
-{
-
-}
-
-void myDataViewCtrl::OnSorted( wxDataViewEvent &event )
-{
-
+  std::cout << std::endl
+            << "myDataViewCtrl::OnDrop - Text dropped: "
+            << obj.GetText()
+            << std::endl;
 }

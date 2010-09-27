@@ -739,11 +739,13 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
-                              wxDV_ROW_LINES
+                              wxDV_SINGLE
                             );
 
   m_amilab_model = new AMILabTreeModel();
+  //Hay que crear el árbol en este punto
   _var_dataview->AssociateModel( m_amilab_model.get() );
+  _var_dataview->InternalAssociateModel( m_amilab_model.get() );
   _var_dataview->EnableDragSource( wxDF_UNICODETEXT );
   _var_dataview->EnableDropTarget( wxDF_UNICODETEXT );
 
@@ -808,13 +810,22 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
     _var_dataview->SetFont(*wxSMALL_FONT);
   _var_dataview->SetIndent(2);
 
+  //_var_dataview->Expand( m_amilab_model->GetRootNode() );
+
   vardataviewpanel_sizer->Add(_var_dataview,
                               1,
                               wxEXPAND,   // make vertically stretchable and make border all around
                               5);             // set border width to 5
 
   vardataviewpanel_sizer->Fit(_vardataview_panel);
-  
+
+  //TODO/FIXME: Automatically don't takes the right size.
+  wxSize a = _vardataview_panel->GetSize();
+  int Space = 100;
+  _vardataview_panel->SetSize(a.GetX()+Space, a.GetY());
+
+  // _vardataview_panel->SetSizerAndFit(vardataviewpanel_sizer, false);
+
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
 
 } // CreateVarDataViewPanel()
@@ -1532,6 +1543,215 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   //_var_list->Show();
 }
 
+//---------------------------------------------------------------
+void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context)
+{
+  boost::shared_ptr<wxArrayString> variables;
+
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) rootbranch.GetID();
+
+  std::cout << std::endl
+            << "MainFrame::UpdateVarDataView:"
+            << " rootbranch= " << node->m_Name
+            << " childrens: " << node->GetChildCount()
+            << std::endl;
+
+  // delete children of rootbranch
+  m_amilab_model->DeleteChildren(rootbranch);
+
+  // TODO: avoid creation of all branches at each update
+  // create all the first branches  
+  wxDataViewItem vartree_images    = m_amilab_model->CreateBranchNode(rootbranch,_T("Images"));
+  wxDataViewItem vartree_surfaces  = m_amilab_model->CreateBranchNode(rootbranch,_T("Surfaces"));
+  wxDataViewItem vartree_numbers   = m_amilab_model->CreateBranchNode(rootbranch,_T("Numbers"));
+  wxDataViewItem vartree_strings   = m_amilab_model->CreateBranchNode(rootbranch,_T("Strings"));
+  wxDataViewItem vartree_functions = m_amilab_model->CreateBranchNode(rootbranch,_T("Functions"));
+  wxDataViewItem vartree_classes   = m_amilab_model->CreateBranchNode(rootbranch,_T("Classes"));
+  wxDataViewItem vartree_objects   = m_amilab_model->CreateBranchNode(rootbranch,_T("Objects"));
+  wxDataViewItem vartree_wrapped_functions = m_amilab_model->CreateBranchNode(rootbranch,_T("Wrapped Image Functions"));
+  wxDataViewItem vartree_wrapped_procedures = m_amilab_model->CreateBranchNode(rootbranch,_T("Wrapped Procedures"));
+  wxDataViewItem vartree_wrapped_var_functions = m_amilab_model->CreateBranchNode(rootbranch,_T("Wrapped Var. Func."));
+  wxDataViewItem vartree_others    = m_amilab_model->CreateBranchNode(rootbranch,_T("Others"));
+
+  std::cout << std::endl
+          << "MainFrame::UpdateVarDataView: "
+          << " Create all the first branches of "
+          << node->m_Name << " (" << node->GetChildCount() << " childrens)"
+          << std::endl;
+
+  // loop vars
+  variables = boost::shared_ptr<wxArrayString>(new wxArrayString());
+  context->SearchCompletions(GetwxStr(""),variables);
+  unsigned long total_image_size = 0;
+
+  for(int i=0;i<(int)variables->GetCount();i++) {
+    //cout << "set item variable " << i << endl;
+
+    wxString type_str;
+    BasicVariable::ptr var = context->GetVar((*variables)[i].mb_str());
+
+    wxDataViewItem append_id;
+    std::string text;
+    std::string valtext;
+
+    if (var.get()) {
+      if (var->Type() == type_image) {
+        // create text with image information
+        DYNAMIC_CAST_VARIABLE(InrImage,var,varim);
+        InrImage::ptr im (varim->Pointer());
+        text = (boost::format("%1% (%2%x%3%x%4%)x%5% %|6$+5| Mb")
+                            % im->FormatName()
+                            % im->DimX()
+                            % im->DimY()
+                            % im->DimZ()
+                            % im->GetVDim()
+                            % (im->GetDataSize()/1000000)).str();
+        //cout << text << endl;
+        append_id = vartree_images;
+        total_image_size += im->GetDataSize();
+      } else
+/* TODO: arrange tree display for type_ami_object
+      if (var->Type() == type_surface) {
+        DYNAMIC_CAST_VARIABLE(SurfacePoly,var,varsurf);
+        SurfacePoly::ptr surf (varsurf->Pointer());
+        std::string text = (boost::format("%1% %15t pts: %2% %25t poly:%3%")
+                            % var->Name()
+                            % surf->GetNumberOfPoints()
+                            % surf->GetNumberOfPolys()).str();
+        //cout << text << endl;
+        itemid = _var_tree->AppendItem(
+              vartree_surfaces,
+              wxString(text.c_str(), wxConvUTF8),
+              -1,-1,
+              new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
+      } else
+*/
+      if (var->IsNumeric())
+      {
+        text = var->TreeCtrlInfo();
+        valtext = var->GetValueAsString();
+        append_id = vartree_numbers;
+      } else
+      if (var->Type() == type_string)
+      {
+        text = var->TreeCtrlInfo();
+        valtext = (boost::format("'%1%'") %var->GetValueAsString()).str();
+        append_id = vartree_strings;
+      } else
+      if (var->Type() == type_ami_function)
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_functions;
+      } else
+      if (var->Type() == type_ami_class)
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_classes;
+      } else
+      if ((var->Type() == type_ami_object))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_objects;
+      } else
+      if (var->Type() == type_c_image_function)
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_functions;
+      } else
+      if ((var->Type() == type_c_procedure))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_procedures;
+      } else
+      if ((var->Type() == type_c_function)||(var->Type() == type_class_member))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_var_functions;
+      } else {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_others;
+      }
+
+      std::cout << std::endl
+                << "MainFrame::UpdateVarDataView: "
+                << " Create lead node (BEFORE) -  "
+                << " parent: "  << ((AMILabTreeModelNode*) append_id.GetID())->m_Name
+                << " values: "
+                << var->Name().c_str()
+                << " : " << var->GetTypeName().c_str()
+                << " : " << valtext.c_str()
+                << " : " << text.c_str();
+
+      wxDataViewItem itemid = m_amilab_model->CreateLeafNode(append_id,
+        wxString(var->Name().c_str(), wxConvUTF8),
+        wxString(var->GetTypeName().c_str(), wxConvUTF8),
+        wxString(valtext.c_str(), wxConvUTF8),
+        wxString(text.c_str(), wxConvUTF8)
+        );
+
+      std::cout << std::endl
+                << "                              "
+                << " Create lead node (AFTER) -  "
+                << " parent: "  << ((AMILabTreeModelNode*) append_id.GetID())->m_Name
+                << " child: " << ((AMILabTreeModelNode*) itemid.GetID())->m_Name
+                << std::endl;
+        
+//       if (((AMILabTreeModelNode*) itemid.GetID())->m_Name == "GetFullHostName")
+//         std::cout << "GetFullHostName" <<std::endl;
+
+      if ((var->Type() == type_ami_object)) {
+        // get the pointer to the objet
+        DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
+        AMIObject::ptr obj( varobj->Pointer());
+        // create the tree by recursive call
+
+        std::cout << std::endl
+                  << "MainFrame::UpdateVarDataView: "
+                  << " Callback UpdateVarDataView -  "
+                  << " node: "  << ((AMILabTreeModelNode*) itemid.GetID())->m_Name
+                  << std::endl;
+
+        this->UpdateVarDataView(itemid, obj->GetContext());
+      }
+    } // end if var.get()
+
+  } // end for
+
+  // TODO/FIXME: I don't understand this part.
+
+  // Display the total size of images in Mb
+  if (total_image_size != 0) {
+    std::string text = (boost::format(" %45t total = %55t %|1$+5| Mb")
+                        % (total_image_size/1000000)).str();
+//    _var_tree->AppendItem(vartree_images,wxString(text.c_str(), wxConvUTF8));
+    m_amilab_model->CreateBranchNode(vartree_images, wxString(text.c_str(), wxConvUTF8));
+  }
+
+  // delete empty branches
+  if (!m_amilab_model->HasChildren(vartree_images))
+    m_amilab_model->Delete(vartree_images);
+  if (!m_amilab_model->HasChildren(vartree_surfaces))
+    m_amilab_model->Delete(vartree_surfaces);
+  if (!m_amilab_model->HasChildren(vartree_numbers))
+    m_amilab_model->Delete(vartree_numbers);
+  if (!m_amilab_model->HasChildren(vartree_strings))
+    m_amilab_model->Delete(vartree_strings);
+  if (!m_amilab_model->HasChildren(vartree_functions))
+    m_amilab_model->Delete(vartree_functions);
+  if (!m_amilab_model->HasChildren(vartree_classes))
+    m_amilab_model->Delete(vartree_classes);
+  if (!m_amilab_model->HasChildren(vartree_objects))
+    m_amilab_model->Delete(vartree_objects);
+  if (!m_amilab_model->HasChildren(vartree_wrapped_functions))
+    m_amilab_model->Delete(vartree_wrapped_functions);
+  if (!m_amilab_model->HasChildren(vartree_wrapped_procedures))
+    m_amilab_model->Delete(vartree_wrapped_procedures);
+  if (!m_amilab_model->HasChildren(vartree_wrapped_var_functions))
+    m_amilab_model->Delete(vartree_wrapped_var_functions);
+  if (!m_amilab_model->HasChildren(vartree_others))
+    m_amilab_model->Delete(vartree_others);
+}
 
 //---------------------------------------------------------------
 void MainFrame::SetProgress( int val )
@@ -1809,8 +2029,36 @@ void MainFrame::UpdateVarsDisplay()
   //UpdateVarList();
 /// @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
-  //AQUI PONER UPDATE DATAVIEW
-  std::cout << "\nMainFrame::UpdateVarsDisplay"<< std::endl;
+  std::cout << std::endl
+            << "MainFrame::UpdateVarsDisplay: Update global node"
+            << std::endl;
+  UpdateVarDataView(m_amilab_model->GetGlobalNode(), Vars.GetCurrentContext());
+
+  std::cout << std::endl
+            << "MainFrame::UpdateVarsDisplay: Notifies the control that data model have been updated"
+            << std::endl;
+  //Notifies the control that data model have been updated.
+  m_amilab_model->Cleared();   
+
+  std::cout << std::endl
+            << "MainFrame::UpdateVarsDisplay: Update builtin node"
+            << std::endl;  
+  UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetCurrentContext());
+
+  std::cout << std::endl
+            << "MainFrame::UpdateVarsDisplay: Notifies the control that data model have been updated"
+            << std::endl;
+  //Notifies the control that data model have been updated.
+  m_amilab_model->Cleared(); 
+
+  //_var_dataview->ExpandAncestors( m_amilab_model->GetBuiltinNode() );
+
+  std::cout << std::endl
+            << "MainFrame::UpdateVarsDisplay Expand branches"
+            << std::endl;
+  _var_dataview->Expand( m_amilab_model->GetRootNode() );
+  _var_dataview->Expand( m_amilab_model->GetGlobalNode() );
+  _var_dataview->Expand( m_amilab_model->GetBuiltinNode() );  
 #else
   wxFont root_font = _var_tree->GetItemFont(_vartree_root);
   root_font.SetStyle(wxFONTSTYLE_ITALIC);
