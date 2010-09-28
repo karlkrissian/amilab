@@ -2043,7 +2043,7 @@ void MainFrame::UpdateVarsDisplay()
   std::cout << std::endl
             << "MainFrame::UpdateVarsDisplay: Update builtin node"
             << std::endl;  
-  UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetCurrentContext());
+  UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetBuiltinContext());
 
   std::cout << std::endl
             << "MainFrame::UpdateVarsDisplay: Notifies the control that data model have been updated"
