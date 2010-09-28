@@ -110,7 +110,8 @@ void AMILabTreeModel::Delete( const wxDataViewItem &item )
   else if (node == m_builtin)
       m_builtin = NULL;
 
-  std::cout << std::endl
+  std::cout 
+  //<< std::endl
             << "AMILabTreeModel::Delete: delete node: " << node->m_Name
             << " (parent: " << node->GetParent()->m_Name << ")"
             << std::endl;  
@@ -282,10 +283,9 @@ void AMILabTreeModel::DeleteChildren( const wxDataViewItem &item )
               << std::endl;
   else
   {
-    unsigned int count = node->GetChildren().GetCount();
-    for (unsigned int pos = 0; pos < count; pos++)
+    while (HasChildren(item))
     {
-      AMILabTreeModelNode *child = node->GetChildren().Item( pos );
+      AMILabTreeModelNode *child = node->GetChildren().Item(0);
       Delete( wxDataViewItem( (void*) child ) );
     }
   }
@@ -309,7 +309,7 @@ wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
       name, type, val, details, var );
     parent_node->Append (child_node);
 
-    std::cout << std::endl
+/*  std::cout << std::endl
               << "\nAMILabTreeModel::CreateLeafNode - "
               << " parent: " << parent_node->m_Name
               << " child: " << child_node->m_Name << "("<< name << ")";
@@ -318,7 +318,7 @@ wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
     else
       std::cout << " grandfather: " << parent_node->GetParent()->m_Name
                 << std::endl;
-
+*/
     // notify control
      wxDataViewItem Child( (void*) child_node );
 //     wxDataViewItem Parent( (void*) parent_node );
@@ -345,7 +345,8 @@ wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
       branch );
     parent_node->Append (child_node);
 
-    std::cout << std::endl
+/*
+std::cout << std::endl
               << "\nAMILabTreeModel::CreateBranchNode - "
               << " parent: " << parent_node->m_Name
               << " child: " << child_node->m_Name << "("<< branch << ")";
@@ -355,6 +356,7 @@ wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
     else
       std::cout << " grandfather: " << parent_node->GetParent()->m_Name
                 << std::endl;
+                */
 
     wxDataViewItem Child( (void*) child_node );
     return Child;

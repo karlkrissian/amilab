@@ -743,7 +743,7 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
                             );
 
   m_amilab_model = new AMILabTreeModel();
-  //Hay que crear el árbol en este punto
+  //Hay que crear el ï¿½rbol en este punto
   _var_dataview->AssociateModel( m_amilab_model.get() );
   _var_dataview->InternalAssociateModel( m_amilab_model.get() );
   _var_dataview->EnableDragSource( wxDF_UNICODETEXT );
@@ -2030,36 +2030,19 @@ void MainFrame::UpdateVarsDisplay()
   //UpdateVarList();
 /// @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
-  std::cout << std::endl
-            << "MainFrame::UpdateVarsDisplay: Update global node"
-            << std::endl;
+  CLASS_MESSAGE("Update global node");
   UpdateVarDataView(m_amilab_model->GetGlobalNode(), Vars.GetCurrentContext());
 
-  std::cout << std::endl
-            << "MainFrame::UpdateVarsDisplay: Notifies the control that data model have been updated"
-            << std::endl;
-  //Notifies the control that data model have been updated.
-  m_amilab_model->Cleared();   
-
-  std::cout << std::endl
-            << "MainFrame::UpdateVarsDisplay: Update builtin node"
-            << std::endl;  
+  CLASS_MESSAGE("Update builtin node");
   UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetBuiltinContext());
 
-  std::cout << std::endl
-            << "MainFrame::UpdateVarsDisplay: Notifies the control that data model have been updated"
-            << std::endl;
   //Notifies the control that data model have been updated.
   m_amilab_model->Cleared(); 
 
-  //_var_dataview->ExpandAncestors( m_amilab_model->GetBuiltinNode() );
-
-  std::cout << std::endl
-            << "MainFrame::UpdateVarsDisplay Expand branches"
-            << std::endl;
   _var_dataview->Expand( m_amilab_model->GetRootNode() );
   _var_dataview->Expand( m_amilab_model->GetGlobalNode() );
   _var_dataview->Expand( m_amilab_model->GetBuiltinNode() );  
+
 #else
   wxFont root_font = _var_tree->GetItemFont(_vartree_root);
   root_font.SetStyle(wxFONTSTYLE_ITALIC);
@@ -2078,6 +2061,7 @@ void MainFrame::UpdateVarsDisplay()
   _var_tree->Expand(  _vartree_builtin);
 #endif
 /// @endcond
+
 }
 
 //--------------------------------------------------
