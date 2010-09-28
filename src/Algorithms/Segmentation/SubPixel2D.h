@@ -67,6 +67,8 @@ public:
   void SuperGradienteCurvo();
   //Subpixel2D method on noisy images
   void SuperGradienteGaussianoCurvo();
+  //Subpixel2D method on noisy images with near edges
+  void DenoisingGus();
   //Optimize second order edges
   void OptimizarParabola(double &a, double &b, double &c, double umbral, 
                          double rmin, double rmax);

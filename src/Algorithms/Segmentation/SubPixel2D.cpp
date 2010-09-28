@@ -45,6 +45,7 @@ double imval(InrImage* input, int x,int y, int z){
     cout << "out of image range (" << x << ", " << y << ", " << z << ")" << endl;
   return 0;
 }
+//Partials
 #define FF(x,y,z)		imval(input,x,y,z)
 #define ffx(x,y,z) 	(FF(x+1,y,z) - FF(x-1,y,z))
 #define ffy(x,y,z) 	(FF(x,y+1,z) - FF(x,y-1,z))
@@ -52,6 +53,9 @@ double imval(InrImage* input, int x,int y, int z){
 #define ffyu(x,y,z)	(FF(x,y,z) - FF(x,y-1,z))
 #define ffxl(x,y,z) (FF(x,y,z) - FF(x-1,y,z))
 #define ffxr(x,y,z)	(FF(x+1,y,z) - FF(x,y,z))
+//Swap int
+int INT_TEMP;
+#define SWAP_INT(a,b) INT_TEMP=a; a=b; b=INT_TEMP
 
 // coeficientes de la máscara de suavizado 2D (por ahora, para probar con promedio 3x3)
 double A00 = (double) 1 / 9;
@@ -291,7 +295,6 @@ void SubPixel2D::drawBorder(DessinImage* viewer, InrImage* inside,
     else
       viewer->SetLineParameters(nthickness, wxDOT);
     //Draw normals
-    double a,b;
     for(int i=0; i<norm_pts->DimX(); i++)
     {
       if ((*inside)(i,0,0))
@@ -854,4 +857,267 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()//,
     } //End x for
   } //End y for
 }
+
+void SubPixel2D::DenoisingGus()
+{ 
+  double A, B;
+  //Partials
+  float parx, pary;
+  double partial;
+  double n;
+  int m, p, k;
+  float par0, par1;
+  //Limits of the window
+  int l1, l2, m1, m2, r1, r2;
+  double SL, SM, SR;
+  double a, b, c=0;
+  double f;
+  double gx, gy, des, cu=0;
+  int z = 0;
+  borderPixel pixel;
+  
+  // barremos todos los pixels (ahora no se usa margen, porque la ventana es dinámica)
+  for (int y = 1; y < input->DimY()-1; y++) 
+  {
+    for (int x = 1; x < input->DimX()-1; x++) 
+    {
+      //Miramos qué parcial es mayor
+      pary = ffy(x,y,z);
+      parx = ffx(x,y,z);
+      
+      if (fabs(pary) >= fabs(parx)) 
+      {
+        //La ventana es vertical
+        partial = pary;
+        n       = (*input)(x,y,z);
+        m       = (parx*pary >= 0) ? 1 : -1;
+        p       = (1+m) / 2;
+        
+        //Ahora miramos qué píxeles de dentro de la ventana se van a usar
+        //Left column
+        for (par0 = ffyu(x-m,y,z), l1=-1; l1>=-2; l1--)
+        {
+          if (y+l1==0) break;
+          par1 = ffyu(x-m, y+l1,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        }
+        if (y<input->DimY()-2)
+        {
+          for (par0 = ffyd(x-m,y+1,z), l2=2; l2<=3; l2++)
+          {
+            if (y+l2==input->DimY()-1) break;
+            par1 = ffyd(x-m,y+l2,z);
+            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+            par0 = par1;
+          }
+        } 
+        else l2 = 1;
+        //Middle column
+        for (par0 = ffyu(x,y,z), m1=-1; m1>=-3; m1--) 
+        {
+					if (y+m1==0) break;	
+					par1 = ffyu(x,y+m1,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        } 
+        for (par0 = ffyd(x,y,z), m2=1; m2<=3; m2++) 
+        {
+					if (y+m2==input->DimY()-1) break;
+					par1 = ffyd(x,y+m2,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        }
+        //Right column
+        if (y>1) for (par0 = ffyu(x+m,y-1,z), r1=-2; r1>=-3; r1--) 
+        {
+					if (y+r1==0) break;
+					par1 = ffyu(x+m,y+r1,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        }
+        else r1 = -1;
+        for (par0 = ffyd(x+m,y,z), r2=1; r2<=2; r2++) 
+        {
+					if (y+r2==input->DimY()-1) break;
+					par1 = ffyd(x+m,y+r2,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        }
+        
+        //If m is negative, swap l and r limits
+        if (m<0) 
+        { 
+          SWAP_INT(l1,r1);
+          SWAP_INT(l2,r2);
+        }
+        
+        //Calculate A and B (A under and B over edge)
+        if (m<0)
+        {
+          A = (FF(x,y+m2,z) + FF(x+1,y+r2,z)) / 2;
+          B = (FF(x,y+m1,z) + FF(x-1,y+l1,z)) / 2;
+        }
+        else 
+        {
+          A = (FF(x,y+m2,z) + FF(x-1,y+l2,z)) / 2;
+          B = (FF(x,y+m1,z) + FF(x+1,y+r1,z)) / 2;
+        }
+        
+        //Calculate the sums of the columns
+        for (SL=0, k=l1; k<=l2; k++) 
+          SL += FF(x-1,y+k,z);
+        for (SM=0, k=m1; k<=m2; k++) 
+          SM += FF(x,y+k,z);
+        for (SR=0, k=r1; k<=r2; k++) 
+          SR += FF(x+1,y+k,z);
+        
+        //Calculamos los coeficientes del polinomio (metodo variable)
+        f = 2 * (A-B);
+        a = (2*SM - (1+2*m2)*A - (1-2*m1)*B) / f;
+        b = (SR - SL + A*(l2-r2) + B*(r1-l1)) / f;		
+        if (!linear_case)
+        {
+          c = (SL + SR - 2*SM + A*(2*m2-l2-r2) - B*(2*m1-l1-r1)) / f;
+          a -= 0.75 * c;
+        }
+        
+        //Calculamos los parametros del contorno
+        f   = (A-B) / sqrt(1+b*b);
+        gx  = b * f;
+        gy  = f;
+        des = -a;
+        if (!linear_case)
+        {
+          cu = sqrt (1+b*b);
+          cu *= cu * cu;
+          cu = 2*c / cu;
+          if (pary<0)
+            cu = -cu;
+        }
+        
+        pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu, x, y);
+        
+        //Add edge pixel to the vector
+        borderPixelVector.push_back(pixel);
+        
+      }
+      else 
+      {
+        //La ventana es horizontal
+        partial = fabs(parx);
+        n       = (*input)(x,y,z);
+        m       = (parx*pary >= 0) ? 1 : -1;
+        p       = (1+m) / 2;
+        
+        //Se miran los pixels a usar dentro de la ventana
+        //Left
+        for (par0 = ffxl(x,y-m,z), l1=-1; l1>=-2; l1--)
+        {
+					if (x+l1==0) break;
+					par1 = ffxl(x+l1,y-m,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        } 
+        if (x<input->DimX()-2) for (par0 = ffxr(x+1,y-m,z),l2=2; l2<=3; l2++) 
+        {
+					if (x+l2==input->DimX()-1) break;
+					par1 = ffxr(x+l2,y-m,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        } 
+        else
+          l2 = 1;
+        //Medium
+        for (par0 = ffxl(x,y,z), m1=-1; m1>=-3; m1--) 
+        {
+					if (x+m1==0) break;	
+					par1 = ffxl(x+m1,y,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        } 
+        for (par0 = ffxr(x,y,z), m2=1; m2<=3; m2++) 
+        {
+					if (x+m2==input->DimX()-1) break;
+					par1 = ffxr(x+m2,y,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        } 
+        //Right
+        if (x>1) for (par0 = ffxl(x-1,y+m,z), r1=-2; r1>=-3; r1--) 
+        {
+					if (x+r1==0) break;
+					par1 = ffxl(x+r1,y+m,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        }
+        else
+          r1 = -1;
+        for (par0 = ffxr(x,y+m,z), r2=1; r2<=2; r2++)
+        {
+					if (x+r2==input->DimX()-1) break;
+					par1 = ffxr(x+r2,y+m,z);
+					if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+					par0 = par1;
+        }
+        
+        //If m is negative, swap l and r limits
+        if (m<0) 
+        { 
+          SWAP_INT(l1,r1);
+          SWAP_INT(l2,r2);
+        }
+        
+        //Calculate A and B (A under and B over edge)
+        if (m>0) 
+        {
+          A = (FF(x+m2,y,z) + FF(x+r2,y+1,z)) / 2;
+          B = (FF(x+m1,y,z) + FF(x+l1,y-1,z)) / 2;
+        }
+        else
+        {
+          A = (FF(x+m2,y,z) + FF(x+l2,y-1,z)) / 2;
+          B = (FF(x+m1,y,z) + FF(x+r1,y+1,z)) / 2;
+        }
+        
+        //Calculate sums of the rows 
+        for (SL=0, k=l1; k<=l2; k++) 
+          SL += FF(x+k,y-1,z);
+        for (SM=0, k=m1; k<=m2; k++) 
+          SM += FF(x+k,y,z);
+        for (SR=0, k=r1; k<=r2; k++) 
+          SR += FF(x+k,y+1,z);
+        
+        //Calculamos los coeficientes del polinomio
+        f = 2 * (A-B);
+        a = (2*SM - (1+2*m2)*A - (1-2*m1)*B) / f;
+        b = (SR - SL + A*(l2-r2) + B*(r1-l1)) / f;		
+        if (!linear_case) {
+          c = (SL + SR - 2*SM + A*(2*m2-l2-r2) - B*(2*m1-l1-r1)) / f;
+          a -= 0.75 * c;
+        }
+        
+        //Calculamos los parametros del contorno
+        f = (A-B) / sqrt(1+b*b);
+        gx = f;
+        gy = b * f;
+        des = -a;
+        if (!linear_case) {
+          cu = sqrt (1+b*b);
+          cu *= cu * cu;
+          cu = 2*c / cu;
+          if (parx<0) 
+            cu = -cu;
+        }
+        
+        pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu, x, y);
+        
+        //Add edge pixel to the vector
+        borderPixelVector.push_back(pixel);
+        
+      } //End else
+    } //End x for
+  } //End y for
+}
+
 
