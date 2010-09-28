@@ -50,7 +50,7 @@ extern "C" {
 #include "func_isoline.hpp"
 
 #define macro_permute(a,b) temp=a; a=b; b=temp;
-#define min(a,b) ((a)<(b)?(a):(b))
+//#define macro_min(a,b) ((a)<(b)?(a):(b))
 #define val_abs( x) (((x)>=0)?(x):-(x))
 #define epsilon  1E-2
 

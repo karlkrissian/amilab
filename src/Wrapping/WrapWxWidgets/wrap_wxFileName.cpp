@@ -561,13 +561,8 @@ BasicVariable::ptr WrapClass_wxFileName::
       wrap_GetFullName::CallMember( ParamList* p)
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
-
-  char buffer[SIZE_BUFFER];
-  strcpy( buffer, (const char*)owxFileName->GetFullName().mb_str(wxConvUTF8) );
-  string sVal = buffer;
-//  string sVal = owxFileName->GetFullName().c_str();
-
-  RETURN_VAR(string,sVal);
+  string sVal(owxFileName->GetFullName().mb_str(wxConvUTF8) );
+  RETURN_VAR(std::string,sVal);
 }
 
 //---------------------------------------------------
@@ -1158,16 +1153,21 @@ BasicVariable::ptr WrapClass_wxFileName::
 //  assign_operator
 //---------------------------------------------------
 void WrapClass_wxFileName::
-      wrap_assign_operator::SetParametersComments() 
+      wrap_assign::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(wxFileName,"A wrapped wxFileName object.");
   return_comments="A copy of the wxFileName.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxFileName::
-      wrap_assign_operator::CallMember( ParamList* p)
+      wrap_assign::CallMember( ParamList* p)
 {
-  return AMILabType<wxFileName>::CreateVar( new wxFileName(*(this->_objectptr->GetObj())));
+  int n = 0;
+  CLASS_GET_OBJECT_PARAM(wxFileName,var,_obj);
+
+  if (_obj.get())
+    *this->_objectptr->GetObj() = *_obj;
+  return BasicVariable::ptr();
 }
 
 //---------------------------------------------------

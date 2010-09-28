@@ -282,7 +282,7 @@ void vtkConvexHull::ExecuteData(vtkDataObject *output)
   float           pos;
   int             index;
   float           maxValue;
-  int             prevValue;
+//  int             prevValue;
   vtkFloatArray*  lineValues=NULL;
   float           value;
   float*          inputPtr;

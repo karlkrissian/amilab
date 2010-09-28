@@ -92,7 +92,7 @@ class WrapClass_wxFileName : public WrapClass<wxFileName>
     ADD_CLASS_METHOD(SameAs,             "Compares the filename.");
 
     ADD_CLASS_METHOD(copy,               "wxFileName copy constructor.");
-    ADD_CLASS_METHOD(assign_operator,    "Operator =, copy assignment.");
+    ADD_CLASS_METHOD(assign,             "Operator =, copy assignment.");
     ADD_CLASS_METHOD(equal,              "Operator ==, compare a wxFileName objects with the current.");
     ADD_CLASS_METHOD(not_equal,          "Operator !=, compare a wxFileName objects with the current.");
 
@@ -146,7 +146,7 @@ class WrapClass_wxFileName : public WrapClass<wxFileName>
 
       // Operators
       AddVar_copy(               this_ptr);
-      AddVar_assign_operator(    this_ptr);
+      AddVar_assign(             this_ptr);
       AddVar_equal(              this_ptr);
       AddVar_not_equal(          this_ptr);
     }
