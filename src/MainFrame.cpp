@@ -1687,7 +1687,8 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
         wxString(var->Name().c_str(), wxConvUTF8),
         wxString(var->GetTypeName().c_str(), wxConvUTF8),
         wxString(valtext.c_str(), wxConvUTF8),
-        wxString(text.c_str(), wxConvUTF8)
+        wxString(text.c_str(), wxConvUTF8),
+        var
         );
 
       std::cout << std::endl

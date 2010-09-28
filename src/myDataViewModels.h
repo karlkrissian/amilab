@@ -87,8 +87,21 @@ class AMILabTreeModel: public wxDataViewModel
      */ 
     wxString GetDetails( const wxDataViewItem &item ) const;
 
-//     boost::weak_ptr<BasicVariable> GetVar( const wxDataViewItem &item) const;
-//     void SetVar (const wxDataViewItem &item, boost::shared_ptr<BasicVariable> var);
+    /**
+     * @brief GetVar
+     * @param item
+     *
+     * Returns the value of the Var filed (weak_ptr of BasicVariable).
+     */     
+    boost::weak_ptr<BasicVariable> GetVar( const wxDataViewItem &item) const;
+
+    /**
+     * @brief SetVar
+     * @param item
+     *
+     * Changes the value of the Var field.
+     */  
+    void SetVar (const wxDataViewItem &item, boost::shared_ptr<BasicVariable> var);
 
     /**
      * @brief Delete
@@ -205,7 +218,8 @@ class AMILabTreeModel: public wxDataViewModel
      * Creates the new leaf node
      */    
     wxDataViewItem CreateLeafNode(const wxDataViewItem &parent, const wxString &name,
-      const wxString &type, const wxString &val,  const wxString &details);
+      const wxString &type, const wxString &val,  const wxString &details,
+      boost::shared_ptr<BasicVariable> var);
 
     /**
      * @brief CreateBranchNode

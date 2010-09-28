@@ -58,16 +58,16 @@ void myDataViewCtrl::_ShowMenu(const wxDataViewItem &item, const wxPoint& pt)
   if ( item.IsOk() )
   {
     wxMenu menu(_amilab_model->GetName(item));
-//     BasicVariable::ptr var = m_amilab_model->GetVar(id).lock();
-//     _currentmenu_var = var;
-// 
-//     if (var.get()) {
-//       std::string com = var->GetComments();
-//       if (com.compare("")!=0) {
-//         wxString comments(com.c_str(), wxConvUTF8);
-//         menu.Append(wxID_ANY, comments);
-//       }
-//     }
+    BasicVariable::ptr var = this->_amilab_model->GetVar(item).lock();
+    _currentmenu_var = var;
+
+    if (var.get()) {
+      std::string com = var->GetComments();
+      if (com.compare("")!=0) {
+        wxString comments(com.c_str(), wxConvUTF8);
+        menu.Append(wxID_ANY, comments);
+      }
+    }
 
     // Write in console menu
     wxMenuItem* item1 = new wxMenuItem(&menu,wxMENU_ID_ToConsole,wxT("Write in console"),
@@ -123,12 +123,52 @@ void myDataViewCtrl::OnContextMenu( wxDataViewEvent &event )
 
 void myDataViewCtrl::OnAbout( wxCommandEvent& event )
 {
-  
+  std::string mess;
+  BasicVariable::ptr var = _currentmenu_var.lock();
+  if (var.get()) {
+    switch (var->Type()) {
+      case type_c_procedure     :
+        {
+        DYNAMIC_CAST_VARIABLE(C_wrap_procedure, var, varproc);
+        (*varproc->Pointer())(NULL);
+        return;
+        }
+
+      case type_class_member     :
+        {
+        // getting the associated help
+        DYNAMIC_CAST_VARIABLE(WrapClassMember, var, mem);
+        mem->Pointer()->ShowHelp();
+        return;
+        }
+
+      case type_c_image_function:
+        {
+        DYNAMIC_CAST_VARIABLE(C_wrap_imagefunction, var, func);
+        (*func->Pointer())(NULL);
+        return;
+        }
+      case type_c_function:
+        {
+        DYNAMIC_CAST_VARIABLE(C_wrap_varfunction, var, func);
+        (*func->Pointer())(NULL);
+        return;
+        }
+      default:
+        mess = var->GetComments();
+    }
+  } else {
+    mess = "No variable for this item";
+  }
+  wxMessageDialog msg(NULL,wxString::FromAscii(mess.c_str()),
+      wxString::FromAscii("Help"),wxOK | wxICON_INFORMATION );
+  msg.ShowModal();
 }
 
 void myDataViewCtrl::ToConsole( wxCommandEvent& event )
 {
-  
+  BasicVariable::ptr var(_currentmenu_var.lock());
+  GB_main_wxFrame->GetConsole()->IncCommand(var->Name());  
 }
 
 

@@ -65,7 +65,7 @@ wxString AMILabTreeModel::GetDetails( const wxDataViewItem &item ) const
 
   return node->m_Details;
 }
-/*
+
 boost::weak_ptr<BasicVariable> AMILabTreeModel::GetVar( const wxDataViewItem &item) const
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -83,7 +83,7 @@ void AMILabTreeModel::SetVar (const wxDataViewItem &item,
 
   node->m_Var = var;
 }
-*/
+
 void AMILabTreeModel::Delete( const wxDataViewItem &item )
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -174,6 +174,9 @@ void AMILabTreeModel::GetValue( wxVariant &variant,
     case 3:
       variant = node->m_Details;
       break;
+    case 4:
+      variant =  wxT("boost::weak_ptr<BasicVariable>");
+      break;
       
 //     case 4: {
 //        //wxWeakRef<BasicVariable> any = node->m_Var.lock().get();
@@ -211,6 +214,9 @@ bool AMILabTreeModel::SetValue( const wxVariant &variant,
     case 3:
       node->m_Details = variant.GetString();
       return true;
+    case 4:
+      //Do nothing
+      break;      
     default:
       std::cout << "AMILabTreeModel::SetValue: wrong column" << std::endl;
   }
@@ -287,7 +293,7 @@ void AMILabTreeModel::DeleteChildren( const wxDataViewItem &item )
 
 wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
   const wxString &name, const wxString &type, const wxString &val,
-  const wxString &details)
+  const wxString &details, boost::shared_ptr<BasicVariable> var)
 {
   AMILabTreeModelNode *parent_node = (AMILabTreeModelNode*) parent.GetID();
 
@@ -300,7 +306,7 @@ wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
   else
   {
     AMILabTreeModelNode* child_node =  new AMILabTreeModelNode( parent_node,
-      name, type, val, details );
+      name, type, val, details, var );
     parent_node->Append (child_node);
 
     std::cout << std::endl
