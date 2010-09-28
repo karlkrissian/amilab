@@ -80,7 +80,7 @@ class wxDrawingWindow : public wxScrolledWindow
   dwControlPoint::ptr _focus_point;
   /// smart pointer to the vector of points to which the current focus point belongs
   boost::shared_ptr<vector_dwControlPoint> _focus_pointset;
-  int _focus_controlledcurve;
+  dwControlledCurve::ptr _focus_controlledcurve;
 
   bool _within_popupmenu;
   
@@ -328,7 +328,8 @@ public:
 
   void DrawControlPoint(  dwControlPoint& pt, 
                           const wxColour& visible_colour,
-                          const wxSize& _sz);
+                          const wxSize& _sz,
+                          bool colormap=false);
   void DrawControlPoints();
   void DrawControls();
 
@@ -358,15 +359,16 @@ public:
   void OnMotion(        wxMouseEvent& event);
   void OnWheel(         wxMouseEvent& event);
 
-  void OnAddControlledCurve( wxCommandEvent& event);
-  void OnRemoveControlledCurve( wxCommandEvent& event);
-  void OnAddControlPoint(    wxCommandEvent& event);
-  void OnRemoveControl(      wxCommandEvent& event);
-  void OnDuplicateControl(   wxCommandEvent& event);
-  void OnColormapPoint(      wxCommandEvent& event);
-  void OnVerticalLine(       wxCommandEvent& event);
-  void OnControlColour(      wxCommandEvent& event);
-  void OnShowGrid(           wxCommandEvent& event);
+  void OnAddControlledCurve(      wxCommandEvent& event);
+  void OnRemoveControlledCurve(   wxCommandEvent& event);
+  void OnAddControlPoint(         wxCommandEvent& event);
+  void OnRemoveControl(           wxCommandEvent& event);
+  void OnDuplicateControl(        wxCommandEvent& event);
+//  void OnColormapPoint(           wxCommandEvent& event);
+  void OnColormapControlledCurve( wxCommandEvent& event);
+  void OnVerticalLine(            wxCommandEvent& event);
+  void OnControlColour(           wxCommandEvent& event);
+  void OnShowGrid(                wxCommandEvent& event);
 
   DECLARE_EVENT_TABLE();
 };

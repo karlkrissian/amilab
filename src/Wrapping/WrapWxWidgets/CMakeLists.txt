@@ -24,6 +24,8 @@ SET(  WrapWxWidgets_SRCS
   wrap_wxBitmap.cpp
   wrap_wxString.cpp
   wrap_wxFileName.cpp
+  wrap_wxSizer.cpp
+  wrap_wxBoxSizer.cpp
 )
 
 SET(WrapWxWidgets_HDRS
@@ -38,6 +40,8 @@ SET(WrapWxWidgets_HDRS
   ../include/wrap_wxBitmap.h
   ../include/wrap_wxString.h
   ../include/wrap_wxFileName.h
+  ../include/wrap_wxSizer.h
+  ../include/wrap_wxBoxSizer.h
 )
 
 SET(WrapWxWidgets_SRCS

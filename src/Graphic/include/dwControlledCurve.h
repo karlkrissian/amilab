@@ -37,6 +37,13 @@
 #include "DefineClass.hpp"
 
 
+typedef enum {
+ normal_curve = 0,
+ colormap_curve,
+} ControlledCurveType;
+
+
+
 /**
  * 2D Curve for wxDrawingWindow class.
  */
@@ -51,6 +58,8 @@ class dwControlledCurve {
     */
   boost::shared_ptr<vector_dwControlPoint> _controlpoints;
 
+  ControlledCurveType type;
+
   public:
     //! simple Constructor
     dwControlledCurve() 
@@ -59,6 +68,7 @@ class dwControlledCurve {
       _controlpoints = boost::shared_ptr<vector_dwControlPoint>(
           new vector_dwControlPoint()
         );
+      type = normal_curve;
     }
 
     //!copy Constructor
@@ -70,6 +80,7 @@ class dwControlledCurve {
         );
       *_curve = *c._curve;
       *_controlpoints = *c._controlpoints; 
+      type = c.type;
     }
 
     boost::shared_ptr<vector_dwControlPoint>& GetControlPoints() {
@@ -84,6 +95,10 @@ class dwControlledCurve {
      * The curve depends on the control points, to start with set linear interpolation between the points
      */
     void ComputeCurve();
+
+
+    int GetType() const { return (int)type; }
+    void SetType( const int t) { type = (ControlledCurveType)t; }
 };
 
 typedef std::vector<dwControlledCurve> vector_dwControlledCurve;

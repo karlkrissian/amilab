@@ -48,11 +48,14 @@ class WrapClass_dwControlledCurve: public WrapClass<dwControlledCurve>
 
     ADD_CLASS_METHOD(GetControlPoints,     "Returns a reference to the std::vector of control points.");
 
+    ADD_CLASS_SETGET(int,Type,"the curve type, 0 for normal_curve, 1 for colormap curve.");
+
     ADD_CLASS_METHOD(copy,      "Copy constructor.");
     ADD_CLASS_METHOD(assign,    "assign operation.");
 
     void AddMethods(WrapClass<dwControlledCurve>::ptr this_ptr )
     {
+      AddVar_SetGetType(       this_ptr);
       AddVar_GetControlPoints( this_ptr);
       AddVar_copy(             this_ptr);
       AddVar_assign(           this_ptr);

@@ -168,62 +168,62 @@ if (!exists(Corr3DTest)) {
     {
       ::win = global::ami_import.ParamPanel("3D Corr")
 
-      ::win->_BeginBook()
+      ::win.BeginBook()
 
-        ::win->_AddPage("Init")
+        ::win.AddPage("Init")
 
 
-          ::win->_BeginBoxPanel("Input Images")
+          ::win.BeginBoxPanel("Input Images")
   
             # set the input1 image
-            ::win->_BeginHorizontal
-              ::win->_AddImageChoice(&::input1_name, "")
-              ::win->_AddButton("Load",::load_input1)
-            ::win->_EndHorizontal
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice(&::input1_name, "")
+              ::win.AddButton("Load",::load_input1)
+            ::win.EndHorizontal()
 
             # set the input2 image
-            ::win->_BeginHorizontal
-              ::win->_AddImageChoice(&::input2_name, "")
-              ::win->_AddButton("Load",::load_input2)
-            ::win->_EndHorizontal
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice(&::input2_name, "")
+              ::win.AddButton("Load",::load_input2)
+            ::win.EndHorizontal()
 
-          ::win->_EndBoxPanel
+          ::win.EndBoxPanel()
 
-          ::win->_BeginBoxPanel("Synthetic image param")
-            ::win->_AddInt( &::image_size,  "::image_size", 10,100)
-            ::win->_AddFloat( &::sphere_size,  "::sphere_size", 0.1,40)
-          ::win->_EndBoxPanel
+          ::win.BeginBoxPanel("Synthetic image param")
+            ::win.AddInt( &::image_size,  "::image_size", 10,100)
+            ::win.AddFloat( &::sphere_size,  "::sphere_size", 0.1,40)
+          ::win.EndBoxPanel()
   
-        ::win->_AddPage("Param")
-          ::win->_BeginBoxPanel("Grid size")
-            ::win->_AddInt( &::step_x,  "::step_x", 1,20)
-            ::win->_AddInt( &::step_y,  "::step_y", 1,20)
-            ::win->_AddInt( &::step_z,  "::step_z", 1,20)
-          ::win->_EndBoxPanel
+        ::win.AddPage("Param")
+          ::win.BeginBoxPanel("Grid size")
+            ::win.AddInt( &::step_x,  "::step_x", 1,20)
+            ::win.AddInt( &::step_y,  "::step_y", 1,20)
+            ::win.AddInt( &::step_z,  "::step_z", 1,20)
+          ::win.EndBoxPanel()
       
-          ::win->_BeginBoxPanel("Window size")
-            ::win->_AddInt( &::winsize_x,  "::winsize_x", 2,8)
-            ::win->_AddInt( &::winsize_y,  "::winsize_y", 2,8)
-            ::win->_AddInt( &::winsize_z,  "::winsize_z", 2,8)
-          ::win->_EndBoxPanel
+          ::win.BeginBoxPanel("Window size")
+            ::win.AddInt( &::winsize_x,  "::winsize_x", 2,8)
+            ::win.AddInt( &::winsize_y,  "::winsize_y", 2,8)
+            ::win.AddInt( &::winsize_z,  "::winsize_z", 2,8)
+          ::win.EndBoxPanel()
       
-          ::win->_AddInt( &::windef,  "::windef", 0,1)
-          ::win->_AddBoolean( &::corr_downsample)
-          ::win->_AddInt( &::corr_threads,  "::corr_threads", 1,10)
+          ::win.AddInt( &::windef,  "::windef", 0,1)
+          ::win.AddBoolean( &::corr_downsample)
+          ::win.AddInt( &::corr_threads,  "::corr_threads", 1,10)
   
-        ::win->_AddPage("Control")
-          ::win->_AddButton("CreateSphere", ::CB_CreateSphere)
-          ::win->_AddButton("Restart",      ::CB_Restart)
-          ::win->_AddButton("Iterate",      ::CB_Iterate)
-      ::win->_EndBook
+        ::win.AddPage("Control")
+          ::win.AddButton("CreateSphere", ::CB_CreateSphere)
+          ::win.AddButton("Restart",      ::CB_Restart)
+          ::win.AddButton("Iterate",      ::CB_Iterate)
+      ::win.EndBook()
 
-      ::win->_BeginHorizontal
-        ::win->_AddButton("Close",      &::Close)
-        ::win->_AddButton("Close All",  &::CloseAll)
-      ::win->_EndHorizontal
+      ::win.BeginHorizontal()
+        ::win.AddButton("Close",      &::Close)
+        ::win.AddButton("Close All",  &::CloseAll)
+      ::win.EndHorizontal()
 
-      ::win->_Update(-1)
-      ::win->_Display
+      ::win.Update(-1)
+      ::win.Display()
     }
 
     ::Init()

@@ -167,13 +167,14 @@ printn "4"
 
         cp0 = ami.dwControlPoint(::minval,hmax/2)
         cp0.SetColour(wx.wxColour(0,0,0))
-        cp0.SetType(1)
+        #cp0.SetType(1)
         cp1 = ami.dwControlPoint(::maxval,hmax/2)
         cp1.SetColour(wx.wxColour(255,255,255))
-        cp1.SetType(1)
+        #cp1.SetType(1)
         # remove all control points
         curve.GetControlPoints().push_back(&cp0)
         curve.GetControlPoints().push_back(&cp1)
+        curve.SetType(1)
         ::dw.GetControlledCurves().clear()
         ::dw.GetControlledCurves().push_back(&curve)
       }
@@ -188,7 +189,7 @@ printn "4"
         ctrlpts = curves[c].GetControlPoints()
         for k=0 to ctrlpts.size()-1 {
           cp = ctrlpts[k]
-          if (cp.GetType()==1) {
+          if (curves[c].GetType()==1) {
             if (!exists(xmin)) {
               xmin = cp.GetX();
             } else {
@@ -202,8 +203,90 @@ printn "4"
           }
         }
       }
-      if (exists(xmin)) { ::cm_min = xmin; }
-      if (exists(xmax)) { ::cm_max = xmax; }
+      if (exists(xmin)) { ::cm_min = xmin; } else { ::cm_min = 0; }
+      if (exists(xmax)) { ::cm_max = xmax; } else { ::cm_min = 255; }
+    }
+
+    #--------------------------------------------------
+    proc ::CreateOpacityMap() \
+    {
+      printn "::OpacityMap()"
+      curves = ::dw.GetControlledCurves()
+      checknext = 1
+      c = INT(0)
+      found = 0
+      while checknext {
+        if (c<curves.size()) { 
+          if (curves[c].GetType()==0) {
+            checknext = 0
+            found = 1
+          } else { c++; }
+        } else {
+          checknext = 0
+        }
+      }
+printn "found = %1%" % found
+      if (found) {
+        # first get min and max of curve
+        ctrlpts = curves[c].GetControlPoints()
+        for k=0 to ctrlpts.size()-1 {
+          cp = ctrlpts[k]
+          if (!exists(xmin)) {
+            xmin = cp.GetX();
+          } else {
+            xmin = -max(-xmin,-cp.GetX())
+          } # end if
+          if (!exists(xmax)) {
+            xmax = cp.GetX();
+          } else {
+            xmax = max(xmax,cp.GetX())
+          } # end if
+        } # end for
+printn "xmin = %1%" % xmin
+printn "xmax = %1%" % xmax
+        if (xmax>xmin) {
+          # second create image
+          res = Image(FLOAT,256,1,1)
+          res.settranslation(xmin,0,0)
+          res.setvoxelsize((xmax-xmin)/255,1,1)
+          res = 0
+          pos = SpacePos(res)
+          # third map each segment
+          for k=1 to ctrlpts.size()-1 {
+            cp0 = ctrlpts[k-1]
+            cp1 = ctrlpts[k]
+            px  = pos[0]
+            p0x = cp0.GetX()
+            printn "p0x %1%" % p0x
+            p0y = cp0.GetY()
+            printn "p0y %1%" % p0y
+            p1x = cp1.GetX()
+            printn "p1x %1%" % p1x
+            p1y = cp1.GetY()
+            printn "p1y %1%" % p1y
+            if (p0x<p1x) {
+              slope = p0y+(px-p0x)*((p1y-p0y)/(p1x-p0x))
+              res = ((px<p0x)+(px>p1x))*res+ \
+                    (px>=p0x)*(px<=p1x)*slope
+            } else {
+              slope = p1y+(px-p1x)*((p0y-p1y)/(p0x-p1x))
+              res = ((px<p1x)+(px>p0x))*res+ \
+                    (px>=p1x)*(px<=p0x)*slope
+            }
+          }
+        }
+      } # end if found
+      if (exists(res)){
+        # rescale in Y to min/max of the window
+        if (exists(::h)) {
+          hmin = min(::h[0])
+          hmax = max(::h[0])
+          res = (res-hmin)/(hmax-hmin)
+          res = res*(res>0)
+          res = res*(res<1)+(res>=1)
+          ::opacity_map = res
+        }
+      }
     }
 
     #--------------------------------------------------

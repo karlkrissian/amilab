@@ -203,13 +203,13 @@ if (!exists(AnisoNRADClass)) {
       printn " Variance = %1%" % noise_variance
       printn " ------------------------"
 
-      noisefile = open(::result_filename+"_noise.txt","w")
-      noisefile.print "noise SD = %1% \n" % sqrt(noise_variance)
+      noisefile = File(::result_filename+"_noise.txt","w")
+      noisefile._print( "noise SD = %1% \n" % sqrt(noise_variance))
       
       if (exists(::exact_noise_sd)) {
         noise_variance = ::exact_noise_sd*::exact_noise_sd
         printn " Using Given Variance = %1%" % noise_variance
-        noisefile.print "exact noise SD = %1% \n" % sqrt(noise_variance)
+        noisefile._print( "exact noise SD = %1% \n" % sqrt(noise_variance))
       }
       del noisefile
 

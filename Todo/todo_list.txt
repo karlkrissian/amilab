@@ -29,7 +29,9 @@ Amilab:
   
 
 - fixing
-  - getimage for Viewer3D and for DessinImage
+  - getimage 
+      for Viewer3D
+      for DessinImage: done
 
 - Testing
   - create testing script for each script in the main menus

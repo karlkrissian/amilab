@@ -35,7 +35,8 @@ enum {
   wxID_DuplicateControl,
   wxID_AddControlledCurve,
   wxID_RemoveControlledCurve,
-  wxID_ColormapPoint,
+  wxID_ColormapControlledCurve,
+//  wxID_ColormapPoint,
   wxID_VerticalLine,
   wxID_SetControlColour,
   wxID_ShowGrid,
@@ -52,9 +53,10 @@ BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_MENU(         wxID_AddControlPoint,    wxDrawingWindow::OnAddControlPoint)
   EVT_MENU(         wxID_AddControlledCurve, wxDrawingWindow::OnAddControlledCurve)
   EVT_MENU(         wxID_RemoveControlledCurve, wxDrawingWindow::OnRemoveControlledCurve)
+  EVT_MENU(         wxID_ColormapControlledCurve, wxDrawingWindow::OnColormapControlledCurve)
   EVT_MENU(         wxID_RemoveControl,      wxDrawingWindow::OnRemoveControl)
   EVT_MENU(         wxID_DuplicateControl,      wxDrawingWindow::OnDuplicateControl)
-  EVT_MENU(         wxID_ColormapPoint,      wxDrawingWindow::OnColormapPoint)
+//  EVT_MENU(         wxID_ColormapPoint,      wxDrawingWindow::OnColormapPoint)
   EVT_MENU(         wxID_VerticalLine,       wxDrawingWindow::OnVerticalLine)
   EVT_MENU(         wxID_SetControlColour,   wxDrawingWindow::OnControlColour)
   EVT_MENU(         wxID_ShowGrid,           wxDrawingWindow::OnShowGrid)
@@ -77,7 +79,7 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
 
   _focus_point.reset();
   _focus_pointset.reset();
-  _focus_controlledcurve = -1;
+  _focus_controlledcurve.reset();
 
   _left_down = false;
   _previous_crosshair = false;
@@ -589,10 +591,12 @@ void wxDrawingWindow::DrawLinearCM(  )
   // first fill the current colormap control points with their positions
   for(int c=0; c<(int) _controlled_curves->size();c++)
   {
+    if (!((*_controlled_curves)[c].GetType()==colormap_curve))
+      continue;
     boost::shared_ptr<vector_dwControlPoint> points = (*_controlled_curves)[c].GetControlPoints();
     for(int i = 0; i<(int) points->size(); i++) 
     {  
-      if ((*points)[i].GetType() == colormap_point)
+//||((*points)[i].GetType() == colormap_point))
         _linearCM.AddPoint(LinearColorMapPoint((*points)[i].GetX(),
                                               (*points)[i].GetColour()));
     }
@@ -605,6 +609,9 @@ void wxDrawingWindow::DrawLinearCM(  )
   std::vector<double> weights(cm_size,0.0);
   for(int c=0; c<(int) _controlled_curves->size();c++)
   {
+    if (!((*_controlled_curves)[c].GetType()==colormap_curve))
+      continue;
+
     //std::cout<< "c = " << c << std::endl;
     boost::shared_ptr<vector_dwControlPoint> points = (*_controlled_curves)[c].GetControlPoints();
 
@@ -710,11 +717,12 @@ void wxDrawingWindow::DrawLinearCM(  )
 //------------------------------------------------
 void wxDrawingWindow::DrawControlPoint( dwControlPoint& pt, 
                 const wxColour& visible_colour, 
-                const wxSize& _sz)
+                const wxSize& _sz,
+                bool colormap)
 {
   wxCoord px,py;
   World2Window(pt.GetX(),pt.GetY(),px,py);
-  if (pt.GetType()==colormap_point) {
+  if (colormap) {
     wxPen pen(visible_colour);
     pen.SetStyle(wxSHORT_DASH);
     _memory_dc->SetPen(pen);
@@ -765,7 +773,8 @@ void wxDrawingWindow::DrawControlPoints()
   {
     boost::shared_ptr<vector_dwControlPoint> points( (*_controlled_curves)[i].GetControlPoints());
     for(int j = 0; j<(int)points->size(); j++) 
-    DrawControlPoint((*points)[j],visible_colour, _sz);
+    DrawControlPoint((*points)[j],visible_colour, _sz,
+                      (*_controlled_curves)[i].GetType()==colormap_curve);
   }
 }
 
@@ -886,12 +895,16 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
   } else {
     menu.Append(wxID_RemoveControl, wxT("&Remove control point"));
     menu.Append(wxID_DuplicateControl, wxT("&Duplicate control point"));
-    if (_focus_controlledcurve!=-1)
+    if (_focus_controlledcurve.get()) {
       menu.Append(wxID_RemoveControlledCurve, wxT("&Remove controlled curve"));
 
+      wxMenuItem* menu_cmcc = menu.AppendCheckItem(wxID_ColormapControlledCurve, wxT("&Colormap Curve"));
+      menu_cmcc->Check(_focus_controlledcurve->GetType()==colormap_curve);
+    }
+/*
     wxMenuItem* menu_cm = menu.AppendCheckItem(wxID_ColormapPoint, wxT("&Colormap"));
-
     menu_cm->Check(_focus_point->GetType()==colormap_point);
+*/
 
     if (_focus_point->GetType()==normal_point) {
       wxMenuItem* menu_vl = menu.AppendCheckItem(wxID_VerticalLine, wxT("&Vertical Line"));
@@ -941,14 +954,15 @@ int wxDrawingWindow::CheckCtrlPoint( boost::shared_ptr<vector_dwControlPoint>& l
 void wxDrawingWindow::CheckCtrlPoint()
 {
   _focus_point.reset();
-  _focus_controlledcurve = -1;
+  _focus_controlledcurve.reset();
   int res;
   res = CheckCtrlPoint(_controlpoints);
   int i=0;
   while ((res==-1)&&(i<(int)_controlled_curves->size())) {
     res = CheckCtrlPoint((*_controlled_curves)[i].GetControlPoints());
     if (res!=-1)
-      _focus_controlledcurve = i;
+      // TODO: improve this "false" smart pointer
+      _focus_controlledcurve = dwControlledCurve::ptr( &(*_controlled_curves)[i], smartpointer_nodeleter<dwControlledCurve>());
     i++;
   }
 }
@@ -973,12 +987,12 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
       double new_x,new_y;
       Window2World(_mouse_x,_mouse_y,new_x,new_y);
 
-      if (event.ShiftDown() && (_focus_controlledcurve!=-1))
+      if (event.ShiftDown() && (_focus_controlledcurve.get()))
       {
         double x = _focus_point->GetX();
         double y = _focus_point->GetY();
         shared_ptr<std::vector<dwControlPoint> > points = 
-          (*_controlled_curves)[_focus_controlledcurve].GetControlPoints();
+          _focus_controlledcurve->GetControlPoints();
         for(int i=0;i<(int)points->size();i++) {
           (*points)[i].SetX((*points)[i].GetX()+new_x-x);
           (*points)[i].SetY((*points)[i].GetY()+new_y-y);
@@ -1059,11 +1073,11 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
 void wxDrawingWindow::OnWheel(wxMouseEvent& event)
 {
   int wr = event.GetWheelRotation();
-  if (_focus_controlledcurve!=-1) {
+  if (_focus_controlledcurve.get()) {
     // rescale the curve
     // find min/max of curve
     shared_ptr<std::vector<dwControlPoint> > points = 
-    (*_controlled_curves)[_focus_controlledcurve].GetControlPoints();
+    _focus_controlledcurve->GetControlPoints();
     if (points->size()==0) return;
 /*
     double xmin = (*points)[0].GetX();
@@ -1153,8 +1167,10 @@ void wxDrawingWindow::OnAddControlledCurve(wxCommandEvent& event)
 //-------------------------------------------------
 void wxDrawingWindow::OnRemoveControlledCurve(wxCommandEvent& event)
 {
-  if (_focus_controlledcurve!=-1)
-    _controlled_curves->erase(_controlled_curves->begin()+_focus_controlledcurve);
+  if (_focus_controlledcurve.get())
+      // TODO: fix remove feature
+//    _controlled_curves->erase(_controlled_curves->begin()+_focus_controlledcurve)
+    ;
   Refresh(false);
 }
 
@@ -1173,6 +1189,7 @@ void wxDrawingWindow::OnDuplicateControl(wxCommandEvent& event)
   Refresh(false);
 }
 
+/*
 //-------------------------------------------------
 void wxDrawingWindow::OnColormapPoint(wxCommandEvent& event)
 {
@@ -1181,6 +1198,19 @@ void wxDrawingWindow::OnColormapPoint(wxCommandEvent& event)
     _focus_point->SetType(colormap_point);
   else
     _focus_point->SetType(normal_point);
+  Refresh(false);
+}
+*/
+
+//-------------------------------------------------
+void wxDrawingWindow::OnColormapControlledCurve(wxCommandEvent& event)
+{
+  
+  if (event.IsChecked())
+    _focus_controlledcurve->SetType(colormap_curve);
+  else
+    _focus_controlledcurve->SetType(normal_curve);
+
   Refresh(false);
 }
 

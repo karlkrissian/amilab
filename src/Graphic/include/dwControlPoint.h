@@ -27,7 +27,7 @@
 
 typedef enum {
  normal_point,
- colormap_point,
+ colormap_point, // unused now this colormap is a property of the whole curve
 } ControlPointType;
 
 /**
