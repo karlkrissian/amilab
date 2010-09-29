@@ -874,6 +874,7 @@ void SubPixel2D::DenoisingGus()
   double f;
   double gx, gy, des, cu=0;
   int z = 0;
+  float ul = 10;
   borderPixel pixel;
   
   // barremos todos los pixels (ahora no se usa margen, porque la ventana es dinámica)
@@ -888,10 +889,11 @@ void SubPixel2D::DenoisingGus()
       if (fabs(pary) >= fabs(parx)) 
       {
         //La ventana es vertical
-        partial = pary;
-        n       = (*input)(x,y,z);
+        partial = fabs(pary);
+        if (partial < threshold) continue;
+//        n       = (*input)(x,y,z);
         m       = (parx*pary >= 0) ? 1 : -1;
-        p       = (1+m) / 2;
+//        p       = (1+m) / 2;
         
         //Ahora miramos qué píxeles de dentro de la ventana se van a usar
         //Left column
@@ -953,16 +955,21 @@ void SubPixel2D::DenoisingGus()
         }
         
         //Calculate A and B (A under and B over edge)
-        if (m<0)
+        if (m>0) 
         {
           A = (FF(x,y+m2,z) + FF(x+1,y+r2,z)) / 2;
           B = (FF(x,y+m1,z) + FF(x-1,y+l1,z)) / 2;
         }
-        else 
+        else
         {
           A = (FF(x,y+m2,z) + FF(x-1,y+l2,z)) / 2;
           B = (FF(x,y+m1,z) + FF(x+1,y+r1,z)) / 2;
         }
+        
+        //Si A-B es muy pequeño no sirve
+        if (fabs(A-B) < ul) continue;
+        //Tampoco vale si es menor que el umbral
+        if (fabs(A-B) < threshold) continue;
         
         //Calculate the sums of the columns
         for (SL=0, k=l1; k<=l2; k++) 
@@ -1006,9 +1013,10 @@ void SubPixel2D::DenoisingGus()
       {
         //La ventana es horizontal
         partial = fabs(parx);
-        n       = (*input)(x,y,z);
+        if (partial < threshold) continue;
+//        n       = (*input)(x,y,z);
         m       = (parx*pary >= 0) ? 1 : -1;
-        p       = (1+m) / 2;
+//        p       = (1+m) / 2;
         
         //Se miran los pixels a usar dentro de la ventana
         //Left
@@ -1079,6 +1087,11 @@ void SubPixel2D::DenoisingGus()
           A = (FF(x+m2,y,z) + FF(x+l2,y-1,z)) / 2;
           B = (FF(x+m1,y,z) + FF(x+r1,y+1,z)) / 2;
         }
+        
+//        //Si A-B es muy pequeño no sirve
+        if (fabs(A-B) < ul) continue;
+        
+        if (fabs(A-B) < threshold) continue;
         
         //Calculate sums of the rows 
         for (SL=0, k=l1; k<=l2; k++) 
