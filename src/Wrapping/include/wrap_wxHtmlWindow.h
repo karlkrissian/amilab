@@ -46,6 +46,7 @@ class WrapClass_wxHtmlWindow : public WrapClass<wxHtmlWindow>, public WrapClass_
     static Variable<AMIObject>::ptr CreateVar( wxHtmlWindow*);
 
     ADD_CLASS_METHOD(LoadFile,        "Loads HTML page from file and displays it.");
+    ADD_CLASS_METHOD(LoadPage,        "Loads HTML page and displays it.");
     ADD_CLASS_METHOD(HistoryBack,     "Moves back to the previous page.");
     ADD_CLASS_METHOD(HistoryForward,  "Moves to next page in history.");
 
@@ -57,6 +58,7 @@ class WrapClass_wxHtmlWindow : public WrapClass<wxHtmlWindow>, public WrapClass_
       parent_obj->AddMethods(parent_obj);
 
       AddVar_LoadFile(       this_ptr);
+      AddVar_LoadPage(       this_ptr);
       AddVar_HistoryBack(    this_ptr);
       AddVar_HistoryForward( this_ptr);
     }

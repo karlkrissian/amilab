@@ -39,6 +39,7 @@ SET(Graphic_HDRS
     include/dwPoint2D.h
     include/LinearColorMap.h
     include/Voxels.h
+    include/myHtmlWindow.h
 
     # from ImageTool
     include/DessinImageMenu.h
@@ -101,6 +102,7 @@ SET(Graphic_SRCS
     Common/LinearColorMap.cpp
     Common/dwControlledCurve.cpp
     Common/Voxels.cpp
+    Common/myHtmlWindow.cpp
 
     # from ImageTool
     ImageTool/CompareImage.cpp

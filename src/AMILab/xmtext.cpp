@@ -38,6 +38,7 @@
 #include <iostream>
 
 #include <wx/strconv.h>
+#include <wx/regex.h>
 
 #include "token_list.h"
 
@@ -260,9 +261,65 @@ void TextControl::ProcessReturn()
 
   // substring
   last_cmd =alltext.Mid(TCsize);
+
+  // check for special case:
+  // 1. if last word is Image
+  wxRegEx image_keyword (wxT(".*[^[:alnum:]]+Image[[:blank:]]*"));
+  if (image_keyword.Matches(last_cmd)) {
+    cout << "ends with Image" << endl;
+
+    int res;
+    string name;
+    string inc_cmd; // increment the command line string
+
+    res=AskImage(name);
+    if (!res) {
+      GB_driver.yyiperror(" Need Image \n");
+      return;
+    }
+
+    wxFileName filename(wxString::FromAscii(name.c_str()));
+    filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
+    wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
+                        filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
+                        filename.GetPathSeparator(wxPATH_UNIX)+
+                        filename.GetFullName());
+    inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
+    IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+  }
+  
+  // 2. if last word is Surface
+  wxRegEx surface_keyword (wxT(".*[^[:alnum:]]+Surface[[:blank:]]*"));
+  if (surface_keyword.Matches(last_cmd)) {
+    cout << "ends with Surface" << endl;
+
+    int res;
+    string name;
+    string inc_cmd; // increment the command line string
+
+    res=AskSurface(name);
+    if (!res) {
+      GB_driver.yyiperror(" Need Image \n");
+      return;
+    }
+
+    wxFileName filename(wxString::FromAscii(name.c_str()));
+    filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
+    wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
+                        filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
+                        filename.GetPathSeparator(wxPATH_UNIX)+
+                        filename.GetFullName());
+    inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
+    IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+  }
+  
+
+  alltext = this->GetValue();
+  TCsize  = this->GetAcceptedSize();
+  // substring
+  last_cmd =alltext.Mid(TCsize);
   //this->AddCommand(last_cmd);
   last_cmd += wxT('\n');
-
   last_cmd.Append(wxT('\0'),2);
 
   /*

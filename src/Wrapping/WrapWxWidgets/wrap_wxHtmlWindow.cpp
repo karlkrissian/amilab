@@ -18,7 +18,7 @@
 #include "ami_object.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
-
+#include "myHtmlWindow.h"
 
 //
 // static member for creating a variable from a ParamList
@@ -71,7 +71,7 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
 
   if (parent.get()){
     return WrapClass_wxHtmlWindow::CreateVar(
-      new wxHtmlWindow(parent.get(), wxID_ANY));
+      new myHtmlWindow(parent.get()));
   }
   else
     ClassHelpAndReturn;
@@ -100,6 +100,26 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   wxFileName wxfilename(wxString::FromAscii(filename->c_str())); 
   int res = this->_objectptr->_obj->LoadFile(wxfilename);
 
+  RETURN_VAR(int, res);
+}
+
+//---------------------------------------------------
+//  LoadPage
+//---------------------------------------------------
+void WrapClass_wxHtmlWindow::
+      wrap_LoadPage::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(std::string,"string: filename to load.");
+  return_comments = "Success result (int variable).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxHtmlWindow::
+      wrap_LoadPage::CallMember( ParamList* p)
+{
+  int n = 0;
+  GET_PARAM(std::string,page,"");
+  wxString wxstPage(page.c_str(), wxConvUTF8);
+  int res = this->_objectptr->_obj->LoadPage(wxstPage);
   RETURN_VAR(int, res);
 }
 
