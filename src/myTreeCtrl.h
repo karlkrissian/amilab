@@ -64,7 +64,7 @@ protected:
   void OnItemRightClick(wxTreeEvent& event);
 
   /// Drag event: Initiate the drag from myTreeCtrl control.
-  void OnBeginDrag(wxTreeEvent& event);
+//  void OnBeginDrag(wxTreeEvent& event);
 //  void OnLeftDown(wxMouseEvent& event);
   
 /*

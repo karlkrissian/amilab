@@ -23,7 +23,7 @@ extern MainFrame*    GB_main_wxFrame;
 #include <iostream>
 
 //dnd operation
-#include "wxDragAndDrop.h"
+//#include "wxDragAndDrop.h"
 
 //Used for &About menu item
 enum
@@ -56,14 +56,14 @@ wxTreeListCtrl(parent,id,pos,size,style,validator,name)
   //Connect(wxEVT_COMMAND_TREE_BEGIN_DRAG,wxTreeEventHandler(myTreeCtrl::OnBeginDrag));
   //Connect(wxEVT_LEFT_DOWN,wxTreeEventHandler(myTreeCtrl::OnBeginDrag));
   //Connect(wxEVT_LEFT_DOWN,wxTreeEventHandler(myTreeCtrl::OnBeginDrag));
-  Connect
-  (
-    wxEVT_COMMAND_TREE_BEGIN_DRAG,
-    //wxEVT_COMMAND_LIST_BEGIN_DRAG,
-    wxTreeEventHandler(myTreeCtrl::OnBeginDrag),
-    NULL,
-    this
-  );
+//   Connect
+//   (
+//     wxEVT_COMMAND_TREE_BEGIN_DRAG,
+//     //wxEVT_COMMAND_LIST_BEGIN_DRAG,
+//     wxTreeEventHandler(myTreeCtrl::OnBeginDrag),
+//     NULL,
+//     this
+//   );
 }
 
 void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
@@ -180,7 +180,7 @@ void myTreeCtrl::ToConsole(wxCommandEvent& event)
   BasicVariable::ptr var(_currentmenu_var.lock());
   GB_main_wxFrame->GetConsole()->IncCommand(var->Name());
 }
-
+/*
 void myTreeCtrl::OnBeginDrag(wxTreeEvent& event)
 //void myTreeCtrl::OnLeftDown(wxMouseEvent& event)
 {
@@ -209,38 +209,38 @@ void myTreeCtrl::OnBeginDrag(wxTreeEvent& event)
   switch (result)
   {
       case wxDragCopy:
-        /* copy the data */
+        /* copy the data *
         std::cout << "\nDrag operation: the data was successfully copied\n" << std::endl;
         break;
       case wxDragMove:
-        /* move the data */
+        /* move the data *
         std::cout << "\nDrag operation: the data was successfully moved\n" << std::endl;
         break;
       case wxDragError:
-        /* Error */
+        /* Error *
         std::cout << "\nDrag operation: Error\n" << std::endl;
         break;
       case wxDragNone:
-        /* target didn't accept the data */
+        /* target didn't accept the data *
         std::cout << "\nDrag operation: target didn't accept the data\n" << std::endl;
         break;
       case wxDragCancel:
-        /* the operation was cancelled by user */
+        /* the operation was cancelled by user *
         std::cout << "\nDrag operation: the operation was cancelled by user\n" << std::endl;
         break;
       case wxDragLink:
-        /* operation is a drag-link */
+        /* operation is a drag-link *
         std::cout << "\nDrag operation: this was a link operation\n" << std::endl;
         break;
       default:
-        /* do nothing */
+        /* do nothing *
         std::cout << "\nDrag operation: do nothing\n" << std::endl;
         break;
   }
 
   event.Skip();
 }
-/*
+
 void myTreeCtrl::OnMouseRightDown(wxMouseEvent& event)
 {
   // find the corresponding item

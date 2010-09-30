@@ -37,6 +37,10 @@ myDataViewCtrl::myDataViewCtrl( wxWindow* parent, wxWindowID id,
   Connect(wxEVT_CHAR,
           wxKeyEventHandler(myDataViewCtrl::OnDataViewChar),
           NULL, this);
+//   Connect(wxEVT_COMMAND_DATAVIEW_ITEM_BEGIN_DRAG,
+//           wxKeyEventHandler(myDataViewCtrl::OnBeginDrag),
+//           NULL, this);
+//           Connect(wxEVT_COMMAND_TREE_BEGIN_DRAG,wxTreeEventHandler(myTreeCtrl::OnBeginDrag));
 }
 
 void myDataViewCtrl::InternalAssociateModel( AMILabTreeModel *model )
@@ -181,6 +185,8 @@ void myDataViewCtrl::OnBeginDrag( wxDataViewEvent &event )
   // only allow drags for item, not containers
   if (_amilab_model->IsContainer( item ) )
   {
+      std::cout << "myDataViewCtrl::OnBeginDrag - Only allow drags for item, not containers"
+                << std::endl;
       event.Veto();
       return;
   }
@@ -190,10 +196,9 @@ void myDataViewCtrl::OnBeginDrag( wxDataViewEvent &event )
   obj->SetText( node->m_Name );
   event.SetDataObject( obj );
 
-  std::cout << std::endl
-          << "myDataViewCtrl::OnBeginDrag - Drag text: "
-          << node->m_Name
-          << std::endl;
+  std::cout << "myDataViewCtrl::OnBeginDrag - Drag text: "
+            << node->m_Name
+            << std::endl;
 }
 
 void myDataViewCtrl::OnDropPossible( wxDataViewEvent &event )
@@ -228,6 +233,8 @@ void myDataViewCtrl::OnDrop( wxDataViewEvent &event )
 
   wxTextDataObject obj;
   obj.SetData( wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer() );
+  
+  GB_main_wxFrame->GetConsole()->IncCommand(obj.GetText());
 
   std::cout << std::endl
             << "myDataViewCtrl::OnDrop - Text dropped: "
