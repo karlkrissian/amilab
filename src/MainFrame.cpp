@@ -2035,7 +2035,10 @@ void MainFrame::UpdateVarsDisplay()
   UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetBuiltinContext());
 
   CLASS_MESSAGE("Notifies the control that data model have been updated");
-  m_amilab_model->Cleared(); 
+//  m_amilab_model->Cleared(); 
+//  wxDataViewItemArray nodes;
+//  m_amilab_model->GetChildren(m_amilab_model->GetRootNode(),nodes);
+//  m_amilab_model->ItemsChanged(nodes); 
 
   _var_dataview->Expand( m_amilab_model->GetRootNode() );
   _var_dataview->Expand( m_amilab_model->GetGlobalNode() );

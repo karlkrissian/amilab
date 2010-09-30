@@ -125,7 +125,8 @@ void AMILabTreeModel::Delete( const wxDataViewItem &item )
   delete node;
 
   // notify control
-//  ItemDeleted( parent, item );
+  ItemDeleted( parent, item );
+
 }
 
 int AMILabTreeModel::Compare( const wxDataViewItem &item1, const wxDataViewItem &item2,
@@ -283,11 +284,17 @@ void AMILabTreeModel::DeleteChildren( const wxDataViewItem &item )
               << std::endl;
   else
   {
+    //wxDataViewItemArray children;
+    //GetChildren(item,children);
     while (HasChildren(item))
     {
       AMILabTreeModelNode *child = node->GetChildren().Item(0);
       Delete( wxDataViewItem( (void*) child ) );
     }
+    
+    // notify control
+    //ItemsDeleted(  item, children);
+
   }
 }
 
@@ -309,6 +316,7 @@ wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
       name, type, val, details, var );
     parent_node->Append (child_node);
 
+    
 /*  std::cout << std::endl
               << "\nAMILabTreeModel::CreateLeafNode - "
               << " parent: " << parent_node->m_Name
@@ -320,9 +328,9 @@ wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
                 << std::endl;
 */
     // notify control
-     wxDataViewItem Child( (void*) child_node );
-//     wxDataViewItem Parent( (void*) parent_node );
-//    ItemAdded( Parent, Child );
+    wxDataViewItem Child( (void*) child_node );
+    wxDataViewItem Parent( (void*) parent_node );
+    ItemAdded( Parent, Child );
 
     return Child;
   }
@@ -359,6 +367,9 @@ std::cout << std::endl
                 */
 
     wxDataViewItem Child( (void*) child_node );
+    wxDataViewItem Parent( (void*) parent_node );
+    ItemAdded( Parent, Child );
+
     return Child;
   }
 }
