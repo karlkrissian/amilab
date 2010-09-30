@@ -744,7 +744,7 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 
   m_amilab_model = new AMILabTreeModel();
   _var_dataview->AssociateModel( m_amilab_model.get() );
-  _var_dataview->InternalAssociateModel( m_amilab_model.get() );
+//  _var_dataview->InternalAssociateModel( m_amilab_model.get() );
   _var_dataview->EnableDragSource( wxDF_UNICODETEXT );
   _var_dataview->EnableDropTarget( wxDF_UNICODETEXT );
 
@@ -1550,11 +1550,11 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
 
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) rootbranch.GetID();
 
-  std::cout //<< std::endl
-            << "MainFrame::UpdateVarDataView:"
-            << " rootbranch= " << node->m_Name
-            << " childrens: " << node->GetChildCount()
-            << std::endl;
+//   std::cout //<< std::endl
+//             << "MainFrame::UpdateVarDataView:"
+//             << " rootbranch= " << node->m_Name
+//             << " childrens: " << node->GetChildCount()
+//             << std::endl;
 
   // delete children of rootbranch
   m_amilab_model->DeleteChildren(rootbranch);
@@ -1573,11 +1573,11 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
   wxDataViewItem vartree_wrapped_var_functions = m_amilab_model->CreateBranchNode(rootbranch,_T("Wrapped Var. Func."));
   wxDataViewItem vartree_others    = m_amilab_model->CreateBranchNode(rootbranch,_T("Others"));
 
-  std::cout //<< std::endl
-          << "MainFrame::UpdateVarDataView: "
-          << " Delete all children and create all the first branches of "
-          << node->m_Name << " (" << node->GetChildCount() << " childrens)"
-          << std::endl;
+//   std::cout //<< std::endl
+//           << "MainFrame::UpdateVarDataView: "
+//           << " Delete all children and create all the first branches of "
+//           << node->m_Name << " (" << node->GetChildCount() << " childrens)"
+//           << std::endl;
 
   // loop vars
   variables = boost::shared_ptr<wxArrayString>(new wxArrayString());
@@ -1686,18 +1686,17 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
           var
           );
 
-      std::cout //<< std::endl
-                << "MainFrame::UpdateVarDataView: "
-                << " Create node -  "
-                << " parent: " << ((AMILabTreeModelNode*) append_id.GetID())->m_Name
-                << " child: "  << ((AMILabTreeModelNode*) itemid.GetID())->m_Name
-                << " values: "
-                << var->Name().c_str()
-                << " : " << var->GetTypeName().c_str()
-                << " : " << valtext.c_str()
-                << " : " << text.c_str()
-                << std::endl;
-
+//       std::cout //<< std::endl
+//                 << "MainFrame::UpdateVarDataView: "
+//                 << " Create node -  "
+//                 << " parent: " << ((AMILabTreeModelNode*) append_id.GetID())->m_Name
+//                 << " child: "  << ((AMILabTreeModelNode*) itemid.GetID())->m_Name
+//                 << " values: "
+//                 << var->Name().c_str()
+//                 << " : " << var->GetTypeName().c_str()
+//                 << " : " << valtext.c_str()
+//                 << " : " << text.c_str()
+//                 << std::endl;
 
       if ((var->Type() == type_ami_object)) {
         // get the pointer to the objet
@@ -2034,7 +2033,7 @@ void MainFrame::UpdateVarsDisplay()
   CLASS_MESSAGE("Update builtin node");
   UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetBuiltinContext());
 
-  CLASS_MESSAGE("Notifies the control that data model have been updated");
+//  CLASS_MESSAGE("Notifies the control that data model have been updated");
 //  m_amilab_model->Cleared(); 
 //  wxDataViewItemArray nodes;
 //  m_amilab_model->GetChildren(m_amilab_model->GetRootNode(),nodes);

@@ -180,7 +180,7 @@ void myDataViewCtrl::OnBeginDrag( wxDataViewEvent &event )
 {
   wxDataViewItem item( event.GetItem() );
 
-  wxDataViewItem *node1 = (wxDataViewItem*) item.GetID();
+//  wxDataViewItem *node1 = (wxDataViewItem*) item.GetID();
 
   // only allow drags for item, not containers
   if (_amilab_model->IsContainer( item ) )

@@ -40,6 +40,10 @@
 #include "wx/aui/aui.h"
 
 #include "myTreeCtrl.h"
+
+//class myDataViewCtrl;
+//class AMILabTreeModel;
+//class wxDataViewItem;
 #include "myDataViewCtrl.h"
 
 #include "wx/listctrl.h"

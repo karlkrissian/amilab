@@ -50,9 +50,8 @@ class AMILabTreeModel: public wxDataViewModel
      */     
     ~AMILabTreeModel()
     {
-      delete m_builtin; // Liberated m_builtin branch
-      delete m_global;  // Liberated m_global branch
-      delete m_root;    // Liberated m_root branch
+       delete m_root;    // Liberated m_root branch
+       Cleared();
     }
 
     /**
@@ -213,7 +212,8 @@ class AMILabTreeModel: public wxDataViewModel
      * @param name
      * @param type
      * @param val
-     * @param details     
+     * @param details
+     * @param var
      *
      * Creates the new leaf node
      */    

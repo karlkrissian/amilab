@@ -111,7 +111,7 @@ class myDataViewCtrl: public wxDataViewCtrl
 
   private:
     boost::weak_ptr<BasicVariable> _currentmenu_var;
-    wxObjectDataPtr<AMILabTreeModel> _amilab_model;
+    AMILabTreeModel* _amilab_model;
 
     void _ShowMenu( const wxDataViewItem &item, const wxPoint& pt );
     

@@ -19,11 +19,13 @@
 AMILabTreeModel::AMILabTreeModel()
 {
   m_root = new AMILabTreeModelNode( NULL, "Root" );
-  m_global = new AMILabTreeModelNode( m_root, "Global" );
-  m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
+//  m_global = new AMILabTreeModelNode( m_root, "Global" );
+//  m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
 
-  m_root->Append(m_global);
-  m_root->Append(m_builtin);
+  m_global =  (AMILabTreeModelNode*)
+        CreateBranchNode(wxDataViewItem(m_root),"Global").GetID();
+  m_builtin = (AMILabTreeModelNode*)
+        CreateBranchNode(wxDataViewItem(m_root),"Builtin").GetID();
 }
 
 wxString AMILabTreeModel::GetName( const wxDataViewItem &item ) const
@@ -110,11 +112,9 @@ void AMILabTreeModel::Delete( const wxDataViewItem &item )
   else if (node == m_builtin)
       m_builtin = NULL;
 
-  std::cout 
-  //<< std::endl
-            << "AMILabTreeModel::Delete: delete node: " << node->m_Name
-            << " (parent: " << node->GetParent()->m_Name << ")"
-            << std::endl;  
+//   std::cout << "AMILabTreeModel::Delete: delete node: " << node->m_Name
+//             << " (parent: " << node->GetParent()->m_Name << ")"
+//             << std::endl;  
 
   // first remove the node from the parent's array of children;
   // NOTE: AMILabTreeModelNodePtrArray is only an array of _pointers_
@@ -126,7 +126,6 @@ void AMILabTreeModel::Delete( const wxDataViewItem &item )
 
   // notify control
   ItemDeleted( parent, item );
-
 }
 
 int AMILabTreeModel::Compare( const wxDataViewItem &item1, const wxDataViewItem &item2,
@@ -179,16 +178,6 @@ void AMILabTreeModel::GetValue( wxVariant &variant,
     case 4:
       variant =  wxT("boost::weak_ptr<BasicVariable>");
       break;
-      
-//     case 4: {
-//        //wxWeakRef<BasicVariable> any = node->m_Var.lock().get();
-// //       BasicVariable::ptr vari(node->m_Var.lock());
-// //       wxString s = vari->Name().c_str();
-// //       variant = vari->Name();
-//       variant = node->m_Var;
-//       //std::cout<<vari->Name()<<std::endl;
-//       }
-//       break;
     default:
       std::cout << "AMILabTreeModel::GetValue: wrong column "
                 << col
@@ -294,7 +283,6 @@ void AMILabTreeModel::DeleteChildren( const wxDataViewItem &item )
     
     // notify control
     //ItemsDeleted(  item, children);
-
   }
 }
 
@@ -316,17 +304,6 @@ wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
       name, type, val, details, var );
     parent_node->Append (child_node);
 
-    
-/*  std::cout << std::endl
-              << "\nAMILabTreeModel::CreateLeafNode - "
-              << " parent: " << parent_node->m_Name
-              << " child: " << child_node->m_Name << "("<< name << ")";
-    if (!parent_node->GetParent())
-      std::cout << std::endl;
-    else
-      std::cout << " grandfather: " << parent_node->GetParent()->m_Name
-                << std::endl;
-*/
     // notify control
     wxDataViewItem Child( (void*) child_node );
     wxDataViewItem Parent( (void*) parent_node );
@@ -353,19 +330,7 @@ wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
       branch );
     parent_node->Append (child_node);
 
-/*
-std::cout << std::endl
-              << "\nAMILabTreeModel::CreateBranchNode - "
-              << " parent: " << parent_node->m_Name
-              << " child: " << child_node->m_Name << "("<< branch << ")";
-
-    if (!parent_node->GetParent())
-      std::cout << std::endl;
-    else
-      std::cout << " grandfather: " << parent_node->GetParent()->m_Name
-                << std::endl;
-                */
-
+    // notify control
     wxDataViewItem Child( (void*) child_node );
     wxDataViewItem Parent( (void*) parent_node );
     ItemAdded( Parent, Child );

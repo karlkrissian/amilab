@@ -105,6 +105,13 @@ class AMILabTreeModelNode
       for (size_t i = 0; i < count; i++)
       {
           AMILabTreeModelNode *child = m_children[i];
+
+//           std::cout << "AMILabTreeModelNode::~AMILabTreeModelNode():"
+//                     << " parent: " <<    child->GetParent()->m_Name
+//                     << "(" << child->GetParent()->GetChildCount() << " children)"
+//                     << " child: " <<     child->m_Name
+//                     << std::endl;
+          
           delete child;
       }
     }
