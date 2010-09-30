@@ -860,6 +860,7 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()//,
 
 void SubPixel2D::DenoisingGus()
 { 
+  int margen = 1;
   double A, B;
   //Partials
   float parx, pary;
@@ -874,13 +875,12 @@ void SubPixel2D::DenoisingGus()
   double f;
   double gx, gy, des, cu=0;
   int z = 0;
-  float ul = 10;
   borderPixel pixel;
   
   // barremos todos los pixels (ahora no se usa margen, porque la ventana es dinámica)
-  for (int y = 1; y < input->DimY()-1; y++) 
+  for (int y = margen; y < input->DimY()-margen; y++) 
   {
-    for (int x = 1; x < input->DimX()-1; x++) 
+    for (int x = margen; x < input->DimX()-margen; x++) 
     {
       //Miramos qué parcial es mayor
       pary = ffy(x,y,z);
@@ -891,9 +891,7 @@ void SubPixel2D::DenoisingGus()
         //La ventana es vertical
         partial = fabs(pary);
         if (partial < threshold) continue;
-//        n       = (*input)(x,y,z);
-        m       = (parx*pary >= 0) ? 1 : -1;
-//        p       = (1+m) / 2;
+        m = (parx*pary >= 0) ? 1 : -1;
         
         //Ahora miramos qué píxeles de dentro de la ventana se van a usar
         //Left column
@@ -966,8 +964,6 @@ void SubPixel2D::DenoisingGus()
           B = (FF(x,y+m1,z) + FF(x+1,y+r1,z)) / 2;
         }
         
-        //Si A-B es muy pequeño no sirve
-        if (fabs(A-B) < ul) continue;
         //Tampoco vale si es menor que el umbral
         if (fabs(A-B) < threshold) continue;
         
@@ -1004,7 +1000,10 @@ void SubPixel2D::DenoisingGus()
         }
         
         pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu, x, y);
-        
+        pixel.printBorderPixel(linear_case);
+        cout << "l1: " << l1 << " l2: " << l2 << endl;
+        cout << "m1: " << m1 << " m2: " << m2 << endl;
+        cout << "r1: " << r1 << " r2: " << r2 << endl;
         //Add edge pixel to the vector
         borderPixelVector.push_back(pixel);
         
@@ -1014,9 +1013,7 @@ void SubPixel2D::DenoisingGus()
         //La ventana es horizontal
         partial = fabs(parx);
         if (partial < threshold) continue;
-//        n       = (*input)(x,y,z);
-        m       = (parx*pary >= 0) ? 1 : -1;
-//        p       = (1+m) / 2;
+        m = (parx*pary >= 0) ? 1 : -1;
         
         //Se miran los pixels a usar dentro de la ventana
         //Left
@@ -1088,9 +1085,6 @@ void SubPixel2D::DenoisingGus()
           B = (FF(x+m1,y,z) + FF(x+r1,y+1,z)) / 2;
         }
         
-//        //Si A-B es muy pequeño no sirve
-        if (fabs(A-B) < ul) continue;
-        
         if (fabs(A-B) < threshold) continue;
         
         //Calculate sums of the rows 
@@ -1123,8 +1117,11 @@ void SubPixel2D::DenoisingGus()
             cu = -cu;
         }
         
-        pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu, x, y);
-        
+        pixel.setBorderPixelValues(A, B, XMAX, a, b, c, cu, x, y);
+        pixel.printBorderPixel(linear_case);
+        cout << "l1: " << l1 << " l2: " << l2 << endl;
+        cout << "m1: " << m1 << " m2: " << m2 << endl;
+        cout << "r1: " << r1 << " r2: " << r2 << endl;
         //Add edge pixel to the vector
         borderPixelVector.push_back(pixel);
         
