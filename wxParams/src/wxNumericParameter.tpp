@@ -486,7 +486,7 @@ void wxNumericParameter<T>::SetToolTip( const wxString& tt)
 
 //-------------------------------------------
 template <class T>
-void wxNumericParameter<T>::Enable(bool enable)
+void wxNumericParameter<T>::EnableWidget(bool enable)
 {
   if (enable!=_enabled) {
     _label          ->Enable(enable);

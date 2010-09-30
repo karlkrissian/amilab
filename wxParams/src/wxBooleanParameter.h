@@ -59,7 +59,9 @@ public:
 
   virtual void OnCheck( wxCommandEvent& );
 
-private:
+  void EnableWidget(bool enable = true);
+
+  private:
     DECLARE_EVENT_TABLE();
 
 }; // wxBooleanParameter

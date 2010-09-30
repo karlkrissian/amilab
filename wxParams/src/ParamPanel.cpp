@@ -1160,7 +1160,7 @@ void ParamPanel::Enable( int id, bool enable) {
     wxGenericWidget* pwidget = (wxGenericWidget*) _tab_param[id].GetWidget();
 
     if (enable!=pwidget->IsEnabled())
-      pwidget->Enable(enable);
+      pwidget->EnableWidget(enable);
   }
 }
 

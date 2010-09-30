@@ -212,7 +212,7 @@ void wxEnumerationParameter::OnEnumUpdate(void* data)
 }
 
 //-------------------------------------------
-void wxEnumerationParameter::Enable(bool enable)
+void wxEnumerationParameter::EnableWidget(bool enable)
 {
   if (enable!=_enabled) {
     _label         ->Enable(enable);

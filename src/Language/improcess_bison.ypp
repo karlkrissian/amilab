@@ -9610,6 +9610,10 @@ equality_var:
 and_var:
   equality_var %prec SHIFT_THERE
   | and_var T_AND equality_var
+  {
+    GET_CHECK_VARSTACK(var2)
+    driver.err_print("binary operator & between variables not defined at the moment ...\n");
+  }
   ;
 
 exclusive_or_var:
@@ -9619,6 +9623,10 @@ exclusive_or_var:
 inclusive_or_var:
   exclusive_or_var %prec SHIFT_THERE
   | inclusive_or_var T_OR exclusive_or_var
+  {
+    GET_CHECK_VARSTACK(var2)
+    driver.err_print("binary operator | between variables not defined at the moment ...\n");
+  }
   ;
 
 logical_and_var:

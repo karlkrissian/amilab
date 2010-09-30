@@ -91,8 +91,8 @@ extern MainFrame*    GB_main_wxFrame;
     if (im1->ScalarFormat()&&im2->ScalarFormat()) { \
       std::string newname = (boost::format("%1%_%2%_%3%")%im1->GetName()%#operator%im2->GetName()).str(); \
       InrImage::ptr res = InrImage::ptr(new InrImage(im1->_format,newname.c_str(),im1.get()));\
-      InrImageIteratorBase::ptr im1_it(res->CreateConstIterator());\
-      InrImageIteratorBase::ptr im2_it(res->CreateConstIterator());\
+      InrImageIteratorBase::ptr im1_it(im1->CreateConstIterator());\
+      InrImageIteratorBase::ptr im2_it(im2->CreateConstIterator());\
       InrImageIteratorBase::ptr res_it(res->CreateIterator());\
       im1_it->InitBuffer();                \
       im2_it->InitBuffer();                \

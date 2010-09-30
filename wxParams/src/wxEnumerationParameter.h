@@ -106,7 +106,7 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   
   static void OnEnumUpdate(void* data);
 
-  void Enable(bool enable = true);
+  void EnableWidget(bool enable = true);
 
 //  void OnButtonUpdate( wxCommandEvent& data);
 
