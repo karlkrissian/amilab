@@ -30,6 +30,7 @@
 #include "wx/html/htmlwin.h"
 #include "wx/html/htmlproc.h"
 #include "wx/fs_inet.h"
+#include "wx/defs.h"
 
 
 // Define a new html window type: this is a wrapper for handling wxHtmlWindow events
@@ -63,8 +64,9 @@ private:
 
     bool m_drawCustomBg;
 
-    DECLARE_EVENT_TABLE()
-//    wxDECLARE_NO_COPY_CLASS(myHtmlWindow);
+//public:
+    DECLARE_EVENT_TABLE();
+    DECLARE_NO_COPY_CLASS(myHtmlWindow);
 };
 
 

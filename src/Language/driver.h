@@ -127,6 +127,7 @@ public:
 
     void init_res_output();
     void res_print(const char* st);
+    void res_print(const wxString& st);
     void res_print(const std::string& st) 
     { 
       this->res_print(st.c_str()); 

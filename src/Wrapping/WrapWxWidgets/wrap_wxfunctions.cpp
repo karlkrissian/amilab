@@ -72,7 +72,7 @@ BasicVariable::ptr wrap_LaunchDefaultBrowser( ParamList* p)
   
   if (!get_val_ptr_param<std::string>( webpage,    p, n)) HelpAndReturnVarPtr;
 
-  int res = wxLaunchDefaultBrowser(wxString::FromAscii(webpage->c_str()));
+  int res = wxLaunchDefaultBrowser(wxString(webpage->c_str(),wxConvUTF8));
 
   RETURN_VAR(int, res);
 }

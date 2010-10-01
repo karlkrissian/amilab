@@ -29,6 +29,7 @@
 #include <wx/utils.h>
 #include <wx/gdicmn.h>
 #include <wx/regex.h>
+#include <iostream>
 
 wxHtmlOpeningStatus myHtmlWindow::OnOpeningURL(wxHtmlURLType WXUNUSED(type),
                                                const wxString& url,

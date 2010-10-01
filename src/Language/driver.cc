@@ -485,7 +485,7 @@ int Driver::err_print(const char* st)
 //   -----------------
 {
   if (GB_main_wxFrame)
-    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st,wxConvUTF8);
   std::cout << "Error: " << st << std::endl;
   string mess =  (format("Error %s \n") % st).str();
   if (InConsole()) 
@@ -525,7 +525,7 @@ void Driver::info_print(const char* st)
 //   -----------------
 {
   if (GB_main_wxFrame)
-    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st,wxConvUTF8);
   string mess =  (format("Information: %s \n") % st).str();
   if (!nomessagedialog) {
     wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
@@ -567,10 +567,18 @@ void Driver::res_print(const char* st)
 //   -----------------
 {
   if (GB_main_wxFrame)
-    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st, wxConvUTF8);
   std::cout << st << std::endl;
 } // Driver::res_print()
 
+//--------------------------------------------
+void Driver::res_print(const wxString& st) 
+//   -----------------
+{
+  if (GB_main_wxFrame)
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << st;
+//  std::cout << st << std::endl;
+} // Driver::res_print()
 
 //----------------------------------------
 void Driver::close_res_output() 

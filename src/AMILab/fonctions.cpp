@@ -47,6 +47,8 @@ extern unsigned char GB_debug;
 extern    VarContexts  Vars;
 extern wxString  GB_scripts_dir;
 
+#include "driver.h"
+extern yyip::Driver GB_driver;
 
 
 
@@ -1311,7 +1313,10 @@ int AskImage(std::string& name)
 
     // it is just a sample, would use wxSplitPath in real program
     s_extDef = filename.AfterLast(_T('.'));
-    name = filename.mb_str(wxConvUTF8);
+    name = filename.mb_str();
+//	GB_driver.res_print(filename);
+//	GB_driver.res_print(name);
+//	std::cout << "image filename = " << name << std::endl;
     return 1;
 }
 

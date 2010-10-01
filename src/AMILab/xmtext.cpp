@@ -117,7 +117,11 @@ void TextControl::IncCommand( const wxString& cmd)
 //--------------------------------------------------
 void TextControl::IncCommand( const std::string& cmd)
 {
-  IncCommand(wxString::FromAscii(cmd.c_str()));
+  const char* stval = cmd.c_str();
+  // conversion failed ...
+  wxString val(stval,wxConvUTF8);
+  std::cout << "val = " << stval << "; "<< val.mb_str(wxConvUTF8) << std::endl;
+  IncCommand(val);
 }
 
 //--------------------------------------------------
@@ -264,13 +268,12 @@ void TextControl::ProcessReturn()
 
   // check for special case:
   // 1. if last word is Image
-  wxRegEx image_keyword (wxT(".*[^[:alnum:]]+Image[[:blank:]]*"));
+  wxRegEx image_keyword (wxT(".*[^[:alnum:]]+Image[[:blank:]]*$"));
   if (image_keyword.Matches(last_cmd)) {
     cout << "ends with Image" << endl;
 
     int res;
     string name;
-    string inc_cmd; // increment the command line string
 
     res=AskImage(name);
     if (!res) {
@@ -284,18 +287,18 @@ void TextControl::ProcessReturn()
                         filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
                         filename.GetPathSeparator(wxPATH_UNIX)+
                         filename.GetFullName());
-    inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
-    IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+    wxString inc_cmd; // increment the command line string
+    inc_cmd = wxT(" \"")+newname+wxT("\" // from browser ");
+    IncCommand(inc_cmd);
   }
   
   // 2. if last word is Surface
-  wxRegEx surface_keyword (wxT(".*[^[:alnum:]]+Surface[[:blank:]]*"));
+  wxRegEx surface_keyword (wxT(".*[^[:alnum:]]+Surface[[:blank:]]*$"));
   if (surface_keyword.Matches(last_cmd)) {
     cout << "ends with Surface" << endl;
 
     int res;
     string name;
-    string inc_cmd; // increment the command line string
 
     res=AskSurface(name);
     if (!res) {
@@ -309,8 +312,9 @@ void TextControl::ProcessReturn()
                         filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
                         filename.GetPathSeparator(wxPATH_UNIX)+
                         filename.GetFullName());
-    inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
-    IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+    wxString inc_cmd; // increment the command line string
+    inc_cmd = wxT(" \"")+newname+wxT("\" // from browser ");
+    IncCommand(inc_cmd);
   }
   
 
@@ -536,7 +540,7 @@ void TextControl::OnChar(wxKeyEvent& event)
                                         filename.GetPathSeparator(wxPATH_UNIX)+
                                         filename.GetFullName());
                     inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
-                    this->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+                    this->IncCommand(wxString(inc_cmd.c_str(),wxConvUTF8));
                   }
                 }
               }

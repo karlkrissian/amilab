@@ -152,7 +152,7 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
   } else {
     mess = "No variable for this item";
   }
-  wxMessageDialog msg(NULL,wxString::FromAscii(mess.c_str()),
+  wxMessageDialog msg(NULL,wxString(mess.c_str(),wxConvUTF8),
       wxString::FromAscii("Help"),wxOK | wxICON_INFORMATION );
   msg.ShowModal();
 }

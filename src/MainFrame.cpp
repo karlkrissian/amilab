@@ -1466,7 +1466,7 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
   int res;
   string name;
   string varname;
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
 
   res=AskImage(name);
   if (!res) {
@@ -1493,17 +1493,19 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
 
   images_history->AddFileToHistory(newname);
 
-  cmd = varname + string(" = Image \"");
-  cmd += newname.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
+  wxString wxst_cmd;
+  wxst_cmd = wxString(varname.c_str(),wxConvUTF8)+wxT(" = Image \"")+newname+wxT("\" // from menu");
+//  cmd = varname + string(" = Image \"");
+//  cmd += newname.mb_str();
+//  cmd += string("\" // from menu");
+  this->TC->IncCommand(wxst_cmd);
   this->TC->ProcessReturn();
 }
 
 //-----------------------------------------------------
 void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
 {
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
   string varname;
   size_t pos = event.GetId() - wxID_Images_History;
   wxString filename(images_history->GetHistoryFile(pos));
@@ -1522,17 +1524,19 @@ void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
   images_history->RemoveFileFromHistory(pos);
   images_history->AddFileToHistory(filename);
 
-  cmd = varname + string(" = Image \"");
-  cmd += filename.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
+//  cmd = varname + string(" = Image \"");
+//  cmd += filename.mb_str();
+//  cmd += string("\" // from menu");
+  wxString wxst_cmd;
+  wxst_cmd = wxString(varname.c_str(),wxConvUTF8)+wxT(" = Image \"")+filename+wxT("\" // from menu");
+  this->TC->IncCommand(wxst_cmd);
   this->TC->ProcessReturn();
 }
 
 //-----------------------------------------------------
 void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
 {
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
   string varname;
   size_t pos = event.GetId() - wxID_Scripts_History;
   wxString filename(scripts_history->GetHistoryFile(pos));
@@ -1541,10 +1545,12 @@ void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
   scripts_history->RemoveFileFromHistory(pos);
   scripts_history->AddFileToHistory(filename);
 
-  cmd = string("func \"");
-  cmd += filename.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
+//  cmd = string("func \"");
+//  cmd += filename.mb_str();
+//  cmd += string("\" // from menu");
+  wxString wxst_cmd;
+  wxst_cmd = wxT("func \"")+filename+wxT("\" // from menu");
+  this->TC->IncCommand(wxst_cmd);
   this->TC->ProcessReturn();
 
 }
@@ -1555,7 +1561,7 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
   int res;
   string name;
   string varname;
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
 
   res=AskSurface(name);
   if (!res) {
@@ -1580,10 +1586,12 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
                       filename.GetPathSeparator(wxPATH_UNIX)+
                       filename.GetFullName());
 
-  cmd = varname + string(" = Surface \"");
-  cmd += newname.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
+//  cmd = varname + string(" = Surface \"");
+//  cmd += newname.mb_str();
+//  cmd += string("\" // from menu");
+  wxString wxst_cmd;
+  wxst_cmd = wxString(varname.c_str(),wxConvUTF8)+wxT(" = Surface \"")+newname+wxT("\" // from menu");
+  this->TC->IncCommand(wxst_cmd);
   this->TC->ProcessReturn();
 }
 
@@ -1593,7 +1601,7 @@ void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
   //cout << "Load script" << std::endl;
   int res;
   string name;
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
 
   res=AskScript(name);
   if (!res) {
@@ -1610,10 +1618,12 @@ void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
 
   scripts_history->AddFileToHistory(newname);
 
-  cmd = string("func \"");
-  cmd += newname.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
+//  cmd = string("func \"");
+//  cmd += newname.mb_str();
+//  cmd += string("\" // from menu");
+  wxString wxst_cmd;
+  wxst_cmd = wxT("func \"")+newname+wxT("\" // from menu");
+  this->TC->IncCommand(wxst_cmd);
   this->TC->ProcessReturn();
 }
 

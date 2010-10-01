@@ -350,8 +350,8 @@ bool MyApp::OnInit()
     }
   cmd_line += "\n";
 
- std::cout << argc << std::endl;
- std::cout << cmd_line << std::endl;
+  std::cout << argc << std::endl;
+  std::cout << cmd_line << std::endl;
 
   GB_num_arg_parsed = 1;
   Si  argc>GB_num_arg_parsed Et

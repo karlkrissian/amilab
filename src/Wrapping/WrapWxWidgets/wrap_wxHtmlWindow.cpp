@@ -97,7 +97,7 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   if (!get_val_ptr_param<std::string>( filename,  p, n)) 
     ClassHelpAndReturn;
 
-  wxFileName wxfilename(wxString::FromAscii(filename->c_str())); 
+  wxFileName wxfilename(wxString(filename->c_str(),wxConvUTF8)); 
   int res = this->_objectptr->_obj->LoadFile(wxfilename);
 
   RETURN_VAR(int, res);
