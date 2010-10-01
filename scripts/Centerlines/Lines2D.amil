@@ -23,10 +23,18 @@ Class Lines2D  : public ScriptGui \
     }
 
     ::win.Update(-1)
+
+    if (::input.vdim>1) {
+      InfoDialog "Taking first component of multi-channel image."
+      ::input <<= ::input[0]
+    }
+    
+
     show ::input
   }
   Comments( ::load_input, "Load input image")
 
+  #-----------------------------------------------
   proc ::Run() \
   {
 
@@ -36,6 +44,12 @@ Class Lines2D  : public ScriptGui \
     # force gradient to be weak?
     
     for n=0 to ::sigma_nb-1 {
+
+      iteration_mess = " Iteration %1%" % n
+      SetStatusText( "Run() "+iteration_mess )
+      ::current_progress = (FLOAT)n/::sigma_nb*100
+      SetProgress(::current_progress)
+
       # Hessian matrix
       sigma = ::sigma_min+n/(::sigma_nb-1)*(::sigma_max-::sigma_min)
       sigma2 = sigma*sigma
@@ -65,6 +79,8 @@ Class Lines2D  : public ScriptGui \
       }
     }
     # end for
+
+    SetProgress(0)  
 
     if (!::black) {
       ::input = -::input
