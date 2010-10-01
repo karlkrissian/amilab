@@ -860,7 +860,7 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()//,
 
 void SubPixel2D::DenoisingGus()
 { 
-  int margen = 1;
+  int margen = 4;
   double A, B;
   //Partials
   float parx, pary;
@@ -876,12 +876,45 @@ void SubPixel2D::DenoisingGus()
   double gx, gy, des, cu=0;
   int z = 0;
   borderPixel pixel;
+  unsigned char caso;
   
-  // barremos todos los pixels (ahora no se usa margen, porque la ventana es dinámica)
+  int *u,*v;
+  
+  int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// parciales
+    0, 1, 1, 0,-1,-1,			// A y B (no usado)
+    -1,-1,-1,-1,-1,-1,-1,		// sumas de columnas 
+    0, 0, 0, 0, 0, 0, 0, 
+    1, 1, 1, 1, 1, 1, 1,
+  };
+  int vpos[] = { 1,-1,-1,-3, 0,-2, 2, 0, 3, 1,	// parciales
+    4, 3, 4,-4,-3,-4,			// A y B (no usado)
+    -2,-1, 0, 1, 2, 3, 4,		// sumas de columnas
+    -3,-2,-1, 0, 1, 2, 3,	
+    -4,-3,-2,-1, 0, 1, 2,	 
+  };
+
+  
+  // barremos todos los pixels
   for (int y = margen; y < input->DimY()-margen; y++) 
   {
     for (int x = margen; x < input->DimX()-margen; x++) 
     {
+      
+      if (fabs(ffy(x,y,z))>=fabs(ffx(x,y,z))) {
+        caso = YMAX;
+        //      u = (ffx(x,y)>0)? upos : uneg;
+        //      v = (ffy(x,y)>0)? vpos : vneg;
+        u = upos;
+        v = vpos;
+      } else {
+        caso = XMAX;
+        //      u = (ffx(x,y)>0)? vpos : vneg;
+        //      v = (ffy(x,y)>0)? upos : uneg;
+        u = vpos;
+        v = upos;
+      }
+      
+      
       //Miramos qué parcial es mayor
       pary = ffy(x,y,z);
       parx = ffx(x,y,z);
@@ -891,6 +924,10 @@ void SubPixel2D::DenoisingGus()
         //La ventana es vertical
         partial = fabs(pary);
         if (partial < threshold) continue;
+        if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
+      if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
+      if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
+      if (fabs(FF(x+u[8],y+v[8],z) - FF(x+u[9],y+v[9],z)) > partial) continue;
         m = (parx*pary >= 0) ? 1 : -1;
         
         //Ahora miramos qué píxeles de dentro de la ventana se van a usar
@@ -1013,6 +1050,11 @@ void SubPixel2D::DenoisingGus()
         //La ventana es horizontal
         partial = fabs(parx);
         if (partial < threshold) continue;
+        if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
+      if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
+      if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
+      if (fabs(FF(x+u[8],y+v[8],z) - FF(x+u[9],y+v[9],z)) > partial) continue;
+
         m = (parx*pary >= 0) ? 1 : -1;
         
         //Se miran los pixels a usar dentro de la ventana
