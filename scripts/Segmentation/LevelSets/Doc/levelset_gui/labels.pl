@@ -33,5 +33,13 @@ $noresave{$key} = "$nosave";
 # labels from external_latex_labels array.
 
 
+$key = q/eq:GenLS/;
+$external_latex_labels{$key} = q|1|; 
+$noresave{$key} = "$nosave";
+
+$key = q/eq:LS_terms/;
+$external_latex_labels{$key} = q|2|; 
+$noresave{$key} = "$nosave";
+
 1;
 
