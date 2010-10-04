@@ -353,6 +353,46 @@ bool AMILabTreeModel::HasChildren(const wxDataViewItem &item) const
     return (node->GetChildren().GetCount() > 0);
 }
 
+bool AMILabTreeModel::_IsDefaultBranch( const wxString &Value ) const
+{
+  if ((Value == "Images") || (Value == "Surfaces") ||
+      (Value == "Numbers") ||(Value == "Strings") ||
+      (Value == "Functions") || (Value == "Classes") ||
+      (Value == "Objects") || (Value == "Wrapped Image Functions") ||
+      (Value == "Wrapped Procedures") || (Value == "Wrapped Var. Func.") ||
+      (Value == "Others"))
+      return true;
+  else
+    return false;
+}
+
+bool AMILabTreeModel::GetAttr ( const wxDataViewItem &  item,
+  unsigned int col, wxDataViewItemAttr &  attr) const
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)
+  {
+    std::cout << "AMILabTreeModel::GetAttr Cannot get the attributes of the item!"
+              << std::endl;
+    return false;
+  }
+  else
+  {
+    if ((node == m_root) || (node == m_global) || (node == m_builtin))
+    {
+      attr.SetBold(true);
+      attr.SetColour(*wxBLACK);
+    }
+    else
+    {
+      if ((node->IsContainer()) && (_IsDefaultBranch(node->m_Name)))
+          attr.SetColour(*wxBLUE);
+    }    
+  }
+  return true;
+}
+
 wxDataViewItem AMILabTreeModel::GetRootNode() const
 {
   return wxDataViewItem( (void*) m_root );

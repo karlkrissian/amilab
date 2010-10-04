@@ -34,14 +34,16 @@
 class TextControlTextDropTarget : public wxTextDropTarget
 {
   public:
-    TextControlTextDropTarget(TextControl::ptr pOwner) { m_pOwner = pOwner; }
+    TextControlTextDropTarget(TextControl *pOwner) {
+      m_pOwner = pOwner;
+    }
 
     virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& text);
 
     virtual wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
 
   private:
-    TextControl::ptr m_pOwner;
+    TextControl* m_pOwner;
 };
 
 

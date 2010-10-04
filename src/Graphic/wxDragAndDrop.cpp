@@ -14,7 +14,7 @@
 
 bool TextControlTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
 {
-  std::cout << "\nrecieving --> " << text.c_str() << std::endl;
+  std::cout << "recieving --> " << text.c_str() << std::endl;
 
   m_pOwner->AddCommand(text);
 
@@ -23,6 +23,6 @@ bool TextControlTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString&
 
 wxDragResult TextControlTextDropTarget::OnEnter(wxCoord x, wxCoord y, wxDragResult def)
 {
-  std::cout << "\nrecieving data..." << std::endl;
+  std::cout << "recieving data..." << std::endl;
   return def;
 };

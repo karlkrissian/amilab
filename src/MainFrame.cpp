@@ -58,9 +58,6 @@ using namespace amilab;
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
-//dnd operation
-//#include "wxDragAndDrop.h"
-
 extern wxString        GB_help_dir;
 extern wxString        GB_scripts_dir;
 extern VarContexts  Vars;
@@ -888,7 +885,8 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
   sbox_sizer->Add(buttons_sizer, 0, wxEXPAND , 5);
   sbox_sizer->Add(TC.get(), 1, wxEXPAND | wxALL, 2);
 
-//  this->TC->SetDropTarget(new TextControlTextDropTarget(this->TC));
+  m_textDropTarget = new TextControlTextDropTarget(this->TC.get());
+  this->TC->SetDropTarget(m_textDropTarget);
 
 } // CreateConsoleText()
 
@@ -1552,14 +1550,6 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
 {
   boost::shared_ptr<wxArrayString> variables;
 
-  AMILabTreeModelNode *node = (AMILabTreeModelNode*) rootbranch.GetID();
-
-//   std::cout //<< std::endl
-//             << "MainFrame::UpdateVarDataView:"
-//             << " rootbranch= " << node->m_Name
-//             << " childrens: " << node->GetChildCount()
-//             << std::endl;
-
   // delete children of rootbranch
   m_amilab_model->DeleteChildren(rootbranch);
 
@@ -1576,12 +1566,6 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
   wxDataViewItem vartree_wrapped_procedures = m_amilab_model->CreateBranchNode(rootbranch,_T("Wrapped Procedures"));
   wxDataViewItem vartree_wrapped_var_functions = m_amilab_model->CreateBranchNode(rootbranch,_T("Wrapped Var. Func."));
   wxDataViewItem vartree_others    = m_amilab_model->CreateBranchNode(rootbranch,_T("Others"));
-
-//   std::cout //<< std::endl
-//           << "MainFrame::UpdateVarDataView: "
-//           << " Delete all children and create all the first branches of "
-//           << node->m_Name << " (" << node->GetChildCount() << " childrens)"
-//           << std::endl;
 
   // loop vars
   variables = boost::shared_ptr<wxArrayString>(new wxArrayString());
@@ -1690,30 +1674,11 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
           var
           );
 
-//       std::cout //<< std::endl
-//                 << "MainFrame::UpdateVarDataView: "
-//                 << " Create node -  "
-//                 << " parent: " << ((AMILabTreeModelNode*) append_id.GetID())->m_Name
-//                 << " child: "  << ((AMILabTreeModelNode*) itemid.GetID())->m_Name
-//                 << " values: "
-//                 << var->Name().c_str()
-//                 << " : " << var->GetTypeName().c_str()
-//                 << " : " << valtext.c_str()
-//                 << " : " << text.c_str()
-//                 << std::endl;
-
       if ((var->Type() == type_ami_object)) {
         // get the pointer to the objet
         DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
         AMIObject::ptr obj( varobj->Pointer());
         // create the tree by recursive call
-//         std::cout //<< std::endl
-//                   << "MainFrame::UpdateVarDataView: "
-//                   << " Callback UpdateVarDataView -  "
-//                   << " parent: "  << ((AMILabTreeModelNode*) append_id.GetID())->m_Name
-//                   << " node: "  << ((AMILabTreeModelNode*) itemid.GetID())->m_Name
-//                   << std::endl;
-
         this->UpdateVarDataView(itemid, obj->GetContext());
       }
     } // end if var.get()

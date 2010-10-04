@@ -239,6 +239,17 @@ class AMILabTreeModel: public wxDataViewModel
     bool HasChildren(const wxDataViewItem &item) const;
 
     /**
+     * @brief GetAttr
+     * @param item The item for which the attribute is requested.
+     * @param col The column of the item for which the attribute is requested.
+     * @param attr The attribute to be filled in if the function returns true.
+     *
+     * Gets the attributes of an item.
+     */     
+    bool GetAttr ( const wxDataViewItem &  item,
+      unsigned int col, wxDataViewItemAttr &  attr) const;
+
+    /**
      * @brief GetRootNode
      *
      * Returns the root's branch
@@ -263,6 +274,8 @@ class AMILabTreeModel: public wxDataViewModel
     AMILabTreeModelNode*   m_root;
     AMILabTreeModelNode*   m_global;
     AMILabTreeModelNode*   m_builtin;
+
+    bool _IsDefaultBranch( const wxString &Value ) const;
 };
 
 #endif // MYDATAVIEWMODELS_H

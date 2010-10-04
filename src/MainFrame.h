@@ -65,6 +65,9 @@
 #include <list>
 #include <map>
 
+//dnd operation
+#include "wxDragAndDrop.h"
+
 class wxStcFrame;
 
 #include "DefineClass.hpp"
@@ -253,6 +256,8 @@ protected:
   wxPanel*     _var_panel;
   wxPanel*     _html_panel;
   wxPanel*     _drawing_panel;
+
+  TextControlTextDropTarget* m_textDropTarget;
 
   boost::shared_ptr<wxDirPickerCtrl> scripts_path_picker;
   boost::shared_ptr<wxDirPickerCtrl> help_path_picker;
