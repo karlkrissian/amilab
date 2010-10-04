@@ -25,7 +25,6 @@
 #include "wx/dnd.h"
 #include "wx/dataobj.h"
 
-#include "myTreeCtrl.h"
 #include "xmtext.hpp"
 
 // ----------------------------------------------------------------------------

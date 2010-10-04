@@ -104,10 +104,10 @@ class myDataViewCtrl: public wxDataViewCtrl
     void ToConsole( wxCommandEvent& event );
 
     void OnBeginDrag( wxDataViewEvent &event );
-    void OnDropPossible( wxDataViewEvent &event );
-    void OnDrop( wxDataViewEvent &event );
+//     void OnDropPossible( wxDataViewEvent &event );
+//     void OnDrop( wxDataViewEvent &event );
 
-    void OnDataViewChar(wxKeyEvent& event);
+    //void OnDataViewChar(wxKeyEvent& event);
 
   private:
     boost::weak_ptr<BasicVariable> _currentmenu_var;

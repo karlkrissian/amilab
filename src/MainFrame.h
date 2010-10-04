@@ -200,6 +200,9 @@ public:
 
 protected:
 
+//   void OnBeginDrag( wxDataViewEvent &event );
+//   void OnDropPossible( wxDataViewEvent &event );
+//   void OnDrop( wxDataViewEvent &event );
   //
   wxStcFrame* amilab_editor;
   
