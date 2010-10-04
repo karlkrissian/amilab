@@ -683,7 +683,9 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::left_assign(cons
 
     if (imptr.get()) {
       if (i1.get() != imptr.get()) {
-        can_skip_allocation = (i1->GetFormat() == imptr->GetFormat());
+        can_skip_allocation = 
+          (i1->GetFormat() == imptr->GetFormat())&&
+          (i1->GetVDim() == imptr->GetVDim());
         if (can_skip_allocation) {
           // first try the standard data copy
           can_skip_allocation = ((*i1) = (*imptr));
