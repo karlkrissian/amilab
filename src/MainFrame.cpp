@@ -822,7 +822,7 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 
   //TODO/FIXME: Automatically don't takes the right size.
   wxSize a = _vardataview_panel->GetSize();
-  int Space = 100;
+  int Space = 120;
   _vardataview_panel->SetSize(a.GetX()+Space, a.GetY());
 
   // _vardataview_panel->SetSizerAndFit(vardataviewpanel_sizer, false);
@@ -1553,6 +1553,13 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
   // delete children of rootbranch
   m_amilab_model->DeleteChildren(rootbranch);
 
+          AMILabTreeModelNode *node1 = (AMILabTreeModelNode*) rootbranch.GetID();
+        std::cout << "rootbranch="
+                  << " node: "      << node1->m_Name
+                  << " parent: "    << node1->GetParent()->m_Name
+                  << " type: "      << node1->m_Type
+                  << " container: " << node1->m_container
+                  << std::endl;
   // TODO: avoid creation of all branches at each update
   // create all the first branches  
   wxDataViewItem vartree_images    = m_amilab_model->CreateBranchNode(rootbranch,_T("Images"));
@@ -1663,8 +1670,22 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
       }
 
       if ((var->Type() == type_ami_object))
+      {
         itemid = m_amilab_model->CreateBranchNode(append_id,
-          wxString(var->Name().c_str(), wxConvUTF8));
+          wxString(var->Name().c_str(), wxConvUTF8),
+          wxString(var->GetTypeName().c_str(), wxConvUTF8)
+          );
+
+        m_amilab_model->SetVar(itemid, var);
+
+        AMILabTreeModelNode *node = (AMILabTreeModelNode*) itemid.GetID();
+        std::cout << "itemid="
+                  << " node: "      << node->m_Name
+                  << " parent: "    << node->GetParent()->m_Name
+                  << " type: "      << node->m_Type
+                  << " container: " << node->m_container
+                  << std::endl;
+      }
       else
         itemid = m_amilab_model->CreateLeafNode(append_id,
           wxString(var->Name().c_str(), wxConvUTF8),

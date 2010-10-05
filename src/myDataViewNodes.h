@@ -81,12 +81,13 @@ class AMILabTreeModelNode
      *
      * Constructor definition for branch nodes
      */    
-    AMILabTreeModelNode(AMILabTreeModelNode* parent, const wxString &branch)
+    AMILabTreeModelNode(AMILabTreeModelNode* parent, const wxString &branch,
+       const wxString &type)
     {
       m_parent = parent;
 
       m_Name = branch;
-      m_Type = wxT("");
+      m_Type = type;
       m_Val = wxT("");
       m_Details = wxT("");
       m_Var = boost::weak_ptr<BasicVariable>();

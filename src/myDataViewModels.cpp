@@ -18,7 +18,7 @@
 // ----------------------------------------------------------------------------
 AMILabTreeModel::AMILabTreeModel()
 {
-  m_root = new AMILabTreeModelNode( NULL, "Root" );
+  m_root = new AMILabTreeModelNode( NULL, "Root", wxT(""));
 //  m_global = new AMILabTreeModelNode( m_root, "Global" );
 //  m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
 
@@ -83,7 +83,23 @@ void AMILabTreeModel::SetVar (const wxDataViewItem &item,
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
 
-  node->m_Var = var;
+  if (!node)
+    std::cout << "AMILabTreeModel::SetVar Cannot changes the value of the Var field"
+              << std::endl;
+  else
+    node->m_Var = var;
+}
+
+void AMILabTreeModel::SetContainer( const wxDataViewItem &item,
+  const bool container  )
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)
+    std::cout << "AMILabTreeModel::SetVar Cannot changes the value of the container field"
+              << std::endl;
+  else
+    node->m_container = container;
 }
 
 void AMILabTreeModel::Delete( const wxDataViewItem &item )
@@ -327,7 +343,7 @@ wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
   else
   {
     AMILabTreeModelNode* child_node =  new AMILabTreeModelNode( parent_node,
-      branch );
+      branch, wxT(""));
     parent_node->Append (child_node);
 
     // notify control
@@ -337,6 +353,32 @@ wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
 
     return Child;
   }
+}
+
+wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
+  const wxString &branch, const wxString &type)
+{
+  AMILabTreeModelNode *parent_node = (AMILabTreeModelNode*) parent.GetID();
+
+  if (!parent_node)
+  {
+    std::cout << "AMILabTreeModel::CreateBranchNode Cannot create the new branch node!"
+              << std::endl;
+    return parent;
+  }
+  else
+  {
+    AMILabTreeModelNode* child_node =  new AMILabTreeModelNode( parent_node,
+      branch, type );
+    parent_node->Append (child_node);
+
+    // notify control
+    wxDataViewItem Child( (void*) child_node );
+    wxDataViewItem Parent( (void*) parent_node );
+    ItemAdded( Parent, Child );
+
+    return Child;
+  }  
 }
 
 bool AMILabTreeModel::HasChildren(const wxDataViewItem &item) const
@@ -387,7 +429,10 @@ bool AMILabTreeModel::GetAttr ( const wxDataViewItem &  item,
     else
     {
       if ((node->IsContainer()) && (_IsDefaultBranch(node->m_Name)))
+      {
+          attr.SetItalic(true);
           attr.SetColour(*wxBLUE);
+      }
     }    
   }
   return true;

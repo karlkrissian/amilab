@@ -171,6 +171,16 @@ class AMILabTreeModel: public wxDataViewModel
       const wxDataViewItem &item, unsigned int col );
 
     /**
+     * @brief SetContainer
+     * @param item
+     * @param container
+     *
+     * Changes the value of the container field
+     */
+    virtual void SetContainer( const wxDataViewItem &item,
+      const bool container );
+      
+    /**
      * @brief GetParent
      * @param item
      *
@@ -230,6 +240,17 @@ class AMILabTreeModel: public wxDataViewModel
      */      
     wxDataViewItem CreateBranchNode(const wxDataViewItem &parent, const wxString &branch);
 
+        /**
+     * @brief CreateBranchNode
+     * @param parent
+     * @param branch
+     * @param type
+     *
+     * Creates the new branch node
+     */
+    wxDataViewItem CreateBranchNode(const wxDataViewItem &parent, const wxString &branch,
+      const wxString &type);
+
     /**
      * @brief HasChildren
      * @param item
@@ -275,6 +296,12 @@ class AMILabTreeModel: public wxDataViewModel
     AMILabTreeModelNode*   m_global;
     AMILabTreeModelNode*   m_builtin;
 
+    /**
+     * @brief _IsDefaultBranch
+     * @param Value The branch name.
+     *
+     * Determines whether it is a default branch.
+     */ 
     bool _IsDefaultBranch( const wxString &Value ) const;
 };
 
