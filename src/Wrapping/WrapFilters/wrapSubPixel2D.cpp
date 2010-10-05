@@ -119,8 +119,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteCurvo
                                                         "ypos.inr.gz"));
   
   //Fill InrImages
-  vector<borderPixel> vaux = sp->getBorderPixelVector();
-  sp->fillImages(vaux, AIntensity, BIntensity, border, a, b, c, curvature, 
+  sp->fillImages(AIntensity, BIntensity, border, a, b, c, curvature, 
                  posx, posy);
   //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
@@ -195,8 +194,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
                                                         "ypos.inr.gz"));
   
   //Fill InrImages
-  vector<borderPixel> vaux = sp->getBorderPixelVector();
-  sp->fillImages(vaux, AIntensity, BIntensity, border, a, b, c, curvature, 
+  sp->fillImages(AIntensity, BIntensity, border, a, b, c, curvature, 
                  posx, posy);
   //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("denoised", output,
@@ -273,8 +271,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_DenoisingGus
                                                         "ypos.inr.gz"));
   
   //Fill InrImages
-  vector<borderPixel> vaux = sp->getBorderPixelVector();
-  sp->fillImages(vaux, AIntensity, BIntensity, border, a, b, c, curvature, 
+  sp->fillImages(AIntensity, BIntensity, border, a, b, c, curvature, 
                  posx, posy);
   //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("denoised", output,

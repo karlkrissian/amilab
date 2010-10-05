@@ -17,6 +17,9 @@ if (!exists(Subpixel2DClass)){
       ::input_name  = "",                "Input image"
       ::output_name = "subpixel2D_edge", "Output image name"
       ::threshold   = 25,                "Gradient threshold"
+      ::average     = UCHAR(0),          "Average the input image"
+      ::show_average= UCHAR(0),          "Show the averaged image"
+      ::dynamic     = UCHAR(0),          "Use a dynamic window"
       ::linear      = UCHAR(0),          "First or second order"
       ::reload      = UCHAR(0),          "Reload automatically"
       ::normals     = UCHAR(0),          "Draw edge normals"
@@ -84,78 +87,46 @@ if (!exists(Subpixel2DClass)){
         modmax    = 0.0
         modmin    = 0.0
         modmed    = 0.0
-        modsumvar = 0.0
         modvar    = 0.0
         modsum    = 0.0
         #Curvature radius
         cumax    = 0.0
         cumin    = 0.0
         cumed    = 0.0
-        cusumvar = 0.0
         cuvar    = 0.0
         cusum    = 0.0
         #Slope
         bmax    = 0.0
         bmin    = 0.0
         bmed    = 0.0
-        bsumvar = 0.0
         bvar    = 0.0
         bsum    = 0.0
-        #Number of border pixels
-        size = ::res->xpos.tx
         
-        diff = 0.0
-        r    = 0.0
+        #Diference image and curvature
+        diff = ::res->aintensity - ::res->bintensity
+        r = 1/::res->curvature
         
-        #Main loop (mins, maxs and sums for means)
-        for i=0 to size-1 {
-          diff = ::res->aintensity(i,0) - ::res->bintensity(i,0)
-          r    = 1/::res->curvature(i,0)
-          #Minimums
-          if (diff < modmin) {
-            modmin = diff
-          }
-          if (r < cumin) {
-            cumin = r
-          }
-          if (::res->bcoef(i,0) < bmin) {
-            bmin = ::res->bcoef(i,0)
-          }
-          #Maximums
-          if (diff > modmax) {
-            modmax = diff
-          }
-          if (r > cumax) {
-            cumax = r
-          }
-          if (::res->bcoef(i,0) > bmax) {
-            bmax = ::res->bcoef(i,0)
-          }
-          #Sums for means
-          modsum += diff
-          cusum  += r
-          bsum   += ::res->bcoef(i,0)
-        }
+        #mins and maxs
+        modmin = min(diff)
+        cumin  = min(r)
+        bmin   = min(::res->bcoef)
+        modmax = max(diff)
+        cumax  = max(r)
         
         #Calculate means
-        modmed = modsum/size
-        cumed  = cusum/size
-        bmed   = bsum/size
+        modmed = mean(diff)
+        cumed  = mean(r)
+        bmed   = mean(::res->bcoef)
         
-        #Variances loop (because we need the means)
-        for i=0 to size-1 {
-          diff = ::res->aintensity(i,0) - ::res->bintensity(i,0)
-          r    = 1/::res->curvature(i,0)
-          #Sums for variances
-          modsumvar += (diff - modmed)            * (diff - modmed)
-          cusumvar  += (r - cumed)                * (r - cumed)
-          bsumvar   += (::res->bcoef(i,0) - bmed) * (::res->bcoef(i,0) - bmed)
-        }
         
+        #Variances (because we need the means)
+        modsumvar = (diff - modmed) * (diff - modmed)
+        cusumvar  = (r - cumed) * (r - cumed)
+        bsumvar   = (::res->bcoef - bmed) * (::res->bcoef - bmed)
         #Calculate variances
-        modvar = modsumvar/size
-        cuvar  = cusumvar/size
-        bvar   = bsumvar/size
+        modvar = mean(modsumvar)
+        cuvar  = mean(cusumvar)
+        bvar   = mean(bsumvar)
         
         #OUTPUT
         #Minimums
@@ -193,7 +164,7 @@ if (!exists(Subpixel2DClass)){
       if (exists(::norm_input_draw) && exists(::res)) {
         imx = ::norm_input_draw.GetXPos()
         imy = ::norm_input_draw.GetYPos()
-        #Initialize pos to a value higher than the maximum position
+        #Initialize pos to a value higer than the maximum position
         pos = ::res->border.tx + 1
         #First, find the position of the pixel inside the border pixel position
         for i=0 to ::res->border.tx-1 {
@@ -337,17 +308,17 @@ if (!exists(Subpixel2DClass)){
       if (exists(::sp2D)) { del ::sp2D; }
       #Build a SubPixel2D object
       ::sp2D = ::import->SubPixel2D(&::norm_input,::threshold,::linear)
-      if(::alg_type==0) {
+      if(::average==0 && ::show_average==0 && ::dynamic==0) {
         ::res = ::sp2D->SuperGradienteCurvo()
-        ::s_method = "SubPixel2D"
+        ::s_method = "Basic method"
       }
-      if(::alg_type==1) {
+      if(::average==1 && ::dynamic==0) {
         ::res = ::sp2D->SuperGradienteGaussianoCurvo()
-        ::s_method = "Gaussian SupPixel2D"
+        ::s_method = "Noisy images"
       }
-      if(::alg_type==2) {
+      if(::dynamic==1) {
         ::res = ::sp2D->DenoisingGus()
-        ::s_method = "DenoisingGus"
+        ::s_method = "Dynamic window"
       }
 			
       ::win.Update(-1)
@@ -365,14 +336,18 @@ if (!exists(Subpixel2DClass)){
     
     proc ::Display() {
       global
-      if (exists(::norm_input) && ::alg_type == 0) {
-        show ::norm_input
-      } else {
-        if(exists(::res)) {
-          ::norm_input <<= ::res->denoised
+      if (exists(::norm_input)) {
+        if (::show_average == 1) {
+          if (exists(::res)) {
+            ::denoised = ::res->denoised
+            show ::denoised
+            show ::norm_input
+            ::denoised_draw._compare(&::norm_input_draw)
+          }
+        } else {
           show ::norm_input
         }
-      }
+      } 
     }
     Comments(::Display, "Show the result image")
     
@@ -410,6 +385,29 @@ if (!exists(Subpixel2DClass)){
     
     #-----------------------
     
+    proc ::CheckAverage() {
+      if (::average == 0 && ::dynamic == 1) {
+        ::average = 1
+        ::win.Update(-1)
+      }
+      if (::average == 0 && ::show_average == 1) {
+        ::average = 1
+        ::win.Update(-1)
+      }
+    }
+    
+    #-----------------------
+    
+    proc ::CheckShowAndDynamic() {
+      if (::show_average == 1 || ::dynamic == 1) {
+        InfoDialog("For show the average image and/or apply the method with dynamic window, you must check average.")
+        ::average = 1
+        ::win.Update(-1)
+      }
+    }
+    
+    #-----------------------
+    
     proc ::CreateGui() {
       ::import = &global::ami_import;
       ::win = ::import->ParamPanel("Subpixel 2D")
@@ -428,18 +426,17 @@ if (!exists(Subpixel2DClass)){
             ::win.AddBoolean(&::linear, "1st order")
             ::win.SetCallback(&::AutoRun)
           ::win.EndBoxPanel()
-          ::win.BeginHorizontal()
-            #::win.AddBoolean(&::reload, "Reload")
+          ::win.BeginBoxPanel("Sub-pixel2D detection options")
+            ::win.AddBoolean(&::average, "Average")
+            ::win.SetCallback(&::CheckShowAndDynamic)
+            ::win.AddBoolean(&::show_average, "Show average")
+            ::win.SetCallback(&::CheckAverage)
+            ::win.AddBoolean(&::dynamic, "Dynamic window")
+            ::win.SetCallback(&::CheckAverage)
             ::win.AddBoolean(&::normals, "Draw normals")
-          ::win.EndHorizontal()
-          ::win.BeginHorizontal()
-            ::filter_type = ::win.AddEnum(&::alg_type, "Met.")
-              ::win.AddEnumChoice(::filter_type, "SubPixel")
-              ::win.AddEnumChoice(::filter_type, "Gaussian SubPixel")
-              ::win.AddEnumChoice(::filter_type, "DenoisingGus")
             ::icons.LoadIconPNG("Play")
             ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
-          ::win.EndHorizontal()
+          ::win.EndBoxPanel()
           
         #New page for border pixel info.
         ::win.AddPage("Px.Info.")
