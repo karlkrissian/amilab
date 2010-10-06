@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
@@ -19,47 +20,43 @@
 #include "wrap_varvector.h"
 
 
-#define RETURN_VARINT(val,name)             \
-  std::string varname = (boost::format("%1%_id")%name).str();\
-  int_ptr varint(new int(val));\
-  Variable<int>::ptr varres( new Variable<int>(varname, varint));\
-  return varres;
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_VarVector(  WrapClass_VarVector::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<VarVector>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("VarVector");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  WrapClass_VarVector::wrap_VarVector construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_VarVector( VarVector* vv)
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(VarVector);
+AMI_DEFINE_VARFROMSMTPTR(VarVector);
+
+/*
+//
+// static member for creating a variable from a pointer to VarVector
+//
+Variable<AMIObject>::ptr WrapClass_VarVector::CreateVar( VarVector* vv)
 {
-  // here VarVector can be deleted
-  boost::shared_ptr<VarVector> vv_ptr( vv );
-  WrapClass_VarVector::ptr sip(new WrapClass_VarVector(vv_ptr));
-  AMIObject::ptr amiobject(AddWrap_VarVector(sip));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+  boost::shared_ptr<VarVector> vv_ptr(vv);
+  return 
+    WrapClass<VarVector>::CreateVar(
+      new WrapClass_VarVector( vv_ptr));
 }
+*/
 
 //---------------------------------------------------
 //  VarVector Constructor
 //---------------------------------------------------
-void  wrap_VarVector::SetParametersComments() 
+void  WrapClass_VarVector::wrap_VarVector::SetParametersComments() 
 {
   ADDPARAMCOMMENT("integer: initial size (def:0).");
   ADDPARAMCOMMENT("Variable: optional variable to fill the initial elements.");
   return_comments = "A wrapped VarVector object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_VarVector::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_VarVector::wrap_VarVector::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -75,7 +72,10 @@ BasicVariable::ptr wrap_VarVector::CallMember( ParamList* p)
   } else {
     CLASS_MESSAGE("Needs a valid variable as second parameter.");
   }
-  return CreateVar_VarVector(vv);
+
+  boost::shared_ptr<VarVector> vv_ptr(vv);
+
+  return WrapClass<VarVector>::CreateVar(new WrapClass_VarVector(vv_ptr));
 }
 
 //===================================================
@@ -100,7 +100,7 @@ BasicVariable::ptr WrapClass_VarVector::wrap_push_back::CallMember( ParamList* p
   // probably still "naive" implementation, need to check for the permanence of the smart pointer ?
   // or is it ok?
   // do we want explicit copy or reference of the variable contents ??
-  cout << "_objectptr" << _objectptr << endl; 
+ std::cout << "_objectptr" << _objectptr << std::endl; 
 
   this->_objectptr->_obj->push_back(var);
 
@@ -132,7 +132,7 @@ BasicVariable::ptr WrapClass_VarVector::wrap_size::CallMember( ParamList* p)
 {
   int size = this->_objectptr->_obj->size();
   // create integer variable to return
-  RETURN_VARINT(size,"Vector_size");
+  RETURN_VAR(int,size);
 }
 
 
@@ -185,7 +185,7 @@ BasicVariable::ptr WrapClass_VarVector::wrap_at::CallMember( ParamList* p)
   int n=0;
   if (!get_int_param(pos, p, n)) ClassHelpAndReturn;
 
-  if ((pos<0)||(pos>=this->_objectptr->_obj->size())) 
+  if ((pos<0)||(pos>=(int)this->_objectptr->_obj->size())) 
     return BasicVariable::ptr();
   else
     return this->_objectptr->_obj->at(pos);
@@ -221,7 +221,7 @@ BasicVariable::ptr WrapClass_VarVector::
   if (!get_int_param(pos, p, n)) ClassHelpAndReturn;
   BasicVariable::ptr v(p->GetParam(n++));
 
-  if ((pos<0)||(pos>=this->_objectptr->_obj->size())) 
+  if ((pos<0)||(pos>=(int)this->_objectptr->_obj->size())) 
     return BasicVariable::ptr();
   else
     if (v.get()) {

@@ -10,6 +10,8 @@
 //
 //
 
+#include "paramlist.h"
+
 
 #include "ami_itkWrite.h"
 
@@ -32,7 +34,7 @@ class itkWriteClass {
   typedef typename itk::ImageFileWriter< ImageType >  WriterType;
 
   public: 
-    bool operator()(typename ImageType::Pointer image, const string& filename) 
+    bool operator()(typename ImageType::Pointer image, const std::string& filename) 
     { 
     #ifdef AMI_USE_ITK
 
@@ -174,3 +176,9 @@ bool itkWrite(InrImage* input, const std::string& fname)
   return true;
 }
 
+/*
+std::vector<std::string> itkWriteGetExtensions( InrImage* input)
+{
+
+}
+*/

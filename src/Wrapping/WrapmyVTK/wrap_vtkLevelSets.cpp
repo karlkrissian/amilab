@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 //#include "wrapfunctions_draw.h"
@@ -46,57 +47,29 @@ class vtkUpdateProgressBar : public vtkCommand
 static vtkUpdateProgressBar update_progressbar;
 
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrapvtkLevelSets(  WrapClass_vtkLevelSets::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<vtkLevelSets>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("vtkLevelSets");
-
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-
-  objectptr->AddVar_SetParam(           objectptr);
-  objectptr->AddVar_InitWithImage(      objectptr);
-  objectptr->AddVar_InitWithThreshold(  objectptr);
- 
-  objectptr->AddVar_SetILowTh(          objectptr);
-  objectptr->AddVar_SetIHighTh(         objectptr);
-  objectptr->AddVar_SetNumInitPoints(   objectptr);
-  objectptr->AddVar_SetInitPoint(       objectptr);
-  objectptr->AddVar_SetIsoContourBin(   objectptr);
-  objectptr->AddVar_SetMeanCurv(        objectptr);
-  objectptr->AddVar_SetAffineCurv(      objectptr);
-  objectptr->AddVar_SetCurvWeights(     objectptr);
-  objectptr->AddVar_GetCurvature(       objectptr);
-  objectptr->AddVar_SetVelocity(        objectptr);
-  objectptr->AddVar_GetVelocity(        objectptr);
-  objectptr->AddVar_SetBalloonScheme(   objectptr);
-  objectptr->AddVar_SetExpansionImage(  objectptr);
-  objectptr->AddVar_SetExpansion(       objectptr);
-  objectptr->AddVar_GetExpansion(       objectptr);
-  objectptr->AddVar_SetProbThreshold(   objectptr);
-  objectptr->AddVar_SetProbHighTh(      objectptr);
-  objectptr->AddVar_SetNumGaussians(    objectptr);
-  objectptr->AddVar_SetGaussian(        objectptr);
-  objectptr->AddVar_SetAdvectionField(  objectptr);
-  objectptr->AddVar_GetAdvection(       objectptr);
-  objectptr->AddVar_SetDistMethod(      objectptr);
-  objectptr->AddVar_SetBandTube(        objectptr);
-  objectptr->AddVar_GetDistMap(         objectptr);
-  objectptr->AddVar_GetSkeleton(        objectptr);
-
-  objectptr->AddVar_SetThreads(         objectptr);
-  objectptr->AddVar_SaveDistMap(        objectptr);
-  objectptr->AddVar_SaveSecDerGrad(     objectptr);
-  objectptr->AddVar_Iterate(            objectptr);
-  objectptr->AddVar_UpdateResult(       objectptr);
-  objectptr->AddVar_GetOutputImage(     objectptr);
-  objectptr->AddVar_GetAttachVect(      objectptr);
-  objectptr->AddVar_End(                objectptr);
-
-  return amiobject;
+  WrapClass_vtkLevelSets::wrap_vtkLevelSets construct;
+  return construct.CallMember(p);
 }
+
+BasicVariable::ptr AMILabType<vtkLevelSets>::CreateVar(vtkLevelSets* val)  
+{ 
+  boost::shared_ptr<vtkLevelSets> obj_ptr(
+    vtk_new<vtkLevelSets> ()(val));
+  return
+    WrapClass<vtkLevelSets>::CreateVar(
+      new WrapClass_vtkLevelSets(obj_ptr));
+} 
+
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkLevelSets);
+
+
+/*
 
 //---------------------------------------------------
 BasicVariable::ptr wrap_vtkLevelSets( ParamList* p)
@@ -111,12 +84,33 @@ BasicVariable::ptr wrap_vtkLevelSets( ParamList* p)
   Variable<AMIObject>::ptr var;
   boost::shared_ptr<vtkLevelSets> ownls = vtk_new<vtkLevelSets> ()();
   WrapClass_vtkLevelSets::ptr wls(new WrapClass_vtkLevelSets());
-  wls->_vtkLevelSets = ownls;
+  wls->GetObj() = ownls;
   AMIObject::ptr amiobject (AddWrapvtkLevelSets(wls));
   Variable<AMIObject>::ptr varres( new Variable<AMIObject>("tmp_vtkLevelSets",  amiobject));
 
   return varres;
 
+}
+
+*/
+
+
+//---------------------------------------------------
+// Method that adds wrapping of vtkLevelSets
+//---------------------------------------------------
+
+void  WrapClass_vtkLevelSets::
+      wrap_vtkLevelSets::SetParametersComments() 
+{
+  return_comments = "A wrapped vtkLevelSets object.";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_vtkLevelSets::
+      wrap_vtkLevelSets::CallMember( ParamList* p)
+{
+  vtkLevelSets* ownls = vtkLevelSets::New();
+  return AMILabType<vtkLevelSets>::CreateVar(ownls);
 }
 
 
@@ -173,7 +167,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetParam::CallMember( ParamList*
   if (!get_val_param<float>( dt,         p, n))     ClassHelpAndReturn;
   if (!get_int_param       ( freq,      p, n))     ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(_objectptr->GetObj());
 
   curv->SetNumIters(           nb_it);
   curv->SetAdvectionCoeff(     coeff_data);
@@ -211,21 +205,26 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_InitWithImage::CallMember( Param
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
   if (!get_val_ptr_param<InrImage>(  initial,  p, n)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(_objectptr->GetObj());
 
   // Initialize the evolution
-  this->_objectptr->image_input  = (vtkImageData_ptr) (*input);
-  this->_objectptr->image_output = vtk_new<vtkImageData>()();
+  // TODO: fix this pb with additional members of WrapClass_vtkLevelSets
+  WrapClass_vtkLevelSets::ptr parent =
+    boost::dynamic_pointer_cast<WrapClass_vtkLevelSets> (this->_objectptr);
+  if (!parent.get()) ClassHelpAndReturn;
 
-  if (!this->_objectptr->initimage.use_count()) {
-    this->_objectptr->initimage = (vtkImageData_ptr) (*initial);
+  parent->image_input  = (vtkImageData_ptr) (*input);
+  parent->image_output = vtk_new<vtkImageData>()();
+
+  if (!parent->initimage.use_count()) {
+    parent->initimage = (vtkImageData_ptr) (*initial);
   }
 
-  curv->InitParam( this->_objectptr->image_input.get(), this->_objectptr->image_output.get());
-  curv->SetinitImage(this->_objectptr->initimage.get());
+  curv->InitParam( parent->image_input.get(), parent->image_output.get());
+  curv->SetinitImage(parent->initimage.get());
   curv->SetInitThreshold(0);
   curv->InitEvolution();
-  InrImage::ptr res(new InrImage(this->_objectptr->image_output.get()));
+  InrImage::ptr res(new InrImage(parent->image_output.get()));
   return Variable<InrImage>::ptr(new Variable<InrImage>(res));
 }
 
@@ -248,20 +247,24 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_InitWithThreshold::CallMember( P
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
   if (!get_int_param(  th,  p, n)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  WrapClass_vtkLevelSets::ptr parent =
+    boost::dynamic_pointer_cast<WrapClass_vtkLevelSets> (this->_objectptr);
+  if (!parent.get()) ClassHelpAndReturn;
+
+  boost::shared_ptr<vtkLevelSets> curv(parent->GetObj());
 
   //InrImage* out;
   //float tr_x,tr_y,tr_z;
 
   // Initialize the evolution
-  this->_objectptr->image_input  = (vtkImageData_ptr) (*input);
-  this->_objectptr->image_output = vtk_new<vtkImageData>()();
+  parent->image_input  = (vtkImageData_ptr) (*input);
+  parent->image_output = vtk_new<vtkImageData>()();
 
-  curv->InitParam( this->_objectptr->image_input.get(), this->_objectptr->image_output.get());
+  curv->InitParam( parent->image_input.get(), parent->image_output.get());
 
   curv->SetInitThreshold(   th);
   curv->InitEvolution();
-  InrImage::ptr res(new InrImage(this->_objectptr->image_output.get()));
+  InrImage::ptr res(new InrImage(parent->image_output.get()));
   return Variable<InrImage>::ptr(new Variable<InrImage>(res));
 }
 
@@ -279,7 +282,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetILowTh::CallMember( ParamList
   int   n = 0;
 
   if (!get_val_param<float>( thres,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   curv->UseLowThresholdOn();
   curv->SetLowThreshold(thres);
   return BasicVariable::ptr();
@@ -299,7 +302,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetIHighTh::CallMember( ParamLis
   int   n = 0;
 
   if (!get_val_param<float>( thres,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   curv->UseHighThresholdOn();
   curv->SetHighThreshold(thres);
   return BasicVariable::ptr();
@@ -320,7 +323,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetNumInitPoints::CallMember( Pa
   int   n  = 0;
 
   if (!get_int_param( nb,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   curv->SetNumInitPoints(nb);
   return BasicVariable::ptr();
 }
@@ -352,7 +355,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetInitPoint::CallMember( ParamL
   if (!get_int_param( z,   p, n))     ClassHelpAndReturn;
   if (!get_val_param<float>( radius,   p, n))     ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   curv->SetInitPoint(id,x,y,z,radius);
   return BasicVariable::ptr();
 }
@@ -371,7 +374,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetIsoContourBin::CallMember( Pa
   int   n  = 0;
 
   if (!get_int_param( bc,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   curv->SetIsoContourBin(bc);
   return BasicVariable::ptr();
 }
@@ -390,7 +393,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetMeanCurv::CallMember( ParamLi
   int   n  = 0;
 
   if (!get_int_param( val,   p, n))     ClassHelpAndReturn;
-  this->_objectptr->_vtkLevelSets->SetDoMean(val);
+  this->_objectptr->GetObj()->SetDoMean(val);
   return BasicVariable::ptr();
 }
 
@@ -407,7 +410,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetAffineCurv::CallMember( Param
   int   val = 0;
   int   n  = 0;
   if (!get_int_param( val,   p, n))     ClassHelpAndReturn;
-  this->_objectptr->_vtkLevelSets->SetAffineCurvature(val);
+  this->_objectptr->GetObj()->SetAffineCurvature(val);
   return BasicVariable::ptr();
 }
 
@@ -425,7 +428,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetCurvWeights::CallMember( Para
   int n = 0;
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
   if (input->GetFormat()==WT_FLOAT) {
-    this->_objectptr->_vtkLevelSets->SetCurvatureWeights((float*)(input->GetData()));
+    this->_objectptr->GetObj()->SetCurvatureWeights((float*)(input->GetData()));
   } else
     CLASS_ERROR("Input image is not in float format ...");
   return BasicVariable::ptr();
@@ -445,7 +448,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_GetCurvature::CallMember( ParamL
   int n = 0;
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (input!=NULL)
     curv->GetCurvatureTerm( (float*) input->Buffer());
   else
@@ -473,11 +476,15 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetVelocity::CallMember( ParamLi
   if (!get_val_ptr_param<InrImage>( input,  p, n)) ClassHelpAndReturn;
   if (!get_val_param<float>(        coeff,   p, n))     ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
-  // need to have it as a member of the class to deal with allocation ..
-  this->_objectptr->velocity  = vtk_new<vtkImageData>()((vtkImageData*) (*input));
+  WrapClass_vtkLevelSets::ptr parent =
+    boost::dynamic_pointer_cast<WrapClass_vtkLevelSets> (this->_objectptr);
+  if (!parent.get()) ClassHelpAndReturn;
 
-  curv->Setvelocity(this->_objectptr->velocity.get());
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
+  // need to have it as a member of the class to deal with allocation ..
+  parent->velocity  = vtk_new<vtkImageData>()((vtkImageData*) (*input));
+
+  curv->Setvelocity(parent->velocity.get());
   curv->Setcoeff_velocity(coeff);
 
   return BasicVariable::ptr();
@@ -498,7 +505,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_GetVelocity::CallMember( ParamLi
   int n = 0;
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (input!=NULL)
     curv->GetVelocityTerm( (float*) input->Buffer());
   else
@@ -521,7 +528,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetBalloonScheme::CallMember( Pa
   int   val = 0;
   int   n  = 0;
   if (!get_int_param( val,   p, n))     ClassHelpAndReturn;
-  this->_objectptr->_vtkLevelSets->Setballoon_scheme(val);
+  this->_objectptr->GetObj()->Setballoon_scheme(val);
 
   return BasicVariable::ptr();
 }
@@ -538,14 +545,18 @@ void WrapClass_vtkLevelSets::wrap_SetExpansionImage::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetExpansionImage::CallMember( ParamList* p)
 {
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   InrImage* input;
   int n = 0;
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
 
+  WrapClass_vtkLevelSets::ptr parent =
+    boost::dynamic_pointer_cast<WrapClass_vtkLevelSets> (this->_objectptr);
+  if (!parent.get()) ClassHelpAndReturn;
+
   if (input) {
-    this->_objectptr->expansion_image  = vtk_new<vtkImageData>()((vtkImageData*) (*input));
-    curv->Setballoon_image(this->_objectptr->expansion_image.get());
+    parent->expansion_image  = vtk_new<vtkImageData>()((vtkImageData*) (*input));
+    curv->Setballoon_image(parent->expansion_image.get());
   } else
     CLASS_ERROR("Input image not allocated ...");
   return BasicVariable::ptr();
@@ -564,7 +575,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetExpansion::CallMember( ParamL
   float coeff = 1;
   int n = 0;
   if (!get_val_param<float>(        coeff,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
     CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
@@ -588,7 +599,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_GetExpansion::CallMember( ParamL
   int n = 0;
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
     CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
@@ -615,7 +626,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetProbThreshold::CallMember( Pa
   float coeff = 1;
   int n = 0;
   if (!get_val_param<float>(        coeff,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
     CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
@@ -640,7 +651,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetProbHighTh::CallMember( Param
   float coeff = 1;
   int n = 0;
   if (!get_val_param<float>(        coeff,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
     CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
@@ -662,7 +673,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetNumGaussians::CallMember( Par
   int   val = 0;
   int   n  = 0;
   if (!get_int_param( val,   p, n))     ClassHelpAndReturn;
-  this->_objectptr->_vtkLevelSets->SetNumGaussians(val);
+  this->_objectptr->GetObj()->SetNumGaussians(val);
   return BasicVariable::ptr();
 }
 
@@ -685,7 +696,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetGaussian::CallMember( ParamLi
   if (!get_int_param(         id,     p, n))     ClassHelpAndReturn;
   if (!get_val_param<float>(  mean,   p, n))     ClassHelpAndReturn;
   if (!get_val_param<float>(  std,    p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
     CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
@@ -718,7 +729,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetAdvectionField::CallMember( P
   InrImage::ptr input_y = var_input_y->Pointer();
   InrImage::ptr input_z = var_input_z->Pointer();
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
     CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
@@ -751,7 +762,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_GetAdvection::CallMember( ParamL
   InrImage* input;
   int n = 0;
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (input!=NULL)
     curv->GetAdvectionTerm( (float*) input->Buffer());
   else
@@ -779,7 +790,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetDistMethod::CallMember( Param
   int   n  = 0;
   if (!get_int_param( val,   p, n))     ClassHelpAndReturn;
   if ((val>=0)&&(val<=3))
-    this->_objectptr->_vtkLevelSets->SetDMmethod( val);
+    this->_objectptr->GetObj()->SetDMmethod( val);
   else
     CLASS_ERROR("Bad value ");
   return BasicVariable::ptr();
@@ -801,8 +812,8 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetBandTube::CallMember( ParamLi
   int   n  = 0;
   if (!get_int_param( band,   p, n))     ClassHelpAndReturn;
   if (!get_int_param( tube,   p, n))     ClassHelpAndReturn;
-  this->_objectptr->_vtkLevelSets->SetBand(band);
-  this->_objectptr->_vtkLevelSets->SetTube(tube);
+  this->_objectptr->GetObj()->SetBand(band);
+  this->_objectptr->GetObj()->SetTube(tube);
   return BasicVariable::ptr();
 }
 
@@ -820,7 +831,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_GetDistMap::CallMember( ParamLis
   InrImage* input;
   int n = 0;
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (input!=NULL)
     curv->GetDistanceMap( (float*) input->Buffer());
   else
@@ -842,7 +853,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_GetSkeleton::CallMember( ParamLi
   InrImage* input;
   int n = 0;
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
 
   vtkImageData* SkeletonImage;
   float* buf2;
@@ -877,7 +888,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetThreads::CallMember( ParamLis
   int nbthreads=1;
   int   n  = 0;
   if (!get_int_param( nbthreads,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (nbthreads>=1) curv->SetEvolveThreads( nbthreads);
   return BasicVariable::ptr();
 }
@@ -895,7 +906,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SaveDistMap::CallMember( ParamLi
   int   sdm=0;
   int   n  = 0;
   if (!get_int_param( sdm,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   curv->Setsavedistmap(sdm);
   return BasicVariable::ptr();
 }
@@ -913,7 +924,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SaveSecDerGrad::CallMember( Para
   int   save=0;
   int   n  = 0;
   if (!get_int_param( save,   p, n))     ClassHelpAndReturn;
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   curv->Setsavesecdergrad(save);
   return BasicVariable::ptr();
 }
@@ -926,7 +937,7 @@ void WrapClass_vtkLevelSets::wrap_Iterate::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkLevelSets::wrap_Iterate::CallMember( ParamList* p)
 {
-  this->_objectptr->_vtkLevelSets->Iterate();
+  this->_objectptr->GetObj()->Iterate();
   return BasicVariable::ptr();
 }
 
@@ -938,7 +949,7 @@ void WrapClass_vtkLevelSets::wrap_UpdateResult::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkLevelSets::wrap_UpdateResult::CallMember( ParamList* p)
 {
-  this->_objectptr->_vtkLevelSets->UpdateResult();
+  this->_objectptr->GetObj()->UpdateResult();
   return BasicVariable::ptr();
 }
 
@@ -950,7 +961,11 @@ void WrapClass_vtkLevelSets::wrap_GetOutputImage::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkLevelSets::wrap_GetOutputImage::CallMember( ParamList* p)
 {
-  InrImage::ptr res(new InrImage(this->_objectptr->image_output.get()));
+  WrapClass_vtkLevelSets::ptr parent =
+    boost::dynamic_pointer_cast<WrapClass_vtkLevelSets> (this->_objectptr);
+  if (!parent.get()) ClassHelpAndReturn;
+
+  InrImage::ptr res(new InrImage(parent->image_output.get()));
   return Variable<InrImage>::ptr(new Variable<InrImage>(res));
 }
 
@@ -969,7 +984,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_GetAttachVect::CallMember( Param
   int n = 0;
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
 
   InrImage::ptr res;
   float_vec DAx;
@@ -1013,14 +1028,18 @@ void WrapClass_vtkLevelSets::wrap_End::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkLevelSets::wrap_End::CallMember( ParamList* p)
 {
-  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
+  WrapClass_vtkLevelSets::ptr parent =
+    boost::dynamic_pointer_cast<WrapClass_vtkLevelSets> (this->_objectptr);
+  if (!parent.get()) ClassHelpAndReturn;
+
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   curv->EndEvolution();
-  this->_objectptr->_vtkLevelSets   .reset();
-  this->_objectptr->image_input     .reset();
-  this->_objectptr->velocity        .reset();
-  this->_objectptr->expansion_image .reset();
-  this->_objectptr->image_output    .reset();
-  this->_objectptr->initimage       .reset();
+//  this->_objectptr->GetObj()   .reset();
+  parent->image_input     .reset();
+  parent->velocity        .reset();
+  parent->expansion_image .reset();
+  parent->image_output    .reset();
+  parent->initimage       .reset();
   return BasicVariable::ptr();
 }
 

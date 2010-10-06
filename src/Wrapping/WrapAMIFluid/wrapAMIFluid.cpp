@@ -10,18 +10,19 @@
 //
 //
 
+#include "paramlist.h"
 #include "namespace.h"
 #include "file_uv.h"
 
-#include "OpticalFlow/inverse/inverse_optic_flow.h"
-#include "OpticalFlow/inverse/inverse_optic_flow_3d.h"
+#include "inverse/inverse_optic_flow.h"
+#include "inverse/inverse_optic_flow_3d.h"
 
 typedef float real;
-#include "OpticalFlow/Horn_Schunck/horn_schunck.h"
-#include "OpticalFlow/Horn_Schunck/horn_schunck_sym.h"
-#include "OpticalFlow/io_routines_yosemite.h"
+#include "Horn_Schunck/horn_schunck.h"
+#include "Horn_Schunck/horn_schunck_sym.h"
+#include "io_routines_yosemite.h"
 
-#include "OpticalFlow/simple/optic_flow_video.h"
+#include "simple/optic_flow_video.h"
 
 
 #include "ami_prototypes.h"
@@ -136,13 +137,14 @@ void AddWrapFluid(){
  */
 void wrap_AMIFluid(ParamList* p)
 {
+/*
   char functionname[] = "AMIFluid";
   char description[]=" \n\
     Adds wrapping for AMIFLuid library. \n\
           ";
   char parameters[] =" \n\
           ";
-
+*/
   AddWrapFluid();
 }
 
@@ -252,7 +254,7 @@ void amiOpticFlowVariational2DZoom(ParamList* p)
   float alpha    = 1.0;
   int   dtype    = 0;
   float quantile = 1;
-  float ht       = 0.1;
+  float ht       = 0.1f;
   InrImage* u    = NULL;
   InrImage* v    = NULL;
   int  Niter     = 10;
@@ -560,9 +562,9 @@ void amiOFPDE_Param( ParamList* p)
   float beta[3] = {0.25,0.25,0.25};
   int zoom_factor[3] = {2,2,2};
   ami_v3f alfa = {4.0,4.0,4.0};
-  float TOL_GaussSeidel = 1E-5;
+  float TOL_GaussSeidel = 1E-5f;
   int Nscales = 3;
-  float TOL_Scales = 1E-5;
+  float TOL_Scales = 1E-5f;
   int grad_type=2;
   int smoothing_type=0;
   int n=0;
@@ -623,7 +625,7 @@ void amiOF_2D_T( ParamList* p)
   float beta[2] = {0.25,0.25};
   int zoom_factor[2] = {2,2};
   ami_v3f alfa = {4.0,4.0,4.0};
-  float TOL_GaussSeidel = 1E-5;
+  float TOL_GaussSeidel = 1E-5f;
   int Nscales = 3;
   float TOL_Scales = 1E-5;
   int grad_type=2;
@@ -998,7 +1000,7 @@ void amiHornSchunckOpticFlowExplicit( ParamList* p)
   
   float     alfa[3]={0.5,0.5,0.5};
   float     total_time = 10;
-  float     dt = 0.1;
+  float     dt = 0.1f;
   int n=0;
   
   if (!get_val_ptr_param<InrImage>(        im1,    p, n)) HelpAndReturn;
@@ -1210,7 +1212,7 @@ void amiSolenoidalProjection3D( ParamList* p)
   InrImage* u  = NULL; 
   float beta[3] = {0.25,0.25,0.25};
   int zoom_factor[3] ={2,2,2};
-  float TOL_GaussSeidel = 5E-6;
+  float TOL_GaussSeidel = 5E-6f;
   int Nscales = 3; 
   float A = 0.01;
 
@@ -1608,13 +1610,13 @@ void amiOpticFlow( ParamList* p)
   InrImage* flow_x;
   InrImage* flow_y;
   int       zoom=3;
-  float     alpha=0.6;
-  float     beta =0.3;
-  float     gamma=1.0;
-  float     isotropy = 0.1;
+  float     alpha=0.6f;
+  float     beta =0.3f;
+  float     gamma=1.0f;
+  float     isotropy = 0.1f;
   float     T=500;
   float     dt=10;
-  float     Nu=0.5;
+  float     Nu=0.5f;
   int n=0;
   
   if (!get_val_ptr_param<InrImage>(    im,               p, n)) HelpAndReturn;

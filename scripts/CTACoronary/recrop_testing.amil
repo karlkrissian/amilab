@@ -16,10 +16,18 @@ response = Image(dataset_name+"_response.ami.gz")
 
 #-----------------------------------------------------------
 proc ReadPoint( STRING st, NUM x, NUM y, NUM z) {
-  f = open(st,"r")
-  f.read(x)
-  f.read(y)
-  f.read(z)
+
+# Old implementation:
+#  f = open(st,"r")
+#  f.read(x)
+#  f.read(y)
+#  f.read(z)
+
+  f = File(st,"r")
+  x = f.read_float()
+  y = f.read_float()
+  z = f.read_float()
+
   printn "Point read:"+sprint("%3.2f",x)+\
         sprint(", %3.2f",y)+sprint(", %3.2f",z);
 }

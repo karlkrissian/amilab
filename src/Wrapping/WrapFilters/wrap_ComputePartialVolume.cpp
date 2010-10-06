@@ -12,92 +12,104 @@
 #include "ami_function.h"
 #include "ComputePartialVolume.h"
 
-#define GET_PARAM(type,varname,defaultval) \
-  type varname = defaultval; \
-  if (!get_val_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
-
-#define GET_SMTPTR_PARAM(type,varname) \
-  boost::shared_ptr<type> varname; \
-  if (!get_val_smtptr_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
-
-#define RETURN_VARPTR(type,  value) \
-  boost::shared_ptr<type> newval(new type(value)); \
-  return Variable<type>::ptr( new Variable<type>(newval));
 
 //---------------------------------------------------
 //AnalyticFunctionBase Wrapping
 //---------------------------------------------------
-AMIObject::ptr AddWrap_AnalyticFunctionBase(WrapClass_AnalyticFunctionBase::ptr& objectptr)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<AnalyticFunctionBase>::CreateVar( ParamList* p )
 {
-  // Create a new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("AnalyticFunctionBase");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-  return amiobject;
+  WrapClass_AnalyticFunctionBase::wrap_AnalyticFunctionBase construct;
+  return construct.CallMember(p);
 }
 
-//---------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_AnalyticFunctionBase(AnalyticFunctionBase* si)
-{
-  boost::shared_ptr<AnalyticFunctionBase> si_ptr(si);
-  WrapClass_AnalyticFunctionBase::ptr sip(new WrapClass_AnalyticFunctionBase(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_AnalyticFunctionBase(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-}
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(AnalyticFunctionBase);
+AMI_DEFINE_VARFROMSMTPTR(AnalyticFunctionBase);
+
+//AMIObject::ptr AddWrap_AnalyticFunctionBase(WrapClass_AnalyticFunctionBase::ptr& objectptr)
+//{
+//  // Create a new instance of the class
+//  AMIObject::ptr amiobject(new AMIObject);
+//  amiobject->SetName("AnalyticFunctionBase");
+//  amiobject->SetWrappedObject(objectptr);
+//  objectptr->SetAMIObject(amiobject);
+//  objectptr->AddMethods(objectptr);
+//  return amiobject;
+//}
+//
+////---------------------------------------------------
+//Variable<AMIObject>::ptr CreateVar_AnalyticFunctionBase(AnalyticFunctionBase* si)
+//{
+//  boost::shared_ptr<AnalyticFunctionBase> si_ptr(si);
+//  WrapClass_AnalyticFunctionBase::ptr sip(new WrapClass_AnalyticFunctionBase(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_AnalyticFunctionBase(sip));
+//  Variable<AMIObject>::ptr varres(
+//    new Variable<AMIObject>(amiobject));
+//  return varres;
+//}
 
 
-void wrap_AnalyticFunctionBase::SetParametersComments()
+void WrapClass_AnalyticFunctionBase::wrap_AnalyticFunctionBase::SetParametersComments()
 {
   return_comments = "A wrapped AnalyticFunctionBase object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_AnalyticFunctionBase::CallMember(ParamList* p)
+BasicVariable::ptr WrapClass_AnalyticFunctionBase::wrap_AnalyticFunctionBase::CallMember(ParamList* p)
 { 
-  
+  return BasicVariable::ptr();
 } 
 
 //---------------------------------------------------
 //AnalyticCircle Wrapping
 //---------------------------------------------------
-AMIObject::ptr AddWrap_AnalyticCircle(WrapClass_AnalyticCircle::ptr& objectptr)
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<AnalyticCircle>::CreateVar( ParamList* p )
 {
-  // Create a new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("AnalyticCircle");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-  return amiobject;
+  WrapClass_AnalyticCircle::wrap_AnalyticCircle construct;
+  return construct.CallMember(p);
 }
 
-//---------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_AnalyticCircle(AnalyticCircle* si)
-{
-  boost::shared_ptr<AnalyticCircle> si_ptr(si);
-  WrapClass_AnalyticCircle::ptr sip(new WrapClass_AnalyticCircle(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_AnalyticCircle(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-}
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(AnalyticCircle);
+AMI_DEFINE_VARFROMSMTPTR(AnalyticCircle);
+
+
+//AMIObject::ptr AddWrap_AnalyticCircle(WrapClass_AnalyticCircle::ptr& objectptr)
+//{
+//  // Create a new instance of the class
+//  AMIObject::ptr amiobject(new AMIObject);
+//  amiobject->SetName("AnalyticCircle");
+//  amiobject->SetWrappedObject(objectptr);
+//  objectptr->SetAMIObject(amiobject);
+//  objectptr->AddMethods(objectptr);
+//  return amiobject;
+//}
+//
+////---------------------------------------------------
+//Variable<AMIObject>::ptr CreateVar_AnalyticCircle(AnalyticCircle* si)
+//{
+//  boost::shared_ptr<AnalyticCircle> si_ptr(si);
+//  WrapClass_AnalyticCircle::ptr sip(new WrapClass_AnalyticCircle(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_AnalyticCircle(sip));
+//  Variable<AMIObject>::ptr varres(
+//    new Variable<AMIObject>(amiobject));
+//  return varres;
+//}
+
 
 //---------------------------------------------------
 //AnalyticCircle Constructor
-void wrap_AnalyticCircle::SetParametersComments()
+void WrapClass_AnalyticCircle::wrap_AnalyticCircle::SetParametersComments()
 {
   return_comments = "A wrapped AnalyticCircle object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_AnalyticCircle::CallMember(ParamList* p)
-{ //Puede que venga vacío o puede que se indiquen el centro y el radio
+BasicVariable::ptr WrapClass_AnalyticCircle::
+                   wrap_AnalyticCircle::CallMember(ParamList* p)
+{ 
   if (!p) ClassHelpAndReturn;
-  return CreateVar_AnalyticCircle((new AnalyticCircle()));
+  //return WrapClass_AnalyticCircle::CreateVar(new AnalyticCircle());
+  return AMILabType<AnalyticCircle>::CreateVar(new AnalyticCircle());
 }
 //---------------------------------------------------
 //setCenter
@@ -181,40 +193,52 @@ BasicVariable::ptr WrapClass_AnalyticCircle::
 //---------------------------------------------------
 //AnalyticLine Wrapping
 //---------------------------------------------------
-AMIObject::ptr AddWrap_AnalyticLine(WrapClass_AnalyticLine::ptr& objectptr)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<AnalyticLine>::CreateVar( ParamList* p )
 {
-  // Create a new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("AnalyticLine");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-  return amiobject;
+  WrapClass_AnalyticLine::wrap_AnalyticLine construct;
+  return construct.CallMember(p);
 }
 
-//---------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_AnalyticLine(AnalyticLine* si)
-{
-  boost::shared_ptr<AnalyticLine> si_ptr(si);
-  WrapClass_AnalyticLine::ptr sip(new WrapClass_AnalyticLine(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_AnalyticLine(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-}
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(AnalyticLine);
+AMI_DEFINE_VARFROMSMTPTR(AnalyticLine);
+
+//AMIObject::ptr AddWrap_AnalyticLine(WrapClass_AnalyticLine::ptr& objectptr)
+//{
+//  // Create a new instance of the class
+//  AMIObject::ptr amiobject(new AMIObject);
+//  amiobject->SetName("AnalyticLine");
+//  amiobject->SetWrappedObject(objectptr);
+//  objectptr->SetAMIObject(amiobject);
+//  objectptr->AddMethods(objectptr);
+//  return amiobject;
+//}
+//
+////---------------------------------------------------
+//Variable<AMIObject>::ptr CreateVar_AnalyticLine(AnalyticLine* si)
+//{
+//  boost::shared_ptr<AnalyticLine> si_ptr(si);
+//  WrapClass_AnalyticLine::ptr sip(new WrapClass_AnalyticLine(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_AnalyticLine(sip));
+//  Variable<AMIObject>::ptr varres(
+//    new Variable<AMIObject>(amiobject));
+//  return varres;
+//}
 
 //---------------------------------------------------
 //AnalyticLine Constructor
-void wrap_AnalyticLine::SetParametersComments()
+void WrapClass_AnalyticLine::wrap_AnalyticLine::SetParametersComments()
 {
   ADDPARAMCOMMENT("Object of a type that inherit from AnalyticLine.");
   return_comments = "A wrapped AnalyticLine object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_AnalyticLine::CallMember(ParamList* p)
-{ //Pasa igual que en el círculo, tiene valores por defecto el constructor
+BasicVariable::ptr WrapClass_AnalyticLine::
+                   wrap_AnalyticLine::CallMember(ParamList* p)
+{
   if (!p) ClassHelpAndReturn;
-  return CreateVar_AnalyticLine((new AnalyticLine()));
+  return AMILabType<AnalyticLine>::CreateVar(new AnalyticLine());
 }
 //---------------------------------------------------
 //setAngle
@@ -287,40 +311,54 @@ BasicVariable::ptr WrapClass_AnalyticLine::
 //---------------------------------------------------
 //AnalyticStraightVessel2D Wrapping
 //---------------------------------------------------
-AMIObject::ptr AddWrap_AnalyticStraightVessel2D(WrapClass_AnalyticStraightVessel2D::ptr& objectptr)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<AnalyticStraightVessel2D>::CreateVar( ParamList* p )
 {
-  // Create a new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("AnalyticStraightVessel2D");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-  return amiobject;
+  WrapClass_AnalyticStraightVessel2D::wrap_AnalyticStraightVessel2D construct;
+  return construct.CallMember(p);
 }
 
-//---------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_AnalyticStraightVessel2D(AnalyticStraightVessel2D* si)
-{
-  boost::shared_ptr<AnalyticStraightVessel2D> si_ptr(si);
-  WrapClass_AnalyticStraightVessel2D::ptr sip(new WrapClass_AnalyticStraightVessel2D(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_AnalyticStraightVessel2D(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-}
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(AnalyticStraightVessel2D);
+AMI_DEFINE_VARFROMSMTPTR(AnalyticStraightVessel2D);
+
+//AMIObject::ptr AddWrap_AnalyticStraightVessel2D(WrapClass_AnalyticStraightVessel2D::ptr& objectptr)
+//{
+//  // Create a new instance of the class
+//  AMIObject::ptr amiobject(new AMIObject);
+//  amiobject->SetName("AnalyticStraightVessel2D");
+//  amiobject->SetWrappedObject(objectptr);
+//  objectptr->SetAMIObject(amiobject);
+//  objectptr->AddMethods(objectptr);
+//  return amiobject;
+//}
+//
+////---------------------------------------------------
+//Variable<AMIObject>::ptr CreateVar_AnalyticStraightVessel2D(AnalyticStraightVessel2D* si)
+//{
+//  boost::shared_ptr<AnalyticStraightVessel2D> si_ptr(si);
+//  WrapClass_AnalyticStraightVessel2D::ptr sip(new WrapClass_AnalyticStraightVessel2D(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_AnalyticStraightVessel2D(sip));
+//  Variable<AMIObject>::ptr varres(
+//    new Variable<AMIObject>(amiobject));
+//  return varres;
+//}
 
 //---------------------------------------------------
 //AnalyticStraightVessel2D Constructor
-void wrap_AnalyticStraightVessel2D::SetParametersComments()
+void WrapClass_AnalyticStraightVessel2D::
+     wrap_AnalyticStraightVessel2D::SetParametersComments()
 {
   ADDPARAMCOMMENT("Object of a type that inherit from AnalyticStraightVessel2D.");
   return_comments = "A wrapped AnalyticStraightVessel2D object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_AnalyticStraightVessel2D::CallMember(ParamList* p)
+BasicVariable::ptr WrapClass_AnalyticStraightVessel2D::
+                   wrap_AnalyticStraightVessel2D::CallMember(ParamList* p)
 { 
   if (!p) ClassHelpAndReturn;
-  return CreateVar_AnalyticStraightVessel2D((new AnalyticStraightVessel2D()));
+  return AMILabType<AnalyticStraightVessel2D>::
+         CreateVar(new AnalyticStraightVessel2D());
 }
 
 
@@ -443,40 +481,52 @@ BasicVariable::ptr WrapClass_AnalyticStraightVessel2D::
 //---------------------------------------------------
 //AnalyticRing2D Wrapping
 //---------------------------------------------------
-AMIObject::ptr AddWrap_AnalyticRing2D(WrapClass_AnalyticRing2D::ptr& objectptr)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<AnalyticRing2D>::CreateVar( ParamList* p )
 {
-  // Create a new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("AnalyticRing2D");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-  return amiobject;
+  WrapClass_AnalyticRing2D::wrap_AnalyticRing2D construct;
+  return construct.CallMember(p);
 }
 
-//---------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_AnalyticRing2D(AnalyticRing2D* si)
-{
-  boost::shared_ptr<AnalyticRing2D> si_ptr(si);
-  WrapClass_AnalyticRing2D::ptr sip(new WrapClass_AnalyticRing2D(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_AnalyticRing2D(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-}
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(AnalyticRing2D);
+AMI_DEFINE_VARFROMSMTPTR(AnalyticRing2D);
+
+//AMIObject::ptr AddWrap_AnalyticRing2D(WrapClass_AnalyticRing2D::ptr& objectptr)
+//{
+//  // Create a new instance of the class
+//  AMIObject::ptr amiobject(new AMIObject);
+//  amiobject->SetName("AnalyticRing2D");
+//  amiobject->SetWrappedObject(objectptr);
+//  objectptr->SetAMIObject(amiobject);
+//  objectptr->AddMethods(objectptr);
+//  return amiobject;
+//}
+//
+////---------------------------------------------------
+//Variable<AMIObject>::ptr CreateVar_AnalyticRing2D(AnalyticRing2D* si)
+//{
+//  boost::shared_ptr<AnalyticRing2D> si_ptr(si);
+//  WrapClass_AnalyticRing2D::ptr sip(new WrapClass_AnalyticRing2D(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_AnalyticRing2D(sip));
+//  Variable<AMIObject>::ptr varres(
+//    new Variable<AMIObject>(amiobject));
+//  return varres;
+//}
 
 //---------------------------------------------------
 //AnalyticRing2D Constructor
-void wrap_AnalyticRing2D::SetParametersComments()
+void WrapClass_AnalyticRing2D::wrap_AnalyticRing2D::SetParametersComments()
 {
   ADDPARAMCOMMENT("Object of a type that inherit from AnalyticRing2D.");
   return_comments = "A wrapped AnalyticRing2D object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_AnalyticRing2D::CallMember(ParamList* p)
+BasicVariable::ptr WrapClass_AnalyticRing2D::
+                   wrap_AnalyticRing2D::CallMember(ParamList* p)
 { 
   if (!p) ClassHelpAndReturn;
-  return CreateVar_AnalyticRing2D((new AnalyticRing2D()));
+  return AMILabType<AnalyticRing2D>::CreateVar(new AnalyticRing2D());
 }
 
 //---------------------------------------------------
@@ -598,40 +648,52 @@ BasicVariable::ptr WrapClass_AnalyticRing2D::
 //---------------------------------------------------
 //AnalyticSphere Wrapping
 //---------------------------------------------------
-AMIObject::ptr AddWrap_AnalyticSphere(WrapClass_AnalyticSphere::ptr& objectptr)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<AnalyticSphere>::CreateVar( ParamList* p )
 {
-  // Create a new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("AnalyticSphere");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-  return amiobject;
+  WrapClass_AnalyticSphere::wrap_AnalyticSphere construct;
+  return construct.CallMember(p);
 }
 
-//---------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_AnalyticSphere(AnalyticSphere* si)
-{
-  boost::shared_ptr<AnalyticSphere> si_ptr(si);
-  WrapClass_AnalyticSphere::ptr sip(new WrapClass_AnalyticSphere(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_AnalyticSphere(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-}
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(AnalyticSphere);
+AMI_DEFINE_VARFROMSMTPTR(AnalyticSphere);
+
+//AMIObject::ptr AddWrap_AnalyticSphere(WrapClass_AnalyticSphere::ptr& objectptr)
+//{
+//  // Create a new instance of the class
+//  AMIObject::ptr amiobject(new AMIObject);
+//  amiobject->SetName("AnalyticSphere");
+//  amiobject->SetWrappedObject(objectptr);
+//  objectptr->SetAMIObject(amiobject);
+//  objectptr->AddMethods(objectptr);
+//  return amiobject;
+//}
+//
+////---------------------------------------------------
+//Variable<AMIObject>::ptr CreateVar_AnalyticSphere(AnalyticSphere* si)
+//{
+//  boost::shared_ptr<AnalyticSphere> si_ptr(si);
+//  WrapClass_AnalyticSphere::ptr sip(new WrapClass_AnalyticSphere(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_AnalyticSphere(sip));
+//  Variable<AMIObject>::ptr varres(
+//    new Variable<AMIObject>(amiobject));
+//  return varres;
+//}
 
 //---------------------------------------------------
 //AnalyticSphere Constructor
-void wrap_AnalyticSphere::SetParametersComments()
+void WrapClass_AnalyticSphere::wrap_AnalyticSphere::SetParametersComments()
 {
   ADDPARAMCOMMENT("Object of a type that inherit from AnalyticSphere.");
   return_comments = "A wrapped AnalyticSphere object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_AnalyticSphere::CallMember(ParamList* p)
-{ //Pasa igual que en el círculo, tiene valores por defecto el constructor
+BasicVariable::ptr WrapClass_AnalyticSphere::
+                   wrap_AnalyticSphere::CallMember(ParamList* p)
+{
   if (!p) ClassHelpAndReturn;
-  return CreateVar_AnalyticSphere((new AnalyticSphere()));
+  return AMILabType<AnalyticSphere>::CreateVar(new AnalyticSphere());
 }
 //---------------------------------------------------
 //setCenter
@@ -725,40 +787,52 @@ BasicVariable::ptr WrapClass_AnalyticSphere::
 //---------------------------------------------------
 //AnalyticTorus Wrapping
 //---------------------------------------------------
-AMIObject::ptr AddWrap_AnalyticTorus(WrapClass_AnalyticTorus::ptr& objectptr)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<AnalyticTorus>::CreateVar( ParamList* p )
 {
-  // Create a new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("AnalyticTorus");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-  return amiobject;
+  WrapClass_AnalyticTorus::wrap_AnalyticTorus construct;
+  return construct.CallMember(p);
 }
 
-//---------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_AnalyticTorus(AnalyticTorus* si)
-{
-  boost::shared_ptr<AnalyticTorus> si_ptr(si);
-  WrapClass_AnalyticTorus::ptr sip(new WrapClass_AnalyticTorus(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_AnalyticTorus(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-}
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(AnalyticTorus);
+AMI_DEFINE_VARFROMSMTPTR(AnalyticTorus);
+
+//AMIObject::ptr AddWrap_AnalyticTorus(WrapClass_AnalyticTorus::ptr& objectptr)
+//{
+//  // Create a new instance of the class
+//  AMIObject::ptr amiobject(new AMIObject);
+//  amiobject->SetName("AnalyticTorus");
+//  amiobject->SetWrappedObject(objectptr);
+//  objectptr->SetAMIObject(amiobject);
+//  objectptr->AddMethods(objectptr);
+//  return amiobject;
+//}
+//
+////---------------------------------------------------
+//Variable<AMIObject>::ptr CreateVar_AnalyticTorus(AnalyticTorus* si)
+//{
+//  boost::shared_ptr<AnalyticTorus> si_ptr(si);
+//  WrapClass_AnalyticTorus::ptr sip(new WrapClass_AnalyticTorus(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_AnalyticTorus(sip));
+//  Variable<AMIObject>::ptr varres(
+//    new Variable<AMIObject>(amiobject));
+//  return varres;
+//}
 
 //---------------------------------------------------
 //AnalyticTorus Constructor
-void wrap_AnalyticTorus::SetParametersComments()
+void WrapClass_AnalyticTorus::wrap_AnalyticTorus::SetParametersComments()
 {
   ADDPARAMCOMMENT("Object of a type that inherit from AnalyticTorus.");
   return_comments = "A wrapped AnalyticTorus object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_AnalyticTorus::CallMember(ParamList* p)
-{ //Pasa igual que en el círculo, tiene valores por defecto el constructor
+BasicVariable::ptr WrapClass_AnalyticTorus::
+                   wrap_AnalyticTorus::CallMember(ParamList* p)
+{
   if (!p) ClassHelpAndReturn;
-  return CreateVar_AnalyticTorus((new AnalyticTorus()));
+  return AMILabType<AnalyticTorus>::CreateVar(new AnalyticTorus());
 }
 //---------------------------------------------------
 //setCenter
@@ -881,41 +955,54 @@ BasicVariable::ptr WrapClass_AnalyticTorus::
 {
   RETURN_VAR(float, _objectptr->_obj->get_rmax());
 }
+
+
 //---------------------------------------------------
 //ComputePV Wrapping
 //---------------------------------------------------
-AMIObject::ptr AddWrap_ComputePV(WrapClass_ComputePV::ptr& objectptr)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<ComputePV>::CreateVar( ParamList* p )
 {
-  // Create a new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("ComputePV");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-  return amiobject;
+  WrapClass_ComputePV::wrap_ComputePV construct;
+  return construct.CallMember(p);
 }
 
-//---------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_ComputePV(ComputePV* si)
-{
-  boost::shared_ptr<ComputePV> si_ptr(si);
-  WrapClass_ComputePV::ptr sip(new WrapClass_ComputePV(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_ComputePV(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-}
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(ComputePV);
+AMI_DEFINE_VARFROMSMTPTR(ComputePV);
+
+//AMIObject::ptr AddWrap_ComputePV(WrapClass_ComputePV::ptr& objectptr)
+//{
+//  // Create a new instance of the class
+//  AMIObject::ptr amiobject(new AMIObject);
+//  amiobject->SetName("ComputePV");
+//  amiobject->SetWrappedObject(objectptr);
+//  objectptr->SetAMIObject(amiobject);
+//  objectptr->AddMethods(objectptr);
+//  return amiobject;
+//}
+//
+////---------------------------------------------------
+//Variable<AMIObject>::ptr CreateVar_ComputePV(ComputePV* si)
+//{
+//  boost::shared_ptr<ComputePV> si_ptr(si);
+//  WrapClass_ComputePV::ptr sip(new WrapClass_ComputePV(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_ComputePV(sip));
+//  Variable<AMIObject>::ptr varres(
+//    new Variable<AMIObject>(amiobject));
+//  return varres;
+//}
 
 //---------------------------------------------------
 //ComputePV Constructor
-void wrap_ComputePV::SetParametersComments()
+void WrapClass_ComputePV::wrap_ComputePV::SetParametersComments()
 {
   return_comments = "A wrapped ComputePV object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_ComputePV::CallMember(ParamList* p)
+BasicVariable::ptr WrapClass_ComputePV::wrap_ComputePV::CallMember(ParamList* p)
 {
-  return CreateVar_ComputePV(new ComputePV());
+  return AMILabType<ComputePV>::CreateVar(new ComputePV());
 }
 
 //---------------------------------------------------
@@ -1052,12 +1139,12 @@ BasicVariable::ptr WrapClass_ComputePV::wrap_getAnalyticFunction
                                       ::CallMember(ParamList* p)
 {
   AnalyticFunctionBase::ptr si_ptr(_objectptr->_obj->getAnalyticFunction().lock());
-  WrapClass_AnalyticFunctionBase::ptr sip(new WrapClass_AnalyticFunctionBase(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_AnalyticFunctionBase(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-
+//  WrapClass_AnalyticFunctionBase::ptr sip(new WrapClass_AnalyticFunctionBase(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_AnalyticFunctionBase(sip));
+//  Variable<AMIObject>::ptr varres(
+//    new Variable<AMIObject>(amiobject));
+//  return varres;
+  return AMILabType<AnalyticFunctionBase>::CreateVarFromSmtPtr(si_ptr);
 }
 
 //---------------------------------------------------

@@ -183,7 +183,7 @@ if (!exists(ShortestPathClass)) {
       ::load_speed
       show ::input
       show ::speed
-      ::input_draw._compare(::speed)
+      ::input_draw.compare(::speed)
       if (exists(::path)) { show ::path; }
     }  
 
@@ -219,7 +219,7 @@ if (!exists(ShortestPathClass)) {
         if (::endx<2) { ::endx=2; }
         if (::endy<2) { ::endy=2; }
         if ((::endz<2)&&(::input.tz>1)) { ::endz=2; }
-        fminit.setpos(::endx,::endy,::endz)
+        fminit._setpos(::endx,::endy,::endz)
         fminit.set(-::maxcost)
       } else {
         # load end mask

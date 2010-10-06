@@ -826,8 +826,8 @@ void ParamPanel::FixeVisible( int id, unsigned char visible)
 
   if ((wxGenericWidget*) _tab_param[id].GetWidget() !=NULL) {
 
-    if (visible!=_tab_param[id].GetSizerItem()->IsShown())
-    _tab_param[id].GetSizerItem()->Show(visible);
+    if ((bool)visible!=_tab_param[id].GetSizerItem()->IsShown())
+    _tab_param[id].GetSizerItem()->Show((bool)visible);
   }
 } // FixeVisible()
 
@@ -1160,14 +1160,14 @@ void ParamPanel::Enable( int id, bool enable) {
     wxGenericWidget* pwidget = (wxGenericWidget*) _tab_param[id].GetWidget();
 
     if (enable!=pwidget->IsEnabled())
-      pwidget->Enable(enable);
+      pwidget->EnableWidget(enable);
   }
 }
 
 //---------------------------------------------------------------------
 void ParamPanel::EnableBox( int id, bool enable) {
 
-  if (id<_tab_boxes.size()) {
+  if (id<(int)_tab_boxes.size()) {
     wxStaticBox* box = _tab_boxes[id];
     if (enable!=box->IsEnabled())
       box->Enable(enable);
@@ -1184,7 +1184,7 @@ void ParamPanel::EnableBox( int id, bool enable) {
 //------------------------------------------------------------
 void ParamPanel::EnablePanel( int id, bool enable) {
 
-  if (id<_tab_panels.size()) {
+  if (id<(int)_tab_panels.size()) {
     wxWindow* panel = _tab_panels[id];
     if (enable!=panel->IsEnabled())
       panel->Enable(enable);
@@ -1201,7 +1201,7 @@ void ParamPanel::EnablePanel( int id, bool enable) {
 //------------------------------------------------------------
 void ParamPanel::SelectPage( int book_id, int panel_nb)
 {
-  if (book_id<_tab_books.size()) {
+  if (book_id<(int)_tab_books.size()) {
     wxNotebook* book = _tab_books[book_id];
     book->ChangeSelection(panel_nb);
   } else {

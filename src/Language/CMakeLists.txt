@@ -4,61 +4,30 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Zinrimage
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/Math
-  ${AMILAB_SOURCE_DIR}/AMImage
-  ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Filtering
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic
+  ${AMILAB_SOURCE_DIR}/Common/include
+  ${AMILAB_SOURCE_DIR}/Graphic/include
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
+  ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
+  ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/wxParams
-  ${AMILAB_SOURCE_DIR}/Voxels
-  ${AMILAB_SOURCE_DIR}/Crest
-  ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Line
-  ${AMILAB_SOURCE_DIR}/myVTK4
-  ${AMILAB_SOURCE_DIR}/SplineThevenaz
-  ${AMILAB_SOURCE_DIR}/Contours
   ${AMILAB_SOURCE_DIR}/libamiFluid
   ${AMILAB_SOURCE_DIR}/libamiFluid/opticflow/
   ${AMILAB_SOURCE_DIR}/JavierHornSchunck
-  ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
-  ${AMILAB_SOURCE_DIR}/DistTransf
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapFilters
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSystem
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapAMIFluid
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWII
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapImage
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapBasicTypes
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapDessinImage
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
-  ${AMILAB_SOURCE_DIR}/wxSamples/penguin
-  ${AMILAB_SOURCE_DIR}/wxStcFrame
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
-  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
-  ${AMILAB_SOURCE_DIR}/Algorithms/Graph
-  ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}/
+  ${wxParams_INCLUDE_DIRS}
+  ${FLEX_INCLUDE_DIR}
   )
 
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
 
+
 SET(Language_SRCS
     driver.cc
     CallBackAMIFunction.cpp
+    ami_object.cpp
     VarContexts.cpp
     BasicVariable.cpp
     Variable.cpp
@@ -115,6 +84,7 @@ SET(Language_BISONFLEX_SRCS
   improcess_flex.lpp
 )
 
+
 IF(AMI_USE_FLEXBISON)
 
 
@@ -129,6 +99,7 @@ IF(AMI_USE_FLEXBISON)
     ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
     ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
   )
+    #COMPILE_FLAGS ${bison_options}
 
   FLEX_TARGET(improcessflex
   ${AMILAB_SOURCE_DIR}/Language/improcess_flex.lpp
@@ -167,5 +138,10 @@ ELSE(AMI_USE_FLEXBISON)
  
 
 ENDIF(AMI_USE_FLEXBISON)
+
+
+#ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Language/Variable.hpp Language_SRCS)
+#ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/amilab_messages.h Language_SRCS)
+#ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/DefineClass.hpp Language_SRCS)
 
 my_add_library ( Language)

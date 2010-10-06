@@ -13,6 +13,8 @@
   //#include <stdlib.h>
   //#include <stdio.h>
 
+#include "MainFrame.h"
+
 // use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
 #define NOMINMAX
 
@@ -29,6 +31,7 @@
 //#include "Duree.hpp"
 
 #include "DefineClass.hpp"
+#include <boost/shared_array.hpp>
 
 #include "Variable.hpp"
 
@@ -42,7 +45,6 @@
 #include "driver.h"
 
 #include "CoutwxString.h"
-#include "MainFrame.h"
 #include "fonctions.h"
 #include "func_isoline.hpp"
 
@@ -74,6 +76,7 @@
 #include "wrap_ImageExtent.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
+#include "wrap_Viewer3D.h"
 
 #ifndef __FLEX_LEXER_H
 #define yyFlexLexer yyipFlexLexer
@@ -82,7 +85,7 @@
 #endif
 
 
-#include "Viewer3D.hpp"
+//#include "Viewer3D.hpp"
 
 //#include "Erreurs.Main.hpp"
  // #include "Graphique.hpp"
@@ -164,7 +167,7 @@ class wxScheduleTimer : public wxTimer
 
     ~wxScheduleTimer()
     { 
-      //cout << "~wxScheduleTimer()" << endl; 
+      //cout << "~wxScheduleTimer()" << std::endl; 
     }
 
     //Called each time the timer's timeout expires
@@ -418,7 +421,7 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token T_Image T_BrowseImage
 %token T_ReadRawImages
-%token T_Transform
+//%token T_Transform
 %token SHOW HELP QUIT T_HIDE
 %token PRINT PRINTN
 %token T_InfoDialog
@@ -434,8 +437,9 @@ void CB_update_imagelist( void* imagelist_gui);
 %token IDENTIFIER
 %token PROCESSED_VAR
 %token VAR_IMAGE  VAR_STRING
-%token VAR_SURFDRAW VAR_MATRIX
-%token VAR_FILE
+//%token VAR_SURFDRAW VAR_MATRIX
+%token VAR_MATRIX
+//%token VAR_FILE
 %token VAR_C_FUNCTION
 %token VAR_C_PROCEDURE
 %token VAR_CLASS_MEMBER
@@ -443,7 +447,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token VAR_AMI_FUNCTION
 %token VAR_AMI_CLASS
 %token VAR_AMI_OBJECT
-%token VAR_GLTRANSFORM
+//%token VAR_GLTRANSFORM
 %token VAR_ARRAY_IMAGE
 %token T_del
 %token T_delvars
@@ -480,7 +484,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token SecDerGrad SecDerGrad2 SubImage PutImage
 %token T_AutoCrop
 %token T_DiscSecDerGrad
-%token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
+//%token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
 %token AnisoSmoothGS T_vtkAnisoGS
 %token T_DiscMeanCurvature
 %token T_vtkMedian3D
@@ -610,33 +614,35 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token T_vtkDist T_AndreDist
 %token T_Surface
-%token T_getimage
-%token T_GetImageFromX
-%token T_rotate
-%token T_computeCC T_drawCC
-%token T_addobj T_setcurrentobj
+//%token T_getimage
+//%token T_GetImageFromX
+//%token T_rotate
+//%token T_computeCC T_drawCC
+%token T_computeCC
+//%token T_addobj T_setcurrentobj
 %token T_writeVRML T_writeVTK
-%token T_Paint
+//%token T_Paint
 %token T_SetLight T_SetLightPos
-%token T_SetLightAmbient T_SetLightDiffuse T_SetLightSpecular
-%token T_SetBackground
-%token T_Normalize T_Center
+//%token T_SetLightAmbient T_SetLightDiffuse T_SetLightSpecular
+//%token T_SetBackground
+//%token T_Normalize T_Center
 
-%token T_Remove
-%token T_SwapBuffers
+//%token T_Remove
+//%token T_SwapBuffers
 
 //%token T_SetOpacityImage
 
-%token T_GetTransform T_SetTransform
-%token T_Interpolate
+//%token T_GetTransform T_SetTransform
+//%token T_Interpolate
 
 %token T_Matrix
 %token T_Invert
 
-%token T_PrintMatrices
+//%token T_PrintMatrices
 
 //%token SET SETPOS SHOWCURSOR T_update COMPARE SETVECTOR
-%token SET SETPOS COMPARE SETVECTOR
+//%token SET SETPOS COMPARE SETVECTOR
+%token SET SETPOS
 
 %token T_lininterp
 //%token T_SetCompareDisplacement
@@ -647,13 +653,13 @@ void CB_update_imagelist( void* imagelist_gui);
 //%token T_SetVectStyle
 //%token T_SetLineThickness
 //%token T_SetZoom
-%token T_SetWindowSize
+//%token T_SetWindowSize
 //%token T_SetColormap
 //%token T_drawcircle
 //%token T_setGLwin
 %token T_initvalue
-%token T_ShowSection
-%token T_HideSection
+//%token T_ShowSection
+//%token T_HideSection
 
 
 %token T_Xpos T_Ypos T_Zpos T_SpacePos
@@ -671,11 +677,11 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_cumhisto
 %token T_DisplayHisto
 
-%token T_OPEN
-%token T_CLOSE
-%token T_scan_float
-%token T_read
-%token T_rewind
+//%token T_OPEN
+//%token T_CLOSE
+//%token T_scan_float
+//%token T_read
+//%token T_rewind
 
 %token T_LineNumber
 %token CONST_PI
@@ -891,7 +897,7 @@ loop_inst :
       // create the variable
       string_ptr tmp(new string());
       Variable<string>::ptr var = Vars.AddVar<string>(ident,tmp);
-      //cout << " *** Create temporary variable " << ident->GetName() << endl;
+      //cout << " *** Create temporary variable " << ident->GetName() << std::endl;
 
       std::list<std::string>::iterator sl_it;
       for (sl_it=sl->begin(); sl_it!=sl->end(); sl_it++) {
@@ -907,11 +913,11 @@ loop_inst :
       }
       // should not delete based on the name !!!
       bool res = Vars.deleteVar(ident->GetName().c_str());
-      //cout << " *** Delete temporary variable " << ident->GetName() << endl;
+      //cout << " *** Delete temporary variable " << ident->GetName() << std::endl;
       if (!res) {
-        cout << "**********" << endl;
-        cout << "**** Could not delete variable in loop"  << ident->GetName() << endl;
-        cout << "**********" << endl;
+       std::cout << "**********" << std::endl;
+       std::cout << "**** Could not delete variable in loop"  << ident->GetName() << std::endl;
+       std::cout << "**********" << std::endl;
       }
       driver.yyiplineno=previous_lineno;
 
@@ -1028,9 +1034,9 @@ proc_decl:
       amifunc->SetBody(     body);
 
       if (GB_debug)
-        cout  << ident->GetName()
+       std::cout  << ident->GetName()
               << " body = "
-              << body->GetBody()  << endl;
+              << body->GetBody()  << std::endl;
 
       BasicVariable::ptr newvar = Vars.AddVar<AMIFunction>( ident, amifunc);
       if (newvar.get())
@@ -1160,13 +1166,13 @@ func_inst :
           string name;
           string inc_cmd; // increment the command line string
 
-          //cout << "current wd = "  <<  wxGetCwd() << endl;
+          //cout << "current wd = "  <<  wxGetCwd() << std::endl;
           res=AskScript(name);
           if (!res) {
             driver.yyiperror(" Need script \n");
             YYABORT;
           }
-          //cout << "current wd = "  <<  wxGetCwd() << endl;
+          //cout << "current wd = "  <<  wxGetCwd() << std::endl;
 
         driver.res_print(name.c_str());
         driver.res_print("\n");
@@ -1186,7 +1192,7 @@ func_inst :
         inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
         if (driver.InConsole())
           GB_main_wxFrame->GetConsole()
-                          ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+                          ->IncCommand(wxString(inc_cmd.c_str(),wxConvUTF8));
       }
     |
     T_eval expr_string
@@ -1208,7 +1214,7 @@ command:
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           if (var.get()) {
             // TODO: only do it from the command line ???
-            //cout << "display var info" << endl;
+            //cout << "display var info" << std::endl;
             if (driver.InConsole())
               var->display();
           }
@@ -1240,7 +1246,7 @@ command:
               break;
               default:;
                 // TODO: only do it from the command line ???
-                //cout << "display var info" << endl;
+                //cout << "display var info" << std::endl;
                 if (driver.InConsole())
                   var->display();
             }
@@ -1380,9 +1386,9 @@ command:
         IdentifierInfo::ptr ident($1);
         if (var.get() && (var->HasPointer())  ) {
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
-            //cout << "var.use_count() = " << var.use_count() << endl;
+            //cout << "var.use_count() = " << var.use_count() << std::endl;
             Vars.AddVar(ident,var);
-            //cout << "var.use_count() = " << var.use_count() << endl;
+            //cout << "var.use_count() = " << var.use_count() << std::endl;
           } else {
             BasicVariable::ptr newvar( var->NewReference());
             Vars.AddVar(ident,newvar);
@@ -1406,8 +1412,8 @@ command:
         IdentifierInfo::ptr ident($1);
         // check counter of the value, not of the variable ...
         if (var.get() && (var->HasPointer())  ) {
-          //cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< endl;
-          //cout << "use_count() == " <<  var.use_count() << endl;
+          //cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< std::endl;
+          //cout << "use_count() == " <<  var.use_count() << std::endl;
           // only if both reference counters are equal to 1, we can avoid copy the variable
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
             //BasicVariable::ptr ref = var->NewReference();
@@ -1604,6 +1610,7 @@ command:
           driver.err_print("assignment of NULL matrix\n");
       }
 */
+/* deprecated
       |
       identifier ASSIGN_OP gltransform
       {
@@ -1616,6 +1623,7 @@ command:
           else
             driver.err_print("assignment of NULL matrix\n");
         }
+*/
 /* Deprecated
        | VAR_MATRIX ASSIGN_OP expr
        {
@@ -1827,7 +1835,6 @@ command:
         BasicVariable::ptr var = Vars.AddVar<string>(ident,varstring);
         var->SetComments(comments.get());
       }
-*/
       |
       identifier ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
       {
@@ -1859,10 +1866,10 @@ command:
           case ENOSPC: fprintf(stderr,"ENOSPC \n"); break;
                   default: fprintf("unknown error \n");
           }
-          */
+          * /
           }
         }
-        |
+/*        |
         VAR_FILE ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
         {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
@@ -1885,6 +1892,7 @@ command:
           FILE_ptr file(varfile->Pointer());
           rewind(file.get());
         }
+*/
         |  T_SetDebugOn
         {
       GB_debug = 1;
@@ -1955,7 +1963,7 @@ command:
       std::string titre;
       GET_VARSTACK_VAR_VAL(InrImage, imagevar, im);
       BasicVariable::ptr var;
-      int var_context = Vars.GetContext(imagevar);
+//      int var_context = Vars.GetContext(imagevar);
       Variables::ptr context = imagevar->GetContext();
 
 /*
@@ -1965,7 +1973,7 @@ command:
             Vars.SetObjectContext(imagevar->GetContext());
           }
 */
-      
+
       titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
       FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
       //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
@@ -1990,7 +1998,7 @@ command:
         // Call constructor from DessinImage constructor function
         ParamList* p = new ParamList();
         p->AddParam(imagevar);
-        BasicVariable::ptr newvar = wrap_DessinImage().CallMember(p);
+        BasicVariable::ptr newvar = WrapClass<DessinImage>::CreateVar(p);
         FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
         if (newvar.get()) {
           newvar->Rename(titre.c_str());
@@ -2038,7 +2046,7 @@ command:
           **/
           GET_VARSTACK_VAR_OBJECT(SurfacePoly,surfvar,surf)
           string    titre;
-          Viewer3D::ptr surfdraw;
+          //Viewer3D::ptr surfdraw;
           BasicVariable::ptr var;
           int var_context = Vars.GetContext(surfvar);
 
@@ -2052,10 +2060,48 @@ command:
               (var_context==OBJECT_CONTEXT_NUMBER)) {
             titre = str(format("%s_draw") % surfvar->Name());
             var = Vars.GetVar(titre.c_str(),var_context);
+
+            if (!var.get()) {
+
+              Variables::ptr context = surfvar->GetContext();
+
+              // Call constructor from Viewer3D constructor function
+              Variable<string>::ptr Title(new Variable<string>(string_ptr(new string(titre))));
+              ParamList* p = new ParamList();
+              p->AddParam(Title);
+              BasicVariable::ptr newvar = WrapClass<Viewer3D>::CreateVar(p);
+              FILE_MESSAGE(boost::format("SHOW var_ami_object creating title %s ") % titre);
+
+              if (newvar.get()) {
+                newvar->Rename(titre.c_str());
+                context->AddVar(newvar, context);
+              } else {
+                driver.err_print("Failed to create the viewer.");
+                YYABORT;
+              }
+
+              GET_WRAPPED_OBJECT(Viewer3D, newvar, surfdraw);
+              if (surfdraw.get()) {
+                surfdraw->Show(true);
+                // Add the surface to the OpenGL Object
+                surfdraw->GetCanvas()->AddSurface( surf);
+                surfdraw->Paint();
+                surfdraw->GetCanvas()->Normalize();
+                surfdraw->GetCanvas()->Center();
+              } else {
+                driver.err_print(
+                  (boost::format
+                    ("Unable to convert variable %1% to a wrapped Viewer3D") % titre).str().c_str());
+                YYABORT;
+              }
+            } else
+              std::cerr << " variable " << titre << " already exists " << std::endl;
+          }
+/*
             if (!var.get()) {
               surfdraw = Viewer3D::Create_ptr(
                             new Viewer3D( GB_main_wxFrame,
-                                          wxString::FromAscii(titre.c_str())));
+                                          wxString(titre.c_str(),wxConvUTF8)));
 
               BasicVariable::ptr newvar = 
                 Vars.AddVar<Viewer3D>(  titre.c_str(),
@@ -2072,9 +2118,9 @@ command:
               surfdraw->GetCanvas()->Normalize();
               surfdraw->GetCanvas()->Center();
             } else
-              cerr << " variable " << titre << " already exists " << endl;
+              std::cerr << " variable " << titre << " already exists " << std::endl;
           } // var_context >=0
-
+*/
           // Restore the object context
           if (var_context==OBJECT_CONTEXT_NUMBER) {
             Vars.SetObjectContext(previous_ocontext);
@@ -2607,7 +2653,6 @@ command:
           fprintf(file.get(),"%s",text.get());
           fflush(file.get());
         }
-*/
       | VAR_FILE T_POINT PRINT expr_var
       {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
@@ -2637,7 +2682,7 @@ command:
             driver.err_print("empty variable");
 
       }
-/* deprecated
+
       | VAR_FILE T_POINT PRINT expr
       {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
@@ -2727,13 +2772,13 @@ command:
         mat->PrintSelf();
         delete mat;
       }
-*/
+
         | VAR_FILE T_POINT T_CLOSE
         {
           driver.var_stack.GetLastBasicVar();
           printf("Deprecated: No need to close files explicitly, since we use smart pointers, they will be closed when the variable is deleted. \n");
         }
-/*
+
         | PRINT expr
         {
         /**
@@ -3178,18 +3223,6 @@ command:
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
           draw->AllContoursParam(  $5 , $7 );
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetOpacityImage T_OP_PAR var_image T_CL_PAR
-        {
-        /**
-         Description:
-            Setting the opacity image for the volume rendering.
-            This image should have unsigned char values.
-         ** /
-          GET_VARSTACK_VALUE(InrImage,    im);
-          GET_VARSTACK_VALUE(DessinImage, imdraw);
-
-          imdraw->SetVolRenOpacity( im.get());
         }*/
         | var_image T_POINT TInit
         {
@@ -3246,9 +3279,9 @@ command:
           GET_VARSTACK_VAR_VAL(AMIObject,varamio,o);
           
           if (o.get()) {
-            cout << "var   name = " << varamio->Name() <<endl;
+           std::cout << "var   name = " << varamio->Name() <<std::endl;
             if (o->GetClass().get()) {
-              cout << "class name = " << o->GetClass()->GetName() <<endl;
+             std::cout << "class name = " << o->GetClass()->GetName() <<std::endl;
             }
             o->GetContext()->display();
           }
@@ -4057,6 +4090,7 @@ command:
       }
 
       }
+/*
         | VAR_SURFDRAW T_POINT T_rotate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
@@ -4064,6 +4098,7 @@ command:
           sdraw->GetCanvas()->UserRotate($5,$7,$9);
           sdraw->Paint();
         }
+
         | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR expr_var T_CL_PAR
         {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
@@ -4092,7 +4127,7 @@ command:
         {
           /**
             Description: Removes the surface without swapping the 3D buffer
-          **/
+          ** /
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
 
@@ -4103,7 +4138,7 @@ command:
         {
           /**
             Description:  Swaps the 3D buffer
-          **/
+          ** /
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw(varsurfd->Pointer());
 
@@ -4185,6 +4220,8 @@ command:
           GET_VARSTACK_VALUE(Viewer3D,v);
           v->GetCanvas()->PrintMatrices();
         }
+*/
+/* deprecated 
         | VAR_SURFDRAW T_POINT T_SetTransform T_OP_PAR gltransform T_CL_PAR
         {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
@@ -4203,6 +4240,8 @@ command:
           if ($7>0.5) sdraw->Paint();
           delete tr;
         }
+*/
+/*
         | VAR_SURFDRAW T_POINT T_Paint
         {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
@@ -4216,7 +4255,7 @@ command:
             if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
             GB_wxApp->Dispatch();
           }
-		  */
+		  * /
         }
         | VAR_SURFDRAW T_POINT T_SetLightAmbient T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
@@ -4269,7 +4308,7 @@ command:
         /**
           Description:
             Normalizes the 3D view based on the limits in space of the current objects
-        **/
+        ** /
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->GetCanvas()->Normalize();
@@ -4279,7 +4318,7 @@ command:
         /**
           Description:
             Centers the 3D view based on the limits in space of the current objects
-        **/
+        ** /
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->GetCanvas()->Center();
@@ -4297,6 +4336,7 @@ command:
             GB_wxApp->Dispatch();
           }
         }
+*/
         |
         T_struct_tensor T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
@@ -4757,7 +4797,7 @@ command:
         Pour(x,0,image->_tx-1)
           tabx[x] = image->SpacePosX(x);
           taby[x] = (*image)(x,y,0);
-          //cout << boost::format("%1%,%2% --> %3%")%x%y%taby[x] << endl;
+          //cout << boost::format("%1%,%2% --> %3%")%x%y%taby[x] << std::endl;
         FinPour
         name =  (boost::format("%s_%02d")%$5%y).str();
         num_courbe = gnuplot.AddCourbe( image->_tx, tabx, taby, name.c_str());
@@ -4773,7 +4813,7 @@ command:
     | T_DisplayHisto T_OP_PAR var_image  T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
-      cerr << "Feature not available, needs to be updated ! " << endl;
+      std::cerr << "Feature not available, needs to be updated ! " << std::endl;
       /*
             InrImage::ptr   image = *(InrImage::ptr*) $3->Pointer();
             Histogramme* histo;
@@ -4850,7 +4890,7 @@ command:
     T_EndTime
     {
       driver.IP_time.Fin();
-      cout << "time spent = " << driver.IP_time << endl;
+     std::cout << "time spent = " << driver.IP_time << std::endl;
     }
     |
     T_SaveStructuredGrid T_OP_PAR var_image T_COMMA expr_string T_CL_PAR
@@ -4859,6 +4899,7 @@ command:
           GET_VARSTACK_VALUE(InrImage, i);
           Func_VectorImage2StructuredGrid(i.get(),filename.get());
         }
+/*
         |
         VAR_GLTRANSFORM T_POINT PRINT
         {
@@ -4872,6 +4913,7 @@ command:
           GET_VARSTACK_VALUE(GLTransfMatrix, glmat);
           Func_SaveTransform(glmat.get(),filename.get());
         }
+*/
         |
         T_import_vtk
         {
@@ -5023,7 +5065,7 @@ exprstringlist:
             $$ = sl;
         }
 
-
+//Esta regla esta huerfana, nadie la llama.
 stringlist:
       T_OP_BR exprstringlist T_CL_BR
       {
@@ -5154,8 +5196,8 @@ param_list_decl:
     | T_NUM IDENTIFIER
     {
       IdentifierInfo::ptr ident($2);
-      cout << "param_list_decl: T_NUM IDENTIFIER" << endl;
-      cout << ident->GetName().c_str() << endl;
+     std::cout << "param_list_decl: T_NUM IDENTIFIER" << std::endl;
+     std::cout << ident->GetName().c_str() << std::endl;
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_float);
       $$ = pl;
@@ -5427,9 +5469,9 @@ instr_block: begin_block
           {
         $$=$2;
         if (GB_debug)
-          cerr << format("ablock : %s")
+          std::cerr << format("ablock : %s")
                   % $2->GetBody()
-                << endl;
+                << std::endl;
           };
 
 begin_block: ;
@@ -6066,13 +6108,14 @@ float_variable:
       float val = (int) $1;
       ADD_VARSTACK_FLOAT(val);
     }
+/*
     | VAR_FILE T_POINT T_scan_float T_OP_PAR expr_string T_CL_PAR
     {
     /**
       Description:
         Scans a float number in the given file and based on the
         given formatting expression.
-    **/
+    ** /
       float res;
       GET_VARSTACK_VALUE(FILE,file);
       boost::shared_array<char> format( $5);
@@ -6113,6 +6156,7 @@ float_variable:
       (*st) = res;
       ADD_VARSTACK_FLOAT(val);
     }
+*/
     ;
 
 
@@ -6269,7 +6313,7 @@ image:
           // add to image history
           if (driver.InConsole())
             GB_main_wxFrame->GetImagesHistory()
-                           ->AddFileToHistory(wxString::FromAscii(st.get()));
+                           ->AddFileToHistory(wxString(st.get(),wxConvUTF8));
           ADD_VARSTACK(InrImage,res);
         }
       }
@@ -6332,7 +6376,6 @@ image:
       {
           int res;
           string name;
-          string inc_cmd; // increment the command line string
 
           res=AskImage(name);
           if (!res) {
@@ -6350,13 +6393,14 @@ image:
                               filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
                               filename.GetPathSeparator(wxPATH_UNIX)+
                               filename.GetFullName());
-          driver.res_print(newname.mb_str());
+          driver.res_print(newname.mb_str(wxConvUTF8));
           driver.res_print("\n");
-          inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
+          wxString inc_cmd; // increment the command line string
+          inc_cmd = wxT(" \"")+newname+wxT("\" // from browser ");
 
           if (driver.InConsole()) {
             GB_main_wxFrame->GetConsole()
-                            ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+                            ->IncCommand(inc_cmd);
             GB_main_wxFrame->GetImagesHistory()
                            ->AddFileToHistory(newname);
           }
@@ -7177,8 +7221,8 @@ image:
       extent->SetRelative(im.get());
   
       //extent->print();
-      //cout << "xmax = " << (int)  extent->Xmax() << endl;
-      //cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
+      //cout << "xmax = " << (int)  extent->Xmax() << std::endl;
+      //cout << "xmax = " << (int)  round((double)extent->Xmax()) << std::endl;
       InrImage::ptr res ( Func_SubImage( im.get(),
                   (int)  round((double)extent->Xmin()),
                   (int)  round((double)extent->Ymin()),
@@ -7252,6 +7296,7 @@ image:
     FinSi
     ADD_VARSTACK_PTR(InrImage,res);
       }
+/*
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
@@ -7321,7 +7366,7 @@ image:
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage, im);
     float Imin = $9;
     float Imax = $11;
@@ -7345,7 +7390,7 @@ image:
       Grayscale morphological opening
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_open( im.get(),
                     $5,  $7));
@@ -7371,7 +7416,7 @@ image:
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage, im);
     float Imin = $9;
     float Imax = $11;
@@ -7412,6 +7457,7 @@ image:
     FinSi
     ADD_VARSTACK_PTR(InrImage,res);
       }
+*/
 /*
       |
       AnisoGS T_POINT T_GetOutput
@@ -7970,7 +8016,7 @@ image:
         FinPour
         FinPour
         FinPour
-        //cout << "(*res)(10,20,0)=" << (*res)(10,20,0) << endl;
+        //cout << "(*res)(10,20,0)=" << (*res)(10,20,0) << std::endl;
         ADD_VARSTACK_PTR(InrImage,res);
         }
         | T_Ypos T_OP_PAR expr_var  T_CL_PAR
@@ -8080,6 +8126,7 @@ image:
         FinPour
         ADD_VARSTACK_PTR(InrImage,res);
         }
+/*
         |
         VAR_SURFDRAW T_POINT T_getimage
         {
@@ -8094,7 +8141,7 @@ image:
           YYABORT;
 /*
           ADD_VARSTACK(InrImage,(*(Viewer3D_ptr*) $1->Pointer())->GetInrImage());
-*/
+* /
     }
     |
 /*    VAR_IMAGEDRAW T_POINT T_getimage
@@ -8102,8 +8149,8 @@ image:
       //GET_VARSTACK_OBJECT(DessinImage, imdraw)
       GET_VARSTACK_VALUE(DessinImage, imdraw)
       ADD_VARSTACK(InrImage, imdraw->GetInrImage());
-    }
-    |*/
+    }*/
+    |
     T_threscross T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
@@ -8570,7 +8617,7 @@ image:
             Repeter
               //pos = (int) im2->ValeurBuffer();
               int pos = (int) (im1->SpaceToVoxelX(im2->ValeurBuffer())+0.5);
-              //cout << boost::format(" im2->ValeurBuffer() = %1% pos = %2%")%im2->ValeurBuffer() % pos << endl;
+              //cout << boost::format(" im2->ValeurBuffer() = %1% pos = %2%")%im2->ValeurBuffer() % pos << std::endl;
               Si (pos<0)  AlorsFait pos = 0;
               Si (pos>=im1->DimX()) 
                           AlorsFait pos = im1->DimX()-1;
@@ -8994,7 +9041,7 @@ primary_var:
           Kept for compatibility.
        **/
       int initial_size = $3;
-      BasicVariable::ptr v = CreateVar_SurfacePoly( new SurfacePoly());
+      BasicVariable::ptr v = WrapClass_SurfacePoly::CreateVar( new SurfacePoly());
 
       // Now create the vector 
       VarVector* vv = new VarVector();
@@ -9002,7 +9049,7 @@ primary_var:
         for (int i=0; i<initial_size; i++)
           vv->push_back(v->NewCopy());
       }
-      BasicVariable::ptr new_var = CreateVar_VarVector(vv);
+      BasicVariable::ptr new_var = AMILabType<VarVector>::CreateVar(vv);
       driver.var_stack.AddVar(new_var);
     }
     |
@@ -9075,7 +9122,7 @@ primary_var:
           Description: 
             Call to a function, returning a variable
         ** /
-        //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
+        //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << std::endl;
         // 1. check the variable type
         GET_CHECK_VARSTACK(var)
         ParamList::ptr param($3);
@@ -9173,7 +9220,7 @@ postfix_var:
             object->GetContext()->GetVar(ident->GetName().c_str()));
     
           if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
-            //cout << "returning variable" << endl;
+            //cout << "returning variable" << std::endl;
             //newvar->display();
             driver.var_stack.AddVar(newvar);
           } else {
@@ -9190,7 +9237,7 @@ postfix_var:
           Description: 
             Call to a function, returning a variable
         **/
-        //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
+        //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << std::endl;
         // 1. check the variable type
         GET_CHECK_VARSTACK(var)
         ParamList::ptr param($3);
@@ -9315,8 +9362,8 @@ postfix_var:
     extent->SetRelative(im.get());
 
     //extent->print();
-    //cout << "xmax = " << (int)  extent->Xmax() << endl;
-    //cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
+    //cout << "xmax = " << (int)  extent->Xmax() << std::endl;
+    //cout << "xmax = " << (int)  round((double)extent->Xmax()) << std::endl;
     InrImage::ptr res ( Func_SubImage( im.get(),
                 (int)  round((double)extent->Xmin()),
                 (int)  round((double)extent->Ymin()),
@@ -9362,7 +9409,7 @@ prefix_var:
   }
   | T_SUB  prefix_var %prec prefix
   {
-    //cout << "T_SUB  cast_var  " << endl;
+    //cout << "T_SUB  cast_var  " << std::endl;
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(-(*var));
   }
@@ -9563,6 +9610,10 @@ equality_var:
 and_var:
   equality_var %prec SHIFT_THERE
   | and_var T_AND equality_var
+  {
+    GET_CHECK_VARSTACK(var2)
+    driver.err_print("binary operator & between variables not defined at the moment ...\n");
+  }
   ;
 
 exclusive_or_var:
@@ -9572,6 +9623,10 @@ exclusive_or_var:
 inclusive_or_var:
   exclusive_or_var %prec SHIFT_THERE
   | inclusive_or_var T_OR exclusive_or_var
+  {
+    GET_CHECK_VARSTACK(var2)
+    driver.err_print("binary operator | between variables not defined at the moment ...\n");
+  }
   ;
 
 logical_and_var:
@@ -9631,7 +9686,7 @@ assignment_var:
   conditional_var %prec SHIFT_THERE
   | conditional_var ASSIGN_OP assignment_var
   {
-    //cout << "assignment_var" << endl;
+    //cout << "assignment_var" << std::endl;
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
     if (var1->GetPtrCounter()==1) {
@@ -9641,7 +9696,7 @@ assignment_var:
   }
   | conditional_var LEFT_ASSIGN assignment_var
   {
-    //cout << "assignment_var" << endl;
+    //cout << "assignment_var" << std::endl;
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1).left_assign(var2));
@@ -9676,7 +9731,7 @@ expr_var:
   assignment_var
   ;
 
-
+/*
 gltransform: VAR_GLTRANSFORM {
             GET_VARSTACK_VALUE(GLTransfMatrix,glt);
             GLTransfMatrix* newglt;
@@ -9728,6 +9783,7 @@ gltransform: VAR_GLTRANSFORM {
          }
       }
 ;
+*/
 
 matrix_variable: 
       T_Matrix T_OP_PAR expr T_COMMA expr T_CL_PAR
@@ -9901,7 +9957,7 @@ surface:
         driver.err_print("Isosurface failed!");
         YYABORT;
       }
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -9913,7 +9969,7 @@ surface:
               $5,
               NULL,
               2);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -9935,7 +9991,7 @@ surface:
               $5,
               mask.get());
       if (surf==NULL) driver.err_print("Isosurface failed!");
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -9969,7 +10025,7 @@ surface:
         YYABORT;
       }
 
-      BasicVariable::ptr res(CreateVar_SurfacePoly(lines));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(lines));
       driver.var_stack.AddVar(res);
 
       delete crestlines;
@@ -9980,7 +10036,7 @@ surface:
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
       SurfacePoly* surf;
       surf = Func_decimate( varsurf.get());
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -9990,7 +10046,7 @@ surface:
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
 
       newsurf = Func_decimate( varsurf.get(), $5 );
-      BasicVariable::ptr res(CreateVar_SurfacePoly(newsurf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(newsurf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -9999,7 +10055,7 @@ surface:
       SurfacePoly* surf;
       GET_VARSTACK_VALUE(InrImage, im);
       surf = Func_vtkMarchingCubes(im.get(),$5);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10009,7 +10065,7 @@ surface:
       GET_VARSTACK_OBJECT(SurfacePoly,surf)
 
       newsurf = Func_vtkSmooth(surf.get(), (int) $5);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(newsurf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(newsurf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10023,14 +10079,14 @@ surface:
         driver.err_print("vtkWindowedSinc failed!");
         YYABORT;
       }
-      BasicVariable::ptr res(CreateVar_SurfacePoly(newsurf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(newsurf));
       driver.var_stack.AddVar(res);
     }
     |
     T_Surface T_OP_PAR T_CL_PAR
     {
       SurfacePoly* surf = new SurfacePoly();
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10039,7 +10095,7 @@ surface:
       boost::shared_array<char> filename( $2);
       SurfacePoly* surf = new SurfacePoly();
       surf->Read(filename.get());
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
         |
@@ -10055,7 +10111,7 @@ surface:
         boost::shared_array<char> filename( $3);
         SurfacePoly* surf;
         surf = Func_ReadCTALine(filename.get());
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
       |
@@ -10074,7 +10130,7 @@ surface:
         boost::shared_array<char> filename( $3);
 
         surf = Func_ReadCTALine(filename.get(), (int) $5);
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
       |
@@ -10093,7 +10149,7 @@ surface:
           driver.err_print("Skeleton2lines() error ... \n");
           YYABORT;
         } else {
-          BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+          BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
           driver.var_stack.AddVar(res);
         }
     }
@@ -10123,7 +10179,7 @@ surface:
         driver.err_print("SmoothLines() error ... \n");
         YYABORT;
       } else {
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
     }
@@ -10152,7 +10208,7 @@ surface:
         driver.err_print("SmoothLines() error ... \n");
         YYABORT;
       } else {
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
     }
@@ -10169,7 +10225,7 @@ surface:
         driver.err_print("ResampleLines() error ... \n");
         YYABORT;
       } else {
-        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
         driver.var_stack.AddVar(res);
       }
     }
@@ -10196,7 +10252,7 @@ surface:
         driver.err_print("Func_shortestpath () error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10230,7 +10286,7 @@ surface:
         driver.err_print("Func_shortestpath_image () error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10262,7 +10318,7 @@ surface:
         driver.err_print("Func_path_from_displ() error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10309,7 +10365,7 @@ surface:
         driver.err_print("Func_path_from_vectfield() error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |
@@ -10351,7 +10407,7 @@ surface:
         driver.err_print("Func_path_from_vectfield() error ... \n");
         YYABORT;
       FinSi
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_CL_PAR
@@ -10360,7 +10416,7 @@ surface:
       SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get());
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_CL_PAR
@@ -10382,7 +10438,7 @@ surface:
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get(), (int) $5 );
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
@@ -10393,7 +10449,7 @@ surface:
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get(),minth,maxth);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_vtkCreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
@@ -10404,7 +10460,7 @@ surface:
       float maxth = $7;
 
       surf = AMIFluid::Func_vtkCreateFlatMesh(im.get(),minth,maxth);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_CL_PAR
@@ -10440,7 +10496,7 @@ surface:
       float maxth = $7;
 
       surf = AMIFluid::Func_CreateVolume(input.get(), minth, maxth, lowpos.get(), highpos.get());
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
@@ -10482,7 +10538,7 @@ surface:
 
       surf = AMIFluid::Func_CreateVolume(input.get(), minth, maxth, 
                                           lowpos.get(), highpos.get(), colors.get(), alpha);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
@@ -10528,7 +10584,7 @@ surface:
 
       surf = AMIFluid::Func_CreateVectors(alt1.get(),displ.get(),alt2.get(), 
                                           stepx, stepy, scale, type);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -10578,7 +10634,7 @@ surface:
       surf = AMIFluid::Func_CreateVectors(alt1.get(),
           displ.get(),
           alt2.get(), stepx, stepy, scale, type,style);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_CL_PAR
@@ -10620,7 +10676,7 @@ surface:
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateVectors(alt1.get(),displ.get(),alt2.get(), stepx, stepy, scale);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateVectorsFromField T_OP_PAR expr_image  T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr  T_COMMA expr T_CL_PAR
@@ -10651,7 +10707,7 @@ surface:
       stepz = macro_max(stepz,1);
       surf = AMIFluid::Func_CreateVectors(displ.get(), 
               stepx, stepy, stepz,  scale, style);
-      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr res(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(res);
     }
     | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
@@ -10683,7 +10739,7 @@ surface:
               v2.get(),
               v3.get(),
               stepx,stepy,stepz,res);
-      BasicVariable::ptr varres(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr varres(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(varres);
     }
     | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr_image T_COMMA  expr_image T_CL_PAR
@@ -10721,7 +10777,7 @@ surface:
                                     v3.get(),stepx,stepy,stepz,res,
                                     colors.get(),
                                     mask.get());
-      BasicVariable::ptr varres(CreateVar_SurfacePoly(surf));
+      BasicVariable::ptr varres(WrapClass_SurfacePoly::CreateVar(surf));
       driver.var_stack.AddVar(varres);
     }
 ;
@@ -10735,8 +10791,10 @@ identifier
   Variable not included in variable expression
 */
 
+/*
 variable_with_assign:
          VAR_GLTRANSFORM;
+*/
 
 function_variable:
          VAR_C_FUNCTION
@@ -10750,16 +10808,19 @@ variable_without_assign:
 //        function_variable
 //        | VAR_IMAGEDRAW
 //        |
-         VAR_SURFDRAW
-        | VAR_FILE
-        | VAR_AMI_CLASS
+//         VAR_SURFDRAW
+//        |
+//         VAR_FILE
+//        | 
+          VAR_AMI_CLASS
         | VAR_ARRAY_IMAGE
         ;
 
 
 unprocessed_variable:
-    variable_with_assign
-    | variable_without_assign
+    //variable_with_assign
+    //| 
+    variable_without_assign
 
 /*
   Variable included in variable expression
@@ -10880,7 +10941,7 @@ image_extent:
   
       comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
           % xmin % xmax % ymin % ymax % zmin % zmax);
-      if (GB_debug) cerr << "********* extent ****" << endl;
+      if (GB_debug) std::cerr << "********* extent ****" << std::endl;
       if (driver.InConsole()) GB_main_wxFrame->GetConsole()->IncCommand(comment);
   
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
@@ -10924,7 +10985,7 @@ void CB_update_imagelist( void* imagelist_gui)
 void wxScheduleTimer::Notify()
 //   -----------------------
 {
-  //cout << "Notify()" << endl;
+  //cout << "Notify()" << std::endl;
   GB_driver.yyip_call_function(var->Pointer().get());
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;

@@ -711,8 +711,8 @@ void ParamBox::FixeVisible( int id, unsigned char visible)
 
   if ((wxGenericWidget*) _tab_param[id].GetWidget() !=NULL) {
 
-    if (visible!=_tab_param[id].GetSizerItem()->IsShown())
-    _tab_param[id].GetSizerItem()->Show(visible);
+    if ((bool)visible!=_tab_param[id].GetSizerItem()->IsShown())
+    _tab_param[id].GetSizerItem()->Show((bool)visible);
 
   }
   

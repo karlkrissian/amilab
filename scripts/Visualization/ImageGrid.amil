@@ -64,20 +64,22 @@ if (!exists(ImageGridClass)) {
           _in_draw.SetLineParameters(::thickness,::style)
 
           # draw vertical
-          _xmin = _in_draw.GetXmin()
-          _xmax = _in_draw.GetXmax()
-          _ymin = _in_draw.GetYmin()
-          _ymax = _in_draw.GetYmax()
+          _xmin = (FLOAT)_in_draw.GetXmin()
+          _xmax = (FLOAT)_in_draw.GetXmax()
+          _ymin = (FLOAT)_in_draw.GetYmin()
+          _ymax = (FLOAT)_in_draw.GetYmax()
           for c=_xmin+1 to _xmax { 
-            _in_draw.DrawLineZ(c-0.5,_ymin-0.5,c-0.5,_ymax+0.5); 
+            _in_draw.DrawLineZ((FLOAT)c-0.5,_ymin-0.5,(FLOAT)c-0.5,_ymax+0.5); 
           }
 
           # draw horizontal
           for l=_ymin+1 to _ymax { 
-            _in_draw.DrawLineZ(_xmin-0.5,l-0.5,_xmax+0.5,l-0.5); 
+            _in_draw.DrawLineZ(_xmin-0.5,(FLOAT)l-0.5,_xmax+0.5,(FLOAT)l-0.5); 
           }
 
           _in_draw->DrawingAreaDisplay()
+        } else {
+          eval "show %1%;" % ::input_name
         }
       }
       # end if enable

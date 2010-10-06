@@ -9,7 +9,7 @@ NoMessageDialog(1)
 # test_dessinimage_window_size.amil
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Check the following methods:
-#                              - _SetWindowSize
+#                              - SetWindowSize
 #
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -18,6 +18,19 @@ func "ctest/ctest_config.amil"
 OK = 1 # The test was successful
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
 
 # Create initial image
 func "SyntheticImages/create_torus_gui.amil"
@@ -55,21 +68,21 @@ height=250
 printn "\n\t\t Change the window size:\n"
 printn "\t\t\t\t Width=%1% " % width
 printn "\t\t\t\t Height=%1% " % height
-torus_draw._SetWindowSize(width,height)
+torus_draw.SetWindowSize(width,height)
 
 width=-100
 height=100
 printn "\n\t\t Change the window size:\n"
 printn "\t\t\t\t Width=%1% " % width
 printn "\t\t\t\t Height=%1% " % height
-torus_draw._SetWindowSize(width,height)
+torus_draw.SetWindowSize(width,height)
 
 width=151000
 height=25000
 printn "\n\t\t Change the window size:\n"
 printn "\t\t\t\t Width=%1% " % width
 printn "\t\t\t\t Height=%1% " % height
-torus_draw._SetWindowSize(width,height)
+torus_draw.SetWindowSize(width,height)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

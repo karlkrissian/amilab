@@ -5,20 +5,11 @@ MESSAGE("***** Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Zinrimage
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/Math
-  ${AMILAB_SOURCE_DIR}/AMImage
+  ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/wxParams
-  ${AMILAB_SOURCE_DIR}/myVTK4
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
-  ${Boost_INCLUDE_DIR}
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -32,8 +23,8 @@ SET(  WrapVTK_SRCS
 )
 
 SET(WrapVTK_HDRS
-	vtkwrap.h
-	wrapVTK.h
+	../include/vtkwrap.h
+	../include/wrapVTK.h
 )
 
 SET(WrapVTK_SRCS

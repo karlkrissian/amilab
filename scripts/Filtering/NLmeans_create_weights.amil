@@ -7,7 +7,7 @@
 #
 
 if (!exists(NLMweightsClass)) {
-  ami_import->Filters()
+  ami_import.Filters()
   func "Noise/AddRiceNoise.amil"
 
   Class NLMweightsClass {
@@ -59,10 +59,10 @@ if (!exists(NLMweightsClass)) {
     proc ::CreateWeights( NUM px, NUM py, NUM wsize, NUM th) {
       i_w <<= ::weights 
       if (::smoothing>0.001) {
-        i1s = filter(::weights,::smoothing,0,0,0)
-        i_w = filters->NSim(i1s,px,py,0,wsize)
+        i1s = filter(::input,::smoothing,0,0,0)
+        i_w = global::filters.NSim(i1s,px,py,0,wsize)
       } else {
-        i_w = filters->NSim(::weights,px,py,0,wsize)
+        i_w = global::filters.NSim((FLOAT)::input,px,py,0,wsize)
       }
       # get a smaller window around
       xmin = px-::winsize
@@ -93,8 +93,8 @@ if (!exists(NLMweightsClass)) {
     
     
     proc ::Reset() {
-      ::weights <<=  ::input
-      ::cont    <<=  ::input*0
+      ::weights <<=  ((FLOAT) ::input)/max(::input)
+      ::cont    <<=  (FLOAT) ::input*0
       show ::input
     }
     
@@ -103,7 +103,7 @@ if (!exists(NLMweightsClass)) {
         show ::weights;
         ::weights_draw.SetIsoContour(0,::cont,0.5)
         ::weights_draw.DrawIsoContour(0,1)
-        ::input_draw._compare(::weights_draw)
+        ::input_draw.compare(&::weights_draw)
     }
     
     proc ::DrawWeights() {

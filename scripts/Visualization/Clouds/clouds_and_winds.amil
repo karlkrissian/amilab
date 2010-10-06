@@ -129,11 +129,11 @@ earth.SetColorMaterial(1)
 
 proc SetClassInfo(NUM classnum, NUM minval, NUM maxval, NUM r, NUM g, NUM b) {
   # color of the class 0
-  colors.setpos(classnum,0,0)
+  colors._setpos(classnum,0,0)
   colors.set(r,g,b) 
-  minclass.setpos(classnum,0,0)
+  minclass._setpos(classnum,0,0)
   minclass.set(minval)
-  maxclass.setpos(classnum,0,0)
+  maxclass._setpos(classnum,0,0)
   maxclass.set(maxval)
 }
 
@@ -608,9 +608,9 @@ CB_DrawVectors()
 #---------------------------------------------
 proc CB_update_visible() {
   visclass=Image(UCHAR,numclasses,1,1)
-  visclass.setpos(0,0,0); visclass.set(class0_visible)
-  visclass.setpos(1,0,0); visclass.set(class1_visible)
-  visclass.setpos(2,0,0); visclass.set(class2_visible)
+  visclass._setpos(0,0,0); visclass.set(class0_visible)
+  visclass._setpos(1,0,0); visclass.set(class1_visible)
+  visclass._setpos(2,0,0); visclass.set(class2_visible)
 
   for n=0 to numclasses-1 {
     clouds[n].SetVisible(   cloud_visible *visclass(n))
@@ -620,7 +620,7 @@ proc CB_update_visible() {
   for n=0 to numclasses-2 {
     vv[n].SetVisible(Vvect_visible)
   }
-  earth_draw.Paint
+  earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -628,7 +628,7 @@ proc CB_cloud_opacity() {
     for n=0 to numclasses-1 {
       clouds[n].SetOpacity(cloud_opacity)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -636,7 +636,7 @@ proc CB_cloud2_opacity() {
     for n=0 to numclasses-1 {
       clouds2[n].SetOpacity(cloud2_opacity)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -644,7 +644,7 @@ proc CB_HORvect_opacity() {
     for n=0 to numclasses-1 {
       displvect[n].SetOpacity(HORvect_opacity)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -652,7 +652,7 @@ proc CB_VERvect_opacity() {
     for n=0 to numclasses-2 {
       vv[n].SetOpacity(VERvect_opacity)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -665,7 +665,7 @@ proc CB_display_visual() {
       earth.SetColorMaterial(0)
       earth.SetOpacity(0)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -678,7 +678,7 @@ proc CB_display_earth() {
       e1.SetColorMaterial(0)
       e1.SetOpacity(0)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 

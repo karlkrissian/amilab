@@ -95,11 +95,11 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
     MeshType::Pointer output = MeshType::New();
 
     // Convert from InrImage to ITK
-    cout << "Converting image to ITK format " << endl;
+   std::cout << "Converting image to ITK format " << std::endl;
 
     image = InrToITK<InternalPixelType,Dimension>(input,region);
 
-    cout << "Conversion done" << endl;
+   std::cout << "Conversion done" << std::endl;
 
     typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
     BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
@@ -123,17 +123,17 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
     int num_points=0;
 
     // Conversion to amilab type to show it
-    for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
+    for (int i=0;i<(int) BackTracking->GetOutput()->GetNumberOfPoints();i++)
     {
         pointID = i;
-        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
+//        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
         surf->AddPoint(pp[0],pp[1],0);
         surf->LineAddPointNumber(num_points);
         num_points++;
     }
     surf->EndLine();
 
-    return CreateVar_SurfacePoly(surf);
+    return WrapClass_SurfacePoly::CreateVar(surf);
 
 } // wrap_itkBackTrackingMeshFilter2D
 
@@ -188,11 +188,11 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
     MeshType::Pointer output = MeshType::New();
 
     // Convert from InrImage to ITK
-    cout << "Converting image to ITK format " << endl;
+   std::cout << "Converting image to ITK format " << std::endl;
 
     image = InrToITK<InternalPixelType,Dimension>(input,region);
 
-    cout << "Conversion done" << endl;
+   std::cout << "Conversion done" << std::endl;
 
     typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
     BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
@@ -217,16 +217,16 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
     surf->NewLine();
     int num_points=0;
 
-    for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
+    for (int i=0;i<(int)BackTracking->GetOutput()->GetNumberOfPoints();i++)
     {
         pointID = i;
-        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
+//        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
         surf->AddPoint(pp[0],pp[1],pp[2]);
         surf->LineAddPointNumber(num_points);
         num_points++;
     }
     surf->EndLine();
 
-    return CreateVar_SurfacePoly(surf);
+    return WrapClass_SurfacePoly::CreateVar(surf);
 
 } // wrap_itkBackTrackingMeshFilter3D

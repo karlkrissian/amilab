@@ -69,7 +69,7 @@ if (!exists(itkNLMeansClass)) {
       
       show ::input
       show ::nlm
-      ::input_draw._compare(&::nlm_draw)
+      ::input_draw.compare(&::nlm_draw)
     } 
     
     proc ::Save() \
@@ -151,17 +151,17 @@ if (!exists(itkNLMeansClass)) {
 # Main
 #----------------------------
 
-if (!exists(itknlm)) {
+if (!exists(itknlm)) { 
 
   itkNLmeansClass itknlm
   
-  if (argc>=1) {
+  if (argc>=1) { 
     printn "reading image"
     input = Image($1)
     itknlm->image_name = "input"
     itknlm->win.Update(-1)
   }
 
-} else {
+} else { 
   InfoDialog "The script seems to be already loaded."
 }

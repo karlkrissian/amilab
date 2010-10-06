@@ -29,7 +29,7 @@ phantom=Image "phantom.ami.gz"
 // Connective=9
 
 # function to compute the statistics
-func "Filtering/AnisoNRAD_gui.amil"
+func "Denoising/AnisoNRAD/AnisoNRADClass.amil"
 
 
 proc InitBessel2( NUM _steps) {
@@ -74,7 +74,7 @@ proc ReferenceAddBias( NUM _sigma, IMAGE _refbias) {
     if (_k==1000) { print "."; _k=0; } 
     _meanrician=0
     MeanRician(_i,_sigma,&_meanrician)
-    _imval.setpos(_i,0,0)
+    _imval._setpos(_i,0,0)
     if (_meanrician>=0)&&(_meanrician<=_maxval) {
       _imval.set(_meanrician)
     }

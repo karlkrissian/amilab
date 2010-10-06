@@ -137,7 +137,7 @@ public:
     return _enabled;
   }
 
-  virtual void Enable(bool enable = true) {  }
+  virtual void EnableWidget(bool enable = true) {  }
 
 };
 

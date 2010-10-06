@@ -15,7 +15,6 @@
 
 #include <stack>
 #include "inrimage.hpp"
-#include <wx/filename.h>
 #include "ami_class.h"
 #include "amilab_messages.h"
 

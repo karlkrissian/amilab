@@ -35,7 +35,7 @@ typedef enum {
   type_ami_object,       /**< AMI Language object (instance of a class, or namespace) */
   type_paramwin,         /**< Parameter window */
   type_matrix,           /**< matrix */
-  type_gltransform,      /**< OpenGL transformation */
+//  type_gltransform,      /**< OpenGL transformation */
   type_array,            /**< Array */
 } vartype; //! types of variables
  

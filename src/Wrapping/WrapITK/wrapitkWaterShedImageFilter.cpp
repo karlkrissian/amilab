@@ -34,6 +34,7 @@
 #include "itkWatershedImageFilter.h"
 #endif // _WITHOUT_ITK_
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkWaterShedImageFilter.h"
@@ -78,7 +79,7 @@ InrImage* wrap_itkWaterShedImageFilter2D(ParamList* p)
   OutputImageType::Pointer outimage;
 
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+  std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<PixelType,Dimension>(input,region);
 
@@ -95,7 +96,7 @@ InrImage* wrap_itkWaterShedImageFilter2D(ParamList* p)
   outimage = watershed->GetOutput();
    
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
 
@@ -147,7 +148,7 @@ InrImage* wrap_itkWaterShedImageFilter3D(ParamList* p)
   OutputImageType::Pointer outimage;
 
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+  std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<PixelType,Dimension>(input,region);
   
@@ -164,7 +165,7 @@ InrImage* wrap_itkWaterShedImageFilter3D(ParamList* p)
   outimage = watershed->GetOutput();
    
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
 

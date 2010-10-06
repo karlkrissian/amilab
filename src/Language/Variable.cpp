@@ -44,6 +44,7 @@ class FloatMatrix;
 class GLTransfMatrix;
 class VarArray;
 
+#include "VarArray.h"
 
 
 #define VARTYPE_PROP(type,name,isnum) \
@@ -58,7 +59,7 @@ VARTYPE_PROP( long,                 type_long,            true); /// New (added:
 VARTYPE_PROP( int,                  type_int,             true);
 VARTYPE_PROP( unsigned char,        type_uchar,           true)
 VARTYPE_PROP( std::string,          type_string,          false)
-VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
+//VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
 VARTYPE_PROP( FILE,                 type_file,            false)
 VARTYPE_PROP( C_wrap_procedure,     type_c_procedure,     false)
 VARTYPE_PROP( WrapClassMember,      type_class_member,    false)
@@ -69,7 +70,7 @@ VARTYPE_PROP( AMIClass,             type_ami_class,       false)
 VARTYPE_PROP( AMIObject,            type_ami_object,      false)
 //VARTYPE_PROP( ,         type_ami_cpp_object,  false)
 VARTYPE_PROP( FloatMatrix,          type_matrix,          false)
-VARTYPE_PROP( GLTransfMatrix,       type_gltransform,     false)
+//VARTYPE_PROP( GLTransfMatrix,       type_gltransform,     false)
 VARTYPE_PROP( VarArray,             type_array,           false)
 
 #undef VARTYPE_PROP
@@ -99,8 +100,8 @@ template <> std::string Variable<FloatMatrix>::GetValueAsString() const
 template <> double Variable<FloatMatrix>::GetValueAsDouble() const { return 0.0; } 
 
 VARTYPE_DEFAULT( InrImage)
-VARTYPE_DEFAULT( DessinImage)
-VARTYPE_DEFAULT( Viewer3D)
+//VARTYPE_DEFAULT( DessinImage)
+//VARTYPE_DEFAULT( Viewer3D)
 VARTYPE_DEFAULT( FILE)
 VARTYPE_DEFAULT( C_wrap_procedure)
 VARTYPE_DEFAULT( WrapClassMember)
@@ -109,7 +110,7 @@ VARTYPE_DEFAULT( C_wrap_varfunction)
 VARTYPE_DEFAULT( AMIFunction)
 VARTYPE_DEFAULT( AMIClass)
 VARTYPE_DEFAULT( AMIObject)
-VARTYPE_DEFAULT( GLTransfMatrix)
+//VARTYPE_DEFAULT( GLTransfMatrix)
 VARTYPE_DEFAULT( VarArray)
 
 #undef VARTYPE_STRING_DOUBLE
@@ -149,3 +150,82 @@ template<> AMI_DLLEXPORT
 BasicVariable::ptr operator +(const boost::shared_ptr<Variable<float> >& a, 
                               const boost::shared_ptr<Variable<float> >& b);
 */
+
+/*
+  template<> AMI_DLLEXPORT class AMILabType<float> { 
+    
+    static char const* name_as_string() { return "float"; } 
+    
+    static boost::shared_ptr<float> GetValue(BasicVariable::ptr var)  
+    { 
+      boost::shared_ptr<Variable<float> > tmp(      boost::dynamic_pointer_cast<Variable<float> >(var)); 
+      if (tmp.get()) return tmp->Pointer(); 
+      else return boost::shared_ptr<float>();
+    } 
+    
+    static BasicVariable::ptr CreateVar(float& val)  
+    { 
+      boost::shared_ptr<float> valptr(new float(val));
+      Variable<float>::ptr varres( new Variable<float>(valptr));
+      return varres; 
+    } 
+    
+  }; 
+*/
+#include "inrimage.hpp"
+#include "wrapfunction_class.h"
+#include "ami_function.h"
+
+AMI_DEFINE_BASICTYPE(float);
+AMI_DEFINE_BASICTYPE(double);
+AMI_DEFINE_BASICTYPE(long);
+AMI_DEFINE_BASICTYPE(int);
+AMI_DEFINE_BASICTYPE(unsigned char);
+AMI_DEFINE_BASICTYPE(InrImage);
+AMI_DEFINE_BASICTYPE(std::string);
+AMI_DEFINE_BASICTYPE(FloatMatrix);
+AMI_DEFINE_BASICTYPE(AMIFunction);
+AMI_DEFINE_BASICTYPE(AMIClass);
+AMI_DEFINE_BASICTYPE(AMIObject);
+AMI_DEFINE_BASICTYPE(VarArray);
+
+#define AMI_DEFINE_BASICTYPE_NOCONSTRUCT(type) \
+	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
+    \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    { \
+      if (!var.get()) \
+      {\
+        FILE_ERROR("Variable not found");\
+        return boost::shared_ptr<type>();\
+      }\
+      boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(var)); \
+      if (tmp.get()) \
+        return tmp->Pointer(); \
+      else {\
+        BasicVariable::ptr converted = var->TryCast(AMILabType<type>::name_as_string());\
+        if (!converted.get()) {\
+          FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<type>::name_as_string().c_str());\
+          return boost::shared_ptr<type>(); \
+        } else { \
+          boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(converted)); \
+          if (tmp.get()) \
+            return tmp->Pointer(); \
+          else \
+            return boost::shared_ptr<type>(); \
+        }\
+      }\
+    } \
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return BasicVariable::ptr(); \
+    } 
+
+AMI_DEFINE_BASICTYPE_NOCONSTRUCT(C_wrap_procedure);
+AMI_DEFINE_BASICTYPE_NOCONSTRUCT(C_wrap_imagefunction);
+AMI_DEFINE_BASICTYPE_NOCONSTRUCT(C_wrap_varfunction);
+
+
+// abstract
+AMI_DEFINE_BASICTYPE_NOCONSTRUCT(WrapClassMember);

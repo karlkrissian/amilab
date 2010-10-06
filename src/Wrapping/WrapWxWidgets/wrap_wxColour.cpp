@@ -14,74 +14,76 @@
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
+#include "wrapfunction_class.h"
 #include "ami_object.h"
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxColour(  WrapClass_wxColour::ptr& objectptr)
+
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxColour>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("wxColour");
-
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-
-  objectptr->AddMethods(objectptr);
-
-  return amiobject;
+  WrapClass_wxColour::wrap_wxColour construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_wxColour( wxColour* si)
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxColour);
+AMI_DEFINE_VARFROMSMTPTR(wxColour);
+
+/*
+//
+// static member for creating a variable from a pointer to wxColour
+//
+Variable<AMIObject>::ptr WrapClass_wxColour::CreateVar( wxColour* sp)
 {
-  // here wxColour can be deleted
-  boost::shared_ptr<wxColour> _si_ptr( si );
-
-  WrapClass_wxColour::ptr sip(new WrapClass_wxColour(_si_ptr));
-  AMIObject::ptr amiobject(AddWrap_wxColour(sip));
-
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+  boost::shared_ptr<wxColour> _obj_ptr(sp);
+  return 
+    WrapClass<wxColour>::CreateVar(
+      new WrapClass_wxColour(_obj_ptr));
 }
+*/
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxColour( ParamList* p)
+// Method that adds wrapping of wxColour
+//---------------------------------------------------
+
+void  WrapClass_wxColour::
+    wrap_wxColour::SetParametersComments() 
 {
-    char functionname[] = "wxColour";
-    char description[]=" \n\
-      Wrapped wxWindow class. \n\
-See http://docs.wxwidgets.org/stable/wx_wxcolour.html for details \n\
-            ";
-    char parameters[] =" wrapped constructors: \n\
-        - wxColour(): default constructor\n\
-        - wxColour(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha=wxALPHA_OPAQUE) \n";
+  ADDPARAMCOMMENT_TYPE(unsigned char,"Red Component (0-255) (MODE 1)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"Green Component (0-255) (MODE 1)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"Blue Component (0-255) (MODE 1)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"Alpha Component (By default, wxALPHA_OPAQUE) (MODE 1)");
+  return_comments = "A wrapped wxColour object.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxColour::
+    wrap_wxColour::CallMember( ParamList* p)
+{
+  int n=0;
 
-
-  if (!p) HelpAndReturnVarPtr;
+  if (!p) ClassHelpAndReturn;
   if (p->GetNumParam()==0) 
-    return CreateVar_wxColour(new wxColour());
+    return AMILabType<wxColour>::CreateVar(new wxColour());
 
   if (p->GetNumParam()>=3) 
   {
-    int n = 0;
-    int red   = 0;
-    int green = 0;
-    int blue  = 0;
-    int alpha = wxALPHA_OPAQUE;
-  
-    if (!get_int_param(red, p, n))   HelpAndReturnVarPtr;
-    if (!get_int_param(green, p, n)) HelpAndReturnVarPtr;
-    if (!get_int_param(blue, p, n))  HelpAndReturnVarPtr;
-    get_int_param(alpha, p, n,false);
+    n = 0;
 
-    return CreateVar_wxColour(new wxColour( 
+    GET_PARAM(unsigned char,red,0);
+    GET_PARAM(unsigned char,green,0);
+    GET_PARAM(unsigned char,blue,0);
+    GET_PARAM(unsigned char,alpha,wxALPHA_OPAQUE);
+
+    return AMILabType<wxColour>::CreateVar(new wxColour(
       (unsigned char)red,
       (unsigned char)green,
       (unsigned char)blue,
       (unsigned char)alpha));
-  } else
-    HelpAndReturnVarPtr;
+  }
+  else
+    ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
@@ -237,6 +239,27 @@ void WrapClass_wxColour::
 BasicVariable::ptr WrapClass_wxColour::
       wrap_copy::CallMember( ParamList* p)
 {
-  return CreateVar_wxColour( new wxColour(*(_objectptr->_obj)));
+  return AMILabType<wxColour>::CreateVar( new wxColour(*(_objectptr->_obj)));
+}
+
+//---------------------------------------------------
+//  assign
+//---------------------------------------------------
+void WrapClass_wxColour::
+      wrap_assign::SetParametersComments() 
+{
+  return_comments = "wxColour assignment operation.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxColour::
+      wrap_assign::CallMember( ParamList* p)
+{
+  int n = 0;
+  CLASS_GET_OBJECT_PARAM(wxColour,var,_obj);
+
+  if (_obj.get()) {
+    this->_objectptr->_obj = _obj;
+  }
+  return BasicVariable::ptr();
 }
 

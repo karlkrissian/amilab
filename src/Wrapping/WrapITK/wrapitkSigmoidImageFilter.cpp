@@ -35,6 +35,7 @@
 #include "itkImage.h"
 #endif // _WITHOUT_ITK_
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkSigmoidImageFilter.h"
@@ -83,11 +84,11 @@ InrImage* wrap_itkSigmoidImageFilter2D(ParamList* p)
   OutputImageType::Pointer outimage;
  
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+ std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<InternalPixelType,Dimension>(input,region);
 
-  cout << "Conversion done" << endl;
+ std::cout << "Conversion done" << std::endl;
 
   typedef itk::SigmoidImageFilter< InternalImageType, InternalImageType >  SigmoidFilterType;
   SigmoidFilterType::Pointer sigmoidFilter = SigmoidFilterType::New();
@@ -104,7 +105,7 @@ InrImage* wrap_itkSigmoidImageFilter2D(ParamList* p)
   outimage = sigmoidFilter->GetOutput();
   
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
   
@@ -161,11 +162,11 @@ InrImage* wrap_itkSigmoidImageFilter3D(ParamList* p)
   OutputImageType::Pointer outimage;
  
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+ std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<InternalPixelType,Dimension>(input,region);
 
-  cout << "Conversion done" << endl;
+ std::cout << "Conversion done" << std::endl;
 
   typedef itk::SigmoidImageFilter< InternalImageType, InternalImageType >  SigmoidFilterType;
   SigmoidFilterType::Pointer sigmoidFilter = SigmoidFilterType::New();
@@ -182,7 +183,7 @@ InrImage* wrap_itkSigmoidImageFilter3D(ParamList* p)
   outimage = sigmoidFilter->GetOutput();
   
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
 

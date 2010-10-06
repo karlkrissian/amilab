@@ -50,7 +50,7 @@ extern "C" {
 #include "func_isoline.hpp"
 
 #define macro_permute(a,b) temp=a; a=b; b=temp;
-#define min(a,b) ((a)<(b)?(a):(b))
+//#define macro_min(a,b) ((a)<(b)?(a):(b))
 #define val_abs( x) (((x)>=0)?(x):-(x))
 #define epsilon  1E-2
 
@@ -70,7 +70,7 @@ static void SupprimeDoublons( CreeCrest* crest, float eps)
     Vect3D<double> v;
     float          dist;
  
-  cout << "SupprimeDoublons\n";
+ std::cout << "SupprimeDoublons\n";
 
   Pour( i, 0, crest->NbLignes()-1)
     Si crest->NbPoints(i) > 1 Alors
@@ -81,7 +81,7 @@ static void SupprimeDoublons( CreeCrest* crest, float eps)
 
         dist = Norme(v);
         Si dist < eps Alors
-  	  cout << "Norme(v) < eps :" << p2 << endl;
+  	 std::cout << "Norme(v) < eps :" << p2 << std::endl;
           crest->Ligne(i).liste_points.Supprime(j);
           crest->Ligne(i).nb_points--;
           j--;
@@ -197,7 +197,7 @@ CreeCrest* Func_IsoLine( InrImage* input, float Sigma, InrImage* image_masque, I
   // Calcul de la fonction (Resultat)
 //  image_resultat->InitBuffer();
   //
-  cout << "Creation des objets CreeCrest ...\n";
+ std::cout << "Creation des objets CreeCrest ...\n";
   crest_lignes  = new CreeCrest( image->_tx, image->_ty, image->_tz);
 
   calcul_isolignes = new CalculIsoLignes(MY_FILTRE_CONV,

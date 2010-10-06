@@ -30,6 +30,7 @@
 
 #include "AMILabConfig.h"
 
+#include "paramlist.h"
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "wrapITK.h"
@@ -109,12 +110,6 @@ void AddWrapITK(){
  */
 void wrap_ITK( ParamList* p)
 {
-    char functionname[] = "ITK";
-    char description[]=" \n\
-      Adds wrapping for ITK. \n\
-            ";
-    char parameters[] =" \n\
-            ";
 
   AddWrapITK();
 }

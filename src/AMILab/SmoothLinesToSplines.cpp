@@ -66,7 +66,7 @@ SurfacePoly* Func_SmoothLinesToSplines(SurfacePoly* s, float samplingStep )
   Pour( l, 0, nb_lines-1)
     line = s->GetLine(l);
     nb_points = line.NbElts();
-    cout << "nb_points = "<< nb_points << endl;
+   std::cout << "nb_points = "<< nb_points << std::endl;
     if (nb_points>1) {
       //printf("line[0]=%d\n"          ,line[0]);
       //printf("line[nb_points-1]=%d\n",line[nb_points-1]);
@@ -112,7 +112,7 @@ SurfacePoly* Func_SmoothLinesToSplines(SurfacePoly* s, float samplingStep )
          preSampleX = InterpolatedValue(coefX, nb_points, 1,n*pos, 0, 2);
          preSampleY = InterpolatedValue(coefY, nb_points, 1,n*pos, 0, 2);
          preSampleZ = InterpolatedValue(coefZ, nb_points, 1,n*pos, 0, 2);
-        cout << " " << preSampleX << " " << preSampleY << " " << preSampleZ << endl;
+       std::cout << " " << preSampleX << " " << preSampleY << " " << preSampleZ << std::endl;
          estimatedLength +=  sqrtf( (preSampleX - preSampleXPrec)*(preSampleX - preSampleXPrec) +
                                     (preSampleY - preSampleYPrec)*(preSampleY - preSampleYPrec) +
                                     (preSampleZ - preSampleZPrec)*(preSampleZ - preSampleZPrec));
@@ -144,21 +144,21 @@ SurfacePoly* Func_SmoothLinesToSplines(SurfacePoly* s, float samplingStep )
 
         if (currentLength>=targetLength-1E-10) {
            targetLength += samplingStep;
-            cout  << " position " << n*pos 
+           std::cout  << " position " << n*pos 
                   << " addpoint " << n << " id " << idPoints 
                   << " " << preSampleX 
                   << " " << preSampleY 
-                  << " " << preSampleZ << endl;
+                  << " " << preSampleZ << std::endl;
            res->AddPoint(preSampleX, preSampleY, preSampleZ);
            res->LineAddPointNumber(idPoints);
            idPoints++;
         } else {
             if (n==nbEpsilonSamplePoints) {
-               cout << " position " << n*pos
+              std::cout << " position " << n*pos
                     << "addpoint " << n << " id " << idPoints
                     << " " << preSampleX 
                     << " " << preSampleY
-                    << " " << preSampleZ << endl;
+                    << " " << preSampleZ << std::endl;
                res->AddPoint(preSampleX, preSampleY, preSampleZ);
                res->LineAddPointNumber(idPoints);
                idPoints++;

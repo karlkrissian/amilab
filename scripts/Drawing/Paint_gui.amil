@@ -59,7 +59,7 @@ Class PaintClass : public ScriptGui {
         printn y
         printn z
 
-        ::input.setpos(x,y,z)
+        ::input._setpos(x,y,z)
         ::input.set(::intensity)
         schedule(3,::Update);
       }

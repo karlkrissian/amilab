@@ -21,41 +21,47 @@
 #include "wrap_wxColour.h"
 #include <boost/shared_ptr.hpp>
 
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_FenetreDessin(  WrapClass_FenetreDessin::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<FenetreDessin>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("FenetreDessin");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  WrapClass_FenetreDessin::wrap_FenetreDessin construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_FenetreDessin( FenetreDessin* si)
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(FenetreDessin);
+
+//
+// static member for creating a variable from a pointer to wxHtmlWindow
+//
+Variable<AMIObject>::ptr WrapClass_FenetreDessin::CreateVar( FenetreDessin* sp)
 {
-  // here FenetreDessin can be deleted
-  boost::shared_ptr<FenetreDessin> _si_ptr( si );
-  WrapClass_FenetreDessin::ptr sip(new WrapClass_FenetreDessin(_si_ptr));
-  AMIObject::ptr amiobject(AddWrap_FenetreDessin(sip));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+  return 
+    WrapClass<FenetreDessin>::CreateVar(
+      new WrapClass_FenetreDessin(
+        boost::shared_ptr<FenetreDessin>(sp,
+        wxwindow_nodeleter<FenetreDessin>() 
+        // deletion will be done by wxwidgets
+        ))
+    );
 }
+
+
 
 //---------------------------------------------------
 //  FenetreDessin Constructor
 //---------------------------------------------------
-void  wrap_FenetreDessin::SetParametersComments() 
+void  WrapClass_FenetreDessin::
+      wrap_FenetreDessin::SetParametersComments() 
 {
   ADDPARAMCOMMENT("Object of a type that inherit from FenetreDessin.");
   return_comments = "A wrapped FenetreDessin object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_FenetreDessin::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_FenetreDessin::
+      wrap_FenetreDessin::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;

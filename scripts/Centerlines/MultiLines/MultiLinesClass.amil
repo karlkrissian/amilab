@@ -57,9 +57,9 @@ if (!exists(MultiLinesClass)) {
       ::keephighest  = 100
 
       # multiscale evolution
-      ::radmin       = 0.5
-      ::radmax       = 5
-      ::numrad       = INT(5)
+      ::radmin       = 0.5, "minimal radius."
+      ::radmax       = 5, "maximal radius"
+      ::numrad       = INT(5), "number of radii."
 
       # Compute local maxima
       ::local_maxima      = UCHAR(0), "Compute local maxima"
@@ -139,7 +139,7 @@ if (!exists(MultiLinesClass)) {
     proc ::ComputeResponse(NUM sigma, IMAGE response,  IMAGE v1, IMAGE v2, IMAGE v3) \
     {
     #    ---------------
-      printn "ComputeResponse"
+      printn "ComputeResponse with sigma = %1%" % sigma
     
       response.initvalue(0)
     
@@ -163,22 +163,26 @@ if (!exists(MultiLinesClass)) {
     
     
       if (::mode==0) {
-        Derivatives(::input,sigma,::gamma,3,3,1,1,::mask)
-        vap1 = input_Hvap1
-        vap2 = input_Hvap2
-        v1  = input_Hvep1
-        v2  = input_Hvep2
-        v3  = input_Hvep3
-        del input_Hvap1
-        del input_Hvap2
-        del input_Hvep1
-        del input_Hvep2
-    
-        // create a region of interest
-        mask1 = (UCHAR) ((::mask>0)*(vap1<0)*(vap2<0)*255)
-    
-        del vap1
-        del vap2
+        if (sigma<0.6) {
+          InfoDialog "sigma = %1% is too small for second order derivatives: this scale is ignored." % sigma
+        } else {
+          Derivatives(::input,sigma,::gamma,3,3,1,1,::mask)
+          vap1 = input_Hvap1
+          vap2 = input_Hvap2
+          v1  = input_Hvep1
+          v2  = input_Hvep2
+          v3  = input_Hvep3
+          del input_Hvap1
+          del input_Hvap2
+          del input_Hvep1
+          del input_Hvep2
+      
+          // create a region of interest
+          mask1 = (UCHAR) ((::mask>0)*(vap1<0)*(vap2<0)*255)
+      
+          del vap1
+          del vap2
+        }
     
       }  else {
     
@@ -201,10 +205,14 @@ if (!exists(MultiLinesClass)) {
         mask1 = ::mask
       }
     
-      // run the circle integration on a region of interest
-      // Integrate the border information on a circle of radius theta*sigma
-      response = CircleInt( input_grad, v1, v2, ::theta*sigma, mask1)
-      // _response   = CircleIntSdExc( _input_grad,_v1,_v2,_theta*sigma,_mask1,1,1.5)
+      # run the circle integration on a region of interest
+      # Integrate the border information on a circle of radius theta*sigma
+      if (::mode==0)&&(sigma<0.6) {
+        response = 0
+      } else {
+        response = CircleInt( input_grad, v1, v2, ::theta*sigma, mask1)
+      }
+      # _response   = CircleIntSdExc( _input_grad,_v1,_v2,_theta*sigma,_mask1,1,1.5)
     
     
     } // ComputeResponse
@@ -236,7 +244,8 @@ if (!exists(MultiLinesClass)) {
       del sth
     
       # do we get the gradient separately to avoid the mask here??
-      grad = gradient(::input,sigma)
+      # normalized gradient
+      grad = gradient(::input,sigma)*sigma
       SetProgress(::current_progress+::current_step*0.75)
     
       // create a region of interest
@@ -253,12 +262,12 @@ if (!exists(MultiLinesClass)) {
                           ::pairs_mode, \
                           ::keephighest)
     
-      // run the circle integration on a region of interest
-      // Integrate the border information on a circle of radius theta*sigma
+      # run the circle integration on a region of interest
+      # Integrate the border information on a circle of radius theta*sigma
     
-      // Error: I did not comment this line for the challenge !!!!
-      //_response = CircleInt( grad, eig[3], eig[4],\
-      //                        _theta*sigma, _mask)
+      # Error: I did not comment this line for the challenge !!!!
+      #_response = CircleInt( grad, eig[3], eig[4],\
+      #                        _theta*sigma, _mask)
     
       if (::local_maxima) {
         # copy the 2 eigenvectors
@@ -274,10 +283,11 @@ if (!exists(MultiLinesClass)) {
     #
     proc ::MultiLines( ) \
     {
+      current_proc = "::MultiLines()"
       InitTime
 
       #  Load input images
-      #::load_input()
+      ::load_input()
 
       # Precompute coefficient of proportionality
       ::h(::gamma,::theta,&::rad2sigma_coeff)
@@ -305,23 +315,28 @@ if (!exists(MultiLinesClass)) {
       v3=Image(FLOAT,3,::input)
       v3.initvalue(0,0,0)
     
+#      ::all_responses     = VarVector()
+#      ::all_maxresponses  = VarVector()
+#      ::all_radii         = VarVector()
+#      ::all_current_radii = VarVector()
+
       for i=0 to ::numrad-1 {
+        iteration_mess = " Iteration %1%" % i
+        SetStatusText( current_proc+iteration_mess )
+        ::current_progress = (FLOAT)i/::numrad*100
+        ::current_step     = 1/::numrad*100
+        SetProgress(::current_progress)
     
-        print "----------\n"
-        print "iteration ";print i; print "\n"
-        print "----------\n"
-    
-        ::rad2sigma(rad,&::current_sigma)
+        ::rad2sigma(::current_rad,&::current_sigma)
+#        ::all_current_radii.push_back(::current_rad)
       
         ::ComputeResponse( ::current_sigma, \
-                            ::input,\
-                            ::gamma,::theta,\
                             &response, \
-                            &v1, &v2,&v3,\
-                            ::mask, \
-                            ::mode)
+                            &v1, &v2,&v3)
+#        ::all_responses.push_back(response)
+
     
-        // save response to file
+        # save response to file
         #response_filename=result.GetName-".gz"-".inr"-".ami"-".vtk"
         #response_filename = "multilines"
         #response_filename = sprint("rep%02.0f.ami.gz",_i)
@@ -329,42 +344,45 @@ if (!exists(MultiLinesClass)) {
         #response.save sprint("rep%02.0f.ami.gz",_i)
     
     
-        // Compute and Update Local Maxima
+        # Compute and Update Local Maxima
         print "Compute and Update Local Maxima\n"
     
-        // keep maximal response
+        # keep maximal response
         if (i==0) {
           max_response=response
+ #        ::all_maxresponses.push_back(max_response)
+          
           prev_response=response
           ::maxima = response*0
           ::maxima = response*0
           v1_max=v1
           v2_max=v2
           v3_max=v3
-          radius = (response>0)*rad;
+          radius = (response>0)*::current_rad;
         } else {
-    
-          // Update the maxima
-          // only keep the first maxima found
+          printn "get here"
+          # Update the maxima
+          # only keep the first maxima found
           ::maxima = (::maxima!=0)*::maxima+(::maxima==0)*(::maxima>response)*::maxima
     
           v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
           v2_max = v2_max*(max_response>=response)+v2*(max_response<response)
           v3_max = v3_max*(max_response>=response)+v3*(max_response<response)
-          radius = (max_response>=response)*radius+(max_response<response)*rad
+          radius = (response<max_response)*radius+(response>=max_response)*::current_rad
           max_response=max(response,max_response)
-          // Compute local maxima
-          ::maxima = LocalExtrema(response,v1,v2,mask)
+ #        ::all_maxresponses.push_back(max_response)
+         # Compute local maxima
+          ::maxima = LocalExtrema(response,v1,v2,::mask)
           ::maxima = ::maxima*(response>prev_response)
-          
         }
     
-    
+ #       ::all_radii.push_back(radius)
         ::current_rad = ::current_rad*_step
+        SetProgress(i/::numrad*100)
       }
     
       
-      v3_max.save sprint("v3_max_%01.0f.ami.gz",mode)
+    #  v3_max.save sprint("v3_max_%01.0f.ami.gz",::mode)
     #  v2_max.save sprint("v2_max_%01.0f.ami.gz",mode)
     
       # computing local maxima on the maximum response accross scales
@@ -372,9 +390,11 @@ if (!exists(MultiLinesClass)) {
     
       # save maximal response to file
       ::result    = max_response
-      maxresult = real_maxima2
-      radii     = radius
+      ::maxima    <<= real_maxima2
+      ::radii     <<= radius
     
+      SetProgress(0)
+      SetStatusText( "Finished MultiLines" )
       EndTime
     } 
     # end MultiLines()
@@ -394,7 +414,7 @@ if (!exists(MultiLinesClass)) {
       InitTime
 
       #  Load input images
-      #::load_input()
+      ::load_input()
 
       # Precompute coefficient of proportionality
       ::h(::gamma,::theta,&::rad2sigma_coeff)
@@ -452,7 +472,6 @@ if (!exists(MultiLinesClass)) {
             }
           }
         } else {
-          max_response=max(response,max_response)
 
           if (::local_maxima) {
             # Update the maxima
@@ -465,13 +484,14 @@ if (!exists(MultiLinesClass)) {
               #v3_max = v3_max*(max_response>=response)+v3*(max_response<response)
             }
             if (::keep_radii) {
-              radius = (max_response>=response)*radius+(max_response<response)*rad
+              radius = (max_response>=response)*radius+(max_response<response)*::current_rad
             }
             # Compute local maxima
             ::maxima = LocalExtrema(response,::current_v1,::current_v2,::mask)
             ::maxima = ::maxima*(response>prev_response)
           } 
           # end if (::local_maxima)
+          max_response=max(response,max_response)
         }
     
         ::current_rad = ::current_rad*_step
@@ -486,6 +506,9 @@ if (!exists(MultiLinesClass)) {
 
       # set the result image
       ::result <<= max_response
+      if ((::local_maxima)&&(::keep_radii)) {
+        ::radii  <<= radius
+      }
 
       SetProgress(0)
       SetStatusText( "Finished MultiLines_new" )
@@ -507,7 +530,7 @@ if (!exists(MultiLinesClass)) {
       show ::input
       if (exists(::result)) {
         show ::result
-        ::input_draw._compare(&::result_draw)
+        ::input_draw.compare(&::result_draw)
       }
       if (exists(::roi_contour)) {
         ::input_draw.SetIsoContour(0,::roi_contour,0.5)
@@ -525,6 +548,16 @@ if (!exists(MultiLinesClass)) {
       ::parent_panel = &pp
     }
     
+    #-----------------------------------------------
+    proc ::OnLocalMaxima() \
+    {
+      printn "::OnLocalMaxima()"
+      printn " val = %1%" % ::local_maxima>0
+      ::win.Enable(::keep_or_id, ::local_maxima>0)
+      ::win.Enable(::keep_rad_id,::local_maxima>0)
+      ::win.Update(-1)
+    }
+
     #-----------------------------------------------
     proc ::Gui() \
     {
@@ -572,14 +605,15 @@ if (!exists(MultiLinesClass)) {
 
         ::win.AddPage("Scales")
           ::win.BeginBoxPanel("Radii (or scales)")
-            ::win.AddFloat( &::radmin,"min.",0.01,10)
-            ::win.AddFloat( &::radmax,"max.",0.01,10)
+            ::win.AddFloat( &::radmin,"min.",0.5,10)
+            ::win.AddFloat( &::radmax,"max.",0.5,10)
             ::win.AddInt( &::numrad,"number",1,20)
           ::win.EndBoxPanel()
         
-          ::win.AddBoolean( &::local_maxima,"Local maxima")
-          ::win.AddBoolean( &::keep_orientations,"Orientations")
-          ::win.AddBoolean( &::keep_radii,"Radii")
+          ::localmax_id = ::win.AddBoolean( &::local_maxima,"Local maxima")
+          ::win.SetCallback(&::OnLocalMaxima)
+          ::keep_or_id  = ::win.AddBoolean( &::keep_orientations,"Orientations")
+          ::keep_rad_id = ::win.AddBoolean( &::keep_radii,"Radii")
 
 
       ::win.EndBook()
@@ -592,7 +626,9 @@ if (!exists(MultiLinesClass)) {
       } else {
         ::win.Display()
       }
+      ::OnLocalMaxima()
       ::win.Update(-1)
+      
     }
     
     ::Init()

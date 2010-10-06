@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_object.h"
@@ -34,12 +35,14 @@ AMIObject::ptr AddWrap_wxfunctions()
 
 BasicVariable::ptr wrap_wxfunctions( ParamList* p)
 {
+/*
     char functionname[] = "wx";
     char description[]=" \n\
       Adds wrapping for the wxwidgets samples and functions. \n\
             ";
     char parameters[] =" \n\
             ";
+*/
 
   AMIObject::ptr amiobject (AddWrap_wxfunctions());
 
@@ -67,9 +70,9 @@ BasicVariable::ptr wrap_LaunchDefaultBrowser( ParamList* p)
   int n=0;
   std::string* webpage = NULL;
   
-  if (!get_val_ptr_param<string>( webpage,    p, n)) HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<std::string>( webpage,    p, n)) HelpAndReturnVarPtr;
 
-  int res = wxLaunchDefaultBrowser(wxString::FromAscii(webpage->c_str()));
+  int res = wxLaunchDefaultBrowser(wxString(webpage->c_str(),wxConvUTF8));
 
   RETURN_VAR(int, res);
 }

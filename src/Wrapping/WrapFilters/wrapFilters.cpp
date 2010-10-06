@@ -45,6 +45,8 @@
 #include "wrapGenerateRamp.h"
 #include "wrap_SurfacePoly.h"
 
+#include "wrap_ContinuousMorphology.h"
+
 extern VarContexts  Vars;
 
 //---------------------------------------------------------
@@ -100,13 +102,16 @@ void AddWrapFilters(){
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
   
   //2D SUBPIXEL METHOD
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
+ // ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction, "GaussianSubpixel2D", wrapGaussianSubpixel2D);
 //  ADDOBJECTVAR_NAME(C_wrap_procedure, "DrawSubPixelBorder", wrapDrawBorder);
 
   // Add AnisoGS
   AddVar_AnisoGS( amiobject->GetContext());
+
+  // Add ContinuousMorphology
+  AddVar_ContinuousMorphology( amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -123,13 +128,14 @@ void AddWrapFilters(){
  */
 void wrap_Filters( ParamList* p)
 {
+/*
   char functionname[] = "Filters";
   char description[]=" \n\
     Adds wrapping for Filters. \n\
           ";
   char parameters[] =" \n\
           ";
-
+*/
   AddWrapFilters();
 }
 
@@ -250,14 +256,14 @@ void NSim2(ParamList* p)
       (input->DimY()!=local_mean->DimY())||
       (input->DimZ()!=local_mean->DimZ()) )
   {
-    cerr << "NSim2 input and local_mean images have different dimensions" << endl;
+    std::cerr << "NSim2 input and local_mean images have different dimensions" << std::endl;
     return;
   }
   if ((input->DimX()!=local_var->DimX())||
       (input->DimY()!=local_var->DimY())||
       (input->DimZ()!=local_var->DimZ()) )
   {
-    cerr << "NSim2 input and local_var images have different dimensions" << endl;
+    std::cerr << "NSim2 input and local_var images have different dimensions" << std::endl;
     return;
   }
 
@@ -1039,7 +1045,7 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
               Resulting polydata as interpolated lines\n\
       ";
 
-    SurfacePoly* input;
+//    SurfacePoly* input;
     float samplingstep = 0.1f;
     int n=0;
 
@@ -1051,7 +1057,7 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
 
 //  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
 
-  return CreateVar_SurfacePoly(Func_SmoothLinesToSplines( objsurf.get(),
+  return WrapClass_SurfacePoly::CreateVar(Func_SmoothLinesToSplines( objsurf.get(),
                                   samplingstep ));
 //Variable<SurfacePoly>::ptr varres(
 //    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));

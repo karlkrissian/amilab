@@ -99,4 +99,12 @@ void wxBooleanParameter::OnCheck(wxCommandEvent& event)
   this->Callback();
 }
 
+//------------------------------------------------------------------------------
+void wxBooleanParameter::EnableWidget(bool enable)
+{
+  if (enable!=_enabled) {
+    this->Enable(enable);
+    _enabled = enable;
+  }
+}
 

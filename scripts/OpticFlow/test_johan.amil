@@ -198,8 +198,10 @@ proc CB_RunAlphaTests() {
 
   filename1=filedir+"MeanError____"+param_str+".dat"
   filename2=filedir+"SDError______"+param_str+".dat"
-  test_file1 = open(filename1,"w")
-  test_file2 = open(filename2,"w")
+#  test_file1 = open(filename1,"w")
+#  test_file2 = open(filename2,"w")
+  test_file1 = File(filename1,"w")
+  test_file2 = File(filename2,"w")
 
   param_str = ""
   param_str = param_str + sprint("(zoom,%0.0f) ",zoom)
@@ -216,18 +218,20 @@ proc CB_RunAlphaTests() {
   param_str = param_str + sprint("%f) ",alfa_step)
 
   # print parameter information at the beginning of the files
-  test_file1.print "# Optical Flow technique\n"
-  test_file1.print "# Mean error on Johan's image\n"
-  test_file1.print "# amilab script: test_johan.amil\n"
-  test_file1.print "# Parameters\n"
-  test_file1.print "# "+param_str+"\n"
+  test_file1._print("# Optical Flow technique\n")
+  test_file1._print("# Mean error on Johan's image\n")
+  test_file1._print("# amilab script: test_johan.amil\n")
+  test_file1._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file1._print(_st_)
 
 
-  test_file2.print "# Optical Flow technique\n"
-  test_file2.print "# Standard deviation on Johan's image\n"
-  test_file2.print "# amilab script: test_johan.amil\n"
-  test_file2.print "# Parameters\n"
-  test_file2.print "# "+param_str+"\n"
+  test_file2._print("# Optical Flow technique\n")
+  test_file2._print("# Standard deviation on Johan's image\n")
+  test_file2._print("# amilab script: test_johan.amil\n")
+  test_file2._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file2._print(_st_)
 
   nb_it=(alfa_max-alfa_min)/alfa_step
   for k=0 to nb_it {
@@ -237,23 +241,23 @@ proc CB_RunAlphaTests() {
 
     n = norm(u-u_o);
     _mean = mean(n,mask)
-    test_file1.print alfa
-    test_file1.print "\t"
-    test_file1.print _mean
-    test_file1.print "\n"
+    test_file1._print(alfa)
+    test_file1._print("\t")
+    test_file1._print(_mean)
+    test_file1._print("\n")
 
     _mean2 = (n-_mean)*(n-_mean)
     // error after removing 15 pixels at the border
-    test_file2.print alfa
-    test_file2.print "\t"
-    test_file2.print sqrt(mean(_mean2,mask))
-    test_file2.print "\n"
+    test_file2._print(alfa)
+    test_file2._print("\t")
+    test_file2._print(sqrt(mean(_mean2,mask)))
+    test_file2._print("\n")
 
   }
 
   print "closing files \n"
-  test_file1.close
-  test_file2.close
+  test_file1.close()
+  test_file2.close()
   print "files closed\n"
 }
 
@@ -365,8 +369,8 @@ u_o = u_o_0[i1]
 show i1;
 #i1_draw.compare(i2);
 
-i1_draw._setvector(0,u);
-i1_draw._setvector(1,u_o);
+i1_draw.setvector(0,u);
+i1_draw.setvector(1,u_o);
 
 i1_draw.DrawVector(0,1);
 i1_draw.DrawVector(1,1);

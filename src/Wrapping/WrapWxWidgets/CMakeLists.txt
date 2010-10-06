@@ -3,19 +3,11 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}
-  ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Crest
-  ${AMILAB_SOURCE_DIR}/Voxels
-  ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
-  ${AMILAB_SOURCE_DIR}/wxSamples/penguin
-  ${AMILAB_SOURCE_DIR}/wxStcFrame
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
-  ${Boost_INCLUDE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${PTHREADS_INCLUDE_DIR}
+  ${AMILAB_SOURCE_DIR}/Graphic/include
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/AMILab
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})
@@ -30,18 +22,26 @@ SET(  WrapWxWidgets_SRCS
   wrap_wxColour.cpp
   wrap_wxImage.cpp
   wrap_wxBitmap.cpp
+  wrap_wxString.cpp
+  wrap_wxFileName.cpp
+  wrap_wxSizer.cpp
+  wrap_wxBoxSizer.cpp
 )
 
 SET(WrapWxWidgets_HDRS
-  wrap_wxsamples.h
-  wrap_wxfunctions.h
-  wrap_wxWindow.h
-  wrap_wxHtmlWindow.h
-  wrap_wxSizerItem.h
-  wrap_wxSize.h
-  wrap_wxColour.h
-  wrap_wxImage.h
-  wrap_wxBitmap.h
+  ../include/wrap_wxsamples.h
+  ../include/wrap_wxfunctions.h
+  ../include/wrap_wxWindow.h
+  ../include/wrap_wxHtmlWindow.h
+  ../include/wrap_wxSizerItem.h
+  ../include/wrap_wxSize.h
+  ../include/wrap_wxColour.h
+  ../include/wrap_wxImage.h
+  ../include/wrap_wxBitmap.h
+  ../include/wrap_wxString.h
+  ../include/wrap_wxFileName.h
+  ../include/wrap_wxSizer.h
+  ../include/wrap_wxBoxSizer.h
 )
 
 SET(WrapWxWidgets_SRCS

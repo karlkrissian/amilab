@@ -10,10 +10,11 @@
 //
 //
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp"
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
-#include "DessinImage.hpp"
+//#include "DessinImage.hpp"
 #include "ami_function.h"
 
 #include <string>
@@ -36,21 +37,21 @@ int get_num_param(ParamList* p)
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
  */
-bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num)
+bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num, bool force_ref )
 {
   if (!p) return false;
   // Getting the Variable and checking its type
   var = p->GetParam(num++); // = is like a swap of smart pointers ...
   if (var.get()) {
-/* TODO: find a solution for this part
-    // check that the variable is not just local
-    int var_count =
-     ((boost::shared_ptr<T>*)var->Pointer())->use_count();
-    if (var_count==1) {
-      FILE_ERROR(boost::format("Parameter %1% is not passed as a reference ... (%2%)")%num%var->Name());
-      return false;
+    // this part is in testing mode
+    if (force_ref) {
+      // check that the variable is not just local
+      int var_count = var->GetPtrCounter();
+      if (var_count==1) {
+        FILE_ERROR(boost::format("Parameter %1% is not passed as a reference ... (%2%)")%num%var->Name());
+        return false;
+      }
     }
-*/
     return true;
   }
   else

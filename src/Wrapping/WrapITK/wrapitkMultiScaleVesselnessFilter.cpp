@@ -38,6 +38,7 @@
 #include "itkHessianToObjectnessMeasureImageFilter.h"
 #endif // _WITHOUT_ITK_
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkMultiScaleVesselnessFilter.h"
@@ -92,11 +93,11 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
   // Convert from InrImage to ITK
   ImageType::RegionType region;
   ImageType::Pointer image;
-  cout << "Converting image to ITK format " << endl;
+  std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<PixelType,Dimension>(input,region);
 
-  cout << "Conversion done" << endl;
+  std::cout << "Conversion done" << std::endl;
 
   MultiScaleEnhancementFilterType::Pointer multiScaleEnhancementFilter = MultiScaleEnhancementFilterType::New();
   multiScaleEnhancementFilter->SetInput(image);
@@ -114,7 +115,7 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
 
   outimage = multiScaleEnhancementFilter->GetOutput();
   
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<PixelType,Dimension>(outimage, region);
 
@@ -174,11 +175,11 @@ char functionname[] = "itkMultiScaleVesselnessFilter3D";
   // Convert from InrImage to ITK
   ImageType::RegionType region;
   ImageType::Pointer image;
-  cout << "Converting image to ITK format " << endl;
+ std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<PixelType,Dimension>(input,region);
 
-  cout << "Conversion done" << endl;
+ std::cout << "Conversion done" << std::endl;
 
   // Instantiate the multiscale filter and set the input image
   MultiScaleEnhancementFilterType::Pointer multiScaleEnhancementFilter = MultiScaleEnhancementFilterType::New();
@@ -196,7 +197,7 @@ char functionname[] = "itkMultiScaleVesselnessFilter3D";
 
   outimage = multiScaleEnhancementFilter->GetOutput();
 
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<PixelType,Dimension>(outimage, region);
 

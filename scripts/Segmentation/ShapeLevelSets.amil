@@ -9,11 +9,11 @@
 //
 //  ballon: balloon term that depends on the distance to the skeleton
 //
-proc DistToSkeleton( IMAGE in, IMAGE out) {
+proc DistToSkeleton( IMAGE input, IMAGE output) {
 //   --------------
   print "----- Begin DistToSkeleton \n"
   print "-- create binary image \n" 
-  j  = (UCHAR) ((in>=0)*255)
+  j  = (UCHAR) ((input>=0)*255)
   print "-- compute Andre dist \n"
   k1 = sqrt(AndreDist(j))
   print "-- compute gradient \n"
@@ -27,7 +27,7 @@ proc DistToSkeleton( IMAGE in, IMAGE out) {
   sk = (UCHAR) ((Flux>1)*255)
 
   print "-- compute Andre dist 2 \n"
-  out = AndreDist(sk)
+  output = AndreDist(sk)
   print "----- End DistToSkeleton \n"
 }
 // DistToSkeleton()
@@ -121,7 +121,7 @@ proc ShapeLevelSets( IMAGE im, IMAGE initial, NUM sigma, NUM it, NUM dist_freq, 
     im_draw.DrawIsoContour(0,1)
     im_draw.SetIsoContour(1,lres,0)
     im_draw.DrawIsoContour(1,1)
-    im_draw._compare(expansion_im)
+    im_draw.compare(expansion_im)
   }
 
 

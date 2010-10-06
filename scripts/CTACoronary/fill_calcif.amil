@@ -6,6 +6,9 @@ if (argc>=3) {
   result = input
   threshold  = atof($2)
   input_filtered   = Image $3
+} else {
+  InfoDialog "Need at least 3 arguments"
+  quit
 }
 KeepGui=0
 if (argc==4) {
@@ -14,13 +17,18 @@ if (argc==4) {
   }
 }
 
+printn "Import filters (ami_import->Filters()).\n"
+ami_import.Filters()
 
 //----------------------------------------------
 proc InPlaceFillMask( IMAGE _input, IMAGE _mask, NUM _it ) {
 //   ---------------
 
-    local::m1 = (FLOAT) (_mask>0)
-  m1 = EDPdilate( m1,2,0.5)
+  local::m1 = (FLOAT) (_mask>0)
+
+#  m1 = EDPdilate( m1,2,0.5)
+  morph = global::filters.ContinuousMorphology()
+  m1 = morph.Dilate(m1,2,0.5)
 
   local::test1 = _input
 
@@ -76,7 +84,7 @@ result.save $1-".gz"-".ami"-".vtk"+"_CalcOut.ami.gz"
 
 if (KeepGui) {
   show input
-  input_draw._compare(result)
+  input_draw.compare(result)
 } else {
   quit
 }

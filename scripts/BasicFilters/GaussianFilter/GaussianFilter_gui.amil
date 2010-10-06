@@ -59,7 +59,7 @@ if (!exists(GaussianFilterClass)) {
     if (exists(::res)) {
       show ::res
       ::res_draw.update()
-      ::input_draw._compare(&::res_draw)
+      ::input_draw.compare(&::res_draw)
     }
   }
   

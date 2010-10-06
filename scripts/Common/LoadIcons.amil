@@ -34,6 +34,7 @@ if (!exists(LoadIcons)) \
       ::LoadIconPNG("Export")
       ::LoadIconPNG("Forward")
       ::LoadIconPNG("Home")
+      ::LoadIconPNG("Open")
       ::LoadIconPNG("Refresh")
       ::LoadIconPNG("Save")
       ::LoadIconPNG2("Save image","Save_image")

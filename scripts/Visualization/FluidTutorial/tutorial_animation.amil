@@ -84,15 +84,17 @@ for k=0 to 4 {clouds[k].SetColorMaterial(1);}
 earth_draw.rotate(0,-90,0)
 earth_draw.rotate(0,0,-90)
 # Set the view
-view1 = Transform("view1.txt")
+
+view1 = GLTransfMatrix()
+view1._read("view1.txt")
 earth_draw.SetTransform(view1)
-earth_draw.Paint
+earth_draw.Paint()
 earth_draw.SetBackground(5,5,40)
 earth_draw.SetWindowSize(600,670)
 
 
 # Saving a screen shot of the image with initial colors
-im1 = earth_draw.GetImageFromX
+im1 = earth_draw.GetImageFromX()
 # Creating the image containing the whole animation
 anim = Image(RGB,im1.tx,im1.ty,300)
 anim_current=0
@@ -104,10 +106,10 @@ clouds[2].SetAmbient( 222, 222,   0 )
 clouds[3].SetAmbient( 0,   254, 252 )
 clouds[4].SetAmbient( 195, 195, 195 )
 for k=0 to 4 {clouds[k].SetColorMaterial(0);}
-earth_draw.Paint
+earth_draw.Paint()
 # Saving a screen shot of the image with colors corresponding
 # to each category of clouds
-im2 = earth_draw.GetImageFromX
+im2 = earth_draw.GetImageFromX()
 # Recording intermediate images between im1 and im2
 # so that the colors will appear progressively
 total_class = 40
@@ -127,13 +129,20 @@ proc GenerateViews(STRING _st1, STRING _st2, NUM _total) {
 # using '_total' images.
 # All the images are added to the global animation 'anim'
 # and the global variable anim_current is updated.
-  _viewinit = Transform(_st1)
-  _viewend  = Transform(_st2)
+//  _viewinit = Transform(_st1)
+//  _viewend  = Transform(_st2)
+
+  _viewinit = GLTransfMatrix()
+  _viewend = GLTransfMatrix()
+
+  _viewinit._read(_st1)
+  _viewend._read(_st2)
+
   for _n=0 to _total-1 {
-    _vtmp = Interpolate(_viewinit,_viewend,_n/(_total-1))
+    _vtmp = _viewinit.Interpolate(_viewend,_n/(_total-1))
     earth_draw.SetTransform(_vtmp)
     del _vtmp
-    _im1 =  earth_draw.GetImageFromX
+    _im1 =  earth_draw.GetImageFromX()
     AnimAddImage(_im1)
   }
   del _viewinit
@@ -151,7 +160,7 @@ GenerateViews("view5_1.txt","view5_1_1.txt",total_view)
 total_rotate=100
 for n=1 to total_rotate {
   earth_draw.rotate(0,360/total_rotate,0)
-  im1 =  earth_draw.GetImageFromX
+  im1 =  earth_draw.GetImageFromX()
   AnimAddImage(im1)
 }
 GenerateViews("view5_1_1.txt","view12.txt",total_view)
@@ -175,8 +184,8 @@ earth_draw += vect1
 total_vectors = 40
 for n=1 to total_vectors {
   vect1.SetOpacity(n/total_vectors)
-  earth_draw.Paint
-  im1 =  earth_draw.GetImageFromX
+  earth_draw.Paint()
+  im1 =  earth_draw.GetImageFromX()
   AnimAddImage(im1)
 }
 # Copy the last image a few times

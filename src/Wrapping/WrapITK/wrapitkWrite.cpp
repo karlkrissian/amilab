@@ -42,6 +42,7 @@
 
 #endif // AMI_USE_ITK
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp" 
 #include "wrapitkWrite.h"
 #include "wrapConversion.tpp"
@@ -70,7 +71,7 @@ void wrap_itkWrite(ParamList* p)
   int n=0;
   
   if (!get_val_ptr_param<InrImage>( input,  p, n)) HelpAndReturn;
-  if (!get_val_ptr_param<string>  ( fname,  p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<std::string>  ( fname,  p, n)) HelpAndReturn;
 
   itkWrite(input,*fname);
 

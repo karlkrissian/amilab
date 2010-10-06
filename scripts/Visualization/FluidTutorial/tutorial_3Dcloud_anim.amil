@@ -129,7 +129,7 @@ proc ChangeCM() {
   for t=tmin to tmax {
     clouds[t-tmin].SetColorMaterial(colormaterial);
   }
-  earth_draw.Paint
+  earth_draw.Paint()
 }
 
 
@@ -148,7 +148,7 @@ proc ChangeVisible() {
 
   }
 
-  earth_draw.Paint
+  earth_draw.Paint()
 }
 
 colormaterial = INT(0)

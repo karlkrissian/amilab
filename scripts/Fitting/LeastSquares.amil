@@ -2,10 +2,12 @@
 # Local Fitting by Least Squares
 #
 
-ami_import->Filters()
 
 if (!exists(LeastSquaresClass)) \
 {
+
+  ami_import.Filters()
+
   Class LeastSquaresClass \
   {
     #-------------------
@@ -62,9 +64,9 @@ if (!exists(LeastSquaresClass)) \
       sizey = 2*::size_y+1
       numcoeff = 3
       b = Image(FLOAT,sizex,sizey,1,numcoeff)
-b.SetComponent( 0, ((FLOAT) Ypos(b)-b.ty/2))
-b.SetComponent( 1, ((FLOAT) Xpos(b)-b.tx/2))
-b.SetComponent( 2, 1)
+      b.SetComponent( 0, ((FLOAT) Ypos(b)-b.ty/2))
+      b.SetComponent( 1, ((FLOAT) Xpos(b)-b.tx/2))
+      b.SetComponent( 2, 1)
       weights = Image(FLOAT,sizex,sizey,1)
       weights.settranslation(-::size_x,-::size_y,0)
       weights = 1
@@ -76,13 +78,13 @@ b.SetComponent( 2, 1)
         #nwp = exp(-nwp*nwp/(gaussian_size*gaussian_size))
       }
       mask = ::input*0+1
-      ::res <<= filters->LeastSquares(::input,b,weights,mask)
+      ::res <<= global::filters.LeastSquares(::input,b,weights,mask)
     }
 
     proc ::Display() {
       show ::input
       show ::res
-      ::input_draw._compare(::res_draw)
+      ::input_draw.compare(&::res_draw)
     }
 
     #-------------------

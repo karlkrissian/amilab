@@ -87,13 +87,13 @@ private:
 
   ParamListDecl* GetParamList( )  { return _param; }
 
-  void SetName( const string& fname) { _name = fname; }
+  void SetName( const std::string& fname) { _name = fname; }
 
-  const string& GetName() const { return _name; }
+  const std::string& GetName() const { return _name; }
 
-  void SetFileName( const string& fname) { _filename = fname; }
+  void SetFileName( const std::string& fname) { _filename = fname; }
 
-  const string& GetFileName() const { return _filename; }
+  const std::string& GetFileName() const { return _filename; }
 
   void SetBody( const AmiInstructionBlock::ptr& b)
     {

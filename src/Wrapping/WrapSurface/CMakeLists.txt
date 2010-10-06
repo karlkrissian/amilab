@@ -1,13 +1,11 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/OpenGL
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK
-  ${Boost_INCLUDE_DIR}
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
 )
@@ -19,7 +17,7 @@ SET(  WrapSurface_SRCS
 )
 
 SET(WrapSurface_HDRS
-  wrap_SurfacePoly.h
+  ../include/wrap_SurfacePoly.h
 )
 
 SET(WrapSurface_SRCS

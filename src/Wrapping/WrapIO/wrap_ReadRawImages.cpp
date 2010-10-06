@@ -10,14 +10,16 @@
 //
 //
 
-#include "wrap_ReadRawImages.h"
 
 #include <string>
 using namespace std;
 
+#include "paramlist.h"
 #include "wrapfunction_class.h"
 #include "amimage.hpp"
 #include "inrimage.hpp"
+
+#include "wrap_ReadRawImages.h"
 
 //---------------------------------------------------
 //  ReadRawImages2D 

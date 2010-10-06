@@ -13,6 +13,9 @@
 #include "LeastSquares.h"
 #include <vnl/algo/vnl_matrix_inverse.h>
 #include <vector>
+#include <iostream>
+
+
 using namespace std;
 
 //--------------------------------------------------
@@ -106,7 +109,7 @@ InrImage*     Func_LeastSquares(  InrImage* input,
         percent_new = (int) 100.0*pos/(1.0*input->Size());
         if (percent_new>=percent+5) {
           percent=percent_new;
-          cout << "done "<< percent << "%" << endl;
+         std::cout << "done "<< percent << "%" << std::endl;
         }
         bool missingpoints = false;
         // get the WY matrix

@@ -103,11 +103,11 @@ proc MSD_display() {
 
   // show results
   show i1_uchar
-  i1_uchar_draw._compare(i2_uchar)
+  i1_uchar_draw.compare(i2_uchar)
   if (exists(res)) {
-    i1_uchar_draw._setvector(0,res)
+    i1_uchar_draw.setvector(0,res)
   }
-  i1_uchar_draw._setvector(1,MSD_GT)
+  i1_uchar_draw.setvector(1,MSD_GT)
 
   local_new
 }
@@ -120,13 +120,13 @@ proc MSD_display_error() {
 	show i1_uchar
   }
   if (exists(MSD_EE)) {
-    i1_uchar_draw._compare(MSD_EE)
+    i1_uchar_draw.compare(MSD_EE)
   }
   if (exists(MSD_AE)) {
-    i1_uchar_draw._compare(MSD_AE)
+    i1_uchar_draw.compare(MSD_AE)
   }
   if (exists(MSD_NE)) {
-    i1_uchar_draw._compare(MSD_NE)
+    i1_uchar_draw.compare(MSD_NE)
   }
 
 
@@ -194,7 +194,7 @@ proc MSD_gui() {
   global_new
 
     MSD_import = &global::ami_import;
-win = import->ParamPanel("MSD param")
+win = global::ami_import.ParamPanel("MSD param")
 
     id = MSD_win.AddInt( &MSD_NLevels,  "MSD_NLevels", 1,10)
     id = MSD_win.AddInt( &MSD_NSteps,  "MSD_NSteps", 1,50)

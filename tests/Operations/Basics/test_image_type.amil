@@ -21,6 +21,19 @@ NoMessageDialog(1)
 
 func "ctest/ctest_config.amil"
 
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
 dimx=10
 dimy=10
 dimz=1
@@ -29,53 +42,117 @@ printn "\t\t\t X (dimx)=%1% " % dimx
 printn "\t\t\t Y (dimy)=%1% " % dimy
 printn "\t\t\t Z (dimz)=%1% " % dimz
 
-printn  "\t\t imgA = Image(FLOAT,dimx,dimy,dimz) (ASSIGN_OP)\n"
+printn  "\t\t imgA = Image(FLOAT,dimx,dimy,dimz) (ASSIGN_OP)"
 imgA = Image(FLOAT,dimx,dimy,dimz)
-printn  "\t\t imgB = Image(FLOAT,dimx,dimy,dimz) (ASSIGN_OP)\n"
+printn  "\t\t imgB = Image(FLOAT,dimx,dimy,dimz) (ASSIGN_OP)"
 imgB = Image(FLOAT,dimx,dimy,dimz)
 
-printn "\t\t Initialized to 10 imageA(ASSIGN_OP).\n"
-imgA=10
+printn "\t\t Initialized to 10 imageA(ASSIGN_OP)."
+imgA=Xpos(imgA)
 
-printn "\t\t Initialized to 10 imageB(ASSIGN_OP).\n"
-imgB=10
+printn "\t\t Initialized to 10 imageB(ASSIGN_OP)."
+Bval = (dimx-1)/2
+imgB=Bval
+
+OK=1
+epsilon = 0.00001
 
 C=imgA+imgB
-printn  "\t\t C=imgA+imgB (T_ADD)"
+# checking mean value
+res =  (abs(mean(C)-(dimx-1))<epsilon)
+printn  "\t\t C=imgA+imgB (T_ADD) \t res = %1% " % res
+OK = OK && res
+
 C=imgA-imgB
-printn  "\t\t C=imgA-imgB (T_SUB)"
+# checking mean value
+res = (abs(mean(C))<epsilon)
+printn  "\t\t C=imgA-imgB (T_SUB) \t res = %1% " % res
+OK = OK && res
+
 C=imgA*imgB
-printn  "\t\t C=imgA*imgB (T_MULT)"
+# checking mean value
+res = (abs(mean(C)-(dimx-1)*(dimx-1)/4)<epsilon)
+printn  "\t\t C=imgA*imgB (T_MULT) \t res = %1% " % res
+OK = OK && res
+
 C=imgA/imgB
-printn  "\t\t C=imgA/imgB (T_DIV)"
+# checking mean value
+res = (abs(mean(C)-1)<epsilon)
+printn  "\t\t C=imgA/imgB (T_DIV) \t res = %1% " % res
+OK = OK && res
+
+printn  "\t\t C=imgA % imgB (T_MOD)"
 C=imgA%imgB
-printn  "\t\t C=imgA%%imgB (T_MOD)"
+# not yet implemented ...
 
 C=imgA<imgB
-printn  "\t\t C=imgA<imgB (T_LT)"
+# checking mean value
+res = (abs(mean(C)-0.5)<epsilon)
+printn  "\t\t C=imgA<imgB (T_LT) \t res = %1% " % res
+OK = OK && res
+
+C=imgA<=imgB
+# checking mean value
+res = (abs(mean(C)-0.5)<epsilon)
+printn  "\t\t C=imgA<=imgB (T_LT) \t res = %1% " % res
+OK = OK && res
+
 C=imgA>imgB
-printn  "\t\t C=imgA>imgB (T_GT)"
+# checking mean value
+res = (abs(mean(C)-0.5)<epsilon)
+printn  "\t\t C=imgA>imgB (T_GT) \t res = %1% " % res
+OK = OK && res
+
+C=imgA>=imgB
+# checking mean value
+res = (abs(mean(C)-0.5)<epsilon)
+printn  "\t\t C=imgA>=imgB (T_GT) \t res = %1% " % res
+OK = OK && res
+
 C=!imgA
-printn  "\t\t C=!imgA (T_NOT)"
-C=imgA&imgB
-printn  "\t\t C=imgA&imgB (T_AND)"
-C=imgA|imgB
-printn  "\t\t C=imgA|imgB (T_OR)"
-C+=imgA
-printn  "\t\t C+=imgA (ADD_ASSIGN)"
+# not yet implemented ...
+printn  "\t\t C=!imgA (T_NOT) not defined"
+
+#C=imgA&imgB
+#printn  "\t\t C=imgA&imgB (T_AND)"
+# not yet implemented ...
+
+#C=imgA|imgB
+#printn  "\t\t C=imgA|imgB (T_OR)"
+
+
+C=imgA
+C+=imgB
+print "\t\t C+=imgA (ADD_ASSIGN)"
+# checking mean value
+res =  (abs(mean(C)-(dimx-1))<epsilon)
+printn  " \t res = %1% " % res
+OK = OK && res
+
+C=imgA
 C-=imgB
-printn  "\t\t C-=imgB (SUB_ASSIGN)"
+printn  "\t\t C-=imgB (SUB_ASSIGN) not defined"
+# checking mean value
+# not defined
+#res =  (abs(mean(C))<epsilon)
+#printn  " \t res = %1% " % res
+#OK = OK && res
+
 C*=imgA
-printn  "\t\t C*=imgA (MUL_ASSIGN)"
+printn  "\t\t C*=imgA (MUL_ASSIGN) not defined"
+
 C/=imgB
-printn  "\t\t C/=imgB (DIV_ASSIGN)"
+printn  "\t\t C/=imgB (DIV_ASSIGN) not defined"
 
 imgA++
 printn  "\t\t imgA++ --> (INC_OP)"
+
 imgB--
 printn  "\t\t imgB-- DEC_OP)"
+
 ++imgA
 printn  "\t\t ++imgA (INC_OP)"
+
 --imgB
 printn  "\t\t --imgB (DEC_OP)"
 
@@ -83,10 +160,7 @@ C=imgA&&imgB
 printn  "\t\t C=imgA&&imgB (AND_OP)"
 C=imgA||imgB
 printn  "\t\t C=imgA||imgB (OR_OP)"
-C=imgA<=imgB
-printn  "\t\t C=imgA<=imgB (LE_OP)"
-C=imgA>=imgB
-printn  "\t\t C=imgA>=imgB (GE_OP)"
+
 C=imgA==imgB
 printn  "\t\t C=imgA==imgB (EQ_OP)"
 C=imgA!=imgB
@@ -228,7 +302,6 @@ printn  "\t\t C=floor imgB (FLOOR)"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-OK=1
 
 ctest.PrintTestResult( OK ) 
 

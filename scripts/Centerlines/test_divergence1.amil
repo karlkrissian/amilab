@@ -28,5 +28,5 @@ res2 = div_ig
 
 
 show i
-i_draw._compare(res1)
-i_draw._compare(res2)
+i_draw.compare(res1)
+i_draw.compare(res2)

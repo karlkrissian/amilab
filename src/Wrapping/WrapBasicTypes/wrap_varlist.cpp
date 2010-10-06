@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
@@ -58,6 +59,7 @@ AMIObject* AddWrapVarList( const VarList::ptr& objectptr)
 //---------------------------------------------------
 BasicVariable::ptr wrap_VarList( ParamList* p)
 {
+/*
     char functionname[] = "VarList";
     char description[]=" \n\
       New VarList object, store a list of variables (smart pointers). \n\
@@ -65,7 +67,7 @@ BasicVariable::ptr wrap_VarList( ParamList* p)
     char parameters[] =" \n\
       - no parameter \n\
             ";
-
+*/
   VarList::ptr pp(new VarList());
 
   AMIObject::ptr amiobject(AddWrapVarList(pp));

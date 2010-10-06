@@ -91,9 +91,9 @@ template<> BasicVariable::ptr Variable<float>::operator &&(const BasicVariable::
 
 template<> BasicVariable::ptr Variable<float>::operator ||(const BasicVariable::ptr& b);
 
-// Mathematical functions
-#define VAR_DECL_FUNC(type,fname) \
-template<> BasicVariable::ptr Variable<type>::m_##fname();
+// // Mathematical functions
+// #define VAR_DECL_FUNC(type,fname) 
+// template<> BasicVariable::ptr Variable<type>::m_##fname();
 
 VAR_DECL_FUNC(float,sin)
 VAR_DECL_FUNC(float,cos)

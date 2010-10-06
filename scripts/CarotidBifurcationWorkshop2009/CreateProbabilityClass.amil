@@ -67,7 +67,9 @@ if (!exists(CreateProbabilityClass)) {
       ::lsd = localSD2(::input,::lm,::localstats_winsize)
 
       if (::lsd_erosion>0.01) {
-        ::lsd = EDPerode(::lsd,::lsd_erosion,0.25)
+        morph = filters.ContinuousMorphology()
+#        ::lsd = EDPerode(::lsd,::lsd_erosion,0.25)
+        ::lsd = morph.Erode(::lsd,::lsd_erosion,0.25)
       }
 
       # map with a "Gaussian"

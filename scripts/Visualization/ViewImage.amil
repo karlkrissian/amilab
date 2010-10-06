@@ -1,4 +1,4 @@
-#!/usr/local/bin/amilab
+#!/usr/bin/amilab
 
 printn argc
 printn $1
@@ -9,17 +9,17 @@ show i
 if (argc>=2) {
   i1 = Image($2)
   show i1
-  i_draw._compare(i1_draw)
+  i_draw.compare(&i1_draw)
 }
 
 if (argc>=3) {
   i2 = Image($3)
   show i2
-  i_draw._compare(i2_draw)
+  i_draw.compare(&i2_draw)
 }
 
 if (argc>=4) {
   i3 = Image($4)
   show i3
-  i_draw._compare(i3_draw)
+  i_draw.compare(&i3_draw)
 }

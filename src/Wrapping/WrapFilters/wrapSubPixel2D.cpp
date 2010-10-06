@@ -16,49 +16,27 @@
 #include "wrap_DessinImage.h"
 #include "wrap_wxColour.h"
 
-#define GET_PARAM(type,varname,defaultval) \
-  type varname = defaultval; \
-  if (!get_val_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
 
-#define GET_SMTPTR_PARAM(type,varname) \
-  boost::shared_ptr<type> varname; \
-  if (!get_val_smtptr_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
-
-#define RETURN_VARPTR(type,  value) \
-  boost::shared_ptr<type> newval(new type(value)); \
-  return Variable<type>::ptr( new Variable<type>(newval));
-
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<SubPixel2D>::CreateVar( ParamList* p)
+{
+  WrapClass_SubPixel2D::wrap_SubPixel2D construct;
+  return construct.CallMember(p);
+}
 
 //---------------------------------------------------
 //SubPixel2D Wrapping
 //---------------------------------------------------
-AMIObject::ptr AddWrap_SubPixel2D(WrapClass_SubPixel2D::ptr& objectptr)
-{
-  //Create a new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("SubPixel2D");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-  return amiobject;
-}
 
-//---------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_SubPixel2D(SubPixel2D* si)
-{
-  boost::shared_ptr<SubPixel2D> si_ptr(si);
-  WrapClass_SubPixel2D::ptr sip(new WrapClass_SubPixel2D(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_SubPixel2D(sip));
-  Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>(amiobject));
-  return varres;
-}
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(SubPixel2D);
+AMI_DEFINE_VARFROMSMTPTR(SubPixel2D);
 
 //---------------------------------------------------
 //SubPixel2D Constructor
-void wrap_SubPixel2D::SetParametersComments()
+void WrapClass_SubPixel2D::wrap_SubPixel2D::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE(InrImage, "The input image.");
   ADDPARAMCOMMENT_TYPE(float, "The intensity threshold.");
@@ -66,7 +44,7 @@ void wrap_SubPixel2D::SetParametersComments()
   return_comments = "A wrapped SubPixel2D object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_SubPixel2D::CallMember(ParamList* p)
+BasicVariable::ptr WrapClass_SubPixel2D::wrap_SubPixel2D::CallMember(ParamList* p)
 {
   InrImage* input;
   float threshold;
@@ -77,7 +55,7 @@ BasicVariable::ptr wrap_SubPixel2D::CallMember(ParamList* p)
   if (!get_val_param<float>(threshold, p, n))    ClassHelpAndReturn;
   if (!get_val_param<int>(linear_case, p, n))    ClassHelpAndReturn;
   
-  return CreateVar_SubPixel2D(new SubPixel2D(input, threshold, linear_case));
+  return AMILabType<SubPixel2D>::CreateVar(new SubPixel2D(input, threshold, linear_case));
 }
 
 //---------------------------------------------------
@@ -144,6 +122,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteCurvo
   Variable<AMIObject>::ptr result(
       new Variable<AMIObject>(amiobject));
   return result;
+
 }
 
 //---------------------------------------------------
@@ -221,6 +200,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
   Variable<AMIObject>::ptr result(
       new Variable<AMIObject>(amiobject));
   return result;
+
 }
 
 //---------------------------------------------------

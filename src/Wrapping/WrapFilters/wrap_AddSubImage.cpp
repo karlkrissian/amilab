@@ -65,7 +65,7 @@ void wrap_AddSubImage(ParamList* p)
 
 
   if (input->ScalarFormat()) {
-    //cout << "**" << endl;
+    //cout << "**" << std::endl;
     for(z=zmin;z<=zmax;z++)
     for(y=ymin;y<=ymax;y++) {
       input   ->BufferPos(xmin,y,z);

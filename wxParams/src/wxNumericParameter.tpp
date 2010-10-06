@@ -135,6 +135,7 @@ wxNumericParameter<T>::wxNumericParameter(
                                       wxDefaultPosition,
                                       wxDefaultSize, 
                                       wxTE_PROCESS_ENTER);
+    _text_min->SetMinSize(wxSize(40+10*_decimate,wxDefaultCoord));
     _text_min->SetToolTip(_T("Scale minimal value"));
     _text_min->SetCallback((void*)wxNumericParameter<T>::OnMinMaxUpdate,(void*) this);
 
@@ -144,6 +145,7 @@ wxNumericParameter<T>::wxNumericParameter(
                                 wxDefaultPosition,
                                 wxDefaultSize, 
                                 wxTE_PROCESS_ENTER | wxTE_RIGHT );
+    _text_max->SetMinSize(wxSize(40+10*_decimate,wxDefaultCoord));
     _text_max->SetToolTip(_T("Scale maximal value"));
     _text_max->SetCallback( (void*)wxNumericParameter<T>::OnMinMaxUpdate,
                                   (void*) this);
@@ -484,7 +486,7 @@ void wxNumericParameter<T>::SetToolTip( const wxString& tt)
 
 //-------------------------------------------
 template <class T>
-void wxNumericParameter<T>::Enable(bool enable)
+void wxNumericParameter<T>::EnableWidget(bool enable)
 {
   if (enable!=_enabled) {
     _label          ->Enable(enable);

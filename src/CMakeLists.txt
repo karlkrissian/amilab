@@ -6,7 +6,7 @@ project (AMILab)
 
 MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.6.4)
 
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
@@ -221,7 +221,7 @@ FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc )
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net )
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
@@ -238,7 +238,7 @@ SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
 
 FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
 #SET(Boost_USE_STATIC_LIBS ON)
-MESSAGE( "BOOST_LIBRARIES = $(BOOST_LIBRARIES)")
+MESSAGE( "BOOST_LIBRARIES = ${BOOST_LIBRARIES}")
 
 
 OPTION(AMI_USE_ZLIB "Use zlib" ON)
@@ -312,10 +312,6 @@ INCLUDE (CheckIncludeFiles)
 CHECK_INCLUDE_FILES (malloc.h HAVE_MALLOC_H)
 
 
-include_directories (
-  ${Boost_INCLUDE_DIR}
-  ${OPENGL_INCLUDE_DIR}
-)
 
 
 #SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../CMAKE)
@@ -326,6 +322,9 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/AMILabConfig.h.in ${CMAKE_CURRENT_BIN
 
 
 include(amilab_macros)
+
+include(PCH_GCC4_v2)
+
 InitPrintSources()
 
 set(  wxParams_INCLUDE_DIRS
@@ -336,10 +335,12 @@ MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
 
 include_directories (
   ${Boost_INCLUDE_DIR}
-  ${OPENGL_INCLUDE_DIR}
-  ${wxParams_INCLUDE_DIRS}
+#  ${OPENGL_INCLUDE_DIR}
+#  ${Boost_INCLUDE_DIR}
+#  ${OPENGL_INCLUDE_DIR}
+#  ${wxParams_INCLUDE_DIRS}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${FLEX_INCLUDE_DIR}
+#  ${FLEX_INCLUDE_DIR}
 )
 
 #INCLUDE(${wxWidgets_USE_FILE})
@@ -348,34 +349,13 @@ include_directories (
 SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )
 
 add_subdirectory (Common)
-add_subdirectory (Math)
-#add_subdirectory (Zinrimage)
-add_subdirectory (AMImage)
-add_subdirectory (DistTransf)
-add_subdirectory (Images)
-add_subdirectory (Coordonnees)
-add_subdirectory (Contours)
-add_subdirectory (Vaisseaux)
-add_subdirectory (Filtering)
-add_subdirectory (Crest)
-add_subdirectory (ImageTool)
+#add_subdirectory (DistTransf)
 add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
-add_subdirectory (OpenGL)
-add_subdirectory (wxSamples/penguin)
-add_subdirectory (wxStcFrame)
-add_subdirectory (wxCode/wxTreeListCtrl)
-add_subdirectory (Voxels)
 add_subdirectory (AMILab)
 
-IF(AMI_USE_VTK)
-  add_subdirectory (myVTK4)
-ENDIF(AMI_USE_VTK)
 
-add_subdirectory (Line)
-add_subdirectory (SplineThevenaz)
 #add_subdirectory (libamiFluid)
-add_subdirectory (Graph)
 
 #add_subdirectory (WrapITK)
 add_subdirectory (Wrapping)
@@ -387,47 +367,22 @@ add_subdirectory (Algorithms)
 #ENDIF(AMI_USE_FASTNLMEANS)
 
 include_directories (
-  ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/Math
-  ${AMILAB_SOURCE_DIR}/AMImage
-  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
+  ${wxParams_INCLUDE_DIRS}
+  ${AMILAB_SOURCE_DIR}/Common/include
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
-  ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/Voxels
-  ${AMILAB_SOURCE_DIR}/Crest
-  ${AMILAB_SOURCE_DIR}/Graph
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Filtering
-  ${AMILAB_SOURCE_DIR}/Line
-  ${AMILAB_SOURCE_DIR}/SplineThevenaz
-  ${AMILAB_SOURCE_DIR}/Contours
-  ${AMILAB_SOURCE_DIR}/DistTransf
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
-  ${AMILAB_SOURCE_DIR}/wxStcFrame
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
   ${Boost_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
   ${OPTICFLOW_INCLUDE_DIR}
-  ${AMILAB_SOURCE_DIR}/../wxParams/src
-#  ${wxParams_INCLUDE_DIRS}
   )
 
 IF(AMI_USE_VTK)
-  include_directories (
-    ${AMILAB_SOURCE_DIR}/myVTK4
-  )
   INCLUDE( ${USE_VTK_FILE} )
 ENDIF(AMI_USE_VTK)
 
@@ -485,6 +440,8 @@ SET(amilab_ownlibs
   WrapAMIFluid
   WrapSurface
   WrapDessinImage
+  WrapViewer3D
+  WrapGLTransfMatrix
   WrapInterface
   WrapWxWidgets
   WrapBasicTypes
@@ -497,25 +454,10 @@ SET(amilab_ownlibs
   WrapITK
   AMILab
   Language
-  AMImage
-  Contours
-  Coordinates
-  Crest
-#  DistTransf
   Algorithms
-  Filtering
-  ImageTool
-  Images
-  Line
-  Math
-  OpenGL
   Graphic
   wxParams
-  SplineThevenaz
-  Graph
-  Vessels
   Common
-  Voxels
 # wrapped wxwidgets samples
   penguin
   wxStcFrame
@@ -587,7 +529,7 @@ endif (WIN32)
 IF(MSVC)
   # NEED TO SPECIFY FOR EACH POSSIBLE CONFIGURATION
   set_target_properties( ${AMILAB_BIN} 
-    PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
+    PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD /NODEFAULTLIB:MSVCRTD")
 
   set_target_properties( ${AMILAB_BIN} 
     PROPERTIES LINK_FLAGS_DEBUG "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
@@ -671,7 +613,7 @@ endif(UNIX)
 
 
 #Test for amilab.
-#INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
+INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
 
 
 #Test for amilab.

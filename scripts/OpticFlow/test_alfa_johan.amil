@@ -77,7 +77,8 @@ d1 = Image(datadir+"johan/u_incomp.ami")
 d1 = d1*(mask!=0);
 
 # Compute results for different alfa ...
-error_file  = open(sprint("alfa_johan_%0.0f_",gradtype)+sprint("%0.0f.dat",zoom_level),"w")
+#error_file  = open(sprint("alfa_johan_%0.0f_",gradtype)+sprint("%0.0f.dat",zoom_level),"w")
+error_file  = File(sprint("alfa_johan_%0.0f_",gradtype)+sprint("%0.0f.dat",zoom_level),"w")
 
 n=(alfa_max-alfa_min)/alfa_step
 
@@ -92,14 +93,14 @@ for k=0 to n {
 
   ndiff = norm(d-d1)
 
-  error_file.print alfa
-  error_file.print "\t"
-  error_file.print mean(ndiff,mask)
-  error_file.print "\n"
+  error_file._print(alfa)
+  error_file._print("\t")
+  error_file._print(mean(ndiff,mask))
+  error_file._print("\n")
 
   print "\n *** alfa: "; print alfa; 
   print "   error: "; print mean(ndiff,mask); print "\n"
 
 }
 
-error_file .close
+error_file .close()

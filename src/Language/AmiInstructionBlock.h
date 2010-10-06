@@ -23,12 +23,12 @@ class AmiInstructionBlock
 
 private:
   int     startingline;
-  string  body;
+  std::string  body;
 public:
   int  GetStartingLine() { return startingline; }
   void SetStartingLine(int sl) 
   {  startingline = sl; }
-  string & GetBody()  { return body; }
+  std::string & GetBody()  { return body; }
 };
 
 

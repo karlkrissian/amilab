@@ -97,44 +97,44 @@ if (!exists(LevelSetsClass)){
       if (FileExists(paramfile_name)) {
         InfoDialog "file %1% already exists, please rename it." % paramfile_name
       } else {
-        paramfile = open(paramfile_name,"w")
+        paramfile = File(paramfile_name,"w")
   
-        paramfile.print "# AMILab\n"
-        paramfile.print "# parameters used in the Level Set segmentation \n"
-        paramfile.print "#  \n"
-        paramfile.print "::input_name   = %1% \n" % ::input_name
-        paramfile.print "::initial_name = %1% \n" % ::initial_name
-        paramfile.print "::init_mode = %1% \n"    % ::init_mode
-        paramfile.print "::inputmin = %1% \n"     % ::inputmin
-        paramfile.print "::inputmax = %1% \n"     % ::inputmax
-        paramfile.print "::minimal_intensity = %1% \n"     % ::minimal_intensity
-        paramfile.print "::use_expansion = %1% \n"     % ::use_expansion
-        paramfile.print "::use_advection = %1% \n"     % ::use_advection
-        paramfile.print "::use_smoothing = %1% \n"     % ::use_smoothing
-        paramfile.print "::use_velocity = %1% \n"     % ::use_velocity
-        paramfile.print "::use_expansion_image = %1% \n"     % ::use_expansion_image
-        paramfile.print "::expansion_image_name = %1% \n"     % ::expansion_image_name
-        paramfile.print "::Imean = %1% \n"     % ::Imean
-        paramfile.print "::Isd = %1% \n"     % ::Isd
-        paramfile.print "::prob_threshold = %1% \n"     % ::prob_threshold
-        paramfile.print "::sphere_radius = %1% \n"     % ::sphere_radius
-        paramfile.print "::accept_high_intensity = %1% \n"     % ::accept_high_intensity
-        paramfile.print "::expansioncoeff = %1% \n"     % ::expansioncoeff
-        paramfile.print "::dt = %1% \n"     % ::dt
-        paramfile.print "::T = %1% \n"     % ::T
-        paramfile.print "::NBD_method = %1% \n"     % ::NBD_method
-        paramfile.print "::NBD_freq = %1% \n"     % ::NBD_freq
-        paramfile.print "::check_convergence = %1% \n"     % ::check_convergence
-        paramfile.print "::conv_freq = %1% \n"     % ::conv_freq
-        paramfile.print "::stop = %1% \n"     % ::stop
-        paramfile.print "::threads = %1% \n"     % ::threads
-        paramfile.print "::advcoeff = %1% \n"     % ::advcoeff
-        paramfile.print "::curvcoeff = %1% \n"     % ::curvcoeff
-        paramfile.print "::smoothingtype = %1% \n"     % ::smoothingtype
-        paramfile.print "::affinecurv = %1% \n"     % ::affinecurv
-        paramfile.print "::velcoeff = %1% \n"     % ::velcoeff
-        paramfile.print "::downsamplefactor = %1% \n"     % ::downsamplefactor
-        paramfile.close
+        paramfile._print("# AMILab\n")
+        paramfile._print("# parameters used in the Level Set segmentation \n")
+        paramfile._print("#  \n")
+        paramfile._print("::input_name   = %1% \n" % ::input_name)
+        paramfile._print("::initial_name = %1% \n" % ::initial_name)
+        paramfile._print("::init_mode = %1% \n"    % ::init_mode)
+        paramfile._print("::inputmin = %1% \n"     % ::inputmin)
+        paramfile._print("::inputmax = %1% \n"     % ::inputmax)
+        paramfile._print("::minimal_intensity = %1% \n"     % ::minimal_intensity)
+        paramfile._print("::use_expansion = %1% \n"     % ::use_expansion)
+        paramfile._print("::use_advection = %1% \n"     % ::use_advection)
+        paramfile._print("::use_smoothing = %1% \n"     % ::use_smoothing)
+        paramfile._print("::use_velocity = %1% \n"     % ::use_velocity)
+        paramfile._print("::use_expansion_image = %1% \n"     % ::use_expansion_image)
+        paramfile._print("::expansion_image_name = %1% \n"     % ::expansion_image_name)
+        paramfile._print("::Imean = %1% \n"     % ::Imean)
+        paramfile._print("::Isd = %1% \n"     % ::Isd)
+        paramfile._print("::prob_threshold = %1% \n"     % ::prob_threshold)
+        paramfile._print("::sphere_radius = %1% \n"     % ::sphere_radius)
+        paramfile._print("::accept_high_intensity = %1% \n"     % ::accept_high_intensity)
+        paramfile._print("::expansioncoeff = %1% \n"     % ::expansioncoeff)
+        paramfile._print("::dt = %1% \n"     % ::dt)
+        paramfile._print("::T = %1% \n"     % ::T)
+        paramfile._print("::NBD_method = %1% \n"     % ::NBD_method)
+        paramfile._print("::NBD_freq = %1% \n"     % ::NBD_freq)
+        paramfile._print("::check_convergence = %1% \n"     % ::check_convergence)
+        paramfile._print("::conv_freq = %1% \n"     % ::conv_freq)
+        paramfile._print("::stop = %1% \n"     % ::stop)
+        paramfile._print("::threads = %1% \n"     % ::threads)
+        paramfile._print("::advcoeff = %1% \n"     % ::advcoeff)
+        paramfile._print("::curvcoeff = %1% \n"     % ::curvcoeff)
+        paramfile._print("::smoothingtype = %1% \n"     % ::smoothingtype)
+        paramfile._print("::affinecurv = %1% \n"     % ::affinecurv)
+        paramfile._print("::velcoeff = %1% \n"     % ::velcoeff)
+        paramfile._print("::downsamplefactor = %1% \n"     % ::downsamplefactor)
+        paramfile.close()
       }
     }
 
@@ -297,29 +297,30 @@ if (!exists(LevelSetsClass)){
   #--------------------------
   proc ::SaveParams( STRING filename) \
   {
-    pfile = open(filename,"w")
+    pfile = File(filename,"w")
     
-    #pfile.printn "#"
-    #pfile.printn "# amilab"
-    #pfile.printn "#"
-    #pfile.printn "# Parameters using for the level set evolution:"
-    #pfile.printn "#"
-    pfile.printn " "
-    #pfile.printn "# Initialization:"
-    pfile.printn "::init_mode = %1%" % ::init_mode
-    pfile.printn "::inputmin  = %1%" % ::inputmin
-    pfile.printn "::inputmax  = %1%" % ::inputmax
-    pfile.printn "::minimal_intensity = %1%" % ::minimal_intensity
-    pfile.printn "::sphere_radius = %1%" % ::sphere_radius
-    pfile.printn " "
-    #pfile.printn "# Evolution equation:"
-    pfile.printn "::Imean         = %1%" % ::Imean
-    pfile.printn "::Isd           = %1%" % ::Isd
-    pfile.printn "::accept_high_intensity = %1%" % ::accept_high_intensity
+    #pfile._printn("#")
+    #pfile._printn("# amilab")
+    #pfile._printn("#")
+    #pfile._printn("# Parameters using for the level set evolution:")
+    #pfile._printn("#")
+    pfile._printn(" ")
+    #pfile._printn("# Initialization:")
+    pfile._printn("::init_mode = %1%" % ::init_mode)
+    pfile._printn("::inputmin  = %1%" % ::inputmin)
+    pfile._printn("::inputmax  = %1%" % ::inputmax)
+    pfile._printn("::minimal_intensity = %1%" % ::minimal_intensity)
+    pfile._printn("::sphere_radius = %1%" % ::sphere_radius)
+    pfile._printn(" ")
+    #pfile._printn("# Evolution equation:")
+    pfile._printn("::Imean         = %1%" % ::Imean)
+    pfile._printn("::Isd           = %1%" % ::Isd)
+    pfile._printn("::accept_high_intensity = %1%" % ::accept_high_intensity)
 
-    pfile.printn "::expansion_coeff = %1%" % ::expansioncoeff
-    pfile.printn "::dt              = %1%" % ::dt
-    pfile.printn "::T               = %1%" % ::T
+    pfile._printn("::expansion_coeff = %1%" % ::expansioncoeff)
+    pfile._printn("::dt              = %1%" % ::dt)
+    pfile._printn("::T               = %1%" % ::T)
+
 
   }
 
@@ -509,7 +510,7 @@ if (!exists(LevelSetsClass)){
             show ::input
             ProcessXEvents(100)
           }
-          SetProgress(n/it*100)
+          SetProgress((FLOAT)n/it*100)
           if (::check_convergence) {
             if ((n % ::conv_freq) == 0) {
               # check for convergence

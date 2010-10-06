@@ -23,10 +23,10 @@ proc SpeckleStats(IMAGE input, STRING name, NUM size, NUM samples, NUM noisetype
   }
   show _ing
 
-  noise_data    = open(name+"_noisestatsmean.dat","w")
+  noise_data    = File(name+"_noisestatsmean.dat","w")
   // using the median
-  noise_datamed = open(name+"_noisestatsmed.dat","w")
-  histo_data    = open(name+"_histo.dat","w")
+  noise_datamed = File(name+"_noisestatsmed.dat","w")
+  histo_data    = File(name+"_histo.dat","w")
 
   _i1 = localmean2(input,size)
   _i2 = localSD2(input,_i1,size)
@@ -66,36 +66,36 @@ proc SpeckleStats(IMAGE input, STRING name, NUM size, NUM samples, NUM noisetype
 
       if (count(selection)>10) {
 
-        noise_data.print "\n";
-        noise_data.print n1; 
-        noise_data.print "\t";
+        noise_data._print("\n");
+        noise_data._print(n1); 
+        noise_data._print("\t");
 
-        noise_datamed.print "\n";
-        noise_datamed.print n1; 
-        noise_datamed.print "\t";
+        noise_datamed._print("\n");
+        noise_datamed._print(n1); 
+        noise_datamed._print("\t");
 
-        histo_data.print "\n";
-        histo_data.print n1; 
-        histo_data.print "\t";
+        histo_data._print("\n");
+        histo_data._print(n1); 
+        histo_data._print("\t");
 
 
 
         _m=mean(_i2,selection)
         _m1 = median[selection](_i2)
 
-        noise_data.print    _m
-        noise_datamed.print _m1
+        noise_data._print(     _m)
+        noise_datamed._print( _m1)
       }
 
-      histo_data.print count((input>n1min)*(input<=n1max))
+      histo_data._print(count((input>n1min)*(input<=n1max)))
 
 
     }
 
 
   }
-  noise_data.close
-  noise_datamed.close
-  histo_data.close
+  noise_data.close()
+  noise_datamed.close()
+  histo_data.close()
 }
 

@@ -12,11 +12,13 @@
 
 
 
-#include "fonctions.h"
+//#include "fonctions.h"
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "wrapSystem.h"
 #include "driver.h"
+
+#include <wx/filename.h>
 
 extern yyip::Driver GB_driver;
 
@@ -67,13 +69,14 @@ void AddWrapSystem(){
  */
 void wrap_System(ParamList* p)
 {
+/*
     char functionname[] = "System";
     char description[]=" \n\
       Adds wrapping for Operating System operations. \n\
             ";
     char parameters[] =" \n\
             ";
-
+*/
   AddWrapSystem();
 }
 
@@ -95,7 +98,7 @@ BasicVariable::ptr wrap_GetFreeMemory(ParamList* p)
 
   if (p->get_num_param()!=0)  HelpAndReturnVarPtr;
   long long val = ::wxGetFreeMemory();
-  cout << (boost::format("Free Memory = %1%") % val).str() << endl;
+ std::cout << (boost::format("Free Memory = %1%") % val).str() << std::endl;
 
   // cast not compiling, why ???
   //  float* value = new float(FreeMemory);
@@ -262,7 +265,7 @@ BasicVariable::ptr wrap_GetCurrentScriptDir(ParamList* p)
             ";
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
-  cout << "GB_driver.GetCurrentFilename()=" << GB_driver.GetCurrentFilename() << endl;
+ std::cout << "GB_driver.GetCurrentFilename()=" << GB_driver.GetCurrentFilename() << std::endl;
   wxFileName filename(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8));
   filename.MakeAbsolute();
   wxString wxvalue = filename.GetPath();
@@ -317,7 +320,8 @@ BasicVariable::ptr wrap_GetGlobalScriptDir(ParamList* p)
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString wxvalue(GB_scripts_dir);
   wxvalue.Replace(wxT("\\"),wxT("/"),true);
-  RETURN_VAR(string,wxvalue.mb_str());
+  std::string val(wxvalue.mb_str());
+  RETURN_VAR(string,val);
 }
 
 //--------------------------------------------------------------------

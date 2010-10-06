@@ -18,56 +18,56 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxEditor(  WrapClass_wxEditor::ptr& objectptr)
+
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxEditor>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("wxEditor");
-
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-
-  return amiobject;
+  WrapClass_wxEditor::wrap_wxEditor construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_wxEditor( wxEditor* si)
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxEditor);
+
+//
+// static member for creating a variable from a pointer to wxEditor
+//
+Variable<AMIObject>::ptr WrapClass_wxEditor::CreateVar( wxEditor* sp)
 {
-  // here wxEditor can be deleted
-  boost::shared_ptr<wxEditor> _si_ptr( 
-        si,
-        wxwindow_nodeleter<wxEditor>() // deletion will be done by wxwidgets
-      );
-
-  WrapClass_wxEditor::ptr sip( new WrapClass_wxEditor(_si_ptr) );
-  AMIObject::ptr amiobject(AddWrap_wxEditor(sip));
-
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+  return 
+    WrapClass<wxEditor>::CreateVar(
+      new WrapClass_wxEditor(
+        boost::shared_ptr<wxEditor>(sp,
+        wxwindow_nodeleter<wxEditor>() 
+        // deletion will be done by wxwidgets
+        ))
+    );
 }
+
+
 
 //---------------------------------------------------
 //  wxEditor Constructor
 //---------------------------------------------------
-void  wrap_wxEditor::SetParametersComments() 
+void  WrapClass_wxEditor::
+      wrap_wxEditor::SetParametersComments() 
 {
   ADDPARAMCOMMENT("wxWindow: parent");
   return_comments = "A wrapped wxEditor object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxEditor::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_wxEditor::
+      wrap_wxEditor::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
   CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
   if (parent.get())
-    return CreateVar_wxEditor(new wxEditor(parent.get()));
+    return WrapClass_wxEditor::CreateVar(new wxEditor(parent.get()));
   else
     ClassHelpAndReturn;
-    
 }
 
 //---------------------------------------------------
@@ -85,9 +85,9 @@ BasicVariable::ptr WrapClass_wxEditor::
 {
   std::string* filename = NULL;
   int n = 0;
-  if (!get_val_ptr_param<string>( filename,  p, n))  ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( filename,  p, n))  ClassHelpAndReturn;
 
-  int res = this->_objectptr->_obj->LoadFile(wxString::FromAscii(filename->c_str()));
+  int res = this->_objectptr->_obj->LoadFile(wxString(filename->c_str(),wxConvUTF8));
   RETURN_VAR(int,res);
 }
 

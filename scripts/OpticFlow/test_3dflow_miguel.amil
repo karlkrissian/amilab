@@ -140,7 +140,7 @@ proc DisplayData() {
   global
   show i1;
   #i1_draw.compare(i2);
-  i1_draw._setvector(0,u);
+  i1_draw.setvector(0,u);
   #i1_draw.setvector(2,u_o);
   i1_draw.DrawVector(0,1);
   i1_draw.DrawVector(1,1);
@@ -320,7 +320,7 @@ proc CB_LoadJohanData() {
   } else { u = Image(FLOAT_VECTOR,i1.tx,i1.ty,i1.tz); }
   u.settranslation(i1.trx,i1.try,i1.trz)
   u.initvalue(0,0,0);
-  i1_draw._setvector(0,u);
+  i1_draw.setvector(0,u);
   #last_u = u;
   u.save "last_u.ami.gz"
   last_error = 999999999999;  
@@ -425,7 +425,7 @@ proc CB_RunSequenceConv() {
 		setvoxelsize(u,step_x,step_y,step_z)		
 	    u.settranslation(i1.trx,i1.try,i1.trz)
   	 	u.initvalue(0,0,0);
-  		i1_draw._setvector(0,u);	
+  		i1_draw.setvector(0,u);	
 	}
 	_error = 0;
 	ComputeError(&_error);
@@ -537,8 +537,10 @@ proc CB_RunAlphaTests() {
 
   filename1=filedir+param_str+"_Mean.dat"
   filename2=filedir+param_str+"_StDv.dat"
-  test_file1 = open(filename1,"w")
-  test_file2 = open(filename2,"w")
+#  test_file1 = open(filename1,"w")
+#  test_file2 = open(filename2,"w")
+  test_file1 = File(filename1,"w")
+  test_file2 = File(filename2,"w")
 
   CreateParamString()
   param_str = param_str + sprint("(alpha,%f,",alfa_min)
@@ -547,18 +549,20 @@ proc CB_RunAlphaTests() {
   param_str = param_str + sprint("%f) ",alfa_step)
 
   # print parameter information at the beginning of the files
-  test_file1.print "# Optical Flow technique\n"
-  test_file1.print "# Mean error \n"
-  test_file1.print "# amilab script: test_3dflow.amil\n"
-  test_file1.print "# Parameters\n"
-  test_file1.print "# "+param_str+"\n"
+  test_file1._print("# Optical Flow technique\n")
+  test_file1._print("# Mean error \n")
+  test_file1._print("# amilab script: test_3dflow.amil\n")
+  test_file1._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file1._print(_st_)
 
 
-  test_file2.print "# Optical Flow technique\n"
-  test_file2.print "# Standard deviation \n"
-  test_file2.print "# amilab script: test_3dflow.amil\n"
-  test_file2.print "# Parameters\n"
-  test_file2.print "# "+param_str+"\n"
+  test_file2._print("# Optical Flow technique\n")
+  test_file2._print("# Standard deviation \n")
+  test_file2._print("# amilab script: test_3dflow.amil\n")
+  test_file2._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file2._print(_st_)
 
   #----- save initial value of the vector flow
   if (!alfa_init_zero) {
@@ -579,23 +583,23 @@ proc CB_RunAlphaTests() {
 
     n = norm(u-u_o);
     _mean = mean(n,mask)
-    test_file1.print alfa
-    test_file1.print "\t"
-    test_file1.print _mean
-    test_file1.print "\n"
+    test_file1._print(alfa)
+    test_file1._print("\t")
+    test_file1._print(_mean)
+    test_file1._print("\n")
 
     _mean2 = (n-_mean)*(n-_mean)
     // error after removing 15 pixels at the border
-    test_file2.print alfa
-    test_file2.print "\t"
-    test_file2.print sqrt(mean(_mean2,mask))
-    test_file2.print "\n"
+    test_file2._print(alfa)
+    test_file2._print("\t")
+    test_file2._print(sqrt(mean(_mean2,mask)))
+    test_file2._print("\n")
 
   }
 
   print "closing files \n"
-  test_file1.close
-  test_file2.close
+  test_file1.close()
+  test_file2.close()
   print "files closed\n"
 }
 
@@ -615,10 +619,10 @@ proc EvalFunction( NUM input, NUM res ) {
   n = norm(u-u_o);
   _mean = mean(n,mask)
 
-  findmin_file1.print input
-  findmin_file1.print "\t"
-  findmin_file1.print _mean
-  findmin_file1.print "\n"
+  findmin_file1._print(input)
+  findmin_file1._print("\t")
+  findmin_file1._print(_mean)
+  findmin_file1._print("\n")
 
   res = _mean
 
@@ -638,7 +642,8 @@ proc CB_AlphaFindMin() {
   filedir="Results/"+data_info+"/"
 
   filename1=filedir+param_str+"__Mean.dat"
-  findmin_file1 = open(filename1,"w")
+#  findmin_file1 = open(filename1,"w")
+  findmin_file1 = File(filename1,"w")
 
   CreateParamString()
   param_str = param_str + sprint("(alpha,%f,",alfa_min)
@@ -646,11 +651,12 @@ proc CB_AlphaFindMin() {
   param_str = param_str + sprint("(iterations,%0.0f) ",alfa_findmin_it)
 
   # print parameter information at the beginning of the files
-  findmin_file1.print "# Optical Flow technique\n"
-  findmin_file1.print "# Mean error \n"
-  findmin_file1.print "# amilab script: test_3dflow.amil\n"
-  findmin_file1.print "# Parameters\n"
-  findmin_file1.print "# "+param_str+"\n"
+  findmin_file1._print("# Optical Flow technique\n")
+  findmin_file1._print("# Mean error \n")
+  findmin_file1._print("# amilab script: test_3dflow.amil\n")
+  findmin_file1._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  findmin_file1._print(_st_)
 
   #----- save initial value of the vector flow
   if (!alfa_init_zero) {
@@ -664,7 +670,7 @@ proc CB_AlphaFindMin() {
   del findmin_u_init
 
   print "closing files \n"
-  findmin_file1.close
+  findmin_file1.close()
   print "files closed\n"
 
   local
@@ -673,7 +679,7 @@ proc CB_AlphaFindMin() {
 
 #-------------- CORRELATION INTERFACE ----------------
 
-w1 = ParamWin("3D Correlation parameters")
+w1 = global::ami_import.ParamPanel("3D Correlation parameters")
 
 step_x_id = w1.AddInt( &step_x,  "step_x", 1,20)
 step_y_id = w1.AddInt( &step_y,  "step_y", 1,20)
@@ -702,7 +708,7 @@ proc CB_CorrInterf() {
 
 #------------------ PDE INTERFACE ---------------------
 
-w2 = ParamWin("PDE Optical Flow")
+w2 = global::ami_import.ParamPanel("PDE Optical Flow")
 
 beta_id         = w2.AddFloat( &beta,  "beta", 0.01,5)
 alfa_id         = w2.AddFloat( &alfa,  "alfa", 0.01,40)
@@ -875,8 +881,7 @@ proc CB_JohanCorrVarTest() {
 
 #-------------- MAIN INTERFACE -----------------------
 
-import = &global::ami_import;
-w_main = import->ParamPanel(" Flow Motion Estimation ")
+w_main = global::ami_import.ParamPanel(" Flow Motion Estimation ")
 
 load_sphere_id     = w_main.AddButton("Load New Sphere 128",    CB_LoadNewSphereData)
 load_sphere64_id   = w_main.AddButton("Load New Sphere 64",     CB_LoadSphere64)
@@ -912,8 +917,8 @@ w_main.Display()
 #-------------------------------------------------
 # Creating parameter window for test on alpha
 #-------------------------------------------------
-import = &global::ami_import;
-alphatests_win = import->ParamPanel("test sequence on alpha")
+
+alphatests_win = global::ami_import.ParamPanel("test sequence on alpha")
 alfa_min_id        = alphatests_win.AddFloat( &alfa_min,  "alfa_min", 0.01,20)
 alfa_max_id        = alphatests_win.AddFloat( &alfa_max,  "alfa_max", 0.01,40)
 alfa_step_id       = alphatests_win.AddFloat( &alfa_step,  "alfa_step", 0.01,2)

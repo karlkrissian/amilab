@@ -25,6 +25,7 @@ extern "C" {
 #endif // _USE_WII_
 
 
+#include "paramlist.h"
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp" 

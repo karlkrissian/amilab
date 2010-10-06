@@ -84,11 +84,11 @@ InrImage* wrap_ImTranslate(ParamList* p)
   int incx,incy,incz;
   input->GetBufferIncrements(incx,incy,incz);
 
-  int displ = dx*incx+dy*incy+dz*incz;
-  //cout << "displ = " << displ << endl;
+  //int displ = dx*incx+dy*incy+dz*incz;
+  //cout << "displ = " << displ << std::endl;
 
   if (input->ScalarFormat()) {
-    //cout << "**" << endl;
+    //cout << "**" << std::endl;
     for(z=zmin;z<=zmax;z++)
     for(y=ymin;y<=ymax;y++) {
       if (border_mode==0) 
@@ -126,7 +126,7 @@ InrImage* wrap_ImTranslate(ParamList* p)
 
   // chek borders if needed
   if (border_mode==0) {
-    //cout << "**" << endl;
+    //cout << "**" << std::endl;
     for(z=0;z<=result->DimZ()-1;z++)
     for(y=0;y<=result->DimY()-1;y++) 
     for(x=0;x<=result->DimX()-1;x++) {

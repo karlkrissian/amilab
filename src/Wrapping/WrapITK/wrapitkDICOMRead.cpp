@@ -38,6 +38,7 @@
 #include "itkImageIOBase.h"
 #endif // _WITHOUT_ITK_
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkDICOMRead.h"
@@ -49,7 +50,7 @@ class itkReadDICOMClass {
   typedef itk::ImageSeriesReader< ImageType > ReaderType;
   
   private:
-    InrImage* CreateImage( int dimx, int dimy, int dimz, WORDTYPE type, const string& name) {
+    InrImage* CreateImage( int dimx, int dimy, int dimz, WORDTYPE type, const std::string& name) {
       return new InrImage(dimx,dimy,dimz,1,type,"Image_itk.ami.gz");
     }
 
@@ -92,7 +93,7 @@ class itkReadDICOMClass {
       for (unsigned int i=0; i<Dimension; i++) {
         tr[i] = inputImage->GetOrigin()[i];
         vs[i] = inputImage->GetSpacing()[i];
-        cout << "vs["<<i<<"] = " << vs[i] << endl;
+        std::cout << "vs["<<i<<"] = " << vs[i] << std::endl;
       }
       res->SetTranslation( tr[0], tr[1], tr[2]);
       res->SetVoxelSize(   vs[0], vs[1], vs[2]);
@@ -170,11 +171,11 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
       image_io= reader->GetImageIO();
       image_component_type = image_io->GetComponentType();
       image_pixel_type = image_io->GetPixelType();
-      cout << "  Component Type = " << image_io->GetComponentTypeAsString(image_component_type) << endl;
-      cout << "  Pixel Type = "     << image_io->GetPixelTypeAsString(image_pixel_type) << endl;
-      cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << endl;
+      std::cout << "  Component Type = " << image_io->GetComponentTypeAsString(image_component_type) << std::endl;
+      std::cout << "  Pixel Type = "     << image_io->GetPixelTypeAsString(image_pixel_type) << std::endl;
+      std::cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << std::endl;
       int vdim = image_io->GetNumberOfComponents();
-      cout << "  Number of Components = "<< vdim << endl;
+      std::cout << "  Number of Components = "<< vdim << std::endl;
     } else
     {
       FILE_ERROR("Dicom series not found ...");
@@ -187,7 +188,7 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
     return NULL;
   }
 
-  int vdim = image_io->GetNumberOfComponents();
+//  int vdim = image_io->GetNumberOfComponents();
   const unsigned int image_dim = image_io->GetNumberOfDimensions();
 
 #define READ_IMAGE(imdim) \
@@ -198,7 +199,7 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
     case itk::ImageIOBase::CHAR:    \
     case itk::ImageIOBase::UNKNOWNPIXELTYPE:  \
     default:  \
-      cerr << "Format not supported in InrImage class "<< endl;  \
+      std::cerr << "Format not supported in InrImage class "<< std::endl;  \
   }
 
   switch (image_pixel_type) {
@@ -208,18 +209,18 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
         case 2: READ_IMAGE(2); break;
         case 3: READ_IMAGE(3); break;
         default:
-          cerr << " InrImage format does not support images of dimension " << image_dim << endl;
+          std::cerr << " InrImage format does not support images of dimension " << image_dim << std::endl;
       }
     break;
 
     default:
-        cerr << boost::format(" itkRead() \t pixel type %s% not supported in this release") % image_io->GetPixelTypeAsString(image_pixel_type)
-              << endl;
+        std::cerr << boost::format(" itkRead() \t pixel type %s% not supported in this release") % image_io->GetPixelTypeAsString(image_pixel_type)
+              << std::endl;
     return NULL;
   }
 
-  cout << image_component_type << endl;
-  cout << itk::ImageIOBase::USHORT << endl;
+ std::cout << image_component_type << std::endl;
+ std::cout << itk::ImageIOBase::USHORT << std::endl;
 
   return res;
 
@@ -249,7 +250,7 @@ InrImage* wrap_itkDICOMRead(ParamList* p)
   std::string*  DicomFolder = NULL;
   int n=0;
   
-  if (!get_val_ptr_param<string>( DicomFolder, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<std::string>( DicomFolder, p, n)) HelpAndReturnNULL;
 
   return itkDICOMRead(*DicomFolder);
 

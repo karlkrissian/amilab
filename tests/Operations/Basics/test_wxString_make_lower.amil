@@ -1,0 +1,71 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxString_make_lower.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - c_str
+#                              - Lower
+#                              - MakeLower
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Create an object of class wxString(sString = wx.wxString(\"HELLO WORLD !!!\")).\n"
+sString = wx.wxString("HELLO WORLD !!!")
+
+VAL=sString.c_str()
+
+printn "\t Returns the sString value: - %1% -\n" % VAL
+
+printn "Converted to the lower (newString=sString.Lower()).\n"
+newString=sString.Lower()
+
+VAL1=newString.c_str()
+
+printn "\t VAL1: %1%\n" % VAL1
+
+if(VAL1 != "hello world !!!") {
+  OK = 0
+  printn  "\nERROR: sString no lower."
+}
+
+printn "Create an object of class wxString(sString1 = wx.wxString(\"HELLO WORLD !!!\")).\n"
+sString1 = wx.wxString("HELLO WORLD !!!")
+
+VAL2=sString1.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL2
+
+printn "Converted to the lower (sString1.MakeLower()).\n"
+sString1.MakeLower()
+
+VAL3=sString1.c_str()
+
+printn "\t VAL3: %1%\n" % VAL3
+
+if(VAL3 != "hello world !!!") {
+  OK = 0
+  printn  "\nERROR: sString no lower."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

@@ -20,6 +20,7 @@
 //------------------------------------------------------
 InrImage* Wrap_NewNLmeans(ParamList* p)
 {
+#ifdef AMI_USE_FASTNLMEANS
     char functionname[] = "NewNLmeans";
     char description[]=" \n\
         Fast implementation of the NL-means algorithms\n\
@@ -38,7 +39,6 @@ InrImage* Wrap_NewNLmeans(ParamList* p)
       - dist_mode (def:0): distance mode: 0 for square intensity differences, 1 for absolute\n\
             ";
 
-#ifdef AMI_USE_FASTNLMEANS
   FastNLmeans_params params;
   int n=0;
 
@@ -57,7 +57,7 @@ InrImage* Wrap_NewNLmeans(ParamList* p)
 
   return fast_nlmeans.GetResult();
 #else
-  cerr << " need to compile with FastNLmeans enabled" << endl;
+  std::cerr << " need to compile with FastNLmeans enabled" << std::endl;
   return NULL;
 #endif
 
