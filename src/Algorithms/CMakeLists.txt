@@ -1,34 +1,21 @@
 # Create a library called "Hello" which includes the source file "hello.cxx".
 # The extension is already found.  Any number of sources could be listed here.
 
+add_subdirectory (myVTK4)
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/Crest
-  ${AMILAB_SOURCE_DIR}/Voxels
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/Math
-  ${AMILAB_SOURCE_DIR}/AMImage
-  ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Filtering
-  ${AMILAB_SOURCE_DIR}/Graph
+  ${AMILAB_SOURCE_DIR}/Graphic/include
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
-  ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapDessinImage
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}
   ${AMIFLUID_INCLUDE_DIR}
   ${PTHREADS_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
+  ${wxParams_INCLUDE_DIRS}
   )
 
 INCLUDE( ${VTK_USE_FILE} )
@@ -42,38 +29,109 @@ IF(AMI_USE_FASTNLMEANS)
 ENDIF(AMI_USE_FASTNLMEANS)
 
 SET(Algorithms_SRCS
-  BasicFilter/ImageToImageFilter.cpp
-  BasicFilter/ImageAddScalar.cpp
-  BasicFilter/ImageCos.cpp
-  Basic/localstats.cpp
-  Graph/func_shortestpath.cpp
+  ImageToImageFilter.cpp
+  ImageAddScalar.cpp
+  ImageCos.cpp
+  localstats.cpp
+  func_shortestpath.cpp
 
-  Denoising/AnisoGS.cpp
-  Denoising/WrapOld_AnisoGS.cpp
-  Denoising/NLmeans.cpp
+  AnisoGS.cpp
+  WrapOld_AnisoGS.cpp
+  NLmeans.cpp
 
-  Segmentation/RegionGrowingTest.cpp
+  RegionGrowingTest.cpp
   Segmentation/SubPixel2D.cpp
 
-  Others/ComputePartialVolume.cpp
+  ComputePartialVolume.cpp
+
+  # files coming from previous Filtering directory
+  bruit.cpp
+  DeriveesLissees.cpp
+  GaussianFilter.cpp
+  filtrage_rec.cpp
+  GeneralGaussianFilter.cpp
+
+  # files coming from previous Line directory
+  reponse_cercle.cpp
+
+  # from Contours
+  CalculAireSection.cpp
+  IsoContour2.cpp
+  IsoContour2D.cpp
+  IsoContour.cpp
+  PointContour.cpp
+
+  # from Vaisseaux
+  Vaisseaux/CalculBoules.cpp
+  Vaisseaux/IntersectIsosurf.cpp
+  Vaisseaux/IsoLigne.cpp
+  Vaisseaux/Vaisseau.cpp
+  Vaisseaux/CalculIsoLignes.cpp
+  Vaisseaux/ImageVaisseaux.cpp
+  Vaisseaux/IsoLigne2.cpp
+  Vaisseaux/Voxel.cpp
+
+  # from SplineThevenaz
+  SplineThevenaz/coeff.c 
+  SplineThevenaz/interpol.c
+  
+  # from Graph
+  Graph/dijkstra.cpp
 )
 
 
 SET(Algorithms_HDRS
-  BasicFilter/ImageToImageFilter.h
-  BasicFilter/ImageAddScalar.h
-  BasicFilter/ImageCos.h
-  Basic/localstats.h
-  Graph/func_shortestpath.h
+  include/ImageToImageFilter.h
+  include/ImageAddScalar.h
+  include/ImageCos.h
+  include/localstats.h
+  include/func_shortestpath.h
 
-  Denoising/AnisoGS.h
-  Denoising/WrapOld_AnisoGS.h
-  Denoising/NLmeans.h
+  include/AnisoGS.h
+  include/WrapOld_AnisoGS.h
+  include/NLmeans.h
 
-  Segmentation/RegionGrowingTest.h
-  Segmentation/SubPixel2D.h
+  include/RegionGrowingTest.h
+  include/SubPixel2D.h
 
-  Others/ComputePartialVolume.h
+  include/ComputePartialVolume.h
+
+  # files coming from previous Filtering directory
+  include/bruit.hpp
+  include/DeriveesLissees.hpp
+  include/GaussianFilter.h
+  include/filtrage_rec.hpp
+  include/GeneralGaussianFilter.h
+  include/filtre_param.hpp
+
+  # files coming from previous Line directory
+  include/reponse_cercle.hpp
+
+  # from Contours
+  include/CalculAireSection.hpp
+  include/IsoContour.hpp
+  include/IsoContour2.hpp
+  include/IsoContour2D.hpp
+  include/PointContour.hpp
+  include/PropagePoints.hpp
+
+  # from Vaisseaux
+  include/CalculBoules.hpp
+  include/CalculIsoLignes.hpp
+  include/ImageVaisseaux.hpp
+  include/InrViewIsoLignes.hpp
+  include/IntersectIsosurf.hpp
+  include/IsoLigne.hpp
+  include/IsoLigne2.hpp
+  include/Vaisseau.hpp
+  include/Voxel.hpp
+
+  # from SplineThevenaz
+  include/coeff.h
+  include/interpol.h
+
+  # from Graph
+  include/dijkstra.h
 )
 
 SET(OpenGL_SRCS
