@@ -14,11 +14,13 @@
 
 # NLM_resultname = $2
 
+func "Common/ScriptGui"
+
 if (!exists(NLmeansClass)) {
 
   ami_import->Filters()
     
-  Class NLmeansClass {
+  Class NLmeansClass : public ScriptGui{
   
     ::class_name ="global::NLmeansClass"
     ::filters=&global::filters
@@ -63,7 +65,7 @@ if (!exists(NLmeansClass)) {
       ::show_images = UCHAR(1)
       ::mse = 0
       ::surf_scaling = 0.1
-      #::CreateWindow()
+      #::Gui()
     }
     
     proc ::SetParentPanel(OBJECT pp) \
@@ -71,23 +73,6 @@ if (!exists(NLmeansClass)) {
       ::parent_panel = &pp
     }
     
-    #----------------------------
-    proc ::Close() \
-    {
-      if (exists(::win)) {
-        ::win.HidePanel()
-      }
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() \
-    {
-      eval "if (exists(%1%)) { del %1%; };" % ::class_name
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::LoadInput() \
@@ -541,7 +526,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
 
     
     #----------------------------
-    proc ::CreateWindow() {
+    proc ::Gui() {
     
       # parameters window
       import = &global::ami_import;
@@ -635,10 +620,8 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
               display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
           ::win.EndBoxPanel()
       ::win.EndBook()
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal()
+
+      ::AddStandardButtons(&::win)
       
       if (exists(::parent_panel)) {
         ::win.ShowPanel()
@@ -647,10 +630,10 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       }
       ::win.Update(-1)
       #::win.Display
-      ::FilterModeEvent
+      ::FilterModeEvent()
     }
 
-    ::Init
+    ::Init()
   } 
   # Class NLmeansClass
 } 
@@ -661,18 +644,18 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
 # Main
 #----------------------------
 
-if (!exists(nlm)) {
+#if (!exists(nlm)) {
 
-  NLmeansClass nlm
+#  NLmeansClass nlm
   
-  if (argc>=1) {
-    printn "reading image"
-    input = Image($1)
-    nlm->image_name = "input"
-    nlm->win.Update(-1)
-  }
+  #if (argc>=1) {
+    #printn "reading image"
+    #input = Image($1)
+    #nlm->image_name = "input"
+    #nlm->win.Update(-1)
+  #}
 
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
+#} else {
+  #InfoDialog "The script seems to be already loaded."
+#}
 

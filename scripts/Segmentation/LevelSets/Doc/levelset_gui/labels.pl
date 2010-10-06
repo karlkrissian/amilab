@@ -22,6 +22,10 @@ $key = q/cite_Osher2002/;
 $external_labels{$key} = "$URL/" . q|node12.html|; 
 $noresave{$key} = "$nosave";
 
+$key = q/cite_KrissianWestin05/;
+$external_labels{$key} = "$URL/" . q|node12.html|; 
+$noresave{$key} = "$nosave";
+
 $key = q/eq:LS_terms/;
 $external_labels{$key} = "$URL/" . q|node2.html|; 
 $noresave{$key} = "$nosave";
