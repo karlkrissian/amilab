@@ -342,7 +342,7 @@ if (!exists(Subpixel2DClass)){
             ::denoised = ::res->denoised
             show ::denoised
             show ::norm_input
-            ::denoised_draw._compare(&::norm_input_draw)
+            ::denoised_draw.compare(&::norm_input_draw)
           }
         } else {
           show ::norm_input

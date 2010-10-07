@@ -48,6 +48,13 @@ SET(  WrapFilters_SRCS
   wrapSubPixel2D.cpp
   wrapGenerateRamp.cpp
   wrap_AnisoGS.cpp
+  wrap_AnalyticFunctionBase.cpp
+  wrap_AnalyticLine.cpp
+  wrap_AnalyticCircle.cpp
+  wrap_AnalyticStraightVessel2D.cpp
+  wrap_AnalyticRing2D.cpp
+  wrap_AnalyticSphere.cpp
+  wrap_AnalyticTorus.cpp
   wrap_ComputePartialVolume.cpp
   wrap_ContinuousMorphology.cpp
 )
@@ -71,6 +78,13 @@ SET(WrapFilters_HDRS
   ../include/wrapGenerateRamp.h
   ../include/wrap_AnisoGS.h
   ../include/wrap_ContinuousMorphology.h
+  ../include/wrap_AnalyticFunctionBase.h
+  ../include/wrap_AnalyticLine.h
+  ../include/wrap_AnalyticCircle.h
+  ../include/wrap_AnalyticStraightVessel2D.h
+  ../include/wrap_AnalyticRing2D.h
+  ../include/wrap_AnalyticSphere.h
+  ../include/wrap_AnalyticTorus.h
   ../include/wrap_ComputePartialVolume.h
 )
 

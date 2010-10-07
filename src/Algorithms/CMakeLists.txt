@@ -42,6 +42,13 @@ SET(Algorithms_SRCS
   RegionGrowingTest.cpp
   Segmentation/SubPixel2D.cpp
 
+  AnalyticFunctionBase.cpp
+  AnalyticLine.cpp
+  AnalyticCircle.cpp
+  AnalyticStraightVessel2D.cpp
+  AnalyticRing2D.cpp
+  AnalyticSphere.cpp
+  AnalyticTorus.cpp
   ComputePartialVolume.cpp
 
   # files coming from previous Filtering directory
@@ -94,6 +101,13 @@ SET(Algorithms_HDRS
   include/RegionGrowingTest.h
   include/SubPixel2D.h
 
+  include/AnalyticFunctionBase.h
+  include/AnalyticLine.h
+  include/AnalyticCircle.h
+  include/AnalyticStraightVessel2D.h
+  include/AnalyticRing2D.h
+  include/AnalyticSphere.h
+  include/AnalyticTorus.h
   include/ComputePartialVolume.h
 
   # files coming from previous Filtering directory
