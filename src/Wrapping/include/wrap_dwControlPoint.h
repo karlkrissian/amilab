@@ -13,12 +13,16 @@
 #ifndef _wrap_dwControlPoint_h_
 #define _wrap_dwControlPoint_h_
 
-#include "wrapfunction_class.h"
-#include "wrapfunctions.hpp"
-#include "Variable.hpp"
-#include "paramlist.h"
-#include "ami_object.h"
-#include "amilab_boost.h"
+#ifdef _AMIPREC_
+  #include "WrapInterface_header.h"
+#else
+  #include "wrapfunction_class.h"
+  #include "wrapfunctions.hpp"
+  #include "Variable.hpp"
+  #include "paramlist.h"
+  #include "ami_object.h"
+  #include "amilab_boost.h"
+#endif
 
 #include "dwControlPoint.h"
 

@@ -12,12 +12,17 @@
 
 #include "wrap_dwControlledCurve.h"
 
-#include "VarContexts.hpp"
-#include "wrapfunctions.hpp"
-#include "ami_class.h"
-#include "ami_object.h"
-#include "ami_function.h"
-#include "wrap_wxColour.h"
+#ifdef _AMIPREC_
+  #include "WrapInterface_header.h"
+#else
+  #include "VarContexts.hpp"
+  #include "wrapfunctions.hpp"
+  #include "ami_class.h"
+  #include "ami_object.h"
+  #include "ami_function.h"
+#endif
+
+//#include "wrap_wxColour.h"
 #include "wrap_stdvector.h"
 
 

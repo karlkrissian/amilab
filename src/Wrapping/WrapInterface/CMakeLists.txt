@@ -49,4 +49,8 @@ SET(WrapInterface_SRCS
      ${WrapInterface_HDRS}
 )
 
+ADD_PCH_RULE(${AMILAB_SOURCE_DIR}/Wrapping/include/WrapInterface_header.h WrapInterface_SRCS)
+
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_AMIPREC_")
+
 my_add_library ( WrapInterface)
