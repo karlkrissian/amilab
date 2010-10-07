@@ -53,6 +53,7 @@ extern MainFrame*   GB_main_wxFrame;
 
 // for completion search
 #include "VarContexts.hpp"
+//#include <wx/unichar.h> 
 extern    VarContexts  Vars;
 
 
@@ -216,6 +217,91 @@ void TextControl::ProcessTab()
     CLASS_ERROR("Empty string");
     return;
   }
+  
+//  wxRegEx last_variable_regex (wxT(".*((global::|)([_[:alpha:]][_[:alnum]]*->)*([_[:alpha:]][_[:alnum]]*))$"));
+  wxString expr = wxT(".*[^[:alnum:]_\\.\\:]((global\\:\\:|)?([_[:alpha:]][_[:alnum:]]*\\.)*([_[:alpha:]][_[:alnum:]]*)?)$");
+  wxRegEx last_variable_regex (expr);
+  wxString last_variable;
+  if (!last_variable_regex.IsValid()) {
+   std::cout << "Expression not valid !!!" << std::endl;
+  }
+  if (last_variable_regex.Matches(alltext))
+  {
+    // need to call Matches before GetMatch !!!
+    last_variable = last_variable_regex.GetMatch(alltext,1);
+    std::cout << "expression " << expr.mb_str() << std::endl;
+    std::cout << "alltext: '"
+        << alltext.mb_str(wxConvUTF8) << "'" << std::endl;
+    std::cout << "last pending variable name: '"
+        << last_variable.mb_str(wxConvUTF8) << "'" << std::endl;
+  } else 
+  {
+   std::cout << "no match !!!" << std::endl;
+   return;
+  }
+
+  // find the corresponding context if any
+  // allow global or builtin ...
+  bool inglobal=true;
+  int seppos;
+  Variables::ptr context = Vars.GetCurrentContext();
+  while ((seppos = last_variable.Find(wxT("."))) != wxNOT_FOUND) 
+  {
+    wxString varname = last_variable.BeforeFirst('.');
+    BasicVariable::ptr var;
+    if (varname.Contains(wxT("global::"))) {
+      varname = varname.AfterLast(':'); // get rid of global::
+      var = context->GetVar(varname.mb_str(wxConvUTF8));
+    }
+    else
+    {
+      if (inglobal)
+        var = Vars.GetVar(varname.mb_str(wxConvUTF8));
+      else
+        var = context->GetVar(varname.mb_str(wxConvUTF8));        
+      }
+    if (!var.get()) {
+      std::cout << "Completion failed, check variable ..." << std::endl;
+      return;
+    }
+    DYNAMIC_CAST_VARIABLE(AMIObject,var,var1);
+    if (!var1.get()) {
+      std::cout << "variable " << var->get_name() 
+                << " is not of type AMIObject" << std::endl;
+      return;
+    }
+    context = var1->Pointer()->GetContext();
+    inglobal = false;
+    last_variable = last_variable.AfterFirst('.');
+  }
+
+  if (inglobal)
+  {
+    if (last_variable.Contains(wxT("global::"))) {
+      last_variable = last_variable.AfterLast(':'); // get rid of global::
+      completions->Clear();
+      context->SearchCompletions(last_variable, completions);
+    }
+    else
+    {
+      completions = Vars.SearchCompletions(last_variable);
+      // add keywords
+      int i = 0;
+      while (token_list[i]!=0) {
+        wxString token=wxString::FromAscii(token_list[i]);
+        if (token.First(last_variable) == 0)
+            completions->Add(token);
+        i++;
+      }
+    }
+  }
+  else
+  {
+    completions->Clear();
+    context->SearchCompletions(last_variable, completions);
+  }
+
+  /*
   completion_lastword = alltext.AfterLast(' ');
   completion_lastword = completion_lastword.AfterLast('(');
   completion_lastword = completion_lastword.AfterLast(',');
@@ -226,19 +312,12 @@ void TextControl::ProcessTab()
        << completion_lastword << std::endl;
   completions = Vars.SearchCompletions(completion_lastword);
 
-  // add keywords
-  int i = 0;
-  while (token_list[i]!=0) {
-    wxString token=wxString::FromAscii(token_list[i]);
-    if (token.First(completion_lastword) == 0)
-        completions->Add(token);
-    i++;
-  }
+  */
 
   if (GB_debug)
    std::cout << "going for it " << completions->GetCount() << std::endl;
   if (completions->GetCount()>0) {
-    int last_command_size = this->GetValue().Length()-this->text.Length()-completion_lastword.Length();
+    int last_command_size = this->GetValue().Length()-this->text.Length()-last_variable.Length();
     completion_lastcommand = this->GetValue().Mid ( this->text.Len(), last_command_size );
     in_completion = 1;
     completion_count = 0;
@@ -278,6 +357,7 @@ void TextControl::ProcessReturn()
     res=AskImage(name);
     if (!res) {
       GB_driver.yyiperror(" Need Image \n");
+      in_changed_value = 0;
       return;
     }
 
@@ -303,6 +383,7 @@ void TextControl::ProcessReturn()
     res=AskSurface(name);
     if (!res) {
       GB_driver.yyiperror(" Need Image \n");
+      in_changed_value = 0;
       return;
     }
 
