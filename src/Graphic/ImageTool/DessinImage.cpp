@@ -2921,6 +2921,7 @@ void DessinImage::InitParametres()
   _type_animation = TYPE_ANIM_FORWARD;
   _ANIM_vitesse   = 25;
   _ANIM_etat      = ANIM_PLAY;
+  _within_animation = false;
 
 
 } // InitParametres()
@@ -4995,16 +4996,27 @@ void DessinImage::PlayAnimation( )
 void DessinImage::UpdateAnimation()
 //                --------------
 {
-  ImageDraw_PositionParam::ptr p(_param_position);
-  
-     //_param_dialog->UpdateParameter( _id_planZ);
-    p->UpdateParameter(p->_id_planZ);
-  
-    DessinePlanZ();
-    AfficheImage( IMAGE_XY);
-    DrawingAreaDisplay();
+//  CLASS_MESSAGE("begin")
+  if (_within_animation) 
+  {
+    CLASS_MESSAGE("cancelled")
+     return;
+  }
+  else {
+    _within_animation = true;
+    ImageDraw_PositionParam::ptr p(_param_position);
+    
+      //_param_dialog->UpdateParameter( _id_planZ);
+      p->UpdateParameter(p->_id_planZ);
+    
+      DessinePlanZ();
+      AfficheImage( IMAGE_XY);
+      DrawingAreaDisplay();
 
-    Param._MAJ._planXY = true;
+      Param._MAJ._planXY = true;
+  //  CLASS_MESSAGE("end")
+    _within_animation = false;
+  }
 }
 
 //----------------------------------------------------------------
@@ -6150,7 +6162,7 @@ void DessinImage::CB_redessine( void* cd)
 
   
 //----------------------------------------------------------------
-void DessinImage::CB_redraw( wxCommandEvent& event)
+void DessinImage::CB_redraw( )
 {
 
      DessinImage*    di = (DessinImage*) this;
@@ -6180,42 +6192,32 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
 {
 
 
-     DessinImage*    di = (DessinImage*) this;
-//     unsigned char         nouvelle_valeur;
-
-
-//  nouvelle_valeur =  di->_wxm_mode->ValueChanged(event);
-
-//  nouvelle_valeur =  di->_Moptions_mode->ValueChanged();
-//return;
-//  Si Non(nouvelle_valeur) AlorsRetourne;
-
-  switch ( di->Param._option_traitement ){
+  switch ( this->Param._option_traitement ){
     case OPTION_MIP:
-      lastView = di->Param._type_coupe;
-      di->MemoriseCoupesXY( false);
-      di->Comparaisons_MemoriseCoupesXY( false);
+      lastView = this->Param._type_coupe;
+      this->MemoriseCoupesXY( false);
+      this->Comparaisons_MemoriseCoupesXY( false);
       // on force l'affichage d'une image 2D
-      //    di->Param._type_coupe == TYPE_COUPE_XY;
-      //     di->_param_dialog->UpdateParameter( di->_id_type_coupe);
+      //    this->Param._type_coupe == TYPE_COUPE_XY;
+      //     this->_param_dialog->UpdateParameter( this->_id_type_coupe);
 
       // Il faut remplacer l'image courante
       // par l'image de projection MIP
-      di->_MIP->FixeVoxelSize( di->Param._dim._voxel_size_x,
-                   di->Param._dim._voxel_size_y,
-                   di->Param._dim._voxel_size_z );
-      di->_MIP->FixeLimites( di->Param._Zoom._xmin, di->Param._Zoom._xmax,
-                 di->Param._Zoom._ymin, di->Param._Zoom._ymax,
-                 di->Param._Zoom._zmin, di->Param._Zoom._zmax);
-      di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP(
-        di->Param._MIP._rot_X,
-        di->Param._MIP._rot_Y,
-        di->Param._MIP._rot_Z));
-      di->Param._MIP._MAJ   = true;
-      di->Param.ChangeTypeCoupeMIP();
-      di->ChangeImage( di->_image_MIP);
+      this->_MIP->FixeVoxelSize( this->Param._dim._voxel_size_x,
+                   this->Param._dim._voxel_size_y,
+                   this->Param._dim._voxel_size_z );
+      this->_MIP->FixeLimites( this->Param._Zoom._xmin, this->Param._Zoom._xmax,
+                 this->Param._Zoom._ymin, this->Param._Zoom._ymax,
+                 this->Param._Zoom._zmin, this->Param._Zoom._zmax);
+      this->_image_MIP = InrImage::ptr(this->_MIP->CreeMIP(
+        this->Param._MIP._rot_X,
+        this->Param._MIP._rot_Y,
+        this->Param._MIP._rot_Z));
+      this->Param._MIP._MAJ   = true;
+      this->Param.ChangeTypeCoupeMIP();
+      this->ChangeImage( this->_image_MIP);
       
-//      di->_param_MIP->AfficheDialogue();
+//      this->_param_MIP->AfficheDialogue();
       
       if (_param_animation->IsShown())
         ToggleParamPanel(_param_animation.get());
@@ -6225,53 +6227,55 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
     break;
 
     case OPTION_ANIM:
-      di->ChangeImage( di->_image_initiale);
-      di->MemoriseCoupesXY( true);
-      di->Comparaisons_MemoriseCoupesXY( true);
+      this->ChangeImage( this->_image_initiale);
+      this->MemoriseCoupesXY( true);
+      this->Comparaisons_MemoriseCoupesXY( true);
       
       if (_param_mip->IsShown())
       {
         ToggleParamPanel(_param_mip.get());
-        RestoreView(event);
+        RestoreView();
       }
       
-      if (!(di->_image->_tz > 1)) {
+      if (!(this->_image->_tz > 1)) {
         wxMessageDialog* message = new wxMessageDialog(this, wxT("You are showing a two-dimensional image."),
                                                        wxT("Viewer Error"), wxOK | wxICON_EXCLAMATION);
         message->ShowModal();
+        event.Skip();
         return;
       }
       ToggleParamPanel(_param_animation.get());
-      di->LanceAnimation();
+      this->LanceAnimation();
     break;
 
     case OPTION_COUPE:
       if (_param_mip->IsShown()) {
         ToggleParamPanel(_param_mip.get());
-        RestoreView(event);
+        RestoreView();
       }
 
       if (_param_animation->IsShown()) {
         Set_ANIM_STOP();
         ToggleParamPanel(_param_animation.get());
-        RestoreView(event);
+        RestoreView();
       }
-      di->MemoriseCoupesXY( false);
-      di->Comparaisons_MemoriseCoupesXY( false);
-      di->ChangeImage( di->_image_initiale);
+      this->MemoriseCoupesXY( false);
+      this->Comparaisons_MemoriseCoupesXY( false);
+      this->ChangeImage( this->_image_initiale);
     break;
 
   } // end switch
 
 /* MIP sub-menu
-  Si di->Param._option_traitement == OPTION_MIP Alors
-    XtManageChild((Widget)(*di->_Mmip));
+  Si this->Param._option_traitement == OPTION_MIP Alors
+    XtManageChild((Widget)(*this->_Mmip));
   Sinon
-    if (XtIsManaged((Widget)(*di->_Mmip)))
-      XtUnmanageChild((Widget)(*di->_Mmip));
+    if (XtIsManaged((Widget)(*this->_Mmip)))
+      XtUnmanageChild((Widget)(*this->_Mmip));
   FinSi
 */
 
+  event.Skip();
 } // CB_option_traitement()
 
 
@@ -6304,7 +6308,7 @@ void DessinImage::CB_fonction_intensite( void* cd)
 {
 
 
-     DessinImage*    di = (DessinImage*) cd;
+  DessinImage*    di = (DessinImage*) cd;
 
   di->Param._MAJ._intensite = true;
   di->Param._MAJ.MAJCoupes();
@@ -6610,11 +6614,11 @@ void DessinImage::Create_Toolbar()
   
 
 //----------------------------------------------------------------
-void DessinImage::RestoreView(wxCommandEvent &event)
+void DessinImage::RestoreView()
 {
   DessinImage* di = (DessinImage*) this;
   di->Param._type_coupe = lastView;
-  CB_redraw(event);
+  CB_redraw();
 
   //Checking chekboxes
   switch (lastView) {
@@ -6792,22 +6796,22 @@ void DessinImage::CB_OnCheckXYClick (wxCommandEvent &event)
     switch (di->Param._type_coupe) {
       case TYPE_COUPE_ZY:
         di->Param._type_coupe = TYPE_COUPE_XY_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
       
       case TYPE_COUPE_XZ:
         di->Param._type_coupe = TYPE_COUPE_XY_XZ;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPE_XZ_ZY:
         di->Param._type_coupe = TYPE_COUPE_XY_XZ_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
 
       case TYPE_COUPES:
         di->Param._type_coupe = TYPE_COUPE_XY;
-        CB_redraw(event);
+        CB_redraw();
         break;
 
       default:
@@ -6824,23 +6828,23 @@ void DessinImage::CB_OnCheckXYClick (wxCommandEvent &event)
       dialog->ShowModal();
       xyCheck->SetValue(true);
       di->Param._type_coupe = TYPE_COUPE_XY;
-      CB_redraw(event);
+      CB_redraw();
       return;
     }
     switch (di->Param._type_coupe) {
       case TYPE_COUPE_XY_ZY:
         di->Param._type_coupe = TYPE_COUPE_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPE_XY_XZ:
         di->Param._type_coupe = TYPE_COUPE_XZ;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPE_XY_XZ_ZY:
         di->Param._type_coupe = TYPE_COUPE_XZ_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
 
       default: 
@@ -6860,22 +6864,22 @@ void DessinImage::CB_OnCheckXZClick (wxCommandEvent &event)
     switch (di->Param._type_coupe) {
       case TYPE_COUPE_ZY:
         di->Param._type_coupe = TYPE_COUPE_XZ_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
       
       case TYPE_COUPE_XY:
         di->Param._type_coupe = TYPE_COUPE_XY_XZ;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPE_XY_ZY:
         di->Param._type_coupe = TYPE_COUPE_XY_XZ_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPES:
         di->Param._type_coupe = TYPE_COUPE_XZ;
-        CB_redraw(event);
+        CB_redraw();
         break;
 
       default:
@@ -6892,23 +6896,23 @@ void DessinImage::CB_OnCheckXZClick (wxCommandEvent &event)
       dialog->ShowModal();
       xzCheck->SetValue(true);
       di->Param._type_coupe = TYPE_COUPE_XZ;
-      CB_redraw(event);
+      CB_redraw();
       return;
     }
     switch (di->Param._type_coupe) {
       case TYPE_COUPE_XZ_ZY:
         di->Param._type_coupe = TYPE_COUPE_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPE_XY_XZ:
         di->Param._type_coupe = TYPE_COUPE_XY;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPE_XY_XZ_ZY:
         di->Param._type_coupe = TYPE_COUPE_XY_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
 
       default: 
@@ -6928,22 +6932,22 @@ void DessinImage::CB_OnCheckZYClick (wxCommandEvent &event)
     switch (di->Param._type_coupe) {
       case TYPE_COUPE_XY:
         di->Param._type_coupe = TYPE_COUPE_XY_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
       
       case TYPE_COUPE_XZ:
         di->Param._type_coupe = TYPE_COUPE_XZ_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPE_XY_XZ:
         di->Param._type_coupe = TYPE_COUPE_XY_XZ_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPES:
         di->Param._type_coupe = TYPE_COUPE_ZY;
-        CB_redraw(event);
+        CB_redraw();
         break;
 
       default:
@@ -6960,23 +6964,23 @@ void DessinImage::CB_OnCheckZYClick (wxCommandEvent &event)
       dialog->ShowModal();
       zyCheck->SetValue(true);
       di->Param._type_coupe = TYPE_COUPE_ZY;
-      CB_redraw(event);
+      CB_redraw();
       return;
     }
     switch (di->Param._type_coupe) {
       case TYPE_COUPE_XY_ZY:
         di->Param._type_coupe = TYPE_COUPE_XY;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPE_XZ_ZY:
         di->Param._type_coupe = TYPE_COUPE_XZ;
-        CB_redraw(event);
+        CB_redraw();
         break;
         
       case TYPE_COUPE_XY_XZ_ZY:
         di->Param._type_coupe = TYPE_COUPE_XY_XZ;
-        CB_redraw(event);
+        CB_redraw();
         break;
 
       default: 
@@ -6994,7 +6998,7 @@ void DessinImage::CB_OnManyXYClick  (wxCommandEvent &event)
 
   if (_param_mip->IsShown()) {
     ToggleParamPanel(_param_mip.get());
-    RestoreView(event);
+    RestoreView();
   }
 
   if (!(di->_image->_tz > 1)) {
@@ -7014,7 +7018,7 @@ void DessinImage::CB_OnManyXYClick  (wxCommandEvent &event)
       zyCheck->Disable();
       comboView->Disable();
       ToggleParamPanel(_param_coupesxy.get());
-      CB_redraw(event);
+      CB_redraw();
     }
     else {
       ToggleParamPanel(_param_coupesxy.get());
@@ -7022,7 +7026,7 @@ void DessinImage::CB_OnManyXYClick  (wxCommandEvent &event)
       xzCheck->Enable(true);
       zyCheck->Enable(true);
       comboView->Enable(true);
-      RestoreView(event);
+      RestoreView();
     }
   }
 
