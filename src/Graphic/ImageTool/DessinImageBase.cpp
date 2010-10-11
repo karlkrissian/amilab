@@ -2034,6 +2034,8 @@ void DessinImageBase :: DrawColorBar( )
 void DessinImageBase::DrawSlice( int slice_id )
 //                    ---------
 {
+  CLASS_MESSAGE(boost::format(" slice_id = %1%") % slice_id)
+
   register int             x,y;
   register double           px, py;
   register double           px1, py1;

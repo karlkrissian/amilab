@@ -4730,7 +4730,8 @@ void DessinImage::Paint( unsigned char affiche)
              % _hauteur
              % _largeur
           << std::endl;
-
+  CLASS_MESSAGE(boost::format("position %1% %2% %3%")%Param._pos._x % Param._pos._y % Param._pos._z)
+          
   Si Non(_vecteur_ON) Alors
   //    curseur = XCreateFontCursor( display, XC_watch);
   //    XDefineCursor( display, fenetre, curseur);
