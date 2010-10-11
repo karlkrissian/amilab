@@ -4246,6 +4246,7 @@ void DessinImage::Boutton2_Relache()
 void DessinImage::DeplaceSourisBout2()
 //                ------------------
 {
+CLASS_MESSAGE("begin")
   ImageDraw_MIPParam::ptr mip(_param_mip);
   
   int var;
@@ -4281,6 +4282,7 @@ void DessinImage::DeplaceSourisBout2()
 
   Boutton2_Presse();
 
+CLASS_MESSAGE("end")
 } // DeplaceSourisBout2()
 
 

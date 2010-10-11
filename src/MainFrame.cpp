@@ -1474,10 +1474,23 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
     return;
   }
 
+  // Create possible variable name
+  wxString possible_name = wxFileName(wxString(name.c_str(),wxConvUTF8)).GetName();
+  // remove all extensions
+  while (wxFileName(possible_name).HasExt()) {
+    wxFileName fn(possible_name);
+    fn.ClearExt();
+    possible_name = fn.GetName();
+  }
+  possible_name.Replace(wxT(" "),wxT("_"));
+  possible_name.Replace(wxT("."),wxT("_"));
+  possible_name.Replace(wxT("("),wxT("_"));
+  possible_name.Replace(wxT(")"),wxT("_"));
+
   res=AskVarName( this,
                   string("Image variable name"),
                   string("Enter name:"),
-                  string("i"),
+                  string(possible_name.mb_str(wxConvUTF8)),
                   varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;
@@ -1509,11 +1522,22 @@ void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
   string varname;
   size_t pos = event.GetId() - wxID_Images_History;
   wxString filename(images_history->GetHistoryFile(pos));
+  wxString possible_name(wxFileName(filename).GetName());
+  // remove all extensions
+  while (wxFileName(possible_name).HasExt()) {
+    wxFileName fn(possible_name);
+    fn.ClearExt();
+    possible_name = fn.GetName();
+  }
+  possible_name.Replace(wxT(" "),wxT("_"));
+  possible_name.Replace(wxT("."),wxT("_"));
+  possible_name.Replace(wxT("("),wxT("_"));
+  possible_name.Replace(wxT(")"),wxT("_"));
 
   int res=AskVarName( this,
                   string("Image variable name"),
                   string("Enter name:"),
-                  string("i"),
+                  string(possible_name.mb_str(wxConvUTF8)),
                   varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;
@@ -1569,10 +1593,23 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
     return;
   }
 
+  // Create possible variable name
+  wxString possible_name = wxFileName(wxString(name.c_str(),wxConvUTF8)).GetName();
+  // remove all extensions
+  while (wxFileName(possible_name).HasExt()) {
+    wxFileName fn(possible_name);
+    fn.ClearExt();
+    possible_name = fn.GetName();
+  }
+  possible_name.Replace(wxT(" "),wxT("_"));
+  possible_name.Replace(wxT("."),wxT("_"));
+  possible_name.Replace(wxT("("),wxT("_"));
+  possible_name.Replace(wxT(")"),wxT("_"));
+
   res=AskVarName(this,
         string("Surface variable name"),
         string("Enter name:"),
-        string("s"),
+        string(possible_name.mb_str(wxConvUTF8)),
         varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;
