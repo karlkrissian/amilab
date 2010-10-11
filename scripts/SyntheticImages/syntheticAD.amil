@@ -1,0 +1,224 @@
+#Interface for synthetic aortic dissection
+
+func "Common/ScriptGui"
+
+if (!exists(syntheticADClass)){
+
+	#Import filters
+  ami_import->Filters()
+
+	Class syntheticADClass : public ScriptGui{
+  
+    ::filters = &global::filters
+    
+    #-----------------------
+    proc ::Init(){
+      ::class_name  = "global::Subpixel2DClass"
+      ::input_name  = "",                "Input image"
+      ::output_name = "synthAD", "Output image name"
+      
+      #Input image parameters
+      ::dimx = INT(100), "Input image X size"
+      ::dimy = INT(100), "Input image Y size"
+      
+      #Intensity values inside and outside of the figures
+      ::A  = 200.0, "A intensity value" 
+      ::B  = 100.0, "B intensity value"
+      
+      #Circle parameters
+      ::cx = 50.0, "X component of the center of the circle"
+      ::cy = 50.0, "Y component of the center of the circle"
+      ::cr = 20.0, "Radius of the circle"
+      
+      #Ring 2D parameters
+      ::ring_cx     = 100.0, "X component of the center of the ring"
+      ::ring_cy     = 50.0, "Y component of the center of the ring"
+      ::ring_radius = 30.0, "Ring internal radius"
+      ::ring_thick  = 2.0, "Thickness of the ring"
+      
+      ::reload = UCHAR(0), "Reload the image"
+      
+      ::subdiv = INT(6), "Subdivision level"
+      
+      ::CreateGui()
+    }
+    
+
+    #-----------------------
+    
+    proc ::CreateInputImage() {
+      #if(exists(::res_draw)) { del ::res_draw; }
+      #Create the image with the parameters and enable the compute method panel
+      ::input <<= Image(FLOAT,::dimx,::dimy,1)
+      ::input   = 0
+      ::win.EnablePanel(::fun_page, 1)
+    }
+    Comments(::CreateInputImage, "Create the input image.")
+    
+    #-----------------------
+    
+    proc ::ResetInputImage() {
+      ::dimx = 100
+      ::dimy = 100
+      ::win.Update(-1)
+    }
+    Comments(::ResetInputImage, "Reset the size of the input image.")
+    
+    #-----------------------
+
+    proc ::Run() {
+    	if (exists(::input)) {
+        #create a compute partial volume object
+        import   = &global::ami_import;
+        ::pv     = import->ComputePV()
+        ::pv->setInputImage(&::input)
+        ::pv->setSubdiv(::subdiv)
+        ::circle = import->AnalyticCircle()
+        ::ring   = import->AnalyticRing2D()
+        ::circle->setCenter(::cx, ::cy)
+        ::circle->setRadius(::cr)
+        ::ring->setCenter(::ring_cx, ::ring_cy)
+        ::ring->setRadius(::ring_radius)
+        ::ring->setThickness(::ring_thick)
+        
+        #Create the circle
+        ::pv->setAnalyticFunction(&::circle)
+        ::resC <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A, ::B)
+        
+        #Create the ring
+        ::pv->setAnalyticFunction(&::ring)
+        ::resR <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
+        
+        #The result image
+        ::res = ::resR * (::resC!=::B && ::resR!=::A) + ::resC * (::resR==::A)
+      } else {
+        InfoDialog "You must create first the input image."
+      }
+    }
+    Comments(::Run, "Generate the syntheticAD image.")
+    
+    #-----------------------
+    
+    proc ::Display() {
+      global
+      if (exists(::res)) {
+          show ::res
+      } 
+    }
+    Comments(::Display, "Show the result image")
+    
+    #-----------------------
+    
+    proc ::AutoRun() {
+      if(::reload) {
+        ::Run()
+      }
+    }
+    Comments(::AutoRun, "Updates image automatically when parameters change.")
+    
+    #-----------------------
+    
+    proc ::Save() {
+      eval "global::" + ::output_name + "<<=::res;"
+    }
+    Comments(::Save, "Save output image as global variable")
+    
+    #-----------------------
+   
+    proc ::ResetAll() {
+      #Reset all parameters
+      #Intensity
+      ::A  = 200.0
+      ::B  = 100.0
+      #Circle
+      ::cx = 50.0
+      ::cy = 50.0
+      ::cr = 20.0
+      #Ring
+      ::ring_cx     = 100.0
+      ::ring_cy     = 50.0
+      ::ring_radius = 30.0
+      ::ring_thick  = 2.0
+      
+      ::win.Update(-1)
+    }
+    
+    #-----------------------
+    
+    proc ::CreateGui() {
+      ::import = &global::ami_import;
+      ::win = ::import->ParamPanel("SyntheticAD")
+      
+      ::win.BeginBook()
+        ::win.AddPage("Main.")
+          #Image size
+          ::win.BeginBoxPanel("Image size")
+            ::win.AddInt(&::dimx, "x", 1, 800)
+            ::win.AddInt(&::dimy, "y", 1, 800)
+          ::win.BeginHorizontal()
+            ::AddBitmapButton(&::win, &::icons._New_image, 16, "CreateInputImage")
+            ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetInputImage")
+          ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+          
+          #Intensity
+          ::win.BeginBoxPanel("Intensity")
+            ::win.AddFloat(&::A, "A", 0, 255)
+            ::win.AddFloat(&::B, "B", 0, 255)
+          ::win.EndBoxPanel()
+          
+          ::win.AddInt(&::subdiv, "Sub.", 1, 20)
+          
+          ::win.BeginHorizontal()
+            ::icons.LoadIconPNG("Play")
+            ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+            ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
+            ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetAll")
+            ::win.AddBoolean(&::reload, "Reload")
+          ::win.EndHorizontal()
+          
+          ::fun_page = ::win.AddPage("Func.")
+            #Circle parameters
+            ::win.BeginBoxPanel("Circle parameters")
+              ::win.BeginBoxPanel("Center")
+                ::win.AddFloat(&::cx, "x", 1, 800)
+                ::win.AddFloat(&::cy, "y", 1, 800)
+              ::win.EndBoxPanel()
+              ::win.AddFloat(&::cr, "Rad.", 1, 800)
+            ::win.EndBoxPanel()
+            
+            #Ring parameters
+            ::win.BeginBoxPanel("Ring parameters")
+              ::win.BeginBoxPanel("Center")
+                ::win.AddFloat(&::ring_cx, "x", 1, 800)
+                ::win.AddFloat(&::ring_cy, "y", 1, 800)
+              ::win.EndBoxPanel()
+              ::win.AddFloat(&::ring_radius, "Rad.", 1, 800)
+              ::win.AddFloat(&::ring_thick, "Thick.", 1, 10)
+            ::win.EndBoxPanel()
+            
+            ::win.EnablePanel(::fun_page, 0)
+          
+      ::win.EndBook()
+      
+      #Add the standard buttons for interface (edit, close, close all)
+      ::AddStandardButtons(&::win)
+      ::win.Update(-1)
+      ::win.Display
+    }
+    
+    ::Init
+
+  } #end Class
+
+} #end If
+
+
+#----------------
+# Main
+#----------------
+if (!exists(synthAD)) {
+  syntheticADClass synthAD
+} else {
+  InfoDialog "The script for syntheticAD generation seems to be already loaded."
+}

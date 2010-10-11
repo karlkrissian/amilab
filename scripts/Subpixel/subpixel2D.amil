@@ -421,7 +421,7 @@ if (!exists(Subpixel2DClass)){
             ::win.EndHorizontal()
             ::win.AddString(&::output_name, "Out.")
             #Edge detection parameters
-            ::win.AddFloat(&::threshold, "Thr.", 0, 25)
+            ::win.AddFloat(&::threshold, "Thr.", 0, 100)
             ::win.SetCallback(&::AutoRun)
             ::win.AddBoolean(&::linear, "1st order")
             ::win.SetCallback(&::AutoRun)

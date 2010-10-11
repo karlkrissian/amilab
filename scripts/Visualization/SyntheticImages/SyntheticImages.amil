@@ -29,7 +29,7 @@ if (!exists(SyntheticImagesClass)) {
     #Circle parameters
     ::cx = 50.0, "X component of the center of the circle"
     ::cy = 50.0, "Y component of the center of the circle"
-    ::cr = 20.0, "Circle's radius"
+    ::cr = 20.0, "Radius of the circle"
     
     #Line parameters
     ::line_angle = 45.0, "Angle of the line"
