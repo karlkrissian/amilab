@@ -14,8 +14,7 @@ if (!exists(syntheticADClass)){
     #-----------------------
     proc ::Init(){
       ::class_name  = "global::Subpixel2DClass"
-      ::input_name  = "",                "Input image"
-      ::output_name = "synthAD", "Output image name"
+      ::output_name = "synthAD_result", "Output image name"
       
       #Input image parameters
       ::dimx = INT(100), "Input image X size"
@@ -31,7 +30,7 @@ if (!exists(syntheticADClass)){
       ::cr = 20.0, "Radius of the circle"
       
       #Ring 2D parameters
-      ::ring_cx     = 100.0, "X component of the center of the ring"
+      ::ring_cx     = 80.0, "X component of the center of the ring"
       ::ring_cy     = 50.0, "Y component of the center of the ring"
       ::ring_radius = 30.0, "Ring internal radius"
       ::ring_thick  = 2.0, "Thickness of the ring"
@@ -52,6 +51,7 @@ if (!exists(syntheticADClass)){
       ::input <<= Image(FLOAT,::dimx,::dimy,1)
       ::input   = 0
       ::win.EnablePanel(::fun_page, 1)
+      ::win.EnablePanel(::isPanel, 1)
     }
     Comments(::CreateInputImage, "Create the input image.")
     
@@ -90,7 +90,18 @@ if (!exists(syntheticADClass)){
         ::resR <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
         
         #The result image
-        ::res = ::resR * (::resC!=::B && ::resR!=::A) + ::resC * (::resR==::A)
+        ::res = ::resC
+        for i=0 to ::resR.tx-1 {
+          for j=0 to ::resR.ty-1 {
+            if(::resC(i,j,0)!=::B && ::resR(i,j,0)!=::A) {
+              ::res.setpos(i,j,0)
+              ::res.set(::resR(i,j,0))
+            }
+          }
+        }
+        #::res = ::resR*(::resC!=::B && ::resR!=::A) + ::resC*(::resC==::B)
+        #Enable the save panel
+        ::win.EnablePanel(::savePanel, 1)
       } else {
         InfoDialog "You must create first the input image."
       }
@@ -112,6 +123,7 @@ if (!exists(syntheticADClass)){
     proc ::AutoRun() {
       if(::reload) {
         ::Run()
+        ::Display()
       }
     }
     Comments(::AutoRun, "Updates image automatically when parameters change.")
@@ -119,7 +131,9 @@ if (!exists(syntheticADClass)){
     #-----------------------
     
     proc ::Save() {
-      eval "global::" + ::output_name + "<<=::res;"
+      if(exists(::res)) {
+        eval "global::" + ::output_name + "<<=::res;"
+      }
     }
     Comments(::Save, "Save output image as global variable")
     
@@ -135,7 +149,7 @@ if (!exists(syntheticADClass)){
       ::cy = 50.0
       ::cr = 20.0
       #Ring
-      ::ring_cx     = 100.0
+      ::ring_cx     = 80.0
       ::ring_cy     = 50.0
       ::ring_radius = 30.0
       ::ring_thick  = 2.0
@@ -162,39 +176,57 @@ if (!exists(syntheticADClass)){
           ::win.EndBoxPanel()
           
           #Intensity
-          ::win.BeginBoxPanel("Intensity")
+          ::isPanel = ::win.BeginBoxPanel("Intensity and subdivision")
             ::win.AddFloat(&::A, "A", 0, 255)
+            ::win.SetCallback(&::AutoRun)
             ::win.AddFloat(&::B, "B", 0, 255)
+            ::win.SetCallback(&::AutoRun)
+            
+            ::win.AddInt(&::subdiv, "Sub.", 1, 20)
+          
+            ::win.BeginHorizontal()
+              ::icons.LoadIconPNG("Play")
+              ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+              ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
+              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetAll")
+              ::win.AddBoolean(&::reload, "Reload")
+            ::win.EndHorizontal()
           ::win.EndBoxPanel()
+          ::win.EnablePanel(::isPanel, 0)
           
-          ::win.AddInt(&::subdiv, "Sub.", 1, 20)
-          
-          ::win.BeginHorizontal()
-            ::icons.LoadIconPNG("Play")
-            ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
-            ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
-            ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetAll")
-            ::win.AddBoolean(&::reload, "Reload")
-          ::win.EndHorizontal()
+          ::savePanel = ::win.BeginBoxPanel("Save output")
+            ::win.BeginHorizontal()
+              ::win.AddString(&::output_name, "Name")
+              ::AddBitmapButton(&::win, &::icons._Save, 16, "Save")
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+          ::win.EnablePanel(::savePanel, 0)
           
           ::fun_page = ::win.AddPage("Func.")
             #Circle parameters
             ::win.BeginBoxPanel("Circle parameters")
               ::win.BeginBoxPanel("Center")
                 ::win.AddFloat(&::cx, "x", 1, 800)
+                ::win.SetCallback(&::AutoRun)
                 ::win.AddFloat(&::cy, "y", 1, 800)
+                ::win.SetCallback(&::AutoRun)
               ::win.EndBoxPanel()
               ::win.AddFloat(&::cr, "Rad.", 1, 800)
+              ::win.SetCallback(&::AutoRun)
             ::win.EndBoxPanel()
             
             #Ring parameters
             ::win.BeginBoxPanel("Ring parameters")
               ::win.BeginBoxPanel("Center")
                 ::win.AddFloat(&::ring_cx, "x", 1, 800)
+                ::win.SetCallback(&::AutoRun)
                 ::win.AddFloat(&::ring_cy, "y", 1, 800)
+                ::win.SetCallback(&::AutoRun)
               ::win.EndBoxPanel()
               ::win.AddFloat(&::ring_radius, "Rad.", 1, 800)
+              ::win.SetCallback(&::AutoRun)
               ::win.AddFloat(&::ring_thick, "Thick.", 1, 10)
+              ::win.SetCallback(&::AutoRun)
             ::win.EndBoxPanel()
             
             ::win.EnablePanel(::fun_page, 0)
