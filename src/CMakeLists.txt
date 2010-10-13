@@ -155,6 +155,35 @@ SET(CPACK_GENERATOR "RPM")
 #SET(CPACK_SOURCE_GENERATOR "TGZ")
 INCLUDE(CPack)
 
+
+#
+# Configuration of Linux Desktop
+#
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/applications/amilab.desktop.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/applications/amilab.desktop)
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab.desktop.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab.desktop)
+
+#
+# Configuration for MacOS
+#
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist)
+
+
+#
+# Configuration of Windows installation script (Inno)
+#
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss)
+
 OPTION(AMI_USE_STATIC_LIBS "Look for static libraries" ON)
 
 #MESSAGE( "CMAKE_SYSTEM = ${CMAKE_SYSTEM} ")
@@ -616,7 +645,8 @@ if (UNIX)
   install(DIRECTORY ${AMILAB_SOURCE_DIR}/../Releases/Linux/share
           DESTINATION .
           FILES_MATCHING
-            PATTERN "*.*"
+            PATTERN "*"
+          PATTERN ".in" EXCLUDE
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE
           PERMISSIONS OWNER_READ GROUP_READ
