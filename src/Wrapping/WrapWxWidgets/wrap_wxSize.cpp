@@ -10,6 +10,10 @@
 //
 //
 
+#ifdef _AMIPREC_
+  #include "WrapWxWidgets_header.h"
+#endif
+
 #include "wrap_wxSize.h"
 
 #include "VarContexts.hpp"

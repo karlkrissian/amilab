@@ -19,6 +19,9 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
+//#include "wrap_wxSizer.h"
+//#include <wx/sizer.h>
+
 #include <wx/html/htmlwin.h>
 
 AMI_DECLARE_TYPE(wxWindow);
@@ -52,9 +55,13 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
     http://docs.wxwidgets.org/stable/wx_wxwindow.html#wxwindowsetsize");
 
     ADD_CLASS_METHOD(Update,         "repaints the invalidated area of the window and all of its children recursively");
-    ADD_CLASS_METHOD(Refresh,        "Causes this window, and all of its children recursively (except under wxGTK1 where this is not implemented), to be repainted")
+    ADD_CLASS_METHOD(Refresh,        "Causes this window, and all of its children recursively (except under wxGTK1 where this is not implemented), to be repainted");
 
     ADD_CLASS_METHOD(SetBackgroundColour,   "Sets the background colour of the window.");
+
+    ADD_CLASS_METHOD(GetSizer,     "Gets the sizer associated with the window.");
+
+
 
     void AddMethods( WrapClass<wxWindow>::ptr this_ptr ) {
       AddVar_GetMinSize(          this_ptr);
@@ -64,6 +71,7 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
       AddVar_SetBackgroundColour( this_ptr);
       AddVar_Update(              this_ptr);
       AddVar_Refresh(             this_ptr);
+      AddVar_GetSizer(            this_ptr);
     }
 
 };

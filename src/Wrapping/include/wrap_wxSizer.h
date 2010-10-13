@@ -50,7 +50,12 @@ class WrapClass_wxSizer : public WrapClass<wxSizer>
 
 
     void AddMethods( WrapClass<wxSizer>::ptr this_ptr ) {
-      AddVar_Add(       this_ptr);
+      AddVar_Add1(       this_ptr);
+      AddVar_Add2(       this_ptr);
+      AddVar_Add3(       this_ptr);
+      AddVar_Add4(       this_ptr);
+      AddVar_Add5(       this_ptr);
+      AddVar_Add (       this_ptr);
     }
 
 };

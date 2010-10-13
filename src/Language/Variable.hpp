@@ -88,11 +88,11 @@ class AMILabType {
   template<> class AMILabType<type> \
   { \
     public: \
-	static std::string name_as_string();\
-    static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
-    static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
-    static BasicVariable::ptr CreateVar(type* val);\
-    static BasicVariable::ptr CreateVar(const type& val);\
+	    static std::string name_as_string();\
+      static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
+      static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+      static BasicVariable::ptr CreateVar(type* val);\
+      static BasicVariable::ptr CreateVar(const type& val);\
   };
 
 #define AMI_DEFINE_BASICTYPE(type) \
@@ -182,6 +182,14 @@ class AMILabType {
     BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
     { \
       return BasicVariable::ptr(); \
+    } 
+
+
+#define AMI_DEFINE_WRAPPEDTYPE_NOCOPY_CREATEFROMPTR(type) \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    { \
+      boost::shared_ptr<type> obj_ptr(val,smartpointer_nodeleter<type>());\
+      return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
     } 
 
 #define AMI_DEFINE_WRAPPEDTYPE_HASCOPY(type) \

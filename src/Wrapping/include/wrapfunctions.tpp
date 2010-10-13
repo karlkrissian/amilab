@@ -173,12 +173,12 @@ bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool
   }
   BasicVariable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
-    if (temp->Type()!=GetVarType<T>()) {
-      FILE_ERROR(boost::format("Parameter %1% is of wrong type.")%num);
-      return false;
-    }
     boost::shared_ptr<Variable<T> > temp1(
       boost::dynamic_pointer_cast<Variable<T> >(temp));
+    if (!temp1.get()) {
+      FILE_ERROR(boost::format("Parameter %1% is dynamic cast failed.")%num);
+      return false;
+    }
     arg= boost::shared_ptr<T>(temp1->Pointer());
     return true;
   }
