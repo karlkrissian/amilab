@@ -155,6 +155,12 @@ SET(CPACK_GENERATOR "RPM")
 #SET(CPACK_SOURCE_GENERATOR "TGZ")
 INCLUDE(CPack)
 
+# create AMILAB_BIN variable
+IF(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
+ELSE(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
+ENDIF(CMAKE_BUILD_TYPE)
 
 #
 # Configuration of Linux Desktop
@@ -164,8 +170,8 @@ CONFIGURE_FILE(
     ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/applications/amilab.desktop)
 
 CONFIGURE_FILE(
-    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab.desktop.in
-    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab.desktop)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab)
 
 #
 # Configuration for MacOS
@@ -457,11 +463,6 @@ SET(amilab_bin_SRCS
 )
 endif (WIN32)
 
-IF(CMAKE_BUILD_TYPE)
-  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
-ELSE(CMAKE_BUILD_TYPE)
-  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
-ENDIF(CMAKE_BUILD_TYPE)
 
 include_directories (
   ${AMILAB_SOURCE_DIR}/Language
