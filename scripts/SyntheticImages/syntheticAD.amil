@@ -1,6 +1,7 @@
 #Interface for synthetic aortic dissection
 
 func "Common/ScriptGui"
+func "Subpixel/subpixel2D.amil"
 
 if (!exists(syntheticADClass)){
 
@@ -38,6 +39,9 @@ if (!exists(syntheticADClass)){
       ::reload = UCHAR(0), "Reload the image"
       
       ::subdiv = INT(6), "Subdivision level"
+      
+      ::mean_str     = "", "Average error of subpixel method"
+      ::variance_str = "", "Variance of subpixel method"
       
       ::CreateGui()
     }
@@ -90,7 +94,7 @@ if (!exists(syntheticADClass)){
         ::resR <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
         
         #The result image
-        ::res = ::resC
+        ::res <<= ::resC
         for i=0 to ::resR.tx-1 {
           for j=0 to ::resR.ty-1 {
             if(::resC(i,j,0)!=::B && ::resR(i,j,0)!=::A) {
@@ -99,9 +103,10 @@ if (!exists(syntheticADClass)){
             }
           }
         }
-        #::res = ::resR*(::resC!=::B && ::resR!=::A) + ::resC*(::resC==::B)
-        #Enable the save panel
+        
+        #Enable the save and statistics panels
         ::win.EnablePanel(::savePanel, 1)
+        ::win.EnablePanel(::stat_page, 1)
       } else {
         InfoDialog "You must create first the input image."
       }
@@ -127,6 +132,61 @@ if (!exists(syntheticADClass)){
       }
     }
     Comments(::AutoRun, "Updates image automatically when parameters change.")
+    
+    #-----------------------
+    
+    proc ::Statistics() {
+      #1º Computo el subpixel para después hacer el cálculo de las distancias
+      ::ComputeSubpixel()
+      #ya tengo spResult. Pillo las posiciones x e y (imágenes 1D)
+      #Cast a double porque esas imágenes son unsigned char
+      x <<= (DOUBLE)::spResult->xpos
+      #Hay que añadirle el coeficiente a porque es a nivel subpixel.
+      y <<= (DOUBLE)::spResult->ypos + ::spResult->acoef
+      
+      #Distancias de los puntos calculados para el circulito
+      modC <<= sqrt((x-::cx)*(x-::cx)+(y-::cy)*(y-::cy))
+      #Y para el anillo
+      modR <<= sqrt((x-::ring_cx)*(x-::ring_cx)+(y-::ring_cy)*(y-::ring_cy))
+      
+      #Ahora hay que ver de cuál está más cerca, el círculo, el anillo dentro o el anillo fuera
+      #Valor absoluto porque sólo interesa la distancia, no el signo
+      #Círculo
+      dis1 <<= abs(modC - ::cr)
+      #Círculo interno del anillo
+      dis2 <<= abs(modR - ::ring_radius)
+      #Círculo externo del anillo
+      dis3 <<= abs(modR - (::ring_radius+::ring_thick))
+      
+      #La distancia será el mínimo de las tres distancias
+      resDis <<= -max(max(-dis1,-dis2),-dis3)
+      
+      #Error medio
+      #print "Average error = "
+      #printn mean(::resDis)
+      
+      #Varianza
+      dis_mean = mean(resDis)
+      var <<= resDis - dis_mean
+      #print "Variance = "
+      #printn mean(var)
+      ::mean_str     = sprint("%f",dis_mean)
+      ::variance_str = sprint("%e",mean(var))
+      ::win.Update(-1)
+    }
+    Comments(::Statistics, "Calculate statistics of subpixel detection")
+    
+    #-----------------------
+    
+    proc ::ComputeSubpixel() {
+      if(exists(::res)) {
+        if (exists(::spResult)) { del ::spResult; }
+        spObject = ::import->SubPixel2D(&::res, 25, 0)
+        ::spResult = spObject->DenoisingGus()
+      } else {
+        InfoDialog "You must create first the image"
+      }
+    }
     
     #-----------------------
     
@@ -229,7 +289,13 @@ if (!exists(syntheticADClass)){
               ::win.SetCallback(&::AutoRun)
             ::win.EndBoxPanel()
             
-            ::win.EnablePanel(::fun_page, 0)
+          ::win.EnablePanel(::fun_page, 0)
+            
+        ::stat_page = ::win.AddPage("Stat.")
+          ::AddBitmapButton(&::win, &::icons._Play, 16, "Statistics")
+          ::win.AddString(&::mean_str, "Mean")
+          ::win.AddString(&::variance_str, "Variance")
+          ::win.EnablePanel(::stat_page, 0)
           
       ::win.EndBook()
       
@@ -239,7 +305,7 @@ if (!exists(syntheticADClass)){
       ::win.Display
     }
     
-    ::Init
+    ::Init()
 
   } #end Class
 

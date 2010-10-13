@@ -842,7 +842,7 @@ void SubPixel2D::DenoisingGus()
         if (!linear_case)
         {
           c = (SL + SR - 2*SM + A*(2*m2-l2-r2) - B*(2*m1-l1-r1)) / f;
-          a -= 0.75 * c;
+          a -= ((1+24*A01+48*A11)/12) * c;
         }
         
         //Calculate gradient, displacement and curvature
@@ -967,7 +967,7 @@ void SubPixel2D::DenoisingGus()
         b = (SR - SL + A*(l2-r2) + B*(r1-l1)) / f;		
         if (!linear_case) {
           c = (SL + SR - 2*SM + A*(2*m2-l2-r2) - B*(2*m1-l1-r1)) / f;
-          a -= 0.75 * c;
+          a -= ((1+24*A01+48*A11)/12) * c;
         }
         
         //Calculate gradient, displacement and curvature

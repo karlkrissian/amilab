@@ -1,0 +1,11 @@
+
+func "subpixel2D.amil"
+
+#----------------
+# Main
+#----------------
+if (!exists(subp2D)) {
+  Subpixel2DClass subp2D
+} else {
+  InfoDialog "The script for subpixel edge detection in 2D images seems to be already loaded."
+}
