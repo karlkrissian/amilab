@@ -2509,7 +2509,7 @@ void wxTreeListMainWindow::DoDeleteItem(wxTreeListItem *item) {
     // don't stay with invalid m_selectItem: default to current item
     if (item == m_selectItem) {
         m_selectItem = m_curItem;
-        SelectItem(m_selectItem, NULL, true);  // unselect others
+        SelectItem(m_selectItem->GetData()->GetId(), NULL, true);  // unselect others
     }
 
     // recurse children, starting from the right to prevent multiple selection
@@ -3488,7 +3488,7 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
 #endif
             m_curItem = (wxTreeListItem*)GetFirstChild (m_curItem, cookie).m_pItem;
         }
-        SelectItem(m_curItem, NULL, true);  // unselect others
+        SelectItem(m_curItem->GetData()->GetId(), NULL, true);  // unselect others
         curItemSet = true;
     }
 
@@ -3938,7 +3938,7 @@ wxLogMessage("OnMouse: LMR down=<%d, %d, %d> up=<%d, %d, %d> LDblClick=<%d> drag
         m_lastOnSame = false;
 
         // selection reset to that single item which was double-clicked
-        if (SelectItem(item, NULL, true)) {  // unselect others --return false if vetoed
+        if (SelectItem(item->GetData()->GetId(), NULL, true)) {  // unselect others --return false if vetoed
 
             // selection change not vetoed, send activate event
             if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, item)) {
