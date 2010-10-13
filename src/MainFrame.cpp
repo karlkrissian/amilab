@@ -670,11 +670,13 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
-                              (wxTR_HAS_BUTTONS 
-                              //| wxTR_HIDE_ROOT 
+                              ((
+                              wxTR_HAS_BUTTONS 
+                              | wxTR_HIDE_ROOT 
                               | wxTR_FULL_ROW_HIGHLIGHT 
+                              | wxTR_LINES_AT_ROOT
                               ) 
-                              //^ (wxTR_NO_LINES )
+                              & (~wxTR_NO_LINES))  ^ wxTR_COLUMN_LINES 
                             );
 
   _vartree_col_main = _var_tree->GetColumnCount();
@@ -698,9 +700,9 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   
 /// @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,1))
-  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+//  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
 #else
-  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+//  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
 #endif
 /// @endcond
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));

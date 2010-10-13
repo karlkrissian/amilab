@@ -10,22 +10,34 @@
 # selecting fastest mirror on ubuntu, check:
 # http://www.ubuntugeek.com/how-to-select-fastest-mirror-in-ubuntu.html
 #
-apt-get install build-essential subversion
-apt-get install cmake cmake-curses-gui cmake-qt-gui
+yum install yum-plugin-fastestmirror
+yum install gcc gcc-c++ binutils make subversion
+yum install cmake cmake-gui
 
 # if you have problems with missing packages, try to change the repository
 # for example http://ubuntu.media.mit.edu/ubuntu worked
-apt-get install libvtk5-dev 
-apt-get install libinsighttoolkit3-dev libwxgtk2.8-dev libboost-all-dev zlib1g-dev libbz2-dev libpng12-dev libtiff4-dev libexpat1-dev  uuid-dev
+yum install vtk-devel
+yum install  wxGTK-devel boost-devel zlib-devel bzip2-devel libpng-devel libtiff-devel expat-devel libjpeg-devel
+yum install bison flex
 
-apt-get install bison flex
 
-apt-get install libgdcm2-dev
+# get number of threads
+yum install gawk
+numthreads=`awk '/model name/  {ORS=""; count++;  }  END {  print  count "\n" }' /proc/cpuinfo`
+
+# compilation of ITK
+yum install wget tar
+wget http://voxel.dl.sourceforge.net/sourceforge/itk/InsightToolkit-3.20.0.tar.gz
+tar zxf InsightToolkit-3.20.0.tar.gz
+cd InsightToolkit-3.20.0
+mkdir build_release
+cd build_release
+cmake  -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release ..
+make -j ${numthreads} install
+cd ../..
 
 svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/trunk amilab_trunk
 
-# get number of threads
-numthreads=`awk '/model name/  {ORS=""; count++;  }  END {  print  count "\n" }' /proc/cpuinfo`
 
 cd amilab_trunk
 maindir=`pwd`
@@ -46,7 +58,7 @@ cp -R libAMIOpticalFlow/include/OpticalFlow /usr/local/include/
 echo "Compiling amilab"
 cd ${maindir}/src
 mkdir build; mkdir build/release; cd build/release
-cmake -D CMAKE_BUILD_TYPE=Release  -D AMI_USE_STATIC_LIBS=OFF ../..
+cmake -DCMAKE_BUILD_TYPE=Release  -DAMI_USE_STATIC_LIBS=OFF ../..
 make -j ${numthreads} 
 
 # Compile documentation, but missing improcess_html 
@@ -55,5 +67,6 @@ cd ${maindir}/doc
 
 # create and install ubuntu package ?
 cd ${maindir}/src/build/release
-cpack -G DEB
-dpkg -i AMILab-3.0.0-Linux.i686.deb
+yum install rpm-build
+cpack -G RPM
+rpm -ivh AMILab-3.0.0-Linux.i686.rpm
