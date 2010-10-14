@@ -167,7 +167,7 @@ if (!exists(syntheticADClass)){
       
       #Varianza
       dis_mean = mean(resDis)
-      var <<= resDis - dis_mean
+      var <<= (resDis - dis_mean)*(resDis - dis_mean)
       #print "Variance = "
       #printn mean(var)
       ::mean_str     = sprint("%f",dis_mean)
@@ -293,8 +293,10 @@ if (!exists(syntheticADClass)){
             
         ::stat_page = ::win.AddPage("Stat.")
           ::AddBitmapButton(&::win, &::icons._Play, 16, "Statistics")
-          ::win.AddString(&::mean_str, "Mean")
-          ::win.AddString(&::variance_str, "Variance")
+          ::win.BeginBoxPanel("Error of the subpixel position")
+            ::win.AddString(&::mean_str, "Mean")
+            ::win.AddString(&::variance_str, "Variance")
+          ::win.EndBoxPanel()
           ::win.EnablePanel(::stat_page, 0)
           
       ::win.EndBook()
