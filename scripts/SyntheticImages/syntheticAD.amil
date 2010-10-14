@@ -136,7 +136,7 @@ if (!exists(syntheticADClass)){
     #-----------------------
     
     proc ::Statistics() {
-      #1º Computo el subpixel para después hacer el cálculo de las distancias
+      #Firstly, the subpixel detection result is needed, for compute the distance
       ::ComputeSubpixel()
       #ya tengo spResult. Pillo las posiciones x e y (imágenes 1D)
       #Cast a double porque esas imágenes son unsigned char
