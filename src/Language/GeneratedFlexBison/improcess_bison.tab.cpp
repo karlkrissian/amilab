@@ -804,7 +804,7 @@ namespace yyip
                             filename.GetPathSeparator(wxPATH_UNIX)+
                             filename.GetFullName());
 
-        driver.res_print( newname.mb_str());
+        driver.res_print( newname);
         driver.res_print("\n");
         inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
         if (driver.InConsole())
@@ -4670,7 +4670,7 @@ namespace yyip
                               filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
                               filename.GetPathSeparator(wxPATH_UNIX)+
                               filename.GetFullName());
-          driver.res_print(newname.mb_str(wxConvUTF8));
+          driver.res_print(newname);
           driver.res_print("\n");
           wxString inc_cmd; // increment the command line string
           inc_cmd = wxT(" \"")+newname+wxT("\" // from browser ");

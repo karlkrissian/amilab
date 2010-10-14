@@ -193,6 +193,9 @@ void DessinImageBase :: CreeImage( int id_image, unsigned int largeur, unsigned 
   CLASS_MESSAGE(boost::format("swapping use_count = %1%")%_tab_slices[id_image].image.use_count());
   CLASS_MESSAGE(boost::format("newim get = %1%")%newim.get());
 
+  if (!newim.get()) {
+    CLASS_ERROR("allocation of image failed!")
+  }
   _tab_slices[id_image].image  = newim;
      
 /*
@@ -2031,6 +2034,8 @@ void DessinImageBase :: DrawColorBar( )
 void DessinImageBase::DrawSlice( int slice_id )
 //                    ---------
 {
+  CLASS_MESSAGE(boost::format(" slice_id = %1%") % slice_id)
+
   register int             x,y;
   register double           px, py;
   register double           px1, py1;
@@ -2260,8 +2265,8 @@ void DessinImageBase::DessinePlanZ( )
 #endif
   Sinon
     CreeImage( IMAGE_XY,
-         (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
-         (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
+         (int) (round(Param._Zoom._zoom_size_x*_size_x+1E-4)),
+         (int) (round(Param._Zoom._zoom_size_y*_size_y+1E-4)));
   FinSi
 
   FixeImageCourante( IMAGE_XY);
@@ -2270,7 +2275,7 @@ void DessinImageBase::DessinePlanZ( )
   register int        image_width = _current_slice->GetWidth();
 
 //  _current_slice->SetPen(*wxTRANSPARENT_PEN);
-  if (!_image) {
+  if (!_image.get()) {
     std::cerr << "DessinImageBase::DessinePlanZ( )"
         << "\t image not allocated !" << std::endl;
     return;
@@ -2361,8 +2366,8 @@ void DessinImageBase :: DessinePlanY( )
   //    et d'eviter
   //--- un plantage
   CreeImage( IMAGE_XZ,
-       (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
-       (int) (Param._Zoom._zoom_size_z*_size_z+1E-4));
+       (int) round(Param._Zoom._zoom_size_x*_size_x+1E-4),
+       (int) round(Param._Zoom._zoom_size_z*_size_z+1E-4));
 
   FixeImageCourante( IMAGE_XZ);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
@@ -2443,8 +2448,8 @@ void DessinImageBase :: DessinePlanX( )
   //--- On rajoute 1E-4 pour etre sur d'arrondir a la valeur superieure et d'eviter
   //--- un plantage
   CreeImage( IMAGE_ZY,
-       (int) (Param._Zoom._zoom_size_z*_size_z+1E-4),
-       (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
+       (int) round(Param._Zoom._zoom_size_z*_size_z+1E-4),
+       (int) round(Param._Zoom._zoom_size_y*_size_y+1E-4));
 
   FixeImageCourante( IMAGE_ZY);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
@@ -2535,7 +2540,8 @@ void DessinImageBase :: DessineCoupes( )
 //  printf("nx %d ny %d sizeX %d sizeY %d \n",nx,ny,(int) _size_x,(int) _size_y);
 
   //--- Initialisation de l'image -------------------------------
-  CreeImage( IMAGE_COUPES, (int) (nx*(2+_size_x*Param._Zoom._zoom_size_x)), (int) (ny*(2+_size_y*Param._Zoom._zoom_size_y)));
+  CreeImage( IMAGE_COUPES,  (int) round(nx*(2+_size_x*Param._Zoom._zoom_size_x)+1E-4), 
+                            (int) round(ny*(2+_size_y*Param._Zoom._zoom_size_y)+1E-4));
 
   FixeImageCourante( IMAGE_COUPES);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();

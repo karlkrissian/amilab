@@ -21,8 +21,9 @@
 #include "wrap_wxWindow.h"
 
 #include "MainFrame.h"
+//class MainFrame;
 
-AMI_DECLARE_TYPE(MainFrame)
+AMI_DECLARE_TYPE(MainFrame);
 
 class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxWindow
 {

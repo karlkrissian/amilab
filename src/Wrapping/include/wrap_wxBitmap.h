@@ -13,12 +13,15 @@
 #ifndef _wrap_wxBitmap_h_
 #define _wrap_wxBitmap_h_
 
-#include "wrapfunction_class.h"
-#include "Variable.hpp"
-#include "paramlist.h"
-#include "ami_object.h"
-
-#include <wx/bitmap.h>
+#ifdef _AMIPREC_
+  #include "WrapWxWidgets_header.h"
+#else
+  #include "wrapfunction_class.h"
+  #include "Variable.hpp"
+  #include "paramlist.h"
+  #include "ami_object.h"
+  #include <wx/bitmap.h>
+#endif
 
 AMI_DECLARE_TYPE(wxBitmap)
 

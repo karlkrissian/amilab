@@ -49,4 +49,10 @@ SET(WrapInterface_SRCS
      ${WrapInterface_HDRS}
 )
 
+if (CMAKE_COMPILER_IS_GNUCXX)
+  ADD_PCH_RULE(${AMILAB_SOURCE_DIR}/Wrapping/include/WrapInterface_header.h WrapInterface_SRCS)
+endif (CMAKE_COMPILER_IS_GNUCXX )
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_AMIPREC_")
+
 my_add_library ( WrapInterface)

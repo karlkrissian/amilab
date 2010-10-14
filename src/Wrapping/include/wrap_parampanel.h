@@ -13,9 +13,14 @@
 #ifndef _wrap_parampanel_h_
 #define _wrap_parampanel_h_
 
-#include "wrapfunction_class.h"
-#include "Variable.hpp"
-#include "paramlist.h"
+#ifdef _AMIPREC_
+  #include "WrapInterface_header.h"
+#else
+  #include "wrapfunction_class.h"
+  #include "Variable.hpp"
+  #include "paramlist.h"
+#endif
+
 #include "ParamPanel.hpp"
 
 #include "wrap_wxWindow.h"

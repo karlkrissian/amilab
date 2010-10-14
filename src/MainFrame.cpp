@@ -670,11 +670,13 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
-                              (wxTR_HAS_BUTTONS 
-                              //| wxTR_HIDE_ROOT 
+                              ((
+                              wxTR_HAS_BUTTONS 
+                              | wxTR_HIDE_ROOT 
                               | wxTR_FULL_ROW_HIGHLIGHT 
+                              | wxTR_LINES_AT_ROOT
                               ) 
-                              //^ (wxTR_NO_LINES )
+                              & (~wxTR_NO_LINES))  ^ wxTR_COLUMN_LINES 
                             );
 
   _vartree_col_main = _var_tree->GetColumnCount();
@@ -698,9 +700,9 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   
 /// @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,1))
-  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+//  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
 #else
-  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+//  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
 #endif
 /// @endcond
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
@@ -1474,10 +1476,23 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
     return;
   }
 
+  // Create possible variable name
+  wxString possible_name = wxFileName(wxString(name.c_str(),wxConvUTF8)).GetName();
+  // remove all extensions
+  while (wxFileName(possible_name).HasExt()) {
+    wxFileName fn(possible_name);
+    fn.ClearExt();
+    possible_name = fn.GetName();
+  }
+  possible_name.Replace(wxT(" "),wxT("_"));
+  possible_name.Replace(wxT("."),wxT("_"));
+  possible_name.Replace(wxT("("),wxT("_"));
+  possible_name.Replace(wxT(")"),wxT("_"));
+
   res=AskVarName( this,
                   string("Image variable name"),
                   string("Enter name:"),
-                  string("i"),
+                  string(possible_name.mb_str(wxConvUTF8)),
                   varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;
@@ -1509,11 +1524,22 @@ void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
   string varname;
   size_t pos = event.GetId() - wxID_Images_History;
   wxString filename(images_history->GetHistoryFile(pos));
+  wxString possible_name(wxFileName(filename).GetName());
+  // remove all extensions
+  while (wxFileName(possible_name).HasExt()) {
+    wxFileName fn(possible_name);
+    fn.ClearExt();
+    possible_name = fn.GetName();
+  }
+  possible_name.Replace(wxT(" "),wxT("_"));
+  possible_name.Replace(wxT("."),wxT("_"));
+  possible_name.Replace(wxT("("),wxT("_"));
+  possible_name.Replace(wxT(")"),wxT("_"));
 
   int res=AskVarName( this,
                   string("Image variable name"),
                   string("Enter name:"),
-                  string("i"),
+                  string(possible_name.mb_str(wxConvUTF8)),
                   varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;
@@ -1569,10 +1595,23 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
     return;
   }
 
+  // Create possible variable name
+  wxString possible_name = wxFileName(wxString(name.c_str(),wxConvUTF8)).GetName();
+  // remove all extensions
+  while (wxFileName(possible_name).HasExt()) {
+    wxFileName fn(possible_name);
+    fn.ClearExt();
+    possible_name = fn.GetName();
+  }
+  possible_name.Replace(wxT(" "),wxT("_"));
+  possible_name.Replace(wxT("."),wxT("_"));
+  possible_name.Replace(wxT("("),wxT("_"));
+  possible_name.Replace(wxT(")"),wxT("_"));
+
   res=AskVarName(this,
         string("Surface variable name"),
         string("Enter name:"),
-        string("s"),
+        string(possible_name.mb_str(wxConvUTF8)),
         varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;

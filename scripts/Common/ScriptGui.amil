@@ -150,17 +150,17 @@ if (!exists(ScriptGui)) \
 
           if (wikipng.IsOk()) {
             win.AddBitmapButton("Wiki", &::LaunchWiki, \
-            &wx.wxBitmap(&wikipng.Scale2(32,32)))
+            &wx.wxBitmap(&wikipng.Scale2(16,16)))
           } else {
             win.AddButton("Wiki", &::LaunchWiki)
           }
           
-          win.AddBitmapButton("Home", &::HtmlHome, &wx.wxBitmap(&::icons._Home))
+          win.AddBitmapButton("Home", &::HtmlHome, &wx.wxBitmap(&::icons._Home.Scale2(16,16)))
           win.SetPositionProp(-1,2)
-          win.AddBitmapButton("<--",  ::HtmlBack, &wx.wxBitmap(&::icons._Back))
+          win.AddBitmapButton("<--",  ::HtmlBack, &wx.wxBitmap(&::icons._Back.Scale2(16,16)))
           win.SetPositionProp(-1,2)
           win.AddBitmapButton("-->",  ::HtmlForward, \
-            &wx.wxBitmap(&::icons._Forward))
+            &wx.wxBitmap(&::icons._Forward.Scale2(16,16)))
           win.SetPositionProp(-1,2)
         win.EndHorizontal()
         # add html widget

@@ -19,8 +19,8 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH}
 # VERSION information
 #-----------------------------------------------------
 
-SET(AMILAB_VERSION_MAJOR "2")
-SET(AMILAB_VERSION_MINOR "1")
+SET(AMILAB_VERSION_MAJOR "3")
+SET(AMILAB_VERSION_MINOR "0")
 SET(AMILAB_VERSION_PATCH "0")
 SET(AMILAB_VERSION "${AMILAB_VERSION_MAJOR}.${AMILAB_VERSION_MINOR}.${AMILAB_VERSION_PATCH}")
 
@@ -59,7 +59,7 @@ SET(CPACK_SET_DESTDIR "OFF")
 SET(CPACK_RPM_PACKAGE_SUMMARY "AMILab image processing and visualization software")
 SET(CPACK_RPM_PACKAGE_NAME "amilab")
 SET(CPACK_RPM_PACKAGE_VERSION ${AMILAB_VERSION})
-SET(CPACK_RPM_PACKAGE_RELEASE "fc11")
+SET(CPACK_RPM_PACKAGE_RELEASE "1")
 SET(CPACK_RPM_PACKAGE_LICENSE "LGPL")
 SET(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 SET(CPACK_RPM_PACKAGE_VENDOR "Karl Krissian, ULPGC")
@@ -69,6 +69,17 @@ SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
 # this will make the package relocatable !!cd
 SET(CPACK_RPM_SPEC_MORE_DEFINE "Prefix: /usr")
+
+# package architecture
+# does this work??
+MESSAGE("CMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR}")
+IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE amd64)
+  SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+ELSEIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686")
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
+  SET(CPACK_RPM_PACKAGE_ARCHITECTURE "i386")
+ENDIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 
 #
 # DEB configuration
@@ -80,9 +91,10 @@ IF(UNIX)
   # DEB configuration
   #
   # no i386 in debian, should use dpkg --print-architecture ??
-  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
+#  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
   SET(CPACK_DEBIAN_PACKAGE_MAINTAINER   "krissian@dis.ulpgc.es")
-  
+  SET(CPACK_DEBIAN_PACKAGE_SECTION      "science")
+  SET(CPACK_DEBIAN_PACKAGE_PRIORITY     "extra")
   # creating dependencies ...
   MESSAGE(" ${AMILAB_BIN}")
   if (EXISTS "${AMILAB_BIN}")
@@ -142,6 +154,41 @@ SET(CPACK_GENERATOR "RPM")
 #SET(CPACK_GENERATOR "RPM;STGZ;DEB")
 #SET(CPACK_SOURCE_GENERATOR "TGZ")
 INCLUDE(CPack)
+
+# create AMILAB_BIN variable
+IF(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
+ELSE(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
+ENDIF(CMAKE_BUILD_TYPE)
+
+#
+# Configuration of Linux Desktop
+#
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/applications/amilab.desktop.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/applications/amilab.desktop)
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab)
+
+#
+# Configuration for MacOS
+#
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist)
+
+
+#
+# Configuration of Windows installation script (Inno)
+#
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss)
 
 OPTION(AMI_USE_STATIC_LIBS "Look for static libraries" ON)
 
@@ -416,11 +463,6 @@ SET(amilab_bin_SRCS
 )
 endif (WIN32)
 
-IF(CMAKE_BUILD_TYPE)
-  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
-ELSE(CMAKE_BUILD_TYPE)
-  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
-ENDIF(CMAKE_BUILD_TYPE)
 
 include_directories (
   ${AMILAB_SOURCE_DIR}/Language
@@ -604,7 +646,8 @@ if (UNIX)
   install(DIRECTORY ${AMILAB_SOURCE_DIR}/../Releases/Linux/share
           DESTINATION .
           FILES_MATCHING
-            PATTERN "*.*"
+            PATTERN "*"
+          PATTERN ".in" EXCLUDE
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE
           PERMISSIONS OWNER_READ GROUP_READ

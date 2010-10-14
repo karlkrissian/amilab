@@ -10,6 +10,10 @@
 //
 //
 
+#ifdef _AMIPREC_
+  #include "WrapWxWidgets_header.h"
+#endif
+
 #include "wrap_wxSizer.h"
 
 #include "VarContexts.hpp"
@@ -36,6 +40,14 @@ BasicVariable::ptr WrapClass<wxSizer>::CreateVar( ParamList* p)
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxSizer);
 AMI_DEFINE_VARFROMSMTPTR(wxSizer);
 
+
+///
+BasicVariable::ptr AMILabType<wxSizer>::CreateVar( wxSizer* val)  
+{ 
+  // deletion will be done by wxwidgets
+  boost::shared_ptr<wxSizer> obj_ptr(val,wxwindow_nodeleter<wxSizer>());
+  return AMILabType<wxSizer>::CreateVarFromSmtPtr(obj_ptr);
+} 
 
 
 //---------------------------------------------------

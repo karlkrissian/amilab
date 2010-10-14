@@ -435,6 +435,7 @@ protected:
    int             _ANIM_vitesse;
    bool            _ANIM_forward; // pour l'autoreverse
    wxTimer         m_timer;
+   bool _within_animation;
 //@}
 
 
@@ -1526,7 +1527,7 @@ public:
   static void CB_redessine( void* cd );
 
   ///
-  void CB_redraw( wxCommandEvent& );
+  void CB_redraw( );
 
   ///
   ///
@@ -1832,7 +1833,7 @@ public:
   //Create toolbar
   void Create_Toolbar();
   
-  void RestoreView(wxCommandEvent &event);
+  void RestoreView();
   
   //Toolbar callbacks
   void CB_OnPositionClick     (wxCommandEvent &event);

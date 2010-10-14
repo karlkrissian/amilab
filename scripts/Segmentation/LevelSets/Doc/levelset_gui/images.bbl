@@ -1,5 +1,11 @@
 \begin{thebibliography}{1}
 
+\bibitem{KrissianWestin05}
+K.~Krissian and C.-F. Westin.
+\newblock Fast sub-voxel re-initialization of the distance map for level set
+  methods.
+\newblock {\em Pattern Recognition Letters}, 26(10):1532--1542, 2005.
+
 \bibitem{Osher2002}
 S.~Osher and R.~Fedkiw.
 \newblock {\em Level Set Methods and Dynamic Implicit Surfaces}.
