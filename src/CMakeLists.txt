@@ -193,7 +193,8 @@ CONFIGURE_FILE(
     ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss.in
     ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss)
 
-OPTION(AMI_USE_STATIC_LIBS "Look for static libraries" ON)
+OPTION(AMI_USE_STATIC_LIBS     "Look for static libraries" ON)
+OPTION(AMI_USE_PRECOMP_HEADERS "Use precompiled headers when available" OFF)
 
 #MESSAGE( "CMAKE_SYSTEM = ${CMAKE_SYSTEM} ")
 

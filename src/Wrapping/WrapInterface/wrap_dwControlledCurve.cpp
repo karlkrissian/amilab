@@ -10,9 +10,10 @@
  *
  **/
 
+#include "AMILabConfig.h"
 #include "wrap_dwControlledCurve.h"
 
-#ifdef _AMIPREC_
+#ifdef AMI_USE_PRECOM_HEADERS
   #include "WrapInterface_header.h"
 #else
   #include "VarContexts.hpp"

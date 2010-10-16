@@ -13,7 +13,9 @@
 #ifndef _wrap_dwCurve_h_
 #define _wrap_dwCurve_h_
 
-#ifdef _AMIPREC_
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_PRECOM_HEADERS
   #include "WrapInterface_header.h"
 #else
   #include "wrapfunction_class.h"

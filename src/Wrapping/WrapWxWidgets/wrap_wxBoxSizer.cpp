@@ -10,6 +10,8 @@
 //
 //
 
+#include "AMILabConfig.h"
+
 #ifdef _AMIPREC_
   #include "WrapWxWidgets_header.h"
 #endif

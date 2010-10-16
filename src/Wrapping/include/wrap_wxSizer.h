@@ -41,6 +41,13 @@ class WrapClass_wxSizer : public WrapClass<wxSizer>
 
     ADD_CLASS_CONSTRUCTOR( wxSizer, "Wrapping of wxSizer (see http://docs.wxwidgets.org/)." );
 
+    // Detach methods
+    ADD_CLASS_METHOD(Detach1,    "Detach a wxWindow child from the sizer without destroying it.")
+    ADD_CLASS_METHOD(Detach2,    "Detach a wxSizer child from the sizer without destroying it.")
+    ADD_CLASS_METHOD(Detach3,    "Detach an index child from the sizer without destroying it.")
+    ADD_CLASS_METHOD(Detach,     "Detach a child from the sizer without destroying it using one of Detach1-3 methods.")
+
+    // Add methods
     ADD_CLASS_METHOD(Add1,    "Adds a wxWindow to the sizer, using wxSizerFlags.");
     ADD_CLASS_METHOD(Add2,    "Adds a wxWindow to the sizer, using proportion, flag, border and user data.");
     ADD_CLASS_METHOD(Add3,    "Adds a wxSizer to the sizer, using wxSizerFlags.");
@@ -48,14 +55,19 @@ class WrapClass_wxSizer : public WrapClass<wxSizer>
     ADD_CLASS_METHOD(Add5,    "Adds a spacer.");
     ADD_CLASS_METHOD(Add,     "Adds an element to the sizer using one of the Add1-Add5 methods.");
 
+    ADD_CLASS_METHOD(Layout,  "Call this to force layout of the children anew.");
 
     void AddMethods( WrapClass<wxSizer>::ptr this_ptr ) {
+      AddVar_Detach(     this_ptr);
+
       AddVar_Add1(       this_ptr);
       AddVar_Add2(       this_ptr);
       AddVar_Add3(       this_ptr);
       AddVar_Add4(       this_ptr);
       AddVar_Add5(       this_ptr);
       AddVar_Add (       this_ptr);
+
+      AddVar_Layout (    this_ptr);
     }
 
 };

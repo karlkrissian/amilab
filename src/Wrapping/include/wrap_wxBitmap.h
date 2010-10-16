@@ -13,7 +13,9 @@
 #ifndef _wrap_wxBitmap_h_
 #define _wrap_wxBitmap_h_
 
-#ifdef _AMIPREC_
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_PRECOM_HEADERS
   #include "WrapWxWidgets_header.h"
 #else
   #include "wrapfunction_class.h"

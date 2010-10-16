@@ -10,6 +10,8 @@
 //
 //
 
+#include "AMILabConfig.h"
+
 #ifdef _AMIPREC_
   #include "WrapWxWidgets_header.h"
 #endif
@@ -103,7 +105,7 @@ BasicVariable::ptr WrapClass_wxSizer::
 void WrapClass_wxSizer::
       wrap_Add2::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(wxWindow,"Widget to add");
+  ADDPARAMCOMMENT_TYPE(wxWindow,"wxWindow to add");
   ADDPARAMCOMMENT_TYPE(int, "Proportion");
   ADDPARAMCOMMENT_TYPE(int, "Flags");
   ADDPARAMCOMMENT_TYPE(int, "Border");
@@ -214,3 +216,122 @@ BasicVariable::ptr WrapClass_wxSizer::
   return BasicVariable::ptr();
 }
 
+//---------------------------------------------------
+//  Detach1
+//---------------------------------------------------
+void WrapClass_wxSizer::
+      wrap_Detach1::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(wxWindow,"wxWindow to detach");
+  return_comments="bool";
+}
+
+/*
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxSizer::
+      wrap_Add2::CallMember( ParamList* p)
+{
+  boost::shared_ptr<wxSizer> s = this->_objectptr->GetObj();
+
+  int n=0;
+  CLASS_GET_OBJECT_PARAM(wxWindow,var0,widget);
+  if (!widget.get()) ClassHelpAndReturn;
+  GET_PARAM(int,proportion,0)
+  GET_PARAM(int,flags,0)
+  GET_PARAM(int,border,0)
+
+  wxSizerItem* si = s->Add(widget.get(),proportion,flags,border);
+  RETURN_VAR(wxSizerItem,si);
+*/
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxSizer::
+      wrap_Detach1::CallMember( ParamList* p)
+{
+  boost::shared_ptr<wxSizer> s = this->_objectptr->GetObj();
+
+  int n=0;
+  CLASS_GET_OBJECT_PARAM(wxWindow,var0,widget);
+
+  bool res = s->Detach(widget.get());
+  RETURN_VAR(int,res);
+}
+
+//---------------------------------------------------
+//  Detach2
+//---------------------------------------------------
+void WrapClass_wxSizer::
+      wrap_Detach2::SetParametersComments() 
+{
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxSizer::
+      wrap_Detach2::CallMember( ParamList* p)
+{
+  boost::shared_ptr<wxSizer> s = this->_objectptr->GetObj();
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Detach3
+//---------------------------------------------------
+void WrapClass_wxSizer::
+      wrap_Detach3::SetParametersComments() 
+{
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxSizer::
+      wrap_Detach3::CallMember( ParamList* p)
+{
+  boost::shared_ptr<wxSizer> s = this->_objectptr->GetObj();
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Detach
+//---------------------------------------------------
+void WrapClass_wxSizer::
+      wrap_Detach::SetParametersComments() 
+{
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxSizer::
+      wrap_Detach::CallMember( ParamList* p)
+{
+
+  BasicVariable::ptr res;
+  WrapClass_wxSizer::wrap_Detach1 m1(this->_objectptr);
+  res = m1.CallMember(p);
+  if (res.get()) return res;
+
+  WrapClass_wxSizer::wrap_Detach2 m2(this->_objectptr);
+  res = m2.CallMember(p);
+  if (res.get()) return res;
+
+  WrapClass_wxSizer::wrap_Detach3 m3(this->_objectptr);
+  res = m3.CallMember(p);
+  if (res.get()) return res;
+
+  RETURN_VAR(int,0);
+}
+
+
+//---------------------------------------------------
+//  Layout
+//---------------------------------------------------
+void WrapClass_wxSizer::
+      wrap_Layout::SetParametersComments() 
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxSizer::
+      wrap_Layout::CallMember( ParamList* p)
+{
+  boost::shared_ptr<wxSizer> s = this->_objectptr->GetObj();
+  s->Layout();
+  return BasicVariable::ptr();
+}
