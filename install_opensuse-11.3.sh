@@ -86,5 +86,5 @@ cd ${maindir}/doc
 cd ${maindir}/src/build/release
 zypper install rpm-build
 cpack -G RPM
-mv AMILab-3.0.0-Linux.i686.rpm AMILab-3.0.0-opensuse11.3.i686.rpm
-rpm -ivh AMILab-3.0.0-opensuse11.3.i686.rpm
+mv AMILab-3.0.0-Linux.`uname -p`.rpm AMILab-3.0.0-opensuse-11.3.`uname -p`.rpm
+rpm -ivh AMILab-3.0.0-opensuse-11.3.`uname -p`.rpm
