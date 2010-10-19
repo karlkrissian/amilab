@@ -138,41 +138,48 @@ if (!exists(syntheticADClass)){
     proc ::Statistics() {
       #Firstly, the subpixel detection result is needed, for compute the distance
       ::ComputeSubpixel()
-      #ya tengo spResult. Pillo las posiciones x e y (imágenes 1D)
-      #Cast a double porque esas imágenes son unsigned char
-      x <<= (DOUBLE)::spResult->xpos
-      #Hay que añadirle el coeficiente a porque es a nivel subpixel.
-      y <<= (DOUBLE)::spResult->ypos + ::spResult->acoef
-      
-      #Distancias de los puntos calculados para el circulito
+      #Take the position of subpixel components and make a cast to double
+      #x <<= (DOUBLE)::spResult->xpos
+      x = ((DOUBLE)::spResult->xpos)*(::spResult->border==2)+((DOUBLE)::spResult->xpos+::spResult->acoef)*(::spResult->border!=2)
+      #Similar to the equation, but with x=0. It is the subpixel position
+      #y <<= (DOUBLE)::spResult->ypos + ::spResult->acoef
+      y = ((DOUBLE)::spResult->ypos+::spResult->acoef)*(::spResult->border==2)+((DOUBLE)::spResult->ypos)*(::spResult->border!=2)
+      #Distance for the circle
       modC <<= sqrt((x-::cx)*(x-::cx)+(y-::cy)*(y-::cy))
-      #Y para el anillo
+      #and for the ring
       modR <<= sqrt((x-::ring_cx)*(x-::ring_cx)+(y-::ring_cy)*(y-::ring_cy))
       
-      #Ahora hay que ver de cuál está más cerca, el círculo, el anillo dentro o el anillo fuera
-      #Valor absoluto porque sólo interesa la distancia, no el signo
-      #Círculo
+      #Now, calculate the diference with the real position, using the radius
+      #Use the abs value, because the sign it does not matter
+      #Circle
       dis1 <<= abs(modC - ::cr)
-      #Círculo interno del anillo
+      #Internal circle of the ring
       dis2 <<= abs(modR - ::ring_radius)
-      #Círculo externo del anillo
+      #External circle of the ring
       dis3 <<= abs(modR - (::ring_radius+::ring_thick))
       
-      #La distancia será el mínimo de las tres distancias
+      #The distance will be the minimum of the three distances calculated
       resDis <<= -max(max(-dis1,-dis2),-dis3)
       
-      #Error medio
-      #print "Average error = "
-      #printn mean(::resDis)
-      
-      #Varianza
+      #Calculate statistics of subpixel position
       dis_mean = mean(resDis)
       var <<= (resDis - dis_mean)*(resDis - dis_mean)
-      #print "Variance = "
-      #printn mean(var)
+      #Mean
       ::mean_str     = sprint("%f",dis_mean)
+      #Variance
       ::variance_str = sprint("%e",mean(var))
       ::win.Update(-1)
+      
+      #Generate the image of the error
+      ::error_image = Image(FLOAT, ::dimx, ::dimy, 1)
+      #Initialize to a negative value
+      ::error_image = -1
+      #And now, fill it
+      for i=0 to resDis.tx-1 {
+        ::error_image.setpos(x(i,0,0), y(i,0,0), 0)
+        ::error_image.set(resDis(i,0,0))
+      }
+      show ::error_image
     }
     Comments(::Statistics, "Calculate statistics of subpixel detection")
     
@@ -290,7 +297,8 @@ if (!exists(syntheticADClass)){
             ::win.EndBoxPanel()
             
           ::win.EnablePanel(::fun_page, 0)
-            
+        
+        #Statistics page
         ::stat_page = ::win.AddPage("Stat.")
           ::AddBitmapButton(&::win, &::icons._Play, 16, "Statistics")
           ::win.BeginBoxPanel("Error of the subpixel position")
