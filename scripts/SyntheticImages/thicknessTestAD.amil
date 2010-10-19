@@ -1,0 +1,235 @@
+#Interface for synthetic aortic dissection
+
+func "Common/ScriptGui"
+#func "Subpixel/subpixel2D.amil"
+
+if (!exists(thickTADClass)){
+
+	#Import filters
+  ami_import->Filters()
+
+	Class thickTADClass : public ScriptGui{
+  
+    ::filters = &global::filters
+    
+    #-----------------------
+    proc ::Init(){
+      ::class_name  = "global::Subpixel2DClass"
+      ::output_name = "synthAD_result", "Output image name"
+      
+      #Input image parameters
+      ::dimx = INT(100), "Input image X size"
+      ::dimy = INT(100), "Input image Y size"
+      
+      #Intensity values inside and outside of the figures
+      ::A  = 200.0, "A intensity value" 
+      ::B  = 100.0, "B intensity value"
+      
+      #Circle parameters
+      ::cx = 50.0, "X component of the center of the circle"
+      ::cy = 50.0, "Y component of the center of the circle"
+      ::cr = 20.0, "Radius of the circle"
+      
+      #Ring 2D parameters
+      ::ring_cx     = 80.0, "X component of the center of the ring"
+      ::ring_cy     = 50.0, "Y component of the center of the ring"
+      ::ring_radius = 30.0, "Ring internal radius"
+      ::ring_thick  = 2.0, "Thickness of the ring"
+      
+      ::reload = UCHAR(0), "Reload the image"
+      
+      ::subdiv = INT(6), "Subdivision level"
+      
+      ::mean_str     = "", "Average error of subpixel method"
+      ::variance_str = "", "Variance of subpixel method"
+      
+      ::CreateGui()
+    }
+    
+
+    #-----------------------
+    
+    proc ::CreateInputImage() {
+      #if(exists(::res_draw)) { del ::res_draw; }
+      #Create the image with the parameters and enable the compute method panel
+      ::input <<= Image(FLOAT,::dimx,::dimy,1)
+      ::input   = 0
+    }
+    Comments(::CreateInputImage, "Create the input image.")
+    
+    #-----------------------
+    
+    proc ::Statistics() {
+      #Firstly, the subpixel detection result is needed, for compute the distance
+      ::ComputeSubpixel()
+      #Take the position of subpixel components and make a cast to double
+      x <<= ((DOUBLE)::spResult->xpos)*(::spResult->border==2)+((DOUBLE)::spResult->xpos-::spResult->acoef)*(::spResult->border!=2)
+      #Similar to the equation, but with x=0. It is the subpixel position
+      y <<= ((DOUBLE)::spResult->ypos-::spResult->acoef)*(::spResult->border==2)+((DOUBLE)::spResult->ypos)*(::spResult->border!=2)
+      #Distance for the circle
+      modC <<= sqrt((x-::cx)*(x-::cx)+(y-::cy)*(y-::cy))
+      #and for the ring
+      modR <<= sqrt((x-::ring_cx)*(x-::ring_cx)+(y-::ring_cy)*(y-::ring_cy))
+      
+      #Now, calculate the diference with the real position, using the radius
+      #Use the abs value, because the sign it does not matter
+      #Circle
+      dis1 <<= abs(modC - ::cr)
+      #Internal circle of the ring
+      dis2 <<= abs(modR - ::ring_radius)
+      #External circle of the ring
+      dis3 <<= abs(modR - (::ring_radius+::i))
+      
+      #The distance will be the minimum of the three distances calculated
+      resDis <<= -max(max(-dis1,-dis2),-dis3)
+      
+      #Calculate statistics of subpixel position (mean and variance)
+      ::dis_mean = mean(resDis)
+      
+      var <<= (resDis - ::dis_mean)*(resDis - ::dis_mean)
+      ::dis_var = mean(var)
+      
+      printn sprint("Thickness: %1.0f ", ::i)
+      print "\tMean = "
+      printn ::dis_mean
+      print "\tVariance = "
+      printn ::dis_var
+      ::win.Update(-1)
+
+    }
+    Comments(::Statistics, "Calculate statistics of subpixel detection")
+    
+    #-----------------------
+    
+    proc ::ComputeSubpixel() {
+      if(exists(::res)) {
+        if (exists(::spResult)) { del ::spResult; }
+        spObject = ::import->SubPixel2D(&::res, 25, 0)
+        ::spResult = spObject->DenoisingGus()
+      } else {
+        InfoDialog "You must create first the image"
+      }
+    }
+    
+    #-----------------------
+   
+    proc ::RunIteration() {
+      #Compute the result image
+      ::res <<= ::resC
+      for i=0 to ::resR.tx-1 {
+        for j=0 to ::resR.ty-1 {
+          if(::resC(i,j,0)!=::B && ::resR(i,j,0)!=::A) {
+            ::res.setpos(i,j,0)
+            ::res.set(::resR(i,j,0))
+          }
+        }
+      }
+    }
+    Comments(::RunIteration, "Generate the syntheticAD image.")
+    
+    #-----------------------
+   
+    proc ::RunTests() {
+      ::CreateInputImage()
+      #create a compute partial volume object
+      pv     = ::import->ComputePV()
+      pv->setInputImage(&::input)
+      pv->setSubdiv(::subdiv)
+      circle = ::import->AnalyticCircle()
+      ring   = ::import->AnalyticRing2D()
+      circle->setCenter(::cx, ::cy)
+      circle->setRadius(::cr)
+      #Create the circle
+      pv->setAnalyticFunction(&circle)
+      ::resC <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::A, ::B)
+      ring->setCenter(::ring_cx, ::ring_cy)
+      ring->setRadius(::ring_radius)
+      mean_image = Image(DOUBLE,6,1,1)
+      var_image = Image(DOUBLE,6,1,1)
+      
+      #Thickness test
+      printn "Starting thickness test..."
+      prog = 0
+      SetProgress(prog)
+      for ::i=1 to 6 {
+        ring->setThickness(::i)
+        #Create the ring
+        pv->setAnalyticFunction(&ring)
+        ::resR <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
+        ::RunIteration()
+        ::Statistics()
+        mean_image.setpos(::i-1,0,0)
+        mean_image.set(::dis_mean)
+        var_image.setpos(::i-1,0,0)
+        var_image.set(::dis_var)
+        prog += 16
+        SetProgress(prog)
+      }
+      #Mean curve
+      ::dwt.SetCurve(mean_image,0)
+      #Variance curve
+      ::dwt.SetCurve(var_image,1)
+      #Color for variance curve
+      ::dwt.SetCurveProperties(1,"#0000FF",0,1)
+      SetProgress(100)
+      printn "Thickness test done!"
+      
+      #Noise test
+    }
+    Comments(::RunTests, "Run test for detection with 10 different thickness of the ring.")
+    
+    #-----------------------
+    
+    proc ::CreateGui() {
+      ::import = &global::ami_import;
+      ::win = ::import->ParamPanel("ADThicknessTest")
+      
+      #add Drawing Window
+      #::win.BeginBoxPanel("Thickness error graph")
+        d = ::win.CurrentParent()
+        ::dwt = ::import->wxDrawingWindow(&d)
+        ::dwt.SetMinSize(&wx.wxSize(50, 100))
+        ::dwt.SetBackgroundColour(&wx.wxColour(255,255,255))
+        ::dwt.SetXLimits(0, 5)
+        ::dwt.SetYLimits(0,  0.5)
+        ::win.AddString("Thickness error", "Graph")
+        ::sizer_item = ::win.AddWidget(&::dwt,0)
+      #::win.EndBoxPanel()
+      
+      #::win.BeginBoxPanel("Noise error graph")
+        d = ::win.CurrentParent()
+        ::dwn = ::import->wxDrawingWindow(&d)
+        ::dwn.SetMinSize(&wx.wxSize(50, 100))
+        ::dwn.SetBackgroundColour(&wx.wxColour(255,255,255))
+        #Faltan poner los límites
+        ::dwn.SetXLimits(0, 10)
+        ::dwn.SetYLimits(0,  1)
+        ::win.AddString("Noise error", "Graph")
+        ::sizer_item = ::win.AddWidget(&::dwn,0)
+      #::win.EndBoxPanel()
+      
+      ::icons.LoadIconPNG("Play")
+      ::AddBitmapButton(&::win, &::icons._Play, 16, "RunTests")
+      
+      ::AddStandardButtons(&::win)
+      
+      ::win.Update(-1)
+      ::win.Display()
+      
+    }
+    
+    ::Init()
+
+  } #end Class
+
+} #end If
+
+
+#----------------
+# Main
+#----------------
+if (!exists(thickTAD_object)) {
+  thickTADClass thickTAD_object
+} else {
+  InfoDialog "The script for test the thickness of the ring in AD synthetic image seems to be already loaded."
+}

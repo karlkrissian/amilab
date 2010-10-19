@@ -140,10 +140,10 @@ if (!exists(syntheticADClass)){
       ::ComputeSubpixel()
       #Take the position of subpixel components and make a cast to double
       #x <<= (DOUBLE)::spResult->xpos
-      x = ((DOUBLE)::spResult->xpos)*(::spResult->border==2)+((DOUBLE)::spResult->xpos+::spResult->acoef)*(::spResult->border!=2)
+      x = ((DOUBLE)::spResult->xpos)*(::spResult->border==2)+((DOUBLE)::spResult->xpos-::spResult->acoef)*(::spResult->border!=2)
       #Similar to the equation, but with x=0. It is the subpixel position
       #y <<= (DOUBLE)::spResult->ypos + ::spResult->acoef
-      y = ((DOUBLE)::spResult->ypos+::spResult->acoef)*(::spResult->border==2)+((DOUBLE)::spResult->ypos)*(::spResult->border!=2)
+      y = ((DOUBLE)::spResult->ypos-::spResult->acoef)*(::spResult->border==2)+((DOUBLE)::spResult->ypos)*(::spResult->border!=2)
       #Distance for the circle
       modC <<= sqrt((x-::cx)*(x-::cx)+(y-::cy)*(y-::cy))
       #and for the ring
