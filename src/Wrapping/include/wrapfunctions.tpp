@@ -258,11 +258,8 @@ bool get_several_int_params(int* arg, ParamList*p, int& num)
   for(i=0;i<nb;i++) 
     val[i] = arg[i];
 
-  bool OK;
-  for(i=0;i<nb;i++) {
-    OK = get_several_params<float,nb>(val,p,num);
-    if (!OK) return false;
-  }
+  bool OK = get_several_params<float,nb>(val,p,num);
+  if (!OK) return false;
   for(i=0;i<nb;i++) 
     arg[i] = round(val[i]);
 

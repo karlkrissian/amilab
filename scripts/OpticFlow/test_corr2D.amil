@@ -3,9 +3,12 @@
 # Simple script to test 2D cross-correlation
 #
 
+func "Common/ScriptGui"
+
+
 if (!exists(test_corr2DClass)) {
 
-  Class test_corr2DClass {
+  Class test_corr2DClass : public ScriptGui {
 
     proc ::Init() {
       ::input1_name =  "", "first image"
@@ -42,22 +45,6 @@ if (!exists(test_corr2DClass)) {
       ::win.Update(-1)
     }
 
-    #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() \
-    {
-      ::Close
-      if (exists(test_corr2DClass)) { del test_corr2DClass; }
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
     #
     proc ::init_corr2D() \
     {
@@ -159,10 +146,7 @@ if (!exists(test_corr2DClass)) {
           ::win.AddButton("Iterate", ::Iterate)
       
       ::win.EndBook()
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal()
+      ::AddStandardButtons(&::win)
 
       ::win.Update(-1)
       ::win.Display()

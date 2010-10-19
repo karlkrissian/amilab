@@ -5,12 +5,13 @@
 
 func "Noise/AddRiceNoise.amil"
 
+func "Common/ScriptGui"
+
 if (!exists(AddNoiseClass)){
-  Class AddNoiseClass {
+  Class AddNoiseClass : public ScriptGui {
   #------------------------------------
   
   proc ::Init() {
-    ::class_name ="global::AddNoiseClass"
     ::input_name  = "",  "name of input image"
     ::output_name = "global::AddNoise_output", "name of output image variable"
   
@@ -24,22 +25,7 @@ if (!exists(AddNoiseClass)){
     ::CreateGui()
   }
   
-  #----------------------------
-  proc ::Close() {
-    ::win.HidePanel()
-    delvars GetObjectName(::Close)
-  }
-  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-  #----------------------------
-  proc ::CloseAll() {
-    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-    ::Close
-  }
-  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-      
   #------------------------------------
-    
   proc ::load_input() {
     eval "::input <<="+::input_name+";"
     if (::input_name=="Image") {
@@ -48,6 +34,7 @@ if (!exists(AddNoiseClass)){
     }
   }
   
+  #------------------------------------
   proc ::Run() {
     ::load_input()
     if (::type==0) {
@@ -68,7 +55,8 @@ if (!exists(AddNoiseClass)){
     #  ::Display()
   }
   
-proc ::Display() {    
+  #------------------------------------
+  proc ::Display() {
     show ::input
     
     if (exists(::res)) {
@@ -77,10 +65,12 @@ proc ::Display() {
     }
   }
   
+  #------------------------------------
   proc ::Save() {
     ::res.save resultname
   }
   
+  #------------------------------------
   proc ::CreateGui() {  
     # parameters window
     import = &global::ami_import;
@@ -106,16 +96,13 @@ proc ::Display() {
         ::win.AddButton("Display",    ::Display)
     ::win.EndBook()
   
-    ::win.BeginHorizontal()
-      ::win.AddButton("Close",          ::Close)
-      ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal()  
+    ::AddStandardButtons(&::win)
   
     ::win.Update(-1)
     ::win.Display()
   }
   
-  ::Init
+  ::Init()
   
  } #End of class 
    

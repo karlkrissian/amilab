@@ -13,15 +13,15 @@
 #
 
 # NLM_resultname = $2
+func "Common/ScriptGui"
 
 if (!exists(MSEClass)) {
 
-  Class MSEClass {
+  Class MSEClass : public ScriptGui {
 
     #----------------------------
     proc ::Init() \
     {
-        ::class_name = "global::MSEClass"
         ::input_name =  "", "input image"
         ::groundtruth_name =  "", "ground truth image" 
         ::MSE_string = "", "Mean Square Error value"
@@ -32,21 +32,6 @@ if (!exists(MSEClass)) {
         ::CreateWindow()
     }
     
-    #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-     #----------------------------
-    proc ::CloseAll() {
-      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-     
     #----------------------------
     proc ::LoadInput() \
     {
@@ -195,17 +180,14 @@ if (!exists(MSEClass)) {
 
       ::win.EndBook()
 
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal()
+      ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
       ::win.Display()
-      ::CheckInputs
+      ::CheckInputs()
     }
 
-    ::Init
+    ::Init()
   } 
   # Class MSEClass
 } 

@@ -66,7 +66,11 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
     ADD_CLASS_METHOD(SetCompTransf,          "SetCompTransf is not available at the moment.");
     ADD_CLASS_METHOD(setvector,              "This command allows to set one of the vector fields, specified by the given number");
     ADD_CLASS_METHOD(DrawVector,             "Enable/Disable the draw of a vector field.");
-    ADD_CLASS_METHOD(DisplayVectors,         "Display the vectors.");
+
+    ADD_CLASS_METHOD(DisplayVectors,         "Display the vectors once.");
+
+    ADD_CLASS_METHOD(SetDisplayVectors,         "Enable/Disable the display of the vectors.");
+
     ADD_CLASS_METHOD(SetVectParam,           "Sets the size and spacing of the vector drawing interface in the given image drawing window");
     ADD_CLASS_METHOD(SetVectColor,           "Sets the color of the given vector field (given by vector id),the color is set as (R,G,B) components, each component has a value between 0 and 255.");
     ADD_CLASS_METHOD(SetVectStyle,           "Specifies the type of vector.");
@@ -119,6 +123,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
       AddVar_setvector(             this_ptr);
       AddVar_DrawVector(            this_ptr);
       AddVar_DisplayVectors(        this_ptr);
+      AddVar_SetDisplayVectors(     this_ptr);
       AddVar_SetVectParam(          this_ptr);
       AddVar_SetVectColor(          this_ptr);
       AddVar_SetVectStyle(          this_ptr);
