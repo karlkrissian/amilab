@@ -1,18 +1,20 @@
 #
 # Creates a sphere within a volume data
 #
+
+func "Common/ScriptGui"
+
 if (!exists(CSPHClass)) {
 
   ami_import->Filters()
   
-  Class CSPHClass {
+  Class CSPHClass : public ScriptGui {
 
     ::filters=&global::filters
 
     #----------------------------
     proc ::Init() {
     
-      ::class_name ="global::CSPHClass"
       ::dimx = INT(100)
       Comments( ::dimx, "Image dimension in X axis")
       ::dimy = INT(100)
@@ -32,26 +34,10 @@ if (!exists(CSPHClass)) {
       ::image_name = "global::sphere"
       Comments( ::image_name, "Output image variable name")
 
-      ::Gui
+      ::Gui()
     }
     
-    #----------------------------
-    proc ::Close() {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() {
-      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-        
     #------------------------------------
-      
-      
     proc ::Create() {
       tmp = Image(FLOAT,::dimx,::dimy,::dimz)
       tmp_x = (FLOAT) Xpos(tmp)
@@ -70,12 +56,14 @@ if (!exists(CSPHClass)) {
     }
     Comments( ::Create, "Create the synthetic image of a sphere")
     
+    #------------------------------------
     proc ::Show() {
       
       eval "show "+::image_name+";"
     }
     Comments( ::Show, "Shows the resulting sphere")
     
+    #------------------------------------
     proc ::Gui() {
       import = &global::ami_import;
       ::win = import->ParamPanel("CreateSphere")
@@ -99,16 +87,14 @@ if (!exists(CSPHClass)) {
           ::win.AddButton("Create", ::Create)
           ::win.AddButton("Show",   ::Show)
       ::win.EndBook()
-      ::win.BeginHorizontal()
-          ::win.AddButton("Close",      ::Close)
-          ::win.AddButton("Close All",  ::CloseAll)
-        ::win.EndHorizontal()
+
+      ::AddStandardButtons(&::win)
     
       ::win.Update(-1)
       ::win.Display()
     }
     
-    ::Init
+    ::Init()
     
   } #End of class
   

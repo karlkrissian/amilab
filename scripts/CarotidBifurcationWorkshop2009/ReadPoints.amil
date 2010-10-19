@@ -9,7 +9,6 @@ if (!exists(ReadPointsClass)) {
 
   Class ReadPointsClass \
   {
-    ::class_name = "global::ReadPointsClass"
     proc ::ReadPoints( STRING points_filename ) \
     {
       ::points = File(points_filename,"r")

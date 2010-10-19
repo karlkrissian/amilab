@@ -4,14 +4,15 @@
 # Data raw data into an image variable
 #
 
+func "Common/ScriptGui"
+
 if (!exists(Raw2AmiClass)) {
 
-  Class Raw2AmiClass{
+  Class Raw2AmiClass : public ScriptGui {
 
     #----------------------------
     proc ::Init() \
     {
-      ::class_name ="global::Raw2AmiClass"
       ::dimx = INT(512)
       ::dimy = INT(512)
       ::dimz = INT(100)
@@ -26,22 +27,6 @@ if (!exists(Raw2AmiClass)) {
       ::Gui()
     }
 
-    #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() \
-    {
-      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
     #------------------------------------
     proc ::Read() {
       printn "Read"
@@ -106,17 +91,14 @@ if (!exists(Raw2AmiClass)) {
         ::win.AddButton("Save as ami.gz", &::Save)
       ::win.EndBook()
   
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      &::Close)
-        ::win.AddButton("Close All",  &::CloseAll)
-      ::win.EndHorizontal()
+      ::AddStandardButtons(&::win)
     
       ::win.Update(-1)
       ::win.Display()
       
     }
   
-    ::Init
+    ::Init()
   }
 
 }

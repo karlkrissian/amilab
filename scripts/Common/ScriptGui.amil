@@ -51,14 +51,14 @@ if (!exists(ScriptGui)) \
     #----------------------------
     # Reloads the script
     #
-    proc ::Reload() {
+    proc ::ReloadScript() {
       printn ::objectfilename
       cmd = "global; func \"%1%\";" % ::objectfilename
       printn cmd
       ::CloseAll()
       eval cmd
     }
-    Comments( ::Reload, "Reload script from file.")
+    Comments( ::ReloadScript, "Reloads the script from disk.")
       
     #------------------------------------
     proc ::EditScript() {
@@ -94,7 +94,7 @@ if (!exists(ScriptGui)) \
       win.BeginHorizontal()
         ::AddBitmapButton16(&win, &::icons._Edit_page, "EditScript")
         win.SetPositionProp(-1,2)
-        ::AddBitmapButton16(&win, &::icons._Refresh, "Reload")
+        ::AddBitmapButton16(&win, &::icons._Refresh, "ReloadScript")
         win.SetPositionProp(-1,2)
         ::AddBitmapButton16(&win, &::icons._Close,   "Close")
         win.SetPositionProp(-1,2)

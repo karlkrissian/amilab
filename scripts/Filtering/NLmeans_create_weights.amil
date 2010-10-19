@@ -6,11 +6,13 @@
 # To do: create interface to play with the parameters ...
 #
 
+func "Common/ScriptGui"
+
 if (!exists(NLMweightsClass)) {
   ami_import.Filters()
   func "Noise/AddRiceNoise.amil"
 
-  Class NLMweightsClass {
+  Class NLMweightsClass : public ScriptGui {
     proc ::Init() {
       ::input_name = "", "input image"
       #pos_x = atof($2)
@@ -24,22 +26,6 @@ if (!exists(NLMweightsClass)) {
       ::apply_exp = UCHAR(1), "apply exponential function"
       ::CreateWindow()
     }
-    
-    #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() \
-    {
-      ::Close
-      if (exists(NLMweightsClass)) { del NLMweightsClass; }
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::LoadInput() \
@@ -183,11 +169,9 @@ if (!exists(NLMweightsClass)) {
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
       ::win.EndBook()
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal()
-        
+
+      ::AddStandardButtons(&::win)
+
       ::win.Update(-1)
       ::win.Display()
     

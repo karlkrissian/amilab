@@ -3,9 +3,11 @@
 # Soft Focus effect, mainly for pictures
 #
 
+func "Common/ScriptGui"
+
 if (!exists(SoftFocus)) {
 
-  Class SoftFocus {
+  Class SoftFocus : public ScriptGui {
 
     #--------------------------------
     proc ::Init( ) {
@@ -20,13 +22,6 @@ if (!exists(SoftFocus)) {
       ::CreateGui()
     }
 
-    #--------------------------------
-    proc ::Close() {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
     #--------------------------------
     proc ::load_input() {
       eval "::input <<="+::input_name+";"
@@ -129,14 +124,15 @@ if (!exists(SoftFocus)) {
         ::win.EndHorizontal()
         ::win.AddButton("Apply",::Filter)
       ::win.EndBook()
-      ::win.AddButton("Close",    ::Close)
+
+      ::AddStandardButtons(&::win)
     
       ::win.Update(-1)
       ::win.Display()
     }
   
   
-    ::Init
+    ::Init()
 
   }
 

@@ -10,16 +10,18 @@
 # IEEE Transactions on Image Processing, vol 16:5, pages 1412-1424, may 2007.
 #
 
+func "Common/ScriptGui"
+
+
 if (!exists(AnisoSRADClass)) {
 
-  Class AnisoSRADClass {
+  Class AnisoSRADClass : public ScriptGui {
 
   #----------------------------
   
   #------------------------------------
   proc ::Init() {
 
-    ::class_name ="global::AnisoSRADClass"
     ::input_name = ""
     ::output_name = "SRAD_result"
     ::output_filename = "SRAD_result.ami.gz"
@@ -33,22 +35,6 @@ if (!exists(AnisoSRADClass)) {
 
     ::CreateGui()
   }
-  
-  #----------------------------
-  proc ::Close() {
-    ::win.HidePanel()
-    delvars GetObjectName(::Close)
-  }
-  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-  #----------------------------
-  proc ::CloseAll() {
-    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-    ::Close
-  }
-  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
-  
   
   #------------------------------------
   proc ::load_input() {
@@ -145,17 +131,14 @@ if (!exists(AnisoSRADClass)) {
         ::win.EndBoxPanel()
     
     ::win.EndBook()
-    ::win.BeginHorizontal()
-      ::win.AddButton("Close",          ::Close)
-      ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal()  
 
-    ::win.Update()
+    ::AddStandardButtons(&::win)
+
     ::win.Display()
     ::win.Update(-1)
   }
   
-  ::Init
+  ::Init()
   
   } #End of Class
   
