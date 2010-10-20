@@ -1,0 +1,390 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_image_creation_vectorial.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Testing for images creation of type vectorial.
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimx=10
+dimy=10
+dimz=1
+dimv=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+#
+# Create a vectorial image in 2D.
+#
+printn "\t\t Create a vectorial image in 2D:\n"
+printn "\t\t\t Type: CHAR.\n"
+imgCHAR = Image(CHAR,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: UCHAR.\n"
+imgUCHAR = Image(UCHAR,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: SHORT.\n"
+imgSHORT = Image(SHORT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: USHORT.\n"
+imgUSHORT = Image(USHORT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: INT.\n"
+imgINT = Image(INT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: UINT.\n"
+imgUINT = Image(UINT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: FLOAT.\n"
+imgFLOAT = Image(FLOAT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: DOUBLE.\n"
+imgDOUBLE = Image(DOUBLE,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: RGB.\n"
+imgRGB = Image(RGB,dimx,dimy,dimz,dimv)
+
+#
+# Show info of vectorial image in 2D.
+#
+printn "\t\t Show info of vectorial image 2D:\n"
+printn "\t\t\t Type: CHAR.\n"
+imgCHAR.info
+
+printn "\t\t\t Type: UCHAR.\n"
+imgUCHAR.info
+
+printn "\t\t\t Type: SHORT.\n"
+imgSHORT.info
+
+printn "\t\t\t Type: USHORT.\n"
+imgUSHORT.info
+
+printn "\t\t\t Type: INT.\n"
+imgINT.info
+
+printn "\t\t\t Type: UINT.\n"
+imgUINT.info
+
+printn "\t\t\t Type: FLOAT.\n"
+imgFLOAT.info
+
+printn "\t\t\t Type: DOUBLE.\n"
+imgDOUBLE.info
+
+printn "\t\t\t Type: RGB.\n"
+imgRGB.info
+
+#
+# Initialized to 0.
+#
+printn "\t\t Initialized to 0 a vectorial image 2D:\n"
+printn "\t\t\t Type: CHAR.\n"
+imgCHAR=0
+
+printn "\t\t\t Type: UCHAR.\n"
+imgUCHAR=0
+
+printn "\t\t\t Type: SHORT.\n"
+imgSHORT=0
+
+printn "\t\t\t Type: USHORT.\n"
+imgUSHORT=0
+
+printn "\t\t\t Type: INT.\n"
+imgINT=0
+
+printn "\t\t\t Type: UINT.\n"
+imgUINT=0
+
+printn "\t\t\t Type: FLOAT.\n"
+imgFLOAT=0
+
+printn "\t\t\t Type: DOUBLE.\n"
+imgDOUBLE=0
+
+printn "\t\t\t Type: RGB.\n"
+imgRGB(0,0,0)
+
+#
+# Images in 3D.
+#
+dimz=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+#
+# Create a vectorial image in 3D.
+#
+printn "\t\t Create a vectorial image in 3D:\n"
+printn "\t\t\t Type: CHAR.\n"
+imgCHAR3D = Image(CHAR,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: UCHAR.\n"
+imgUCHAR3D = Image(UCHAR,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: SHORT.\n"
+imgSHORT3D = Image(SHORT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: USHORT.\n"
+imgUSHORT3D = Image(USHORT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: INT.\n"
+imgINT3D = Image(INT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: UINT.\n"
+imgUINT3D = Image(UINT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: FLOAT.\n"
+imgFLOAT3D = Image(FLOAT,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: DOUBLE.\n"
+imgDOUBLE3D = Image(DOUBLE,dimx,dimy,dimz,dimv)
+
+printn "\t\t\t Type: RGB.\n"
+imgRGB3D = Image(RGB,dimx,dimy,dimz,dimv)
+
+#
+# Show info of vectorial image 3D.
+#
+printn "\t\t Show info of vectorial image 2D:\n"
+printn "\t\t\t Type: CHAR.\n"
+imgCHAR3D.info
+
+printn "\t\t\t Type: UCHAR.\n"
+imgUCHAR3D.info
+
+printn "\t\t\t Type: SHORT.\n"
+imgSHORT3D.info
+
+printn "\t\t\t Type: USHORT.\n"
+imgUSHORT3D.info
+
+printn "\t\t\t Type: INT.\n"
+imgINT3D.info
+
+printn "\t\t\t Type: UINT.\n"
+imgUINT3D.info
+
+printn "\t\t\t Type: FLOAT.\n"
+imgFLOAT3D.info
+
+printn "\t\t\t Type: DOUBLE.\n"
+imgDOUBLE3D.info
+
+printn "\t\t\t Type: RGB.\n"
+imgRGB3D.info
+
+#
+# Initialized to 0.
+#
+printn "\t\t Initialized to 0 a vectorial image 3D:\n"
+printn "\t\t\t Type: CHAR.\n"
+imgCHAR3D=0
+
+printn "\t\t\t Type: UCHAR.\n"
+imgUCHAR3D=0
+
+printn "\t\t\t Type: SHORT.\n"
+imgSHORT3D=0
+
+printn "\t\t\t Type: USHORT.\n"
+imgUSHORT3D=0
+
+printn "\t\t\t Type: INT.\n"
+imgINT3D=0
+
+printn "\t\t\t Type: UINT.\n"
+imgUINT3D=0
+
+printn "\t\t\t Type: FLOAT.\n"
+imgFLOAT3D=0
+
+printn "\t\t\t Type: DOUBLE.\n"
+imgDOUBLE3D=0
+
+printn "\t\t\t Type: RGB.\n"
+imgRGB3D(0,0,0)
+
+#
+# We calculated the mean
+#
+printn "\t\t We calculated the mean for the image 2D:\n"
+printn "\t\t\t Image: imgCHAR.\n"
+meanCHAR=mean(imgCHAR)
+
+if (meanCHAR!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 2D image(imgCHAR)."
+}
+
+printn "\t\t\t Image: imgUCHAR.\n"
+meanUCHAR=mean(imgUCHAR)
+
+if (meanUCHAR!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 2D image(imgUCHAR)."
+}
+
+printn "\t\t\t Image: imgSHORT.\n"
+meanSHORT=mean(imgSHORT)
+
+if (meanSHORT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 2D image(imgSHORT)."
+}
+
+printn "\t\t\t Image: imgUSHORT.\n"
+meanUSHORT=mean(imgUSHORT)
+
+if (meanSHORT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 2D image(imgUSHORT)."
+}
+
+printn "\t\t\t Image: imgINT.\n"
+meanINT=mean(imgINT)
+
+if (meanINT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 2D image(imgINT)."
+}
+
+printn "\t\t\t Image: imgUINT.\n"
+meanUINT=mean(imgUINT)
+
+if (meanUINT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 2D image(imgUINT)."
+}
+
+printn "\t\t\t Image: imgFLOAT.\n"
+meanFLOAT=mean(imgFLOAT)
+
+if (meanFLOAT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 2D image(imgFLOAT)."
+}
+
+printn "\t\t\t Image: imgDOUBLE.\n"
+meanDOUBLE=mean(imgDOUBLE)
+
+if (meanDOUBLE!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 2D image(imgDOUBLE)."
+}
+
+#printn "\t\t\t Image: imgRGB.\n"
+#meanRGB=mean(imgRGB)
+
+#if (meanRGB!=0)  {
+#  OK=0
+#  printn  "\nERROR: Failed the calculation of the mean in the 2D image(imgRGB)."
+#}
+
+printn "\t\t We calculated the mean for the image 2D:\n"
+printn "\t\t\t Image: imgCHAR.\n"
+meanCHAR=mean(imgCHAR3D)
+
+if (meanCHAR!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 3D image(imgCHAR3D)."
+}
+
+printn "\t\t\t Image: imgUCHAR3D.\n"
+meanUCHAR=mean(imgUCHAR3D)
+
+if (meanUCHAR!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 3D image(imgUCHAR3D)."
+}
+
+printn "\t\t\t Image: imgSHORT3D.\n"
+meanSHORT=mean(imgSHORT3D)
+
+if (meanSHORT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 3D image(imgSHORT3D)."
+}
+
+printn "\t\t\t Image: imgUSHORT3D.\n"
+meanUSHORT=mean(imgUSHORT3D)
+
+if (meanSHORT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 3D image(imgUSHORT3D)."
+}
+
+printn "\t\t\t Image: imgINT3D.\n"
+meanINT=mean(imgINT3D)
+
+if (meanINT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 3D image(imgINT3D)."
+}
+
+printn "\t\t\t Image: imgUINT3D.\n"
+meanUINT=mean(imgUINT3D)
+
+if (meanUINT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 3D image(imgUINT3D)."
+}
+
+printn "\t\t\t Image: imgFLOAT3D.\n"
+meanFLOAT=mean(imgFLOAT3D)
+
+if (meanFLOAT!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 3D image(imgFLOAT3D)."
+}
+
+printn "\t\t\t Image: imgDOUBLE3D.\n"
+meanDOUBLE=mean(imgDOUBLE3D)
+
+if (meanDOUBLE!=0)  {
+  OK=0
+  printn  "\nERROR: Failed the calculation of the mean in the 3D image(imgDOUBLE3D)."
+}
+
+#printn "\t\t\t Image: imgRGB3D.\n"
+#meanRGB=mean(imgRGB3D)
+
+#if (meanRGB!=0)  {
+#  OK=0
+#  printn  "\nERROR: Failed the calculation of the mean in the 3D image(imgRGB3D)."
+#}
+
+printn "\t\t Show images 2D of type RGB:\n"
+show imgRGB
+
+printn "\t\t Show images 3D of type RGB:\n"
+show imgRGB3D
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

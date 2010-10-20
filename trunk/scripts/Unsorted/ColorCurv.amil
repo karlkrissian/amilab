@@ -1,0 +1,122 @@
+#!/home/karl/projects/bin/OS/improcess
+
+//
+// Put colors to a surface depending on the curvature
+//
+
+//----------------------------------------------------------------------
+proc MinCurvColors( OBJECT s, NUM size, NUM curv_mean, NUM curv_sd  ) {
+//
+
+  // Compute the curvatures
+  s.Curvatures(size)
+
+  // get the colormap
+  colmap = Image "/home/karl/projects/Surfaces/CMrainbow1.ami.gz"
+
+  // Create a grey level image between 0 and 255
+  grey = (s_cmin-curv_mean)/curv_sd*127+127
+  grey = (grey>=0)*(grey<=255)*grey+(grey>255)*255
+  grey1 = (UCHAR) grey
+
+  // Apply the color to the grey level image
+  c1 = colmap(grey1)
+
+  // Apply the colors to the surface points
+  s.SetPointsColors(c1)
+
+} // MinCurvColors()
+
+
+//----------------------------------------------------------------------
+proc MaxCurvColors( OBJECT s, NUM size, NUM curv_mean, NUM curv_sd  ) {
+//
+
+  // Compute the curvatures
+  s._Curvatures(size)
+
+  // get the colormap
+  colmap = Image "/home/karl/projects/Surfaces/CMrainbow1.ami.gz"
+
+  // Create a grey level image between 0 and 255
+  grey = (s_cmax-curv_mean)/curv_sd*127+127
+  grey = (grey>=0)*(grey<=255)*grey+(grey>255)*255
+  grey1 = (UCHAR) grey
+
+  // Apply the color to the grey level image
+  c1 = colmap(grey1)
+
+  // Apply the colors to the surface points
+  s.SetPointsColors(c1)
+
+} // MaxCurvColors()
+
+
+//-----------------------------------------------------------------------
+proc PutColors( OBJECT s, IMAGE im, NUM _mean, NUM _sd) {
+//
+
+  print "1\n"
+
+  // get the colormap
+  colmap = Image "/home/karl/projects/Surfaces/CMrainbow1.ami.gz"
+
+  _pts = s.GetIntensities(im);
+
+  // Create a grey level image between 0 and 255
+  grey = atan((_pts-_mean)/_sd)/(Pi/2)*127+127
+  grey = (grey>=0)*(grey<=255)*grey+(grey>255)*255
+  grey1 = (UCHAR) grey
+
+  // Apply the color to the grey level image
+  c1 = colmap(grey1)
+
+  // Apply the colors to the surface points
+  s.SetPointsColors(c1)
+    
+}
+
+//-----------------------------------------------------------------------
+// put colors based on a colomap image CM
+//
+proc PutColorsCM( OBJECT s, IMAGE im, IMAGE _CM, NUM _mean, NUM _sd) {
+//
+
+  // Create a grey level image between 0 and 255
+  grey = (im-_mean)/_sd*127+127
+  grey = (grey>=0)*(grey<=255)*grey+(grey>255)*255
+  grey1 = (UCHAR) grey
+
+  // Apply the color to the grey level image
+  c1 = _CM(grey1)
+
+  // Apply the colors to the surface points
+  s.SetPointsColors(c1)
+    
+}
+
+//-----------------------------------------------------------------------
+proc PutColors2( OBJECT s, IMAGE im, NUM _mean, NUM _sd) {
+//
+
+print "*\n"
+  // get the colormap
+  colmap = Image "/home/karl/projects/Surfaces/CMrainbow1.ami.gz"
+
+print "*\n"
+  // Create a grey level image between 0 and 255
+  grey = (im-_mean)/_sd*127+127
+print "*\n"
+  grey = (grey>=0)*(grey<=255)*grey+(grey>255)*255
+print "*\n"
+  grey1 = (UCHAR) grey
+
+print "*\n"
+  // Apply the color to the grey level image
+  c1 = colmap(grey1)
+
+print "*\n"
+  // Apply the colors to the surface points
+  s.SetPointsColors(c1)
+    
+}

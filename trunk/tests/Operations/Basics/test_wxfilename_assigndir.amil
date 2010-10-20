@@ -1,0 +1,47 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxfilename_assigndir.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - AssignDir
+#                              - GetPath
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Constructor: MODE 0 (file=wx.wxFileName()).\n"
+file=wx.wxFileName()
+
+printn "AssignDir: Sets this file name object to the given directory name (file.AssignDir(\"/tmp\")).\n"
+file.AssignDir("/tmp")
+
+VAL = file.GetPath()
+
+printn "\t The path part of the filename (without the name or extension)(file): - %1% -\n" % VAL
+
+if (VAL != "/tmp")  {
+  OK=0;
+  printn  "\nERROR: The AssignDir failed."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

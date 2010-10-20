@@ -1,0 +1,42 @@
+#!/home/karl/projects/bin/OS/improcess
+
+i = Image($1)
+th=atof($2)
+j=(FLOAT)i
+del i
+
+nx=2
+ny=3
+nz=3
+
+dx=(INT)(j.tx/nx)
+dy=(INT)(j.ty/ny)
+dz=(INT)(j.tz/nz)
+
+print dx; print "\t";print dy; print "\t"; print  dz; ; print "\n"
+
+func "RunLS"
+
+for x1=0 to nx-1 {
+for y1=0 to ny-1 {
+for z1=0 to nz-1 {
+  print x1; print y1; print z1; print "\n"
+  Xmin=x1*dx
+  Xmax=(x1+1)*dx-1
+  Ymin=y1*dy
+  Ymax=(y1+1)*dy-1
+  Zmin=z1*dz
+  Zmax=(z1+1)*dz-1
+  j1=j[Xmin:Xmax,Ymin:Ymax,Zmin:Zmax]
+  j1_res=j1-th
+  SmoothLS(j1,&j1_res,5,0)
+  j.putimage(j1_res)
+  del j1; del j1_res
+}
+}
+stx1=sprint("%03.0f",x1)
+sty1=sprint("%03.0f",y1)
+stz1=sprint("%03.0f",z1)
+resname="res"+stx1+sty1+stz1+".ami.gz"
+j.save resname
+}

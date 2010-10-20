@@ -1,0 +1,68 @@
+
+func "ConnectedComponents/FillHoles"
+
+#----------------------------------------------------------------------
+#
+# use Danielsson distance, fill the holes
+# object is bright
+#
+proc CreateSkeleton(IMAGE input, NUM threshold, IMAGE output) {
+#    --------------
+  print "Entering CreateSkeleton\n"
+  _i   = ((FLOAT)input)-threshold
+  _res = _i
+  FillHolesPositive(_i,&_res)
+#  show _res
+  # compute distance inside the structure
+  print "Compute Danielsson distance\n"
+
+#  _idist = vtkPropDaniel2(_res,0,-1,50)
+  _idist = vtkPropDanielsson(_res,-1,50)
+
+#  show _idist
+  _j = (UCHAR) (_res>0)*255
+  print "Compute Skeleton\n"
+  output = Skeleton(_j,_idist,0,1000)
+  print "Leaving CreateSkeleton\n"
+}
+#----------------------------------------------------------------------
+#----------------------------------------------------------------------
+#
+# use Danielsson distance, do not fill the holes
+# object is bright
+#
+proc CreateSkeleton2(IMAGE input, IMAGE output) {
+#    ---------------
+  # compute distance inside the structure
+  print "Compute Danielsson distance\n"
+#  _idist = vtkPropDaniel2(input,0,-1,30)
+  _idist = vtkPropDanielsson(input,-1,50)
+  show _idist
+  _j = (UCHAR) (input>0)*255
+  print "Compute Skeleton\n"
+  output = Skeleton(_j,_idist,0,1000)
+  print "Leaving CreateSkeleton\n"
+}
+
+
+#----------------------------------------------------------------------
+#
+# initial, with distance to binary image
+#
+proc CreateSkeletonBin(IMAGE input, NUM threshold, IMAGE output) {
+#    -----------------
+
+  print "Entering CreateSkeletonBin\n"
+  _i   = ((FLOAT)input)-threshold
+  _j   = (UCHAR) ((_i>0)*255)
+  _j1  = (_j<127)*255
+
+  print "Running the distance transform \n"
+  _k1  = AndreDist(_j1)
+
+  print "Compute Skeleton\n"
+  output = Skeleton(_j,_k1,0,1000)
+  print "Leaving CreateSkeletonBin\n"
+}
+#----------------------------------------------------------------------
+

@@ -1,0 +1,29 @@
+
+*****  EDPclose *****
+
+token(s):
+EDP_close EDPclose
+
+rule(s):
+image -> EDP_close ( VAR_IMAGE, expr, expr )
+
+parameter(s):
+  #1 VAR_IMAGE: input image
+  #2 expr     : dilatation size
+  #3 expr     : evolution step dt
+
+description:
+Image morphological greyscale closing
+using Partial Derivative Equation and the 
+scheme of Brockett and Maragos.
+The closeing is the combination of a dilatation
+followed by an erosion.
+
+Example(s):
+- Closing of size 1
+ di = EDPclose(i,1,0.1)
+
+See Also:
+	EDPdilate EDPerode EDPopen
+
+******************************

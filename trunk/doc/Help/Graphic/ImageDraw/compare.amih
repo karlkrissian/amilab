@@ -1,0 +1,18 @@
+
+***** VAR_IMAGEDRAW.COMPARE *****
+
+token(s):
+COMPARE  compare
+
+rule(s):
+commande -> VAR_IMAGEDRAW '.' COMPARE '(' VAR_IMAGE ')'
+
+
+description:
+Put a comparison image for the imagedraw window
+specified by the variable VAR_IMAGEDRAW.
+The comparison image is displayed in a new window.
+
+
+
+******************************

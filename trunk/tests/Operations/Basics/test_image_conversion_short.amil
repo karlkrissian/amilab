@@ -1,0 +1,133 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_image_conversion_short.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the conversion between images.
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
+dimx=10
+dimy=10
+dimz=1
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+
+printn "\t\t Create a scalar image 2D of type SHORT.\n"
+imgSHORT = Image(SHORT,dimx,dimy,dimz)
+
+printn "\t\t Show info of scalar image 2D of type SHORT.\n"
+imgSHORT.info
+
+printn "\t\t Initialized to 10.\n"
+imgSHORT=10
+
+printn "\t\t Conversion: imgDOUBLE = (DOUBLE) imgSHORT \n"
+imgDOUBLE = (DOUBLE) imgSHORT
+imgDOUBLE.info
+
+printn "\t\t Conversion: imgFLOAT = (FLOAT) imgSHORT \n"
+imgFLOAT = (FLOAT) imgSHORT
+imgFLOAT.info
+
+printn "\t\t Conversion: imgUINT = (UINT) imgSHORT \n"
+imgUINT = (UINT) imgSHORT
+imgUINT.info
+
+printn "\t\t Conversion: imgINT = (INT) imgSHORT \n"
+imgINT = (INT) imgSHORT
+imgINT.info
+
+printn "\t\t Conversion: imgUSHORT = (USHORT) imgSHORT \n"
+imgUSHORT = (USHORT) imgSHORT
+imgUSHORT.info
+
+printn "\t\t Conversion: imgUCHAR = (UCHAR) imgSHORT \n"
+imgUCHAR = (UCHAR) imgSHORT
+imgUCHAR.info
+
+printn "\t\t Conversion: imgCHAR = (CHAR) imgSHORT \n"
+imgCHAR = (CHAR) imgSHORT
+imgCHAR.info
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimx=10
+dimy=10
+dimz=1
+dimv=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn "\t\t Create a vectorial image 2D of type SHORT.\n"
+imgSHORT = Image(SHORT,dimx,dimy,dimz,dimv)
+
+printn "\t\t Show info of vectorial image 2D of type SHORT.\n"
+imgSHORT.info
+
+printn "\t\t Initialized to 10.\n"
+imgSHORT=10
+
+printn "\t\t Conversion: imgDOUBLE = (DOUBLE) imgSHORT \n"
+imgDOUBLE = (DOUBLE) imgSHORT
+imgDOUBLE.info
+
+printn "\t\t Conversion: imgFLOAT = (FLOAT) imgSHORT \n"
+imgFLOAT = (FLOAT) imgSHORT
+imgFLOAT.info
+
+printn "\t\t Conversion: imgUINT = (UINT) imgSHORT \n"
+imgUINT = (UINT) imgSHORT
+imgUINT.info
+
+printn "\t\t Conversion: imgINT = (INT) imgSHORT \n"
+imgINT = (INT) imgSHORT
+imgINT.info
+
+printn "\t\t Conversion: imgUSHORT = (USHORT) imgSHORT \n"
+imgUSHORT = (USHORT) imgSHORT
+imgUSHORT.info
+
+printn "\t\t Conversion: imgUCHAR = (UCHAR) imgSHORT \n"
+imgUCHAR = (UCHAR) imgSHORT
+imgUCHAR.info
+
+printn "\t\t Conversion: imgCHAR = (CHAR) imgSHORT \n"
+imgCHAR = (CHAR) imgSHORT
+imgCHAR.info
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

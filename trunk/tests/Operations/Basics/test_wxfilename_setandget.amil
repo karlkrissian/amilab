@@ -1,0 +1,112 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxfilename_setandget.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - SetVolume
+#                              - _SetName
+#                              - SetExt
+#                              - SetEmptyExt
+#                              - GetExt
+#                              - _GetName
+#                              - GetVolume
+#                              - SetFullName
+#                              - GetFullName
+#                              - SetCwd
+#                              - GetCwd
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Constructor: MODE 0 (file=wx.wxFileName()).\n"
+file=wx.wxFileName()
+
+print "Set:\n"
+print "\t Volumne: \"/\"\n"
+print "\t Name: \"Karl\"\n"
+print "\t Ext: \"txt\"\n"
+
+file.SetVolume("/")
+file._SetName("Karl")
+file.SetExt("txt")
+
+print "Get:\n"
+
+VAL1 = file._GetName()
+VAL2 = file.GetExt()
+VAL3 = file.GetVolume()
+
+print "\t Volumne: - %1% -\n" % VAL3
+print "\t Name: - %1% -\n" % VAL1
+print "\t Ext: - %1% -\n" % VAL2
+
+if ((VAL3 != "/tmp/") && (VAL1 != "Karl") && (VAL2 != "txt"))  {
+  OK=0;
+  printn  "\nERROR: The sets failed."
+}
+
+printn "\t *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"
+
+print "Empty extension (file.SetEmptyExt())\n"
+file.SetEmptyExt()
+
+VAL1 = file.GetExt()
+
+print "\t Ext: - %1% -\n" % VAL1
+
+if (VAL1 != "")  {
+  OK=0;
+  printn  "\nERROR: The sets failed."
+}
+
+printn "\t *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"
+
+print "Set the full name (file.SetFullName(\"amilab.amil\"))\n"
+file.SetFullName("amilab.amil")
+
+print "Get the full name (file.GetFullName()):\n"
+VAL1 = file.GetFullName()
+
+print "\t The full name: - %1% -\n" % VAL1
+
+if (VAL1 != "amilab.amil")  {
+  OK=0;
+  printn  "\nERROR: The sets failed."
+}
+
+printn "\t *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"
+
+print "Set the current working directory (file.SetCwd(\"/tmp/\"))\n"
+file.SetCwd("/tmp/")
+
+print "Get the current working directory (file.GetCwd()):\n"
+VAL1 = file.GetCwd()
+
+print "\t The current working directory: - %1% -\n" % VAL1
+
+if (VAL1 != "/tmp")  {
+  OK=0;
+  printn  "\nERROR: The sets failed."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

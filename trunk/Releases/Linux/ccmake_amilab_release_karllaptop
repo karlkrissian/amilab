@@ -1,0 +1,6 @@
+ccmake -DBoost_DEBUG=1 -DBOOST_ROOT=/usr/local \
+    -DVTK_DIR=/usr/local/lib/vtk-5.2/ \
+    -DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config \
+    -DITK_DIR=/home/karl/projects/Install/InsightToolkit-3.10.1/builds_static_release \
+    -DCMAKE_BUILD_TYPE=Release \
+    ../../amilab/trunk/src/

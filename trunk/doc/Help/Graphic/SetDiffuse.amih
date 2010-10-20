@@ -1,0 +1,27 @@
+
+***** SetDiffuse: set the diffuse color *******
+
+token(s):
+T_SetDiffuse	SetDiffuse
+
+rule(s):
+image <-- VAR_SURFACE '.' T_SetDiffuse '(' expr ',' expr ',' expr ')'
+
+
+parameters
+  # VAR_SURFACE
+  # expr: red   (0-255)
+  # expr: green (0-255)
+  # expr: blue  (0-255)
+
+description:
+Sets the diffuse color of a surface.
+
+
+
+See Also:
+	SetSpecular, SetAmbient, SetShininess, OwnMaterial, SetOpacity,
+	SetVisible, SetColorMaterial, SetColor, SetColors, SetPointsColors
+
+
+******************************

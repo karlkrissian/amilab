@@ -1,0 +1,23 @@
+
+***** 'Paint' command *****
+
+token(s):
+T_Paint Paint
+
+rule(s):
+commande <-- VAR_SURFDRAW '.' T_Paint 
+
+parameters:
+1. VAR_SURFACEDRAW
+
+
+Description:
+Calls the method 'Paint' of the surface drawing window,
+updating the scene information.
+
+See Also:
+	SetBackground, SetTransform, GetTransform, print, save, Interpolate, TRANSFORM
+
+
+
+******************************

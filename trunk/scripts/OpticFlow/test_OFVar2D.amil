@@ -1,0 +1,103 @@
+# command line: ./amilab 
+
+ami_import->AMIFluid()
+
+#--------------------------------------------------
+sigma    = 2.0
+T        = 2.0
+nbiter   = INT(10)
+alpha    = 1.0
+ht       = 0.5
+quantile = 1
+zoom     = INT(3)
+
+# from 0 to 3:
+# 0: Horn/Schunck
+# 1: image driven, isotropic
+# 2: image driven, anisotropic (Nagel)
+# 3: flow driven, isotropic
+dtype = INT(0)
+
+
+#--------------------------------------------------
+proc call_amiOFVar2D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
+  _u = _res[0];
+  _v = _res[1];
+  AMIFluid->amiOFVar2DZoom(_im1,_im2,sigma,T,alpha,dtype,quantile,ht,&_u,&_v,nbiter,zoom);
+  _res.SetComponent( 0, _u;)
+  _res.SetComponent( 1, _v;)
+}
+
+i = Image(FLOAT,100,100,1)
+func "SyntheticImages/AddSphere.amil"
+i = i*0-10
+
+AddSphereClass sphere
+
+sphere.AddBrightSphere(&i,50,50,0,10)
+i2 = i*0-10
+_vx=1.5
+_vy=0.8
+sphere.AddBrightSphere(&i2,50+_vx,50+_vy,0,10)
+
+//i  = (i<0)*255
+i = i+10
+i = (-exp(-i*i/(10*10))+1)*100
+//i2 = (i2<0)*255
+i2 = i2+10
+i2 = (-exp(-i2*i2/(10*10))+1)*100
+
+d = Image(FLOAT_VECTOR,i.tx,i.ty,1)
+d.initvalue(0,0,0);
+d0=d
+d0.initvalue(_vx,_vy,0)
+#call_amiOFVar2D(i,i2,&d);
+
+#--------------------------------------------------
+#--------------------------------------------------
+
+# BUG??,  needed to create this function to avoid a segmentation fault ...
+proc UpdateDisplay() {
+  global; show i; local
+}
+
+proc CB_Restart() {
+  d.initvalue(0,0,0);
+  call_amiOFVar2D(i,i2,&d);
+  UpdateDisplay()
+}
+
+proc CB_Iterate() {
+  call_amiOFVar2D(i,i2,&d);
+  UpdateDisplay()
+}
+
+#--------------------------------------------------
+w1 = global::ami_import.ParamPanel("Test Optic Flow PDE 2D")
+
+sigma_id  = w1.AddFloat( &sigma,  "sigma", 0.5,5)
+T_id      = w1.AddFloat( &T,  "T", 1,20)
+nbiter_id = w1.AddInt( &nbiter,  "nbiter", 1,200)
+
+dtype_id  = w1.AddInt( &dtype,  "dtype", 0,3)
+alpha_id  = w1.AddFloat( &alpha,  "alpha", 0.01,5)
+ht_id     = w1.AddFloat( &ht,  "ht", 0.01,10)
+quantile_id = w1.AddFloat( &quantile,  "quantile", 0.01,10)
+zoom_id     = w1.AddInt( &zoom,  "zoom", 1,6)
+
+restart_id=w1.AddButton("Restart", CB_Restart)
+iterate_id=w1.AddButton("Iterate", CB_Iterate)
+
+w1.Update()
+w1.Display()
+
+
+show i;
+show i2
+i_draw.compare(&i2_draw);
+i_draw.setvector(0,d0);
+i_draw.DrawVector(0,1);
+i_draw.setvector(1,d);
+i_draw.DrawVector(1,1);
+i_draw.DisplayVectors();
+

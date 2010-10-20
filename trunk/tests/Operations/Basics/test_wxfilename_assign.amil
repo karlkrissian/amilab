@@ -1,0 +1,125 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxfilename_assign.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - Assign
+#                              - GetVolume
+#                              - GetName
+#                              - GetExt
+#                              - GetPath
+#                              - GetFullName
+#                              - GetFullPath
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Constructor: MODE 0 (file=wx.wxFileName()).\n"
+file=wx.wxFileName()
+
+VAL = file.GetFullPath()
+
+printn "\t The full path with name and extension(file): - %1% -\n" % VAL
+
+if (VAL != "")  {
+  OK=0;
+  printn  "\nERROR: The constructor failed (MODE 0)."
+}
+
+printn "\t *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"
+
+printn "Assign: MODE 1 - a full file name - (file.Assign(\"karl\")).\n"
+file.Assign("karl")
+
+VAL = file._GetName()
+
+printn "\t The name part of the filename (without extension)(file): - %1% -\n" % VAL
+
+if (VAL != "karl")  {
+  OK=0;
+  printn  "\nERROR: The Assign failed (MODE 1)."
+}
+
+printn "\t *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"
+
+printn "Assign: MODE 2 - a directory name, a file name - (file.Assign(\"/tmp/\",\"karl\")).\n"
+file.Assign("/tmp/","karl")
+
+VAL = file.GetPath()
+VAL1 = file._GetName()
+
+printn "\t The path part of the filename (without the name or extension)(file): - %1% -\n" % VAL
+printn "\t The name part of the filename (without extension)(file): - %1% -\n" % VAL1
+
+if ((VAL != "/tmp/") && (VAL1 != "karl"))  {
+  OK=0;
+  printn  "\nERROR: The Assign failed (MODE 2)."
+}
+
+printn "\t *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"
+
+printn "Assign: MODE 3 - a directory name, a file name, a file extension - (file.Assign(\"/tmp/\",\"karl\",\"txt\")).\n"
+file.Assign("/tmp/","karl","txt")
+
+VAL1 = file.GetPath()
+VAL2 = file._GetName()
+VAL3 = file.GetExt()
+VAL4 = file.GetFullPath()
+VAL5 = file.GetFullName()
+
+printn "\t The path part of the filename (without the name or extension)(file): - %1% -\n" % VAL1
+printn "\t The name part of the filename (without extension)(file): - %1% -\n" % VAL2
+printn "\t The file name extension(file): - %1% -\n" % VAL3
+printn "\t The full path with name and extension(file): - %1% -\n" % VAL4
+printn "\t The full name (including extension but excluding directories)(file): - %1% -\n" % VAL5
+
+if ((VAL1 != "/tmp/") && (VAL2 != "karl") && (VAL3 != "txt"))  {
+  OK=0;
+  printn  "\nERROR: The Assign failed (MODE 3)."
+}
+
+printn "\t *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"
+
+printn "Assign: MODE 4 - a volume name, a directory name, a file name, a file extension - (file.Assign(\"/\",\"tmp/\",\"karl\",\"txt\")).\n"
+file.Assign("/","amilab/","karl-branch","txt")
+
+VAL1 = file.GetPath()
+VAL2 = file._GetName()
+VAL3 = file.GetExt()
+VAL4 = file.GetVolume()
+VAL5 = file.GetFullPath()
+VAL6 = file.GetFullName()
+
+printn "\t The path part of the filename (without the name or extension)(file): - %1% -\n" % VAL1
+printn "\t The name part of the filename (without extension)(file): - %1% -\n" % VAL2
+printn "\t The file name extension(file): - %1% -\n" % VAL3
+printn "\t The string containing the volume for this file name(file): - %1% -\n" % VAL4
+printn "\t The full path with name and extension(file): - %1% -\n" % VAL5
+printn "\t The full name (including extension but excluding directories)(file): - %1% -\n" % VAL6
+
+if ((VAL1 != "amilab/") && (VAL2 != "karl-branch") && (VAL3 != "txt") && (VAL4 != "/"))  {
+  OK=0;
+  printn  "\nERROR: The Assign failed (MODE 4)."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Recursive Gaussian Param</TITLE>
+<META NAME="description" CONTENT="Recursive Gaussian Param">
+<META NAME="keywords" CONTENT="recursivegaussian_gui">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="recursivegaussian_gui.css">
+
+<LINK REL="previous" HREF="node6.html">
+<LINK REL="up" HREF="node6.html">
+<LINK REL="next" HREF="node8.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html86"
+  HREF="node8.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="../../../../Latex2HtmlIcons/next.png"></A> 
+<A NAME="tex2html84"
+  HREF="node6.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="../../../../Latex2HtmlIcons/up.png"></A> 
+<A NAME="tex2html80"
+  HREF="node6.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="../../../../Latex2HtmlIcons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html87"
+  HREF="node8.html">Help</A>
+<B> Up:</B> <A NAME="tex2html85"
+  HREF="node6.html">Param</A>
+<B> Previous:</B> <A NAME="tex2html81"
+  HREF="node6.html">Param</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H3><A NAME="SECTION00032100000000000000">
+Recursive Gaussian Param</A>
+</H3>
+
+<OL>
+<LI>Select the <B>Sigma</B> value, measured in world coordinates, of the Gaussian kernel. The default is 1.0.
+</LI>
+<LI>Select the flag <B>Normalize</B> for normalizing the gaussian over scale space. When this flag is ON the filter will be normalized in such a way that larger sigmas will not result in the image fading away.
+		    <BR><P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac1{\sqrt{2\pi}}
+\end{displaymath}
+ -->
+<A NAME="eq:GenRG"></A>
+
+<A NAME="eq:GenRG"></A><IMG
+ WIDTH="32" HEIGHT="42" BORDER="0"
+ SRC="img2.png"
+ ALT="\begin{displaymath}
+\frac1{\sqrt{2\pi}}\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+When the flag is OFF the normalization will conserve contant the integral of the image intensity.
+		    <BR><P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac1{\sigma\sqrt{2\pi}}
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="42" HEIGHT="42" BORDER="0"
+ SRC="img3.png"
+ ALT="\begin{displaymath}\frac1{\sigma\sqrt{2\pi}}\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+For analyzing an image across Scale Space you want to enable this flag. It is disabled by default. 
+</LI>
+<LI>Select the <B>Order</B> of the Gaussian to convolve with.
+    
+<OL>
+<LI>ZeroOrder is equivalent to convolving with a Gaussian. This is the default.
+</LI>
+<LI>FirstOrder is equivalent to convolving with the first derivative of a Gaussian.
+</LI>
+<LI>SecondOrder is equivalent to convolving with the second derivative of a Gaussian.
+    
+</LI>
+</OL>
+</LI>
+<LI><B>Run</B> the filter.
+</LI>
+<LI><B>Display</B> the result.
+</LI>
+<LI><B>Save</B> the result.
+</LI>
+</OL>
+
+<P>
+<BR><HR>
+<ADDRESS>
+...
+</ADDRESS>
+</BODY>
+</HTML>

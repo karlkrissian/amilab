@@ -1,0 +1,101 @@
+
+func "CumulHisto"
+
+#----------------------------------------------------------------------
+proc SpeckleStats(IMAGE input, STRING name, NUM size, NUM samples, NUM noisetype, NUM gradhisto) {
+#    ------------
+
+# noisetype=1 additive
+#           0 multiplicative
+
+# mode = 1 use original non-smoothed image for intensity ranges
+# mode = other use smoothed image
+
+  mode=0
+
+  _ing =(FLOAT) input
+
+  if (noisetype==1) {
+    GradHistoThreshold(input,gradhisto,&_ing) ;
+  }  else {
+    _in = log((input>1)*input+(input<=1))
+    GradHistoThreshold(_in,gradhisto,&_ing) ;
+  }
+  show _ing
+
+  noise_data    = File(name+"_noisestatsmean.dat","w")
+  // using the median
+  noise_datamed = File(name+"_noisestatsmed.dat","w")
+  histo_data    = File(name+"_histo.dat","w")
+
+  _i1 = localmean2(input,size)
+  _i2 = localSD2(input,_i1,size)
+
+  if (mode==1) {
+    _Imin = min(input);
+    _Imax = max(input);
+  } else {
+    _Imin = min(_i1);
+    _Imax = max(_i1);
+  }
+
+
+  i2min = min(_i2)
+  i2max = max(_i2)
+  print i2min; print "\n"
+  print i2max; print "\n"
+
+  nmax=samples
+  step=(_Imax-_Imin)/nmax
+  for _n= 0 to nmax-1   { 
+    n1 = _Imin+_n*step
+    print n1;
+    print "\n"
+    if ((n1>_Imin)&&(n1<_Imax)) { 
+
+      n1min= n1-0.5*step
+      n1max= n1+0.5*step
+      print n1min; print "\t"
+      print n1max; print "\t"
+
+      if (mode==1) {
+	selection = (input>n1min)*(input<=n1max) 
+      } else {
+	selection = (_i1>n1min)*(_i1<=n1max)*(_ing<0.5)
+      }
+
+      if (count(selection)>10) {
+
+        noise_data._print("\n");
+        noise_data._print(n1); 
+        noise_data._print("\t");
+
+        noise_datamed._print("\n");
+        noise_datamed._print(n1); 
+        noise_datamed._print("\t");
+
+        histo_data._print("\n");
+        histo_data._print(n1); 
+        histo_data._print("\t");
+
+
+
+        _m=mean(_i2,selection)
+        _m1 = median[selection](_i2)
+
+        noise_data._print(     _m)
+        noise_datamed._print( _m1)
+      }
+
+      histo_data._print(count((input>n1min)*(input<=n1max)))
+
+
+    }
+
+
+  }
+  noise_data.close()
+  noise_datamed.close()
+  histo_data.close()
+}
+

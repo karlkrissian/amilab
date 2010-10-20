@@ -1,0 +1,224 @@
+#!/usr/bin/amilab
+
+
+proc MSD_ReadGT() {
+  global_new
+
+  D1u = ReadRawImages(300,300,1,FLOAT,0,"D4uf.raw")
+  D1v = ReadRawImages(300,300,1,FLOAT,0,"D4vf.raw")
+
+  D1u_r = Resize(D1u,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
+  D1v_r = Resize(D1v,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
+
+  D1 = Image(FLOAT,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,3)
+  imsizeX=0.1
+  imsizeY=0.1
+  D1.setvoxelsize(imsizeX/D1.tx,imsizeX/D1.ty,1)
+  D1u_r = Flip(D1u_r,1)
+  D1v_r = Flip(D1v_r,1)
+  D1.SetComponent( 0, D1u_r)
+  D1.SetComponent( 1, D1v_r)
+  D1.SetComponent( 2, D1u_r*0)
+  del D1u
+  del D1v
+
+  MSD_GT = D1
+
+  MSD_GT.SetComponent( 0, MSD_GT[0]/MSD_GT.vx)
+  MSD_GT.SetComponent( 1, MSD_GT[1]/MSD_GT.vy)
+
+//  MSD_GT = Resize(D1,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
+
+//  MSD_GT[0] =  MSD_GT[0]/MSD_GT.vx
+//  MSD_GT[1] =  MSD_GT[1]/MSD_GT.vy
+
+  local_new
+}
+
+proc MSD_Init() {
+  global_new
+
+  DemonBin="/home/dario/MSD/builds/linux/MLDemons"
+  image1_name = "image1.vtk" 
+  image2_name = "image2.vtk"
+  res_name = "demon_result.vtk"
+
+  result_X_name = "defx"
+  result_Y_name = "defy"
+
+  i1 = Image $1
+  i2 = Image $2
+
+  i1_uchar = (UCHAR) (i1[0])
+  i2_uchar = (UCHAR) (i2[0])
+
+  i1_uchar.save image1_name
+  i2_uchar.save image2_name
+
+  MSD_NLevels = INT(5)
+  MSD_NSteps  = INT(10)
+  MSD_sigmaE  = 2
+
+  MSD_ReadGT()
+
+  local_new
+}
+
+
+proc MSD_run() {
+  global_new
+
+  InitTime
+  // Run the algorithm
+
+  demon_cmd = DemonBin + " " + image1_name + " " + image2_name + " " + res_name
+  demon_cmd = demon_cmd + sprint(" %0.0f", MSD_NLevels)
+  demon_cmd = demon_cmd + sprint(" %0.0f", MSD_NSteps)
+  demon_cmd = demon_cmd + " 1 0"
+  demon_cmd = demon_cmd + sprint(" %f",MSD_sigmaE)
+
+  printn demon_cmd
+  sh demon_cmd
+
+  // Read the result
+  resx = ReadRawImages(i1.tx,i1.ty,i1.tz,FLOAT,0,result_X_name)
+  resy = ReadRawImages(i1.tx,i1.ty,i1.tz,FLOAT,0,result_Y_name)
+
+  res = Image(FLOAT,i1.tx,i1.ty,i1.tz,3)
+  res.SetComponent( 0, resx)
+  res.SetComponent( 1, resy)
+  res.SetComponent( 2, resx*0)
+
+  EndTime
+
+  local_new
+}
+
+
+
+
+
+proc MSD_display() {
+  global_new
+
+  // show results
+  show i1_uchar
+  i1_uchar_draw.compare(i2_uchar)
+  if (exists(res)) {
+    i1_uchar_draw.setvector(0,res)
+  }
+  i1_uchar_draw.setvector(1,MSD_GT)
+
+  local_new
+}
+
+
+proc MSD_display_error() {
+  global_new
+	
+  if (!exists(i1_uchar_draw)) {
+	show i1_uchar
+  }
+  if (exists(MSD_EE)) {
+    i1_uchar_draw.compare(MSD_EE)
+  }
+  if (exists(MSD_AE)) {
+    i1_uchar_draw.compare(MSD_AE)
+  }
+  if (exists(MSD_NE)) {
+    i1_uchar_draw.compare(MSD_NE)
+  }
+
+
+  local_new
+}
+
+#--------------------------------------------------
+proc angular_error(IMAGE _d1, IMAGE _d0, IMAGE _err){
+  _err = (_d1*_d0+1)/sqrt(_d1*_d1+1)/sqrt(_d0*_d0+1)
+  # limit to [-1, 1]
+  _err = _err*(_err<1) +(_err>=1)
+  _err = _err*(_err>-1)-(_err<=-1)
+  # convert to degrees
+  _err = acos(_err)/Pi*180
+
+}
+
+proc Stats( IMAGE _u, IMAGE _gt, IMAGE _mask, IMAGE eucl_error, IMAGE norm_error, IMAGE ang_error) {
+
+#	u
+#	u_o
+#	mask
+#
+
+
+    print sprint("Average displacement %3.4f \n\n",mean(norm(_gt)))
+
+    eucl_error = norm(_u-_gt);
+    _mean = mean(eucl_error,_mask)
+    print sprint("Euclidean Error %3.4f ",_mean)
+    _mean2 = (eucl_error-_mean)*(eucl_error-_mean)
+    print sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2,_mask)))
+
+    norm_error = abs(norm(_u)-norm(_gt));
+    _mean = mean(norm_error,_mask)
+    print sprint("Norm Error %3.4f ",_mean)
+    _mean2 = (norm_error-_mean)*(norm_error-_mean)
+    print sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2,_mask)))
+
+    angular_error(_u,_gt,&ang_error)
+    _mean_ang = mean(ang_error,_mask)
+    print sprint("Angular Error %3.4f ",_mean_ang)
+    _mean2_ang = (ang_error-_mean_ang)*(ang_error-_mean_ang)
+    print sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2_ang,_mask)))
+
+}
+
+
+proc MSD_stats() {
+  global_new
+
+  MSD_mask = (Xpos(res)>40)*(Xpos(res)<res.tx-40)
+
+  MSD_EE = MSD_mask*0
+  MSD_AE = MSD_mask*0
+  MSD_NE = MSD_mask*0
+
+  Stats(&res, &MSD_GT, &MSD_mask, &MSD_EE, &MSD_NE, &MSD_AE)
+
+  local_new
+}
+
+
+proc MSD_gui() {
+  global_new
+
+    MSD_import = &global::ami_import;
+win = global::ami_import.ParamPanel("MSD param")
+
+    id = MSD_win.AddInt( &MSD_NLevels,  "MSD_NLevels", 1,10)
+    id = MSD_win.AddInt( &MSD_NSteps,  "MSD_NSteps", 1,50)
+    id = MSD_win.AddFloat( &MSD_sigmaE,  "MSD_sigmaE", 0.1,50)
+
+    MSD_win.BeginHorizontal()
+    id = MSD_win.AddButton("Run",    MSD_run)
+    id = MSD_win.AddButton("Stats",  MSD_stats)
+    MSD_win.EndHorizontal()
+
+    MSD_win.BeginHorizontal()
+    id = MSD_win.AddButton("Display",MSD_display)
+    id = MSD_win.AddButton("Display Error",MSD_display_error)
+    MSD_win.EndHorizontal()
+
+    MSD_win.Update()
+    MSD_win.Display()
+
+  local_new
+}
+
+
+
+
+MSD_Init()
+
+MSD_gui()

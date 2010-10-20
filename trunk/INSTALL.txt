@@ -1,0 +1,146 @@
+
+
+
+===============================
+  COMPILING
+===============================
+
+
+AMILab is compiled with cmake
+
+to compile it, you need the following tools/packages:
+- cmake 
+- vtk 
+- insighttoolkit
+- wxWidgets  with opengl component
+- OpenGL
+- Boost 1.38 with date_time, filesystem, system, iostreams and regex components
+- zlib
+- bzip2
+- pthread
+- flex
+- bison
+
+
+The steps to compile are:
+- install all dependencies
+- compile and install libAMIFluid
+- compile and install libOpticFlow
+- compile and install AMILab
+
+
+after the compilation of amilab binary, you have different ways to setup the scripts and help directories,
+one way to set the scripts directory is to copy the file Config/config.amil in the directory of the binary and edit 
+the correct path to the scripts, another way is using AMI_SCRIPTS and AMI_HELP environment variables.
+
+--------
+LINUX
+--------
+
+To compile on linux, the best is to run (or adapt) on the given scripts that to everything for you:
+
+install_debian5.sh 
+install_fedora13.sh
+install_opensuse-11.3.sh
+install_ubuntu10.10.sh
+
+if ever you need to recompile wxwidgets from source, you can try the following:
+
+  on standard linux: check install_debian5.sh
+
+  on cygwin, you may try
+  ./configure --with-opengl --enable-intl --enable-threads --enable-xpm  --with-msw  --disable-shared
+  make
+  su
+  make install
+  + compilation of the stc library in contrib 
+
+--------
+WINDOWS
+--------
+
+with VC++
+-----------
+
+follow instructions in amilab.sourceforge.net dokuwiki:
+http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-install
+
+with CodeBlocks and MinGW ( old instructions, need to be tested ...)
+-------------------------
+
+  - install codeblocks with mingw i
+  - install cmake
+  - download VTK and ITK from codeblocks
+  - To allow cmake to work, add the path to CodeBlocks/MinGW/bin to the windows path
+  - generate the build on a path that doesn't contain any space
+  - tell cmake to use mingw-make.exe
+  - choose the type of build Debug, Release, ... and use the same type for all compiled libraries
+
+  - download wxwidgets
+  - compile wxwidgets with mingw:
+    in the directory build/mws
+    edit config.gcc:
+        - setup the compilers mingw32-gcc and mingw32-g++
+        - MONOLITHIC to 0
+        - BUILD to Release
+        - USE_OPENGL to 1
+    "mingw32-make.exe -f makefile.gcc" in the msdos commands window.
+    To compile faster if you have several processors, you can add the option "-j n"
+    where n is the number of files to compile in parallel.
+
+  //also edit the file include\wx\msw\setup.h to set wsUSE_GLCANVAS to 1
+  //and delete the file lib/gcc_lib/mswd/wx/setup.h if it exists
+
+  more explanations can be found at
+  http://wiki.wxwidgets.org/CodeBlocks_Setup_Guide
+
+- install boost
+-  compile pthreads for windows
+- compile libAMIFluid
+- compile AMILab
+
+
+-------
+MacOS
+-------
+
+follow instructions in amilab.sourceforge.net dokuwiki:
+http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-install
+
+
+
+====================================
+  Troubleshooting
+====================================
+
+note:
+- I had problems using the vtk and vtk-devel packages
+  from the fedora distribution because it was linking
+  with the wrong GL libraries and GLX was crashing:
+  it is better to recompile VTK from scratch
+
+-  install vtk:
+  to avoid problems, it is sometimes better to recompile it than to use the distribution packages
+  download lastest stable release from www.vtk.org and compile with cmake
+
+-  install itk:
+  to avoid problems, it is sometimes  better to recompile it than to use the distribution packages
+  download lastest stable release from www.itk.org and compile with cmake
+
+  install ITK development packages from your distribution
+
+    - package libinsightoolkit-dev
+  After installing the package ,
+  you may need to create a symbolic link for the program
+  to find the includes files, for this you must execute as root:
+  cd /usr/local/include/
+  ln -s ../../include/InsightToolkit
+
+
+  or download and install from
+  www.itk.org
+
+
+
+
+ 

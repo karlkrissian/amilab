@@ -1,0 +1,24 @@
+
+***** 'SetBackground' command *****
+
+token(s):
+T_SetBackground SetBackground
+
+rule(s):
+commande <-- VAR_SURFDRAW '.' T_SetBackground '(' expr ',' expr ',' expr  ')'
+
+parameters:
+1. VAR_SURFACEDRAW
+2. expr: Red   component (0-255)
+3. expr: Green component (0-255)
+4. expr: Blue  component (0-255)
+
+Description:
+Sets the background of the surface drawing window to the specified RGB color
+
+See Also:
+	Paint, SetTransform, GetTransform, print, save, Interpolate, TRANSFORM
+
+
+
+******************************

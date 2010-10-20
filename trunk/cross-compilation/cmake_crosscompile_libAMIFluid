@@ -1,0 +1,1 @@
+ ccmake -DCMAKE_TOOLCHAIN_FILE=../Toolchain-mingw32.cmake -DCMAKE_INSTALL_PREFIX=/home/karl/projects/Install/mingw-install/  -DVTKCompileTools_DIR=/home/karl/projects/Sourceforge/build/VTK/build/ ../../../Sourceforge/build/VTK/ 

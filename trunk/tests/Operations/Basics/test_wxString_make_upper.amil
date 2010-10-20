@@ -1,0 +1,71 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxString_make_upper.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - c_str
+#                              - Upper
+#                              - MakeUpper
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Create an object of class wxString(sString = wx.wxString(\"hello world !!!\")).\n"
+sString = wx.wxString("hello world !!!")
+
+VAL=sString.c_str()
+
+printn "\t Returns the sString value: - %1% -\n" % VAL
+
+printn "Converted to the upper (newString=sString.Upper()).\n"
+newString=sString.Upper()
+
+VAL1=newString.c_str()
+
+printn "\t VAL1: %1%\n" % VAL1
+
+if(VAL1 != "HELLO WORLD !!!") {
+  OK = 0
+  printn  "\nERROR: sString no upper."
+}
+
+printn "Create an object of class wxString(sString1 = wx.wxString(\"hello world !!!\")).\n"
+sString1 = wx.wxString("hello world !!!")
+
+VAL2=sString1.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL2
+
+printn "Converted to the upper (sString1.MakeUpper()).\n"
+sString1.MakeUpper()
+
+VAL3=sString1.c_str()
+
+printn "\t VAL3: %1%\n" % VAL3
+
+if(VAL3 != "HELLO WORLD !!!") {
+  OK = 0
+  printn  "\nERROR: sString no upper."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

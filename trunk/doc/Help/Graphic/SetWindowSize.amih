@@ -1,0 +1,22 @@
+
+***** SetWindowSize: set the size of the drawing window *****
+
+token(s):
+T_SetWindowSize  	SetWindowSize
+
+rule(s):
+commande <-- VAR_IMAGEDRAW '.' T_SetWindowSize '(' expr ',' expr ')'
+commande <-- VAR_SURFDRAW  '.' T_SetWindowSize '(' expr ',' expr   ')'
+
+
+parameters
+  # VAR_IMAGEDRAW or VAR_SURFDRAW
+  # expr:  width
+  # expr:  height
+
+description:
+Set the dimension of the drawing window, for either images or surfaces.
+
+
+
+******************************

@@ -1,0 +1,255 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_double_type.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the operations you can perform with the double type.
+#
+# Permitted operations:   =, +, -, *, /, %, & 
+#                         +=, -=, *=, /=, %=, &=, ^=, |=,      
+#                         ++, --, &&, ||,  (, ),
+#                         <, >, ==, !=, <=, >=,
+#                         sin, cos, sqrt, abs, round, floor,
+#                         tan, asin, acos, atan, exp, log, ln, norm
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# First case: 
+#             OPERATOR DOUBLE
+#             DOUBLE OPERATOR
+#             DOUBLE OPERATOR DOUBLE
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn  "\n\t First case:"
+printn  "\t              OPERATOR DOUBLE"
+printn  "\t              DOUBLE OPERATOR DOUBLE"
+printn  "\t              DOUBLE OPERATOR DOUBLE"
+
+A=(DOUBLE) 10
+printn  "\t\t A=(DOUBLE) 10 --> A=%1% (ASSIGN_OP)" % A
+B=(DOUBLE) 2
+printn  "\t\t B=(DOUBLE) 2 --> B=%1% (ASSIGN_OP)" % B
+
+C=A+B
+printn  "\t\t C=A+B --> C=%1% (T_ADD)" % C
+C=A-B
+printn  "\t\t C=A-B --> C=%1% (T_SUB)" % C
+C=A*B
+printn  "\t\t C=A*B --> C=%1% (T_MULT)" % C
+C=A/B
+printn  "\t\t C=A/B --> C=%1% (T_DIV)" % C
+C=A%B
+printn  "\t\t C=A%%B --> C=%1% (T_MOD)" % C
+C=A^B
+printn  "\t\t C=A^B --> C=%1% (T_EXP)" % C
+C=A<B
+printn  "\t\t C=A<B --> C=%1% (T_LT)" % C
+C=A>B
+printn  "\t\t C=A>B --> C=%1% (T_GT)" % C
+C=!A
+printn  "\t\t C=!A --> C=%1% (T_NOT)" % C
+C=A&B
+printn  "\t\t C=A&B --> C=%1% (T_AND)" % C
+C=A|B
+printn  "\t\t C=A|B --> C=%1% (T_OR)" % C
+C+=A
+printn  "\t\t C+=A --> C=%1% (ADD_ASSIGN)" % C
+C-=B
+printn  "\t\t C-=B --> C=%1% (SUB_ASSIGN)" % C
+C*=A
+printn  "\t\t C*=A --> C=%1% (MUL_ASSIGN)" % C
+C/=B
+printn  "\t\t C/=B --> C=%1% (DIV_ASSIGN)" % C
+A++
+printn  "\t\t A++ --> A=%1% (INC_OP)" % A
+B--
+printn  "\t\t B-- --> B=%1% (DEC_OP)" % B
+++A
+printn  "\t\t ++A --> A=%1% (INC_OP)" % A
+--B
+printn  "\t\t --B --> B=%1% (DEC_OP)" % B
+C=A&&B
+printn  "\t\t C=A&&B --> C=%1% (AND_OP)" % C
+C=A||B
+printn  "\t\t C=A||B --> C=%1% (OR_OP)" % C
+C=A<=B
+printn  "\t\t C=A<=B --> C=%1% (LE_OP)" % C
+C=A>=B
+printn  "\t\t C=A>=B --> C=%1% (GE_OP)" % C
+C=A==B
+printn  "\t\t C=A==B --> C=%1% (EQ_OP)" % C
+C=A!=B
+printn  "\t\t C=A!=B --> C=%1% (NE_OP)" % C
+
+A=(DOUBLE) Pi
+printn  "\n\t\t A=(DOUBLE) Pi --> A=%1% (ASSIGN_OP)" % A
+
+C=sin A
+printn  "\t\t C=sin A --> C=%1% (SIN)" % C
+C=cos A
+printn  "\t\t C=cos A --> C=%1% (COS)" % C
+C=tan A
+printn  "\t\t C=tan A --> C=%1% (TAN)" % C
+C=asin A
+printn  "\t\t C=asin A --> C=%1% (ASIN)" % C
+C=acos A
+printn  "\t\t C=acos A --> C=%1% (ACOS)" % C
+C=atan A
+printn  "\t\t C=atan A --> C=%1% (ATAN)" % C
+
+B=(DOUBLE) 2
+printn  "\n\t\t B=(DOUBLE) 2 --> b=%1% (ASSIGN_OP)" % B
+
+C=exp B 
+printn  "\t\t C=exp B --> C=%1% (EXP)" % C
+C=ln B
+printn  "\t\t C=ln B --> C=%1% (LN)" % C
+C=log B
+printn  "\t\t C=log B --> C=%1% (LOG)" % C
+C=sqrt B
+printn  "\t\t C=sqrt B --> C=%1% (SQRT)" % C
+
+A=(DOUBLE) -180
+printn  "\n\t\t A=(DOUBLE) -180 --> A=%1% (ASSIGN_OP)" % A
+
+C=abs A
+printn  "\t\t C=abs A --> C=%1% (ABS)" % C
+C=norm B
+printn  "\t\t C=norm B --> C=%1% (NORM)" % C
+C=round B
+printn  "\t\t C=round B --> C=%1% (ROUND)" % C
+C=floor B
+printn  "\t\t C=floor B --> C=%1% (FLOOR)" % C
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Second case:
+#             DOUBLE OPERATOR FLOAT
+#             FLOAT OPERATOR DOUBLE
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn  "\n\t Third case:"
+printn  "\t              DOUBLE OPERATOR FLOAT"
+printn  "\t              FLOAT  OPERATOR DOUBLE"
+
+A=(DOUBLE) 10
+printn  "\t\t A=(DOUBLE) 10 --> A=%1% (ASSIGN_OP)" % A
+B=(FLOAT) 2
+printn  "\t\t B=(FLOAT) 2 --> B=%1% (ASSIGN_OP)" % B
+
+C=A+B
+printn  "\t\t C=A+B --> C=%1% (T_ADD)" % C
+C=A-B
+printn  "\t\t C=A-B --> C=%1% (T_SUB)" % C
+C=A*B
+printn  "\t\t C=A*B --> C=%1% (T_MULT)" % C
+C=A/B
+printn  "\t\t C=A/B --> C=%1% (T_DIV)" % C
+C=A%B
+printn  "\t\t C=A%%B --> C=%1% (T_MOD)" % C
+C=A^B
+printn  "\t\t C=A^B --> C=%1% (T_EXP)" % C
+C=A<B
+printn  "\t\t C=A<B --> C=%1% (T_LT)" % C
+C=A>B
+printn  "\t\t C=A>B --> C=%1% (T_GT)" % C
+C=A&B
+printn  "\t\t C=A&B --> C=%1% (T_AND)" % C
+C=A|B
+printn  "\t\t C=A|B --> C=%1% (T_OR)" % C
+C-=B
+printn  "\t\t C-=B --> C=%1% (SUB_ASSIGN)" % C
+C*=B
+printn  "\t\t C*=B --> C=%1% (MUL_ASSIGN)" % C
+C/=B
+printn  "\t\t C/=B --> C=%1% (DIV_ASSIGN)" % C
+C=A&&B
+printn  "\t\t C=A&&B --> C=%1% (AND_OP)" % C
+C=A||B
+printn  "\t\t C=A||B --> C=%1% (OR_OP)" % C
+C=A<=B
+printn  "\t\t C=A<=B --> C=%1% (LE_OP)" % C
+C=A>=B
+printn  "\t\t C=A>=B --> C=%1% (GE_OP)" % C
+C=A==B
+printn  "\t\t C=A==B --> C=%1% (EQ_OP)" % C
+C=A!=B
+printn  "\t\t C=A!=B --> C=%1% (NE_OP)" % C
+
+C=B+A
+printn  "\t\t C=B+A --> C=%1% (T_ADD)" % C
+C=B-A
+printn  "\t\t C=B-A --> C=%1% (T_SUB)" % C
+C=B*A
+printn  "\t\t C=B*A --> C=%1% (T_MULT)" % C
+C=B/A
+printn  "\t\t C=B/A --> C=%1% (T_DIV)" % C
+C=B%A
+printn  "\t\t C=B%%A --> C=%1% (T_MOD)" % C
+C=B^A
+printn  "\t\t C=B^A --> C=%1% (T_EXP)" % C
+C=B<A
+printn  "\t\t C=B<A --> C=%1% (T_LT)" % C
+C=B>A
+printn  "\t\t C=B>A --> C=%1% (T_GT)" % C
+C=B&A
+printn  "\t\t C=B&A --> C=%1% (T_AND)" % C
+C=B|A
+printn  "\t\t C=B|A --> C=%1% (T_OR)" % C
+C=B&&A
+printn  "\t\t C=B&&A --> C=%1% (AND_OP)" % C
+C=B||A
+printn  "\t\t C=B||A --> C=%1% (OR_OP)" % C
+C=B<=A
+printn  "\t\t C=B<=A --> C=%1% (LE_OP)" % C
+C=B>=A
+printn  "\t\t C=B>=A --> C=%1% (GE_OP)" % C
+C=B==A
+printn  "\t\t C=B==A --> C=%1% (EQ_OP)" % C
+C=B!=A
+printn  "\t\t C=B!=A --> C=%1% (NE_OP)" % C
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#printn  "\n\t\t Pending operations to implement (AMILAB-2.1.0): "
+printn  "\t\t C=sinh A --> Not implemented" 
+printn  "\t\t C=cosh A --> Not implemented"
+printn  "\t\t C=sinh A --> Not implemented" 
+printn  "\t\t C=cosh A --> Not implemented"
+
+#A=(DOUBLE) Pi
+#printn  "\n\t\t A=(DOUBLE) Pi --> A=%1% (ASSIGN_OP)" % A
+#C=sinh A 
+#printn  "\t\t C=sinh A --> C=%1% (SINH)" % C
+#C=cosh A
+#printn  "\t\t C=cosh A --> C=%1% (COSH)" % C
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+OK=1
+
+ctest.PrintTestResult( OK ) 
+

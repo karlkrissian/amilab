@@ -1,0 +1,25 @@
+
+***** rotate *****
+
+token(s):
+T_rotate rotate
+
+rule(s):
+commande -> VAR_SURFDRAW . T_rotate ( expr, expr, expr )
+
+parameters:
+  #1 VAR_SURFDRAW: surface visualization window
+  #2 expr: rotation around X axis in degrees
+  #3 expr: rotation around Y axis in degrees
+  #4 expr: rotation around Z axis in degrees
+
+description:
+applies a rotation to the objects displayed
+by the surface visualization window.
+
+Example:
+  s = Surface "torus.wrl"
+  Show s
+  for a=1 to 40 { s_draw.rotate(0,9,0); }
+
+******************************

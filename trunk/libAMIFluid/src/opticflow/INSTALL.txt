@@ -1,0 +1,15 @@
+
+libAMIOpticalFlow
+installation:
+
+this library is only made of header files:
+template C++ code.
+
+To install, just uncompress and untar the file
+build/libAMIOpticalFlow-1.0.0-Linux.tar.gz
+
+Later to compile with this library and cmake,
+you will need to specify the directory where the files 
+have been extracted.
+
+enjoy!

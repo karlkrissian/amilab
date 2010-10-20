@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+
+\begin{document}
+
+% Title Page
+\title{ITK Shortest Path Gui}
+\author{Karl Krissian \& Sara Arencibia}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es darkmind@gmail.com
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface create a path in 3D.
+\end{abstract}
+
+
+\section{Quick Start}
+
+The different steps for obtaining the Path are:
+\begin{enumerate}
+  \item Select and load the input image.
+  \item Select and load the speed image if you want to use it.
+  \item Select the start point and the end point.
+  \item If you want to save the fastmarching output mark Save FastMarching Output.
+  \item Select epsilon value.
+  \item Select maxcost value.
+  \item If you load the speed image mark Use Speed, then select the minimum and maximum intensity and the input speed value.
+  \item Select the step size.
+  \item Select the maxlength.
+  \item Run the filter.
+  \item Display the result.
+\end{enumerate}
+
+
+\section{Detailed Description}
+Creates a path starting at a point and following the displacements given by the input vector field image. 
+If the input is scalar the corresponding vector field is computed from its gradient by local linear interpolation.
+The tracking stops in one of the following cases:
+\begin{enumerate}
+  \item The maximal distance is reached.
+  \item The closest voxel to the current location has a negative intensity.
+  \item The current gradient is very low.
+\end{enumerate}
+
+
+\section{Interface tabs}
+
+The interface is divided into several pages.
+
+\subsection{\emph{Init} page}
+
+You can choose the initialization parameters.
+First of all, you need to choose an input image and load it with the {\bf Load} button. 
+Then, you need to choose a speed image and load it with the {\bf Load} button.
+
+\subsubsection{Extremities}
+Select the start point with the {\bf Set Start Point} button. An image appear, select with the central mouse button the seed point and then press the same button once more.
+Select the end point with the {\bf Set End Point} button. An image appear, select with the central mouse button the seed point and then press the same button once more.
+
+
+\subsection{\emph{Param} page}
+If you want to show or save the FastMarching output image, you must mark ``Save FastMarching Output''. Now, you can use the image.
+Select the epsilon value. This is use in the FastMarching solution and for create the path.
+Select the maxcost, maximal time.
+
+\subsubsection{Input Intensity-based Speed}
+If you want to use speed image, you must mark ``Use speed''.
+Then, select the minimum and the maximum intensity that are used.
+Select the input speed value.
+
+
+Select the step size for the evolution.
+Select the maxlength, maximal Euclidean distance of the path.
+
+Run with the {\bf Run} button.
+Display the result with the {\bf Display} button.
+
+\subsection{\emph{Help} page}
+This help.
+
+\end{document}          

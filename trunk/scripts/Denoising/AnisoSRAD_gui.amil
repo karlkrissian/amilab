@@ -1,0 +1,163 @@
+#!/usr/bin/amilab
+
+#
+# Speckle Reducing Anisotropic Diffusion
+#
+#  Based on the paper of Yu and Acton: Speckle Reducing Anisotropic Diffusion TIP 2002
+#  and
+#  Oriented Speckle Reducing Anisotropic Diffusion
+# `Karl Krissian, Carl-Fredrik Westin, Ron Kikinis and Kirby Vosburgh'
+# IEEE Transactions on Image Processing, vol 16:5, pages 1412-1424, may 2007.
+#
+
+func "Common/ScriptGui"
+
+
+if (!exists(AnisoSRADClass)) {
+
+  Class AnisoSRADClass : public ScriptGui {
+
+  #----------------------------
+  
+  #------------------------------------
+  proc ::Init() {
+
+    ::input_name = ""
+    ::output_name = "SRAD_result"
+    ::output_filename = "SRAD_result.ami.gz"
+    ::dt   = 0.1
+    ::T    = 10
+    # 0: Lee, 1: Kuan, 2: Additive
+    ::mode = INT(1) 
+    ::neighborhood = INT(3)
+    # Scheme, 0: explicit 1: semi-implicit
+    ::scheme = INT(1)
+
+    ::CreateGui()
+  }
+  
+  #------------------------------------
+  proc ::load_input() {
+    if (::input_name=="Image") {
+      # read image using browser
+      ::input << Image
+      ::input_name = "::input"
+      ::win.Update(-1)
+    } else {
+      eval "::input <<="+::input_name+";"
+    }
+  }
+
+  
+  #------------------------------------
+  proc ::CreateRoi() {
+      if (!exists(::input_draw)) {
+        ::Display
+      }
+      if (exists(::input_draw)) {
+        ::roi <<= ::input[::input_draw]
+      }
+  }
+  
+  #------------------------------------
+  proc ::Filter() {
+    if (!exists(::input)) {
+      ::load_input
+      ::Display
+    }
+    if (!exists(::roi)) {
+      InfoDialog "Please select the Region of Interest (ROI)"
+    }
+    numit = ::T/::dt
+    ::res = AnisoLeeAdd2(::input,::dt,numit,::roi)
+    eval ::output_name+" <<= ::res;"
+  }
+  
+  #------------------------------------
+  proc ::Display() {
+    if (!exists(::input)) {
+      ::load_input
+    }
+    if (!exists(::input_draw)) {
+      show ::input
+    }
+    if exists(::res) {
+      show ::res
+      ::input_draw.compare(::res_draw)
+    }
+  }
+  
+  #------------------------------------
+  proc ::Save() {
+    ::res.save ::output_filename
+  }
+  
+  #------------------------------------
+  proc ::CreateGui() {
+  
+    # parameters window
+    import = &global::ami_import;
+    ::win = import->ParamPanel("SRAD")
+
+    ::win.BeginBook()
+      ::win.AddPage("Param")
+        ::win.AddImageChoice( &::input_name, "Input")
+        ::win.AddString( &::output_name,"Result name")
+
+        ::dt_id         = ::win.AddFloat( &::dt,"dt",0.01,10)
+        ::T_id          = ::win.AddFloat( &::T,"T",0,100)
+        
+        ::mode_id       = ::win.AddEnum( &::mode,"Mode")
+          ::win.AddEnumChoice(::mode_id,"Lee")
+          ::win.AddEnumChoice(::mode_id,"Kuan")
+          ::win.AddEnumChoice(::mode_id,"Additive")
+        
+        ::neighborhood_id = ::win.AddInt( &::neighborhood,"Neighborhood",0,4)
+        ::scheme_id       = ::win.AddEnum( &::scheme,"Scheme")
+          ::win.AddEnumChoice(::scheme_id,"Explicit")
+          ::win.AddEnumChoice(::scheme_id,"Semi-implicit")
+        
+        ::win.BeginBoxPanel("Controls")
+          ::win.BeginHorizontal()
+            ROI_id     = ::win.AddButton("Select ROI", ::CreateRoi)
+            iterate_id = ::win.AddButton("Filter",     ::Filter)
+            display_id = ::win.AddButton("Display",    ::Display)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+
+        ::win.BeginBoxPanel("Save to disk")
+          ::win.AddString( &::output_filename,"result filename")
+          display_id = ::win.AddButton("Save",       ::Save)
+        ::win.EndBoxPanel()
+    
+    ::win.EndBook()
+
+    ::AddStandardButtons(&::win)
+
+    ::win.Display()
+    ::win.Update(-1)
+  }
+  
+  ::Init()
+  
+  } #End of Class
+  
+} #End of if
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(aniSRAD)) {
+
+  AnisoSRADClass aniSRAD  
+   
+  if (argc==2) {    
+    input_arg = Image($1)
+    ::input_image = "input_arg"
+    ::output_name = $2
+    ::win.Update(-1)
+  }
+} else {
+InfoDialog "The script seems to be already loaded." 
+}

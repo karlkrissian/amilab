@@ -1,0 +1,71 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_image_vdim.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the vdim method.
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimx=10
+dimy=10
+dimz=1
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+
+printn "\t\t Create a scalar image 2D of type FLOAT.\n"
+imgFLOAT = Image(FLOAT,dimx,dimy,dimz)
+
+printn "\t\t Show info of vectorial image 2D of type FLOAT.\n"
+imgFLOAT.info
+
+printn "\t\t Run: result=imgFLOAT.vdim\n"
+result=imgFLOAT.vdim
+printn "\t\t result= %1%\n" % result
+
+if(result!=1) {
+  OK=0
+  printn  "\nERROR: Failed the vdim operation."
+}
+
+dimv=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn "\t\t Create a vectorial image 2D of type FLOAT.\n"
+imgFLOAT2D = Image(FLOAT,dimx,dimy,dimz,dimv)
+
+printn "\t\t Show info of vectorial image 2D of type FLOAT.\n"
+imgFLOAT2D.info
+
+printn "\t\t Run: result=imgFLOAT2D.vdim\n"
+result=imgFLOAT2D.vdim
+printn "\t\t result= %1%\n" % result
+
+if(result!=10) {
+  OK=0
+  printn  "\nERROR: Failed the vdim operation."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

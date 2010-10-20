@@ -1,0 +1,36 @@
+
+***** Eccentricity *****
+
+token(s):
+T_eccentricity eccentricity
+
+rule(s): 
+postfix_expr -> T_eccentricity ( VAR_IMAGE )
+
+description:
+Computes the eccentricity of a 2D image,
+defined as:
+
+\[
+ Ecc(i) = \frac{e_1 + 4*e_3}{e_2}
+\]
+with
+\begin{eqnarray*}
+  e_1 &=& (var(x)-(var(y))^2 \\
+  e_2 &=& (var(x)+(var(y))^2 \\
+  e_3 &=& (var(x,y))^2 
+\end{eqnarray*}
+and
+\begin{eqnarray*}
+  var(x)   &=& \sum_{(x,y) \in D_I} I(x,y) (x-\bar{x})^2 \\
+  var(y)   &=& \sum_{(x,y) \in D_I} I(x,y) (x-\bar{y})^2 \\
+  var(x,y) &=& \sum_{(x,y) \in D_I} I(x,y) (x-\bar{y}) (y - \bar{y}) \\
+  \bar{x}  &=& \frac{\sum_{(x,y) \in D_I} I(x,y)*x}{\sum_{(x,y) \in D_I} I(x,y)}
+\end{eqnarray*}
+
+
+This eccentricity is usually defined for binary images (0 or 1),
+and gives an idea of the elongation of a structure.
+
+
+******************************

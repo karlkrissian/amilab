@@ -1,0 +1,150 @@
+
+func "Common/ScriptGui"
+
+if (!exists(SuperquadricClass)) {
+
+  func "SyntheticImages/superquadric.amil"
+  
+  Class SuperquadricClass : public ScriptGui {
+
+    #----------------------------
+    proc ::Init()  {
+      ::imdimx = INT(110), "Created image dimension in X"
+      ::imdimy = INT(110), "Created image dimension in Y"
+      ::imdimz = INT(110), "Created image dimension in Z"
+      ::s1 = 50, "Superquadric dimension in X"
+      ::s2 = 50, "Superquadric dimension in Y"
+      ::s3 = 50, "Superquadric dimension in Z"
+      ::r = 1
+      ::s = 1
+      ::t = 1
+      ::torus_radius = 30
+      ::type = INT(0) # 0:Spherical 1:Cylindrical 2:Toroidal
+      ::image = Image(FLOAT,::imdimx,::imdimy,::imdimz)
+      ::Update()
+      ::isosurf = Surface()
+      ::Gui()
+    }
+
+    # print parameters 
+    # to do
+    proc ::Print() {
+      
+    }
+    
+    # save parameters 
+    # to do
+    proc ::SaveParam() {
+      
+    }
+
+    proc ::Update() {
+      if (::image.tx!=::imdimx) || (::image.ty!=::imdimy) || (::image.tz!=::imdimz) {
+        ::image <<= Image(FLOAT,::imdimx,::imdimy,::imdimz)
+      }
+      if (::type == 0) {
+        global::SuperQuadric(::s1,::s2,::s3,::r,::s,::t,&::image)
+      }
+      if (::type == 1) {
+        global::CylindricalSuperQuadric(::s1,::s2,::r,::s,&::image)
+      }
+      if (::type == 2) {
+        global::ToroidalSuperQuadric(::torus_radius,::s1,::s2,::r,::s,&::image)
+      }
+    }
+
+    proc ::CreateImage() {
+      ::Update()
+      show ::image
+    }
+
+    proc ::ShowIsoSurface() {
+      ::Update()
+      if (exists(::isosurf_draw)) {
+        ::isosurf_draw -= ::isosurf
+      }
+      ::isosurf <<= isosurf(-::image,0.0001)
+      if (exists(::isosurf_draw)) {
+        ::isosurf_draw += ::isosurf
+      } else {
+        show ::isosurf
+      }
+    }
+
+    proc ::CreateParamSurface() {
+    }
+
+    proc ::UpdateType() {
+
+      # to do: show/hide a parameter !!!
+
+      #::win.ShowSlider(::torus_radius_id,::type==2)
+      #::win.update
+      #::win.Display
+    }
+    
+    
+    #------------------------------------
+    proc ::Gui( ) \
+    {
+      import = &global::ami_import;
+      ::win = import->ParamPanel("SuperQuadrics")
+      ::win.BeginBook()
+        ::win.AddPage("Resolution")
+          ::win.BeginBoxPanel("Image dimensions")
+            ::imx_i  = ::win.AddInt( &::imdimx, "imdimx", 0,1024)
+            ::imy_i  = ::win.AddInt( &::imdimy, "imdimy", 0,1024)
+            ::imz_i  = ::win.AddInt( &::imdimz, "imdimz", 0,1024)
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Sup.Quad.")
+          ::win.BeginBoxPanel("SQ dimensions")
+            ::s1_i  = ::win.AddFloat( &::s1, "s1", 0,200)
+            ::s2_i  = ::win.AddFloat( &::s2, "s2", 0,200)
+            ::s3_i  = ::win.AddFloat( &::s3, "s3", 0,200)
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Coefficients")
+            ::r_i  = ::win.AddFloat( &::r,  "r", 0,5)
+            ::s_i  = ::win.AddFloat( &::s,  "s", 0,5)
+            ::t_i  = ::win.AddFloat( &::t,  "t", 0,5)
+          ::win.EndBoxPanel()
+
+          ::type_id  = ::win.AddEnum( &::type)
+          ::win.AddEnumChoice(::type_id,"SPHERICAL")
+          ::win.AddEnumChoice(::type_id,"CYLINDRICAL")
+          ::win.AddEnumChoice(::type_id,"TOROIDAL")
+          ::win.SetCallback( &::UpdateType)
+
+          ::torus_radius_id =  ::win.AddFloat( &::torus_radius,  "torus_radius", 0,200)
+          #::win.ShowSlider(::torus_radius_id,::type==2)
+
+          ::win.BeginHorizontal()
+            ::win.AddButton("Image",              ::CreateImage)
+            ::win.AddButton("IsoSurface",           ::ShowIsoSurface)
+          ::win.EndHorizontal()
+          ::win.AddButton("Parametric Surf.", ::CreateParamSurface)
+      
+      ::win.EndBook()
+
+      ::AddStandardButtons(&::win)
+      ::win.Update(-1)
+      ::win.Display()
+      
+    }
+
+    ::Init()
+  } #End of class
+  
+} # End of if
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(superq)) {
+
+  SuperquadricClass superq
+  } else {
+  InfoDialog "The script seems to be already loaded."
+}

@@ -1,0 +1,444 @@
+#!/usr/bin/amilab
+
+using_args = UCHAR(0)
+
+if (argc==1) {
+  if (($1=="-help")||($1=="--help")) {
+    printn ""
+    printn "------------------------------------"
+    printn "Program trying_circles.amil"
+    printn ""
+    printn "Can accept 2 or 4 arguments"
+    printn " 1. input image"
+    printn " 2. threshold"
+    printn " 3. mask for response computation"
+    printn " 4. threshold on the mask image"
+    printn ""
+    printn "------------------------------------"
+    printn ""
+    quit
+  }
+}
+
+if (argc==2) {
+  input_filename = $1
+  im = Image $1
+  //im1 = MeanHalfSize(im)
+  th = atof($2)
+  using_args=1
+}
+
+if (argc==4) {
+  im = Image $1
+  th = atof($2)
+  m2 = Image $3
+  m2_th = atof($4)
+  using_args=1
+}
+
+emptyargs
+
+func "Centerlines/test_divergence.amil"
+
+#SetVerboseOn
+#SetDebugOn
+
+ami_import->Filters()
+
+//----------------------------------------
+proc TC_init(IMAGE im, NUM minint, STRING datasetdir) {
+//   -------
+  global_new
+
+  printn "start TC_init"
+  cmd = "mkdir "+datasetdir+"CenterlineResponse"
+  sh cmd
+  TC_result_filename = datasetdir+\
+                        "CenterlineResponse/trying_circles_result"
+  TC_result_extension = "ami.gz"
+  TC_result_overwrite = UCHAR(0)
+
+  TC_save_mask        = UCHAR(0)
+  TC_keep_grad        = UCHAR(0)
+  TC_save_orientation = UCHAR(0)
+
+  TC_usezoom      = UCHAR(0)
+  TC_split_number = INT(1)
+
+  TC_radmin  = 0.2
+  TC_radmax  = 3.4
+  TC_radstep = 0.2
+
+  // Gaussian standard deviations 
+  // for the structure tensor computation
+  TC_sigma          = 0.8
+  TC_beta           = 1.0
+  TC_sigma_gradient = 0.5
+  TC_save_orientation_filename = ""
+
+  // Standard deviation Threshod
+  TC_SD_th  = 2
+  // Excentricity Threshold
+  TC_EXC_th = 5
+
+  // 0: min
+  // 1: max
+  // 2: mean
+  TC_pairs_mode = INT(0)
+  TC_keephighest = INT(100)
+
+  TC_input_name = ""
+  TC_input0  = im 
+  TC_input   = (FLOAT) im
+  TC_rmax    = im*0
+  TC_lextr   = im*0
+  // minimal intensity
+  TC_minint  = minint
+  TC_calc_th  = 1600         // reduce effect of calcifications
+  TC_calc_th_grad = UCHAR(0) // lower gradient close to calcifications
+  #TC_maxint_replace  = 1500 // reduce effect of calcifications
+  TC_mask    = (UCHAR) (im>TC_minint)*255
+
+  //si = (si<1000)*1000+(si>=1000)*si
+  //m = (UCHAR) ((si>1100)*255)
+
+  local_new
+}
+
+
+//----------------------------------------
+proc TC_SetMask(IMAGE mask) {
+//   ----------
+  global::TC_mask = mask
+}
+
+//----------------------------------------
+proc TC_SetMask2(IMAGE mask2, NUM mask2_th) {
+//   -----------
+  global::TC_mask2 = (UCHAR) (mask2>mask2_th)*255
+}
+
+//----------------------------------------
+proc TC_CreateMask() {
+//   -------------
+  InitTime
+
+  morph = filters.ContinuousMorphology()
+
+  local::res=TC_input
+  TubeDiv(TC_input,&res,TC_mask,0.6,0)
+  local::m1 = (UCHAR) ((res>8)*255)
+  local::m2 = (UCHAR) morph.Dilate(m1,2,0.5)
+  del res
+  TC_mask = m2
+  EndTime
+}
+
+
+//----------------------------------------
+proc TC_execute(IMAGE input, IMAGE mask, IMAGE repmax, IMAGE extr) {
+//   ----------
+
+  global_new
+
+  InitTime
+  // Compute Structure Tensor
+  printn "Structure Tensor"
+
+  morph = filters.ContinuousMorphology()
+
+  if (exists(eig)) { del eig; }
+
+  sth = filters->StructureTensorH(&input,TC_sigma,TC_beta,&mask)
+
+  if (exists(TC_mask2)) {
+    mask2 = TC_mask2
+  } else {
+    mask2 = mask
+  }
+  eig = filters->EigenDecomp(&sth,0,7,&mask2)
+  del sth
+  #show vars
+  #StructTensorH(input,TC_sigma,TC_beta,mask)
+
+  if (TC_save_orientation) {
+    if (exists(TC_current_split)) {
+      eig[5].save TC_result_filename+\
+                    sprint("_orientation_%0.0f.ami.gz",\
+                            TC_current_split)
+    } else {
+      eig[5].save TC_result_filename+"_orientation.ami.gz"
+    }
+  }
+  #if (TC_save_orientation_filename!="") {
+  #  eig[5].save TC_save_orientation_filename
+  #}
+  printn "1"
+  #del eig[5]
+
+  grad    <<= gradient(input,TC_sigma_gradient)
+  if (TC_calc_th_grad) {
+    local::calc = TC_input0>TC_calc_th
+#    calc = EDPdilate(calc,2,0.5)
+    calc = morph.Dilate(calc,2,0.5)
+    grad = grad * (calc<0.5)
+  }
+
+  TC_rad  <<= input*0
+
+  printn "2"
+  for r=TC_radmin to TC_radmax step TC_radstep {
+    print " -- Running radius "; printn r
+      rep <<= CircleMinIntSdExc(grad,\
+                eig[3],\
+                eig[4],\
+                r, \
+                mask2,\
+                TC_SD_th,\
+                TC_EXC_th, \
+                TC_pairs_mode, \
+                TC_keephighest)
+    rep = rep/r
+    TC_rad  = max(TC_rad,(rep>repmax)*r)
+    repmax  = max(repmax,rep)
+    printn " time spent "+TimeSpent
+  }
+  extr = LocalExtrema(repmax,eig[3],eig[4],mask2)
+
+  if (TC_keep_grad) {
+    TC_grad  = grad
+  }
+  del grad
+  del rep
+
+  printn " time spent "+TimeSpent
+  EndTime
+#printn "end execute"
+}
+
+
+//----------------------------------------
+proc TC_Run() {
+//   ------
+
+  global
+
+  TC_input = (FLOAT)  (TC_input0*(TC_input0<TC_calc_th)+\
+                      (TC_input0>=TC_calc_th)*TC_calc_th)
+
+  if (TC_save_mask) {
+    TC_mask.save TC_result_filename+"_mask.ami.gz"
+  }
+
+  if ((TC_usezoom)&&(exists(TC_input_draw))) {
+        TC_input1  <<= TC_input [TC_input_draw]
+        TC_mask1   <<= TC_mask  [TC_input_draw]
+        TC_rmax1   <<= TC_rmax  [TC_input_draw]
+        TC_lextr1  <<= TC_lextr [TC_input_draw]
+        TC_execute(&TC_input1,&TC_mask1,&TC_rmax1,&TC_lextr1)
+        TC_rmax.putimage(TC_rmax1)
+        TC_lextr.putimage(TC_lextr1)
+  } else {
+    if (TC_split_number>1) {
+      dimx = TC_input.tx
+      dimy = TC_input.ty
+      dimz = TC_input.tz
+      margin = 10
+      zsize = dimz/TC_split_number
+      // if (zsize<2*margin)
+      for n=1 to TC_split_number {
+        printn "SPLIT ITERATION"
+        zmin0 = (n-1)*zsize
+        zmin  = zmin0-margin
+        margin_min = margin
+        if (zmin<0) { 
+          zmin=0;
+          margin_min = zmin0
+        }
+        zmax0 = n*zsize-1
+        zmax  = zmax0+margin
+        margin_max = margin
+        if (zmax>dimz-1) { 
+          zmax=dimz-1;
+          margin_max = zmax-zmax0
+        }
+        printn zmin
+        printn zmax
+
+        TC_input1  <<= TC_input[:,:,zmin:zmax]
+        TC_mask1   <<= TC_mask [TC_input1]
+        TC_rmax1   <<= TC_rmax [TC_input1]
+        TC_lextr1  <<= TC_lextr [TC_input1]
+
+#TC_input1.info
+#TC_mask1.info
+#TC_rmax1.info
+        global::TC_current_split = n
+        TC_execute(&TC_input1,&TC_mask1,&TC_rmax1,&TC_lextr1)
+#printn sprint("margin_min = %f \t",margin_min) 
+#printn sprint("margin_max = %f \n",margin_max) 
+#printn sprint("max = %f \n",dimz-1-margin_max) 
+#TC_rmax1.info
+        TC_rmax2 = TC_rmax1[:,:,margin_min:(TC_rmax1.tz-1-margin_max)]
+        TC_rmax.putimage(TC_rmax2)
+        printn "del TC_rmax2"
+        del TC_rmax2
+        TC_lextr2 = TC_lextr1[:,:,margin_min:(TC_rmax1.tz-1-margin_max)]
+        TC_lextr.putimage(TC_lextr2)
+        printn "del TC_rmax2"
+        del TC_lextr2
+      }
+    } else {
+      TC_execute(&TC_input,&TC_mask,&TC_rmax,&TC_lextr)
+    }
+  }
+
+}
+
+//----------------------------------------
+proc TC_Display() {
+//   ----------
+  global_new
+  if (!exists(TC_input_draw)) {
+    show TC_input
+  }
+
+  TC_input_draw.compare(TC_rmax)
+  TC_input_draw.compare(TC_lextr)
+  if (exists(eig[5])) {
+    TC_input_draw.setvector(0,eig[5])
+  }
+  local_new
+}
+
+//----------------------------------------
+proc TC_Save() {
+//   ----------
+  global_new
+
+  if (TC_result_overwrite) {
+    filename = TC_result_filename
+  } else {
+    for n=0 to 99 {
+      filename = sprint(TC_result_filename+".%0.0f."+\
+                        TC_result_extension,n)
+      // check if file exists
+      f = File(filename,"r")
+      if (!exists(f)) { n=100; }
+    }
+  }
+  TC_rmax.save  filename
+  TC_lextr.save filename+"_localextrema.ami.gz"
+
+  file = File(filename+".param","w")
+  file._print("----- filter_circles.amil script -------\n")
+  file._print("\n Ran with the following parameters: \n\n")
+  if (exists(input_filename)) {
+    file._print("input filename      "+input_filename+"\n")
+  } else {
+    file._print("input filename      "+TC_input0.GetName+"\n")
+  }
+  file._print(sprint("th                  %3.3f \n",th))
+  file._print(sprint("UseZoom             %3.3f \n",TC_usezoom))
+  file._print(sprint("SplitNumber         %3.3f \n",TC_split_number))
+  file._print(sprint("rad min             %3.3f \n",TC_radmin))
+  file._print(sprint("rad max             %3.3f \n",TC_radmax))
+  file._print(sprint("rad step            %3.3f \n",TC_radstep))
+  file._print(sprint("sigma               %3.3f \n",TC_sigma))
+  file._print(sprint("Gradient sigma      %3.3f \n",TC_sigma_gradient))
+  file._print(sprint("Beta                %3.3f \n",TC_beta))
+  file._print(sprint("Pairs mode          %3.0f \n",TC_pairs_mode))
+  file._print(sprint("Keep Highest values %3.0f \n",TC_keephighest))
+
+  del file
+}
+
+
+
+//----------------------------------------
+proc TC_CreateWindow() {
+//   ---------------
+  global
+
+    # parameters window
+    import = &global::ami_import;
+    TC_win = import->ParamPanel("Circle integration for centerlines")
+
+    TC_win.BeginBook()
+
+      TC_win.AddPage("Main")
+        TC_win.BeginBoxPanel("Initialization")
+          TC_inputname_id     = TC_win.AddImageChoice( &TC_input_name, "Input image")
+          TC_usezoom_id       = TC_win.AddBoolean( &TC_usezoom       )
+          TC_splitnum_id      = TC_win.AddInt( &TC_split_number,  "TC_split_number",  1,5)
+          TC_minint_id        = TC_win.AddFloat( &TC_minint,  "TC_minint",        0,3000)
+          TC_calc_th_id       = TC_win.AddFloat( &TC_calc_th,  "TC_calc_th",       0,3000)
+          TC_calc_th_grad_id  = TC_win.AddBoolean( &TC_calc_th_grad  )
+          #TC_maxint_replace_id  = TC_win.AddFloat(TC_maxint_replace,0,3000)
+        TC_win.EndBoxPanel()
+    
+        TC_win.BeginBoxPanel("Radii")
+          TC_radmin_id  = TC_win.AddFloat( &TC_radmin,  "TC_radmin", 0,5)
+          TC_radmax_id  = TC_win.AddFloat( &TC_radmax,  "TC_radmax", 0,10)
+          TC_radstep_id = TC_win.AddFloat( &TC_radstep,  "TC_radstep", 0,2)
+        TC_win.EndBoxPanel()
+  
+      TC_win.AddPage("Orientation")
+        TC_win.BeginBoxPanel("Structure Tensor Param")
+          TC_sigma_id  = TC_win.AddFloat( &TC_sigma,  "TC_sigma", 0,5)
+          TC_beta_id   = TC_win.AddFloat( &TC_beta,  "TC_beta", 0,2)
+        TC_win.EndBoxPanel()
+        TC_win.BeginBoxPanel("Gradient Param")
+          TC_sigma_gradient_id  = TC_win.AddFloat( &TC_sigma_gradient,  "TC_sigma_gradient", 0,5)
+        TC_win.EndBoxPanel()
+    
+        TC_win.AddPage("Response")
+        TC_win.BeginBoxPanel("Param")
+          // Integration mode
+          TC_pairs_mode_id = TC_win.AddEnum( &TC_pairs_mode)
+          TC_pmin_id       = TC_win.AddEnumChoice(TC_pairs_mode_id,"Min")
+          TC_pmax_id       = TC_win.AddEnumChoice(TC_pairs_mode_id,"Max")
+          TC_pmean_id      = TC_win.AddEnumChoice(TC_pairs_mode_id,"Mean")
+    
+          TC_kh_id       = TC_win.AddInt( &TC_keephighest,  "TC_keephighest",  1,100)
+          TC_SD_th_id    = TC_win.AddFloat( &TC_SD_th,  "TC_SD_th",  0,10)
+          TC_EXC_th_id   = TC_win.AddFloat( &TC_EXC_th,  "TC_EXC_th", 0,10)
+        TC_win.EndBoxPanel()
+  
+      TC_win.AddPage("Save")
+        TC_win.BeginBoxPanel("Save result and parameters")
+          kg_id = TC_win.AddBoolean( &TC_keep_grad)
+          sm_id = TC_win.AddBoolean( &TC_save_mask)
+          so_id = TC_win.AddBoolean( &TC_save_orientation)
+          resfn_id  = TC_win.AddString( &TC_result_filename,        TC_result_filename)
+          resext_id = TC_win.AddString( &TC_result_extension,       TC_result_extension)
+          display_id = TC_win.AddButton("Save",        TC_Save)
+        TC_win.EndBoxPanel()
+    TC_win.EndBook()
+
+    TC_win.BeginHorizontal()
+      mask_id    = TC_win.AddButton("Create Mask", TC_CreateMask)
+      iterate_id = TC_win.AddButton("Run",         TC_Run)
+      display_id = TC_win.AddButton("Display",     TC_Display)
+    TC_win.EndHorizontal()
+    
+    TC_win.Update()
+
+    #TC_win.ShowSlider(TC_radmin_id, 0)
+    #TC_win.ShowSlider(TC_radmax_id, 0)
+    #TC_win.ShowSlider(TC_radstep_id,0)
+
+    TC_win.Display()
+    TC_win.Update(-1)
+  local
+}
+
+
+if (using_args) {
+  TC_init(&im,th,"./")
+  if (exists(m2)) {
+    TC_SetMask2(&m2,m2_th)
+  }
+  TC_CreateWindow()
+}
+

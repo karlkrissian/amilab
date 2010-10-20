@@ -1,0 +1,20 @@
+
+***** VAR_IMAGEDRAW.SETPOS *****
+
+token(s):
+SETPOS  setpos
+
+rule(s):
+commande -> VAR_IMAGEDRAW '.' SETPOS '(' expr ',' expr ',' expr ')'
+
+parameters
+  #1 expr:  X pos of the cursor
+  #2 expr:  Y pos of the cursor
+  #3 expr:  Z pos of the cursor
+
+description:
+Set the cursor position on a imagedraw window.
+
+
+
+******************************

@@ -1,0 +1,375 @@
+#!/usr/bin/amilab
+
+#
+# Script for drawing 2D functions
+# or lines from an image
+#
+
+func "Common/ScriptGui.amil"
+
+comments="Functions2DClass: this class provides an interface for plotting 2D functions."
+
+#ami_import->MainFrame()
+
+if (!exists(Functions2DClass)) {
+  
+  
+  
+  Class Functions2DClass : public ScriptGui {
+    
+    #--------------------------------------------
+    Class ::CurveParamClass  {
+    #     ---------------
+      ::mode = INT(0), "Equation mode: 0 for user equation, 1 for equation from input image"
+      ::equation   =  "sin(X)*3", "Equation as a function of the image X, example sin(X)"
+      ::color_str  = "#000000", "Curve color defined by a string of the type RRGGBB"
+      ::_style = INT(0), "style 0 for solid, 1 for dot, 2 for long dash, 3 for short dash, 4 for dot dash"
+      ::_width = INT(1), "line width"
+      ::input_name =  "", "Name of input image"
+
+      #----------------------------
+      proc ::LoadInput() \
+      {
+        printn "evaluation of --> ::input <<="+::input_name+";"
+        eval "::input <<="+::input_name+";"
+        if (::input_name=="Image") {
+          ::input_name = "::input"
+          #::win.update
+        }
+        #::win.update
+      }
+
+      #--------------------------
+      proc ::GetXLimits( NUM xmin, NUM xmax) \
+      {
+        if (::mode==1)&&(exists(::input)) {
+          local::_pos1 = SpacePos(::input)
+          xmin = min(_pos1[0])
+          xmax = max(_pos1[0])
+        }
+      }
+      Comments( ::GetXLimits, "Returns limits of the curve in X axis if the input is an image")
+
+      #--------------------------
+      proc ::GetYLimits( NUM xmin, NUM xmax, NUM res, NUM ymin, NUM ymax) \
+      {
+        if (::mode==0) {
+          numval = INT((xmax-xmin)/res+0.5)
+          if (numval==0) { numval=1; }
+          X <<= Image(DOUBLE,numval,1,1)
+          X.settranslation(xmin,0,0)
+          X.setvoxelsize(res,1,1)
+          _pos = SpacePos(X)
+          X = _pos[0]
+          eval "Y <<= "+::equation+";"
+          ymin = min(Y)
+          ymax = max(Y)
+        }
+        if (::mode==1)&&(exists(::input)) {
+          ymin = min(::input)
+          ymax = max(::input)
+        }
+      }
+      Comments( ::GetYLimits, "Returns limits of the curve in Y axis ")
+
+    }
+    Comments( ::CurveParamClass, "Parameters for drawing a curve")
+
+    #----------------------------
+    proc ::Init() \
+    {
+      ::xmin = -10, "minimal value along X axis"
+      ::xmax = 10,  "maximal value along X axis"
+      ::ymin = -10, "minimal value along Y axis"
+      ::ymax = 10,  "maximal value along Y axis"
+      ::resolution = 0.1, "Curve resolution along X"
+      ::CurveParamClass ::c1
+      #::c1->Comments("Parameters for curve 1")
+      ::c1->equation = "sin(X)*3"
+      ::c1->color_str = "#FF0000"
+      ::CurveParamClass ::c2
+      #::c2->Comments("Parameters for curve 2")
+      ::c2->equation = "cos(X)*3"
+      ::c2->color_str = "#0000FF"
+
+
+      #::equation1_drag = UCHAR(1)
+      ::CreateWindow()
+    }
+    
+    #----------------------------
+    proc ::CheckLimits() \
+    {
+      ::smallest_interval = 0.01
+      if (::xmax<=::xmin+::smallest_interval) {
+        ::xmax = ::xmin+::smallest_interval
+        ::win.Update(-1)
+      }
+      if (::ymax<=::ymin+::smallest_interval) {
+        ::ymax = ::ymin+::smallest_interval
+        ::win.Update(-1)
+      }
+    }
+
+    #----------------------------
+    proc ::AutoX() \
+    {
+      if (::c1->mode==1) {
+        ::c1->GetXLimits( &::xmin, &::xmax)
+        if (::c2->mode==1) {
+          xmin2 = ::xmin
+          xmax2 = ::xmax
+          ::c2->GetXLimits( &xmin2, &xmax2)
+          ::xmin = -max(-::xmin,-xmin2)
+          ::xmax = max(::xmax,xmax2)
+        }
+      } else {
+        if (::c2->mode==1) {
+          ::c2->GetXLimits( &::xmin, &::xmax)
+        }
+      }
+#      _xw = ::xmax-::xmin
+#      ::xmin = ::xmin-_xw/10
+#      ::xmax = ::xmax+_xw/10
+      ::win.Update(-1)
+      ::dw.SetXLimits(::xmin,::xmax)
+    }
+
+    #----------------------------
+    proc ::AutoY() \
+    {
+      ymin1 = ::ymin
+      ymax1 = ::ymax
+      ::c1.GetYLimits( ::xmin, ::xmax, ::resolution, \
+                       &ymin1, &ymax1)
+      #::c1.GetYLimits( ::xmin, ::xmax, ::resolution, &ymin1, &ymax1)
+
+      ymin2 = ::ymin
+
+      ymax2 = ::ymax
+
+      ::c2.GetYLimits( ::xmin, ::xmax, ::resolution, &ymin2, &ymax2)
+      ::ymin = -max(-ymin1,-ymin2)
+      ::ymax = max(ymax1,ymax2)
+      _yw = ::ymax-::ymin
+      ::ymin = ::ymin-_yw/10
+      ::ymax = ::ymax+_yw/10
+      ::win.Update(-1)
+      ::dw.SetYLimits(::ymin,::ymax)
+    }
+
+    #----------------------------
+    proc ::SetCurve1() \
+    {
+      ::CheckLimits()
+      ::dw.SetXLimits(::xmin,::xmax)
+      ::dw.SetYLimits(::ymin,::ymax)
+
+      if (::c1->mode==0) {
+        numval = INT((::xmax-::xmin)/::resolution+0.5)
+        if (numval==0) { numval=1; }
+        ::X <<= Image(FLOAT,numval,1,1)
+        ::X.settranslation(::xmin,0,0)
+        ::X.setvoxelsize(::resolution,1,1)
+        _pos = SpacePos(::X)
+        ::X = _pos[0]
+        X = ::X
+        eval "::Y1 <<= "+::c1->equation+";"
+        ::dw.SetCurve(::Y1,0)
+      }
+      if (::c1->mode==1) {
+        # set min and max
+        ::dw.SetCurve(::c1->input,0)
+      }
+    }
+    # end ::SetCurve1()
+
+    #----------------------------
+    proc ::SetCurve2() \
+    {
+      ::CheckLimits()
+      if (::c2->mode==0) {
+        numval = INT((::xmax-::xmin)/::resolution+0.5)
+        if (numval==0) { numval=1; }
+        ::X <<= Image(DOUBLE,numval,1,1)
+        ::X.settranslation(::xmin,0,0)
+        ::X.setvoxelsize(::resolution,1,1)
+        _pos = SpacePos(::X)
+        ::X = _pos[0]
+        X = ::X
+        eval "::Y2 <<= "+::c2->equation+";"
+        ::dw.SetXLimits(::xmin,::xmax)
+        ::dw.SetYLimits(::ymin,::ymax)
+        ::dw.SetCurve(::Y2,1)
+      }
+      if (::c2->mode==1) {
+        # set min and max
+        ::dw.SetXLimits(::xmin,::xmax)
+        ::dw.SetYLimits(::ymin,::ymax)
+        ::dw.SetCurve(::c2->input,1)
+      }
+    }
+    # end ::SetCurve2()
+
+    #----------------------------
+    proc ::OnCurves() {
+      # InfoDialog ::equation
+      ::dw.SetCurveProperties(0,::c1->color_str,::c1->_style,::c1->_width)
+      ::SetCurve1()
+      ::dw.SetCurveProperties(1,::c2->color_str,::c2->_style,::c2->_width)
+      ::SetCurve2()
+
+      #::dw._Paint()
+
+      #::dw.Refresh(1)
+
+      #::dw.Update()
+    }
+
+    #--------------------------------
+    proc ::EqModeEvent() \
+    {
+      ::win.EnablePanel(::c1_eq_panel,    ::c1->mode==0)
+      ::win.EnablePanel(::c1_input_panel, ::c1->mode==1)
+
+      ::win.EnablePanel(::c2_eq_panel,    ::c2->mode==0)
+      ::win.EnablePanel(::c2_input_panel, ::c2->mode==1)
+    }
+
+    #----------------------------
+    proc ::CreateWindow() {
+    
+      # parameters window
+      import = &global::ami_import;
+      ::win = import->ParamPanel("2DFunc")
+      
+
+      # add Drawing Window
+
+      d = ::win.CurrentParent()
+
+      ::dw = import->wxDrawingWindow(&d)
+
+      ::dw.SetMinSize(&wx.wxSize(50,100))
+
+      ::win.AddWidget(&::dw,0)
+
+      ::dw.SetBackgroundColour(&wx.wxColour(255,255,255))
+
+
+
+      ::win.BeginBook()
+    
+        ::win.AddPage("Param")
+
+          ::win.BeginBoxPanel("Axes")
+            ::win.AddFloat( &::xmin,"xmin",-30,30)
+            ::win.SetCallback( &::OnCurves)
+            ::win.AddFloat( &::xmax,"xmax",-30,30)
+            ::win.SetCallback( &::OnCurves)
+            ::win.AddButton("Auto X", ::AutoX)
+
+            ::win.AddFloat( &::ymin,"ymin",-30,30)
+            ::win.SetCallback( &::OnCurves)
+            ::win.AddFloat( &::ymax,"ymax",-30,30)
+            ::win.SetCallback( &::OnCurves)
+            ::win.AddButton("Auto Y", ::AutoY)
+          ::win.EndBoxPanel()
+
+          ::res_id = ::win.AddFloat( &::resolution,"res.",0.01,10)
+          ::win.SetCallback( &::OnCurves)
+          ::win.SetDragCallback(::res_id,1)
+
+        #---------------- Curve 1 -------------------------------
+        ::win.AddPage("Curve 1")
+          ::eq1_mode_id = ::win.AddEnum( &::c1->mode,"mode")
+            ::win.AddEnumChoice(::eq1_mode_id,"User equation")
+            ::win.AddEnumChoice(::eq1_mode_id,"Input image")
+          ::win.SetCallback( &::EqModeEvent)
+
+          # set input equation
+          ::c1_eq_panel = ::win.BeginBoxPanel("Equation")
+            ::win.AddString( &::c1->equation,"Y=")
+            ::win.SetCallback( &::OnCurves)
+          ::win.EndBoxPanel()
+
+          # set the input image
+          ::c1_input_panel = ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::c1->input_name, "")
+              ::win.AddButton("Load",::c1->LoadInput)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          # Line Parameters
+          ::win.BeginBoxPanel("Line param.")
+            ::win.AddString( &::c1->color_str,"color")
+            ::win.SetCallback( &::OnCurves)
+            ::win.AddInt( &::c1->_style,"style",0,4)
+            ::win.SetCallback( &::OnCurves)
+            ::win.AddInt( &::c1->_width,"width",0,4)
+            ::win.SetCallback( &::OnCurves)
+          ::win.EndBoxPanel()
+
+        #---------------- Curve 2 -------------------------------
+        ::win.AddPage("Curve 2")
+          ::eq2_mode_id = ::win.AddEnum( &::c2->mode,"mode")
+            ::win.AddEnumChoice(::eq2_mode_id,"User equation")
+            ::win.AddEnumChoice(::eq2_mode_id,"Input image")
+          ::win.SetCallback( &::EqModeEvent)
+
+          # set input equation
+          ::c2_eq_panel = ::win.BeginBoxPanel("Equation")
+            ::win.AddString( &::c2->equation,"Y=")
+            ::win.SetCallback( &::OnCurves)
+          ::win.EndBoxPanel()
+
+          # set the input image
+          ::c2_input_panel = ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::c2->input_name, "")
+              ::win.AddButton("Load",::c2->LoadInput)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          # Line Parameters
+          ::win.BeginBoxPanel("Line param.")
+            ::win.AddString( &::c2->color_str,"color")
+            ::win.SetCallback( &::OnCurves)
+            ::win.AddInt( &::c2->_style,"style",0,4)
+            ::win.SetCallback( &::OnCurves)
+            ::win.AddInt( &::c2->_width,"width",0,4)
+            ::win.SetCallback( &::OnCurves)
+          ::win.EndBoxPanel()
+
+      ::win.EndBook()
+
+      ::win.AddButton("Update",::OnCurves)    
+      ::AddStandardButtons(&::win)
+      
+      ::win.Update(-1)
+      ::win.Display()
+      ::EqModeEvent
+      ::OnCurves()
+   }
+
+    ::Init()
+    ::OnCurves()
+  } 
+  # Class Functions2DClass
+} 
+# end if (!exists(Functions2DClass))
+  
+  
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(func2d)) {
+
+  Functions2DClass func2d
+  
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+

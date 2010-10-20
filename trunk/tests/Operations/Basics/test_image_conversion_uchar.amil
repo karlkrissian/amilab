@@ -1,0 +1,136 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_image_conversion_uchar.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the conversion between images.
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
+dimx=10
+dimy=10
+dimz=1
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+
+printn "\t\t Create a scalar image 2D of type UCHAR.\n"
+imgUCHAR = Image(UCHAR,dimx,dimy,dimz)
+
+printn "\t\t Show info of scalar image 2D of type UCHAR.\n"
+imgUCHAR.info
+
+printn "\t\t Initialized to 10.\n"
+imgUCHAR=10
+
+printn "\t\t Conversion: imgDOUBLE = (DOUBLE) imgUCHAR \n"
+imgDOUBLE = (DOUBLE) imgUCHAR
+imgDOUBLE.info
+
+printn "\t\t Conversion: imgFLOAT = (FLOAT) imgUCHAR \n"
+imgFLOAT = (FLOAT) imgUCHAR
+imgFLOAT.info
+
+printn "\t\t Conversion: imgUINT = (UINT) imgUCHAR \n"
+imgUINT = (UINT) imgUCHAR
+imgUINT.info
+
+printn "\t\t Conversion: imgINT = (INT) imgUCHAR \n"
+imgINT = (INT) imgUCHAR
+imgINT.info
+
+printn "\t\t Conversion: imgUSHORT = (USHORT) imgUCHAR \n"
+imgUSHORT = (USHORT) imgUCHAR
+imgUSHORT.info
+
+printn "\t\t Conversion: imgSHORT = (SHORT) imgUCHAR \n"
+imgSHORT = (SHORT) imgUCHAR
+imgSHORT.info
+
+printn "\t\t Conversion: imgCHAR = (CHAR) imgUCHAR \n"
+imgCHAR = (CHAR) imgUCHAR
+imgCHAR.info
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimx=10
+dimy=10
+dimz=1
+dimv=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn "\t\t Create a vectorial image 2D of type UCHAR.\n"
+imgUCHAR = Image(UCHAR,dimx,dimy,dimz,dimv)
+
+printn "\t\t Show info of vectorial image 2D of type UCHAR.\n"
+imgUCHAR.info
+
+printn "\t\t Initialized to 10.\n"
+imgUCHAR=10
+
+printn "\t\t Conversion: imgDOUBLE = (DOUBLE) imgUCHAR \n"
+imgDOUBLE = (DOUBLE) imgUCHAR
+imgDOUBLE.info
+
+printn "\t\t Conversion: imgFLOAT = (FLOAT) imgUCHAR \n"
+imgFLOAT = (FLOAT) imgUCHAR
+imgFLOAT.info
+
+printn "\t\t Conversion: imgUINT = (UINT) imgUCHAR \n"
+imgUINT = (UINT) imgUCHAR
+imgUINT.info
+
+printn "\t\t Conversion: imgINT = (INT) imgUCHAR \n"
+imgINT = (INT) imgUCHAR
+imgINT.info
+
+printn "\t\t Conversion: imgUSHORT = (USHORT) imgUCHAR \n"
+imgUSHORT = (USHORT) imgUCHAR
+imgUSHORT.info
+
+printn "\t\t Conversion: imgSHORT = (SHORT) imgUCHAR \n"
+imgSHORT = (SHORT) imgUCHAR
+imgSHORT.info
+
+printn "\t\t Conversion: imgCHAR = (CHAR) imgUCHAR \n"
+imgCHAR = (CHAR) imgUCHAR
+imgCHAR.info
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

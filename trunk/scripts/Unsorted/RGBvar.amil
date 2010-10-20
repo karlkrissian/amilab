@@ -1,0 +1,15 @@
+
+proc RGB_mean_var(IMAGE im,IMAGE _mean, IMAGE _var) {
+
+  _imx = (FLOAT)im[0]
+  _imy = (FLOAT)im[1]
+  _imz = (FLOAT)im[2]
+
+  _mean = (_imx+_imy+_imz)/3
+  
+  _imx=_imx-_mean
+  _imy=_imy-_mean
+  _imz=_imz-_mean
+  _var = sqrt((_imx*_imx + _imy*_imy + _imz-*_imz)/3)
+
+}

@@ -1,0 +1,119 @@
+#
+# Example of using the Gaussian Filtering
+# with the command filter
+#
+
+func "Noise/AddRiceNoise.amil"
+
+func "Common/ScriptGui"
+
+if (!exists(AddNoiseClass)){
+  Class AddNoiseClass : public ScriptGui {
+  #------------------------------------
+  
+  proc ::Init() {
+    ::input_name  = "",  "name of input image"
+    ::output_name = "global::AddNoise_output", "name of output image variable"
+  
+    # 0: Additive Gaussian Noise
+    # 1: Multiplicative Gaussian Noise
+    # 2: Rician Noise
+    ::type       = INT(0), "Noise type: 0: Additive Gaussian, 1: Multiplicative Gaussian, 1: Rician Noise"
+    
+    ::mean       = 0, "Mean of the noise"
+    ::stddev     = 1, "Standard deviation of the noise"
+    ::CreateGui()
+  }
+  
+  #------------------------------------
+  proc ::load_input() {
+    eval "::input <<="+::input_name+";"
+    if (::input_name=="Image") {
+      ::input_name = "AddNoise_input"
+      ::win.Update(-1)
+    }
+  }
+  
+  #------------------------------------
+  proc ::Run() {
+    ::load_input()
+    if (::type==0) {
+      ::res <<= AddGaussNoise(::input,::mean,::stddev)
+    }
+    if (::type==1) {
+      ::noise = ::input*0
+      ::noise = AddGaussNoise(::noise,1,::stddev)
+      ::res <<= ::input*::noise
+    }
+    if (::type==2) {
+      ::res <<= ::input
+      global::AddRiceNoise(&::res,::stddev)
+    }
+    
+    eval ::output_name+" <<= ::res;"
+  
+    #  ::Display()
+  }
+  
+  #------------------------------------
+  proc ::Display() {
+    show ::input
+    
+    if (exists(::res)) {
+      show ::res
+      ::input_draw.compare(&::res_draw)
+    }
+  }
+  
+  #------------------------------------
+  proc ::Save() {
+    ::res.save resultname
+  }
+  
+  #------------------------------------
+  proc ::CreateGui() {  
+    # parameters window
+    import = &global::ami_import;
+    ::win = import->ParamPanel("Noise")
+  
+    ::win.BeginBook()
+      ::win.AddPage("Param")
+        ::win.AddImageChoice( &::input_name, "Input")
+      
+        ::win.AddString( &::output_name,"Output name")
+      
+        ::type_id = ::win.AddEnum( &::type, "Type")
+          ::win.AddEnumChoice(::type_id,"Add. Gaussian")
+          ::win.AddEnumChoice(::type_id,"Mult. Gaussian")
+          ::win.AddEnumChoice(::type_id,"Rician")
+        
+        ::win.AddFloat( &::mean,"Mean",0.1,  50)
+        ::win.AddFloat( &::stddev,"Std dev",0.1,50)
+      
+        #::win.SetCallback(::Run)
+      
+        ::win.AddButton("Run",        ::Run)
+        ::win.AddButton("Display",    ::Display)
+    ::win.EndBook()
+  
+    ::AddStandardButtons(&::win)
+  
+    ::win.Update(-1)
+    ::win.Display()
+  }
+  
+  ::Init()
+  
+ } #End of class 
+   
+} #End of if
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(anoise)) {
+  AddNoiseClass anoise 
+} else {
+InfoDialog "The script seems to be already loaded." 
+}

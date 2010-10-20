@@ -1,0 +1,918 @@
+# command line: ./amilab 
+
+ami_import->AMIFluid()
+printn "Import filters (ami_import->Filters()).\n"
+ami_import->Filters()
+
+symmetric         = UCHAR(0)
+inverse_upsample  = INT(1)
+temporal          = UCHAR(0)
+global_smoothing  = UCHAR(1)
+
+# 0: correlation 2D
+# 1: amiPDE (new)
+# 2: amiPDE
+# 3: Vorticity
+method            = INT(0)
+
+
+Gaussian_scales   = UCHAR(0)
+use_splines       = UCHAR(0)
+
+presmoothing      = 0.6
+
+
+input_data_name   = ""
+
+seqmin = INT(0)
+seqmax = INT(1)
+
+#--------------------------------------------------
+# 2D cross-correlation parameters
+#
+corr_step_x = INT(2)
+corr_step_y = INT(2)
+
+corr_winsize_x = INT(5)
+corr_winsize_y = INT(5)
+
+#--------------------------------------------------
+# ami PDE optic flow parameters
+#
+beta            = 0.25
+alfa            = 2.0
+Conv_GS_exp     = INT(-5)
+Nscales         = INT(3)
+Conv_Scales_exp = INT(-2)
+gradtype        = INT(0)
+boundarytype    = INT(0)
+gradcomputation = INT(0)
+smoothfunction  = INT(0)
+smoothgradient      = UCHAR(0)
+alpha_normalization = UCHAR(1)
+alpha_norm_epsilon  = INT(-2)
+
+
+
+#--------------------------------------------------
+# Vorticity code parameters
+#
+vort_grid       = INT(1)
+vort_winsize    = INT(5)
+vort_sigma      = 2
+vort_alpha_log  = 3
+vort_TOL_log    = -5
+
+#--------------------------------------------------
+# amiOF zoom code parameters
+#
+OFzoom_sigma    = 1.0
+OFzoom_T        = 500.0
+OFzoom_nbiter   = INT(5)
+OFzoom_alpha    = 1.0
+OFzoom_ht       = 10
+OFzoom_quantile = 0.15
+OFzoom_zoom     = INT(4);
+# from 0 to 3:
+# 0: Horn/Schunck
+# 1: image driven, isotropic
+# 2: image driven, anisotropic (Nagel)
+# 3: flow driven, isotropic
+OFzoom_dtype    = INT(0)
+
+#--------------------------------------------------
+# test varying alfa
+#
+alfa_min  = 0.25
+alfa_max  = 4
+alfa_step = 0.25
+
+#--------------------------------------------------
+# Continous Gaussian Scales
+#
+sigma_min  = 0.4
+sigma_max  = 4
+sigma_N    = INT(5)
+
+
+
+proc DeleteImages() {
+  global
+
+  del im
+  del im1
+  del displ
+  del displ_res
+  del mask
+  del ang_error
+
+  local
+}
+
+
+#
+proc LoadImages() {
+#    ----------
+
+  global
+
+  input_data_name = "standard"
+
+    i1_0 = (FLOAT) Image "PreFr1_08nb.tif"
+    i2_0 = (FLOAT) Image "PosFr1_18nb.tif"
+    
+    // change dimensions for multiples of 8
+    dimx = floor(i1_0.tx/8)*8
+    dimy = floor(i1_0.ty/8)*8
+    
+    i1 = i1_0[0:(dimx-1),0:(dimy-1)]
+    i2 = i2_0[0:(dimx-1),0:(dimy-1)]
+    
+    im = Image(FLOAT,i1.tx,i1.ty,2)
+    im.putimage(i1,0,0,0)
+    im.putimage(i2,0,0,1)
+    im = Flip(im,1)
+    
+    displ = Image(FLOAT_VECTOR,i1.tx,i1.ty,1)
+    displ.initvalue(0,0,0)
+    mask = (UCHAR)  i1
+    mask = mask*0+255
+    
+    displ_res= displ*0
+    im1 = im[:,:,0:0]
+    ang_error = (FLOAT) displ[0]*0
+
+  local
+
+}
+# LoadImages()
+
+#
+proc LoadRFImage() {
+#    ----------
+
+  global
+  ls
+  input_data_name = "RF"
+  i0 = Image "rf.ami.gz"
+  // change dimensions for multiples of 8
+  dimx = floor(i0.tx/8)*8
+  dimy = floor(i0.ty/8)*8
+    
+  im = i0[0:(dimx-1),0:(dimy-1),0:(i0.tz-1)]
+    
+  displ = Image(FLOAT_VECTOR,im.tx,im.ty,im.tz-1)
+  displ.initvalue(0,0,0)
+  mask = (UCHAR)  im
+  mask = mask*0+255
+    
+    displ_res= displ*0
+    im1 = im[:,:,0:(im.tz-2)]
+    ang_error = (FLOAT) displ[0]*0
+
+  local
+
+}
+# LoadRFImage()
+
+
+proc InverseFlow( IMAGE _flow, NUM scale_factor) {
+  flow1 = Resize(_flow,_flow.tx*scale_factor,_flow.ty*scale_factor,1,2)
+  flow1 = AMIFluid->amiInverseFlow(flow1/2)
+  _flow = Resize(flow1,_flow.tx,_flow.ty,_flow.tz,2)
+}
+
+#--------------------------------------------------
+proc invert_flow_2d_t(IMAGE _flow) {
+  //
+  for seq=0 to _flow.tz-1 {
+    _tmp = _flow[:,:,seq:seq]
+    InverseFlow(&_tmp,inverse_upsample)
+    _flow.putimage(_tmp,0,0,seq)
+    del _tmp
+  }
+}
+
+
+#--------------------------------------------------
+proc call_amiOFPDE_temp(IMAGE _im, IMAGE _res) {
+
+  AMIFluid->amiOFSetSymmetric(symmetric)
+  
+  Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
+  Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
+  AMIFluid->amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+  
+  if (symmetric) {
+    // invert flux
+    global_new 
+    symmetricflow=_res;
+    invert_flow_2d_t(&_res)
+    local_new
+  } 
+ 
+}
+
+
+#--------------------------------------------------
+proc call_amiOFPDE_Zoom(IMAGE _im1,IMAGE _im2, IMAGE _res) {
+
+  _resx=_res[0]
+  _resy=_res[1]
+
+  AMIFluid->amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
+
+  _res.SetComponent( 0, _resx)
+  _res.SetComponent( 1, _resy)
+
+}
+
+#--------------------------------------------------
+proc call_amiOFPDE_Vorticity(IMAGE _im1,IMAGE _im2, IMAGE _res) {
+
+  vort_alpha  = exp(ln(10)*vort_alpha_log  ) 
+  vort_TOL    = exp(ln(10)*vort_TOL_log    ) 
+
+  _resx=_res[0]
+  _resy=_res[1]
+  _vort=_resx;
+
+  AMIFluid->amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
+
+  _res.SetComponent( 0, _resx)
+  _res.SetComponent( 1, _resy)
+
+}
+
+#--------------------------------------------------
+proc call_amiCorr2D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
+  _u = _res[0];
+  _v = _res[1];
+  wsx = exp(ln(2)*corr_winsize_x)
+  wsy = exp(ln(2)*corr_winsize_y)
+  print sprint("window size (%0.0f",wsx)+","+sprint("%0.0f)\n",wsy)
+  corr=_im1*0
+  cx = _im1*0
+  cy = _im1*0
+  AMIFluid->amiOFCorr2D(_im1,_im2,_u,_v,corr,cx,cy,0,0,corr_step_x,corr_step_y,wsx,wsy,1);
+  _res.SetComponent( 0, _u;)
+  _res.SetComponent( 1, _v;)
+}
+
+
+#--------------------------------------------------
+proc call_OFPDE(IMAGE _im1, IMAGE _im2, IMAGE _res) {
+  print "call_OFPDE\n"
+  printn method
+    if (method==0) {
+      call_amiCorr2D(_im1,_im2,&_res)
+    } 
+    if (method==1) {
+      call_amiOFPDE(_im1,_im2,&_res)
+    } 
+    if (method==2) {
+      call_amiOFPDE_Zoom(_im1,_im2,&_res)
+    } 
+    if (method==3) {
+      call_amiOFPDE_Vorticity(_im1,_im2,&_res)
+    }
+}
+
+
+
+#--------------------------------------------------
+proc call_amiOFPDE_GaussSc(IMAGE _im1, IMAGE _im2, IMAGE _res) {
+
+  AMIFluid->amiOFSetSymmetric(symmetric)
+  zoom_z = 1+_im1.tz>1;
+  Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
+  Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
+  
+  ln_min=ln(sigma_min)
+  ln_max=ln(sigma_max)
+
+  print "1\n"
+  // smooth from sigma_max to sigma_min
+  for _n=0 to sigma_N-1 {
+    print "2\n"
+    _sigma = exp(ln_max+(ln_min-ln_max)/(sigma_N-1)*_n)
+    print sprint("\n sigma = %0.2f \n",_sigma)
+    _im1s = filter(_im1,_sigma,0,0,0)
+    _im2s = filter(_im2,_sigma,0,0,0)
+    AMIFluid->amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,1,Conv_Scales,gradtype,smoothfunction)
+    AMIFluid->amiOFPDE(_im1s,_im2s,&_res)
+  }
+
+  if (symmetric==1) {
+    // inverse flow
+    InverseFlow(&_res,inverse_upsample)
+  }
+}
+
+
+#--------------------------------------------------
+proc call_amiOFPDE(IMAGE _im1, IMAGE _im2, IMAGE _res) {
+
+  print "amiOFPDE\n"
+  if (Gaussian_scales==1) {
+    call_amiOFPDE_GaussSc(_im1,_im2,&_res)
+  } else {
+    AMIFluid->amiOFSetSymmetric(symmetric)
+    zoom_z = 1+_im1.tz>1;
+    Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
+    Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
+
+    AMIFluid->amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+    AMIFluid->amiOFPDE(_im1,_im2,&_res)
+
+    if (symmetric==1) {
+      // inverse flow
+      InverseFlow(&_res,inverse_upsample)
+    }
+  }
+}
+
+
+
+
+#--------------------------------------------------
+proc call_OFPDE_sym(IMAGE _im1, IMAGE _im2, IMAGE _res) {
+    call_amiOFPDE(_im1,_im2,&_res)
+}
+
+
+
+#--------------------------------------------------
+proc angular_error(IMAGE _d1, IMAGE _d0, IMAGE _err){
+  _err = (_d1*_d0+1)/sqrt(_d1*_d1+1)/sqrt(_d0*_d0+1)
+  # limit to [-1, 1]
+  _err = _err*(_err<1) +(_err>=1)
+  _err = _err*(_err>-1)-(_err<=-1)
+  # convert to degrees
+  _err = acos(_err)/Pi*180
+
+}
+
+#--------------------------------------------------
+proc RemoveBorder(IMAGE _m, NUM _size) {
+  umask = _m[_size:(_m.tx-1-_size),_size:(_m.ty-1-_size),0:(_m.tz-1)]
+  _m.initvalue(0)
+  _m.putimage(umask)
+  del umask
+}
+
+
+proc CB_Stats() {
+
+  // some statistics ...
+  diff = (displ-displ_res)*(displ-displ_res)
+
+  error = sqrt(mean(diff))
+  print sprint("RMS error = %f \n",error);
+
+  ng = normgrad(im,1)
+  error = sqrt(mean[ng>0.1](diff))
+  print sprint("mean (in high gradients) error = %f \n",error);
+
+  error_max = sqrt(max(diff))
+  print sprint("MAX error = %f \n",error_max);
+
+  ang_error.initvalue(0)
+  angular_error(displ,displ_res,&ang_error)  
+
+
+  mask1=mask*0+255
+  print sprint("Angular error : %f\n",mean(ang_error));
+  print sprint("Angular error (earth): %f\n",mean(ang_error,mask1));
+  // standard deviation of the error
+  ae1 = ang_error-mean(ang_error,mask1)
+  ae1_sd = ae1*ae1
+  ang_sd = sqrt(mean(ae1_sd,mask1))
+  print sprint("Angular error SD (earth) : %f\n",ang_sd);
+
+  RemoveBorder(&mask1,15)
+  print sprint("Angular error (earth - 15 pix. border): %f\n",mean(ang_error,mask1));
+
+  print "Only pixel with big enough displacement ...\n"
+  mask1=mask*0+255
+
+  morph = filters.ContinuousMorphology()
+
+  // Erode mask
+  mask1f = (FLOAT) mask1
+#  mask1fe = EDPerode(mask1f,1,0.25)
+  mask1fe = morph.Erode(mask1f,1,0.25)
+  mask1 =  (UCHAR) ((mask1fe>127)*255)
+  
+  print sprint("Angular error : %f\n",mean(ang_error));
+  print sprint("Angular error (earth): %f\n",mean(ang_error,mask1));
+  RemoveBorder(&mask1,15)
+  print sprint("Angular error (earth - 15 pix. border): %f\n",mean(ang_error,mask1));
+   
+}
+
+
+#--------------------------------------------------
+#--------------------------------------------------
+
+# BUG??,  needed to create this function to avoid a segmentation fault ...
+proc UpdateDisplay() {
+  global; show im1; local  
+}
+
+proc CB_ReLoad() {
+  if (images_loaded) {
+    DeleteImages()
+  }
+  LoadImages()
+  images_loaded=1
+}
+
+proc CB_LoadRF() {
+  if (images_loaded) {
+    DeleteImages()
+  }
+  LoadRFImage()
+  images_loaded=1
+}
+
+
+proc CB_Restart() {
+//print "CB_Restart \n"
+  displ_res.initvalue(0,0,0);
+//  CB_Iterate()
+}
+
+
+proc CB_IterateTemporal() {
+    call_amiOFPDE_temp(im,&displ_res);
+  UpdateDisplay()
+}
+
+proc CB_IterateStandard() {
+
+//  global
+
+//  if ((seqmin<0)||(seqmin>i.tz-1)) {
+//    seqmin = 0
+//  }
+//  if ((seqmax<0)||(seqmax>i.tz-1)) {
+//    seqmax = i.tz-1
+//  }
+//  winput.Display
+//  local
+
+//    seqmin=0
+//    seqmax=im.tz-1
+
+  for seq=seqmin to seqmax-1 {
+    print "Computing "; print seq; print "\n"
+    seqn=seq-seqmin
+    print "1\t"; print seqn; print "\n"
+    i  = im[:,:,seqn:seqn]
+    print "2\t";
+    i2 = im[:,:,(seqn+1):(seqn+1)]
+    print "3\t";
+    d  = displ_res[:,:,seqn:seqn]
+    if (symmetric==0) {
+      call_OFPDE(i,i2,&d);
+    } else { 
+      call_OFPDE_sym(i,i2,&d);
+    }
+    displ_res.putimage(d,0,0,seqn)
+  }
+  UpdateDisplay()
+}
+
+proc CB_Iterate() {
+//  print "CB_Iterate \n"
+//  print sprint("temporal %0.0f \n",temporal);
+  if (presmoothing>0.1) {
+    im_bak=im
+    # 2D Gaussian filtering in X and Y
+    im = filter(im_bak,presmoothing,0,0,-1)
+  }
+  alpha_epsilon  = exp(ln(10)*alpha_norm_epsilon)
+
+  #print sprint("global smoothing = %01.0f \n",global_smoothing)
+  AMIFluid->amiOFSetGlobalConstraint(global_smoothing)
+  AMIFluid->amiOFSetSmoothGradient(smoothgradient)
+  AMIFluid->amiOFSetGradient(gradcomputation)
+  AMIFluid->amiOFSetBoundaryType(boundarytype)
+  AMIFluid->amiOFSetAlphaNormEpsilon(alpha_epsilon)
+  AMIFluid->amiOFSetNormalizeAlpha(alpha_normalization)
+
+  AMIFluid->amiOFSetInterpolation(use_splines)
+  if (temporal==1) {
+    CB_IterateTemporal()
+  } else {
+    CB_IterateStandard()
+  }
+
+  if (presmoothing>0.1) {
+    im = im_bak
+    del im_bak
+  }
+
+}
+
+
+proc CB_Display() {
+  global
+  show im1;
+  im1_draw.setvector(0,displ_res);
+  im1_draw.setvector(1,displ);
+  local
+}
+
+proc CB_InputImages() {
+  global
+  winput.Display()
+  local
+}
+
+proc CB_AlphaTests() {
+  global
+  w2.Display()
+  local
+}
+
+
+proc CB_corr_param() {
+  global
+  wcorr.Display()
+  local
+}
+
+proc CB_amiOF_param() {
+  global
+  wamiOF.Display()
+  local
+}
+
+
+proc CB_JavOF_param() {
+  global
+  wJavOF.Display()
+  local
+}
+
+proc CB_JAOF_param() {
+  global
+  wJAOF.Display()
+  local
+}
+
+proc CB_Vort_param() {
+  global
+  wVort.Display()
+  local
+}
+
+proc CB_OFzoom_param() {
+  global
+  wOFzoom.Display()
+  local
+}
+
+proc CB_GaussianScales_param() {
+  global
+  wGaussSc.Display()
+  local
+}
+
+proc CB_RunAlphaTests() {
+
+  param_str=""
+  if (symmetric) {
+    param_str = param_str + "_SYM"
+  } else { 
+    param_str = param_str + "_STD"
+  }
+  if (temporal) {
+    param_str = param_str + "_2DT"
+  } else { 
+    param_str = param_str + "_2D_"
+  }
+  param_str = param_str + sprint("_PreSmooth%0.2f",presmoothing)
+  param_str = param_str + sprint("_Beta%0.2f",beta)
+  param_str = param_str + sprint("_Scal%0.0f",Nscales)
+  param_str = param_str + sprint("_GradTyp%0.0f",gradtype)
+  param_str = param_str + sprint("_GradComp%0.0f",gradcomputation)
+  param_str = param_str + sprint("_BoundTyp%0.0f",boundarytype)
+  param_str = param_str + sprint("_SmoothGrad%0.0f",smoothgradient)  
+  param_str = param_str + sprint("_GlobSmooth%0.0f",global_smoothing)  
+  param_str = param_str + sprint("_SmoothFunc%0.0f",smoothfunction)
+  param_str = param_str + sprint("_UseSplines%0.0f",use_splines)
+  param_str = param_str + sprint("_AlphaNorm%0.0f",alpha_normalization)
+  param_str = param_str + sprint("_AlphaEps%0.0f",alpha_norm_epsilon)
+  param_str = param_str + sprint("_GST%0.0f",Conv_GS_exp)
+  param_str = param_str + sprint("_ST%0.0f",Conv_Scales_exp)
+  param_str = param_str + sprint("_a%0.2f",alfa_min)
+  param_str = param_str + sprint("-%0.2f",alfa_max)
+  param_str = param_str + sprint("-%0.2f",alfa_step)
+
+
+    filedir="Results/"
+
+  filename1=filedir+"MeanAngError____"+param_str+".dat"
+  filename2=filedir+"MeanAngErrorMarg"+param_str+".dat"
+  filename3=filedir+"SDAngError______"+param_str+".dat"
+  filename4=filedir+"MeanAngErrorSky_"+param_str+".dat"
+#  test_file1 = open(filename1,"w")
+#  test_file2 = open(filename2,"w")
+#  test_file3 = open(filename3,"w")
+#  test_file4 = open(filename4,"w")
+  test_file1 = File(filename1,"w")
+  test_file2 = File(filename2,"w")
+  test_file3 = File(filename3,"w")
+  test_file4 = File(filename4,"w")
+
+  param_str = ""
+  if (symmetric) {
+    param_str = param_str + "(Symmetric) "
+  } else { 
+    param_str = param_str + "(Standard) "
+  }
+  if (temporal) {
+    param_str = param_str + "(Temporal) "
+  } else { 
+    param_str = param_str + "(2D) "
+  }
+  param_str = param_str + sprint("(presmooth,%0.2f) ",presmoothing)
+  param_str = param_str + sprint("(beta,%f) ",beta)
+  param_str = param_str + sprint("(Nscales,%0.0f) ",Nscales)
+  param_str = param_str + sprint("(gradtype,%0.0f) ",gradtype)
+  param_str = param_str + sprint("(gradcomputation,%0.0f) ",gradcomputation)
+  param_str = param_str + sprint("(boundtype,%0.0f) ",boundarytype)
+  param_str = param_str + sprint("(smooth gradient,%0.0f) ",smoothgradient)
+  param_str = param_str + sprint("(global smoothing,%0.0f) ",global_smoothing)
+  param_str = param_str + sprint("(smoothfunction,%0.0f) ",smoothfunction)
+  param_str = param_str + sprint("(splines,%0.0f) ",use_splines)
+  param_str = param_str + sprint("(alpha normalization,%0.0f)",alpha_normalization)
+  param_str = param_str + sprint("(alpha normalization epsilon,%0.0f)",alpha_norm_epsilon)
+  param_str = param_str + sprint("(GS TOL,10^%0.0f) ",Conv_GS_exp)
+  param_str = param_str + sprint("(Scale TOL,10^%0.0f) ",Conv_Scales_exp)
+  param_str = param_str + sprint("(alpha,%f,",alfa_min)
+  param_str = param_str + sprint("%f,",alfa_max)
+  param_str = param_str + sprint("%f) ",alfa_step)
+
+  # print parameter information at the beginning of the files
+  test_file1._print("# Optical Flow technique\n")
+  test_file1._print("# Angular error obtained for the Yosemite sequence\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file1._print(_st_)
+  test_file1._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file1._print(_st_)
+
+  test_file2._print("# Optical Flow technique\n")
+  test_file2._print("# Angular error obtained for the Yosemite sequence\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file2._print(_st_)
+  test_file2._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file2._print(_st_)
+  test_file2._print("# margin of 15 pixels at the border\n")
+
+  test_file3._print("# Optical Flow technique\n")
+  test_file3._print("# Standard deviation of the angular error obtained for the Yosemite sequence\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file3._print(_st_)
+  test_file3._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file3._print(_st_)
+
+  test_file4._print("# Optical Flow technique\n")
+  test_file4._print("# Angular error obtained for the Yosemite sequence, getting rid of the pb close to the sky\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file4._print(_st_)
+  test_file4._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file4._print(_st_)
+
+  n=(alfa_max-alfa_min)/alfa_step
+  for k=0 to n {
+    alfa = alfa_min+k/n*(alfa_max-alfa_min)
+    CB_Restart()
+
+    ang_error.initvalue(0)
+    angular_error(displ,displ_res,&ang_error)  
+
+      // full image
+      mask1=mask*0+255
+
+    test_file1._print(alfa)
+    test_file1._print("\t")
+    test_file1._print(mean(ang_error,mask1))
+    test_file1._print("\n")
+
+    // standard deviation of the error
+    ae1 = ang_error-mean(ang_error,mask1)
+    ae1_sd = ae1*ae1
+    ang_sd = sqrt(mean(ae1_sd,mask1))
+
+    test_file3._print(alfa)
+    test_file3._print("\t")
+    test_file3._print(ang_sd)
+    test_file3._print("\n")
+
+    // error after removing 15 pixels at the border
+    RemoveBorder(&mask1,15)
+    test_file2._print(alfa)
+    test_file2._print("\t")
+    test_file2._print(mean(ang_error,mask1))
+    test_file2._print("\n")
+
+    // full image
+    mask1=mask*0+255
+
+    morph = filters.ContinuousMorphology()
+
+    // Erode mask
+    mask1f = (FLOAT) mask1
+#    mask1fe = EDPerode(mask1f,1,0.25)
+    mask1fe = morph.Erode(mask1f,1,0.25)
+    mask1 =  (UCHAR) ((mask1fe>127)*255)
+    test_file4._print(alfa)
+    test_file4._print("\t")
+    test_file4._print(mean(ang_error,mask1))
+    test_file4._print("\n")
+
+    ProcessXEvents(200);
+
+  }
+
+  print "closing files \n"
+  test_file1.close()
+  test_file2.close()
+  test_file3.close()
+  test_file4.close()
+  print "files closed\n"
+}
+
+
+#--------------------------------------------------
+# Input Images
+#
+winput = global::ami_import.ParamPanel("Input images for Optical Flow")
+winput.BeginBoxPanel("Elastography B mode")
+restart_id         = winput.AddButton("ReLoad", CB_ReLoad)
+winput.EndBoxPanel()
+winput.BeginBoxPanel("Elastography RF")
+restart_id         = winput.AddButton("Load RF", CB_LoadRF)
+seqmin_id          = winput.AddInt( &seqmin,  "seqmin", 0,100)
+seqmax_id          = winput.AddInt( &seqmax,  "seqmax", 0,100)
+winput.EndBoxPanel()
+winput.Update()
+
+
+#--------------------------------------------------
+# Window of Parameters for 2D cross-correlation code
+#
+wcorr = global::ami_import.ParamPanel("Cross-Correlation 2D")
+
+corr_step_x_id = wcorr.AddInt( &corr_step_x,  "corr_step_x", 1,20)
+corr_step_y_id = wcorr.AddInt( &corr_step_y,  "corr_step_y", 1,20)
+
+corr_winsize_x_id =  wcorr.AddInt( &corr_winsize_x,  "corr_winsize_x", 0,8)
+corr_winsize_y_id =  wcorr.AddInt( &corr_winsize_y,  "corr_winsize_y", 0,8)
+
+#restart_id=w1.AddButton("Restart", CB_Restart)
+#iterate_id=w1.AddButton("Iterate", CB_Iterate)
+
+wcorr.Update()
+#w1.Display
+
+#--------------------------------------------------
+# Parameters for libami's code
+#
+wamiOF = global::ami_import.ParamPanel("libamiFluid: PDE Optical Flow Parameters")
+
+presmoothing_id    = wamiOF.AddFloat( &presmoothing,  "presmoothing", 0,3)
+beta_id            = wamiOF.AddFloat( &beta,  "beta", 0.01,5)
+alfa_id            = wamiOF.AddFloat( &alfa,  "alfa", 0.01,20)
+Nscales_id         = wamiOF.AddInt( &Nscales,  "Nscales", 1,5)
+
+gradtype_id        = wamiOF.AddInt( &gradtype,  "gradtype", 0,3)
+
+gradcomputation_id = wamiOF.AddEnum( &gradcomputation)
+wamiOF.AddEnumChoice(gradcomputation_id,"grad_max")
+wamiOF.AddEnumChoice(gradcomputation_id,"grad_3x3")
+wamiOF.AddEnumChoice(gradcomputation_id,"grad_splines")
+
+boundtype_id = wamiOF.AddEnum( &boundarytype)
+wamiOF.AddEnumChoice(boundtype_id,"border")
+wamiOF.AddEnumChoice(boundtype_id,"outside mask")
+
+
+smoothfunction_id  = wamiOF.AddEnum( &smoothfunction)
+wamiOF.AddEnumChoice(smoothfunction_id,"x^2")
+wamiOF.AddEnumChoice(smoothfunction_id,"sqrt(x^2)")
+
+smoothgradient_id      = wamiOF.AddBoolean( &smoothgradient) 
+alpha_normalization_id = wamiOF.AddBoolean( &alpha_normalization)
+alpha_norm_epsilon_id  = wamiOF.AddInt( &alpha_norm_epsilon,  "alpha_norm_epsilon", -5,0)
+
+wamiOF.BeginBoxPanel("Convergence")
+#wamiOF.BeginHorizontal
+Conv_GS_exp_id     = wamiOF.AddInt( &Conv_GS_exp,  "Conv_GS_exp", -10,0)
+Conv_Scales_exp_id = wamiOF.AddInt( &Conv_Scales_exp,  "Conv_Scales_exp", -5,0)
+#wamiOF.EndHorizontal
+wamiOF.EndBoxPanel()
+wamiOF.Update()
+
+
+#--------------------------------------------------
+# Parameters for Vorticity code
+#
+wVort = global::ami_import.ParamPanel("Vorticity Optical Flow parameters")
+vort_grid_id       = wVort.AddInt( &vort_grid,  "vort_grid",    1,10)
+vort_winsize_id    = wVort.AddInt( &vort_winsize,  "vort_winsize", 3,10)
+vort_sigma_id      = wVort.AddFloat( &vort_sigma,  "vort_sigma", 0.1,5)
+vort_alpha_log_id  = wVort.AddFloat( &vort_alpha_log,  "vort_alpha_log", -1,10)
+vort_TOL_log_id    = wVort.AddFloat( &vort_TOL_log,  "vort_TOL_log", -10,-3)
+wVort.Update()
+
+#--------------------------------------------------
+# Parameters for optic_flow_zoom code
+#
+wOFzoom = global::ami_import.ParamPanel("Optic Flow PDE 2D parameters")
+
+OFzoom_sigma_id    = wOFzoom.AddFloat( &OFzoom_sigma,  "OFzoom_sigma", 0.5,5)
+OFzoom_T_id        = wOFzoom.AddFloat( &OFzoom_T,  "OFzoom_T", 1,1000)
+OFzoom_nbiter_id   = wOFzoom.AddInt( &OFzoom_nbiter,  "OFzoom_nbiter", 1,200)
+
+OFzoom_dtype_id    = wOFzoom.AddInt( &OFzoom_dtype,  "OFzoom_dtype", 0,3)
+OFzoom_alpha_id    = wOFzoom.AddFloat( &OFzoom_alpha,  "OFzoom_alpha", 0.01,5)
+OFzoom_ht_id       = wOFzoom.AddFloat( &OFzoom_ht,  "OFzoom_ht", 0.01,10)
+OFzoom_quantile_id = wOFzoom.AddFloat( &OFzoom_quantile,  "OFzoom_quantile", 0.01,10)
+OFzoom_zoom_id     = wOFzoom.AddInt( &OFzoom_zoom,  "OFzoom_zoom", 1,6)
+wOFzoom.Update()
+
+#--------------------------------------------------
+# Parameters for continous Gaussian multiscale
+#
+wGaussSc = global::ami_import.ParamPanel("Continous Gaussian Scales")
+sigma_min_id      = wGaussSc.AddFloat( &sigma_min,  "sigma_min", 0.01,5)
+sigma_max_id      = wGaussSc.AddFloat( &sigma_max,  "sigma_max", 0.01,15)
+sigma_N_id        = wGaussSc.AddInt( &sigma_N,  "sigma_N",   2,20)
+wGaussSc.Update()
+
+#--------------------------------------------------
+# Main Parameters
+#
+w1 = global::ami_import.ParamPanel("Optic Flow Experiments: main parameters ")
+
+input_id = w1.AddButton("Input Images", CB_InputImages)
+amiCorr_id = w1.AddButton("2D correlation",CB_corr_param)
+amiOF_id  = w1.AddButton("Parameters for libami code",         CB_amiOF_param)
+GCPOF_id  = w1.AddButton("Gaussian Continuous Pyramid",        CB_GaussianScales_param)
+ZoomOF_id = w1.AddButton("Parameters for optic_flow_zoom code",CB_OFzoom_param)
+Vort_id   = w1.AddButton("Parameters for Vorticity code",      CB_Vort_param)
+
+method_id = w1.AddEnum( &method)
+w1.AddEnumChoice(method_id,"Correlation 2D")
+w1.AddEnumChoice(method_id,"amiOpticFlow (new)")
+w1.AddEnumChoice(method_id,"amiOpticFlow")
+w1.AddEnumChoice(method_id,"Vorticity")
+
+
+sym_id              = w1.AddBoolean( &symmetric)
+invup_id            = w1.AddInt( &inverse_upsample,  "inverse_upsample", 1,10)
+temp_id             = w1.AddBoolean( &temporal)
+global_smoothing_id = w1.AddBoolean( &global_smoothing)
+use_splines_id      = w1.AddBoolean( &use_splines)
+Gaussian_scales_id  = w1.AddBoolean( &Gaussian_scales)
+
+w1.BeginBoxPanel("Controls")
+w1.BeginHorizontal()
+restart_id=w1.AddButton("Restart", CB_Restart)
+iterate_id=w1.AddButton("Iterate", CB_Iterate)
+
+#w1.EndHorizontal
+#w1.BeginHorizontal
+
+display_id=w1.AddButton("Display", CB_Display)
+stat_id   =w1.AddButton("Statistics", CB_Stats)
+w1.EndHorizontal()
+alfatests_id = w1.AddButton("Alpha Test", CB_AlphaTests)
+w1.EndBoxPanel()
+
+
+w1.Update()
+w1.Display()
+
+#-------------------------------------------------
+# Creating parameter window for test on alpha
+#-------------------------------------------------
+w2 = global::ami_import.ParamPanel("test sequence on alpha")
+alfa_min_id     = w2.AddFloat( &alfa_min,  "alfa_min", 0.01,10)
+alfa_max_id     = w2.AddFloat( &alfa_max,  "alfa_max", 0.01,20)
+alfa_step_id    = w2.AddFloat( &alfa_step,  "alfa_step", 0.01,1)
+alfa_start_id   = w2.AddButton("Run Alpha Test", CB_RunAlphaTests)
+w2.Update()
+
+
+#LoadImages()
+images_loaded=0

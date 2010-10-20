@@ -1,0 +1,12 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+#InfoDialog "Including scripts/OI/..."
+ami.MainFrame.AddToMenu("&Scripts","&IO","Read &Raw data","IO/Raw2Ami_gui.amil")
+ami.MainFrame.AddToMenu("&Scripts","&IO","&itk DICOM","IO/itkDICOM/itkDICOM.amil")
+
+# ITK
+ami.MainFrame.AddToMenu("&ITK","&IO","&DICOM","IO/itkDICOM/itkDICOM.amil")

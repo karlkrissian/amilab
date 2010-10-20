@@ -1,0 +1,69 @@
+
+***** Numerical expression *****
+
+token(s):
+SIN 	sin
+COS	cos
+TAN	tan
+ACOS	acos
+ASIN	asin
+ATAN	atan
+EXP	exp
+LOG	log
+LN	ln
+LE_OP   <=
+GE_OP   >=
+EQ_OP	==
+NE_OP	!=
+AND_OP  &&
+OR_OP	||
+
+The numbers are stored in float precision.
+The synthax for a numerical expression is very
+close to C language synthax.
+The operators sorted by priority order are:
+
+1. 	NUMBER, CONST_PI, VAR_FLOAT, VAR_INT, ( expr )
+
+2.	[-,+] cast_expr,
+	SIN:  sinus, 
+	COS:  cosinus, 
+	TAN:  tangent, 
+	ASIN: arcsinus, 
+	ACOS: arccosinus, 
+	ATAN: arctangent, 
+	EXP:  exponential, 
+	LOG:  logarithm basis 10, 
+	LN:   neperien logarithm,
+
+3.      *: multiplication, 
+	/: division
+
+4.	+: addition, 
+	-: subtraction
+
+5.	<: inferior, 
+	>: superior, 
+	LE_OP: lower or equal, 
+	GE_OP: greater or equal
+
+6.	EQ_OP: equal,
+	NE_OP: not equal
+
+7.	&: and
+
+8.	^: exclusive or
+
+9.	|: or
+
+10.	AND_OP: logical and
+
+11.	OR_OP: logical or
+
+12.	'logical_or_expr ? logical_or_expr : conditional_expr'
+	conditional expression
+
+13.	=: assignment
+
+
+******************************

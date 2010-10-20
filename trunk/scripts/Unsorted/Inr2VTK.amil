@@ -1,0 +1,6 @@
+#!/home/karl/projects/bin/OS/improcess
+
+i = Image($1)
+i.save $2
+
+quit

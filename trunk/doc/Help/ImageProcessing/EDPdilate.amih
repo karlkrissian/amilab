@@ -1,0 +1,27 @@
+
+*****  EDPdilate *****
+
+token(s):
+EDP_dilate EDPdilate
+
+rule(s):
+image -> EDP_dilate ( VAR_IMAGE, expr, expr )
+
+parameter(s):
+  #1 VAR_IMAGE: input image
+  #2 expr     : dilatation size
+  #3 expr     : evolution step dt
+
+description:
+Image morphological greyscale dilatation
+using Partial Derivative Equation and the 
+scheme of Brockett and Maragos.
+
+Example(s):
+- Dilatation of size 1
+ di = EDPdilate(i,1,0.1)
+
+See Also:
+	EDPerode EDPopen EDPclose
+
+******************************

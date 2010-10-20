@@ -1,0 +1,25 @@
+
+***** SetColor: set the same color all vertices of a surface *******
+
+token(s):
+T_SetColor	SetColor
+
+rule(s):
+commande <-- VAR_SURFACE '.' T_SetColor '(' expr ',' expr ',' expr ')'
+
+
+parameters
+  # VAR_SURFACE: input surface
+  # expr: red   (0-255)
+  # expr: green (0-255)
+  # expr: blue  (0-255)
+
+description:
+Set the same color all vertices of a surface.
+
+
+See Also:
+	ColorMaterial
+
+
+******************************

@@ -1,0 +1,30 @@
+
+***** secdergrad : Second Order derivative  *****
+***** in the gradient direction             *****
+
+token(s):
+secdergrad SecDerGrad
+
+rule(s): 
+image -> SecDerGrad ( VAR_IMAGE, expr )
+
+Parameters
+  #1 var_image: input image 
+  #2 expr:      standard deviation of the Gaussian kernel
+
+description:
+Computes the second order derivative of the image
+intensity in the direction of the gradient.
+Take into account the voxel size,
+and computes the derivatives by convolution with
+the derivatives of a Gaussian of standard deviation
+given by the second parameter.
+
+
+Example(s):
+j = secdergrad(i,1)
+
+See Also:
+	filter normgrad
+
+****************************

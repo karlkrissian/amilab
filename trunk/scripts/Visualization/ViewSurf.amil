@@ -1,0 +1,5 @@
+#!/usr/bin/amilab
+
+s = Surface($1)
+show s
+

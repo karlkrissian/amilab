@@ -1,0 +1,31 @@
+
+***** normgrad : Gradient norm *****
+
+token(s):
+NormGrad normgrad
+
+rule(s): 
+image -> NormGrad ( VAR_IMAGE, expr )
+
+Parameters
+  #1 var_image: input image 
+  #2 expr:      standard deviation of the Gaussian kernel
+
+description:
+Computes the norm of the gradient of the image,
+using Gaussian convolutions for computing the derivatives
+(convolutions with the derivatives of a Gaussian).
+
+
+Example(s):
+j = normgrad(i,1)
+
+Remark:
+Another way to obtain it is by computing the gradient vector:
+gi = gradient(i,1)
+j = sqrt(gi*gi)
+
+See Also:
+	gradient
+
+****************************

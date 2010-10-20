@@ -1,0 +1,13 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+# Scripts menu
+ami.MainFrame.AddToMenu(\
+  "&Scripts",\
+  "&Segmentation",\
+  "&Multiple-LevelSets",\
+  "Segmentation/MultipleLevelSets/MultipleLevelSetsGui.amil")
+

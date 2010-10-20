@@ -1,0 +1,45 @@
+#!/home/karl/projects/bin/solaris/improcess
+
+//----------------------------------------------------------------------
+// Skeleton image of the point of the image 'i'
+// of intensity higher than th
+//
+proc BinarySkeleton( IMAGE im, IMAGE res, NUM th) {
+//
+
+  j     = (UCHAR) ((im>th)*255)
+
+  j1    = (j<127)*255
+
+  print "Running the distance transform \n" 
+  k1    = AndreDist(j1)
+
+  print "Processing the gradient \n"
+  k1g   = gradient(k1,1)
+
+  print "Processing the divergence of the gradient \n"
+  Flux  = OutFlux(k1g)*-1
+
+  print "Processing the skeleton ... \n"
+  res   = Skeleton(j,Flux,0,1000)
+
+}
+// BinarySkeleton
+
+
+//----------------------------------------------------------------------
+// Skeleton image of the point of the image 'i'
+// of intensity higher than th
+//
+proc IsoContourSkeleton( IMAGE im, IMAGE res, NUM th) {
+//
+
+  j     = (UCHAR) ((im>th)*255)
+  d = vtkPropDaniel2(i,th,0,1000) 
+
+  print "Processing the skeleton ... \n"
+  res   = Skeleton(j,d,0,1000)
+
+}
+// BinarySkeleton
+
