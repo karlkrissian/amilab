@@ -9,7 +9,7 @@ if [ $# -ne 1 ]
       echo
       echo " Usage: "
       echo " $0 amilabtag"
-      echo " where amilabtag is the name of the amilab subversion repository tab to download (for example release-3.0.0)"
+      echo " where amilabtag is the name of the amilab subversion repository tab to download (for example Release-3.0.0)"
       echo
       exit $ERROR_PAR
 fi
