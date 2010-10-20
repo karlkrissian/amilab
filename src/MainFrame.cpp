@@ -29,7 +29,7 @@
 #include <wx/toolbar.h>
 #include <wx/combobox.h>
 #include <iostream>
-
+#include <cstring>
 #include "myTreeCtrl.h"
 
 #include <sys/stat.h>
@@ -61,6 +61,10 @@ using namespace amilab;
 #include "ami_object.h"
 #include "wxStcFrame.h"
 #include "ParamPanel.hpp"
+
+
+#include <map>
+#include <string>
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
@@ -370,12 +374,13 @@ MainFrame::MainFrame( const wxString& title,
 */
 
   CreateVarTreePanel(this);
-  m_mgr.AddPane(_vartree_panel,
+  m_mgr.AddPane(_var_book,
                   wxAuiPaneInfo()
                   .Name(wxT("VariablesTree"))
                   .Caption(wxT("Variables Tree"))
                   .Left().Layer(1)
-                  .MaximizeButton(true));
+                  .MaximizeButton(true)
+                  .BestSize(wxSize(200,200)));
 
   CreateLogText(this);
   m_mgr.AddPane(_log_text,
@@ -662,7 +667,28 @@ void MainFrame::CreateVarListPanel ( wxWindow* parent)
 void MainFrame::CreateVarTreePanel ( wxWindow* parent)
 {
 
-  _vartree_panel = new wxPanel(parent);
+  
+   wxSize client_size = GetClientSize();
+
+   _var_book  = new wxAuiNotebook(this, wxID_ANY,
+                                    wxPoint(client_size.x, client_size.y),
+                                                //wxDefaultPosition,
+                                    wxDefaultSize,
+                                    wxAUI_NB_TOP          |
+                                    wxAUI_NB_TAB_SPLIT    |
+                                    wxAUI_NB_TAB_MOVE     |
+                                    wxAUI_NB_SCROLL_BUTTONS
+                                  );
+  _var_book->Fit();
+
+
+//  CreateDrawingPanel(this);
+//  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
+
+
+  // Add TreeList Page to notebook
+  _vartree_panel = new wxPanel(this);
+  
   vartreepanel_sizer  = new wxBoxSizer( wxVERTICAL );
   _vartree_panel->SetSizer(vartreepanel_sizer);
 
@@ -721,7 +747,98 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
   vartreepanel_sizer->Fit(_vartree_panel);
 
+
+  _var_book->AddPage(_vartree_panel,wxT("Tree"));
+  
+
+  // File Selection
+  typedef std::pair<std::string,std::string> file_format;
+  typedef std::map<std::string,std::string>  file_format_map;
+
+  std::map<std::string,std::string> formats;
+
+  formats.insert(file_format( "All ext",
+                              "*.*"));
+  formats.insert(file_format( "Amilab Images",
+                              "*.ami;*.ami.gz"));
+  formats.insert(file_format( "Amilab scripts",
+                              "*.amil"));
+  formats.insert(file_format( "VTK Files",
+                              "*.vtk"));
+  formats.insert(file_format( "Standard images",  
+                              "*.jpg;*.JPG;*.jpeg;*.JPEG;*.png;*.PNG;*.bmp;*.BMP;*.tif;*.TIF;*.tiff;*.TIFF"));
+  formats.insert(file_format( "ITK",
+                              "*.mhd"));
+  formats.insert(file_format( "All",
+                              "*"));
+
+  wxString format_choices;
+
+  for(file_format_map::iterator p = formats.begin(); 
+      p!=formats.end();
+      ++p)
+  {
+    if (p!=formats.begin())
+      format_choices << wxString::FromAscii("|");
+    format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
+  }
+
+  
+  //
+  _var_dirctrl = new wxGenericDirCtrl(this,wxID_ANY,
+                                    wxDirDialogDefaultFolderStr,
+                                    wxDefaultPosition,
+                                    wxDefaultSize,
+                                    wxDIRCTRL_3D_INTERNAL
+                                    |
+                                    //wxBORDER_SUNKEN
+                                    //|
+                                    wxDIRCTRL_SHOW_FILTERS
+                                    #if (wxCHECK_VERSION(2,9,1))
+                                      |
+                                      wxDIRCTRL_MULTIPLE
+                                    #endif // wxCHECK_VERSION(2,9,1)
+                                    ,                                      
+                                    format_choices, // filters
+                                    0 // default filter
+                                    );
+                                    
+  // try to allow multiple selections
+  //_var_dirctrl->GetTreeCtrl()->SetWindowStyle(_var_dirctrl->GetTreeCtrl()->SetWindowStyle() |wxTR_EXTENDED);
+
+  _var_dirctrl->GetTreeCtrl()->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
+                                       wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
+  _var_book->AddPage(_var_dirctrl,wxT("Dir"));
+  
+  //std::cout << res << std::endl;
+  _var_book->Fit();
+
 } // CreateVarTreePanel()
+
+
+//--------------------------------------------------------
+void MainFrame::OnFileActivated(wxCommandEvent& WXUNUSED(event))
+{
+  #if (wxCHECK_VERSION(2,9,1))
+    wxArrayString paths;
+    wxString filename;
+    _var_dirctrl->GetFilePaths(paths);
+    for (size_t n=0; n<paths.GetCount(); n++ )
+    {
+      filename = paths[n];
+      if (filename != wxEmptyString) {
+        //std::cout << filename.mb_str(wxConvUTF8)<< "Activated !!!" << std::endl;
+        TryToOpenImage(filename);
+      }
+    }
+  #else// (wxCHECK_VERSION(2,9,1))
+    wxString filename = _var_dirctrl->GetFilePath();
+    if (filename != wxEmptyString) {
+      //std::cout << filename.mb_str(wxConvUTF8)<< "Activated !!!" << std::endl;
+      TryToOpenImage(filename);
+    }
+  #endif // (wxCHECK_VERSION(2,9,1))
+}
 
 //--------------------------------------------------------
 void MainFrame::CreateConsoleText( wxWindow* parent)
@@ -1461,7 +1578,6 @@ void MainFrame::OnViewReset( wxCommandEvent& event )
   m_mgr.Update();
 }
 
-
 //-----------------------------------------------------
 void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
 {
@@ -1476,8 +1592,16 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
     return;
   }
 
+  TryToOpenImage(wxString(name.c_str(),wxConvUTF8));
+}
+
+//-----------------------------------------------------
+bool MainFrame::TryToOpenImage( const wxString& string_filename)
+{
+  std::string varname;
+  
   // Create possible variable name
-  wxString possible_name = wxFileName(wxString(name.c_str(),wxConvUTF8)).GetName();
+  wxString possible_name = wxFileName(string_filename).GetName();
   // remove all extensions
   while (wxFileName(possible_name).HasExt()) {
     wxFileName fn(possible_name);
@@ -1488,18 +1612,19 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
   possible_name.Replace(wxT("."),wxT("_"));
   possible_name.Replace(wxT("("),wxT("_"));
   possible_name.Replace(wxT(")"),wxT("_"));
+  possible_name.Replace(wxT("-"),wxT("_"));
 
-  res=AskVarName( this,
+  int res=AskVarName( this,
                   string("Image variable name"),
                   string("Enter name:"),
                   string(possible_name.mb_str(wxConvUTF8)),
                   varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;
-    return;
+    return false;
   }
 
-  wxFileName filename(GetwxStr(name));
+  wxFileName filename(string_filename);
   filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
   wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
                       filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
@@ -1514,7 +1639,19 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
 //  cmd += newname.mb_str();
 //  cmd += string("\" // from menu");
   this->TC->IncCommand(wxst_cmd);
-  this->TC->ProcessReturn();
+  bool return_res = this->TC->ProcessReturn(); 
+  if (!return_res) {
+    wxString mess = wxT("Failed to open '");
+    mess += string_filename;
+    mess += wxT("' ...");
+    wxMessageDialog dialog( 
+      this,mess,wxT("Info"),
+      wxOK|wxICON_INFORMATION|wxSTAY_ON_TOP 
+      );
+    dialog.ShowModal();
+    this->TC->ConsoleClear();
+  }
+  return return_res;
 }
 
 //-----------------------------------------------------
@@ -1524,39 +1661,13 @@ void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
   string varname;
   size_t pos = event.GetId() - wxID_Images_History;
   wxString filename(images_history->GetHistoryFile(pos));
-  wxString possible_name(wxFileName(filename).GetName());
-  // remove all extensions
-  while (wxFileName(possible_name).HasExt()) {
-    wxFileName fn(possible_name);
-    fn.ClearExt();
-    possible_name = fn.GetName();
-  }
-  possible_name.Replace(wxT(" "),wxT("_"));
-  possible_name.Replace(wxT("."),wxT("_"));
-  possible_name.Replace(wxT("("),wxT("_"));
-  possible_name.Replace(wxT(")"),wxT("_"));
-
-  int res=AskVarName( this,
-                  string("Image variable name"),
-                  string("Enter name:"),
-                  string(possible_name.mb_str(wxConvUTF8)),
-                  varname);
-  if (!res) {
-    std::cerr << " Var name error " << std::endl;
-    return;
-  }
+  
+  TryToOpenImage(filename);
 
 
-  images_history->RemoveFileFromHistory(pos);
-  images_history->AddFileToHistory(filename);
+//  images_history->RemoveFileFromHistory(pos);
+//  images_history->AddFileToHistory(filename);
 
-//  cmd = varname + string(" = Image \"");
-//  cmd += filename.mb_str();
-//  cmd += string("\" // from menu");
-  wxString wxst_cmd;
-  wxst_cmd = wxString(varname.c_str(),wxConvUTF8)+wxT(" = Image \"")+filename+wxT("\" // from menu");
-  this->TC->IncCommand(wxst_cmd);
-  this->TC->ProcessReturn();
 }
 
 //-----------------------------------------------------

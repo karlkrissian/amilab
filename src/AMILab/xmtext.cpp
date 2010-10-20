@@ -330,7 +330,7 @@ void TextControl::ProcessTab()
 } // ProcessTab()
 
 //--------------------------------------------------
-void TextControl::ProcessReturn()
+bool TextControl::ProcessReturn()
 {
   wxString   alltext;
   wxString   last_cmd;
@@ -358,7 +358,7 @@ void TextControl::ProcessReturn()
     if (!res) {
       GB_driver.yyiperror(" Need Image \n");
       in_changed_value = 0;
-      return;
+      return false;
     }
 
     wxFileName filename(wxString::FromAscii(name.c_str()));
@@ -384,7 +384,7 @@ void TextControl::ProcessReturn()
     if (!res) {
       GB_driver.yyiperror(" Need Image \n");
       in_changed_value = 0;
-      return;
+      return false;
     }
 
     wxFileName filename(wxString::FromAscii(name.c_str()));
@@ -431,6 +431,7 @@ void TextControl::ProcessReturn()
   if (GB_main_wxFrame)
     GB_main_wxFrame->UpdateVarsDisplay();
 
+  return parseok;
   // event.Skip();
 }
 

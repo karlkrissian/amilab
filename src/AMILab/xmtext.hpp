@@ -109,7 +109,7 @@ protected:
 
   void ProcessTab();
 
-  void ProcessReturn();
+  bool ProcessReturn();
 
   void OnEnter(wxCommandEvent& event);
 

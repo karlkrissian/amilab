@@ -110,6 +110,10 @@ WS      [ \t]
 #define YY_USER_ACTION  yylloc->columns(yyleng);
 %}
 
+
+identifier [a-zA-Z_]([A-Za-z0-9_])*
+
+
 %%
 
  /* code to place at the beginning of yylex() */
@@ -861,7 +865,7 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   // sauver les commentaires dans une variable du driver??
 }
 
-local::([A-Za-z0-9_])*   {
+local::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -872,7 +876,7 @@ local::([A-Za-z0-9_])*   {
   return result;
 }
 
-global::([A-Za-z0-9_])*   {
+global::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -882,7 +886,7 @@ global::([A-Za-z0-9_])*   {
   return result;
 }
 
-this::([A-Za-z0-9_])*   {
+this::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -895,7 +899,7 @@ this::([A-Za-z0-9_])*   {
 }
 
 
-::([A-Za-z0-9_])*   {
+::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -908,7 +912,7 @@ this::([A-Za-z0-9_])*   {
 }
 
 
-::([A-Za-z0-9_])*->([A-Za-z0-9_])*   {
+::{identifier}->{identifier}   {
 // TODO: can all the variable system to return only variable from lex !!!
 // this rule is a hack
 //
@@ -945,7 +949,7 @@ this::([A-Za-z0-9_])*   {
 }
 
 
-([A-Za-z0-9_])*->([A-Za-z0-9_])*   {
+{identifier}->{identifier}   {
 //
 //============================ Parse variable in a given context ====================
 //
@@ -982,7 +986,7 @@ this::([A-Za-z0-9_])*   {
 
 
 
-([A-Za-z0-9_])*   {
+{identifier}   {
 //
 //============================ Parse variable ====================
 //

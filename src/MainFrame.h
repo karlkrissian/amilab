@@ -21,6 +21,7 @@
 
 
 #include "wx/treectrl.h"
+#include <wx/dirctrl.h>
 
 //#include "wx/app.h"
 //#include "wx/grid.h"
@@ -129,6 +130,9 @@ public:
 
   void OnFileOpenImage         ( wxCommandEvent& event );
   void OnFileOpenImageHistory  ( wxCommandEvent& event );
+
+  bool TryToOpenImage( const wxString& filename);
+
   void OnFileOpenPolydata ( wxCommandEvent& event );
   void OnFileLoadScript   ( wxCommandEvent& event );
   void OnFileOpenScriptHistory  ( wxCommandEvent& event );
@@ -234,7 +238,9 @@ protected:
   wxPanel*     _varlist_panel;
   wxBoxSizer*  varlistpanel_sizer;
 
-  wxPanel*     _vartree_panel;
+  wxAuiNotebook*    _var_book;
+  wxPanel*          _vartree_panel;
+  wxGenericDirCtrl* _var_dirctrl;
   wxBoxSizer*  vartreepanel_sizer;
 
   boost::shared_ptr<wxTextValidator> _textcontrol_validator;
@@ -287,6 +293,8 @@ protected:
   void CreateHtmlPanel    ( wxWindow*);
   void CreateDrawingPanel ( wxWindow*);
   void CreateSettingsPanel( wxWindow*);
+
+  void OnFileActivated(wxCommandEvent& event);
 
 private:
   wxAuiManager m_mgr;

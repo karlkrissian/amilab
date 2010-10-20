@@ -69,4 +69,4 @@ cd ${maindir}/doc
 cd ${maindir}/src/build/release
 yum install rpm-build
 cpack -G RPM
-rpm -ivh AMILab-3.0.0-Linux.i686.rpm
+rpm -ivh AMILab-3.0.0-Linux.`uname -p`.rpm

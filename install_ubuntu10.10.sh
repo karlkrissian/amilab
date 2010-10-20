@@ -55,7 +55,5 @@ cd ${maindir}/doc
 
 # create and install ubuntu package ?
 cd ${maindir}/src/build/release
-# rerun cmake . to be sure to have the dependencies right
-cmake .
 cpack -G DEB
-software-center ./AMILab-3.0.0-Linux.i686.deb
+dpkg -i AMILab-3.0.0-Linux.`uname -p`.deb
