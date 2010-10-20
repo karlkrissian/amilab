@@ -409,15 +409,16 @@ MainFrame::MainFrame( const wxString& title,
   /// @cond wxCHECK
 
     // create some toolbars
-  #if (wxCHECK_VERSION(2,9,0)) && !WIN32
+/*  #if (wxCHECK_VERSION(2,9,0)) && !WIN32
     wxToolBar* tb1 = new wxToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize);
-  #else
+  #else*/
+  
     wxAuiToolBar* tb1 = new wxAuiToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize,
                         wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW);
-  #endif
+/*  #endif*/
   /// @endcond
     tb1->SetToolBitmapSize(wxSize(48,48));
 //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
@@ -504,6 +505,7 @@ void MainFrame::CreateMainBook(wxWindow* parent)
 
   CreateHtmlPanel(this);
   _main_book->AddPage( _html_panel , wxT("Help") );
+  
 
   CreateSettingsPanel(this);
   _main_book->AddPage( _settings_panel , wxT("Paths") );
@@ -756,7 +758,7 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
   // wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE | wxDATAVIEW_COL_RESIZABLE
   wxDataViewColumn *column0 =
   new wxDataViewColumn( "Name", tr, 0, 250, wxALIGN_LEFT,
-                        wxDATAVIEW_COL_RESIZABLE );
+                        wxDATAVIEW_COL_RESIZABLE |  wxDATAVIEW_COL_SORTABLE );
   column0->SetMinWidth(200); // this column can't be resized to be smaller
   _var_dataview->AppendColumn( column0 );
 
@@ -885,8 +887,11 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
   sbox_sizer->Add(buttons_sizer, 0, wxEXPAND , 5);
   sbox_sizer->Add(TC.get(), 1, wxEXPAND | wxALL, 2);
 
-  m_textDropTarget = new TextControlTextDropTarget(this->TC.get());
-  this->TC->SetDropTarget(m_textDropTarget);
+//   m_textDropTarget = new TextControlTextDropTarget(this->TC.get());
+//   this->TC->SetDropTarget(m_textDropTarget);
+
+  TextControlDropTarget *textDropTarget = new TextControlDropTarget(this->TC.get());
+  this->TC->SetDropTarget(textDropTarget);
 
 } // CreateConsoleText()
 
@@ -1553,13 +1558,13 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
   // delete children of rootbranch
   m_amilab_model->DeleteChildren(rootbranch);
 
-          AMILabTreeModelNode *node1 = (AMILabTreeModelNode*) rootbranch.GetID();
-        std::cout << "rootbranch="
-                  << " node: "      << node1->m_Name
-                  << " parent: "    << node1->GetParent()->m_Name
-                  << " type: "      << node1->m_Type
-                  << " container: " << node1->m_container
-                  << std::endl;
+//   AMILabTreeModelNode *node1 = (AMILabTreeModelNode*) rootbranch.GetID();
+// std::cout << "rootbranch="
+//           << " node: "      << node1->m_Name
+//           << " parent: "    << node1->GetParent()->m_Name
+//           << " type: "      << node1->m_Type
+//           << " container: " << node1->m_container
+//           << std::endl;
   // TODO: avoid creation of all branches at each update
   // create all the first branches  
   wxDataViewItem vartree_images    = m_amilab_model->CreateBranchNode(rootbranch,_T("Images"));
@@ -1672,19 +1677,17 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
       if ((var->Type() == type_ami_object))
       {
         itemid = m_amilab_model->CreateBranchNode(append_id,
-          wxString(var->Name().c_str(), wxConvUTF8),
-          wxString(var->GetTypeName().c_str(), wxConvUTF8)
-          );
+          wxString(var->Name().c_str(), wxConvUTF8));
 
         m_amilab_model->SetVar(itemid, var);
 
-        AMILabTreeModelNode *node = (AMILabTreeModelNode*) itemid.GetID();
-        std::cout << "itemid="
-                  << " node: "      << node->m_Name
-                  << " parent: "    << node->GetParent()->m_Name
-                  << " type: "      << node->m_Type
-                  << " container: " << node->m_container
-                  << std::endl;
+//         AMILabTreeModelNode *node = (AMILabTreeModelNode*) itemid.GetID();
+//         std::cout << "itemid="
+//                   << " node: "      << node->m_Name
+//                   << " parent: "    << node->GetParent()->m_Name
+//                   << " type: "      << node->m_Type
+//                   << " container: " << node->m_container
+//                   << std::endl;
       }
       else
         itemid = m_amilab_model->CreateLeafNode(append_id,
@@ -1694,6 +1697,8 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
           wxString(text.c_str(), wxConvUTF8),
           var
           );
+
+      m_amilab_model->BuildAbsoluteName(itemid);
 
       if ((var->Type() == type_ami_object)) {
         // get the pointer to the objet

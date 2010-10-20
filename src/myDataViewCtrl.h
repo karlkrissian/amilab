@@ -104,6 +104,8 @@ class myDataViewCtrl: public wxDataViewCtrl
     void ToConsole( wxCommandEvent& event );
 
     void OnBeginDrag( wxDataViewEvent &event );
+    void OnActivated( wxDataViewEvent &event );
+    void OnSorted( wxDataViewEvent &event );
 //     void OnDropPossible( wxDataViewEvent &event );
 //     void OnDrop( wxDataViewEvent &event );
 

@@ -111,6 +111,8 @@ BEGIN_EVENT_TABLE(myDataViewCtrl, wxDataViewCtrl)
 
   EVT_DATAVIEW_ITEM_CONTEXT_MENU(wxID_ANY, myDataViewCtrl::OnContextMenu)
   EVT_DATAVIEW_ITEM_BEGIN_DRAG( wxID_ANY, myDataViewCtrl::OnBeginDrag )
+  EVT_DATAVIEW_ITEM_ACTIVATED( wxID_ANY, myDataViewCtrl::OnActivated )
+  EVT_DATAVIEW_COLUMN_SORTED( wxID_ANY, myDataViewCtrl::OnSorted)
 //   EVT_DATAVIEW_ITEM_DROP_POSSIBLE( wxID_ANY, myDataViewCtrl::OnDropPossible )
 //   EVT_DATAVIEW_ITEM_DROP( wxID_ANY, myDataViewCtrl::OnDrop )
 
@@ -188,13 +190,85 @@ void myDataViewCtrl::OnBeginDrag( wxDataViewEvent &event )
   wxDataViewItem item( event.GetItem() );
 
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
-  wxTextDataObject *obj = new wxTextDataObject;
-  if (!node->IsContainer())
-    obj->SetText( node->m_Name );
-  else
-    obj->SetText( "" );
-  event.SetDataObject( obj );
+  boost::shared_ptr<BasicVariable> variable = node->m_Var.lock();
+  MyNode mynode;
+  if (variable.get())  
+  {
+    mynode.SetAbsoluteName( node->m_AbsoluteName );
+    mynode.SetVar( variable );
+  }
+  MyNodeDataObject obj;
+  obj.SetNode( mynode );
+//   MyNodeDataObject *obj =new MyNodeDataObject();
+//   obj->SetNode( mynode );
+//   event.SetDataObject( obj );
+  
+  wxDropSource dragSource(obj, this ); //Create data source
+  //dragSource.SetData( obj );  //Assign the data
+  wxDragResult result = dragSource.DoDragDrop( ); //Begin the drag operation.
+
+  switch (result)
+  {
+      case wxDragCopy:
+        // copy the data
+        std::cout << "\nDrag operation: MIKO the data was successfully copied\n" << std::endl;
+        break;
+      case wxDragMove:
+        // move the data
+        std::cout << "\nDrag operation: MIO the data was successfully moved\n" << std::endl;
+        break;
+      case wxDragError:
+        // Error
+        std::cout << "\nDrag operation: MIO Error\n" << std::endl;
+        break;
+      case wxDragNone:
+        // target didn't accept the data
+        std::cout << "\nDrag operation: MIO target didn't accept the data\n" << std::endl;
+        break;
+      case wxDragCancel:
+        // the operation was cancelled by user
+        std::cout << "\nDrag operation: MIO the operation was cancelled by user\n" << std::endl;
+        break;
+      case wxDragLink:
+        // operation is a drag-link
+        std::cout << "\nDrag operation: MIO this was a link operation\n" << std::endl;
+        break;
+      default:
+        // do nothing
+        std::cout << "\nDrag operation: MIO do nothing\n" << std::endl;
+        break;
+  }
+
+  //wxTextDataObject *obj = new wxTextDataObject;
+//   MyNodeDataObject * obj =  new MyNodeDataObject();
+//   boost::shared_ptr<BasicVariable> variable = node->m_Var.lock();
+//   MyNode mynode;
+//   if (variable.get())
+//   {
+//     mynode.SetAbsoluteName( node->m_AbsoluteName );
+//     mynode.SetVar( variable );
+// //     obj->SetText( node->m_AbsoluteName );
+//   }
+// //   else
+// //     obj->SetText( "" );
+//   //MyNodeDataObject * obj =  new MyNodeDataObject(mynode);
+//   obj->SetNode( mynode );
+//   event.SetDataObject( obj );
 }
+
+void myDataViewCtrl::OnActivated( wxDataViewEvent &event )
+{
+  if(!IsExpanded( event.GetItem() ))
+    Expand( event.GetItem() );
+  else
+    Collapse( event.GetItem() );
+}
+
+void myDataViewCtrl::OnSorted( wxDataViewEvent &event )
+{
+  GetColumnPosition( event.GetDataViewColumn() );
+}
+
 /*
 void myDataViewCtrl::OnDropPossible( wxDataViewEvent &event )
 {

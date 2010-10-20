@@ -18,7 +18,7 @@
 // ----------------------------------------------------------------------------
 AMILabTreeModel::AMILabTreeModel()
 {
-  m_root = new AMILabTreeModelNode( NULL, "Root", wxT(""));
+  m_root = new AMILabTreeModelNode( NULL, "Root");
 //  m_global = new AMILabTreeModelNode( m_root, "Global" );
 //  m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
 
@@ -343,7 +343,7 @@ wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
   else
   {
     AMILabTreeModelNode* child_node =  new AMILabTreeModelNode( parent_node,
-      branch, wxT(""));
+      branch);
     parent_node->Append (child_node);
 
     // notify control
@@ -353,32 +353,6 @@ wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
 
     return Child;
   }
-}
-
-wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
-  const wxString &branch, const wxString &type)
-{
-  AMILabTreeModelNode *parent_node = (AMILabTreeModelNode*) parent.GetID();
-
-  if (!parent_node)
-  {
-    std::cout << "AMILabTreeModel::CreateBranchNode Cannot create the new branch node!"
-              << std::endl;
-    return parent;
-  }
-  else
-  {
-    AMILabTreeModelNode* child_node =  new AMILabTreeModelNode( parent_node,
-      branch, type );
-    parent_node->Append (child_node);
-
-    // notify control
-    wxDataViewItem Child( (void*) child_node );
-    wxDataViewItem Parent( (void*) parent_node );
-    ItemAdded( Parent, Child );
-
-    return Child;
-  }  
 }
 
 bool AMILabTreeModel::HasChildren(const wxDataViewItem &item) const
@@ -393,19 +367,6 @@ bool AMILabTreeModel::HasChildren(const wxDataViewItem &item) const
   }
   else
     return (node->GetChildren().GetCount() > 0);
-}
-
-bool AMILabTreeModel::_IsDefaultBranch( const wxString &Value ) const
-{
-  if ((Value == "Images") || (Value == "Surfaces") ||
-      (Value == "Numbers") ||(Value == "Strings") ||
-      (Value == "Functions") || (Value == "Classes") ||
-      (Value == "Objects") || (Value == "Wrapped Image Functions") ||
-      (Value == "Wrapped Procedures") || (Value == "Wrapped Var. Func.") ||
-      (Value == "Others"))
-      return true;
-  else
-    return false;
 }
 
 bool AMILabTreeModel::GetAttr ( const wxDataViewItem &  item,
@@ -428,14 +389,53 @@ bool AMILabTreeModel::GetAttr ( const wxDataViewItem &  item,
     }
     else
     {
-      if ((node->IsContainer()) && (_IsDefaultBranch(node->m_Name)))
+      if (node->IsContainer()) 
       {
+        boost::shared_ptr<BasicVariable> variable = node->m_Var.lock();
+        if (!variable.get())
+        {
           attr.SetItalic(true);
           attr.SetColour(*wxBLUE);
+        }
       }
     }    
   }
   return true;
+}
+
+void AMILabTreeModel::BuildAbsoluteName( const wxDataViewItem & item )
+{
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  if (!node)
+    std::cout << "AMILabTreeModel::BuildAbsoluteName Cannot build the full name of the item!"
+              << std::endl;
+  else
+  {
+    boost::shared_ptr<BasicVariable> variable = node->m_Var.lock();
+
+    if ((node->m_Name != m_global->m_Name) &&
+        (node->m_Name != m_builtin->m_Name) && (variable.get()))
+    {
+      AMILabTreeModelNode *child = node->GetParent();
+      wxString name = node->m_AbsoluteName;
+
+      while ((child->m_Name != m_global->m_Name) && (child->m_Name != m_builtin->m_Name))
+      {
+        variable = child->m_Var.lock();
+
+        if (variable.get())
+          name = child->m_Name + "." + name;
+
+        child = child->GetParent();
+      }
+
+      if (child->m_Name == m_global->m_Name)
+        node->m_AbsoluteName = m_global->m_Name.Lower() + "::" + name;
+      else
+        node->m_AbsoluteName = name;
+    }
+  }
 }
 
 wxDataViewItem AMILabTreeModel::GetRootNode() const

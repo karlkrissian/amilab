@@ -17,6 +17,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
+  ${AMILAB_SOURCE_DIR}/Language
   )
 
 INCLUDE(${wxWidgets_USE_FILE})

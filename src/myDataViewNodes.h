@@ -72,6 +72,7 @@ class AMILabTreeModelNode
       m_Val = val;
       m_Details = details;
       m_Var = var;
+      m_AbsoluteName = name;
 
       m_container = false;
     }
@@ -81,17 +82,17 @@ class AMILabTreeModelNode
      *
      * Constructor definition for branch nodes
      */    
-    AMILabTreeModelNode(AMILabTreeModelNode* parent, const wxString &branch,
-       const wxString &type)
+    AMILabTreeModelNode(AMILabTreeModelNode* parent, const wxString &branch)
     {
       m_parent = parent;
 
       m_Name = branch;
-      m_Type = type;
+      m_Type = wxT("");
       m_Val = wxT("");
       m_Details = wxT("");
       m_Var = boost::weak_ptr<BasicVariable>();
 
+      m_AbsoluteName = branch;
       m_container = true;
     }
 
@@ -171,6 +172,7 @@ public:     // public to avoid getters/setters
     wxString                        m_Type;
     wxString                        m_Val;
     wxString                        m_Details;
+    wxString                        m_AbsoluteName;
     boost::weak_ptr<BasicVariable>  m_Var;
 
     // TODO/FIXME:
