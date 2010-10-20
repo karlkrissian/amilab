@@ -219,7 +219,7 @@ void TextControl::ProcessTab()
   }
   
 //  wxRegEx last_variable_regex (wxT(".*((global::|)([_[:alpha:]][_[:alnum]]*->)*([_[:alpha:]][_[:alnum]]*))$"));
-  wxString expr = wxT(".*[^[:alnum:]_\\.\\:]((global\\:\\:|)?([_[:alpha:]][_[:alnum:]]*\\.)*([_[:alpha:]][_[:alnum:]]*)?)$");
+  wxString expr = wxT(".*[^[:alnum:]_\\.\\:]((global\\:\\:)?([_[:alpha:]][_[:alnum:]]*\\.)*([_[:alpha:]][_[:alnum:]]*)?)$");
   wxRegEx last_variable_regex (expr);
   wxString last_variable;
   if (!last_variable_regex.IsValid()) {

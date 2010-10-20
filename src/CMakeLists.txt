@@ -150,19 +150,57 @@ ENDIF(WIN32 AND NOT UNIX)
 # Bundle Configuration (still needs work ...),
 # now compiling MacOS Package with "sudo cpack -G PackageMaker ."
 #
-#SET( CPACK_PACKAGE_FILE_NAME      )
-SET( CPACK_PACKAGE_ICON            "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.xpm")
-SET( CPACK_BUNDLE_NAME             "AMLab-${AMILAB_VERSION}-Bundle")
-SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.xpm")
-SET( CPACK_BUNDLE_PLIST            "${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info_${AMILAB_VERSION}.plist")
-#SET( CPACK_BUNDLE_STARTUP_COMMAND )
+IF (APPLE)
+  SET(CPACK_GENERATOR "Bundle")
+  SET( CPACK_PACKAGE_FILE_NAME      )
+#  SET( CPACK_PACKAGE_ICON            "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.png")
+#  SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.png")
+#  SET( CPACK_BUNDLE_STARTUP_COMMAND )
+
+
+  SET(CPACK_BUNDLE_ICON              "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_bundleicon.icns")
+  SET( CPACK_BUNDLE_NAME             "AMILab_${AMILAB_VERSION}")
+  SET( CPACK_BUNDLE_PLIST            "${CMAKE_SOURCE_DIR}/../Releases/MacOS/Info.plist")
+  SET(CPACK_BUNDLE_STARTUP_COMMAND   "${CMAKE_SOURCE_DIR}/../Releases/MacOS/StartupCommand")
+  SET(CPACK_PACKAGE_DESCRIPTIONG     "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}")
+
+  #Usamos el icono que hicimos para el disco
+  SET(CPACK_PACKAGE_ICON    "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_volumeicon.icns")
+  SET(CPACK_PACKAGE_NAME     "AMILabPackage")
+  SET(CPACK_PACKAGE_VERSION  "1.0")
+
+ENDIF(APPLE)
+
+
+#IF(APPLE)
+#  SET(CMAKE_BUNDLE_NAME "AMILab_${AMILAB_VERSION}")
+#  SET(CMAKE_BUNDLE_LOCATION "${CMAKE_INSTALL_PREFIX}")
+#  # make sure CMAKE_INSTALL_PREFIX ends in /
+#  STRING(LENGTH "${CMAKE_INSTALL_PREFIX}" LEN)
+#  MATH(EXPR LEN "${LEN} -1" )
+#  STRING(SUBSTRING "${CMAKE_INSTALL_PREFIX}" ${LEN} 1 ENDCH)
+#  IF(NOT "${ENDCH}" STREQUAL "/")
+#  SET(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/")
+#  ENDIF(NOT "${ENDCH}" STREQUAL "/")
+#  SET(CMAKE_INSTALL_PREFIX  "${CMAKE_INSTALL_PREFIX}${CMAKE_BUNDLE_NAME}.app/Contents")
+#ENDIF(APPLE)
+
+
 
 #SET( CPACK_COMPONENTS_ALL applications scripts doc )
 
-SET(CPACK_GENERATOR "RPM")
-#SET(CPACK_GENERATOR "RPM;STGZ;DEB")
-#SET(CPACK_SOURCE_GENERATOR "TGZ")
+IF (UNIX AND NOT APPLE)
+  SET(CPACK_GENERATOR "RPM")
+  #SET(CPACK_GENERATOR "RPM;STGZ;DEB")
+  #SET(CPACK_SOURCE_GENERATOR "TGZ")
+ENDIF(UNIX AND NOT APPLE)
+
 INCLUDE(CPack)
+
+
+#-------------------------------------------------------------------------------
+#  Configuration files
+#-------------------------------------------------------------------------------
 
 
 #
@@ -184,6 +222,9 @@ CONFIGURE_FILE(
     ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist.in
     ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist)
 
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/StartupCommand.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/StartupCommand)
 
 #
 # Configuration of Windows installation script (Inno)
@@ -193,10 +234,18 @@ CONFIGURE_FILE(
     ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss.in
     ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss)
 
+
+#-------------------------------------------------------------------------------
+#  End of Configuration files
+#-------------------------------------------------------------------------------
+
+
 OPTION(AMI_USE_STATIC_LIBS     "Look for static libraries" ON)
 OPTION(AMI_USE_PRECOMP_HEADERS "Use precompiled headers when available" OFF)
 
 #MESSAGE( "CMAKE_SYSTEM = ${CMAKE_SYSTEM} ")
+
+set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "4.2")
 
 IF( AMI_USE_STATIC_LIBS )
    SET( _ami_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
@@ -473,7 +522,7 @@ include_directories (
 )
 
 add_executable (${AMILAB_BIN} WIN32
-  #MACOSX_BUNDLE
+  # MACOSX_BUNDLE
   ${amilab_bin_SRCS}
 )
 
@@ -596,19 +645,32 @@ ENDIF(UNIX)
 #  SET(CMAKE_INSTALL_PREFIX "/Applications/AMILab.app/")
 #ENDIF(APPLE)
 
-IF (APPLE)
-  SET_TARGET_PROPERTIES( ${AMILAB_BIN}
-      PROPERTIES
-      MACOSX_BUNDLE_BUNDLE_NAME AMILab
-      MACOSX_BUNDLE_ICON_FILE "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_64x64_alpha.icns"
-  )
+
+IF(APPLE)
+   SET_TARGET_PROPERTIES(${AMILAB_BIN} PROPERTIES
+     OUTPUT_NAME ${CPACK_BUNDLE_NAME})
 ENDIF(APPLE)
+#SET(CMAKE_INSTALL_DESTINATION_ARGS  BUNDLE DESTINATION "${CMAKE_BUNDLE_LOCATION}")
+
+
+#IF (APPLE)
+#   SET(amilab_bin_SRCS ${amilab_bin_SRCS} CMakeSetup.icns)
+#   SET(MACOSX_BUNDLE_ICON_FILE "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_64x64_alpha.icns")
+#   SET_SOURCE_FILES_PROPERTIES(CMakeSetup.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+
+#  SET_TARGET_PROPERTIES( ${AMILAB_BIN}
+#      PROPERTIES
+#      MACOSX_BUNDLE_BUNDLE_NAME AMILab
+#      MACOSX_BUNDLE_ICON_FILE 
+#  )
+#ENDIF(APPLE)
 
 
 INSTALL(TARGETS ${AMILAB_BIN}
   RUNTIME DESTINATION bin
-#  COMPONENT applications
-  BUNDLE DESTINATION /Applications
+  #  COMPONENT applications
+  #  BUNDLE DESTINATION 
+  #${CMAKE_INSTALL_DESTINATION_ARGS}
 )
 
 
@@ -657,6 +719,7 @@ if (UNIX)
           PERMISSIONS OWNER_READ GROUP_READ
           )
 endif(UNIX)
+
 
 
 #Test for amilab.

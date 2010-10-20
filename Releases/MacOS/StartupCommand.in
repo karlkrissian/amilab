@@ -8,5 +8,5 @@ echo "RESOURCES: $RESOURCES"
 
 #export DYLD_LIBRARY_PATH=$RESOURCES/lib
 
-exec "$RESOURCES/bin/amilab_3.0.0"
+exec "$RESOURCES/bin/@CPACK_BUNDLE_NAME@"
 
