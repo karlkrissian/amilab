@@ -32,6 +32,7 @@ Name: {userprograms}\AMILab_@AMILAB_VERSION@; Permissions: users-full; Flags: un
 [Files]
 Source: share\amilab-@AMILAB_VERSION@\*; DestDir: {app}\share\amilab-@AMILAB_VERSION@; Flags: createallsubdirs recursesubdirs
 Source: bin\*.dll; DestDir: {app}\bin; Permissions: everyone-readexec
+Source: bin\*.manifest; DestDir: {app}\bin; Permissions: everyone-readexec
 Source: bin\amilab_@AMILAB_VERSION@.exe; DestDir: {app}\bin; Permissions: everyone-readexec; Flags: 32bit nocompression; MinVersion: 4.1.1998,4.0.1381
 Source: @CMAKE_SOURCE_DIR@\..\Pixmaps\amilab_logo_new_64x64_alpha.ico; DestDir: {app}\Pixmaps
 
