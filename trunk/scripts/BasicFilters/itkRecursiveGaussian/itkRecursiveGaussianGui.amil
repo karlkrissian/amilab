@@ -1,7 +1,0 @@
-
-func "BasicFilters/itkRecursiveGaussian/itkRecursiveGaussianClass"
-
-itkRecursiveGaussianClass itk_recgauss
-
-itk_recgauss.Gui()
-

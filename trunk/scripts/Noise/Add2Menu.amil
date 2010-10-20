@@ -1,7 +1,0 @@
-#!/usr/bin/amilab
-
-#
-# Adding main Gui scripts to the menu
-#
-
-ami.MainFrame.AddToMenu("&Scripts","&Noise","Create &Noise","Noise/AddNoise_gui.amil")

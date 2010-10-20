@@ -53,10 +53,8 @@ then
   cd ../..
 fi
 
-svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/trunk amilab_trunk
-
-
-cd amilab_trunk
+svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/tags/stable amilab_stable
+cd amilab_stable
 maindir=`pwd`
 
 # Compile and install libAMIFluid

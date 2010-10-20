@@ -55,10 +55,8 @@ fi
 cmake_bin=`pwd`/cmake-2.8.2-Linux-i386/bin/cmake
 cpack_bin=`pwd`/cmake-2.8.2-Linux-i386/bin/cpack
 
-svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/trunk amilab_trunk
-
-
-cd amilab_trunk
+svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/tags/stable amilab_stable
+cd amilab_stable
 maindir=`pwd`
 
 # Compile and install libAMIFluid

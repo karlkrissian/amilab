@@ -1,9 +1,0 @@
-
-i = (FLOAT) Image $1
-
-if argc==2 {
-  i.save $2
-} else {
-  i.save $1-".gz"-".ami"+".raw"
-}
-quit

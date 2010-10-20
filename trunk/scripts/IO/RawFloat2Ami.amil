@@ -1,9 +1,0 @@
-
-dimx = atof($2)
-dimy = atof($3)
-dimz = atof($4)
-
-i = ReadRawImages(dimx,dimy,dimz,FLOAT,0,$1)
-
-i.save $1-".raw"+".ami.gz"
-quit

@@ -1,5 +1,0 @@
-
-
-i = Image $1
-i.save($1-".hdr"+".vtk")
-quit

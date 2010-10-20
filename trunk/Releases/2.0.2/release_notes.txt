@@ -1,7 +1,0 @@
-
-Several improvements and bug fixes,
-especially for the windows version with:
-- better installer
-- improved 3D surface viewer
-- fixed amimage format read/write with gzip and bzip2 compressions
-

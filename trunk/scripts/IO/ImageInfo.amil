@@ -1,7 +1,0 @@
-#!/usr/local/bin/amilab_bin
-
-printn "Image Info for "+$1+" :"
-i = Image($1)
-i.info
-
-quit

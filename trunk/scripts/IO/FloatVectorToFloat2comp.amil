@@ -1,8 +1,0 @@
-
-i = Image($1)
-
-j = Image(FLOAT,i.tx,i.ty,i.tz,2)
-j.SetComponent( 0, i[0])
-j.SetComponent( 1, i[1])
-j.save $2
-

@@ -1,1 +1,0 @@
-ccmake  -DCMAKE_TOOLCHAIN_FILE=../Toolchain-mingw32.cmake -DCMAKE_INSTALL_PREFIX=/home/karl/projects/Install/mingw-install/  -DCMAKE_CROSS_COMPILE:string=i686-pc-mingw32-g++ -DCROSSCOMPILE=TRUE  -C../ITKTryRunResults-windows.cmake /home/karl/projects/Install/Devel/ITK-3.10.0/InsightToolkit-3.10.0/.

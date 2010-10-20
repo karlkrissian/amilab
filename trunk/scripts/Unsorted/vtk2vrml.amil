@@ -1,6 +1,0 @@
-#!/home/karl/projects/bin/linux/improcess
-
-
-s = Surface($1)
-s._save($1-".vtk"+".wrl")
-quit
