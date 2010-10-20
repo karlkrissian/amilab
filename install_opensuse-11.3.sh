@@ -1,5 +1,24 @@
 #!/bin/bash
 
+
+# check for proper number of command line arguments
+ERROR_PAR=65
+
+if [ $# -ne 1 ]
+   then
+      echo
+      echo " Usage: "
+      echo " $0 amilabtag"
+      echo " where amilabtag is the name of the amilab subversion repository tab to download (for example release-3.0.0)"
+      echo
+      exit $ERROR_PAR
+fi
+
+#
+# need to specify the release tag as argument
+#
+releasetag=$1
+
 #
 # Script for installing amilab from source on OpenSuse, tested on OpenSuse 11.3 32 bits
 #
@@ -53,7 +72,7 @@ then
   cd ../..
 fi
 
-svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/tags/stable amilab_stable
+svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/tags/${releasetag} amilab_stable
 cd amilab_stable
 maindir=`pwd`
 
