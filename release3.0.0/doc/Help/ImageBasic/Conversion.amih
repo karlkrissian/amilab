@@ -1,0 +1,23 @@
+
+***** Image Conversion *****
+
+
+Rule: cast_image -> ( basic_type ) unary_image
+
+
+The image conversion is done using the cast operator
+
+
+where basic_type can be one of the basic type accepted,
+currently:
+
+CHAR UCHAR SHORT USHORT FLOAT DOUBLE RGB FLOAT_VECTOR
+
+
+Example:
+
+i = Image(FLOAT,10,10,10)
+j = (RGB) i
+
+
+****************************

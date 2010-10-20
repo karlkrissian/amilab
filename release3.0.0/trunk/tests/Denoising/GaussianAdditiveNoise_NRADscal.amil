@@ -1,0 +1,43 @@
+#!/usr/bin/amilab
+#
+#
+# Test of the AnisoGS code with Additive Gaussian noise
+#
+
+input_noise = Image "synthetic_torus_addGauss15.ami.gz"
+
+
+# filter with aniNRAD->gui
+func "Denoising/AnisoNRAD_gui.amil"
+
+# set all the necessary parameters
+aniNRAD->input_name = "global::input_noise"
+# suggested 1/6 in 3D but taking smaller value because of oscillations
+aniNRAD->dt   = 0.06
+aniNRAD->t    = 2.0
+# 0: scalar diffusion, 1: matrix diffusion equation
+aniNRAD->equation_type = 0
+# 0: Lee, 1: Kuan, 2: Additive, 3: MRI
+aniNRAD->scalar_mode   = 2
+aniNRAD->neighborhood  = 1
+# Scheme, 0: explicit 1: semi-implicit
+aniNRAD->scheme        = 1
+
+aniNRAD->win.Update(-1)
+
+# load input image and filter
+aniNRAD->ReloadInput()
+# use the full image as ROI, not perfect but ok
+#aniNRAD->GetRoi 
+aniNRAD->SetRoiImage(aniNRAD->input[18:32,18:32,0:aniNRAD->input.tz-1])
+aniNRAD->Filter()
+
+#aniNRAD->Display
+
+# read pre-processed result
+res = Image "synthetic_torus_addGauss15_NRADscal.ami.gz"
+
+l_d = mean((res-aniNRAD->res)*(res-aniNRAD->res))
+printn "\t ** value is %1% " %l_d
+printn "\t *******  Filter Test Result:  %1% " % (l_d<0.00000001)
+

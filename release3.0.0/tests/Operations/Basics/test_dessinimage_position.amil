@@ -1,0 +1,114 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_dessinimage_position.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - _setpos
+#                              - GetXPos, GetYPos, GetZPos
+#                              - GetXmin, GetYmin, GetZmin
+#                              - GetXmax, GetYmax, GetZmax
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Create initial image
+func "SyntheticImages/create_torus_gui.amil"
+CTClass CT
+
+DIMX=100
+DIMY=100
+DIMZ=100
+BG=0
+FG=0
+R=20
+r=4
+printn "\t\t Create synthetic imaged:"
+printn "\t\t\t dimx=%1%" % DIMX
+printn "\t\t\t dimy=%1%" % DIMY
+printn "\t\t\t dimz=%1%" % DIMZ
+printn "\t\t\t bg=%1%" % BG
+printn "\t\t\t fg=%1%" % FG
+printn "\t\t\t R=%1%"  % R
+printn "\t\t\t r=%1%"  % r
+ctobject->dimx = 100
+ctobject->dimy = 100
+ctobject->dimz = 100
+ctobject->bg = 0
+ctobject->fg = 100
+ctobject->R = 20
+ctobject->r = 4
+ctobject->Create
+
+printn "\t\t Create an object of class DessinImage (torus_draw).\n"
+torus_draw = DessinImage(&torus)
+
+printn "\t\t Show current position:\n"
+printn "\t\t\t X (GetXPos)=%1% " % torus_draw.GetXPos()
+printn "\t\t\t Y (GetYPos)=%1% " % torus_draw.GetYPos()
+printn "\t\t\t Y (GetZPos)=%1% " % torus_draw.GetZPos()
+
+printn "\n\t\t Extreme maximum and minimum:\n"
+printn "\t\t\t X min (GetXmin)=%1% "  % torus_draw.GetXmin()
+printn "\t\t\t Y min (GetYmin)=%1% "  % torus_draw.GetYmin()
+printn "\t\t\t Y min (GetZmin)=%1%\n" % torus_draw.GetZmin()
+printn "\t\t\t X max (GetXmax)=%1% " % torus_draw.GetXmax()
+printn "\t\t\t Y max (GetYmax)=%1% " % torus_draw.GetYmax()
+printn "\t\t\t Y max (GetZmax)=%1% " % torus_draw.GetZmax()
+
+printn "\n\t\t Position change (GetXmin,GetYmin,GetZmin):\n"
+torus_draw._setpos(torus_draw.GetXmin(), torus_draw.GetYmin(), torus_draw.GetZmin())
+
+printn "\t\t\t Show current position:\n"
+printn "\t\t\t\t X (GetXPos)=%1% " % torus_draw.GetXPos()
+printn "\t\t\t\t Y (GetYPos)=%1% " % torus_draw.GetYPos()
+printn "\t\t\t\t Y (GetZPos)=%1% " % torus_draw.GetZPos()
+
+ResultX=torus_draw.GetXPos()
+ResultXmin=torus_draw.GetXmin()
+ResultY=torus_draw.GetYPos() 
+ResultYmin=torus_draw.GetYmin()
+ResultZ=torus_draw.GetZPos() 
+ResultZmin=torus_draw.GetZmin()
+
+if(ResultX != ResultXmin) &&  (ResultY != ResultYmin) && (ResultZ != ResultZmin) {
+  OK = 0
+  printn  "\nERROR: The position has not changed(_setpos failed)."
+}
+
+printn "\n\t\t Position change (GetXmax,GetYmax,GetZmax):\n"
+torus_draw._setpos(torus_draw.GetXmax(), torus_draw.GetYmax(), torus_draw.GetZmax())
+
+printn "\t\t\t Show current position:\n"
+printn "\t\t\t\t X (GetXPos)=%1% " % torus_draw.GetXPos()
+printn "\t\t\t\t Y (GetYPos)=%1% " % torus_draw.GetYPos()
+printn "\t\t\t\t Y (GetZPos)=%1% " % torus_draw.GetZPos()
+
+ResultX=torus_draw.GetXPos()
+ResultXmax=torus_draw.GetXmax()
+ResultY=torus_draw.GetYPos() 
+ResultYmax=torus_draw.GetYmax()
+ResultZ=torus_draw.GetZPos() 
+ResultZmax=torus_draw.GetZmax()
+
+if(ResultX != ResultXmax) && (ResultY != ResultYmax) && (ResultZ != ResultZmax) {
+  OK = 0
+  printn  "\nERROR: The position has not changed(_setpos failed)."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

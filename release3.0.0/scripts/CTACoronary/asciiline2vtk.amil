@@ -1,0 +1,8 @@
+#!/usr/bin/amilab
+
+v    = ReadCTALine($1,1)
+
+resname=$1-".txt"+".vtk"
+printn "saving "+resname
+v.save resname
+quit

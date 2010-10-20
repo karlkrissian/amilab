@@ -1,0 +1,25 @@
+
+libAMIFluid
+installation:
+
+Compile the library with cmake:
+requirements:
+
+- C++ compiler
+- cmake (download at www.cmake.org)
+- pthreads library 
+    ( on linux or mac, install with your package manager, 
+      on windows, install the windows pthreads library)
+
+compilation with cmake:
+
+example on linux:
+mkdir builds
+cd builds
+ccmake ..
+// specify the pthreads library directory
+// press the 'c' key until you can press the 'g' key and press 'g'
+make 
+make install // as root or sudo make install
+
+enjoy!

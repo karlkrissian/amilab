@@ -1,0 +1,61 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxString_substring.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - c_str
+#                              - SubString
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Create an object of class wxString(sString1 = wx.wxString()).\n"
+sString1 = wx.wxString()
+
+printn "Returns the part of the string between the indices from 0 to 1 inclusive(newString1=sString1.SubString(0,1)).\n"
+newString1=sString1.SubString(0,1)
+
+VAL1=sString1.c_str()
+VAL2=newString1.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL1
+printn "\t Returns the newString1 value: - %1% -\n" % VAL2
+
+printn "Create an object of class wxString(sString2 = wx.wxString(\"hello world !!!\")).\n"
+sString2 = wx.wxString("hello world !!!")
+
+printn "Returns the part of the string between the indices from 0 to 4 inclusive(newString2=sString2.SubString(0,4)).\n"
+newString2=sString2.SubString(0,4)
+
+VAL1=sString1.c_str()
+VAL2=newString2.c_str()
+
+printn "\t Returns the sString2 value: - %1% -\n" % VAL1
+printn "\t Returns the newString2 value: - %1% -\n" % VAL2
+
+if(VAL2 != "hello") {
+  OK = 0
+  printn  "\nERROR: The string has not been extracted."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

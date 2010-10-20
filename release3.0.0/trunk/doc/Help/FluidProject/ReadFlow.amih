@@ -1,0 +1,21 @@
+***** Reads the flow as a 2D vector field *****
+
+Tokens:
+T_ReadFlow	ReadFlow
+
+Rules: 
+1. image -> T_ReadFlow '(' expr_string   ')'
+
+Parameters:
+  #1 expr_string: 	name of the ASCII file containing the flow information
+
+Description:
+Reads the flow information in ASCII format and returns a vectorial image of the flow.
+
+Examples:
+  displ   = ReadFlow("test_arrows/01test_NAtl_SF_3_0.3_0.0_0.0_0.3_.uv_v2.txt")
+
+SeeAlso:
+	CreateFlatMesh, ElevateMesh, CreateVectors, Altitudes2Position
+
+****************************

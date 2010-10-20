@@ -1,0 +1,26 @@
+
+***** Ypos: getting the Y coordinates *****
+
+token(s):
+T_Ypos Ypos
+
+rule(s):
+image -> T_Ypos( VAR_IMAGE )
+
+description:
+Creates an new USHORT image that contains
+the Y coordinates of the given image.
+This can be very useful for arithmetic
+operations on images.
+
+Example(s):
+- Putting the image borders in Y coordinates at 0:
+
+y = Ypos(i)
+i = i*(y>2)*(y<i.ty-3)
+
+See Also:
+	Xpos, Zpos
+
+
+******************************

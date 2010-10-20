@@ -1,0 +1,144 @@
+//--------------------------------------------------
+proc RunLSUS( IMAGE im, IMAGE initial, NUM Imean, NUM Isd, NUM it, NUM graphics) {
+//   ------------
+
+
+  im=-im+255
+  Imean=-Imean+255
+
+  // number of threads (not used right now)
+  th = 10
+  
+  // every how many iterations call the graphic events
+  freq = 40
+
+
+  // 0:liana's, 1: fast marching 2: fast chamfer
+  method     = 2
+
+  v_x = im.vx
+  v_y = im.vy
+  v_z = im.vz
+
+
+  setvoxelsize(im,     1,1,1)
+  setvoxelsize(initial,1,1,1)
+
+  // Parameters:
+  //   1. grad threshold
+  //   2. iterations
+  //   3. attach coeff
+  //   4. curvcoeff
+  //   5. dt
+  //   6. reinitfreq
+
+  LevelSetsCURV.SetParam(0.7,it,0.5,0.5,0.75,6)
+  LevelSetsCURV.SetDistMethod(method)
+  LevelSetsCURV.SetThreads(th)
+  LevelSetsCURV.SetMeanCurv(0)
+
+  print "Compute Expansion Image \n"
+
+  print "Mean = "; print Imean;
+  print " SD = ";  print Isd;
+  print "\n"
+
+  LevelSetsCURV.SetNumGaussians(1)
+  LevelSetsCURV.SetGaussian(0,Imean,Isd)
+  LevelSetsCURV.SetProbThreshold(0.3)
+#  LevelSetsCURV.SetProbHighTh(Imean+Isd)
+  LevelSetsCURV.SetExpansion(0.5)
+  
+  print "Compute Expansion Image OK \n"
+
+  LevelSetsCURV.SetBandTube(3,2)
+
+  lres = LevelSetsCURV.init(im,initial)
+
+  if (graphics) {
+    show im
+    // sets the isocontour number 0 to the image 'initial' with threshold 0
+    im_draw.SetIsoContour(0,initial,0)
+    // sets the isocontour number 0 to be active
+    im_draw.DrawIsoContour(0,1)
+    im_draw.SetIsoContour(1,lres,0)
+    im_draw.DrawIsoContour(1,1)
+  }
+ 
+  LevelSetsCURV.iterate;
+
+  k = 0
+  for n=1 to it-1 { 
+    print n
+    LevelSetsCURV.iterate;
+    k = k+1
+    if (graphics)&&(k==freq) {
+      k = 0;
+      show im;
+      ProcessXEvents(500);
+    }
+
+  }
+
+  setvoxelsize( im, v_x, v_y, v_z)
+  setvoxelsize( initial, v_x, v_y, v_z)
+  setvoxelsize( lres, v_x, v_y, v_z)
+
+
+  if (graphics) {
+    print "del im_draw \n"
+    del im_draw
+  }
+
+  LevelSetsCURV.end
+
+  initial = lres/100;
+
+//  del lres
+//  del im
+
+}
+# RunLS()
+
+func "AddSphere"
+
+proc FollowContour( IMAGE im, IMAGE res, OBJECT imdraw) {
+  print "1\n"
+  posz=imdraw.GetZPos()
+  print "2\n"
+  # extract the corresponding slice
+  minx= imdraw.GetXPos()-50
+  minx=(minx>0?minx:0)
+  maxx= imdraw.GetXPos()+50
+  maxx=(maxx<im.tx?maxx:im.tx-1)
+  miny= imdraw.GetYPos()-50
+  miny=(miny>0?miny:0)
+  maxy= imdraw.GetYPos()+50
+  maxy=(maxy<im.ty?maxy:im.ty-1)
+  iz = im[minx:maxx,miny:maxy,posz:posz]
+  print "3\n"
+  # add the initial circle
+  ls_iz = (FLOAT) iz*0-4
+  ls_iz0=ls_iz
+  print "4\n"
+  AddBrightSphere(&ls_iz,imdraw.GetXPos()-minx,imdraw.GetYPos()-miny,0,6.1)
+  print "5\n"
+  # First Evolution
+  RunLSUS(iz,&ls_iz,6,8,300,0)
+  res.putimage(ls_iz)
+
+  for _z = posz+1 to im.tz-1 {
+    print "_z ="; print _z; print "\n"
+    del ls_iz0
+    del ls_iz
+    ls_iz = res[:,:,(_z-1):(_z-1)]
+    ls_iz0 = autocrop(ls_iz,30)
+    del iz
+    iz = im[(ls_iz0.trx):(ls_iz0.trx+ls_iz0.tx-1),(ls_iz0.try):(ls_iz0.try+ls_iz0.ty-1),_z:_z]
+    del ls_iz
+    ls_iz = res[iz]
+    ls_iz=ls_iz0
+    RunLSUS(iz,&ls_iz,6,8,50,1)
+    res.putimage(ls_iz)
+  }
+}

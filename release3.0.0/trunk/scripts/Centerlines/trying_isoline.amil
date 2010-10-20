@@ -1,0 +1,31 @@
+printn "Import filters (ami_import->Filters()).\n"
+ami_import.Filters()
+
+# command line: amilab 
+i = Image "image_filteredmaskcrop.ami.gz"
+i = (i<1000)*1000+(i>=1000)*i
+
+si = i[188:367, 168:327, 146:259] 
+v = Image "image_filteredm_opening9_0.4_ls.ami.gz"
+sv = v[si]
+
+vl_s = Surface "selected_vessels.vtk"
+
+morph = global::filters.ContinuousMorphology()
+
+sv = sv*-100
+#svd  = EDPdilate(sv,1,0.5)
+svd  = morph.Dilate(sv,1,0.5)
+
+smask = (UCHAR) ((si>1150)*(svd<0)*255)
+
+SetVerboseOn
+sl = isoline(si,0.8,smask)
+
+sl.info
+show sl
+sl_draw += vl_s
+
+show si
+si_draw.setGLwin(sl_draw)
+

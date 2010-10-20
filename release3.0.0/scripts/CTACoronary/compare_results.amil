@@ -1,0 +1,315 @@
+#!/usr/bin/amilab
+
+
+
+sh "gunzip Images/*.vtk.gz"
+
+i0     = Image "Images/initial_crop.vtk"
+i0f    = Image "Images/initial_crop_FastNLmeans.vtk"
+recons = Image "Images/recons_crop.vtk"
+
+rep_threshold = 15.1;
+
+if (argc==2) {
+  rep    = Image $1
+  rep_threshold = atof($2);
+} 
+if (argc==1) {
+    rep    = Image $1
+} 
+
+if (argc==0) {
+    rep    = Image "Images/initial_crop_FastNLmeans_centerrep.vtk"
+}
+
+emptyargs
+
+func "SyntheticImages/AddSphere.amil"
+
+proc ReadPoint( STRING st, NUM x, NUM y, NUM z) {
+
+# Old implementation:
+#  f = open(st,"r")
+#  f.read(x)
+#  f.read(y)
+#  f.read(z)
+
+  f = File(st,"r")
+  x = f.read_float()
+  y = f.read_float()
+  z = f.read_float()
+
+  printn "Point read:"+sprint("%3.2f",Ax)+\
+        sprint(", %3.2f",Ay)+sprint(", %3.2f",Az);
+}
+
+proc ReadPoints( STRING vessel, IMAGE _im, NUM _rad1, NUM _rad2) {
+  global_new
+    Ax = 0;Ay = 0;Az = 0
+    ReadPoint(vessel+"/pointA.txt",&Ax,&Ay,&Az)
+    Ax = (Ax-_im.trx)/_im.vx
+    Ay = (Ay-_im.try)/_im.vy
+    Az = (Az-_im.trz)/_im.vz
+    // size 1mm, background 0, foreground 255
+    //printn "(i,j,k):"+sprint("%3.2f",Ax)+\
+    //    sprint(", %3.2f",Ay)+sprint(", %3.2f",Az);
+    AddBrightSphere_mm( &_im, Ax,Ay,Az, _rad1, 0, 100 )
+
+    Bx = 0;By = 0;Bz = 0
+    ReadPoint(vessel+"/pointB.txt",&Bx,&By,&Bz)
+    Bx = (Bx-_im.trx)/_im.vx
+    By = (By-_im.try)/_im.vy
+    Bz = (Bz-_im.trz)/_im.vz
+    //printn "(i,j,k):"+sprint("%3.2f",Bx)+\
+    //    sprint(", %3.2f",By)+sprint(", %3.2f",Bz);
+    AddBrightSphere_mm( &_im, Bx,By,Bz, _rad2, 0, 100 )
+}
+
+
+// try to automatically find difficult areas
+
+//rep1 = rep*exp(-recons*recons/(100*100))
+
+#i0_draw.compare(rep1)
+#i0_draw.compare(i0f)
+
+
+
+// compare surfaces
+
+
+s1d = Surface "PolyData/vessels_recons.vtk"
+#isosurf(recons,127.1)
+#s1d = vtkDecimate(s1)
+s2d = isosurf(rep,rep_threshold)
+#s2d = vtkDecimate(s2)
+#del s1
+#del s2
+
+show s1d
+s1d_draw += s2d
+
+s1d.SetDiffuse( 255,   0,   0)
+s2d.SetDiffuse( 127, 127,   0)
+
+
+#i0_draw.setGLwin(s1d_draw)
+#i0_draw.showcursor(1)
+
+#view = Transform("view1.txt")
+#s1d_draw.SetTransform(view)
+
+CR_nviews   = INT(4)  // number of views
+CR_rotation = INT(45) // rotation in degrees between views
+
+snapdir = "Snapshots/"
+sh "mkdir "+snapdir
+
+snap1_name = snapdir+"recons.png"
+snap2_name = snapdir+"centerrep.png"
+snap3_name = snapdir+"recons_centerrep.png"
+snap_name  = snapdir+"combination.png"
+
+
+proc CR_AddCC() {
+  global
+
+  // run de connected components in the response image
+  rep_cc = CC((FLOAT)rep-rep_threshold)
+
+  Points = recons
+  Points.initvalue(0)
+  
+  ReadPoints( "vessel0", &Points,3,2)
+  // get the connected components for vessel 0
+  rep_cc_vessel0_A = (rep_cc==rep_cc(Ax,Ay,Az))*(rep(Ax,Ay,Az)>rep_threshold)
+  rep_cc_vessel0_B = (rep_cc==rep_cc(Bx,By,Bz))*(rep(Bx,By,Bz)>rep_threshold)
+  rep_cc_vessel0 = max(rep_cc_vessel0_A,rep_cc_vessel0_B)
+  
+  ReadPoints( "vessel1", &Points,3,2)
+  // get the connected components for vessel 1
+  rep_cc_vessel1_A = (rep_cc==rep_cc(Ax,Ay,Az))*(rep(Ax,Ay,Az)>rep_threshold)
+  rep_cc_vessel1_B = (rep_cc==rep_cc(Bx,By,Bz))*(rep(Bx,By,Bz)>rep_threshold)
+  rep_cc_vessel1 = max(rep_cc_vessel1_A,rep_cc_vessel1_B)
+  
+  ReadPoints( "vessel2", &Points,3,2)
+  // get the connected components for vessel 2
+  rep_cc_vessel2_A = (rep_cc==rep_cc(Ax,Ay,Az))*(rep(Ax,Ay,Az)>rep_threshold)
+  rep_cc_vessel2_B = (rep_cc==rep_cc(Bx,By,Bz))*(rep(Bx,By,Bz)>rep_threshold)
+  rep_cc_vessel2 = max(rep_cc_vessel2_A,rep_cc_vessel2_B)
+  
+  ReadPoints( "vessel3", &Points,3,2)
+  // get the connected components for vessel 3
+  rep_cc_vessel3_A = (rep_cc==rep_cc(Ax,Ay,Az))*(rep(Ax,Ay,Az)>rep_threshold)
+  rep_cc_vessel3_B = (rep_cc==rep_cc(Bx,By,Bz))*(rep(Bx,By,Bz)>rep_threshold)
+  rep_cc_vessel3 = max(rep_cc_vessel3_A,rep_cc_vessel3_B)
+  
+  rep_cc_vessels = max(rep_cc_vessel0,rep_cc_vessel1)
+  rep_cc_vessels = max(rep_cc_vessels,rep_cc_vessel2)
+  rep_cc_vessels = max(rep_cc_vessels,rep_cc_vessel3)
+  
+  vessels_extracted = isosurf(rep_cc_vessels,0.5)
+  
+  pts0 = isosurf(Points,50.1)
+  pts = vtkSmooth(pts0,20)
+  
+  vessels_extracted.SetDiffuse( 100, 255,  25)
+  pts              .SetDiffuse(   0,   0, 255)
+  
+  s1d_draw += vessels_extracted
+  s1d_draw += pts
+
+}
+
+
+proc CR_AddEstimatedPaths() {
+  global
+
+  vpath = Surface[4]
+
+
+  for _n = 0 to 3 {
+    vpath[_n] = ReadCTALine(sprint( "vessel%0.0f/result.txt",_n),1)
+    s1d_draw += vpath[_n]
+  }
+  global::vgt <<= Surface[4]
+  for _n = 0 to 3 {
+    vgt[_n] = ReadCTALine(sprint( "vessel%0.0f/reference.txt",_n))
+    s1d_draw += vgt[_n]
+  }
+}
+
+proc CR_ShowImages() {
+  global_new
+  show i0
+  i0_draw.SetIsoContour(0,recons,127)
+  i0_draw.SetIsoContour(1,rep,20)
+  if (exists(s1d_draw)) {
+    i0_draw.setGLwin(s1d_draw)
+  }
+}
+
+
+proc SetOpacities( NUM o_pts, NUM o_recons, NUM o_rep, NUM o_repcc) {
+    pts              .SetOpacity(o_pts)
+    s1d              .SetOpacity(o_recons)
+    s2d              .SetOpacity(o_rep)
+    vessels_extracted.SetOpacity(o_repcc)
+}
+
+proc SetConfig(NUM conf) {
+  s1d_draw.SetWindowSize(400,400)
+  if (conf==1) { SetOpacities(1,1,0,0);    }
+  if (conf==2) { SetOpacities(0.6,0,0.6,1);  }
+  if (conf==3) { SetOpacities(0.6,1,0,0.6);  }
+  if (conf==4) { SetOpacities(0,1,0,1);    }
+  s1d_draw.Paint()
+}
+
+proc FlipSave(IMAGE im, STRING name) {
+  im = Flip(im,1)
+  im.save name
+}
+
+proc SaveConfig1() {
+  global_new
+  SetConfig(1)
+  if (exists(snap1)) { del snap1;} 
+  snap1 = s1d_draw.getimage()
+  FlipSave(snap1,snap1_name)
+}
+
+
+proc SaveConfig2() {
+  global_new
+  SetConfig(2)
+  if (exists(snap2)) { del snap2;}
+  snap2 = s1d_draw.getimage()
+  FlipSave(snap2,snap2_name)
+}
+
+proc SaveConfig3() {
+  global_new
+  SetConfig(3)
+  if (exists(snap3)) { del snap3;} 
+  snap3 = s1d_draw.getimage()
+  FlipSave(snap3,snap3_name)
+}
+
+proc CR_CreateWin() {
+  global
+
+    # parameters window
+    import = &global::ami_import;
+    CR_win = import->ParamPanel("Comparing results")
+
+    CR_win.BeginBook()
+      CR_win.AddPage("Main")
+        CR_repth = CR_win.AddFloat( &rep_threshold,  "rep_threshold", 0.01,100)
+        CR_acc   = CR_win.AddButton("Add Connected Components",CR_AddCC)
+        CR_aep   = CR_win.AddButton("Add Paths",CR_AddEstimatedPaths)
+    
+        CR_nviews_id   = CR_win.AddInt( &CR_nviews,  "CR_nviews", 1,10)
+        CR_rotation_id = CR_win.AddInt( &CR_rotation,  "CR_rotation", 1,180)
+        CR_snap_id = CR_win.AddButton("combine",SaveCombine)
+    
+        CR_showimages_id = CR_win.AddButton("Show Images",CR_ShowImages)
+  
+      # Add the snapshots
+      CR_win.AddPage("Snapshots")
+        CR_win.BeginBoxPanel("Snapshot 1")
+          CR_snap1_name_id = CR_win.AddString( &snap1_name,"file")
+          CR_snap1_but_id  = CR_win.AddButton("Save",SaveConfig1)
+        CR_win.EndBoxPanel()
+    
+        CR_win.BeginBoxPanel("Snapshot 2")
+          CR_snap2_name_id = CR_win.AddString( &snap2_name,"file")
+          CR_snap2_but_id  = CR_win.AddButton("Save",SaveConfig2)
+        CR_win.EndBoxPanel()
+    
+        CR_win.BeginBoxPanel("Snapshot 3")
+          CR_snap3_name_id = CR_win.AddString( &snap3_name,"file")
+          CR_snap3_but_id  = CR_win.AddButton("Save",SaveConfig3)
+        CR_win.EndBoxPanel()
+    CR_win.EndHorizontal()
+
+    CR_win.EndBook()
+
+
+    CR_win.Update(-1)
+    CR_win.Display()
+  local
+}
+
+proc SaveCombine() {
+  global_new
+  s1d_draw.Paint()
+
+  // nconfigs: number of configurations
+  nconfigs = 3;
+  // check size in X and Y
+  if (exists(snap1)) { del snap1;} 
+  s1d_draw.SetWindowSize(400,400)
+  snap1 = s1d_draw.getimage()
+  dx = snap1.tx
+  dy = snap1.ty
+  if (exists(snap)) { del snap;} 
+  snap = Image(RGB,CR_nviews*dx,dy*nconfigs,1)
+
+  for v=0 to CR_nviews-1 {
+    for c=1 to nconfigs {
+      SetConfig(c)
+      if (exists(snap1)) { del snap1;} 
+      snap1 = s1d_draw.getimage()
+      # combine in a unique file
+      snap.putimage(snap1,v*dx,(c-1)*dy,0)
+    }
+    // change view
+    s1d_draw.rotate(0,CR_rotation,0)
+  }
+
+  show snap
+  FlipSave(snap, snap_name )
+}
+
+CR_CreateWin()

@@ -1,0 +1,87 @@
+#!/usr/local/bin/amilab_bin
+
+#
+# we suppose that we have the following subdirectory tree:
+#
+# dataset${n}/Images/initial_crop_FastNLmeans.vtk
+# dataset${n}/cistib/image${n}-PDF-01.vtk
+#
+# where ${n} is 00, 01, etc ...
+
+
+if (argc<3) {
+  printn "-----------------------------------------"
+  printn ""
+  printn "Program "+$0
+  printn ""
+  printn "Description:"
+  printn "Computes the centerline "
+  printn "paths for the CorCTA Challenge workshop"
+  printn ""
+  printn "Parameters:"
+  printn " 1. the dataset number"
+  printn " 2. input probability density function"
+  printn " 3. vesselness response"
+  printn ""
+  printn "-----------------------------------------"
+  printn ""
+  quit
+}
+
+printn "start"
+datasetid = atof($1)
+
+datasetnum = sprint("%02.0f",datasetid)
+datasetdir = "dataset"+datasetnum+"/"
+
+vessels_pdf = Image($2)
+printn "vessels_pdf "+$2
+
+vessels_rep = Image($3)
+printn "vessels_rep "+$3
+
+ves_number=-1
+if (argc>=4) {
+  ves_number=atof($4)
+}
+
+# don't try to interpret parameters anymore
+emptyargs
+
+
+# pb with remaining variables 
+printn "1"
+func "Centerlines/CreateSkeletonGui"
+
+printn "2"
+th = 0.1
+Skel_Init(&vessels_pdf,th,datasetid)
+Skel_maxrep = vessels_rep
+
+# use maximal response for path
+Skel_datasetdir = datasetdir
+
+Skel_SP_start    = 2  # 0:A, 1:B 2:S 3:E
+Skel_SP_end      = 3  # 0:A, 1:B 2:S 3:E
+
+Skel_path_mode = 1 # 0: use centerlines
+                  # 1: use maximal response
+
+Skel_smooth_paths = 1
+Skel_smooth_coeff = 0.1
+Skel_smooth_data  = 0.01
+Skel_smooth_it    = 10
+
+if (ves_number!=-1) {
+  Skel_firstvessel = ves_number
+  Skel_lastvessel  = ves_number
+  printn Skel_firstvessel
+  printn Skel_lastvessel
+}
+
+Skel_ShortestPaths()
+Skel_SavePaths()
+printn "--- Print Scores ..."
+Skel_PrintScores()
+
+quit

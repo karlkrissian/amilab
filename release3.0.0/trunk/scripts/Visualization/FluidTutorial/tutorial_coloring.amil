@@ -1,0 +1,46 @@
+
+i48 = IO.ReadRawImages2D(1024,1024,USHORT.val,0,"WP01/package_02_LMD/images/AfGG_c0.81.48",0)
+c48 = IO.ReadRawImages2D(1024,1024,UCHAR.val, 0,"WP01/package_02_LMD/misc/AfGG_CLA_scene_analysis.48",0)
+t48 = IO.ReadRawImages2D(1024,1024,USHORT.val,0,"WP01/package_02_LMD/images/AfGG_c10.8.48",0)
+coeff = Image "alt_coeff.ami.gz"
+
+epsilon=0.5-0.2
+earth  = CreateFlatMesh(c48,0,100-epsilon)
+
+clouds = Surface[5]
+clouds[0] = CreateFlatMesh(c48,100-epsilon,100+epsilon)
+clouds[1] = CreateFlatMesh(c48,101-epsilon,103+epsilon)
+clouds[2] = CreateFlatMesh(c48,104-epsilon,106+epsilon)
+clouds[3] = CreateFlatMesh(c48,107-epsilon,109+epsilon)
+clouds[4] = CreateFlatMesh(c48,110-epsilon,200)
+
+alt_factor = 4
+alt48 = ComputeAltitudes(t48,coeff)
+alt48 = alt48*alt_factor
+pos=Altitude2Position(alt48,1)
+earth.SetColors(i48,min(i48),max(i48))
+pos=pos/1000
+earth.ElevateMesh(pos)
+earth.Normals()
+earth.SetColorMaterial(1)
+
+printn "clouds[3]"
+clouds[3]._info
+
+show earth
+for n=0 to 4 { 
+  clouds[n].ElevateMesh(pos)
+  clouds[n].Normals()
+  earth_draw += clouds[n]
+}
+
+earth_draw.SetLightDiffuse(0,180,180,180)
+# Set Colors of the different clouds
+clouds[0].SetAmbient( 195, 195, 195 )
+clouds[1].SetAmbient( 224,   0,   0 ) 
+clouds[2].SetAmbient( 222, 222,   0 )
+clouds[3].SetAmbient( 0,   254, 252 )
+clouds[4].SetAmbient( 195, 195, 195 )
+
+earth_draw.rotate(0,-90,0)
+earth_draw.rotate(0,0,-90)

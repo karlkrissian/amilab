@@ -1,0 +1,20 @@
+
+***** Signal to Noise Ratio *****
+
+token(s):
+T_SNR	SNR
+
+rule(s): 
+postfix_expr -> T_SNR ( VAR_IMAGE , VAR_IMAGE )
+
+Parameters
+  #1 var_image: image to estimate
+  #2 var_image: reference image
+
+description:
+Computes the Signal to Noise Ratio
+for the image #1, given the reference 
+non-noisy image #2.
+
+
+****************************

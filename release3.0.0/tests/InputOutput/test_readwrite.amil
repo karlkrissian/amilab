@@ -1,0 +1,41 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+func "ctest/ctest_config.amil"
+epsilon = 0.000001
+
+if (argc<1) {
+
+  printn "\nFailing to get the parameter."
+
+} else {
+
+  extension = $1 
+  # read test
+  l_i0 = Image "smallvolume"+extension
+  l_i = Image(FLOAT,2,2,2)
+  l_i = Xpos(l_i)
+  
+  l_d = mean((l_i-l_i0)*(l_i-l_i0))
+  printn "\t ******* "+extension+" Read Test Result:  %1%" % (l_d<epsilon)
+  
+  resultRead = (l_d<epsilon)
+   
+  # write test
+  l_i.save "smallvolume2"+extension
+  l_j= Image "smallvolume2"+extension
+  l_d = mean((l_i-l_j)*(l_i-l_j))
+
+  printn "\t ******* "+extension+" Write Test Result:  %1%" % (l_d<epsilon)
+
+  resultWrite = (l_d<epsilon)
+
+  ctest.PrintTestResult( resultRead && resultWrite ) 
+
+}
+
+quit

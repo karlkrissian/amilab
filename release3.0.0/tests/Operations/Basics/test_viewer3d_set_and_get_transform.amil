@@ -1,0 +1,104 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_viewer3d_set_and_get_transform.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - GetTransform.
+#                              - SetTransform.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
+
+# Create initial image
+func "SyntheticImages/create_torus_gui.amil"
+CTClass CT
+
+DIMX=100
+DIMY=100
+DIMZ=100
+BG=0
+FG=0
+R=20
+r=4
+
+printn "\t\t Create synthetic imaged:"
+printn "\t\t\t dimx=%1%" % DIMX
+printn "\t\t\t dimy=%1%" % DIMY
+printn "\t\t\t dimz=%1%" % DIMZ
+printn "\t\t\t bg=%1%" % BG
+printn "\t\t\t fg=%1%" % FG
+printn "\t\t\t R=%1%"  % R
+printn "\t\t\t r=%1%"  % r
+
+ctobject->dimx = 100
+ctobject->dimy = 100
+ctobject->dimz = 100
+ctobject->bg = 0
+ctobject->fg = 100
+ctobject->R = 20
+ctobject->r = 4
+ctobject->Create
+
+printn "\t\t Create an object of class Viewer3D (viewer).\n"
+viewer=Viewer3D()
+
+printn "\t\t Create an object of class SurfacePoly (surf).\n"
+surf=isosurf(torus,50.1)
+
+printn "\t\t Add the SurfacePoly object to the viewer (AddObject).\n"
+viewer.AddObject(surf)
+
+printn "\t\t Centers the 3D view (Center).\n"
+viewer.Center()
+
+printn "\t\t Normalizes the 3D view based (Normalize).\n"
+viewer.Normalize()
+
+printn "\t\t Updating the scene information (Paint).\n"
+viewer.Paint()
+
+printn "\t\t Get transform matrix (glmat = viewer.GetTransform()).\n"
+glmat = viewer.GetTransform()
+
+printn "\t\t Set transform matrix with interpolate (viewer.SetTransform(glmat.Interpolate(glmat, 0.3)).\n"
+viewer.SetTransform(glmat.Interpolate(glmat, 0.3))
+
+printn "\t\t Centers the 3D view (Center).\n"
+viewer.Center()
+
+printn "\t\t Normalizes the 3D view based (Normalize).\n"
+viewer.Normalize()
+
+printn "\t\t Updating the scene information (Paint).\n"
+viewer.Paint()
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

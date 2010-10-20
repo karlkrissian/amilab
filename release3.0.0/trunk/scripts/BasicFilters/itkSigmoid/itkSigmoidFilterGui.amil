@@ -1,0 +1,11 @@
+
+func "BasicFilters/itkSigmoid/itkSigmoidFilterClass"
+
+if (!exists(itk_sigmoid)) {
+  itkSigmoidFilterClass itk_sigmoid
+  itk_sigmoid.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

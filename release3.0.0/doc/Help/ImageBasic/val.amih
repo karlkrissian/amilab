@@ -1,0 +1,24 @@
+
+***** VAR_IMAGE.val *****
+
+rule(s):
+1. commande -> VAR_IMAGE '.' identifier
+
+description:
+if the identifier is the string "val",
+returns the value at the current buffer position.
+
+
+Example(s):
+
+i.init
+for x=0 to i.tx-1 {
+  print "value at x = "; print x; print ": ";
+  print i.val; print "\n";
+  i.inc
+}
+
+See Also:
+	init inc
+
+******************************

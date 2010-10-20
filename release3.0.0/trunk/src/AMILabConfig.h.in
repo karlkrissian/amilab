@@ -1,0 +1,48 @@
+//
+// C++ Interface: AMILabConfig
+//
+// Description:
+//
+//
+// Author: Karl Krissian  <krissian@dis.ulpgc.es>, (C) 2009
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+
+#ifndef _AMILabConfig_h_
+#define _AMILabConfig_h_
+
+#define AMILAB_VERSION "@AMILAB_VERSION@"
+
+#cmakedefine HAVE_MALLOC_H 1
+
+#cmakedefine AMI_USE_FASTNLMEANS
+#cmakedefine AMI_USE_OPENMP
+#cmakedefine AMI_USE_VTK
+#cmakedefine AMI_USE_ITK
+
+#cmakedefine AMI_USE_ZLIB
+
+#cmakedefine AMI_USE_BZIP2
+
+#cmakedefine AMI_USE_SSE
+
+#cmakedefine AMI_USE_PRECOMP_HEADERS
+
+#define AMI_BUILD_@AMI_BUILD_TYPE@
+
+#ifdef _MSC_VER
+  #define __func__ __FUNCTION__
+  #define _CRT_SECURE_NO_WARNINGS
+  // Disable warning messages 
+  // conversion from 'double' to  ' float' warning (4244)
+  // and warning about unsafe sprintf ... functions (4996)
+  // conversion from/to unsigned char to/from bool (4800)
+  // const qualifier ignored, for Variable<C_wrap_procedure> and Variable<C_wrap_varfunction> (4180)
+  #pragma warning( disable : 4244 4996 4800 4180 4305)
+
+#endif
+
+#endif // _AMILabConfig_h_
+

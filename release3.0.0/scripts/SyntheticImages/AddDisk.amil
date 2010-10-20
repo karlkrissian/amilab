@@ -1,0 +1,31 @@
+
+
+//
+// Add a black disk to an 3D image,
+// the disk is centered in M0=(x0,y0,z0)
+// and orthogonal to M0M1 where M1=(x1,y1,z1)
+// 
+//
+proc AddDisk( IMAGE im, NUM x0, NUM y0, NUM z0, NUM x1, NUM y1, NUM z1, NUM rad, NUM thick ) {
+//   --------------
+  rad2=2*rad
+  if (im.tz>1) {
+    im0 = im[(x0-rad2):(x0+rad2),(y0-rad2):(y0+rad2),(z0-rad2):(z0+rad2)]
+    px = (FLOAT) Xpos(im0)-rad2
+    py = (FLOAT) Ypos(im0)-rad2
+    pz = (FLOAT) Zpos(im0)-rad2
+    sph = sqrt(px*px+py*py+pz*pz)-rad
+
+    vx = x1-x0
+    vy = y1-y0
+    vz = z1-z0
+    vn = sqrt(vx*vx+vy*vy+vz*vz)
+    distplane = (px*vx+py*vy+pz*vz)/vn
+
+    disk = (sph<0)*(distplane>-thick)*(distplane<thick)
+    im0 = im0*(-disk+1)
+    im.putimage(im0)
+  }  else {
+    print "AddDisk only for 3D images \n"
+  }
+}

@@ -1,0 +1,65 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxfilename_touch.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - Touch
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
+
+printn "Constructor: MODE 0 (file=wx.wxFileName()).\n"
+file=wx.wxFileName()
+
+printn "Set the new path (file.AssignDir(\"/home/Francisco/proyectos/amilab/amilab-trunk/tests/Operations/Basics\"))\n"
+file.AssignDir("/home/Francisco/proyectos/amilab/amilab-trunk/tests/Operations/Basics")
+
+printn "Set the name (file._SetName(\"TOUCH_FILE\"))\n"
+file._SetName("TOUCH_FILE")
+
+VAL = file.GetFullPath();
+
+printn "\t The full path: - %1% -\n" % VAL
+
+printn "\t Sets the access and modification times to the current moment (file.Touch())\n"
+file.Touch()
+
+VAL = file.GetFullPath();
+
+printn "\t The full path: - %1% -\n" % VAL
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

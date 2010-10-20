@@ -1,0 +1,19 @@
+***** Set the 3D View for surface visualization *****
+
+Tokens:
+T_SetTransform SetTransform
+
+Rules:
+commande <-- VAR_SURFDRAW '.' T_SetTransform '(' gltransform ')'
+
+Parameters:
+1. VAR_SURFACEDRAW
+2. gltransform
+
+Description:
+Sets a given transform (defining a point of view) to the surface drawing window.
+
+SeeAlso:
+	GetTransform, print, save, Interpolate, TRANSFORM
+
+******************************

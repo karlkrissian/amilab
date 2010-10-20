@@ -1,0 +1,29 @@
+#!/usr/bin/amilab
+#
+# To do:
+#
+# 0. convert input image to ami 	OK
+# 1. convert vessels to vtk 		OK
+# 2. combine vessels into 1 vessel 	OK
+# 3. make reconstruction of the vessel with constant radius OK
+# 4. autocrop the reconstructed image OK
+# 5. get same subvolume from the original image OK
+# 6. filter the subvolume to reduce noise
+#	with RNAD
+#	with modified NL-means			OK
+# 7. Get centerline response
+#
+
+
+i0 = Image $1
+
+recons = Image "Images/vessels_recons.vtk"
+crop = autocrop(recons,15)
+sr  = recons[crop]
+
+sr.save "Images/recons_crop.vtk"
+
+si0 = i0[crop]
+
+si0.save "Images/initial_crop.vtk"
+quit

@@ -1,0 +1,33 @@
+
+***** Flat mesh from 2D image using vtk *****
+
+token(s):
+T_vtkCreateFlatMesh	CreatevtkFlatMesh
+
+rule(s): 
+1. surface -> T_vtkCreateFlatMesh '(' expr_image ',' expr ',' expr ')'
+
+Parameters
+  #1 expr_image: input_image
+  #2 expr: min
+  #2 expr: max
+
+description:
+Creates a triangulated flat mesh from a 2D image,
+if 2 values min and max are specified, only the mesh
+of the intensity region between min and max will be created,
+using linear interpolation. 
+
+Notes:
+The non-vtk version is faster.
+
+
+Example(s):
+
+s1 = vtkCreateFlatMesh(i,10,100)
+
+See Also:
+	CreateFlatMesh, ElevateMesh
+
+
+****************************

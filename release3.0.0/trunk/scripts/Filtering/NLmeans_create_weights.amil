@@ -1,0 +1,204 @@
+#!/usr/bin/amilab
+# command line: amilab
+#
+# creates local weights that are used in the NLmeans algorithm
+#
+# To do: create interface to play with the parameters ...
+#
+
+func "Common/ScriptGui"
+
+if (!exists(NLMweightsClass)) {
+  ami_import.Filters()
+  func "Noise/AddRiceNoise.amil"
+
+  Class NLMweightsClass : public ScriptGui {
+    proc ::Init() {
+      ::input_name = "", "input image"
+      #pos_x = atof($2)
+      #pos_y = atof($3)
+      ::smoothing = 0.9, "smoothing parameter"
+      ::winsize = INT(5), "window size is (2*winsize+1)^2"
+      ::patsize = INT(2), "pattern size is (2*patsize+1)^2"
+      ::thres   = 0.2
+      ::noise   = INT(0)
+      ::current_pos = "", "Display current selected position"
+      ::apply_exp = UCHAR(1), "apply exponential function"
+      ::CreateWindow()
+    }
+    
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      printn "evaluation of --> ::input <<="+::input_name+";"
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+      ::win.Update(-1)
+      if (exists(::input_draw)) { del ::input_draw; }
+      ::Reset()
+    }
+    
+    
+    proc ::CreateWeights( NUM px, NUM py, NUM wsize, NUM th) {
+      i_w <<= ::weights 
+      if (::smoothing>0.001) {
+        i1s = filter(::input,::smoothing,0,0,0)
+        i_w = global::filters.NSim(i1s,px,py,0,wsize)
+      } else {
+        i_w = global::filters.NSim((FLOAT)::input,px,py,0,wsize)
+      }
+      # get a smaller window around
+      xmin = px-::winsize
+      if (xmin<wsize) { xmin = wsize}
+      ymin = py-::winsize
+      if (ymin<wsize) { ymin = wsize}
+      xmax = px+::winsize
+      if (xmax>::weights.tx-1-wsize) { xmax = ::weights.tx-1-wsize}
+      ymax = py+::winsize
+      if (ymax>::weights.ty-1-wsize) { ymax = ::weights.ty-1-wsize}
+      i_2 <<= i_w[xmin:xmax,ymin:ymax,0:0]
+      if (::apply_exp) {
+        i_2 = exp(-(i_2*i_2)/(4*th*th))
+        i_2.setpos(px-xmin,py-ymin,0)
+        i_2.set(0)
+        v = max(i_2)
+        i_2.setpos(px-xmin,py-ymin,0)
+        i_2.set(v)
+        i_2 = i_2 / v 
+        #  i_2 = i_2/(mean(i_2)*i_2.tx*i_2.ty*i_2.tz)
+      }
+      # update weights image
+      ::weights.putimage(i_2)
+      # update contour image
+      i_2.initvalue(1)
+      ::cont.putimage(i_2)
+    }
+    
+    
+    proc ::Reset() {
+      ::weights <<=  ((FLOAT) ::input)/max(::input)
+      ::cont    <<=  (FLOAT) ::input*0
+      show ::input
+    }
+    
+    proc ::ShowWeights() {
+    
+        show ::weights;
+        ::weights_draw.SetIsoContour(0,::cont,0.5)
+        ::weights_draw.DrawIsoContour(0,1)
+        ::input_draw.compare(&::weights_draw)
+    }
+    
+    proc ::DrawWeights() {
+    
+      if (exists(::input)) {
+        pos_x = ::input_draw.GetXPos()
+        pos_y = ::input_draw.GetYPos()
+        ::current_pos = "(%1%, " %pos_x
+        ::current_pos = ::current_pos + "%1%)" %pos_y
+        ::win.Update(-1)
+        ::CreateWeights(pos_x,pos_y,::patsize,::thres)
+        ::ShowWeights()
+      }
+    }
+    
+    proc ::Preset1() {
+    
+      if (exists(::input)) {
+        ::CreateWeights(35,14,1,0.5)
+        ::CreateWeights(35,35,2,0.5)
+        ::CreateWeights(14,35,3,0.5)
+        ::CreateWeights(14,14,4,0.5)
+        ::ShowWeights()
+      }
+    }
+    
+    proc ::Preset2() {
+      if (exists(::input)) {
+        ::CreateWeights(37,12,1,0.5)
+        ::CreateWeights(37,37,2,0.5)
+        ::CreateWeights(12,37,3,0.5)
+        ::CreateWeights(12,12,4,0.5)
+        ::ShowWeights()
+      }
+    }
+    
+    proc ::AddRicianNoise() {
+      AddRiceNoise(&::weights, ::noise/100);
+    }
+    
+    proc ::CreateWindow() {
+
+      import = &global::ami_import;
+      ::win = import->ParamPanel("Weights for NLM")
+      ::win.BeginBook()
+    
+        ::win.AddPage("Input/Output")
+          # set the input image
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::LoadInput)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Parameters")
+          ::win.AddFloat( &::smoothing,"smoothing",0.01,2)
+          ::win.AddInt( &::patsize,"patsize",1,10)
+          ::win.AddInt( &::winsize,"winsize",1,20)
+          ::win.AddFloat( &::thres,"thres",0.01,1)
+
+          ::win.BeginBoxPanel("Add Noise")
+            ::win.AddInt( &::noise,"noise",0,70)
+            ::win.AddButton("Apply", ::AddRicianNoise)
+          ::win.EndBoxPanel()
+        
+          ::win.BeginBoxPanel("Controls")
+            ::win.AddString( &::current_pos,"pos:")
+            ::win.AddBoolean( &::apply_exp,"Apply exp.")
+            ::win.BeginHorizontal()
+              ::win.AddButton("Reset",            ::Reset)
+              ::win.AddButton("Draw Weights",     ::DrawWeights)
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+              ::win.AddButton("Preset 1",   ::Preset1)
+              ::win.AddButton("Preset 2",   ::Preset2)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+      ::win.EndBook()
+
+      ::AddStandardButtons(&::win)
+
+      ::win.Update(-1)
+      ::win.Display()
+    
+    }
+    
+    ::Init()
+  }
+  # end class NLMweightsClass
+}
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(nlmw)) {
+
+  NLMweightsClass nlmw
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    nlmw->image_name = "input"
+    nlmw->win.Update(-1)
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+
+

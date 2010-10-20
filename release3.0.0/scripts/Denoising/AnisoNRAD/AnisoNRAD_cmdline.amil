@@ -1,0 +1,57 @@
+
+func "AnisoNRADClass.amil"
+
+# Command line arguments
+#
+# - name of input image
+# - name of output image
+# - name of ROI sub-image
+# - use Graphics or not (1/0)
+
+# using the Structure Tensor mode with default values
+
+printn argc
+
+if (argc>=4) {
+  input_name = $1
+  output_name = $2
+  subimage_name = $3
+  usegraphics = atof($4)
+  
+  if (argc>=5) {
+    noise_sd = atof($5)*2.55
+  }
+
+  # hide main window ?
+  ami.MainFrame.ShowWin(usegraphics)
+
+  AnisoNRADClass anisoNRAD
+
+  inputim = Image(input_name)
+  anisoNRAD->input_name      = "global::inputim"
+  anisoNRAD->result_filename = output_name
+  
+  anisoNRAD.equation_type   = 1
+  anisoNRAD.load_input()
+
+  roiimage = Image(subimage_name)
+  anisoNRAD.SetRoiImage(&roiimage)
+  if exists(noise_sd) {
+    anisoNRAD.SetNoiseStandardDeviation(noise_sd)
+  }
+
+  anisoNRAD.Filter()
+  anisoNRAD.Save()
+ 
+
+  if (usegraphics) {
+    #anisoNRAD.CreateWindow()
+  } else {
+    quit
+  }
+
+} else {
+
+  printn "Wrong number of arguments ..."
+  quit
+}

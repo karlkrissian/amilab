@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AMILab @AMILAB_VERSION@
+Comment=Image Processing and Visualization Tool
+TryExec=@AMILAB_BIN@
+Exec=@AMILAB_BIN@
+Terminal=true
+Icon=/usr/share/icons/hicolor/32x32/apps/amilab.png
+MimeType=image/x-foo;
+Categories=Graphics;Education;Science;

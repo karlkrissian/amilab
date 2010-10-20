@@ -1,0 +1,16 @@
+
+func "CalculatorClass"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(calc)) {
+
+  CalculatorClass calc
+  calc.Gui()
+  
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

@@ -1,0 +1,26 @@
+
+***** Zpos: getting the Z coordinates *****
+
+token(s):
+T_Zpos Zpos
+
+rule(s):
+image -> T_Zpos( VAR_IMAGE )
+
+description:
+Creates an new USHORT image that contains
+the Z coordinates of the given image.
+This can be very useful for arithmetic
+operations on images.
+
+Example(s):
+- Putting the image borders in Z coordinates at 0:
+
+z = Zpos(i)
+i = i*(z>2)*(z<i.tz-3)
+
+See Also:
+	Xpos, Ypos
+
+
+******************************

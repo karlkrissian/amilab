@@ -1,0 +1,64 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxString_replaceall.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - c_str
+#                              - ReplaceAll
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Create an object of class wxString(sString1 = wx.wxString()).\n"
+sString1 = wx.wxString()
+
+printn "Replace all occurrences of A by B(sString1.ReplaceAll(\"A\", \"B\")).\n"
+sString1.ReplaceAll("A", "B")
+
+VAL1=sString1.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL1
+
+printn "Replace all occurrences of A by B(sString1.ReplaceAll(\"\", \"\")).\n"
+sString1.ReplaceAll("", "")
+
+VAL1=sString1.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL1
+
+printn "Create an object of class wxString(sString2 = wx.wxString(\"hello world !!!\")).\n"
+sString2 = wx.wxString("hello world !!!")
+
+printn "Replace all occurrences of o by a (sString2.ReplaceAll(\"o\", \"a\")).\n"
+sString2.ReplaceAll("o", "a")
+
+VAL2=sString2.c_str()
+
+printn "\t Returns the sString2 value: - %1% -\n" % VAL2
+
+if(VAL2 != "hella warld !!!") {
+  OK = 0
+  printn  "\nERROR: The string has not been replaced."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

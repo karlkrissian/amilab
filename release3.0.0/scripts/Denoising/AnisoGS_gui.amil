@@ -1,0 +1,171 @@
+#!/usr/bin/amilab
+
+#
+# Denoising algorithm
+#
+
+func "Common/ScriptGui"
+
+if (!exists(AnisoGSClass)) {
+
+  Class AnisoGSClass : public ScriptGui {
+
+  #----------------------------
+  proc ::Init() {
+
+    ::input_name  = ""
+    ::result_name = "AnisoGS_result"
+    ::result_filename = "AnisoGS_result.ami.gz"
+    ::sigma=1
+    ::threshold=10
+    ::datacoeff=0.05
+    ::niter=INT(5)
+    ::use_zoom=UCHAR(0)
+    Comments( ::use_zoom, "Allow to process only on the Region-Of-Interest defined by the current zoom in the input image display window")
+    ::started=0
+  
+    ::CreateWindow()
+  }
+  
+  #------------------------------------
+  proc ::load_input() {
+    if (::input_name=="Image") {
+      # read image using browser
+      ::input <<= Image
+      ::input_name = "::input"
+      ::win.Update(-1)
+    } else {
+      eval "::input <<="+::input_name+";"
+    }
+  }
+
+  #------------------------------------
+  proc ::Restart() {
+
+    if (::started) {
+      AnisoGS.end
+      if exists(::res_draw) {
+        del ::res_draw
+      }
+      if exists(::res) {
+        del ::res
+      }
+      if exists(::input) {
+        del ::input
+      }
+    }
+    if (!exists(NRAD_input)) {
+      ::load_input
+    }
+    if (::use_zoom)&&(exists(::input_draw)) {
+      ::input_roi <<= (FLOAT) ::input[::input_draw.GetXmin() : ::input_draw.GetXmax(),\
+                            ::input_draw.GetYmin() : ::input_draw.GetYmax(),\
+                            ::input_draw.GetZmin() : ::input_draw.GetZmax() ]
+    } else {
+      ::input_roi <<= (FLOAT) ::input
+    }
+    AnisoGS.init(::input_roi,::sigma,::threshold,::datacoeff)
+    ::started=1
+    ::res <<= AnisoGS.GetOutput
+  }
+  
+  #------------------------------------
+  
+  proc ::Filter() {
+
+    if (!::started) {
+      ::Restart()
+    }
+    SetProgress(0)
+    for k=1 to ::niter {
+      AnisoGS.iterate
+      SetProgress(k/::niter*100)
+      if exists(::res_draw) {
+        show ::res
+      }
+    }
+    ::res = AnisoGS.GetOutput
+    SetProgress(0)
+  }
+  
+  #------------------------------------
+  
+  proc ::Display() {
+    show ::input
+    if exists(::res) {
+        show ::res
+        ::input_draw.compare(&::res_draw)
+    }
+  }
+  
+  #------------------------------------
+  proc ::Save() {
+    ::res.save ::result_name
+  }
+  
+  #------------------------------------
+  
+  proc ::CreateWindow() {
+
+    # parameters window
+    import = &global::ami_import;
+    ::win = import->ParamPanel("AnisoGS")
+
+    ::win.BeginBook() 
+    ::win.AddPage("Param")
+        ::win.AddImageChoice( &::input_name, "Input")
+    
+        ::win.AddFloat( &::sigma,  "::sigma", 0.01,10)
+        ::win.AddFloat( &::threshold,  "::threshold", 0,100)
+        ::win.AddFloat( &::datacoeff,  "::datacoeff", 0.01,10)
+        ::win.AddInt( &::niter,  "::niter", 0,100)
+        ::win.AddBoolean( &::use_zoom,"Use Zoom")
+        ::win.AddString( &::result_name,"result name")
+        ::win.AddString( &::result_filename,"result filename")
+        
+        ::win.BeginBoxPanel("Controls")
+          ::win.BeginHorizontal()
+            ::win.AddButton("Restart",    ::Restart)
+            ::win.AddButton("Filter",     ::Filter)
+            ::win.AddButton("Display",    ::Display)
+            ::win.AddButton("Save",       ::Save)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+      ::win.AddPage("Contour Smoothing")
+        ::win.BeginBoxPanel("2D Images")
+        ::win.EndBoxPanel()
+        ::win.BeginBoxPanel("3D Images")
+        ::win.EndBoxPanel()
+
+    ::win.EndBook()
+
+    ::AddStandardButtons(&::win)
+
+    ::win.Display()
+    ::win.Update(-1)
+  }
+  
+  ::Init
+  
+  }#end of class
+  
+}#end of if
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(anigsc)) {
+
+  AnisoGSClass anisogs  
+   
+  if (argc>=2) {
+      printn "reading image"
+      input_arg = Image($1)
+      anisogs->input_image = "input_arg"
+      anisogs->result_filename = $2
+      anisogs->win.Update(-1)
+  }
+} else {
+InfoDialog "The script seems to be already loaded." 
+}

@@ -1,0 +1,24 @@
+
+***** VAR_IMAGE.SETPOS *****
+
+token(s):
+SETPOS  setpos
+
+rule(s):
+commande -> VAR_IMAGE '.' SETPOS '(' expr ',' expr ',' expr ')'
+
+parameters:
+  #1 expr:  X position
+  #2 expr:  Y position 
+  #3 expr:  Z position 
+
+description:
+Set the current voxel (or pixel) of the image
+to the specified position.
+
+See Also:
+	set
+
+
+
+******************************

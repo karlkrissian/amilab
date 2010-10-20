@@ -1,0 +1,94 @@
+#!/usr/bin/amilab
+
+#
+# we suppose that we have the following subdirectory tree:
+#
+# dataset${n}/Images/initial_crop_FastNLmeans.vtk
+# dataset${n}/cistib/image${n}-PDF-01.vtk
+#
+# where ${n} is 00, 01, etc ...
+
+
+if (argc!=4) {
+  printn "-----------------------------------------"
+  printn ""
+  printn "Program "+$0
+  printn ""
+  printn "Description:"
+  printn "Computes the centerline response function"
+  printn "for the CorCTA Challenge workshop"
+  printn ""
+  printn " 1. the dataset number"
+  printn " 2. input image"
+  printn " 3. input probability density function"
+  printn " 4. result filename"
+  printn ""
+  printn "-----------------------------------------"
+  printn ""
+  quit
+}
+
+datasetid = atof($1)
+
+datasetnum = sprint("%02.0f",datasetid)
+datasetdir = "dataset"+datasetnum+"/"
+
+input       = Image($2)
+vessels_pdf = Image($3)
+# if ROI, limit input to the same ROI
+if ((input.tx>vessels_pdf.tx)&&\
+    (input.ty>vessels_pdf.ty)&&\
+    (input.tz>vessels_pdf.tz)) { \
+  input <<= input[vessels_pdf]
+}
+
+result_filename=$4
+
+# don't try to interpret parameters anymore
+emptyargs
+
+
+
+sh "mkdir "+datasetdir+"CenterlineResponse"
+
+
+
+func "Centerlines/trying_circles"
+
+# 1. run the centerline response 
+# needs as input 
+#   - the input cropped and filtered image
+#   - the probably density function for vessels
+# Images/initial_crop_FastNLmeans.vtk 800 cistib/image05-PDF-01.vtk 0.1 
+
+th = 800
+TC_init(&input,th,datasetdir)
+
+TC_usezoom      = 0
+TC_split_number = 1
+TC_radmin  = 0.2
+TC_radmax  = 3.4
+TC_radstep = 0.2
+
+// Gaussian standard deviations 
+// for the structure tensor computation
+TC_sigma          = 0.8
+TC_beta           = 1.0
+TC_sigma_gradient = 0.5
+
+// Standard deviation Threshod
+TC_SD_th  = 2
+// Excentricity Threshold
+TC_EXC_th = 5
+
+m2_th = 0.1
+TC_SetMask2(&vessels_pdf,m2_th)
+TC_CreateMask()
+TC_Run()
+
+TC_result_filename=result_filename
+TC_result_overwrite=1
+
+TC_Save()
+
+quit

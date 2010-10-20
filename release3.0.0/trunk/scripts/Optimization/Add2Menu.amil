@@ -1,0 +1,13 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+filt_category = "&Optimization"
+filt_dir = "Optimization/"
+
+ami.MainFrame.AddToMenu("&Scripts",filt_category,"Find &Min",        filt_dir+"find_minimum")
+
+del filt_category
+del filt_dir

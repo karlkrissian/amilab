@@ -1,0 +1,83 @@
+
+#
+#
+#
+
+im0 = Image "subi1.ami.gz"
+im = im0[(im0.tx*0.1):(im0.tx*0.9),(im0.ty*0.1):(im0.ty*0.9),0:(im0.tz-1)]
+
+
+# 1. get the connected component
+imcc = CC(im-3101)
+imcc1    = reorder(imcc)
+cc_sign1 = cc_sign(reorder( Xpos(reorder)))
+
+#   reorder         image
+#   inclusion         image
+#   cc_sign         image
+#   cc_size         image
+
+imcc2=(FLOAT)imcc1*0
+
+imc1    = (FLOAT) reorder*0
+imc2    = (FLOAT) reorder*0
+imratio = (FLOAT) reorder*0
+imjunc  = (FLOAT) reorder*0
+
+for i=0 to 200 {
+
+  #  i=reorder(reorder.tx-n,0,0)
+
+  # get the skeleton of this connected component 
+  #if (cc_sign(i,0,0)==1) {
+
+    cci = (imcc1==i)
+    cci1 = autocrop(cci,5)
+    cci1bin0 = (UCHAR) ((cci1>0.5)*255)
+    cci1bin  = (UCHAR) ((cci1<0.5)*255)
+    cci1dist = AndreDist(cci1bin)
+    cci1sk    = Skeleton(cci1bin0,cci1dist,0,1000)
+#    imname=sprint("cc%05.0f.ami.gz",i)
+#    print "Image name : "; print imname ; print "\n";
+#    cci1.save imname
+#    del imname
+#    imname=sprint("ccsk%05.0f.ami.gz",i)
+#    cci1sk.save imname
+
+  c1 = count(cci1bin0>0)
+  c2 = count(cci1sk>0)
+  ratio=c1/c2
+  nb_junc = count(cci1sk==127) 
+
+  imc1._setpos(i,0,0)
+  imc1.set(c1)
+
+  imc2._setpos(i,0,0)
+  imc2.set(c2)
+
+  imratio._setpos(i,0,0)
+  imratio.set(ratio)
+
+  imjunc._setpos(i,0,0)
+  imjunc.set(nb_junc)
+
+  if (i==0)||((ratio>1.5)&&(ratio<10)&&(c1>5)&&(c1<200)&&(nb_junc<5)) {
+    imcc2.putimage(cci1bin0)
+    print sprint("Adding cc %05.0f\n",i)
+  } 
+
+#  print sprint("CC size %05.0f \n",c1);
+#  print sprint("SK size %05.0f \n",c2);
+#  print sprint("ratio %02.2f \n",c1/c2);
+
+
+
+  #}
+  del cci
+  del cci1
+  del cci1bin0
+  del cci1bin
+  del cci1dist
+  del cci1sk
+#  del imname
+}

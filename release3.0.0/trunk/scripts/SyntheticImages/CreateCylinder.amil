@@ -1,0 +1,205 @@
+#!/home/karl/projects/bin/OS/improcess
+
+#
+# in development ...
+#
+ami_import->Filters()
+
+Class Cylinder {
+
+  # different modes
+  ::EuclideanDist      = INT(0), "Euclidean distance to the cylinder"
+  ::PartialVolumeEffect = INT(1), "Estimate the PVE based on the 0-isosurface with trilinear interpolation"
+
+  #---------------------------
+  proc ::Init() {
+    ::x1 = 10, "first extremity X position in world coord."
+    ::y1 = 10, "first extremity Y position in world coord."
+    ::z1 = 10, "first extremity Z position in world coord."
+
+    ::x2 = 50, "second extremity X position in world coord."
+    ::y2 = 50, "second extremity Y position in world coord."
+    ::z2 = 50, "second extremity Z position in world coord."
+    
+    ::radius = 4, "radius"
+    ::margin = 10, "margin for creating the image automatically"
+    ::bg_value = 0, "background intensity value"
+    ::fg_value = 0, "foreground (object) intensity value"
+    ::mode = INT(::PartialVolumeEffect), "mode: Euclidean distance (0) or Partial Volume Effect (1)"
+  }
+
+  #---------------------------
+  proc ::SetFirstExtremity(NUM x, NUM y, NUM z) {
+    ::x1=x; ::y1=y; ::z1=z
+  }
+
+  #---------------------------
+  proc ::SetSecondExtremity(NUM x, NUM y, NUM z) {
+    ::x2=x; ::y2=y; ::z2=z
+  }
+
+  #---------------------------
+  proc ::SetRadius(NUM r) {
+    ::radius = r
+  }
+
+  #---------------------------
+  proc ::SetImage(IMAGE _in) {
+    ::resim <<= _in
+  }
+
+  #---------------------------
+  proc ::InitImage() {
+    minx = ::x1-::margin
+    maxx = ::x2+::margin
+    miny = ::y1-::margin
+    maxy = ::y2+::margin
+    minz = ::z1-::margin
+    maxz = ::z2+::margin
+    ::resim <<= Image(FLOAT,maxx-minx+1,maxy-miny+1,maxz-minz+1)
+    ::resim.settranslation(minx,miny,minz)
+    ::resim = ::bg_value
+  }
+
+  #---------------------------
+  proc ::Create() {
+
+    if (!exists(::resim)) { ::InitImage(); }
+
+    pos = SpacePos(::resim)
+
+    # unit vector from x1 to x2
+    v1x = ::x2-::x1
+    v1y = ::y2-::y1
+    v1z = ::z2-::z1
+    v1_2 = v1x*v1x+v1y*v1y+v1z*v1z
+    normv1 = sqrt(v1_2)
+    if (normv1<0.01) {
+      InfoDialog "Extremities too close to create a cylinder!"
+    } else {
+      # distance to cylinder
+      # 1. distance to x1 squared
+      diffx1 = pos
+      diffx1.SetComponent(0,diffx1[0]-::x1)
+      diffx1.SetComponent(1,diffx1[1]-::y1)
+      diffx1.SetComponent(2,diffx1[2]-::z1)
+      distx1_2 = diffx1*diffx1
+      
+  
+      # 1. distance to x2 squared
+      diffx2 = pos
+      diffx2.SetComponent(0,diffx2[0]-::x2)
+      diffx2.SetComponent(1,diffx2[1]-::y2)
+      diffx2.SetComponent(2,diffx2[2]-::z2)
+      distx2_2 = diffx2*diffx2
+      del diffx2
+
+      # 2. projected distance
+      v1im = pos
+      v1im.initvalue(v1x/normv1,v1y/normv1,v1z/normv1)
+      projdist = diffx1*v1im
+      del v1im
+
+      # 3. distance to center squared
+      centerdist2 = distx1_2 - projdist*projdist
+
+      ::resim = -(sqrt(centerdist2)-::radius)
+      projinterv = (projdist>=0)*(projdist<=normv1)
+
+      distx1_2 = -(sqrt(distx1_2)-::radius)
+      distx2_2 = -(sqrt(distx2_2)-::radius)
+      distx1x2 = max(distx1_2,distx2_2)
+      ::resim = ::resim*(projinterv>0.5)+(projinterv<0.5)*distx1x2
+
+      if (::mode ==  ::PartialVolumeEffect) \
+      {
+        filters=&global::filters
+        ::resim = filters->ComputePV_subdiv(::resim)
+      }
+      return = ::resim
+    }
+  }
+  ::Init()
+}
+
+//----------------------------------------------------------------------
+proc CreateVerticalCylinder( IMAGE i, NUM x1, NUM y1, NUM z1, NUM x2, NUM y2, NUM z2, NUM r) \
+{
+
+  dist = sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)+(z2-z1)*(z2-z1))
+  printn "distance = %1% " % dist
+  stepx = (x2-x1)/dist
+  stepy = (y2-y1)/dist
+  stepz = (z2-z1)/dist
+  printn " stepx = %1% " % stepx + " stepy = %1%" % stepy + " stepz = %1% " % stepz
+  printn "distance = %1% " % dist
+
+  sub  = 5
+  nsub = 2*sub+1
+
+  for t=0 to dist step 0.5  {
+
+    printn " t = %1%" % t
+    SetProgress(t/dist*100)
+    cx = x1+t*stepx
+    cy = y1+t*stepy
+    cz = z1+t*stepz
+    printn " cx = %1% " % cx + " cy = %1%" % cy + " cz = %1% " % cz
+
+    for x=cx-r to cx+r {
+    for y=cy-r to cy+r {
+    for z=cz-r to cz+r {
+
+      _np = 0
+
+      _x1 = x-sub/nsub
+      _y1 = y-sub/nsub
+      _d00 = (_x1-cx)*(_x1-cx)+(_y1-cy)*(_y1-cy)
+      if (_d00<r*r) { _np=_np+1; }
+
+      _x1 = x-sub/nsub
+      _y1 = y+sub/nsub
+      _d01 = (_x1-cx)*(_x1-cx)+(_y1-cy)*(_y1-cy)
+      if (_d01<r*r) { _np=_np+1; }
+
+      _x1 = x+sub/nsub
+      _y1 = y-sub/nsub
+      _d10 = (_x1-cx)*(_x1-cx)+(_y1-cy)*(_y1-cy)
+      if (_d10<r*r) { _np=_np+1; }
+
+      _x1 = x+sub/nsub
+      _y1 = y+sub/nsub
+      _d11 = (_x1-cx)*(_x1-cx)+(_y1-cy)*(_y1-cy)
+      if (_d11<r*r) { _np=_np+1; }
+
+      if (_np==4) {
+        i._setpos(x,y,z)
+        i.set(100)
+      }
+
+      if (_np<4)&&(_np>0) {
+        n = 0
+        for xn=-sub to sub {
+          for yn=-sub to sub {
+            _x1 = x+xn/nsub
+            _y1 = y+yn/nsub
+            d =(_x1-cx)*(_x1-cx)+(_y1-cy)*(_y1-cy)
+            if (d<r*r) {  n=n+1; }
+          } // end for yn
+        } // end for xn
+        i._setpos(x,y,z)
+        i.set(100*n/nsub/nsub)
+      } // end if _np
+    } // end for z
+    } // end for y
+    } // end for x
+    print t; print " "
+  } // end for t
+
+  SetProgress(0)
+
+} // end function
+
+
+
+

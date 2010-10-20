@@ -1,0 +1,145 @@
+#
+# Local Fitting by Least Squares
+#
+
+func "Common/ScriptGui"
+
+if (!exists(LeastSquaresClass)) \
+{
+
+  ami_import.Filters()
+
+  Class LeastSquaresClass : public ScriptGui \
+  {
+    #-------------------
+    proc ::Init() {
+      ::input_name =  ""
+      ::size_x = INT(3), "window size in X is (2*val+1)"
+      ::size_y = INT(3), "window size in Y is (2*val+1)"
+
+      ::weight_mode = INT(0), "window weights: 0 for uniform, 1 for Gaussian"
+      ::use_constant = UCHAR(1), "use constant"
+      ::use_X        = UCHAR(1), "use unit slope in X"
+      ::use_Y        = UCHAR(1), "use unit slope in Y"
+      # todo: allow Gaussian weights
+      # todo: allow mask
+
+      ::CreateWindow()
+    }
+  
+    #------------------------------------
+    proc ::LoadInput() \
+    {
+      printn "evaluation of --> ::input <<="+::input_name+";"
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+      ::win.Update(-1)
+      if (exists(::input_draw)) { del ::input_draw; }
+      show ::input
+    }
+    
+    #-----------------------------------
+    proc ::Run() \
+    {
+      # fitting base
+      sizex = 2*::size_x+1
+      sizey = 2*::size_y+1
+      numcoeff = 3
+      b = Image(FLOAT,sizex,sizey,1,numcoeff)
+      b.SetComponent( 0, ((FLOAT) Ypos(b)-b.ty/2))
+      b.SetComponent( 1, ((FLOAT) Xpos(b)-b.tx/2))
+      b.SetComponent( 2, 1)
+      weights = Image(FLOAT,sizex,sizey,1)
+      weights.settranslation(-::size_x,-::size_y,0)
+      weights = 1
+      if (::weight_mode==1) {
+        # TODO ...
+        #wp  = SpacePos(weights)
+        #nwp = sqrt(wp[0]*wp[0]+wp[1]*wp[1])
+        #gaussian_size = _size_y*_sigma
+        #nwp = exp(-nwp*nwp/(gaussian_size*gaussian_size))
+      }
+      mask = ::input*0+1
+      ::res <<= global::filters.LeastSquares(::input,b,weights,mask)
+    }
+
+    proc ::Display() {
+      show ::input
+      show ::res
+      ::input_draw.compare(&::res_draw)
+    }
+
+    #-------------------
+    proc ::CreateWindow() {
+
+      # parameters window
+      import = &global::ami_import;
+      ::win = import->ParamPanel("LeastSqu")
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Input/Output")
+
+          # set the input image
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::LoadInput)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+
+        ::win.AddPage("Param")
+          ::win.AddInt( &::size_x,"size X",1,10)
+          ::win.AddInt( &::size_y,"size Y",1,10)
+
+          ::win.BeginBoxPanel("Coefficients to fit")
+            ::win.AddBoolean( &::use_constant,"constant")
+            ::win.AddBoolean( &::use_X,"X")
+            ::win.AddBoolean( &::use_Y,"Y")
+          ::win.EndBoxPanel()
+    
+        ::win.AddPage("Controls")
+          ::win.AddButton("Run",     ::Run)
+  
+          ::win.BeginBoxPanel("Result")
+            ::win.AddButton("Display",    ::Display)
+          ::win.EndBoxPanel()
+
+      ::win.EndBook()
+      ::AddStandardButtons(&::win)
+      
+      ::win.Update(-1)
+      ::win.Display()
+    }
+  
+    ::Init()
+  
+  }
+  # end Class LeastSquaresClass
+
+}
+# end if (!exists(LeastSquaresClass))
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(lsf)) {
+
+  LeastSquaresClass lsf
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    lsf->image_name = "input"
+    lsf->win.Update(-1)
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+

@@ -1,0 +1,29 @@
+
+***** 'min' command *****
+
+token(s):
+T_MIN min
+
+rule(s):
+1. postfix_expr ->  T_MIN '(' VAR_IMAGE  ')'
+2. postfix_expr ->  T_MIN '[' expr_image ']' '(' VAR_IMAGE  ')'
+
+parameters:
+1. VAR_IMAGE
+2. expr_image
+
+Description:
+Returns the minimal intensity  value of the whole image (1) or of the region
+defined by 'expr_image' (2)
+
+Example:
+
+print min(i); print "\n"
+
+print min[j>80](i); print "\n"
+
+
+See Also:
+	max, median
+
+******************************

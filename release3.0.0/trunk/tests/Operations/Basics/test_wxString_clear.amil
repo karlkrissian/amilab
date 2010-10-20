@@ -1,0 +1,61 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxString_clear.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - c_str
+#                              - Clear
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Create an object of class wxString(sString1 = wx.wxString()).\n"
+sString1 = wx.wxString()
+
+printn "Create an object of class wxString(sString2 = wx.wxString(\"hello world !!!\")).\n"
+sString2 = wx.wxString("hello world !!!")
+
+VAL1=sString1.c_str()
+VAL2=sString2.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL1
+printn "\t Returns the sString2 value: - %1% -\n" % VAL2
+
+printn "Empties the sString1 string and frees memory occupied by it (sString1.Clear()).\n"
+sString1.Clear()
+
+printn "Empties the sString2 string and frees memory occupied by it (sString2.Clear()).\n"
+sString2.Clear()
+
+VAL1=sString1.c_str()
+VAL2=sString2.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL1
+printn "\t Returns the sString2 value: - %1% -\n" % VAL2
+
+if((VAL1 != "") && (VAL2 != "")) {
+  OK = 0
+  printn  "\nERROR: The values were not cleaned."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

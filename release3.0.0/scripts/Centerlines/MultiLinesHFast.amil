@@ -1,0 +1,49 @@
+
+i           = Image $1
+IntensityTh = atof($2)
+ExtremaTh   = atof($3)
+
+m = (UCHAR) ((i>IntensityTh)*255)
+
+HessianMatrix(i,0.6,m)
+
+del i_Hvap1
+del i_Hvep1
+
+g = gradient(i,0.6)
+
+m = (UCHAR) (m*(i_Hvap2<0))
+del i_Hvap2
+del i_Hvap3
+
+r = 1
+print "Compute for radius = "; print r; print "\n"
+rep   = CircleIntSdExc(   g,i_Hvep2,i_Hvep3,r,m,1,1.5)
+repm = rep
+rad   = (rep>0)*r
+
+
+for n=1 to 4 {
+  r = r+0.5
+  print "Compute for radius = "; print r; print "\n"
+  rep   = CircleIntSdExc(   g,i_Hvep2,i_Hvep3,r,m,1,1.5)
+
+  rad   = (rep>repm)*r    + (repm>=rep)*rad
+  repm  = max(rep,repm)
+}
+
+
+del g
+
+print "Compute local extrema \n"
+e  = LocalExtrema(repm,i_Hvep2,i_Hvep3,m)
+
+e.save     "extrema.ami.gz"
+
+print "Thresholds and creates lines \n"
+b   = (UCHAR) ((e>ExtremaTh)*255)
+bsk = Skeleton(b,e,0,1000)
+l   = Skeleton2lines(bsk)
+l1  = SmoothLines(l)
+
+l1.save "multiscale-lines.vtk"

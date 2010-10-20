@@ -1,0 +1,18 @@
+
+proc PrintAB() {
+  print sprint("a=%3.0f, \t",a);
+  print sprint("b=%3.3f. \n",b);  
+}
+
+a = INT(1)
+b = 0.5
+
+w1 = ParamWin("test")
+aid=w1.AddInt( &a,  "a", 1,100)
+w1.SetCallback( &PrintAB)
+bid=w1.AddFloat( &b,  "b", 0,1)
+w1.SetCallback( &PrintAB)
+w1.Update()
+w1.Display()
+w1.SetDragCallback(aid)
+w1.SetDragCallback(bid)

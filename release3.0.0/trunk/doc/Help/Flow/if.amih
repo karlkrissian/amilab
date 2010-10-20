@@ -1,0 +1,23 @@
+
+***** if condition *****
+
+token(s):
+IF    if
+ELSE  else
+
+rule(s):
+1. commande -> IF expr instr_block
+2. commande -> IF expr instr_block ELSE instr_block
+
+Description:
+conditional expressions.
+
+
+Example(s):
+
+ if i>10 { print i; }
+
+ if i>10 { print "i>10\n"; } else { print "i<=10"; }
+
+
+******************************

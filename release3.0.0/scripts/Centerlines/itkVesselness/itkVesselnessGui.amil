@@ -1,0 +1,15 @@
+
+func "Centerlines/itkVesselness/itkVesselnessClass"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(itk_vess)) {
+  itkVesselnessClass itk_vess
+  itk_vess.Gui()
+  
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

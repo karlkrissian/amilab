@@ -1,0 +1,22 @@
+***** Calculate altitudes based on the temperature *****
+
+Tokens:
+T_ComputeAltitudes	ComputeAltitudes
+
+Rules: 
+1. image -> T_ComputeAltitudes '(' expr_image ',' expr_image  ')'
+
+Parameters:
+  #1 expr_image: 	input temperatures
+  #2 expr_image:	coeff
+
+Description:
+Compute the altitudes based on the temperature image and an image of coefficients. Coefficients is an image of 5 float values of size 5x1x1 (1D), created from the satellite information.
+
+Examples:
+alt1 = ComputeAltitudes(i,coeff)
+
+SeeAlso:
+	CreateFlatMesh, ElevateMesh, CreateVectors, Altitudes2Position
+
+****************************

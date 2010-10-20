@@ -1,0 +1,42 @@
+#!/home/karl/projects/bin/solaris/improcess
+
+i         = Image $1
+threshold = atof($2)
+
+ir = Image(FLOAT,i.tx,i.ty,i.tz)
+
+i_means = Image(FLOAT,i.ty,i.tz,1)
+
+for y=0 to i.ty-1 {
+  for z=0 to i.tz-1 {
+
+     sub  = subimage(i,0,y,z,i.tx-1,y,z);
+     mask = sub<threshold
+
+     m = mean(sub,mask)
+
+     i_means._setpos(y,z,0)
+     i_means.set(m)
+
+  }
+  print  y; print " ";
+}
+print "\n"
+
+mean_total = mean(i_means)
+
+del sub
+
+for y=0 to i.ty-1 {
+  for z=0 to i.tz-1 {
+
+     sub  = (FLOAT) subimage(i,0,y,z,i.tx-1,y,z);
+
+     subr = sub*mean_total/i_means(y,z,0);
+
+     ir.putimage(subr,0,y,z);
+
+  }
+  print  y; print " ";
+}
+print "\n"

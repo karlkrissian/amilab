@@ -1,0 +1,27 @@
+#!/usr/bin/amilab
+
+#
+# Adding main GUI scripts to the menu interface
+#
+
+for dir in  "BasicFilters","Filtering","Denoising",\
+            "Noise","Segmentation","SyntheticImages",\
+            "Visualization","IO","Centerlines",\
+            "QualityMeasures", "Fitting", "Optimization", \
+            "OpticFlow", \
+            "CarotidBifurcationWorkshop2009", \
+            "Utils" \
+{
+  local_f = wx.wxFileName(GetScriptsDir)
+  local_f.AppendDir(dir)
+  local_f.SetFullName("Add2Menu.amil")
+  if local_f._FileExists() {
+    func dir+"/Add2Menu.amil"
+  } else {
+    InfoDialog local_f.GetFullPath()+" does not exists"
+  }
+  del local_f
+}
+
+#quit
+

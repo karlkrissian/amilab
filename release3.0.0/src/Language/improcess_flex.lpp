@@ -1,0 +1,1181 @@
+%{
+
+// use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
+#define NOMINMAX
+
+#include "IdentifierInfo.h"
+//#include "Variable.hpp"
+#include "imageextent.h"
+#include "AmiInstructionBlock.h"
+#include "driver.h"
+
+#include "scanner.h"
+
+extern yyip::Driver GB_driver;
+
+/* import the parser's token type into a local typedef */
+typedef yyip::Parser::token token;
+typedef yyip::Parser::token_type token_type;
+
+/* By default yylex returns int, we use token_type. Unfortunately yyterminate
+ * by default returns 0, which is not of token_type. */
+#define yyterminate() return token::END
+
+/* This disables inclusion of unistd.h, which is not available under Visual C++
+ * on Win32. The C++ scanner uses STL streams instead. */
+#define YY_NO_UNISTD_H
+
+
+#include <boost/format.hpp>
+#include <boost/shared_ptr.hpp>
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <locale.h>
+#include "messages.h"
+#include "fonctions.h"
+
+#include "IdentifierInfo.h"
+#include "Variable.hpp"
+#include "imageextent.h"
+#include "AmiInstructionBlock.h"
+
+#include "improcess_bison.tab.hpp"
+#include "VarContexts.hpp"
+#include "ami_function.h"
+#include "VarArray.h"
+#include <string>
+
+#define LEX_DEBUG(expr) if (GB_debug) {expr}
+
+
+//int          yyiplineno = 0;
+//std::string  GB_current_file;
+
+int yycharno = 0;
+bool LexError = 0;
+
+//extern  void yyiperror(const char*);
+extern  VarContexts  Vars;
+
+yyip::Parser::token::yytokentype checkvar(
+      yyip::Parser::semantic_type* yylval,
+      const char* varname, int context=-1);
+
+BasicVariable::ptr IsObject(  const char* varname, int context=-1);
+
+using namespace std;
+
+
+string* cpp_string;
+//char string_buf[256];
+//char *string_buf_ptr;
+
+//#define MAXSIZE_BLOCK 10000
+//char block_buf[MAXSIZE_BLOCK];
+//char *block_buf_ptr;
+
+
+AmiInstructionBlock* ami_block;
+
+int  block_level = 0;
+int comment_caller;
+
+
+
+extern int       GB_argc;
+extern wxChar**  GB_argv;
+extern int       GB_num_arg_parsed;
+
+
+%}
+
+/* enable c++ scanner class generation */
+%option c++
+
+%option prefix="yyip"
+%option noyywrap
+%option verbose
+
+WS      [ \t]
+
+%x str
+%x block
+%x comment
+
+/* The following paragraph suffices to track locations accurately. Each time
+ * yylex is invoked, the begin position is moved onto the end position. */
+%{
+#define YY_USER_ACTION  yylloc->columns(yyleng);
+%}
+
+
+identifier [a-zA-Z_]([A-Za-z0-9_])*
+
+
+%%
+
+ /* code to place at the beginning of yylex() */
+%{
+    // reset location
+    yylloc->step();
+%}
+
+">>="                   return(token::RIGHT_ASSIGN);   /*{>>=,RIGHT_ASSIGN}*/
+"<<="                   return(token::LEFT_ASSIGN);    /*{<<=,LEFT_ASSIGN}*/
+"+="                    return(token::ADD_ASSIGN);     /*{+=,ADD_ASSIGN}*/
+"-="                    return(token::SUB_ASSIGN);     /*{-=,SUB_ASSIGN}*/
+"*="                    return(token::MUL_ASSIGN);     /*{*=,MUL_ASSIGN}*/
+"/="                    {  return(token::DIV_ASSIGN); } /*{/=,DIV_ASSIGN}*/
+"%="                    {  return(token::MOD_ASSIGN); } /*{%=,MOD_ASSIGN}*/
+"&="                    {  return(token::AND_ASSIGN); } /*{&=,AND_ASSIGN}*/
+"^="                    {  return(token::XOR_ASSIGN); } /*{ ^=,XOR_ASSIGN}*/
+"|="                    {  return(token::OR_ASSIGN); } /*{|=,OR_ASSIGN}*/
+">>"                    {  return(token::RIGHT_OP); } /*{>>,RIGHT_OP}*/
+"++"                    {  return(token::INC_OP); } /*{++,INC_OP}*/
+"--"                    {  return(token::DEC_OP); } /*{--,DEC_OP}*/
+"->"                    {  return(token::PTR_OP); } /*{->,PTR_OP}*/
+"&&"                    {  return(token::AND_OP); } /*{&&,AND_OP}*/
+"||"                    {  return(token::OR_OP); } /*{||,OR_OP}*/
+"<="                    {  return(token::LE_OP); } /*{<=,LE_OP}*/
+">="                    {  return(token::GE_OP); } /*{>=,GE_OP}*/
+"=="                    {  return(token::EQ_OP); } /*{==,EQ_OP}*/
+"!="                    {  return(token::NE_OP); } /*{!=,NE_OP}*/
+
+
+"'"  return(token::TRANSPOSE_OP); /*{',TRANSPOSE_OP}*/
+"^"  return(token::T_EXP);  /*{^,T_EXP}*/
+">"  return(token::T_GT);   /*{>,T_GT}*/
+"<"  return(token::T_LT);   /*{<,T_LT}*/
+"*"  return(token::T_MULT); /*{*,T_MULT}*/
+".*"  return(token::POINTWISE_MULT);
+"/"  return(token::T_DIV);  /*{/,T_DIV}*/
+"!"  return(token::T_NOT); /*{!,T_NOT}*/
+"+"  return(token::T_ADD); /*{+,T_ADD}*/
+"-"  return(token::T_SUB); /*{-,T_SUB}*/
+"%"  return(token::T_MOD); /*{%,T_MOD}*/
+
+"="  return(token::ASSIGN_OP); /*{=,ASSIGN_OP}*/
+"("  return(token::T_OP_PAR); /*{(,T_OP_PAR}*/
+")"  return(token::T_CL_PAR); /*{),T_CL_PAR}*/
+"["  return(token::T_OP_BR);  /*{[,T_OP_BR}*/
+"]"  return(token::T_CL_BR);  /*{],T_CL_BR}*/
+"&"  return(token::T_AND);    /*{&,T_AND}*/
+"|"  return(token::T_OR);     /*{|,T_OR}*/
+
+"."  return(token::T_POINT); /*{.,T_POINT}*/
+","  return(token::T_COMMA); /*{,,T_COMMA}*/
+"?"  return(token::T_QUEST);  /*{?,T_QUEST}*/
+":"  return(token::T_COLON); /*{:,T_COLON}*/
+
+
+";"  return(token::T_SEMICOLON);  /*{;,T_SEMICOLON}*/
+
+SetComponent   return(token::T_SetComponent); /*{SetComponent,T_SetComponent}*/
+GetExtent      return(token::T_GetExtent); /*{GetExtent,T_GetExtent}*/
+
+LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
+
+set              return(token::SET);               /*{set,SET}*/
+setpos           return(token::SETPOS);            /*{setpos,SETPOS}*/
+lininterp        return(token::T_lininterp);      /*{lininterp,T_lininterp}*/
+initvalue        return(token::T_initvalue);       /*{initvalue,T_initvalue}*/
+
+itk               return(token::T_itk); /*{itk,T_itk}*/
+CannyEdgeDetector return(token::T_CannyEdgeDetector); /*{CannyEdgeDetector,T_CannyEdgeDetector}*/
+
+GetName        return(token::T_GetName); /*{GetName,T_GetName}*/
+GetObjectName  return(token::T_GetObjectName); /*{GetObjectName,T_GetObjectName}*/
+SetName        return(token::T_SetName); /*{SetName,T_SetName}*/
+
+
+CHAR          return(token::T_CHAR); /*{CHAR,T_CHAR}*/
+UCHAR         return(token::T_UCHAR); /*{UCHAR,T_UCHAR}*/
+SHORT         return(token::T_SHORT); /*{SHORT,T_SHORT}*/
+USHORT        return(token::T_USHORT); /*{USHORT,T_USHORT}*/
+INT           return(token::T_INT); /*{INT,T_INT}*/
+UINT          return(token::T_UINT); /*{UINT,T_UINT}*/
+FLOAT         return(token::T_FLOAT); /*{FLOAT,T_FLOAT}*/
+LONG          return(token::T_LONG); /*{LONG,T_LONG}*/ /// New (added: 27/05/2010)
+DOUBLE        return(token::T_DOUBLE); /*{DOUBLE,T_DOUBLE}*/
+RGB           return(token::T_RGB); /*{RGB,T_RGB}*/
+FLOAT_VECTOR  return(token::T_FLOAT_VECTOR); /*{FLOAT_VECTOR,T_FLOAT_VECTOR}*/
+GetFormat     return(token::T_GetFormat); /*{GetFormat,T_GetFormat}*/
+Comments      return(token::T_Comments); /*{Comments,T_Comments}*/
+
+IMAGE         return(token::T_IMAGE); /*{IMAGE,T_IMAGE}*/
+NUM           return(token::T_NUM); /*{NUM,T_NUM}*/
+STRING        return(token::T_STRING); /*{STRING,T_STRING}*/
+TRANSFORM     return(token::T_TRANSFORM); /*{TRANSFORM,T_TRANSFORM}*/
+OBJECT        return(token::T_OBJECT); /*{OBJECT,T_OBJECT}*/
+
+atof          return(token::T_atof); /*{atof,T_atof}*/
+
+global        return(token::T_global);     /*{global,T_global}*/
+global_new    return(token::T_global_new); /*{global_new,T_global_new}*/
+local_new     return(token::T_local_new); /*{local_new,T_local_new}*/
+local         return(token::T_local);      /*{local,T_local}*/
+wait          return(token::T_wait);       /*{wait,T_wait}*/
+schedule      return(token::T_schedule);   /*{schedule,T_schedule}*/
+
+Pi    {
+//
+//============================ Parse constants ====================
+//
+ return(token::CONST_PI);
+} /*{Pi,CONST_P}*/
+
+
+sin    {
+//
+//============================ Parse Math functions ====================
+//
+return(token::SIN);
+} /*{sin,SIN}*/
+cos    return(token::COS); /*{cos,COS}*/
+tan    return(token::TAN); /*{tan,TAN}*/
+asin   return(token::ASIN); /*{asin,ASIN}*/
+acos   return(token::ACOS); /*{acos,ACOS}*/
+atan   return(token::ATAN); /*{atan,ATAN}*/
+exp    return(token::EXP); /*{exp,EXP}*/
+ln     return(token::LN); /*{ln,LN}*/
+log    return(token::LOG); /*{log,LOG}*/
+cosh   return(token::COSH); /*{cosh,COSH}*/
+sinh   return(token::SINH); /*{sinh,SINH}*/
+sqrt   return(token::SQRT); /*{sqrt,SQRT}*/
+abs    return(token::ABS); /*{abs,ABS}*/
+norm   return(token::NORM); /*{norm,NORM}*/
+round  return(token::ROUND); /*{round,ROUND}*/
+floor  return(token::FLOOR); /*{floor,FLOOR}*/
+
+proc       return(token::T_PROC);   /*{proc,T_PROC}*/
+Class      return(token::T_Class);  /*{Class,T_Class}*/
+public     return(token::T_public);  /*{public,T_public}*/
+
+for    {
+//
+//============================ Parse Loops and Conditions ===============
+//
+return(token::FOR);
+} /*{for,FOR}*/
+in     return(token::T_IN); /*{in,T_IN}*/
+to     return(token::TO); /*{to,TO}*/
+step     return(token::STEP); /*{step,STEP}*/
+endfor return(token::ENDFOR); /*{endfor,ENDFOR}*/
+
+repeat return(token::T_REPEAT); /*{repeat,T_REPEAT}*/
+while  return(token::T_WHILE); /*{while,T_WHILE}*/
+until  return(token::T_UNTIL); /*{until,T_UNTIL}*/
+break  return(token::T_BREAK); /*{break,T_BREAK}*/
+
+if      return(token::IF); /*{if,IF}*/
+else    return(token::ELSE); /*{else,ELSE}*/
+
+sh                {
+//
+//============================ Parse Commands ===============
+//
+return(token::ASHELL);
+} /*{sh,ASHELL}*/
+
+SetDebugOn         return(token::T_SetDebugOn); /*{SetDebugOn,T_SetDebugOn}*/
+SetDebugOff        return(token::T_SetDebugOff); /*{SetDebugOff,T_SetDebugOff}*/
+TraceScanning      return(token::T_TraceScanning); /*{TraceScanning,T_TraceScanning}*/
+TraceParsing       return(token::T_TraceParsing); /*{TraceParsing,T_TraceParsing}*/
+SetVerboseOn       return(token::T_SetVerboseOn); /*{SetVerboseOn,T_SetVerboseOn}*/
+SetVerboseOff      return(token::T_SetVerboseOff); /*{SetVerboseOff,T_SetVerboseOff}*/
+NoMessageDialog    return(token::T_NoMessageDialog); /*{NoMessageDialog,T_NoMessageDialog}*/
+
+GetScriptsDir      return(token::T_GetScriptsDir); /*{GetScriptDir,T_GetScriptDir}*/
+SetProgress        return(token::T_SetProgress); /*{SetProgress,T_SetProgress}*/
+SetStatusText      return(token::T_SetStatusText); /*{SetStatusText,T_SetStatusText}*/
+Quit               return(token::QUIT); /*{Quit,QUIT}*/
+quit               return(token::QUIT);
+
+Image              return(token::T_Image); /*{Image,T_Image}*/
+BrowseImage        return(token::T_BrowseImage); /*{BrowseImage,T_BrowseImage}*/
+
+ReadRawImages      return(token::T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}*/
+
+Show               return(token::SHOW); /*{Show,SHOW}*/
+show               return(token::SHOW);
+
+Hide               return(token::T_HIDE); /*{Hide,T_HIDE}*/
+hide               return(token::T_HIDE);
+Help               return(token::HELP); /*{Help,HELP}*/
+help               return(token::HELP);
+ls                 return(token::LS); /*{ls,LS}*/
+print              return(token::PRINT); /*{print,PRINT}*/
+printn             return(token::PRINTN); /*{printn,PRINTN}*/
+boost_format       return(token::T_boost_format); /*{boost_format,T_boost_format}*/
+sprint             return(token::T_SPRINT); /*{sprint,T_SPRINT}*/
+vars               return(token::VARIABLES); /*{vars,VARIABLES}*/
+func               return(token::FUNCTION); /*{func,FUNCTION}*/
+eval               return(token::T_eval); /*{eval,T_eval}*/
+
+tx                  return(token::T_tx); /*{tx,T_tx}*/
+ty                  return(token::T_ty); /*{ty,T_ty}*/
+tz                  return(token::T_tz); /*{tz,T_tz}*/
+trx                 return(token::T_trx); /*{trx,T_trx}*/
+try                 return(token::T_try); /*{try,T_try}*/
+trz                 return(token::T_trz); /*{trz,T_trz}*/
+vx                  return(token::T_vx); /*{vx,T_vx}*/
+vy                  return(token::T_vy); /*{vy,T_vy}*/
+vz                  return(token::T_vz); /*{vz,T_vz}*/
+vdim                return(token::T_vdim); /*{vdim,T_vdim}*/
+inc                 return(token::T_inc); /*{inc,T_inc}*/
+val                 return(token::T_val); /*{val,T_val}*/
+
+filter             return(token::FILTER); /*{filter,FILTER}*/
+vtkMedian3D        return(token::T_vtkMedian3D); /*{vtkMedian3D,T_vtkMedian3D}*/
+normgrad           return(token::NormGrad); /*{normgrad,NormGrad}*/
+discnormgrad       return(token::T_DiscNormGrad); /*{discnormgrad,T_DiscNormGrad}*/
+gradient           return(token::T_gradient); /*{gradient,T_gradient}*/
+secdergrad         return(token::SecDerGrad); /*{secdergrad,SecDerGrad}*/
+secdergrad2        return(token::SecDerGrad2); /*{secdergrad2,SecDerGrad2}*/
+discsecdergrad     return(token::T_DiscSecDerGrad); /*{discsecdergrad,T_DiscSecDerGrad}*/
+OpImage            return(token::OpImage); /*{OpImage,OpImage}*/
+subimage           return(token::SubImage); /*{subimage,SubImage}*/
+autocrop           return(token::T_AutoCrop); /*{autocrop,T_AutoCrop}*/
+putimage           return(token::PutImage); /*{putimage,PutImage}*/
+rot2D              return(token::T_rot2D); /*{rot2D,T_rot2D}*/
+
+mean               return(token::T_mean); /*{mean,T_mean}*/
+localmean          return(token::T_localmean); /*{localmean,T_localmean}*/
+localmean2         return(token::T_localmean2); /*{localmean2,T_localmean2}*/
+localSD            return(token::T_localSD); /*{localSD,T_localSD}*/
+localSD2           return(token::T_localSD2); /*{localSD2,T_localSD2}*/
+StructTensor       return(token::T_struct_tensor); /*{StructTensor,T_struct_tensor}*/
+StructTensorH      return(token::T_StructTensorH); /*{StructTensorH,T_StructTensorH}*/
+HessianMatrix      return(token::T_HessianMatrix); /*{HessianMatrix,T_HessianMatrix}*/
+HessianEVal        return(token::T_HessianEVal); /*{HessianEVal,T_HessianEVal}*/
+Derivatives        return(token::T_Derivatives); /*{Derivatives,T_Derivatives}*/
+Curvatures         return(token::T_curvatures); /*{Curvatures,T_curvatures}*/
+DiscMeanCurvature  return(token::T_DiscMeanCurvature); /*{DiscMeanCurvature,T_DiscMeanCurvature}*/
+Laplacian          return(token::T_Laplacian); /*{Laplacian,T_Laplacian}*/
+setvoxelsize       return(token::T_setvoxelsize); /*{setvoxelsize,T_setvoxelsize}*/
+settranslation     return(token::T_settranslation); /*{settranslation,T_settranslation}*/
+setendianness      return(token::T_setendianness);  /*{setendianness,T_setendianness}*/
+
+threscross         return(token::T_threscross); /*{threscross,T_threscross}*/
+IsocontourPoints   return(token::T_IsocontourPoints); /*{IsocontourPoints,T_IsocontourPoints}*/
+IsosurfDist        return(token::T_IsosurfDist); /*{IsosurfDist,T_IsosurfDist}*/
+vtkIsoContourDist  return(token::T_vtkIsoContourDist); /*{vtkIsoContourDist,T_vtkIsoContourDist}*/
+
+
+
+Convolve           return(token::T_Convolve); /*{Convolve,T_Convolve}*/
+ConvolveMask       return(token::T_ConvolveMask); /*{ConvolveMask,T_ConvolveMask}*/
+Pad                return(token::T_Pad); /*{Pad,T_Pad}*/
+Eigen2D            return(token::T_Eigen2D); /*{Eigen2D,T_Eigen2D}*/
+Eigen3D            return(token::T_Eigen3D); /*{Eigen3D,T_Eigen3D}*/
+ChamferDT          return(token::T_ChamferDT); /*{ChamferDT,T_ChamferDT}*/
+Chamfer2DT         return(token::T_Chamfer2DT); /*{Chamfer2DT,T_Chamfer2DT}*/
+BorgeforsDT        return(token::T_BorgeforsDT); /*{BorgeforsDT,T_BorgeforsDT}*/
+BorgeforsSDT       return(token::T_BorgeforsSDT); /*{BorgeforsSDT,T_BorgeforsSDT}*/
+vtkSignedBorgefors return(token::T_vtkSignedBorgefors); /*{vtkSignedBorgefors,T_vtkSignedBorgefors}*/
+vtkSignedFMDist    return(token::T_vtkSignedFMDist); /*{vtkSignedFMDist,T_vtkSignedFMDist}*/
+PropagationDist    return(token::T_PropagationDist); /*{PropagationDist,T_PropagationDist}*/
+PropagationDist2   return(token::T_PropagationDist2); /*{PropagationDist2,T_PropagationDist2}*/
+PropDanielsson     return(token::T_PropDanielsson); /*{PropDanielsson,T_PropDanielsson}*/
+vtkPropDanielsson  return(token::T_vtkPropDanielsson); /*{vtkPropDanielsson,T_vtkPropDanielsson}*/
+vtkPropDaniel2     return(token::T_vtkPropDaniel2); /*{vtkPropDaniel2,T_vtkPropDaniel2}*/
+CC                 return(token::T_CC); /*{CC,T_CC}*/
+
+ConvexHull        return(token::T_ConvexHull); /*{ConvexHull,T_ConvexHull}*/
+
+MeanHalfSize      return(token::T_MeanHalfSize); /*{MeanHalfSize,T_MeanHalfSize}*/
+Resize            return(token::T_Resize); /*{Resize,T_Resize}*/
+ReSlice           return(token::T_ReSlice); /*{ReSlice,T_ReSlice}*/
+Flip              return(token::T_Flip);  /*{Flip,T_Flip}*/// flips image in one of the main axis direction
+
+
+RestartTime       return(token::T_RestartTime); /*{RestartTime,T_RestartTime}*/
+InitTime          return(token::T_InitTime); /*{InitTime,T_InitTime}*/
+TimeSpent         return(token::T_TimeSpent); /*{TimeSpent,T_TimeSpent}*/
+EndTime           return(token::T_EndTime); /*{EndTime,T_EndTime}*/
+
+NULL              return(token::T_NULL); /*{NULL,T_NULL}*/
+
+
+ProcessXEvents    return(token::T_ProcessXEvents); /*{ProcessXEvents,T_ProcessXEvents}*/
+ProcessEvents    return(token::T_ProcessEvents); /*{ProcessEvents,T_ProcessEvents}*/
+
+count             return(token::T_COUNT); /*{count,T_COUNT}*/
+max               return(token::T_MAX); /*{max,T_MAX}*/
+argmax            return(token::T_argmax); /*{argmax,T_argmax}*/
+min               return(token::T_MIN); /*{min,T_MIN}*/
+median            return(token::T_MEDIAN); /*{median,T_MEDIAN}*/
+sum               return(token::T_SUM); /*{sum,T_SUM}*/
+
+info              return(token::T_info); /*{info,T_info}*/
+
+
+Xpos              return(token::T_Xpos); /*{Xpos,T_Xpos}*/
+Ypos              return(token::T_Ypos); /*{Ypos,T_Ypos}*/
+Zpos              return(token::T_Zpos); /*{Zpos,T_Zpos}*/
+SpacePos          return(token::T_SpacePos); /*{SpacePos,T_SpacePos}*/
+
+del               return(token::T_del); /*{del,T_del}*/
+delvars           return(token::T_delvars); /*{delvars,T_delvars}*/
+
+vtkFastMarching   return(token::T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
+vtkFastMarchingTarget   return(token::T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
+
+
+FluxDiffusion     return(token::T_FluxDiffusion); /*{FluxDiffusion,T_FluxDiffusion}*/
+vtkAnisoGS        return(token::T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/
+AnisoSmoothGS     return(token::AnisoSmoothGS); /*{AnisoSmoothGS,AnisoSmoothGS}*/
+init              return(token::TInit); /*{init,TInit}*/
+iterate           return(token::TIterate); /*{iterate,TIterate}*/
+end               return(token::TEnd); /*{end,TEnd}*/
+
+AnisoWeickert     return(token::T_AnisoWeickert); /*{AnisoWeickert,T_AnisoWeickert}*/
+AnisoCW           return(token::T_AnisoCW); /*{AnisoCW,T_AnisoCW}*/
+
+SRAD_qcoeff       return(token::T_SRAD_qcoeff); /*{SRAD_qcoeff,T_SRAD_qcoeff}*/
+AnisoSRAD         return(token::T_AnisoSRAD); /*{AnisoSRAD,T_AnisoSRAD}*/
+AnisoSRAD2        return(token::T_AnisoSRAD2); /*{AnisoSRAD2,T_AnisoSRAD2}*/
+AnisoDPAD         return(token::T_AnisoDPAD); /*{AnisoDPAD,T_AnisoDPAD}*/
+AnisoDPAD2        return(token::T_AnisoDPAD2); /*{AnisoDPAD2,T_AnisoDPAD2}*/
+AnisoNRAD         return(token::T_AnisoNRAD); /*{AnisoNRAD,T_AnisoNRAD}*/
+AnisoLeeAdd2      return(token::T_AnisoLeeAdd2); /*{AnisoLeeAdd2,T_AnisoLeeAdd2}*/
+
+AnisoRudinMult    return(token::T_AnisoRudinMult); /*{AnisoRudinMult,T_AnisoRudinMult}*/
+
+AddGaussNoise     return(token::TAddGaussNoise); /*{AddGaussNoise,TAddGaussNoise}*/
+
+SNR               return(token::T_SNR); /*{SNR,T_SNR}*/
+
+save              return(token::T_save); /*{save,T_save}*/
+
+eccentricity      return(token::T_eccentricity); /*{eccentricity,T_eccentricity}*/
+
+
+isoarea2D         return(token::T_isoarea2D); /*{isoarea2D,T_isoarea2D}*/
+posarea           return(token::T_posarea); /*{posarea,T_posarea}*/
+
+ReadCTALine      return(token::T_ReadCTALine); /*{ReadCTALine,T_ReadCTALine}*/
+ReadCTALineRadii return(token::T_ReadCTALineRadii); /*{ReadCTALineRadii,T_ReadCTALineRadii}*/
+
+isosurf           return(token::T_isosurf); /*{isosurf,T_isosurf}*/
+isosurf_inv       return(token::T_isosurf_inv); /*{isosurf_inv,T_isosurf_inv}*/
+isosurf_ijk       return(token::T_isosurf_ijk); /*{isosurf_ijk,T_isosurf_ijk}*/
+isosurf_ras       return(token::T_isosurf_ras); /*{isosurf_ras,T_isosurf_ras}*/
+Surface           return(token::T_Surface); /*{Surface,T_Surface}*/
+vtkDecimate       return(token::T_vtkDecimate); /*{vtkDecimate,T_vtkDecimate}*/
+vtkMarchingCubes  return(token::T_vtkMarchingCubes); /*{vtkMarchingCubes,T_vtkMarchingCubes}*/
+vtkSmooth         return(token::T_vtkSmooth); /*{vtkSmooth,T_vtkSmooth}*/
+vtkWindowedSinc   return(token::T_vtkWindowedSinc); /*{vtkWindowedSinc,T_vtkWindowedSinc}*/
+
+isoline           return(token::T_isoline); /*{isoline,T_isoline}*/
+
+vtkDist           return(token::T_vtkDist); /*{vtkDist,T_vtkDist}*/
+AndreDist         return(token::T_AndreDist); /*{AndreDist,T_AndreDist}*/
+
+OutFlux           return(token::T_OutFlux); /*{OutFlux,T_OutFlux}*/
+OutFluxScalar     return(token::T_OutFluxScalar); /*{OutFluxScalar,T_OutFluxScalar}*/
+2DFlux            return(token::T_2DFlux); /*{2DFlux,T_2DFlux}*/
+OrientationRatio  return(token::T_OrientationRatio); /*{OrientationRatio,T_OrientationRatio}*/
+
+computeCC         return(token::T_computeCC); /*{computeCC,T_computeCC}*/
+SetLight          return(token::T_SetLight); /*{SetLight,T_SetLight}*/
+SetLightPos       return(token::T_SetLightPos); /*{SetLightPos,T_SetLightPos}*/
+
+Skeleton          return(token::T_Skeleton); /*{Skeleton,T_Skeleton}*/
+SimplePoints      return(token::T_SimplePoints); /*{SimplePoints,T_SimplePoints}*/
+
+NormalField       return(token::T_NormalField); /*{NormalField,T_NormalField}*/
+DirConnectivity   return(token::T_DirConnectivity); /*{DirConnectivity,T_DirConnectivity}*/
+OrientField       return(token::T_OrientField); /*{OrientField,T_OrientField}*/
+OrientPositive    return(token::T_OrientPositive); /*{OrientPositive,T_OrientPositive}*/
+
+Skeleton2lines    return(token::T_Skeleton2lines); /*{Skeleton2lines,T_Skeleton2lines}*/
+SmoothLines       return(token::T_SmoothLines);  /*{SmoothLines,T_SmoothLines}*/
+ResampleLines     return(token::T_ResampleLines); /*{ResampleLines,T_ResampleLines}*/
+ShortestPath      return(token::T_ShortestPath); /*{ShortestPath,T_ShortestPath}*/
+ShortestPathImage return(token::T_ShortestPathImage); /*{ShortestPathImage,T_ShortestPathImage}*/
+PathFromDispl     return(token::T_PathFromDispl); /*{PathFromDispl,T_PathFromDispl}*/
+PathFromVectField return(token::T_PathFromVectField); /*{PathFromVectField,T_PathFromVectField}*/
+LineRecons        return(token::T_LineRecons); /*{LineRecons,T_LineRecons}*/
+
+CircleInt         return(token::T_CircleIntegral); /*{CircleInt,T_CircleIntegral}*/
+CircleIntExc      return(token::T_CircleIntegralExc); /*{CircleIntExc,T_CircleIntegralExc}*/
+CircleIntSdExc    return(token::T_CircleIntSdExc); /*{CircleIntSdExc,T_CircleIntSdExc}*/
+CircleMinIntSdExc    return(token::T_CircleMinIntSdExc); /*{CircleMinIntSdExc,T_CircleMinIntSdExc}*/
+LocalExtrema      return(token::T_LocalExtrema); /*{LocalExtrema,T_LocalExtrema}*/
+
+
+gnuplot           return(token::T_gnuplot); /*{gnuplot,T_gnuplot}*/
+histo             return(token::T_histo); /*{histo,T_histo}*/
+cumhisto          return(token::T_cumhisto); /*{cumhisto,T_cumhisto}*/
+DisplayHisto      return(token::T_DisplayHisto); /*{DisplayHisto,T_DisplayHisto}*/
+
+GenRead           return(token::T_GenRead); /*{GenRead,T_GenRead}*/
+
+
+Matrix            return(token::T_Matrix); /*{Matrix,T_Matrix}*/
+Invert            return(token::T_Invert); /*{Invert,T_Invert}*/
+
+SaveStructuredGrid {return(token::T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
+
+//
+//============================== PARAMWIN options ====================
+//
+
+//ParamWin          {
+//                  return(token::T_ParamWin);
+
+//BeginBook         return(token::T_BeginBook); // BeginBook,T_BeginBook
+// EndBook           return(token::T_EndBook); //EndBook,T_EndBook
+// AddPage           return(token::T_AddPage); / / AddPage,T_AddPage
+// BeginPanel        return(token::T_BeginPanel); // BeginPanel,T_BeginPanel
+// EndPanel          return(token::T_EndPanel); // EndPanel,T_EndPanel}
+// SelectPage        return(token::T_SelectPage); // SelectPage,T_SelectPage
+
+//BeginBoxPanel     return(token::T_BeginBoxPanel); /// BeginBoxPanel,T_BeginBoxPanel
+//EndBoxPanel       return(token::T_EndBoxPanel); /// EndBoxPanel,T_EndBoxPanel
+
+//AddFloat          return(token::T_AddFloat); // AddFloat,T_AddFloat
+// AddInt            return(token::T_AddInt); // AddInt,T_AddInt
+// AddButton         return(token::T_AddButton); // AddButton,T_AddButton
+
+// AddBoolean        return(token::T_AddBoolean); /// AddBoolean,T_AddBoolean
+
+// AddEnum           return(token::T_AddEnum); // AddEnum,T_AddEnum
+// AddEnumChoice     return(token::T_AddEnumChoice); // AddEnumChoice,T_AddEnumChoice
+//AddImageChoice    return(token::T_AddImageChoice); // AddImageChoice,T_AddImageChoice
+// AddString         return(token::T_AddString); // AddString,T_AddString
+// AddFilename       return(token::T_AddFilename); // AddFilename,T_AddFilename
+//AddLabel          return(token::T_AddLabel); //AddLabel,T_AddLabel
+//SetCallback       return(token::T_SetCallback); //SetCallback,T_SetCallback
+//SetDragCallback   return(token::T_SetDragCallback); //SetDragCallback,T_SetDragCallback
+
+//BeginBox          return(token::T_BeginBox); //BeginBox,T_BeginBox
+//EndBox            return(token::T_EndBox); //EndBox,T_EndBox
+
+//BeginHorizontal   return(token::T_BeginHorizontal); //BeginHorizontal,T_BeginHorizontal
+//EndHorizontal     return(token::T_EndHorizontal); //EndHorizontal,T_EndHorizontal
+
+// EnablePanel       return(token::T_EnablePanel);  //EnablePanel,T_EnablePanel
+
+// EnableBox         return(token::T_EnableBox);  // EnableBox,T_EnableBox
+
+// Display           return(token::T_Display); //Display,T_Display
+
+// CreateWin         return(token::T_CreateWin); // CreateWin,T_CreateWin
+// redraw            return(token::T_redraw); // redraw,T_redraw
+
+//SetPositionProp      return(token::T_SetPositionProp); //SetPositionProp,T_SetPositionProp
+// ShowSlider        return(token::T_ShowSlider); // ShowSlider,T_ShowSlider
+// Enable            return(token::T_Enable);  //Enable,T_Enable
+
+} /*{ParamWin,T_ParamWin}*/
+
+
+
+CreateFlatMesh    return(token::T_CreateFlatMesh);    /*{CreateFlatMesh,T_CreateFlatMesh}*/
+CreateVolume      return(token::T_CreateVolume);      /*{CreateVolume,T_CreateVolume}*/
+vtkCreateFlatMesh return(token::T_vtkCreateFlatMesh); /*{vtkCreateFlatMesh,T_vtkCreateFlatMesh}*/
+Altitude2Position return(token::T_Altitude2Position); /*{Altitude2Position,T_Altitude2Position}*/
+Temp2Altitudes    return(token::T_Temp2Altitudes);    /*{Temp2Altitudes,T_Temp2Altitudes}*/
+GeoCoordinates    return(token::T_GeoCoordinates);    /*{GeoCoordinates,T_GeoCoordinates}*/
+Set3DArrowParam   return(token::T_Set3DArrowParam); /*{Set3DArrowParam,T_Set3DArrowParam}*/
+
+CreateVectors     return(token::T_CreateVectors); /*{CreateVectors,T_CreateVectors}*/
+
+CreateVectorsFromField  return(token::T_CreateVectorsFromField); /*{CreateVectorsFromField,T_CreateVectorsFromField}*/
+
+ComputeAltitudes  return(token::T_ComputeAltitudes); /*{ComputeAltitudes,T_ComputeAltitudes}*/
+ReadFlow          return(token::T_ReadFlow); /*{ReadFlow,T_ReadFlow}*/
+SetFluidNavFile   return(token::T_SetFluidNavFile); /*{SetFluidNavFile,T_SetFluidNavFile}*/
+DrawEarthCoord    return(token::T_DrawEarthCoord); /*{DrawEarthCoord,T_DrawEarthCoord}*/
+
+CreateEllipsoids  return(token::T_CreateEllipsoids); /*{CreateEllipsoids,T_CreateEllipsoids}*/
+
+import_vtk        return(token::T_import_vtk);     /*{import_vtk,T_import_vtk}*/
+import_wii        return(token::T_import_wii);     /*{import_wii,T_import_wii}*/
+import_filters    return(token::T_import_filters); /*{import_filters,T_import_filters}*/
+
+amiOFCorr2D       return(token::T_amiOFCorr2D);  /*{amiOFCorr2D,T_amiOFCorr2D}*/
+amiOFVar2D        return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/
+
+vtkDicomRead      return(token::T_vtkDicomRead); /*{vtkDicomRead,T_vtkDicomRead}*/
+vtkMINCRead       return(token::T_vtkMINCRead);  /*{vtkMINCRead,T_vtkMINCRead}*/
+
+exists            return(token::T_exists);       /*{exists,T_exists}*/
+FileExists        return(token::T_FileExists);  /*{FileExists,T_FileExists}*/
+
+InfoDialog        return(token::T_InfoDialog); /*{InfoDialog,T_InfoDialog}*/
+
+slice             return(token::T_slice);        /*{slice,T_slice}*/
+
+argc              return(token::T_argc);         /*{argc,T_argc}*/
+emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
+
+
+[0-9]+"."[0-9]+   {
+//
+//============================ Parse float ====================
+//
+//  setlocale(LC_NUMERIC,"C");
+  setlocale(LC_NUMERIC, "C");
+  yylval->adouble=atof(YYText());
+  return(token::NUMBER);
+}
+
+
+[0-9]+   {
+//
+//============================ Parse interger ====================
+//
+//  setlocale(LC_NUMERIC,"C");
+  setlocale(LC_NUMERIC, "C");
+  char* endstr;
+  yylval->adouble=strtol(YYText(),&endstr,0);
+  return(token::NUMBER);
+}
+
+0x[0-9a-fA-F]+   {
+//
+//============================ Parse interger ====================
+//
+//  setlocale(LC_NUMERIC,"C");
+  setlocale(LC_NUMERIC, "C");
+  char* endstr;
+  yylval->adouble=strtol(YYText(),&endstr,0);
+  return(token::NUMBER);
+}
+
+
+
+\"          {
+//
+//
+//============================ Parse string ====================
+//
+ cpp_string = new string();
+ BEGIN(str);
+ }
+
+<str>\"      {
+  // end of string
+  // Not thread safe ...
+  BEGIN(0);
+  // add the \0 character, why ???...
+  cpp_string->append(1,'\0');
+
+  if((yylval->astring = new char[cpp_string->length()+1])==NULL) {
+    GB_driver.yyiperror(E_MEM);
+    return token::LEX_ERROR;
+  }
+  // first conversion, we keep char* for astring for now
+  strcpy(yylval->astring, cpp_string->c_str());
+  delete cpp_string;
+  cpp_string = NULL;
+  return(token::ASTRING);
+}
+
+<str>[\n\r]  {
+  GB_driver.yyiperror(E_UNTERM_STRING);
+}
+
+<str>\\n cpp_string->append(1,'\n');
+<str>\\t cpp_string->append(1,'\t');
+<str>\\r cpp_string->append(1,'\r');
+<str>\\b cpp_string->append(1,'\b');
+<str>\\f cpp_string->append(1,'\f');
+
+<str>\\(.|\n\r) cpp_string->append(1,YYText()[1]);
+
+<str>\# {
+  cpp_string->append(YYText());
+}
+
+<str>[^\\\n\r\"]+ {
+  cpp_string->append(YYText());
+/*
+  char *yptr = YYText();
+
+  while (*yptr)
+    *string_buf_ptr++ = *yptr++;
+*/
+}
+
+
+"$#"  {
+  yylval->adouble=GB_argc-GB_num_arg_parsed;
+  return(token::NUMBER);
+}
+
+\$[0-9]   {
+  // TODO allow more than 10 arguments!!
+  int n,pos;
+  n = YYText()[1]-'0';
+  // TODO: check the position, improve the code here
+  pos = n+GB_num_arg_parsed-1;
+
+  if ((pos>=GB_argc)||(pos<0)) {
+    boost::format fmt =
+        boost::format("improcess.l \t invalid argument number %d / %d\n");
+#ifdef str
+  #undef str
+      GB_driver.yyiperror( str(fmt % n % (GB_argc-GB_num_arg_parsed)).c_str() );
+  #define str 1
+#else
+      GB_driver.yyiperror( str(fmt % n % (GB_argc-GB_num_arg_parsed)).c_str() );
+#endif
+    return token::LEX_ERROR;
+//myss1.c_str() );
+  }
+
+  // we use GB_argv[n+1] because the first two arguments are the program and the script file
+  wxString argument(GB_argv[pos]);
+  
+  if((yylval->astring = new char[strlen(argument.mb_str(wxConvUTF8))+1])==NULL) {
+    GB_driver.yyiperror(E_MEM);
+    return token::LEX_ERROR;
+  }
+
+  strcpy(yylval->astring,argument.mb_str(wxConvUTF8));
+
+  return(token::ASTRING);
+
+}
+
+\{          {
+//============================ Parse block ====================
+//
+  if (block_level==0) {
+    ami_block = new AmiInstructionBlock();
+    ami_block->SetStartingLine(GB_driver.yyiplineno);
+    if (GB_debug )std::cerr << "Starting block at " <<  GB_driver.yyiplineno << std::endl;
+    if (GB_debug )std::cerr << "Starting block at " << *yylloc << std::endl;
+    block_level++;
+    BEGIN(block);
+  }
+
+/*
+<block>\# {
+//============================ Parse comment ====================
+//
+    comment_caller = block;
+    BEGIN(comment);
+//    printf("begin comment in block \n");
+}
+
+<block>"//"  {
+    comment_caller = block;
+    BEGIN(comment);
+//    printf("begin comment in block \n");
+}
+*/
+}
+
+<block>\r\n|[\r\n] {
+  // dealing with windows end-of-lines ...
+  yylloc->lines(1); yylloc->step();
+  GB_driver.yyiplineno++;
+  ami_block->GetBody().append(YYText());
+}
+
+
+<block>\{      {
+  block_level++;
+  ami_block->GetBody().append(1,'{');
+}
+
+<block>\}      {
+
+  block_level--;
+  if (block_level>0)
+    ami_block->GetBody().append(1,'}');
+  else {
+    BEGIN(0);
+    ami_block->GetBody().append(3,'\0');
+//    cpp_block->append(1,YY_END_OF_BUFFER_CHAR);
+
+//     printf("block = *%s*\n",block_buf);
+
+/*
+    length=ami_block->GetBody().length();
+
+    if((yyiplval.astring = new char[length+3])==NULL)
+      yyiperror(E_MEM);
+    strcpy(yyiplval.astring,
+            ami_block->GetBody().c_str());
+    // why add those 3 characters ...??? lex is looking ahead several characters
+    // risky in memory ...
+    yyiplval.astring[length  ]=YY_END_OF_BUFFER_CHAR;
+    yyiplval.astring[length+1]=YY_END_OF_BUFFER_CHAR;
+    yyiplval.astring[length+2]=YY_END_OF_BUFFER_CHAR;
+*/
+    yylval->ablock = ami_block;
+    // cannot use smart pointers in union ...
+    // needs to be freed after use ...
+
+    //ami_block = AmiInstructionBlock_ptr();
+    return(token::ABLOCK);
+  }
+}
+
+
+<block>[^\{\}] {
+//  char *yptr = YYText();
+//  while (*yptr)
+//    *block_buf_ptr++ = *yptr++;
+  ami_block->GetBody().append(YYText());
+}
+
+
+\# {
+//============================ Parse comment ====================
+//
+    comment_caller = INITIAL;
+    BEGIN(comment);
+//  printf("begin comment \n");
+}
+
+"//"  {
+    comment_caller = INITIAL;
+    BEGIN(comment);
+//  printf("begin comment \n");
+}
+
+
+<comment>\r\n|[\n\r] {
+  //GB_driver.yyiplineno++;
+//  printf("end comment from %d \n",comment_caller);
+  // use unput to accept the end of the command if any
+// std::cout << "<comment>\n [" << YYText() << "]" << std::endl;
+// std::cout << "length = " << strlen(YYText()) << std::endl;
+  if (strlen(YYText())==1) {
+    unput(YYText()[0]);
+  }
+  if (strlen(YYText())==2) {
+    unput(YYText()[1]);
+    unput(YYText()[0]);
+  }
+  BEGIN(comment_caller);
+}
+
+<comment>.                 {
+  // on ecrit ce qu'on veut dans un commentaire ...
+  // sauver les commentaires dans une variable du driver??
+}
+
+local::{identifier}   {
+//
+//============================ Parse variable ====================
+//
+  int context = Vars.GetCurrentContextNumber();
+  string text(YYText());
+  string varname = text.substr(7);
+  yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),context);
+  return result;
+}
+
+global::{identifier}   {
+//
+//============================ Parse variable ====================
+//
+  string text(YYText());
+  string varname = text.substr(8);
+  yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),0);
+  return result;
+}
+
+this::{identifier}   {
+//
+//============================ Parse variable ====================
+//
+  string text(YYText());
+  string varname = text.substr(6);
+  yyip::Parser::token::yytokentype 
+      result = checkvar(yylval,varname.c_str(),
+                        OBJECT_CONTEXT_NUMBER);
+  return result;
+}
+
+
+::{identifier}   {
+//
+//============================ Parse variable ====================
+//
+  string text(YYText());
+  string varname = text.substr(2);
+  yyip::Parser::token::yytokentype 
+      result = checkvar(yylval,varname.c_str(),
+                        OBJECT_CONTEXT_NUMBER);
+  return result;
+}
+
+
+::{identifier}->{identifier}   {
+// TODO: can all the variable system to return only variable from lex !!!
+// this rule is a hack
+//
+//============================ Parse variable in a given context ====================
+//
+  //cout << "::XX->XX variable in object ?" << std::endl;
+  string text(YYText());
+  size_t pos = text.find("->");
+  string contextname = text.substr(2,pos-2);
+
+
+  // check if contextname is really a context
+  //cout << "looking for "<< contextname << std::endl;
+  BasicVariable::ptr var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
+  if (var.get()) 
+  {
+    FILE_MESSAGE("Object found");
+    string varname = text.substr(pos+2);
+
+    Variable<AMIObject>::ptr objvar( boost::dynamic_pointer_cast<Variable<AMIObject> >(var));
+    AMIObject::ptr object (objvar->Pointer());
+
+    Variables::ptr previous_ocontext = Vars.GetObjectContext();
+    Vars.SetObjectContext(object->GetContext());
+
+    yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),OBJECT_CONTEXT_NUMBER);
+
+    Vars.SetObjectContext(previous_ocontext);
+    return result;
+  } else {
+    std::string error_string =" lex error \t object not found ";
+    GB_driver.yyiperror(error_string.c_str());
+  }
+}
+
+
+{identifier}->{identifier}   {
+//
+//============================ Parse variable in a given context ====================
+//
+  //cout << "variable in object ?" << std::endl;
+  string text(YYText());
+  size_t pos = text.find("->");
+  string contextname = text.substr(0,pos);
+
+
+  // check if contextname is really a context
+  BasicVariable::ptr var = IsObject(contextname.c_str());
+  if (var.get()) 
+  {
+    FILE_MESSAGE("Object found");
+    string varname = text.substr(pos+2);
+
+    Variable<AMIObject>::ptr objvar( boost::dynamic_pointer_cast<Variable<AMIObject> >(var));
+    AMIObject::ptr object ( objvar->Pointer());
+
+    Variables::ptr previous_ocontext = Vars.GetObjectContext();
+    Vars.SetObjectContext(object->GetContext());
+
+    yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),OBJECT_CONTEXT_NUMBER);
+
+    Vars.SetObjectContext(previous_ocontext);
+    return result;
+  } else {
+    std::string error_string =" lex error \t object not found ";
+    GB_driver.yyiperror(error_string.c_str());
+  }
+}
+
+
+
+
+
+{identifier}   {
+//
+//============================ Parse variable ====================
+//
+   return checkvar(yylval,YYText());
+}
+
+
+[[:blank:]]       {
+                    yylloc->step();
+                  }
+
+\\(\r\n|[\n\r])              {
+      //cout << "\\NEWLINE \n" << std::endl;
+      // allow multiline command
+      GB_driver.yyiplineno++;
+    }
+
+\r\n|[\n\r]                {
+          //cout << "NEWLINE \n" << std::endl;
+//          if (yyleng!=1)std::cout << " ******* yyleng = " << yyleng << "************" << std::endl; 
+          yylloc->lines(1); yylloc->step();
+          GB_driver.yyiplineno++;
+          return(token::END_INSTRUCTION);
+      } /*{end-of-line,END_INSTRUCTION}*/
+
+.                 {
+
+    std::string error_string =" lex error \t invalid characters ";
+    GB_driver.yyiperror(error_string.c_str());
+
+  }
+
+
+
+
+%%
+
+
+
+//--------------------------------------------------
+//       IsObject()
+//--------------------------------------------------
+//
+BasicVariable::ptr IsObject( const char* varname, int context)
+//
+{
+  BasicVariable::ptr var = Vars.GetVar(varname,context);
+  if (var.get())
+    if ((var->Type() == type_ami_object))
+      return var;
+    else 
+      return BasicVariable::ptr();
+  else
+    return BasicVariable::ptr();
+}
+
+
+//--------------------------------------------------
+//       checkvar()
+//--------------------------------------------------
+//
+yyip::Parser::token::yytokentype checkvar(
+  yyip::Parser::semantic_type* yylval,
+  const char* varname,
+  int context
+)
+//
+{
+
+  BasicVariable::ptr var = Vars.GetVar(varname,context);
+  //cout << "res = " << res << std::endl;
+  if  ((!GB_driver.procedure_declaration) && var.get())   {
+
+    // add the variable to the stack
+    GB_driver.var_stack.AddVar(var);
+
+    //yylval->variable = var.get();
+    switch(var->Type()) {
+      case type_image:            return token::VAR_IMAGE;
+        /*{$variable_image,VAR_IMAGE}*/
+      case type_float:
+      case type_long:
+      case type_double:
+      case type_int:
+      case type_uchar:
+        return token::PROCESSED_VAR; /*{$PROCESSED_VAR,PROCESSED_VAR}*/
+//      case type_surfdraw:         return token::VAR_SURFDRAW;
+        /*{$variable_surfdraw,VAR_SURFDRAW}*/
+//      case type_file:             return token::VAR_FILE;
+        /*{$variable_file,VAR_FILE}*/
+      case type_c_procedure:      return token::VAR_C_PROCEDURE;
+        /*{$variable_c_procedure,VAR_C_PROCEDURE}*/
+      case type_class_member:      return token::VAR_CLASS_MEMBER;
+        /*{$variable_class_procedure,VAR_CLASS_MEMBER}*/
+      case type_c_image_function: return token::VAR_C_IMAGE_FUNCTION;
+        /*{$variable_c_image_function,VAR_C_IMAGE_FUNCTION}*/
+      case type_c_function: return token::VAR_C_FUNCTION;
+        /*{$variable_c_function,VAR_C_FUNCTION}*/
+
+      case type_ami_function:     return token::VAR_AMI_FUNCTION;
+        /*{$variable_ami_function,VAR_AMI_FUNCTION}*/
+      case type_ami_class:     return token::VAR_AMI_CLASS;
+        /*{$variable_ami_class,VAR_AMI_CLASS}*/
+      case type_ami_object:     return token::VAR_AMI_OBJECT;
+        /*{$variable_ami_object,VAR_AMI_OBJECT}*/
+
+      case type_string:           return token::VAR_STRING;
+        /*{$variable_string,VAR_STRING}*/
+      case type_matrix:           return token::VAR_MATRIX;
+        /*{$variable_matrix,VAR_MATRIX}*/
+//      case type_gltransform:      return token::VAR_GLTRANSFORM;
+        /*{$variable_gltransform,VAR_GLTRANSFORM}*/
+      case type_array:       {
+        Variable<VarArray>::ptr vararray( 
+          boost::dynamic_pointer_cast<Variable<VarArray> >(var));
+        VarArray::ptr array (vararray->Pointer());
+        switch(array->Type()) {
+          case type_image:      return token::VAR_ARRAY_IMAGE;
+          /*{$variable_image_array,VAR_ARRAY_IMAGE}*/
+          default:
+            GB_driver.err_print("Array type not available \n");
+        }
+        break;
+      }
+      default:
+        GB_driver.err_print("Variable type still not available \n");
+        GB_driver.var_stack.GetLastBasicVar();
+    }
+
+  }
+
+  yylval->ident = new IdentifierInfo;
+  yylval->ident->SetName( varname);
+  yylval->ident->SetCreationContext(context);
+  return(token::IDENTIFIER);
+}
+
+/*** Additional Code ***/
+
+namespace yyip {
+
+Scanner::Scanner(std::istream* in,
+     std::ostream* out)
+    : yyipFlexLexer(in, out)
+{
+}
+
+Scanner::~Scanner()
+{
+}
+
+void Scanner::set_debug(bool b)
+{
+    yy_flex_debug = b;
+}
+
+}
+
+
+/* This implementation of ExampleFlexLexer::yylex() is required to fill the
+ * vtable of the class ExampleFlexLexer. We define the scanner's main yylex
+ * function via YY_DECL to reside in the Scanner class instead. */
+
+#ifdef yylex
+#undef yylex
+#endif
+
+int yyipFlexLexer::yylex()
+{
+    std::cerr << "in yyipFlexLexer::yylex() !" << std::endl;
+    return 0;
+}
+
+/* When the scanner receives an end-of-file indication from YY_INPUT, it then
+ * checks the yywrap() function. If yywrap() returns false (zero), then it is
+ * assumed that the function has gone ahead and set up `yyin' to point to
+ * another input file, and scanning continues. If it returns true (non-zero),
+ * then the scanner terminates, returning 0 to its caller. */
+
+/*
+int yyFlexLexer::yywrap()
+{
+    return 1;
+}
+*/
+
+
+
+
+
+
+

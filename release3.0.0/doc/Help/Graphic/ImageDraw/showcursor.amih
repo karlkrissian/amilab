@@ -1,0 +1,18 @@
+
+***** VAR_IMAGEDRAW.SHOWCURSOR *****
+
+token(s):
+SHOWCURSOR  showcursor
+
+rule(s):
+commande -> VAR_IMAGEDRAW '.' SHOWCURSOR '(' expr ')'
+
+parameters
+  #1 expr:  integer 0 or 1.
+
+description:
+displays or hides the cursor of a imagedraw window.
+
+
+
+******************************

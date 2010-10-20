@@ -1,0 +1,48 @@
+
+proc RGBAniso( IMAGE in, IMAGE out, NUM _sigma, NUM _th, NUM _it) {
+
+print "*\n"
+
+  _inr = in[0]
+  _ing = in[1]
+  _inb = in[2]
+
+print "*\n"
+
+  _inrr = AnisoGS(_inr,_sigma,_th,0.01,_it)
+  _ingr = AnisoGS(_ing,_sigma,_th,0.01,_it)
+  _inbr = AnisoGS(_inb,_sigma,_th,0.01,_it)
+  
+  out.SetComponent( 0, _inrr)
+  out.SetComponent( 1, _ingr)
+  out.SetComponent( 2, _inbr)
+
+}
+
+
+proc Float2Uchar( IMAGE im) {
+  im = (im>0)*(im<255)*im + (im>=255)*255
+}
+
+proc RGBAddNoise( IMAGE in, IMAGE out, NUM _sd) {
+
+  print "*\n"
+
+  _inr = in[0]
+  _ing = in[1]
+  _inb = in[2]
+
+  print "*\n"
+
+  _inrr = AddGaussNoise(_inr,0,_sd)
+  _ingr = AddGaussNoise(_ing,0,_sd)
+  _inbr = AddGaussNoise(_inb,0,_sd)
+  
+  Float2Uchar(&_inrr)
+  Float2Uchar(&_ingr)
+  Float2Uchar(&_inbr)
+  out.SetComponent( 0, _inrr)
+  out.SetComponent( 1, _ingr)
+  out.SetComponent( 2, _inbr)
+
+}

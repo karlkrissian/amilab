@@ -1,0 +1,31 @@
+
+***** ParamWin: window of parameters *****
+
+token(s):
+T_ParamWin  		ParamWin
+assignment_operator	'='
+
+rule(s):
+commande <-- identifier assignment_operator T_ParamWin '('  expr_string ')'
+
+
+parameters
+  #1 expr_string:     title of the window
+
+description:
+Creates a window of parameters.
+
+See Also:
+	AddFloat, AddInt, CreateWin, Display
+
+
+Example(s):
+
+  a=1
+  w1 = ParamWin("test")
+  w1.AddFloat(a,1,100)
+  w1.CreateWin
+  w1.Display
+
+
+******************************

@@ -1,0 +1,16 @@
+
+proc Col2Grey(IMAGE in, NUM cr,NUM sr,NUM cg, NUM sg, NUM cb, NUM sb, IMAGE res) {
+
+  print "process red \n"
+  tmp=((FLOAT)in[0]-cr)/sr
+  res = exp(-tmp*tmp)
+ 
+  print "process green \n"
+  tmp=((FLOAT)in[1]-cg)/sg
+  res = res*exp(-tmp*tmp)
+
+  print "process blue \n"
+  tmp=((FLOAT)in[2]-cb)/sb
+  res = res*exp(-tmp*tmp)
+
+}

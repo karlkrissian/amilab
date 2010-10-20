@@ -1,0 +1,24 @@
+***** From 2D image of altitudes to image of positions in 3D *****
+
+Tokens:
+T_Altitude2Position	Altitude2Position
+
+Rules: 
+1. image -> T_Altitude2Position ( expr_image , expr  )
+
+Parameters:
+  #1 expr_image: input_image
+  #2 expr      : type
+
+Description:
+Compute the position in space of the points based on their position in the image and on their altitude. 
+The input is the image of altitudes and the type of the image: 0 for Altantic and 1 for Africa. 
+The result is a image of 3D vectors in float, where each vector is the position in 3D of the corresponding pixel.
+
+Examples:
+ipos = Altitude2Postion(i,1)
+
+SeeAlso:
+	CreateFlatMesh, ElevateMesh
+
+****************************

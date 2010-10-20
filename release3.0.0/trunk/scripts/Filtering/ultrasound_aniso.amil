@@ -1,0 +1,53 @@
+#!/home/karl/projects/bin/OS/improcess 
+
+imagename  = $1
+data_coeff = atof($2)
+numit      = atof($3)
+noisetype  = atof($4)
+
+// threshold on the gradient norm
+th         = atof($5)
+
+
+i0 = Image(imagename)
+i = (i0>1)*i0+(i0<=1)*1
+
+// mask
+m0 = (i<1)
+
+AnisoGS.init(i,0.8,th,data_coeff)
+
+ir=AnisoGS.GetOutput;show ir;
+ir_draw.compare(i);
+
+AnisoGS.setcoeff(0.1,0.5)
+
+// Set Speckle Noise
+AnisoGS.SetNoiseType(noisetype)
+AnisoGS.SetMask(m0)
+
+#noise_file = open("noise_"+$2+"_"+$4+".dat","w")
+noise_file = File("noise_"+$2+"_"+$4+".dat","w")
+
+for n=1 to numit {
+  AnisoGS.iterate
+  ir=AnisoGS.GetOutput;show ir;
+
+  // SNR
+  NoiseSD=AnisoGS.GetNoiseSD;
+  DAcoeff=AnisoGS.GetDAcoeff;
+
+
+  noise_file._print(sprint("it=%02.0f; ",n))
+  noise_file._print(sprint("Noise SD=%3.3f; ",NoiseSD))
+  noise_file._print(sprint("DA coeff=%3.5f \n",DAcoeff))
+
+}
+
+noise_file.close()
+
+ir_name = imagename-".gz"-".ami"+sprint("_%2.2f",data_coeff)
+ir.save ir_name+"_"+$4+"_"+$5+".ami.gz"
+
+AnisoGS.end
+#quit

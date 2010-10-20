@@ -1,0 +1,58 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_area_of_circle.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Find the area of a circle. Test performed to test the value of Pi.
+#
+# Area = πr^2    Circumference = 2πr   where r = radius
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+R=10
+const_pi = 3.141592654
+
+printn  "\n\t\t R=10 --> R=%1%" % R
+
+printn  "\n\t\t Area of circle:"
+
+AREA=Pi*(R*R)
+printn  "\t\t AREA=Pi*(R*R) --> AREA=%1%" % AREA
+
+if(AREA != (const_pi*(R*R))) {
+  OK = 0
+  print  "\nERROR: Failed to calculate the area of a circle (%1% != " % AREA
+  print  "%1%)\n" % (const_pi*(R*R))
+}
+
+printn  "\n\t\t Circumference:"
+
+CIRCUMFERENCE=2*Pi*R
+printn  "\t\t CIRCUMFERENCE=2*Pi*R --> CIRCUMFERENCE=%1%" % CIRCUMFERENCE
+
+if(CIRCUMFERENCE != (2*const_pi*R)) {
+  OK = 0
+  print  "\nERROR: Failed to calculate the circumference of a circle (%1% != " % CIRCUMFERENCE
+  printn  "%1%)" % (2*const_pi*R)
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

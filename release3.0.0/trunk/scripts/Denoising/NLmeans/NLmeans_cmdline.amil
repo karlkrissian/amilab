@@ -1,0 +1,35 @@
+
+func "NLmeansClass.amil"
+
+# Command line arguments
+#
+params  = " - name of input image\n"
+params += " - t parameter\n"
+params += " - f parameter\n"
+params += " - h parameter\n"
+params += " - name of result image\n"
+
+
+printn argc
+
+if (argc>=5) {
+
+  NLmeansClass nlmeans
+
+  nlmeans.input_name = $1
+  nlmeans.t = atof($2)
+  nlmeans.f = atof($3)
+  nlmeans.h = atof($4)
+  nlmeans.result_filename = $5
+
+  nlmeans.load_input()
+  nlmeans.Run()
+  nlmeans.Save()
+
+  quit
+
+} else {
+
+  InfoDialog "Wrong number of arguments ..., parameters are \n"+params
+  quit
+}

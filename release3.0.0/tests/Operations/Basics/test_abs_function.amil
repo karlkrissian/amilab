@@ -1,0 +1,46 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_abs_function.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the absolute value function (abs).
+#
+# Operations:   abs
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+A=(DOUBLE) 10
+printn  "\n\t\t A=(DOUBLE) 10 --> A=%1% " % A
+B=A*-1
+printn  "\t\t B=A*-1 --> B=%1% " % B
+
+R1=abs A
+R2=abs B
+print  "\t\t R1=abs A --> R1=%1% " % R1
+printn "\t\t R2=abs B --> R2=%1% " % R2
+
+if((R1 != 10) &&( R2 != 10))  {
+  OK = 0
+  printn  "\nERROR: The absolute value function is not working properly."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

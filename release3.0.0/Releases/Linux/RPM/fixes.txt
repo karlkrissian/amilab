@@ -1,0 +1,35 @@
+
+problem with buildroot,
+see http://www.mail-archive.com/cmake@cmake.org/msg20340.html :
+
+---------------------------------------------------------------------------------------------------------------
+Eric Noulard wrote:
+
+    Seems like a RedHat specific RPM bugs.
+    Do you think it's rpm => 4.6.0 issue or Fedora 10 one?
+
+I think it's rpm issue because Buildroot from spec file ignoring declared release notes of rpm 4.6.0 on main development site and there is no distribution dependent exceptions on this.
+
+The solution I have found is quite simple - command line parameter of rpmbuild --buildroot can be used to enforce buildroot directory. So in Modules/CPackRPM.cmake
+
+"
+EXECUTE_PROCESS(
+    COMMAND "${RPMBUILD_EXECUTABLE}" -bb "${CPACK_RPM_BINARY_SPECFILE}"
+    WORKING_DIRECTORY "${CPACK_TOPLEVEL_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}"
+    ERROR_FILE "${CPACK_TOPLEVEL_DIRECTORY}/rpmbuild.err"
+    OUTPUT_FILE "${CPACK_TOPLEVEL_DIRECTORY}/rpmbuild.out")
+"
+must be replaced with
+"
+ EXECUTE_PROCESS(
+    COMMAND "${RPMBUILD_EXECUTABLE}" -bb --buildroot "${CPACK_RPM_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}" "${CPACK_RPM_BINARY_SPECFILE}"
+    WORKING_DIRECTORY "${CPACK_TOPLEVEL_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}"
+    ERROR_FILE "${CPACK_TOPLEVEL_DIRECTORY}/rpmbuild.err"
+    OUTPUT_FILE "${CPACK_TOPLEVEL_DIRECTORY}/rpmbuild.out")
+"
+
+And the good news is that the rpmbuild from earlier versions accepts this parameter too. I've checked this solution on systems with rpm 4.6.0, rpm 4.4.2 and it works fine for me.
+
+Best regards,
+Dmitry Gerasimov
+---------------------------------------------------------------------------------------------------------------

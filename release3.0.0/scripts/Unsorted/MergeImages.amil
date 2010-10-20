@@ -1,0 +1,48 @@
+
+i   = Image $1
+
+nx = 4
+ny = 2
+nz = 2
+
+res = i
+
+
+for z=0 to nz-1{
+  for y=0 to ny-1 {
+    for x= 0 to nx-1 {
+      stx = sprint "%1.0f" x
+      sty = sprint "%1.0f" y
+      stz = sprint "%1.0f" z
+
+      name = $1 + "." + stx + sty + stz + ".ami"
+      sh "rm -f " + name
+
+      name = name + "-repm.ami.gz"
+      print name + "\n"
+      si = Image (name)
+      sh "rm -f " + name
+ 
+      x1 = 0; if x!=0 { x1 = x1+5; }
+      y1 = 0; if y!=0 { y1 = y1+5; }
+      z1 = 0; if z!=0 { z1 = z1+5; }
+
+      x2 = si.tx-1; if x!=(nx-1) { x2 = x2-5; }
+      y2 = si.ty-1; if y!=(ny-1) { y2 = y2-5; }
+      z2 = si.tz-1; if z!=(nz-1) { z2 = z2-5; }
+
+
+      ssi = subimage(si,x1,y1,z1,x2,y2,z2);
+
+      res.putimage(ssi);
+
+      del ssi     
+      del si     
+ 
+   }
+  }
+}
+
+res.save $1 + "-repm.ami.gz"
+
+quit

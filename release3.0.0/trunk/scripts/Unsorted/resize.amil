@@ -1,0 +1,104 @@
+
+
+i     = Image $1
+sigma = atof($2)
+
+s2    = -1*sigma*sigma
+
+ri    = Image(FLOAT,i.tx*2,i.ty*2,i.tz*2)
+setvoxelsize(ri,i.vx/2,i.vy/2,i.vz/2)
+
+r1 = -0.25
+r2 = 0.25
+
+mx1 = Image(FLOAT,5,1,1)
+mx1 = (FLOAT) Xpos(mx1)-(INT)(mx1.tx/2)+r1
+mx1 = exp(mx1*mx1/s2)
+mx1 = mx1/(mean(mx1)*mx1.tx)
+
+mx2 = Image(FLOAT,5,1,1)
+mx2 = (FLOAT) Xpos(mx2)-(INT)(mx2.tx/2)+r2
+mx2 = exp(mx2*mx2/s2)
+mx2 = mx2/(mean(mx2)*mx2.tx)
+
+i1 = Convolve(i,mx1)
+i2 = Convolve(i,mx2)
+
+my1 = Image(FLOAT,1,5,1)
+my1 = (FLOAT) Ypos(my1)-(INT)(my1.ty/2)+r1
+my1 = exp(my1*my1/s2)
+my1 = my1/(mean(my1)*my1.ty)
+
+my2 = Image(FLOAT,1,5,1)
+my2 = (FLOAT) Ypos(my2)-(INT)(my2.ty/2)+r2
+my2 = exp(my2*my2/s2)
+my2 = my2/(mean(my2)*my2.ty)
+
+i11 = Convolve(i1,my1)
+i12 = Convolve(i1,my2)
+del i1
+
+i21 = Convolve(i2,my1)
+i22 = Convolve(i2,my2)
+del i2
+
+mz1 = Image(FLOAT,1,1,5)
+mz1 = (FLOAT) Zpos(mz1)-(INT)(mz1.tz/2)+r1
+mz1 = exp(mz1*mz1/s2)
+mz1 = mz1/(mean(mz1)*mz1.tz)
+
+mz2 = Image(FLOAT,1,1,5)
+mz2 = (FLOAT) Zpos(mz2)-(INT)(mz2.tz/2)+r2
+mz2 = exp(mz2*mz2/s2)
+mz2 = mz2/(mean(mz2)*mz2.tz)
+
+i111 = Convolve(i11,mz1)
+ri(0:2,0:2,0:2) = i111
+del i111
+
+i112 = Convolve(i11,mz2)
+ri(0:2,0:2,1:2) = i112
+del i112
+del i11
+
+i121 = Convolve(i12,mz1)
+ri(0:2,1:2,0:2) = i121
+del i121
+
+i122 = Convolve(i12,mz2)
+ri(0:2,1:2,1:2) = i122
+del i122
+del i12
+
+i211 = Convolve(i21,mz1)
+ri(1:2,0:2,0:2) = i211
+del i211
+
+i212 = Convolve(i21,mz2)
+ri(1:2,0:2,1:2) = i212
+del i212
+
+del i21
+
+i221 = Convolve(i22,mz1)
+ri(1:2,1:2,0:2) = i221
+del i221
+
+i222 = Convolve(i22,mz2)
+ri(1:2,1:2,1:2) = i222
+del i222
+
+del i22
+
+del mx1
+del mx2
+del my1
+del my2
+del mz1
+del mz2
+
+name = $1 - ".gz" - ".vtk" - ".ami"
+name = name + ".x2.ami.gz"
+ri.save name
+
+quit

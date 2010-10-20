@@ -1,0 +1,64 @@
+
+dimx=20
+dimy=20
+dimz=20
+radius = 3
+
+
+proc CreateTubeTensor( IMAGE t, NUM vx, NUM vy, NUM vz, NUM rad) {
+  i = Image(FLOAT,dimx,dimy,dimz)
+  ix = (FLOAT) Xpos(i)
+  iy = (FLOAT) Ypos(i)
+  iz = (FLOAT) Zpos(i)
+
+  ix = ix-i.tx/2
+  iy = iy-i.ty/2
+  iz = iz-i.tz/2
+
+  nv = sqrt(vx*vx+vy*vy+vz*vz)
+
+printn 1
+  pos = (ix*vx+iy*vy+iz*vz)/nv
+pos.info
+printn 2
+  rad_im = sqrt(ix*ix+iy*iy+iz*iz-pos*pos)
+printn 3
+  tube = rad_im<radius
+
+  // eigenvectors
+  dir = Image(FLOAT,dimx,dimy,dimz,3)
+  dir.initvalue(vx,vy,vz)
+
+  liso = 0.05
+  ldir = 0.2
+
+  n=0
+  for k=0 to 2 {
+  for l=0 to 2 {
+    temp = dir[k]*dir[l]*ldir
+    temp = temp*tube
+t.SetComponent( n, temp)
+    n=n+1
+  }
+  }
+printn "iso"
+  // add isotropic component
+t.SetComponent( 0, t[0]+tube*liso)
+t.SetComponent( 4, t[4]+tube*liso)
+t.SetComponent( 8, t[8]+tube*liso)
+}
+
+
+t1 = Image(FLOAT,dimx,dimy,dimz,9)
+CreateTubeTensor(&t1, 1,0,0,radius)
+t2 = t1
+CreateTubeTensor(&t2, 0,1,0,radius)
+t3 = t1
+CreateTubeTensor(&t3, 0,0,1,radius)
+
+t1._save( "tube_tensor1.vtk")
+t2 = t2+t1
+t2._save( "tube_tensor2.vtk")
+t3 = t3+t2
+t3._save( "tube_tensor3.vtk")
+

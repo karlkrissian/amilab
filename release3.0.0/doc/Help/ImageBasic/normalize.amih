@@ -1,0 +1,16 @@
+
+***** normalize vectorial images *****
+
+token(s):
+T_normalize  normalize
+
+rule(s):
+commande -> VAR_IMAGE '.' T_normalize
+
+description:
+Normalizes a vector field given by a vectorial image.
+
+Example:
+  v1.normalize
+
+******************************

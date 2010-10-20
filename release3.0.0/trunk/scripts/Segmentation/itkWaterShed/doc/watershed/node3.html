@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Overview and terminology</TITLE>
+<META NAME="description" CONTENT="Overview and terminology">
+<META NAME="keywords" CONTENT="watershed">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="watershed.css">
+
+<LINK REL="next" HREF="node4.html">
+<LINK REL="previous" HREF="node2.html">
+<LINK REL="up" HREF="node2.html">
+<LINK REL="next" HREF="node4.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html54"
+  HREF="node4.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html52"
+  HREF="node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html46"
+  HREF="node2.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html55"
+  HREF="node4.html">Implementational details</A>
+<B> Up:</B> <A NAME="tex2html53"
+  HREF="node2.html">Detailed Description</A>
+<B> Previous:</B> <A NAME="tex2html47"
+  HREF="node2.html">Detailed Description</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00021000000000000000">
+Overview and terminology</A>
+</H2>
+This filter implements a non-streaming version of an image segmentation algorithm commonly known as ``watershed segmentation''. Watershed segmentation gets its name from the manner in which the algorithm segments regions into catchment basins. If a function f is a continuous height function defined over an image domain, then a catchment basin is defined as the set of points whose paths of steepest descent terminate at the same local minimum of f.
+
+<P>
+The choice of height function (input) depends on the application, and the basic watershed algorithm operates independently of that choice. For intensity-based image data, you might typically use some sort of gradient magnitude calculation as input. (see itk::GradientMagnitudeImageFilter)
+
+<P>
+The watershed algorithm proceeds in several steps. First, an initial classification of all points into catchment basin regions is done by tracing each point down its path of steepest descent to a local minima. Next, neighboring regions and the boundaries between them are analyzed according to some saliency measure (such as minimum boundary height) to produce a tree of merges among adjacent regions. These merges occur at different maximum saliency values. The collective set of all possible merges up to a specified saliency ``flood level'' is referred to in this documentation as a ``merge tree''. Metaphorically, the flood level is a value that reflects the amount of precipitation that is rained into the catchment basins. As the flood level rises, boundaries between adjacent segments erode and those segments merge. The minimum value of the flood level is zero and the maximum value is the difference between the highest and lowest values in the input image.
+
+<P>
+Note that once the initial analysis and segmentation is done to produce the merge tree, it is trivial to produce a hierarchy of labeled images in constant time. The complexity of the algorithm is in the computation of the merge tree. Once that tree has been created, the initial segmented image can be relabeled to reflect any maximum saliency value found in the tree by simply identifying a subset of segment merges from the tree.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html54"
+  HREF="node4.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html52"
+  HREF="node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html46"
+  HREF="node2.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html55"
+  HREF="node4.html">Implementational details</A>
+<B> Up:</B> <A NAME="tex2html53"
+  HREF="node2.html">Detailed Description</A>
+<B> Previous:</B> <A NAME="tex2html47"
+  HREF="node2.html">Detailed Description</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+karl krissian
+2010-09-28
+</ADDRESS>
+</BODY>
+</HTML>

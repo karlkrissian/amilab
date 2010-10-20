@@ -1,0 +1,67 @@
+
+if (!exists(SuperQuadric)) {
+
+  proc SuperQuadric(NUM s1, NUM s2, NUM s3, \
+                    NUM e1, NUM e2, NUM e3, \
+                    IMAGE res) \
+  {
+  
+    res.settranslation( \
+      -res.tx/2,\
+      -res.ty/2,\
+      -res.tz/2)
+      
+    respos = SpacePos(res)
+    xterm = exp(ln(abs(respos[0]/s1))/e1)
+    yterm = exp(ln(abs(respos[1]/s2))/e2)
+    zterm = exp(ln(abs(respos[2]/s3))/e3)
+    res = xterm+yterm+zterm -1
+  }
+  
+  proc CylindricalSuperQuadric(NUM s1, NUM s2, NUM e1, NUM e2, IMAGE res) {
+  
+    res.settranslation(-res.tx/2,-res.ty/2,-res.tz/2)
+    respos = SpacePos(res)
+    xterm = exp(ln(abs(respos[0]/s1))/e1)
+    yterm = exp(ln(abs(respos[1]/s2))/e2)
+    res = xterm+yterm -1
+  
+  }
+  
+  
+  # R: torus big radius
+  # s1,s2 size of the superquadric
+  # e1, e2 parameters of the superquadric
+  proc ToroidalSuperQuadric(NUM R, NUM s1, NUM s2,  NUM e1, NUM e2, IMAGE res) {
+    res.settranslation(-res.tx/2,-res.ty/2,-res.tz/2)
+    respos = SpacePos(res)
+    newposx = sqrt(respos[0]*respos[0]+respos[1]*respos[1])-R
+    newposy = respos[2]
+    xterm = exp(ln(abs(newposx/s1))/e1)
+    yterm = exp(ln(abs(newposy/s2))/e2)
+    res = xterm+yterm -1
+  }
+  
+  proc SuperQuadricTest( IMAGE res) {
+  
+    s1=20
+    s2=20
+    s3=20
+  
+    cx = (res.tx-1)/2
+    cy = (res.ty-1)/2
+    cz = (res.tz-1)/2
+  
+    xp = ((FLOAT) Xpos(res))-cx
+    yp = ((FLOAT) Ypos(res))-cy
+    zp = ((FLOAT) Zpos(res))-cz
+  
+    e2=exp(zp/(abs(zp)+0.0001)*ln(abs(zp))/2)
+  
+    xterm = exp(ln(xp*xp/(s1*s1))/e2)
+    yterm = exp(ln(yp*yp/(s2*s2))/e2)
+  
+    res = xterm+yterm -1
+  
+  }
+}

@@ -1,0 +1,175 @@
+#!/usr/bin/amilab
+
+# this script is deprecated, use Centerlines/MultiLines/MultiLinesGui.amil instead
+
+if (argc==1) {
+  inputname=$1
+  emptyargs
+} else {
+  inputname = ""
+}
+
+func "Centerlines/MultiLines.amil"
+
+proc RML_init() {
+  global_new
+  RML_input_name = ""
+  RML_mask_name = ""
+  RML_radmin=0.5
+  RML_radmax=3
+  RML_numrad=INT(5)
+
+  RML_output_name="Multilines-maxresponse.ami.gz"
+  RML_gui()
+}
+
+
+#----------------------------
+proc RML_Close() \
+{
+  RML_win.HidePanel()
+  delvars "RML_*_draw"
+  delvars "RML_*"
+}
+
+
+#-----------------------------------------------
+proc RML_load_input() {
+
+  eval "global::RML_input <<= (FLOAT)"+RML_input_name+";"
+  if (RML_input_name=="Image") {
+    RML_input_name = "RML_input"
+  }
+
+  if (RML_mask_name=="Image") {
+    global::RML_mask <<= (UCHAR) ((RML_input>0.1)*255)
+    RML_mask_name = "RML_mask"
+  } else {
+    eval "global::RML_mask <<="+RML_mask_name+";"
+  }
+  RML_win.Update(-1)
+
+}
+
+
+#-----------------------------------------------
+proc RML_SetMask( IMAGE mask) {
+  global_new
+  RML_mask <<= (UCHAR) (mask>0.1)*255
+}
+
+#-----------------------------------------------
+proc RML_filter() {
+  global_new
+
+  RML_load_input()
+  if (!exists(RML_result)) {
+    RML_result=Image(FLOAT,1,RML_input)
+  }
+  RML_result.initvalue(0)
+
+  if (exists(RML_ROI)) {
+    RML_input1 <<= RML_input[RML_ROI]
+    RML_mask1  <<= RML_mask[RML_ROI]
+    RML_result1 <<=Image(FLOAT,1,RML_input1)
+    RML_result1.initvalue(0)
+    
+    #MultiLines(input_image,&result,&maxres,&radim,radmin,radmax,numrad,GB_mask,1)
+    MultiLines_new(&RML_input1,&RML_result1,\
+        RML_radmin,RML_radmax,RML_numrad,&RML_mask1,1)
+
+    RML_result.putimage(RML_result1)
+  } else {
+    
+    RML_maxres = RML_result
+    RML_radim  = RML_result
+    
+    #MultiLines(input_image,&result,&maxres,&radim,radmin,radmax,numrad,GB_mask,1)
+    MultiLines_new(&RML_input,&RML_result,\
+        RML_radmin,RML_radmax,RML_numrad,&RML_mask,1)
+  }
+}
+
+
+
+#-----------------------------------------------
+proc RML_CB_ROI() {
+  global
+  if (exists(RML_input_draw)) {
+    RML_ROI <<= RML_input[RML_input_draw]
+    RML_ROI_contour = (UCHAR) RML_input*0
+    RML_ROI = 1
+    RML_ROI_contour.putimage(RML_ROI)
+    RML_CB_Display()
+  }
+}
+
+#-----------------------------------------------
+proc RML_CB_Filter() {
+  InitTime
+  RML_filter()
+  EndTime
+}
+
+#-----------------------------------------------
+proc RML_CB_Display() {
+  global_new
+  show RML_input
+  if (exists(RML_result)) {
+    RML_input_draw.compare(&RML_result)
+  }
+  if (exists(RML_ROI_contour)) {
+    RML_input_draw.SetIsoContour(0,RML_ROI_contour,0.5)
+    RML_input_draw.DrawIsoContour(0,1)
+  }
+}
+
+#-----------------------------------------------
+proc RML_CB_Save() {
+  RML_result.save RML_output_name
+}
+
+#-----------------------------------------------
+proc RML_gui() {
+  global_new
+
+  RML_import = &global::ami_import;
+  win = import->ParamPanel("Vesselness")
+
+  RML_win.BeginPanel("Parameters")
+    # set the input image
+    RML_win.AddImageChoice( &RML_input_name, "Input")
+    # set the mask image
+    RML_win.AddImageChoice( &RML_mask_name, "Mask")
+  
+    RML_radmin_id = RML_win.AddFloat( &RML_radmin,  "RML_radmin", 0.01,10)
+    RML_radmax_id = RML_win.AddFloat( &RML_radmax,  "RML_radmax", 0.01,10)
+    RML_numrad_id = RML_win.AddInt( &RML_numrad,  "RML_numrad", 1,20)
+    RML_outputname_id = RML_win.AddString( &RML_output_name, "Output")
+  
+    RML_win.BeginBoxPanel("Controls")
+      RML_win.BeginHorizontal()
+          ROI_id     = RML_win.AddButton("Select ROI", RML_CB_ROI)
+          iterate_id = RML_win.AddButton("Filter",     RML_CB_Filter)
+      RML_win.EndHorizontal()
+      RML_win.BeginHorizontal()
+          display_id = RML_win.AddButton("Display",    RML_CB_Display)
+          display_id = RML_win.AddButton("Save",       RML_CB_Save)
+      RML_win.EndHorizontal()
+    RML_win.EndBoxPanel()
+  RML_win.EndPanel
+
+  RML_win.AddButton("Close",RML_Close)
+
+  RML_win.Update(-1)
+  RML_win.Display()
+}
+
+
+#-------------------------------------------
+RML_init()
+if (inputname != "") {
+  in = Image(inputname)
+  RML_input_name = "in"
+  RML_win.Update(-1)
+}

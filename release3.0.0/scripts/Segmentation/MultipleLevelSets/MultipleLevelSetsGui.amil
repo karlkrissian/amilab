@@ -1,0 +1,10 @@
+
+func "Segmentation/MultipleLevelSets/MultipleLevelSetsClass"
+
+if (!exists(multilevelset)) {
+  MultipleLevelSetsClass multilevelset
+  multilevelset.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

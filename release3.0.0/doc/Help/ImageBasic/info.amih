@@ -1,0 +1,21 @@
+
+***** VAR_IMAGE.info *****
+
+rule(s):
+1. commande -> VAR_IMAGE '.' identifier
+
+description:
+if the identifier is the string "info",
+displays information on the image:
+type, size, voxel size.
+
+
+Example(s):
+
+i.info
+
+
+See Also:
+	tx ty tz
+
+******************************

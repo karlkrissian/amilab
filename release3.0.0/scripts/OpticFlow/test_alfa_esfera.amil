@@ -1,0 +1,81 @@
+
+ami_import->AMIFluid()
+
+
+#
+# Set the parameters
+#
+beta      = 0.25
+
+alfa_min  = 0.1
+alfa_max  = 0.2
+alfa_step = 0.01
+
+Conv_GS_exp     = INT(-5)
+Nscales         = INT(1)
+Conv_Scales_exp = INT(-2)
+gradtype        = atof($1)
+
+
+#
+# Function to call the optical flow estimation
+#
+proc call_amiOFPDE3D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
+  zoom_z = 1+(_im1.tz>1);
+  //print sprint("zoom_z = %f \n",zoom_z);
+  //print sprint("dz = %f \n",_im1.tz);
+
+  Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
+  Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
+
+  AMIFluid->amiPDESetSolenoidal(1)    
+  AMIFluid->amiOFSetGlobalConstraint(1)
+  AMIFluid->amiOFPDE(_im1,_im2,&_res,beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype)
+
+}
+
+
+# image 1
+i_0 = Image "/home/mgarcia/flow_3d/esfera/volumenA.ami"
+i = (FLOAT) i_0
+
+# image 2
+i2_0 = Image "/home/mgarcia/flow_3d/esfera/volumenB.ami"
+i2 = (FLOAT) i2_0
+
+# perfect flow
+d1 = Image "/home/mgarcia/flow_3d/esfera/u_o.ami"
+
+# correlation flow
+d0 = Image "tmp_u_cor_esfera.ami"
+
+# compute the mask to get rid of the clouds
+mask = Image "/home/mgarcia/flow_3d/esfera/mask.ami.gz"
+
+# Compute results for different alfa ...
+#error_file  = open(sprint("alfa_esfera_cor_%0.0f.dat",gradtype),"w")
+error_file = File(sprint("alfa_esfera_cor_%0.0f.dat",gradtype),"w")
+
+n=(alfa_max-alfa_min)/alfa_step
+
+print "gradtype: "; print gradtype; print "\n"
+
+for k=0 to n {
+
+  alfa = alfa_min+k/n*(alfa_max-alfa_min)
+  print "\n *** alfa: "; print alfa; print "\n"
+
+  d=d0
+  call_amiOFPDE3D(i,i2,&d);
+
+  ndiff = norm(d-d1)
+
+  error_file._print(alfa)
+  error_file._print("\t")
+  error_file._print(mean(ndiff,mask))
+  error_file._print("\n")
+
+
+}
+
+error_file .close()

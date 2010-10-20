@@ -1,0 +1,49 @@
+
+#---------------------------------------------------------
+#--- LSE()
+lse_comments="Process Least Square Estimation for polynomial fitting over the whole image\n"+\
+  "adapted for elastography: fitting along X and Z"
+  "Parameters are\n"+\
+  "\t- input image\n"+\
+  "\t- size of the fitting window (2*size+1)^n\n"+\
+  "\t- resulting image\n"+\
+  "\t- sigma_x\n"+\
+#---------------------------------------------------------
+proc LSE( IMAGE im, NUM size, IMAGE res, NUM sigma_x) {
+  n = size+size+1;
+  res = (FLOAT) im*0
+  # precalculate image of y^2
+  im_x = Image(FLOAT,im.tx,n,im.tz)
+  printn "1"
+  im_x    = ((FLOAT)Ypos(im_x))-size
+  im_x2   = im_x*im_x
+  mean_x  = sum(im_x,  1)/size
+  mean_x2 = sum(im_x2, 1)/size
+  var_x   = mean_x2 - mean_x*mean_x
+
+  printn "start loop"
+  for y=size to im.ty-1-size {
+    printn y
+    // get subvolume
+    im_y    = im[0:(im.tx-1),(y-size):(y+size),0:(im.tz-1)]
+
+    if (sigma_x>0.1) {
+      im_y = filter(im_y,sigma_x,0,-1,-1)
+    }
+    //    im_y2   = im_y*im_y
+    mean_y  = sum(im_y,  1)/size
+    //    mean_y2 = sum(im_y2, 1)/size
+
+    im_xy = im_x*im_y
+
+    mean_xy = sum(im_x*im_y,1)/size
+    cov_xy  = mean_xy - mean_x*mean_y
+
+    coeff_b = cov_xy / var_x
+    res.putimage(coeff_b,0,y,0)
+  }
+
+  //res = res/(size*(size+1)*(2*size+1)/3)
+}
+
+Comments( LSE, lse_comments)

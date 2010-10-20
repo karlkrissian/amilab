@@ -1,0 +1,57 @@
+
+print "MultiRep.amil " + $1 + "\n"
+
+i           = Image $1
+IntensityTh = atof($2)
+ExtremaTh   = atof($3)
+
+print "IntensityTh "; print IntensityTh; print "\n"
+
+SD_th  = 1
+Exc_th = 1
+
+m = (UCHAR) ((i>IntensityTh)*255)
+
+HessianMatrix(i,1,m)
+
+del i_Hvap1
+del i_Hvep1
+
+g = gradient(i,1)
+
+m = (UCHAR) (m*(i_Hvap2<0))
+del i_Hvap2
+del i_Hvap3
+
+r = 1
+print "Compute for radius = "; print r; print "\n"
+rep   = CircleIntSdExc(   g,i_Hvep2,i_Hvep3,r,m,SD_th,Exc_th)
+repm = rep
+rad   = (rep>0)*r
+
+
+for n=1 to 4 {
+  r = r+1
+  print "Compute for radius = "; print r; print "\n"
+  rep   = CircleIntSdExc(   g,i_Hvep2,i_Hvep3,r,m,SD_th,Exc_th)
+
+  rad   = (rep>repm)*r    + (repm>=rep)*rad
+  repm  = max(rep,repm)
+}
+
+
+print "Compute local extrema \n"
+e  = LocalExtrema(repm,i_Hvep2,i_Hvep3,m)
+name = $1 -".gz" -".inr" - ".ami"
+e.save    name + "-ext.ami.gz"
+
+print "Thresholds and creates lines \n"
+b   = (UCHAR) ((e>ExtremaTh)*255)
+bsk = Skeleton(b,e,0,1000)
+bsk.save    name+ "-skel.ami.gz"
+
+
+repm.save name + "-repm.ami.gz"
+rad.save name + "-rad.ami.gz"
+
+quit

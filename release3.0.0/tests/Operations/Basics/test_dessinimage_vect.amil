@@ -1,0 +1,122 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_dessinimage_vect.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - SetVectStyle
+#                              - SetVectColor
+#                              - SetIsoContourColor
+#                              - SetVectParam
+#                              - DisplayVectors
+#                              - DrawVector
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
+# Create initial image
+func "SyntheticImages/create_torus_gui.amil"
+CTClass CT
+
+DIMX=100
+DIMY=100
+DIMZ=100
+BG=0
+FG=0
+R=20
+r=4
+
+printn "\t\t Create synthetic imaged:"
+printn "\t\t\t dimx=%1%" % DIMX
+printn "\t\t\t dimy=%1%" % DIMY
+printn "\t\t\t dimz=%1%" % DIMZ
+printn "\t\t\t bg=%1%" % BG
+printn "\t\t\t fg=%1%" % FG
+printn "\t\t\t R=%1%"  % R
+printn "\t\t\t r=%1%"  % r
+
+ctobject->dimx = 100
+ctobject->dimy = 100
+ctobject->dimz = 100
+ctobject->bg = 0
+ctobject->fg = 100
+ctobject->R = 20
+ctobject->r = 4
+ctobject->Create
+
+printn "\t\t Create an object of class DessinImage (torus_draw).\n"
+torus_draw=DessinImage(&torus)
+
+printn "\t\t Create an image ( Image(FLOAT,X,Y,Z,V) ).\n"
+ImageDimX=50
+ImageDimY=50
+ImageDimZ=50
+ImageDimV=3
+img= Image(FLOAT,ImageDimX,ImageDimY,ImageDimZ,ImageDimV)
+img.initvalue(10,10,10)
+
+VectorIndex=1
+printn "\n\t\t Set one of the vector fields (setvector):\n"
+printn "\t\t\t Index of the vector field to be drawned (1,2 or 3)=%1% " % VectorIndex
+printn "\t\t\t Vector field image= img "
+torus_draw.setvector(VectorIndex,img)
+
+VectorSize=1
+VectorSpacing=2
+printn "\n\t\t Sets the size and spacing of the vector drawing interface in the given image drawing window (SetVectParam):\n"
+printn "\t\t\t Vector size=%1% "     % VectorSize
+printn "\t\t\t Vector spacing=%1% "  % VectorSpacing
+torus_draw.SetVectParam(VectorSize,VectorSpacing)
+
+RedComponent=0
+GreenComponent=255
+BlueComponent=0
+printn "\n\t\t Sets the color of the given vector field (given by vector id),the color is set as (R,G,B) components, each component has a value between 0 and 255 (SetVectColor):\n"
+printn "\t\t\t vector id=%1% "     % VectorIndex
+printn "\t\t\t Red component in [0,255]=%1% "  % RedComponent
+printn "\t\t\t Green component in [0,255]=%1% "  % GreenComponent
+printn "\t\t\t Blue component in [0,255]=%1% "  % BlueComponent
+torus_draw.SetVectColor(VectorIndex,RedComponent,GreenComponent,BlueComponent)
+
+VectorStyle=0
+printn "\n\t\t Set the vector style (SetVectStyle):\n"
+printn "\t\t\t Vector style=%1% "     % VectorStyle
+torus_draw.SetVectStyle(VectorStyle)
+
+Visible=1;
+printn "\n\t\t Draw the vector (DrawVector):\n"
+printn "\t\t\t Index of the vector field to be drawned (1,2 or 3)=%1% " % VectorIndex
+printn "\t\t\t Vector spacing=%1% "  % Visible
+torus_draw.DrawVector((VectorIndex-1),Visible)
+
+printn "\n\t\t Display vectors (DisplayVectors):\n"
+torus_draw.DisplayVectors()
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

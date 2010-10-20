@@ -1,0 +1,11 @@
+
+***** AddGaussNoise *****
+
+token(s):
+TAddGaussNoise AddGaussNoise
+
+rule(s):
+image -> TAddGaussNoise ( VAR_IMAGE, expr, expr )
+
+
+******************************
