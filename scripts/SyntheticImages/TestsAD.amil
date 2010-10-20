@@ -1,7 +1,8 @@
 #Interface for synthetic aortic dissection
 
 func "Common/ScriptGui"
-#func "Subpixel/subpixel2D.amil"
+#Include NRAD for denoising
+func "Denoising/AnisoNRAD/AnisoNRADClass.amil"
 
 if (!exists(thickTADClass)){
 
@@ -87,15 +88,8 @@ if (!exists(thickTADClass)){
       ::dis_mean = mean(resDis)
       
       var <<= (resDis - ::dis_mean)*(resDis - ::dis_mean)
-      ::dis_var = mean(var)
-      
-      printn sprint("Thickness: %1.0f ", ::i)
-      print "\tMean = "
-      printn ::dis_mean
-      print "\tVariance = "
-      printn ::dis_var
-      ::win.Update(-1)
-
+      dis_var = mean(var)
+      ::dis_std = sqrt(dis_var)
     }
     Comments(::Statistics, "Calculate statistics of subpixel detection")
     
@@ -145,12 +139,13 @@ if (!exists(thickTADClass)){
       ring->setCenter(::ring_cx, ::ring_cy)
       ring->setRadius(::ring_radius)
       mean_image = Image(DOUBLE,6,1,1)
-      var_image = Image(DOUBLE,6,1,1)
+      std_image  = Image(DOUBLE,6,1,1)
       
       #Thickness test
       printn "Starting thickness test..."
       prog = 0
       SetProgress(prog)
+      if(exists(::i)) { del ::i; }
       for ::i=1 to 6 {
         ring->setThickness(::i)
         #Create the ring
@@ -160,21 +155,75 @@ if (!exists(thickTADClass)){
         ::Statistics()
         mean_image.setpos(::i-1,0,0)
         mean_image.set(::dis_mean)
-        var_image.setpos(::i-1,0,0)
-        var_image.set(::dis_var)
-        prog += 16
+        std_image.setpos(::i-1,0,0)
+        std_image.set(::dis_std)
+        printn sprint("Thickness: %1.0f ", ::i)
+        print "\tMean = "
+        printn ::dis_mean
+        print "\tSTD  = "
+        printn ::dis_std
+        ::win.Update(-1)
+        prog += 8
         SetProgress(prog)
       }
       #Mean curve
       ::dwt.SetCurve(mean_image,0)
-      #Variance curve
-      ::dwt.SetCurve(var_image,1)
+      #Standard deviation curve
+      ::dwt.SetCurve(std_image,1)
       #Color for variance curve
       ::dwt.SetCurveProperties(1,"#0000FF",0,1)
-      SetProgress(100)
+      ::dwt.SetYLimits(0, max(max(mean_image, std_image))*1.1)
+      #SetProgress(100)
       printn "Thickness test done!"
       
       #Noise test
+      printn "Starting noise test..."
+      mean_image = 0
+      std_image  = 0
+      ring->setThickness(4)
+      ::resR <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
+      #::RunIteration()
+      #Also set the thickness value to ::i, for compute statistics
+      ::i = 4
+      #Create an AnisoNRADClass object for denoising
+      #AnisoNRADClass aniNRAD
+      #and initialice the values of the parameters
+      #aniNRAD->equation_type = 1
+      ::equation_type = 1
+      #aniNRAD->matrix_mode   = 1
+      ::matrix_mode   = 1
+      for j=0 to 5 {
+        ::RunIteration()
+        ::res = AddGaussNoise(::res,0,4*(j+1))
+        #Denoise the image using NRAD object
+        if(exists(::res_draw)) { del ::res_draw; }
+        show ::res
+        ::res_draw.ShowWin(0)
+        ::res_draw.SetZoom(0,0,0,20,20,0)
+        region <<= ::res[::res_draw]
+        ::input <<= ::res
+        ::SetRoiImage(&region)
+        ::Filter()
+        ::Statistics()
+        mean_image.setpos(j,0,0)
+        mean_image.set(::dis_mean)
+        std_image.setpos(j,0,0)
+        std_image.set(::dis_std)
+        printn sprint("Noise (sd): %1.0f ", (j+1)*4)
+        print "\tMean = "
+        printn ::dis_mean
+        print "\tSTD  = "
+        printn ::dis_std
+        ::win.Update(-1)
+        prog += 8
+        SetProgress(prog)
+      }
+      ::dwn.SetCurve(mean_image,0)
+      ::dwn.SetCurve(std_image, 1)
+      ::dwn.SetCurveProperties(1,"#0000FF",0,1)
+      ::dwn.SetYLimits(0, max(max(mean_image, std_image))*1.1)
+      SetProgress(100)
+      printn "Noise test done!"
     }
     Comments(::RunTests, "Run test for detection with 10 different thickness of the ring.")
     
@@ -190,8 +239,8 @@ if (!exists(thickTADClass)){
         ::dwt = ::import->wxDrawingWindow(&d)
         ::dwt.SetMinSize(&wx.wxSize(50, 100))
         ::dwt.SetBackgroundColour(&wx.wxColour(255,255,255))
-        ::dwt.SetXLimits(0, 5)
-        ::dwt.SetYLimits(0,  0.5)
+        ::dwt.SetXLimits(0,   5)
+        ::dwt.SetYLimits(0, 0.5)
         ::win.AddString("Thickness error", "Graph")
         ::sizer_item = ::win.AddWidget(&::dwt,0)
       #::win.EndBoxPanel()
@@ -202,8 +251,8 @@ if (!exists(thickTADClass)){
         ::dwn.SetMinSize(&wx.wxSize(50, 100))
         ::dwn.SetBackgroundColour(&wx.wxColour(255,255,255))
         #Faltan poner los límites
-        ::dwn.SetXLimits(0, 10)
-        ::dwn.SetYLimits(0,  1)
+        ::dwn.SetXLimits(0,   5)
+        ::dwn.SetYLimits(0, 0.5)
         ::win.AddString("Noise error", "Graph")
         ::sizer_item = ::win.AddWidget(&::dwn,0)
       #::win.EndBoxPanel()
