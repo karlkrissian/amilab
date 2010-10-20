@@ -22,13 +22,12 @@ apt-get install bison flex
 
 apt-get install libgdcm2-dev
 
-svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/trunk amilab_trunk
+svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/tags/stable amilab_stable
+cd amilab_stable
+maindir=`pwd`
 
 # get number of threads
 numthreads=`awk '/model name/  {ORS=""; count++;  }  END {  print  count "\n" }' /proc/cpuinfo`
-
-cd amilab_trunk
-maindir=`pwd`
 
 # Compile and install libAMIFluid
 echo "Compiling and installing libAMIFluid"

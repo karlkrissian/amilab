@@ -36,10 +36,8 @@ cmake  -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release ..
 make -j ${numthreads} install
 cd ../..
 
-svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/trunk amilab_trunk
-
-
-cd amilab_trunk
+svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/tags/stable amilab_stable
+cd amilab_stable
 maindir=`pwd`
 
 # Compile and install libAMIFluid
