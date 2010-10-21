@@ -362,8 +362,8 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       if (::res.vdim==1) {
       ::res <<= ::filters->NewNLmeans(&::res,::t,::f,::h,::threads,::minweight)
       } else {
-        for local::k = 0 to ::res.vdim-1 {
-          local::c = ::res[k]
+        for k = 0 to ::res.vdim-1 {
+          c = ::res[k]
           ::res.SetComponent( k, ::filters->NewNLmeans(&c,::t,::f,::h,::threads,::minweight))
         }
       }
@@ -397,18 +397,18 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     #----------------------------
     proc ::Run() \
     {
-      if (!exists(::input)) { ::LoadInput; }
+      if (!exists(::input)) { ::LoadInput(); }
       ::stop = 0
       if (!exists(::res)) {
-        ::res =  ::input
+        ::res =  (FLOAT) ::input
       }
       for local::k=1 to ::iterations {
         if (!::stop) {
           print sprint("Iteration %0.0f \n",k)
-          if (::filter_mode==0) { ::Filter; }
-          if (::filter_mode==1) { ::MRIFilter; }
-          if (::filter_mode==2) { ::FeatureFilter; }
-          if (::filter_mode==3) { ::FastFilter; }
+          if (::filter_mode==0) { ::Filter(); }
+          if (::filter_mode==1) { ::MRIFilter(); }
+          if (::filter_mode==2) { ::FeatureFilter(); }
+          if (::filter_mode==3) { ::FastFilter(); }
         }
         if (::show_images) {
           ::Display
@@ -426,7 +426,8 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     #----------------------------
     proc ::ReRun() \
     {
-      ::Restart()
+      ::res <<= (FLOAT) ::input
+      show ::res
       ::Run()
     }
     Comments( ::ReRun, "Run starting from initial image.")
@@ -444,7 +445,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         roibox = (FLOAT)::roi*0+1
         ::imbox  = (FLOAT)::input*0
         ::imbox.putimage(roibox)
-        ::input_draw.SetIsoContour(0,::imbox,0.5)
+        ::input_draw.SetIsoContour(0,&::imbox,0.5)
         ::input_draw.DrawIsoContour(0,1)
         show ::input
       }
@@ -454,14 +455,14 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         ::noise_imbox  = (FLOAT)::input*0
         ::noise_imbox.putimage(roibox)
         del roibox
-        ::input_draw.SetIsoContour(1,::noise_imbox,0.5)
+        ::input_draw.SetIsoContour(1,&::noise_imbox,0.5)
         ::input_draw.DrawIsoContour(1,1)
         show ::input
       }
       if exists(::res) {
         show ::res
         if exists(::roi) {
-          ::res_draw.SetIsoContour(0,::imbox,0.5)
+          ::res_draw.SetIsoContour(0,&::imbox,0.5)
           ::res_draw.DrawIsoContour(0,1)
         }
         ::input_draw.compare(&::res_draw)
@@ -494,8 +495,9 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     #----------------------------
     proc ::Restart() \
     {
-      ::LoadInput
-      ::res <<= ::input
+      ::LoadInput()
+      if (exists(::res_draw)) { del ::res_draw; }
+      ::res <<= (FLOAT) ::input
       show ::res
     }
     Comments( ::Restart, "Reloads the input, sets the result equal to it and displays it.")
