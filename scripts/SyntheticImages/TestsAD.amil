@@ -2,7 +2,7 @@
 
 func "Common/ScriptGui"
 #Include NRAD for denoising
-func "Denoising/AnisoNRAD/AnisoNRADClass.amil"
+#func "Denoising/AnisoNRAD/AnisoNRADClass.amil"
 
 if (!exists(thickTADClass)){
 
@@ -16,7 +16,6 @@ if (!exists(thickTADClass)){
     #-----------------------
     proc ::Init(){
       ::class_name  = "global::Subpixel2DClass"
-      ::output_name = "synthAD_result", "Output image name"
       
       #Input image parameters
       ::dimx = INT(100), "Input image X size"
@@ -36,22 +35,15 @@ if (!exists(thickTADClass)){
       ::ring_cy     = 50.0, "Y component of the center of the ring"
       ::ring_radius = 30.0, "Ring internal radius"
       ::ring_thick  = 2.0, "Thickness of the ring"
-      
-      ::reload = UCHAR(0), "Reload the image"
-      
+            
       ::subdiv = INT(6), "Subdivision level"
-      
-      ::mean_str     = "", "Average error of subpixel method"
-      ::variance_str = "", "Variance of subpixel method"
-      
+            
       ::CreateGui()
     }
-    
 
     #-----------------------
     
     proc ::CreateInputImage() {
-      #if(exists(::res_draw)) { del ::res_draw; }
       #Create the image with the parameters and enable the compute method panel
       ::input <<= Image(FLOAT,::dimx,::dimy,1)
       ::input   = 0
@@ -192,6 +184,8 @@ if (!exists(thickTADClass)){
       ::equation_type = 1
       #aniNRAD->matrix_mode   = 1
       ::matrix_mode   = 1
+      dt = 1.0/6.0
+      t = 2.0
       for j=0 to 5 {
         ::RunIteration()
         ::res = AddGaussNoise(::res,0,4*(j+1))
@@ -202,8 +196,9 @@ if (!exists(thickTADClass)){
         ::res_draw.SetZoom(0,0,0,20,20,0)
         region <<= ::res[::res_draw]
         ::input <<= ::res
-        ::SetRoiImage(&region)
-        ::Filter()
+        #::SetRoiImage(&region)
+        #::Filter()
+        ::res <<= AnisoNRAD(::res, 2, dt, t/dt, 1, region.GetExtent)
         ::Statistics()
         mean_image.setpos(j,0,0)
         mean_image.set(::dis_mean)
@@ -242,7 +237,7 @@ if (!exists(thickTADClass)){
         ::dwt.SetXLimits(0,   5)
         ::dwt.SetYLimits(0, 0.5)
         ::win.AddString("Thickness error", "Graph")
-        ::sizer_item = ::win.AddWidget(&::dwt,0)
+        ::win.AddWidget(&::dwt,0)
       #::win.EndBoxPanel()
       
       #::win.BeginBoxPanel("Noise error graph")
@@ -254,7 +249,7 @@ if (!exists(thickTADClass)){
         ::dwn.SetXLimits(0,   5)
         ::dwn.SetYLimits(0, 0.5)
         ::win.AddString("Noise error", "Graph")
-        ::sizer_item = ::win.AddWidget(&::dwn,0)
+        ::win.AddWidget(&::dwn,0)
       #::win.EndBoxPanel()
       
       ::icons.LoadIconPNG("Play")
@@ -280,5 +275,5 @@ if (!exists(thickTADClass)){
 if (!exists(thickTAD_object)) {
   thickTADClass thickTAD_object
 } else {
-  InfoDialog "The script for test the thickness of the ring in AD synthetic image seems to be already loaded."
+  InfoDialog "The script for test the aortic dissection synthetic images seems to be already loaded."
 }
