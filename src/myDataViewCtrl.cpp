@@ -205,37 +205,37 @@ void myDataViewCtrl::OnBeginDrag( wxDataViewEvent &event )
   
   wxDropSource dragSource(obj, this ); //Create data source
   //dragSource.SetData( obj );  //Assign the data
-  wxDragResult result = dragSource.DoDragDrop( ); //Begin the drag operation.
+  wxDragResult result = dragSource.DoDragDrop( TRUE ); //Begin the drag operation.
 
   switch (result)
   {
       case wxDragCopy:
         // copy the data
-        std::cout << "\nDrag operation: MIKO the data was successfully copied\n" << std::endl;
+        std::cout << "DnD result: the data was successfully copied" << std::endl;
         break;
       case wxDragMove:
         // move the data
-        std::cout << "\nDrag operation: MIO the data was successfully moved\n" << std::endl;
+        std::cout << "DnD result: the data was successfully moved" << std::endl;
         break;
       case wxDragError:
         // Error
-        std::cout << "\nDrag operation: MIO Error\n" << std::endl;
+        std::cout << "DnD result: Error" << std::endl;
         break;
       case wxDragNone:
         // target didn't accept the data
-        std::cout << "\nDrag operation: MIO target didn't accept the data\n" << std::endl;
+        std::cout << "DnD result: target didn't accept the data" << std::endl;
         break;
       case wxDragCancel:
         // the operation was cancelled by user
-        std::cout << "\nDrag operation: MIO the operation was cancelled by user\n" << std::endl;
+        std::cout << "DnD result: the operation was cancelled by user" << std::endl;
         break;
       case wxDragLink:
         // operation is a drag-link
-        std::cout << "\nDrag operation: MIO this was a link operation\n" << std::endl;
+        std::cout << "DnD result: this was a link operation" << std::endl;
         break;
       default:
         // do nothing
-        std::cout << "\nDrag operation: MIO do nothing\n" << std::endl;
+        std::cout << "DnD result: do nothing" << std::endl;
         break;
   }
 

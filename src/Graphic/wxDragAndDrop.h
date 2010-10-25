@@ -52,6 +52,8 @@ class MyNode
       m_var = var;
     }
 
+    static MyNode* New(const void* buff);
+
     boost::weak_ptr<BasicVariable> GetVar() const { return m_var; }
     
     wxString GetAbsoluteName() const { return m_absoluteName; }
@@ -102,13 +104,27 @@ class MyNodeDataObject : public wxDataObjectSimple
     }
 
     ///Gets the size of our data.
-    virtual size_t GetDataSize() const { return GetDataSize(); }
+    virtual size_t GetDataSize() const { return sizeof(m_node); }
 
     ///Copy the data to the buffer, return true on success.
-    virtual bool GetDataHere(void *buf) const { return GetDataHere(buf); }
+    virtual bool GetDataHere(void *buf) const 
+    {
+      MyNode& mynode = *(MyNode *)buf;
+      mynode.SetAbsoluteName(m_node.GetAbsoluteName());
+      mynode.SetVar(m_node.GetVar().lock());
+     
+      return true;
+    }
 
     ///Copy the data from the buffer, return true on success.
-    virtual bool SetData(size_t len, const void *buf) { return SetData(len, buf); }
+    virtual bool SetData(size_t len, const void *buf) 
+    { 
+      MyNode& mynode = *(MyNode *)buf;
+      m_node.SetAbsoluteName(mynode.GetAbsoluteName());
+      m_node.SetVar(mynode.GetVar().lock());
+     
+      return true;      
+    }
 
     ///Returns the (one and only one) format supported by this object.
     const wxDataFormat &  GetFormat () const { return m_formatNode; }
@@ -127,7 +143,7 @@ class MyNodeDataObject : public wxDataObjectSimple
 class MyNodeDropTarget : public wxDropTarget
 {
 public:
-    MyNodeDropTarget() :wxDropTarget() {};
+    MyNodeDropTarget() :wxDropTarget(new MyNodeDataObject) {};
 
     virtual bool OnDrop(wxCoord x, wxCoord y, const MyNode & node) = 0;
 
@@ -152,7 +168,7 @@ public:
 class TextControlDropTarget : public wxDropTarget
 {
   public:
-    TextControlDropTarget(TextControl *pOwner) {
+    TextControlDropTarget(TextControl *pOwner): wxDropTarget(new MyNodeDataObject)  {
       m_pOwner = pOwner;
     }
 
@@ -169,6 +185,7 @@ class TextControlDropTarget : public wxDropTarget
             return wxDragNone;
         }
         
+        OnDropNode(x, y, ((MyNodeDataObject *)GetDataObject())->GetNode());
 
         return def;
     }    
