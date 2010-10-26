@@ -41,8 +41,8 @@ if (!exists(thickTADClass)){
 
       ::min_thick = 1
       ::max_thick = 6
-      ::step_thick = 6
-      #::step_thick = 1
+      #::step_thick = 6
+      ::step_thick = 1
 
       ::CreateGui()
     }
@@ -230,8 +230,8 @@ if (!exists(thickTADClass)){
       
       noise_min = 0
       noise_max = 20
-      #noise_step = 4
-      noise_step = 20
+      noise_step = 4
+      #noise_step = 20
 
       #num_experiments = 4
       num_experiments = 2
@@ -240,6 +240,11 @@ if (!exists(thickTADClass)){
       printn "Starting thickness&noise test..."
       mean_image <<= Image(DOUBLE,6,6,1)
       std_image  <<= Image(DOUBLE,6,6,1)
+
+      # region for compute the noise statistics
+      noise_extent = ::resC[0:20,0:20]
+
+
       for i=::min_thick to ::max_thick step ::step_thick {
         noise_counter = 0
         for j=noise_min to noise_max step noise_step {
@@ -249,17 +254,11 @@ if (!exists(thickTADClass)){
           pv->setAnalyticFunction(&ring)
           ::resR <<= pv.ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
           ::RunIteration()
+          
           for k=1 to num_experiments {
             res_noise <<= AddGaussNoise(::res,0,j)
             #Denoise the image using AnisoNRAD command
-            if(exists(res_noise_draw)) { del res_noise_draw; }
-            show res_noise
-            res_noise_draw.ShowWin(0)
-            res_noise_draw.SetZoom(0,0,0,20,20,0)
-
-            region <<= res_noise[res_noise_draw]
-
-            res_denoised <<= AnisoNRAD(res_noise, 2, dt, t/dt, 1, region.GetExtent)
+            res_denoised <<= AnisoNRAD(res_noise, 2, dt, t/dt, 1, noise_extent.GetExtent)
 
             ::Statistics(&res_denoised,i)
             local_mean += ::dis_mean
