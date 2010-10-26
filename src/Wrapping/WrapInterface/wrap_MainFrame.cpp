@@ -19,6 +19,8 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "MainFrame.h"
+
 //
 // static member for creating a variable from a ParamList
 //

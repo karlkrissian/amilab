@@ -65,14 +65,14 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator +()
 /// prefix ++ operator ++a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ++()
 {
-  std::cout << "**" << endl;
+  //std::cout << "**" << std::endl;
   RETURN_VARPTR(long int,++RefValue());
 }
 
 /// postfix ++ operator a++
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ++(int)
 {
-  std::cout << "**" << endl;
+  //std::cout << "**" << std::endl;
   RETURN_VARPTR(long int,RefValue()++);
 }
 

@@ -66,14 +66,14 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator +()
 /// prefix ++ operator ++a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator ++()
 {
-  std::cout << "**" << endl;
+  //std::cout << "**" << std::endl;
   RETURN_VARPTR(float,++RefValue());
 }
 
 /// postfix ++ operator a++
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator ++(int)
 {
-  std::cout << "**" << endl;
+  //std::cout << "**" << std::endl;
   RETURN_VARPTR(float,RefValue()++);
 }
 

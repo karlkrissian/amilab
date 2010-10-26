@@ -1,0 +1,6 @@
+?package(amilab): \
+	needs="X11"\
+	section="Applications/Science" \
+	title="AMILab @AMILAB_VERSION@" \
+	command="/usr/bin/@AMILAB_BIN@" \
+	icon="/usr/share/icons/hicolor/48x48/apps/amilab.png"

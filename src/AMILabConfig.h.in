@@ -28,6 +28,8 @@
 
 #cmakedefine AMI_USE_SSE
 
+#cmakedefine AMI_USE_PRECOMP_HEADERS
+
 #define AMI_BUILD_@AMI_BUILD_TYPE@
 
 #ifdef _MSC_VER
@@ -38,7 +40,7 @@
   // and warning about unsafe sprintf ... functions (4996)
   // conversion from/to unsigned char to/from bool (4800)
   // const qualifier ignored, for Variable<C_wrap_procedure> and Variable<C_wrap_varfunction> (4180)
-  #pragma warning( disable : 4244 4996 4800 4180)
+  #pragma warning( disable : 4244 4996 4800 4180 4305)
 
 #endif
 

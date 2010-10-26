@@ -91,14 +91,14 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator +()
 /// prefix ++ operator ++a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator ++()
 {
-  std::cout << "**" << endl;
+  std::cout << "**" << std::endl;
   RETURN_VARPTR(FloatMatrix,++RefValue());
 }
 
 /// postfix ++ operator a++
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator ++(int)
 {
-  std::cout << "**" << endl;
+  std::cout << "**" << std::endl;
   RETURN_VARPTR(FloatMatrix,RefValue()++);
 }
 */

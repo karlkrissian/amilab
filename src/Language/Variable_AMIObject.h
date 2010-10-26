@@ -104,7 +104,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator ^(const BasicVariabl
 
 
 // Mathematical functions
-#define VAR_DECL_FUNC(type,fname) \
+#define VAR_DECL_FUNC(type,fname) 
 template<> BasicVariable::ptr Variable<type>::m_##fname();
 
 VAR_DECL_FUNC(AMIObject,sin)

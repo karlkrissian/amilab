@@ -22,8 +22,7 @@ extern MainFrame*    GB_main_wxFrame;
 
 #include "myDataViewCtrl.h"
 
-#include "wx/dnd.h"
-#include "wx/dataobj.h"
+#include "wxDragAndDrop.h"
 
 //Pop menu: two options ("Write in console" and "About..")
 enum

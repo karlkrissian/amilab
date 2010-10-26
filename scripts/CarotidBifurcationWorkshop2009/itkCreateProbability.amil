@@ -8,10 +8,10 @@ func "Common/ScriptGui"
 
 if (!exists(itkCreateProbabilityClass)) {
 
-  ami_import->Filters()
-  ami_import->ITK()
+  global::ami_import.Filters()
+  global::ami_import.ITK()
   
-  Class itkCreateProbabilityClass \
+  Class itkCreateProbabilityClass : public ScriptGui \
   {
     ::filters=&global::filters
     ::itk=&global::itk
@@ -134,7 +134,7 @@ if (!exists(itkCreateProbabilityClass)) {
           ::win.EndBoxPanel
     
           ::win.AddButton("Apply",::Apply)
-      ::win.EndBook
+      ::win.EndBook()
 
       ::AddStandardButtons(&::win)
 

@@ -85,7 +85,7 @@ bool Driver::parse_stream(std::istream& in,
   try {
     res = parser.parse();
     if (res!=0) {
-      cout << __func__ << " returned " << res << endl;
+     std::cout << __func__ << " returned " << res << std::endl;
     }
   }
   catch(std::exception const& e) {
@@ -142,13 +142,13 @@ int Driver::error(const class location& l,
 {
     stringstream tmpstr;
     tmpstr  << l 
-            << endl
-            << " current_file = " << current_file << endl
+            << std::endl
+            << " current_file = " << current_file << std::endl
             << " lineno = "  
               << yyiplineno -1
               << "-"
               << yyiplineno 
-              << endl
+              << std::endl
             << m 
             << std::endl;
     return err_print(tmpstr.str().c_str());
@@ -270,17 +270,17 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
       for(i=0;i<param->GetNumParam();i++) {
         name = f->GetParamList( )->GetName(i);
         if (Vars.GetCurrentContext()->ExistVar(name)) {
-          cerr  << "variable " << name 
+          std::cerr  << "variable " << name 
                 << " already exists ... " 
                 << "in context " << Vars.GetCurrentContext()->GetName()
-                << endl;
+                << std::endl;
         }
         else {
           
           //if (GB_debug)
-          //  cerr << format("Vars.AddVarPtr( %1%, %2%, %3% )")
+          //  std::cerr << format("Vars.AddVarPtr( %1%, %2%, %3% )")
           //        % param->GetType(i) % name % param->GetParam(i)
-          //      << endl;
+          //      << std::endl;
           BasicVariable::ptr paramvar( param->GetParam(i));
           local_context->AddVar(name, paramvar,local_context);
         }
@@ -340,7 +340,7 @@ bool Driver::parse_script(  const char* filename)
   if (inputname.GetExt().Cmp(wxT(""))==0)
     inputname.SetExt(_T("amil"));
 
-  //cout << "current wd = "  <<  wxGetCwd() << endl; 
+  //cout << "current wd = "  <<  wxGetCwd() << std::endl; 
   if (!inputname.DirExists(inputname.GetPath())) 
   {
     // try with current directory
@@ -385,7 +385,7 @@ bool Driver::parse_script(  const char* filename)
   }
 
 /*
-  cout << "current name " << newname.GetFullPath() << endl;
+ std::cout << "current name " << newname.GetFullPath() << std::endl;
   yyipin=fopen(newname.GetFullPath().mb_str(),"r");
   if (!yyipin) {
     string mess =  (format("Error in reading %s \n") % newname.GetFullPath().c_str()).str();
@@ -406,7 +406,7 @@ bool Driver::parse_script(  const char* filename)
     GB_main_wxFrame->GetScriptsHistory()->AddFileToHistory(newfilename);
 
   bool res = parse_file(string(newfilename.mb_str()));
-  //cout << "current wd = "  <<  wxGetCwd() << endl; 
+  //cout << "current wd = "  <<  wxGetCwd() << std::endl; 
   return res;
 
 } // Driver::parse_script()
@@ -450,7 +450,7 @@ void Driver::init_debug_stream()
 
   language_debug_stream.open(filename.c_str());
   if (!language_debug_stream.good()) 
-    cerr << "Error in opening " << filename << endl;
+    std::cerr << "Error in opening " << filename << std::endl;
 
 } // Driver::init_debug_stream()
 
@@ -485,7 +485,7 @@ int Driver::err_print(const char* st)
 //   -----------------
 {
   if (GB_main_wxFrame)
-    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st,wxConvUTF8);
   std::cout << "Error: " << st << std::endl;
   string mess =  (format("Error %s \n") % st).str();
   if (InConsole()) 
@@ -525,7 +525,7 @@ void Driver::info_print(const char* st)
 //   -----------------
 {
   if (GB_main_wxFrame)
-    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st,wxConvUTF8);
   string mess =  (format("Information: %s \n") % st).str();
   if (!nomessagedialog) {
     wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
@@ -567,10 +567,18 @@ void Driver::res_print(const char* st)
 //   -----------------
 {
   if (GB_main_wxFrame)
-    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
-  std::cout << st << endl;
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st, wxConvUTF8);
+  std::cout << st << std::endl;
 } // Driver::res_print()
 
+//--------------------------------------------
+void Driver::res_print(const wxString& st) 
+//   -----------------
+{
+  if (GB_main_wxFrame)
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << st;
+//  std::cout << st << std::endl;
+} // Driver::res_print()
 
 //----------------------------------------
 void Driver::close_res_output() 
@@ -622,7 +630,7 @@ void Driver::init_cmdhistory()
     filename = str( ws_filename_format % i);
   FinTantQue
 
-  cout << format("Opening %1% \n") % filename;
+ std::cout << format("Opening %1% \n") % filename;
   cmdhistory=FILE_ptr(fopen(filename.c_str(),"w"),file_deleter());
 
   // change properties to allow execution
@@ -631,7 +639,7 @@ void Driver::init_cmdhistory()
   #endif
 
   if (!cmdhistory) {
-    cerr << format("Error in opening %s\n") % filename;
+    std::cerr << format("Error in opening %s\n") % filename;
     FILE_ptr stdout_ptr = CreateSmartPointer<FILE>()(stdout);
     cmdhistory.swap(stdout_ptr);
   } else

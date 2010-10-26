@@ -276,9 +276,9 @@ InrImage* LineRecons( SurfacePoly* surf, InrImage* ref,
                           );
         }
         catch (Excep_points_proches) {
-          cerr  << "points trop proches ..." 
+          std::cerr  << "points trop proches ..." 
                 << p1.pt << " , " << p2.pt 
-                << endl;
+                << std::endl;
         }
   
         p0    = p1;

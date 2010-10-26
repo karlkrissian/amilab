@@ -3,15 +3,16 @@
 #
 # Denoising algorithm
 #
+
+func "Common/ScriptGui"
+
 if (!exists(AnisoGSClass)) {
 
-  Class AnisoGSClass {
+  Class AnisoGSClass : public ScriptGui {
 
   #----------------------------
-  
   proc ::Init() {
-    ::class_name ="global::AnisoGSClass"
-  
+
     ::input_name  = ""
     ::result_name = "AnisoGS_result"
     ::result_filename = "AnisoGS_result.ami.gz"
@@ -25,22 +26,6 @@ if (!exists(AnisoGSClass)) {
   
     ::CreateWindow()
   }
-  
-  #----------------------------
-  proc ::Close() {
-    ::win.HidePanel()
-    delvars GetObjectName(::Close)
-  }
-  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-  #----------------------------
-  proc ::CloseAll() {
-    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-    ::Close
-  }
-  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
-  #----------------------------
   
   #------------------------------------
   proc ::load_input() {
@@ -153,11 +138,9 @@ if (!exists(AnisoGSClass)) {
         ::win.EndBoxPanel()
 
     ::win.EndBook()
-    ::win.BeginHorizontal()
-      ::win.AddButton("Close",          ::Close)
-      ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal()  
-    ::win.Update()
+
+    ::AddStandardButtons(&::win)
+
     ::win.Display()
     ::win.Update(-1)
   }

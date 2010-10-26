@@ -4,25 +4,16 @@ MESSAGE("***** Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Zinrimage
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/Math
-  ${AMILAB_SOURCE_DIR}/AMImage
-  ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/wxParams
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
+  ${wxParams_INCLUDE_DIRS}
+  ${AMILAB_SOURCE_DIR}/Common/include
+  ${AMILAB_SOURCE_DIR}/Graphic/include
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${Boost_INCLUDE_DIR}
   )
 
 INCLUDE( ${USE_ITK_FILE} )
 MESSAGE( "USE_ITK_FILE = ${USE_ITK_FILE}")
-
 INCLUDE( ${wxWidgets_USE_FILE})
-MESSAGE( "wxWidgets_USE_FILE = ${wxWidgets_USE_FILE}")
 
 INCLUDE( ${USE_VTK_FILE})
 MESSAGE( "USE_VTK_FILE = ${USE_VTK_FILE}")
@@ -39,7 +30,6 @@ SET(  WrapITK_SRCS
     wrapitkWrite.cpp
     wrapitkIsoContourDist.cpp
     wrapitkBasicNLMeansFilter.cpp
-    itkBasicNLMeansFilter.txx
     wrapitkFastMarchingImageFilter.cpp
     wrapitkWaterShedImageFilter.cpp
     wrapitkMultiScaleVesselnessFilter.cpp
@@ -53,21 +43,22 @@ SET(  WrapITK_SRCS
 )
 
 SET(WrapITK_HDRS
-	itkCannyEdgeDetector.h
-	wrapConversion.h
-	wrapITK.h
-	wrapitkFastMarchingImageFilter.h
-	wrapitkIsoContourDist.h
-  ami_itkRead.h
-	wrapitkRead.h
+	../include/itkCannyEdgeDetector.h
+	../include/wrapConversion.h
+	../include/wrapITK.h
+	../include/wrapitkFastMarchingImageFilter.h
+	../include/wrapitkIsoContourDist.h
+  ../include/ami_itkRead.h
+	../include/wrapitkRead.h
 	#wrapitkRead_3D_US.h
-	wrapitkRecursiveGaussianImageFilter.h
-	wrapitkWaterShedImageFilter.h
-  ami_itkWrite.h
-	wrapitkWrite.h
-	wrapitkBackTrackingMeshFilter.h
-	wrapitkLocalMeanImageFilter.h
-	wrapitkTranslateImageFilter.h
+	../include/wrapitkRecursiveGaussianImageFilter.h
+	../include/wrapitkWaterShedImageFilter.h
+  ../include/ami_itkWrite.h
+	../include/wrapitkWrite.h
+	../include/wrapitkBackTrackingMeshFilter.h
+	../include/wrapitkLocalMeanImageFilter.h
+	../include/wrapitkTranslateImageFilter.h
+  ../include/itkBasicNLMeansFilter.txx
 )
 
 SET(WrapITK_SRCS

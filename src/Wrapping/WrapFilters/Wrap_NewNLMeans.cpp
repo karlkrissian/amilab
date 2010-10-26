@@ -57,7 +57,7 @@ InrImage* Wrap_NewNLmeans(ParamList* p)
 
   return fast_nlmeans.GetResult();
 #else
-  cerr << " need to compile with FastNLmeans enabled" << endl;
+  std::cerr << " need to compile with FastNLmeans enabled" << std::endl;
   return NULL;
 #endif
 

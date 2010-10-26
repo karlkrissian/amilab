@@ -91,8 +91,8 @@ extern MainFrame*    GB_main_wxFrame;
     if (im1->ScalarFormat()&&im2->ScalarFormat()) { \
       std::string newname = (boost::format("%1%_%2%_%3%")%im1->GetName()%#operator%im2->GetName()).str(); \
       InrImage::ptr res = InrImage::ptr(new InrImage(im1->_format,newname.c_str(),im1.get()));\
-      InrImageIteratorBase::ptr im1_it(res->CreateConstIterator());\
-      InrImageIteratorBase::ptr im2_it(res->CreateConstIterator());\
+      InrImageIteratorBase::ptr im1_it(im1->CreateConstIterator());\
+      InrImageIteratorBase::ptr im2_it(im2->CreateConstIterator());\
       InrImageIteratorBase::ptr res_it(res->CreateIterator());\
       im1_it->InitBuffer();                \
       im2_it->InitBuffer();                \
@@ -147,14 +147,14 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator +()
 /// prefix ++ operator ++a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator ++()
 {
-  std::cout << "**" << endl;
+  std::cout << "**" << std::endl;
   RETURN_VARPTR(InrImage,++RefValue());
 }
 
 /// postfix ++ operator a++
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator ++(int)
 {
-  std::cout << "**" << endl;
+  std::cout << "**" << std::endl;
   RETURN_VARPTR(InrImage,RefValue()++);
 }
 */
@@ -683,7 +683,9 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::left_assign(cons
 
     if (imptr.get()) {
       if (i1.get() != imptr.get()) {
-        can_skip_allocation = (i1->GetFormat() == imptr->GetFormat());
+        can_skip_allocation = 
+          (i1->GetFormat() == imptr->GetFormat())&&
+          (i1->GetVDim() == imptr->GetVDim());
         if (can_skip_allocation) {
           // first try the standard data copy
           can_skip_allocation = ((*i1) = (*imptr));

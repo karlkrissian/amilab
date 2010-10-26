@@ -88,6 +88,9 @@ if (!exists(LevelSetsClass)) {
         ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
 
         ::html_filename = GetScriptsDir+"/Segmentation/LevelSets/Doc/levelset_gui/index.html"
+
+        ::own_viewer = UCHAR(1), "if using own image viewer"
+        ::isocontour_index = 1, "isocontour number to show the evolving level set"
     }
 
       #-----------------------------------------------
@@ -149,6 +152,7 @@ if (!exists(LevelSetsClass)) {
     
         ::inputmin          = min(::input)
         ::inputmax          = max(::input)
+        ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
         ::minimal_intensity = ::inputmin
         if (exists(::win)) {
           ::win.Update(-1)
@@ -156,16 +160,44 @@ if (!exists(LevelSetsClass)) {
 
         ::UpdateHistogram()
 
-        show ::input
+        if (exists(::viewer)) { del ::viewer;}
+        ::viewer = DessinImage(&::input)
+        ::own_viewer = 1;
       }
       Comments( ::load_input, "Copies the input image in a local image member named 'input', and updates the min-max intensities")
 
+      //--------------------------------------------------
+      proc ::setviewer( OBJECT v) \
+      {
+        if (exists(::viewer)) { del ::viewer;}
+        ::viewer = &v
+        ::own_viewer = 0;
+      }
+
+      //--------------------------------------------------
+      proc ::setisocontour( NUM index) \
+      {
+        ::isocontour_index = index;
+      }
+
+      //--------------------------------------------------
+      proc ::UpdateViewer( ) \
+      {
+        if (exists(::viewer)) \
+        {
+          ::viewer.Paint()
+        }
+      }
 
       //--------------------------------------------------
       proc ::set_input(IMAGE _input) \
       {
         
-        if (exists(::input_draw))  { del ::input_draw; }
+        if (::own_viewer && exists(::viewer))  \
+        { 
+          del ::viewer; 
+          ::own_viewer = 0;
+        }
         if (exists(::inls_backup)) { del ::inls_backup; }
       
         ::input <<= (FLOAT)_input
@@ -174,13 +206,17 @@ if (!exists(LevelSetsClass)) {
         ::inputmax = max(::input)
         ::minimal_intensity = ::inputmin
         ::UpdateHistogram()
+        ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
       
         ::inls <<= (FLOAT)::input*0-10
         ::inls0 <<= ::inls
       
-        show ::input
-        ::input_draw.SetIsoContour(1,&::inls,0)
-        ::input_draw.DrawIsoContour(1,1)
+        if (!exists(::viewer)) { 
+          ::viewer = DessinImage(&::input);
+          ::own_viewer = 1;
+        }
+        ::viewer.SetIsoContour(::isocontour_index,&::inls,0)
+        ::viewer.DrawIsoContour(::isocontour_index,1)
       
       }
     
@@ -190,9 +226,9 @@ if (!exists(LevelSetsClass)) {
         ::inls <<= im
         ::inls0 <<= ::inls
         show ::inls
-        if (exists(::input_draw)) {
-          ::input_draw.SetIsoContour(1,::inls,0)
-          ::input_draw.DrawIsoContour(1,1)
+        if (exists(::viewer)) {
+          ::viewer.SetIsoContour(::isocontour_index,::inls,0)
+          ::viewer.DrawIsoContour(::isocontour_index,1)
         }
       }
     
@@ -257,8 +293,8 @@ if (!exists(LevelSetsClass)) {
           }
       
           ::inls0 <<= ::inls
-          ::input_draw.SetIsoContour(1,&::inls,0)
-          ::input_draw.DrawIsoContour(1,1)
+          ::viewer.SetIsoContour(::isocontour_index,&::inls,0)
+          ::viewer.DrawIsoContour(::isocontour_index,1)
         }
       }
       Comments( ::load_initial, "Copies the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
@@ -283,8 +319,8 @@ if (!exists(LevelSetsClass)) {
           }
       
           ::inls <<= ::inls0
-          ::input_draw.SetIsoContour(1,&::inls,0)
-          ::input_draw.DrawIsoContour(1,1)
+          ::viewer.SetIsoContour(::isocontour_index,&::inls,0)
+          ::viewer.DrawIsoContour(::isocontour_index,1)
         }
       }
       Comments( ::ref_initial, "Creates a reference to the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
@@ -351,7 +387,7 @@ if (!exists(LevelSetsClass)) {
       if (exists(::inls)) {
         ::inls = -1
       }
-      show ::input
+      ::UpdateViewer()
     }
     
     
@@ -403,28 +439,24 @@ if (!exists(LevelSetsClass)) {
     }
     
     //--------------------------------------------------
-    proc ::Run(  NUM graphics) {
-    //   -----
+    proc ::InitEvolution(  NUM graphics, NUM numit) {
+    //   ---------------
     
-      // every how many iterations call the graphic events
-      ::displ_freq = 8
-      it = floor(::T/::dt)+1
-    
-    
-      v_x = ::input.vx
-      v_y = ::input.vy
-      v_z = ::input.vz
+      # Not ideal to force isotropic voxels !!!
+      ::v_x = ::input.vx
+      ::v_y = ::input.vy
+      ::v_z = ::input.vz
     
       setvoxelsize(::input,  1,1,1)
       setvoxelsize(::inls,1,1,1)
     
-      // Parameters:
-      //   1. grad threshold
-      //   2. iterations
-      //   3. attach coeff
-      //   4. curvcoeff
-      //   5. dt
-      //   6. reinitfreq
+      # Parameters:
+      #   1. grad threshold
+      #   2. iterations
+      #   3. attach coeff
+      #   4. curvcoeff
+      #   5. dt
+      #   6. reinitfreq
     
     
       adv_coeff = 0;
@@ -437,10 +469,9 @@ if (!exists(LevelSetsClass)) {
       }
 
       # new level set object
-      import = &global::ami_import;
       if (exists(::levelset)) { del ::levelset; }
-      ::levelset = import->vtkLevelSets();
-      ::levelset.SetParam(0.7,it,adv_coeff,smo_coeff,::dt,::NBD_freq)
+      ::levelset = global::ami_import.vtkLevelSets();
+      ::levelset.SetParam(0.7,numit,adv_coeff,smo_coeff,::dt,::NBD_freq)
       ::levelset.SetDistMethod(::NBD_method)
       ::levelset.SetThreads(::threads)
       ::levelset.SetMeanCurv(::smoothingtype)
@@ -461,7 +492,7 @@ if (!exists(LevelSetsClass)) {
       if (::use_expansion) {
         if (::use_expansion_image) {
           if (!exists(::expansion_image)) {
-            ::load_expansion
+            ::load_expansion()
           }
           ::levelset.SetExpansionImage(::expansion_image)
         } else {
@@ -483,25 +514,67 @@ if (!exists(LevelSetsClass)) {
     
       ::levelset.SetBandTube(3,2)
     
-      lres = ::levelset.InitWithImage(&::input,&::inls)
-    #  lres = ::levelset.init(::input,900)
+      ::lsres = ::levelset.InitWithImage(&::input,&::inls)
+    #  ::lsres = ::levelset.init(::input,900)
     
       if (graphics) {
-        show ::input
-        // sets the isocontour number 0 to the image 'initial' with threshold 0
-        ::input_draw.SetIsoContour(1,&::inls,0)
-        // sets the isocontour number 0 to be active
-        ::input_draw.DrawIsoContour(1,1)
-        ::input_draw.SetIsoContour(2,&lres,0)
-        ::input_draw.DrawIsoContour(2,1)
+        ::UpdateViewer()
+        if (::own_viewer) {
+          # sets the isocontour number 0 to the image 'initial' with threshold 0
+          ::viewer.SetIsoContour(::isocontour_index,&::inls,0)
+          # sets the isocontour number 0 to be active
+          ::viewer.DrawIsoContour(::isocontour_index,1)
+          ::viewer.SetIsoContour(2,&::lsres,0)
+          ::viewer.DrawIsoContour(2,1)
+        } else {
+          ::viewer.SetIsoContour(::isocontour_index,&::lsres,0)
+          ::viewer.DrawIsoContour(::isocontour_index,1)
+        }
       }
+
+    }
+
+    //--------------------------------------------------
+    proc ::EndEvolution(  NUM graphics) {
+    //   ---------------
+      printn "continue commands"
+      setvoxelsize( ::input, ::v_x, ::v_y, ::v_z)
+      setvoxelsize( ::inls,  ::v_x, ::v_y, ::v_z)
+      setvoxelsize( ::lsres,    ::v_x, ::v_y, ::v_z)
+      del ::v_x
+      del ::v_y
+      del ::v_z
     
-      printn "1"
+      # invert before ending to be compatible with input convention
+      ::levelset.UpdateResult()
+      ::lsres = ::levelset.GetOutputImage()
+      ::inls = -::lsres
+      del ::lsres
+      ::levelset.End()
+
+      if (::own_viewer) {
+        ::viewer.DrawIsoContour(2,0)
+      } else {
+        ::viewer.SetIsoContour(::isocontour_index,&::inls,0)
+        ::viewer.DrawIsoContour(::isocontour_index,1)
+      }
+
+    }
+
+    //--------------------------------------------------
+    proc ::Run(  NUM graphics) {
+    //   -----
+    
+      it = floor(::T/::dt)+1
+
+      ::InitEvolution(graphics,it)
       ::levelset.Iterate();
       ::levelset.UpdateResult()
       previous_ls = ::levelset.GetOutputImage()
-      printn "2"
     
+      # every how many iterations call the graphic events
+      ::displ_freq = 8
+
       k = 0
       SetProgress(0)
       ::stop = 0;
@@ -514,9 +587,9 @@ if (!exists(LevelSetsClass)) {
           k = k+1
           if (graphics)&&(k==::displ_freq) {
             ::levelset.UpdateResult()
-            lres = ::levelset.GetOutputImage()
+            ::lsres = ::levelset.GetOutputImage()
             k = 0
-            show ::input
+            ::UpdateViewer()
             ProcessXEvents(100)
           }
           SetProgress(n/it*100)
@@ -524,11 +597,11 @@ if (!exists(LevelSetsClass)) {
             if ((n % ::conv_freq) == 0) {
               # check for convergence
               ::levelset.UpdateResult()
-              lres = ::levelset.GetOutputImage()
-              stillmoving = count((previous_ls*lres)<0)
+              ::lsres = ::levelset.GetOutputImage()
+              stillmoving = count((previous_ls*::lsres)<0)
               print "*** Convergence test = "; printn stillmoving
               if (stillmoving==0) { ::stop=1; }
-              previous_ls = lres
+              previous_ls = ::lsres
             }
           }
         } else {
@@ -537,20 +610,9 @@ if (!exists(LevelSetsClass)) {
         }
       }
     
-      printn "continue commands"
-      setvoxelsize( ::input,   v_x, v_y, v_z)
-      setvoxelsize( ::inls, v_x, v_y, v_z)
-      setvoxelsize( lres,    v_x, v_y, v_z)
-    
-      // invert before ending to be compatible with input convention
-      ::levelset.UpdateResult()
-      lres = ::levelset.GetOutputImage()
-      ::inls = -lres;
-    
-      ::levelset.End()
+      ::EndEvolution(graphics)
       SetProgress(0)
     
-      ::input_draw.DrawIsoContour(2,0)
     }
     # ::Run()
     
@@ -558,15 +620,15 @@ if (!exists(LevelSetsClass)) {
     //---------------------------------------------------
     proc ::AddSphere() \
     {
-      if (!exists(::inls))        { ::load_initial; }
-      if (exists(::input_draw)) {
-        _x = ::input_draw.GetXPos() 
-        _y = ::input_draw.GetYPos()
-        _z = ::input_draw.GetZPos()
-        printn "cursor is at "
-        printn _x
-        printn _y
-        printn _z
+      if (!exists(::inls))        { ::load_initial(); }
+      if (exists(::viewer)) {
+        _x = ::viewer.GetXPos() 
+        _y = ::viewer.GetYPos()
+        _z = ::viewer.GetZPos()
+        print "cursor is at "
+        print " %1% " % _x
+        print " %1% " %_y
+        print " %1% \n" % _z
         ::inls_backup = ::inls
         #global::AddBrightSphere_mm(&::inls,\
         #      _x,_y,_z,\
@@ -575,7 +637,7 @@ if (!exists(LevelSetsClass)) {
               _x,_y,_z,\
               ::sphere_radius,-1,1)
         ::inls0 = ::inls
-        show ::input;
+        ::UpdateViewer()
       } else {
         print "We have to show ::input and position de cursor at the sphere center (using mouse middle button) \n"
       }
@@ -611,11 +673,11 @@ if (!exists(LevelSetsClass)) {
     
     //---------------------------------------------------
     proc ::ReRun() {
-      if (!exists(::input)) { ::load_input; }
-      if (!exists(::inls))  { ::load_initial; }
+      if (!exists(::input)) { ::load_input(); }
+      if (!exists(::inls))  { ::load_initial(); }
       ::inls = ::inls0
       ::Run(1)
-      show ::input
+      ::UpdateViewer()
     }
     
     //---------------------------------------------------
@@ -628,7 +690,7 @@ if (!exists(LevelSetsClass)) {
     //---------------------------------------------------
     proc ::Continue() {
       ::Run(1)
-      show ::input
+      ::UpdateViewer()
     }
     
     //---------------------------------------------------
@@ -650,8 +712,8 @@ if (!exists(LevelSetsClass)) {
       }
       ::s1 = isosurf(::inls,0.01)
       ::s0_draw += ::s1
-      if (exists(::input_draw)) {
-        ::input_draw.setGLwin(&::s0_draw)
+      if (exists(::viewer)) {
+        ::viewer.setGLwin(&::s0_draw)
       }
     
     }
@@ -706,6 +768,13 @@ if (!exists(LevelSetsClass)) {
       ::parent_panel = &pp
     }
     
+    //---------------------------------------------------
+    proc ::GuiUpdateIntensityLimits( NUM _min, NUM _max) {
+      ::win.FloatConstraints(::imean_id,_min,_max,::Imean)
+      ::win.FloatConstraints(::isd_id, 0,(_max-_min)/3.0,::Isd)
+      ::win.Update(-1)
+    }
+
     //---------------------------------------------------
     proc ::Gui() {
     
@@ -780,9 +849,9 @@ if (!exists(LevelSetsClass)) {
               ::expansion_book = ::win.BeginBook()
                 ::intexp_page = ::win.AddPage("Intensity-based")
                   ::win.AddButton("Compute stats",::ComputeIntensityStats)
-                  ::win.AddFloat( &::Imean,"Mean", ::inputmin,::inputmax)
+                  ::imean_id = ::win.AddFloat( &::Imean,"Mean", ::inputmin,::inputmax)
                   ::win.SetCallback( &::UpdateExpansionCurve)
-                  ::win.AddFloat( &::Isd,"StandDev",0,(::inputmax-::inputmin)/2)
+                  ::isd_id = ::win.AddFloat( &::Isd,"StandDev",0,(::inputmax-::inputmin)/2)
                   ::win.SetCallback( &::UpdateExpansionCurve)
                   ::win.AddFloat( &::prob_threshold,"Threshold",0,1)
                   ::win.SetCallback( &::UpdateExpansionCurve)

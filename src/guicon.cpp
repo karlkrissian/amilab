@@ -53,7 +53,7 @@ fp = _fdopen( hConHandle, "w" );
 *stderr = *fp;
 setvbuf( stderr, NULL, _IONBF, 0 );
 
-// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
+// makestd::cout, wcout, cin, wcin, wcerr, std::cerr, wclog and clog
 // point to console as well
 ios::sync_with_stdio();
 }

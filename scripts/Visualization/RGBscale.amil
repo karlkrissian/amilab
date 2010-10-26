@@ -7,16 +7,17 @@
 
 comments="RGBscale: Linear rescaling of the intensity of RGB image per RGB component."
 
+func "Common/ScriptGui"
 
-if (!exists(global::RGBscale)) {
 
-  Class global::RGBscaleClass {
+if (!exists(RGBscale)) {
+
+  Class RGBscaleClass : public ScriptGui {
 
     ::ami_import = &global::ami_import
     #----------------------------
     proc ::Init() \
     {
-      ::classname  = "global::RGBscaleClass"
       ::input_name =  "", "name of the input image, the drawing window of this image will be used"
       ::All_min = INT(0),    "min value for the 3 components"
       ::All_max = INT(255),  "max value for the 3 components"
@@ -39,30 +40,13 @@ if (!exists(global::RGBscale)) {
     }
   
     #----------------------------
-    proc ::Reload() \
+    proc ::ImReload() \
     {
       ::load_input
       if (exists(::transf_im_draw)) { del ::transf_im_draw;}
       ::transf_im <<= ::input
     }
 
-    #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() \
-    {
-      closeclass_cmd = "if (exists(%1%)) { del %1%; };" %::classname
-      eval closeclass_cmd
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
     #----------------------------
     proc ::TransformComp(NUM numcomp, NUM cmin, NUM cmax) \
     {
@@ -131,7 +115,7 @@ if (!exists(global::RGBscale)) {
     
       # parameters window
       import = &global::ami_import;
-      ::win = import->ParamPanel("ImGrid")
+      ::win = import->ParamPanel("RGBscale")
       
       ::win.BeginBook()
     
@@ -141,7 +125,7 @@ if (!exists(global::RGBscale)) {
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
-              ::win.AddButton( "Reload",::Reload)
+              ::win.AddButton( "ImReload",&::ImReload)
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
@@ -171,16 +155,14 @@ if (!exists(global::RGBscale)) {
           ::win.EndBoxPanel()
   
       ::win.EndBook()
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal()
+
+      ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
       ::win.Display()
    }
 
-    ::Init
+    ::Init()
   } 
   # Class RGBscaleClass
   Comments( RGBscaleClass, comments)

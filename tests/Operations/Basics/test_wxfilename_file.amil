@@ -5,6 +5,9 @@
 
 NoMessageDialog(1)
 
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # test_wxfilename_file.amil
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

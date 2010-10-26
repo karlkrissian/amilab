@@ -27,6 +27,7 @@
 */
 
 #include "func_imagebasictools.h"
+#include <iostream>
 
 #ifndef macro_min
   #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
@@ -35,6 +36,8 @@
 #ifndef macro_max
   #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
 #endif 
+
+using namespace std;
 
 extern unsigned char GB_debug;
 
@@ -173,7 +176,7 @@ void Func_PutImage( InrImage* i1,
     int x,y,z;
 
   if (i1->GetVDim()!=i2->GetVDim()) {
-    cerr << "Func_PutImage() image of different vectorial dimensions " << endl;
+    std::cerr << "Func_PutImage() image of different vectorial dimensions " << std::endl;
     return;
   }
 

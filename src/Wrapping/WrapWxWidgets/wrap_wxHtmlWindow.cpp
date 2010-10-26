@@ -10,6 +10,12 @@
 //
 //
 
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_PRECOM_HEADERS
+  #include "WrapWxWidgets_header.h"
+#endif
+
 #include "wrap_wxHtmlWindow.h"
 
 #include "VarContexts.hpp"
@@ -18,7 +24,7 @@
 #include "ami_object.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
-
+#include "myHtmlWindow.h"
 
 //
 // static member for creating a variable from a ParamList
@@ -65,13 +71,13 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
       wrap_wxHtmlWindow::CallMember( ParamList* p)
 {
   int n = 0;
-  std::string* title = NULL;
+//  std::string* title = NULL;
 
   CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
 
   if (parent.get()){
     return WrapClass_wxHtmlWindow::CreateVar(
-      new wxHtmlWindow(parent.get(), wxID_ANY));
+      new myHtmlWindow(parent.get()));
   }
   else
     ClassHelpAndReturn;
@@ -94,12 +100,32 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
 {
   std::string* filename = NULL;
   int n = 0;
-  if (!get_val_ptr_param<string>( filename,  p, n)) 
+  if (!get_val_ptr_param<std::string>( filename,  p, n)) 
     ClassHelpAndReturn;
 
-  wxFileName wxfilename(wxString::FromAscii(filename->c_str())); 
+  wxFileName wxfilename(wxString(filename->c_str(),wxConvUTF8)); 
   int res = this->_objectptr->_obj->LoadFile(wxfilename);
 
+  RETURN_VAR(int, res);
+}
+
+//---------------------------------------------------
+//  LoadPage
+//---------------------------------------------------
+void WrapClass_wxHtmlWindow::
+      wrap_LoadPage::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(std::string,"string: filename to load.");
+  return_comments = "Success result (int variable).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxHtmlWindow::
+      wrap_LoadPage::CallMember( ParamList* p)
+{
+  int n = 0;
+  GET_PARAM(std::string,page,"");
+  wxString wxstPage(page.c_str(), wxConvUTF8);
+  int res = this->_objectptr->_obj->LoadPage(wxstPage);
   RETURN_VAR(int, res);
 }
 

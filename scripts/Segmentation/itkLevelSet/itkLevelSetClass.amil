@@ -4,18 +4,20 @@ func "Common/ScriptGui"
 
 if (!exists(itkLevelSetClass)) {
 
-  ami_import->ITK()
-  #func "BasicFilters/itkSigmoid/itkSigmoidFilter.amil"
-  func "Segmentation/itkFastMarching/itkFastMarchingClass.amil"
+  global::ami_import.ITK()
 
-#*******************************************************************************************#
-#****************************LEVELSET*******************************************************#
-#*******************************************************************************************#
+  #*********************************************************#
+  #***************LEVELSET**********************************#
+  #*********************************************************#
     
   Class itkLevelSetClass : public ScriptGui \
   {
     
-    global::itkFastMarchingClass ::FAST
+    #func "BasicFilters/itkSigmoid/itkSigmoidFilter.amil"
+
+    func "Segmentation/itkFastMarching/itkFastMarchingClass.amil"
+    itkFastMarchingClass ::FAST
+
     #global::itkSigmoidClass ::SIG
     
     ::itk=&global::itk
@@ -148,56 +150,57 @@ if (!exists(itkLevelSetClass)) {
       } else {
         ::win = import->ParamPanel("itkLS")
       }
+
       ::win.BeginBook()
       
         ::win.AddPage("Init")
-          // initmode_id = ::win.AddEnum(&::mode,"Mode")
-            // ::win.AddEnumChoice(initmode_id,"ITK input")
-            // ::win.AddEnumChoice(initmode_id,"Manual input")
-          // ::win.SetCallback(&::ConfigEventL)
+        // initmode_id = ::win.AddEnum(&::mode,"Mode")
+        // ::win.AddEnumChoice(initmode_id,"ITK input")
+        // ::win.AddEnumChoice(initmode_id,"Manual input")
+        // ::win.SetCallback(&::ConfigEventL)
           
-          // ::init_book = ::win.BeginBook()
-            // ::config_itk_input = ::win.AddPage("ITK input")
-              // ::win.BeginBook()
-                // ::FAST->SetParentPanel(&::win)
-                // ::FAST->Gui()
-                // ::win.AddPage("itkFM",&::FAST->win)
-              // ::win.EndBook()
-            //::config_manual_input = ::win.AddPage("Input")
-              ::win.BeginBoxPanel("Initial Image")
-                # set the input image
-                ::win.BeginHorizontal()
-                  ::win.AddImageChoice( &::initial_name, "")
-                  ::win.AddButton("Load",::load_initial)
-                ::win.EndHorizontal()
-              ::win.EndBoxPanel()
-              ::win.BeginBoxPanel("Edge Map Image")
-                # set the input image
-                ::win.BeginHorizontal()
-                  ::win.AddImageChoice( &::initial_name, "")
-                  ::win.AddButton("Load",::load_initial)
-                ::win.EndHorizontal()
-              ::win.EndBoxPanel()
-              ::win.BeginHorizontal()
-                dim_id = ::win.AddEnum( &::dim,"Dimension")
-                ::win.AddEnumChoice(dim_id, "2D")
-                ::win.AddEnumChoice(dim_id, "3D")
-              ::win.EndHorizontal()
-          //::win.EndBook()
+        // ::init_book = ::win.BeginBook()
+        // ::config_itk_input = ::win.AddPage("ITK input")
+        // ::win.BeginBook()
+        // ::FAST->SetParentPanel(&::win)
+        // ::FAST->Gui()
+        // ::win.AddPage("itkFM",&::FAST->win)
+        // ::win.EndBook()
+        //::config_manual_input = ::win.AddPage("Input")
+        ::win.BeginBoxPanel("Initial Image")
+          # set the input image
+          ::win.BeginHorizontal()
+            ::win.AddImageChoice( &::initial_name, "")
+            ::win.AddButton("Load",::load_initial)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        ::win.BeginBoxPanel("Edge Map Image")
+          # set the input image
+          ::win.BeginHorizontal()
+            ::win.AddImageChoice( &::initial_name, "")
+            ::win.AddButton("Load",::load_initial)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        ::win.BeginHorizontal()
+          dim_id = ::win.AddEnum( &::dim,"Dimension")
+          ::win.AddEnumChoice(dim_id, "2D")
+          ::win.AddEnumChoice(dim_id, "3D")
+        ::win.EndHorizontal()
+        //::win.EndBook()
           
-          ::win.AddPage("Param")
-            ::win.AddFloat( &::error,"ErrorRMS",0,1)
-            ::win.AddInt( &::iterations,"Iterations",0,800)
-            ::win.AddFloat( &::advScaling,"Advection",0,1)
-            ::win.AddFloat( &::curScaling,"Curvature",0,1)
-            ::win.AddFloat( &::proScaling,"Propagation",0,1)
-            ::win.BeginHorizontal()
-              ::win.AddButton("Run", ::Run)
-              //::win.AddButton("RunNew", ::RunNew)
-              ::win.AddButton("Display", ::Display)
-            ::win.EndHorizontal()       
+        ::win.AddPage("Param")
+          ::win.AddFloat( &::error,"ErrorRMS",0,1)
+          ::win.AddInt( &::iterations,"Iterations",0,800)
+          ::win.AddFloat( &::advScaling,"Advection",0,1)
+          ::win.AddFloat( &::curScaling,"Curvature",0,1)
+          ::win.AddFloat( &::proScaling,"Propagation",0,1)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Run", ::Run)
+            //::win.AddButton("RunNew", ::RunNew)
+            ::win.AddButton("Display", ::Display)
+          ::win.EndHorizontal()       
             
-       ::AddHelpPage(&::win)
+      ::AddHelpPage(&::win)
         
       ::win.EndBook()
       

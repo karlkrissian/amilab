@@ -185,7 +185,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   int n                  = 0;
 
   if (!get_int_param(    curve_number, p, n)) ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( color_str,    p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( color_str,    p, n)) ClassHelpAndReturn;
   if (!get_int_param(    style,        p, n)) ClassHelpAndReturn;
   if (!get_int_param(    width,        p, n)) ClassHelpAndReturn;
 

@@ -75,6 +75,7 @@ protected:
     cmdline_displaypos = -1;
     cmdlines_pos       = 0;
     in_completion      = 0;
+    completions =  boost::shared_ptr<wxArrayString>(new wxArrayString());
     completion_count   = 0;
     SetSizeHints(wxSize(200,100));
     SetToolTip(_T("Amilab command line console, \n \tKeyboard shortcuts: \n \tCtrl-F: load a filename as a string. \n \tTab: complete a keyword or a variable name. \n \tUp-Down arrows to browse command history. "));    
@@ -108,7 +109,7 @@ protected:
 
   void ProcessTab();
 
-  void ProcessReturn();
+  bool ProcessReturn();
 
   void OnEnter(wxCommandEvent& event);
 

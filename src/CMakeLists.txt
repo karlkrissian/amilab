@@ -8,9 +8,9 @@ MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
 cmake_minimum_required(VERSION 2.6.4)
 
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+#if(COMMAND cmake_policy)
+#  cmake_policy(SET CMP0003 NEW)
+#endif(COMMAND cmake_policy)
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
@@ -19,8 +19,8 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH}
 # VERSION information
 #-----------------------------------------------------
 
-SET(AMILAB_VERSION_MAJOR "2")
-SET(AMILAB_VERSION_MINOR "1")
+SET(AMILAB_VERSION_MAJOR "3")
+SET(AMILAB_VERSION_MINOR "0")
 SET(AMILAB_VERSION_PATCH "0")
 SET(AMILAB_VERSION "${AMILAB_VERSION_MAJOR}.${AMILAB_VERSION_MINOR}.${AMILAB_VERSION_PATCH}")
 
@@ -59,7 +59,7 @@ SET(CPACK_SET_DESTDIR "OFF")
 SET(CPACK_RPM_PACKAGE_SUMMARY "AMILab image processing and visualization software")
 SET(CPACK_RPM_PACKAGE_NAME "amilab")
 SET(CPACK_RPM_PACKAGE_VERSION ${AMILAB_VERSION})
-SET(CPACK_RPM_PACKAGE_RELEASE "fc11")
+SET(CPACK_RPM_PACKAGE_RELEASE "1")
 SET(CPACK_RPM_PACKAGE_LICENSE "LGPL")
 SET(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 SET(CPACK_RPM_PACKAGE_VENDOR "Karl Krissian, ULPGC")
@@ -69,6 +69,26 @@ SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
 # this will make the package relocatable !!cd
 SET(CPACK_RPM_SPEC_MORE_DEFINE "Prefix: /usr")
+
+# package architecture
+# does this work??
+MESSAGE("CMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR}")
+IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE amd64)
+  SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+ELSEIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686")
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
+  SET(CPACK_RPM_PACKAGE_ARCHITECTURE "i386")
+ENDIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+
+
+
+# create AMILAB_BIN variable
+IF(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
+ELSE(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
+ENDIF(CMAKE_BUILD_TYPE)
 
 #
 # DEB configuration
@@ -80,9 +100,10 @@ IF(UNIX)
   # DEB configuration
   #
   # no i386 in debian, should use dpkg --print-architecture ??
-  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
+#  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
   SET(CPACK_DEBIAN_PACKAGE_MAINTAINER   "krissian@dis.ulpgc.es")
-  
+  SET(CPACK_DEBIAN_PACKAGE_SECTION      "science")
+  SET(CPACK_DEBIAN_PACKAGE_PRIORITY     "extra")
   # creating dependencies ...
   MESSAGE(" ${AMILAB_BIN}")
   if (EXISTS "${AMILAB_BIN}")
@@ -129,23 +150,102 @@ ENDIF(WIN32 AND NOT UNIX)
 # Bundle Configuration (still needs work ...),
 # now compiling MacOS Package with "sudo cpack -G PackageMaker ."
 #
-#SET( CPACK_PACKAGE_FILE_NAME      )
-SET( CPACK_PACKAGE_ICON            "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.xpm")
-SET( CPACK_BUNDLE_NAME             "AMLab-${AMILAB_VERSION}-Bundle")
-SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.xpm")
-SET( CPACK_BUNDLE_PLIST            "${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info_${AMILAB_VERSION}.plist")
-#SET( CPACK_BUNDLE_STARTUP_COMMAND )
+IF (APPLE)
+  SET(CPACK_GENERATOR "Bundle")
+  SET( CPACK_PACKAGE_FILE_NAME      )
+#  SET( CPACK_PACKAGE_ICON            "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.png")
+#  SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.png")
+#  SET( CPACK_BUNDLE_STARTUP_COMMAND )
+
+
+  SET(CPACK_BUNDLE_ICON              "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_bundleicon.icns")
+  SET( CPACK_BUNDLE_NAME             "AMILab_${AMILAB_VERSION}")
+  SET( CPACK_BUNDLE_PLIST            "${CMAKE_SOURCE_DIR}/../Releases/MacOS/Info.plist")
+  SET(CPACK_BUNDLE_STARTUP_COMMAND   "${CMAKE_SOURCE_DIR}/../Releases/MacOS/StartupCommand")
+  SET(CPACK_PACKAGE_DESCRIPTIONG     "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}")
+
+  #Usamos el icono que hicimos para el disco
+  SET(CPACK_PACKAGE_ICON    "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_volumeicon.icns")
+  SET(CPACK_PACKAGE_NAME     "AMILabPackage")
+  SET(CPACK_PACKAGE_VERSION  "1.0")
+
+ENDIF(APPLE)
+
+
+#IF(APPLE)
+#  SET(CMAKE_BUNDLE_NAME "AMILab_${AMILAB_VERSION}")
+#  SET(CMAKE_BUNDLE_LOCATION "${CMAKE_INSTALL_PREFIX}")
+#  # make sure CMAKE_INSTALL_PREFIX ends in /
+#  STRING(LENGTH "${CMAKE_INSTALL_PREFIX}" LEN)
+#  MATH(EXPR LEN "${LEN} -1" )
+#  STRING(SUBSTRING "${CMAKE_INSTALL_PREFIX}" ${LEN} 1 ENDCH)
+#  IF(NOT "${ENDCH}" STREQUAL "/")
+#  SET(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/")
+#  ENDIF(NOT "${ENDCH}" STREQUAL "/")
+#  SET(CMAKE_INSTALL_PREFIX  "${CMAKE_INSTALL_PREFIX}${CMAKE_BUNDLE_NAME}.app/Contents")
+#ENDIF(APPLE)
+
+
 
 #SET( CPACK_COMPONENTS_ALL applications scripts doc )
 
-SET(CPACK_GENERATOR "RPM")
-#SET(CPACK_GENERATOR "RPM;STGZ;DEB")
-#SET(CPACK_SOURCE_GENERATOR "TGZ")
+IF (UNIX AND NOT APPLE)
+  SET(CPACK_GENERATOR "RPM")
+  #SET(CPACK_GENERATOR "RPM;STGZ;DEB")
+  #SET(CPACK_SOURCE_GENERATOR "TGZ")
+ENDIF(UNIX AND NOT APPLE)
+
 INCLUDE(CPack)
 
-OPTION(AMI_USE_STATIC_LIBS "Look for static libraries" ON)
+
+#-------------------------------------------------------------------------------
+#  Configuration files
+#-------------------------------------------------------------------------------
+
+
+#
+# Configuration of Linux Desktop
+#
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/applications/amilab.desktop.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/applications/amilab.desktop)
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Linux/share/menu/amilab)
+
+#
+# Configuration for MacOS
+#
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist)
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/StartupCommand.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/StartupCommand)
+
+#
+# Configuration of Windows installation script (Inno)
+#
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss)
+
+
+#-------------------------------------------------------------------------------
+#  End of Configuration files
+#-------------------------------------------------------------------------------
+
+
+OPTION(AMI_USE_STATIC_LIBS     "Look for static libraries" ON)
+OPTION(AMI_USE_PRECOMP_HEADERS "Use precompiled headers when available" OFF)
 
 #MESSAGE( "CMAKE_SYSTEM = ${CMAKE_SYSTEM} ")
+
+set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "4.2")
 
 IF( AMI_USE_STATIC_LIBS )
    SET( _ami_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
@@ -221,7 +321,7 @@ FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc )
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net )
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
@@ -312,10 +412,6 @@ INCLUDE (CheckIncludeFiles)
 CHECK_INCLUDE_FILES (malloc.h HAVE_MALLOC_H)
 
 
-include_directories (
-  ${Boost_INCLUDE_DIR}
-  ${OPENGL_INCLUDE_DIR}
-)
 
 
 #SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../CMAKE)
@@ -326,6 +422,9 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/AMILabConfig.h.in ${CMAKE_CURRENT_BIN
 
 
 include(amilab_macros)
+
+include(PCH_GCC4_v2)
+
 InitPrintSources()
 
 set(  wxParams_INCLUDE_DIRS
@@ -336,10 +435,12 @@ MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
 
 include_directories (
   ${Boost_INCLUDE_DIR}
-  ${OPENGL_INCLUDE_DIR}
-  ${wxParams_INCLUDE_DIRS}
+#  ${OPENGL_INCLUDE_DIR}
+#  ${Boost_INCLUDE_DIR}
+#  ${OPENGL_INCLUDE_DIR}
+#  ${wxParams_INCLUDE_DIRS}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${FLEX_INCLUDE_DIR}
+#  ${FLEX_INCLUDE_DIR}
 )
 
 #INCLUDE(${wxWidgets_USE_FILE})
@@ -348,34 +449,13 @@ include_directories (
 SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )
 
 add_subdirectory (Common)
-add_subdirectory (Math)
-#add_subdirectory (Zinrimage)
-add_subdirectory (AMImage)
-add_subdirectory (DistTransf)
-add_subdirectory (Images)
-add_subdirectory (Coordonnees)
-add_subdirectory (Contours)
-add_subdirectory (Vaisseaux)
-add_subdirectory (Filtering)
-add_subdirectory (Crest)
-add_subdirectory (ImageTool)
+#add_subdirectory (DistTransf)
 add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
-add_subdirectory (OpenGL)
-add_subdirectory (wxSamples/penguin)
-add_subdirectory (wxStcFrame)
-add_subdirectory (wxCode/wxTreeListCtrl)
-add_subdirectory (Voxels)
 add_subdirectory (AMILab)
 
-IF(AMI_USE_VTK)
-  add_subdirectory (myVTK4)
-ENDIF(AMI_USE_VTK)
 
-add_subdirectory (Line)
-add_subdirectory (SplineThevenaz)
 #add_subdirectory (libamiFluid)
-add_subdirectory (Graph)
 
 #add_subdirectory (WrapITK)
 add_subdirectory (Wrapping)
@@ -387,47 +467,22 @@ add_subdirectory (Algorithms)
 #ENDIF(AMI_USE_FASTNLMEANS)
 
 include_directories (
-  ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/Math
-  ${AMILAB_SOURCE_DIR}/AMImage
-  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
+  ${wxParams_INCLUDE_DIRS}
+  ${AMILAB_SOURCE_DIR}/Common/include
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
-  ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/Voxels
-  ${AMILAB_SOURCE_DIR}/Crest
-  ${AMILAB_SOURCE_DIR}/Graph
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Filtering
-  ${AMILAB_SOURCE_DIR}/Line
-  ${AMILAB_SOURCE_DIR}/SplineThevenaz
-  ${AMILAB_SOURCE_DIR}/Contours
-  ${AMILAB_SOURCE_DIR}/DistTransf
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
-  ${AMILAB_SOURCE_DIR}/wxStcFrame
-  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
   ${Boost_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
   ${OPTICFLOW_INCLUDE_DIR}
-  ${AMILAB_SOURCE_DIR}/../wxParams/src
-#  ${wxParams_INCLUDE_DIRS}
   )
 
 IF(AMI_USE_VTK)
-  include_directories (
-    ${AMILAB_SOURCE_DIR}/myVTK4
-  )
   INCLUDE( ${USE_VTK_FILE} )
 ENDIF(AMI_USE_VTK)
 
@@ -466,18 +521,13 @@ SET(amilab_bin_SRCS
 )
 endif (WIN32)
 
-IF(CMAKE_BUILD_TYPE)
-  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
-ELSE(CMAKE_BUILD_TYPE)
-  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
-ENDIF(CMAKE_BUILD_TYPE)
 
 include_directories (
   ${AMILAB_SOURCE_DIR}/Language
 )
 
 add_executable (${AMILAB_BIN} WIN32
-  #MACOSX_BUNDLE
+  # MACOSX_BUNDLE
   ${amilab_bin_SRCS}
 )
 
@@ -504,25 +554,10 @@ SET(amilab_ownlibs
   WrapITK
   AMILab
   Language
-  AMImage
-  Contours
-  Coordinates
-  Crest
-#  DistTransf
   Algorithms
-  Filtering
-  ImageTool
-  Images
-  Line
-  Math
-  OpenGL
   Graphic
   wxParams
-  SplineThevenaz
-  Graph
-  Vessels
   Common
-  Voxels
 # wrapped wxwidgets samples
   penguin
   wxStcFrame
@@ -594,7 +629,7 @@ endif (WIN32)
 IF(MSVC)
   # NEED TO SPECIFY FOR EACH POSSIBLE CONFIGURATION
   set_target_properties( ${AMILAB_BIN} 
-    PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
+    PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD /NODEFAULTLIB:MSVCRTD")
 
   set_target_properties( ${AMILAB_BIN} 
     PROPERTIES LINK_FLAGS_DEBUG "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
@@ -615,19 +650,32 @@ ENDIF(UNIX)
 #  SET(CMAKE_INSTALL_PREFIX "/Applications/AMILab.app/")
 #ENDIF(APPLE)
 
-IF (APPLE)
-  SET_TARGET_PROPERTIES( ${AMILAB_BIN}
-      PROPERTIES
-      MACOSX_BUNDLE_BUNDLE_NAME AMILab
-      MACOSX_BUNDLE_ICON_FILE "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_64x64_alpha.icns"
-  )
+
+IF(APPLE)
+   SET_TARGET_PROPERTIES(${AMILAB_BIN} PROPERTIES
+     OUTPUT_NAME ${CPACK_BUNDLE_NAME})
 ENDIF(APPLE)
+#SET(CMAKE_INSTALL_DESTINATION_ARGS  BUNDLE DESTINATION "${CMAKE_BUNDLE_LOCATION}")
+
+
+#IF (APPLE)
+#   SET(amilab_bin_SRCS ${amilab_bin_SRCS} CMakeSetup.icns)
+#   SET(MACOSX_BUNDLE_ICON_FILE "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_64x64_alpha.icns")
+#   SET_SOURCE_FILES_PROPERTIES(CMakeSetup.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+
+#  SET_TARGET_PROPERTIES( ${AMILAB_BIN}
+#      PROPERTIES
+#      MACOSX_BUNDLE_BUNDLE_NAME AMILab
+#      MACOSX_BUNDLE_ICON_FILE 
+#  )
+#ENDIF(APPLE)
 
 
 INSTALL(TARGETS ${AMILAB_BIN}
   RUNTIME DESTINATION bin
-#  COMPONENT applications
-  BUNDLE DESTINATION /Applications
+  #  COMPONENT applications
+  #  BUNDLE DESTINATION 
+  #${CMAKE_INSTALL_DESTINATION_ARGS}
 )
 
 
@@ -669,12 +717,14 @@ if (UNIX)
   install(DIRECTORY ${AMILAB_SOURCE_DIR}/../Releases/Linux/share
           DESTINATION .
           FILES_MATCHING
-            PATTERN "*.*"
+            PATTERN "*"
+          PATTERN ".in" EXCLUDE
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE
           PERMISSIONS OWNER_READ GROUP_READ
           )
 endif(UNIX)
+
 
 
 #Test for amilab.

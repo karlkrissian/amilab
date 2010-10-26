@@ -18,16 +18,6 @@ OK = 1 # The test was successful
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-printn "\t\t ******************************************"
-printn "\t\t *                 WARNING                *"
-printn "\t\t ******************************************"
-printn "\t\t *                                        *"
-printn "\t\t *           This test will fail          *"
-printn "\t\t *           ^^^^^^^^^^^^^^^^^^^          *"
-printn "\t\t *                                        *"
-printn "\t\t * DessinImage::getimage not implemented. *"
-printn "\t\t ******************************************\n"
-
 # Create initial image
 func "SyntheticImages/create_torus_gui.amil"
 CTClass CT
@@ -62,6 +52,7 @@ printn "\t\t Create an object of class DessinImage (torus_draw).\n"
 torus_draw=DessinImage(&torus)
 
 printn "\t\t Get the image (getimage): NewImage = torus_draw.getimage()\n"
+torus_draw.Paint()
 NewImage=torus_draw.getimage()
 
 printn "\n\t\t Show the image: show NewImage\n"

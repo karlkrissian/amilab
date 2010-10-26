@@ -15,6 +15,9 @@
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"
 #include <boost/scoped_array.hpp>
+#include <iostream>
+
+using namespace std;
 
 //--------------------------------------------------------------------
 //  Return a vector of 6 pointers to images including
@@ -46,14 +49,14 @@ InrImage::ptr_vector EigenDecomp3D(InrImage* im,
   InrImage::ptr_vector result(6);
 
   if (im==NULL) {
-    cerr << "EigenDecomp3D()\t input image empty " << endl;
+    std::cerr << "EigenDecomp3D()\t input image empty " << std::endl;
     return result;
   }
 
   int vdim;
   vdim = im->GetVDim();
   if ((vdim!=6)&&(vdim!=9)) {
-    cerr << "EigenDecomp3D()\t image must be vectorial with vector dimension 6 or 9 " << endl;
+    std::cerr << "EigenDecomp3D()\t image must be vectorial with vector dimension 6 or 9 " << std::endl;
     return result;
   }
 
@@ -135,11 +138,11 @@ InrImage::ptr_vector EigenDecomp3D(InrImage* im,
           if (i<=j) {
             double val = im->VectValeurBuffer(n);
             matrice[i][j] = val;
-            //cout << boost::format("matrice[%1%][%2%] = %3%") % i % j % val << endl;
+            //cout << boost::format("matrice[%1%][%2%] = %3%") % i % j % val << std::endl;
             n++;
           } else {
             matrice[i][j] = matrice[j][i];
-            //cout << boost::format("matrice[%1%][%2%] = %3% *") % i % j % matrice[j][i] << endl;
+            //cout << boost::format("matrice[%1%][%2%] = %3% *") % i % j % matrice[j][i] << std::endl;
           }
         }
         if (vdim==9) {
@@ -206,7 +209,7 @@ InrImage::ptr_vector EigenDecomp(InrImage* im,
   InrImage::ptr_vector result;
 
   if (im==NULL) {
-    cerr << "EigenDecomp()\t input image empty " << endl;
+    std::cerr << "EigenDecomp()\t input image empty " << std::endl;
     return result;
   }
 
@@ -216,7 +219,7 @@ InrImage::ptr_vector EigenDecomp(InrImage* im,
   if ((im->GetVDim()==6)||(im->GetVDim()==9))
     return EigenDecomp3D(im,value_flag,vector_flag,mask);
 
-  cerr << "Wrong image type for eigen decomposition" << endl;
+  std::cerr << "Wrong image type for eigen decomposition" << std::endl;
   return result;
 }
 

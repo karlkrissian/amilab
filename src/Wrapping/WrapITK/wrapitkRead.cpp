@@ -66,7 +66,7 @@ InrImage* wrap_itkRead(ParamList* p)
   
   int n=0;
   
-  if (!get_val_ptr_param<string>( fname, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<std::string>( fname, p, n)) HelpAndReturnNULL;
 
   return itkRead(*fname);
 

@@ -6,19 +6,19 @@
 //#include "DessinImage.hpp"
 //#include "Viewer3D.hpp"
 //#include "paramlist.h"
-#include <string>
-#include <iostream>
 
 #include "DefineClass.hpp"
 
+#include <string>
+#include <iostream>
 #include "amilab_messages.h"
 #include "vartype.h"
 //#include "paramlist.h"
 #include "BasicVariable.h"
 #include <limits>
 
-#include <vector>
-#include <list>
+//#include <vector>
+//#include <list>
 #include <boost/pointer_cast.hpp>
 
 // forward definition of Variables
@@ -70,7 +70,7 @@
 template<typename T> 
 class AMILabType {
     public:
-    static char const* name_as_string() { return "unknown"; }
+    static std::string name_as_string() { return std::string("unknown"); }
     static boost::shared_ptr<T> GetValue(BasicVariable::ptr var)
     { return boost::shared_ptr<T>(); }
 
@@ -88,15 +88,15 @@ class AMILabType {
   template<> class AMILabType<type> \
   { \
     public: \
-    static char const* name_as_string();\
-    static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
-    static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
-    static BasicVariable::ptr CreateVar(type* val);\
-    static BasicVariable::ptr CreateVar(const type& val);\
+	    static std::string name_as_string();\
+      static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
+      static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+      static BasicVariable::ptr CreateVar(type* val);\
+      static BasicVariable::ptr CreateVar(const type& val);\
   };
 
 #define AMI_DEFINE_BASICTYPE(type) \
-    char const* AMILabType<type>::name_as_string() { return #type; } \
+	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
     \
     boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
     { \
@@ -141,9 +141,9 @@ class AMILabType {
 
 
 #define AMI_DEFINE_WRAPPEDTYPE_COMMON(type) \
-    char const* AMILabType<type>::name_as_string() { \
-       std::string name = std::string("wrap_")+#type; \
-       return name.c_str(); \
+	std::string AMILabType<type>::name_as_string() { \
+	  std::string name = std::string("wrap_")+std::string(#type); \
+      return name; \
     } \
     \
     boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
@@ -182,6 +182,14 @@ class AMILabType {
     BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
     { \
       return BasicVariable::ptr(); \
+    } 
+
+
+#define AMI_DEFINE_WRAPPEDTYPE_NOCOPY_CREATEFROMPTR(type) \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    { \
+      boost::shared_ptr<type> obj_ptr(val,smartpointer_nodeleter<type>());\
+      return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
     } 
 
 #define AMI_DEFINE_WRAPPEDTYPE_HASCOPY(type) \
@@ -307,7 +315,7 @@ private:
   bool FreeMemory()
   {
     if ((_pointer.use_count()>1)&&(GB_debug)) {
-      CLASS_ERROR( format("variable %1% is referenced %2% times")  % _name % _pointer.use_count() );
+      CLASS_ERROR( boost::format("variable %1% is referenced %2% times")  % _name % _pointer.use_count() );
     }
     _pointer.reset();
     return true;
@@ -739,6 +747,9 @@ class GLTransfMatrix;
 class VarArray;
 */
 
+// Mathematical functions, 
+#define VAR_DECL_FUNC(type,fname) \
+template<> BasicVariable::ptr Variable<type>::m_##fname();
 
 #include "Variable_float.h"
 #include "Variable_double.h" /// New (added: 24/05/2010)

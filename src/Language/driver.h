@@ -24,9 +24,10 @@
 #include "ImageStack.h"
 //#include "SurfStack.h"
 #include "MatrixStack.h"
-#include "GLTransformStack.h"
+//#include "GLTransformStack.h"
 #include "ami_class.h"
 #include "ami_object.h"
+
 
 struct yy_buffer_state;
 
@@ -91,7 +92,7 @@ public:
     VariableStack     var_stack;
 //    SurfStack         surf_stack;
     MatrixStack       matrix_stack;
-    GLTransformStack  gltransf_stack;
+//    GLTransformStack  ;
     Timing             IP_time;
 
     // Dealing with output files
@@ -126,6 +127,7 @@ public:
 
     void init_res_output();
     void res_print(const char* st);
+    void res_print(const wxString& st);
     void res_print(const std::string& st) 
     { 
       this->res_print(st.c_str()); 

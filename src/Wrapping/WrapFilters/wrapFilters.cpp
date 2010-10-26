@@ -99,7 +99,7 @@ void AddWrapFilters(){
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
   
   //2D SUBPIXEL METHOD
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
+ // ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
   ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
 
   // Add AnisoGS
@@ -123,13 +123,14 @@ void AddWrapFilters(){
  */
 void wrap_Filters( ParamList* p)
 {
+/*
   char functionname[] = "Filters";
   char description[]=" \n\
     Adds wrapping for Filters. \n\
           ";
   char parameters[] =" \n\
           ";
-
+*/
   AddWrapFilters();
 }
 
@@ -250,14 +251,14 @@ void NSim2(ParamList* p)
       (input->DimY()!=local_mean->DimY())||
       (input->DimZ()!=local_mean->DimZ()) )
   {
-    cerr << "NSim2 input and local_mean images have different dimensions" << endl;
+    std::cerr << "NSim2 input and local_mean images have different dimensions" << std::endl;
     return;
   }
   if ((input->DimX()!=local_var->DimX())||
       (input->DimY()!=local_var->DimY())||
       (input->DimZ()!=local_var->DimZ()) )
   {
-    cerr << "NSim2 input and local_var images have different dimensions" << endl;
+    std::cerr << "NSim2 input and local_var images have different dimensions" << std::endl;
     return;
   }
 
@@ -1039,7 +1040,7 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
               Resulting polydata as interpolated lines\n\
       ";
 
-    SurfacePoly* input;
+//    SurfacePoly* input;
     float samplingstep = 0.1f;
     int n=0;
 

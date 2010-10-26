@@ -3,26 +3,13 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Zinrimage
-  ${AMILAB_SOURCE_DIR}/Images
-  ${AMILAB_SOURCE_DIR}/Math
-  ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/OpenGL
-  ${AMILAB_SOURCE_DIR}/Graphic
-  ${AMILAB_SOURCE_DIR}/Crest
-  ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
-  ${AMILAB_SOURCE_DIR}/ImageTool
-  ${AMILAB_SOURCE_DIR}/Crest
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
-  ${AMILAB_SOURCE_DIR}/Language
-  ${Boost_INCLUDE_DIR}
+  ${AMILAB_SOURCE_DIR}/Graphic/include
+  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
 )
 
-INCLUDE( ${wxWidgets_USE_FILE})
+#INCLUDE( ${wxWidgets_USE_FILE})
 
 SET(  WrapBasicTypes_SRCS
   wrap_varlist.cpp
@@ -32,11 +19,11 @@ SET(  WrapBasicTypes_SRCS
 )
 
 SET(WrapBasicTypes_HDRS
-  wrap_varlist.h
-  wrap_varvector.h
-  wrap_File.h
-  wrap_stdvector.h
-  wrap_stdvector.tpp
+  ../include/wrap_varlist.h
+  ../include/wrap_varvector.h
+  ../include/wrap_File.h
+  ../include/wrap_stdvector.h
+  ../include/wrap_stdvector.tpp
 )
 
 SET(WrapBasicTypes_SRCS

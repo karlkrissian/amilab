@@ -1,0 +1,11 @@
+
+func "Denoising/NLmeans/NLmeansClass"
+
+if (!exists(nlmeans)) {
+  NLmeansClass nlmeans
+  nlmeans.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

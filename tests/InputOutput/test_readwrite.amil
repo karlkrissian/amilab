@@ -2,6 +2,9 @@
 
 #SetDebugOn
 
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
 func "ctest/ctest_config.amil"
 epsilon = 0.000001
 

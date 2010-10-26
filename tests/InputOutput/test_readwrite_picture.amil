@@ -4,6 +4,9 @@
 #SetVerboseOn
 #import_itk
 
+# Hide main frame
+ami.MainFrame.ShowWin(0)
+
 ami_import->System()
 #InfoDialog l_script_dir
 

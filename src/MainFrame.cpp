@@ -12,6 +12,11 @@
 
 #include "MainFrame.h"
 
+#include "wx/app.h"
+#include "wx/grid.h"
+#include "wx/spinctrl.h"
+#include "wx/artprov.h"
+#include "wx/clipbrd.h"
 #include <wx/dirctrl.h>
 #include <wx/stattext.h>
 #include <wx/utils.h>
@@ -24,8 +29,9 @@
 #include <wx/toolbar.h>
 #include <wx/combobox.h>
 #include <iostream>
-
+#include <cstring>
 #include "myTreeCtrl.h"
+#include "wxDragAndDrop.h"
 
 #include <sys/stat.h>
 #ifndef WIN32
@@ -55,6 +61,11 @@ using namespace amilab;
 
 #include "ami_object.h"
 #include "wxStcFrame.h"
+#include "ParamPanel.hpp"
+
+
+#include <map>
+#include <string>
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
@@ -377,12 +388,13 @@ MainFrame::MainFrame( const wxString& title,
                   .MaximizeButton(true));
 #else
   CreateVarTreePanel(this);
-  m_mgr.AddPane(_vartree_panel,
+  m_mgr.AddPane(_var_book,
                   wxAuiPaneInfo()
                   .Name(wxT("VariablesTree"))
                   .Caption(wxT("Variables Tree"))
                   .Left().Layer(1)
-                  .MaximizeButton(true));
+                  .MaximizeButton(true)
+                  .BestSize(wxSize(200,200)));
 #endif
 /// @endcond
 
@@ -409,16 +421,15 @@ MainFrame::MainFrame( const wxString& title,
   /// @cond wxCHECK
 
     // create some toolbars
-/*  #if (wxCHECK_VERSION(2,9,0)) && !WIN32
+  #if (wxCHECK_VERSION(2,9,0)) && !WIN32 && (!__WXMAC__)
     wxToolBar* tb1 = new wxToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize);
-  #else*/
-  
+  #else
     wxAuiToolBar* tb1 = new wxAuiToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize,
                         wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW);
-/*  #endif*/
+  #endif
   /// @endcond
     tb1->SetToolBitmapSize(wxSize(48,48));
 //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
@@ -673,7 +684,28 @@ void MainFrame::CreateVarListPanel ( wxWindow* parent)
 void MainFrame::CreateVarTreePanel ( wxWindow* parent)
 {
 
-  _vartree_panel = new wxPanel(parent);
+  
+   wxSize client_size = GetClientSize();
+
+   _var_book  = new wxAuiNotebook(this, wxID_ANY,
+                                    wxPoint(client_size.x, client_size.y),
+                                                //wxDefaultPosition,
+                                    wxDefaultSize,
+                                    wxAUI_NB_TOP          |
+                                    wxAUI_NB_TAB_SPLIT    |
+                                    wxAUI_NB_TAB_MOVE     |
+                                    wxAUI_NB_SCROLL_BUTTONS
+                                  );
+  _var_book->Fit();
+
+
+//  CreateDrawingPanel(this);
+//  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
+
+
+  // Add TreeList Page to notebook
+  _vartree_panel = new wxPanel(this);
+  
   vartreepanel_sizer  = new wxBoxSizer( wxVERTICAL );
   _vartree_panel->SetSizer(vartreepanel_sizer);
 
@@ -681,11 +713,13 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
-                              (wxTR_HAS_BUTTONS 
-                              //| wxTR_HIDE_ROOT 
+                              ((
+                              wxTR_HAS_BUTTONS 
+                              | wxTR_HIDE_ROOT 
                               | wxTR_FULL_ROW_HIGHLIGHT 
+                              | wxTR_LINES_AT_ROOT
                               ) 
-                              //^ (wxTR_NO_LINES )
+                              & (~wxTR_NO_LINES))  ^ wxTR_COLUMN_LINES 
                             );
 
   _vartree_col_main = _var_tree->GetColumnCount();
@@ -704,11 +738,14 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   _var_tree->AddColumn (_T("Details"), 250, wxALIGN_CENTER);
   _var_tree->SetColumnEditable (_vartree_col_desc, false);
 
+  // TODO/FIXME:
+  // Problems with GetWindowStyle method.
+  
 /// @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,1))
-  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+//  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
 #else
-  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
+//  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
 #endif
 /// @endcond
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
@@ -727,7 +764,98 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
   vartreepanel_sizer->Fit(_vartree_panel);
 
+
+  _var_book->AddPage(_vartree_panel,wxT("Tree"));
+  
+
+  // File Selection
+  typedef std::pair<std::string,std::string> file_format;
+  typedef std::map<std::string,std::string>  file_format_map;
+
+  std::map<std::string,std::string> formats;
+
+  formats.insert(file_format( "All ext",
+                              "*.*"));
+  formats.insert(file_format( "Amilab Images",
+                              "*.ami;*.ami.gz"));
+  formats.insert(file_format( "Amilab scripts",
+                              "*.amil"));
+  formats.insert(file_format( "VTK Files",
+                              "*.vtk"));
+  formats.insert(file_format( "Standard images",  
+                              "*.jpg;*.JPG;*.jpeg;*.JPEG;*.png;*.PNG;*.bmp;*.BMP;*.tif;*.TIF;*.tiff;*.TIFF"));
+  formats.insert(file_format( "ITK",
+                              "*.mhd"));
+  formats.insert(file_format( "All",
+                              "*"));
+
+  wxString format_choices;
+
+  for(file_format_map::iterator p = formats.begin(); 
+      p!=formats.end();
+      ++p)
+  {
+    if (p!=formats.begin())
+      format_choices << wxString::FromAscii("|");
+    format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
+  }
+
+  
+  //
+  _var_dirctrl = new wxGenericDirCtrl(this,wxID_ANY,
+                                    wxDirDialogDefaultFolderStr,
+                                    wxDefaultPosition,
+                                    wxDefaultSize,
+                                    wxDIRCTRL_3D_INTERNAL
+                                    |
+                                    //wxBORDER_SUNKEN
+                                    //|
+                                    wxDIRCTRL_SHOW_FILTERS
+                                    #if (wxCHECK_VERSION(2,9,1))
+                                      |
+                                      wxDIRCTRL_MULTIPLE
+                                    #endif // wxCHECK_VERSION(2,9,1)
+                                    ,                                      
+                                    format_choices, // filters
+                                    0 // default filter
+                                    );
+                                    
+  // try to allow multiple selections
+  //_var_dirctrl->GetTreeCtrl()->SetWindowStyle(_var_dirctrl->GetTreeCtrl()->SetWindowStyle() |wxTR_EXTENDED);
+
+  _var_dirctrl->GetTreeCtrl()->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
+                                       wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
+  _var_book->AddPage(_var_dirctrl,wxT("Dir"));
+  
+  //std::cout << res << std::endl;
+  _var_book->Fit();
+
 } // CreateVarTreePanel()
+
+
+//--------------------------------------------------------
+void MainFrame::OnFileActivated(wxCommandEvent& WXUNUSED(event))
+{
+  #if (wxCHECK_VERSION(2,9,1))
+    wxArrayString paths;
+    wxString filename;
+    _var_dirctrl->GetFilePaths(paths);
+    for (size_t n=0; n<paths.GetCount(); n++ )
+    {
+      filename = paths[n];
+      if (filename != wxEmptyString) {
+        //std::cout << filename.mb_str(wxConvUTF8)<< "Activated !!!" << std::endl;
+        TryToOpenImage(filename);
+      }
+    }
+  #else// (wxCHECK_VERSION(2,9,1))
+    wxString filename = _var_dirctrl->GetFilePath();
+    if (filename != wxEmptyString) {
+      //std::cout << filename.mb_str(wxConvUTF8)<< "Activated !!!" << std::endl;
+      TryToOpenImage(filename);
+    }
+  #endif // (wxCHECK_VERSION(2,9,1))
+}
 
 //--------------------------------------------------------
 void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
@@ -1123,7 +1251,7 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
           );
 
   _settings_panel->SetSizer(settingspanel_sizer);
-//  cout << GB_scripts_dir << endl;
+// std::cout << GB_scripts_dir << std::endl;
 
   wxStaticText* scripts_label = new wxStaticText(_settings_panel,wxID_ANY,GetwxStr("Scripts path:"));
 
@@ -1218,7 +1346,7 @@ void MainFrame::OnClose(wxCloseEvent& event)
   Vars.EmptyVariables();
   Destroy();
   GB_main_wxFrame = NULL;
-/*  cout << "OnClose " << endl;
+/* std::cout << "OnClose " << std::endl;
 
     if ( event.CanVeto()  )
     {
@@ -1260,7 +1388,7 @@ void MainFrame::UpdateVarList()
 
 
   for(int i=0;i<(int)variables->GetCount();i++) {
-    //cout << "set item variable " << i << endl;
+    //cout << "set item variable " << i << std::endl;
 
     Variable* var;
     wxString type_str;
@@ -1374,7 +1502,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   unsigned long total_image_size = 0;
 
   for(int i=0;i<(int)variables->GetCount();i++) {
-    //cout << "set item variable " << i << endl;
+    //cout << "set item variable " << i << std::endl;
 
     wxString type_str;
     BasicVariable::ptr var = context->GetVar((*variables)[i].mb_str());
@@ -1395,7 +1523,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
                             % im->DimZ()
                             % im->GetVDim()
                             % (im->GetDataSize()/1000000)).str();
-        //cout << text << endl;
+        //cout << text << std::endl;
         append_id = vartree_images;
         total_image_size += im->GetDataSize();
       } else
@@ -1407,7 +1535,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
                             % var->Name()
                             % surf->GetNumberOfPoints()
                             % surf->GetNumberOfPolys()).str();
-        //cout << text << endl;
+        //cout << text << std::endl;
         itemid = _var_tree->AppendItem(
               vartree_surfaces,
               wxString(text.c_str(), wxConvUTF8),
@@ -1767,11 +1895,10 @@ void MainFrame::OnViewReset( wxCommandEvent& event )
 
   m_mgr.LoadPerspective(_initial_perspective);
 
-//  cout << _param_book->GetPageCount()>0 << endl;
+// std::cout << _param_book->GetPageCount()>0 << std::endl;
   m_mgr.GetPane(_param_book).Show(_param_book->GetPageCount()>0);
   m_mgr.Update();
 }
-
 
 //-----------------------------------------------------
 void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
@@ -1779,25 +1906,47 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
   int res;
   string name;
   string varname;
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
 
   res=AskImage(name);
   if (!res) {
-    cerr << " Image not found " << endl;
+    std::cerr << " Image not found " << std::endl;
     return;
   }
 
-  res=AskVarName( this,
+  TryToOpenImage(wxString(name.c_str(),wxConvUTF8));
+}
+
+//-----------------------------------------------------
+bool MainFrame::TryToOpenImage( const wxString& string_filename)
+{
+  std::string varname;
+  
+  // Create possible variable name
+  wxString possible_name = wxFileName(string_filename).GetName();
+  // remove all extensions
+  while (wxFileName(possible_name).HasExt()) {
+    wxFileName fn(possible_name);
+    fn.ClearExt();
+    possible_name = fn.GetName();
+  }
+  possible_name.Replace(wxT(" "),wxT("_"));
+  possible_name.Replace(wxT("."),wxT("_"));
+  possible_name.Replace(wxT("("),wxT("_"));
+  possible_name.Replace(wxT(")"),wxT("_"));
+  possible_name.Replace(wxT("-"),wxT("_"));
+
+  int res=AskVarName( this,
                   string("Image variable name"),
                   string("Enter name:"),
-                  string("i"),
+                  string(possible_name.mb_str(wxConvUTF8)),
                   varname);
   if (!res) {
-    cerr << " Var name error " << endl;
-    return;
+    std::cerr << " Var name error " << std::endl;
+    return false;
   }
 
-  wxFileName filename(GetwxStr(name));
+  wxFileName filename(string_filename);
   filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
   wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
                       filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
@@ -1806,46 +1955,47 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
 
   images_history->AddFileToHistory(newname);
 
-  cmd = varname + string(" = Image \"");
-  cmd += newname.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
-  this->TC->ProcessReturn();
+  wxString wxst_cmd;
+  wxst_cmd = wxString(varname.c_str(),wxConvUTF8)+wxT(" = Image \"")+newname+wxT("\" // from menu");
+//  cmd = varname + string(" = Image \"");
+//  cmd += newname.mb_str();
+//  cmd += string("\" // from menu");
+  this->TC->IncCommand(wxst_cmd);
+  bool return_res = this->TC->ProcessReturn(); 
+  if (!return_res) {
+    wxString mess = wxT("Failed to open '");
+    mess += string_filename;
+    mess += wxT("' ...");
+    wxMessageDialog dialog( 
+      this,mess,wxT("Info"),
+      wxOK|wxICON_INFORMATION|wxSTAY_ON_TOP 
+      );
+    dialog.ShowModal();
+    this->TC->ConsoleClear();
+  }
+  return return_res;
 }
 
 //-----------------------------------------------------
 void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
 {
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
   string varname;
   size_t pos = event.GetId() - wxID_Images_History;
   wxString filename(images_history->GetHistoryFile(pos));
-
-  int res=AskVarName( this,
-                  string("Image variable name"),
-                  string("Enter name:"),
-                  string("i"),
-                  varname);
-  if (!res) {
-    cerr << " Var name error " << endl;
-    return;
-  }
+  
+  TryToOpenImage(filename);
 
 
-  images_history->RemoveFileFromHistory(pos);
-  images_history->AddFileToHistory(filename);
+//  images_history->RemoveFileFromHistory(pos);
+//  images_history->AddFileToHistory(filename);
 
-  cmd = varname + string(" = Image \"");
-  cmd += filename.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
-  this->TC->ProcessReturn();
 }
 
 //-----------------------------------------------------
 void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
 {
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
   string varname;
   size_t pos = event.GetId() - wxID_Scripts_History;
   wxString filename(scripts_history->GetHistoryFile(pos));
@@ -1854,10 +2004,12 @@ void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
   scripts_history->RemoveFileFromHistory(pos);
   scripts_history->AddFileToHistory(filename);
 
-  cmd = string("func \"");
-  cmd += filename.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
+//  cmd = string("func \"");
+//  cmd += filename.mb_str();
+//  cmd += string("\" // from menu");
+  wxString wxst_cmd;
+  wxst_cmd = wxT("func \"")+filename+wxT("\" // from menu");
+  this->TC->IncCommand(wxst_cmd);
   this->TC->ProcessReturn();
 
 }
@@ -1868,21 +2020,34 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
   int res;
   string name;
   string varname;
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
 
   res=AskSurface(name);
   if (!res) {
-    cerr << " Surface not found " << endl;
+    std::cerr << " Surface not found " << std::endl;
     return;
   }
+
+  // Create possible variable name
+  wxString possible_name = wxFileName(wxString(name.c_str(),wxConvUTF8)).GetName();
+  // remove all extensions
+  while (wxFileName(possible_name).HasExt()) {
+    wxFileName fn(possible_name);
+    fn.ClearExt();
+    possible_name = fn.GetName();
+  }
+  possible_name.Replace(wxT(" "),wxT("_"));
+  possible_name.Replace(wxT("."),wxT("_"));
+  possible_name.Replace(wxT("("),wxT("_"));
+  possible_name.Replace(wxT(")"),wxT("_"));
 
   res=AskVarName(this,
         string("Surface variable name"),
         string("Enter name:"),
-        string("s"),
+        string(possible_name.mb_str(wxConvUTF8)),
         varname);
   if (!res) {
-    cerr << " Var name error " << endl;
+    std::cerr << " Var name error " << std::endl;
     return;
   }
 
@@ -1893,24 +2058,26 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
                       filename.GetPathSeparator(wxPATH_UNIX)+
                       filename.GetFullName());
 
-  cmd = varname + string(" = Surface \"");
-  cmd += newname.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
+//  cmd = varname + string(" = Surface \"");
+//  cmd += newname.mb_str();
+//  cmd += string("\" // from menu");
+  wxString wxst_cmd;
+  wxst_cmd = wxString(varname.c_str(),wxConvUTF8)+wxT(" = Surface \"")+newname+wxT("\" // from menu");
+  this->TC->IncCommand(wxst_cmd);
   this->TC->ProcessReturn();
 }
 
 //-----------------------------------------------------
 void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
 {
-  //cout << "Load script" << endl;
+  //cout << "Load script" << std::endl;
   int res;
   string name;
-  string cmd; // increment the command line string
+//  string cmd; // increment the command line string
 
   res=AskScript(name);
   if (!res) {
-    cerr << " Script filename not found " << endl;
+    std::cerr << " Script filename not found " << std::endl;
     return;
   }
 
@@ -1923,10 +2090,12 @@ void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
 
   scripts_history->AddFileToHistory(newname);
 
-  cmd = string("func \"");
-  cmd += newname.mb_str();
-  cmd += string("\" // from menu");
-  this->TC->IncCommand(cmd);
+//  cmd = string("func \"");
+//  cmd += newname.mb_str();
+//  cmd += string("\" // from menu");
+  wxString wxst_cmd;
+  wxst_cmd = wxT("func \"")+newname+wxT("\" // from menu");
+  this->TC->IncCommand(wxst_cmd);
   this->TC->ProcessReturn();
 }
 
@@ -2074,20 +2243,20 @@ void MainFrame::OnToolHelp( wxCommandEvent& event)
 //--------------------------------------------------
 void MainFrame::VarListRightClick( wxListEvent& event)
 {
-  cout << "Right click on item \n";
+ std::cout << "Right click on item \n";
 }
 
 //--------------------------------------------------
 void MainFrame::OnScriptsPath( wxFileDirPickerEvent& event)
 {
-  cout << "Scripts path changed" << endl;
+ std::cout << "Scripts path changed" << std::endl;
   GB_scripts_dir = event.GetPath();
 }
 
 //--------------------------------------------------
 void MainFrame::OnHelpPath   ( wxFileDirPickerEvent& event)
 {
-  cout << "Help path changed" << endl;
+ std::cout << "Help path changed" << std::endl;
   GB_help_dir = event.GetPath();
 }
 
@@ -2193,8 +2362,8 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
 void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
 {
   //cout << "MainFrame::OnUserMenuScript() ";
-  //cout << "GetId() = "<< event.GetId() << endl;
-  //cout << "script = " << usermenu_scripts[event.GetId()] << endl;
+  //cout << "GetId() = "<< event.GetId() << std::endl;
+  //cout << "script = " << usermenu_scripts[event.GetId()] << std::endl;
   string cmd; // increment the command line string
 
   

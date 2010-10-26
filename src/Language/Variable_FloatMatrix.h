@@ -113,9 +113,9 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator ||(const BasicVari
 template<> BasicVariable::ptr Variable<FloatMatrix>::operator ^(const BasicVariable::ptr& b);
 */
 
-// Mathematical functions
-#define VAR_DECL_FUNC(type,fname) \
-template<> BasicVariable::ptr Variable<type>::m_##fname();
+// // Mathematical functions
+// #define VAR_DECL_FUNC(type,fname) 
+// template<> BasicVariable::ptr Variable<type>::m_##fname();
 
 VAR_DECL_FUNC(FloatMatrix,sin)
 VAR_DECL_FUNC(FloatMatrix,cos)

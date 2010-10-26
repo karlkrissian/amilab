@@ -26,7 +26,7 @@ SurfacePoly* GetConnectedComponent( SurfacePoly* input, int line_id)
 
   // check that the line exists
   if ((line_id<0)||(line_id>=input->GetNumberOfLines())) {
-     cerr << "GetConnectedComponent() \t bad line number " << endl;
+     std::cerr << "GetConnectedComponent() \t bad line number " << std::endl;
   }
 
   // create a array that marks the lines already visited

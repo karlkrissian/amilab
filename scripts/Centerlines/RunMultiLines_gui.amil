@@ -1,5 +1,7 @@
 #!/usr/bin/amilab
 
+# this script is deprecated, use Centerlines/MultiLines/MultiLinesGui.amil instead
+
 if (argc==1) {
   inputname=$1
   emptyargs

@@ -2,15 +2,17 @@
 # Local Fitting by Least Squares
 #
 
-ami_import->Filters()
+func "Common/ScriptGui"
 
 if (!exists(LeastSquaresClass)) \
 {
-  Class LeastSquaresClass \
+
+  ami_import.Filters()
+
+  Class LeastSquaresClass : public ScriptGui \
   {
     #-------------------
     proc ::Init() {
-      ::class_name = "global::LeastSquaresClass"
       ::input_name =  ""
       ::size_x = INT(3), "window size in X is (2*val+1)"
       ::size_y = INT(3), "window size in Y is (2*val+1)"
@@ -25,21 +27,6 @@ if (!exists(LeastSquaresClass)) \
       ::CreateWindow()
     }
   
-    #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() {
-      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-        
     #------------------------------------
     proc ::LoadInput() \
     {
@@ -62,9 +49,9 @@ if (!exists(LeastSquaresClass)) \
       sizey = 2*::size_y+1
       numcoeff = 3
       b = Image(FLOAT,sizex,sizey,1,numcoeff)
-b.SetComponent( 0, ((FLOAT) Ypos(b)-b.ty/2))
-b.SetComponent( 1, ((FLOAT) Xpos(b)-b.tx/2))
-b.SetComponent( 2, 1)
+      b.SetComponent( 0, ((FLOAT) Ypos(b)-b.ty/2))
+      b.SetComponent( 1, ((FLOAT) Xpos(b)-b.tx/2))
+      b.SetComponent( 2, 1)
       weights = Image(FLOAT,sizex,sizey,1)
       weights.settranslation(-::size_x,-::size_y,0)
       weights = 1
@@ -76,13 +63,13 @@ b.SetComponent( 2, 1)
         #nwp = exp(-nwp*nwp/(gaussian_size*gaussian_size))
       }
       mask = ::input*0+1
-      ::res <<= filters->LeastSquares(::input,b,weights,mask)
+      ::res <<= global::filters.LeastSquares(::input,b,weights,mask)
     }
 
     proc ::Display() {
       show ::input
       show ::res
-      ::input_draw.compare(::res_draw)
+      ::input_draw.compare(&::res_draw)
     }
 
     #-------------------
@@ -123,10 +110,7 @@ b.SetComponent( 2, 1)
           ::win.EndBoxPanel()
 
       ::win.EndBook()
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal()
+      ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
       ::win.Display()

@@ -2,7 +2,7 @@
 func "Common/ScriptGui"
 
 if (!exists(itkVesselnessClass)) {
-  ami_import->ITK()
+  global::ami_import.ITK()
   
   Class itkVesselnessClass : public ScriptGui {
     

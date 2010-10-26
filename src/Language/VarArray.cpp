@@ -78,7 +78,7 @@ ostream& operator<<(ostream& o, const VarArray& v)
     if (v._vars[i].get())
 //      if (->Pointer()!=NULL) 
         o  << v._vars[i] << std::endl;
-//format("\t\t [%1%]\t %2%") % i  % (*v._vars[i])  << endl;
+//format("\t\t [%1%]\t %2%") % i  % (*v._vars[i])  << std::endl;
   return o;
 } // operator <<
 
@@ -86,7 +86,7 @@ ostream& operator<<(ostream& o, const VarArray& v)
 //---------------------------------------------------
 void VarArray::display() 
 {
-  cout << *this;
+ std::cout << *this;
 }
 
 void VarArray::FreeMemory()

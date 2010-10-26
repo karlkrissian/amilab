@@ -10,6 +10,12 @@
 //
 //
 
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_PRECOM_HEADERS
+  #include "WrapWxWidgets_header.h"
+#endif
+
 #include "wrap_wxImage.h"
 
 #include "VarContexts.hpp"
@@ -71,12 +77,13 @@ BasicVariable::ptr WrapClass_wxImage::
     int n = 0;
     std::string* name=NULL;
   
-    if (!get_val_ptr_param<string>(name,p,n)) ClassHelpAndReturn;
+    if (!get_val_ptr_param<std::string>(name,p,n)) ClassHelpAndReturn;
     GET_PARAM(int,type, wxBITMAP_TYPE_ANY);
     GET_PARAM(int,index,-1);
 
     wxImage* im = new wxImage();
-    bool res = im->LoadFile( wxString(name->c_str(), wxConvUTF8),type,index);
+    //bool res = 
+    im->LoadFile( wxString(name->c_str(), wxConvUTF8),type,index);
     return AMILabType<wxImage>::CreateVar(im);
   }
   return BasicVariable::ptr();
@@ -171,9 +178,9 @@ BasicVariable::ptr WrapClass_wxImage::
 {
   std::string* filename = NULL;
   int n = 0;
-  if (!get_val_ptr_param<string>( filename,  p, n)) 
+  if (!get_val_ptr_param<std::string>( filename,  p, n)) 
     ClassHelpAndReturn;
 
-  int res = this->_objectptr->_obj->SaveFile(wxString::FromAscii(filename->c_str()));
+  int res = this->_objectptr->_obj->SaveFile(wxString(filename->c_str(),wxConvUTF8));
   RETURN_VAR(int,res);
 }

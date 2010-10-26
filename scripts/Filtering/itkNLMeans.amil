@@ -1,8 +1,11 @@
+
+func "Common/ScriptGui"
+
 if (!exists(itkNLMeansClass)) {
   
   ami_import->ITK()
   
-  Class itkNLMeansClass {
+  Class itkNLMeansClass : public ScriptGui {
     
     ::itk=&global::itk
     
@@ -27,20 +30,6 @@ if (!exists(itkNLMeansClass)) {
 				
       ::Gui()
     }
-    
-    proc ::Close() \
-    {
-      ::win.HidePanel
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() \
-    {
-      ::Close
-      if (exists(NLmeansClass)) { del NLmeansClass; }
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     proc ::Load_input() \
     {
@@ -95,16 +84,16 @@ if (!exists(itkNLMeansClass)) {
         
         ::win.BeginBoxPanel("Input Image")
             # set the input image
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::Load_input)
-            ::win.EndHorizontal
-            ::win.BeginHorizontal
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
               dim_id = ::win.AddEnum( &::dim,"Dimension")
               ::win.AddEnumChoice(dim_id, "2D")
               ::win.AddEnumChoice(dim_id, "3D")
-            ::win.EndHorizontal
-        ::win.EndBoxPanel
+            ::win.EndHorizontal()
+        ::win.EndBoxPanel()
         
         ::win.AddPage("Param")
         
@@ -115,7 +104,7 @@ if (!exists(itkNLMeansClass)) {
           noise_id = ::win.AddEnum( &::noise,"Noise Type")
           ::win.AddEnumChoice(noise_id, "Additive Gaussian")
           ::win.AddEnumChoice(noise_id, "Rician")
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         
         ::win.AddPage("Run")
         
@@ -127,17 +116,14 @@ if (!exists(itkNLMeansClass)) {
         
         ::win.BeginBoxPanel("Result")
           ::win.AddButton("Save", ::Save)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         
-      ::win.EndBook
+      ::win.EndBook()
       
-      ::win.BeginHorizontal
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
 	
     ::Init

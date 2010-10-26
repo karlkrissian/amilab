@@ -112,7 +112,7 @@ BasicVariable::ptr WrapClass_wxStcFrame::
   if (!get_val_ptr_param<string>( filename,  p, n))  ClassHelpAndReturn;
 
   this->_objectptr->_obj->FileOpen(
-    wxString::FromAscii(filename->c_str())
+    wxString(filename->c_str(),wxConvUTF8)
     );
 
   return BasicVariable::ptr();

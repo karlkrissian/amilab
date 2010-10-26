@@ -215,7 +215,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   DessinImage::ptr draw(this->_objectptr->_obj);
 
   if (!p) ClassHelpAndReturn;
-  int n=0;
+//  int n=0;
 
   DessinImageParametres* param;
 
@@ -389,7 +389,7 @@ void WrapClass_DessinImage::
       wrap_DrawVector::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT_TYPE(int,"Index of the vector field to be drawned (1,2 or 3).");
+  ADDPARAMCOMMENT_TYPE(int,"Index of the vector field to be drawned (0,1 or 2).");
   ADDPARAMCOMMENT_TYPE(int,"Visible or not (0 or 1)");
 }
 //---------------------------------------------------
@@ -421,6 +421,27 @@ BasicVariable::ptr WrapClass_DessinImage::
   DessinImage::ptr di(this->_objectptr->_obj);
 
   di->CB_AfficheChampVect(di.get(),NULL);
+
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  SetDisplayVectors
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_SetDisplayVectors::SetParametersComments() 
+{ 
+  
+  ADDPARAMCOMMENT_TYPE(unsigned char,"Enable/Disable the display of the vectors (default: 1 or enable).");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_SetDisplayVectors::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  int n=0;
+  GET_PARAM(unsigned char,display,1);
+  *di->Get_display_vectors() = display;
 
   return BasicVariable::ptr();
 }

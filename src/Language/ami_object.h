@@ -96,16 +96,17 @@ private:
    * Associates the class to the object
    * @param amiclass 
    */
-  void SetClass(AMIClass::ptr& amiclass)
-  {
+  void SetClass(AMIClass::ptr& amiclass);
+/*  {
     if (amiclass.get()!=NULL)
-      cout  << "will run the code of the class "
+      std::cout  << "will run the code of the class "
             << amiclass->GetName()
             << " for the object " 
             << GetName()
-            << endl;
+            << std::endl;
     _class = amiclass;
   }
+*/
 
   /**
    * Gets a smart pointer to the associated class if any
@@ -136,7 +137,7 @@ private:
    * Sets the object name
    * @param fname 
    */
-  void SetName( const string& fname) 
+  void SetName( const std::string& fname) 
   { 
 //    _name = fname; 
     _vars->SetName(fname);
@@ -146,7 +147,7 @@ private:
    * Gets the object name
    * @return object name
    */
-  const string GetName() const 
+  const std::string GetName() const 
   { 
     return _vars->GetName();
   }

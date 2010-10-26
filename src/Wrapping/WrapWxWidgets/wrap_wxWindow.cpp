@@ -10,6 +10,12 @@
 //
 //
 
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_PRECOM_HEADERS
+  #include "WrapWxWidgets_header.h"
+#endif
+
 #include "wrap_wxWindow.h"
 #include "wrap_wxColour.h"
 
@@ -19,6 +25,7 @@
 #include "ami_object.h"
 #include "ami_function.h"
 #include "wrap_wxSize.h"
+#include "wrap_wxSizer.h"
 
 //
 // static member for creating a variable from a ParamList
@@ -47,7 +54,7 @@ void WrapClass_wxWindow::wrap_wxWindow::SetParametersComments()
 BasicVariable::ptr WrapClass_wxWindow::wrap_wxWindow::CallMember( ParamList* p)
 {
   int n = 0;
-  std::string* title = NULL;
+//  std::string* title = NULL;
 
   if (!p) ClassHelpAndReturn;
   CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
@@ -206,6 +213,25 @@ BasicVariable::ptr WrapClass_wxWindow::
   this->_objectptr->_obj->Refresh(clearbg);
   return BasicVariable::ptr();
 }
+
+
+//---------------------------------------------------
+//  GetSizer
+//---------------------------------------------------
+void WrapClass_wxWindow::
+      wrap_GetSizer::SetParametersComments() 
+{
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindow::
+      wrap_GetSizer::CallMember( ParamList* p)
+{
+  //int n = 0;
+  //GET_SMTPTR_PARAM(wxSizer,var);
+  wxSizer* w = this->_objectptr->_obj->GetSizer();
+  return AMILabType<wxSizer>::CreateVar(w);
+}
+
 
 
 

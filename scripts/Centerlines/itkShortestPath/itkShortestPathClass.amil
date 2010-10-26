@@ -6,11 +6,12 @@
 func "Common/ScriptGui"
 
 if (!exists(itkShortestPathClass)) {
-  func "SyntheticImages/AddSphere.amil"
   global::ami_import.ITK()
   
   Class itkShortestPathClass : public ScriptGui {
-    global::AddSphereClass ::AS
+
+    func "SyntheticImages/AddSphere.amil"
+    AddSphereClass ::AS
     ::itk=&global::itk
       
     #----------------------------

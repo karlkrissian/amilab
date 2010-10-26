@@ -190,7 +190,7 @@ AMI_DEFINE_BASICTYPE(AMIObject);
 AMI_DEFINE_BASICTYPE(VarArray);
 
 #define AMI_DEFINE_BASICTYPE_NOCONSTRUCT(type) \
-    char const* AMILabType<type>::name_as_string() { return #type; } \
+	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
     \
     boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
     { \
@@ -205,7 +205,7 @@ AMI_DEFINE_BASICTYPE(VarArray);
       else {\
         BasicVariable::ptr converted = var->TryCast(AMILabType<type>::name_as_string());\
         if (!converted.get()) {\
-          FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<type>::name_as_string());\
+          FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<type>::name_as_string().c_str());\
           return boost::shared_ptr<type>(); \
         } else { \
           boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(converted)); \

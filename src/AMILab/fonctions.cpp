@@ -35,6 +35,7 @@
 #include "IsoContour2.hpp"
 #include "VarContexts.hpp"
 #include "Viewer3D.hpp"
+#include "isosurface.hpp"
 
 #include <wx/textdlg.h>
 
@@ -46,6 +47,8 @@ extern unsigned char GB_debug;
 extern    VarContexts  Vars;
 extern wxString  GB_scripts_dir;
 
+#include "driver.h"
+extern yyip::Driver GB_driver;
 
 
 
@@ -1219,7 +1222,7 @@ int AskFilename(std::string& name)
         format_choices << wxString::FromAscii("|");
       format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
     }
-    if (GB_debug) cerr << format_choices << endl;
+    if (GB_debug) std::cerr << format_choices << std::endl;
 
     wxString filename = wxFileSelector(
                                     _T("Select the filename"),
@@ -1278,7 +1281,7 @@ int AskImage(std::string& name)
         format_choices << wxString::FromAscii("|");
       format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
     }
-    if (GB_debug) cerr << format_choices << endl;
+    if (GB_debug) std::cerr << format_choices << std::endl;
 
 /*
     format_choices  << "Amilab (*.ami;*.ami.gz)|*.ami;*.ami.gz"
@@ -1293,11 +1296,12 @@ int AskImage(std::string& name)
                                     wxEmptyString, // default path
                                     wxEmptyString, // default filename
                                     s_extDef, // default extension
-                                    wxString::Format // wildcard
-                                    ( format_choices,
-                                        wxFileSelectorDefaultWildcardStr,
-                                        wxFileSelectorDefaultWildcardStr
-                                    ),
+                                    //wxString::Format // wildcard
+                                    //( format_choices,
+                                    //    wxFileSelectorDefaultWildcardStr,
+                                    //    wxFileSelectorDefaultWildcardStr
+                                    //),
+                                    format_choices,
                                       wxFD_OPEN
                                     //|wxFD_CHANGE_DIR
                                     |wxFD_PREVIEW
@@ -1309,7 +1313,10 @@ int AskImage(std::string& name)
 
     // it is just a sample, would use wxSplitPath in real program
     s_extDef = filename.AfterLast(_T('.'));
-    name = filename.mb_str(wxConvUTF8);
+    name = filename.mb_str();
+//	GB_driver.res_print(filename);
+//	GB_driver.res_print(name);
+//	std::cout << "image filename = " << name << std::endl;
     return 1;
 }
 
@@ -1389,7 +1396,7 @@ int AskScript(std::string& name)
         format_choices << wxString::FromAscii("|");
       format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
     }
-    if (GB_debug) cerr << format_choices << endl;
+    if (GB_debug) std::cerr << format_choices << std::endl;
 
     wxString filename = wxFileSelector(
                                     _T("Select the script to load"),

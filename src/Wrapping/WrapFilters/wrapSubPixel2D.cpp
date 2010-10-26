@@ -32,7 +32,7 @@ double imval(InrImage* input, int x,int y, int z){
   if (input->CoordOK(x,y,z)) 
     return (*input)(x,y,z);
   else 
-    cout << "out of image range (" << x << ", " << y << ", " << z << ")" << endl;
+   std::cout << "out of image range (" << x << ", " << y << ", " << z << ")" << std::endl;
   return 0;
 }
 #define FF(x,y,z)		imval(input,x,y,z)
@@ -60,7 +60,7 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
   cu   = -2*c / cu;
   r    = fabs(1/cu);
   
-  //cout << "inicial a = " << a << " b = " << b << " c = " << c << " r = " << r << endl;
+  //cout << "inicial a = " << a << " b = " << b << " c = " << c << " r = " << r << std::endl;
   
   // a partir de aqui, se cumple siempre que c<0, cu>0 
   // si la curvatura es muy pequeña, pasamos del factor de correccion
@@ -83,7 +83,7 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
      cu = c = 0.0;
      */	
     //	printf ("r muy chico %f\n", r);
-    //cout << "r muy chico " << r << endl;
+    //cout << "r muy chico " << r << std::endl;
     return;
   }
   
@@ -102,8 +102,8 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
    r = sqrt(r);
    double t1 = (-b+r)/(2*c);
    double t2 = (-b-r)/(2*c);
-   if (t1>-2.5 && t1<0) printf ("la parabola corta en t1 (%.2f,-7/2)\n",t1); cout << "la parábola corta en t1 (" << t1 << ", -7/2)" << endl;
-   if (t2>-2.5 && t2<0) printf ("la parabola corta en t2 (%.2f,-7/2)\n",t2); cout << "la parábola corta en t2 (" << t2 << ", -7/2)" << endl
+   if (t1>-2.5 && t1<0) printf ("la parabola corta en t1 (%.2f,-7/2)\n",t1);std::cout << "la parábola corta en t1 (" << t1 << ", -7/2)" << std::endl;
+   if (t2>-2.5 && t2<0) printf ("la parabola corta en t2 (%.2f,-7/2)\n",t2);std::cout << "la parábola corta en t2 (" << t2 << ", -7/2)" << std::endl
    }
    }
    */	
@@ -140,11 +140,11 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
     
     /*
      printf ("a0=%f a1=%f a2=%f\n", a0, a1, a2);	
-     cout << "a0 = " << a0 << " a1 = " << a1 << " a2 = " << a2 << endl;
+    std::cout << "a0 = " << a0 << " a1 = " << a1 << " a2 = " << a2 << std::endl;
      printf ("b0=%f b1=%f b2=%f\n", b0, b1, b2);
-     cout << "b0 = " << b0 << " b1 = " << b1 << " b2 = " << b2 << endl;
+    std::cout << "b0 = " << b0 << " b1 = " << b1 << " b2 = " << b2 << std::endl;
      printf ("c0=%f c1=%f c2=%f\n", c0, c1, c2);
-     cout << "c0 = " << c0 << " c1 = " << c1 << " c2 = " << c2 << endl;
+    std::cout << "c0 = " << c0 << " c1 = " << c1 << " c2 = " << c2 << std::endl;
      */	
     // revisamos que el factor de corrección haya dado datos correctos
     if (isnan(a) || isnan(b) || isnan(c) 
@@ -164,7 +164,7 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
     r     = 1 / cu;
     rvar  = fabs(r-rprev) / rprev;
     //printf ("a=%f b=%f c=%f C=(%.2f,%.2f) r=%f var(r)=%f\n", a, b, c, xc, yc, r, rvar);
-    //cout << "a = " << a << " b = " << b << " c = " << c << " C = (" << xc << ", " << yc << ") r = " << r << "var(r) = " << rvar << endl;
+    //cout << "a = " << a << " b = " << b << " c = " << c << " C = (" << xc << ", " << yc << ") r = " << r << "var(r) = " << rvar << std::endl;
     if (rvar > rvar0) break;
     rvar0 = rvar;
     
@@ -299,7 +299,7 @@ void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float
       den  = sqrt (1 + b*b);
       cu_n = 2*c / den / den / den;
       //printf ("pixel (%d,%d) a=%f b=%f c=%f R=%f\n", x, y, a, b, c, 1/cu_n);
-      //cout << "pixel (" << x << ", " << y << ") a = " << a << " b = " << b << " c = " << c << " R = " << 1/cu_n << endl;
+      //cout << "pixel (" << x << ", " << y << ") a = " << a << " b = " << b << " c = " << c << " R = " << 1/cu_n << std::endl;
       
       
       // volcamos los double al vector float

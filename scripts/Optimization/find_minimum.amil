@@ -1,10 +1,12 @@
 
+func "Common/ScriptGui"
+
+
 if (!exists(MinSearchClass)) {
 
-  Class MinSearchClass {
+  Class MinSearchClass : public ScriptGui {
 
     proc ::Init() {
-      ::class_name = "global::MinSearchClass"
       ::eval_string = "res = (P1-10)*(P1-10);", "Evaluation string, defines the function to minimize and uses 'P1', 'P2', ... as input value and 'res' as resulting value"
 
       ::P1min   = 0, "Minimal value, 1st parameter"
@@ -23,21 +25,6 @@ if (!exists(MinSearchClass)) {
       ::CreateWindow()
     }
 
-    #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() {
-      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
     #
     # Simple procedure to find the minimum of a function
     #
@@ -58,7 +45,7 @@ if (!exists(MinSearchClass)) {
       for _n=0 to _nval { 
         _x = ::P1min+::P1inc*_n
         ::EvalFunction(_x,&_val)
-        ::values._setpos(_n,0,0)
+        ::values.setpos(_n,0,0)
         ::values.set(_val)
         if (_n==0) {
           ::xmin = _x
@@ -198,10 +185,7 @@ if (!exists(MinSearchClass)) {
           ::win.AddButton("Dichotomy",::MinDichotomy)
           ::win.AddButton("Grid",     ::MinGrid)
       ::win.EndBook()
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal()
+      ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
       ::win.Display()

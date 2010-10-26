@@ -10,7 +10,7 @@ filt_dir = "Denoising/"
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &GS",        filt_dir+"AnisoGS_gui")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &SRAD",      filt_dir+"AnisoSRAD_gui")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &NRAD",      filt_dir+"AnisoNRAD/AnisoNRADGui")
-ami.MainFrame.AddToMenu("&Scripts",filt_category,"Non-Local &Means", filt_dir+"NLmeans_gui")
+#ami.MainFrame.AddToMenu("&Scripts",filt_category,"Non-Local &Means", filt_dir+"NLmeans_gui")
 #ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Non-Local &Means", filt_dir+"itkNLMeans")
 
 # add also to ITK menu
@@ -19,3 +19,17 @@ ami.MainFrame.AddToMenu("&Scripts",filt_category,"Non-Local &Means", filt_dir+"N
 
 del filt_category
 del filt_dir
+
+proc AddSegMenu() {
+  for dir in  "NLmeans" \
+  {
+    if FileExists(GetScriptsDir+"/Denoising/"+dir+"/Add2Menu.amil") {
+      func "/Denoising/"+dir+"/Add2Menu.amil"
+    } else {
+      InfoDialog GetScriptsDir+"/Denoising/"+dir+"/Add2Menu.amil does not exists"
+    }
+  }
+}
+
+AddSegMenu()
+del AddSegMenu

@@ -55,13 +55,13 @@ InrImage* wrap_itkIsoContourDist2D(ParamList* p)
   typedef itk::ImageLinearIteratorWithIndex< ImageType >       IteratorType;
 
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+  std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<PixelType,Dimension>(input,region);
 
   // Apply the filter
   // Set up  image filter
-  cout << "Applying filter " << endl;
+ std::cout << "Applying filter " << std::endl;
 
   try {
     typedef itk::IsoContourDistanceImageFilter<ImageType,ImageType> IsoContourType;
@@ -81,7 +81,7 @@ InrImage* wrap_itkIsoContourDist2D(ParamList* p)
     }
 
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
 
@@ -131,13 +131,13 @@ InrImage* wrap_itkIsoContourDist3D(ParamList* p)
   typedef itk::ImageLinearIteratorWithIndex< ImageType >       IteratorType;
 
   // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
+  std::cout << "Converting image to ITK format " << std::endl;
 
   image = InrToITK<PixelType,Dimension>(input,region);
 
   // Apply the filter
   // Set up  image filter
-  cout << "Applying filter " << endl;
+ std::cout << "Applying filter " << std::endl;
 
   try {
     typedef itk::IsoContourDistanceImageFilter<ImageType,ImageType> IsoContourType;
@@ -157,7 +157,7 @@ InrImage* wrap_itkIsoContourDist3D(ParamList* p)
     }
 
   // Convert from ITK to InrImage
-  cout << "Converting back to InrImage " << endl;
+ std::cout << "Converting back to InrImage " << std::endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
 

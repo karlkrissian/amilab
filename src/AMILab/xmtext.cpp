@@ -38,6 +38,7 @@
 #include <iostream>
 
 #include <wx/strconv.h>
+#include <wx/regex.h>
 
 #include "token_list.h"
 
@@ -52,6 +53,7 @@ extern MainFrame*   GB_main_wxFrame;
 
 // for completion search
 #include "VarContexts.hpp"
+//#include <wx/unichar.h> 
 extern    VarContexts  Vars;
 
 
@@ -116,7 +118,11 @@ void TextControl::IncCommand( const wxString& cmd)
 //--------------------------------------------------
 void TextControl::IncCommand( const std::string& cmd)
 {
-  IncCommand(wxString::FromAscii(cmd.c_str()));
+  const char* stval = cmd.c_str();
+  // conversion failed ...
+  wxString val(stval,wxConvUTF8);
+  std::cout << "val = " << stval << "; "<< val.mb_str(wxConvUTF8) << std::endl;
+  IncCommand(val);
 }
 
 //--------------------------------------------------
@@ -151,10 +157,10 @@ void TextControl::UpdateText()
   this->SetInsertionPointEnd();
   _protect = 1;
   if (GB_debug) {
-    cerr << "TextControl::Update() text ="
+    std::cerr << "TextControl::Update() text ="
          << text.Len()
          << "Is ASCII ?" << text.IsAscii()
-         << endl;
+         << std::endl;
   }
 }
 
@@ -181,9 +187,9 @@ void TextControl::OnUpdate(wxCommandEvent&  event)
     event.Skip(); return;}
 
   if (GB_debug)
-    cerr  << " insertion position "
+    std::cerr  << " insertion position "
           << (int) this->GetInsertionPoint()
-          << " " << lastprompt_position << endl;
+          << " " << lastprompt_position << std::endl;
 }
 
 //--------------------------------------------------
@@ -211,42 +217,120 @@ void TextControl::ProcessTab()
     CLASS_ERROR("Empty string");
     return;
   }
+  
+//  wxRegEx last_variable_regex (wxT(".*((global::|)([_[:alpha:]][_[:alnum]]*->)*([_[:alpha:]][_[:alnum]]*))$"));
+  wxString expr = wxT(".*[^[:alnum:]_\\.\\:]((global\\:\\:)?([_[:alpha:]][_[:alnum:]]*\\.)*([_[:alpha:]][_[:alnum:]]*)?)$");
+  wxRegEx last_variable_regex (expr);
+  wxString last_variable;
+  if (!last_variable_regex.IsValid()) {
+   std::cout << "Expression not valid !!!" << std::endl;
+  }
+  if (last_variable_regex.Matches(alltext))
+  {
+    // need to call Matches before GetMatch !!!
+    last_variable = last_variable_regex.GetMatch(alltext,1);
+    std::cout << "expression " << expr.mb_str() << std::endl;
+    std::cout << "alltext: '"
+        << alltext.mb_str(wxConvUTF8) << "'" << std::endl;
+    std::cout << "last pending variable name: '"
+        << last_variable.mb_str(wxConvUTF8) << "'" << std::endl;
+  } else 
+  {
+   std::cout << "no match !!!" << std::endl;
+   return;
+  }
+
+  // find the corresponding context if any
+  // allow global or builtin ...
+  bool inglobal=true;
+  int seppos;
+  Variables::ptr context = Vars.GetCurrentContext();
+  while ((seppos = last_variable.Find(wxT("."))) != wxNOT_FOUND) 
+  {
+    wxString varname = last_variable.BeforeFirst('.');
+    BasicVariable::ptr var;
+    if (varname.Contains(wxT("global::"))) {
+      varname = varname.AfterLast(':'); // get rid of global::
+      var = context->GetVar(varname.mb_str(wxConvUTF8));
+    }
+    else
+    {
+      if (inglobal)
+        var = Vars.GetVar(varname.mb_str(wxConvUTF8));
+      else
+        var = context->GetVar(varname.mb_str(wxConvUTF8));        
+      }
+    if (!var.get()) {
+      std::cout << "Completion failed, check variable ..." << std::endl;
+      return;
+    }
+    DYNAMIC_CAST_VARIABLE(AMIObject,var,var1);
+    if (!var1.get()) {
+      std::cout << "variable " << var->get_name() 
+                << " is not of type AMIObject" << std::endl;
+      return;
+    }
+    context = var1->Pointer()->GetContext();
+    inglobal = false;
+    last_variable = last_variable.AfterFirst('.');
+  }
+
+  if (inglobal)
+  {
+    if (last_variable.Contains(wxT("global::"))) {
+      last_variable = last_variable.AfterLast(':'); // get rid of global::
+      completions->Clear();
+      context->SearchCompletions(last_variable, completions);
+    }
+    else
+    {
+      completions = Vars.SearchCompletions(last_variable);
+      // add keywords
+      int i = 0;
+      while (token_list[i]!=0) {
+        wxString token=wxString::FromAscii(token_list[i]);
+        if (token.First(last_variable) == 0)
+            completions->Add(token);
+        i++;
+      }
+    }
+  }
+  else
+  {
+    completions->Clear();
+    context->SearchCompletions(last_variable, completions);
+  }
+
+  /*
   completion_lastword = alltext.AfterLast(' ');
   completion_lastword = completion_lastword.AfterLast('(');
   completion_lastword = completion_lastword.AfterLast(',');
   completion_lastword = completion_lastword.AfterLast('.');
   //completion_lastword.RemoveLast();
 
-  cout << "last word to complete "
-       << completion_lastword << endl;
+ std::cout << "last word to complete "
+       << completion_lastword << std::endl;
   completions = Vars.SearchCompletions(completion_lastword);
 
-  // add keywords
-  int i = 0;
-  while (token_list[i]!=0) {
-    wxString token=wxString::FromAscii(token_list[i]);
-    if (token.First(completion_lastword) == 0)
-        completions->Add(token);
-    i++;
-  }
+  */
 
   if (GB_debug)
-    cout << "going for it " << completions->GetCount() << endl;
+   std::cout << "going for it " << completions->GetCount() << std::endl;
   if (completions->GetCount()>0) {
-    int last_command_size = this->GetValue().Length()-this->text.Length()-completion_lastword.Length();
+    int last_command_size = this->GetValue().Length()-this->text.Length()-last_variable.Length();
     completion_lastcommand = this->GetValue().Mid ( this->text.Len(), last_command_size );
     in_completion = 1;
     completion_count = 0;
     DisplayCompletion();
     printf("Found %d completions \n",(int)completions->GetCount());
     for(int i=0;i<(int)completions->GetCount();i++) {
-      cout << (*completions)[i].mb_str() << endl;
+     std::cout << (*completions)[i].mb_str() << std::endl;
     }
   }
 } // ProcessTab()
 
 //--------------------------------------------------
-void TextControl::ProcessReturn()
+bool TextControl::ProcessReturn()
 {
   wxString   alltext;
   wxString   last_cmd;
@@ -260,9 +344,67 @@ void TextControl::ProcessReturn()
 
   // substring
   last_cmd =alltext.Mid(TCsize);
+
+  // check for special case:
+  // 1. if last word is Image
+  wxRegEx image_keyword (wxT(".*[^[:alnum:]]+Image[[:blank:]]*$"));
+  if (image_keyword.Matches(last_cmd)) {
+    cout << "ends with Image" << endl;
+
+    int res;
+    string name;
+
+    res=AskImage(name);
+    if (!res) {
+      GB_driver.yyiperror(" Need Image \n");
+      in_changed_value = 0;
+      return false;
+    }
+
+    wxFileName filename(wxString::FromAscii(name.c_str()));
+    filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
+    wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
+                        filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
+                        filename.GetPathSeparator(wxPATH_UNIX)+
+                        filename.GetFullName());
+    wxString inc_cmd; // increment the command line string
+    inc_cmd = wxT(" \"")+newname+wxT("\" // from browser ");
+    IncCommand(inc_cmd);
+  }
+  
+  // 2. if last word is Surface
+  wxRegEx surface_keyword (wxT(".*[^[:alnum:]]+Surface[[:blank:]]*$"));
+  if (surface_keyword.Matches(last_cmd)) {
+    cout << "ends with Surface" << endl;
+
+    int res;
+    string name;
+
+    res=AskSurface(name);
+    if (!res) {
+      GB_driver.yyiperror(" Need Image \n");
+      in_changed_value = 0;
+      return false;
+    }
+
+    wxFileName filename(wxString::FromAscii(name.c_str()));
+    filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
+    wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
+                        filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
+                        filename.GetPathSeparator(wxPATH_UNIX)+
+                        filename.GetFullName());
+    wxString inc_cmd; // increment the command line string
+    inc_cmd = wxT(" \"")+newname+wxT("\" // from browser ");
+    IncCommand(inc_cmd);
+  }
+  
+
+  alltext = this->GetValue();
+  TCsize  = this->GetAcceptedSize();
+  // substring
+  last_cmd =alltext.Mid(TCsize);
   //this->AddCommand(last_cmd);
   last_cmd += wxT('\n');
-
   last_cmd.Append(wxT('\0'),2);
 
   /*
@@ -289,6 +431,7 @@ void TextControl::ProcessReturn()
   if (GB_main_wxFrame)
     GB_main_wxFrame->UpdateVarsDisplay();
 
+  return parseok;
   // event.Skip();
 }
 
@@ -310,11 +453,11 @@ void TextControl::OnChar(wxKeyEvent& event)
 
    if (this->GetInsertionPoint()<lastprompt_position) {
      this->SetInsertionPoint(this->text.Len());
-    if (GB_debug) cerr << format("TextControl::OnChar  insertion point %1% <  last position %2% ")
+    if (GB_debug) std::cerr << format("TextControl::OnChar  insertion point %1% <  last position %2% ")
         % GetInsertionPoint()
         % lastprompt_position
         << "text = [" << this->text << "]"
-        << endl;
+        << std::endl;
      return;
    }
 
@@ -331,7 +474,7 @@ void TextControl::OnChar(wxKeyEvent& event)
       char c[2];
       c[0] = keycode;
       c[1] = 0;
-      if (GB_debug) cerr << format(" OnChar() \t non ASCII character %s") % c << endl;
+      if (GB_debug) std::cerr << format(" OnChar() \t non ASCII character %s") % c << std::endl;
     }
 
     {
@@ -344,7 +487,7 @@ void TextControl::OnChar(wxKeyEvent& event)
 
             case WXK_RETURN: //key = _T("RETURN"); break;
               // process the new line
-              //cout << "OnChar return" << endl;
+              //cout << "OnChar return" << std::endl;
               if (in_changed_value)
                 event.Skip();
               else
@@ -354,7 +497,7 @@ void TextControl::OnChar(wxKeyEvent& event)
 
             case WXK_BACK:
                 // Don't allow deleting the prompt ...
-                if (GB_debug) cerr << "OnChar BACK" << endl;
+                if (GB_debug) std::cerr << "OnChar BACK" << std::endl;
                 if (this->GetInsertionPoint()==lastprompt_position)
                   this->SetInsertionPoint(this->text.Len());
                 if ((int)this->GetInsertionPoint()>lastprompt_position) event.Skip();
@@ -479,7 +622,7 @@ void TextControl::OnChar(wxKeyEvent& event)
                                         filename.GetPathSeparator(wxPATH_UNIX)+
                                         filename.GetFullName());
                     inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
-                    this->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+                    this->IncCommand(wxString(inc_cmd.c_str(),wxConvUTF8));
                   }
                 }
               }
@@ -489,7 +632,7 @@ void TextControl::OnChar(wxKeyEvent& event)
         }
     }
 
-    if (GB_debug) cerr <<  key << endl;
+    if (GB_debug) std::cerr <<  key << std::endl;
     event.Skip();
 } // OnChar()
 

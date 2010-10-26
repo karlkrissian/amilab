@@ -91,7 +91,7 @@ InrImage* NLmeans(ParamList* p)
   if (presmooth_sd>0) {
     smoothed_image = InrImage::ptr(Func_Filter( input_float, presmooth_sd,0,0,0));
   } else {
-    cout << "no smoothing" << endl; 
+   std::cout << "no smoothing" << std::endl; 
   }
 
   long points_processed = 0;

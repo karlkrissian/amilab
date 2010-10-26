@@ -22,6 +22,10 @@ $key = q/cite_Osher2002/;
 $ref_files{$key} = "$dir".q|node12.html|; 
 $noresave{$key} = "$nosave";
 
+$key = q/cite_KrissianWestin05/;
+$ref_files{$key} = "$dir".q|node12.html|; 
+$noresave{$key} = "$nosave";
+
 $key = q/eq:LS_terms/;
 $ref_files{$key} = "$dir".q|node2.html|; 
 $noresave{$key} = "$nosave";

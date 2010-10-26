@@ -19,18 +19,21 @@
 #pragma hdrstop
 #endif
 
-#include "wx/app.h"
-#include "wx/grid.h"
+
 #include "wx/treectrl.h"
-#include "wx/spinctrl.h"
-#include "wx/artprov.h"
-#include "wx/clipbrd.h"
+#include <wx/dirctrl.h>
+
+//#include "wx/app.h"
+//#include "wx/grid.h"
+//#include "wx/spinctrl.h"
+//#include "wx/artprov.h"
+//#include "wx/clipbrd.h"
 #include "wx/image.h"
 #include "wx/colordlg.h"
 #include "wx/wxhtml.h"
-#include "wx/imaglist.h"
-#include "wx/dataobj.h"
-#include "wx/dcclient.h"
+//#include "wx/imaglist.h"
+//#include "wx/dataobj.h"
+//#include "wx/dcclient.h"
 #include "wx/bmpbuttn.h"
 #include "wx/menu.h"
 #include "wx/toolbar.h"
@@ -39,7 +42,8 @@
 #include "wx/textdlg.h"
 #include "wx/aui/aui.h"
 
-#include "myTreeCtrl.h"
+class myTreeCtrl;
+//#include "myTreeCtrl.h"
 
 //class myDataViewCtrl;
 //class AMILabTreeModel;
@@ -57,7 +61,8 @@
 
 #include "xmtext.hpp"
 
-#include "ParamPanel.hpp"
+//#include "ParamPanel.hpp"
+class ParamPanel;
 
 #include "Variables.hpp"
 
@@ -66,11 +71,13 @@
 #include <map>
 
 //dnd operation
-#include "wxDragAndDrop.h"
+//#include "wxDragAndDrop.h"
+class TextControlTextDropTarget;
 
 class wxStcFrame;
 
 #include "DefineClass.hpp"
+#include "wx/aui/aui.h"
 
 class CustomStatusBar : public wxStatusBar
 {
@@ -126,12 +133,15 @@ public:
   bool RemoveParamPage(wxWindow* page);
 
   // Deal with ParamPanel::ptr pages
-  bool AddParamPanelPage(const ParamPanel::ptr& panel, const wxString& caption,
+  bool AddParamPanelPage(const boost::shared_ptr<ParamPanel>& panel, const wxString& caption,
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
-  bool RemoveParamPanelPage(const ParamPanel::ptr& panel);
+  bool RemoveParamPanelPage(const boost::shared_ptr<ParamPanel>& panel);
 
   void OnFileOpenImage         ( wxCommandEvent& event );
   void OnFileOpenImageHistory  ( wxCommandEvent& event );
+
+  bool TryToOpenImage( const wxString& filename);
+
   void OnFileOpenPolydata ( wxCommandEvent& event );
   void OnFileLoadScript   ( wxCommandEvent& event );
   void OnFileOpenScriptHistory  ( wxCommandEvent& event );
@@ -228,7 +238,7 @@ protected:
   wxMenu *menuSyntheticImages;
 
   int usermenu_id;
-  std::map<int,string> usermenu_scripts; // Scripts added to the menu by the user
+  std::map<int,std::string> usermenu_scripts; // Scripts added to the menu by the user
 
   CustomStatusBar* _status_bar;
 
@@ -236,14 +246,16 @@ protected:
   wxAuiNotebook* _param_book;
   wxString       _initial_perspective;
   // store the smart pointers of the used param panels for protection
-  std::list<ParamPanel::ptr> _parampanel_ptrs;
+  std::list<boost::shared_ptr<ParamPanel> > _parampanel_ptrs;
 
   wxPanel*     _prompt_panel;
 
   wxPanel*     _varlist_panel;
   wxBoxSizer*  varlistpanel_sizer;
 
-  wxPanel*     _vartree_panel;
+  wxAuiNotebook*    _var_book;
+  wxPanel*          _vartree_panel;
+  wxGenericDirCtrl* _var_dirctrl;
   wxBoxSizer*  vartreepanel_sizer;
 
   wxPanel*     _vardataview_panel;
@@ -306,6 +318,8 @@ protected:
   void CreateHtmlPanel        ( wxWindow*);
   void CreateDrawingPanel     ( wxWindow*);
   void CreateSettingsPanel    ( wxWindow*);
+
+  void OnFileActivated(wxCommandEvent& event);
 
 private:
   wxAuiManager m_mgr;

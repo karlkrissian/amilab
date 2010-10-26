@@ -10,6 +10,12 @@
 //
 //
 
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_PRECOM_HEADERS
+  #include "WrapWxWidgets_header.h"
+#endif
+
 #include "wrap_wxString.h"
 
 #include "VarContexts.hpp"

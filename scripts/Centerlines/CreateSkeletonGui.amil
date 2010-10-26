@@ -801,10 +801,7 @@ if (!exists(CreateSkeletonClass)) {
         #flux_id = ::win.AddButton("CreateLines", ::Lines)
         ::win.AddButton("Display",     ::Display)
       ::win.EndHorizontal()
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal()
+
     
       ::win.Update(-1)
       ::win.Display()

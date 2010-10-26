@@ -30,7 +30,7 @@
 // Chaine.cpp
 // Perpignan,	24/09/94
 
-
+#include "AMILabConfig.h"
 #include "style.hpp"
 
 extern "C" {

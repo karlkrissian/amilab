@@ -86,7 +86,7 @@ std::string Variables::CheckVarName(const char* name)
       // otherwise create a new name
       int i = 1;
       Repeter
-        resname = (format("%s_%d") % name %i).str();
+        resname = (boost::format("%s_%d") % name %i).str();
         i++;
       JusquA Non(ExistVar(resname.c_str())) FinRepeter;
     }
@@ -105,7 +105,7 @@ BasicVariable::ptr Variables::AddVar(
 
   std::string resname = this->CheckVarName(name.c_str());
   BasicVariable::ptr newvar(val);
-  //std::cout << "  **  newvar =  " << newvar << endl;
+  //std::cout << "  **  newvar =  " << newvar << std::endl;
 
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
@@ -122,7 +122,7 @@ BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr co
 
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
-  string resname = this->CheckVarName(var->Name().c_str());
+  std::string resname = this->CheckVarName(var->Name().c_str());
   // TODO: fix the following code, maybe not so easy ...
   // should we copy the contents here ??
   // why do we create a reference here ???
@@ -248,7 +248,7 @@ unsigned char Variables::GetVar(const char* varname, int* i)
 //--------------------------------------------------
 bool Variables::deleteVar(const char* varname)
 {
-  CLASS_MESSAGE( format("Variables::deleteVar(%s) for %s") % varname % GetName());
+  CLASS_MESSAGE( boost::format("Variables::deleteVar(%s) for %s") % varname % GetName());
 
   std::list<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
@@ -263,7 +263,7 @@ bool Variables::deleteVar(const char* varname)
       return true;
     }
   }
-  CLASS_ERROR( format("deleteVar(%s) variable not found") % varname);
+  CLASS_ERROR( boost::format("deleteVar(%s) variable not found") % varname);
   return false;
 
 } // Variables::deleteVar()

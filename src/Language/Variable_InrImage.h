@@ -110,9 +110,9 @@ template<> BasicVariable::ptr Variable<InrImage>::operator ||(const BasicVariabl
 template<> BasicVariable::ptr Variable<InrImage>::operator ^(const BasicVariable::ptr& b);
 
 
-// Mathematical functions
-#define VAR_DECL_FUNC(type,fname) \
-template<> BasicVariable::ptr Variable<type>::m_##fname();
+// // Mathematical functions
+// #define VAR_DECL_FUNC(type,fname) 
+// template<> BasicVariable::ptr Variable<type>::m_##fname();
 
 VAR_DECL_FUNC(InrImage,sin)
 VAR_DECL_FUNC(InrImage,cos)

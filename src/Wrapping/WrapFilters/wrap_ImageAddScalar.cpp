@@ -48,7 +48,7 @@ void wrap_ImageAddScalar( ParamList* p)
 
   add_scalar.SetParameters(param);
   add_scalar.SetScalarValue(val);
-  cout << "mode = " << mode << endl;
+ std::cout << "mode = " << mode << std::endl;
   add_scalar.SetMode(mode);
   add_scalar.Run();
 

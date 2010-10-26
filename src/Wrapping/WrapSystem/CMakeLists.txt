@@ -3,9 +3,8 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${Boost_INCLUDE_DIR}
+  ${AMILAB_SOURCE_DIR}/AMILab
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${PTHREADS_INCLUDE_DIR}
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})
@@ -15,7 +14,7 @@ SET(  WrapSystem_SRCS
 )
 
 SET(WrapSystem_HDRS
-	wrapSystem.h
+	../include/wrapSystem.h
 )
 
 SET(WrapSystem_SRCS

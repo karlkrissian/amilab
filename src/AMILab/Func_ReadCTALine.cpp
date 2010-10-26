@@ -124,7 +124,7 @@ void Func_WriteCTALine( SurfacePoly* surf, std::string filename)
   setlocale(LC_NUMERIC,"C");
 
   if (surf->GetNumberOfLines()==0) {
-    cerr << "Func_WriteCTALine()\t no line in polydata " << endl;
+    std::cerr << "Func_WriteCTALine()\t no line in polydata " << std::endl;
     return;
   }
 
@@ -137,10 +137,10 @@ void Func_WriteCTALine( SurfacePoly* surf, std::string filename)
 
   T_Line l = surf->GetLine(0);
   
-  //cout << l.NbElts() << endl;
+  //cout << l.NbElts() << std::endl;
 
   for(int n=0;n<l.NbElts();n++) {
-    //cout << l[n] << endl;
+    //cout << l[n] << std::endl;
     fprintf(  file,
               "%f %f %f \n",
               (*surf)[l[n]].pt.x,
