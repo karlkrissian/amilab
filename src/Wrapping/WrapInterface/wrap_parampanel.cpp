@@ -61,7 +61,7 @@ Variable<AMIObject>::ptr WrapClass_ParamPanel::CreateVar( ParamPanel* sp)
     WrapClass<ParamPanel>::CreateVar(
       new WrapClass_ParamPanel(
         boost::shared_ptr<ParamPanel>(sp,
-        wxwindow_nodeleter<ParamPanel>() 
+        wxwindow_deleter<ParamPanel>() 
         // deletion will be done by wxwidgets
         ))
     );

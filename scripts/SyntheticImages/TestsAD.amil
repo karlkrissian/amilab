@@ -38,11 +38,20 @@ if (!exists(thickTADClass)){
             
       ::subdiv = INT(6), "Subdivision level"
             
-
+      #Thickness loop limits
       ::min_thick = 1
       ::max_thick = 6
       #::step_thick = 6
       ::step_thick = 1
+      
+      #Noise loop limits
+      ::noise_min = 0
+      ::noise_max = 20
+      ::noise_step = 4
+      #::noise_step = 20
+
+      ::num_experiments = 4
+      #::num_experiments = 2
 
       ::CreateGui()
     }
@@ -108,15 +117,15 @@ if (!exists(thickTADClass)){
     proc ::RunIteration() {
       #Compute the result image
       ::res <<= ::resC
-      ::res = (::resC!=::B)*(::resR!=::A)*::resR+((::resC==::B)+(::resR==::A))*::res
-      #for i=0 to ::resR.tx-1 {
-        #for j=0 to ::resR.ty-1 {
-          #if(::resC(i,j,0)!=::B && ::resR(i,j,0)!=::A) {
-            #::res.setpos(i,j,0)
-            #::res.set(::resR(i,j,0))
-          #}
-        #}
-      #}
+      #::res = (::resC!=::B)*(::resR!=::A)*::resR+((::resC==::B)+(::resR==::A))*::res
+      for i=0 to ::resR.tx-1 {
+        for j=0 to ::resR.ty-1 {
+          if(::resC(i,j,0)!=::B && ::resR(i,j,0)!=::A) {
+            ::res.setpos(i,j,0)
+            ::res.set(::resR(i,j,0))
+          }
+        }
+      }
     }
     Comments(::RunIteration, "Generate the syntheticAD image.")
     
@@ -147,107 +156,98 @@ if (!exists(thickTADClass)){
       increment = (INT)(100/(6+6+36))
       SetProgress(prog)
 
-      ## 1. Thickness test
-      #printn "Starting thickness test..."
-      ##if(exists(i)) { del i; }
-      #for i=::min_thick to ::max_thick step ::step_thick {
-        #ring->setThickness(i)
-        ##Create the ring
-        #pv->setAnalyticFunction(&ring)
-        #::resR <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
-        #::RunIteration()
-        #::Statistics(&::res,i)
-        #mean_image.setpos(i-1,0,0)
-        #mean_image.set(::dis_mean)
-        #std_image.setpos(i-1,0,0)
-        #std_image.set(::dis_std)
-        #printn sprint("Thickness: %1.0f ", i)
-        #print "\tMean = "
-        #printn ::dis_mean
-        #print "\tSTD  = "
-        #printn ::dis_std
-        #prog += increment
-        #SetProgress(prog)
-      #}
-      ##Mean curve
-      #::dwt.SetCurve(mean_image,0)
-      ##Standard deviation curve
-      #::dwt.SetCurve(std_image,1)
-      ##Color for variance curve
-      #::dwt.SetCurveProperties(1,"#0000FF",0,1)
-      #::dwt.SetYLimits(0, max(max(mean_image, std_image))*1.1)
-      #printn "Thickness test done!"
+      # 1. Thickness test
+      printn "Starting thickness test..."
+      if(exists(i)) { del i; }
+      for i=::min_thick to ::max_thick step ::step_thick {
+        ring->setThickness(i)
+        #Create the ring
+        pv->setAnalyticFunction(&ring)
+        ::resR <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
+        ::RunIteration()
+        ::Statistics(&::res,i)
+        mean_image.setpos(i-1,0,0)
+        mean_image.set(::dis_mean)
+        std_image.setpos(i-1,0,0)
+        std_image.set(::dis_std)
+        printn sprint("Thickness: %1.0f ", i)
+        print "\tMean = "
+        printn ::dis_mean
+        print "\tSTD  = "
+        printn ::dis_std
+        prog += increment
+        SetProgress(prog)
+      }
+      #Mean curve
+      ::dwt.SetCurve(mean_image,0)
+      #Standard deviation curve
+      ::dwt.SetCurve(std_image,1)
+      #Color for variance curve
+      ::dwt.SetCurveProperties(1,"#0000FF",0,1)
+      ::dwt.SetYLimits(0, max(max(mean_image, std_image))*1.1)
+      printn "Thickness test done!"
       
-      ## 2. Noise test
-      #printn "Starting noise test..."
-      #mean_image = 0
-      #std_image  = 0
-      #ring->setThickness(4)
-      #pv->setAnalyticFunction(&ring)
-      #::resR <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
-      ##::RunIteration()
-      ##Also set the thickness value to i, for compute statistics
-      ##i = 4
+      # 2. Noise test
+      printn "Starting noise test..."
+      mean_image = 0
+      std_image  = 0
+      ring->setThickness(4)
+      pv->setAnalyticFunction(&ring)
+      ::resR <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
+      ::RunIteration()
+      #Also set the thickness value to i, for compute statistics
+      i = 4
+      
+      # region for compute the noise statistics
+      noise_extent = ::resC[0:20,0:20]
+      noise_counter = 0
+      
+      for j=::noise_min to ::noise_max step ::noise_step {
+        local_mean = 0.0
+        local_std  = 0.0
+        ::RunIteration()
+        for k=0 to 3 {
+          res_noise <<= AddGaussNoise(::res,0,j)
+          #Denoise the image using AnisoNRAD command
+          if(exists(res_noise_draw)) { del res_noise_draw; }
+          res_denoised <<= AnisoNRAD(res_noise, 2, dt, t/dt, 1, noise_extent.GetExtent)
 
-      #for j=0 to 5 {
-        #local_mean = 0.0
-        #local_std  = 0.0
-        #::RunIteration()
-        #for k=0 to 3 {
-          #res_noise <<= AddGaussNoise(::res,0,4*j)
-          ##Denoise the image using AnisoNRAD command
-          #if(exists(res_noise_draw)) { del res_noise_draw; }
-          #show res_noise
-          #res_noise_draw.ShowWin(0)
-          #res_noise_draw.SetZoom(0,0,0,20,20,0)
-          #region <<= res_noise[res_noise_draw]
-          #res_denoised <<= AnisoNRAD(res_noise, 2, dt, t/dt, 1, region.GetExtent)
+          # use thickness 4
+          ::Statistics(&res_denoised,4)
 
-          ## use thickness 4
-          #::Statistics(&res_denoised,4)
-
-          #local_mean += ::dis_mean
-          #local_std  += ::dis_std
-        #}
+          local_mean += ::dis_mean
+          local_std  += ::dis_std
+        }
         
-        #mean_image.setpos(j,0,0)
-        #mean_image.set(local_mean/4)
-        #std_image.setpos(j,0,0)
-        #std_image.set(local_std/4)
-        #printn sprint("Noise (sd): %1.0f ", j*4)
-        #print "\tMean = "
-        #printn local_mean/4
-        #print "\tSTD  = "
-        #printn local_std/4
-        #prog += increment
-        #SetProgress(prog)
-      #}
-      #::dwn.SetCurve(mean_image,0)
-      #::dwn.SetCurve(std_image, 1)
-      #::dwn.SetCurveProperties(1,"#0000FF",0,1)
-      #::dwn.SetYLimits(0, max(max(mean_image, std_image))*1.1)
-      #printn "Noise test done!"
+        mean_image.setpos(noise_counter,0,0)
+        mean_image.set(local_mean/4)
+        std_image.setpos(noise_counter,0,0)
+        std_image.set(local_std/4)
+        printn sprint("Noise (sd): %1.0f ", j)
+        print "\tMean = "
+        printn local_mean/4
+        print "\tSTD  = "
+        printn local_std/4
+        prog += increment
+        SetProgress(prog)
+        noise_counter++
+      }
+      ::dwn.SetCurve(mean_image,0)
+      ::dwn.SetCurve(std_image, 1)
+      ::dwn.SetCurveProperties(1,"#0000FF",0,1)
+      ::dwn.SetYLimits(0, max(max(mean_image, std_image))*1.1)
+      printn "Noise test done!"
       
-      noise_min = 0
-      noise_max = 20
-      noise_step = 4
-      #noise_step = 20
-
-      #num_experiments = 4
-      num_experiments = 2
+      
 
       #Thickness and noise test
       printn "Starting thickness&noise test..."
       mean_image <<= Image(DOUBLE,6,6,1)
       std_image  <<= Image(DOUBLE,6,6,1)
-
-      # region for compute the noise statistics
-      noise_extent = ::resC[0:20,0:20]
-
-
+      del i
       for i=::min_thick to ::max_thick step ::step_thick {
         noise_counter = 0
-        for j=noise_min to noise_max step noise_step {
+        for j=::noise_min to ::noise_max step ::noise_step {
           local_mean = 0.0
           local_std  = 0.0
           ring->setThickness(i)
@@ -255,11 +255,10 @@ if (!exists(thickTADClass)){
           ::resR <<= pv.ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
           ::RunIteration()
           
-          for k=1 to num_experiments {
+          for k=1 to ::num_experiments {
             res_noise <<= AddGaussNoise(::res,0,j)
             #Denoise the image using AnisoNRAD command
             res_denoised <<= AnisoNRAD(res_noise, 2, dt, t/dt, 1, noise_extent.GetExtent)
-
             ::Statistics(&res_denoised,i)
             local_mean += ::dis_mean
             local_std  += ::dis_std
@@ -285,7 +284,7 @@ if (!exists(thickTADClass)){
       std_image.save "eurocast/stdTN.ami.gz"
       printn "Thickness&noise test done!"
     }
-    Comments(::RunTests, "Run test for detection with 10 different thickness of the ring.")
+    Comments(::RunTests, "Run tests with differents thickness and noise values.")
     
     #-----------------------
     

@@ -1102,14 +1102,14 @@ void DessinImage::CreeFenetreParametres()
 
   Si GB_debug AlorsFait printf("DessinImage::%s\n",method);
   
-  _param_position = new_wxWindow_ptr(ImageDraw_PositionParam,this);
+  _param_position = new_wxWindow_ptr_deleter(ImageDraw_PositionParam,this);
   _param_position->Hide();
 
   aff_err("DessinImage::CreeFenetreParametres() 5 \n");
 
   Si GB_debug AlorsFait fprintf(stderr,"DessinImage::%s min et max \n",method);
 
-  _param_intensity = new_wxWindow_ptr(ImageDraw_IntensityParam,this);
+  _param_intensity = new_wxWindow_ptr_deleter(ImageDraw_IntensityParam,this);
   _param_intensity->Hide();
 
   aff_err("DessinImage::CreeFenetreParametres() fin \n");
@@ -1122,7 +1122,7 @@ void DessinImage::CreeParametresVoxel()
 //                           -------------------
 {
   
-  _param_voxel = new_wxWindow_ptr(ImageDraw_VoxelSizeParam,this);
+  _param_voxel = new_wxWindow_ptr_deleter(ImageDraw_VoxelSizeParam,this);
   _param_voxel->Hide();
 
 } // CreeParametresVoxel()
@@ -1134,7 +1134,7 @@ void DessinImage::CreeParametresVecteurs()
 //                ----------------------
 {
   
-  _param_vectors = new_wxWindow_ptr(ImageDraw_VectorsParam,this);
+  _param_vectors = new_wxWindow_ptr_deleter(ImageDraw_VectorsParam,this);
   _param_vectors->Hide();
 
 } // CreeParametresVecteurs()
@@ -1145,7 +1145,7 @@ void DessinImage::CreeParametresCircles()
 //                           -------------------
 {
 
-  _param_circles = new_wxWindow_ptr(ImageDraw_CirclesParam,this);
+  _param_circles = new_wxWindow_ptr_deleter(ImageDraw_CirclesParam,this);
   _param_circles->Hide();
 
 } // CreeParametresCircles()
@@ -1156,7 +1156,7 @@ void DessinImage::CreeParametresMIP()
 //                           -----------------
 {
 
-  _param_mip = new_wxWindow_ptr(ImageDraw_MIPParam,this);
+  _param_mip = new_wxWindow_ptr_deleter(ImageDraw_MIPParam,this);
   _param_mip->Hide();
   
 } // CreeParametresMIP()
@@ -1219,7 +1219,7 @@ void DessinImage::CreeParametresCoupesXY()
 //                           ----------------------
 {
 
-  _param_coupesxy = new_wxWindow_ptr(ImageDraw_CoupesXYParam,this);
+  _param_coupesxy = new_wxWindow_ptr_deleter(ImageDraw_CoupesXYParam,this);
   _param_coupesxy->Hide();
 
 } // CreeParametresCoupesXY()
@@ -1230,7 +1230,7 @@ void DessinImage::CreeParametresAnimation()
 //                           -----------------------
 {
   
-  _param_animation = new_wxWindow_ptr(ImageDraw_AnimationParam,this);
+  _param_animation = new_wxWindow_ptr_deleter(ImageDraw_AnimationParam,this);
   _param_animation->Hide();
 
 } // CreeParametresAnimation()
@@ -1242,7 +1242,7 @@ void DessinImage::CreeParametresIsoContour()
 //                ------------------------
 {
     
-  _param_isocontour = new_wxWindow_ptr(ImageDraw_IsoContourParam,this);
+  _param_isocontour = new_wxWindow_ptr_deleter(ImageDraw_IsoContourParam,this);
   _param_isocontour->Hide();
 
 
@@ -1254,7 +1254,7 @@ void DessinImage::CreeParametresImageSurface()
 //                --------------------------
 {
 
-  _param_imagesurface = new_wxWindow_ptr(ImageDraw_ImageSurfaceParam,this);
+  _param_imagesurface = new_wxWindow_ptr_deleter(ImageDraw_ImageSurfaceParam,this);
   _param_imagesurface->Hide();
 
 
@@ -1266,7 +1266,7 @@ void DessinImage::CreeParametresVoxels3D()
 //                           ----------------------
 {
 
-  _param_voxels3D = new_wxWindow_ptr(ImageDraw_Voxels3DParam,this);
+  _param_voxels3D = new_wxWindow_ptr_deleter(ImageDraw_Voxels3DParam,this);
   _param_voxels3D->Hide();
   
 } // CreeParametresVoxels3D()
@@ -1277,7 +1277,7 @@ void DessinImage::CreeParametresGLMIP()
 //                           ----------------------
 {
 
-  _param_glmip = new_wxWindow_ptr(ImageDraw_GLMIPParam,this);
+  _param_glmip = new_wxWindow_ptr_deleter(ImageDraw_GLMIPParam,this);
   _param_glmip->Hide();
 
 } // CreeParametresGLMIP()
@@ -1288,7 +1288,7 @@ void DessinImage::CreeParametresVOLREN()
 //                           --------------------
 {
 
-  _param_volren = new_wxWindow_ptr(ImageDraw_VolRenParam,this);
+  _param_volren = new_wxWindow_ptr_deleter(ImageDraw_VolRenParam,this);
   _param_volren->Hide();
 
 } // CreeParametresVOLREN()
@@ -1299,7 +1299,7 @@ void DessinImage::CreeParametresSections3D()
 //                           ------------------------
 {
 
-  _param_sections3D = new_wxWindow_ptr(ImageDraw_Sections3DParam,this);
+  _param_sections3D = new_wxWindow_ptr_deleter(ImageDraw_Sections3DParam,this);
   _param_sections3D->Hide();
 
 
@@ -1311,7 +1311,7 @@ void DessinImage::CreeParametresZoomFacteur()
 //                           -------------------------
 {
 
-  _param_zoomfactor = new_wxWindow_ptr(ImageDraw_ZoomFactorParam,this);
+  _param_zoomfactor = new_wxWindow_ptr_deleter(ImageDraw_ZoomFactorParam,this);
   _param_zoomfactor->Hide();
 
 } // CreeParametresZoomFacteur
@@ -1321,7 +1321,7 @@ void DessinImage::CreeParametresZoomFacteur()
 void DessinImage::CreeParametresCouleurs()
 //                           ----------------------
 {
-  _param_colors = new_wxWindow_ptr(ImageDraw_ColorsParam,this);
+  _param_colors = new_wxWindow_ptr_deleter(ImageDraw_ColorsParam,this);
   _param_colors->Hide();
 
 } // CreeParametresCouleurs()
@@ -1398,7 +1398,7 @@ void DessinImage::CreeParametresInfo()
 //                           ------------------
 {
 
-  _param_image_info = new_wxWindow_ptr(ImageDraw_InfoParam,this);
+  _param_image_info = new_wxWindow_ptr_deleter(ImageDraw_InfoParam,this);
   _param_image_info->Hide();
 
 } // CreeParametresInfo()
