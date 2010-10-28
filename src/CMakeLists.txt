@@ -565,6 +565,8 @@ IF(AMI_USE_VTK)
       ${amilab_ownlibs}
       myVTK4
   )
+  INCLUDE(${VTK_USE_FILE})
+
   SET(LINK_VTK
     vtkGraphics
     vtkImaging
@@ -572,12 +574,17 @@ IF(AMI_USE_VTK)
     vtkFiltering
     vtkCommon
     vtkNetCDF
+    # additional libraries for volume rendering
+    vtkRendering 
+    vtkVolumeRendering 
+    vtkWidgets
   )
+
 ELSE(AMI_USE_VTK)
   SET(LINK_VTK
   )
 ENDIF(AMI_USE_VTK)
-
+#MESSAGE( " VTK_LIBRARY_DIRS = ${VTK_LIBRARY_DIRS}")
 
 MESSAGE( "Boost_LIBRARIES=${Boost_LIBRARIES}" )
 

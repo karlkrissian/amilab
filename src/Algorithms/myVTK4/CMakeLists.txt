@@ -21,8 +21,8 @@ SET(myVTK4_SRCS
     vtkImagePropagateDist2.cxx
     vtkLevelSetFastMarching.cxx
     vtkLevelSets.cxx
-    vtkMINCImageAttributes.cxx
-    vtkMINCImageReader.cxx
+#    vtkMINCImageAttributes.cxx
+#    vtkMINCImageReader.cxx
     vtkSkeleton2Lines.cxx
 )
 
@@ -45,9 +45,9 @@ SET(myVTK4_HDRS
   ../include/vtkLevelSetFastMarching.h
   ../include/vtkLevelSets.h
   ../include/vtkLevelSetsConfigure.h
-  ../include/vtkMINC.h
-  ../include/vtkMINCImageAttributes.h
-  ../include/vtkMINCImageReader.h
+#  ../include/vtkMINC.h
+#  ../include/vtkMINCImageAttributes.h
+#  ../include/vtkMINCImageReader.h
   ../include/vtkMinHeap.h
   ../include/vtkmyVTKConfigure.h
   ../include/vtkSkeleton2Lines.h

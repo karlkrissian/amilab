@@ -91,6 +91,7 @@ SET(Graphic_HDRS
     include/Viewer3D.hpp
     include/VolumeRender.hpp
 
+    include/vtkGPURayCasting.h
 )
 
 SET(Graphic_SRCS
@@ -144,6 +145,8 @@ SET(Graphic_SRCS
     OpenGL/ami_wxGLCanvas.cpp
     OpenGL/isosurface.cpp 
     OpenGL/surface.cpp
+
+    VTKDemos/GPURayCasting/vtkGPURayCasting.cxx
 )
 
 SET(Graphic_SRCS
