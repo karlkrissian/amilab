@@ -161,9 +161,9 @@ if (!exists(Subpixel2DClass)){
     #-----------------------
     
     proc ::getBorderPixelInfo() {
-      if (exists(::norm_input_draw) && exists(::res)) {
-        imx = ::norm_input_draw.GetXPos()
-        imy = ::norm_input_draw.GetYPos()
+      if (exists(::input_draw) && exists(::res)) {
+        imx = ::input_draw.GetXPos()
+        imy = ::input_draw.GetYPos()
         #Initialize pos to a value higer than the maximum position
         pos = ::res->border.tx + 1
         #First, find the position of the pixel inside the border pixel position
@@ -210,10 +210,10 @@ if (!exists(Subpixel2DClass)){
       if(exists(::res) && exists(::sp2D)){
         #InitTime
         #Catch visualization region limits
-        xmin = ::norm_input_draw.GetXmin()
-        xmax = ::norm_input_draw.GetXmax()
-        ymin = ::norm_input_draw.GetYmin()
-        ymax = ::norm_input_draw.GetYmax()
+        xmin = ::input_draw.GetXmin()
+        xmax = ::input_draw.GetXmax()
+        ymin = ::input_draw.GetYmin()
+        ymax = ::input_draw.GetYmax()
         #Create four new images for displacements inside pixel
         dx1 = Image(DOUBLE,::res->xpos.tx,1,1)
         dy1 = Image(DOUBLE,::res->xpos.tx,1,1)
@@ -271,11 +271,11 @@ if (!exists(Subpixel2DClass)){
         
         if (::change==0) {
           if(::normals==0) {
-            ::sp2D->drawBorder(&::norm_input_draw, inside, border_pts,\
+            ::sp2D->drawBorder(&::input_draw, inside, border_pts,\
                                std_color, std_thickness, std_style,\
                                ::normals)
           } else {
-            ::sp2D->drawBorder(&::norm_input_draw, inside, border_pts,\
+            ::sp2D->drawBorder(&::input_draw, inside, border_pts,\
                                std_color, std_thickness, std_style,\
                                ::normals, norm_pts, std_color, std_thickness,\
                                std_style)
@@ -284,10 +284,10 @@ if (!exists(Subpixel2DClass)){
           bcolor = &wx.wxColour(::Ered, ::Egreen, ::Eblue, ::Ealpha)
           ncolor = &wx.wxColour(::Nred, ::Ngreen, ::Nblue, ::Nalpha)
           if(::normals==0) {
-            ::sp2D->drawBorder(&::norm_input_draw, inside, border_pts,\
+            ::sp2D->drawBorder(&::input_draw, inside, border_pts,\
                                bcolor, ::Ethickness, ::Estyle, ::normals)
           } else {
-            ::sp2D->drawBorder(&::norm_input_draw, inside, border_pts,\
+            ::sp2D->drawBorder(&::input_draw, inside, border_pts,\
                                bcolor, ::Ethickness, ::Estyle, ::normals,\
                                norm_pts, ncolor, ::Nthickness, ::Nstyle)
           }
@@ -302,7 +302,7 @@ if (!exists(Subpixel2DClass)){
     
     proc ::Run() {
     	::load_input()
-      if (exists(::norm_input_draw)) { del ::norm_input_draw; }
+      if (exists(::input_draw)) { del ::input_draw; }
     	::norm_input <<= norm(::input)
       if (exists(::res))  { del ::res; }
       if (exists(::sp2D)) { del ::sp2D; }
@@ -328,7 +328,7 @@ if (!exists(Subpixel2DClass)){
       ::Display
       ::drawBorder
       
-      ::norm_input_draw.PaintCallback(&::drawBorder)
+      ::input_draw.PaintCallback(&::drawBorder)
     }
     Comments(::Run, "Detects edges with Subpixel2D method")
     
@@ -336,16 +336,16 @@ if (!exists(Subpixel2DClass)){
     
     proc ::Display() {
       global
-      if (exists(::norm_input)) {
+      if (exists(::input)) {
         if (::show_average == 1) {
           if (exists(::res)) {
             ::denoised = ::res->denoised
             show ::denoised
-            show ::norm_input
-            ::denoised_draw.compare(&::norm_input_draw)
+            show ::input
+            ::denoised_draw.compare(&::input_draw)
           }
         } else {
-          show ::norm_input
+          show ::input
         }
       } 
     }
