@@ -21,6 +21,7 @@
 
 
 #include "wx/treectrl.h"
+#include "wx/filectrl.h"
 #include <wx/dirctrl.h>
 
 //#include "wx/app.h"
@@ -69,10 +70,6 @@ class ParamPanel;
 #include <iostream>
 #include <list>
 #include <map>
-
-//dnd operation
-//#include "wxDragAndDrop.h"
-class TextControlTextDropTarget;
 
 class wxStcFrame;
 
@@ -255,6 +252,7 @@ protected:
 
   wxAuiNotebook*    _var_book;
   wxPanel*          _vartree_panel;
+  wxFileCtrl*       _var_fileCtrl;
   wxGenericDirCtrl* _var_dirctrl;
   wxBoxSizer*  vartreepanel_sizer;
 
@@ -268,8 +266,6 @@ protected:
   wxPanel*     _var_panel;
   wxPanel*     _html_panel;
   wxPanel*     _drawing_panel;
-
-  TextControlTextDropTarget* m_textDropTarget;
 
   boost::shared_ptr<wxDirPickerCtrl> scripts_path_picker;
   boost::shared_ptr<wxDirPickerCtrl> help_path_picker;
@@ -310,6 +306,8 @@ protected:
 
   void CreateConsoleText      ( wxWindow*);
   void CreateVarListPanel     ( wxWindow*);
+  void CreateVarBook          ( wxWindow*);
+  void CreateVarDirCtrl       ( wxWindow*);
   void CreateVarTreePanel     ( wxWindow*);
   void CreateVarDataViewPanel ( wxWindow*);
   void CreateLogText          ( wxWindow*);
@@ -319,6 +317,11 @@ protected:
   void CreateDrawingPanel     ( wxWindow*);
   void CreateSettingsPanel    ( wxWindow*);
 
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
+  void OnFileCtrl( wxFileCtrlEvent& event );  
+#endif
+///@endcond
   void OnFileActivated(wxCommandEvent& event);
 
 private:

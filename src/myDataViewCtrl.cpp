@@ -22,8 +22,6 @@ extern MainFrame*    GB_main_wxFrame;
 
 #include "myDataViewCtrl.h"
 
-#include "wxDragAndDrop.h"
-
 //Pop menu: two options ("Write in console" and "About..")
 enum
 {
@@ -35,34 +33,13 @@ myDataViewCtrl::myDataViewCtrl( wxWindow* parent, wxWindowID id,
   const wxPoint& pos, const wxSize& size, long style,
   const wxValidator& validator):wxDataViewCtrl(parent, id, pos, size, style, validator)
 {
-  // CONSTRUCTOR DEFINITION.
-//   Connect(wxEVT_CHAR,
-//           wxKeyEventHandler(myDataViewCtrl::OnDataViewChar),
-//           NULL, this);
-//   Connect(wxEVT_COMMAND_DATAVIEW_ITEM_BEGIN_DRAG,
-//           wxDataViewEventHandler(myDataViewCtrl::OnBeginDrag),
-//           NULL, this);
-//   Connect(wxEVT_COMMAND_DATAVIEW_ITEM_DROP_POSSIBLE,
-//           wxDataViewEventHandler(myDataViewCtrl::OnDropPossible),
-//           NULL, this);
-//   Connect(wxEVT_COMMAND_DATAVIEW_ITEM_DROP,
-//           wxDataViewEventHandler(myDataViewCtrl::OnDrop),
-//           NULL, this);
+
 }
 
 void myDataViewCtrl::InternalAssociateModel( AMILabTreeModel *model )
 {
   this->_amilab_model = model;
 }
-
-// void myDataViewCtrl::OnDataViewChar(wxKeyEvent& event)
-// {
-// //     if ( event.GetKeyCode() == WXK_DELETE )
-// //         //DeleteSelectedItems();
-// //     else
-//         event.Skip();
-// }
-
 
 void myDataViewCtrl::_ShowMenu(const wxDataViewItem &item, const wxPoint& pt)
 {
@@ -109,11 +86,8 @@ BEGIN_EVENT_TABLE(myDataViewCtrl, wxDataViewCtrl)
   EVT_MENU(wxMENU_ID_ToConsole, myDataViewCtrl::ToConsole)
 
   EVT_DATAVIEW_ITEM_CONTEXT_MENU(wxID_ANY, myDataViewCtrl::OnContextMenu)
-  EVT_DATAVIEW_ITEM_BEGIN_DRAG( wxID_ANY, myDataViewCtrl::OnBeginDrag )
   EVT_DATAVIEW_ITEM_ACTIVATED( wxID_ANY, myDataViewCtrl::OnActivated )
   EVT_DATAVIEW_COLUMN_SORTED( wxID_ANY, myDataViewCtrl::OnSorted)
-//   EVT_DATAVIEW_ITEM_DROP_POSSIBLE( wxID_ANY, myDataViewCtrl::OnDropPossible )
-//   EVT_DATAVIEW_ITEM_DROP( wxID_ANY, myDataViewCtrl::OnDrop )
 
 END_EVENT_TABLE()
 
@@ -184,77 +158,6 @@ void myDataViewCtrl::ToConsole( wxCommandEvent& event )
   GB_main_wxFrame->GetConsole()->IncCommand(var->Name());  
 }
 
-void myDataViewCtrl::OnBeginDrag( wxDataViewEvent &event )
-{
-  wxDataViewItem item( event.GetItem() );
-
-  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
-  boost::shared_ptr<BasicVariable> variable = node->m_Var.lock();
-  MyNode mynode;
-  if (variable.get())  
-  {
-    mynode.SetAbsoluteName( node->m_AbsoluteName );
-    mynode.SetVar( variable );
-  }
-  MyNodeDataObject obj;
-  obj.SetNode( mynode );
-//   MyNodeDataObject *obj =new MyNodeDataObject();
-//   obj->SetNode( mynode );
-//   event.SetDataObject( obj );
-  
-  wxDropSource dragSource(obj, this ); //Create data source
-  //dragSource.SetData( obj );  //Assign the data
-  wxDragResult result = dragSource.DoDragDrop( TRUE ); //Begin the drag operation.
-
-  switch (result)
-  {
-      case wxDragCopy:
-        // copy the data
-        std::cout << "DnD result: the data was successfully copied" << std::endl;
-        break;
-      case wxDragMove:
-        // move the data
-        std::cout << "DnD result: the data was successfully moved" << std::endl;
-        break;
-      case wxDragError:
-        // Error
-        std::cout << "DnD result: Error" << std::endl;
-        break;
-      case wxDragNone:
-        // target didn't accept the data
-        std::cout << "DnD result: target didn't accept the data" << std::endl;
-        break;
-      case wxDragCancel:
-        // the operation was cancelled by user
-        std::cout << "DnD result: the operation was cancelled by user" << std::endl;
-        break;
-      case wxDragLink:
-        // operation is a drag-link
-        std::cout << "DnD result: this was a link operation" << std::endl;
-        break;
-      default:
-        // do nothing
-        std::cout << "DnD result: do nothing" << std::endl;
-        break;
-  }
-
-  //wxTextDataObject *obj = new wxTextDataObject;
-//   MyNodeDataObject * obj =  new MyNodeDataObject();
-//   boost::shared_ptr<BasicVariable> variable = node->m_Var.lock();
-//   MyNode mynode;
-//   if (variable.get())
-//   {
-//     mynode.SetAbsoluteName( node->m_AbsoluteName );
-//     mynode.SetVar( variable );
-// //     obj->SetText( node->m_AbsoluteName );
-//   }
-// //   else
-// //     obj->SetText( "" );
-//   //MyNodeDataObject * obj =  new MyNodeDataObject(mynode);
-//   obj->SetNode( mynode );
-//   event.SetDataObject( obj );
-}
-
 void myDataViewCtrl::OnActivated( wxDataViewEvent &event )
 {
   if(!IsExpanded( event.GetItem() ))
@@ -267,50 +170,3 @@ void myDataViewCtrl::OnSorted( wxDataViewEvent &event )
 {
   GetColumnPosition( event.GetDataViewColumn() );
 }
-
-/*
-void myDataViewCtrl::OnDropPossible( wxDataViewEvent &event )
-{
-  wxDataViewItem item( event.GetItem() );
-
-  // only allow drags for item, not containers
-  if (_amilab_model->IsContainer( item ) )
-    std::cout << "myDataViewCtrl::OnDropPossible: only allow drops for item, not containers"
-              << std::endl;
-
-  if (event.GetDataFormat() != wxDF_UNICODETEXT)
-    std::cout << "myDataViewCtrl::OnDropPossible: Unsupported format"
-              << std::endl;
-
-    std::cout << "myDataViewCtrl::OnDropPossible: Begin process..."
-              << std::endl;
-}
-
-void myDataViewCtrl::OnDrop( wxDataViewEvent &event )
-{
-  wxDataViewItem item( event.GetItem() );
-
-  // only allow drops for item, not containers
-  if (_amilab_model->IsContainer( item ) )
-  {
-    std::cout << "myDataViewCtrl::OnDrop: only allow drops for item, not containers"
-              << std::endl;
-    return;
-  }
-
-  if (event.GetDataFormat() != wxDF_UNICODETEXT)
-  {
-    std::cout << "myDataViewCtrl::OnDrop: Unsupported format"
-              << std::endl;
-    return;
-  }
-
-  wxTextDataObject obj;
-  obj.SetData( wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer() );
-  GB_main_wxFrame->GetConsole()->IncCommand(obj.GetText());
-
-  std::cout << "myDataViewCtrl::OnDrop - Text dropped: "
-            << obj.GetText()
-            << std::endl;
-}
-*/

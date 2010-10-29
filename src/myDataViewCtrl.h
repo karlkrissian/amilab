@@ -30,61 +30,6 @@
 
 // #include <wx/any.h>
 
-// //=======================================================
-// 
-// class MyDataViewItemData : public wxDataViewItem
-// {
-//   public:
-//     MyDataViewItemData(boost::shared_ptr<BasicVariable> lvar) : _var(lvar) { }
-// 
-//     boost::weak_ptr<BasicVariable> GetVar() const { return _var; }
-// 
-//   private:
-//     /// weak pointer to the Variable
-//     boost::weak_ptr<BasicVariable> _var;
-// };
-
-//=======================================================
-
-// ---------------------------------------------------------
-// wxDataViewAnyRenderer
-// ---------------------------------------------------------
-
-// class wxDataViewAnyRenderer: public wxDataViewCustomRenderer
-// {
-//   public:
-//     wxDataViewAnyRenderer(): wxDataViewCustomRenderer("string",
-//                                    wxDATAVIEW_CELL_ACTIVATABLE,
-//                                    wxALIGN_CENTER)
-//        { }
-// 
-//     virtual bool SetValue( const wxVariant &value )
-//     {
-//       m_value = value;
-//       return true;
-//     }
-// 
-//     virtual bool GetValue( wxVariant &value ) const
-//     {
-//       value = m_value;
-// 
-//       return true;
-//     }
-// 
-//     virtual wxSize GetSize() const
-//     {
-//         return wxSize();
-//     }
-// 
-//     virtual bool Render( wxRect rect, wxDC *dc, int state )
-//     {
-//         return true;
-//     }
-// 
-//   private:
-//     wxVariant m_value;
-// };
-
 //=======================================================
 
 class myDataViewCtrl: public wxDataViewCtrl
@@ -103,13 +48,8 @@ class myDataViewCtrl: public wxDataViewCtrl
     void OnAbout( wxCommandEvent& event );
     void ToConsole( wxCommandEvent& event );
 
-    void OnBeginDrag( wxDataViewEvent &event );
     void OnActivated( wxDataViewEvent &event );
     void OnSorted( wxDataViewEvent &event );
-//     void OnDropPossible( wxDataViewEvent &event );
-//     void OnDrop( wxDataViewEvent &event );
-
-    //void OnDataViewChar(wxKeyEvent& event);
 
   private:
     boost::weak_ptr<BasicVariable> _currentmenu_var;

@@ -41,9 +41,6 @@ SET(Graphic_HDRS
     include/Voxels.h
     include/myHtmlWindow.h
 
-    # from DragAndDrop
-    include/wxDragAndDrop.h
-
     # from ImageTool
     include/DessinImageMenu.h
     include/Menu.h
@@ -106,9 +103,6 @@ SET(Graphic_SRCS
     Common/dwControlledCurve.cpp
     Common/Voxels.cpp
     Common/myHtmlWindow.cpp
-
-    # from DragAndDrop
-    Common/wxDragAndDrop.cpp
 
     # from ImageTool
     ImageTool/CompareImage.cpp

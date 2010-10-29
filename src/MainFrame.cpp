@@ -31,7 +31,6 @@
 #include <iostream>
 #include <cstring>
 #include "myTreeCtrl.h"
-#include "wxDragAndDrop.h"
 
 #include <sys/stat.h>
 #ifndef WIN32
@@ -168,6 +167,11 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_DIRPICKER_CHANGED(wxID_ScriptsPath, MainFrame::OnScriptsPath)
     EVT_DIRPICKER_CHANGED(wxID_HelpPath,    MainFrame::OnHelpPath   )
+
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
+    EVT_FILECTRL_FILEACTIVATED( wxID_ANY, MainFrame::OnFileCtrl )
+#endif
 
 //     EVT_DATAVIEW_ITEM_BEGIN_DRAG( wxID_ANY, MainFrame::OnBeginDrag )
 //     EVT_DATAVIEW_ITEM_DROP_POSSIBLE( wxID_ANY, MainFrame::OnDropPossible )
@@ -380,23 +384,17 @@ MainFrame::MainFrame( const wxString& title,
 /// @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
   CreateVarDataViewPanel(this);
-  m_mgr.AddPane(_vardataview_panel,
-                  wxAuiPaneInfo()
-                  .Name(wxT("VariablesTree"))
-                  .Caption(wxT("Variables Tree"))
-                  .Left().Layer(1)
-                  .MaximizeButton(true));
 #else
   CreateVarTreePanel(this);
+#endif
+/// @endcond
   m_mgr.AddPane(_var_book,
                   wxAuiPaneInfo()
                   .Name(wxT("VariablesTree"))
                   .Caption(wxT("Variables Tree"))
                   .Left().Layer(1)
                   .MaximizeButton(true)
-                  .BestSize(wxSize(200,200)));
-#endif
-/// @endcond
+                  .BestSize(wxSize(200,200)));  
 
   CreateLogText(this);
   m_mgr.AddPane(_log_text,
@@ -681,10 +679,8 @@ void MainFrame::CreateVarListPanel ( wxWindow* parent)
 } // CreateVarListPanel()
 
 //--------------------------------------------------------
-void MainFrame::CreateVarTreePanel ( wxWindow* parent)
+void MainFrame::CreateVarBook ( wxWindow* parent)
 {
-
-  
    wxSize client_size = GetClientSize();
 
    _var_book  = new wxAuiNotebook(this, wxID_ANY,
@@ -698,7 +694,95 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                                   );
   _var_book->Fit();
 
+} // CreateVarBook()
 
+//--------------------------------------------------------
+void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
+{
+  // File Selection
+  typedef std::pair<std::string,std::string> file_format;
+  typedef std::map<std::string,std::string>  file_format_map;
+
+  std::map<std::string,std::string> formats;
+
+  formats.insert(file_format( "All ext",
+                              "*.*"));
+  formats.insert(file_format( "Amilab Images",
+                              "*.ami;*.ami.gz"));
+  formats.insert(file_format( "Amilab scripts",
+                              "*.amil"));
+  formats.insert(file_format( "VTK Files",
+                              "*.vtk"));
+  formats.insert(file_format( "Standard images",
+                              "*.jpg;*.JPG;*.jpeg;*.JPEG;*.png;*.PNG;*.bmp;*.BMP;*.tif;*.TIF;*.tiff;*.TIFF"));
+  formats.insert(file_format( "ITK",
+                              "*.mhd"));
+  formats.insert(file_format( "All",
+                              "*"));
+
+  wxString format_choices;
+
+  for(file_format_map::iterator p = formats.begin();
+      p!=formats.end();
+      ++p)
+  {
+    if (p!=formats.begin())
+      format_choices << wxString::FromAscii("|");
+    format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
+  }
+
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
+  _var_fileCtrl = new wxFileCtrl(this,wxID_ANY,
+                     wxEmptyString,
+                     wxEmptyString,
+                     format_choices,
+                     wxFC_OPEN,
+                     wxDefaultPosition,
+                     wxDefaultSize
+                 );
+
+//   _var_fileCtrl->Connect(wxEVT_FILECTRL_FILEACTIVATED,
+//                          wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
+  _var_book->AddPage(_var_fileCtrl,wxT("Dir"));
+#else
+  _var_dirctrl = new wxGenericDirCtrl(this,wxID_ANY,
+                                    wxDirDialogDefaultFolderStr,
+                                    wxDefaultPosition,
+                                    wxDefaultSize,
+                                    wxDIRCTRL_3D_INTERNAL
+                                    |
+                                    //wxBORDER_SUNKEN
+                                    //|
+                                    wxDIRCTRL_SHOW_FILTERS
+                                    #if (wxCHECK_VERSION(2,9,1))
+                                      |
+                                      wxDIRCTRL_MULTIPLE
+                                    #endif // wxCHECK_VERSION(2,9,1)
+                                    ,
+                                    format_choices, // filters
+                                    0 // default filter
+                                    );
+
+  // try to allow multiple selections
+  //_var_dirctrl->GetTreeCtrl()->SetWindowStyle(_var_dirctrl->GetTreeCtrl()->SetWindowStyle() |wxTR_EXTENDED);
+
+  _var_dirctrl->GetTreeCtrl()->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
+                                       wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
+  _var_book->AddPage(_var_dirctrl,wxT("Dir"));  
+#endif
+///@endcond
+   
+  //std::cout << res << std::endl;
+  _var_book->Fit();
+
+} // CreateVarDirCtrl 
+
+//--------------------------------------------------------
+void MainFrame::CreateVarTreePanel ( wxWindow* parent)
+{
+
+  CreateVarBook(this);
 //  CreateDrawingPanel(this);
 //  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
 
@@ -741,13 +825,13 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   // TODO/FIXME:
   // Problems with GetWindowStyle method.
   
-/// @cond wxCHECK
-#if (wxCHECK_VERSION(2,9,1))
+// @cond wxCHECK
+//#if (wxCHECK_VERSION(2,9,1))
 //  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
-#else
+//#else
 //  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
-#endif
-/// @endcond
+//#endif
+// @endcond
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
 
   wxFont font(10,wxMODERN,wxNORMAL,wxNORMAL);
@@ -764,71 +848,9 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
   vartreepanel_sizer->Fit(_vartree_panel);
 
-
   _var_book->AddPage(_vartree_panel,wxT("Tree"));
-  
 
-  // File Selection
-  typedef std::pair<std::string,std::string> file_format;
-  typedef std::map<std::string,std::string>  file_format_map;
-
-  std::map<std::string,std::string> formats;
-
-  formats.insert(file_format( "All ext",
-                              "*.*"));
-  formats.insert(file_format( "Amilab Images",
-                              "*.ami;*.ami.gz"));
-  formats.insert(file_format( "Amilab scripts",
-                              "*.amil"));
-  formats.insert(file_format( "VTK Files",
-                              "*.vtk"));
-  formats.insert(file_format( "Standard images",  
-                              "*.jpg;*.JPG;*.jpeg;*.JPEG;*.png;*.PNG;*.bmp;*.BMP;*.tif;*.TIF;*.tiff;*.TIFF"));
-  formats.insert(file_format( "ITK",
-                              "*.mhd"));
-  formats.insert(file_format( "All",
-                              "*"));
-
-  wxString format_choices;
-
-  for(file_format_map::iterator p = formats.begin(); 
-      p!=formats.end();
-      ++p)
-  {
-    if (p!=formats.begin())
-      format_choices << wxString::FromAscii("|");
-    format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
-  }
-
-  
-  //
-  _var_dirctrl = new wxGenericDirCtrl(this,wxID_ANY,
-                                    wxDirDialogDefaultFolderStr,
-                                    wxDefaultPosition,
-                                    wxDefaultSize,
-                                    wxDIRCTRL_3D_INTERNAL
-                                    |
-                                    //wxBORDER_SUNKEN
-                                    //|
-                                    wxDIRCTRL_SHOW_FILTERS
-                                    #if (wxCHECK_VERSION(2,9,1))
-                                      |
-                                      wxDIRCTRL_MULTIPLE
-                                    #endif // wxCHECK_VERSION(2,9,1)
-                                    ,                                      
-                                    format_choices, // filters
-                                    0 // default filter
-                                    );
-                                    
-  // try to allow multiple selections
-  //_var_dirctrl->GetTreeCtrl()->SetWindowStyle(_var_dirctrl->GetTreeCtrl()->SetWindowStyle() |wxTR_EXTENDED);
-
-  _var_dirctrl->GetTreeCtrl()->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
-                                       wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
-  _var_book->AddPage(_var_dirctrl,wxT("Dir"));
-  
-  //std::cout << res << std::endl;
-  _var_book->Fit();
+  CreateVarDirCtrl(this);
 
 } // CreateVarTreePanel()
 
@@ -857,10 +879,35 @@ void MainFrame::OnFileActivated(wxCommandEvent& WXUNUSED(event))
   #endif // (wxCHECK_VERSION(2,9,1))
 }
 
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
+//--------------------------------------------------------
+void MainFrame::OnFileCtrl( wxFileCtrlEvent& event )
+{
+  // Some documentation
+  // On wxEVT_FILECTRL_FILEACTIVATED, GetDirectory returns the current directory
+  // for the wxFileCtrl and GetFiles returns the names of the file(s) activated.
+  wxArrayString paths;
+  wxString filename;
+  _var_fileCtrl->GetPaths(paths);
+  for (size_t n=0; n<paths.GetCount(); n++ )
+  {
+    filename = paths[n];
+    if (filename != wxEmptyString) {
+      //std::cout << filename.mb_str(wxConvUTF8)<< "Activated !!!" << std::endl;
+      TryToOpenImage(filename);
+    }
+  }
+} // OnFileCtrl
+#endif
+///@endcond
+
 //--------------------------------------------------------
 void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 {
-  _vardataview_panel = new wxPanel(parent);
+  CreateVarBook(this);
+
+  _vardataview_panel = new wxPanel(this);
 
   vardataviewpanel_sizer  = new wxBoxSizer( wxVERTICAL );
 
@@ -950,14 +997,9 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 
   vardataviewpanel_sizer->Fit(_vardataview_panel);
 
-  //TODO/FIXME: Automatically don't takes the right size.
-  wxSize a = _vardataview_panel->GetSize();
-  int Space = 120;
-  _vardataview_panel->SetSize(a.GetX()+Space, a.GetY());
+  _var_book->AddPage(_var_dataview,wxT("Tree"));
 
-  // _vardataview_panel->SetSizerAndFit(vardataviewpanel_sizer, false);
-
-  //_var_tree->SetToolTip(_T("Tree Control for current variables"));
+  CreateVarDirCtrl(this);
 
 } // CreateVarDataViewPanel()
 
@@ -1014,12 +1056,6 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
 
   sbox_sizer->Add(buttons_sizer, 0, wxEXPAND , 5);
   sbox_sizer->Add(TC.get(), 1, wxEXPAND | wxALL, 2);
-
-//   m_textDropTarget = new TextControlTextDropTarget(this->TC.get());
-//   this->TC->SetDropTarget(m_textDropTarget);
-
-  TextControlDropTarget *textDropTarget = new TextControlDropTarget(this->TC.get());
-  this->TC->SetDropTarget(textDropTarget);
 
 } // CreateConsoleText()
 
