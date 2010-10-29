@@ -245,13 +245,26 @@ BasicVariable::ptr wrap_vtkGPURayCasting(ParamList* p)
   char parameters[] =" \n\
           Parameters:\n\
               input image\n\
+              int   blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->RGB_Composite\n\
+              float opacitywindow\n\
+              float opacitylevel\n\
+              int clip 0|1 \n\
       ";
     
     InrImage* input;
-    int n=0;
+    int   n=0;
+    int   blendtype=0;
+    float window=4096;
+    float level=2048;
+    int   clip=0;
 
   if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
 
+  if (!get_val_param<int>(           blendtype,    p, n)) HelpAndReturnVarPtr;
+
+  if (!get_val_param<float>(         window,    p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>(         level,    p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<int>(           clip,    p, n)) HelpAndReturnVarPtr;
 
   vtkImageData_ptr                vtk_image;
   //  printf("1 \n");
@@ -260,6 +273,9 @@ BasicVariable::ptr wrap_vtkGPURayCasting(ParamList* p)
 
   vtkGPURayCasting volren;
   volren.SetInput(vtk_image.get());
+  volren.SetBlendType(blendtype);
+  volren.SetOpacityMap(window,level);
+  volren.SetClip(clip);
   volren.Display();
   
 

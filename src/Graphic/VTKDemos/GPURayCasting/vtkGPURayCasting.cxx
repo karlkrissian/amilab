@@ -141,6 +141,7 @@ vtkGPURayCasting::vtkGPURayCasting()
   input=NULL;
 }
 
+
 void vtkGPURayCasting::SetInput( vtkImageData* image)
 {
   // not safe, should use smart pointers ...

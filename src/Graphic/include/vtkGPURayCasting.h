@@ -49,6 +49,14 @@
       
       vtkGPURayCasting();
       
+      void SetClip(int val) { clip = val; }
+      void SetBlendType(int val) { blendType = val; }
+      void SetOpacityMap(double win, double level) 
+      { 
+        opacityWindow = win;
+        opacityLevel = level; 
+      }
+
       void SetInput( vtkImageData* image);
     
       bool Display();
