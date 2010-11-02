@@ -334,7 +334,13 @@ protected:
   void CreateVarBook          ( wxWindow*);
   void CreateVarDirCtrl       ( wxWindow*);
   void CreateVarTreePanel     ( wxWindow*);
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
   void CreateVarDataViewPanel ( wxWindow*);
+#endif
+/// @endcond  
+
   void CreateLogText          ( wxWindow*);
   void CreateKeywordsPanel    ( wxWindow*);
   void CreateVarPanel         ( wxWindow*);

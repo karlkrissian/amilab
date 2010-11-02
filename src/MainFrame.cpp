@@ -904,6 +904,8 @@ void MainFrame::OnFileCtrl( wxFileCtrlEvent& event )
 #endif
 ///@endcond
 
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
 //--------------------------------------------------------
 void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 {
@@ -1004,7 +1006,8 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
   CreateVarDirCtrl(this);
 
 } // CreateVarDataViewPanel()
-
+#endif
+/// @endcond 
 //--------------------------------------------------------
 void MainFrame::CreateConsoleText( wxWindow* parent)
 {
