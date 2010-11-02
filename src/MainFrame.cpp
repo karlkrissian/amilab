@@ -1719,6 +1719,8 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   //_var_list->Show();
 }
 
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
 //---------------------------------------------------------------
 void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context)
 {
@@ -1914,7 +1916,8 @@ void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::
   if (!m_amilab_model->HasChildren(vartree_others))
     m_amilab_model->Delete(vartree_others);
 }
-
+#endif
+/// @endcond
 //---------------------------------------------------------------
 void MainFrame::SetProgress( int val )
 {
