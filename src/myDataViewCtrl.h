@@ -25,9 +25,10 @@
     #include "wx/wx.h"
 #endif
 
-#include <wx/dataview.h>
 #include "myDataViewModels.h"
 
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
 // #include <wx/any.h>
 
 //=======================================================
@@ -59,5 +60,8 @@ class myDataViewCtrl: public wxDataViewCtrl
     
     DECLARE_EVENT_TABLE();
 };
+
+#endif
+/// @endcond
 
 #endif // MYDATAVIEWCTRL_H

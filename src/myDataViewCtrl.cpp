@@ -22,6 +22,9 @@ extern MainFrame*    GB_main_wxFrame;
 
 #include "myDataViewCtrl.h"
 
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
+
 //Pop menu: two options ("Write in console" and "About..")
 enum
 {
@@ -170,3 +173,6 @@ void myDataViewCtrl::OnSorted( wxDataViewEvent &event )
 {
   GetColumnPosition( event.GetDataViewColumn() );
 }
+
+#endif
+/// @endcond

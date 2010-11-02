@@ -11,6 +11,9 @@
 //
 
 #include "myDataViewModels.h"
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
 //#include <wx/any.h>
 
 // ----------------------------------------------------------------------------
@@ -452,3 +455,6 @@ wxDataViewItem AMILabTreeModel::GetBuiltinNode() const
 {
   return wxDataViewItem( (void*) m_builtin );
 }
+
+#endif
+/// @endcond

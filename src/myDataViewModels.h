@@ -12,6 +12,11 @@
 #ifndef MYDATAVIEWMODELS_H
 #define MYDATAVIEWMODELS_H
 
+#include <wx/version.h>
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
+
 #include <wx/dataview.h>
 
 #include "myDataViewNodes.h"
@@ -293,5 +298,8 @@ class AMILabTreeModel: public wxDataViewModel
     AMILabTreeModelNode*   m_global;
     AMILabTreeModelNode*   m_builtin;
 };
+
+#endif
+/// @endcond
 
 #endif // MYDATAVIEWMODELS_H
