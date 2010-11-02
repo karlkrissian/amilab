@@ -23,8 +23,8 @@
 #include "wx/treectrl.h"
 
 ///@cond wxCHECK
-#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
-#include "wx/filectrl.h"
+#if (wxCHECK_VERSION(2,9,0) && wxUSE_FILECTRL)
+  #include "wx/filectrl.h"
 #endif
 /// @endcond
 
@@ -57,8 +57,8 @@ class myTreeCtrl;
 //class wxDataViewItem;
 
 ///@cond wxCHECK
-#if (wxCHECK_VERSION(2,9,1))
-#include "myDataViewCtrl.h"
+#if (wxCHECK_VERSION(2,9,0))
+  #include "myDataViewCtrl.h"
 #endif
 /// @endcond
 
@@ -193,7 +193,7 @@ public:
   void UpdateVarTree( const wxTreeItemId& rootbranch, Variables::ptr context);
 
 ///@cond wxCHECK
-#if (wxCHECK_VERSION(2,9,1))
+#if (wxCHECK_VERSION(2,9,0))
   void UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context);
 #endif
 /// @endcond
@@ -267,8 +267,9 @@ protected:
 
   wxAuiNotebook*    _var_book;
   wxPanel*          _vartree_panel;
+
 ///@cond wxCHECK
-#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
+#if (wxCHECK_VERSION(2,9,0) && wxUSE_FILECTRL)
   wxFileCtrl*       _var_fileCtrl;
 #endif
 /// @endcond
@@ -305,7 +306,7 @@ protected:
   wxTreeItemId _vartree_builtin;
 
 ///@cond wxCHECK
-#if (wxCHECK_VERSION(2,9,1))
+#if (wxCHECK_VERSION(2,9,0))
   myDataViewCtrl* _var_dataview;
   wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
 #endif
@@ -342,10 +343,11 @@ protected:
   void CreateSettingsPanel    ( wxWindow*);
 
 ///@cond wxCHECK
-#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
+#if (wxCHECK_VERSION(2,9,0) && wxUSE_FILECTRL)
   void OnFileCtrl( wxFileCtrlEvent& event );  
 #endif
 ///@endcond
+
   void OnFileActivated(wxCommandEvent& event);
 
 private:

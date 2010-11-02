@@ -47,7 +47,8 @@ wxString GetwxStr(const string& str);
 //      wxEnumerationParameter
 //==============================================================================
 
-BEGIN_EVENT_TABLE(myChoice, wxChoice)
+//BEGIN_EVENT_TABLE(myChoice, wxChoice)
+BEGIN_EVENT_TABLE(myChoice, wxComboBox)
   EVT_CHOICE    (wxID_ANY,  myChoice::OnChoiceUpdate)
 END_EVENT_TABLE()
 
