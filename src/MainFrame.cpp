@@ -731,8 +731,6 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
     format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
   }
 
-///@cond wxCHECK
-#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
   _var_fileCtrl = new wxFileCtrl(this,wxID_ANY,
                      wxEmptyString,
                      wxEmptyString,
@@ -742,37 +740,33 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
                      wxDefaultSize
                  );
 
-//   _var_fileCtrl->Connect(wxEVT_FILECTRL_FILEACTIVATED,
-//                          wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
-  _var_book->AddPage(_var_fileCtrl,wxT("Dir"));
-#else
   _var_dirctrl = new wxGenericDirCtrl(this,wxID_ANY,
-                                    wxDirDialogDefaultFolderStr,
-                                    wxDefaultPosition,
-                                    wxDefaultSize,
-                                    wxDIRCTRL_3D_INTERNAL
-                                    |
-                                    //wxBORDER_SUNKEN
-                                    //|
-                                    wxDIRCTRL_SHOW_FILTERS
-                                    #if (wxCHECK_VERSION(2,9,1))
-                                      |
-                                      wxDIRCTRL_MULTIPLE
-                                    #endif // wxCHECK_VERSION(2,9,1)
-                                    ,
-                                    format_choices, // filters
-                                    0 // default filter
-                                    );
+                      wxDirDialogDefaultFolderStr,
+                      wxDefaultPosition,
+                      wxDefaultSize,
+                      wxDIRCTRL_3D_INTERNAL
+                      |
+                      //wxBORDER_SUNKEN
+                      //|
+                      wxDIRCTRL_SHOW_FILTERS
+                      #if (wxCHECK_VERSION(2,9,1))
+                        |
+                        wxDIRCTRL_MULTIPLE
+                      #endif // wxCHECK_VERSION(2,9,1)
+                      ,
+                      format_choices, // filters
+                      0 // default filter
+                      );
 
   // try to allow multiple selections
   //_var_dirctrl->GetTreeCtrl()->SetWindowStyle(_var_dirctrl->GetTreeCtrl()->SetWindowStyle() |wxTR_EXTENDED);
 
   _var_dirctrl->GetTreeCtrl()->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
                                        wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
-  _var_book->AddPage(_var_dirctrl,wxT("Dir"));  
-#endif
-///@endcond
-   
+
+  _var_book->AddPage(_var_dirctrl,wxT("DirCtrl"));
+  _var_book->AddPage(_var_fileCtrl,wxT("FileCtrl"));
+    
   //std::cout << res << std::endl;
   _var_book->Fit();
 
