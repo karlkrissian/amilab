@@ -731,6 +731,8 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
     format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
   }
 
+// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && (wxUSE_FILECTRL))
   _var_fileCtrl = new wxFileCtrl(this,wxID_ANY,
                      wxEmptyString,
                      wxEmptyString,
@@ -739,7 +741,8 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
                      wxDefaultPosition,
                      wxDefaultSize
                  );
-
+#endif
+// @endcond
   _var_dirctrl = new wxGenericDirCtrl(this,wxID_ANY,
                       wxDirDialogDefaultFolderStr,
                       wxDefaultPosition,
@@ -765,8 +768,13 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
                                        wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
 
   _var_book->AddPage(_var_dirctrl,wxT("DirCtrl"));
+
+// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && (wxUSE_FILECTRL)) 
   _var_book->AddPage(_var_fileCtrl,wxT("FileCtrl"));
-    
+#endif
+// @endcond
+
   //std::cout << res << std::endl;
   _var_book->Fit();
 

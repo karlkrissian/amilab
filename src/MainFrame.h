@@ -21,7 +21,11 @@
 
 
 #include "wx/treectrl.h"
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
 #include "wx/filectrl.h"
+#endif
+/// @endcond
 #include <wx/dirctrl.h>
 
 //#include "wx/app.h"
@@ -49,7 +53,11 @@ class myTreeCtrl;
 //class myDataViewCtrl;
 //class AMILabTreeModel;
 //class wxDataViewItem;
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1))
 #include "myDataViewCtrl.h"
+#endif
+/// @endcond
 
 #include "wx/listctrl.h"
 #include "wx/wxhtml.h"
@@ -181,7 +189,11 @@ public:
 
   void UpdateVarTree( const wxTreeItemId& rootbranch, Variables::ptr context);
 
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1))
   void UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context);
+#endif
+/// @endcond
 
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
   wxAuiNotebook* GetParamBook() { return _param_book; }
@@ -284,8 +296,12 @@ protected:
   wxTreeItemId _vartree_global;
   wxTreeItemId _vartree_builtin;
 
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1))
   myDataViewCtrl* _var_dataview;
   wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
+#endif
+/// @endcond
 
 //  wxTreeItemId _vartree_images;
 //  wxTreeItemId _vartree_surfaces;
