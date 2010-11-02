@@ -21,11 +21,13 @@
 
 
 #include "wx/treectrl.h"
+
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
 #include "wx/filectrl.h"
 #endif
 /// @endcond
+
 #include <wx/dirctrl.h>
 
 //#include "wx/app.h"
@@ -53,6 +55,7 @@ class myTreeCtrl;
 //class myDataViewCtrl;
 //class AMILabTreeModel;
 //class wxDataViewItem;
+
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,1))
 #include "myDataViewCtrl.h"
@@ -264,7 +267,12 @@ protected:
 
   wxAuiNotebook*    _var_book;
   wxPanel*          _vartree_panel;
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
   wxFileCtrl*       _var_fileCtrl;
+#endif
+/// @endcond
+
   wxGenericDirCtrl* _var_dirctrl;
   wxBoxSizer*  vartreepanel_sizer;
 
