@@ -394,7 +394,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Caption(wxT("Variables Tree"))
                   .Left().Layer(1)
                   .MaximizeButton(true)
-                  .BestSize(wxSize(200,200)));  
+                  .BestSize(wxSize(200,200)));
 
   CreateLogText(this);
   m_mgr.AddPane(_log_text,
@@ -420,8 +420,10 @@ MainFrame::MainFrame( const wxString& title,
 
     // create some toolbars
   #if (wxCHECK_VERSION(2,9,0)) && !WIN32 && (!__WXMAC__)
-    wxToolBar* tb1 = new wxToolBar(this, wxID_ANY,
-                        wxDefaultPosition, wxDefaultSize);
+    wxAuiToolBar* tb1 = new wxAuiToolBar(this, wxID_ANY,
+                        wxDefaultPosition, wxDefaultSize,
+                        wxAUI_TB_DEFAULT_STYLE |
+                        wxAUI_TB_OVERFLOW);
   #else
     wxAuiToolBar* tb1 = new wxAuiToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize,
@@ -683,7 +685,7 @@ void MainFrame::CreateVarBook ( wxWindow* parent)
 {
    wxSize client_size = GetClientSize();
 
-   _var_book  = new wxAuiNotebook(this, wxID_ANY,
+   _var_book  = new wxAuiNotebook(parent, wxID_ANY,
                                     wxPoint(client_size.x, client_size.y),
                                                 //wxDefaultPosition,
                                     wxDefaultSize,
@@ -733,7 +735,7 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
 
 // @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,1) && (wxUSE_FILECTRL))
-  _var_fileCtrl = new wxFileCtrl(this,wxID_ANY,
+  _var_fileCtrl = new wxFileCtrl(parent,wxID_ANY,
                      wxEmptyString,
                      wxEmptyString,
                      format_choices,
@@ -743,7 +745,7 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
                  );
 #endif
 // @endcond
-  _var_dirctrl = new wxGenericDirCtrl(this,wxID_ANY,
+  _var_dirctrl = new wxGenericDirCtrl(parent,wxID_ANY,
                       wxDirDialogDefaultFolderStr,
                       wxDefaultPosition,
                       wxDefaultSize,
@@ -784,18 +786,19 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
 void MainFrame::CreateVarTreePanel ( wxWindow* parent)
 {
 
-  CreateVarBook(this);
+  CreateVarBook(parent);
 //  CreateDrawingPanel(this);
 //  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
 
 
   // Add TreeList Page to notebook
-  _vartree_panel = new wxPanel(this);
-  
-  vartreepanel_sizer  = new wxBoxSizer( wxVERTICAL );
-  _vartree_panel->SetSizer(vartreepanel_sizer);
+//   _vartree_panel = new wxPanel(this);
+//   
+//   vartreepanel_sizer  = new wxBoxSizer( wxVERTICAL );
+//   _vartree_panel->SetSizer(vartreepanel_sizer);
 
-  _var_tree = new myTreeCtrl( _vartree_panel,
+//   _var_tree = new myTreeCtrl( _vartree_panel,
+  _var_tree = new myTreeCtrl( _var_book,
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
@@ -847,12 +850,12 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   _vartree_global      = _var_tree->AppendItem(_vartree_root,_T("Global"));
   _vartree_builtin     = _var_tree->AppendItem(_vartree_root,_T("Builtin"));
 
-  vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
-  vartreepanel_sizer->Fit(_vartree_panel);
+//   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
+//   vartreepanel_sizer->Fit(_vartree_panel);
 
-  _var_book->AddPage(_vartree_panel,wxT("Tree"));
+  _var_book->AddPage(_var_tree,wxT("Tree"));
 
-  CreateVarDirCtrl(this);
+  CreateVarDirCtrl(parent);
 
 } // CreateVarTreePanel()
 
@@ -909,15 +912,16 @@ void MainFrame::OnFileCtrl( wxFileCtrlEvent& event )
 //--------------------------------------------------------
 void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 {
-  CreateVarBook(this);
+  CreateVarBook(parent);
 
-  _vardataview_panel = new wxPanel(this);
-
-  vardataviewpanel_sizer  = new wxBoxSizer( wxVERTICAL );
-
-  _vardataview_panel->SetSizer(vardataviewpanel_sizer);
+//   _vardataview_panel = new wxPanel(this);
+// 
+//   vardataviewpanel_sizer  = new wxBoxSizer( wxVERTICAL );
+// 
+//   _vardataview_panel->SetSizer(vardataviewpanel_sizer);
   
-  _var_dataview = new myDataViewCtrl( _vardataview_panel,
+//  _var_dataview = new myDataViewCtrl( _vardataview_panel,
+  _var_dataview = new myDataViewCtrl( _var_book,
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
@@ -944,7 +948,7 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
   // column 1 of the view control: Type
   wxDataViewTextRenderer *tr1 =
     new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
-    
+
   wxDataViewColumn *column1 =
       new wxDataViewColumn( "Type", tr1, 1, 100, wxALIGN_LEFT,
                             wxDATAVIEW_COL_RESIZABLE );
@@ -971,7 +975,7 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
   column3->SetMinWidth(250); // this column can't be resized to be smaller
   _var_dataview->AppendColumn( column3 );
 
-  // column 4 of the view control: Var
+//   column 4 of the view control: Var
 //   wxDataViewAnyRenderer *tr4 =
 //     new wxDataViewAnyRenderer(  );
 // 
@@ -979,10 +983,10 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 //       new wxDataViewColumn( "Variable", tr4, 4, 250, wxALIGN_LEFT,
 //                             wxDATAVIEW_COL_HIDDEN );
 //   column4->SetMinWidth(250); // this column can't be resized to be smaller
-//   //column4->SetHidden(true);
+  //column4->SetHidden(true);
 //     _var_dataview->AppendColumn( column4 );
 
-  _var_dataview->SetWindowStyle(_var_dataview->GetWindowStyle());
+  //_var_dataview->SetWindowStyle(_var_dataview->GetWindowStyle());
 
   wxFont font(10,wxMODERN,wxNORMAL,wxNORMAL);
 
@@ -992,18 +996,16 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
      _var_dataview->SetFont(*wxSMALL_FONT);
    _var_dataview->SetIndent(2);
 
-  //_var_dataview->Expand( m_amilab_model->GetRootNode() );
-
-  vardataviewpanel_sizer->Add(_var_dataview,
-                              1,
-                              wxEXPAND,   // make vertically stretchable and make border all around
-                              5);             // set border width to 5
-
-  vardataviewpanel_sizer->Fit(_vardataview_panel);
+//   vardataviewpanel_sizer->Add(_var_dataview,
+//                               1,
+//                               wxEXPAND,   // make vertically stretchable and make border all around
+//                               5);         // set border width to 5
+// 
+//   vardataviewpanel_sizer->Fit(_vardataview_panel);
 
   _var_book->AddPage(_var_dataview,wxT("Tree"));
 
-  CreateVarDirCtrl(this);
+  CreateVarDirCtrl(parent);
 
 } // CreateVarDataViewPanel()
 #endif
