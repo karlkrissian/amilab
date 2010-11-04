@@ -173,7 +173,7 @@ wxString wxEnumerationParameter::GetStringSelection()
 //----------------------------------------------
 void wxEnumerationParameter::SetSelection( int n)
 {
-  this->_choice->SetSelection(n);
+  this->_choice->SetSelection(n,n);
   this->OnEnumUpdate(this);
 }
 
@@ -181,7 +181,7 @@ void wxEnumerationParameter::SetSelection( int n)
 void wxEnumerationParameter::Update()
 {
   if (this->_parameter!=NULL)
-    this->_choice->SetSelection(*this->_parameter);
+    this->_choice->SetSelection(*this->_parameter,*this->_parameter);
   //  this->SetSelection(*this->_parameter);
 
   if (this->_selection_param.get()) {

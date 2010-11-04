@@ -20,6 +20,7 @@ using namespace amilab;
 #include "vtk_common.h"
 
 #include "wrap_SurfacePoly.h"
+#include "vtkGPURayCasting.h"
 
 extern VarContexts  Vars;
 
@@ -63,7 +64,8 @@ void AddWrapVTK()
 
   ADDVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
   ADDVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
-  ADDVAR_NAME(C_wrap_varfunction,    "vtkSphere",            Wrap_vtkSphere);
+  ADDVAR_NAME( C_wrap_varfunction,   "vtkSphere",            Wrap_vtkSphere);
+  ADDVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     wrap_vtkGPURayCasting);
 
 }
 
@@ -230,3 +232,54 @@ BasicVariable::ptr Wrap_vtkSphere( ParamList* p)
 
 } // Wrap_vtkSphere()
 
+
+
+/** Read a 3D Flow from an ASCII file **/
+BasicVariable::ptr wrap_vtkGPURayCasting(ParamList* p)
+{
+
+  char functionname[] = "vtkCPURayCasting";
+  char description[]=" \n\
+      GPU Ray Casting with VTK 5.6\n\
+      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+              input image\n\
+              int   blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->RGB_Composite\n\
+              float opacitywindow\n\
+              float opacitylevel\n\
+              int clip 0|1 \n\
+      ";
+    
+    InrImage* input;
+    int   n=0;
+    int   blendtype=0;
+    float window=4096;
+    float level=2048;
+    int   clip=0;
+
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
+
+  if (!get_val_param<int>(           blendtype,    p, n)) HelpAndReturnVarPtr;
+
+  if (!get_val_param<float>(         window,    p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>(         level,    p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<int>(           clip,    p, n)) HelpAndReturnVarPtr;
+
+  vtkImageData_ptr                vtk_image;
+  //  printf("1 \n");
+  vtk_image = (vtkImageData_ptr) (*input);
+  //    printf("2 \n");
+
+  vtkGPURayCasting volren;
+  volren.SetInput(vtk_image.get());
+  volren.SetBlendType(blendtype);
+  volren.SetOpacityMap(window,level);
+  volren.SetClip(clip);
+  volren.Display();
+  
+
+  return BasicVariable::ptr();
+
+  
+} // Wrap_vtkSkeleton2Lines()

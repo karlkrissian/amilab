@@ -60,7 +60,7 @@ VARTYPE_PROP( int,                  type_int,             true);
 VARTYPE_PROP( unsigned char,        type_uchar,           true)
 VARTYPE_PROP( std::string,          type_string,          false)
 //VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
-VARTYPE_PROP( FILE,                 type_file,            false)
+//VARTYPE_PROP( FILE,                 type_file,            false)
 VARTYPE_PROP( C_wrap_procedure,     type_c_procedure,     false)
 VARTYPE_PROP( WrapClassMember,      type_class_member,    false)
 VARTYPE_PROP( C_wrap_imagefunction, type_c_image_function,false)

@@ -77,7 +77,7 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
     case type_uchar           : o << "uchar    "; break;
     case type_string          : o << "string   "; break;
     case type_surfdraw        : o << "surfdraw "; break;
-    case type_file            : o << "file     "; break;
+  //  case type_file            : o << "file     "; break;
   //  case type_c_function      : o << ("C function ";       break;
     case type_c_procedure     : o << "C procedure ";       break;
     case type_class_member : o << "C++ procedure member";       break;

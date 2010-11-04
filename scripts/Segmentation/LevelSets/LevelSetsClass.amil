@@ -592,7 +592,7 @@ if (!exists(LevelSetsClass)) {
             ::UpdateViewer()
             ProcessXEvents(100)
           }
-          SetProgress(n/it*100)
+          SetProgress((FLOAT)n/it*100.0)
           if (::check_convergence) {
             if ((n % ::conv_freq) == 0) {
               # check for convergence

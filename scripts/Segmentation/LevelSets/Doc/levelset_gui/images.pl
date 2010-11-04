@@ -16,7 +16,7 @@ $cached_env_img{$key} = q|<IMG
  WIDTH="141" HEIGHT="45" BORDER="0"
  SRC="|."$dir".q|img1.png"
  ALT="\begin{displaymath}
-\left\{ \begin{array}{lcl} u(0) &amp;=&amp; u_0 \ %
+\left\{ \begin{array}{lcl} u(0) &amp;=&amp; u_0  %
 \frac{\partial u}{\partial t} &amp;=&amp; F \Vert \nabla u \Vert \end{array} \right.
 \end{displaymath}">|; 
 
