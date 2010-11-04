@@ -20,10 +20,12 @@ if (!exists(Subpixel2DClass)){
       ::average     = UCHAR(0),          "Average the input image"
       ::show_average= UCHAR(0),          "Show the averaged image"
       ::dynamic     = UCHAR(0),          "Use a dynamic window"
+      ::subden      = UCHAR(0),          "Use subpixel denoising restoration"
       ::linear      = UCHAR(0),          "First or second order"
       ::reload      = UCHAR(0),          "Reload automatically"
       ::normals     = UCHAR(0),          "Draw edge normals"
       ::change      = UCHAR(0),          "Change contour's default values"
+      ::niter       = INT(10),            "Number of iterations for subpixel denoising"
       ::alg_type    = INT(0),            "Sub-pixel 2D algorithm type"
       #Edge parameters
       ::Ered        = INT(255),          "Red contour value"
@@ -308,6 +310,10 @@ if (!exists(Subpixel2DClass)){
       if (exists(::sp2D)) { del ::sp2D; }
       #Build a SubPixel2D object
       ::sp2D = ::import->SubPixel2D(&::norm_input,::threshold,::linear)
+      if(::subden==1) {
+        ::res = ::sp2D->SubpixelDenoising(::niter);
+        ::s_method = "Subpixel denoising"
+      }
       if(::average==0 && ::show_average==0 && ::dynamic==0) {
         ::res = ::sp2D->SuperGradienteCurvo()
         ::s_method = "Basic method"
@@ -408,6 +414,16 @@ if (!exists(Subpixel2DClass)){
     
     #-----------------------
     
+    proc ::CheckSD() {
+      if(::subden == 1) {
+        ::win.EnablePanel(::niter_panel,1)
+      } else {
+        ::win.EnablePanel(::niter_panel,0)
+      }
+    }
+    
+    #-----------------------
+    
     proc ::CreateGui() {
       ::import = &global::ami_import;
       ::win = ::import->ParamPanel("Subpixel 2D")
@@ -434,6 +450,12 @@ if (!exists(Subpixel2DClass)){
             ::win.AddBoolean(&::dynamic, "Dynamic window")
             ::win.SetCallback(&::CheckAverage)
             ::win.AddBoolean(&::normals, "Draw normals")
+            ::win.AddBoolean(&::subden, "SubpixelDenoising")
+            ::win.SetCallback(&::CheckSD)
+            ::niter_panel = ::win.BeginBoxPanel("Num. iterations")
+              ::win.AddInt(&::niter, "Niter", 1, 100)
+            ::win.EndBoxPanel()
+            ::win.EnablePanel(::niter_panel, 0)
             ::icons.LoadIconPNG("Play")
             ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
           ::win.EndBoxPanel()

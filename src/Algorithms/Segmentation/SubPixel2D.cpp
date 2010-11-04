@@ -22,6 +22,8 @@ using namespace std;
 #include "DessinImage.hpp"
 #include "wrap_DessinImage.h"
 #include "wrap_wxColour.h"
+#include "AnalyticLine.h"
+#include "ComputePartialVolume.h"
 #include <wx/colour.h>
 
 //Type of edge: Vertical or horizontal (based on the maximum partial)
@@ -993,3 +995,359 @@ void SubPixel2D::DenoisingGus()
   } //End y for
 }
 
+
+//---------------------------------------------
+// RESTORATION
+//---------------------------------------------
+
+//Versión con la ventana fija de 9x3. Restauración básica de imágenes
+//Voy a tener dos funcioncitas. Una, la que es la de restaurar imagen, se va a
+//llamar SubpixelDenoising (como dijo Agustín) y una que auxiliar que usa, como
+//en el pseudo-código de la tesis se llama ActualizarImágenes le voy a poner
+//UpdateImages. También usa una función para calcular el módulo del gradiente
+//que se llama CalculaModGrad. Voy a ponerle ComputeModGrad
+
+//Compute the gradient module
+//void ComputeModGrad(InrImage* G, InrImage* Grad)
+//{
+//  float parx, pary, partial;
+//  int z = 0;
+//  //Pointers to the indexes of the partials
+//  int *u,*v;
+//  //Indexes of the partials
+//  int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0};
+//  int vpos[] = { -1,-3, 0,-2, 2, 0, 3, 1};
+//  
+//  for (int y = 1; y < G->DimY()-1; y++)
+//  {
+//    for (int x = 1; x < G->DimX()-1; x++)
+//    {
+//      //Search the maximum partials in row/column
+//      pary = ffy(x,y,z);
+//      parx = ffx(x,y,z);
+//      if (fabs(pary) >= fabs(parx))
+//      {
+//        partial = pary;
+//        if (y > 1) 
+//        { 
+//          if (partial<=fabs(ffy(x,y-1,z))) continue; 
+//        }
+//        else 
+//          if (2*fabs(ffyd(x,y,z))<=fabs(ffyd(x,y-1,z))) continue;
+//        if (y < ny-2) 
+//        { 
+//          if (partial<fabs(ffy(x,y+1,z))) continue; 
+//        }
+//	   		else 
+//          if (2*fabs(ffyu(x,y,z))<fabs(ffyu(x,y+1,z))) continue;
+//      }
+//      else
+//      {
+//        partial = parx;
+//        if (x > 1) 
+//        { 
+//          if (partial<=fabs(ffx(x-1,y,z))) continue; 
+//        }
+//        else 
+//          if (2*fabs(ffxr(x,y,z))<=fabs(ffxr(x-1,y,z))) continue;
+//        if (x < nx-2) 
+//        { 
+//          if (partial<fabs(ffx(x+1,y,z))) continue; 
+//        }
+//	   		else 
+//          if (2*fabs(ffxl(x,y,z))<fabs(ffxl(x+1,y,z))) continue;
+//      }
+//    }
+//    //Save the square gradient module
+//    Grad->BufferPos(x, y, z);
+//    Grad->FixeValeur(parx*parx + pary*pary);
+//  }
+//}
+
+void UpdateImages(InrImage* input, InrImage* C, InrImage* I, int x, int y, int z, 
+                  unsigned char edgeCase, vector<borderPixel> &borderPixelVector,
+                  int linear_case)
+{
+  int *u, *v;
+  int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Partials
+                 0, 1, 1, 0,-1,-1,              //A and B
+                 -1,-1,-1,-1,-1,-1,-1,          //Sums of the columns 
+                 0, 0, 0, 0, 0, 0, 0, 
+                 1, 1, 1, 1, 1, 1, 1 };
+  int vpos[] = { 1,-1,-1,-3, 0,-2, 2, 0, 3, 1,	//Partials
+                 4, 3, 4,-4,-3,-4,              //A and B
+                -2,-1, 0, 1, 2, 3, 4,           //Sums of the columns
+                -3,-2,-1, 0, 1, 2, 3,	
+                -4,-3,-2,-1, 0, 1, 2 };
+  borderPixel pixel;
+  double A, B, S1, S2, S3;
+  double a, b, c, d;
+  double gx_n, gy_n, des_n, cu_n, abscu;
+  double f = (1+24*A01+48*A11) / 12;
+  int m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
+  
+  if (edgeCase == YMAX)
+  {
+    u = upos;
+    v = vpos;
+    B = ((double) FF(x-m,y-3,z) + FF(x-m,y-4,z) + FF(x,y-4,z)) / 3.0;
+    A = ((double) FF(x,y+4,z) + FF(x+m,y+4,z) + FF(x+m,y+3,z)) / 3.0;
+  }
+  else 
+  {
+    u = vpos;
+    v = upos;
+    B = ((double) FF(x-3,y-m,z) + FF(x-4,y-m,z) + FF(x-4,y,z)) / 3.0;
+    A = ((double) FF(x+4,y,z) + FF(x+4,y+m,z) + FF(x+3,y+m,z)) / 3.0;
+  }
+  S1 = S2 = S3 = 0.0;
+  for (int t=-3; t<=3; t++) 
+  {
+    S1 += FF(x+u[19+t],y+v[19+t],z);
+    S2 += FF(x+u[26+t],y+v[26+t],z);
+    S3 += FF(x+u[33+t],y+v[33+t],z);
+  }
+  
+  //Calculate the coefficients of the parable
+  a = (2*S2 - 7*(A+B)) / (2*(A-B));
+  b = 1.0 + (S3-S1) / (2*(A-B));
+  c = (linear_case) ? 0 : (S3+S1-2*S2) / (2*(A-B)); //In 1st order, c=0
+  a -= f * c;
+  
+  //Calculate curvature
+  cu_n  = sqrt (1+b*b);
+  cu_n *= cu_n * cu_n;
+  cu_n  = 2*c / cu_n;
+  abscu = fabs(cu_n);
+  
+  //Calculate gradient and displacement
+  d = (A-B) / sqrt(1+b*b);
+  if (edgeCase==YMAX) 
+  {
+    gx_n  = (ffx(x,y,z)>0) ? b*d : -b*d;
+    gy_n  = (ffy(x,y,z)>0) ? d   : -d;
+    des_n = (ffy(x,y,z)>0) ? -a  : a;
+  } 
+  else 
+  {
+    gx_n  = (ffx(x,y,z)>0) ? d   : -d;
+    gy_n  = (ffy(x,y,z)>0) ? b*d : -b*d; 
+    des_n = (ffx(x,y,z)>0) ? -a  : a;
+  }  
+  
+  //The sign of the curvature change based on partial value
+  if (edgeCase == YMAX && ffy(x,y,z)<0) cu_n = -cu_n;
+  if (edgeCase == XMAX && ffx(x,y,z)<0) cu_n = -cu_n;
+  
+  //Set the calculated values on the borderPixel object
+  pixel.setBorderPixelValues(A, B, edgeCase, a, b, c, cu_n, x, y);
+  //Add edge pixel to the vector
+  borderPixelVector.push_back(pixel);
+  
+  //Ahora hay que calcular la imagencita nueva  con las intensidades. Voy a usar
+  //la función que nos hicimos pa generar una imagen sintética. Mi imagen ahora será
+  //de 9x3 y el ángulo será el que venga dado por la inversa de la pendiente 
+  //(ojo con el signo)
+  ComputePV pv;
+  double alpha = (atan(b)*180)/M_PI;
+  //tengo que calcular en grados, porque atan me lo da en radianes
+//  line.setAngle(alpha);
+  AnalyticFunctionBase::ptr line = AnalyticLine::ptr(new AnalyticLine(alpha,a,1));
+  InrImage::ptr in;
+  InrImage::ptr res;
+  if (edgeCase == YMAX) 
+  {
+    in  = InrImage::ptr(new InrImage(3,9,1,WT_FLOAT,"in.inr.gz"));
+  }
+  else 
+  {
+    in  = InrImage::ptr(new InrImage(9,3,1,WT_FLOAT,"in.inr.gz"));
+  }
+  pv.setInputImage(in);
+  pv.setAnalyticFunction(line);
+  res = pv.ComputeAnalyticPartialSurfaceSubdiv(A, B);
+  //Ahora hay que meter en I y en C lo que corresponde
+  //Esto habrá que hacerlo mejor por el rollo de la ventana escalonada
+  //ventana vertical
+  int weight = 100; //Para acelerar las iteraciones (converja más rápido)
+  if (edgeCase == YMAX)
+  {
+    int px = 1; int py = 4;
+    for (int i=-1;i<=1;i++)
+    {
+      for (int j=-4;j<=4;j++)
+      {
+        //Se mete la imagen en la imagen de intensidad y se incrementa la imagen
+        //de contadores
+        I->BufferPos(x+i,y+j,z);
+        C->BufferPos(x+i,y+j,z);
+        if (i==0) //La columna central tiene más peso
+        {
+          I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z)*weight);
+          C->FixeValeur(((*C)(x+i,y+j,z)) + weight);
+        }
+        else
+        {
+          I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z));
+          C->FixeValeur(((*C)(x+i,y+j,z)) + 1);
+        }
+       
+      }
+    }
+  }
+  else //ventana horizontal
+  {
+    int px = 4; int py = 1;
+    for (int i=-4;i<=4;i++)
+    {
+      for (int j=-1;j<=1;j++)
+      {
+        I->BufferPos(x+i,y+j,z);
+        C->BufferPos(x+i,y+j,z);
+        if (j==0) //La fila central tiene más peso
+        {
+          I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z)*weight);
+          C->FixeValeur((*C)(x+i,y+j,z) + weight);
+        }
+        else 
+        {
+          I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z));
+          C->FixeValeur((*C)(x+i,y+j,z) + 1);
+        }
+      }
+    }
+  }
+ 
+}
+
+void copyImage(InrImage* input, InrImage::ptr output)
+{
+  int z = 0;
+  for(int x=0;x<input->DimX();x++)
+  {
+    for(int y=0;y<input->DimY();y++)
+    {
+      input->BufferPos(x, y, z);
+      input->FixeValeur((*output)(x,y,z));
+    }
+  }
+}
+
+void SubPixel2D::SubpixelDenoising(int niter)
+{
+  int margin = 4;
+//  cout << "entro en SubpixelDenoising" << endl;
+  //Crear imagen de contadores y de intensidades e inicializarlas a cero
+  InrImage::ptr C = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
+                                               input->DimZ(), WT_DOUBLE,
+                                               "counters.inr.gz"));
+  InrImage::ptr I = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
+                                               input->DimZ(), WT_DOUBLE,
+                                               "intensities.inr.gz"));
+  InrImage::ptr G = InrImage::ptr(new InrImage(input->DimX(), input->DimY(),
+                                               input->DimZ(), WT_DOUBLE,
+                                               "averaged.inr.gz"));
+//  InrImage::ptr Grad = InrImage::ptr(new InrImage(input->DimX(), input->DimY(),
+//                                                  input->DimZ(), WT_DOUBLE,
+//                                                  "modgrad.inr.gz"));
+  //For third dimension
+  int z = 0;
+  //Partial derivatives
+  float parx, pary, partial;
+  //Pointers to the indexes of the partials
+  int *u,*v;
+  //Indexes of the partials
+  int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0};
+  int vpos[] = { -1,-3, 0,-2, 2, 0, 3, 1};	 
+  vector<borderPixel> vecaux; //Vector auxiliar para las iteraciones
+  
+  //Pa' probar por ahora, hay q poder pillar el niter que diga el user
+  for(int index=0; index<niter; index++)
+  {
+//    cout << "index = " << index << endl;
+    C->InitZero();
+    I->InitZero();
+    G->InitZero();
+//    cout << "inicializo a cero las imágenes" << endl;
+    //  Grad->InitZero();
+    
+    //1º Se promedia la imagen de entrada y se deja en G
+    Promedio3x3(G.get(), (double)1/9, (double)1/9, (double)1/9);
+//    cout << "hago el promediado" << endl;
+    
+    //Para que funcionen las macros de parciales tengo que jincar G como input
+    //setInput(G.get());
+    copyImage(input, G);
+    //2º Se calcula el gradiente
+    //ComputeModGrad(G, Grad);
+    //Para todos los pixels de G
+    //Habría que cargarse los pixels que estuvieran en borderPixelVector de una iteracion anterior
+    if (index!=0 && vecaux.size()!=0) 
+    {
+      //Me aseguro que en borderPixelVector siempre tengo bordes y no me los estoy cargando
+      borderPixelVector = vecaux;
+      vecaux.erase(vecaux.begin(), vecaux.end());
+    }
+   
+//    cout << "me cepillo en borderPixelVector" << endl;
+    for(int y = margin; y < G->DimY()-margin; y++)
+    {
+//      cout << "\ty = " << y << endl;
+      for(int x = margin; x < G->DimX()-margin; x++)
+      {
+//        cout << "\t\tx = " << x << endl;
+        pary = ffy(x,y,z);
+        parx = ffx(x,y,z);
+//        cout << "producto de las parciales" << parx*parx+pary*pary << endl;
+//        cout << "valor de la imagen en (" << x << ", " << y << ") = " << (*input)(x,y,z) << endl;
+        if (parx*parx + pary*pary < threshold*threshold) continue;
+        if (fabs(pary) >= fabs(parx))
+        {
+          partial = pary;
+          //Vertical window
+          u = upos;
+          v = vpos;
+          //Is it maximum in the column?
+          if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
+          if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
+          if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
+          if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
+//          cout << "la parcial máxima es en y. Voy a llamar a UpdateImages" << endl;
+          UpdateImages(input, C.get(), I.get(), x, y, z, YMAX, vecaux,
+                       linear_case);
+//          cout << "vuelvo de update images en parcial máxima y." << endl;
+        }
+        else
+        {
+          partial = parx;
+          //Horizontal window
+          u = vpos;
+          v = upos;
+          //Is it maximum in the row?
+          if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
+          if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
+          if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
+          if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
+//          cout << "la parcial máxima es en x. Voy a llamar a UpdateImages" << endl;
+          UpdateImages(input, C.get(), I.get(), x, y, z, XMAX, vecaux,
+                       linear_case);
+//          cout << "vuelvo de update images en parcial máxima x." << endl;
+        }
+      }
+    }
+    //Con las imágenes resultantes, se rellena la nueva imagen de entrada
+    for (int y = margin; y < G->DimY()-margin; y++)
+    {
+      for (int x = margin; x < G->DimX()-margin; x++)
+      {
+        if ((*C)(x,y,z) > 0)
+        {
+          input->BufferPos(x,y,z);
+          input->FixeValeur((*I)(x,y,z)/(*C)(x,y,z));
+//          cout << "valor final que meto: " << (*I)(x,y,z)/(*C)(x,y,z) << endl;
+        }
+      }
+    }
+  }
+//  cout << "salgo de SubpixelDenoising" << endl;
+}

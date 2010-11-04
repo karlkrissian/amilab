@@ -41,6 +41,8 @@ public:
                    "Compute subpixel method in a 2D noisy image.");
   ADD_CLASS_METHOD(DenoisingGus,
                    "Compute subpixel method for near-edge images (2D).");
+  ADD_CLASS_METHOD(SubpixelDenoising,
+                   "Compute the image restoration (2D).");
   ADD_CLASS_METHOD(drawBorder,
                    "Draw the subpixel border.");
   
@@ -49,6 +51,7 @@ public:
     AddVar_SuperGradienteCurvo(         this_ptr);
     AddVar_SuperGradienteGaussianoCurvo(this_ptr);
     AddVar_DenoisingGus(                this_ptr);
+    AddVar_SubpixelDenoising(           this_ptr);
     AddVar_drawBorder(                  this_ptr);
   }
 };

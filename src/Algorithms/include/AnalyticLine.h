@@ -21,7 +21,7 @@ class AnalyticLine : public AnalyticFunctionBase {
   
 private:
   /** Normal of the line, cut point on 'y' axis and angle */
-  float m[2], _n, angle;
+  float m[2], _n, angle, xc;
   
 public:
   /**
@@ -29,7 +29,7 @@ public:
    *  @param angle Line angle. Default 45.0.
    *  @param n Cut point value. Default 50.0.
    */
-  AnalyticLine(float angle = 45.0, float n = 50.0);
+  AnalyticLine(float angle = 45.0, float n = 50.0, float xcen = 50);
   
   ~AnalyticLine();
   
@@ -66,6 +66,9 @@ public:
    *  @return float The cut point value.
    */
   float get_n();
+  
+  void setXC(float xcen);
+  float getXC();
 };
 
 #endif

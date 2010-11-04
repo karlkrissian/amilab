@@ -185,6 +185,11 @@ public:
    */
   void DenoisingGus();
   
+  void SubpixelDenoising(int niter);
+  
+//  void UpdateImages(InrImage* C, InrImage* I, int x, int y, int z, 
+//                    unsigned char edgeCase, vector<borderPixel> borderPixelVector);
+  
   /**
    *  This procedure optimize the second order edges.
    *  @param a         The 'a' coefficient of the curve.

@@ -10,9 +10,10 @@
 //AnalyticLine methods
 //---------------------------------------------------
 //Constructor
-AnalyticLine::AnalyticLine(float alpha, float n)
+AnalyticLine::AnalyticLine(float alpha, float n, float xcen)
 {
   _n   = n;
+  xc = xcen;
   setAngle(alpha);
 }
 
@@ -22,7 +23,7 @@ AnalyticLine::~AnalyticLine(){}
 //Redefinition of the operator parenthesis
 double AnalyticLine::operator () (const double& x, const double& y, const double& z) const
 {
-  double xaux = x-50;
+  double xaux = x-xc;
   return m[0]*xaux + m[1]*(y - _n);
 }
 
@@ -104,5 +105,15 @@ void AnalyticLine::set_n(float n)
 float AnalyticLine::get_n()
 {
   return _n;
+}
+
+//Set and get the x central point
+void AnalyticLine::setXC(float xcen)
+{
+  xc = xcen;
+}
+float AnalyticLine::getXC()
+{
+  return xc;
 }
 

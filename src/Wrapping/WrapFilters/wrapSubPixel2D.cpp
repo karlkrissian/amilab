@@ -280,6 +280,93 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_DenoisingGus
   return result;
 }
 
+
+//---------------------------------------------------
+//SubpixelDenoising
+void WrapClass_SubPixel2D::wrap_SubpixelDenoising
+                         ::SetParametersComments()
+{
+  return_comments = "Returns an AMIObject with parameters inside 1D images.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_SubPixel2D::wrap_SubpixelDenoising
+                                       ::CallMember(ParamList* p)
+{
+  SubPixel2D::ptr sp(this->_objectptr->GetObj());
+  int n = 0;
+  int niter;
+  
+  if (!get_val_param<int>(niter, p, n)) ClassHelpAndReturn;
+  
+  //sp->Promedio3x3(output.get(), (double)1/9, (double)1/9, (double)1/9);
+  
+  //sp->setInput(output.get());
+  
+  //sp->DenoisingGus();
+  
+  sp->SubpixelDenoising(niter);
+  
+//  InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE, 
+//                                                    "output.ami.gz",
+//                                                    sp->getInput()));
+  
+  //Create the AMIObject with the result
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("SubpixelDenoising2D");
+  int size = sp->getBorderPixelVector().size();
+  cout << "el tamaño del vector es " << size << endl;
+  //InrImages for params
+  InrImage::ptr AIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "aintensity.inr.gz"));
+  InrImage::ptr BIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "bintensity.inr.gz"));
+  InrImage::ptr border     = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_CHAR,
+                                                        "border.inr.gz"));
+  InrImage::ptr a          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "acoef.inr.gz"));
+  InrImage::ptr b          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "bcoef.inr.gz"));
+  InrImage::ptr c          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "ccoef.inr.gz"));
+  InrImage::ptr curvature  = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "curvature.inr.gz"));
+  InrImage::ptr posx       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+                                                        "xpos.inr.gz"));
+  InrImage::ptr posy       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+                                                        "ypos.inr.gz"));
+  
+  //Fill InrImages
+  sp->fillImages(AIntensity, BIntensity, border, a, b, c, curvature, 
+                 posx, posy);
+  //Add to amiobject
+//  InrImage::ptr output(sp->getInput());
+//  amiobject->GetContext()->AddVar<InrImage>("restored", output,
+//                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("bintensity", BIntensity,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("border", border,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("acoef", a,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("bcoef", b,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("ccoef", c,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("curvature", curvature,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("xpos", posx,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("ypos", posy,
+                                            amiobject->GetContext());
+
+  Variable<AMIObject>::ptr result(
+      new Variable<AMIObject>(amiobject));
+  return result;
+}
+
+
 //---------------------------------------------------
 //drawBorder
 void WrapClass_SubPixel2D::wrap_drawBorder::SetParametersComments()
