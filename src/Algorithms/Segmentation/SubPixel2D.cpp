@@ -183,7 +183,7 @@ void SubPixel2D::OptimizarParabola (double &a, double &b, double &c,
     c         = -c;
   }	
   
-  //Save orginal values returned by the method
+  //Save original values returned by the method
   a0 = a; b0 = b; c0 = c;
   
 	
@@ -712,6 +712,10 @@ void SubPixel2D::DenoisingGus()
   float par0, par1;
   //Limits of the window
   int l1, l2, m1, m2, r1, r2;
+  //Limits for read from the image
+  int ll1, ll2, mm1, mm2, rr1, rr2;
+  //Second border near flags
+  bool bor2u, bor2d;
   //Sums (columns or rows)
   double SL, SM, SR;
   //Coefficients of the curve
@@ -826,8 +830,98 @@ void SubPixel2D::DenoisingGus()
           B = (FF(x,y+m1,z) + FF(x+1,y+r1,z)) / 2;
         }
         
+        //Ahora hay que mirar si hay un segundo borde muy cercano (caso 2 y 3 px)**********************
+        //Initialize the image limits
+        ll1 = l1; mm1 = m1; rr1 = r1;
+        ll2 = l2; mm2 = m2; rr2 = r2;
+        bor2d = bor2u = false;
+        int i1, i2, j1, j2;
+        double par0;
+        if (partial > 2*fabs(parx))
+        {
+          i1 = i2 = 0;
+          j1 = m1;
+          j2 = m2;
+        }
+        else 
+        {
+          i1 = -m;
+          i2 = m;
+          if (m>0)
+          {
+            j1 = l1;
+            j2 = r2;
+          }
+          else 
+          {
+            j1 = r1;
+            j2 = l2;
+          }
+        }
+        if (j1>-4 && y+j1-2>=0)
+        {
+          par0 = (y+j1-2>0) ? ffy(x+i1,y+j1-2,z) : ffyd(x+i1,0,z);
+          par0 = fabs(par0);
+          if (par0 > partial/4 && par0>threshold)
+          {
+            bor2u = true; //There is a 2nd near border up
+            if (m>0) //NECESITO LA IMAGEN ORIGINAL, TENGO QUE CAMBIAR COSAS!!!! original es rimt en el código de Agustín
+              B = (*original)(x,y+m1,z) + (*original)(x-1,y+l1,z)/2;
+            else 
+              B = (*original)(x,y+m1,z) + (*original)(x+1,y+r1,z)/2;
+          }
+        }
+        if (j2<4 && y+j2+2<=input->DimY()-1)
+        { //Revisar las parciales, ahora no sé si tengo que coger la promediada o la de entrada :-S
+          par0 = (y+j2+2<input->DimY()-1) ? ffy(x+i2,y+j2+2,z) : ffyu(x+i2,input->DimY()-1);
+          par0 = fabs(par0);
+          if (par0>partial/4 && par0>threshold)
+          {
+            bor2d = true; //There is a 2nd near border down
+            if (m>0)
+              A = (*original)(x,y+m2,z) + (*original)(x+1,y+r2,z)/2;
+            else
+              A = (*original)(x,y+m2,z) + (*original)(x-1,y+l2,z)/2;
+          }
+        }
+        
         //If the intensity jump is less than the threshold, continue
-        if (fabs(A-B) < threshold) continue;
+        //if (fabs(A-B) < threshold) continue; CUIDADO, COMENTÉ ESTO POR LO QUE PUSE DEBAJO!!
+        //jinqué el 10 porque si, en la interfaz de agustín pregunta por este umbral chico!!!!
+        if (fabs(A-B) < 10) continue;
+        //numbordes++;
+        
+        //Si hay un borde cercano crearemos una nueva subimagen a partir de la original
+        //que luego suavizaremos para calcular el contorno
+        if (bor2d || bor2u)
+        {
+          //Mi nueva imagencita sintética 11x5
+          InrImage::ptr synthetic11x5 = InrImage::ptr(new InrImage(11,5,1,WT_DOUBLE,"11x5.inr.gz"));
+          //Usando imagen original (AQUÍ ME PIERDO UN POCO EN EL CÓDIGO DE AGUSTÍN, VOY A GUIARME POR LA TESIS PAG. 176 EN ADELANTE)
+//          int mini,minj,maxi,maxj;
+//          minj = (y>4) ? -5 : -y;
+//          maxj = (y<input->DimY()-5) ? 5 : input->DimY()-1-y;
+//          if (x==1)
+//          {
+//            mini = -1;
+//            for(int j=minj; j<=maxj; j++)
+//            {
+//              
+//            }
+//          }
+//          else 
+//            mini = -2;
+          
+          //volvemos a usar la imagen suavizada
+          
+          //El pseudocódigo dice:
+          //Si contorno superior o contorno inferior:
+          //crear una imagen F' centrada en (i,j) copiando los píxeles de F
+          //si contorno superior actualizar B en la zona superior de F'
+          //si contorno inferior actualizar A en la zona inferior de F'
+          //suavizar F' para obtener G'
+          //Calcular parábola P según el Lema 6.1 a partir de la imagen G'
+        }
         
         //Calculate the sums of the columns
         for (SL=0, k=l1; k<=l2; k++) 
@@ -863,6 +957,9 @@ void SubPixel2D::DenoisingGus()
         
         //Set values on the borderPixel object
         pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu, x, y);
+        cout << "estoy entrando aquí (" << x << ", " << y << ")" << "a=" << a << " b=" << b << " c=" << c << endl;
+        if(x==48 && y==50)
+          pixel.printBorderPixel(linear_case);
         //Add edge pixel to the vector
         borderPixelVector.push_back(pixel);
         
@@ -987,6 +1084,7 @@ void SubPixel2D::DenoisingGus()
         
         //Set values on the borderPixel object
         pixel.setBorderPixelValues(A, B, XMAX, a, b, c, cu, x, y);
+        cout << "estoy entrando aquí (" << x << ", " << y << ")" << "a=" << a << " b=" << b << " c=" << c << endl;
         //Add edge pixel to the vector
         borderPixelVector.push_back(pixel);
         
@@ -1002,67 +1100,9 @@ void SubPixel2D::DenoisingGus()
 
 //Versión con la ventana fija de 9x3. Restauración básica de imágenes
 //Voy a tener dos funcioncitas. Una, la que es la de restaurar imagen, se va a
-//llamar SubpixelDenoising (como dijo Agustín) y una que auxiliar que usa, como
+//llamar SubpixelDenoising (como dijo Agustín) y una auxiliar que usa, como
 //en el pseudo-código de la tesis se llama ActualizarImágenes le voy a poner
-//UpdateImages. También usa una función para calcular el módulo del gradiente
-//que se llama CalculaModGrad. Voy a ponerle ComputeModGrad
-
-//Compute the gradient module
-//void ComputeModGrad(InrImage* G, InrImage* Grad)
-//{
-//  float parx, pary, partial;
-//  int z = 0;
-//  //Pointers to the indexes of the partials
-//  int *u,*v;
-//  //Indexes of the partials
-//  int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0};
-//  int vpos[] = { -1,-3, 0,-2, 2, 0, 3, 1};
-//  
-//  for (int y = 1; y < G->DimY()-1; y++)
-//  {
-//    for (int x = 1; x < G->DimX()-1; x++)
-//    {
-//      //Search the maximum partials in row/column
-//      pary = ffy(x,y,z);
-//      parx = ffx(x,y,z);
-//      if (fabs(pary) >= fabs(parx))
-//      {
-//        partial = pary;
-//        if (y > 1) 
-//        { 
-//          if (partial<=fabs(ffy(x,y-1,z))) continue; 
-//        }
-//        else 
-//          if (2*fabs(ffyd(x,y,z))<=fabs(ffyd(x,y-1,z))) continue;
-//        if (y < ny-2) 
-//        { 
-//          if (partial<fabs(ffy(x,y+1,z))) continue; 
-//        }
-//	   		else 
-//          if (2*fabs(ffyu(x,y,z))<fabs(ffyu(x,y+1,z))) continue;
-//      }
-//      else
-//      {
-//        partial = parx;
-//        if (x > 1) 
-//        { 
-//          if (partial<=fabs(ffx(x-1,y,z))) continue; 
-//        }
-//        else 
-//          if (2*fabs(ffxr(x,y,z))<=fabs(ffxr(x-1,y,z))) continue;
-//        if (x < nx-2) 
-//        { 
-//          if (partial<fabs(ffx(x+1,y,z))) continue; 
-//        }
-//	   		else 
-//          if (2*fabs(ffxl(x,y,z))<fabs(ffxl(x+1,y,z))) continue;
-//      }
-//    }
-//    //Save the square gradient module
-//    Grad->BufferPos(x, y, z);
-//    Grad->FixeValeur(parx*parx + pary*pary);
-//  }
-//}
+//UpdateImages.
 
 void UpdateImages(InrImage* input, InrImage* C, InrImage* I, int x, int y, int z, 
                   unsigned char edgeCase, vector<borderPixel> &borderPixelVector,
@@ -1149,19 +1189,21 @@ void UpdateImages(InrImage* input, InrImage* C, InrImage* I, int x, int y, int z
   //de 9x3 y el ángulo será el que venga dado por la inversa de la pendiente 
   //(ojo con el signo)
   ComputePV pv;
-  double alpha = (atan(b)*180)/M_PI;
   //tengo que calcular en grados, porque atan me lo da en radianes
-//  line.setAngle(alpha);
-  AnalyticFunctionBase::ptr line = AnalyticLine::ptr(new AnalyticLine(alpha,a,1));
+  double alpha = (atan(b)*180)/M_PI;
+  cout << "alfa = " << alpha << endl;
+  AnalyticFunctionBase::ptr line; 
   InrImage::ptr in;
   InrImage::ptr res;
   if (edgeCase == YMAX) 
   {
     in  = InrImage::ptr(new InrImage(3,9,1,WT_FLOAT,"in.inr.gz"));
+    line = AnalyticLine::ptr(new AnalyticLine(alpha,a,1));
   }
   else 
   {
     in  = InrImage::ptr(new InrImage(9,3,1,WT_FLOAT,"in.inr.gz"));
+    line = AnalyticLine::ptr(new AnalyticLine(alpha,a,4));
   }
   pv.setInputImage(in);
   pv.setAnalyticFunction(line);
@@ -1169,55 +1211,45 @@ void UpdateImages(InrImage* input, InrImage* C, InrImage* I, int x, int y, int z
   //Ahora hay que meter en I y en C lo que corresponde
   //Esto habrá que hacerlo mejor por el rollo de la ventana escalonada
   //ventana vertical
-  int weight = 100; //Para acelerar las iteraciones (converja más rápido)
-  if (edgeCase == YMAX)
+  //Para acelerar las iteraciones (converja más rápido)
+  int weight = 100; 
+  //Punto central de la ventana
+  int px = 1; 
+  int py = 4; 
+  //Límites horizontales
+  int hmin = -1; 
+  int hmax = 1; 
+  //Límites verticales
+  int vmin = -4; 
+  int vmax = 4;
+  //Intercambio to' si la ventana está tumba'
+  if (edgeCase==XMAX) 
   {
-    int px = 1; int py = 4;
-    for (int i=-1;i<=1;i++)
+    SWAP_INT(px,py);
+    SWAP_INT(hmin,vmin);
+    SWAP_INT(hmax,vmax);
+  }
+  
+  for (int i=hmin;i<=hmax;i++)
+  {
+    for (int j=vmin;j<=vmax;j++)
     {
-      for (int j=-4;j<=4;j++)
+      //Se mete la imagen en la imagen de intensidad y se incrementa la imagen
+      //de contadores
+      I->BufferPos(x+i,y+j,z);
+      C->BufferPos(x+i,y+j,z);
+      if ((edgeCase==YMAX&&i==0) || (edgeCase==XMAX&&j==0)) //La columna/fila central tiene más peso
       {
-        //Se mete la imagen en la imagen de intensidad y se incrementa la imagen
-        //de contadores
-        I->BufferPos(x+i,y+j,z);
-        C->BufferPos(x+i,y+j,z);
-        if (i==0) //La columna central tiene más peso
-        {
-          I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z)*weight);
-          C->FixeValeur(((*C)(x+i,y+j,z)) + weight);
-        }
-        else
-        {
-          I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z));
-          C->FixeValeur(((*C)(x+i,y+j,z)) + 1);
-        }
-       
+        I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z)*weight);
+        C->FixeValeur(((*C)(x+i,y+j,z)) + weight);
+      }
+      else
+      {
+        I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z));
+        C->FixeValeur(((*C)(x+i,y+j,z)) + 1);
       }
     }
   }
-  else //ventana horizontal
-  {
-    int px = 4; int py = 1;
-    for (int i=-4;i<=4;i++)
-    {
-      for (int j=-1;j<=1;j++)
-      {
-        I->BufferPos(x+i,y+j,z);
-        C->BufferPos(x+i,y+j,z);
-        if (j==0) //La fila central tiene más peso
-        {
-          I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z)*weight);
-          C->FixeValeur((*C)(x+i,y+j,z) + weight);
-        }
-        else 
-        {
-          I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z));
-          C->FixeValeur((*C)(x+i,y+j,z) + 1);
-        }
-      }
-    }
-  }
- 
 }
 
 void copyImage(InrImage* input, InrImage::ptr output)

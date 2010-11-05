@@ -338,10 +338,21 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SubpixelDenoising
   //Fill InrImages
   sp->fillImages(AIntensity, BIntensity, border, a, b, c, curvature, 
                  posx, posy);
-  //Add to amiobject
-//  InrImage::ptr output(sp->getInput());
-//  amiobject->GetContext()->AddVar<InrImage>("restored", output,
-//                                            amiobject->GetContext());
+
+  //Copy the result of restoration
+  InrImage* aux = sp->getInput();
+  InrImage::ptr output = InrImage::ptr(new InrImage(aux->DimX(),aux->DimY(),
+                                                    aux->DimZ(),WT_DOUBLE,""));
+  for(int x=0;x<aux->DimX();x++)
+    for(int y=0;y<aux->DimY();y++)
+    {
+      output->BufferPos(x,y,0);
+      output->FixeValeur((*aux)(x,y,0));
+    }
+
+    //Add to amiobject
+  amiobject->GetContext()->AddVar<InrImage>("restored", output,
+                                            amiobject->GetContext());
   amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
                                             amiobject->GetContext());
   amiobject->GetContext()->AddVar<InrImage>("bintensity", BIntensity,
