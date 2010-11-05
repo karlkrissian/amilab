@@ -25,11 +25,10 @@ class Variables{
 
   DEFINE_CLASS(Variables);
 
-protected:
-  // TODO: avoid pointers here !!!
-  std::list<BasicVariable::ptr>  _vars;
-  std::string                  _context_name;
-  bool                      _global_new;
+ protected:
+  std::vector<BasicVariable::ptr>  _vars;
+  std::string                      _context_name;
+  bool                             _global_new;
 
  public:
 
@@ -40,8 +39,19 @@ protected:
 
   virtual ~Variables();
 
-//  Variable* operator [](int i) {  return _vars[i];  }
+  BasicVariable::ptr operator [](int i)
+  {
+    if ((i>=0)&&(i<GetSize()))
+      return _vars[i];
+    return BasicVariable::ptr();
+  }
 
+  int GetSize()
+  {
+    return _vars.size();
+  }
+
+  
   std::string GetName() const { return _context_name; }
   void SetName( const std::string& name ) { _context_name = name; }
 
@@ -81,7 +91,7 @@ protected:
 
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
-  _vars.push_front(newvar);
+  _vars.push_back(newvar);
 
   return newvar;
 }
@@ -107,7 +117,7 @@ protected:
   
     newvar->Rename(resname.c_str());
     newvar->SetContext(context);
-    _vars.push_front(newvar);
+    _vars.push_back(newvar);
   
     return newvar;
   }
@@ -181,7 +191,7 @@ boost::shared_ptr<Variable<T> > Variables::AddVar(
 
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
-  _vars.push_front(newvar);
+  _vars.push_back(newvar);
 
   return newvar;
 }

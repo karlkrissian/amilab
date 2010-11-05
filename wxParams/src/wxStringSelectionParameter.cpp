@@ -33,6 +33,7 @@
 #include "StructParams.hpp"
 #include "couleur.hpp"
 #include "wxStringSelectionParameter.h"
+#include "DndChoiceTextDropTarget.h"
 
 wxString GetwxStr(const char* str);
 wxString GetwxStr(const string& str);
@@ -43,7 +44,7 @@ wxString GetwxStr(const string& str);
 
 //BEGIN_EVENT_TABLE(myChoice, wxChoice)
 BEGIN_EVENT_TABLE(myChoice, wxComboBox)
-  EVT_COMBOBOX    (wxID_ANY,  myChoice::OnChoiceUpdate)
+  EVT_CHOICE    (wxID_ANY,  myChoice::OnChoiceUpdate)
 END_EVENT_TABLE()
 
 
@@ -58,6 +59,9 @@ wxStringSelectionParameter::wxStringSelectionParameter( wxWindow* parent, int* p
                         wxALIGN_LEFT );
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
+  DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this->_choice);
+  this->_choice->SetDropTarget(ChoiceTextImage);
+  
   this->_choice->SetCallback((void*)wxStringSelectionParameter::OnEnumUpdate,(void*) this);
 
   this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);

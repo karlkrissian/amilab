@@ -56,4 +56,4 @@ printn sqrt(mean(diff*diff))
 
 ctest.PrintTestResult( sqrt(mean(diff*diff)) < epsilon )
 
-quit
+#quit

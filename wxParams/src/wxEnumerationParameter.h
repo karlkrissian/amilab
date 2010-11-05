@@ -34,7 +34,7 @@ class wxBitmapButtonParameter;
 /*!
   \brief myChoice: inherit of wxChoice to add a callback for any value change.
 */
-class myChoice: public wxComboBox
+class myChoice: public wxChoice
 {
   public:
     myChoice(wxWindow *parent, wxWindowID id,
@@ -44,7 +44,7 @@ class myChoice: public wxComboBox
         long style = 0,
         const wxValidator& validator = wxDefaultValidator,
         const wxString& name = wxChoiceNameStr) :
-        wxComboBox(parent,id,wxT(""),pos,size,n,choices,style,validator,name)
+        wxChoice(parent,id,pos,size,n,choices,style,validator,name)        
     {   }
     
   void SetCallback(void* cb, void* cd) { _callback=cb; _calldata=cd;}

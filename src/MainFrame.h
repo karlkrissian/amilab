@@ -195,8 +195,17 @@ public:
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
   void UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context);
+
+#if wxUSE_DRAG_AND_DROP
+  void OnBeginDrag( wxDataViewEvent &event );
+  void OnDropPossible( wxDataViewEvent &event );
+  void OnDrop( wxDataViewEvent &event );
+#endif  
+  
 #endif
 /// @endcond
+
+
 
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
   wxAuiNotebook* GetParamBook() { return _param_book; }
