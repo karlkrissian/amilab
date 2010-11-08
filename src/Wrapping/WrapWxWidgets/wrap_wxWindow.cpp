@@ -40,6 +40,21 @@ BasicVariable::ptr WrapClass<wxWindow>::CreateVar( ParamList* p)
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxWindow);
 
 
+//
+// static member for creating a variable from a pointer to wxWindow
+//
+Variable<AMIObject>::ptr WrapClass_wxWindow::CreateVar( wxWindow* sp)
+{
+  boost::shared_ptr<wxWindow> di_ptr(
+    sp,
+    wxwindow_nodeleter<wxWindow>()); // deletion will be done by wxwidgets;
+  Variable<AMIObject>::ptr res = 
+    WrapClass<wxWindow>::CreateVar(
+      new WrapClass_wxWindow(di_ptr)
+    );
+  return res;
+}
+
 
 //---------------------------------------------------
 // Method that adds wrapping of wxWindow

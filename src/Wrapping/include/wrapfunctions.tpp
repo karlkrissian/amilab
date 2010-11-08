@@ -137,13 +137,12 @@ bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required)
   }
   BasicVariable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
-    if (temp->Type()!=GetVarType<T>()) {
-      FILE_ERROR(boost::format("Parameter %1% is of wrong type (type is %2% instead of %3%).") % num % temp->Type() % GetVarType<T>());
+    boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(temp);
+    if (!val_ptr.get()) {
+      FILE_ERROR(boost::format("Parameter %1% failed.") % num);
       return false;
     }
-    boost::shared_ptr<Variable<T> > temp1(
-      boost::dynamic_pointer_cast<Variable<T> >(temp));
-    arg= temp1->Pointer().get();
+    arg= val_ptr.get();
     return true;
   }
   else

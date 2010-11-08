@@ -51,6 +51,8 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxWind
     ADD_CLASS_METHOD(AddMenuScript,    "Adds a new link to a script from the 'Scripts' menu.");
     ADD_CLASS_METHOD(AddToMenu,        "Adds a new link to a script from any menu.");
 
+    ADD_CLASS_METHOD(GetAuiManager, "Gets the wxAuiManager");
+
     void AddMethods(WrapClass<MainFrame>::ptr this_ptr )
     {
       // Add members from wxWindow
@@ -60,6 +62,7 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxWind
       AddVar_GetAmilabEditor(  this_ptr);
       AddVar_AddMenuScript(    this_ptr);
       AddVar_AddToMenu(        this_ptr);
+      AddVar_GetAuiManager(    this_ptr);
     }
 
 };
