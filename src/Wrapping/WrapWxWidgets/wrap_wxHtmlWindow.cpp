@@ -68,19 +68,16 @@ void  WrapClass_wxHtmlWindow::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxHtmlWindow::
-      wrap_wxHtmlWindow::CallMember( ParamList* p)
+      wrap_wxHtmlWindow::CallMember( ParamList* _p)
 {
-  int n = 0;
+  int _n = 0;
 //  std::string* title = NULL;
 
-  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
+  wxWindow* w;
+  if (!get_val_ptr_param<wxWindow>(w,_p,_n)) ClassHelpAndReturn;
+//  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
 
-  if (parent.get()){
-    return WrapClass_wxHtmlWindow::CreateVar(
-      new myHtmlWindow(parent.get()));
-  }
-  else
-    ClassHelpAndReturn;
+  return WrapClass_wxHtmlWindow::CreateVar( new myHtmlWindow(w));
 }
 
 

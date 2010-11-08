@@ -40,6 +40,7 @@
 #include "wrap_wxHtmlWindow.h"
 #include "wrap_wxString.h"
 #include "wrap_wxFileName.h"
+#include "wrap_wxAuiPaneInfo.h"
 #include "wrap_vtkLevelSets.h"
 
 #include "wrap_wxEditor.h"
@@ -131,6 +132,8 @@ void AddWrapWxWidgets()
   WrapClass_wxBitmap    ::AddVar_wxBitmap    ( amiobject->GetContext());
   WrapClass_wxImage     ::AddVar_wxImage     ( amiobject->GetContext());
   WrapClass_wxHtmlWindow::AddVar_wxHtmlWindow( amiobject->GetContext());
+  WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo(amiobject->GetContext());
+  WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo2(amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

@@ -20,7 +20,6 @@
 #include "ami_object.h"
 
 #include "wx/aui/aui.h"
-//wxAuiManager.hpp"
 
 // include what is needed for inheritence and for types ...
 //#include "wrap_BaseClass1.h"
@@ -57,8 +56,11 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
       CLASS_MESSAGE("*** Destroying ***");
     }
 
+    
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxAuiManager, "Wrapping of wxAuiManager." );
+    ADD_CLASS_CONSTRUCTOR(wxAuiManager,"Wrapping of $wxAuiManager.");
+
+
 
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxAuiManager*);
@@ -77,48 +79,30 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
 /* The following types are missing: wxAuiDockArt
     ADD_CLASS_METHOD(GetArtProvider,"")
 */
-/* The following types are missing: wxAuiPaneInfo
     ADD_CLASS_METHOD(GetPane,"")
-*/
-/* The following types are missing: wxAuiPaneInfo
     ADD_CLASS_METHOD(GetPane1,"")
-*/
 /* The following types are missing: wxAuiPaneInfoArray
     ADD_CLASS_METHOD(GetAllPanes,"")
 */
-/* The following types are missing: wxAuiPaneInfo
     ADD_CLASS_METHOD(AddPane,"")
-*/
-/* The following types are missing: wxAuiPaneInfo, wxPoint
+/* The following types are missing: wxPoint
     ADD_CLASS_METHOD(AddPane1,"")
 */
     ADD_CLASS_METHOD(AddPane2,"")
-/* The following types are missing: wxAuiPaneInfo
     ADD_CLASS_METHOD(InsertPane,"")
-*/
     ADD_CLASS_METHOD(DetachPane,"")
     ADD_CLASS_METHOD(Update,"")
-/* The following types are missing: wxAuiPaneInfo
     ADD_CLASS_METHOD(SavePaneInfo,"")
-*/
-/* The following types are missing: wxAuiPaneInfo
     ADD_CLASS_METHOD(LoadPaneInfo,"")
-*/
     ADD_CLASS_METHOD(SavePerspective,"")
     ADD_CLASS_METHOD(LoadPerspective,"")
     ADD_CLASS_METHOD(SetDockSizeConstraint,"")
     ADD_CLASS_METHOD(GetDockSizeConstraint,"")
-/* The following types are missing: wxAuiPaneInfo
     ADD_CLASS_METHOD(ClosePane,"")
-*/
-/* The following types are missing: wxAuiPaneInfo
     ADD_CLASS_METHOD(MaximizePane,"")
-*/
-/* The following types are missing: wxAuiPaneInfo
     ADD_CLASS_METHOD(RestorePane,"")
-*/
     ADD_CLASS_METHOD(RestoreMaximizedPane,"")
-/* The following types are missing: wxAuiFloatingFrame, wxAuiPaneInfo
+/* The following types are missing: wxAuiFloatingFrame
     ADD_CLASS_METHOD(CreateFloatingFrame,"")
 */
 /* The following types are missing: wxPoint
@@ -178,48 +162,30 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
 /* The following types are missing: wxAuiDockArt
       AddVar_GetArtProvider( this_ptr);
 */
-/* The following types are missing: wxAuiPaneInfo
       AddVar_GetPane( this_ptr);
-*/
-/* The following types are missing: wxAuiPaneInfo
       AddVar_GetPane1( this_ptr);
-*/
 /* The following types are missing: wxAuiPaneInfoArray
       AddVar_GetAllPanes( this_ptr);
 */
-/* The following types are missing: wxAuiPaneInfo
       AddVar_AddPane( this_ptr);
-*/
-/* The following types are missing: wxAuiPaneInfo, wxPoint
+/* The following types are missing: wxPoint
       AddVar_AddPane1( this_ptr);
 */
       AddVar_AddPane2( this_ptr);
-/* The following types are missing: wxAuiPaneInfo
       AddVar_InsertPane( this_ptr);
-*/
       AddVar_DetachPane( this_ptr);
       AddVar_Update( this_ptr);
-/* The following types are missing: wxAuiPaneInfo
       AddVar_SavePaneInfo( this_ptr);
-*/
-/* The following types are missing: wxAuiPaneInfo
       AddVar_LoadPaneInfo( this_ptr);
-*/
       AddVar_SavePerspective( this_ptr);
       AddVar_LoadPerspective( this_ptr);
       AddVar_SetDockSizeConstraint( this_ptr);
       AddVar_GetDockSizeConstraint( this_ptr);
-/* The following types are missing: wxAuiPaneInfo
       AddVar_ClosePane( this_ptr);
-*/
-/* The following types are missing: wxAuiPaneInfo
       AddVar_MaximizePane( this_ptr);
-*/
-/* The following types are missing: wxAuiPaneInfo
       AddVar_RestorePane( this_ptr);
-*/
       AddVar_RestoreMaximizedPane( this_ptr);
-/* The following types are missing: wxAuiFloatingFrame, wxAuiPaneInfo
+/* The following types are missing: wxAuiFloatingFrame
       AddVar_CreateFloatingFrame( this_ptr);
 */
 /* The following types are missing: wxPoint
