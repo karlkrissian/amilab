@@ -52,6 +52,12 @@ class myDataViewCtrl: public wxDataViewCtrl
     void OnActivated( wxDataViewEvent &event );
     void OnSorted( wxDataViewEvent &event );
 
+#if wxUSE_DRAG_AND_DROP
+    void OnBeginDrag( wxDataViewEvent &event );
+    void OnDropPossible( wxDataViewEvent &event );
+//    void OnDrop( wxDataViewEvent &event );
+#endif
+
   private:
     boost::weak_ptr<BasicVariable> _currentmenu_var;
     AMILabTreeModel* _amilab_model;

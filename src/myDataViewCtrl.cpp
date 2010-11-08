@@ -92,6 +92,12 @@ BEGIN_EVENT_TABLE(myDataViewCtrl, wxDataViewCtrl)
   EVT_DATAVIEW_ITEM_ACTIVATED( wxID_ANY, myDataViewCtrl::OnActivated )
   EVT_DATAVIEW_COLUMN_SORTED( wxID_ANY, myDataViewCtrl::OnSorted)
 
+#if wxUSE_DRAG_AND_DROP
+    EVT_DATAVIEW_ITEM_BEGIN_DRAG( wxID_ANY, myDataViewCtrl::OnBeginDrag )
+    EVT_DATAVIEW_ITEM_DROP_POSSIBLE( wxID_ANY, myDataViewCtrl::OnDropPossible )
+//     EVT_DATAVIEW_ITEM_DROP( wxID_ANY, myDataViewCtrl::OnDrop )
+#endif       
+
 END_EVENT_TABLE()
 
 void myDataViewCtrl::OnContextMenu( wxDataViewEvent &event )
@@ -173,6 +179,85 @@ void myDataViewCtrl::OnSorted( wxDataViewEvent &event )
 {
   GetColumnPosition( event.GetDataViewColumn() );
 }
+
+#if wxUSE_DRAG_AND_DROP
+void myDataViewCtrl::OnBeginDrag( wxDataViewEvent &event )
+{
+  wxDataViewItem item( event.GetItem() );
+  wxString Text;
+  wxTextDataObject *obj = new wxTextDataObject;
+  AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
+
+  // only allow drags for item, not containers
+  if (node->IsContainer())
+  {
+      std::cout << "myDataViewCtrl::OnBeginDrag->Only allow drags for item, not containers"
+                << std::endl;
+      //event.Veto();
+//       return;
+  }
+  else //It is a item node.
+    std::cout << "myDataViewCtrl::OnBeginDrag->"
+              << "Dnd: node type: "
+              << node->m_Type
+              << std::endl;
+
+  Text = node->m_Type + "-"+ node->m_AbsoluteName;
+  obj->SetText( Text );
+  event.SetDataObject( obj );
+
+  std::cout << "myDataViewCtrl::OnBeginDrag->"
+            << "Dnd: Drag operation(text: "
+            << node->m_AbsoluteName << ")"
+            << std::endl;
+
+}
+
+void myDataViewCtrl::OnDropPossible( wxDataViewEvent &event )
+{
+  wxDataViewItem item( event.GetItem() );
+
+  // only allow drags for item, not containers
+  if (_amilab_model->IsContainer( item ) )
+    std::cout << "myDataViewCtrl::OnDropPossible->only allow drops for item, not containers"
+              << std::endl;
+
+  if (event.GetDataFormat() != wxDF_UNICODETEXT)
+    std::cout << "myDataViewCtrl::OnDropPossible->Error: Unsupported format"
+              << std::endl;
+
+    std::cout << "myDataViewCtrl::OnDropPossible->Begin process..."
+              << std::endl;
+}
+
+// void myDataViewCtrl::OnDrop( wxDataViewEvent &event )
+// {
+//   wxDataViewItem item( event.GetItem() );
+// 
+//   // only allow drops for item, not containers
+//   if (_amilab_model->IsContainer( item ) )
+//   {
+//     std::cout << "myDataViewCtrl::OnDrop->Only allow drops for item, not containers"
+//               << std::endl;
+//     return;
+//   }
+// 
+//   if (event.GetDataFormat() != wxDF_UNICODETEXT)
+//   {
+//     std::cout << "MainFrame::OnDrop->Unsupported format"
+//               << std::endl;
+//     return;
+//   }
+// 
+//   wxTextDataObject obj;
+//   obj.SetData( wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer() );
+// 
+//   std::cout << std::endl
+//             << "MainFrame::OnDrop->Text dropped: "
+//             << obj.GetText()
+//             << std::endl;
+// }
+#endif
 
 #endif
 /// @endcond
