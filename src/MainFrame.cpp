@@ -167,6 +167,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_DIRPICKER_CHANGED(wxID_ScriptsPath, MainFrame::OnScriptsPath)
     EVT_DIRPICKER_CHANGED(wxID_HelpPath,    MainFrame::OnHelpPath   )
+
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
+    EVT_FILECTRL_FILEACTIVATED( wxID_ANY, MainFrame::OnFileCtrl )
+#endif
+
 END_EVENT_TABLE()
 
 
@@ -372,8 +378,13 @@ MainFrame::MainFrame( const wxString& title,
                   .Left().Layer(1)
                   .MinimizeButton(true));
 */
-
+/// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0))
+  CreateVarDataViewPanel(this);
+#else
   CreateVarTreePanel(this);
+#endif
+/// @endcond
   m_mgr.AddPane(_var_book,
                   wxAuiPaneInfo()
                   .Name(wxT("VariablesTree"))
@@ -406,8 +417,10 @@ MainFrame::MainFrame( const wxString& title,
 
     // create some toolbars
   #if (wxCHECK_VERSION(2,9,0)) && !WIN32 && (!__WXMAC__)
-    wxToolBar* tb1 = new wxToolBar(this, wxID_ANY,
-                        wxDefaultPosition, wxDefaultSize);
+    wxAuiToolBar* tb1 = new wxAuiToolBar(this, wxID_ANY,
+                        wxDefaultPosition, wxDefaultSize,
+                        wxAUI_TB_DEFAULT_STYLE |
+                        wxAUI_TB_OVERFLOW);
   #else
     wxAuiToolBar* tb1 = new wxAuiToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize,
@@ -500,6 +513,7 @@ void MainFrame::CreateMainBook(wxWindow* parent)
 
   CreateHtmlPanel(this);
   _main_book->AddPage( _html_panel , wxT("Help") );
+  
 
   CreateSettingsPanel(this);
   _main_book->AddPage( _settings_panel , wxT("Paths") );
@@ -664,13 +678,11 @@ void MainFrame::CreateVarListPanel ( wxWindow* parent)
 } // CreateVarListPanel()
 
 //--------------------------------------------------------
-void MainFrame::CreateVarTreePanel ( wxWindow* parent)
+void MainFrame::CreateVarBook ( wxWindow* parent)
 {
-
-  
    wxSize client_size = GetClientSize();
 
-   _var_book  = new wxAuiNotebook(this, wxID_ANY,
+   _var_book  = new wxAuiNotebook(parent, wxID_ANY,
                                     wxPoint(client_size.x, client_size.y),
                                                 //wxDefaultPosition,
                                     wxDefaultSize,
@@ -681,18 +693,109 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                                   );
   _var_book->Fit();
 
+} // CreateVarBook()
 
+//--------------------------------------------------------
+void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
+{
+  // File Selection
+  typedef std::pair<std::string,std::string> file_format;
+  typedef std::map<std::string,std::string>  file_format_map;
+
+  std::map<std::string,std::string> formats;
+
+  formats.insert(file_format( "All ext",
+                              "*.*"));
+  formats.insert(file_format( "Amilab Images",
+                              "*.ami;*.ami.gz"));
+  formats.insert(file_format( "Amilab scripts",
+                              "*.amil"));
+  formats.insert(file_format( "VTK Files",
+                              "*.vtk"));
+  formats.insert(file_format( "Standard images",
+                              "*.jpg;*.JPG;*.jpeg;*.JPEG;*.png;*.PNG;*.bmp;*.BMP;*.tif;*.TIF;*.tiff;*.TIFF"));
+  formats.insert(file_format( "ITK",
+                              "*.mhd"));
+  formats.insert(file_format( "All",
+                              "*"));
+
+  wxString format_choices;
+
+  for(file_format_map::iterator p = formats.begin();
+      p!=formats.end();
+      ++p)
+  {
+    if (p!=formats.begin())
+      format_choices << wxString::FromAscii("|");
+    format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
+  }
+
+// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && (wxUSE_FILECTRL))
+  _var_fileCtrl = new wxFileCtrl(parent,wxID_ANY,
+                     wxEmptyString,
+                     wxEmptyString,
+                     format_choices,
+                     wxFC_OPEN,
+                     wxDefaultPosition,
+                     wxDefaultSize
+                 );
+#endif
+// @endcond
+  _var_dirctrl = new wxGenericDirCtrl(parent,wxID_ANY,
+                      wxDirDialogDefaultFolderStr,
+                      wxDefaultPosition,
+                      wxDefaultSize,
+                      wxDIRCTRL_3D_INTERNAL
+                      |
+                      //wxBORDER_SUNKEN
+                      //|
+                      wxDIRCTRL_SHOW_FILTERS
+                      #if (wxCHECK_VERSION(2,9,1))
+                        |
+                        wxDIRCTRL_MULTIPLE
+                      #endif // wxCHECK_VERSION(2,9,1)
+                      ,
+                      format_choices, // filters
+                      0 // default filter
+                      );
+
+  // try to allow multiple selections
+  //_var_dirctrl->GetTreeCtrl()->SetWindowStyle(_var_dirctrl->GetTreeCtrl()->SetWindowStyle() |wxTR_EXTENDED);
+
+  _var_dirctrl->GetTreeCtrl()->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
+                                       wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
+
+  _var_book->AddPage(_var_dirctrl,wxT("DirCtrl"));
+
+// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && (wxUSE_FILECTRL)) 
+  _var_book->AddPage(_var_fileCtrl,wxT("FileCtrl"));
+#endif
+// @endcond
+
+  //std::cout << res << std::endl;
+  _var_book->Fit();
+
+} // CreateVarDirCtrl 
+
+//--------------------------------------------------------
+void MainFrame::CreateVarTreePanel ( wxWindow* parent)
+{
+
+  CreateVarBook(parent);
 //  CreateDrawingPanel(this);
 //  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
 
 
   // Add TreeList Page to notebook
-  _vartree_panel = new wxPanel(this);
-  
-  vartreepanel_sizer  = new wxBoxSizer( wxVERTICAL );
-  _vartree_panel->SetSizer(vartreepanel_sizer);
+//   _vartree_panel = new wxPanel(this);
+//   
+//   vartreepanel_sizer  = new wxBoxSizer( wxVERTICAL );
+//   _vartree_panel->SetSizer(vartreepanel_sizer);
 
-  _var_tree = new myTreeCtrl( _vartree_panel,
+//   _var_tree = new myTreeCtrl( _vartree_panel,
+  _var_tree = new myTreeCtrl( _var_book,
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
@@ -724,13 +827,13 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   // TODO/FIXME:
   // Problems with GetWindowStyle method.
   
-/// @cond wxCHECK
-#if (wxCHECK_VERSION(2,9,1))
+// @cond wxCHECK
+//#if (wxCHECK_VERSION(2,9,1))
 //  _var_tree->SetWindowStyle(wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
-#else
+//#else
 //  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
-#endif
-/// @endcond
+//#endif
+// @endcond
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
 
   wxFont font(10,wxMODERN,wxNORMAL,wxNORMAL);
@@ -744,74 +847,12 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   _vartree_global      = _var_tree->AppendItem(_vartree_root,_T("Global"));
   _vartree_builtin     = _var_tree->AppendItem(_vartree_root,_T("Builtin"));
 
-  vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
-  vartreepanel_sizer->Fit(_vartree_panel);
+//   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
+//   vartreepanel_sizer->Fit(_vartree_panel);
 
+  _var_book->AddPage(_var_tree,wxT("Tree"));
 
-  _var_book->AddPage(_vartree_panel,wxT("Tree"));
-  
-
-  // File Selection
-  typedef std::pair<std::string,std::string> file_format;
-  typedef std::map<std::string,std::string>  file_format_map;
-
-  std::map<std::string,std::string> formats;
-
-  formats.insert(file_format( "All ext",
-                              "*.*"));
-  formats.insert(file_format( "Amilab Images",
-                              "*.ami;*.ami.gz"));
-  formats.insert(file_format( "Amilab scripts",
-                              "*.amil"));
-  formats.insert(file_format( "VTK Files",
-                              "*.vtk"));
-  formats.insert(file_format( "Standard images",  
-                              "*.jpg;*.JPG;*.jpeg;*.JPEG;*.png;*.PNG;*.bmp;*.BMP;*.tif;*.TIF;*.tiff;*.TIFF"));
-  formats.insert(file_format( "ITK",
-                              "*.mhd"));
-  formats.insert(file_format( "All",
-                              "*"));
-
-  wxString format_choices;
-
-  for(file_format_map::iterator p = formats.begin(); 
-      p!=formats.end();
-      ++p)
-  {
-    if (p!=formats.begin())
-      format_choices << wxString::FromAscii("|");
-    format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
-  }
-
-  
-  //
-  _var_dirctrl = new wxGenericDirCtrl(this,wxID_ANY,
-                                    wxDirDialogDefaultFolderStr,
-                                    wxDefaultPosition,
-                                    wxDefaultSize,
-                                    wxDIRCTRL_3D_INTERNAL
-                                    |
-                                    //wxBORDER_SUNKEN
-                                    //|
-                                    wxDIRCTRL_SHOW_FILTERS
-                                    #if (wxCHECK_VERSION(2,9,1))
-                                      |
-                                      wxDIRCTRL_MULTIPLE
-                                    #endif // wxCHECK_VERSION(2,9,1)
-                                    ,                                      
-                                    format_choices, // filters
-                                    0 // default filter
-                                    );
-                                    
-  // try to allow multiple selections
-  //_var_dirctrl->GetTreeCtrl()->SetWindowStyle(_var_dirctrl->GetTreeCtrl()->SetWindowStyle() |wxTR_EXTENDED);
-
-  _var_dirctrl->GetTreeCtrl()->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
-                                       wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
-  _var_book->AddPage(_var_dirctrl,wxT("Dir"));
-  
-  //std::cout << res << std::endl;
-  _var_book->Fit();
+  CreateVarDirCtrl(parent);
 
 } // CreateVarTreePanel()
 
@@ -840,6 +881,132 @@ void MainFrame::OnFileActivated(wxCommandEvent& WXUNUSED(event))
   #endif // (wxCHECK_VERSION(2,9,1))
 }
 
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,1) && wxUSE_FILECTRL)
+//--------------------------------------------------------
+void MainFrame::OnFileCtrl( wxFileCtrlEvent& event )
+{
+  // Some documentation
+  // On wxEVT_FILECTRL_FILEACTIVATED, GetDirectory returns the current directory
+  // for the wxFileCtrl and GetFiles returns the names of the file(s) activated.
+  wxArrayString paths;
+  wxString filename;
+  _var_fileCtrl->GetPaths(paths);
+  for (size_t n=0; n<paths.GetCount(); n++ )
+  {
+    filename = paths[n];
+    if (filename != wxEmptyString) {
+      //std::cout << filename.mb_str(wxConvUTF8)<< "Activated !!!" << std::endl;
+      TryToOpenImage(filename);
+    }
+  }
+} // OnFileCtrl
+#endif
+///@endcond
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
+//--------------------------------------------------------
+void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
+{
+  CreateVarBook(parent);
+
+//   _vardataview_panel = new wxPanel(this);
+// 
+//   vardataviewpanel_sizer  = new wxBoxSizer( wxVERTICAL );
+// 
+//   _vardataview_panel->SetSizer(vardataviewpanel_sizer);
+  
+//  _var_dataview = new myDataViewCtrl( _vardataview_panel,
+  _var_dataview = new myDataViewCtrl( _var_book,
+                              wxID_ANY,
+                              wxDefaultPosition,
+                              wxDefaultSize,
+                              wxDV_SINGLE
+                            );
+
+  m_amilab_model = new AMILabTreeModel();
+  _var_dataview->AssociateModel( m_amilab_model.get() );
+  _var_dataview->InternalAssociateModel( m_amilab_model.get() );
+  _var_dataview->EnableDragSource( wxDF_UNICODETEXT );
+  _var_dataview->EnableDropTarget( wxDF_UNICODETEXT );
+
+  wxDataViewTextRenderer *tr =
+    new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
+
+  // column 0 of the view control: Name
+  // wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE | wxDATAVIEW_COL_RESIZABLE
+  wxDataViewColumn *column0 =
+  new wxDataViewColumn( "Name", tr, 0, 250, wxALIGN_LEFT,
+                        wxDATAVIEW_COL_RESIZABLE |  wxDATAVIEW_COL_SORTABLE );
+  column0->SetMinWidth(200); // this column can't be resized to be smaller
+  _var_dataview->AppendColumn( column0 );
+
+  // column 1 of the view control: Type
+  wxDataViewTextRenderer *tr1 =
+    new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
+
+  wxDataViewColumn *column1 =
+      new wxDataViewColumn( "Type", tr1, 1, 100, wxALIGN_LEFT,
+                            wxDATAVIEW_COL_RESIZABLE );
+  column1->SetMinWidth(100); // this column can't be resized to be smaller
+  _var_dataview->AppendColumn( column1 );
+
+  // column 2 of the view control: Val
+  wxDataViewTextRenderer *tr2 =
+    new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
+
+  wxDataViewColumn *column2 =
+      new wxDataViewColumn( "Val", tr2, 2, 60, wxALIGN_LEFT,
+                            wxDATAVIEW_COL_RESIZABLE );
+  column2->SetMinWidth(60); // this column can't be resized to be smaller
+  _var_dataview->AppendColumn( column2 );
+
+  // column 3 of the view control: Details
+  wxDataViewTextRenderer *tr3 =
+    new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
+
+  wxDataViewColumn *column3 =
+      new wxDataViewColumn( "Details", tr3, 3, 250, wxALIGN_LEFT,
+                            wxDATAVIEW_COL_RESIZABLE );
+  column3->SetMinWidth(250); // this column can't be resized to be smaller
+  _var_dataview->AppendColumn( column3 );
+
+//   column 4 of the view control: Var
+//   wxDataViewAnyRenderer *tr4 =
+//     new wxDataViewAnyRenderer(  );
+// 
+//   wxDataViewColumn *column4 =
+//       new wxDataViewColumn( "Variable", tr4, 4, 250, wxALIGN_LEFT,
+//                             wxDATAVIEW_COL_HIDDEN );
+//   column4->SetMinWidth(250); // this column can't be resized to be smaller
+  //column4->SetHidden(true);
+//     _var_dataview->AppendColumn( column4 );
+
+  //_var_dataview->SetWindowStyle(_var_dataview->GetWindowStyle());
+
+  wxFont font(10,wxMODERN,wxNORMAL,wxNORMAL);
+
+  if (font.IsOk())
+     _var_dataview->SetFont(font ); // try a fixed pitch font
+  else
+     _var_dataview->SetFont(*wxSMALL_FONT);
+   _var_dataview->SetIndent(2);
+
+//   vardataviewpanel_sizer->Add(_var_dataview,
+//                               1,
+//                               wxEXPAND,   // make vertically stretchable and make border all around
+//                               5);         // set border width to 5
+// 
+//   vardataviewpanel_sizer->Fit(_vardataview_panel);
+
+  _var_book->AddPage(_var_dataview,wxT("Tree"));
+
+  CreateVarDirCtrl(parent);
+
+} // CreateVarDataViewPanel()
+#endif
+/// @endcond 
 //--------------------------------------------------------
 void MainFrame::CreateConsoleText( wxWindow* parent)
 {
@@ -1551,7 +1718,205 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   //_var_list->Show();
 }
 
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
+//---------------------------------------------------------------
+void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context)
+{
+  boost::shared_ptr<wxArrayString> variables;
 
+  // delete children of rootbranch
+  m_amilab_model->DeleteChildren(rootbranch);
+
+//   AMILabTreeModelNode *node1 = (AMILabTreeModelNode*) rootbranch.GetID();
+// std::cout << "rootbranch="
+//           << " node: "      << node1->m_Name
+//           << " parent: "    << node1->GetParent()->m_Name
+//           << " type: "      << node1->m_Type
+//           << " container: " << node1->m_container
+//           << std::endl;
+  // TODO: avoid creation of all branches at each update
+  // create all the first branches  
+  wxDataViewItem vartree_images    = m_amilab_model->CreateBranchNode(rootbranch,_T("Images"));
+  wxDataViewItem vartree_surfaces  = m_amilab_model->CreateBranchNode(rootbranch,_T("Surfaces"));
+  wxDataViewItem vartree_numbers   = m_amilab_model->CreateBranchNode(rootbranch,_T("Numbers"));
+  wxDataViewItem vartree_strings   = m_amilab_model->CreateBranchNode(rootbranch,_T("Strings"));
+  wxDataViewItem vartree_functions = m_amilab_model->CreateBranchNode(rootbranch,_T("Functions"));
+  wxDataViewItem vartree_classes   = m_amilab_model->CreateBranchNode(rootbranch,_T("Classes"));
+  wxDataViewItem vartree_objects   = m_amilab_model->CreateBranchNode(rootbranch,_T("Objects"));
+  wxDataViewItem vartree_wrapped_functions = m_amilab_model->CreateBranchNode(rootbranch,_T("Wrapped Image Functions"));
+  wxDataViewItem vartree_wrapped_procedures = m_amilab_model->CreateBranchNode(rootbranch,_T("Wrapped Procedures"));
+  wxDataViewItem vartree_wrapped_var_functions = m_amilab_model->CreateBranchNode(rootbranch,_T("Wrapped Var. Func."));
+  wxDataViewItem vartree_others    = m_amilab_model->CreateBranchNode(rootbranch,_T("Others"));
+
+  // loop vars
+  variables = boost::shared_ptr<wxArrayString>(new wxArrayString());
+  context->SearchCompletions(GetwxStr(""),variables);
+  unsigned long total_image_size = 0;
+  wxDataViewItem itemid;
+
+  for(int i=0;i<(int)variables->GetCount();i++) {
+    //cout << "set item variable " << i << endl;
+
+    wxString type_str;
+    BasicVariable::ptr var = context->GetVar((*variables)[i].mb_str());
+
+    wxDataViewItem append_id;
+    std::string text;
+    std::string valtext;
+
+    if (var.get()) {
+      if (var->Type() == type_image) {
+        // create text with image information
+        DYNAMIC_CAST_VARIABLE(InrImage,var,varim);
+        InrImage::ptr im (varim->Pointer());
+        text = (boost::format("%1% (%2%x%3%x%4%)x%5% %|6$+5| Mb")
+                            % im->FormatName()
+                            % im->DimX()
+                            % im->DimY()
+                            % im->DimZ()
+                            % im->GetVDim()
+                            % (im->GetDataSize()/1000000)).str();
+        //cout << text << endl;
+        append_id = vartree_images;
+        total_image_size += im->GetDataSize();
+      } else
+/* TODO: arrange tree display for type_ami_object
+      if (var->Type() == type_surface) {
+        DYNAMIC_CAST_VARIABLE(SurfacePoly,var,varsurf);
+        SurfacePoly::ptr surf (varsurf->Pointer());
+        std::string text = (boost::format("%1% %15t pts: %2% %25t poly:%3%")
+                            % var->Name()
+                            % surf->GetNumberOfPoints()
+                            % surf->GetNumberOfPolys()).str();
+        //cout << text << endl;
+        itemid = _var_tree->AppendItem(
+              vartree_surfaces,
+              wxString(text.c_str(), wxConvUTF8),
+              -1,-1,
+              new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
+      } else
+*/
+      if (var->IsNumeric())
+      {
+        text = var->TreeCtrlInfo();
+        valtext = var->GetValueAsString();
+        append_id = vartree_numbers;
+      } else
+      if (var->Type() == type_string)
+      {
+        text = var->TreeCtrlInfo();
+        valtext = (boost::format("'%1%'") %var->GetValueAsString()).str();
+        append_id = vartree_strings;
+      } else
+      if (var->Type() == type_ami_function)
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_functions;
+      } else
+      if (var->Type() == type_ami_class)
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_classes;
+      } else
+      if ((var->Type() == type_ami_object))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_objects;
+      } else
+      if (var->Type() == type_c_image_function)
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_functions;
+      } else
+      if ((var->Type() == type_c_procedure))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_procedures;
+      } else
+      if ((var->Type() == type_c_function)||(var->Type() == type_class_member))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_var_functions;
+      } else {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_others;
+      }
+
+      if ((var->Type() == type_ami_object))
+      {
+        itemid = m_amilab_model->CreateBranchNode(append_id,
+          wxString(var->Name().c_str(), wxConvUTF8));
+
+        m_amilab_model->SetVar(itemid, var);
+
+//         AMILabTreeModelNode *node = (AMILabTreeModelNode*) itemid.GetID();
+//         std::cout << "itemid="
+//                   << " node: "      << node->m_Name
+//                   << " parent: "    << node->GetParent()->m_Name
+//                   << " type: "      << node->m_Type
+//                   << " container: " << node->m_container
+//                   << std::endl;
+      }
+      else
+        itemid = m_amilab_model->CreateLeafNode(append_id,
+          wxString(var->Name().c_str(), wxConvUTF8),
+          wxString(var->GetTypeName().c_str(), wxConvUTF8),
+          wxString(valtext.c_str(), wxConvUTF8),
+          wxString(text.c_str(), wxConvUTF8),
+          var
+          );
+
+      m_amilab_model->BuildAbsoluteName(itemid);
+
+      if ((var->Type() == type_ami_object)) {
+        // get the pointer to the objet
+        DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
+        AMIObject::ptr obj( varobj->Pointer());
+        // create the tree by recursive call
+        this->UpdateVarDataView(itemid, obj->GetContext());
+      }
+    } // end if var.get()
+
+  } // end for
+
+  // TODO/FIXME: I don't understand this part.
+
+  // Display the total size of images in Mb
+  if (total_image_size != 0) {
+    std::string text = (boost::format(" %45t total = %55t %|1$+5| Mb")
+                        % (total_image_size/1000000)).str();
+//    _var_tree->AppendItem(vartree_images,wxString(text.c_str(), wxConvUTF8));
+    m_amilab_model->CreateBranchNode(vartree_images, wxString(text.c_str(), wxConvUTF8));
+  }
+
+  // delete empty branches
+  if (!m_amilab_model->HasChildren(vartree_images))
+    m_amilab_model->Delete(vartree_images);
+  if (!m_amilab_model->HasChildren(vartree_surfaces))
+    m_amilab_model->Delete(vartree_surfaces);
+  if (!m_amilab_model->HasChildren(vartree_numbers))
+    m_amilab_model->Delete(vartree_numbers);
+  if (!m_amilab_model->HasChildren(vartree_strings))
+    m_amilab_model->Delete(vartree_strings);
+  if (!m_amilab_model->HasChildren(vartree_functions))
+    m_amilab_model->Delete(vartree_functions);
+  if (!m_amilab_model->HasChildren(vartree_classes))
+    m_amilab_model->Delete(vartree_classes);
+  if (!m_amilab_model->HasChildren(vartree_objects))
+    m_amilab_model->Delete(vartree_objects);
+  if (!m_amilab_model->HasChildren(vartree_wrapped_functions))
+    m_amilab_model->Delete(vartree_wrapped_functions);
+  if (!m_amilab_model->HasChildren(vartree_wrapped_procedures))
+    m_amilab_model->Delete(vartree_wrapped_procedures);
+  if (!m_amilab_model->HasChildren(vartree_wrapped_var_functions))
+    m_amilab_model->Delete(vartree_wrapped_var_functions);
+  if (!m_amilab_model->HasChildren(vartree_others))
+    m_amilab_model->Delete(vartree_others);
+}
+#endif
+/// @endcond
 //---------------------------------------------------------------
 void MainFrame::SetProgress( int val )
 {
@@ -1867,7 +2232,25 @@ void MainFrame::ConsoleClear( wxCommandEvent& event)
 void MainFrame::UpdateVarsDisplay()
 {
   //UpdateVarList();
+/// @cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0))
+  CLASS_MESSAGE("Update global node");
+  UpdateVarDataView(m_amilab_model->GetGlobalNode(), Vars.GetCurrentContext());
 
+  CLASS_MESSAGE("Update builtin node");
+  UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetBuiltinContext());
+
+//  CLASS_MESSAGE("Notifies the control that data model have been updated");
+//  m_amilab_model->Cleared(); 
+//  wxDataViewItemArray nodes;
+//  m_amilab_model->GetChildren(m_amilab_model->GetRootNode(),nodes);
+//  m_amilab_model->ItemsChanged(nodes); 
+
+  _var_dataview->Expand( m_amilab_model->GetRootNode() );
+  _var_dataview->Expand( m_amilab_model->GetGlobalNode() );
+  _var_dataview->Expand( m_amilab_model->GetBuiltinNode() );  
+
+#else
   wxFont root_font = _var_tree->GetItemFont(_vartree_root);
   root_font.SetStyle(wxFONTSTYLE_ITALIC);
   root_font.SetWeight(wxFONTWEIGHT_BOLD);
@@ -1883,6 +2266,8 @@ void MainFrame::UpdateVarsDisplay()
 
   UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext());
   _var_tree->Expand(  _vartree_builtin);
+#endif
+/// @endcond
 
 }
 
@@ -2033,4 +2418,3 @@ void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }
-

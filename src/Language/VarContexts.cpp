@@ -27,9 +27,12 @@
 */
 
 #include "VarContexts.hpp"
+#include "wxParamTypes.hpp"
 #include "amilab_messages.h"
 
 #include <wx/arrstr.h>
+
+#include "ami_object.h"
 
 extern unsigned char       GB_debug;
 
@@ -146,23 +149,60 @@ boost::shared_ptr<wxArrayString> VarContexts::SearchCompletions(const wxString& 
 
 
 //--------------------------------------------------
-boost::shared_ptr<wxArrayString> VarContexts::SearchVariables(const vartype& type)
+boost::shared_ptr<wxArrayString> VarContexts::SearchVariables(const vartype& type, bool recursive)
 {
   boost::shared_ptr<wxArrayString> completions;
   completions = boost::shared_ptr<wxArrayString>(new wxArrayString());
 
-  for (int i=_context.size()-1; i>=1; i--)
-    _context[i]->SearchVariables(type,completions);
+  if (!recursive) {
+    for (int i=_context.size()-1; i>=1; i--)
+      _context[i]->SearchVariables(type,completions);
 
-  // global context, prepend "global::"
-  _context[0]->SearchVariables(type,completions,"global::");
+    // global context, prepend "global::"
+    _context[0]->SearchVariables(type,completions,"global::");
 
-  // global context, prepend "global::"
-  _builtin_context->SearchVariables(type,completions);
+    // global context, prepend "global::"
+    _builtin_context->SearchVariables(type,completions);
+  } else {
+    // global context, prepend "global::"
+    SearchVariablesRecursive(type,completions,_context[0],_T("global::"));
+
+    // global context, prepend "global::"
+    SearchVariablesRecursive(type,completions,_builtin_context,_T(""));
+    
+  }
 
   return completions;
 }
 
+//--------------------------------------------------
+void VarContexts::SearchVariablesRecursive( const vartype& type,
+                                   boost::shared_ptr<wxArrayString>& variables,
+                                   const Variables::ptr& context,
+                                   wxString const & prefix ) const
+{
+  wxString new_prefix;
+
+  for(int i=0;i<(int)context->GetSize();i++) {
+    BasicVariable::ptr m_var = (*context)[i];
+
+    if (m_var.get()) {
+      if (m_var->Type() == type) {
+        new_prefix = prefix + wxString(m_var->Name().c_str(), wxConvUTF8);
+        variables->Add(new_prefix);
+      } else {
+        if ((m_var->Type() == type_ami_object))
+        {
+          // get the pointer to the objet
+          DYNAMIC_CAST_VARIABLE(AMIObject,m_var,varobj);
+          AMIObject::ptr obj( varobj->Pointer());
+          new_prefix = prefix + wxString(m_var->Name().c_str(), wxConvUTF8) + wxT(".");
+          SearchVariablesRecursive(type, variables, obj->GetContext(), new_prefix);
+        }
+      }
+    }
+  }
+}
 
 //--------------------------------------------------
 int VarContexts::GetNewVarContext()

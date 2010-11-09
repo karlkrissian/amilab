@@ -109,7 +109,7 @@ BasicVariable::ptr Variables::AddVar(
 
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
-  _vars.push_front(newvar);
+  _vars.push_back(newvar);
 
   return newvar;
 }
@@ -130,7 +130,7 @@ BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr co
 //  BasicVariable::ptr newvar(var->NewReference());
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
-  _vars.push_front(newvar);
+  _vars.push_back(newvar);
 
   return newvar;
 }
@@ -141,7 +141,7 @@ void Variables::SearchCompletions(const wxString& varname,
     boost::shared_ptr<wxArrayString>& completions)
 {
   wxString name;
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
 
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
@@ -159,7 +159,7 @@ void Variables::SearchVariables( const vartype& type,
                       const std::string& prepend)
 {
   wxString name;
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
 
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
@@ -175,7 +175,7 @@ void Variables::SearchVariables( const vartype& type,
 //--------------------------------------------------
 bool Variables::ExistVar(const char* varname)
 {
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -189,7 +189,7 @@ bool Variables::ExistVar(const char* varname)
 //--------------------------------------------------
 bool Variables::ExistVar(BasicVariable::ptr& var)
 {
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -201,7 +201,7 @@ bool Variables::ExistVar(BasicVariable::ptr& var)
 //--------------------------------------------------
 bool Variables::ExistVar(BasicVariable* var)
 {
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -214,7 +214,7 @@ bool Variables::ExistVar(BasicVariable* var)
 //--------------------------------------------------
 BasicVariable::ptr Variables::GetVar(const char* varname)
 {
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -250,7 +250,7 @@ bool Variables::deleteVar(const char* varname)
 {
   CLASS_MESSAGE( boost::format("Variables::deleteVar(%s) for %s") % varname % GetName());
 
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -276,7 +276,7 @@ int Variables::deleteVars(const std::string& varmatch)
   wxString wxvarmatch(varmatch.c_str(), wxConvUTF8);
   int count=0;
 
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   Iter  = _vars.begin();
   while(Iter != _vars.end())
   {
@@ -299,7 +299,7 @@ int Variables::deleteVars(const std::string& varmatch)
 void Variables::display()
 {
   printf("VARIABLES:\n");
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -313,7 +313,7 @@ void Variables::display()
 void Variables::EmptyVariables()
 {
   CLASS_MESSAGE(boost::format("  in %1% ") % GetName());
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
 /* useless now ???
   Iter  = _vars.begin();
   while (Iter != _vars.end() )

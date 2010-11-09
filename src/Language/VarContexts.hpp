@@ -123,7 +123,18 @@ public:
 
   boost::shared_ptr<wxArrayString> SearchCompletions(const wxString& varname);
 
-  boost::shared_ptr<wxArrayString> SearchVariables(const vartype& type);
+  /**
+   * \brief Search all variables of a given type.
+   * \param type variable type
+   * \param recursive recursively go through all the objects of the context
+   * \return shared pointer of the array of resulting strings
+   */
+  boost::shared_ptr<wxArrayString> SearchVariables(const vartype& type, bool recursive=false);
+
+  void SearchVariablesRecursive( const vartype& type,
+                        boost::shared_ptr<wxArrayString>& variables,
+                        const Variables::ptr& context,
+                        wxString const & prefix) const;
 
   /**
   * 

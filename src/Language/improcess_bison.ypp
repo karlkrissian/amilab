@@ -10975,7 +10975,7 @@ void CB_update_imagelist( void* imagelist_gui)
   wxEnumerationParameter* imlist = (wxEnumerationParameter*) imagelist_gui;
   boost::shared_ptr<wxArrayString> imagelist;
 
-  imagelist = Vars.SearchVariables(type_image);
+  imagelist = Vars.SearchVariables(type_image,true);
   imagelist->Add(_T("BrowseImage"));
   imlist->SetChoices(imagelist);
 }

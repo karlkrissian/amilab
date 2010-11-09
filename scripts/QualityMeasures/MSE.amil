@@ -65,7 +65,7 @@ if (!exists(MSEClass)) {
       show ::input
       if (exists(::gt_draw)) { del ::gt_draw; }
       show ::gt
-      ::input_draw.compare(::gt_draw)
+      ::input_draw.compare(&::gt_draw)
     }
     
 

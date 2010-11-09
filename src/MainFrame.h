@@ -21,6 +21,13 @@
 
 
 #include "wx/treectrl.h"
+
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0) && wxUSE_FILECTRL)
+  #include "wx/filectrl.h"
+#endif
+/// @endcond
+
 #include <wx/dirctrl.h>
 
 //#include "wx/app.h"
@@ -44,6 +51,16 @@
 
 class myTreeCtrl;
 //#include "myTreeCtrl.h"
+
+//class myDataViewCtrl;
+//class AMILabTreeModel;
+//class wxDataViewItem;
+
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0))
+  #include "myDataViewCtrl.h"
+#endif
+/// @endcond
 
 #include "wx/listctrl.h"
 #include "wx/wxhtml.h"
@@ -175,6 +192,12 @@ public:
 
   void UpdateVarTree( const wxTreeItemId& rootbranch, Variables::ptr context);
 
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0))
+  void UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context);  
+#endif
+/// @endcond
+
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
   wxAuiNotebook* GetParamBook() { return _param_book; }
 
@@ -196,11 +219,15 @@ public:
   void OnAddNoise(            wxCommandEvent& event);
   void OnUserMenuScript(      wxCommandEvent& event);
 
+  
   boost::shared_ptr<wxFileHistory> GetImagesHistory()  { return images_history;  }
   boost::shared_ptr<wxFileHistory> GetScriptsHistory() { return scripts_history; }
 
 protected:
 
+//   void OnBeginDrag( wxDataViewEvent &event );
+//   void OnDropPossible( wxDataViewEvent &event );
+//   void OnDrop( wxDataViewEvent &event );
   //
   wxStcFrame* amilab_editor;
   
@@ -217,10 +244,10 @@ protected:
   wxMenu *menuFile;
   wxMenu *menuView;
   wxMenu *menuScripts;
-    wxMenu *menuSegmentation;
-    wxMenu *menuNoiseReduction;
-    wxMenu *menuVisualization;
-    wxMenu *menuSyntheticImages;
+  wxMenu *menuSegmentation;
+  wxMenu *menuNoiseReduction;
+  wxMenu *menuVisualization;
+  wxMenu *menuSyntheticImages;
 
   int usermenu_id;
   std::map<int,std::string> usermenu_scripts; // Scripts added to the menu by the user
@@ -240,8 +267,18 @@ protected:
 
   wxAuiNotebook*    _var_book;
   wxPanel*          _vartree_panel;
+
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0) && wxUSE_FILECTRL)
+  wxFileCtrl*       _var_fileCtrl;
+#endif
+/// @endcond
+
   wxGenericDirCtrl* _var_dirctrl;
   wxBoxSizer*  vartreepanel_sizer;
+
+  wxPanel*     _vardataview_panel;
+  wxBoxSizer*  vardataviewpanel_sizer;
 
   boost::shared_ptr<wxTextValidator> _textcontrol_validator;
   TextControl::ptr TC;
@@ -267,32 +304,55 @@ protected:
   wxTreeItemId _vartree_root;
   wxTreeItemId _vartree_global;
   wxTreeItemId _vartree_builtin;
-  wxTreeItemId _vartree_images;
-  wxTreeItemId _vartree_surfaces;
-  wxTreeItemId _vartree_numbers;
-  wxTreeItemId _vartree_strings;
-  wxTreeItemId _vartree_functions;
-  wxTreeItemId _vartree_classes;
-  wxTreeItemId _vartree_objects;
-  wxTreeItemId _vartree_wrapped_functions;
-  wxTreeItemId _vartree_others;
+
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0))
+  myDataViewCtrl* _var_dataview;
+  wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
+#endif
+/// @endcond
+
+//  wxTreeItemId _vartree_images;
+//  wxTreeItemId _vartree_surfaces;
+//  wxTreeItemId _vartree_numbers;
+//  wxTreeItemId _vartree_strings;
+//  wxTreeItemId _vartree_functions;
+//  wxTreeItemId _vartree_classes;
+//  wxTreeItemId _vartree_objects;
+//  wxTreeItemId _vartree_wrapped_functions;
+//  wxTreeItemId _vartree_others;
 
   void CreateMenu();
 
-  wxToolBar* CreateToolbar ( wxWindow* parent );
+  wxToolBar* CreateToolbar    ( wxWindow* parent );
 
-  void CreateMainBook     ( wxWindow*);
-  void CreateParamBook    ( wxWindow*);
+  void CreateMainBook         ( wxWindow*);
+  void CreateParamBook        ( wxWindow*);
 
-  void CreateConsoleText  ( wxWindow*);
-  void CreateVarListPanel ( wxWindow*);
-  void CreateVarTreePanel ( wxWindow*);
-  void CreateLogText      ( wxWindow*);
-  void CreateKeywordsPanel( wxWindow*);
-  void CreateVarPanel     ( wxWindow*);
-  void CreateHtmlPanel    ( wxWindow*);
-  void CreateDrawingPanel ( wxWindow*);
-  void CreateSettingsPanel( wxWindow*);
+  void CreateConsoleText      ( wxWindow*);
+  void CreateVarListPanel     ( wxWindow*);
+  void CreateVarBook          ( wxWindow*);
+  void CreateVarDirCtrl       ( wxWindow*);
+  void CreateVarTreePanel     ( wxWindow*);
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
+  void CreateVarDataViewPanel ( wxWindow*);
+#endif
+/// @endcond  
+
+  void CreateLogText          ( wxWindow*);
+  void CreateKeywordsPanel    ( wxWindow*);
+  void CreateVarPanel         ( wxWindow*);
+  void CreateHtmlPanel        ( wxWindow*);
+  void CreateDrawingPanel     ( wxWindow*);
+  void CreateSettingsPanel    ( wxWindow*);
+
+///@cond wxCHECK
+#if (wxCHECK_VERSION(2,9,0) && wxUSE_FILECTRL)
+  void OnFileCtrl( wxFileCtrlEvent& event );  
+#endif
+///@endcond
 
   void OnFileActivated(wxCommandEvent& event);
 

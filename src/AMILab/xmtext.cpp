@@ -679,6 +679,3 @@ void TextControl::NextCommand()
     }
 }
 
-
-
-

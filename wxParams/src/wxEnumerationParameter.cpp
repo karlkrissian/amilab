@@ -34,6 +34,8 @@
 #include "wxEnumerationParameter.h"
 #include "wxParamTypes.hpp"
 
+#include "DndChoiceTextDropTarget.h"
+
 #include "slick/16x16/actions/reload.xpm"
 
 #ifdef _MSC_VER
@@ -48,6 +50,7 @@ wxString GetwxStr(const string& str);
 //==============================================================================
 
 BEGIN_EVENT_TABLE(myChoice, wxChoice)
+//BEGIN_EVENT_TABLE(myChoice, wxComboBox)
   EVT_CHOICE    (wxID_ANY,  myChoice::OnChoiceUpdate)
 END_EVENT_TABLE()
 
@@ -86,7 +89,8 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
 wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent, 
     string_ptr selection_param,
     const char* label,
-    const std::string& tooltip
+    const std::string& tooltip,
+    bool allowdrop
     ):  wxBoxSizer(wxHORIZONTAL), 
         _selection_param(selection_param)
 {
@@ -101,6 +105,10 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
   this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
+  if (allowdrop) {
+    DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this);
+    this->_choice->SetDropTarget(ChoiceTextImage);
+  }
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);
 
   this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
@@ -142,6 +150,10 @@ void wxEnumerationParameter::AddUpdateButton( void* update_cb,
 //----------------------------------------------
 void wxEnumerationParameter::AddChoice( int* choix_id, const char* label)
 {
+  int Pos = this->_choice->FindString(wxString::FromAscii(label), true);
+  if (Pos != wxNOT_FOUND)
+    *choix_id = Pos;
+  else
     *choix_id = this->_choice->Append(wxString::FromAscii(label));
 }
 
@@ -151,17 +163,29 @@ void wxEnumerationParameter::SetChoices( const boost::shared_ptr<wxArrayString>&
 {
   // get the current selected name
   wxString currentselection = GetStringSelection();
+  
+  std::cout << "wxEnumerationParameter::SetChoices"
+            << " Current Item: "
+            << currentselection << std::endl;
+
   this->_choice->Clear();
   for(int i=0;i<(int)choices->GetCount();i++) {
     this->_choice->Append((*choices)[i]);
+    std::cout << "wxEnumerationParameter::SetChoices"
+              << " Added Item:"
+              << (*choices)[i] << std::endl;
   }
 
   if (!this->_choice->SetStringSelection(currentselection))
     // if not able to set the same selection, set to the first item
     if (choices->GetCount()>0)
       SetSelection(0);
-}
 
+//   std::cout << "wxEnumerationParameter::SetChoices"
+//             << " Current Item: "
+//             << this->_choice->GetString(this->_choice->GetCurrentSelection())
+//             << std::endl;
+}
 
 //----------------------------------------------
 wxString wxEnumerationParameter::GetStringSelection()

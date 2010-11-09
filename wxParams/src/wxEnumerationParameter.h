@@ -24,8 +24,13 @@
 #include <boost/shared_ptr.hpp>
 //#include "wxParamTypes.hpp"
 
+
+
 typedef boost::shared_ptr<std::string>     string_ptr;
 
+#include <wx/choice.h>
+#include <wx/sizer.h>
+#include "widget.hpp"
 
 class wxBitmapButtonParameter;
 
@@ -44,8 +49,8 @@ class myChoice: public wxChoice
         long style = 0,
         const wxValidator& validator = wxDefaultValidator,
         const wxString& name = wxChoiceNameStr) :
-        wxChoice(parent,id,pos,size,n,choices,style,validator,name) 
-    {}
+        wxChoice(parent,id,pos,size,n,choices,style,validator,name)        
+    {   }
     
   void SetCallback(void* cb, void* cd) { _callback=cb; _calldata=cd;}
   void OnChoiceUpdate( wxCommandEvent &WXUNUSED(event) )
@@ -87,7 +92,9 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   wxEnumerationParameter( wxWindow* parent,
     string_ptr selection_param,
     const char* label,
-    const std::string& tooltip="");
+    const std::string& tooltip="",
+    bool allowdrop=false
+                        );
   
   ~wxEnumerationParameter();
   
