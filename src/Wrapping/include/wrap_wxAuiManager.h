@@ -85,9 +85,7 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
     ADD_CLASS_METHOD(GetAllPanes,"")
 */
     ADD_CLASS_METHOD(AddPane,"")
-/* The following types are missing: wxPoint
     ADD_CLASS_METHOD(AddPane1,"")
-*/
     ADD_CLASS_METHOD(AddPane2,"")
     ADD_CLASS_METHOD(InsertPane,"")
     ADD_CLASS_METHOD(DetachPane,"")
@@ -105,25 +103,13 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
 /* The following types are missing: wxAuiFloatingFrame
     ADD_CLASS_METHOD(CreateFloatingFrame,"")
 */
-/* The following types are missing: wxPoint
     ADD_CLASS_METHOD(StartPaneDrag,"")
-*/
-/* The following types are missing: wxRect, wxPoint, wxPoint
     ADD_CLASS_METHOD(CalculateHintRect,"")
-*/
-/* The following types are missing: wxPoint, wxPoint
     ADD_CLASS_METHOD(DrawHintRect,"")
-*/
-/* The following types are missing: wxRect
     ADD_CLASS_METHOD(ShowHint,"")
-*/
     ADD_CLASS_METHOD(HideHint,"")
-/* The following types are missing: wxFrame
     ADD_CLASS_METHOD(SetFrame,"")
-*/
-/* The following types are missing: wxFrame
     ADD_CLASS_METHOD(GetFrame,"")
-*/
 /* The following types are missing: wxAuiManagerEvent
     ADD_CLASS_METHOD(OnRender,"")
 */
@@ -168,9 +154,7 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
       AddVar_GetAllPanes( this_ptr);
 */
       AddVar_AddPane( this_ptr);
-/* The following types are missing: wxPoint
       AddVar_AddPane1( this_ptr);
-*/
       AddVar_AddPane2( this_ptr);
       AddVar_InsertPane( this_ptr);
       AddVar_DetachPane( this_ptr);
@@ -188,25 +172,13 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
 /* The following types are missing: wxAuiFloatingFrame
       AddVar_CreateFloatingFrame( this_ptr);
 */
-/* The following types are missing: wxPoint
       AddVar_StartPaneDrag( this_ptr);
-*/
-/* The following types are missing: wxRect, wxPoint, wxPoint
       AddVar_CalculateHintRect( this_ptr);
-*/
-/* The following types are missing: wxPoint, wxPoint
       AddVar_DrawHintRect( this_ptr);
-*/
-/* The following types are missing: wxRect
       AddVar_ShowHint( this_ptr);
-*/
       AddVar_HideHint( this_ptr);
-/* The following types are missing: wxFrame
       AddVar_SetFrame( this_ptr);
-*/
-/* The following types are missing: wxFrame
       AddVar_GetFrame( this_ptr);
-*/
 /* The following types are missing: wxAuiManagerEvent
       AddVar_OnRender( this_ptr);
 */

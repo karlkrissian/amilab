@@ -28,6 +28,9 @@ SET(  WrapWxWidgets_SRCS
   wrap_wxBoxSizer.cpp
   wrap_wxAuiManager.cpp
   wrap_wxAuiPaneInfo.cpp
+  wrap_wxPoint.cpp
+  wrap_wxRect.cpp
+  wrap_wxFrame.cpp
 )
 
 SET(WrapWxWidgets_HDRS
@@ -46,6 +49,9 @@ SET(WrapWxWidgets_HDRS
   ../include/wrap_wxBoxSizer.h
   ../include/wrap_wxAuiManager.h
   ../include/wrap_wxAuiPaneInfo.h
+  ../include/wrap_wxPoint.h
+  ../include/wrap_wxRect.h
+  ../include/wrap_wxFrame.h
 )
 
 SET(WrapWxWidgets_SRCS

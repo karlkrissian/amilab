@@ -73,8 +73,9 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   int _n = 0;
 //  std::string* title = NULL;
 
+  // avoid recursive calls to the constructor ...
   wxWindow* w;
-  if (!get_val_ptr_param<wxWindow>(w,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<wxWindow>(w,_p,_n,true,true)) ClassHelpAndReturn;
 //  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
 
   return WrapClass_wxHtmlWindow::CreateVar( new myHtmlWindow(w));

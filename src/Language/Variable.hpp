@@ -71,7 +71,7 @@ template<typename T>
 class AMILabType {
     public:
     static std::string name_as_string() { return std::string("unknown"); }
-    static boost::shared_ptr<T> GetValue(BasicVariable::ptr var)
+    static boost::shared_ptr<T> GetValue(BasicVariable::ptr var, bool noconstr=false)
     { return boost::shared_ptr<T>(); }
 
     static BasicVariable::ptr CreateVarFromSmtPtr(boost::shared_ptr<T>& val);
@@ -89,7 +89,7 @@ class AMILabType {
   { \
     public: \
 	    static std::string name_as_string();\
-      static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
+      static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false);\
       static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
       static BasicVariable::ptr CreateVar(type* val);\
       static BasicVariable::ptr CreateVar(const type& val);\
@@ -98,7 +98,7 @@ class AMILabType {
 #define AMI_DEFINE_BASICTYPE(type) \
 	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
     \
-    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr)  \
     { \
       if (!var.get()) \
       {\
@@ -146,7 +146,7 @@ class AMILabType {
       return name; \
     } \
     \
-    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr)  \
     { \
       if (!var.get()) \
       {\
@@ -154,7 +154,7 @@ class AMILabType {
         return boost::shared_ptr<type>();\
       }\
       boost::shared_ptr<Variable<AMIObject> > tmp( boost::dynamic_pointer_cast<Variable<AMIObject> >(var)); \
-      if (!tmp.get()) {\
+      if ((!tmp.get()) && (!noconstr)) {\
         /* Try with the constructor */ \
         ParamList::ptr param(new ParamList()); \
         param->AddParam(var); \

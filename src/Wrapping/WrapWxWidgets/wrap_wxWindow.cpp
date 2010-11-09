@@ -66,23 +66,26 @@ void WrapClass_wxWindow::wrap_wxWindow::SetParametersComments()
   return_comments = "A wrapped wxWindow object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindow::wrap_wxWindow::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_wxWindow::wrap_wxWindow::CallMember( ParamList* _p)
 {
-  int n = 0;
+  int _n = 0;
 //  std::string* title = NULL;
 
-  if (!p) ClassHelpAndReturn;
-  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
-  if (parent.get()){
+  if (!_p) ClassHelpAndReturn;
+  wxWindow* w;
+  if (!get_val_ptr_param<wxWindow>(w,_p,_n)) ClassHelpAndReturn;
+//  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
+//  if (parent.get()){
     
-    boost::shared_ptr<wxWindow> w_ptr(
-      new wxWindow(parent.get(), wxID_ANY),
-      wxwindow_nodeleter<wxWindow>() // deletion will be done by wxwidgets
-    );
-    return WrapClass<wxWindow>::CreateVar(new WrapClass_wxWindow(w_ptr));
-  }
-  else
-    ClassHelpAndReturn;
+//    boost::shared_ptr<wxWindow> w_ptr(
+//      new wxWindow(parent.get(), wxID_ANY),
+//      wxwindow_nodeleter<wxWindow>() // deletion will be done by wxwidgets
+//    );
+//    return WrapClass<wxWindow>::CreateVar(new WrapClass_wxWindow(w_ptr));
+//  }
+//  else
+//    ClassHelpAndReturn;
+    return WrapClass_wxWindow::CreateVar(w);
 }
 
 //---------------------------------------------------

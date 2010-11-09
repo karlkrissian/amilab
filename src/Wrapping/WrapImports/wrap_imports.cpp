@@ -133,7 +133,7 @@ void AddWrapWxWidgets()
   WrapClass_wxImage     ::AddVar_wxImage     ( amiobject->GetContext());
   WrapClass_wxHtmlWindow::AddVar_wxHtmlWindow( amiobject->GetContext());
   WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo(amiobject->GetContext());
-  WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo2(amiobject->GetContext());
+  WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo1(amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
