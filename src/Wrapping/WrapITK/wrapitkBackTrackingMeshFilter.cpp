@@ -126,10 +126,15 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
     for (int i=0;i<(int) BackTracking->GetOutput()->GetNumberOfPoints();i++)
     {
         pointID = i;
-//        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
-        surf->AddPoint(pp[0],pp[1],0);
-        surf->LineAddPointNumber(num_points);
-        num_points++;
+        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
+        if (pointExists) {
+          surf->AddPoint(pp[0],pp[1],0);
+          surf->LineAddPointNumber(num_points);
+          num_points++;
+        } else
+        {
+          FILE_ERROR("point not found")
+        }
     }
     surf->EndLine();
 
@@ -220,10 +225,15 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
     for (int i=0;i<(int)BackTracking->GetOutput()->GetNumberOfPoints();i++)
     {
         pointID = i;
-//        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
-        surf->AddPoint(pp[0],pp[1],pp[2]);
-        surf->LineAddPointNumber(num_points);
-        num_points++;
+        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
+        if (pointExists) {
+          surf->AddPoint(pp[0],pp[1],pp[2]);
+          surf->LineAddPointNumber(num_points);
+          num_points++;
+        } else
+        {
+          FILE_ERROR("point not found")
+        }
     }
     surf->EndLine();
 
