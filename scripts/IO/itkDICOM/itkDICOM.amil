@@ -29,7 +29,7 @@ if (!exists(DICOMClass)) {
     #---------------------------
     proc ::Run() \
     {   
-      ::out = ::itk->DICOMRead(::dicom_folder+"/")
+      ::out <<= ::itk->DICOMRead(::dicom_folder+"/")
       eval "global::"+::image_name+"<<= ::out;"
     }
     

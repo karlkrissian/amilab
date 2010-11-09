@@ -21,6 +21,8 @@
 
 #include "MainFrame.h"
 
+#include "wrap_wxAuiManager.h"
+
 //
 // static member for creating a variable from a ParamList
 //
@@ -128,4 +130,20 @@ BasicVariable::ptr WrapClass_MainFrame::
   if ((menuname=="")||(category=="")||(label=="")||(script=="")) ClassHelpAndReturn;
   this->_objectptr->_obj->AddToMenu(menuname,category,label,script);
   return BasicVariable::ptr();
+}
+
+
+//---------------------------------------------------
+//  GetAuiManager
+//---------------------------------------------------
+void WrapClass_MainFrame::
+      wrap_GetAuiManager::SetParametersComments() 
+{
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_MainFrame::
+      wrap_GetAuiManager::CallMember( ParamList* p)
+{
+  wxAuiManager& mgr =   this->_objectptr->_obj->GetAuiManager();
+  return WrapClass_wxAuiManager::CreateVar(&mgr);
 }

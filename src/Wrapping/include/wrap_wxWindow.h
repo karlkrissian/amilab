@@ -45,6 +45,9 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
       std::cout << "~WrapClass_wxWindow()" << std::endl;
     }
 
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( wxWindow*);
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( wxWindow, "Wrapping of wxWindow (see http://docs.wxwidgets.org/)." );
 

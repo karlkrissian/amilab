@@ -48,7 +48,7 @@ BasicVariable::ptr WrapClass<wxString>::CreateVar( ParamList* p)
 AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxString);
 AMI_DEFINE_VARFROMSMTPTR(wxString);
 
-/*
+
 //
 // static member for creating a variable from a pointer to dwControlPoint
 //
@@ -58,7 +58,7 @@ Variable<AMIObject>::ptr WrapClass_wxString::CreateVar( wxString* sp)
     WrapClass<wxString>::CreateVar(
       new WrapClass_wxString(boost::shared_ptr<wxString>(sp)));
 }
-*/
+
 
 //---------------------------------------------------
 // Method that adds wrapping of wxString
