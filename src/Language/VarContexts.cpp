@@ -188,7 +188,7 @@ void VarContexts::SearchVariablesRecursive( const vartype& type,
 
     if (m_var.get()) {
       if (m_var->Type() == type) {
-        new_prefix = prefix + m_var->Name();
+        new_prefix = prefix + wxString(m_var->Name().c_str(), wxConvUTF8);
         variables->Add(new_prefix);
       } else {
         if ((m_var->Type() == type_ami_object))
@@ -196,7 +196,7 @@ void VarContexts::SearchVariablesRecursive( const vartype& type,
           // get the pointer to the objet
           DYNAMIC_CAST_VARIABLE(AMIObject,m_var,varobj);
           AMIObject::ptr obj( varobj->Pointer());
-          new_prefix = prefix + m_var->Name() + ".";
+          new_prefix = prefix + wxString(m_var->Name().c_str(), wxConvUTF8) + wxT(".");
           SearchVariablesRecursive(type, variables, obj->GetContext(), new_prefix);
         }
       }

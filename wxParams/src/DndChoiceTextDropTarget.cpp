@@ -18,7 +18,7 @@ bool DndChoiceTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& t
             << "recieving: " << text << std::endl;
 
   // Process the string received to determine if it is an image
-  int Pos = text.First("-");
+  int Pos = text.First(_T("-"));
   wxString Type = text.SubString(0, Pos-1); //Get prefix
   wxString Value = text.SubString(Pos+1, text.Len()); //Get text
 
@@ -28,7 +28,7 @@ bool DndChoiceTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& t
             << "Text: " << Value
             << std::endl;
 
-  if (Type == "InrImage")
+  if (Type == wxT("InrImage"))
   {
     if (!m_pOwner->SetStringSelection(Value))
     {
