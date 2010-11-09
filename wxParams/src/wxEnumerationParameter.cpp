@@ -72,8 +72,8 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
                         wxALIGN_LEFT );
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
-  DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this->_choice);
-  this->_choice->SetDropTarget(ChoiceTextImage);  
+  //DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this->_choice);
+  //this->_choice->SetDropTarget(ChoiceTextImage);  
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);
 
   this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
@@ -91,7 +91,8 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
 wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent, 
     string_ptr selection_param,
     const char* label,
-    const std::string& tooltip
+    const std::string& tooltip,
+    bool allowdrop
     ):  wxBoxSizer(wxHORIZONTAL), 
         _selection_param(selection_param)
 {
@@ -106,8 +107,10 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
   this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
-  DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this->_choice);
-  this->_choice->SetDropTarget(ChoiceTextImage); 
+  if (allowdrop) {
+    DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this->_choice);
+    this->_choice->SetDropTarget(ChoiceTextImage);
+  }
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);
 
   this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);

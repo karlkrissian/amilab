@@ -87,7 +87,9 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   wxEnumerationParameter( wxWindow* parent,
     string_ptr selection_param,
     const char* label,
-    const std::string& tooltip="");
+    const std::string& tooltip="",
+    bool allowdrop=false
+                        );
   
   ~wxEnumerationParameter();
   

@@ -794,7 +794,9 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddImageChoice::CallMember( ParamL
       imagelist,
       (void*)CB_update_imagelist, // TODO: check declaration
       EnumOptionMenu,
-      tooltip);
+      tooltip,
+      true // allowing drop
+                              );
 
   // create integer variable to return
   RETURN_VARINT(var_id,var->Name());

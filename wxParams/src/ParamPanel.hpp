@@ -519,7 +519,8 @@ public:
             const boost::shared_ptr<wxArrayString>& choicelist,
             void* update_cb,
             type_enum type=EnumOptionMenu,
-            const std::string& tooltip=""
+            const std::string& tooltip="",
+            bool allowdrop=false
             );
 
   ///
