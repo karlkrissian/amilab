@@ -115,6 +115,12 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
 
   void EnableWidget(bool enable = true);
 
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,8,11)
+  wxString GetAbsoluteName(const wxString& Name);
+#endif
+/// @endcond
+
 //  void OnButtonUpdate( wxCommandEvent& data);
 
 }; // wxEnumerationParameter

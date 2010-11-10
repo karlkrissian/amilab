@@ -252,3 +252,55 @@ void wxEnumerationParameter::EnableWidget(bool enable)
 //{
 //}
 
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,8,11)
+//---------------------------------------------
+wxString wxEnumerationParameter::GetAbsoluteName(const wxString& Name)
+{
+  wxString Result= wxT("");
+  wxString Text;
+  wxArrayString choices;
+  string Simb;
+  int Pos, Size;
+
+  // eventually call update button callback function
+  if (_update_button!=NULL)
+    _update_button->Callback();
+
+  choices = this->_choice->GetStrings();
+
+  for(int i=0;i<(int)choices.GetCount();i++) {
+      Text = choices[i];
+      Pos = Text.Find(Name);
+      if(Pos != wxNOT_FOUND)
+      {
+        Size = Pos + Name.Len();
+        Simb = Text.SubString(Pos-2, Pos-1).ToAscii();
+
+        if(Size == Text.Len())
+        {
+          if(Simb == "::")
+          {
+            Result = Text;
+            break;
+          }
+          else
+          {
+            Simb = Text.SubString(Pos-1, Pos-1).ToAscii();
+            if(Simb == ".")
+            {
+              Result = Text;
+              break;
+            }
+          }
+        }
+      }
+  }
+  std::cout << "wxEnumerationParameter::GetAbsoluteName->Obtained name: "
+            << Result.ToAscii()
+            << std::endl;
+  return Result;
+}
+#endif
+/// @endcond
+

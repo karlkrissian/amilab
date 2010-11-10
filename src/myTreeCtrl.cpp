@@ -24,6 +24,8 @@ extern MainFrame*    GB_main_wxFrame;
 
 //dnd operation
 //#include "wxDragAndDrop.h"
+#include <wx/dnd.h>
+#include <wx/dataobj.h>
 
 //Used for &About menu item
 enum
@@ -38,7 +40,9 @@ BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeListCtrl)
   EVT_MENU(wxID_ToConsole, myTreeCtrl::ToConsole)
 
 //  EVT_TREE_BEGIN_DRAG(wxID_ANY, myTreeCtrl::OnBeginDrag)
-  
+#if wxUSE_DRAG_AND_DROP
+    EVT_TREE_BEGIN_DRAG(wxID_ANY, myTreeCtrl::OnBeginDrag)
+#endif   
 /*
   EVT_ERASE_BACKGROUND(    myTreeCtrl::OnEraseBackground)
   EVT_PAINT(               myTreeCtrl::OnPaint)
@@ -180,6 +184,73 @@ void myTreeCtrl::ToConsole(wxCommandEvent& event)
   BasicVariable::ptr var(_currentmenu_var.lock());
   GB_main_wxFrame->GetConsole()->IncCommand(var->Name());
 }
+
+#if wxUSE_DRAG_AND_DROP
+void myTreeCtrl::OnBeginDrag(wxTreeEvent& event)
+{
+  wxTreeItemId itemid( event.GetItem() );
+
+  wxString Text;
+  wxString Type;
+
+  if (itemid.IsOk()) // get the item name
+  {
+    Text = GetItemText(itemid);
+    Type = GetItemText (itemid, 1); //Type column.
+  }
+  else
+    Text = _T("No item has been captured");
+
+  std::cout << "myTreeCtrl::OnBeginDrag->"
+            << "Dnd: Item Type: "
+            << Type.ToAscii() 
+            << std::endl;
+
+  if(Type == _T("InrImage"))
+  {
+    wxTextDataObject dragData(Text); //Create data object.
+    wxDropSource dragSource( this ); //Create data source
+    dragSource.SetData( dragData );  //Assign the data
+    wxDragResult result = dragSource.DoDragDrop( ); //Begin the drag operation.
+
+    //event.Allow();
+
+    switch (result)
+    {
+      case wxDragCopy: // copy the data
+        std::cout << "myTreeCtrl::OnBeginDrag->Drag operation: the data was successfully copied" << std::endl;
+        break;
+      case wxDragMove: // move the data
+        std::cout << "myTreeCtrl::OnBeginDrag->Drag operation: the data was successfully moved" << std::endl;
+        break;
+      case wxDragError: // Error
+        std::cout << "myTreeCtrl::OnBeginDrag->Drag operation: Error" << std::endl;
+        break;
+      case wxDragNone: // target didn't accept the data
+        std::cout << "myTreeCtrl::OnBeginDrag->Drag operation: target didn't accept the data" << std::endl;
+        break;
+      case wxDragCancel: // the operation was cancelled by user
+        std::cout << "myTreeCtrl::OnBeginDrag->Drag operation: the operation was cancelled by user" << std::endl;
+        break;
+      case wxDragLink: // operation is a drag-link
+        std::cout << "myTreeCtrl::OnBeginDrag->Drag operation: this was a link operation" << std::endl;
+        break;
+      default: // do nothing
+        std::cout << "myTreeCtrl::OnBeginDrag->Drag operation: do nothing" << std::endl;
+        break;
+    }
+
+    std::cout << "myTreeCtrl::OnBeginDrag->"
+              << "Dnd: Drag operation(text: "
+              << Text.ToAscii() << ")"
+              << std::endl;
+
+    event.Skip();
+  }
+}
+
+#endif
+
 /*
 void myTreeCtrl::OnBeginDrag(wxTreeEvent& event)
 //void myTreeCtrl::OnLeftDown(wxMouseEvent& event)

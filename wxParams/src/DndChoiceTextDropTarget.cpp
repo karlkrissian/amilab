@@ -17,8 +17,12 @@ bool DndChoiceTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& t
   std::cout << "DndChoiceTextDropTarget::OnDropText->"
             << "recieving: " << text << std::endl;
 
+  int Pos;
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,9,0)
   // Process the string received to determine if it is an image
-  int Pos = text.First(_T("-"));
+  Pos = text.First(_T("-"));
   wxString Type = text.SubString(0, Pos-1); //Get prefix
   wxString Value = text.SubString(Pos+1, text.Len()); //Get text
 
@@ -42,7 +46,18 @@ bool DndChoiceTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& t
     std::cout << "DndChoiceTextDropTarget::OnDropText->"
               << "Not allowed operation(It is not an image)"
               << std::endl;
+#else
+    wxString Name = m_pOwner->GetAbsoluteName(text);
 
+    m_pOwner->AddChoice( &Pos, Name.char_str() );
+    m_pOwner->SetSelection( Pos );
+
+    std::cout << "DndChoiceTextDropTarget::OnDropText->"
+              << "Selected Item: "
+              << m_pOwner->GetStringSelection().ToAscii()
+              << std::endl;
+#endif
+/// @endcond
   return true;
 }
 
