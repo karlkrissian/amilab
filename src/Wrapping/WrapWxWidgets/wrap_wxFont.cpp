@@ -36,7 +36,10 @@ BasicVariable::ptr WrapClass<wxFont>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxFont);
+
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxFont);
+AMI_DEFINE_VARFROMSMTPTR(wxFont);
+
 
 //
 // static member for creating a variable from a pointer to wxFont
@@ -59,37 +62,63 @@ Variable<AMIObject>::ptr WrapClass_wxFont::CreateVar( wxFont* sp)
 //  Wrapping of Constructor wxFont::wxFont(wxFont const & param0)
 //---------------------------------------------------
 void WrapClass_wxFont::
-    wrap_wxFont::SetParametersComments()
+    wrap_wxFont1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxFont, "parameter named 'param0'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxFont::
-    wrap_wxFont::CallMember( ParamList* _p)
+    wrap_wxFont1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxFont* param0_ptr;
-  if (!get_val_ptr_param<wxFont>(param0_ptr,_p,_n)) ClassHelpAndReturn;
-  wxFont& param0 = *param0_ptr;
+  boost::shared_ptr<wxFont> param0_smtptr;
+  if (!get_val_smtptr_param<wxFont>(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxFont& param0 = *param0_smtptr;
   wxFont* _newobj = new wxFont(param0);
   BasicVariable::ptr res = WrapClass_wxFont::CreateVar(_newobj);
   return res;
 }
 
 //---------------------------------------------------
+//  Wrapping of multipled defined method:... Constructor wxFont::wxFont(...)
+//---------------------------------------------------
+void WrapClass_wxFont::
+    wrap_wxFont::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxFont::
+    wrap_wxFont::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxFont::wrap_wxFont1 m1;
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxFont::wrap_wxFont2 m2;
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxFont::wrap_wxFont3 m3;
+  res = m3.CallMember(_p);
+  if (res.get()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
 //  Wrapping of Constructor wxFont::wxFont()
 //---------------------------------------------------
 void WrapClass_wxFont::
-    wrap_wxFont1::SetParametersComments()
+    wrap_wxFont2::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxFont::
-    wrap_wxFont1::CallMember( ParamList* _p)
+    wrap_wxFont2::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
   wxFont* _newobj = new wxFont();
   BasicVariable::ptr res = WrapClass_wxFont::CreateVar(_newobj);
   return res;
@@ -99,20 +128,21 @@ BasicVariable::ptr WrapClass_wxFont::
 //  Wrapping of Constructor wxFont::wxFont(wxString const & fontname)
 //---------------------------------------------------
 void WrapClass_wxFont::
-    wrap_wxFont2::SetParametersComments()
+    wrap_wxFont3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'fontname'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxFont::
-    wrap_wxFont2::CallMember( ParamList* _p)
+    wrap_wxFont3::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxString* fontname_ptr;
-  if (!get_val_ptr_param<wxString>(fontname_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& fontname = *fontname_ptr;
+  boost::shared_ptr<wxString> fontname_smtptr;
+  if (!get_val_smtptr_param<wxString>(fontname_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxString& fontname = *fontname_smtptr;
   wxFont* _newobj = new wxFont(fontname);
   BasicVariable::ptr res = WrapClass_wxFont::CreateVar(_newobj);
   return res;
@@ -123,20 +153,21 @@ BasicVariable::ptr WrapClass_wxFont::
 //  Wrapping of Constructor wxFont::wxFont(wxNativeFontInfo const & info)
 //---------------------------------------------------
 void WrapClass_wxFont::
-    wrap_wxFont3::SetParametersComments()
+    wrap_wxFont4::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxNativeFontInfo, "parameter named 'info'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxFont::
-    wrap_wxFont3::CallMember( ParamList* _p)
+    wrap_wxFont4::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxNativeFontInfo* info_ptr;
-  if (!get_val_ptr_param<wxNativeFontInfo>(info_ptr,_p,_n)) ClassHelpAndReturn;
-  wxNativeFontInfo& info = *info_ptr;
+  boost::shared_ptr<wxNativeFontInfo> info_smtptr;
+  if (!get_val_smtptr_param<wxNativeFontInfo>(info_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxNativeFontInfo& info = *info_smtptr;
   wxFont* _newobj = new wxFont(info);
   BasicVariable::ptr res = WrapClass_wxFont::CreateVar(_newobj);
   return res;
@@ -148,7 +179,7 @@ BasicVariable::ptr WrapClass_wxFont::
 //  Wrapping of Constructor wxFont::wxFont(int size, int family, int style, int weight, bool underlined, wxString const & face, wxFontEncoding encoding)
 //---------------------------------------------------
 void WrapClass_wxFont::
-    wrap_wxFont4::SetParametersComments()
+    wrap_wxFont5::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'size'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'family'")
@@ -161,38 +192,55 @@ void WrapClass_wxFont::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxFont::
-    wrap_wxFont4::CallMember( ParamList* _p)
+    wrap_wxFont5::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>7) ClassReturnEmptyVar;
   int _n=0;
   int size;
-  if (!get_val_param<int>(size,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(size,_p,_n)) ClassReturnEmptyVar;
   int family;
-  if (!get_val_param<int>(family,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(family,_p,_n)) ClassReturnEmptyVar;
   int style;
-  if (!get_val_param<int>(style,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(style,_p,_n)) ClassReturnEmptyVar;
   int weight;
-  if (!get_val_param<int>(weight,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(weight,_p,_n)) ClassReturnEmptyVar;
   int underlined_int;
-  if (!get_val_param<int>(underlined_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(underlined_int,_p,_n)) ClassReturnEmptyVar;
   bool underlined = (bool) (underlined_int>0.5);
-  wxString* face_ptr;
-  if (!get_val_ptr_param<wxString>(face_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& face = *face_ptr;
+  boost::shared_ptr<wxString> face_smtptr;
+  if (!get_val_smtptr_param<wxString>(face_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxString& face = *face_smtptr;
   wxFontEncoding encoding;
-  if (!get_val_param<wxFontEncoding>(encoding,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<wxFontEncoding>(encoding,_p,_n)) ClassReturnEmptyVar;
   wxFont* _newobj = new wxFont(size, family, style, weight, underlined, face, encoding);
   BasicVariable::ptr res = WrapClass_wxFont::CreateVar(_newobj);
   return res;
 }
 */
+
+//---------------------------------------------------
+//  Wrapping of 'copy' method for wxFont.
+//---------------------------------------------------
+void WrapClass_wxFont::
+    wrap_copy::SetParametersComments()
+{
+  return_comments="A copy of the wxFont object within a new variable.";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxFont::
+    wrap_copy::CallMember( ParamList* _p)
+{
+    return AMILabType<wxFont>::CreateVar( new wxFont(*(this->_objectptr->GetObj())));
+}
 /* The following types are missing: wxFontEncoding
 
 //---------------------------------------------------
 //  Wrapping of bool wxFont::Create(int size, int family, int style, int weight, bool underlined, wxString const & face, wxFontEncoding encoding)
 //---------------------------------------------------
 void WrapClass_wxFont::
-    wrap_Create::SetParametersComments()
+    wrap_Create1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'size'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'family'")
@@ -201,44 +249,6 @@ void WrapClass_wxFont::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'underlined'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'face'")
   ADDPARAMCOMMENT_TYPE( wxFontEncoding, "parameter named 'encoding'")
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxFont::
-    wrap_Create::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  int _n=0;
-  int size;
-  if (!get_val_param<int>(size,_p,_n)) ClassHelpAndReturn;
-  int family;
-  if (!get_val_param<int>(family,_p,_n)) ClassHelpAndReturn;
-  int style;
-  if (!get_val_param<int>(style,_p,_n)) ClassHelpAndReturn;
-  int weight;
-  if (!get_val_param<int>(weight,_p,_n)) ClassHelpAndReturn;
-  int underlined_int;
-  if (!get_val_param<int>(underlined_int,_p,_n)) ClassHelpAndReturn;
-  bool underlined = (bool) (underlined_int>0.5);
-  wxString* face_ptr;
-  if (!get_val_ptr_param<wxString>(face_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& face = *face_ptr;
-  wxFontEncoding encoding;
-  if (!get_val_param<wxFontEncoding>(encoding,_p,_n)) ClassHelpAndReturn;
-  bool res =   this->_objectptr->GetObj()->Create(size, family, style, weight, underlined, face, encoding);
-  int  res_int = ((res==true)?1:0);
-  return AMILabType<int>::CreateVar(res_int);
-}
-*/
-
-//---------------------------------------------------
-//  Wrapping of bool wxFont::Create(wxString const & fontname)
-//---------------------------------------------------
-void WrapClass_wxFont::
-    wrap_Create1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'fontname'")
   return_comments="returning a variable of type int";
 }
 
@@ -246,11 +256,69 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_Create1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>7) ClassReturnEmptyVar;
   int _n=0;
-  wxString* fontname_ptr;
-  if (!get_val_ptr_param<wxString>(fontname_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& fontname = *fontname_ptr;
+  int size;
+  if (!get_val_param<int>(size,_p,_n)) ClassReturnEmptyVar;
+  int family;
+  if (!get_val_param<int>(family,_p,_n)) ClassReturnEmptyVar;
+  int style;
+  if (!get_val_param<int>(style,_p,_n)) ClassReturnEmptyVar;
+  int weight;
+  if (!get_val_param<int>(weight,_p,_n)) ClassReturnEmptyVar;
+  int underlined_int;
+  if (!get_val_param<int>(underlined_int,_p,_n)) ClassReturnEmptyVar;
+  bool underlined = (bool) (underlined_int>0.5);
+  boost::shared_ptr<wxString> face_smtptr;
+  if (!get_val_smtptr_param<wxString>(face_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxString& face = *face_smtptr;
+  wxFontEncoding encoding;
+  if (!get_val_param<wxFontEncoding>(encoding,_p,_n)) ClassReturnEmptyVar;
+  bool res =   this->_objectptr->GetObj()->Create(size, family, style, weight, underlined, face, encoding);
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+}
+*/
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxFont::Create(...)
+//---------------------------------------------------
+void WrapClass_wxFont::
+    wrap_Create::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxFont::
+    wrap_Create::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxFont::wrap_Create2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxFont::Create(wxString const & fontname)
+//---------------------------------------------------
+void WrapClass_wxFont::
+    wrap_Create2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'fontname'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxFont::
+    wrap_Create2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
+  int _n=0;
+  boost::shared_ptr<wxString> fontname_smtptr;
+  if (!get_val_smtptr_param<wxString>(fontname_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxString& fontname = *fontname_smtptr;
   bool res =   this->_objectptr->GetObj()->Create(fontname);
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -269,6 +337,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetPointSize::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   int res =   this->_objectptr->GetObj()->GetPointSize();
   return AMILabType<int>::CreateVar(res);
 }
@@ -286,6 +355,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetFamily::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   int res =   this->_objectptr->GetObj()->GetFamily();
   return AMILabType<int>::CreateVar(res);
 }
@@ -303,6 +373,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetStyle::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   int res =   this->_objectptr->GetObj()->GetStyle();
   return AMILabType<int>::CreateVar(res);
 }
@@ -320,6 +391,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetWeight::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   int res =   this->_objectptr->GetObj()->GetWeight();
   return AMILabType<int>::CreateVar(res);
 }
@@ -337,6 +409,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetFaceName::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxString res =   this->_objectptr->GetObj()->GetFaceName();
   return AMILabType<wxString>::CreateVar(res);
 }
@@ -354,6 +427,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetUnderlined::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->GetUnderlined();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -373,6 +447,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetEncoding::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxFontEncoding res =   this->_objectptr->GetObj()->GetEncoding();
   return AMILabType<wxFontEncoding>::CreateVar(res);
 }
@@ -392,6 +467,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetNativeFontInfo::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxNativeFontInfo const * res =   this->_objectptr->GetObj()->GetNativeFontInfo();
   return AMILabType<wxNativeFontInfo>::CreateVar(res);
 }
@@ -410,6 +486,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_IsFixedWidth::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsFixedWidth();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -429,6 +506,7 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_SetPointSize::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int pointSize;
   if (!get_val_param<int>(pointSize,_p,_n)) ClassHelpAndReturn;
@@ -450,6 +528,7 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_SetFamily::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int family;
   if (!get_val_param<int>(family,_p,_n)) ClassHelpAndReturn;
@@ -471,6 +550,7 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_SetStyle::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int style;
   if (!get_val_param<int>(style,_p,_n)) ClassHelpAndReturn;
@@ -492,6 +572,7 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_SetWeight::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int weight;
   if (!get_val_param<int>(weight,_p,_n)) ClassHelpAndReturn;
@@ -514,10 +595,11 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_SetFaceName::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxString* faceName_ptr;
-  if (!get_val_ptr_param<wxString>(faceName_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& faceName = *faceName_ptr;
+  boost::shared_ptr<wxString> faceName_smtptr;
+  if (!get_val_smtptr_param<wxString>(faceName_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxString& faceName = *faceName_smtptr;
   bool res =   this->_objectptr->GetObj()->SetFaceName(faceName);
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -537,6 +619,7 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_SetUnderlined::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int underlined_int;
   if (!get_val_param<int>(underlined_int,_p,_n)) ClassHelpAndReturn;
@@ -560,6 +643,7 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_SetEncoding::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   wxFontEncoding encoding;
   if (!get_val_param<wxFontEncoding>(encoding,_p,_n)) ClassHelpAndReturn;
@@ -582,6 +666,7 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_SetNoAntiAliasing::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int no_int;
   if (!get_val_param<int>(no_int,_p,_n)) ClassHelpAndReturn;
@@ -603,6 +688,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetNoAntiAliasing::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->GetNoAntiAliasing();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -620,7 +706,8 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_Unshare::CallMember( ParamList* _p)
 {
-  this->_objectptr->GetObj()->Unshare();
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+//  this->_objectptr->GetObj()->Unshare();
   return BasicVariable::ptr();
 }
 
@@ -637,6 +724,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_GetClassInfo::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
   BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
   return res_var;
@@ -655,6 +743,7 @@ void WrapClass_wxFont::
 BasicVariable::ptr WrapClass_wxFont::
     wrap_wxCreateObject::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxObject * res =   this->_objectptr->GetObj()->wxCreateObject();
   BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
   return res_var;
@@ -675,10 +764,11 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_assign::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxFont* param0_ptr;
-  if (!get_val_ptr_param<wxFont>(param0_ptr,_p,_n)) ClassHelpAndReturn;
-  wxFont& param0 = *param0_ptr;
+  boost::shared_ptr<wxFont> param0_smtptr;
+  if (!get_val_smtptr_param<wxFont>(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxFont& param0 = *param0_smtptr;
   wxFont & res =   (*this->_objectptr->GetObj()) = (param0);
   return AMILabType<wxFont>::CreateVar(res);
 }

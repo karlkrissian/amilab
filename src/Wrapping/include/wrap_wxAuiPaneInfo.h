@@ -22,16 +22,15 @@
 #include "wx/aui/aui.h"
 
 // include what is needed for inheritence and for types ...
-//#include "wrap_BaseClass1.h"
-//#include "wrap_BaseClass2.h"
-// ...
+
+
 
 
 AMI_DECLARE_TYPE(wxAuiPaneInfo);
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
-// inheritence, public virtual WrapClass_BaseClass1, ...
+    
 {
   DEFINE_CLASS(WrapClass_wxAuiPaneInfo);
 
@@ -45,8 +44,8 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
 
     /// Constructor
     WrapClass_wxAuiPaneInfo(boost::shared_ptr<wxAuiPaneInfo > si): 
-    // inheritence WrapClass_BaseClass1(si), ... 
     WrapClass<wxAuiPaneInfo>(si)
+    
     {}
 
     /// Destructor
@@ -58,9 +57,11 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxAuiPaneInfo,"Wrapping of $wxAuiPaneInfo.");
+    ADD_CLASS_CONSTRUCTOR(wxAuiPaneInfo1,"Wrapping of wxAuiPaneInfo, http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#wxauipaneinfo.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxAuiPaneInfo1,"Wrapping of $wxAuiPaneInfo.");
+    ADD_CLASS_CONSTRUCTOR(wxAuiPaneInfo,"Wrapping of wxAuiPaneInfo, http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#wxauipaneinfo.");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxAuiPaneInfo2,"Wrapping of wxAuiPaneInfo, http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#wxauipaneinfo.");
 
 
 
@@ -69,84 +70,95 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
 
     // here add each method
     
-    ADD_CLASS_METHOD(SafeSet,"")
-    ADD_CLASS_METHOD(IsOk,"")
-    ADD_CLASS_METHOD(IsFixed,"")
-    ADD_CLASS_METHOD(IsResizable,"")
-    ADD_CLASS_METHOD(IsShown,"")
-    ADD_CLASS_METHOD(IsFloating,"")
-    ADD_CLASS_METHOD(IsDocked,"")
-    ADD_CLASS_METHOD(IsToolbar,"")
-    ADD_CLASS_METHOD(IsTopDockable,"")
-    ADD_CLASS_METHOD(IsBottomDockable,"")
-    ADD_CLASS_METHOD(IsLeftDockable,"")
-    ADD_CLASS_METHOD(IsRightDockable,"")
-    ADD_CLASS_METHOD(IsFloatable,"")
-    ADD_CLASS_METHOD(IsMovable,"")
-    ADD_CLASS_METHOD(IsDestroyOnClose,"")
-    ADD_CLASS_METHOD(IsMaximized,"")
-    ADD_CLASS_METHOD(HasCaption,"")
-    ADD_CLASS_METHOD(HasGripper,"")
-    ADD_CLASS_METHOD(HasBorder,"")
-    ADD_CLASS_METHOD(HasCloseButton,"")
-    ADD_CLASS_METHOD(HasMaximizeButton,"")
-    ADD_CLASS_METHOD(HasMinimizeButton,"")
-    ADD_CLASS_METHOD(HasPinButton,"")
-    ADD_CLASS_METHOD(HasGripperTop,"")
-    ADD_CLASS_METHOD(Window,"")
-    ADD_CLASS_METHOD(Name,"")
-    ADD_CLASS_METHOD(Caption,"")
-    ADD_CLASS_METHOD(Left,"")
-    ADD_CLASS_METHOD(Right,"")
-    ADD_CLASS_METHOD(Top,"")
-    ADD_CLASS_METHOD(Bottom,"")
-    ADD_CLASS_METHOD(Center,"")
-    ADD_CLASS_METHOD(Centre,"")
-    ADD_CLASS_METHOD(Direction,"")
-    ADD_CLASS_METHOD(Layer,"")
-    ADD_CLASS_METHOD(Row,"")
-    ADD_CLASS_METHOD(Position,"")
-    ADD_CLASS_METHOD(BestSize,"")
-    ADD_CLASS_METHOD(MinSize,"")
-    ADD_CLASS_METHOD(MaxSize,"")
-    ADD_CLASS_METHOD(BestSize1,"")
-    ADD_CLASS_METHOD(MinSize1,"")
-    ADD_CLASS_METHOD(MaxSize1,"")
-    ADD_CLASS_METHOD(FloatingPosition,"")
-    ADD_CLASS_METHOD(FloatingPosition1,"")
-    ADD_CLASS_METHOD(FloatingSize,"")
-    ADD_CLASS_METHOD(FloatingSize1,"")
-    ADD_CLASS_METHOD(Fixed,"")
-    ADD_CLASS_METHOD(Resizable,"")
-    ADD_CLASS_METHOD(Dock,"")
-    ADD_CLASS_METHOD(Float,"")
-    ADD_CLASS_METHOD(Hide,"")
-    ADD_CLASS_METHOD(Show,"")
-    ADD_CLASS_METHOD(CaptionVisible,"")
-    ADD_CLASS_METHOD(Maximize,"")
-    ADD_CLASS_METHOD(Restore,"")
-    ADD_CLASS_METHOD(PaneBorder,"")
-    ADD_CLASS_METHOD(Gripper,"")
-    ADD_CLASS_METHOD(GripperTop,"")
-    ADD_CLASS_METHOD(CloseButton,"")
-    ADD_CLASS_METHOD(MaximizeButton,"")
-    ADD_CLASS_METHOD(MinimizeButton,"")
-    ADD_CLASS_METHOD(PinButton,"")
-    ADD_CLASS_METHOD(DestroyOnClose,"")
-    ADD_CLASS_METHOD(TopDockable,"")
-    ADD_CLASS_METHOD(BottomDockable,"")
-    ADD_CLASS_METHOD(LeftDockable,"")
-    ADD_CLASS_METHOD(RightDockable,"")
-    ADD_CLASS_METHOD(Floatable,"")
-    ADD_CLASS_METHOD(Movable,"")
-    ADD_CLASS_METHOD(DockFixed,"")
-    ADD_CLASS_METHOD(Dockable,"")
-    ADD_CLASS_METHOD(DefaultPane,"")
-    ADD_CLASS_METHOD(CentrePane,"")
-    ADD_CLASS_METHOD(CenterPane,"")
-    ADD_CLASS_METHOD(ToolbarPane,"")
-    ADD_CLASS_METHOD(SetFlag,"")
-    ADD_CLASS_METHOD(HasFlag,"")
+    // Adding copy method
+    ADD_CLASS_METHOD(copy,"Copy method, uses the copy constructor.");
+    // Adding standard methods
+    ADD_CLASS_METHOD(SafeSet,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#safeset")
+    ADD_CLASS_METHOD(IsOk,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isok")
+    ADD_CLASS_METHOD(IsFixed,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isfixed")
+    ADD_CLASS_METHOD(IsResizable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isresizable")
+    ADD_CLASS_METHOD(IsShown,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isshown")
+    ADD_CLASS_METHOD(IsFloating,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isfloating")
+    ADD_CLASS_METHOD(IsDocked,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isdocked")
+    ADD_CLASS_METHOD(IsToolbar,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#istoolbar")
+    ADD_CLASS_METHOD(IsTopDockable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#istopdockable")
+    ADD_CLASS_METHOD(IsBottomDockable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isbottomdockable")
+    ADD_CLASS_METHOD(IsLeftDockable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isleftdockable")
+    ADD_CLASS_METHOD(IsRightDockable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isrightdockable")
+    ADD_CLASS_METHOD(IsFloatable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isfloatable")
+    ADD_CLASS_METHOD(IsMovable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#ismovable")
+    ADD_CLASS_METHOD(IsDestroyOnClose,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#isdestroyonclose")
+    ADD_CLASS_METHOD(IsMaximized,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#ismaximized")
+    ADD_CLASS_METHOD(HasCaption,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#hascaption")
+    ADD_CLASS_METHOD(HasGripper,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#hasgripper")
+    ADD_CLASS_METHOD(HasBorder,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#hasborder")
+    ADD_CLASS_METHOD(HasCloseButton,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#hasclosebutton")
+    ADD_CLASS_METHOD(HasMaximizeButton,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#hasmaximizebutton")
+    ADD_CLASS_METHOD(HasMinimizeButton,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#hasminimizebutton")
+    ADD_CLASS_METHOD(HasPinButton,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#haspinbutton")
+    ADD_CLASS_METHOD(HasGripperTop,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#hasgrippertop")
+    ADD_CLASS_METHOD(Window,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#window")
+    ADD_CLASS_METHOD(Name,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#name")
+    ADD_CLASS_METHOD(Caption,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#caption")
+    ADD_CLASS_METHOD(Left,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#left")
+    ADD_CLASS_METHOD(Right,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#right")
+    ADD_CLASS_METHOD(Top,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#top")
+    ADD_CLASS_METHOD(Bottom,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#bottom")
+    ADD_CLASS_METHOD(Center,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#center")
+    ADD_CLASS_METHOD(Centre,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#centre")
+    ADD_CLASS_METHOD(Direction,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#direction")
+    ADD_CLASS_METHOD(Layer,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#layer")
+    ADD_CLASS_METHOD(Row,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#row")
+    ADD_CLASS_METHOD(Position,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#position")
+    ADD_CLASS_METHOD(BestSize1,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#bestsize")
+    ADD_CLASS_METHOD(MinSize1,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#minsize")
+    ADD_CLASS_METHOD(MaxSize1,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#maxsize")
+    ADD_CLASS_METHOD(BestSize,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#bestsize")
+    ADD_CLASS_METHOD(BestSize2,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#bestsize")
+    ADD_CLASS_METHOD(MinSize,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#minsize")
+    ADD_CLASS_METHOD(MinSize2,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#minsize")
+    ADD_CLASS_METHOD(MaxSize,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#maxsize")
+    ADD_CLASS_METHOD(MaxSize2,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#maxsize")
+    ADD_CLASS_METHOD(FloatingPosition1,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#floatingposition")
+    ADD_CLASS_METHOD(FloatingPosition,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#floatingposition")
+    ADD_CLASS_METHOD(FloatingPosition2,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#floatingposition")
+    ADD_CLASS_METHOD(FloatingSize1,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#floatingsize")
+    ADD_CLASS_METHOD(FloatingSize,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#floatingsize")
+    ADD_CLASS_METHOD(FloatingSize2,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#floatingsize")
+    ADD_CLASS_METHOD(Fixed,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#fixed")
+    ADD_CLASS_METHOD(Resizable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#resizable")
+    ADD_CLASS_METHOD(Dock,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#dock")
+    ADD_CLASS_METHOD(Float,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#float")
+    ADD_CLASS_METHOD(Hide,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#hide")
+    ADD_CLASS_METHOD(Show,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#show")
+    ADD_CLASS_METHOD(CaptionVisible,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#captionvisible")
+    ADD_CLASS_METHOD(Maximize,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#maximize")
+    ADD_CLASS_METHOD(Restore,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#restore")
+    ADD_CLASS_METHOD(PaneBorder,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#paneborder")
+    ADD_CLASS_METHOD(Gripper,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#gripper")
+    ADD_CLASS_METHOD(GripperTop,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#grippertop")
+    ADD_CLASS_METHOD(CloseButton,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#closebutton")
+    ADD_CLASS_METHOD(MaximizeButton,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#maximizebutton")
+    ADD_CLASS_METHOD(MinimizeButton,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#minimizebutton")
+    ADD_CLASS_METHOD(PinButton,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#pinbutton")
+    ADD_CLASS_METHOD(DestroyOnClose,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#destroyonclose")
+    ADD_CLASS_METHOD(TopDockable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#topdockable")
+    ADD_CLASS_METHOD(BottomDockable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#bottomdockable")
+    ADD_CLASS_METHOD(LeftDockable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#leftdockable")
+    ADD_CLASS_METHOD(RightDockable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#rightdockable")
+    ADD_CLASS_METHOD(Floatable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#floatable")
+    ADD_CLASS_METHOD(Movable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#movable")
+    ADD_CLASS_METHOD(DockFixed,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#dockfixed")
+    ADD_CLASS_METHOD(Dockable,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#dockable")
+    ADD_CLASS_METHOD(DefaultPane,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#defaultpane")
+    ADD_CLASS_METHOD(CentrePane,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#centrepane")
+    ADD_CLASS_METHOD(CenterPane,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#centerpane")
+    ADD_CLASS_METHOD(ToolbarPane,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#toolbarpane")
+    ADD_CLASS_METHOD(SetFlag,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#setflag")
+    ADD_CLASS_METHOD(HasFlag,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#hasflag")
+
+    // Operators:
+    ADD_CLASS_METHOD(assign,"http://docs.wxwidgets.org/stable/wx_wxauipaneinfo.html#assign")
 
 
 
@@ -154,13 +166,14 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
     void AddMethods(WrapClass<wxAuiPaneInfo>::ptr this_ptr )
     {
       // here inheritence
-      // Add members from wxWindow
-      //WrapClass_BaseClass1::ptr parent_obj(
-      //  boost::dynamic_pointer_cast<WrapClass_BaseClass1>(this_ptr));
-      //parent_obj->AddMethods(parent_obj);
+      
+
 
       // check that the method name is not a token
       
+      // Adding copy method 
+      AddVar_copy( this_ptr);
+       // Adding standard methods 
       AddVar_SafeSet( this_ptr);
       AddVar_IsOk( this_ptr);
       AddVar_IsFixed( this_ptr);
@@ -198,16 +211,21 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
       AddVar_Layer( this_ptr);
       AddVar_Row( this_ptr);
       AddVar_Position( this_ptr);
-      AddVar_BestSize( this_ptr);
-      AddVar_MinSize( this_ptr);
-      AddVar_MaxSize( this_ptr);
       AddVar_BestSize1( this_ptr);
       AddVar_MinSize1( this_ptr);
       AddVar_MaxSize1( this_ptr);
-      AddVar_FloatingPosition( this_ptr);
+      AddVar_BestSize( this_ptr);
+      AddVar_BestSize2( this_ptr);
+      AddVar_MinSize( this_ptr);
+      AddVar_MinSize2( this_ptr);
+      AddVar_MaxSize( this_ptr);
+      AddVar_MaxSize2( this_ptr);
       AddVar_FloatingPosition1( this_ptr);
-      AddVar_FloatingSize( this_ptr);
+      AddVar_FloatingPosition( this_ptr);
+      AddVar_FloatingPosition2( this_ptr);
       AddVar_FloatingSize1( this_ptr);
+      AddVar_FloatingSize( this_ptr);
+      AddVar_FloatingSize2( this_ptr);
       AddVar_Fixed( this_ptr);
       AddVar_Resizable( this_ptr);
       AddVar_Dock( this_ptr);
@@ -239,6 +257,9 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
       AddVar_ToolbarPane( this_ptr);
       AddVar_SetFlag( this_ptr);
       AddVar_HasFlag( this_ptr);
+
+      // Adding operators
+      AddVar_assign( this_ptr);
 
 
     };

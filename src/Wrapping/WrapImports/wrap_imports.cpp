@@ -41,6 +41,8 @@
 #include "wrap_wxString.h"
 #include "wrap_wxFileName.h"
 #include "wrap_wxAuiPaneInfo.h"
+#include "wrap_wxAuiToolBar.h"
+
 #include "wrap_wxRect.h"
 #include "wrap_wxPoint.h"
 #include "wrap_vtkLevelSets.h"
@@ -126,7 +128,7 @@ void AddWrapWxWidgets()
 
   WrapClass_wxWindow::AddVar_wxWindow( amiobject->GetContext(), "wxWindow");
 
-  AddVar_wxSize( amiobject->GetContext(), "wxSize");
+  WrapClass_wxSize      ::AddVar_wxSize( amiobject->GetContext());
 
   WrapClass_wxFileName  ::AddVar_wxFileName  ( amiobject->GetContext());
   WrapClass_wxString    ::AddVar_wxString    ( amiobject->GetContext());
@@ -135,7 +137,7 @@ void AddWrapWxWidgets()
   WrapClass_wxImage     ::AddVar_wxImage     ( amiobject->GetContext());
   WrapClass_wxHtmlWindow::AddVar_wxHtmlWindow( amiobject->GetContext());
   WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo(amiobject->GetContext());
-  WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo1(amiobject->GetContext());
+  WrapClass_wxAuiToolBar::AddVar_wxAuiToolBar(amiobject->GetContext());
   WrapClass_wxRect       ::AddVar_wxRect(        amiobject->GetContext());
   WrapClass_wxPoint      ::AddVar_wxPoint(       amiobject->GetContext());
   WrapClass_wxPoint      ::AddVar_wxPoint1(       amiobject->GetContext());

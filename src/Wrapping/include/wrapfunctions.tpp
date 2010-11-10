@@ -157,7 +157,7 @@ bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required, bool nocon
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to its value.
  */
 template<class T>
-bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool required)
+bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool required, bool noconstr)
 {
   if (!p) return false;
   // if the parameter number is too high, skip it (use default value)
@@ -172,13 +172,20 @@ bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool
   }
   BasicVariable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
+    boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(temp,noconstr);
+    if (!val_ptr.get()) {
+      FILE_ERROR(boost::format("Parameter %1% failed.") % num);
+      return false;
+    }
+    /*
     boost::shared_ptr<Variable<T> > temp1(
       boost::dynamic_pointer_cast<Variable<T> >(temp));
     if (!temp1.get()) {
       FILE_ERROR(boost::format("Parameter %1% is dynamic cast failed.")%num);
       return false;
     }
-    arg= boost::shared_ptr<T>(temp1->Pointer());
+    */
+    arg= boost::shared_ptr<T>(val_ptr);
     return true;
   }
   else

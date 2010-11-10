@@ -35,8 +35,10 @@ BasicVariable::ptr WrapClass<wxRect>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
+
 AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxRect);
 AMI_DEFINE_VARFROMSMTPTR(wxRect);
+
 
 //
 // static member for creating a variable from a pointer to wxRect
@@ -68,12 +70,12 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_wxRect1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxRect* param0_ptr;
-  if (!get_val_ptr_param<wxRect>(param0_ptr,_p,_n,true,true)) ClassHelpAndReturn;
-  wxRect& param0 = *param0_ptr;
+  boost::shared_ptr<wxRect> param0_smtptr;
+  if (!get_val_smtptr_param<wxRect>(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxRect& param0 = *param0_smtptr;
   wxRect* _newobj = new wxRect(param0);
   BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
   return res;
@@ -109,7 +111,7 @@ BasicVariable::ptr WrapClass_wxRect::
   WrapClass_wxRect::wrap_wxRect6 m6;
   res = m6.CallMember(_p);
   if (res.get()) return res;
-  return BasicVariable::ptr();
+  ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
@@ -124,7 +126,7 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_wxRect2::CallMember( ParamList* _p)
 {
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
   wxRect* _newobj = new wxRect();
   BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
   return res;
@@ -146,17 +148,17 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_wxRect3::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>4) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>4) ClassReturnEmptyVar;
   int _n=0;
   int xx;
-  if (!get_val_param<int>(xx,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(xx,_p,_n)) ClassReturnEmptyVar;
   int yy;
-  if (!get_val_param<int>(yy,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(yy,_p,_n)) ClassReturnEmptyVar;
   int ww;
-  if (!get_val_param<int>(ww,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(ww,_p,_n)) ClassReturnEmptyVar;
   int hh;
-  if (!get_val_param<int>(hh,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(hh,_p,_n)) ClassReturnEmptyVar;
   wxRect* _newobj = new wxRect(xx, yy, ww, hh);
   BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
   return res;
@@ -176,15 +178,15 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_wxRect4::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
-  wxPoint* topLeft_ptr;
-  if (!get_val_ptr_param<wxPoint>(topLeft_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& topLeft = *topLeft_ptr;
-  wxPoint* bottomRight_ptr;
-  if (!get_val_ptr_param<wxPoint>(bottomRight_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& bottomRight = *bottomRight_ptr;
+  boost::shared_ptr<wxPoint> topLeft_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(topLeft_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxPoint& topLeft = *topLeft_smtptr;
+  boost::shared_ptr<wxPoint> bottomRight_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(bottomRight_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxPoint& bottomRight = *bottomRight_smtptr;
   wxRect* _newobj = new wxRect(topLeft, bottomRight);
   BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
   return res;
@@ -204,15 +206,15 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_wxRect5::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
-  wxPoint* pt_ptr;
-  if (!get_val_ptr_param<wxPoint>(pt_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& pt = *pt_ptr;
-  wxSize* size_ptr;
-  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& size = *size_ptr;
+  boost::shared_ptr<wxPoint> pt_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxPoint& pt = *pt_smtptr;
+  boost::shared_ptr<wxSize> size_smtptr;
+  if (!get_val_smtptr_param<wxSize>(size_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxSize& size = *size_smtptr;
   wxRect* _newobj = new wxRect(pt, size);
   BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
   return res;
@@ -231,15 +233,31 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_wxRect6::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxSize* size_ptr;
-  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& size = *size_ptr;
+  boost::shared_ptr<wxSize> size_smtptr;
+  if (!get_val_smtptr_param<wxSize>(size_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxSize& size = *size_smtptr;
   wxRect* _newobj = new wxRect(size);
   BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
   return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of 'copy' method for wxRect.
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_copy::SetParametersComments()
+{
+  return_comments="A copy of the wxRect object within a new variable.";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_copy::CallMember( ParamList* _p)
+{
+    return AMILabType<wxRect>::CreateVar( new wxRect(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -436,9 +454,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxPoint* p_ptr;
-  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& p = *p_ptr;
+  boost::shared_ptr<wxPoint> p_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_smtptr;
   this->_objectptr->GetObj()->SetPosition(p);
   return BasicVariable::ptr();
 }
@@ -477,9 +495,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxSize* s_ptr;
-  if (!get_val_ptr_param<wxSize>(s_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& s = *s_ptr;
+  boost::shared_ptr<wxSize> s_smtptr;
+  if (!get_val_smtptr_param<wxSize>(s_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxSize& s = *s_smtptr;
   this->_objectptr->GetObj()->SetSize(s);
   return BasicVariable::ptr();
 }
@@ -715,9 +733,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxPoint* p_ptr;
-  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& p = *p_ptr;
+  boost::shared_ptr<wxPoint> p_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_smtptr;
   this->_objectptr->GetObj()->SetTopLeft(p);
   return BasicVariable::ptr();
 }
@@ -738,9 +756,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxPoint* p_ptr;
-  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& p = *p_ptr;
+  boost::shared_ptr<wxPoint> p_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_smtptr;
   this->_objectptr->GetObj()->SetLeftTop(p);
   return BasicVariable::ptr();
 }
@@ -797,9 +815,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxPoint* p_ptr;
-  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& p = *p_ptr;
+  boost::shared_ptr<wxPoint> p_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_smtptr;
   this->_objectptr->GetObj()->SetBottomRight(p);
   return BasicVariable::ptr();
 }
@@ -820,9 +838,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxPoint* p_ptr;
-  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& p = *p_ptr;
+  boost::shared_ptr<wxPoint> p_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_smtptr;
   this->_objectptr->GetObj()->SetRightBottom(p);
   return BasicVariable::ptr();
 }
@@ -879,9 +897,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxPoint* p_ptr;
-  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& p = *p_ptr;
+  boost::shared_ptr<wxPoint> p_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_smtptr;
   this->_objectptr->GetObj()->SetTopRight(p);
   return BasicVariable::ptr();
 }
@@ -902,9 +920,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxPoint* p_ptr;
-  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& p = *p_ptr;
+  boost::shared_ptr<wxPoint> p_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_smtptr;
   this->_objectptr->GetObj()->SetRightTop(p);
   return BasicVariable::ptr();
 }
@@ -961,9 +979,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxPoint* p_ptr;
-  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& p = *p_ptr;
+  boost::shared_ptr<wxPoint> p_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_smtptr;
   this->_objectptr->GetObj()->SetBottomLeft(p);
   return BasicVariable::ptr();
 }
@@ -984,9 +1002,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxPoint* p_ptr;
-  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& p = *p_ptr;
+  boost::shared_ptr<wxPoint> p_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_smtptr;
   this->_objectptr->GetObj()->SetLeftBottom(p);
   return BasicVariable::ptr();
 }
@@ -1006,13 +1024,13 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Inflate1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
   int dx;
-  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dx,_p,_n)) ClassReturnEmptyVar;
   int dy;
-  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dy,_p,_n)) ClassReturnEmptyVar;
   wxRect & res =   this->_objectptr->GetObj()->Inflate(dx, dy);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1041,7 +1059,7 @@ BasicVariable::ptr WrapClass_wxRect::
   WrapClass_wxRect::wrap_Inflate4 m4(this->_objectptr);
   res = m4.CallMember(_p);
   if (res.get()) return res;
-  return BasicVariable::ptr();
+  ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
@@ -1058,12 +1076,12 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Inflate2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxSize* d_ptr;
-  if (!get_val_ptr_param<wxSize>(d_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& d = *d_ptr;
+  boost::shared_ptr<wxSize> d_smtptr;
+  if (!get_val_smtptr_param<wxSize>(d_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxSize& d = *d_smtptr;
   wxRect & res =   this->_objectptr->GetObj()->Inflate(d);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1082,11 +1100,11 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Inflate3::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
   int d;
-  if (!get_val_param<int>(d,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(d,_p,_n)) ClassReturnEmptyVar;
   wxRect & res =   this->_objectptr->GetObj()->Inflate(d);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1106,13 +1124,13 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Inflate4::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
   int dx;
-  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dx,_p,_n)) ClassReturnEmptyVar;
   int dy;
-  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dy,_p,_n)) ClassReturnEmptyVar;
   wxRect res =   this->_objectptr->GetObj()->Inflate(dx, dy);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1132,13 +1150,13 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Deflate1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
   int dx;
-  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dx,_p,_n)) ClassReturnEmptyVar;
   int dy;
-  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dy,_p,_n)) ClassReturnEmptyVar;
   wxRect & res =   this->_objectptr->GetObj()->Deflate(dx, dy);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1167,7 +1185,7 @@ BasicVariable::ptr WrapClass_wxRect::
   WrapClass_wxRect::wrap_Deflate4 m4(this->_objectptr);
   res = m4.CallMember(_p);
   if (res.get()) return res;
-  return BasicVariable::ptr();
+  ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
@@ -1184,12 +1202,12 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Deflate2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxSize* d_ptr;
-  if (!get_val_ptr_param<wxSize>(d_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& d = *d_ptr;
+  boost::shared_ptr<wxSize> d_smtptr;
+  if (!get_val_smtptr_param<wxSize>(d_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxSize& d = *d_smtptr;
   wxRect & res =   this->_objectptr->GetObj()->Deflate(d);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1208,11 +1226,11 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Deflate3::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
   int d;
-  if (!get_val_param<int>(d,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(d,_p,_n)) ClassReturnEmptyVar;
   wxRect & res =   this->_objectptr->GetObj()->Deflate(d);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1232,13 +1250,13 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Deflate4::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
   int dx;
-  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dx,_p,_n)) ClassReturnEmptyVar;
   int dy;
-  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dy,_p,_n)) ClassReturnEmptyVar;
   wxRect res =   this->_objectptr->GetObj()->Deflate(dx, dy);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1257,13 +1275,13 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Offset1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
   int dx;
-  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dx,_p,_n)) ClassReturnEmptyVar;
   int dy;
-  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(dy,_p,_n)) ClassReturnEmptyVar;
   this->_objectptr->GetObj()->Offset(dx, dy);
   return BasicVariable::ptr();
 }
@@ -1286,7 +1304,7 @@ BasicVariable::ptr WrapClass_wxRect::
   WrapClass_wxRect::wrap_Offset2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (res.get()) return res;
-  return BasicVariable::ptr();
+  ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
@@ -1302,12 +1320,12 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Offset2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxPoint* pt_ptr;
-  if (!get_val_ptr_param<wxPoint>(pt_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& pt = *pt_ptr;
+  boost::shared_ptr<wxPoint> pt_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxPoint& pt = *pt_smtptr;
   this->_objectptr->GetObj()->Offset(pt);
   return BasicVariable::ptr();
 }
@@ -1326,12 +1344,12 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Intersect1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxRect& rect = *rect_smtptr;
   wxRect & res =   this->_objectptr->GetObj()->Intersect(rect);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1354,7 +1372,7 @@ BasicVariable::ptr WrapClass_wxRect::
   WrapClass_wxRect::wrap_Intersect2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (res.get()) return res;
-  return BasicVariable::ptr();
+  ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
@@ -1371,12 +1389,12 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Intersect2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxRect& rect = *rect_smtptr;
   wxRect res =   this->_objectptr->GetObj()->Intersect(rect);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1395,12 +1413,12 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Union1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxRect& rect = *rect_smtptr;
   wxRect & res =   this->_objectptr->GetObj()->Union(rect);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1423,7 +1441,7 @@ BasicVariable::ptr WrapClass_wxRect::
   WrapClass_wxRect::wrap_Union2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (res.get()) return res;
-  return BasicVariable::ptr();
+  ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
@@ -1440,12 +1458,12 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Union2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxRect& rect = *rect_smtptr;
   wxRect res =   this->_objectptr->GetObj()->Union(rect);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1465,13 +1483,13 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Contains1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
   int x;
-  if (!get_val_param<int>(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(x,_p,_n)) ClassReturnEmptyVar;
   int y;
-  if (!get_val_param<int>(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(y,_p,_n)) ClassReturnEmptyVar;
   bool res =   this->_objectptr->GetObj()->Contains(x, y);
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -1498,7 +1516,7 @@ BasicVariable::ptr WrapClass_wxRect::
   WrapClass_wxRect::wrap_Contains3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (res.get()) return res;
-  return BasicVariable::ptr();
+  ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
@@ -1515,12 +1533,12 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Contains2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxPoint* pt_ptr;
-  if (!get_val_ptr_param<wxPoint>(pt_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& pt = *pt_ptr;
+  boost::shared_ptr<wxPoint> pt_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxPoint& pt = *pt_smtptr;
   bool res =   this->_objectptr->GetObj()->Contains(pt);
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -1540,124 +1558,15 @@ void WrapClass_wxRect::
 BasicVariable::ptr WrapClass_wxRect::
     wrap_Contains3::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxRect& rect = *rect_smtptr;
   bool res =   this->_objectptr->GetObj()->Contains(rect);
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
-}
-
-//---------------------------------------------------
-//  Wrapping of bool wxRect::Inside(int cx, int cy)
-//---------------------------------------------------
-void WrapClass_wxRect::
-    wrap_Inside1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'cx'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'cy'")
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxRect::
-    wrap_Inside1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
-  int _n=0;
-  int cx;
-  if (!get_val_param<int>(cx,_p,_n)) ClassHelpAndReturn;
-  int cy;
-  if (!get_val_param<int>(cy,_p,_n)) ClassHelpAndReturn;
-//  bool res =   this->_objectptr->GetObj()->Inside(cx, cy);
-//  int  res_int = ((res==true)?1:0);
-//  return AMILabType<int>::CreateVar(res_int);
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of multipled defined method:... wxRect::Inside(...)
-//---------------------------------------------------
-void WrapClass_wxRect::
-    wrap_Inside::SetParametersComments()
-{}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxRect::
-    wrap_Inside::CallMember( ParamList* _p)
-{
-  BasicVariable::ptr res;
-  WrapClass_wxRect::wrap_Inside1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (res.get()) return res;
-  WrapClass_wxRect::wrap_Inside2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (res.get()) return res;
-  WrapClass_wxRect::wrap_Inside3 m3(this->_objectptr);
-  res = m3.CallMember(_p);
-  if (res.get()) return res;
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of bool wxRect::Inside(wxPoint const & pt)
-//---------------------------------------------------
-void WrapClass_wxRect::
-    wrap_Inside2::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxRect::
-    wrap_Inside2::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-  wxPoint* pt_ptr;
-  if (!get_val_ptr_param<wxPoint>(pt_ptr,_p,_n)) ClassHelpAndReturn;
-/*
-wxPoint& pt = *pt_ptr;
-  bool res =   this->_objectptr->GetObj()->Inside(pt);
-  int  res_int = ((res==true)?1:0);
-  return AMILabType<int>::CreateVar(res_int);
-  */
-  return BasicVariable::ptr();
-
-}
-
-//---------------------------------------------------
-//  Wrapping of bool wxRect::Inside(wxRect const & rect)
-//---------------------------------------------------
-void WrapClass_wxRect::
-    wrap_Inside3::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxRect::
-    wrap_Inside3::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-/*  wxRect& rect = *rect_ptr;
-  bool res =   this->_objectptr->GetObj()->Inside(rect);
-  int  res_int = ((res==true)?1:0);
-  return AMILabType<int>::CreateVar(res_int);
-  */
-  return BasicVariable::ptr();
-
 }
 
 //---------------------------------------------------
@@ -1677,9 +1586,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_smtptr;
   bool res =   this->_objectptr->GetObj()->Intersects(rect);
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -1703,9 +1612,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
-  wxRect* r_ptr;
-  if (!get_val_ptr_param<wxRect>(r_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& r = *r_ptr;
+  boost::shared_ptr<wxRect> r_smtptr;
+  if (!get_val_smtptr_param<wxRect>(r_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& r = *r_smtptr;
   int dir;
   if (!get_val_param<int>(dir,_p,_n)) ClassHelpAndReturn;
   wxRect res =   this->_objectptr->GetObj()->CentreIn(r, dir);
@@ -1730,9 +1639,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
-  wxRect* r_ptr;
-  if (!get_val_ptr_param<wxRect>(r_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& r = *r_ptr;
+  boost::shared_ptr<wxRect> r_smtptr;
+  if (!get_val_smtptr_param<wxRect>(r_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& r = *r_smtptr;
   int dir;
   if (!get_val_param<int>(dir,_p,_n)) ClassHelpAndReturn;
   wxRect res =   this->_objectptr->GetObj()->CenterIn(r, dir);
@@ -1756,9 +1665,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxRect* param0_ptr;
-  if (!get_val_ptr_param<wxRect>(param0_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& param0 = *param0_ptr;
+  boost::shared_ptr<wxRect> param0_smtptr;
+  if (!get_val_smtptr_param<wxRect>(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& param0 = *param0_smtptr;
   wxRect & res =   (*this->_objectptr->GetObj()) = (param0);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1780,9 +1689,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_smtptr;
   bool res =   (*this->_objectptr->GetObj()) == (rect);
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -1805,9 +1714,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_smtptr;
   bool res =   (*this->_objectptr->GetObj()) != (rect);
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -1830,9 +1739,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_smtptr;
   wxRect res =   (*this->_objectptr->GetObj()) + (rect);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -1854,9 +1763,9 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxRect* rect_ptr;
-  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_ptr;
+  boost::shared_ptr<wxRect> rect_smtptr;
+  if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_smtptr;
   wxRect & res =   (*this->_objectptr->GetObj()) += (rect);
   return AMILabType<wxRect>::CreateVar(res);
 }

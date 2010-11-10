@@ -46,6 +46,7 @@
 #include "wrap_SurfacePoly.h"
 
 #include "wrap_ContinuousMorphology.h"
+#include "wrap_TestClass.h"
 
 extern VarContexts  Vars;
 
@@ -107,6 +108,9 @@ void AddWrapFilters(){
 
   // Add ContinuousMorphology
   AddVar_ContinuousMorphology( amiobject->GetContext());
+
+  // Add TestClass
+  WrapClass_TestClass::AddVar_TestClass( amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

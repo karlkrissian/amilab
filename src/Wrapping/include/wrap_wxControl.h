@@ -23,14 +23,14 @@
 
 // include what is needed for inheritence and for types ...
 
-//#include "wrap_wxControlBase.h"
+#include "wrap_wxControlBase.h"
 
 
 AMI_DECLARE_TYPE(wxControl);
 
 // TODO: check for inheritence ...
 class WrapClass_wxControl : public WrapClass<wxControl>
-    //, public virtual WrapClass_wxControlBase
+    , public  WrapClass_wxControlBase
 {
   DEFINE_CLASS(WrapClass_wxControl);
 
@@ -45,7 +45,7 @@ class WrapClass_wxControl : public WrapClass<wxControl>
     /// Constructor
     WrapClass_wxControl(boost::shared_ptr<wxControl > si): 
     WrapClass<wxControl>(si)
-    //, WrapClass_wxControlBase(si)
+    , WrapClass_wxControlBase(si)
     {}
 
     /// Destructor
@@ -57,10 +57,12 @@ class WrapClass_wxControl : public WrapClass<wxControl>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxControl,"Wrapping of wxControl.");
+    ADD_CLASS_CONSTRUCTOR(wxControl1,"Wrapping of wxControl, http://docs.wxwidgets.org/stable/wx_wxcontrol.html#wxcontrol.");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxControl,"Wrapping of wxControl, http://docs.wxwidgets.org/stable/wx_wxcontrol.html#wxcontrol.");
     /* The following types are missing: wxValidator
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxControl1,"Wrapping of wxControl.");
+    ADD_CLASS_CONSTRUCTOR(wxControl2,"Wrapping of wxControl, http://docs.wxwidgets.org/stable/wx_wxcontrol.html#wxcontrol.");
     */
 
 
@@ -70,21 +72,18 @@ class WrapClass_wxControl : public WrapClass<wxControl>
 
     // here add each method
     
+    // Adding standard methods
 /* The following types are missing: wxValidator
-    ADD_CLASS_METHOD(Create,"")
+    ADD_CLASS_METHOD(Create,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#create")
 */
-    ADD_CLASS_METHOD(SetLabel,"")
-    ADD_CLASS_METHOD(GetLabel,"")
+    ADD_CLASS_METHOD(SetLabel,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#setlabel")
+    ADD_CLASS_METHOD(GetLabel,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#getlabel")
 /* The following types are missing: wxVisualAttributes
-    ADD_CLASS_METHOD(GetDefaultAttributes,"")
+    ADD_CLASS_METHOD(GetDefaultAttributes,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#getdefaultattributes")
 */
-    ADD_CLASS_METHOD(OnInternalIdle,"")
-/* The following types are missing: wxClassInfo
-    ADD_CLASS_METHOD(GetClassInfo,"")
-*/
-    ADD_CLASS_METHOD(wxCreateObject,"")
+    ADD_CLASS_METHOD(OnInternalIdle,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#oninternalidle")
+    ADD_CLASS_METHOD(GetClassInfo,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#getclassinfo")
 
-    // Operators:
 
 
 
@@ -92,15 +91,15 @@ class WrapClass_wxControl : public WrapClass<wxControl>
     void AddMethods(WrapClass<wxControl>::ptr this_ptr )
     {
       // here inheritence
-      /*
+      
       // Add members from wxControlBase
       WrapClass_wxControlBase::ptr parent_wxControlBase(        boost::dynamic_pointer_cast<WrapClass_wxControlBase>(this_ptr));
       parent_wxControlBase->AddMethods(parent_wxControlBase);
-      */
 
 
       // check that the method name is not a token
       
+       // Adding standard methods 
 /* The following types are missing: wxValidator
       AddVar_Create( this_ptr);
 */
@@ -110,12 +109,7 @@ class WrapClass_wxControl : public WrapClass<wxControl>
       AddVar_GetDefaultAttributes( this_ptr);
 */
       AddVar_OnInternalIdle( this_ptr);
-/* The following types are missing: wxClassInfo
       AddVar_GetClassInfo( this_ptr);
-*/
-      AddVar_wxCreateObject( this_ptr);
-
-      // Operators:
 
 
     };

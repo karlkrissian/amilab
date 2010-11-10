@@ -72,8 +72,13 @@ BasicVariable::ptr WrapClass_wxWindow::wrap_wxWindow::CallMember( ParamList* _p)
 //  std::string* title = NULL;
 
   if (!_p) ClassHelpAndReturn;
-  wxWindow* w;
-  if (!get_val_ptr_param<wxWindow>(w,_p,_n)) ClassHelpAndReturn;
+//  wxWindow* w;
+//  if (!get_val_ptr_param<wxWindow>(w,_p,_n,true,true)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxWindow> parent_smtptr;
+  if (!get_val_smtptr_param<wxWindow>(parent_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxWindow* val = parent_smtptr.get();
+
 //  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
 //  if (parent.get()){
     
@@ -85,7 +90,7 @@ BasicVariable::ptr WrapClass_wxWindow::wrap_wxWindow::CallMember( ParamList* _p)
 //  }
 //  else
 //    ClassHelpAndReturn;
-    return WrapClass_wxWindow::CreateVar(w);
+    return WrapClass_wxWindow::CreateVar(val);
 }
 
 //---------------------------------------------------
@@ -101,7 +106,7 @@ BasicVariable::ptr WrapClass_wxWindow::
       wrap_GetMinSize::CallMember( ParamList* p)
 {
   wxSize size = this->_objectptr->_obj->GetMinSize();
-  return CreateVar_wxSize(new wxSize(size));
+  return WrapClass_wxSize::CreateVar(new wxSize(size));
 }
 
 //---------------------------------------------------

@@ -49,6 +49,7 @@ SET(  WrapFilters_SRCS
   wrapGenerateRamp.cpp
   wrap_AnisoGS.cpp
   wrap_ContinuousMorphology.cpp
+  wrap_TestClass.cpp
 )
 
 SET(WrapFilters_HDRS
@@ -70,6 +71,7 @@ SET(WrapFilters_HDRS
   ../include/wrapGenerateRamp.h
   ../include/wrap_AnisoGS.h
   ../include/wrap_ContinuousMorphology.h
+  ../include/wrap_TestClass.h
 )
 
 SET(WrapFilters_SRCS

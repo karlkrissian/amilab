@@ -57,11 +57,13 @@ class WrapClass_wxPoint : public WrapClass<wxPoint>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxPoint,"Wrapping of wxPoint.");
-    /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxPoint1,"Wrapping of wxPoint.");
     /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxPoint,"Wrapping of wxPoint.");
+    /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxPoint2,"Wrapping of wxPoint.");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxPoint3,"Wrapping of wxPoint.");
 
 
 
@@ -75,15 +77,19 @@ class WrapClass_wxPoint : public WrapClass<wxPoint>
     ADD_CLASS_METHOD(assign,"")
     ADD_CLASS_METHOD(equal,"")
     ADD_CLASS_METHOD(not_equal,"")
-    ADD_CLASS_METHOD(add,"")
-    // ADD_CLASS_METHOD(operator not available,"")
-    ADD_CLASS_METHOD(add_assign,"")
-    ADD_CLASS_METHOD(sub_assign,"")
+    ADD_CLASS_METHOD(add1,"")
+    ADD_CLASS_METHOD(op_substract1,"")
     ADD_CLASS_METHOD(add_assign1,"")
     ADD_CLASS_METHOD(sub_assign1,"")
-    ADD_CLASS_METHOD(add1,"")
-    // ADD_CLASS_METHOD(operator not available,"")
-    // ADD_CLASS_METHOD(operator not available,"")
+    ADD_CLASS_METHOD(add_assign,"")
+    ADD_CLASS_METHOD(add_assign2,"")
+    ADD_CLASS_METHOD(sub_assign,"")
+    ADD_CLASS_METHOD(sub_assign2,"")
+    ADD_CLASS_METHOD(add,"")
+    ADD_CLASS_METHOD(add2,"")
+    ADD_CLASS_METHOD(op_substract,"")
+    ADD_CLASS_METHOD(op_substract2,"")
+    ADD_CLASS_METHOD(op_substract3,"")
 
 
 
@@ -101,15 +107,19 @@ class WrapClass_wxPoint : public WrapClass<wxPoint>
       AddVar_assign( this_ptr);
       AddVar_equal( this_ptr);
       AddVar_not_equal( this_ptr);
-      AddVar_add( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      AddVar_add_assign( this_ptr);
-      AddVar_sub_assign( this_ptr);
+      AddVar_add1( this_ptr);
+      AddVar_op_substract1( this_ptr);
       AddVar_add_assign1( this_ptr);
       AddVar_sub_assign1( this_ptr);
-      AddVar_add1( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
+      AddVar_add_assign( this_ptr);
+      AddVar_add_assign2( this_ptr);
+      AddVar_sub_assign( this_ptr);
+      AddVar_sub_assign2( this_ptr);
+      AddVar_add( this_ptr);
+      AddVar_add2( this_ptr);
+      AddVar_op_substract( this_ptr);
+      AddVar_op_substract2( this_ptr);
+      AddVar_op_substract3( this_ptr);
 
 
     };

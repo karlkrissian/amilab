@@ -36,6 +36,7 @@ SET(  WrapWxWidgets_SRCS
   wrap_wxFont.cpp
   wrap_wxObject.cpp
   wrap_wxControl.cpp
+  wrap_wxControlBase.cpp
   wrap_wxRect.cpp
   wrap_wxClassInfo.cpp
   wrap_wxFrame.cpp
@@ -65,6 +66,7 @@ SET(WrapWxWidgets_HDRS
   ../include/wrap_wxFont.h
   ../include/wrap_wxObject.h
   ../include/wrap_wxControl.h
+  ../include/wrap_wxControlBase.h
   ../include/wrap_wxRect.h
   ../include/wrap_wxClassInfo.h
   ../include/wrap_wxFrame.h

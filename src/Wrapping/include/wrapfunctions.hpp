@@ -365,8 +365,9 @@ bool get_val_ptr_param( T*& arg,
  * @return true/false for success/failure
  */
 template<class T> bool get_val_smtptr_param( boost::shared_ptr<T>& arg, 
-                       ParamList*p, int& num, 
-                       bool required=true);
+                                              ParamList*p, int& num, 
+                                              bool required=true,
+                                             bool noconstr=false);
 
 /**
  * Returning the wrapped object of the given type and its corresponding variable

@@ -30,7 +30,7 @@ AMI_DECLARE_TYPE(wxAuiToolBar);
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
-    , public virtual WrapClass_wxControl
+    , public  WrapClass_wxControl
 {
   DEFINE_CLASS(WrapClass_wxAuiToolBar);
 
@@ -57,7 +57,7 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxAuiToolBar,"Wrapping of wxAuiToolBar.");
+    ADD_CLASS_CONSTRUCTOR(wxAuiToolBar,"Wrapping of wxAuiToolBar, http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#wxauitoolbar.");
 
 
 
@@ -66,79 +66,75 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
 
     // here add each method
     
-    ADD_CLASS_METHOD(SetWindowStyleFlag,"")
-    ADD_CLASS_METHOD(GetWindowStyleFlag,"")
-    ADD_CLASS_METHOD(SetArtProvider,"")
-    ADD_CLASS_METHOD(GetArtProvider,"")
-    ADD_CLASS_METHOD(SetFont,"")
-/* The following types are missing: wxItemKind
-    ADD_CLASS_METHOD(AddTool,"")
-*/
-/* The following types are missing: wxItemKind
-    ADD_CLASS_METHOD(AddTool1,"")
-*/
-    ADD_CLASS_METHOD(AddTool2,"")
-    ADD_CLASS_METHOD(AddLabel,"")
-    ADD_CLASS_METHOD(AddControl,"")
-    ADD_CLASS_METHOD(AddSeparator,"")
-    ADD_CLASS_METHOD(AddSpacer,"")
-    ADD_CLASS_METHOD(AddStretchSpacer,"")
-    ADD_CLASS_METHOD(Realize,"")
-    ADD_CLASS_METHOD(FindControl,"")
-    ADD_CLASS_METHOD(FindToolByPosition,"")
-    ADD_CLASS_METHOD(FindToolByIndex,"")
-    ADD_CLASS_METHOD(FindTool,"")
-    ADD_CLASS_METHOD(ClearTools,"")
-    ADD_CLASS_METHOD(Clear,"")
-    ADD_CLASS_METHOD(DeleteTool,"")
-    ADD_CLASS_METHOD(DeleteByIndex,"")
-/* The following types are missing: long unsigned int
-    ADD_CLASS_METHOD(GetToolCount,"")
-*/
-    ADD_CLASS_METHOD(GetToolPos,"")
-    ADD_CLASS_METHOD(GetToolIndex,"")
-    ADD_CLASS_METHOD(GetToolFits,"")
-    ADD_CLASS_METHOD(GetToolRect,"")
-    ADD_CLASS_METHOD(GetToolFitsByIndex,"")
-    ADD_CLASS_METHOD(GetToolBarFits,"")
-    ADD_CLASS_METHOD(SetMargins,"")
-    ADD_CLASS_METHOD(SetMargins1,"")
-    ADD_CLASS_METHOD(SetMargins2,"")
-    ADD_CLASS_METHOD(SetToolBitmapSize,"")
-    ADD_CLASS_METHOD(GetToolBitmapSize,"")
-    ADD_CLASS_METHOD(GetOverflowVisible,"")
-    ADD_CLASS_METHOD(SetOverflowVisible,"")
-    ADD_CLASS_METHOD(GetGripperVisible,"")
-    ADD_CLASS_METHOD(SetGripperVisible,"")
-    ADD_CLASS_METHOD(ToggleTool,"")
-    ADD_CLASS_METHOD(GetToolToggled,"")
-    ADD_CLASS_METHOD(EnableTool,"")
-    ADD_CLASS_METHOD(GetToolEnabled,"")
-    ADD_CLASS_METHOD(SetToolDropDown,"")
-    ADD_CLASS_METHOD(GetToolDropDown,"")
-    ADD_CLASS_METHOD(SetToolBorderPadding,"")
-    ADD_CLASS_METHOD(GetToolBorderPadding,"")
-    ADD_CLASS_METHOD(SetToolTextOrientation,"")
-    ADD_CLASS_METHOD(GetToolTextOrientation,"")
-    ADD_CLASS_METHOD(SetToolPacking,"")
-    ADD_CLASS_METHOD(GetToolPacking,"")
-    ADD_CLASS_METHOD(SetToolProportion,"")
-    ADD_CLASS_METHOD(GetToolProportion,"")
-    ADD_CLASS_METHOD(SetToolSeparation,"")
-    ADD_CLASS_METHOD(GetToolSeparation,"")
-    ADD_CLASS_METHOD(SetToolSticky,"")
-    ADD_CLASS_METHOD(GetToolSticky,"")
-    ADD_CLASS_METHOD(GetToolLabel,"")
-    ADD_CLASS_METHOD(SetToolLabel,"")
-    ADD_CLASS_METHOD(GetToolBitmap,"")
-    ADD_CLASS_METHOD(SetToolBitmap,"")
-    ADD_CLASS_METHOD(GetToolShortHelp,"")
-    ADD_CLASS_METHOD(SetToolShortHelp,"")
-    ADD_CLASS_METHOD(GetToolLongHelp,"")
-    ADD_CLASS_METHOD(SetToolLongHelp,"")
-    ADD_CLASS_METHOD(SetCustomOverflowItems,"")
-    ADD_CLASS_METHOD(GetClassInfo,"")
-    ADD_CLASS_METHOD(wxCreateObject,"")
+    // Adding standard methods
+    ADD_CLASS_METHOD(SetWindowStyleFlag,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setwindowstyleflag")
+    ADD_CLASS_METHOD(GetWindowStyleFlag,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getwindowstyleflag")
+    ADD_CLASS_METHOD(SetArtProvider,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setartprovider")
+    ADD_CLASS_METHOD(GetArtProvider,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getartprovider")
+    ADD_CLASS_METHOD(SetFont,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setfont")
+    ADD_CLASS_METHOD(AddTool1,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addtool")
+    ADD_CLASS_METHOD(AddTool,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addtool")
+    ADD_CLASS_METHOD(AddTool2,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addtool")
+    ADD_CLASS_METHOD(AddTool3,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addtool")
+    ADD_CLASS_METHOD(AddLabel,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addlabel")
+    ADD_CLASS_METHOD(AddControl,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addcontrol")
+    ADD_CLASS_METHOD(AddSeparator,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addseparator")
+    ADD_CLASS_METHOD(AddSpacer,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addspacer")
+    ADD_CLASS_METHOD(AddStretchSpacer,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addstretchspacer")
+    ADD_CLASS_METHOD(Realize,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#realize")
+    ADD_CLASS_METHOD(FindControl,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findcontrol")
+    ADD_CLASS_METHOD(FindToolByPosition,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findtoolbyposition")
+    ADD_CLASS_METHOD(FindToolByIndex,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findtoolbyindex")
+    ADD_CLASS_METHOD(FindTool,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findtool")
+    ADD_CLASS_METHOD(ClearTools,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#cleartools")
+    ADD_CLASS_METHOD(Clear,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#clear")
+    ADD_CLASS_METHOD(DeleteTool,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#deletetool")
+    ADD_CLASS_METHOD(DeleteByIndex,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#deletebyindex")
+    ADD_CLASS_METHOD(GetToolCount,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolcount")
+    ADD_CLASS_METHOD(GetToolPos,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolpos")
+    ADD_CLASS_METHOD(GetToolIndex,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolindex")
+    ADD_CLASS_METHOD(GetToolFits,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolfits")
+    ADD_CLASS_METHOD(GetToolRect,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolrect")
+    ADD_CLASS_METHOD(GetToolFitsByIndex,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolfitsbyindex")
+    ADD_CLASS_METHOD(GetToolBarFits,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolbarfits")
+    ADD_CLASS_METHOD(SetMargins1,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setmargins")
+    ADD_CLASS_METHOD(SetMargins,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setmargins")
+    ADD_CLASS_METHOD(SetMargins2,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setmargins")
+    ADD_CLASS_METHOD(SetMargins3,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setmargins")
+    ADD_CLASS_METHOD(SetToolBitmapSize,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolbitmapsize")
+    ADD_CLASS_METHOD(GetToolBitmapSize,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolbitmapsize")
+    ADD_CLASS_METHOD(GetOverflowVisible,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getoverflowvisible")
+    ADD_CLASS_METHOD(SetOverflowVisible,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setoverflowvisible")
+    ADD_CLASS_METHOD(GetGripperVisible,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getgrippervisible")
+    ADD_CLASS_METHOD(SetGripperVisible,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setgrippervisible")
+    ADD_CLASS_METHOD(ToggleTool,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#toggletool")
+    ADD_CLASS_METHOD(GetToolToggled,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettooltoggled")
+    ADD_CLASS_METHOD(EnableTool,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#enabletool")
+    ADD_CLASS_METHOD(GetToolEnabled,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolenabled")
+    ADD_CLASS_METHOD(SetToolDropDown,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settooldropdown")
+    ADD_CLASS_METHOD(GetToolDropDown,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettooldropdown")
+    ADD_CLASS_METHOD(SetToolBorderPadding,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolborderpadding")
+    ADD_CLASS_METHOD(GetToolBorderPadding,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolborderpadding")
+    ADD_CLASS_METHOD(SetToolTextOrientation,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settooltextorientation")
+    ADD_CLASS_METHOD(GetToolTextOrientation,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettooltextorientation")
+    ADD_CLASS_METHOD(SetToolPacking,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolpacking")
+    ADD_CLASS_METHOD(GetToolPacking,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolpacking")
+    ADD_CLASS_METHOD(SetToolProportion,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolproportion")
+    ADD_CLASS_METHOD(GetToolProportion,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolproportion")
+    ADD_CLASS_METHOD(SetToolSeparation,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolseparation")
+    ADD_CLASS_METHOD(GetToolSeparation,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolseparation")
+    ADD_CLASS_METHOD(SetToolSticky,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolsticky")
+    ADD_CLASS_METHOD(GetToolSticky,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolsticky")
+    ADD_CLASS_METHOD(GetToolLabel,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoollabel")
+    ADD_CLASS_METHOD(SetToolLabel,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoollabel")
+    ADD_CLASS_METHOD(GetToolBitmap,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolbitmap")
+    ADD_CLASS_METHOD(SetToolBitmap,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolbitmap")
+    ADD_CLASS_METHOD(GetToolShortHelp,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoolshorthelp")
+    ADD_CLASS_METHOD(SetToolShortHelp,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolshorthelp")
+    ADD_CLASS_METHOD(GetToolLongHelp,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoollonghelp")
+    ADD_CLASS_METHOD(SetToolLongHelp,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoollonghelp")
+    ADD_CLASS_METHOD(SetCustomOverflowItems,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setcustomoverflowitems")
+    ADD_CLASS_METHOD(GetClassInfo,"http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getclassinfo")
 
 
 
@@ -155,18 +151,16 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
 
       // check that the method name is not a token
       
+       // Adding standard methods 
       AddVar_SetWindowStyleFlag( this_ptr);
       AddVar_GetWindowStyleFlag( this_ptr);
       AddVar_SetArtProvider( this_ptr);
       AddVar_GetArtProvider( this_ptr);
       AddVar_SetFont( this_ptr);
-/* The following types are missing: wxItemKind
-      AddVar_AddTool( this_ptr);
-*/
-/* The following types are missing: wxItemKind
       AddVar_AddTool1( this_ptr);
-*/
+      AddVar_AddTool( this_ptr);
       AddVar_AddTool2( this_ptr);
+      AddVar_AddTool3( this_ptr);
       AddVar_AddLabel( this_ptr);
       AddVar_AddControl( this_ptr);
       AddVar_AddSeparator( this_ptr);
@@ -181,18 +175,17 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
       AddVar_Clear( this_ptr);
       AddVar_DeleteTool( this_ptr);
       AddVar_DeleteByIndex( this_ptr);
-/* The following types are missing: long unsigned int
       AddVar_GetToolCount( this_ptr);
-*/
       AddVar_GetToolPos( this_ptr);
       AddVar_GetToolIndex( this_ptr);
       AddVar_GetToolFits( this_ptr);
       AddVar_GetToolRect( this_ptr);
       AddVar_GetToolFitsByIndex( this_ptr);
       AddVar_GetToolBarFits( this_ptr);
-      AddVar_SetMargins( this_ptr);
       AddVar_SetMargins1( this_ptr);
+      AddVar_SetMargins( this_ptr);
       AddVar_SetMargins2( this_ptr);
+      AddVar_SetMargins3( this_ptr);
       AddVar_SetToolBitmapSize( this_ptr);
       AddVar_GetToolBitmapSize( this_ptr);
       AddVar_GetOverflowVisible( this_ptr);
@@ -227,8 +220,6 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
       AddVar_SetToolLongHelp( this_ptr);
       AddVar_SetCustomOverflowItems( this_ptr);
       AddVar_GetClassInfo( this_ptr);
-      AddVar_wxCreateObject( this_ptr);
-
 
 
     };

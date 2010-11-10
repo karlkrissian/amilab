@@ -86,7 +86,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
       wrap_GetMinSize::CallMember( ParamList* p)
 {
   wxSize minsize = this->_objectptr->GetObj()->GetMinSize();
-  return CreateVar_wxSize(new wxSize(minsize));
+  return WrapClass_wxSize::CreateVar(new wxSize(minsize));
 }
 
 //---------------------------------------------------

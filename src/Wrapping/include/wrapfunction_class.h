@@ -193,6 +193,10 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
     return BasicVariable::ptr();\
   }
 
+// simple return with empty variable for a class member
+#define ClassReturnEmptyVar  \
+    return BasicVariable::ptr();
+
 /**
  * Add the comments for the next parameter for a wrapped class member.
  **/

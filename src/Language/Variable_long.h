@@ -111,6 +111,11 @@ VAR_DECL_FUNC(long int,ln)
 VAR_DECL_FUNC(long int,norm)
 VAR_DECL_FUNC(long int,sqrt)
 
+/// Cast to a type based on its name as a string
+template<>
+BasicVariable::ptr Variable<long int>::TryCast(const std::string&) const;
+
+
 template<> BasicVariable::ptr Variable<long int>::BasicCast(const int& type);
 
 /// (cond?a:b)

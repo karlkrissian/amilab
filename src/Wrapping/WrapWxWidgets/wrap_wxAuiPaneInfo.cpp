@@ -38,7 +38,10 @@ BasicVariable::ptr WrapClass<wxAuiPaneInfo>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxAuiPaneInfo);
+
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxAuiPaneInfo);
+AMI_DEFINE_VARFROMSMTPTR(wxAuiPaneInfo);
+
 
 //
 // static member for creating a variable from a pointer to wxAuiPaneInfo
@@ -55,70 +58,85 @@ Variable<AMIObject>::ptr WrapClass_wxAuiPaneInfo::CreateVar( wxAuiPaneInfo* sp)
   return res;
 }
 
-/*
-//---------------------------------------------------
-// Method that adds wrapping of wxAuiPaneInfo
-//---------------------------------------------------
-
-void WrapClass_wxAuiPaneInfo::
-      wrap_wxAuiPaneInfo::SetParametersComments() 
-{
-  ADDPARAMCOMMENT_TYPE(..,"...");
-  return_comments = "A wrapped wxAuiPaneInfo object.";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-      wrap_wxAuiPaneInfo::CallMember( ParamList* p)
-{
-  if (!p) ClassHelpAndReturn;
-  int n=0;
-  // get parameters...
-  wxAuiPaneInfo* owxAuiPaneInfo = new wxAuiPaneInfo(...); // constructor parameters ...
-  BasicVariable::ptr res = WrapClass_wxAuiPaneInfo::CreateVar(owxAuiPaneInfo);
-  return res;
-}
-*/
 
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxAuiPaneInfo::wxAuiPaneInfo()
 //---------------------------------------------------
 void WrapClass_wxAuiPaneInfo::
-    wrap_wxAuiPaneInfo::SetParametersComments()
-{
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_wxAuiPaneInfo::CallMember( ParamList* _p)
-{
-  wxAuiPaneInfo* _newobj = new wxAuiPaneInfo();
-  BasicVariable::ptr res = WrapClass_wxAuiPaneInfo::CreateVar(_newobj);
-  return res;
-}
-
-//---------------------------------------------------
-//  Wrapping of Constructor wxAuiPaneInfo::wxAuiPaneInfo(wxAuiPaneInfo & c)
-//---------------------------------------------------
-void WrapClass_wxAuiPaneInfo::
     wrap_wxAuiPaneInfo1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxAuiPaneInfo, "parameter named 'c'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_wxAuiPaneInfo1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
+  wxAuiPaneInfo* _newobj = new wxAuiPaneInfo();
+  BasicVariable::ptr res = WrapClass_wxAuiPaneInfo::CreateVar(_newobj);
+  return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... Constructor wxAuiPaneInfo::wxAuiPaneInfo(...)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_wxAuiPaneInfo::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_wxAuiPaneInfo::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxAuiPaneInfo::wrap_wxAuiPaneInfo1 m1;
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxAuiPaneInfo::wrap_wxAuiPaneInfo2 m2;
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of Constructor wxAuiPaneInfo::wxAuiPaneInfo(wxAuiPaneInfo const & c)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_wxAuiPaneInfo2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxAuiPaneInfo, "parameter named 'c'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_wxAuiPaneInfo2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxAuiPaneInfo* c_ptr;
-  if (!get_val_ptr_param<wxAuiPaneInfo>(c_ptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo& c = *c_ptr;
+  boost::shared_ptr<wxAuiPaneInfo> c_smtptr;
+  if (!get_val_smtptr_param<wxAuiPaneInfo>(c_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxAuiPaneInfo& c = *c_smtptr;
   wxAuiPaneInfo* _newobj = new wxAuiPaneInfo(c);
   BasicVariable::ptr res = WrapClass_wxAuiPaneInfo::CreateVar(_newobj);
   return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of 'copy' method for wxAuiPaneInfo.
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_copy::SetParametersComments()
+{
+  return_comments="A copy of the wxAuiPaneInfo object within a new variable.";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_copy::CallMember( ParamList* _p)
+{
+    return AMILabType<wxAuiPaneInfo>::CreateVar( new wxAuiPaneInfo(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -135,6 +153,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_SafeSet::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   wxAuiPaneInfo source;
   if (!get_val_param<wxAuiPaneInfo>(source,_p,_n)) ClassHelpAndReturn;
@@ -155,6 +174,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsOk::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsOk();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -173,6 +193,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsFixed::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsFixed();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -191,6 +212,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsResizable::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsResizable();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -209,6 +231,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsShown::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsShown();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -227,6 +250,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsFloating::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsFloating();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -245,6 +269,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsDocked::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsDocked();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -263,6 +288,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsToolbar::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsToolbar();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -281,6 +307,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsTopDockable::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsTopDockable();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -299,6 +326,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsBottomDockable::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsBottomDockable();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -317,6 +345,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsLeftDockable::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsLeftDockable();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -335,6 +364,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsRightDockable::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsRightDockable();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -353,6 +383,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsFloatable::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsFloatable();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -371,6 +402,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsMovable::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsMovable();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -389,6 +421,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsDestroyOnClose::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsDestroyOnClose();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -407,6 +440,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_IsMaximized::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->IsMaximized();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -425,6 +459,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_HasCaption::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->HasCaption();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -443,6 +478,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_HasGripper::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->HasGripper();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -461,6 +497,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_HasBorder::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->HasBorder();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -479,6 +516,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_HasCloseButton::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->HasCloseButton();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -497,6 +535,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_HasMaximizeButton::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->HasMaximizeButton();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -515,6 +554,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_HasMinimizeButton::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->HasMinimizeButton();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -533,6 +573,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_HasPinButton::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->HasPinButton();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -551,6 +592,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_HasGripperTop::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   bool res =   this->_objectptr->GetObj()->HasGripperTop();
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
@@ -571,15 +613,17 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Window::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxWindow* w;
-  if (!get_val_ptr_param<wxWindow>(w,_p,_n)) ClassHelpAndReturn;
+  boost::shared_ptr<wxWindow> w_smtptr;
+  if (!get_val_smtptr_param<wxWindow>(w_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxWindow* w = w_smtptr.get();
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Window(w);
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
 
 //---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::Name(wxString & n)
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::Name(wxString const & n)
 //---------------------------------------------------
 void WrapClass_wxAuiPaneInfo::
     wrap_Name::SetParametersComments()
@@ -593,16 +637,17 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Name::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxString* n_ptr;
-  if (!get_val_ptr_param<wxString>(n_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& n = *n_ptr;
+  boost::shared_ptr<wxString> n_smtptr;
+  if (!get_val_smtptr_param<wxString>(n_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxString& n = *n_smtptr;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Name(n);
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
 
 //---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::Caption(wxString & c)
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::Caption(wxString const & c)
 //---------------------------------------------------
 void WrapClass_wxAuiPaneInfo::
     wrap_Caption::SetParametersComments()
@@ -616,10 +661,11 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Caption::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxString* c_ptr;
-  if (!get_val_ptr_param<wxString>(c_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& c = *c_ptr;
+  boost::shared_ptr<wxString> c_smtptr;
+  if (!get_val_smtptr_param<wxString>(c_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxString& c = *c_smtptr;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Caption(c);
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -637,6 +683,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Left::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Left();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -654,6 +701,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Right::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Right();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -671,6 +719,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Top::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Top();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -688,6 +737,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Bottom::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Bottom();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -705,6 +755,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Center::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Center();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -722,6 +773,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Centre::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Centre();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -741,6 +793,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Direction::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int direction;
   if (!get_val_param<int>(direction,_p,_n)) ClassHelpAndReturn;
@@ -763,6 +816,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Layer::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int layer;
   if (!get_val_param<int>(layer,_p,_n)) ClassHelpAndReturn;
@@ -785,6 +839,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Row::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int row;
   if (!get_val_param<int>(row,_p,_n)) ClassHelpAndReturn;
@@ -807,6 +862,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Position::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int pos;
   if (!get_val_param<int>(pos,_p,_n)) ClassHelpAndReturn;
@@ -815,82 +871,12 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::BestSize(wxSize & size)
-//---------------------------------------------------
-void WrapClass_wxAuiPaneInfo::
-    wrap_BestSize::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
-  return_comments="returning a variable of type wxAuiPaneInfo";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_BestSize::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  int _n=0;
-  wxSize* size_ptr;
-  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& size = *size_ptr;
-  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->BestSize(size);
-  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::MinSize(wxSize & size)
-//---------------------------------------------------
-void WrapClass_wxAuiPaneInfo::
-    wrap_MinSize::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
-  return_comments="returning a variable of type wxAuiPaneInfo";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_MinSize::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  int _n=0;
-  wxSize* size_ptr;
-  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& size = *size_ptr;
-  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MinSize(size);
-  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::MaxSize(wxSize & size)
-//---------------------------------------------------
-void WrapClass_wxAuiPaneInfo::
-    wrap_MaxSize::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
-  return_comments="returning a variable of type wxAuiPaneInfo";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_MaxSize::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  int _n=0;
-  wxSize* size_ptr;
-  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& size = *size_ptr;
-  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MaxSize(size);
-  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::BestSize(int x, int y)
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::BestSize(wxSize const & size)
 //---------------------------------------------------
 void WrapClass_wxAuiPaneInfo::
     wrap_BestSize1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -898,119 +884,21 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_BestSize1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  int x;
-  if (!get_val_param<int>(x,_p,_n)) ClassHelpAndReturn;
-  int y;
-  if (!get_val_param<int>(y,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->BestSize(x, y);
+  boost::shared_ptr<wxSize> size_smtptr;
+  if (!get_val_smtptr_param<wxSize>(size_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxSize& size = *size_smtptr;
+  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->BestSize(size);
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
 
 //---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::MinSize(int x, int y)
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::MinSize(wxSize const & size)
 //---------------------------------------------------
 void WrapClass_wxAuiPaneInfo::
     wrap_MinSize1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type wxAuiPaneInfo";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_MinSize1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  int _n=0;
-  int x;
-  if (!get_val_param<int>(x,_p,_n)) ClassHelpAndReturn;
-  int y;
-  if (!get_val_param<int>(y,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MinSize(x, y);
-  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::MaxSize(int x, int y)
-//---------------------------------------------------
-void WrapClass_wxAuiPaneInfo::
-    wrap_MaxSize1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type wxAuiPaneInfo";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_MaxSize1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  int _n=0;
-  int x;
-  if (!get_val_param<int>(x,_p,_n)) ClassHelpAndReturn;
-  int y;
-  if (!get_val_param<int>(y,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MaxSize(x, y);
-  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::FloatingPosition(wxPoint & pos)
-//---------------------------------------------------
-void WrapClass_wxAuiPaneInfo::
-    wrap_FloatingPosition::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pos'")
-  return_comments="returning a variable of type wxAuiPaneInfo";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_FloatingPosition::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  int _n=0;
-  wxPoint* pos_ptr;
-  if (!get_val_ptr_param<wxPoint>(pos_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& pos = *pos_ptr;
-  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->FloatingPosition(pos);
-  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::FloatingPosition(int x, int y)
-//---------------------------------------------------
-void WrapClass_wxAuiPaneInfo::
-    wrap_FloatingPosition1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type wxAuiPaneInfo";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_FloatingPosition1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  int _n=0;
-  int x;
-  if (!get_val_param<int>(x,_p,_n)) ClassHelpAndReturn;
-  int y;
-  if (!get_val_param<int>(y,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->FloatingPosition(x, y);
-  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::FloatingSize(wxSize & size)
-//---------------------------------------------------
-void WrapClass_wxAuiPaneInfo::
-    wrap_FloatingSize::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
   return_comments="returning a variable of type wxAuiPaneInfo";
@@ -1018,22 +906,68 @@ void WrapClass_wxAuiPaneInfo::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_FloatingSize::CallMember( ParamList* _p)
+    wrap_MinSize1::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxSize* size_ptr;
-  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& size = *size_ptr;
-  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->FloatingSize(size);
+  boost::shared_ptr<wxSize> size_smtptr;
+  if (!get_val_smtptr_param<wxSize>(size_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxSize& size = *size_smtptr;
+  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MinSize(size);
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
 
 //---------------------------------------------------
-//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::FloatingSize(int x, int y)
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::MaxSize(wxSize const & size)
 //---------------------------------------------------
 void WrapClass_wxAuiPaneInfo::
-    wrap_FloatingSize1::SetParametersComments()
+    wrap_MaxSize1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
+  return_comments="returning a variable of type wxAuiPaneInfo";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_MaxSize1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
+  int _n=0;
+  boost::shared_ptr<wxSize> size_smtptr;
+  if (!get_val_smtptr_param<wxSize>(size_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxSize& size = *size_smtptr;
+  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MaxSize(size);
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxAuiPaneInfo::BestSize(...)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_BestSize::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_BestSize::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxAuiPaneInfo::wrap_BestSize1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxAuiPaneInfo::wrap_BestSize2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::BestSize(int x, int y)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_BestSize2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
@@ -1042,14 +976,251 @@ void WrapClass_wxAuiPaneInfo::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
-    wrap_FloatingSize1::CallMember( ParamList* _p)
+    wrap_BestSize2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
   int x;
-  if (!get_val_param<int>(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(x,_p,_n)) ClassReturnEmptyVar;
   int y;
-  if (!get_val_param<int>(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int>(y,_p,_n)) ClassReturnEmptyVar;
+  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->BestSize(x, y);
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxAuiPaneInfo::MinSize(...)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_MinSize::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_MinSize::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxAuiPaneInfo::wrap_MinSize1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxAuiPaneInfo::wrap_MinSize2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::MinSize(int x, int y)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_MinSize2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
+  return_comments="returning a variable of type wxAuiPaneInfo";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_MinSize2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
+  int _n=0;
+  int x;
+  if (!get_val_param<int>(x,_p,_n)) ClassReturnEmptyVar;
+  int y;
+  if (!get_val_param<int>(y,_p,_n)) ClassReturnEmptyVar;
+  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MinSize(x, y);
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxAuiPaneInfo::MaxSize(...)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_MaxSize::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_MaxSize::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxAuiPaneInfo::wrap_MaxSize1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxAuiPaneInfo::wrap_MaxSize2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::MaxSize(int x, int y)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_MaxSize2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
+  return_comments="returning a variable of type wxAuiPaneInfo";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_MaxSize2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
+  int _n=0;
+  int x;
+  if (!get_val_param<int>(x,_p,_n)) ClassReturnEmptyVar;
+  int y;
+  if (!get_val_param<int>(y,_p,_n)) ClassReturnEmptyVar;
+  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MaxSize(x, y);
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::FloatingPosition(wxPoint const & pos)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_FloatingPosition1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pos'")
+  return_comments="returning a variable of type wxAuiPaneInfo";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_FloatingPosition1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
+  int _n=0;
+  boost::shared_ptr<wxPoint> pos_smtptr;
+  if (!get_val_smtptr_param<wxPoint>(pos_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxPoint& pos = *pos_smtptr;
+  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->FloatingPosition(pos);
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxAuiPaneInfo::FloatingPosition(...)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_FloatingPosition::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_FloatingPosition::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxAuiPaneInfo::wrap_FloatingPosition1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxAuiPaneInfo::wrap_FloatingPosition2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::FloatingPosition(int x, int y)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_FloatingPosition2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
+  return_comments="returning a variable of type wxAuiPaneInfo";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_FloatingPosition2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
+  int _n=0;
+  int x;
+  if (!get_val_param<int>(x,_p,_n)) ClassReturnEmptyVar;
+  int y;
+  if (!get_val_param<int>(y,_p,_n)) ClassReturnEmptyVar;
+  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->FloatingPosition(x, y);
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::FloatingSize(wxSize const & size)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_FloatingSize1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
+  return_comments="returning a variable of type wxAuiPaneInfo";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_FloatingSize1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
+  int _n=0;
+  boost::shared_ptr<wxSize> size_smtptr;
+  if (!get_val_smtptr_param<wxSize>(size_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxSize& size = *size_smtptr;
+  wxAuiPaneInfo & res =   this->_objectptr->GetObj()->FloatingSize(size);
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxAuiPaneInfo::FloatingSize(...)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_FloatingSize::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_FloatingSize::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxAuiPaneInfo::wrap_FloatingSize1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxAuiPaneInfo::wrap_FloatingSize2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::FloatingSize(int x, int y)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_FloatingSize2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
+  return_comments="returning a variable of type wxAuiPaneInfo";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_FloatingSize2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
+  int _n=0;
+  int x;
+  if (!get_val_param<int>(x,_p,_n)) ClassReturnEmptyVar;
+  int y;
+  if (!get_val_param<int>(y,_p,_n)) ClassReturnEmptyVar;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->FloatingSize(x, y);
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1067,6 +1238,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Fixed::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Fixed();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1086,6 +1258,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Resizable::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int resizable_int;
   if (!get_val_param<int>(resizable_int,_p,_n)) ClassHelpAndReturn;
@@ -1107,6 +1280,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Dock::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Dock();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1124,6 +1298,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Float::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Float();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1141,6 +1316,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Hide::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Hide();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1160,6 +1336,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Show::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int show_int;
   if (!get_val_param<int>(show_int,_p,_n)) ClassHelpAndReturn;
@@ -1183,6 +1360,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_CaptionVisible::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int visible_int;
   if (!get_val_param<int>(visible_int,_p,_n)) ClassHelpAndReturn;
@@ -1204,6 +1382,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Maximize::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Maximize();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1221,6 +1400,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Restore::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Restore();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1240,6 +1420,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_PaneBorder::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int visible_int;
   if (!get_val_param<int>(visible_int,_p,_n)) ClassHelpAndReturn;
@@ -1263,6 +1444,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Gripper::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int visible_int;
   if (!get_val_param<int>(visible_int,_p,_n)) ClassHelpAndReturn;
@@ -1286,6 +1468,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_GripperTop::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int attop_int;
   if (!get_val_param<int>(attop_int,_p,_n)) ClassHelpAndReturn;
@@ -1309,6 +1492,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_CloseButton::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int visible_int;
   if (!get_val_param<int>(visible_int,_p,_n)) ClassHelpAndReturn;
@@ -1332,6 +1516,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_MaximizeButton::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int visible_int;
   if (!get_val_param<int>(visible_int,_p,_n)) ClassHelpAndReturn;
@@ -1355,6 +1540,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_MinimizeButton::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int visible_int;
   if (!get_val_param<int>(visible_int,_p,_n)) ClassHelpAndReturn;
@@ -1378,6 +1564,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_PinButton::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int visible_int;
   if (!get_val_param<int>(visible_int,_p,_n)) ClassHelpAndReturn;
@@ -1401,6 +1588,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_DestroyOnClose::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int b_int;
   if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
@@ -1424,6 +1612,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_TopDockable::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int b_int;
   if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
@@ -1447,6 +1636,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_BottomDockable::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int b_int;
   if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
@@ -1470,6 +1660,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_LeftDockable::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int b_int;
   if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
@@ -1493,6 +1684,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_RightDockable::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int b_int;
   if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
@@ -1516,6 +1708,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Floatable::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int b_int;
   if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
@@ -1539,6 +1732,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Movable::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int b_int;
   if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
@@ -1562,6 +1756,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_DockFixed::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int b_int;
   if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
@@ -1585,6 +1780,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_Dockable::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   int b_int;
   if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
@@ -1606,6 +1802,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_DefaultPane::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->DefaultPane();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1623,6 +1820,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_CentrePane::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->CentrePane();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1640,6 +1838,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_CenterPane::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->CenterPane();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1657,6 +1856,7 @@ void WrapClass_wxAuiPaneInfo::
 BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_ToolbarPane::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->ToolbarPane();
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -1677,6 +1877,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_SetFlag::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
   long flag_long;
   if (!get_val_param<long>(flag_long,_p,_n)) ClassHelpAndReturn;
@@ -1703,6 +1904,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
     wrap_HasFlag::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
   long flag_long;
   if (!get_val_param<long>(flag_long,_p,_n)) ClassHelpAndReturn;
@@ -1710,5 +1912,29 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   bool res =   this->_objectptr->GetObj()->HasFlag(flag);
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxAuiPaneInfo & wxAuiPaneInfo::=(wxAuiPaneInfo const & c)
+//---------------------------------------------------
+void WrapClass_wxAuiPaneInfo::
+    wrap_assign::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxAuiPaneInfo, "parameter named 'c'")
+  return_comments="returning a variable of type wxAuiPaneInfo";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiPaneInfo::
+    wrap_assign::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  boost::shared_ptr<wxAuiPaneInfo> c_smtptr;
+  if (!get_val_smtptr_param<wxAuiPaneInfo>(c_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxAuiPaneInfo& c = *c_smtptr;
+  wxAuiPaneInfo & res =   (*this->_objectptr->GetObj()) = (c);
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
 

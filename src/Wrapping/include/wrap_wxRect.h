@@ -57,19 +57,19 @@ class WrapClass_wxRect : public WrapClass<wxRect>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxRect1,"Wrapping of wxRect.");
+    ADD_CLASS_CONSTRUCTOR(wxRect1,"Wrapping of wxRect, http://docs.wxwidgets.org/stable/wx_wxrect.html#wxrect.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxRect,"Wrapping of wxRect.");
+    ADD_CLASS_CONSTRUCTOR(wxRect,"Wrapping of wxRect, http://docs.wxwidgets.org/stable/wx_wxrect.html#wxrect.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxRect2,"Wrapping of wxRect.");
+    ADD_CLASS_CONSTRUCTOR(wxRect2,"Wrapping of wxRect, http://docs.wxwidgets.org/stable/wx_wxrect.html#wxrect.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxRect3,"Wrapping of wxRect.");
+    ADD_CLASS_CONSTRUCTOR(wxRect3,"Wrapping of wxRect, http://docs.wxwidgets.org/stable/wx_wxrect.html#wxrect.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxRect4,"Wrapping of wxRect.");
+    ADD_CLASS_CONSTRUCTOR(wxRect4,"Wrapping of wxRect, http://docs.wxwidgets.org/stable/wx_wxrect.html#wxrect.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxRect5,"Wrapping of wxRect.");
+    ADD_CLASS_CONSTRUCTOR(wxRect5,"Wrapping of wxRect, http://docs.wxwidgets.org/stable/wx_wxrect.html#wxrect.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxRect6,"Wrapping of wxRect.");
+    ADD_CLASS_CONSTRUCTOR(wxRect6,"Wrapping of wxRect, http://docs.wxwidgets.org/stable/wx_wxrect.html#wxrect.");
 
 
 
@@ -78,80 +78,79 @@ class WrapClass_wxRect : public WrapClass<wxRect>
 
     // here add each method
     
-    ADD_CLASS_METHOD(GetX,"")
-    ADD_CLASS_METHOD(SetX,"")
-    ADD_CLASS_METHOD(GetY,"")
-    ADD_CLASS_METHOD(SetY,"")
-    ADD_CLASS_METHOD(GetWidth,"")
-    ADD_CLASS_METHOD(SetWidth,"")
-    ADD_CLASS_METHOD(GetHeight,"")
-    ADD_CLASS_METHOD(SetHeight,"")
-    ADD_CLASS_METHOD(GetPosition,"")
-    ADD_CLASS_METHOD(SetPosition,"")
-    ADD_CLASS_METHOD(GetSize,"")
-    ADD_CLASS_METHOD(SetSize,"")
-    ADD_CLASS_METHOD(IsEmpty,"")
-    ADD_CLASS_METHOD(GetLeft,"")
-    ADD_CLASS_METHOD(GetTop,"")
-    ADD_CLASS_METHOD(GetBottom,"")
-    ADD_CLASS_METHOD(GetRight,"")
-    ADD_CLASS_METHOD(SetLeft,"")
-    ADD_CLASS_METHOD(SetRight,"")
-    ADD_CLASS_METHOD(SetTop,"")
-    ADD_CLASS_METHOD(SetBottom,"")
-    ADD_CLASS_METHOD(GetTopLeft,"")
-    ADD_CLASS_METHOD(GetLeftTop,"")
-    ADD_CLASS_METHOD(SetTopLeft,"")
-    ADD_CLASS_METHOD(SetLeftTop,"")
-    ADD_CLASS_METHOD(GetBottomRight,"")
-    ADD_CLASS_METHOD(GetRightBottom,"")
-    ADD_CLASS_METHOD(SetBottomRight,"")
-    ADD_CLASS_METHOD(SetRightBottom,"")
-    ADD_CLASS_METHOD(GetTopRight,"")
-    ADD_CLASS_METHOD(GetRightTop,"")
-    ADD_CLASS_METHOD(SetTopRight,"")
-    ADD_CLASS_METHOD(SetRightTop,"")
-    ADD_CLASS_METHOD(GetBottomLeft,"")
-    ADD_CLASS_METHOD(GetLeftBottom,"")
-    ADD_CLASS_METHOD(SetBottomLeft,"")
-    ADD_CLASS_METHOD(SetLeftBottom,"")
-    ADD_CLASS_METHOD(Inflate1,"")
-    ADD_CLASS_METHOD(Inflate,"")
-    ADD_CLASS_METHOD(Inflate2,"")
-    ADD_CLASS_METHOD(Inflate3,"")
-    ADD_CLASS_METHOD(Inflate4,"")
-    ADD_CLASS_METHOD(Deflate1,"")
-    ADD_CLASS_METHOD(Deflate,"")
-    ADD_CLASS_METHOD(Deflate2,"")
-    ADD_CLASS_METHOD(Deflate3,"")
-    ADD_CLASS_METHOD(Deflate4,"")
-    ADD_CLASS_METHOD(Offset1,"")
-    ADD_CLASS_METHOD(Offset,"")
-    ADD_CLASS_METHOD(Offset2,"")
-    ADD_CLASS_METHOD(Intersect1,"")
-    ADD_CLASS_METHOD(Intersect,"")
-    ADD_CLASS_METHOD(Intersect2,"")
-    ADD_CLASS_METHOD(Union1,"")
-    ADD_CLASS_METHOD(Union,"")
-    ADD_CLASS_METHOD(Union2,"")
-    ADD_CLASS_METHOD(Contains1,"")
-    ADD_CLASS_METHOD(Contains,"")
-    ADD_CLASS_METHOD(Contains2,"")
-    ADD_CLASS_METHOD(Contains3,"")
-    ADD_CLASS_METHOD(Inside1,"")
-    ADD_CLASS_METHOD(Inside,"")
-    ADD_CLASS_METHOD(Inside2,"")
-    ADD_CLASS_METHOD(Inside3,"")
-    ADD_CLASS_METHOD(Intersects,"")
-    ADD_CLASS_METHOD(CentreIn,"")
-    ADD_CLASS_METHOD(CenterIn,"")
+    // Adding copy method
+    ADD_CLASS_METHOD(copy,"Copy method, uses the copy constructor.");
+    // Adding standard methods
+    ADD_CLASS_METHOD(GetX,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getx")
+    ADD_CLASS_METHOD(SetX,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setx")
+    ADD_CLASS_METHOD(GetY,"http://docs.wxwidgets.org/stable/wx_wxrect.html#gety")
+    ADD_CLASS_METHOD(SetY,"http://docs.wxwidgets.org/stable/wx_wxrect.html#sety")
+    ADD_CLASS_METHOD(GetWidth,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getwidth")
+    ADD_CLASS_METHOD(SetWidth,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setwidth")
+    ADD_CLASS_METHOD(GetHeight,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getheight")
+    ADD_CLASS_METHOD(SetHeight,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setheight")
+    ADD_CLASS_METHOD(GetPosition,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getposition")
+    ADD_CLASS_METHOD(SetPosition,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setposition")
+    ADD_CLASS_METHOD(GetSize,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getsize")
+    ADD_CLASS_METHOD(SetSize,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setsize")
+    ADD_CLASS_METHOD(IsEmpty,"http://docs.wxwidgets.org/stable/wx_wxrect.html#isempty")
+    ADD_CLASS_METHOD(GetLeft,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getleft")
+    ADD_CLASS_METHOD(GetTop,"http://docs.wxwidgets.org/stable/wx_wxrect.html#gettop")
+    ADD_CLASS_METHOD(GetBottom,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getbottom")
+    ADD_CLASS_METHOD(GetRight,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getright")
+    ADD_CLASS_METHOD(SetLeft,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setleft")
+    ADD_CLASS_METHOD(SetRight,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setright")
+    ADD_CLASS_METHOD(SetTop,"http://docs.wxwidgets.org/stable/wx_wxrect.html#settop")
+    ADD_CLASS_METHOD(SetBottom,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setbottom")
+    ADD_CLASS_METHOD(GetTopLeft,"http://docs.wxwidgets.org/stable/wx_wxrect.html#gettopleft")
+    ADD_CLASS_METHOD(GetLeftTop,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getlefttop")
+    ADD_CLASS_METHOD(SetTopLeft,"http://docs.wxwidgets.org/stable/wx_wxrect.html#settopleft")
+    ADD_CLASS_METHOD(SetLeftTop,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setlefttop")
+    ADD_CLASS_METHOD(GetBottomRight,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getbottomright")
+    ADD_CLASS_METHOD(GetRightBottom,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getrightbottom")
+    ADD_CLASS_METHOD(SetBottomRight,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setbottomright")
+    ADD_CLASS_METHOD(SetRightBottom,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setrightbottom")
+    ADD_CLASS_METHOD(GetTopRight,"http://docs.wxwidgets.org/stable/wx_wxrect.html#gettopright")
+    ADD_CLASS_METHOD(GetRightTop,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getrighttop")
+    ADD_CLASS_METHOD(SetTopRight,"http://docs.wxwidgets.org/stable/wx_wxrect.html#settopright")
+    ADD_CLASS_METHOD(SetRightTop,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setrighttop")
+    ADD_CLASS_METHOD(GetBottomLeft,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getbottomleft")
+    ADD_CLASS_METHOD(GetLeftBottom,"http://docs.wxwidgets.org/stable/wx_wxrect.html#getleftbottom")
+    ADD_CLASS_METHOD(SetBottomLeft,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setbottomleft")
+    ADD_CLASS_METHOD(SetLeftBottom,"http://docs.wxwidgets.org/stable/wx_wxrect.html#setleftbottom")
+    ADD_CLASS_METHOD(Inflate1,"http://docs.wxwidgets.org/stable/wx_wxrect.html#inflate")
+    ADD_CLASS_METHOD(Inflate,"http://docs.wxwidgets.org/stable/wx_wxrect.html#inflate")
+    ADD_CLASS_METHOD(Inflate2,"http://docs.wxwidgets.org/stable/wx_wxrect.html#inflate")
+    ADD_CLASS_METHOD(Inflate3,"http://docs.wxwidgets.org/stable/wx_wxrect.html#inflate")
+    ADD_CLASS_METHOD(Inflate4,"http://docs.wxwidgets.org/stable/wx_wxrect.html#inflate")
+    ADD_CLASS_METHOD(Deflate1,"http://docs.wxwidgets.org/stable/wx_wxrect.html#deflate")
+    ADD_CLASS_METHOD(Deflate,"http://docs.wxwidgets.org/stable/wx_wxrect.html#deflate")
+    ADD_CLASS_METHOD(Deflate2,"http://docs.wxwidgets.org/stable/wx_wxrect.html#deflate")
+    ADD_CLASS_METHOD(Deflate3,"http://docs.wxwidgets.org/stable/wx_wxrect.html#deflate")
+    ADD_CLASS_METHOD(Deflate4,"http://docs.wxwidgets.org/stable/wx_wxrect.html#deflate")
+    ADD_CLASS_METHOD(Offset1,"http://docs.wxwidgets.org/stable/wx_wxrect.html#offset")
+    ADD_CLASS_METHOD(Offset,"http://docs.wxwidgets.org/stable/wx_wxrect.html#offset")
+    ADD_CLASS_METHOD(Offset2,"http://docs.wxwidgets.org/stable/wx_wxrect.html#offset")
+    ADD_CLASS_METHOD(Intersect1,"http://docs.wxwidgets.org/stable/wx_wxrect.html#intersect")
+    ADD_CLASS_METHOD(Intersect,"http://docs.wxwidgets.org/stable/wx_wxrect.html#intersect")
+    ADD_CLASS_METHOD(Intersect2,"http://docs.wxwidgets.org/stable/wx_wxrect.html#intersect")
+    ADD_CLASS_METHOD(Union1,"http://docs.wxwidgets.org/stable/wx_wxrect.html#union")
+    ADD_CLASS_METHOD(Union,"http://docs.wxwidgets.org/stable/wx_wxrect.html#union")
+    ADD_CLASS_METHOD(Union2,"http://docs.wxwidgets.org/stable/wx_wxrect.html#union")
+    ADD_CLASS_METHOD(Contains1,"http://docs.wxwidgets.org/stable/wx_wxrect.html#contains")
+    ADD_CLASS_METHOD(Contains,"http://docs.wxwidgets.org/stable/wx_wxrect.html#contains")
+    ADD_CLASS_METHOD(Contains2,"http://docs.wxwidgets.org/stable/wx_wxrect.html#contains")
+    ADD_CLASS_METHOD(Contains3,"http://docs.wxwidgets.org/stable/wx_wxrect.html#contains")
+    ADD_CLASS_METHOD(Intersects,"http://docs.wxwidgets.org/stable/wx_wxrect.html#intersects")
+    ADD_CLASS_METHOD(CentreIn,"http://docs.wxwidgets.org/stable/wx_wxrect.html#centrein")
+    ADD_CLASS_METHOD(CenterIn,"http://docs.wxwidgets.org/stable/wx_wxrect.html#centerin")
 
     // Operators:
-    ADD_CLASS_METHOD(assign,"")
-    ADD_CLASS_METHOD(equal,"")
-    ADD_CLASS_METHOD(not_equal,"")
-    ADD_CLASS_METHOD(add,"")
-    ADD_CLASS_METHOD(add_assign,"")
+    ADD_CLASS_METHOD(assign,"http://docs.wxwidgets.org/stable/wx_wxrect.html#assign")
+    ADD_CLASS_METHOD(equal,"http://docs.wxwidgets.org/stable/wx_wxrect.html#equal")
+    ADD_CLASS_METHOD(not_equal,"http://docs.wxwidgets.org/stable/wx_wxrect.html#not_equal")
+    ADD_CLASS_METHOD(add,"http://docs.wxwidgets.org/stable/wx_wxrect.html#add")
+    ADD_CLASS_METHOD(add_assign,"http://docs.wxwidgets.org/stable/wx_wxrect.html#add_assign")
 
 
 
@@ -164,6 +163,9 @@ class WrapClass_wxRect : public WrapClass<wxRect>
 
       // check that the method name is not a token
       
+      // Adding copy method 
+      AddVar_copy( this_ptr);
+       // Adding standard methods 
       AddVar_GetX( this_ptr);
       AddVar_SetX( this_ptr);
       AddVar_GetY( this_ptr);
@@ -224,15 +226,11 @@ class WrapClass_wxRect : public WrapClass<wxRect>
       AddVar_Contains( this_ptr);
       AddVar_Contains2( this_ptr);
       AddVar_Contains3( this_ptr);
-      AddVar_Inside1( this_ptr);
-      AddVar_Inside( this_ptr);
-      AddVar_Inside2( this_ptr);
-      AddVar_Inside3( this_ptr);
       AddVar_Intersects( this_ptr);
       AddVar_CentreIn( this_ptr);
       AddVar_CenterIn( this_ptr);
 
-      // Operators:
+      // Adding operators
       AddVar_assign( this_ptr);
       AddVar_equal( this_ptr);
       AddVar_not_equal( this_ptr);

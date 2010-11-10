@@ -57,18 +57,20 @@ class WrapClass_wxFont : public WrapClass<wxFont>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxFont,"Wrapping of wxFont.");
+    ADD_CLASS_CONSTRUCTOR(wxFont1,"Wrapping of wxFont, http://docs.wxwidgets.org/stable/wx_wxfont.html#wxfont.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxFont1,"Wrapping of wxFont.");
+    ADD_CLASS_CONSTRUCTOR(wxFont,"Wrapping of wxFont, http://docs.wxwidgets.org/stable/wx_wxfont.html#wxfont.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxFont2,"Wrapping of wxFont.");
+    ADD_CLASS_CONSTRUCTOR(wxFont2,"Wrapping of wxFont, http://docs.wxwidgets.org/stable/wx_wxfont.html#wxfont.");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxFont3,"Wrapping of wxFont, http://docs.wxwidgets.org/stable/wx_wxfont.html#wxfont.");
     /* The following types are missing: wxNativeFontInfo
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxFont3,"Wrapping of wxFont.");
+    ADD_CLASS_CONSTRUCTOR(wxFont4,"Wrapping of wxFont, http://docs.wxwidgets.org/stable/wx_wxfont.html#wxfont.");
     */
     /* The following types are missing: wxFontEncoding
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxFont4,"Wrapping of wxFont.");
+    ADD_CLASS_CONSTRUCTOR(wxFont5,"Wrapping of wxFont, http://docs.wxwidgets.org/stable/wx_wxfont.html#wxfont.");
     */
 
 
@@ -78,40 +80,44 @@ class WrapClass_wxFont : public WrapClass<wxFont>
 
     // here add each method
     
+    // Adding copy method
+    ADD_CLASS_METHOD(copy,"Copy method, uses the copy constructor.");
+    // Adding standard methods
 /* The following types are missing: wxFontEncoding
-    ADD_CLASS_METHOD(Create,"")
+    ADD_CLASS_METHOD(Create1,"http://docs.wxwidgets.org/stable/wx_wxfont.html#create")
 */
-    ADD_CLASS_METHOD(Create1,"")
-    ADD_CLASS_METHOD(GetPointSize,"")
-    ADD_CLASS_METHOD(GetFamily,"")
-    ADD_CLASS_METHOD(GetStyle,"")
-    ADD_CLASS_METHOD(GetWeight,"")
-    ADD_CLASS_METHOD(GetFaceName,"")
-    ADD_CLASS_METHOD(GetUnderlined,"")
+    ADD_CLASS_METHOD(Create,"http://docs.wxwidgets.org/stable/wx_wxfont.html#create")
+    ADD_CLASS_METHOD(Create2,"http://docs.wxwidgets.org/stable/wx_wxfont.html#create")
+    ADD_CLASS_METHOD(GetPointSize,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getpointsize")
+    ADD_CLASS_METHOD(GetFamily,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getfamily")
+    ADD_CLASS_METHOD(GetStyle,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getstyle")
+    ADD_CLASS_METHOD(GetWeight,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getweight")
+    ADD_CLASS_METHOD(GetFaceName,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getfacename")
+    ADD_CLASS_METHOD(GetUnderlined,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getunderlined")
 /* The following types are missing: wxFontEncoding
-    ADD_CLASS_METHOD(GetEncoding,"")
+    ADD_CLASS_METHOD(GetEncoding,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getencoding")
 */
 /* The following types are missing: wxNativeFontInfo
-    ADD_CLASS_METHOD(GetNativeFontInfo,"")
+    ADD_CLASS_METHOD(GetNativeFontInfo,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getnativefontinfo")
 */
-    ADD_CLASS_METHOD(IsFixedWidth,"")
-    ADD_CLASS_METHOD(SetPointSize,"")
-    ADD_CLASS_METHOD(SetFamily,"")
-    ADD_CLASS_METHOD(SetStyle,"")
-    ADD_CLASS_METHOD(SetWeight,"")
-    ADD_CLASS_METHOD(SetFaceName,"")
-    ADD_CLASS_METHOD(SetUnderlined,"")
+    ADD_CLASS_METHOD(IsFixedWidth,"http://docs.wxwidgets.org/stable/wx_wxfont.html#isfixedwidth")
+    ADD_CLASS_METHOD(SetPointSize,"http://docs.wxwidgets.org/stable/wx_wxfont.html#setpointsize")
+    ADD_CLASS_METHOD(SetFamily,"http://docs.wxwidgets.org/stable/wx_wxfont.html#setfamily")
+    ADD_CLASS_METHOD(SetStyle,"http://docs.wxwidgets.org/stable/wx_wxfont.html#setstyle")
+    ADD_CLASS_METHOD(SetWeight,"http://docs.wxwidgets.org/stable/wx_wxfont.html#setweight")
+    ADD_CLASS_METHOD(SetFaceName,"http://docs.wxwidgets.org/stable/wx_wxfont.html#setfacename")
+    ADD_CLASS_METHOD(SetUnderlined,"http://docs.wxwidgets.org/stable/wx_wxfont.html#setunderlined")
 /* The following types are missing: wxFontEncoding
-    ADD_CLASS_METHOD(SetEncoding,"")
+    ADD_CLASS_METHOD(SetEncoding,"http://docs.wxwidgets.org/stable/wx_wxfont.html#setencoding")
 */
-    ADD_CLASS_METHOD(SetNoAntiAliasing,"")
-    ADD_CLASS_METHOD(GetNoAntiAliasing,"")
-    ADD_CLASS_METHOD(Unshare,"")
-    ADD_CLASS_METHOD(GetClassInfo,"")
-    ADD_CLASS_METHOD(wxCreateObject,"")
+    ADD_CLASS_METHOD(SetNoAntiAliasing,"http://docs.wxwidgets.org/stable/wx_wxfont.html#setnoantialiasing")
+    ADD_CLASS_METHOD(GetNoAntiAliasing,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getnoantialiasing")
+    ADD_CLASS_METHOD(Unshare,"http://docs.wxwidgets.org/stable/wx_wxfont.html#unshare")
+    ADD_CLASS_METHOD(GetClassInfo,"http://docs.wxwidgets.org/stable/wx_wxfont.html#getclassinfo")
+    ADD_CLASS_METHOD(wxCreateObject,"http://docs.wxwidgets.org/stable/wx_wxfont.html#wxcreateobject")
 
     // Operators:
-    ADD_CLASS_METHOD(assign,"")
+    ADD_CLASS_METHOD(assign,"http://docs.wxwidgets.org/stable/wx_wxfont.html#assign")
 
 
 
@@ -128,10 +134,14 @@ class WrapClass_wxFont : public WrapClass<wxFont>
 
       // check that the method name is not a token
       
+      // Adding copy method 
+      AddVar_copy( this_ptr);
+       // Adding standard methods 
 /* The following types are missing: wxFontEncoding
-      AddVar_Create( this_ptr);
-*/
       AddVar_Create1( this_ptr);
+*/
+      AddVar_Create( this_ptr);
+      AddVar_Create2( this_ptr);
       AddVar_GetPointSize( this_ptr);
       AddVar_GetFamily( this_ptr);
       AddVar_GetStyle( this_ptr);
@@ -160,7 +170,7 @@ class WrapClass_wxFont : public WrapClass<wxFont>
       AddVar_GetClassInfo( this_ptr);
       AddVar_wxCreateObject( this_ptr);
 
-      // Operators:
+      // Adding operators
       AddVar_assign( this_ptr);
 
 

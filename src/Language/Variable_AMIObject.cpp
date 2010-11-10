@@ -140,20 +140,6 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --(int
 /// a+b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +(const BasicVariable::ptr& b)
 {
-/*
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),+,b->GetValueAsDouble());
-  }
-  else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),+);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference();
-*/
-  //Modified: Added (02-07-2010)
   APPLY_MEMBER_PARAM1("add", b, varres)
   if (varres.get())
     return varres;
@@ -188,23 +174,16 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +=(con
   return this->NewReference(); 
 */
 }
-/*
+
 /// a-b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariable::ptr& b)
 {
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),-,b->GetValueAsDouble());
-  } 
+  APPLY_MEMBER_PARAM1("op_substract", b, varres)
+  if (varres.get())
+    return varres;
   else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),-);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+    return BasicVariable::ptr();
 }
-*/
 
 /// a-=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b)
