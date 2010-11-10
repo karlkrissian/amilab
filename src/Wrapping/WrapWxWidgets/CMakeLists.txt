@@ -28,8 +28,16 @@ SET(  WrapWxWidgets_SRCS
   wrap_wxBoxSizer.cpp
   wrap_wxAuiManager.cpp
   wrap_wxAuiPaneInfo.cpp
+  wrap_wxAuiToolBar.cpp
+  wrap_wxAuiToolBarItem.cpp
+  wrap_wxAuiToolBarItemArray.cpp
+  wrap_wxAuiToolBarArt.cpp
   wrap_wxPoint.cpp
+  wrap_wxFont.cpp
+  wrap_wxObject.cpp
+  wrap_wxControl.cpp
   wrap_wxRect.cpp
+  wrap_wxClassInfo.cpp
   wrap_wxFrame.cpp
 )
 
@@ -49,8 +57,16 @@ SET(WrapWxWidgets_HDRS
   ../include/wrap_wxBoxSizer.h
   ../include/wrap_wxAuiManager.h
   ../include/wrap_wxAuiPaneInfo.h
+  ../include/wrap_wxAuiToolBar.h
+  ../include/wrap_wxAuiToolBarItem.h
+  ../include/wrap_wxAuiToolBarItemArray.h
+  ../include/wrap_wxAuiToolBarArt.h
   ../include/wrap_wxPoint.h
+  ../include/wrap_wxFont.h
+  ../include/wrap_wxObject.h
+  ../include/wrap_wxControl.h
   ../include/wrap_wxRect.h
+  ../include/wrap_wxClassInfo.h
   ../include/wrap_wxFrame.h
 )
 
