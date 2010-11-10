@@ -644,10 +644,10 @@ BasicVariable::ptr WrapClass_wxString::
 {
   boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
-  char buffer[SIZE_BUFFER];
-  strcpy( buffer, (const char*)owxString->ToAscii() );
+//  char buffer[SIZE_BUFFER];
+//  strcpy( buffer, (const char*)owxString->ToAscii() );
 
-  string val = buffer;
+  std::string val((const char*)owxString->ToAscii());
 
   RETURN_VAR(string,val);
 }

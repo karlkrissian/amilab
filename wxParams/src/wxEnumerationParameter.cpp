@@ -72,8 +72,6 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
                         wxALIGN_LEFT );
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
-  //DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this->_choice);
-  //this->_choice->SetDropTarget(ChoiceTextImage);  
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);
 
   this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
@@ -108,7 +106,7 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
   if (allowdrop) {
-    DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this->_choice);
+    DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this);
     this->_choice->SetDropTarget(ChoiceTextImage);
   }
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);
@@ -152,6 +150,10 @@ void wxEnumerationParameter::AddUpdateButton( void* update_cb,
 //----------------------------------------------
 void wxEnumerationParameter::AddChoice( int* choix_id, const char* label)
 {
+  int Pos = this->_choice->FindString(wxString::FromAscii(label), true);
+  if (Pos != wxNOT_FOUND)
+    *choix_id = Pos;
+  else
     *choix_id = this->_choice->Append(wxString::FromAscii(label));
 }
 
@@ -249,4 +251,56 @@ void wxEnumerationParameter::EnableWidget(bool enable)
 //void wxEnumerationParameter::OnButtonUpdate( wxCommandEvent& data)
 //{
 //}
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,8,11)
+//---------------------------------------------
+wxString wxEnumerationParameter::GetAbsoluteName(const wxString& Name)
+{
+  wxString Result= wxT("");
+  wxString Text;
+  wxArrayString choices;
+  string Simb;
+  int Pos, Size;
+
+  // eventually call update button callback function
+  if (_update_button!=NULL)
+    _update_button->Callback();
+
+  choices = this->_choice->GetStrings();
+
+  for(int i=0;i<(int)choices.GetCount();i++) {
+      Text = choices[i];
+      Pos = Text.Find(Name);
+      if(Pos != wxNOT_FOUND)
+      {
+        Size = Pos + Name.Len();
+        Simb = Text.SubString(Pos-2, Pos-1).ToAscii();
+
+        if(Size == Text.Len())
+        {
+          if(Simb == "::")
+          {
+            Result = Text;
+            break;
+          }
+          else
+          {
+            Simb = Text.SubString(Pos-1, Pos-1).ToAscii();
+            if(Simb == ".")
+            {
+              Result = Text;
+              break;
+            }
+          }
+        }
+      }
+  }
+  std::cout << "wxEnumerationParameter::GetAbsoluteName->Obtained name: "
+            << Result.ToAscii()
+            << std::endl;
+  return Result;
+}
+#endif
+/// @endcond
 

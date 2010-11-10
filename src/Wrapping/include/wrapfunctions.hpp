@@ -346,12 +346,14 @@ bool get_val_param( T& arg,
  * @param p list of parameters
  * @param num integer variable containing the argument number, it is incremented by one
  * @param required  default is true
+ * @param noconstr  if true does not try to convert variable using the class constructor
  * @return true/false for success/failure
  */
 template<class T>
 bool get_val_ptr_param( T*& arg, 
                     ParamList*p, int& num, 
-                    bool required=true);
+                    bool required=true,
+                    bool noconstr=false);
 
 
 /**

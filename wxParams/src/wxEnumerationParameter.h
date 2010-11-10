@@ -24,8 +24,13 @@
 #include <boost/shared_ptr.hpp>
 //#include "wxParamTypes.hpp"
 
+
+
 typedef boost::shared_ptr<std::string>     string_ptr;
 
+#include <wx/choice.h>
+#include <wx/sizer.h>
+#include "widget.hpp"
 
 class wxBitmapButtonParameter;
 
@@ -109,6 +114,12 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   static void OnEnumUpdate(void* data);
 
   void EnableWidget(bool enable = true);
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,8,11)
+  wxString GetAbsoluteName(const wxString& Name);
+#endif
+/// @endcond
 
 //  void OnButtonUpdate( wxCommandEvent& data);
 

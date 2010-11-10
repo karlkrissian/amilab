@@ -25,6 +25,9 @@
 #include "wrap_wxAuiManager.h"
 #include "wrap_wxAuiPaneInfo.h"
 #include "wrap_wxString.h"
+#include "wrap_wxPoint.h"
+#include "wrap_wxRect.h"
+#include "wrap_wxFrame.h"
 
 
 //
@@ -285,8 +288,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   wxWindow* window;
   if (!get_val_ptr_param<wxWindow>(window,_p,_n)) ClassHelpAndReturn;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->GetPane(window);
-  BasicVariable::ptr res_var = WrapClass_wxAuiPaneInfo::CreateVar(&res);
-  return res_var;
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -309,8 +311,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!get_val_ptr_param<wxString>(name_ptr,_p,_n)) ClassHelpAndReturn;
   wxString& name = *name_ptr;
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->GetPane(name);
-  BasicVariable::ptr res_var = WrapClass_wxAuiPaneInfo::CreateVar(&res);
-  return res_var;
+  return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
 /* The following types are missing: wxAuiPaneInfoArray
 
@@ -358,7 +359,6 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
 }
-/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxAuiManager::AddPane(wxWindow * window, wxAuiPaneInfo & pane_info, wxPoint & drop_pos)
@@ -390,7 +390,6 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   int  res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxAuiManager::AddPane(wxWindow * window, int direction, wxString & caption)
@@ -511,8 +510,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!get_val_ptr_param<wxAuiPaneInfo>(pane_ptr,_p,_n)) ClassHelpAndReturn;
   wxAuiPaneInfo& pane = *pane_ptr;
   wxString res =   this->_objectptr->GetObj()->SavePaneInfo(pane);
-  BasicVariable::ptr res_var = WrapClass_wxString::CreateVar(&res);
-  return res_var;
+  return AMILabType<wxString>::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -554,8 +552,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_SavePerspective::CallMember( ParamList* _p)
 {
   wxString res =   this->_objectptr->GetObj()->SavePerspective();
-  BasicVariable::ptr res_var = WrapClass_wxString::CreateVar(&res);
-  return res_var;
+  return AMILabType<wxString>::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -743,7 +740,6 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   return AMILabType<wxAuiFloatingFrame>::CreateVar(res);
 }
 */
-/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiManager::StartPaneDrag(wxWindow * pane_window, wxPoint & offset)
@@ -769,8 +765,6 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   this->_objectptr->GetObj()->StartPaneDrag(pane_window, offset);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxRect, wxPoint, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxRect wxAuiManager::CalculateHintRect(wxWindow * pane_window, wxPoint & pt, wxPoint & offset)
@@ -801,8 +795,6 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   wxRect res =   this->_objectptr->GetObj()->CalculateHintRect(pane_window, pt, offset);
   return AMILabType<wxRect>::CreateVar(res);
 }
-*/
-/* The following types are missing: wxPoint, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiManager::DrawHintRect(wxWindow * pane_window, wxPoint & pt, wxPoint & offset)
@@ -832,8 +824,6 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   this->_objectptr->GetObj()->DrawHintRect(pane_window, pt, offset);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiManager::ShowHint(wxRect & rect)
@@ -856,7 +846,6 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   this->_objectptr->GetObj()->ShowHint(rect);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiManager::HideHint()
@@ -873,7 +862,6 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   this->_objectptr->GetObj()->HideHint();
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxFrame
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiManager::SetFrame(wxFrame * frame)
@@ -895,8 +883,6 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   this->_objectptr->GetObj()->SetFrame(frame);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxFrame
 
 //---------------------------------------------------
 //  Wrapping of wxFrame * wxAuiManager::GetFrame()
@@ -912,9 +898,9 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_GetFrame::CallMember( ParamList* _p)
 {
   wxFrame * res =   this->_objectptr->GetObj()->GetFrame();
-  return AMILabType<wxFrame>::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxFrame::CreateVar(res);
+  return res_var;
 }
-*/
 /* The following types are missing: wxAuiManagerEvent
 
 //---------------------------------------------------

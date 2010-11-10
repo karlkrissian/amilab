@@ -60,7 +60,7 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxAuiPaneInfo,"Wrapping of $wxAuiPaneInfo.");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxAuiPaneInfo2,"Wrapping of $wxAuiPaneInfo.");
+    ADD_CLASS_CONSTRUCTOR(wxAuiPaneInfo1,"Wrapping of $wxAuiPaneInfo.");
 
 
 
@@ -112,9 +112,7 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
     ADD_CLASS_METHOD(BestSize1,"")
     ADD_CLASS_METHOD(MinSize1,"")
     ADD_CLASS_METHOD(MaxSize1,"")
-/* The following types are missing: wxPoint
     ADD_CLASS_METHOD(FloatingPosition,"")
-*/
     ADD_CLASS_METHOD(FloatingPosition1,"")
     ADD_CLASS_METHOD(FloatingSize,"")
     ADD_CLASS_METHOD(FloatingSize1,"")
@@ -206,9 +204,7 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
       AddVar_BestSize1( this_ptr);
       AddVar_MinSize1( this_ptr);
       AddVar_MaxSize1( this_ptr);
-/* The following types are missing: wxPoint
       AddVar_FloatingPosition( this_ptr);
-*/
       AddVar_FloatingPosition1( this_ptr);
       AddVar_FloatingSize( this_ptr);
       AddVar_FloatingSize1( this_ptr);

@@ -59,8 +59,8 @@ wxStringSelectionParameter::wxStringSelectionParameter( wxWindow* parent, int* p
                         wxALIGN_LEFT );
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
-  DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this->_choice);
-  this->_choice->SetDropTarget(ChoiceTextImage);
+//   DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this->_choice);
+//   this->_choice->SetDropTarget(ChoiceTextImage);
   
   this->_choice->SetCallback((void*)wxStringSelectionParameter::OnEnumUpdate,(void*) this);
 

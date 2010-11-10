@@ -192,7 +192,7 @@ AMI_DEFINE_BASICTYPE(VarArray);
 #define AMI_DEFINE_BASICTYPE_NOCONSTRUCT(type) \
 	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
     \
-    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr)  \
     { \
       if (!var.get()) \
       {\

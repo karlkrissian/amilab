@@ -66,7 +66,10 @@ protected:
   /// Drag event: Initiate the drag from myTreeCtrl control.
 //  void OnBeginDrag(wxTreeEvent& event);
 //  void OnLeftDown(wxMouseEvent& event);
-  
+
+#if wxUSE_DRAG_AND_DROP
+    void OnBeginDrag( wxTreeEvent& event );
+#endif  
 /*
   void OnEraseBackground( wxEraseEvent& WXUNUSED(event) );
   void OnPaint( wxPaintEvent& event );

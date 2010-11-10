@@ -41,6 +41,8 @@
 #include "wrap_wxString.h"
 #include "wrap_wxFileName.h"
 #include "wrap_wxAuiPaneInfo.h"
+#include "wrap_wxRect.h"
+#include "wrap_wxPoint.h"
 #include "wrap_vtkLevelSets.h"
 
 #include "wrap_wxEditor.h"
@@ -133,7 +135,11 @@ void AddWrapWxWidgets()
   WrapClass_wxImage     ::AddVar_wxImage     ( amiobject->GetContext());
   WrapClass_wxHtmlWindow::AddVar_wxHtmlWindow( amiobject->GetContext());
   WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo(amiobject->GetContext());
-  WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo2(amiobject->GetContext());
+  WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo1(amiobject->GetContext());
+  WrapClass_wxRect       ::AddVar_wxRect(        amiobject->GetContext());
+  WrapClass_wxPoint      ::AddVar_wxPoint(       amiobject->GetContext());
+  WrapClass_wxPoint      ::AddVar_wxPoint1(       amiobject->GetContext());
+  WrapClass_wxPoint      ::AddVar_wxPoint2(       amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

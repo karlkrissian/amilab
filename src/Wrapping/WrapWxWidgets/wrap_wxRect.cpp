@@ -1,0 +1,1863 @@
+/**
+ * C++ Interface: wrap_wxRect
+ *
+ * Description: wrapping wxRect
+ * File generated automatically using CableSwig xml output and a python script
+ *
+ * Author: Karl Krissian \<krissian@dis.ulpgc.es\>, (C) 2010
+ *
+ * Copyright: See COPYING file that comes with this distribution
+ *
+ **/
+
+#include "wrap_wxRect.h"
+
+//#include "VarContexts.hpp"
+#include "wrapfunctions.hpp"
+#include "ami_class.h"
+#include "ami_object.h"
+#include "ami_function.h"
+
+// get all the required includes
+// #include "..."
+#include "wrap_wxRect.h"
+#include "wrap_wxPoint.h"
+#include "wrap_wxSize.h"
+
+
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxRect>::CreateVar( ParamList* p)
+{
+  WrapClass_wxRect::wrap_wxRect construct;
+  return construct.CallMember(p);
+}
+
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxRect);
+AMI_DEFINE_VARFROMSMTPTR(wxRect);
+
+//
+// static member for creating a variable from a pointer to wxRect
+//
+Variable<AMIObject>::ptr WrapClass_wxRect::CreateVar( wxRect* sp)
+{
+  boost::shared_ptr<wxRect> di_ptr(
+    sp,
+    wxwindow_nodeleter<wxRect>()); // deletion will be done by wxwidgets;
+  Variable<AMIObject>::ptr res = 
+    WrapClass<wxRect>::CreateVar(
+      new WrapClass_wxRect(di_ptr)
+    );
+  return res;
+}
+
+
+
+//---------------------------------------------------
+//  Wrapping of Constructor wxRect::wxRect(wxRect const & param0)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_wxRect1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'param0'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_wxRect1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* param0_ptr;
+  if (!get_val_ptr_param<wxRect>(param0_ptr,_p,_n,true,true)) ClassHelpAndReturn;
+  wxRect& param0 = *param0_ptr;
+  wxRect* _newobj = new wxRect(param0);
+  BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
+  return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... Constructor wxRect::wxRect(...)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_wxRect::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_wxRect::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxRect::wrap_wxRect1 m1;
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_wxRect2 m2;
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_wxRect3 m3;
+  res = m3.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_wxRect4 m4;
+  res = m4.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_wxRect5 m5;
+  res = m5.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_wxRect6 m6;
+  res = m6.CallMember(_p);
+  if (res.get()) return res;
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of Constructor wxRect::wxRect()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_wxRect2::SetParametersComments()
+{
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_wxRect2::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxRect* _newobj = new wxRect();
+  BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
+  return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of Constructor wxRect::wxRect(int xx, int yy, int ww, int hh)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_wxRect3::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'xx'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'yy'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'ww'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'hh'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_wxRect3::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>4) ClassHelpAndReturn;
+  int _n=0;
+  int xx;
+  if (!get_val_param<int>(xx,_p,_n)) ClassHelpAndReturn;
+  int yy;
+  if (!get_val_param<int>(yy,_p,_n)) ClassHelpAndReturn;
+  int ww;
+  if (!get_val_param<int>(ww,_p,_n)) ClassHelpAndReturn;
+  int hh;
+  if (!get_val_param<int>(hh,_p,_n)) ClassHelpAndReturn;
+  wxRect* _newobj = new wxRect(xx, yy, ww, hh);
+  BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
+  return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of Constructor wxRect::wxRect(wxPoint const & topLeft, wxPoint const & bottomRight)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_wxRect4::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'topLeft'")
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'bottomRight'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_wxRect4::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* topLeft_ptr;
+  if (!get_val_ptr_param<wxPoint>(topLeft_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& topLeft = *topLeft_ptr;
+  wxPoint* bottomRight_ptr;
+  if (!get_val_ptr_param<wxPoint>(bottomRight_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& bottomRight = *bottomRight_ptr;
+  wxRect* _newobj = new wxRect(topLeft, bottomRight);
+  BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
+  return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of Constructor wxRect::wxRect(wxPoint const & pt, wxSize const & size)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_wxRect5::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_wxRect5::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* pt_ptr;
+  if (!get_val_ptr_param<wxPoint>(pt_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& pt = *pt_ptr;
+  wxSize* size_ptr;
+  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
+  wxSize& size = *size_ptr;
+  wxRect* _newobj = new wxRect(pt, size);
+  BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
+  return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of Constructor wxRect::wxRect(wxSize const & size)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_wxRect6::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_wxRect6::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxSize* size_ptr;
+  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
+  wxSize& size = *size_ptr;
+  wxRect* _newobj = new wxRect(size);
+  BasicVariable::ptr res = WrapClass_wxRect::CreateVar(_newobj);
+  return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxRect::GetX()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetX::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetX::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  int res =   this->_objectptr->GetObj()->GetX();
+  return AMILabType<int>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetX(int xx)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetX::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'xx'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetX::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int xx;
+  if (!get_val_param<int>(xx,_p,_n)) ClassHelpAndReturn;
+  this->_objectptr->GetObj()->SetX(xx);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxRect::GetY()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetY::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetY::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  int res =   this->_objectptr->GetObj()->GetY();
+  return AMILabType<int>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetY(int yy)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetY::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'yy'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetY::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int yy;
+  if (!get_val_param<int>(yy,_p,_n)) ClassHelpAndReturn;
+  this->_objectptr->GetObj()->SetY(yy);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxRect::GetWidth()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetWidth::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetWidth::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  int res =   this->_objectptr->GetObj()->GetWidth();
+  return AMILabType<int>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetWidth(int w)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetWidth::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetWidth::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int w;
+  if (!get_val_param<int>(w,_p,_n)) ClassHelpAndReturn;
+  this->_objectptr->GetObj()->SetWidth(w);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxRect::GetHeight()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetHeight::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetHeight::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  int res =   this->_objectptr->GetObj()->GetHeight();
+  return AMILabType<int>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetHeight(int h)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetHeight::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetHeight::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int h;
+  if (!get_val_param<int>(h,_p,_n)) ClassHelpAndReturn;
+  this->_objectptr->GetObj()->SetHeight(h);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxPoint wxRect::GetPosition()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetPosition::SetParametersComments()
+{
+  return_comments="returning a variable of type wxPoint";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetPosition::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxPoint res =   this->_objectptr->GetObj()->GetPosition();
+  return AMILabType<wxPoint>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetPosition(wxPoint const & p)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetPosition::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'p'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetPosition::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* p_ptr;
+  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_ptr;
+  this->_objectptr->GetObj()->SetPosition(p);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxSize wxRect::GetSize()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetSize::SetParametersComments()
+{
+  return_comments="returning a variable of type wxSize";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetSize::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxSize res =   this->_objectptr->GetObj()->GetSize();
+  return AMILabType<wxSize>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetSize(wxSize const & s)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetSize::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 's'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetSize::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxSize* s_ptr;
+  if (!get_val_ptr_param<wxSize>(s_ptr,_p,_n)) ClassHelpAndReturn;
+  wxSize& s = *s_ptr;
+  this->_objectptr->GetObj()->SetSize(s);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::IsEmpty()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_IsEmpty::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_IsEmpty::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  bool res =   this->_objectptr->GetObj()->IsEmpty();
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxRect::GetLeft()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetLeft::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetLeft::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  int res =   this->_objectptr->GetObj()->GetLeft();
+  return AMILabType<int>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxRect::GetTop()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetTop::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetTop::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  int res =   this->_objectptr->GetObj()->GetTop();
+  return AMILabType<int>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxRect::GetBottom()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetBottom::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetBottom::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  int res =   this->_objectptr->GetObj()->GetBottom();
+  return AMILabType<int>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxRect::GetRight()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetRight::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetRight::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  int res =   this->_objectptr->GetObj()->GetRight();
+  return AMILabType<int>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetLeft(int left)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetLeft::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'left'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetLeft::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int left;
+  if (!get_val_param<int>(left,_p,_n)) ClassHelpAndReturn;
+  this->_objectptr->GetObj()->SetLeft(left);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetRight(int right)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetRight::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'right'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetRight::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int right;
+  if (!get_val_param<int>(right,_p,_n)) ClassHelpAndReturn;
+  this->_objectptr->GetObj()->SetRight(right);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetTop(int top)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetTop::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'top'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetTop::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int top;
+  if (!get_val_param<int>(top,_p,_n)) ClassHelpAndReturn;
+  this->_objectptr->GetObj()->SetTop(top);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetBottom(int bottom)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetBottom::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bottom'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetBottom::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int bottom;
+  if (!get_val_param<int>(bottom,_p,_n)) ClassHelpAndReturn;
+  this->_objectptr->GetObj()->SetBottom(bottom);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxPoint wxRect::GetTopLeft()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetTopLeft::SetParametersComments()
+{
+  return_comments="returning a variable of type wxPoint";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetTopLeft::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxPoint res =   this->_objectptr->GetObj()->GetTopLeft();
+  return AMILabType<wxPoint>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxPoint wxRect::GetLeftTop()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetLeftTop::SetParametersComments()
+{
+  return_comments="returning a variable of type wxPoint";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetLeftTop::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxPoint res =   this->_objectptr->GetObj()->GetLeftTop();
+  return AMILabType<wxPoint>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetTopLeft(wxPoint const & p)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetTopLeft::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'p'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetTopLeft::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* p_ptr;
+  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_ptr;
+  this->_objectptr->GetObj()->SetTopLeft(p);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetLeftTop(wxPoint const & p)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetLeftTop::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'p'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetLeftTop::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* p_ptr;
+  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_ptr;
+  this->_objectptr->GetObj()->SetLeftTop(p);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxPoint wxRect::GetBottomRight()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetBottomRight::SetParametersComments()
+{
+  return_comments="returning a variable of type wxPoint";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetBottomRight::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxPoint res =   this->_objectptr->GetObj()->GetBottomRight();
+  return AMILabType<wxPoint>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxPoint wxRect::GetRightBottom()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetRightBottom::SetParametersComments()
+{
+  return_comments="returning a variable of type wxPoint";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetRightBottom::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxPoint res =   this->_objectptr->GetObj()->GetRightBottom();
+  return AMILabType<wxPoint>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetBottomRight(wxPoint const & p)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetBottomRight::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'p'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetBottomRight::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* p_ptr;
+  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_ptr;
+  this->_objectptr->GetObj()->SetBottomRight(p);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetRightBottom(wxPoint const & p)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetRightBottom::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'p'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetRightBottom::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* p_ptr;
+  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_ptr;
+  this->_objectptr->GetObj()->SetRightBottom(p);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxPoint wxRect::GetTopRight()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetTopRight::SetParametersComments()
+{
+  return_comments="returning a variable of type wxPoint";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetTopRight::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxPoint res =   this->_objectptr->GetObj()->GetTopRight();
+  return AMILabType<wxPoint>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxPoint wxRect::GetRightTop()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetRightTop::SetParametersComments()
+{
+  return_comments="returning a variable of type wxPoint";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetRightTop::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxPoint res =   this->_objectptr->GetObj()->GetRightTop();
+  return AMILabType<wxPoint>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetTopRight(wxPoint const & p)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetTopRight::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'p'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetTopRight::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* p_ptr;
+  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_ptr;
+  this->_objectptr->GetObj()->SetTopRight(p);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetRightTop(wxPoint const & p)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetRightTop::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'p'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetRightTop::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* p_ptr;
+  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_ptr;
+  this->_objectptr->GetObj()->SetRightTop(p);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxPoint wxRect::GetBottomLeft()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetBottomLeft::SetParametersComments()
+{
+  return_comments="returning a variable of type wxPoint";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetBottomLeft::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxPoint res =   this->_objectptr->GetObj()->GetBottomLeft();
+  return AMILabType<wxPoint>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxPoint wxRect::GetLeftBottom()
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_GetLeftBottom::SetParametersComments()
+{
+  return_comments="returning a variable of type wxPoint";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_GetLeftBottom::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+  wxPoint res =   this->_objectptr->GetObj()->GetLeftBottom();
+  return AMILabType<wxPoint>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetBottomLeft(wxPoint const & p)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetBottomLeft::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'p'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetBottomLeft::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* p_ptr;
+  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_ptr;
+  this->_objectptr->GetObj()->SetBottomLeft(p);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::SetLeftBottom(wxPoint const & p)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_SetLeftBottom::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'p'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_SetLeftBottom::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* p_ptr;
+  if (!get_val_ptr_param<wxPoint>(p_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& p = *p_ptr;
+  this->_objectptr->GetObj()->SetLeftBottom(p);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::Inflate(wxCoord dx, wxCoord dy)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Inflate1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dx'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dy'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Inflate1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  int dx;
+  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  int dy;
+  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  wxRect & res =   this->_objectptr->GetObj()->Inflate(dx, dy);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxRect::Inflate(...)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Inflate::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Inflate::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxRect::wrap_Inflate1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Inflate2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Inflate3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Inflate4 m4(this->_objectptr);
+  res = m4.CallMember(_p);
+  if (res.get()) return res;
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::Inflate(wxSize const & d)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Inflate2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'd'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Inflate2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxSize* d_ptr;
+  if (!get_val_ptr_param<wxSize>(d_ptr,_p,_n)) ClassHelpAndReturn;
+  wxSize& d = *d_ptr;
+  wxRect & res =   this->_objectptr->GetObj()->Inflate(d);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::Inflate(wxCoord d)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Inflate3::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'd'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Inflate3::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int d;
+  if (!get_val_param<int>(d,_p,_n)) ClassHelpAndReturn;
+  wxRect & res =   this->_objectptr->GetObj()->Inflate(d);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect wxRect::Inflate(wxCoord dx, wxCoord dy)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Inflate4::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dx'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dy'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Inflate4::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  int dx;
+  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  int dy;
+  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  wxRect res =   this->_objectptr->GetObj()->Inflate(dx, dy);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::Deflate(wxCoord dx, wxCoord dy)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Deflate1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dx'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dy'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Deflate1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  int dx;
+  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  int dy;
+  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  wxRect & res =   this->_objectptr->GetObj()->Deflate(dx, dy);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxRect::Deflate(...)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Deflate::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Deflate::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxRect::wrap_Deflate1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Deflate2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Deflate3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Deflate4 m4(this->_objectptr);
+  res = m4.CallMember(_p);
+  if (res.get()) return res;
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::Deflate(wxSize const & d)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Deflate2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'd'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Deflate2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxSize* d_ptr;
+  if (!get_val_ptr_param<wxSize>(d_ptr,_p,_n)) ClassHelpAndReturn;
+  wxSize& d = *d_ptr;
+  wxRect & res =   this->_objectptr->GetObj()->Deflate(d);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::Deflate(wxCoord d)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Deflate3::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'd'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Deflate3::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  int d;
+  if (!get_val_param<int>(d,_p,_n)) ClassHelpAndReturn;
+  wxRect & res =   this->_objectptr->GetObj()->Deflate(d);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect wxRect::Deflate(wxCoord dx, wxCoord dy)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Deflate4::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dx'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dy'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Deflate4::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  int dx;
+  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  int dy;
+  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  wxRect res =   this->_objectptr->GetObj()->Deflate(dx, dy);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::Offset(wxCoord dx, wxCoord dy)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Offset1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dx'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dy'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Offset1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  int dx;
+  if (!get_val_param<int>(dx,_p,_n)) ClassHelpAndReturn;
+  int dy;
+  if (!get_val_param<int>(dy,_p,_n)) ClassHelpAndReturn;
+  this->_objectptr->GetObj()->Offset(dx, dy);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxRect::Offset(...)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Offset::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Offset::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxRect::wrap_Offset1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Offset2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxRect::Offset(wxPoint const & pt)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Offset2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Offset2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* pt_ptr;
+  if (!get_val_ptr_param<wxPoint>(pt_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& pt = *pt_ptr;
+  this->_objectptr->GetObj()->Offset(pt);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::Intersect(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Intersect1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Intersect1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  wxRect & res =   this->_objectptr->GetObj()->Intersect(rect);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxRect::Intersect(...)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Intersect::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Intersect::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxRect::wrap_Intersect1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Intersect2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect wxRect::Intersect(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Intersect2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Intersect2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  wxRect res =   this->_objectptr->GetObj()->Intersect(rect);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::Union(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Union1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Union1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  wxRect & res =   this->_objectptr->GetObj()->Union(rect);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxRect::Union(...)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Union::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Union::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxRect::wrap_Union1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Union2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect wxRect::Union(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Union2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Union2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  wxRect res =   this->_objectptr->GetObj()->Union(rect);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::Contains(int x, int y)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Contains1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Contains1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  int x;
+  if (!get_val_param<int>(x,_p,_n)) ClassHelpAndReturn;
+  int y;
+  if (!get_val_param<int>(y,_p,_n)) ClassHelpAndReturn;
+  bool res =   this->_objectptr->GetObj()->Contains(x, y);
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxRect::Contains(...)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Contains::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Contains::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxRect::wrap_Contains1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Contains2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Contains3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (res.get()) return res;
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::Contains(wxPoint const & pt)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Contains2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Contains2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* pt_ptr;
+  if (!get_val_ptr_param<wxPoint>(pt_ptr,_p,_n)) ClassHelpAndReturn;
+  wxPoint& pt = *pt_ptr;
+  bool res =   this->_objectptr->GetObj()->Contains(pt);
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::Contains(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Contains3::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Contains3::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  bool res =   this->_objectptr->GetObj()->Contains(rect);
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::Inside(int cx, int cy)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Inside1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'cx'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'cy'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Inside1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  int cx;
+  if (!get_val_param<int>(cx,_p,_n)) ClassHelpAndReturn;
+  int cy;
+  if (!get_val_param<int>(cy,_p,_n)) ClassHelpAndReturn;
+//  bool res =   this->_objectptr->GetObj()->Inside(cx, cy);
+//  int  res_int = ((res==true)?1:0);
+//  return AMILabType<int>::CreateVar(res_int);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxRect::Inside(...)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Inside::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Inside::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxRect::wrap_Inside1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Inside2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (res.get()) return res;
+  WrapClass_wxRect::wrap_Inside3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (res.get()) return res;
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::Inside(wxPoint const & pt)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Inside2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Inside2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxPoint* pt_ptr;
+  if (!get_val_ptr_param<wxPoint>(pt_ptr,_p,_n)) ClassHelpAndReturn;
+/*
+wxPoint& pt = *pt_ptr;
+  bool res =   this->_objectptr->GetObj()->Inside(pt);
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+  */
+  return BasicVariable::ptr();
+
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::Inside(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Inside3::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Inside3::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+/*  wxRect& rect = *rect_ptr;
+  bool res =   this->_objectptr->GetObj()->Inside(rect);
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+  */
+  return BasicVariable::ptr();
+
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::Intersects(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_Intersects::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_Intersects::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  bool res =   this->_objectptr->GetObj()->Intersects(rect);
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect wxRect::CentreIn(wxRect const & r, int dir)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_CentreIn::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'r'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dir'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_CentreIn::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* r_ptr;
+  if (!get_val_ptr_param<wxRect>(r_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& r = *r_ptr;
+  int dir;
+  if (!get_val_param<int>(dir,_p,_n)) ClassHelpAndReturn;
+  wxRect res =   this->_objectptr->GetObj()->CentreIn(r, dir);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect wxRect::CenterIn(wxRect const & r, int dir)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_CenterIn::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'r'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dir'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_CenterIn::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* r_ptr;
+  if (!get_val_ptr_param<wxRect>(r_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& r = *r_ptr;
+  int dir;
+  if (!get_val_param<int>(dir,_p,_n)) ClassHelpAndReturn;
+  wxRect res =   this->_objectptr->GetObj()->CenterIn(r, dir);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::=(wxRect const & param0)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_assign::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'param0'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_assign::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* param0_ptr;
+  if (!get_val_ptr_param<wxRect>(param0_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& param0 = *param0_ptr;
+  wxRect & res =   (*this->_objectptr->GetObj()) = (param0);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::==(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_equal::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_equal::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  bool res =   (*this->_objectptr->GetObj()) == (rect);
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxRect::!=(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_not_equal::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_not_equal::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  bool res =   (*this->_objectptr->GetObj()) != (rect);
+  int  res_int = ((res==true)?1:0);
+  return AMILabType<int>::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect wxRect::+(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_add::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_add::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  wxRect res =   (*this->_objectptr->GetObj()) + (rect);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxRect & wxRect::+=(wxRect const & rect)
+//---------------------------------------------------
+void WrapClass_wxRect::
+    wrap_add_assign::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
+  return_comments="returning a variable of type wxRect";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxRect::
+    wrap_add_assign::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+  wxRect* rect_ptr;
+  if (!get_val_ptr_param<wxRect>(rect_ptr,_p,_n)) ClassHelpAndReturn;
+  wxRect& rect = *rect_ptr;
+  wxRect & res =   (*this->_objectptr->GetObj()) += (rect);
+  return AMILabType<wxRect>::CreateVar(res);
+}
+

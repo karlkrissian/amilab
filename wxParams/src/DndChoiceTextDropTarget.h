@@ -25,12 +25,12 @@
 #include "wx/dnd.h"
 #include "wx/dataobj.h"
 #include <wx/string.h>
-#include "wx/choice.h"
+#include "wxEnumerationParameter.h"
 
 class DndChoiceTextDropTarget : public wxTextDropTarget
 {
 public:
-  DndChoiceTextDropTarget(wxChoice *pOwner) {
+  DndChoiceTextDropTarget(wxEnumerationParameter *pOwner) {
     m_pOwner = pOwner;
   }
 
@@ -39,7 +39,7 @@ public:
   virtual wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
 
 private:
-  wxChoice* m_pOwner;
+  wxEnumerationParameter* m_pOwner;
 };
 
 #endif // DNDCHOICETEXTDROPTARGET_H

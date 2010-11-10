@@ -122,7 +122,7 @@ bool get_val_param(T& arg, ParamList*p, int& num)
  * Function used to parse a variable of generic type in a list of parameters, and to give back a pointer to its value.
  */
 template<class T>
-bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required)
+bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required, bool noconstr)
 {
   if (!p) return false;
   // if the parameter number is too high, skip it (use default value)
@@ -137,7 +137,7 @@ bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required)
   }
   BasicVariable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
-    boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(temp);
+    boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(temp,noconstr);
     if (!val_ptr.get()) {
       FILE_ERROR(boost::format("Parameter %1% failed.") % num);
       return false;
