@@ -30,7 +30,7 @@ AMI_DECLARE_TYPE(wxAuiToolBar);
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
-    , public  WrapClass_wxControl
+    , public virtual WrapClass_wxControl
 {
   DEFINE_CLASS(WrapClass_wxAuiToolBar);
 

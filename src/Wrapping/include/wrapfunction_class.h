@@ -36,6 +36,7 @@ class wrap_##classname##methodname : public WrapClassMember { \
   public: \
     wrap_##classname##methodname(const classname::ptr& pp) : \
      _objectptr(pp) { \
+      Set_arg_failure(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -63,6 +64,7 @@ class wrap_##methodname : public WrapClassMember { \
   public: \
     wrap_##methodname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
+      Set_arg_failure(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -96,6 +98,7 @@ class wrap_Set##varname : public WrapClassMember { \
   public: \
     wrap_Set##varname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
+      Set_arg_failure(false);\
       ADDPARAMCOMMENT_TYPE(type,description_str); \
     } \
     BasicVariable::ptr CallMember(ParamList* p) { \
@@ -122,6 +125,7 @@ class wrap_Get##varname : public WrapClassMember { \
   public: \
     wrap_Get##varname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
+      Set_arg_failure(false);\
       return_comments = (boost::format("Returns a variable of type %1%.") % AMILabType<type>::name_as_string().c_str()).str(); \
     } \
     BasicVariable::ptr CallMember(ParamList*) { \
@@ -157,6 +161,7 @@ void AddVar_SetGet##varname(  _parentclass_ptr& pc) {\
 class wrap_##methodname : public WrapClassMember { \
   public: \
     wrap_##methodname() { \
+      Set_arg_failure(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -194,8 +199,10 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
   }
 
 // simple return with empty variable for a class member
-#define ClassReturnEmptyVar  \
-    return BasicVariable::ptr();
+#define ClassReturnEmptyVar  {\
+    Set_arg_failure(true);\
+    return BasicVariable::ptr();\
+    }
 
 /**
  * Add the comments for the next parameter for a wrapped class member.
@@ -349,6 +356,7 @@ class WrapClassMember {
     std::vector<std::string> paramtypes;
     std::string return_comments;
     std::string return_type;
+    bool arg_failure;
 
   public:
     virtual ~WrapClassMember() = 0;
@@ -360,6 +368,9 @@ class WrapClassMember {
      * Display the function help in an information dialog.
      */
     void ShowHelp();
+    
+    void Set_arg_failure(bool const & f) { arg_failure=f;}
+    bool Get_arg_failure() { return arg_failure;}
     virtual const std::string GetDescription() = 0;
     virtual const std::string GetFunctionName() = 0;
 };

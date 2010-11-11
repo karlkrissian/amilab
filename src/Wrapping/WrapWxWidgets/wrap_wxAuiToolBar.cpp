@@ -267,13 +267,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBar::
   BasicVariable::ptr res;
   WrapClass_wxAuiToolBar::wrap_AddTool1 m1(this->_objectptr);
   res = m1.CallMember(_p);
-  if (res.get()) return res;
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxAuiToolBar::wrap_AddTool2 m2(this->_objectptr);
   res = m2.CallMember(_p);
-  if (res.get()) return res;
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxAuiToolBar::wrap_AddTool3 m3(this->_objectptr);
   res = m3.CallMember(_p);
-  if (res.get()) return res;
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -882,13 +882,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBar::
   BasicVariable::ptr res;
   WrapClass_wxAuiToolBar::wrap_SetMargins1 m1(this->_objectptr);
   res = m1.CallMember(_p);
-  if (res.get()) return res;
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxAuiToolBar::wrap_SetMargins2 m2(this->_objectptr);
   res = m2.CallMember(_p);
-  if (res.get()) return res;
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxAuiToolBar::wrap_SetMargins3 m3(this->_objectptr);
   res = m3.CallMember(_p);
-  if (res.get()) return res;
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
