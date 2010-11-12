@@ -350,7 +350,7 @@ protected:
 
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0) && wxUSE_FILECTRL)
-  void OnFileCtrl( wxFileCtrlEvent& event );  
+  void OnFileCtrl( wxFileCtrlEvent& event );
 #endif
 ///@endcond
 

@@ -766,11 +766,11 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
   _var_dirctrl->GetTreeCtrl()->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
                                        wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
 
-  _var_book->AddPage(_var_dirctrl,wxT("DirCtrl"));
+  _var_book->AddPage(_var_dirctrl,wxT("Dir"));
 
 // @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,1) && (wxUSE_FILECTRL)) 
-  _var_book->AddPage(_var_fileCtrl,wxT("FileCtrl"));
+  _var_book->AddPage(_var_fileCtrl,wxT("File"));
 #endif
 // @endcond
 
