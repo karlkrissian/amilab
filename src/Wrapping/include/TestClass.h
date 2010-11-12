@@ -1,5 +1,6 @@
 
 #include <string>
+#include <iostream>
 
 #ifndef _TestClass_h_
 #define _TestClass_h_
@@ -23,6 +24,10 @@ class TestClass
     
     std::string GetComment() {
       return comment;
+    }
+    
+    void PrintComment() {
+      std::cout << "comment = " << comment << std::endl;
     }
 };
 

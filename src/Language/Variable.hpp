@@ -206,6 +206,21 @@ class AMILabType {
       return AMILabType<type>::CreateVar(new type(val));\
     } 
 
+// Abstract classes
+#define AMI_DEFINE_WRAPPEDTYPE_ABSTRACT(type) \
+    AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    { \
+      boost::shared_ptr<type> obj_ptr(val);\
+      return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
+    } \
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return BasicVariable::ptr();\
+    } 
+
 #define AMI_DEFINE_VARFROMSMTPTR(type) \
   BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr(boost::shared_ptr<type>& obj_ptr) \
   { \

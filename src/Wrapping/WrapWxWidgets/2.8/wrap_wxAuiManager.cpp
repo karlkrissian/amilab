@@ -27,9 +27,7 @@
 #include "wrap_wxString.h"
 #include "wrap_wxPoint.h"
 #include "wrap_wxRect.h"
-#include "wrap_wxFrame.h"
 #include "wrap_wxClassInfo.h"
-#include "wrap_wxObject.h"
 
 
 //
@@ -64,13 +62,13 @@ Variable<AMIObject>::ptr WrapClass_wxAuiManager::CreateVar( wxAuiManager* sp)
 
 
 //---------------------------------------------------
-//  Wrapping of Constructor wxAuiManager::wxAuiManager(wxWindow * managed_wnd, unsigned int flags)
+//  Wrapping of Constructor wxAuiManager::wxAuiManager(wxWindow * managed_wnd = 0l, unsigned int flags = wxAUI_MGR_DEFAULT)
 //---------------------------------------------------
 void WrapClass_wxAuiManager::
     wrap_wxAuiManager::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'managed_wnd'")
-  ADDPARAMCOMMENT_TYPE( long, "parameter named 'flags'")
+  ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'managed_wnd' (def:0l)")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'flags' (def:wxAUI_MGR_DEFAULT)")
 }
 
 //---------------------------------------------------
@@ -80,12 +78,16 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxWindow> managed_wnd_smtptr;
   if (!get_val_smtptr_param<wxWindow>(managed_wnd_smtptr,_p,_n)) ClassHelpAndReturn;
   wxWindow* managed_wnd = managed_wnd_smtptr.get();
-  long flags_long;
+
+  //unsigned int val=wxAUI_MGR_DEFAULT;
+  long flags_long = boost::numeric_cast<long>((unsigned int)wxAUI_MGR_DEFAULT);;
   if (!get_val_param<long>(flags_long,_p,_n)) ClassHelpAndReturn;
   unsigned int flags = boost::numeric_cast<unsigned int>(flags_long);
+
   wxAuiManager* _newobj = new wxAuiManager(managed_wnd, flags);
   BasicVariable::ptr res = WrapClass_wxAuiManager::CreateVar(_newobj);
   return res;
@@ -104,6 +106,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_UnInit::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->UnInit();
   return BasicVariable::ptr();
 }
@@ -124,9 +127,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   long flags_long;
   if (!get_val_param<long>(flags_long,_p,_n)) ClassHelpAndReturn;
   unsigned int flags = boost::numeric_cast<unsigned int>(flags_long);
+
   this->_objectptr->GetObj()->SetFlags(flags);
   return BasicVariable::ptr();
 }
@@ -145,8 +150,9 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_GetFlags::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   unsigned int res =   this->_objectptr->GetObj()->GetFlags();
-  long  res_long = boost::numeric_cast<long>(res);
+  long res_long = boost::numeric_cast<long>(res);
   return AMILabType<long>::CreateVar(res_long);
 }
 
@@ -166,9 +172,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxWindow> managed_wnd_smtptr;
   if (!get_val_smtptr_param<wxWindow>(managed_wnd_smtptr,_p,_n)) ClassHelpAndReturn;
   wxWindow* managed_wnd = managed_wnd_smtptr.get();
+
   this->_objectptr->GetObj()->SetManagedWindow(managed_wnd);
   return BasicVariable::ptr();
 }
@@ -187,6 +195,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_GetManagedWindow::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxWindow * res =   this->_objectptr->GetObj()->GetManagedWindow();
   BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
   return res_var;
@@ -209,9 +218,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxWindow> window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(window_smtptr,_p,_n)) ClassHelpAndReturn;
   wxWindow* window = window_smtptr.get();
+
   wxAuiManager * res =   this->_objectptr->GetObj()->GetManager(window);
   BasicVariable::ptr res_var = WrapClass_wxAuiManager::CreateVar(res);
   return res_var;
@@ -234,9 +245,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxAuiDockArt> art_provider_smtptr;
   if (!get_val_smtptr_param<wxAuiDockArt>(art_provider_smtptr,_p,_n)) ClassHelpAndReturn;
   wxAuiDockArt* art_provider = art_provider_smtptr.get();
+
   this->_objectptr->GetObj()->SetArtProvider(art_provider);
   return BasicVariable::ptr();
 }
@@ -257,6 +270,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_GetArtProvider::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxAuiDockArt * res =   this->_objectptr->GetObj()->GetArtProvider();
   return AMILabType<wxAuiDockArt>::CreateVar(res);
 }
@@ -279,9 +293,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
+
   boost::shared_ptr<wxWindow> window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(window_smtptr,_p,_n)) ClassReturnEmptyVar;
   wxWindow* window = window_smtptr.get();
+
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->GetPane(window);
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -300,10 +316,10 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   BasicVariable::ptr res;
   WrapClass_wxAuiManager::wrap_GetPane1 m1(this->_objectptr);
   res = m1.CallMember(_p);
-  if (res.get()) return res;
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxAuiManager::wrap_GetPane2 m2(this->_objectptr);
   res = m2.CallMember(_p);
-  if (res.get()) return res;
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -324,9 +340,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
+
   boost::shared_ptr<wxString> name_smtptr;
   if (!get_val_smtptr_param<wxString>(name_smtptr,_p,_n)) ClassReturnEmptyVar;
-  wxString& name = *name_smtptr;
+  wxString const & name = *name_smtptr;
+
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->GetPane(name);
   return AMILabType<wxAuiPaneInfo>::CreateVar(res);
 }
@@ -346,6 +364,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_GetAllPanes::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxAuiPaneInfoArray & res =   this->_objectptr->GetObj()->GetAllPanes();
   return AMILabType<wxAuiPaneInfoArray>::CreateVar(res);
 }
@@ -369,14 +388,17 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
+
   boost::shared_ptr<wxWindow> window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(window_smtptr,_p,_n)) ClassReturnEmptyVar;
   wxWindow* window = window_smtptr.get();
+
   boost::shared_ptr<wxAuiPaneInfo> pane_info_smtptr;
   if (!get_val_smtptr_param<wxAuiPaneInfo>(pane_info_smtptr,_p,_n)) ClassReturnEmptyVar;
-  wxAuiPaneInfo& pane_info = *pane_info_smtptr;
+  wxAuiPaneInfo const & pane_info = *pane_info_smtptr;
+
   bool res =   this->_objectptr->GetObj()->AddPane(window, pane_info);
-  int  res_int = ((res==true)?1:0);
+  int res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
 }
 
@@ -394,13 +416,13 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   BasicVariable::ptr res;
   WrapClass_wxAuiManager::wrap_AddPane1 m1(this->_objectptr);
   res = m1.CallMember(_p);
-  if (res.get()) return res;
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxAuiManager::wrap_AddPane2 m2(this->_objectptr);
   res = m2.CallMember(_p);
-  if (res.get()) return res;
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxAuiManager::wrap_AddPane3 m3(this->_objectptr);
   res = m3.CallMember(_p);
-  if (res.get()) return res;
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -423,29 +445,33 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
+
   boost::shared_ptr<wxWindow> window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(window_smtptr,_p,_n)) ClassReturnEmptyVar;
   wxWindow* window = window_smtptr.get();
+
   boost::shared_ptr<wxAuiPaneInfo> pane_info_smtptr;
   if (!get_val_smtptr_param<wxAuiPaneInfo>(pane_info_smtptr,_p,_n)) ClassReturnEmptyVar;
-  wxAuiPaneInfo& pane_info = *pane_info_smtptr;
+  wxAuiPaneInfo const & pane_info = *pane_info_smtptr;
+
   boost::shared_ptr<wxPoint> drop_pos_smtptr;
   if (!get_val_smtptr_param<wxPoint>(drop_pos_smtptr,_p,_n)) ClassReturnEmptyVar;
-  wxPoint& drop_pos = *drop_pos_smtptr;
+  wxPoint const & drop_pos = *drop_pos_smtptr;
+
   bool res =   this->_objectptr->GetObj()->AddPane(window, pane_info, drop_pos);
-  int  res_int = ((res==true)?1:0);
+  int res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxAuiManager::AddPane(wxWindow * window, int direction, wxString const & caption)
+//  Wrapping of bool wxAuiManager::AddPane(wxWindow * window, int direction = wxLEFT, wxString const & caption = wxEmptyString)
 //---------------------------------------------------
 void WrapClass_wxAuiManager::
     wrap_AddPane3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'direction'")
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'caption'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'direction' (def:wxLEFT)")
+  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'caption' (def:wxEmptyString)")
   return_comments="returning a variable of type int";
 }
 
@@ -456,28 +482,35 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
+
   boost::shared_ptr<wxWindow> window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(window_smtptr,_p,_n)) ClassReturnEmptyVar;
   wxWindow* window = window_smtptr.get();
-  int direction;
+
+  int direction = wxLEFT;
   if (!get_val_param<int>(direction,_p,_n)) ClassReturnEmptyVar;
+
   boost::shared_ptr<wxString> caption_smtptr;
-  if (!get_val_smtptr_param<wxString>(caption_smtptr,_p,_n)) ClassReturnEmptyVar;
-  wxString& caption = *caption_smtptr;
+  if (!get_val_smtptr_param<wxString>(caption_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  // Setting default value if no value is returned
+  wxString const & caption = (caption_smtptr.get()?
+    (wxString const &) (*caption_smtptr):
+    (wxString const &) wxEmptyString);
+
   bool res =   this->_objectptr->GetObj()->AddPane(window, direction, caption);
-  int  res_int = ((res==true)?1:0);
+  int res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxAuiManager::InsertPane(wxWindow * window, wxAuiPaneInfo const & insert_location, int insert_level)
+//  Wrapping of bool wxAuiManager::InsertPane(wxWindow * window, wxAuiPaneInfo const & insert_location, int insert_level = wxAUI_INSERT_PANE)
 //---------------------------------------------------
 void WrapClass_wxAuiManager::
     wrap_InsertPane::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
   ADDPARAMCOMMENT_TYPE( wxAuiPaneInfo, "parameter named 'insert_location'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'insert_level'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'insert_level' (def:wxAUI_INSERT_PANE)")
   return_comments="returning a variable of type int";
 }
 
@@ -488,16 +521,20 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxWindow> window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(window_smtptr,_p,_n)) ClassHelpAndReturn;
   wxWindow* window = window_smtptr.get();
+
   boost::shared_ptr<wxAuiPaneInfo> insert_location_smtptr;
   if (!get_val_smtptr_param<wxAuiPaneInfo>(insert_location_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo& insert_location = *insert_location_smtptr;
-  int insert_level;
+  wxAuiPaneInfo const & insert_location = *insert_location_smtptr;
+
+  int insert_level = wxAUI_INSERT_PANE;
   if (!get_val_param<int>(insert_level,_p,_n)) ClassHelpAndReturn;
+
   bool res =   this->_objectptr->GetObj()->InsertPane(window, insert_location, insert_level);
-  int  res_int = ((res==true)?1:0);
+  int res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
 }
 
@@ -518,11 +555,13 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxWindow> window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(window_smtptr,_p,_n)) ClassHelpAndReturn;
   wxWindow* window = window_smtptr.get();
+
   bool res =   this->_objectptr->GetObj()->DetachPane(window);
-  int  res_int = ((res==true)?1:0);
+  int res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
 }
 
@@ -539,6 +578,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_Update::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->Update();
   return BasicVariable::ptr();
 }
@@ -560,9 +600,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxAuiPaneInfo> pane_smtptr;
   if (!get_val_smtptr_param<wxAuiPaneInfo>(pane_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo& pane = *pane_smtptr;
+  wxAuiPaneInfo & pane = *pane_smtptr;
+
   wxString res =   this->_objectptr->GetObj()->SavePaneInfo(pane);
   return AMILabType<wxString>::CreateVar(res);
 }
@@ -584,11 +626,14 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
+
   wxString pane_part;
   if (!get_val_param<wxString>(pane_part,_p,_n)) ClassHelpAndReturn;
+
   boost::shared_ptr<wxAuiPaneInfo> pane_smtptr;
   if (!get_val_smtptr_param<wxAuiPaneInfo>(pane_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo& pane = *pane_smtptr;
+  wxAuiPaneInfo & pane = *pane_smtptr;
+
   this->_objectptr->GetObj()->LoadPaneInfo(pane_part, pane);
   return BasicVariable::ptr();
 }
@@ -607,18 +652,19 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_SavePerspective::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxString res =   this->_objectptr->GetObj()->SavePerspective();
   return AMILabType<wxString>::CreateVar(res);
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxAuiManager::LoadPerspective(wxString const & perspective, bool update)
+//  Wrapping of bool wxAuiManager::LoadPerspective(wxString const & perspective, bool update = true)
 //---------------------------------------------------
 void WrapClass_wxAuiManager::
     wrap_LoadPerspective::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'perspective'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'update'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'update' (def:true)")
   return_comments="returning a variable of type int";
 }
 
@@ -629,14 +675,17 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxString> perspective_smtptr;
   if (!get_val_smtptr_param<wxString>(perspective_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxString& perspective = *perspective_smtptr;
-  int update_int;
+  wxString const & perspective = *perspective_smtptr;
+
+  int update_int = ((true==true)?1:0);;
   if (!get_val_param<int>(update_int,_p,_n)) ClassHelpAndReturn;
   bool update = (bool) (update_int>0.5);
+
   bool res =   this->_objectptr->GetObj()->LoadPerspective(perspective, update);
-  int  res_int = ((res==true)?1:0);
+  int res_int = ((res==true)?1:0);
   return AMILabType<int>::CreateVar(res_int);
 }
 
@@ -657,10 +706,13 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
+
   double width_pct;
   if (!get_val_param<double>(width_pct,_p,_n)) ClassHelpAndReturn;
+
   double height_pct;
   if (!get_val_param<double>(height_pct,_p,_n)) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->SetDockSizeConstraint(width_pct, height_pct);
   return BasicVariable::ptr();
 }
@@ -682,12 +734,15 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<double> width_pct_smtptr;
   if (!get_val_smtptr_param<double>(width_pct_smtptr,_p,_n)) ClassHelpAndReturn;
   double* width_pct = width_pct_smtptr.get();
+
   boost::shared_ptr<double> height_pct_smtptr;
   if (!get_val_smtptr_param<double>(height_pct_smtptr,_p,_n)) ClassHelpAndReturn;
   double* height_pct = height_pct_smtptr.get();
+
   this->_objectptr->GetObj()->GetDockSizeConstraint(width_pct, height_pct);
   return BasicVariable::ptr();
 }
@@ -708,9 +763,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxAuiPaneInfo> pane_info_smtptr;
   if (!get_val_smtptr_param<wxAuiPaneInfo>(pane_info_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo& pane_info = *pane_info_smtptr;
+  wxAuiPaneInfo & pane_info = *pane_info_smtptr;
+
   this->_objectptr->GetObj()->ClosePane(pane_info);
   return BasicVariable::ptr();
 }
@@ -731,9 +788,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxAuiPaneInfo> pane_info_smtptr;
   if (!get_val_smtptr_param<wxAuiPaneInfo>(pane_info_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo& pane_info = *pane_info_smtptr;
+  wxAuiPaneInfo & pane_info = *pane_info_smtptr;
+
   this->_objectptr->GetObj()->MaximizePane(pane_info);
   return BasicVariable::ptr();
 }
@@ -754,9 +813,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxAuiPaneInfo> pane_info_smtptr;
   if (!get_val_smtptr_param<wxAuiPaneInfo>(pane_info_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo& pane_info = *pane_info_smtptr;
+  wxAuiPaneInfo & pane_info = *pane_info_smtptr;
+
   this->_objectptr->GetObj()->RestorePane(pane_info);
   return BasicVariable::ptr();
 }
@@ -774,6 +835,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_RestoreMaximizedPane::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->RestoreMaximizedPane();
   return BasicVariable::ptr();
 }
@@ -797,12 +859,15 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxWindow> parent_smtptr;
   if (!get_val_smtptr_param<wxWindow>(parent_smtptr,_p,_n)) ClassHelpAndReturn;
   wxWindow* parent = parent_smtptr.get();
+
   boost::shared_ptr<wxAuiPaneInfo> p_smtptr;
   if (!get_val_smtptr_param<wxAuiPaneInfo>(p_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiPaneInfo& p = *p_smtptr;
+  wxAuiPaneInfo const & p = *p_smtptr;
+
   wxAuiFloatingFrame * res =   this->_objectptr->GetObj()->CreateFloatingFrame(parent, p);
   return AMILabType<wxAuiFloatingFrame>::CreateVar(res);
 }
@@ -825,12 +890,15 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxWindow> pane_window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(pane_window_smtptr,_p,_n)) ClassHelpAndReturn;
   wxWindow* pane_window = pane_window_smtptr.get();
+
   boost::shared_ptr<wxPoint> offset_smtptr;
   if (!get_val_smtptr_param<wxPoint>(offset_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& offset = *offset_smtptr;
+  wxPoint const & offset = *offset_smtptr;
+
   this->_objectptr->GetObj()->StartPaneDrag(pane_window, offset);
   return BasicVariable::ptr();
 }
@@ -854,15 +922,19 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxWindow> pane_window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(pane_window_smtptr,_p,_n)) ClassHelpAndReturn;
   wxWindow* pane_window = pane_window_smtptr.get();
+
   boost::shared_ptr<wxPoint> pt_smtptr;
   if (!get_val_smtptr_param<wxPoint>(pt_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& pt = *pt_smtptr;
+  wxPoint const & pt = *pt_smtptr;
+
   boost::shared_ptr<wxPoint> offset_smtptr;
   if (!get_val_smtptr_param<wxPoint>(offset_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& offset = *offset_smtptr;
+  wxPoint const & offset = *offset_smtptr;
+
   wxRect res =   this->_objectptr->GetObj()->CalculateHintRect(pane_window, pt, offset);
   return AMILabType<wxRect>::CreateVar(res);
 }
@@ -885,15 +957,19 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxWindow> pane_window_smtptr;
   if (!get_val_smtptr_param<wxWindow>(pane_window_smtptr,_p,_n)) ClassHelpAndReturn;
   wxWindow* pane_window = pane_window_smtptr.get();
+
   boost::shared_ptr<wxPoint> pt_smtptr;
   if (!get_val_smtptr_param<wxPoint>(pt_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& pt = *pt_smtptr;
+  wxPoint const & pt = *pt_smtptr;
+
   boost::shared_ptr<wxPoint> offset_smtptr;
   if (!get_val_smtptr_param<wxPoint>(offset_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& offset = *offset_smtptr;
+  wxPoint const & offset = *offset_smtptr;
+
   this->_objectptr->GetObj()->DrawHintRect(pane_window, pt, offset);
   return BasicVariable::ptr();
 }
@@ -914,9 +990,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxRect> rect_smtptr;
   if (!get_val_smtptr_param<wxRect>(rect_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxRect& rect = *rect_smtptr;
+  wxRect const & rect = *rect_smtptr;
+
   this->_objectptr->GetObj()->ShowHint(rect);
   return BasicVariable::ptr();
 }
@@ -934,50 +1012,9 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_HideHint::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->HideHint();
   return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of void wxAuiManager::SetFrame(wxFrame * frame)
-//---------------------------------------------------
-void WrapClass_wxAuiManager::
-    wrap_SetFrame::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxFrame, "parameter named 'frame'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiManager::
-    wrap_SetFrame::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-  boost::shared_ptr<wxFrame> frame_smtptr;
-  if (!get_val_smtptr_param<wxFrame>(frame_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxFrame* frame = frame_smtptr.get();
-  this->_objectptr->GetObj()->SetFrame(frame);
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of wxFrame * wxAuiManager::GetFrame()
-//---------------------------------------------------
-void WrapClass_wxAuiManager::
-    wrap_GetFrame::SetParametersComments()
-{
-  return_comments="returning a variable of type wxFrame";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiManager::
-    wrap_GetFrame::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-  wxFrame * res =   this->_objectptr->GetObj()->GetFrame();
-  BasicVariable::ptr res_var = WrapClass_wxFrame::CreateVar(res);
-  return res_var;
 }
 /* The following types are missing: wxAuiManagerEvent
 
@@ -997,9 +1034,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxAuiManagerEvent> evt_smtptr;
   if (!get_val_smtptr_param<wxAuiManagerEvent>(evt_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiManagerEvent& evt = *evt_smtptr;
+  wxAuiManagerEvent & evt = *evt_smtptr;
+
   this->_objectptr->GetObj()->OnRender(evt);
   return BasicVariable::ptr();
 }
@@ -1022,9 +1061,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   boost::shared_ptr<wxAuiManagerEvent> evt_smtptr;
   if (!get_val_smtptr_param<wxAuiManagerEvent>(evt_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiManagerEvent& evt = *evt_smtptr;
+  wxAuiManagerEvent & evt = *evt_smtptr;
+
   this->_objectptr->GetObj()->OnPaneButton(evt);
   return BasicVariable::ptr();
 }
@@ -1044,28 +1085,9 @@ BasicVariable::ptr WrapClass_wxAuiManager::
     wrap_GetClassInfo::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
   BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
   return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxObject * wxAuiManager::wxCreateObject()
-//---------------------------------------------------
-void WrapClass_wxAuiManager::
-    wrap_wxCreateObject::SetParametersComments()
-{
-  return_comments="returning a variable of type wxObject";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxAuiManager::
-    wrap_wxCreateObject::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-/*  wxObject * res =   this->_objectptr->GetObj()->wxCreateObject();
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
-  return res_var;*/
-return BasicVariable::ptr();
 }
 

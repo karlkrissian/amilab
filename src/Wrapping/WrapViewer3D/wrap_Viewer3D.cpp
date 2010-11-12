@@ -103,13 +103,13 @@ BasicVariable::ptr  WrapClass_Viewer3D::
 //  reference
 //---------------------------------------------------
 void WrapClass_Viewer3D::
-      wrap_reference::SetParametersComments() 
+      wrap___reference__::SetParametersComments() 
 {
   ADDPARAMCOMMENT("New reference variable as parameter for processing.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_Viewer3D::
-      wrap_reference::CallMember( ParamList* p)
+      wrap___reference__::CallMember( ParamList* p)
 {
   Viewer3D::ptr sdraw(this->_objectptr->_obj);
   if (p) {

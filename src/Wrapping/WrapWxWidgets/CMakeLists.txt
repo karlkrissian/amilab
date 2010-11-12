@@ -8,69 +8,29 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/AMILab
+  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})
 
+
+file(GLOB wx_HDRS  "${AMI_WXWIDGETS_VERSION}/*.h"  )
+file(GLOB wx_SRCS   "${AMI_WXWIDGETS_VERSION}/*.cpp")
+
+
 SET(  WrapWxWidgets_SRCS
   wrap_wxsamples.cpp
   wrap_wxfunctions.cpp
-  wrap_wxWindow.cpp
-  wrap_wxHtmlWindow.cpp
-  wrap_wxSizerItem.cpp
-  wrap_wxSize.cpp
-  wrap_wxColour.cpp
-  wrap_wxImage.cpp
-  wrap_wxBitmap.cpp
-  wrap_wxString.cpp
-  wrap_wxFileName.cpp
-  wrap_wxSizer.cpp
-  wrap_wxBoxSizer.cpp
-  wrap_wxAuiManager.cpp
-  wrap_wxAuiPaneInfo.cpp
-  wrap_wxAuiToolBar.cpp
-  wrap_wxAuiToolBarItem.cpp
-  wrap_wxAuiToolBarItemArray.cpp
-  wrap_wxAuiToolBarArt.cpp
-  wrap_wxPoint.cpp
-  wrap_wxFont.cpp
-  wrap_wxObject.cpp
-  wrap_wxControl.cpp
-  wrap_wxControlBase.cpp
-  wrap_wxRect.cpp
-  wrap_wxClassInfo.cpp
-  wrap_wxFrame.cpp
+  ${wx_SRCS}
 )
+
 
 SET(WrapWxWidgets_HDRS
   ../include/wrap_wxsamples.h
   ../include/wrap_wxfunctions.h
-  ../include/wrap_wxWindow.h
-  ../include/wrap_wxHtmlWindow.h
-  ../include/wrap_wxSizerItem.h
-  ../include/wrap_wxSize.h
-  ../include/wrap_wxColour.h
-  ../include/wrap_wxImage.h
-  ../include/wrap_wxBitmap.h
-  ../include/wrap_wxString.h
-  ../include/wrap_wxFileName.h
-  ../include/wrap_wxSizer.h
-  ../include/wrap_wxBoxSizer.h
-  ../include/wrap_wxAuiManager.h
-  ../include/wrap_wxAuiPaneInfo.h
-  ../include/wrap_wxAuiToolBar.h
-  ../include/wrap_wxAuiToolBarItem.h
-  ../include/wrap_wxAuiToolBarItemArray.h
-  ../include/wrap_wxAuiToolBarArt.h
-  ../include/wrap_wxPoint.h
-  ../include/wrap_wxFont.h
-  ../include/wrap_wxObject.h
-  ../include/wrap_wxControl.h
-  ../include/wrap_wxControlBase.h
-  ../include/wrap_wxRect.h
-  ../include/wrap_wxClassInfo.h
-  ../include/wrap_wxFrame.h
+  ${wx_HDRS}
 )
+
 
 SET(WrapWxWidgets_SRCS
      ${WrapWxWidgets_SRCS}

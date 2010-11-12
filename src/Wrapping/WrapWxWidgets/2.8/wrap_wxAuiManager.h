@@ -110,8 +110,6 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
     ADD_CLASS_METHOD(DrawHintRect,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#drawhintrect")
     ADD_CLASS_METHOD(ShowHint,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#showhint")
     ADD_CLASS_METHOD(HideHint,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#hidehint")
-    ADD_CLASS_METHOD(SetFrame,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#setframe")
-    ADD_CLASS_METHOD(GetFrame,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getframe")
 /* The following types are missing: wxAuiManagerEvent
     ADD_CLASS_METHOD(OnRender,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#onrender")
 */
@@ -119,7 +117,6 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
     ADD_CLASS_METHOD(OnPaneButton,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#onpanebutton")
 */
     ADD_CLASS_METHOD(GetClassInfo,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getclassinfo")
-    ADD_CLASS_METHOD(wxCreateObject,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#wxcreateobject")
 
 
 
@@ -127,7 +124,6 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
 
     void AddMethods(WrapClass<wxAuiManager>::ptr this_ptr )
     {
-      // here inheritence
       /*
       // Add members from wxEvtHandler
       WrapClass_wxEvtHandler::ptr parent_wxEvtHandler(        boost::dynamic_pointer_cast<WrapClass_wxEvtHandler>(this_ptr));
@@ -137,7 +133,7 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
 
       // check that the method name is not a token
       
-       // Adding standard methods 
+      // Adding standard methods 
       AddVar_UnInit( this_ptr);
       AddVar_SetFlags( this_ptr);
       AddVar_GetFlags( this_ptr);
@@ -181,8 +177,6 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
       AddVar_DrawHintRect( this_ptr);
       AddVar_ShowHint( this_ptr);
       AddVar_HideHint( this_ptr);
-      AddVar_SetFrame( this_ptr);
-      AddVar_GetFrame( this_ptr);
 /* The following types are missing: wxAuiManagerEvent
       AddVar_OnRender( this_ptr);
 */
@@ -190,9 +184,10 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
       AddVar_OnPaneButton( this_ptr);
 */
       AddVar_GetClassInfo( this_ptr);
-      AddVar_wxCreateObject( this_ptr);
 
 
+
+      
     };
 };
 

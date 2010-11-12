@@ -115,13 +115,13 @@ BasicVariable::ptr WrapClass_DessinImage::
 //  reference
 //---------------------------------------------------
 void WrapClass_DessinImage::
-      wrap_reference::SetParametersComments() 
+      wrap___reference__::SetParametersComments() 
 {
   ADDPARAMCOMMENT("New reference variable as parameter for processing.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
-      wrap_reference::CallMember( ParamList* p)
+      wrap___reference__::CallMember( ParamList* p)
 {
   DessinImage::ptr di(this->_objectptr->_obj);
   if (p) {

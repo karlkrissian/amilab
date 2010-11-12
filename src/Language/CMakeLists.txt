@@ -8,6 +8,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/include
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
   ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/wxParams

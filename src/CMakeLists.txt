@@ -323,6 +323,8 @@ FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
 FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net )
 
+SET(AMI_WXWIDGETS_VERSION "2.8" CACHE STRING "set the wxwidgets version: 2.8 or 2.9" )
+
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
 FIND_PATH(GLEXT_INCLUDE_DIR GL/glext.h )
