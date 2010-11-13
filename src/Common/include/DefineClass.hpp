@@ -117,8 +117,7 @@ using namespace MyNS_ForOutput;
 #ifdef  _MSC_VER
   #define AMI_DLLEXPORT __declspec( dllexport )
 #else 
-  #define AMI_DLLEXPORT 
+  #define AMI_DLLEXPORT
 #endif
-
 
 #endif // _DefineClass_hpp_

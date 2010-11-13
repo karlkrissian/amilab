@@ -87,6 +87,8 @@ class wxStcFrame;
 #include "DefineClass.hpp"
 #include "wx/aui/aui.h"
 
+#include "PluginManager.h"
+
 class CustomStatusBar : public wxStatusBar
 {
   public:
@@ -158,6 +160,8 @@ public:
 
   void OnQuit ( wxCommandEvent& event );
   void OnClose ( wxCloseEvent& event );
+
+  void OnPluginAbout ( wxCommandEvent& event );
 
 /*
   void OnInternalIdle();
@@ -248,6 +252,7 @@ protected:
   wxMenu *menuNoiseReduction;
   wxMenu *menuVisualization;
   wxMenu *menuSyntheticImages;
+  wxMenu *menuPlugin;  
 
   int usermenu_id;
   std::map<int,std::string> usermenu_scripts; // Scripts added to the menu by the user
@@ -311,6 +316,8 @@ protected:
   wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
 #endif
 /// @endcond
+
+  PluginManager _plugin_manager;
 
 //  wxTreeItemId _vartree_images;
 //  wxTreeItemId _vartree_surfaces;

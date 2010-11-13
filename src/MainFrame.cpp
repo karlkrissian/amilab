@@ -103,6 +103,8 @@ enum
     wxID_HelpForward,
 
     wxID_ProgressBar,
+
+    ID_PLUGIN_ABOUT,
 };
 
 enum {
@@ -138,6 +140,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(ID_Quit,              MainFrame::OnQuit)
 
     EVT_MENU(ID_View_Reset,        MainFrame::OnViewReset)
+
+    EVT_MENU(ID_PLUGIN_ABOUT, MainFrame::OnPluginAbout)
 
     EVT_CLOSE(MainFrame::OnClose)
 
@@ -235,6 +239,15 @@ void CustomStatusBar::Reposition()
 }
 
 //-------------------------------------------------------
+void  MainFrame::OnPluginAbout ( wxCommandEvent& event )
+{
+  if (_plugin_manager.LoadPlugins("/home/roncali/proyectos/amilab/branch-amilab/build/debug/Plugins/AboutBox/libAboutBoxPluginExample.so"))
+  {
+    PluginInterface* plugin = _plugin_manager.GetPluginHandle();
+    wxWindow * w = plugin->CreateGui(this);
+  }
+} //OnLoadPlugin
+//-------------------------------------------------------
 void MainFrame::CreateMenu()
 //            ----------
 {
@@ -271,14 +284,15 @@ void MainFrame::CreateMenu()
   menuView = new wxMenu;
   menuView->Append( ID_View_Reset, GetwxStr("&Reset") );
 
-
+  menuPlugin = new wxMenu;
+  menuPlugin->Append( ID_PLUGIN_ABOUT, GetwxStr("&About...") );
 
   menuScripts = new wxMenu;
-
 
   menuBar = new wxMenuBar;
   menuBar->Append( menuFile,    GetwxStr("&File") );
   menuBar->Append( menuView,    GetwxStr("&View") );
+  menuBar->Append( menuPlugin,  GetwxStr("&Plugins") );
   menuBar->Append( menuScripts, GetwxStr("&Scripts") );
 
   SetMenuBar( menuBar );
@@ -766,11 +780,11 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
   _var_dirctrl->GetTreeCtrl()->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
                                        wxCommandEventHandler(MainFrame::OnFileActivated),NULL,this);
 
-  _var_book->AddPage(_var_dirctrl,wxT("DirCtrl"));
+  _var_book->AddPage(_var_dirctrl,wxT("Dir"));
 
 // @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,1) && (wxUSE_FILECTRL)) 
-  _var_book->AddPage(_var_fileCtrl,wxT("FileCtrl"));
+  _var_book->AddPage(_var_fileCtrl,wxT("File"));
 #endif
 // @endcond
 

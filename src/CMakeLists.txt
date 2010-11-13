@@ -454,6 +454,8 @@ add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (AMILab)
 
+add_subdirectory (Plugins/AboutBox)
+
 
 #add_subdirectory (libamiFluid)
 
@@ -472,6 +474,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
+  ${AMILAB_SOURCE_DIR}/Plugins/
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}
