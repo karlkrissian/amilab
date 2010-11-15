@@ -50,10 +50,8 @@ const string BasicVariable::GetTypeName() const
     case type_gltransform     : return string( "gltransform");
     case type_array           : 
     {
-/* TODO
-      VarArray::ptr array =  *((VarArray::ptr*) Pointer());
-      return str( format("array \t %d \n") % array->Size());
-* /
+     // VarArray::ptr array =  *((VarArray::ptr*) Pointer());
+     // return str( format("array \t %d \n") % array->Size());
     }
     default                : 
       return string( "unknown type");

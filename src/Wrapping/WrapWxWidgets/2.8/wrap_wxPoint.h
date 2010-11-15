@@ -57,13 +57,13 @@ class WrapClass_wxPoint : public WrapClass<wxPoint>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxPoint1,"Wrapping of wxPoint, http://docs.wxwidgets.org/stable/wx_wxpoint.html#wxpoint.");
+    ADD_CLASS_CONSTRUCTOR(wxPoint_1,"Constructor wxPoint::wxPoint(wxPoint const & param0) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#wxpoint).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxPoint,"Wrapping of wxPoint, http://docs.wxwidgets.org/stable/wx_wxpoint.html#wxpoint.");
+    ADD_CLASS_CONSTRUCTOR(wxPoint,"Constructor wxPoint::wxPoint() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#wxpoint).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxPoint2,"Wrapping of wxPoint, http://docs.wxwidgets.org/stable/wx_wxpoint.html#wxpoint.");
+    ADD_CLASS_CONSTRUCTOR(wxPoint_2,"Constructor wxPoint::wxPoint() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#wxpoint).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxPoint3,"Wrapping of wxPoint, http://docs.wxwidgets.org/stable/wx_wxpoint.html#wxpoint.");
+    ADD_CLASS_CONSTRUCTOR(wxPoint_3,"Constructor wxPoint::wxPoint(int xx, int yy) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#wxpoint).");
 
 
 
@@ -73,83 +73,32 @@ class WrapClass_wxPoint : public WrapClass<wxPoint>
     // here add each method
     
     // Adding copy method
-    ADD_CLASS_METHOD(copy,"Copy method, uses the copy constructor.");
+    ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
     // Adding standard methods
 
     // Operators:
-    ADD_CLASS_METHOD(assign,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#assign")
-    ADD_CLASS_METHOD(equal,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#equal")
-    ADD_CLASS_METHOD(not_equal,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#not_equal")
-    ADD_CLASS_METHOD(add1,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#add")
-    ADD_CLASS_METHOD(op_substract1,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#op_substract")
-    ADD_CLASS_METHOD(add_assign1,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#add_assign")
-    ADD_CLASS_METHOD(sub_assign1,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#sub_assign")
-    ADD_CLASS_METHOD(add_assign,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#add_assign")
-    ADD_CLASS_METHOD(add_assign2,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#add_assign")
-    ADD_CLASS_METHOD(sub_assign,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#sub_assign")
-    ADD_CLASS_METHOD(sub_assign2,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#sub_assign")
-    ADD_CLASS_METHOD(add,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#add")
-    ADD_CLASS_METHOD(add2,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#add")
-    ADD_CLASS_METHOD(op_substract,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#op_substract")
-    ADD_CLASS_METHOD(op_substract2,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#op_substract")
-    ADD_CLASS_METHOD(op_substract3,"http://docs.wxwidgets.org/stable/wx_wxpoint.html#op_substract")
+    ADD_CLASS_METHOD(__assign__,            "wxPoint & wxPoint::=(wxPoint const & param0) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__assign__)")
+    ADD_CLASS_METHOD(__equal__,            "bool wxPoint::==(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__equal__)")
+    ADD_CLASS_METHOD(__not_equal__,            "bool wxPoint::!=(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__not_equal__)")
+    ADD_CLASS_METHOD(__add___1,            "wxPoint wxPoint::+(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add__)")
+    ADD_CLASS_METHOD(__substract___1,            "wxPoint wxPoint::-(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
+    ADD_CLASS_METHOD(__add_assign___1,            "wxPoint & wxPoint::+=(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add_assign__)")
+    ADD_CLASS_METHOD(__sub_assign___1,            "wxPoint & wxPoint::-=(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__sub_assign__)")
+    ADD_CLASS_METHOD(__add_assign__,            "wxPoint::+=() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign___2,            "wxPoint & wxPoint::+=(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add_assign__)")
+    ADD_CLASS_METHOD(__sub_assign__,            "wxPoint::-=() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__sub_assign__)")
+    ADD_CLASS_METHOD(__sub_assign___2,            "wxPoint & wxPoint::-=(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__sub_assign__)")
+    ADD_CLASS_METHOD(__add__,            "wxPoint::+() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add__)")
+    ADD_CLASS_METHOD(__add___2,            "wxPoint wxPoint::+(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add__)")
+    ADD_CLASS_METHOD(__substract__,            "wxPoint::-() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
+    ADD_CLASS_METHOD(__substract___2,            "wxPoint wxPoint::-(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
+    ADD_CLASS_METHOD(__substract___3,            "wxPoint wxPoint::-() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
 
 
 
 
-    void AddMethods(WrapClass<wxPoint>::ptr this_ptr )
-    {
-      
+    void AddMethods(WrapClass<wxPoint>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding copy method 
-      AddVar_copy( this_ptr);
-      // Adding standard methods 
-
-      // Adding operators
-      AddVar_assign( this_ptr);
-      AddVar_equal( this_ptr);
-      AddVar_not_equal( this_ptr);
-      AddVar_add1( this_ptr);
-      AddVar_op_substract1( this_ptr);
-      AddVar_add_assign1( this_ptr);
-      AddVar_sub_assign1( this_ptr);
-      AddVar_add_assign( this_ptr);
-      AddVar_add_assign2( this_ptr);
-      AddVar_sub_assign( this_ptr);
-      AddVar_sub_assign2( this_ptr);
-      AddVar_add( this_ptr);
-      AddVar_add2( this_ptr);
-      AddVar_op_substract( this_ptr);
-      AddVar_op_substract2( this_ptr);
-      AddVar_op_substract3( this_ptr);
-
-
-
-      // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member x
-      boost::shared_ptr<int> var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int>());
-      BasicVariable::ptr var_x = AMILabType<int>::CreateVarFromSmtPtr(var_x_ptr);
-      if (var_x.get()) {
-        var_x->Rename("x");
-        context->AddVar(var_x,context);
-      }
-      
-      // Adding public member y
-      boost::shared_ptr<int> var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int>());
-      BasicVariable::ptr var_y = AMILabType<int>::CreateVarFromSmtPtr(var_y_ptr);
-      if (var_y.get()) {
-        var_y->Rename("y");
-        context->AddVar(var_y,context);
-      }
-
-    };
 };
 
 

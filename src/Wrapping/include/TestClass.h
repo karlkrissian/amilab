@@ -5,6 +5,17 @@
 #ifndef _TestClass_h_
 #define _TestClass_h_
 
+// Template class
+template<class T>
+class TemplateClass
+{
+  public:
+    T value;
+};
+
+typedef TemplateClass<int > templateclass_int_def;
+
+// Test normal class
 class TestClass
 {
   private:
@@ -28,6 +39,36 @@ class TestClass
     
     void PrintComment() {
       std::cout << "comment = " << comment << std::endl;
+    }
+};
+
+// Test inheritence
+class ClassBase1
+{
+  public:
+    void Method1() 
+    { 
+      std::cout << "ClassBase1::Method1\n" << std::endl; 
+    }
+};
+
+// first level
+class ClassBase2 : public ClassBase1
+{
+  public:
+    void Method2() 
+    { 
+      std::cout << "ClassBase2::Method2\n" << std::endl; 
+    }
+};
+
+// second level
+class ClassBase3 : public ClassBase2
+{
+  public:
+    void Method3() 
+    { 
+      std::cout << "ClassBase3::Method3\n" << std::endl; 
     }
 };
 

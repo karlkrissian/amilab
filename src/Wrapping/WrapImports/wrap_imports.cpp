@@ -42,9 +42,16 @@
 #include "wrap_wxFileName.h"
 #include "wrap_wxAuiPaneInfo.h"
 #include "wrap_wxAuiToolBar.h"
+#include "wrap_wxButton.h"
+#include "wrap_wxBitmapButton.h"
+#include "wrap_wxBoxSizer.h"
+#include "wrap_wxSizerFlags.h"
 
 #include "wrap_wxRect.h"
 #include "wrap_wxPoint.h"
+#include "wrap_wxFrame.h"
+#include "wrap_wxToolBar.h"
+
 #include "wrap_vtkLevelSets.h"
 
 #include "wrap_wxEditor.h"
@@ -130,18 +137,23 @@ void AddWrapWxWidgets()
 
   WrapClass_wxSize      ::AddVar_wxSize( amiobject->GetContext());
 
-  WrapClass_wxFileName  ::AddVar_wxFileName  ( amiobject->GetContext());
-  WrapClass_wxString    ::AddVar_wxString    ( amiobject->GetContext());
-  WrapClass_wxColour    ::AddVar_wxColour    ( amiobject->GetContext());
-  WrapClass_wxBitmap    ::AddVar_wxBitmap    ( amiobject->GetContext());
-  WrapClass_wxImage     ::AddVar_wxImage     ( amiobject->GetContext());
-  WrapClass_wxHtmlWindow::AddVar_wxHtmlWindow( amiobject->GetContext());
+  WrapClass_wxFileName   ::AddVar_wxFileName  ( amiobject->GetContext());
+  WrapClass_wxString     ::AddVar_wxString    ( amiobject->GetContext());
+  WrapClass_wxColour     ::AddVar_wxColour    ( amiobject->GetContext());
+  WrapClass_wxBitmap     ::AddVar_wxBitmap    ( amiobject->GetContext());
+  WrapClass_wxImage      ::AddVar_wxImage     ( amiobject->GetContext());
+  WrapClass_wxHtmlWindow ::AddVar_wxHtmlWindow( amiobject->GetContext());
   WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo(amiobject->GetContext());
-  WrapClass_wxAuiToolBar::AddVar_wxAuiToolBar(amiobject->GetContext());
-  WrapClass_wxRect       ::AddVar_wxRect(        amiobject->GetContext());
-  WrapClass_wxPoint      ::AddVar_wxPoint(       amiobject->GetContext());
-  WrapClass_wxPoint      ::AddVar_wxPoint1(       amiobject->GetContext());
-  WrapClass_wxPoint      ::AddVar_wxPoint2(       amiobject->GetContext());
+  WrapClass_wxAuiToolBar ::AddVar_wxAuiToolBar( amiobject->GetContext());
+  WrapClass_wxRect       ::AddVar_wxRect      ( amiobject->GetContext());
+  WrapClass_wxPoint      ::AddVar_wxPoint     ( amiobject->GetContext());
+  WrapClass_wxFrame      ::AddVar_wxFrame     ( amiobject->GetContext());
+  WrapClass_wxToolBar    ::AddVar_wxToolBar   ( amiobject->GetContext());
+
+  WrapClass_wxButton     ::AddVar_wxButton    ( amiobject->GetContext());
+  WrapClass_wxBitmapButton ::AddVar_wxBitmapButton    ( amiobject->GetContext());
+  WrapClass_wxBoxSizer   ::AddVar_wxBoxSizer  ( amiobject->GetContext());
+  WrapClass_wxSizerFlags ::AddVar_wxSizerFlags ( amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

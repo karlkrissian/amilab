@@ -47,6 +47,10 @@
 
 #include "wrap_ContinuousMorphology.h"
 #include "wrap_TestClass.h"
+#include "wrap_TemplateClass_int_.h"
+#include "wrap_ClassBase1.h"
+#include "wrap_ClassBase2.h"
+#include "wrap_ClassBase3.h"
 
 extern VarContexts  Vars;
 
@@ -111,6 +115,14 @@ void AddWrapFilters(){
 
   // Add TestClass
   WrapClass_TestClass::AddVar_TestClass( amiobject->GetContext());
+
+  WrapClass_TemplateClass_int_::AddVar_TemplateClass( amiobject->GetContext(),"TemplateClass_int");
+
+  WrapClass_ClassBase1::AddVar_ClassBase1( amiobject->GetContext());
+
+  WrapClass_ClassBase2::AddVar_ClassBase2( amiobject->GetContext());
+
+  WrapClass_ClassBase3::AddVar_ClassBase3( amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

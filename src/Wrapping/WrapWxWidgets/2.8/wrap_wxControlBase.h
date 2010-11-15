@@ -30,7 +30,7 @@ AMI_DECLARE_TYPE(wxControlBase);
 
 // TODO: check for inheritence ...
 class WrapClass_wxControlBase : public WrapClass<wxControlBase>
-    , public  WrapClass_wxWindow
+    , public   WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_wxControlBase);
 
@@ -57,7 +57,7 @@ class WrapClass_wxControlBase : public WrapClass<wxControlBase>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxControlBase,"Wrapping of wxControlBase, http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#wxcontrolbase.");
+    ADD_CLASS_CONSTRUCTOR(wxControlBase,"Constructor wxControlBase::wxControlBase() (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#wxcontrolbase).");
 
 
 
@@ -68,57 +68,28 @@ class WrapClass_wxControlBase : public WrapClass<wxControlBase>
     
     // Adding standard methods
 /* The following types are missing: wxValidator
-    ADD_CLASS_METHOD(Create,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#create")
+    ADD_CLASS_METHOD(Create,"bool wxControlBase::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxControlNameStr)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#create)")
 */
-    ADD_CLASS_METHOD(GetAlignment,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getalignment")
-    ADD_CLASS_METHOD(GetLabelText1,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getlabeltext")
-    ADD_CLASS_METHOD(GetLabelText,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getlabeltext")
-    ADD_CLASS_METHOD(GetLabelText2,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getlabeltext")
-    ADD_CLASS_METHOD(ShouldInheritColours,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#shouldinheritcolours")
+    ADD_CLASS_METHOD(GetAlignment,"int wxControlBase::GetAlignment()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getalignment)")
+    ADD_CLASS_METHOD(GetLabelText_1,"wxString wxControlBase::GetLabelText(wxString const & label)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getlabeltext)")
+    ADD_CLASS_METHOD(GetLabelText,"wxControlBase::GetLabelText()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getlabeltext)")
+    ADD_CLASS_METHOD(GetLabelText_2,"wxString wxControlBase::GetLabelText()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getlabeltext)")
+    ADD_CLASS_METHOD(ShouldInheritColours,"bool wxControlBase::ShouldInheritColours()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#shouldinheritcolours)")
 /* The following types are missing: wxCommandEvent
-    ADD_CLASS_METHOD(Command,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#command")
+    ADD_CLASS_METHOD(Command,"void wxControlBase::Command(wxCommandEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#command)")
 */
-    ADD_CLASS_METHOD(SetLabel,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#setlabel")
-    ADD_CLASS_METHOD(SetFont,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#setfont")
+    ADD_CLASS_METHOD(SetLabel,"void wxControlBase::SetLabel(wxString const & label)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#setlabel)")
+    ADD_CLASS_METHOD(SetFont,"bool wxControlBase::SetFont(wxFont const & font)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#setfont)")
 /* The following types are missing: wxUpdateUIEvent
-    ADD_CLASS_METHOD(DoUpdateWindowUI,"http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#doupdatewindowui")
+    ADD_CLASS_METHOD(DoUpdateWindowUI,"void wxControlBase::DoUpdateWindowUI(wxUpdateUIEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#doupdatewindowui)")
 */
 
 
 
 
 
-    void AddMethods(WrapClass<wxControlBase>::ptr this_ptr )
-    {
-      // here inheritence
-      
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_wxWindow(        boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
-      parent_wxWindow->AddMethods(parent_wxWindow);
+    void AddMethods(WrapClass<wxControlBase>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-       // Adding standard methods 
-/* The following types are missing: wxValidator
-      AddVar_Create( this_ptr);
-*/
-      AddVar_GetAlignment( this_ptr);
-      AddVar_GetLabelText1( this_ptr);
-      AddVar_GetLabelText( this_ptr);
-      AddVar_GetLabelText2( this_ptr);
-      AddVar_ShouldInheritColours( this_ptr);
-/* The following types are missing: wxCommandEvent
-      AddVar_Command( this_ptr);
-*/
-      AddVar_SetLabel( this_ptr);
-      AddVar_SetFont( this_ptr);
-/* The following types are missing: wxUpdateUIEvent
-      AddVar_DoUpdateWindowUI( this_ptr);
-*/
-
-
-    };
 };
 
 

@@ -25,7 +25,6 @@
 #include "wrap_wxPoint.h"
 #include "wrap_wxSize.h"
 #include "wrap_wxClassInfo.h"
-#include "wrap_wxObject.h"
 
 
 //
@@ -36,9 +35,12 @@ BasicVariable::ptr WrapClass<wxFrame>::CreateVar( ParamList* p)
 {
   WrapClass_wxFrame::wrap_wxFrame construct;
   return construct.CallMember(p);
+
 }
 
+
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxFrame);
+
 
 //
 // static member for creating a variable from a pointer to wxFrame
@@ -61,14 +63,16 @@ Variable<AMIObject>::ptr WrapClass_wxFrame::CreateVar( wxFrame* sp)
 //  Wrapping of Constructor wxFrame::wxFrame()
 //---------------------------------------------------
 void WrapClass_wxFrame::
-    wrap_wxFrame1::SetParametersComments()
+    wrap_wxFrame_1::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxFrame::
-    wrap_wxFrame1::CallMember( ParamList* _p)
+    wrap_wxFrame_1::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
+
   wxFrame* _newobj = new wxFrame();
   BasicVariable::ptr res = WrapClass_wxFrame::CreateVar(_newobj);
   return res;
@@ -86,62 +90,81 @@ BasicVariable::ptr WrapClass_wxFrame::
     wrap_wxFrame::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxFrame::wrap_wxFrame1 m1;
+  WrapClass_wxFrame::wrap_wxFrame_1 m1;
   res = m1.CallMember(_p);
-  if (res.get()) return res;
-  WrapClass_wxFrame::wrap_wxFrame2 m2;
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxFrame::wrap_wxFrame_2 m2;
   res = m2.CallMember(_p);
-  if (res.get()) return res;
-  return BasicVariable::ptr();
+  if (!m2.Get_arg_failure()) return res;
+  ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
-//  Wrapping of Constructor wxFrame::wxFrame(wxWindow * parent, wxWindowID id, wxString const & title, wxPoint const & pos, wxSize const & size, long int style, wxString const & name)
+//  Wrapping of Constructor wxFrame::wxFrame(wxWindow * parent, wxWindowID id, wxString const & title, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 541072960, wxString const & name = wxFrameNameStr)
 //---------------------------------------------------
 void WrapClass_wxFrame::
-    wrap_wxFrame2::SetParametersComments()
+    wrap_wxFrame_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'id'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'title'")
-  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pos'")
-  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
-  ADDPARAMCOMMENT_TYPE( long, "parameter named 'style'")
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pos' (def:wxDefaultPosition)")
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size' (def:wxDefaultSize)")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:541072960)")
+  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxFrameNameStr)")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxFrame::
-    wrap_wxFrame2::CallMember( ParamList* _p)
+    wrap_wxFrame_2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>7) ClassReturnEmptyVar;
   int _n=0;
-  wxWindow* parent;
-  if (!get_val_ptr_param<wxWindow>(parent,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxWindow > parent_smtptr;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxWindow* parent = parent_smtptr.get();
+
   int id;
-  if (!get_val_param<int>(id,_p,_n)) ClassHelpAndReturn;
-  wxString* title_ptr;
-  if (!get_val_ptr_param<wxString>(title_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& title = *title_ptr;
-  wxPoint* pos_ptr;
-  if (!get_val_ptr_param<wxPoint>(pos_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& pos = *pos_ptr;
-  wxSize* size_ptr;
-  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& size = *size_ptr;
-  long style_long;
-  if (!get_val_param<long>(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(id,_p,_n)) ClassReturnEmptyVar;
+
+  boost::shared_ptr<wxString > title_smtptr;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassReturnEmptyVar;
+  wxString const & title = *title_smtptr;
+
+  boost::shared_ptr<wxPoint > pos_smtptr;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  // Setting default value if no value is returned
+  wxPoint const & pos = (pos_smtptr.get()?
+    (wxPoint const &) (*pos_smtptr):
+    (wxPoint const &) wxDefaultPosition);
+
+  boost::shared_ptr<wxSize > size_smtptr;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  // Setting default value if no value is returned
+  wxSize const & size = (size_smtptr.get()?
+    (wxSize const &) (*size_smtptr):
+    (wxSize const &) wxDefaultSize);
+
+  long style_long = 541072960;;
+  if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
   long int style = style_long;
-  wxString* name_ptr;
-  if (!get_val_ptr_param<wxString>(name_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& name = *name_ptr;
+
+  boost::shared_ptr<wxString > name_smtptr;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  // Setting default value if no value is returned
+  wxString const & name = (name_smtptr.get()?
+    (wxString const &) (*name_smtptr):
+    (wxString const &) wxFrameNameStr);
+
   wxFrame* _newobj = new wxFrame(parent, id, title, pos, size, style, name);
   BasicVariable::ptr res = WrapClass_wxFrame::CreateVar(_newobj);
   return res;
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxFrame::Create(wxWindow * parent, wxWindowID id, wxString const & title, wxPoint const & pos, wxSize const & size, long int style, wxString const & name)
+//  Wrapping of bool wxFrame::Create(wxWindow * parent, wxWindowID id, wxString const & title, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 541072960, wxString const & name = wxFrameNameStr)
 //---------------------------------------------------
 void WrapClass_wxFrame::
     wrap_Create::SetParametersComments()
@@ -149,10 +172,10 @@ void WrapClass_wxFrame::
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'id'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'title'")
-  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pos'")
-  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
-  ADDPARAMCOMMENT_TYPE( long, "parameter named 'style'")
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
+  ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pos' (def:wxDefaultPosition)")
+  ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size' (def:wxDefaultSize)")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:541072960)")
+  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxFrameNameStr)")
   return_comments="returning a variable of type int";
 }
 
@@ -161,42 +184,61 @@ BasicVariable::ptr WrapClass_wxFrame::
     wrap_Create::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>7) ClassHelpAndReturn;
   int _n=0;
-  wxWindow* parent;
-  if (!get_val_ptr_param<wxWindow>(parent,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxWindow > parent_smtptr;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxWindow* parent = parent_smtptr.get();
+
   int id;
-  if (!get_val_param<int>(id,_p,_n)) ClassHelpAndReturn;
-  wxString* title_ptr;
-  if (!get_val_ptr_param<wxString>(title_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& title = *title_ptr;
-  wxPoint* pos_ptr;
-  if (!get_val_ptr_param<wxPoint>(pos_ptr,_p,_n)) ClassHelpAndReturn;
-  wxPoint& pos = *pos_ptr;
-  wxSize* size_ptr;
-  if (!get_val_ptr_param<wxSize>(size_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& size = *size_ptr;
-  long style_long;
-  if (!get_val_param<long>(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(id,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxString > title_smtptr;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxString const & title = *title_smtptr;
+
+  boost::shared_ptr<wxPoint > pos_smtptr;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  // Setting default value if no value is returned
+  wxPoint const & pos = (pos_smtptr.get()?
+    (wxPoint const &) (*pos_smtptr):
+    (wxPoint const &) wxDefaultPosition);
+
+  boost::shared_ptr<wxSize > size_smtptr;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  // Setting default value if no value is returned
+  wxSize const & size = (size_smtptr.get()?
+    (wxSize const &) (*size_smtptr):
+    (wxSize const &) wxDefaultSize);
+
+  long style_long = 541072960;;
+  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
   long int style = style_long;
-  wxString* name_ptr;
-  if (!get_val_ptr_param<wxString>(name_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& name = *name_ptr;
+
+  boost::shared_ptr<wxString > name_smtptr;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  // Setting default value if no value is returned
+  wxString const & name = (name_smtptr.get()?
+    (wxString const &) (*name_smtptr):
+    (wxString const &) wxFrameNameStr);
+
   bool res =   this->_objectptr->GetObj()->Create(parent, id, title, pos, size, style, name);
-  int  res_int = ((res==true)?1:0);
-  return AMILabType<int>::CreateVar(res_int);
+  int res_int = ((res==true)?1:0);
+  return AMILabType<int >::CreateVar(res_int);
 }
 /* The following types are missing: wxStatusBar
 
 //---------------------------------------------------
-//  Wrapping of wxStatusBar * wxFrame::CreateStatusBar(int number, long int style, wxWindowID id, wxString const & name)
+//  Wrapping of wxStatusBar * wxFrame::CreateStatusBar(int number = 1, long int style = 65552, wxWindowID id = 0, wxString const & name = wxStatusLineNameStr)
 //---------------------------------------------------
 void WrapClass_wxFrame::
     wrap_CreateStatusBar::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'number'")
-  ADDPARAMCOMMENT_TYPE( long, "parameter named 'style'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'id'")
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'number' (def:1)")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:65552)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'id' (def:0)")
+  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxStatusLineNameStr)")
   return_comments="returning a variable of type wxStatusBar";
 }
 
@@ -205,19 +247,28 @@ BasicVariable::ptr WrapClass_wxFrame::
     wrap_CreateStatusBar::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>4) ClassHelpAndReturn;
   int _n=0;
-  int number;
-  if (!get_val_param<int>(number,_p,_n)) ClassHelpAndReturn;
-  long style_long;
-  if (!get_val_param<long>(style_long,_p,_n)) ClassHelpAndReturn;
+
+  int number = 1;
+  if (!get_val_param<int >(number,_p,_n)) ClassHelpAndReturn;
+
+  long style_long = 65552;;
+  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
   long int style = style_long;
-  int id;
-  if (!get_val_param<int>(id,_p,_n)) ClassHelpAndReturn;
-  wxString* name_ptr;
-  if (!get_val_ptr_param<wxString>(name_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& name = *name_ptr;
+
+  int id = 0;
+  if (!get_val_param<int >(id,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxString > name_smtptr;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  // Setting default value if no value is returned
+  wxString const & name = (name_smtptr.get()?
+    (wxString const &) (*name_smtptr):
+    (wxString const &) wxStatusLineNameStr);
+
   wxStatusBar * res =   this->_objectptr->GetObj()->CreateStatusBar(number, style, id, name);
-  return AMILabType<wxStatusBar>::CreateVar(res);
+  return AMILabType<wxStatusBar >::CreateVar(res);
 }
 */
 /* The following types are missing: wxStatusBar
@@ -236,9 +287,13 @@ BasicVariable::ptr WrapClass_wxFrame::
     wrap_SetStatusBar::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxStatusBar* statbar;
-  if (!get_val_ptr_param<wxStatusBar>(statbar,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxStatusBar > statbar_smtptr;
+  if (!get_val_smtptr_param<wxStatusBar >(statbar_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxStatusBar* statbar = statbar_smtptr.get();
+
   this->_objectptr->GetObj()->SetStatusBar(statbar);
   return BasicVariable::ptr();
 }
@@ -246,14 +301,14 @@ BasicVariable::ptr WrapClass_wxFrame::
 /* The following types are missing: wxToolBar
 
 //---------------------------------------------------
-//  Wrapping of wxToolBar * wxFrame::CreateToolBar(long int style, wxWindowID id, wxString const & name)
+//  Wrapping of wxToolBar * wxFrame::CreateToolBar(long int style = -0x00000000000000001, wxWindowID id = -0x00000000000000001, wxString const & name = wxToolBarNameStr)
 //---------------------------------------------------
 void WrapClass_wxFrame::
     wrap_CreateToolBar::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long, "parameter named 'style'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'id'")
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:-0x00000000000000001)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'id' (def:-0x00000000000000001)")
+  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxToolBarNameStr)")
   return_comments="returning a variable of type wxToolBar";
 }
 
@@ -262,17 +317,25 @@ BasicVariable::ptr WrapClass_wxFrame::
     wrap_CreateToolBar::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
-  long style_long;
-  if (!get_val_param<long>(style_long,_p,_n)) ClassHelpAndReturn;
+
+  long style_long = -0x00000000000000001;;
+  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
   long int style = style_long;
-  int id;
-  if (!get_val_param<int>(id,_p,_n)) ClassHelpAndReturn;
-  wxString* name_ptr;
-  if (!get_val_ptr_param<wxString>(name_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& name = *name_ptr;
+
+  int id = -0x00000000000000001;
+  if (!get_val_param<int >(id,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxString > name_smtptr;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  // Setting default value if no value is returned
+  wxString const & name = (name_smtptr.get()?
+    (wxString const &) (*name_smtptr):
+    (wxString const &) wxToolBarNameStr);
+
   wxToolBar * res =   this->_objectptr->GetObj()->CreateToolBar(style, id, name);
-  return AMILabType<wxToolBar>::CreateVar(res);
+  return AMILabType<wxToolBar >::CreateVar(res);
 }
 */
 /* The following types are missing: wxToolBar
@@ -291,9 +354,13 @@ BasicVariable::ptr WrapClass_wxFrame::
     wrap_SetToolBar::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxToolBar* toolbar;
-  if (!get_val_ptr_param<wxToolBar>(toolbar,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxToolBar > toolbar_smtptr;
+  if (!get_val_smtptr_param<wxToolBar >(toolbar_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxToolBar* toolbar = toolbar_smtptr.get();
+
   this->_objectptr->GetObj()->SetToolBar(toolbar);
   return BasicVariable::ptr();
 }
@@ -312,8 +379,10 @@ void WrapClass_wxFrame::
 BasicVariable::ptr WrapClass_wxFrame::
     wrap_GetClientAreaOrigin::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxPoint res =   this->_objectptr->GetObj()->GetClientAreaOrigin();
-  return AMILabType<wxPoint>::CreateVar(res);
+  return AMILabType<wxPoint >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -328,7 +397,9 @@ void WrapClass_wxFrame::
 BasicVariable::ptr WrapClass_wxFrame::
     wrap_GtkOnSize::CallMember( ParamList* _p)
 {
-//  this->_objectptr->GetObj()->GtkOnSize();
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  this->_objectptr->GetObj()->GtkOnSize();
   return BasicVariable::ptr();
 }
 
@@ -344,6 +415,8 @@ void WrapClass_wxFrame::
 BasicVariable::ptr WrapClass_wxFrame::
     wrap_OnInternalIdle::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->OnInternalIdle();
   return BasicVariable::ptr();
 }
@@ -360,7 +433,9 @@ void WrapClass_wxFrame::
 BasicVariable::ptr WrapClass_wxFrame::
     wrap_UpdateMenuBarSize::CallMember( ParamList* _p)
 {
-//  this->_objectptr->GetObj()->UpdateMenuBarSize();
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  this->_objectptr->GetObj()->UpdateMenuBarSize();
   return BasicVariable::ptr();
 }
 
@@ -377,26 +452,10 @@ void WrapClass_wxFrame::
 BasicVariable::ptr WrapClass_wxFrame::
     wrap_GetClassInfo::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
   BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxObject * wxFrame::wxCreateObject()
-//---------------------------------------------------
-void WrapClass_wxFrame::
-    wrap_wxCreateObject::SetParametersComments()
-{
-  return_comments="returning a variable of type wxObject";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxFrame::
-    wrap_wxCreateObject::CallMember( ParamList* _p)
-{
-  wxObject * res =   this->_objectptr->GetObj()->wxCreateObject();
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
   return res_var;
 }
 

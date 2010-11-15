@@ -32,9 +32,13 @@ BasicVariable::ptr WrapClass<wxObject>::CreateVar( ParamList* p)
 {
   WrapClass_wxObject::wrap_wxObject construct;
   return construct.CallMember(p);
+
 }
 
-AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxObject);
+
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxObject);
+AMI_DEFINE_VARFROMSMTPTR(wxObject);
+
 
 //
 // static member for creating a variable from a pointer to wxObject
@@ -57,40 +61,82 @@ Variable<AMIObject>::ptr WrapClass_wxObject::CreateVar( wxObject* sp)
 //  Wrapping of Constructor wxObject::wxObject()
 //---------------------------------------------------
 void WrapClass_wxObject::
-    wrap_wxObject::SetParametersComments()
+    wrap_wxObject_1::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxObject::
-    wrap_wxObject::CallMember( ParamList* _p)
+    wrap_wxObject_1::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
+
   wxObject* _newobj = new wxObject();
   BasicVariable::ptr res = WrapClass_wxObject::CreateVar(_newobj);
   return res;
 }
 
 //---------------------------------------------------
-//  Wrapping of Constructor wxObject::wxObject(wxObject & other)
+//  Wrapping of multipled defined method:... Constructor wxObject::wxObject(...)
 //---------------------------------------------------
 void WrapClass_wxObject::
-    wrap_wxObject1::SetParametersComments()
+    wrap_wxObject::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxObject::
+    wrap_wxObject::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxObject::wrap_wxObject_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxObject::wrap_wxObject_2 m2;
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of Constructor wxObject::wxObject(wxObject const & other)
+//---------------------------------------------------
+void WrapClass_wxObject::
+    wrap_wxObject_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'other'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxObject::
-    wrap_wxObject1::CallMember( ParamList* _p)
+    wrap_wxObject_2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxObject* other_ptr;
-  if (!get_val_ptr_param<wxObject>(other_ptr,_p,_n)) ClassHelpAndReturn;
-  wxObject& other = *other_ptr;
+
+  boost::shared_ptr<wxObject > other_smtptr;
+  if (!get_val_smtptr_param<wxObject >(other_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxObject const & other = *other_smtptr;
+
   wxObject* _newobj = new wxObject(other);
   BasicVariable::ptr res = WrapClass_wxObject::CreateVar(_newobj);
   return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of 'copy' method for wxObject.
+//---------------------------------------------------
+void WrapClass_wxObject::
+    wrap___copy__::SetParametersComments()
+{
+  return_comments="A copy of the wxObject object within a new variable.";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxObject::
+    wrap___copy__::CallMember( ParamList* _p)
+{
+    return AMILabType<wxObject >::CreateVar( new wxObject(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -106,6 +152,8 @@ void WrapClass_wxObject::
 BasicVariable::ptr WrapClass_wxObject::
     wrap_GetClassInfo::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
   BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
   return res_var;
@@ -126,12 +174,16 @@ BasicVariable::ptr WrapClass_wxObject::
     wrap_IsKindOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxClassInfo* info;
-  if (!get_val_ptr_param<wxClassInfo>(info,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxClassInfo > info_smtptr;
+  if (!get_val_smtptr_param<wxClassInfo >(info_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxClassInfo* info = info_smtptr.get();
+
   bool res =   this->_objectptr->GetObj()->IsKindOf(info);
-  int  res_int = ((res==true)?1:0);
-  return AMILabType<int>::CreateVar(res_int);
+  int res_int = ((res==true)?1:0);
+  return AMILabType<int >::CreateVar(res_int);
 }
 /* The following types are missing: wxObjectRefData
 
@@ -148,8 +200,10 @@ void WrapClass_wxObject::
 BasicVariable::ptr WrapClass_wxObject::
     wrap_GetRefData::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxObjectRefData * res =   this->_objectptr->GetObj()->GetRefData();
-  return AMILabType<wxObjectRefData>::CreateVar(res);
+  return AMILabType<wxObjectRefData >::CreateVar(res);
 }
 */
 /* The following types are missing: wxObjectRefData
@@ -168,16 +222,20 @@ BasicVariable::ptr WrapClass_wxObject::
     wrap_SetRefData::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxObjectRefData* data;
-  if (!get_val_ptr_param<wxObjectRefData>(data,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxObjectRefData > data_smtptr;
+  if (!get_val_smtptr_param<wxObjectRefData >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxObjectRefData* data = data_smtptr.get();
+
   this->_objectptr->GetObj()->SetRefData(data);
   return BasicVariable::ptr();
 }
 */
 
 //---------------------------------------------------
-//  Wrapping of void wxObject::Ref(wxObject & clone)
+//  Wrapping of void wxObject::Ref(wxObject const & clone)
 //---------------------------------------------------
 void WrapClass_wxObject::
     wrap_Ref::SetParametersComments()
@@ -190,10 +248,13 @@ BasicVariable::ptr WrapClass_wxObject::
     wrap_Ref::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxObject* clone_ptr;
-  if (!get_val_ptr_param<wxObject>(clone_ptr,_p,_n)) ClassHelpAndReturn;
-  wxObject& clone = *clone_ptr;
+
+  boost::shared_ptr<wxObject > clone_smtptr;
+  if (!get_val_smtptr_param<wxObject >(clone_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxObject const & clone = *clone_smtptr;
+
   this->_objectptr->GetObj()->Ref(clone);
   return BasicVariable::ptr();
 }
@@ -210,6 +271,8 @@ void WrapClass_wxObject::
 BasicVariable::ptr WrapClass_wxObject::
     wrap_UnRef::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->UnRef();
   return BasicVariable::ptr();
 }
@@ -226,12 +289,14 @@ void WrapClass_wxObject::
 BasicVariable::ptr WrapClass_wxObject::
     wrap_UnShare::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->UnShare();
   return BasicVariable::ptr();
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxObject::IsSameAs(wxObject & o)
+//  Wrapping of bool wxObject::IsSameAs(wxObject const & o)
 //---------------------------------------------------
 void WrapClass_wxObject::
     wrap_IsSameAs::SetParametersComments()
@@ -245,20 +310,23 @@ BasicVariable::ptr WrapClass_wxObject::
     wrap_IsSameAs::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxObject* o_ptr;
-  if (!get_val_ptr_param<wxObject>(o_ptr,_p,_n)) ClassHelpAndReturn;
-  wxObject& o = *o_ptr;
+
+  boost::shared_ptr<wxObject > o_smtptr;
+  if (!get_val_smtptr_param<wxObject >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxObject const & o = *o_smtptr;
+
   bool res =   this->_objectptr->GetObj()->IsSameAs(o);
-  int  res_int = ((res==true)?1:0);
-  return AMILabType<int>::CreateVar(res_int);
+  int res_int = ((res==true)?1:0);
+  return AMILabType<int >::CreateVar(res_int);
 }
 
 //---------------------------------------------------
-//  Wrapping of wxObject & wxObject::=(wxObject & other)
+//  Wrapping of wxObject & wxObject::=(wxObject const & other)
 //---------------------------------------------------
 void WrapClass_wxObject::
-    wrap_assign::SetParametersComments()
+    wrap___assign__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'other'")
   return_comments="returning a variable of type wxObject";
@@ -266,14 +334,17 @@ void WrapClass_wxObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxObject::
-    wrap_assign::CallMember( ParamList* _p)
+    wrap___assign__::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxObject* other_ptr;
-  if (!get_val_ptr_param<wxObject>(other_ptr,_p,_n)) ClassHelpAndReturn;
-  wxObject& other = *other_ptr;
+
+  boost::shared_ptr<wxObject > other_smtptr;
+  if (!get_val_smtptr_param<wxObject >(other_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxObject const & other = *other_smtptr;
+
   wxObject & res =   (*this->_objectptr->GetObj()) = (other);
-  return AMILabType<wxObject>::CreateVar(res);
+  return AMILabType<wxObject >::CreateVar(res);
 }
 

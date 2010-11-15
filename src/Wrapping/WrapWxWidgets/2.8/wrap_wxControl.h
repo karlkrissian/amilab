@@ -30,7 +30,7 @@ AMI_DECLARE_TYPE(wxControl);
 
 // TODO: check for inheritence ...
 class WrapClass_wxControl : public WrapClass<wxControl>
-    , public  WrapClass_wxControlBase
+    , public   WrapClass_wxControlBase
 {
   DEFINE_CLASS(WrapClass_wxControl);
 
@@ -57,12 +57,12 @@ class WrapClass_wxControl : public WrapClass<wxControl>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxControl1,"Wrapping of wxControl, http://docs.wxwidgets.org/stable/wx_wxcontrol.html#wxcontrol.");
+    ADD_CLASS_CONSTRUCTOR(wxControl_1,"Constructor wxControl::wxControl() (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#wxcontrol).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxControl,"Wrapping of wxControl, http://docs.wxwidgets.org/stable/wx_wxcontrol.html#wxcontrol.");
+    ADD_CLASS_CONSTRUCTOR(wxControl,"Constructor wxControl::wxControl() (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#wxcontrol).");
     /* The following types are missing: wxValidator
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxControl2,"Wrapping of wxControl, http://docs.wxwidgets.org/stable/wx_wxcontrol.html#wxcontrol.");
+    ADD_CLASS_CONSTRUCTOR(wxControl_2,"Constructor wxControl::wxControl(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxControlNameStr) (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#wxcontrol).");
     */
 
 
@@ -74,15 +74,15 @@ class WrapClass_wxControl : public WrapClass<wxControl>
     
     // Adding standard methods
 /* The following types are missing: wxValidator
-    ADD_CLASS_METHOD(Create,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#create")
+    ADD_CLASS_METHOD(Create,"bool wxControl::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxControlNameStr)  (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#create)")
 */
-    ADD_CLASS_METHOD(SetLabel,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#setlabel")
-    ADD_CLASS_METHOD(GetLabel,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#getlabel")
+    ADD_CLASS_METHOD(SetLabel,"void wxControl::SetLabel(wxString const & label)  (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#setlabel)")
+    ADD_CLASS_METHOD(GetLabel,"wxString wxControl::GetLabel()  (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#getlabel)")
 /* The following types are missing: wxVisualAttributes
-    ADD_CLASS_METHOD(GetDefaultAttributes,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#getdefaultattributes")
+    ADD_CLASS_METHOD(GetDefaultAttributes,"wxVisualAttributes wxControl::GetDefaultAttributes()  (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#getdefaultattributes)")
 */
-    ADD_CLASS_METHOD(OnInternalIdle,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#oninternalidle")
-    ADD_CLASS_METHOD(GetClassInfo,"http://docs.wxwidgets.org/stable/wx_wxcontrol.html#getclassinfo")
+    ADD_CLASS_METHOD(OnInternalIdle,"void wxControl::OnInternalIdle()  (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#oninternalidle)")
+    ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxControl::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#getclassinfo)")
 
 
 
@@ -90,16 +90,15 @@ class WrapClass_wxControl : public WrapClass<wxControl>
 
     void AddMethods(WrapClass<wxControl>::ptr this_ptr )
     {
-      // here inheritence
       
       // Add members from wxControlBase
-      WrapClass_wxControlBase::ptr parent_wxControlBase(        boost::dynamic_pointer_cast<WrapClass_wxControlBase>(this_ptr));
+      WrapClass_wxControlBase::ptr parent_wxControlBase(        boost::dynamic_pointer_cast<WrapClass_wxControlBase >(this_ptr));
       parent_wxControlBase->AddMethods(parent_wxControlBase);
 
 
       // check that the method name is not a token
       
-       // Adding standard methods 
+      // Adding standard methods 
 /* The following types are missing: wxValidator
       AddVar_Create( this_ptr);
 */
@@ -112,6 +111,8 @@ class WrapClass_wxControl : public WrapClass<wxControl>
       AddVar_GetClassInfo( this_ptr);
 
 
+
+      
     };
 };
 

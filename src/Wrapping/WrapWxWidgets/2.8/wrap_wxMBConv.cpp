@@ -151,7 +151,7 @@ mbstowcs(src,src_string->c_str(),src_string->size()+1);
 //  Wrapping of wxWCharBuffer const wxMBConv::cMB2WC(char const * in)
 //---------------------------------------------------
 void WrapClass_wxMBConv::
-    wrap_cMB2WC1::SetParametersComments()
+    wrap_cMB2WC_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'in'")
   return_comments="returning a variable of type wxWCharBuffer";
@@ -159,7 +159,7 @@ void WrapClass_wxMBConv::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMBConv::
-    wrap_cMB2WC1::CallMember( ParamList* _p)
+    wrap_cMB2WC_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -177,7 +177,7 @@ BasicVariable::ptr WrapClass_wxMBConv::
 //  Wrapping of wxCharBuffer const wxMBConv::cWC2MB(wchar_t const * in)
 //---------------------------------------------------
 void WrapClass_wxMBConv::
-    wrap_cWC2MB1::SetParametersComments()
+    wrap_cWC2MB_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'in'")
   return_comments="returning a variable of type wxCharBuffer";
@@ -185,7 +185,7 @@ void WrapClass_wxMBConv::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMBConv::
-    wrap_cWC2MB1::CallMember( ParamList* _p)
+    wrap_cWC2MB_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -212,10 +212,10 @@ BasicVariable::ptr WrapClass_wxMBConv::
     wrap_cMB2WC::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxMBConv::wrap_cMB2WC1 m1(this->_objectptr);
+  WrapClass_wxMBConv::wrap_cMB2WC_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxMBConv::wrap_cMB2WC2 m2(this->_objectptr);
+  WrapClass_wxMBConv::wrap_cMB2WC_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -225,7 +225,7 @@ BasicVariable::ptr WrapClass_wxMBConv::
 //  Wrapping of wxWCharBuffer const wxMBConv::cMB2WC(char const * in, size_t inLen, size_t * outLen)
 //---------------------------------------------------
 void WrapClass_wxMBConv::
-    wrap_cMB2WC2::SetParametersComments()
+    wrap_cMB2WC_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'in'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'inLen'")
@@ -235,7 +235,7 @@ void WrapClass_wxMBConv::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMBConv::
-    wrap_cMB2WC2::CallMember( ParamList* _p)
+    wrap_cMB2WC_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
@@ -270,10 +270,10 @@ BasicVariable::ptr WrapClass_wxMBConv::
     wrap_cWC2MB::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxMBConv::wrap_cWC2MB1 m1(this->_objectptr);
+  WrapClass_wxMBConv::wrap_cWC2MB_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxMBConv::wrap_cWC2MB2 m2(this->_objectptr);
+  WrapClass_wxMBConv::wrap_cWC2MB_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -283,7 +283,7 @@ BasicVariable::ptr WrapClass_wxMBConv::
 //  Wrapping of wxCharBuffer const wxMBConv::cWC2MB(wchar_t const * in, size_t inLen, size_t * outLen)
 //---------------------------------------------------
 void WrapClass_wxMBConv::
-    wrap_cWC2MB2::SetParametersComments()
+    wrap_cWC2MB_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'in'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'inLen'")
@@ -293,7 +293,7 @@ void WrapClass_wxMBConv::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMBConv::
-    wrap_cWC2MB2::CallMember( ParamList* _p)
+    wrap_cWC2MB_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
@@ -560,7 +560,7 @@ mbstowcs(in,in_string->c_str(),in_string->size()+1);
 //  Wrapping of wxMBConv & wxMBConv::=(wxMBConv const & param0)
 //---------------------------------------------------
 void WrapClass_wxMBConv::
-    wrap_assign::SetParametersComments()
+    wrap___assign__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxMBConv, "parameter named 'param0'")
   return_comments="returning a variable of type wxMBConv";
@@ -568,7 +568,7 @@ void WrapClass_wxMBConv::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMBConv::
-    wrap_assign::CallMember( ParamList* _p)
+    wrap___assign__::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

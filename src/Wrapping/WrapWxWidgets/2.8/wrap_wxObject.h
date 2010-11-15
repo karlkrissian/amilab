@@ -57,9 +57,11 @@ class WrapClass_wxObject : public WrapClass<wxObject>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxObject,"Wrapping of wxObject.");
+    ADD_CLASS_CONSTRUCTOR(wxObject_1,"Constructor wxObject::wxObject() (http://docs.wxwidgets.org/stable/wx_wxobject.html#wxobject).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxObject1,"Wrapping of wxObject.");
+    ADD_CLASS_CONSTRUCTOR(wxObject,"Constructor wxObject::wxObject() (http://docs.wxwidgets.org/stable/wx_wxobject.html#wxobject).");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxObject_2,"Constructor wxObject::wxObject(wxObject const & other) (http://docs.wxwidgets.org/stable/wx_wxobject.html#wxobject).");
 
 
 
@@ -68,33 +70,38 @@ class WrapClass_wxObject : public WrapClass<wxObject>
 
     // here add each method
     
-    ADD_CLASS_METHOD(GetClassInfo,"")
-    ADD_CLASS_METHOD(IsKindOf,"")
+    // Adding copy method
+    ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
+    // Adding standard methods
+    ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxObject::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxobject.html#getclassinfo)")
+    ADD_CLASS_METHOD(IsKindOf,"bool wxObject::IsKindOf(wxClassInfo * info)  (http://docs.wxwidgets.org/stable/wx_wxobject.html#iskindof)")
 /* The following types are missing: wxObjectRefData
-    ADD_CLASS_METHOD(GetRefData,"")
+    ADD_CLASS_METHOD(GetRefData,"wxObjectRefData * wxObject::GetRefData()  (http://docs.wxwidgets.org/stable/wx_wxobject.html#getrefdata)")
 */
 /* The following types are missing: wxObjectRefData
-    ADD_CLASS_METHOD(SetRefData,"")
+    ADD_CLASS_METHOD(SetRefData,"void wxObject::SetRefData(wxObjectRefData * data)  (http://docs.wxwidgets.org/stable/wx_wxobject.html#setrefdata)")
 */
-    ADD_CLASS_METHOD(Ref,"")
-    ADD_CLASS_METHOD(UnRef,"")
-    ADD_CLASS_METHOD(UnShare,"")
-    ADD_CLASS_METHOD(IsSameAs,"")
+    ADD_CLASS_METHOD(Ref,"void wxObject::Ref(wxObject const & clone)  (http://docs.wxwidgets.org/stable/wx_wxobject.html#ref)")
+    ADD_CLASS_METHOD(UnRef,"void wxObject::UnRef()  (http://docs.wxwidgets.org/stable/wx_wxobject.html#unref)")
+    ADD_CLASS_METHOD(UnShare,"void wxObject::UnShare()  (http://docs.wxwidgets.org/stable/wx_wxobject.html#unshare)")
+    ADD_CLASS_METHOD(IsSameAs,"bool wxObject::IsSameAs(wxObject const & o)  (http://docs.wxwidgets.org/stable/wx_wxobject.html#issameas)")
 
     // Operators:
-    ADD_CLASS_METHOD(assign,"")
+    ADD_CLASS_METHOD(__assign__,            "wxObject & wxObject::=(wxObject const & other) (http://docs.wxwidgets.org/stable/wx_wxobject.html#__assign__)")
 
 
 
 
     void AddMethods(WrapClass<wxObject>::ptr this_ptr )
     {
-      // here inheritence
       
 
 
       // check that the method name is not a token
       
+      // Adding copy method 
+      AddVar___copy__( this_ptr);
+      // Adding standard methods 
       AddVar_GetClassInfo( this_ptr);
       AddVar_IsKindOf( this_ptr);
 /* The following types are missing: wxObjectRefData
@@ -108,10 +115,12 @@ class WrapClass_wxObject : public WrapClass<wxObject>
       AddVar_UnShare( this_ptr);
       AddVar_IsSameAs( this_ptr);
 
-      // Operators:
-      AddVar_assign( this_ptr);
+      // Adding operators
+      AddVar___assign__( this_ptr);
 
 
+
+      
     };
 };
 

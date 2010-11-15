@@ -66,12 +66,12 @@ class WrapClass_wxMBConv : public WrapClass<wxMBConv>
     // Adding standard methods
     ADD_CLASS_METHOD(ToWChar,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#towchar")
     ADD_CLASS_METHOD(FromWChar,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#fromwchar")
-    ADD_CLASS_METHOD(cMB2WC1,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc")
-    ADD_CLASS_METHOD(cWC2MB1,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb")
+    ADD_CLASS_METHOD(cMB2WC_1,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc")
+    ADD_CLASS_METHOD(cWC2MB_1,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb")
     ADD_CLASS_METHOD(cMB2WC,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc")
-    ADD_CLASS_METHOD(cMB2WC2,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc")
+    ADD_CLASS_METHOD(cMB2WC_2,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc")
     ADD_CLASS_METHOD(cWC2MB,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb")
-    ADD_CLASS_METHOD(cWC2MB2,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb")
+    ADD_CLASS_METHOD(cWC2MB_2,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb")
     ADD_CLASS_METHOD(cMB2WX,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wx")
     ADD_CLASS_METHOD(cWX2MB,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwx2mb")
     ADD_CLASS_METHOD(cWC2WX,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2wx")
@@ -82,7 +82,7 @@ class WrapClass_wxMBConv : public WrapClass<wxMBConv>
     ADD_CLASS_METHOD(WC2MB,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#wc2mb")
 
     // Operators:
-    ADD_CLASS_METHOD(assign,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#assign")
+    ADD_CLASS_METHOD(__assign__,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#__assign__")
 
 
 
@@ -97,12 +97,12 @@ class WrapClass_wxMBConv : public WrapClass<wxMBConv>
       // Adding standard methods 
       AddVar_ToWChar( this_ptr);
       AddVar_FromWChar( this_ptr);
-      AddVar_cMB2WC1( this_ptr);
-      AddVar_cWC2MB1( this_ptr);
+      AddVar_cMB2WC_1( this_ptr);
+      AddVar_cWC2MB_1( this_ptr);
       AddVar_cMB2WC( this_ptr);
-      AddVar_cMB2WC2( this_ptr);
+      AddVar_cMB2WC_2( this_ptr);
       AddVar_cWC2MB( this_ptr);
-      AddVar_cWC2MB2( this_ptr);
+      AddVar_cWC2MB_2( this_ptr);
       AddVar_cMB2WX( this_ptr);
       AddVar_cWX2MB( this_ptr);
       AddVar_cWC2WX( this_ptr);
@@ -113,7 +113,7 @@ class WrapClass_wxMBConv : public WrapClass<wxMBConv>
       AddVar_WC2MB( this_ptr);
 
       // Adding operators
-      AddVar_assign( this_ptr);
+      AddVar___assign__( this_ptr);
 
 
 

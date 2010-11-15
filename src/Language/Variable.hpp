@@ -237,6 +237,13 @@ class AMILabType {
         new WrapClass_##name1<type2>(obj_ptr));\
   } 
 
+#define AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2(type1,type2) \
+  BasicVariable::ptr AMILabType<type1 >::CreateVarFromSmtPtr(boost::shared_ptr<type1 >& obj_ptr) \
+  { \
+    return \
+      WrapClass<type1 >::CreateVar( \
+        new WrapClass_##type2(obj_ptr));\
+  } 
 
 template<typename> 
 struct to_string {
