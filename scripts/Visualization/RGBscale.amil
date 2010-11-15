@@ -94,7 +94,7 @@ if (!exists(RGBscale)) {
     #----------------------------
     proc ::UpdateDisplay_B() \
     {
-      ::TransformComp(1,::B_min,::B_max)
+      ::TransformComp(2,::B_min,::B_max)
       show ::transf_im
     }
 

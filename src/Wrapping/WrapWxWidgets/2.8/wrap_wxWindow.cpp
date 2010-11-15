@@ -24,6 +24,7 @@
 #include "wrap_wxString.h"
 #include "wrap_wxWindowBase.h"
 #include "wrap_wxRect.h"
+#include "wrap_wxColour.h"
 #include "wrap_wxFont.h"
 #include "stdlib.h"
 #include "wrap_wxClassInfo.h"
@@ -100,12 +101,8 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       AddVar_Refresh( this_ptr);
       AddVar_Update( this_ptr);
       AddVar_ClearBackground( this_ptr);
-/* The following types are missing: wxColour
       AddVar_SetBackgroundColour( this_ptr);
-*/
-/* The following types are missing: wxColour
       AddVar_SetForegroundColour( this_ptr);
-*/
 /* The following types are missing: wxCursor
       AddVar_SetCursor( this_ptr);
 */
@@ -574,12 +571,12 @@ BasicVariable::ptr WrapClass_wxWindow::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?    (*pos_smtptr):    (wxDefaultPosition));
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?    (*size_smtptr):    (wxDefaultSize));
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
@@ -588,7 +585,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?    (*name_smtptr):    (wxPanelNameStr));
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxPanelNameStr) );
 
   wxWindow* _newobj = new wxWindow(parent, id, pos, size, style, name);
   BasicVariable::ptr res = WrapClass_wxWindow::CreateVar(_newobj);
@@ -628,12 +625,12 @@ BasicVariable::ptr WrapClass_wxWindow::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?    (*pos_smtptr):    (wxDefaultPosition));
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?    (*size_smtptr):    (wxDefaultSize));
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
@@ -642,7 +639,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?    (*name_smtptr):    (wxPanelNameStr));
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxPanelNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, pos, size, style, name);
   int res_int = ((res==true)?1:0);
@@ -1006,7 +1003,6 @@ BasicVariable::ptr WrapClass_wxWindow::
   this->_objectptr->GetObj()->ClearBackground();
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindow::SetBackgroundColour(wxColour const & colour)
@@ -1034,8 +1030,6 @@ BasicVariable::ptr WrapClass_wxWindow::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindow::SetForegroundColour(wxColour const & colour)
@@ -1063,7 +1057,6 @@ BasicVariable::ptr WrapClass_wxWindow::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
 /* The following types are missing: wxCursor
 
 //---------------------------------------------------

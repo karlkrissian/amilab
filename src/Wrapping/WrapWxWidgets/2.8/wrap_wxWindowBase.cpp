@@ -21,10 +21,12 @@
 #include "wrap_wxWindowBase.h"
 #include "wrap_wxPoint.h"
 #include "wrap_wxSize.h"
+#include "wrap_wxValidator.h"
 #include "wrap_wxString.h"
 #include "wrap_wxRect.h"
 #include "wrap_wxWindow.h"
 #include "wrap_wxVisualAttributes.h"
+#include "wrap_wxColour.h"
 #include "wrap_wxFont.h"
 #include "wrap_wxSizer.h"
 #include "wrap_wxClassInfo.h"
@@ -85,9 +87,7 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
   // check that the method name is not a token
   
       // Adding standard methods 
-/* The following types are missing: wxValidator
       AddVar_CreateBase( this_ptr);
-*/
       AddVar_Close( this_ptr);
       AddVar_Destroy( this_ptr);
       AddVar_DestroyChildren( this_ptr);
@@ -245,12 +245,8 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 /* The following types are missing: wxEvtHandler
       AddVar_RemoveEventHandler( this_ptr);
 */
-/* The following types are missing: wxValidator
       AddVar_SetValidator( this_ptr);
-*/
-/* The following types are missing: wxValidator
       AddVar_GetValidator( this_ptr);
-*/
       AddVar_Validate( this_ptr);
       AddVar_TransferDataToWindow( this_ptr);
       AddVar_TransferDataFromWindow( this_ptr);
@@ -299,26 +295,14 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
       AddVar_IsExposed_4( this_ptr);
       AddVar_GetDefaultAttributes( this_ptr);
       AddVar_GetClassDefaultAttributes( this_ptr);
-/* The following types are missing: wxColour
       AddVar_SetBackgroundColour( this_ptr);
-*/
-/* The following types are missing: wxColour
       AddVar_SetOwnBackgroundColour( this_ptr);
-*/
-/* The following types are missing: wxColour
       AddVar_GetBackgroundColour( this_ptr);
-*/
       AddVar_InheritsBackgroundColour( this_ptr);
       AddVar_UseBgCol( this_ptr);
-/* The following types are missing: wxColour
       AddVar_SetForegroundColour( this_ptr);
-*/
-/* The following types are missing: wxColour
       AddVar_SetOwnForegroundColour( this_ptr);
-*/
-/* The following types are missing: wxColour
       AddVar_GetForegroundColour( this_ptr);
-*/
       AddVar_SetBackgroundStyle( this_ptr);
       AddVar_GetBackgroundStyle( this_ptr);
       AddVar_HasTransparentBackground( this_ptr);
@@ -456,7 +440,6 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: wxValidator
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::CreateBase(wxWindowBase * parent, wxWindowID winid, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxPanelNameStr)
@@ -492,16 +475,12 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?
-    (wxPoint const &) (*pos_smtptr):
-    (wxPoint const &) wxDefaultPosition);
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?
-    (wxSize const &) (*size_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
@@ -510,22 +489,17 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   boost::shared_ptr<wxValidator > validator_smtptr;
   if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxValidator const & validator = (validator_smtptr.get()?
-    (wxValidator const &) (*validator_smtptr):
-    (wxValidator const &) wxDefaultValidator);
+  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : (wxDefaultValidator) );
 
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?
-    (wxString const &) (*name_smtptr):
-    (wxString const &) wxPanelNameStr);
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxPanelNameStr) );
 
   bool res =   this->_objectptr->GetObj()->CreateBase(parent, winid, pos, size, style, validator, name);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::Close(bool force = false)
@@ -1859,9 +1833,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?
-    (wxSize const &) (*size_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   this->_objectptr->GetObj()->SetInitialSize(size);
   return BasicVariable::ptr();
@@ -2090,16 +2062,12 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   boost::shared_ptr<wxSize > maxSize_smtptr;
   if (!get_val_smtptr_param<wxSize >(maxSize_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & maxSize = (maxSize_smtptr.get()?
-    (wxSize const &) (*maxSize_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & maxSize = ( maxSize_smtptr.get() ? (*maxSize_smtptr) : (wxDefaultSize) );
 
   boost::shared_ptr<wxSize > incSize_smtptr;
   if (!get_val_smtptr_param<wxSize >(incSize_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & incSize = (incSize_smtptr.get()?
-    (wxSize const &) (*incSize_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & incSize = ( incSize_smtptr.get() ? (*incSize_smtptr) : (wxDefaultSize) );
 
   this->_objectptr->GetObj()->SetSizeHints(minSize, maxSize, incSize);
   return BasicVariable::ptr();
@@ -2231,9 +2199,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   boost::shared_ptr<wxSize > maxSize_smtptr;
   if (!get_val_smtptr_param<wxSize >(maxSize_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & maxSize = (maxSize_smtptr.get()?
-    (wxSize const &) (*maxSize_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & maxSize = ( maxSize_smtptr.get() ? (*maxSize_smtptr) : (wxDefaultSize) );
 
   this->_objectptr->GetObj()->SetVirtualSizeHints(minSize, maxSize);
   return BasicVariable::ptr();
@@ -3793,7 +3759,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   return AMILabType<int >::CreateVar(res_int);
 }
 */
-/* The following types are missing: wxValidator
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetValidator(wxValidator const & validator)
@@ -3819,8 +3784,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetValidator(validator);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxValidator
 
 //---------------------------------------------------
 //  Wrapping of wxValidator * wxWindowBase::GetValidator()
@@ -3838,9 +3801,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxValidator * res =   this->_objectptr->GetObj()->GetValidator();
-  return AMILabType<wxValidator >::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxValidator::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::Validate()
@@ -4717,7 +4680,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxVisualAttributes res =   this->_objectptr->GetObj()->GetClassDefaultAttributes(variant);
   return AMILabType<wxVisualAttributes >::CreateVar(res);
 }
-/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::SetBackgroundColour(wxColour const & colour)
@@ -4745,8 +4707,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetOwnBackgroundColour(wxColour const & colour)
@@ -4772,8 +4732,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetOwnBackgroundColour(colour);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of wxColour wxWindowBase::GetBackgroundColour()
@@ -4793,7 +4751,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxColour res =   this->_objectptr->GetObj()->GetBackgroundColour();
   return AMILabType<wxColour >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::InheritsBackgroundColour()
@@ -4834,7 +4791,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::SetForegroundColour(wxColour const & colour)
@@ -4862,8 +4818,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetOwnForegroundColour(wxColour const & colour)
@@ -4889,8 +4843,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetOwnForegroundColour(colour);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of wxColour wxWindowBase::GetForegroundColour()
@@ -4910,7 +4862,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxColour res =   this->_objectptr->GetObj()->GetForegroundColour();
   return AMILabType<wxColour >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::SetBackgroundStyle(wxBackgroundStyle style)
@@ -5500,9 +5451,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?
-    (wxPoint const &) (*pos_smtptr):
-    (wxPoint const &) wxDefaultPosition);
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   bool res =   this->_objectptr->GetObj()->PopupMenu(menu, pos);
   int res_int = ((res==true)?1:0);

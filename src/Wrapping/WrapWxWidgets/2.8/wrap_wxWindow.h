@@ -51,7 +51,6 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
     /// Destructor
     ~WrapClass_wxWindow()
     {
-      std::cout << "~WrapClass_wxWindow()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -88,12 +87,8 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
     ADD_CLASS_METHOD(Refresh,"void wxWindow::Refresh(bool eraseBackground = true, wxRect const * rect = 0u)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#refresh)")
     ADD_CLASS_METHOD(Update,"void wxWindow::Update()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#update)")
     ADD_CLASS_METHOD(ClearBackground,"void wxWindow::ClearBackground()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#clearbackground)")
-/* The following types are missing: wxColour
     ADD_CLASS_METHOD(SetBackgroundColour,"bool wxWindow::SetBackgroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setbackgroundcolour)")
-*/
-/* The following types are missing: wxColour
     ADD_CLASS_METHOD(SetForegroundColour,"bool wxWindow::SetForegroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setforegroundcolour)")
-*/
 /* The following types are missing: wxCursor
     ADD_CLASS_METHOD(SetCursor,"bool wxWindow::SetCursor(wxCursor const & cursor)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setcursor)")
 */

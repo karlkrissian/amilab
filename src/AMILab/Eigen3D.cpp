@@ -94,10 +94,11 @@ unsigned char      Func_Eigen2D( char* varname,
 
 //  verbose = true;
 
-  image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT,3,  "E-vep1.inr.gz", Mxx));
-  image_vep2 = InrImage::ptr( new InrImage( WT_FLOAT,3,  "E-vep2.inr.gz", Mxx));
-  image_vep1->InitImage( 0.0, 0.0, 0.0);
-  image_vep2->InitImage( 0.0, 0.0, 0.0);
+  image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT,2,  "E-vep1.inr.gz", Mxx));
+  image_vep2 = InrImage::ptr( new InrImage( WT_FLOAT,2,  "E-vep2.inr.gz", Mxx));
+  double initval[2] = {0.0, 0.0};
+  image_vep1->InitImage( initval,2);
+  image_vep2->InitImage( initval,2);
 
   image_vap1 = InrImage::ptr( new InrImage( WT_FLOAT,  "E-vap1.inr.gz", Mxx));
   image_vap2 = InrImage::ptr( new InrImage( WT_FLOAT,  "E-vap2.inr.gz", Mxx));
@@ -130,8 +131,10 @@ unsigned char      Func_Eigen2D( char* varname,
 
       Si VapHessien Alors
         eigsrt(vap, VP_2D, 2);
-        image_vep1->VectFixeValeurs( VP_2D[0][0],  VP_2D[1][0],  0);
-        image_vep2->VectFixeValeurs( VP_2D[0][1],  VP_2D[1][1],  0);
+        image_vep1->VectFixeValeur( 0, VP_2D[0][0]);
+        image_vep1->VectFixeValeur( 1, VP_2D[1][0]);
+        image_vep2->VectFixeValeur( 0, VP_2D[0][1]);
+        image_vep2->VectFixeValeur( 1, VP_2D[1][1]);
         image_vap1->FixeValeur( vap[0]);
         image_vap2->FixeValeur( vap[1]);
       FinSi

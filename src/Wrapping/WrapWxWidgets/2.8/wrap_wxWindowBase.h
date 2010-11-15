@@ -51,7 +51,6 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
     /// Destructor
     ~WrapClass_wxWindowBase()
     {
-      std::cout << "~WrapClass_wxWindowBase()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -64,9 +63,7 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
     // here add each method
     
     // Adding standard methods
-/* The following types are missing: wxValidator
     ADD_CLASS_METHOD(CreateBase,"bool wxWindowBase::CreateBase(wxWindowBase * parent, wxWindowID winid, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxPanelNameStr)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#createbase)")
-*/
     ADD_CLASS_METHOD(Close,"bool wxWindowBase::Close(bool force = false)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#close)")
     ADD_CLASS_METHOD(Destroy,"bool wxWindowBase::Destroy()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#destroy)")
     ADD_CLASS_METHOD(DestroyChildren,"bool wxWindowBase::DestroyChildren()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#destroychildren)")
@@ -224,12 +221,8 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
 /* The following types are missing: wxEvtHandler
     ADD_CLASS_METHOD(RemoveEventHandler,"bool wxWindowBase::RemoveEventHandler(wxEvtHandler * handler)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#removeeventhandler)")
 */
-/* The following types are missing: wxValidator
     ADD_CLASS_METHOD(SetValidator,"void wxWindowBase::SetValidator(wxValidator const & validator)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setvalidator)")
-*/
-/* The following types are missing: wxValidator
     ADD_CLASS_METHOD(GetValidator,"wxValidator * wxWindowBase::GetValidator()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getvalidator)")
-*/
     ADD_CLASS_METHOD(Validate,"bool wxWindowBase::Validate()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#validate)")
     ADD_CLASS_METHOD(TransferDataToWindow,"bool wxWindowBase::TransferDataToWindow()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#transferdatatowindow)")
     ADD_CLASS_METHOD(TransferDataFromWindow,"bool wxWindowBase::TransferDataFromWindow()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#transferdatafromwindow)")
@@ -278,26 +271,14 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
     ADD_CLASS_METHOD(IsExposed_4,"bool wxWindowBase::IsExposed(wxRect const & rect)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#isexposed)")
     ADD_CLASS_METHOD(GetDefaultAttributes,"wxVisualAttributes wxWindowBase::GetDefaultAttributes()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getdefaultattributes)")
     ADD_CLASS_METHOD(GetClassDefaultAttributes,"wxVisualAttributes wxWindowBase::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getclassdefaultattributes)")
-/* The following types are missing: wxColour
     ADD_CLASS_METHOD(SetBackgroundColour,"bool wxWindowBase::SetBackgroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setbackgroundcolour)")
-*/
-/* The following types are missing: wxColour
     ADD_CLASS_METHOD(SetOwnBackgroundColour,"void wxWindowBase::SetOwnBackgroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setownbackgroundcolour)")
-*/
-/* The following types are missing: wxColour
     ADD_CLASS_METHOD(GetBackgroundColour,"wxColour wxWindowBase::GetBackgroundColour()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getbackgroundcolour)")
-*/
     ADD_CLASS_METHOD(InheritsBackgroundColour,"bool wxWindowBase::InheritsBackgroundColour()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#inheritsbackgroundcolour)")
     ADD_CLASS_METHOD(UseBgCol,"bool wxWindowBase::UseBgCol()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#usebgcol)")
-/* The following types are missing: wxColour
     ADD_CLASS_METHOD(SetForegroundColour,"bool wxWindowBase::SetForegroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setforegroundcolour)")
-*/
-/* The following types are missing: wxColour
     ADD_CLASS_METHOD(SetOwnForegroundColour,"void wxWindowBase::SetOwnForegroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setownforegroundcolour)")
-*/
-/* The following types are missing: wxColour
     ADD_CLASS_METHOD(GetForegroundColour,"wxColour wxWindowBase::GetForegroundColour()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getforegroundcolour)")
-*/
     ADD_CLASS_METHOD(SetBackgroundStyle,"bool wxWindowBase::SetBackgroundStyle(wxBackgroundStyle style)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setbackgroundstyle)")
     ADD_CLASS_METHOD(GetBackgroundStyle,"wxBackgroundStyle wxWindowBase::GetBackgroundStyle()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getbackgroundstyle)")
     ADD_CLASS_METHOD(HasTransparentBackground,"bool wxWindowBase::HasTransparentBackground()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#hastransparentbackground)")
