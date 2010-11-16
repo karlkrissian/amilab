@@ -52,7 +52,9 @@ public:
 
 private:
   wxDynamicLibrary m_dll;     // DLL handle.
-  PluginInterface* m_plugin;  // Plugin handle.
+  PluginBase *m_plugin;       // Plugin handle.
+  WX_Plugin* m_wxplugin;      // wxWindow plugin handle.
+
 }; // PluginManager
 
 #endif // PLUGINMANAGER_H

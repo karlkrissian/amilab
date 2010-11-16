@@ -243,8 +243,12 @@ void  MainFrame::OnPluginAbout ( wxCommandEvent& event )
 {
   if (_plugin_manager.LoadPlugins("/home/roncali/proyectos/amilab/branch-amilab/build/debug/Plugins/AboutBox/libAboutBoxPluginExample.so"))
   {
-    PluginInterface* plugin = _plugin_manager.GetPluginHandle();
-    wxWindow * w = plugin->CreateGui(this);
+    WX_Plugin* plugin = _plugin_manager.GetPluginHandle();
+    plugin->SetwxWindow(this);
+    if (plugin->Execute())
+    {
+      //TODO
+    }
   }
 } //OnLoadPlugin
 //-------------------------------------------------------

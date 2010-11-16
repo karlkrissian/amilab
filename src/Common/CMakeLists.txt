@@ -109,6 +109,7 @@ SET(Common_HDRS
   # from Plugin
   include/PluginInterface.h
   include/PluginManager.h
+  #include/PluginBase.h
 )
 
 SET (Common_SRCS

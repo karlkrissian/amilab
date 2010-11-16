@@ -19,9 +19,9 @@
 /**
  * @brief Class that contains a plugins that display the About dialog box.
  **/
-class WX_AMILAB_EXPORT AboutBox : public PluginInterface
+class WX_AMILAB_EXPORT AboutBox : public WX_Plugin
 {
-  PLUGIN_DEFINE();
+  PLUGIN_WX_DEFINE();
 
 public:
   AboutBox();

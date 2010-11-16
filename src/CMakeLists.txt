@@ -239,7 +239,6 @@ CONFIGURE_FILE(
 #  End of Configuration files
 #-------------------------------------------------------------------------------
 
-
 OPTION(AMI_USE_STATIC_LIBS     "Look for static libraries" ON)
 OPTION(AMI_USE_PRECOMP_HEADERS "Use precompiled headers when available" OFF)
 
@@ -303,8 +302,6 @@ IF(AMI_CHECK_BRANCH)
   
 ENDIF(AMI_CHECK_BRANCH)
 
-
-
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
 
 IF(AMI_USE_VTK)
@@ -322,6 +319,38 @@ FIND_PACKAGE ( AMIFluid )
 FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
 FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net )
+
+#-------------------------------------------------------------------------------
+#  Get the wxWidgets version.
+#-------------------------------------------------------------------------------
+IF(wxWidgets_FOUND)
+  SET(AMI_WXWIDGETS_VERSION "AMI_WXWIDGETS_VERSION-NOTFOUND")
+  MESSAGE("\n*** wxWidgets VERSION ***")
+  MESSAGE("wxWidgets include dirs: ${wxWidgets_INCLUDE_DIRS}")
+
+  FIND_PATH(WX_VERSION_FOUND NAMES wx/version.h
+    PATHS
+      ${wxWidgets_INCLUDE_DIRS}
+    DOC "path of file: wx/version.h")
+  MARK_AS_ADVANCED(WX_VERSION_FOUND)
+  IF(WX_VERSION_FOUND)
+    MESSAGE("path of file \"wx/version.h\": ${WX_VERSION_FOUND}")
+    FILE(STRINGS "${WX_VERSION_FOUND}/wx/version.h"
+         FILE_WX_MAJOR_VERSION
+         REGEX "^#define( +)wxM[AJ|IN].*OR_VERSION( +)[0-9]")
+    MESSAGE("File filtering: ${FILE_WX_MAJOR_VERSION}\n")
+    LIST(GET FILE_WX_MAJOR_VERSION 0 MAJOR_VERSION)
+    LIST(GET FILE_WX_MAJOR_VERSION -1 MINOR_VERSION)
+    STRING(REGEX MATCH "[0-9]" WX_MAJOR_VERSION ${MAJOR_VERSION})
+    STRING(REGEX MATCH "[0-9]" WX_MINOR_VERSION ${MINOR_VERSION})
+    SET(AMI_WXWIDGETS_VERSION "${WX_MAJOR_VERSION}.${WX_MINOR_VERSION}")
+    MESSAGE("wxWidgets version: ${AMI_WXWIDGETS_VERSION}\n")
+  ELSE(WX_VERSION_FOUND)
+    MESSAGE("Error: \"wx/version.h\" file not found\n")
+  ENDIF(WX_VERSION_FOUND)
+ENDIF(wxWidgets_FOUND)
+
+SET(WX_VERSION_FOUND "WX_VERSION_FOUND-NOTFOUND" CACHE FILEPATH "Cleared." FORCE)
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )

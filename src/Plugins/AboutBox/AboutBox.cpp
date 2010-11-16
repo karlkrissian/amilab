@@ -41,16 +41,20 @@ const wxString & AboutBox::GetStatus(void) const
 const wxString & AboutBox::GetPath(void)  const
   { return m_Path; }
 
-void AboutBox::SetStatus( const wxString& Status )
-  { m_Status = Status; }
+void AboutBox::SetStatus( const wxString& MyStatus )
+  { m_Status = MyStatus; }
   
 void AboutBox::SetPath( const wxString& Path )
   { m_Path = Path; }
 
-wxWindow * AboutBox::CreateGui (wxWindow *parent)
-{
-  m_win = new wxWindow(parent, wxID_ANY);
+void AboutBox::SetwxWindow( wxWindow *Parent )
+  { m_win = Parent; }
 
+wxWindow* AboutBox::GetwxWindow(void)
+  { return m_win; }
+  
+bool AboutBox::Execute (void)
+{
   wxAboutDialogInfo info;
 
   info.SetName(wxT("AMILab"));
@@ -60,5 +64,5 @@ wxWindow * AboutBox::CreateGui (wxWindow *parent)
   info.SetCopyright(wxT("(C) 2007 Karl Krissian <krissian@dis.ulpgc.es>>"));
 
   wxAboutBox(info, m_win);
-  return m_win;
+  return true;
 }
