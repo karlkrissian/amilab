@@ -36,7 +36,7 @@
 
 #include "DndChoiceTextDropTarget.h"
 
-#include "slick/16x16/actions/reload.xpm"
+//#include "slick/16x16/actions/reload.xpm"
 
 #ifdef _MSC_VER
   #define __func__ __FUNCTION__
@@ -52,8 +52,46 @@ wxString GetwxStr(const string& str);
 BEGIN_EVENT_TABLE(myChoice, wxChoice)
 //BEGIN_EVENT_TABLE(myChoice, wxComboBox)
   EVT_CHOICE    (wxID_ANY,  myChoice::OnChoiceUpdate)
+  EVT_SET_FOCUS (myChoice::OnFocus)
+  EVT_LEFT_DOWN (myChoice::OnLeftDown)
 END_EVENT_TABLE()
 
+//---------------------------------------------------------------
+void myChoice::OnFocus(wxFocusEvent& event)
+{
+  std::cout << "Focus ..." << std::endl;
+  event.Skip();
+}
+
+//---------------------------------------------------------------
+void myChoice::OnLeftDown(wxMouseEvent& event)
+{
+  std::cout << "Left down ..." << std::endl;
+  this->UpdateListCallback();
+//void (*cbf)( void*) = (void (*)(void*)) this->_callback;
+//  cbf(this->_calldata);
+  event.Skip();
+}
+
+//---------------------------------------------------------------
+void myChoice::Callback()
+//
+{
+  if (this->_callback!=NULL) {
+    void (*pf)( void*) = (void (*)(void*)) this->_callback;
+    pf( this->_calldata);
+  }
+}
+
+//---------------------------------------------------------------
+void myChoice::UpdateListCallback()
+//
+{
+  if (this->_updatelist_callback!=NULL) {
+    void (*pf)( void*) = (void (*)(void*)) this->_updatelist_callback;
+    pf( this->_updatelist_calldata);
+  }
+}
 
 //---------------------------------------------------------------
 wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent, 
@@ -133,9 +171,10 @@ wxEnumerationParameter::~wxEnumerationParameter()
   }
 
 //----------------------------------------------
-void wxEnumerationParameter::AddUpdateButton( void* update_cb,
+void wxEnumerationParameter::AddUpdateCallback( void* update_cb,
   const std::string& tooltip)
 {
+/*
   _update_button = new wxBitmapButtonParameter(
         this->_parent, 
         "update", 
@@ -144,6 +183,9 @@ void wxEnumerationParameter::AddUpdateButton( void* update_cb,
         (void*) this);
   _update_button->SetToolTip(GetwxStr(tooltip.c_str()));
   this->Add(this->_update_button,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+*/
+
+  _choice->SetUpdateListCallback(update_cb,(void*) this);
 }
 
 
@@ -277,7 +319,7 @@ wxString wxEnumerationParameter::GetAbsoluteName(const wxString& Name)
         Size = Pos + Name.Len();
         Simb = Text.SubString(Pos-2, Pos-1).ToAscii();
 
-        if(Size == Text.Len())
+        if(Size == (int) Text.Len())
         {
           if(Simb == "::")
           {

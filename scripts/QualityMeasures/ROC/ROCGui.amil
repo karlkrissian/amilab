@@ -1,0 +1,12 @@
+
+func "ROCClass"
+
+if (!exists(ROC_obj)) {
+  ROCClass ROC_obj
+  ROC_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
+

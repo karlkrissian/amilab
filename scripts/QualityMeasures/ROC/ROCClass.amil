@@ -5,9 +5,9 @@
 
 func "Common/ScriptGui"
 
-if (!exists(ROC_Class)){
+if (!exists(ROCClass)){
 
-  Class ROC_Class : public ScriptGui \
+  Class ROCClass : public ScriptGui \
   {
 
     proc ::Init() {
@@ -31,7 +31,7 @@ if (!exists(ROC_Class)){
       
       ::AUC_string = "", "Area Under the Curve (AUC)"
 
-      ::Gui()
+      #::Gui()
     }
 
 
@@ -202,9 +202,9 @@ if (!exists(ROC_Class)){
 
         ::win.AddPage("Params")
           # Parameters
-          ::minval_id = ::win.AddFloat( &::min_val,"min val",0,100)
-          ::maxval_id = ::win.AddFloat( &::max_val,"max val",0,100)
-          ::win.AddInt( &::num_val,"nb values",1,256)
+          ::minval_id = ::win.AddFloat( &::min_val,"min",0,100)
+          ::maxval_id = ::win.AddFloat( &::max_val,"max",0,100)
+          ::win.AddInt( &::num_val,"nb",1,256)
           
           ::win.BeginBoxPanel("Draw")
             ::win.BeginHorizontal()
@@ -213,8 +213,6 @@ if (!exists(ROC_Class)){
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
-          # Area Under the curve
-          ::win.AddString(&::AUC_string,"AUC")
 
           # Run
           ::win.BeginHorizontal()
@@ -222,6 +220,9 @@ if (!exists(ROC_Class)){
             ::win.SetPositionProp(-1,0)
             ::AddBitmapButton(&::win, &::icons._Show,   32, "Display")
             ::win.SetPositionProp(-1,0)
+            # Area Under the curve
+            ::win.AddString(&::AUC_string,"AUC")
+            ::win.SetPositionProp(1,2)
           ::win.EndHorizontal()
           #::win.AddButton("Run",     &::Run)
           #::win.AddButton("Display", &::Display)
@@ -240,6 +241,3 @@ if (!exists(ROC_Class)){
   }
 }
 
-if (!exists(ROCobj)) {
-  ROC_Class ROCobj
-}

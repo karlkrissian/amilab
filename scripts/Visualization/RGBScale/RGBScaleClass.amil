@@ -5,14 +5,14 @@
 # or lines from an image
 #
 
-comments="RGBscale: Linear rescaling of the intensity of RGB image per RGB component."
+comments="RGBScale: Linear rescaling of the intensity of RGB image per RGB component."
 
 func "Common/ScriptGui"
 
 
-if (!exists(RGBscale)) {
+if (!exists(RGBScaleClass)) {
 
-  Class RGBscaleClass : public ScriptGui {
+  Class RGBScaleClass : public ScriptGui {
 
     ::ami_import = &global::ami_import
     #----------------------------
@@ -27,7 +27,7 @@ if (!exists(RGBscale)) {
       ::R_max = INT(255), "maximum for Red component of the color"
       ::G_max = INT(255), "maximum for Green component of the color"
       ::B_max = INT(255), "maximum for Blue component of the color"
-      ::CreateWindow()
+      #::Gui()
     }
     
     #----------------------------
@@ -111,11 +111,11 @@ if (!exists(RGBscale)) {
     Comments( ::SetAsCallback, "Set the grid display function as a paint callback of the drawing area")
 
     #----------------------------
-    proc ::CreateWindow() {
+    proc ::Gui() {
     
       # parameters window
       import = &global::ami_import;
-      ::win = import->ParamPanel("RGBscale")
+      ::win = import->ParamPanel("RGB")
       
       ::win.BeginBook()
     
@@ -125,7 +125,8 @@ if (!exists(RGBscale)) {
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
-              ::win.AddButton( "ImReload",&::ImReload)
+              ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload")
+              #::win.AddButton( "ImReload",&::ImReload)
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
@@ -165,20 +166,9 @@ if (!exists(RGBscale)) {
     ::Init()
   } 
   # Class RGBscaleClass
-  Comments( RGBscaleClass, comments)
+  Comments( RGBScaleClass, comments)
 } 
 # end if (!exists(Functions2DClass))
   
   
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(rgb_scale)) {
-
-  RGBscaleClass rgb_scale
-  
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
 

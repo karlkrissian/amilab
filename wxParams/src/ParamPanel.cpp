@@ -686,7 +686,7 @@ bool ParamPanel::AddListChoice( int* id,
   wxEnumerationParameter* wxe = new wxEnumerationParameter(
       CurrentParent(), selection_param, libelle, tooltip,allowdrop);
   std::string update_string = "Update list";
-  wxe->AddUpdateButton(update_cb,update_string);
+  wxe->AddUpdateCallback(update_cb,update_string);
   wxe->SetChoices(choicelist);
 
   ParamInfo pi( TYPE_PARAMETER_ENUMERATION,
