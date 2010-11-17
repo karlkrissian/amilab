@@ -310,10 +310,10 @@ if (!exists(Subpixel2DClass)){
       if (exists(::sp2D)) { del ::sp2D; }
       #Build a SubPixel2D object
       ::sp2D = ::import->SubPixel2D(&::norm_input,::threshold,::linear)
-      if(::subden==1) {
-        ::res = ::sp2D->SubpixelDenoising(::niter);
-        ::s_method = "Subpixel denoising"
-      }
+      #if(::subden==1) {
+      #  ::res = ::sp2D->SubpixelDenoising(::niter);
+      #  ::s_method = "Subpixel denoising"
+      #}
       if(::average==0 && ::show_average==0 && ::dynamic==0) {
         ::res = ::sp2D->SuperGradienteCurvo()
         ::s_method = "Basic method"

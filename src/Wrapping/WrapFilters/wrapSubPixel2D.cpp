@@ -142,7 +142,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
                                                     "promedio.ami.gz",
                                                     sp->getInput()));
   
-  sp->Promedio3x3(/*sp->getInput(),*/ output.get(), (double)1/9, (double)1/9, (double)1/9);
+  sp->Promedio3x3(sp->getInput(), output.get(), (double)1/9, (double)1/9, (double)1/9);
   
   sp->setInput(output.get());
   
@@ -220,9 +220,9 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_DenoisingGus
                                                     "promedio.ami.gz",
                                                     sp->getInput()));
   
-  sp->Promedio3x3(output.get(), (double)1/9, (double)1/9, (double)1/9);
+  sp->Promedio3x3(sp->getInput(), output.get(), (double)1/9, (double)1/9, (double)1/9);
   
-  sp->setInput(output.get());
+  //sp->setInput(output.get());
   
   sp->DenoisingGus();
   

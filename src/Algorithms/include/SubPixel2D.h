@@ -227,7 +227,7 @@ public:
    *  @param a01    Coefficient of the mask.
    *  @param a11    Coefficient of the mask.
    */
-  void Promedio3x3(InrImage* result, 
+  void Promedio3x3(InrImage* input, InrImage* result, 
                    double a00, double a01, double a11);
   
   /**
@@ -251,6 +251,8 @@ public:
 private:
   //Input image
   InrImage* input;
+  //Denoised image
+  InrImage* denoised;
   //borderPixel vector
   vector<borderPixel> borderPixelVector;
   //Gradient threshold
