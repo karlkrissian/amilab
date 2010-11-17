@@ -323,7 +323,37 @@ FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
 FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net )
 
-SET(AMI_WXWIDGETS_VERSION "2.8" CACHE STRING "set the wxwidgets version: 2.8 or 2.9" )
+SET(AMI_WXWIDGETS_VERSION "AMI_WXWIDGETS_VERSION-NOTFOUND" )
+
+#-------------------------------------------------------------------------------
+#  Get the wxWidgets version.
+#-------------------------------------------------------------------------------
+IF(wxWidgets_FOUND)
+  MESSAGE("\n*** wxWidgets VERSION ***")
+  MESSAGE("wxWidgets include dirs: ${wxWidgets_INCLUDE_DIRS}")
+  FIND_PATH(WX_VERSION_PATH NAMES wx/version.h
+    PATHS
+      ${wxWidgets_INCLUDE_DIRS}
+    NO_DEFAULT_PATH
+    DOC "path of file: wx/version.h")
+  IF(WX_VERSION_PATH)
+    MESSAGE("path of file \"wx/version.h\": ${WX_VERSION_PATH}")
+    FILE(STRINGS "${WX_VERSION_PATH}/wx/version.h"
+         FILE_WX_MAJOR_VERSION
+         REGEX "^#define( +)wxM[AJ|IN].*OR_VERSION( +)[0-9]")
+    MESSAGE("File filtering: ${FILE_WX_MAJOR_VERSION}\n")
+    LIST(GET FILE_WX_MAJOR_VERSION 0 MAJOR_VERSION)
+    LIST(GET FILE_WX_MAJOR_VERSION -1 MINOR_VERSION)
+    STRING(REGEX MATCH "[0-9]" WX_MAJOR_VERSION ${MAJOR_VERSION})
+    STRING(REGEX MATCH "[0-9]" WX_MINOR_VERSION ${MINOR_VERSION})
+    SET(AMI_WXWIDGETS_VERSION "${WX_MAJOR_VERSION}.${WX_MINOR_VERSION}")
+    MESSAGE("wxWidgets version: ${AMI_WXWIDGETS_VERSION}\n")
+  ELSE(WX_VERSION_PATH)
+    MESSAGE("Error: \"wx/version.h\" file not found\n")
+  ENDIF(WX_VERSION_PATH)
+  SET(WX_VERSION_PATH "WX_VERSION_PATH-NOTFOUND" CACHE FILEPATH "Cleared." FORCE)
+  MARK_AS_ADVANCED(WX_VERSION_PATH)
+ENDIF(wxWidgets_FOUND)
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
