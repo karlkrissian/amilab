@@ -10,6 +10,7 @@
 
 #source code:
 INCLUDE_DIRECTORIES (
+  ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Wrapping/include

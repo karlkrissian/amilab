@@ -41,12 +41,17 @@
     #include "wx/wx.h"
 #endif
 
-#include "DefineClass.hpp"
+//--------------------------------------------------
+// Definition of macros to determine the mode of use
+// of the Plugin.
+//--------------------------------------------------
+#define PLUGIN_IN_CONSOLE_MODE  0
+#define PLUGIN_IN_GRAPHIC_MODE  1
 
 /**
  * @brief Class that contains the protocol of communication.
  **/
-class WX_AMILAB_EXPORT PluginBase : public wxObject
+class WX_AMILAB_EXPORT PluginInterface //: public wxObject
 {
   public:
     /**
@@ -54,42 +59,49 @@ class WX_AMILAB_EXPORT PluginBase : public wxObject
      *
      * @return return a wxString with the plugin name
      **/
-    virtual const wxString & GetName(void) const = 0;
+    virtual wxString GetName(void) const = 0;
 
     /**
      * @brief Get the plugin description.
      *
      * @return return a wxString with the plugin description
      **/
-    virtual const wxString & GetDescription(void) const = 0;
+    virtual wxString GetDescription(void) const = 0;
 
     /**
      * @brief Get the plugin version.
      *
      * @return return a wxString with the plugin version
      **/
-    virtual const wxString & GetVersion(void) const = 0;
+    virtual wxString GetVersion(void) const = 0;
 
     /**
      * @brief Get the plugin author.
      *
      * @return return a wxString with the plugin author
      **/
-    virtual const wxString & GetAuthor(void) const = 0;
+    virtual wxString GetAuthor(void) const = 0;
 
     /**
      * @brief Get the plugin status.
      *
      * @return return a wxString with the plugin status
      **/
-    virtual const wxString & GetStatus(void) const = 0;
+    virtual wxString GetStatus(void) const = 0;
 
     /**
      * @brief Get the plugin path.
      *
      * @return return a wxString with the plugin path
      **/
-    virtual const wxString & GetPath(void) const = 0;
+    virtual wxString GetPath(void) const = 0;
+
+    /**
+     * @brief  Get the wxWindow of the plugin.
+     *
+     * @return return a wxString with the wxWindow of the plugin
+     **/
+    virtual wxWindow* GetwxWindow(void) const = 0;
 
     /**
      * @brief Set the plugin Path.
@@ -106,37 +118,55 @@ class WX_AMILAB_EXPORT PluginBase : public wxObject
     virtual void SetStatus( const wxString& MyStatus) = 0;
 
     /**
-     * @brief Execute the plugin.
-     *
-     * @return return true if the plugin executes correctly
-     **/
-    virtual bool Execute (void) const = 0;
-}; // PluginBase
-
-
-/**
- * @brief Class that contains the protocol of communication.
- **/
-class WX_AMILAB_EXPORT WX_Plugin : public PluginBase
-{
-  public:
-    /**
-     * @brief  Get the wxWindow of the plugin.
-     *
-     * @return return a wxString with the plugin path
-     **/
-    virtual wxWindow* GetwxWindow(void) const = 0;
-
-    /**
      * @brief Set the wxWindow of the plugin.
      *
      * @param Parent The wxWindow of the plugin
      **/
      virtual void SetwxWindow( wxWindow *Parent ) = 0;
 
-}; // WX_Plugin
+    /**
+     * @brief Set that the plugin executes in mode console.
+     *
+     * The plugin does not require the graphical environment(wxWindow) to work.
+     **/     
+     virtual void SetConsoleMode(void)
+      { m_plugin_mode = PLUGIN_IN_CONSOLE_MODE; }
 
-//IMPLEMENT_ABSTRACT_CLASS(PluginInterface, wxObject)
+    /**
+     * @brief Set that the plugin executes in mode graphic.
+     *
+     * The plugin requires the graphical environment(wxWindow) to work.
+     **/  
+     virtual void SetGraphicMode(void)
+      { m_plugin_mode = PLUGIN_IN_GRAPHIC_MODE; }
+
+    /**
+     * @brief Checks if this in console mode.
+     *
+     * @return Returns true if this in console mode.
+     **/
+    virtual bool IsConsoleMode(void) const
+      { return (m_plugin_mode == PLUGIN_IN_CONSOLE_MODE); }
+
+    /**
+     * @brief Checks if this in graphic mode.
+     *
+     * @return Returns true if this in graphic mode.
+     **/
+    virtual bool IsGraphicMode(void) const
+      { return (m_plugin_mode == PLUGIN_IN_GRAPHIC_MODE); }
+
+    /**
+     * @brief Execute the plugin.
+     *
+     * @return return true if the plugin executes correctly
+     **/
+    virtual bool Execute (void) = 0;
+
+  private:
+    unsigned char m_plugin_mode; // Determines the mode in which the plugin is executed.
+
+}; // PluginInterface
 
 /** @name This is the API that each AMILAB shared lib must implement. */
 //@{
@@ -147,8 +177,7 @@ extern "C"
     type which will be called to initialise it. That function must
     return the new object representing this module.
    */  
-  typedef PluginBase* ( *CreatePlugin_BASE_function)();
-  typedef WX_Plugin* ( *CreatePlugin_WX_function)();
+  typedef PluginInterface* ( *CreatePlugin_function)();
 
 }
 //@}
@@ -159,32 +188,24 @@ extern "C"
 // This macros must be used inside the class declaration for any module class.
 // ----------------------------------------------------------------------------
 
-#define PLUGIN_BASE_DEFINE() \
+#define PLUGIN_DEFINE() \
 public: \
-  virtual const wxString & GetName(void) const; \
-  virtual const wxString & GetDescription(void) const; \
-  virtual const wxString & GetVersion(void) const; \
-  virtual const wxString & GetAuthor(void) const; \
-  virtual const wxString & GetStatus(void) const = 0; \
-  virtual const wxString & GetPath(void) const = 0; \
-  virtual void SetPath( const wxString& Path ) = 0; \
-  virtual void SetStatus( const wxString& MyStatus) = 0; \
-  virtual bool Execute (void) const = 0;
+    virtual wxString  GetName(void)        const ; \
+    virtual wxString  GetDescription(void) const ; \
+    virtual wxString  GetVersion(void)     const ; \
+    virtual wxString  GetAuthor(void)      const ; \
+    virtual wxString  GetStatus(void)      const ; \
+    virtual wxString  GetPath(void)        const ; \
+    virtual wxWindow* GetwxWindow(void)    const ; \
+    virtual void SetPath( const wxString& Path ) ; \
+    virtual void SetStatus( const wxString& MyStatus) ; \
+    virtual void SetwxWindow( wxWindow *Parent ) ; \
+    virtual bool Execute (void);
 
-#define PLUGIN_WX_DEFINE() \
-  PLUGIN_BASE_DEFINE(); \
-  virtual wxWindow* GetwxWindow(void) const = 0; \
-  virtual void SetwxWindow( wxWindow *Parent ) = 0;
-
-#define PLUGIN_BASE_ENTRY_FUNCTION(name) \
-extern "C" PLUGIN_AMILAB_DLLEXPORT PluginBase* CreatePlugin() \
+#define PLUGIN_ENTRY_FUNCTION(name) \
+extern "C" PLUGIN_AMILAB_DLLEXPORT PluginInterface* CreatePlugin() \
 { \
   return new name(); \
 };
 
-#define PLUGIN_WX_ENTRY_FUNCTION(name) \
-extern "C" PLUGIN_AMILAB_DLLEXPORT WX_Plugin* CreatePlugin() \
-{ \
-  return new name(); \
-};
 #endif // PLUGININTERFACE_H

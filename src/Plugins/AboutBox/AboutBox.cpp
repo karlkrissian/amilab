@@ -21,39 +21,61 @@ AboutBox::AboutBox()
   m_Author      = wxT("Karl Krissian");
   m_Status      = wxT("Disabled");
   m_Path        = wxT("NOT-FOUND");
+  m_win         = NULL;
+  SetGraphicMode();
 }
 
-const wxString & AboutBox::GetName(void) const
-  { return m_Name; }
+wxString AboutBox::GetName(void) const
+{
+  return m_Name;
+}
 
-const wxString & AboutBox::GetDescription(void) const
-  { return m_Description; }
+wxString AboutBox::GetDescription(void) const
+{
+  return m_Description;
+}
 
-const wxString & AboutBox::GetVersion(void) const
-  { return m_Version; }
+wxString AboutBox::GetVersion(void) const
+{
+  return m_Version;
+}
 
-const wxString & AboutBox::GetAuthor(void) const
-  { return m_Author; }
+wxString AboutBox::GetAuthor(void) const
+{
+  return m_Author;
+}
 
-const wxString & AboutBox::GetStatus(void) const
-  { return m_Status; }
+wxString AboutBox::GetStatus(void) const
+{
+  return m_Status;
+}
 
-const wxString & AboutBox::GetPath(void)  const
-  { return m_Path; }
+wxString AboutBox::GetPath(void)  const
+{
+  return m_Path;
+}
+
+wxWindow* AboutBox::GetwxWindow(void) const
+{
+  return m_win;
+}
+
+void AboutBox::SetPath( const wxString& Path )
+{
+  m_Path = Path;
+}
 
 void AboutBox::SetStatus( const wxString& MyStatus )
-  { m_Status = MyStatus; }
-  
-void AboutBox::SetPath( const wxString& Path )
-  { m_Path = Path; }
+{
+  m_Status = MyStatus;
+}
 
 void AboutBox::SetwxWindow( wxWindow *Parent )
-  { m_win = Parent; }
+{
+  m_win = Parent;
+}
 
-wxWindow* AboutBox::GetwxWindow(void)
-  { return m_win; }
-  
-bool AboutBox::Execute (void)
+bool AboutBox::Execute(void)
 {
   wxAboutDialogInfo info;
 

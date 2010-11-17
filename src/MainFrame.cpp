@@ -241,16 +241,44 @@ void CustomStatusBar::Reposition()
 //-------------------------------------------------------
 void  MainFrame::OnPluginAbout ( wxCommandEvent& event )
 {
-  if (_plugin_manager.LoadPlugins("/home/roncali/proyectos/amilab/branch-amilab/build/debug/Plugins/AboutBox/libAboutBoxPluginExample.so"))
+  wxString LibName = wxT("/home/roncali/proyectos/amilab/branch-amilab/build/debug/Plugins/AboutBox/libAboutBoxPluginExample.so");
+  wxString msg;
+  if (_plugin_manager.LoadPlugins(LibName))
   {
-    WX_Plugin* plugin = _plugin_manager.GetPluginHandle();
-    plugin->SetwxWindow(this);
-    if (plugin->Execute())
+    msg = "Plugin: " + LibName + " is loaded.";
+    CLASS_MESSAGE(msg);
+    PluginInterface* plugin = _plugin_manager.GetPluginHandle();
+    if (plugin->IsGraphicMode())
     {
-      //TODO
+      plugin->SetwxWindow(this);
+      plugin->SetStatus(wxT("Enable"));
+      plugin->SetPath(LibName);
+
+      std::cout << "MainFrame::OnPluginAbout->Plugin info: (BEGIN)" << std::endl;
+      std::cout << "  Name:         " << plugin->GetName()          << std::endl;
+      std::cout << "  Description:  " << plugin->GetDescription()   << std::endl;
+      std::cout << "  Version:      " << plugin->GetVersion()       << std::endl;
+      std::cout << "  Author:       " << plugin->GetAuthor()        << std::endl;
+      std::cout << "  Status:       " << plugin->GetStatus()        << std::endl;
+      std::cout << "  Path:         " << plugin->GetPath()          << std::endl;
+      std::cout << "MainFrame::OnPluginAbout->Plugin info: (END)"   << std::endl;
+
+      if (plugin->Execute())
+        msg = "Plugin: " + LibName + " has been executed.";
+      else
+         msg = "Plugin: " + LibName + " has not been executed.";
+      CLASS_MESSAGE(msg);
     }
+    else
+      CLASS_ERROR("The plugin requires the graphical environment.")
   }
-} //OnLoadPlugin
+  else
+  {
+    msg = "Plugin: " + LibName + " could not be loaded.";
+    CLASS_ERROR(msg);
+  }
+} //OnPluginAbout
+
 //-------------------------------------------------------
 void MainFrame::CreateMenu()
 //            ----------
@@ -289,15 +317,15 @@ void MainFrame::CreateMenu()
   menuView->Append( ID_View_Reset, GetwxStr("&Reset") );
 
   menuPlugin = new wxMenu;
-  menuPlugin->Append( ID_PLUGIN_ABOUT, GetwxStr("&About...") );
+  menuPlugin->Append( ID_PLUGIN_ABOUT, GetwxStr("&About") );
 
   menuScripts = new wxMenu;
 
   menuBar = new wxMenuBar;
   menuBar->Append( menuFile,    GetwxStr("&File") );
   menuBar->Append( menuView,    GetwxStr("&View") );
-  menuBar->Append( menuPlugin,  GetwxStr("&Plugins") );
   menuBar->Append( menuScripts, GetwxStr("&Scripts") );
+  menuBar->Append( menuPlugin,  GetwxStr("&Plugins") );  
 
   SetMenuBar( menuBar );
 

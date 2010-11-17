@@ -15,6 +15,7 @@
 #include "PluginInterface.h"
 
 #include <wx/dynlib.h>
+#include "DefineClass.hpp"
 
 /**
  * @brief Class that manages the life-cycle of the plugins.
@@ -51,9 +52,8 @@ public:
   PluginInterface* GetPluginHandle () { return m_plugin; };
 
 private:
-  wxDynamicLibrary m_dll;     // DLL handle.
-  PluginBase *m_plugin;       // Plugin handle.
-  WX_Plugin* m_wxplugin;      // wxWindow plugin handle.
+  wxDynamicLibrary  m_dll;     // DLL handle.
+  PluginInterface*  m_plugin;  // Plugin handle.
 
 }; // PluginManager
 
