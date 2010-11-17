@@ -6,7 +6,7 @@
 
 
 proc AddUtilsMenu() {
-  for dir in  "Calculator" \
+  for dir in  "Calculator" , "RemoveSpots"\
   {
     if FileExists(GetScriptsDir+"/Utils/"+dir+"/Add2Menu.amil") {
       func "/Utils/"+dir+"/Add2Menu.amil"
