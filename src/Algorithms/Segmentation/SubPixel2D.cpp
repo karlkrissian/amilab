@@ -1373,11 +1373,11 @@ void SubPixel2D::DenoisingGus()
           //Calcular parábola P según el Lema 6.1 a partir de la imagen G'
           //esto es aplicar el método... creo (solo tengo que hacer las sumitas)
           for (SL=0, k=ll1; k<=ll2; k++) 
-            SL += (*fprime)(fprimex-1,fprimey+k,z);
+            SL += (*fprime)(fprimex+k,fprimey-1,z);
           for (SM=0, k=mm1; k<=mm2; k++) 
-            SM += (*fprime)(fprimex,fprimey+k,z);
+            SM += (*fprime)(fprimex+k,fprimey,z);
           for (SR=0, k=rr1; k<=rr2; k++) 
-            SR += (*fprime)(fprimex+1,fprimey+k,z);
+            SR += (*fprime)(fprimex+k,fprimey+1,z);
           delete(fprime);
         }
         else //En caso contrario se calculan las sumas como siempre
