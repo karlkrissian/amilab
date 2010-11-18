@@ -53,6 +53,7 @@ extern VarContexts  Vars;
 #include "vtkConvexHull.h"
 #include "vtkAnisoGaussSeidel.h"
 #include "vtkSkeleton2Lines.h"
+#include "wxMedical3Frame.h"
 
 #endif // _WITHOUT_VTK_
 
@@ -66,6 +67,7 @@ void AddWrapVTK()
   ADDVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
   ADDVAR_NAME( C_wrap_varfunction,   "vtkSphere",            Wrap_vtkSphere);
   ADDVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     wrap_vtkGPURayCasting);
+  ADDVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        wrap_wxVTKMedical3);
 
 }
 
@@ -283,3 +285,28 @@ BasicVariable::ptr wrap_vtkGPURayCasting(ParamList* p)
 
   
 } // Wrap_vtkSkeleton2Lines()
+
+//
+BasicVariable::ptr wrap_wxVTKMedical3(ParamList* p)
+{
+
+  char functionname[] = "wxVTKMedical3";
+  char description[]=" \n\
+      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+      ";
+    
+  // create the main application window
+  wxMedical3Frame *frame = new wxMedical3Frame(_T("wxWindows-VTK App"),
+                                wxPoint(50, 50), wxSize(450, 340));
+
+  // and show it (the frames, unlike simple controls, are not shown when
+  // created initially)
+  frame->Show(TRUE);
+  
+
+  return BasicVariable::ptr();
+
+  
+} // wrap_wxVTKMedical3()

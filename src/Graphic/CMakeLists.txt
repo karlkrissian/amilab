@@ -5,6 +5,8 @@
 add_subdirectory (wxCode/wxTreeListCtrl)
 add_subdirectory (wxSamples/penguin)
 add_subdirectory (wxStcFrame)
+add_subdirectory (wxVTK)
+add_subdirectory (wxVTKSamples)
 
 
 # Make sure the compiler can find include files from our Hello library.
