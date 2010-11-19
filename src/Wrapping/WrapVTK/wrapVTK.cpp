@@ -245,18 +245,16 @@ BasicVariable::ptr wrap_vtkGPURayCasting(ParamList* p)
 
     char functionname[] = "vtkCPURayCasting";
     char description[]=" \n\
-                       GPU Ray Casting with VTK 5.6\n\
+                        GPU Ray Casting with VTK 5.6\n\
                        ";
-    char parameters[] =" \n\
-                       Parameters:\
-                       \n\
-                       input image\n\
-                       int   blend type:\
-                       0->MIP, 1->CompositeRamp,\ 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->RGB_Composite\n\
-                       float opacitywindow\n\
-                       float opacitylevel\n\
-                       int clip 0|1 \n\
-                       ";
+
+    char parameters[] = "\n\
+    Parameters:\n    input image\n    int   blend type:\n\
+    0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->RGB_Composite\n\
+    float opacitywindow\n\
+    float opacitylevel\n\
+    int clip 0|1 \n\
+    ";
 
     InrImage* input;
     int   n=0;
@@ -278,8 +276,7 @@ BasicVariable::ptr wrap_vtkGPURayCasting(ParamList* p)
     vtk_image = (vtkImageData_ptr) (*input);
     //    printf("2 \n");
 
-    vtkGPURayCasting* volren = new vtkGPURayCasting();
-    volren->SetInput(vtk_image);
+    vtkGPURayCasting* volren = new vtkGPURayCasting(vtk_image);
     volren->SetBlendType(blendtype);
     volren->SetOpacityMap(window,level);
     volren->SetClip(clip);
@@ -311,9 +308,9 @@ BasicVariable::ptr wrap_wxVTKMedical3(ParamList* p)
     vtk_image = (vtkImageData_ptr) (*input);
 
     // create the main application window
-    wxMedical3Frame *frame = new wxMedical3Frame(_T("wxWindows-VTK App"),
+    wxMedical3Frame *frame = new wxMedical3Frame(vtk_image,_T("wxWindows-VTK App"),
             wxPoint(50, 50), wxSize(450, 340));
-    frame->SetInput(vtk_image);
+//    frame->SetInput(vtk_image);
 
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)

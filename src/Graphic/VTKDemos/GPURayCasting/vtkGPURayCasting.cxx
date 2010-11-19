@@ -32,24 +32,18 @@
 #include "wxVTKRenderWindowInteractor.h"
 
   #include "vtkGPURayCasting.h"
-
   #include "vtkBoxWidget.h"
   #include "vtkCamera.h"
   #include "vtkCommand.h"
   #include "vtkColorTransferFunction.h"
   #include "vtkImageData.h"
-  #include "vtkImageResample.h"
-  #include "vtkMetaImageReader.h"
   #include "vtkPiecewiseFunction.h"
   #include "vtkPlanes.h"
-  #include "vtkProperty.h"
   #include "vtkRenderer.h"
   #include "vtkRenderWindow.h"
   #include "vtkRenderWindowInteractor.h"
   #include "vtkVolume.h"
   #include "vtkVolumeProperty.h"
-  #include "vtkXMLImageDataReader.h"
-  #include "vtkStructuredPoints.h"
 
 #if (VTK_MAJOR_VERSION==5)&&(VTK_MINOR_VERSION>=6)
   #include "vtkGPUVolumeRayCastMapper.h"
@@ -148,7 +142,7 @@ END_EVENT_TABLE()
   */
 
     
-vtkGPURayCasting::vtkGPURayCasting() : wxFrame((wxFrame *)NULL, -1, wxT("VTK GPU RayCasting"), wxPoint(50, 50), wxSize(450, 340))
+vtkGPURayCasting::vtkGPURayCasting(vtkImageData_ptr image) : wxFrame((wxFrame *)NULL, -1, wxT("VTK GPU RayCasting"), wxPoint(50, 50), wxSize(450, 340))
 {
   blendType = 0;
   opacityWindow = 4096;
@@ -166,7 +160,7 @@ vtkGPURayCasting::vtkGPURayCasting() : wxFrame((wxFrame *)NULL, -1, wxT("VTK GPU
   m_pVTKWindow = new wxVTKRenderWindowInteractor(this, MY_VTK_WINDOW);
   //turn on mouse grabbing if possible
   m_pVTKWindow->UseCaptureMouseOn();
-  ConstructVTK();
+  SetInput(image);
   Display();
 //  ConfigureVTK();
 }
@@ -177,10 +171,6 @@ vtkGPURayCasting::~vtkGPURayCasting()
   DestroyVTK();
 }
 
-void vtkGPURayCasting::ConstructVTK()
-{
-  
-}
 
 /*
 void wxMedical3Frame::ConfigureVTK()
@@ -407,7 +397,6 @@ void vtkGPURayCasting::DestroyVTK()
 
 void vtkGPURayCasting::SetInput( vtkImageData_ptr image)
 {
-  // not safe, should use smart pointers ...
   input=image;
 }
 
@@ -415,8 +404,8 @@ bool vtkGPURayCasting::Display()
 {
 
   // Create the renderer, render window and interactor
-  renderer = vtkRenderer::New();
   vtkRenderWindow *renWin = m_pVTKWindow->GetRenderWindow();
+  renderer = vtkRenderer::New();
   renWin->AddRenderer(renderer);
 
   // Connect it all. Note that funny arithematic on the 
@@ -424,11 +413,10 @@ bool vtkGPURayCasting::Display()
   // allocated time across all renderers, and the renderer
   // divides it time across all props. If clip is
   // true then there are two props
-  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
-  iren->SetRenderWindow(renWin);
-  iren->SetDesiredUpdateRate(frameRate / (1+clip) );
-  
-  iren->GetInteractorStyle()->SetDefaultRenderer(renderer);
+//  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
+//  iren->SetRenderWindow(renWin);
+  m_pVTKWindow->SetDesiredUpdateRate(frameRate / (1+clip) );
+  //m_pVTKWindow->GetInteractorStyle()->SetDefaultRenderer(renderer);
 
   // Verify that we actually have a volume
   int dim[3];
@@ -461,7 +449,7 @@ bool vtkGPURayCasting::Display()
   vtkBoxWidget *box = vtkBoxWidget::New();
   if (clip)
     {
-    box->SetInteractor(iren);
+    box->SetInteractor(m_pVTKWindow);
     box->SetPlaceFactor(1.01);
 /*
 if ( reductionFactor < 1.0 )
@@ -664,9 +652,10 @@ if ( reductionFactor < 1.0 )
     }
   
   // Set the default window size
-  renWin->SetSize(600,600);
-  renWin->Render();
+//  renWin->SetSize(600,600);
+//  renWin->Render();
 
+/*
 #ifdef HAS_GPU
   if ( !mapper->IsRenderSupported(renWin, property) )
     {
@@ -674,15 +663,15 @@ if ( reductionFactor < 1.0 )
       return false;
     }
 #endif
+*/
 
   // Add the volume to the scene
   renderer->AddVolume( volume );
-
   renderer->ResetCamera();
 
   // interact with data
-  renWin->Render();
-  iren->Start();
+//  renWin->Render();
+//  m_pVTKWindow->Start();
   
   opacityFun->Delete();
   colorFun->Delete();
@@ -690,11 +679,10 @@ if ( reductionFactor < 1.0 )
   
   box->Delete();
   volume->Delete();
-  mapper->Delete();
+//  mapper->Delete();
 //  resample->Delete();
-  renderer->Delete();
-  renWin->Delete();
-  iren->Delete();
+//  renWin->Delete();
+//  iren->Delete();
 
   return true;
   

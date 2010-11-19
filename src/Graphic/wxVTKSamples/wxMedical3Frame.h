@@ -26,7 +26,7 @@ class wxMedical3Frame : public wxFrame
 {
 public:
     // ctor(s)
-    wxMedical3Frame(const wxString& title, const wxPoint& pos, const wxSize& size);
+    wxMedical3Frame(vtkImageData_ptr image, const wxString& title, const wxPoint& pos, const wxSize& size);
     ~wxMedical3Frame();
 
     // event handlers (these functions should _not_ be virtual)

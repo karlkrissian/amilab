@@ -89,7 +89,7 @@ bool MyApp::OnInit()
 */
 
 // frame constructor
-wxMedical3Frame::wxMedical3Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
+wxMedical3Frame::wxMedical3Frame(vtkImageData_ptr image, const wxString& title, const wxPoint& pos, const wxSize& size)
        : wxFrame((wxFrame *)NULL, -1, title, pos, size)
 {
 #ifdef __WXMAC__
@@ -100,6 +100,8 @@ wxMedical3Frame::wxMedical3Frame(const wxString& title, const wxPoint& pos, cons
 
     // set the frame icon
 //     SetIcon(wxICON(mondrian));
+
+  SetInput(image);
 
     // create a menu bar
     wxMenu *menuFile = new wxMenu(_T(""), wxMENU_TEAROFF);
@@ -181,12 +183,12 @@ void wxMedical3Frame::ConfigureVTK()
     skinExtractor->SetInput( this->input.get());
     skinExtractor->SetValue(0, 500);
   vtkPolyDataNormals *skinNormals = vtkPolyDataNormals::New();
-    skinNormals->SetInput(skinExtractor->GetOutput());
+    skinNormals->SetInputConnection(skinExtractor->GetOutputPort());
     skinNormals->SetFeatureAngle(60.0);
   vtkStripper *skinStripper = vtkStripper::New();
     skinStripper->SetInput(skinNormals->GetOutput());
   vtkPolyDataMapper *skinMapper = vtkPolyDataMapper::New();
-    skinMapper->SetInput(skinStripper->GetOutput());
+    skinMapper->SetInputConnection(skinStripper->GetOutputPort());
     skinMapper->ScalarVisibilityOff();
   vtkActor *skin = vtkActor::New();
     skin->SetMapper(skinMapper);
@@ -204,7 +206,7 @@ void wxMedical3Frame::ConfigureVTK()
     boneExtractor->SetInput(input.get());
     boneExtractor->SetValue(0, 1150);
   vtkPolyDataNormals *boneNormals = vtkPolyDataNormals::New();
-    boneNormals->SetInput(boneExtractor->GetOutput());
+    boneNormals->SetInputConnection(boneExtractor->GetOutputPort());
     boneNormals->SetFeatureAngle(60.0);
   vtkStripper *boneStripper = vtkStripper::New();
     boneStripper->SetInput(boneNormals->GetOutput());
