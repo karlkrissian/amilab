@@ -56,6 +56,10 @@ double imval(InrImage* input, int x,int y, int z){
 #define ffxl(x,y,z) (FF(x,y,z) - FF(x-1,y,z))
 #define ffxr(x,y,z)	(FF(x+1,y,z) - FF(x,y,z))
 
+//Swap double
+double DOUBLE_TEMP;
+#define SWAP_DOUBLE(a,b) DOUBLE_TEMP=a; a=b; b=DOUBLE_TEMP
+
 //Swap int
 int INT_TEMP;
 #define SWAP_INT(a,b) INT_TEMP=a; a=b; b=INT_TEMP
@@ -1112,6 +1116,7 @@ void SubPixel2D::DenoisingGus()
         if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
 
         m = (parx*pary >= 0) ? 1 : -1;
+        p = (m+1) / 2;
         
         //Calculate the limits of the window
         //Left
@@ -1438,6 +1443,135 @@ void SubPixel2D::DenoisingGus()
 //en el pseudo-código de la tesis se llama ActualizarImágenes le voy a poner
 //UpdateImages.
 
+//Hacen falta un par de funciones para calcula el color que le toca a cada pixel
+//diferenciándose para el caso de una recta y de una curva.
+//Estas funciones miran si el pixel cae por encima o por debajo, devolviendo el
+//valor de intensidad adecuado en cada caso. Si por el pixel pasa la recta (o curva)
+//entonces se calcula la integral y se devuelve cuál es el valor de intensidad
+//que le toca al pixel en función del área. En el código de Agustín estas funciones
+//eran CalculaColorPixelRecto y CalculaColorPixelCurvo. Aquí las llamaré como
+//ComputeStraightPixelColor y ComputeCurvePixelColor.
+
+//Compute the pixel intensity value based on line equation and up and down 
+//intensities
+double ComputeStraightPixelColor(double a, double b, double A, double B)
+{
+  //Given the line y=a+bx, with A down and B up, we compute the pixel color
+  double x0=-0.5, x1=0.5;
+  double area;
+  
+  //We make b always positive
+  if (b<0) 
+    b = -b;
+  
+  //If the line don't cross the pixel, return B or A
+  if (a+0.5*b < -0.5) 
+    return (B);
+  if (a-0.5*b > 0.5) 
+    return (A);
+  
+  //Horizontal
+  if (b<1e-4) 
+    area = a+0.5;
+  else 
+  { 
+    //Compute the cuts and intgrate
+    if (a-0.5*b < -0.5) 
+      x0 = (-0.5-a) / b; 
+    if (a+0.5*b > 0.5)  
+      x1 = (0.5-a) / b;
+    area = (a+0.5)*(x1-x0) + b/2*(x1*x1-x0*x0);
+    if (x1<0.5) 
+      area += 0.5-x1;
+  }
+	
+  //Return the color
+  return (area*A + (1-area)*B);
+}
+
+//Compute the pixel intensity value based on circle equation and inside and
+//outside intensities
+double ComputeCurvePixelColor(double xc, double yc, double r, double D, double F)
+{
+  //With the circunference (x-xc)2 + (y-yc)2 = r2, the intensity D in and the
+  //intensity F out, we compute the pixel color
+  double t, x0, x1, area;
+  
+  //cout << "xc=" << xc << " yc=" << yc << " r=" << r << " D=" << D << " F=" << F << endl;
+  
+  //Pass the center to right down (xc>0, yc<0, xc>-yc)
+  xc = fabs(xc);
+  yc = fabs(yc);
+  if (xc < yc) 
+  { 
+    SWAP_DOUBLE (xc, yc);
+  }
+  yc = -yc;
+  
+  //If the pixel is outside, we return F
+  if (yc+r<=-0.5 || xc-r>=0.5) 
+    return (F);
+  
+  //Compute the cuts
+  x0 = xc - sqrt(r*r - (-0.5-yc)*(-0.5-yc));
+  if (x0 < xc-r) 
+    x0 = xc-r;
+  if (yc+r <= 0.5) 
+    x1 = 0.5;
+	else 
+    x1 = xc - sqrt( r*r - (0.5-yc)*(0.5-yc));
+	
+  //If the pixel is inside, we return D
+  if (x1 <= -0.5) 
+    return (D); 
+  
+  // miramos los casos (ver folio aparte) ¿¿comorl??
+  //All posible cases
+  if (yc <= -0.5) 
+  {
+  	if (x0 >= 0.5) 
+      return (F);
+    if (x0 > -0.5) 
+    {
+      if (x1 < 0.5)  
+        area = P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
+      else 
+        area = P(0.5) - P(x0) - 0.5*x0 + 0.25;
+    } 
+    else 
+    {
+      if (x1 < 0.5)
+        area = P(x1) - P(-0.5) - 0.5*x1 + 0.75;
+      else 
+        area = P(0.5) - P(-0.5) + 0.5;
+    }
+  } 
+  else 
+  {
+    t = xc - r;
+    if (x1 < 0.5) 
+    {
+      if (t >= -0.5)
+        area = 2 * (P(x0) - P(t) - yc*(x0-t)) +
+				P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
+      else 
+        area = 2 * (P(x0) - P(-0.5) - yc*(x0+0.5)) +
+				P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
+    } 
+    else 
+    {
+      if (x0 <= 0.5)
+        area = 2 * (P(x0) - P(t) - yc*(x0-t)) +
+				P(0.5) - P(x0) - 0.5*x0 + 0.25;
+      else 
+        area = 2 * (P(0.5) - P(t) - yc*(0.5-t));
+    }
+  }
+  
+  //Return the color
+  return (F + area*(D-F));
+}
+
 void UpdateImages(InrImage* input, InrImage* C, InrImage* I, int x, int y, int z, 
                   unsigned char edgeCase, vector<borderPixel> &borderPixelVector,
                   int linear_case)
@@ -1518,30 +1652,6 @@ void UpdateImages(InrImage* input, InrImage* C, InrImage* I, int x, int y, int z
   //Add edge pixel to the vector
   borderPixelVector.push_back(pixel);
   
-  //Ahora hay que calcular la imagencita nueva  con las intensidades. Voy a usar
-  //la función que nos hicimos pa generar una imagen sintética. Mi imagen ahora será
-  //de 9x3 y el ángulo será el que venga dado por la inversa de la pendiente 
-  //(ojo con el signo)
-  ComputePV pv;
-  //tengo que calcular en grados, porque atan me lo da en radianes
-  double alpha = (atan(b)*180)/M_PI;
-  cout << "alfa = " << alpha << endl;
-  AnalyticFunctionBase::ptr line; 
-  InrImage::ptr in;
-  InrImage::ptr res;
-  if (edgeCase == YMAX) 
-  {
-    in  = InrImage::ptr(new InrImage(3,9,1,WT_FLOAT,"in.inr.gz"));
-    line = AnalyticLine::ptr(new AnalyticLine(alpha,a,1));
-  }
-  else 
-  {
-    in  = InrImage::ptr(new InrImage(9,3,1,WT_FLOAT,"in.inr.gz"));
-    line = AnalyticLine::ptr(new AnalyticLine(alpha,a,4));
-  }
-  pv.setInputImage(in);
-  pv.setAnalyticFunction(line);
-  res = pv.ComputeAnalyticPartialSurfaceSubdiv(A, B);
   //Ahora hay que meter en I y en C lo que corresponde
   //Esto habrá que hacerlo mejor por el rollo de la ventana escalonada
   //ventana vertical
@@ -1564,22 +1674,49 @@ void UpdateImages(InrImage* input, InrImage* C, InrImage* I, int x, int y, int z
     SWAP_INT(hmax,vmax);
   }
   
+  double root = sqrt(1+b*b);
+  double r    = root*root*root / (-2*c);
+  double xc   = b * r / root;
+  double yc   = a - r / root;
+  double pixel_value, D, F;
+  
+  if (c<=0) 
+  {
+    D=A;
+    F=B;
+  }
+  else 
+  {
+    D=B;
+    F=A;
+  }
+
+  
   for (int i=hmin;i<=hmax;i++)
   {
     for (int j=vmin;j<=vmax;j++)
     {
+      //Se calcula el valor correspondiente de intensidad
+      if (isnan(r) || fabs(r)>RMAX) 
+      {
+        pixel_value = ComputeStraightPixelColor(a+i*b+j, b, A, B);
+      }
+      else 
+      {
+        pixel_value = ComputeCurvePixelColor(xc-i, yc-j, fabs(r), D, F);
+      }
       //Se mete la imagen en la imagen de intensidad y se incrementa la imagen
       //de contadores
       I->BufferPos(x+i,y+j,z);
       C->BufferPos(x+i,y+j,z);
       if ((edgeCase==YMAX&&i==0) || (edgeCase==XMAX&&j==0)) //La columna/fila central tiene más peso
       {
-        I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z)*weight);
+        I->FixeValeur((*I)(x+i,y+j,z) + pixel_value*weight);
         C->FixeValeur(((*C)(x+i,y+j,z)) + weight);
       }
       else
       {
-        I->FixeValeur((*I)(x+i,y+j,z) + (*res)(px+i,py+j,z));
+        I->FixeValeur((*I)(x+i,y+j,z) + pixel_value);
         C->FixeValeur(((*C)(x+i,y+j,z)) + 1);
       }
     }
@@ -1614,9 +1751,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
   //Indexes of the partials
   int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0};
   int vpos[] = { -1,-3, 0,-2, 2, 0, 3, 1};	 
-  vector<borderPixel> vecaux; //Vector auxiliar para las iteraciones
+  //vector<borderPixel> vecaux; //Vector auxiliar para las iteraciones
   
-  //Pa' probar por ahora, hay q poder pillar el niter que diga el user
   for(int index=0; index<niter; index++)
   {
 //    cout << "index = " << index << endl;
@@ -1633,16 +1769,10 @@ void SubPixel2D::SubpixelDenoising(int niter)
     //Para que funcionen las macros de parciales tengo que jincar G como input
     //setInput(G.get());
     copyImage(input, G.get());
-    //2º Se calcula el gradiente
-    //ComputeModGrad(G, Grad);
     //Para todos los pixels de G
-    //Habría que cargarse los pixels que estuvieran en borderPixelVector de una iteracion anterior
-    if (index!=0 && vecaux.size()!=0) 
-    {
-      //Me aseguro que en borderPixelVector siempre tengo bordes y no me los estoy cargando
-      borderPixelVector = vecaux;
-      vecaux.erase(vecaux.begin(), vecaux.end());
-    }
+
+    borderPixelVector.clear();
+    cout << "iteración: " << index << " tamaño: " << borderPixelVector.size() << endl;
    
 //    cout << "me cepillo en borderPixelVector" << endl;
     for(int y = margin; y < G->DimY()-margin; y++)
@@ -1668,7 +1798,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
           if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
           if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
 //          cout << "la parcial máxima es en y. Voy a llamar a UpdateImages" << endl;
-          UpdateImages(input, C.get(), I.get(), x, y, z, YMAX, vecaux,
+          UpdateImages(input, C.get(), I.get(), x, y, z, YMAX, borderPixelVector,
                        linear_case);
 //          cout << "vuelvo de update images en parcial máxima y." << endl;
         }
@@ -1684,7 +1814,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
           if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
           if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
 //          cout << "la parcial máxima es en x. Voy a llamar a UpdateImages" << endl;
-          UpdateImages(input, C.get(), I.get(), x, y, z, XMAX, vecaux,
+          UpdateImages(input, C.get(), I.get(), x, y, z, XMAX, borderPixelVector,
                        linear_case);
 //          cout << "vuelvo de update images en parcial máxima x." << endl;
         }
@@ -1705,4 +1835,5 @@ void SubPixel2D::SubpixelDenoising(int niter)
     }
   }
 //  cout << "salgo de SubpixelDenoising" << endl;
+  cout << "tamaño del vector al final: " << borderPixelVector.size() << endl;
 }
