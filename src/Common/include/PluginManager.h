@@ -12,7 +12,7 @@
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
 
-#include "PluginInterface.h"
+#include "PluginBase.h"
 
 #include <wx/dynlib.h>
 #include "DefineClass.hpp"
@@ -24,17 +24,6 @@ class PluginManager
 {
   DEFINE_CLASS(PluginManager);
 public:
-  /** Constructor. */
-  PluginManager()
-  {
-    //TODO
-  }; //Constructor definition.
-
-  /** Destructor. */
-  virtual ~PluginManager()
-  {
-    //TODO
-  }; //Destructor definition.
 
   /**
    * @brief Load the library with the given name (full or not), return true if ok.
@@ -42,18 +31,33 @@ public:
    * @param LibName the library name
    * @return return true if load library with the given name
    **/
-  bool LoadPlugins (const wxString& LibName);
+  bool Load (const wxString& LibName);
+
+  /**
+   * @brief Detaches this object from its library handle.
+   *
+   * Forces that the library is unloaded manually by the method UnLoad().
+   **/
+  void Detach (void);
+
+  /**
+   * @brief Unloads the library from memory.
+   *
+   * Works when previously the Detach method has been invoked.
+   **/  
+  void Unload (void);
 
   /**
    * @brief Gets the plugin handler.
    *
    * @return return the plugin handler
    **/
-  PluginInterface* GetPluginHandle () { return m_plugin; };
+  PluginBase* GetPluginHandle () { return m_plugin; };
 
 private:
-  wxDynamicLibrary  m_dll;     // DLL handle.
-  PluginInterface*  m_plugin;  // Plugin handle.
+  wxDllType         m_Detach; // Library handle
+  wxDynamicLibrary  m_dll;    // Library manager.
+  PluginBase*       m_plugin; // Plugin handle.
 
 }; // PluginManager
 

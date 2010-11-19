@@ -13,66 +13,19 @@
 
 PLUGIN_ENTRY_FUNCTION(AboutBox);
 
+void AboutBox::_Init(void)
+{
+  SetGraphicMode();
+  m_win = GetwxWindow();  
+  SetName(wxT("AboutBox"));
+  SetDescription(wxT("A plugin that display the About dialog box."));
+  SetAuthor(wxT("Karl Krissian"));
+  SetVersion(wxT("1.0.0"));
+}
+
 AboutBox::AboutBox()
 {
-  m_Name        = wxT("AboutBox");
-  m_Description = wxT("A plugin that display the About dialog box.");
-  m_Version     = wxT("1.0.0");
-  m_Author      = wxT("Karl Krissian");
-  m_Status      = wxT("Disabled");
-  m_Path        = wxT("NOT-FOUND");
-  m_win         = NULL;
-  SetGraphicMode();
-}
-
-wxString AboutBox::GetName(void) const
-{
-  return m_Name;
-}
-
-wxString AboutBox::GetDescription(void) const
-{
-  return m_Description;
-}
-
-wxString AboutBox::GetVersion(void) const
-{
-  return m_Version;
-}
-
-wxString AboutBox::GetAuthor(void) const
-{
-  return m_Author;
-}
-
-wxString AboutBox::GetStatus(void) const
-{
-  return m_Status;
-}
-
-wxString AboutBox::GetPath(void)  const
-{
-  return m_Path;
-}
-
-wxWindow* AboutBox::GetwxWindow(void) const
-{
-  return m_win;
-}
-
-void AboutBox::SetPath( const wxString& Path )
-{
-  m_Path = Path;
-}
-
-void AboutBox::SetStatus( const wxString& MyStatus )
-{
-  m_Status = MyStatus;
-}
-
-void AboutBox::SetwxWindow( wxWindow *Parent )
-{
-  m_win = Parent;
+  _Init();
 }
 
 bool AboutBox::Execute(void)

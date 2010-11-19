@@ -161,7 +161,7 @@ public:
   void OnQuit ( wxCommandEvent& event );
   void OnClose ( wxCloseEvent& event );
 
-  void OnPluginAbout ( wxCommandEvent& event );
+  void OnPlugins ( wxCommandEvent& event );
 
 /*
   void OnInternalIdle();
@@ -317,6 +317,7 @@ protected:
 #endif
 /// @endcond
 
+  PluginBase* _plugin;
   PluginManager _plugin_manager;
 
 //  wxTreeItemId _vartree_images;
@@ -365,6 +366,7 @@ protected:
 
 private:
   wxAuiManager m_mgr;
+  void _LoadPlugins(void);
   DECLARE_EVENT_TABLE();
 
 }; // MainFrame
