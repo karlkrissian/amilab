@@ -18,7 +18,7 @@
 #include "wxVTKRenderWindowInteractor.h"
 
 #include "vtkRenderer.h"
-
+#include "vtk_common.h"
 
 
 // Define a new frame type: this is going to be our main frame
@@ -33,6 +33,12 @@ public:
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 
+    void SetInput( vtkImageData_ptr image)
+    {
+      // not safe, should use smart pointers ...
+      input=image;
+    }
+
 protected:
     void ConstructVTK();
     void ConfigureVTK();
@@ -43,10 +49,11 @@ private:
 
   // vtk classes
   vtkRenderer       *aRenderer;
+  vtkImageData_ptr  input;
 
 private:
     // any class wishing to process wxWindows events must use this macro
-    DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // _wxMedical3Frame_h_

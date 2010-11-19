@@ -52,7 +52,7 @@ if (!exists(ImageHistoClass)) {
           }
         }
         ::dw._Paint()
-        ::dw.Refresh()
+        #::dw.Refresh(1,wx.wxRect(0,0,400,400))
         if (exists(::input_draw)) {
           ::input_draw.Paint()
         }
@@ -80,7 +80,7 @@ if (!exists(ImageHistoClass)) {
         }
   
         ::dw._Paint()
-        ::dw.Refresh()
+        #::dw.Refresh(1)
         ::UpdateCM()
         if (exists(::input_draw)) {
           ::input_draw.Paint()
@@ -350,7 +350,7 @@ printn "xmax = %1%" % xmax
         }
       }
       ::cm._Paint()
-      ::cm.Refresh()
+      #::cm.Refresh(1)
     }
 
     #----------------------------

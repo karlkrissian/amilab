@@ -45,36 +45,9 @@
 //     #include "mondrian.xpm"
 // #endif
 
-class wxMedical3Frame;
+//class wxMedical3Frame;
+#include "wxMedical3Frame.h"
 
-
-// Define a new frame type: this is going to be our main frame
-class wxMedical3Frame : public wxFrame
-{
-public:
-    // ctor(s)
-    wxMedical3Frame(const wxString& title, const wxPoint& pos, const wxSize& size);
-    ~wxMedical3Frame();
-
-    // event handlers (these functions should _not_ be virtual)
-    void OnQuit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-
-protected:
-    void ConstructVTK();
-    void ConfigureVTK();
-    void DestroyVTK();
-
-private:
-  wxVTKRenderWindowInteractor *m_pVTKWindow;
-
-  // vtk classes
-  vtkRenderer       *aRenderer;
-
-private:
-    // any class wishing to process wxWindows events must use this macro
-    DECLARE_EVENT_TABLE()
-};
 
 // IDs for the controls and the menu commands
 enum
@@ -177,22 +150,26 @@ void wxMedical3Frame::ConfigureVTK()
   aRenderer = vtkRenderer::New();
   pRenderWindow->AddRenderer(aRenderer);
 
-
-  char* fname = vtkTestUtilities::ExpandDataFileName(0, 0, "Data/headsq/quarter");
-
-  // The following reader is used to read a series of 2D slices (images)
-  // that compose the volume. The slice dimensions are set, and the
-  // pixel spacing. The data Endianness must also be specified. The
-  // reader usese the FilePrefix in combination with the slice number to
-  // construct filenames using the format FilePrefix.%d. (In this case
-  // the FilePrefix is the root name of the file: quarter.)
-  vtkVolume16Reader *v16 = vtkVolume16Reader::New();
-    v16->SetDataDimensions(64,64);
-    v16->SetDataByteOrderToLittleEndian();
-    v16->SetFilePrefix ( fname );
-    v16->SetImageRange(1, 93);
-    v16->SetDataSpacing (3.2, 3.2, 1.5);
-  delete[] fname;
+  vtkVolume16Reader *v16 = NULL;
+  if (!input.get())
+  {
+    char* fname = vtkTestUtilities::ExpandDataFileName(0, 0, "Data/headsq/quarter");
+  
+    // The following reader is used to read a series of 2D slices (images)
+    // that compose the volume. The slice dimensions are set, and the
+    // pixel spacing. The data Endianness must also be specified. The
+    // reader usese the FilePrefix in combination with the slice number to
+    // construct filenames using the format FilePrefix.%d. (In this case
+    // the FilePrefix is the root name of the file: quarter.)
+    v16 = vtkVolume16Reader::New();
+      v16->SetDataDimensions(64,64);
+      v16->SetDataByteOrderToLittleEndian();
+      v16->SetFilePrefix ( fname );
+      v16->SetImageRange(1, 93);
+      v16->SetDataSpacing (3.2, 3.2, 1.5);
+    delete[] fname;
+    //input = v16->GetOutput();
+  }
 
   // An isosurface, or contour value of 500 is known to correspond to
   // the skin of the patient. Once generated, a vtkPolyDataNormals
@@ -201,7 +178,7 @@ void wxMedical3Frame::ConfigureVTK()
   // strips from the isosurface; these render much faster on may
   // systems.
   vtkContourFilter *skinExtractor = vtkContourFilter::New();
-    skinExtractor->SetInput( v16->GetOutput());
+    skinExtractor->SetInput( this->input.get());
     skinExtractor->SetValue(0, 500);
   vtkPolyDataNormals *skinNormals = vtkPolyDataNormals::New();
     skinNormals->SetInput(skinExtractor->GetOutput());
@@ -224,7 +201,7 @@ void wxMedical3Frame::ConfigureVTK()
   // strips from the isosurface; these render much faster on may
   // systems.
   vtkContourFilter *boneExtractor = vtkContourFilter::New();
-    boneExtractor->SetInput((vtkDataSet *) v16->GetOutput());
+    boneExtractor->SetInput(input.get());
     boneExtractor->SetValue(0, 1150);
   vtkPolyDataNormals *boneNormals = vtkPolyDataNormals::New();
     boneNormals->SetInput(boneExtractor->GetOutput());
@@ -241,7 +218,7 @@ void wxMedical3Frame::ConfigureVTK()
   // An outline provides context around the data.
   //
   vtkOutlineFilter *outlineData = vtkOutlineFilter::New();
-    outlineData->SetInput((vtkDataSet *) v16->GetOutput());
+    outlineData->SetInput(input.get());
   vtkPolyDataMapper *mapOutline = vtkPolyDataMapper::New();
     mapOutline->SetInput(outlineData->GetOutput());
   vtkActor *outline = vtkActor::New();
@@ -284,7 +261,7 @@ void wxMedical3Frame::ConfigureVTK()
   // specifying the DisplayExtent, the pipeline requests data of this extent
   // and the vtkImageMapToColors only processes a slice of data.
   vtkImageMapToColors *saggitalColors = vtkImageMapToColors::New();
-    saggitalColors->SetInput(v16->GetOutput());
+    saggitalColors->SetInput(input.get());
     saggitalColors->SetLookupTable(bwLut);
   vtkImageActor *saggital = vtkImageActor::New();
     saggital->SetInput(saggitalColors->GetOutput());
@@ -293,7 +270,7 @@ void wxMedical3Frame::ConfigureVTK()
   // Create the second (axial) plane of the three planes. We use the
   // same approach as before except that the extent differs.
   vtkImageMapToColors *axialColors = vtkImageMapToColors::New();
-    axialColors->SetInput(v16->GetOutput());
+    axialColors->SetInput(input.get());
     axialColors->SetLookupTable(hueLut);
   vtkImageActor *axial = vtkImageActor::New();
     axial->SetInput(axialColors->GetOutput());
@@ -302,7 +279,7 @@ void wxMedical3Frame::ConfigureVTK()
   // Create the third (coronal) plane of the three planes. We use 
   // the same approach as before except that the extent differs.
   vtkImageMapToColors *coronalColors = vtkImageMapToColors::New();
-    coronalColors->SetInput(v16->GetOutput());
+    coronalColors->SetInput(input.get());
     coronalColors->SetLookupTable(satLut);
   vtkImageActor *coronal = vtkImageActor::New();
     coronal->SetInput(coronalColors->GetOutput());
@@ -353,7 +330,8 @@ void wxMedical3Frame::ConfigureVTK()
   // between the planes is actually rendered.
   aRenderer->ResetCameraClippingRange ();
 
-  v16->Delete();
+  if (v16!=NULL)
+    v16->Delete();
   skinExtractor->Delete();
   skinNormals->Delete();
   skinStripper->Delete();

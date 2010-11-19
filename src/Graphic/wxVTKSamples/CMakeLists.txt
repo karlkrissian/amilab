@@ -1,5 +1,6 @@
 
 include_directories (
+  ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic/wxVTK
 )
 
