@@ -44,6 +44,7 @@
   #include "vtkRenderWindowInteractor.h"
   #include "vtkVolume.h"
   #include "vtkVolumeProperty.h"
+  #include "vtkProperty.h"
 
 #if (VTK_MAJOR_VERSION==5)&&(VTK_MINOR_VERSION>=6)
   #include "vtkGPUVolumeRayCastMapper.h"

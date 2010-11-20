@@ -55,6 +55,11 @@ extern VarContexts  Vars;
 #include "vtkSkeleton2Lines.h"
 #include "wxMedical3Frame.h"
 
+#include "wrap_vtkRenderer.h"
+
+#include "wrap_vtkPiecewiseFunction.h"
+#include "wrap_vtkColorTransferFunction.h"
+
 #endif // _WITHOUT_VTK_
 
 
@@ -68,6 +73,11 @@ void AddWrapVTK() {
     ADDVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     wrap_vtkGPURayCasting);
     ADDVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        wrap_wxVTKMedical3);
 
+    Variables::ptr current_context=Vars.GetCurrentContext();
+    WrapClass_vtkPiecewiseFunction::
+      AddVar_New(current_context,"vtkPiecewiseFunction");
+    WrapClass_vtkColorTransferFunction::
+      AddVar_New(current_context,"vtkColorTransferFunction");
 }
 
 
@@ -282,7 +292,9 @@ BasicVariable::ptr wrap_vtkGPURayCasting(ParamList* p)
     volren->SetClip(clip);
 //    volren->Display();
     volren->Show(TRUE);
-    return BasicVariable::ptr();
+    vtkRenderer* ren = volren->GetRenderer();
+
+    return AMILabType<vtkRenderer>::CreateVar(ren);
 
 } // Wrap_vtkSkeleton2Lines()
 

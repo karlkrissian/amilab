@@ -79,7 +79,7 @@ class AMILabType {
     static BasicVariable::ptr CreateVar(const T& val)
     { return BasicVariable::ptr(); }
 
-    static BasicVariable::ptr CreateVar(T* val)
+    static BasicVariable::ptr CreateVar(T* val, bool nodeleter=false)
     { return BasicVariable::ptr(); }
 };
 
@@ -91,7 +91,7 @@ class AMILabType {
 	    static std::string name_as_string();\
       static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false);\
       static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
-      static BasicVariable::ptr CreateVar(type* val);\
+      static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
       static BasicVariable::ptr CreateVar(const type& val);\
   };
 
@@ -128,9 +128,13 @@ class AMILabType {
       return Variable<type>::ptr( new Variable<type>(valptr));\
     }\
     \
-    BasicVariable::ptr AMILabType<type>::CreateVar(type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar(type* val, bool nodeleter)  \
     { \
-      boost::shared_ptr<type> valptr(val);\
+      boost::shared_ptr<type> valptr; \
+      if (nodeleter) \
+        valptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        valptr = boost::shared_ptr<type>(val);\
       return CreateVarFromSmtPtr(valptr); \
     } \
     \
@@ -186,7 +190,7 @@ class AMILabType {
 
 
 #define AMI_DEFINE_WRAPPEDTYPE_NOCOPY_CREATEFROMPTR(type) \
-    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
     { \
       boost::shared_ptr<type> obj_ptr(val,smartpointer_nodeleter<type>());\
       return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
@@ -195,9 +199,13 @@ class AMILabType {
 #define AMI_DEFINE_WRAPPEDTYPE_HASCOPY(type) \
     AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
     \
-    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
     { \
-      boost::shared_ptr<type> obj_ptr(val);\
+      boost::shared_ptr<type> obj_ptr; \
+      if (nodeleter) \
+        obj_ptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        obj_ptr = boost::shared_ptr<type>(val);\
       return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
     } \
     \
@@ -210,9 +218,13 @@ class AMILabType {
 #define AMI_DEFINE_WRAPPEDTYPE_ABSTRACT(type) \
     AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
     \
-    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
     { \
-      boost::shared_ptr<type> obj_ptr(val);\
+      boost::shared_ptr<type> obj_ptr; \
+      if (nodeleter) \
+        obj_ptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        obj_ptr = boost::shared_ptr<type>(val);\
       return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
     } \
     \

@@ -178,6 +178,32 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
   _context->AddVar<WrapClassMember>(newname, tmp, _context); \
 }
 
+/** Macro for adding the class static method with a static function
+  */
+#define ADD_CLASS_STATICMETHOD(methodname,description_str) \
+/**\
+ * description_str\
+ **/\
+class wrap_##methodname : public WrapClassMember { \
+  public: \
+    wrap_##methodname() { \
+      Set_arg_failure(false);\
+      SetParametersComments(); \
+    } \
+    void SetParametersComments(); \
+    BasicVariable::ptr CallMember(ParamList* p); \
+    static const std::string StaticDescription()  { return description_str; }\
+    static const std::string StaticFunctionName() \
+    { std::string classname(AMILabType<ObjectType>::name_as_string());\
+      return classname+"::"+#methodname; }\
+    STATIC_HELP\
+}; \
+\
+static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
+  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
+  _context->AddVar<WrapClassMember>(newname, tmp, _context); \
+}
+
 /**
     Macro for adding the members to a class.
  */

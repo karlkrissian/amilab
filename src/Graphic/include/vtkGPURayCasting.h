@@ -77,6 +77,9 @@ class vtkGPURayCasting : public wxFrame
 
     void SetInput( vtkImageData_ptr image);
   
+    vtkRenderer* GetRenderer() { return renderer; }
+
+
     bool Display();
 
 protected:
