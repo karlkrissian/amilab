@@ -144,12 +144,12 @@ SubPixel2D::SubPixel2D(InrImage* inp_image, float thres, int lc)
 //Destructor
 SubPixel2D::~SubPixel2D(){}
 
-void copyImage(InrImage* input, InrImage* output)
+void copyImage(InrImage* input, InrImage* output, int margin)
 {
   int z = 0;
-  for(int x=0;x<input->DimX();x++)
+  for(int x=margin;x<input->DimX()-margin;x++)
   {
-    for(int y=0;y<input->DimY();y++)
+    for(int y=margin;y<input->DimY()-margin;y++)
     {
       input->BufferPos(x, y, z);
       input->FixeValeur((*output)(x,y,z));
@@ -753,9 +753,6 @@ void SubPixel2D::DenoisingGus()
   int vpos[] = { -1,-3, 0,-2, 2, 0, 3, 1};	 
   
   //Vamos a empezar por copiar la imagen original y luego promediarla
-//  InrImage::ptr original = InrImage::ptr(new InrImage(WT_DOUBLE, "original.inr.gz", input));
-//  copyImage(input, original);
-//  Promedio3x3(original.get(), input, A00, A01, A11);
   InrImage input_copy(WT_DOUBLE,"input_copy.inr.gz",input);
   denoised = new InrImage(WT_DOUBLE,"denoised.inr.gz",input);
   Promedio3x3(input, denoised, A00, A01, A11);
@@ -1475,7 +1472,7 @@ double ComputeStraightPixelColor(double a, double b, double A, double B)
     area = a+0.5;
   else 
   { 
-    //Compute the cuts and intgrate
+    //Compute the cuts and integrate
     if (a-0.5*b < -0.5) 
       x0 = (-0.5-a) / b; 
     if (a+0.5*b > 0.5)  
@@ -1486,6 +1483,11 @@ double ComputeStraightPixelColor(double a, double b, double A, double B)
   }
 	
   //Return the color
+  if (isnan(area*A + (1-area)*B)) {
+    cout << "intensidad nan en recto" << endl;
+    cout << "a:" << a << " b:" << b << " A:" << A << " B:" << B << endl;
+  }
+
   return (area*A + (1-area)*B);
 }
 
@@ -1569,6 +1571,9 @@ double ComputeCurvePixelColor(double xc, double yc, double r, double D, double F
   }
   
   //Return the color
+  if (isnan(F + area*(D-F))) {
+    cout << "intensidad nan en curvo" << endl;
+  }
   return (F + area*(D-F));
 }
 
@@ -1680,6 +1685,7 @@ void UpdateImages(InrImage* input, InrImage* C, InrImage* I, int x, int y, int z
   double yc   = a - r / root;
   double pixel_value, D, F;
   
+  
   if (c<=0) 
   {
     D=A;
@@ -1700,6 +1706,7 @@ void UpdateImages(InrImage* input, InrImage* C, InrImage* I, int x, int y, int z
       if (isnan(r) || fabs(r)>RMAX) 
       {
         pixel_value = ComputeStraightPixelColor(a+i*b+j, b, A, B);
+        //pixel_value = ComputeStraightPixelColor(a, b, A, B);
       }
       else 
       {
@@ -1739,9 +1746,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
   InrImage::ptr G = InrImage::ptr(new InrImage(input->DimX(), input->DimY(),
                                                input->DimZ(), WT_DOUBLE,
                                                "averaged.inr.gz"));
-//  InrImage::ptr Grad = InrImage::ptr(new InrImage(input->DimX(), input->DimY(),
-//                                                  input->DimZ(), WT_DOUBLE,
-//                                                  "modgrad.inr.gz"));
+
   //For third dimension
   int z = 0;
   //Partial derivatives
@@ -1763,18 +1768,19 @@ void SubPixel2D::SubpixelDenoising(int niter)
     //  Grad->InitZero();
     
     //1º Se promedia la imagen de entrada y se deja en G
-    Promedio3x3(input, G.get(), (double)1/9, (double)1/9, (double)1/9);
+    Promedio3x3(input, G.get(), A00, A01, A11);
 //    cout << "hago el promediado" << endl;
     
     //Para que funcionen las macros de parciales tengo que jincar G como input
     //setInput(G.get());
-    copyImage(input, G.get());
+    copyImage(input, G.get(), margin);
+    //*input = *(G.get());
     //Para todos los pixels de G
 
     borderPixelVector.clear();
     cout << "iteración: " << index << " tamaño: " << borderPixelVector.size() << endl;
    
-//    cout << "me cepillo en borderPixelVector" << endl;
+//    cout << "me cepillo los elementos de borderPixelVector" << endl;
     for(int y = margin; y < G->DimY()-margin; y++)
     {
 //      cout << "\ty = " << y << endl;
@@ -1827,8 +1833,10 @@ void SubPixel2D::SubpixelDenoising(int niter)
       {
         if ((*C)(x,y,z) > 0)
         {
+          //cout << "el valor del contador es: " << (*C)(x,y,z) << endl;
           input->BufferPos(x,y,z);
-          input->FixeValeur((*I)(x,y,z)/(*C)(x,y,z));
+          cout << "cociente= " << ((*I)(x,y,z))/((*C)(x,y,z)) << endl;
+          input->FixeValeur(((*I)(x,y,z))/((*C)(x,y,z)));
 //          cout << "valor final que meto: " << (*I)(x,y,z)/(*C)(x,y,z) << endl;
         }
       }
