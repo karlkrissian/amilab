@@ -473,8 +473,8 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_insertCallback
-      boost::shared_ptr<_13512 > var_m_insertCallback_ptr(&GetObj()->m_insertCallback, smartpointer_nodeleter<_13512 >());
-      BasicVariable::ptr var_m_insertCallback = AMILabType<_13512 >::CreateVarFromSmtPtr(var_m_insertCallback_ptr);
+      boost::shared_ptr<_13528 > var_m_insertCallback_ptr(&GetObj()->m_insertCallback, smartpointer_nodeleter<_13528 >());
+      BasicVariable::ptr var_m_insertCallback = AMILabType<_13528 >::CreateVarFromSmtPtr(var_m_insertCallback_ptr);
       if (var_m_insertCallback.get()) {
         var_m_insertCallback->Rename("m_insertCallback");
         context->AddVar(var_m_insertCallback,context);

@@ -23,14 +23,15 @@
 
 // include what is needed for inheritence and for types ...
 
-#include "wrap_wxButtonBase.h"
+//#include "wrap_wxButtonBase.h"
+
 
 
 AMI_DECLARE_TYPE(wxButton);
 
 // TODO: check for inheritence ...
 class WrapClass_wxButton : public WrapClass<wxButton>
-    , public   WrapClass_wxButtonBase
+    //, public  WrapClass_wxButtonBase
 {
   DEFINE_CLASS(WrapClass_wxButton);
 
@@ -45,7 +46,7 @@ class WrapClass_wxButton : public WrapClass<wxButton>
     /// Constructor
     WrapClass_wxButton(boost::shared_ptr<wxButton > si): 
     WrapClass<wxButton>(si)
-    , WrapClass_wxButtonBase(si)
+    //, WrapClass_wxButtonBase(si)
     {}
 
     /// Destructor

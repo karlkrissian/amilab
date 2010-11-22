@@ -143,13 +143,13 @@ END_EVENT_TABLE()
   */
 
     
-vtkGPURayCasting::vtkGPURayCasting(vtkImageData_ptr image) : wxFrame((wxFrame *)NULL, -1, wxT("VTK GPU RayCasting"), wxPoint(50, 50), wxSize(450, 340))
+vtkGPURayCasting::vtkGPURayCasting(vtkImageData_ptr image, bool clipval) : wxFrame((wxFrame *)NULL, -1, wxT("VTK GPU RayCasting"), wxPoint(50, 50), wxSize(450, 340))
 {
   blendType = 0;
   opacityWindow = 4096;
   opacityLevel = 2048;
   /// clip 0|1
-  clip = 0; 
+  clip = clipval; 
   /// within [0,1]
   reductionFactor = 1.0;
   /// within [0.01,60]
@@ -157,10 +157,6 @@ vtkGPURayCasting::vtkGPURayCasting(vtkImageData_ptr image) : wxFrame((wxFrame *)
   ///
   independentComponents=true;
   
-  ///
-  m_pVTKWindow = new wxVTKRenderWindowInteractor(this, MY_VTK_WINDOW);
-  //turn on mouse grabbing if possible
-  m_pVTKWindow->UseCaptureMouseOn();
   SetInput(image);
   Display();
 //  ConfigureVTK();
@@ -403,6 +399,11 @@ void vtkGPURayCasting::SetInput( vtkImageData_ptr image)
 
 bool vtkGPURayCasting::Display()
 {
+
+  ///
+  m_pVTKWindow = new wxVTKRenderWindowInteractor(this, MY_VTK_WINDOW);
+  //turn on mouse grabbing if possible
+  m_pVTKWindow->UseCaptureMouseOn();
 
   // Create the renderer, render window and interactor
   vtkRenderWindow *renWin = m_pVTKWindow->GetRenderWindow();
@@ -677,9 +678,12 @@ if ( reductionFactor < 1.0 )
   opacityFun->Delete();
   colorFun->Delete();
   property->Delete();
-  
+
+/*
   box->Delete();
   volume->Delete();
+  */
+
 //  mapper->Delete();
 //  resample->Delete();
 //  renWin->Delete();

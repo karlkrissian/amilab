@@ -21,6 +21,7 @@
 #include "wrap_wxObject.h"
 #include "wrap_wxValidator.h"
 #include "wrap_wxWindow.h"
+#include "wrap_wxWindowBase.h"
 #include "wrap_wxClassInfo.h"
 
 
@@ -69,11 +70,10 @@ Variable<AMIObject>::ptr WrapClass_wxValidator::CreateVar( wxValidator* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxValidator::AddMethods(WrapClass<wxValidator>::ptr this_ptr )
 {
-  /*
+  
       // Add members from wxEvtHandler
       WrapClass_wxEvtHandler::ptr parent_wxEvtHandler(        boost::dynamic_pointer_cast<WrapClass_wxEvtHandler >(this_ptr));
       parent_wxEvtHandler->AddMethods(parent_wxEvtHandler);
-      */
 
 
   // check that the method name is not a token
@@ -85,9 +85,7 @@ void WrapClass_wxValidator::AddMethods(WrapClass<wxValidator>::ptr this_ptr )
       AddVar_TransferToWindow( this_ptr);
       AddVar_TransferFromWindow( this_ptr);
       AddVar_GetWindow( this_ptr);
-/* The following types are missing: wxWindowBase
       AddVar_SetWindow( this_ptr);
-*/
       AddVar_GetClassInfo( this_ptr);
 
 
@@ -297,7 +295,6 @@ BasicVariable::ptr WrapClass_wxValidator::
   BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
   return res_var;
 }
-/* The following types are missing: wxWindowBase
 
 //---------------------------------------------------
 //  Wrapping of void wxValidator::SetWindow(wxWindowBase * win)
@@ -323,7 +320,6 @@ BasicVariable::ptr WrapClass_wxValidator::
   this->_objectptr->GetObj()->SetWindow(win);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxClassInfo * wxValidator::GetClassInfo()

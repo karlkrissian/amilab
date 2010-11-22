@@ -26,6 +26,7 @@
 #include "wrap_wxGDIObject.h"
 
 
+
 AMI_DECLARE_TYPE(wxFontBase);
 
 // TODO: check for inheritence ...

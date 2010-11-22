@@ -286,11 +286,11 @@ BasicVariable::ptr wrap_vtkGPURayCasting(ParamList* p)
     vtk_image = (vtkImageData_ptr) (*input);
     //    printf("2 \n");
 
-    vtkGPURayCasting* volren = new vtkGPURayCasting(vtk_image);
+    vtkGPURayCasting* volren = new vtkGPURayCasting(vtk_image, clip);
     volren->SetBlendType(blendtype);
     volren->SetOpacityMap(window,level);
-    volren->SetClip(clip);
-//    volren->Display();
+    //volren->SetClip(clip);
+    //volren->Display();
     volren->Show(TRUE);
     vtkRenderer* ren = volren->GetRenderer();
 

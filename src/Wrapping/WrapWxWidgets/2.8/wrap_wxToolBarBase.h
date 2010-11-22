@@ -26,6 +26,7 @@
 #include "wrap_wxControl.h"
 
 
+
 AMI_DECLARE_TYPE(wxToolBarBase);
 
 // TODO: check for inheritence ...

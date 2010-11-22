@@ -16,7 +16,7 @@ proc AddSegMenu() {
   ami.MainFrame.AddToMenu("&Scripts",category,"Image &Histogram",  dir+"ImageHistogram")
   
   
-  for subdir in  "RGBScale" \
+  for subdir in  "RGBScale","VolRen" \
   {
     curfile=GetScriptsDir+"/Visualization/"+subdir+"/Add2Menu.amil"
     if FileExists(curfile) {

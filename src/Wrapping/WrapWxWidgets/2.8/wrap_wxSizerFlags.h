@@ -51,7 +51,6 @@ class WrapClass_wxSizerFlags : public WrapClass<wxSizerFlags>
     /// Destructor
     ~WrapClass_wxSizerFlags()
     {
-      std::cout << "~WrapClass_wxSizerFlags()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -68,7 +67,13 @@ class WrapClass_wxSizerFlags : public WrapClass<wxSizerFlags>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxSizerFlags*);
 
-    // here add each method
+    // Static methods
+    
+    ADD_CLASS_STATICMETHOD(GetDefaultBorder,"int wxSizerFlags::GetDefaultBorder() (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#getdefaultborder).");
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
@@ -82,7 +87,6 @@ class WrapClass_wxSizerFlags : public WrapClass<wxSizerFlags>
     ADD_CLASS_METHOD(Right,"wxSizerFlags & wxSizerFlags::Right()  (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#right)")
     ADD_CLASS_METHOD(Top,"wxSizerFlags & wxSizerFlags::Top()  (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#top)")
     ADD_CLASS_METHOD(Bottom,"wxSizerFlags & wxSizerFlags::Bottom()  (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#bottom)")
-    ADD_CLASS_METHOD(GetDefaultBorder,"int wxSizerFlags::GetDefaultBorder()  (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#getdefaultborder)")
     ADD_CLASS_METHOD(Border_1,"wxSizerFlags & wxSizerFlags::Border(int direction, int borderInPixels)  (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#border)")
     ADD_CLASS_METHOD(Border,"wxSizerFlags::Border()  (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#border)")
     ADD_CLASS_METHOD(Border_2,"wxSizerFlags & wxSizerFlags::Border(int direction = wxALL)  (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#border)")
@@ -98,52 +102,13 @@ class WrapClass_wxSizerFlags : public WrapClass<wxSizerFlags>
     ADD_CLASS_METHOD(GetBorderInPixels,"int wxSizerFlags::GetBorderInPixels()  (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#getborderinpixels)")
 
     // Operators:
-    ADD_CLASS_METHOD(__assign__,            "wxSizerFlags & wxSizerFlags::=(wxSizerFlags const & param0) (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#__assign__)")
+    ADD_CLASS_METHOD(__assign__,            "wxSizerFlags & wxSizerFlags::operator =(wxSizerFlags const & param0) (http://docs.wxwidgets.org/stable/wx_wxsizerflags.html#__assign__)")
 
 
 
 
-    void AddMethods(WrapClass<wxSizerFlags>::ptr this_ptr )
-    {
-      
+    void AddMethods(WrapClass<wxSizerFlags>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Proportion( this_ptr);
-      AddVar_Align( this_ptr);
-      AddVar_Expand( this_ptr);
-      AddVar_Centre( this_ptr);
-      AddVar_Center( this_ptr);
-      AddVar_Left( this_ptr);
-      AddVar_Right( this_ptr);
-      AddVar_Top( this_ptr);
-      AddVar_Bottom( this_ptr);
-      AddVar_GetDefaultBorder( this_ptr);
-      AddVar_Border_1( this_ptr);
-      AddVar_Border( this_ptr);
-      AddVar_Border_2( this_ptr);
-      AddVar_DoubleBorder( this_ptr);
-      AddVar_TripleBorder( this_ptr);
-      AddVar_HorzBorder( this_ptr);
-      AddVar_DoubleHorzBorder( this_ptr);
-      AddVar_Shaped( this_ptr);
-      AddVar_FixedMinSize( this_ptr);
-      AddVar_ReserveSpaceEvenIfHidden( this_ptr);
-      AddVar_GetProportion( this_ptr);
-      AddVar_GetFlags( this_ptr);
-      AddVar_GetBorderInPixels( this_ptr);
-
-      // Adding operators
-      AddVar___assign__( this_ptr);
-
-
-
-      
-    };
 };
 
 

@@ -72,10 +72,11 @@ Variable<AMIObject>::ptr WrapClass_wxButton::CreateVar( wxButton* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxButton::AddMethods(WrapClass<wxButton>::ptr this_ptr )
 {
-  
+  /*
       // Add members from wxButtonBase
       WrapClass_wxButtonBase::ptr parent_wxButtonBase(        boost::dynamic_pointer_cast<WrapClass_wxButtonBase >(this_ptr));
       parent_wxButtonBase->AddMethods(parent_wxButtonBase);
+      */
 
 
   // check that the method name is not a token
@@ -173,17 +174,17 @@ BasicVariable::ptr WrapClass_wxButton::
   boost::shared_ptr<wxString > label_smtptr;
   if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & label = ( label_smtptr.get() ? (*label_smtptr) : (wxEmptyString) );
+  wxString const & label = ( label_smtptr.get() ? (*label_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
@@ -192,12 +193,12 @@ BasicVariable::ptr WrapClass_wxButton::
   boost::shared_ptr<wxValidator > validator_smtptr;
   if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : (wxDefaultValidator) );
+  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : wxDefaultValidator );
 
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxButtonNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxButtonNameStr) );
 
   wxButton* _newobj = new wxButton(parent, id, label, pos, size, style, validator, name);
   BasicVariable::ptr res = WrapClass_wxButton::CreateVar(_newobj);
@@ -265,17 +266,17 @@ BasicVariable::ptr WrapClass_wxButton::
   boost::shared_ptr<wxString > label_smtptr;
   if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & label = ( label_smtptr.get() ? (*label_smtptr) : (wxEmptyString) );
+  wxString const & label = ( label_smtptr.get() ? (*label_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
@@ -284,12 +285,12 @@ BasicVariable::ptr WrapClass_wxButton::
   boost::shared_ptr<wxValidator > validator_smtptr;
   if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : (wxDefaultValidator) );
+  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : wxDefaultValidator );
 
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxButtonNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxButtonNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, label, pos, size, style, validator, name);
   int res_int = ((res==true)?1:0);

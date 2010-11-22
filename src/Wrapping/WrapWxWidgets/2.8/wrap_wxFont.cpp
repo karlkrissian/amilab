@@ -72,7 +72,9 @@ void WrapClass_wxFont::AddMethods(WrapClass<wxFont>::ptr this_ptr )
       // Adding copy method 
       AddVar___copy__( this_ptr);
       // Adding standard methods 
+/* The following types are missing: wxFontEncoding
       AddVar_Create_1( this_ptr);
+*/
       AddVar_Create( this_ptr);
       AddVar_Create_2( this_ptr);
       AddVar_GetPointSize( this_ptr);
@@ -81,7 +83,9 @@ void WrapClass_wxFont::AddMethods(WrapClass<wxFont>::ptr this_ptr )
       AddVar_GetWeight( this_ptr);
       AddVar_GetFaceName( this_ptr);
       AddVar_GetUnderlined( this_ptr);
+/* The following types are missing: wxFontEncoding
       AddVar_GetEncoding( this_ptr);
+*/
 /* The following types are missing: wxNativeFontInfo
       AddVar_GetNativeFontInfo( this_ptr);
 */
@@ -92,7 +96,9 @@ void WrapClass_wxFont::AddMethods(WrapClass<wxFont>::ptr this_ptr )
       AddVar_SetWeight( this_ptr);
       AddVar_SetFaceName( this_ptr);
       AddVar_SetUnderlined( this_ptr);
+/* The following types are missing: wxFontEncoding
       AddVar_SetEncoding( this_ptr);
+*/
       AddVar_SetNoAntiAliasing( this_ptr);
       AddVar_GetNoAntiAliasing( this_ptr);
       AddVar_GetClassInfo( this_ptr);
@@ -157,9 +163,6 @@ BasicVariable::ptr WrapClass_wxFont::
   WrapClass_wxFont::wrap_wxFont_3 m3;
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
-  WrapClass_wxFont::wrap_wxFont_5 m5;
-  res = m5.CallMember(_p);
-  if (!m5.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -235,6 +238,7 @@ BasicVariable::ptr WrapClass_wxFont::
   return res;
 }
 */
+/* The following types are missing: wxFontEncoding
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxFont::wxFont(int size, int family, int style, int weight, bool underlined = false, wxString const & face = wxEmptyString, wxFontEncoding encoding = wxFONTENCODING_DEFAULT)
@@ -248,7 +252,7 @@ void WrapClass_wxFont::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'weight'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'underlined' (def:false)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'face' (def:wxEmptyString)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'encoding' (def:wxFONTENCODING_DEFAULT)")
+  ADDPARAMCOMMENT_TYPE( wxFontEncoding, "parameter named 'encoding' (def:wxFONTENCODING_DEFAULT)")
 }
 
 //---------------------------------------------------
@@ -280,14 +284,14 @@ BasicVariable::ptr WrapClass_wxFont::
   // Setting default value if no value is returned
   wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
-  int encoding_int = (int) wxFONTENCODING_DEFAULT;;
-  if (!get_val_param<int >(encoding_int,_p,_n)) ClassReturnEmptyVar;
-  wxFontEncoding encoding = (wxFontEncoding) encoding_int;
+  wxFontEncoding encoding = wxFONTENCODING_DEFAULT;
+  if (!get_val_param<wxFontEncoding >(encoding,_p,_n)) ClassReturnEmptyVar;
 
   wxFont* _newobj = new wxFont(size, family, style, weight, underlined, face, encoding);
   BasicVariable::ptr res = WrapClass_wxFont::CreateVar(_newobj);
   return res;
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of 'copy' method for wxFont.
@@ -304,6 +308,7 @@ BasicVariable::ptr WrapClass_wxFont::
 {
     return AMILabType<wxFont >::CreateVar( new wxFont(*(this->_objectptr->GetObj())));
 }
+/* The following types are missing: wxFontEncoding
 
 //---------------------------------------------------
 //  Wrapping of bool wxFont::Create(int size, int family, int style, int weight, bool underlined = false, wxString const & face = wxEmptyString, wxFontEncoding encoding = wxFONTENCODING_DEFAULT)
@@ -317,7 +322,7 @@ void WrapClass_wxFont::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'weight'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'underlined' (def:false)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'face' (def:wxEmptyString)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'encoding' (def:wxFONTENCODING_DEFAULT)")
+  ADDPARAMCOMMENT_TYPE( wxFontEncoding, "parameter named 'encoding' (def:wxFONTENCODING_DEFAULT)")
   return_comments="returning a variable of type int";
 }
 
@@ -350,14 +355,14 @@ BasicVariable::ptr WrapClass_wxFont::
   // Setting default value if no value is returned
   wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
-  int encoding_int = (int) wxFONTENCODING_DEFAULT;;
-  if (!get_val_param<int >(encoding_int,_p,_n)) ClassReturnEmptyVar;
-  wxFontEncoding encoding = (wxFontEncoding) encoding_int;
+  wxFontEncoding encoding = wxFONTENCODING_DEFAULT;
+  if (!get_val_param<wxFontEncoding >(encoding,_p,_n)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Create(size, family, style, weight, underlined, face, encoding);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxFont::Create(...)
@@ -371,9 +376,6 @@ BasicVariable::ptr WrapClass_wxFont::
     wrap_Create::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxFont::wrap_Create_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxFont::wrap_Create_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -521,6 +523,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxFontEncoding
 
 //---------------------------------------------------
 //  Wrapping of wxFontEncoding wxFont::GetEncoding()
@@ -528,7 +531,7 @@ BasicVariable::ptr WrapClass_wxFont::
 void WrapClass_wxFont::
     wrap_GetEncoding::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxFontEncoding";
 }
 
 //---------------------------------------------------
@@ -538,9 +541,9 @@ BasicVariable::ptr WrapClass_wxFont::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxFontEncoding res =   this->_objectptr->GetObj()->GetEncoding();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxFontEncoding >::CreateVar(res);
 }
+*/
 /* The following types are missing: wxNativeFontInfo
 
 //---------------------------------------------------
@@ -559,7 +562,7 @@ BasicVariable::ptr WrapClass_wxFont::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxNativeFontInfo const * res =   this->_objectptr->GetObj()->GetNativeFontInfo();
-  return AMILabType<wxNativeFontInfo >::CreateVar(res,true);
+  return AMILabType<wxNativeFontInfo >::CreateVar(const_cast<wxNativeFontInfo *>(res),true);
 }
 */
 
@@ -730,6 +733,7 @@ BasicVariable::ptr WrapClass_wxFont::
   this->_objectptr->GetObj()->SetUnderlined(underlined);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxFontEncoding
 
 //---------------------------------------------------
 //  Wrapping of void wxFont::SetEncoding(wxFontEncoding encoding)
@@ -737,7 +741,7 @@ BasicVariable::ptr WrapClass_wxFont::
 void WrapClass_wxFont::
     wrap_SetEncoding::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'encoding'")
+  ADDPARAMCOMMENT_TYPE( wxFontEncoding, "parameter named 'encoding'")
 }
 
 //---------------------------------------------------
@@ -748,13 +752,13 @@ BasicVariable::ptr WrapClass_wxFont::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int encoding_int;
-  if (!get_val_param<int >(encoding_int,_p,_n)) ClassHelpAndReturn;
-  wxFontEncoding encoding = (wxFontEncoding) encoding_int;
+  wxFontEncoding encoding;
+  if (!get_val_param<wxFontEncoding >(encoding,_p,_n)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetEncoding(encoding);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxFont::SetNoAntiAliasing(bool no = true)

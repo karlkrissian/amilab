@@ -26,6 +26,7 @@
 #include "wrap_wxBitmapBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxBitmap);
 
 // TODO: check for inheritence ...
@@ -65,10 +66,14 @@ class WrapClass_wxBitmap : public WrapClass<wxBitmap>
     ADD_CLASS_CONSTRUCTOR(wxBitmap_3,"Constructor wxBitmap::wxBitmap(int width, int height, int depth = -0x00000000000000001) (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#wxbitmap).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxBitmap_4,"Constructor wxBitmap::wxBitmap(char const * bits, int width, int height, int depth = 1) (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#wxbitmap).");
+    /* The following types are missing: char const * const *
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxBitmap_5,"Constructor wxBitmap::wxBitmap(char const * const * bits) (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#wxbitmap).");
+    */
+    /* The following types are missing: wxBitmapType
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxBitmap_6,"Constructor wxBitmap::wxBitmap(wxString const & filename, wxBitmapType type = wxBITMAP_TYPE_XPM) (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#wxbitmap).");
+    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxBitmap_7,"Constructor wxBitmap::wxBitmap(wxImage const & image, int depth = -0x00000000000000001) (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#wxbitmap).");
 
@@ -99,8 +104,12 @@ class WrapClass_wxBitmap : public WrapClass<wxBitmap>
     ADD_CLASS_METHOD(GetMask,"wxMask * wxBitmap::GetMask()  (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#getmask)")
     ADD_CLASS_METHOD(SetMask,"void wxBitmap::SetMask(wxMask * mask)  (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#setmask)")
     ADD_CLASS_METHOD(GetSubBitmap,"wxBitmap wxBitmap::GetSubBitmap(wxRect const & rect)  (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#getsubbitmap)")
+/* The following types are missing: wxBitmapType
     ADD_CLASS_METHOD(SaveFile,"bool wxBitmap::SaveFile(wxString const & name, wxBitmapType type, wxPalette const * palette = 0u)  (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#savefile)")
+*/
+/* The following types are missing: wxBitmapType
     ADD_CLASS_METHOD(LoadFile,"bool wxBitmap::LoadFile(wxString const & name, wxBitmapType type = wxBITMAP_TYPE_XPM)  (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#loadfile)")
+*/
     ADD_CLASS_METHOD(GetPalette,"wxPalette * wxBitmap::GetPalette()  (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#getpalette)")
     ADD_CLASS_METHOD(SetPalette,"void wxBitmap::SetPalette(wxPalette const & palette)  (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#setpalette)")
     ADD_CLASS_METHOD(GetColourMap,"wxPalette * wxBitmap::GetColourMap()  (http://docs.wxwidgets.org/stable/wx_wxbitmap.html#getcolourmap)")

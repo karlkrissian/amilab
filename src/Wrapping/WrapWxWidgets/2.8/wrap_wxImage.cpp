@@ -86,7 +86,9 @@ void WrapClass_wxImage::AddMethods(WrapClass<wxImage>::ptr this_ptr )
       AddVar_Create( this_ptr);
       AddVar_Create_2( this_ptr);
       AddVar_Create_3( this_ptr);
+/* The following types are missing: char const * const *
       AddVar_Create_4( this_ptr);
+*/
       AddVar_Destroy( this_ptr);
       AddVar_Copy( this_ptr);
       AddVar_GetSubImage( this_ptr);
@@ -238,9 +240,6 @@ BasicVariable::ptr WrapClass_wxImage::
   WrapClass_wxImage::wrap_wxImage_7 m7;
   res = m7.CallMember(_p);
   if (!m7.Get_arg_failure()) return res;
-  WrapClass_wxImage::wrap_wxImage_8 m8;
-  res = m8.CallMember(_p);
-  if (!m8.Get_arg_failure()) return res;
   WrapClass_wxImage::wrap_wxImage_9 m9;
   res = m9.CallMember(_p);
   if (!m9.Get_arg_failure()) return res;
@@ -455,6 +454,7 @@ BasicVariable::ptr WrapClass_wxImage::
   BasicVariable::ptr res = WrapClass_wxImage::CreateVar(_newobj);
   return res;
 }
+/* The following types are missing: char const * const *
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxImage::wxImage(char const * const * xpmData)
@@ -481,6 +481,7 @@ BasicVariable::ptr WrapClass_wxImage::
   BasicVariable::ptr res = WrapClass_wxImage::CreateVar(_newobj);
   return res;
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxImage::wxImage(wxInputStream & stream, long int type = wxBITMAP_TYPE_ANY, int index = -0x00000000000000001)
@@ -1126,9 +1127,6 @@ BasicVariable::ptr WrapClass_wxImage::
   WrapClass_wxImage::wrap_Create_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
-  WrapClass_wxImage::wrap_Create_4 m4(this->_objectptr);
-  res = m4.CallMember(_p);
-  if (!m4.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -1216,6 +1214,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: char const * const *
 
 //---------------------------------------------------
 //  Wrapping of bool wxImage::Create(char const * const * xpmData)
@@ -1243,6 +1242,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxImage::Destroy()

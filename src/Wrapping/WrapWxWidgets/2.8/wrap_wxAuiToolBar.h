@@ -26,6 +26,7 @@
 #include "wrap_wxControl.h"
 
 
+
 AMI_DECLARE_TYPE(wxAuiToolBar);
 
 // TODO: check for inheritence ...
@@ -51,7 +52,6 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
     /// Destructor
     ~WrapClass_wxAuiToolBar()
     {
-      std::cout << "~WrapClass_wxAuiToolBar()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -64,13 +64,22 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxAuiToolBar*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding standard methods
     ADD_CLASS_METHOD(SetWindowStyleFlag,"void wxAuiToolBar::SetWindowStyleFlag(long int style)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setwindowstyleflag)")
     ADD_CLASS_METHOD(GetWindowStyleFlag,"long int wxAuiToolBar::GetWindowStyleFlag()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getwindowstyleflag)")
+/* The following types are missing: wxAuiToolBarArt
     ADD_CLASS_METHOD(SetArtProvider,"void wxAuiToolBar::SetArtProvider(wxAuiToolBarArt * art)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setartprovider)")
+*/
+/* The following types are missing: wxAuiToolBarArt
     ADD_CLASS_METHOD(GetArtProvider,"wxAuiToolBarArt * wxAuiToolBar::GetArtProvider()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getartprovider)")
+*/
     ADD_CLASS_METHOD(SetFont,"bool wxAuiToolBar::SetFont(wxFont const & font)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setfont)")
     ADD_CLASS_METHOD(AddTool_1,"void wxAuiToolBar::AddTool(int tool_id, wxString const & label, wxBitmap const & bitmap, wxString const & short_help_string = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addtool)")
     ADD_CLASS_METHOD(AddTool,"wxAuiToolBar::AddTool()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addtool)")
@@ -83,9 +92,15 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
     ADD_CLASS_METHOD(AddStretchSpacer,"void wxAuiToolBar::AddStretchSpacer(int proportion = 1)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addstretchspacer)")
     ADD_CLASS_METHOD(Realize,"bool wxAuiToolBar::Realize()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#realize)")
     ADD_CLASS_METHOD(FindControl,"wxControl * wxAuiToolBar::FindControl(int window_id)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findcontrol)")
+/* The following types are missing: wxAuiToolBarItem
     ADD_CLASS_METHOD(FindToolByPosition,"wxAuiToolBarItem * wxAuiToolBar::FindToolByPosition(wxCoord x, wxCoord y)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findtoolbyposition)")
+*/
+/* The following types are missing: wxAuiToolBarItem
     ADD_CLASS_METHOD(FindToolByIndex,"wxAuiToolBarItem * wxAuiToolBar::FindToolByIndex(int idx)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findtoolbyindex)")
+*/
+/* The following types are missing: wxAuiToolBarItem
     ADD_CLASS_METHOD(FindTool,"wxAuiToolBarItem * wxAuiToolBar::FindTool(int tool_id)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findtool)")
+*/
     ADD_CLASS_METHOD(ClearTools,"void wxAuiToolBar::ClearTools()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#cleartools)")
     ADD_CLASS_METHOD(Clear,"void wxAuiToolBar::Clear()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#clear)")
     ADD_CLASS_METHOD(DeleteTool,"bool wxAuiToolBar::DeleteTool(int tool_id)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#deletetool)")
@@ -133,97 +148,17 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
     ADD_CLASS_METHOD(SetToolShortHelp,"void wxAuiToolBar::SetToolShortHelp(int tool_id, wxString const & help_string)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolshorthelp)")
     ADD_CLASS_METHOD(GetToolLongHelp,"wxString wxAuiToolBar::GetToolLongHelp(int tool_id)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoollonghelp)")
     ADD_CLASS_METHOD(SetToolLongHelp,"void wxAuiToolBar::SetToolLongHelp(int tool_id, wxString const & help_string)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoollonghelp)")
+/* The following types are missing: wxAuiToolBarItemArray, wxAuiToolBarItemArray
     ADD_CLASS_METHOD(SetCustomOverflowItems,"void wxAuiToolBar::SetCustomOverflowItems(wxAuiToolBarItemArray const & prepend, wxAuiToolBarItemArray const & append)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setcustomoverflowitems)")
+*/
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxAuiToolBar::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getclassinfo)")
 
 
 
 
 
-    void AddMethods(WrapClass<wxAuiToolBar>::ptr this_ptr )
-    {
-      
-      // Add members from wxControl
-      WrapClass_wxControl::ptr parent_wxControl(        boost::dynamic_pointer_cast<WrapClass_wxControl >(this_ptr));
-      parent_wxControl->AddMethods(parent_wxControl);
+    void AddMethods(WrapClass<wxAuiToolBar>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-      AddVar_SetWindowStyleFlag( this_ptr);
-      AddVar_GetWindowStyleFlag( this_ptr);
-      AddVar_SetArtProvider( this_ptr);
-      AddVar_GetArtProvider( this_ptr);
-      AddVar_SetFont( this_ptr);
-      AddVar_AddTool_1( this_ptr);
-      AddVar_AddTool( this_ptr);
-      AddVar_AddTool_2( this_ptr);
-      AddVar_AddTool_3( this_ptr);
-      AddVar_AddLabel( this_ptr);
-      AddVar_AddControl( this_ptr);
-      AddVar_AddSeparator( this_ptr);
-      AddVar_AddSpacer( this_ptr);
-      AddVar_AddStretchSpacer( this_ptr);
-      AddVar_Realize( this_ptr);
-      AddVar_FindControl( this_ptr);
-      AddVar_FindToolByPosition( this_ptr);
-      AddVar_FindToolByIndex( this_ptr);
-      AddVar_FindTool( this_ptr);
-      AddVar_ClearTools( this_ptr);
-      AddVar_Clear( this_ptr);
-      AddVar_DeleteTool( this_ptr);
-      AddVar_DeleteByIndex( this_ptr);
-      AddVar_GetToolCount( this_ptr);
-      AddVar_GetToolPos( this_ptr);
-      AddVar_GetToolIndex( this_ptr);
-      AddVar_GetToolFits( this_ptr);
-      AddVar_GetToolRect( this_ptr);
-      AddVar_GetToolFitsByIndex( this_ptr);
-      AddVar_GetToolBarFits( this_ptr);
-      AddVar_SetMargins_1( this_ptr);
-      AddVar_SetMargins( this_ptr);
-      AddVar_SetMargins_2( this_ptr);
-      AddVar_SetMargins_3( this_ptr);
-      AddVar_SetToolBitmapSize( this_ptr);
-      AddVar_GetToolBitmapSize( this_ptr);
-      AddVar_GetOverflowVisible( this_ptr);
-      AddVar_SetOverflowVisible( this_ptr);
-      AddVar_GetGripperVisible( this_ptr);
-      AddVar_SetGripperVisible( this_ptr);
-      AddVar_ToggleTool( this_ptr);
-      AddVar_GetToolToggled( this_ptr);
-      AddVar_EnableTool( this_ptr);
-      AddVar_GetToolEnabled( this_ptr);
-      AddVar_SetToolDropDown( this_ptr);
-      AddVar_GetToolDropDown( this_ptr);
-      AddVar_SetToolBorderPadding( this_ptr);
-      AddVar_GetToolBorderPadding( this_ptr);
-      AddVar_SetToolTextOrientation( this_ptr);
-      AddVar_GetToolTextOrientation( this_ptr);
-      AddVar_SetToolPacking( this_ptr);
-      AddVar_GetToolPacking( this_ptr);
-      AddVar_SetToolProportion( this_ptr);
-      AddVar_GetToolProportion( this_ptr);
-      AddVar_SetToolSeparation( this_ptr);
-      AddVar_GetToolSeparation( this_ptr);
-      AddVar_SetToolSticky( this_ptr);
-      AddVar_GetToolSticky( this_ptr);
-      AddVar_GetToolLabel( this_ptr);
-      AddVar_SetToolLabel( this_ptr);
-      AddVar_GetToolBitmap( this_ptr);
-      AddVar_SetToolBitmap( this_ptr);
-      AddVar_GetToolShortHelp( this_ptr);
-      AddVar_SetToolShortHelp( this_ptr);
-      AddVar_GetToolLongHelp( this_ptr);
-      AddVar_SetToolLongHelp( this_ptr);
-      AddVar_SetCustomOverflowItems( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
-
-
-
-      
-    };
 };
 
 

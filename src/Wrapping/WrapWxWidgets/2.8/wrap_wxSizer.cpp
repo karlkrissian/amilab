@@ -18,11 +18,15 @@
 
 // get all the required includes
 // #include "..."
+#include "wrap_wxSizerItem.h"
 #include "wrap_wxWindow.h"
 #include "wrap_wxObject.h"
 #include "wrap_wxSizer.h"
+#include "wrap_wxSizerFlags.h"
 #include "boost/numeric/conversion/cast.hpp"
 #include "wrap_wxSize.h"
+#include "wrap_wxPoint.h"
+#include "wrap_wxSizerItemList.h"
 #include "wrap_wxClassInfo.h"
 
 
@@ -64,94 +68,45 @@ Variable<AMIObject>::ptr WrapClass_wxSizer::CreateVar( wxSizer* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxSizer::AddMethods(WrapClass<wxSizer>::ptr this_ptr )
 {
-  /*
+  
       // Add members from wxObject
       WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
       parent_wxObject->AddMethods(parent_wxObject);
       // Add members from wxClientDataContainer
       WrapClass_wxClientDataContainer::ptr parent_wxClientDataContainer(        boost::dynamic_pointer_cast<WrapClass_wxClientDataContainer >(this_ptr));
       parent_wxClientDataContainer->AddMethods(parent_wxClientDataContainer);
-      */
 
 
   // check that the method name is not a token
   
       // Adding standard methods 
-/* The following types are missing: wxSizerItem
       AddVar_Add_1( this_ptr);
-*/
       AddVar_Add( this_ptr);
-/* The following types are missing: wxSizerItem
       AddVar_Add_2( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_Add_3( this_ptr);
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
       AddVar_Add_4( this_ptr);
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
       AddVar_Add_5( this_ptr);
-*/
-/* The following types are missing: wxSizerItem, wxSizerItem
       AddVar_Add_6( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_AddSpacer( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_AddStretchSpacer( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_Insert_1( this_ptr);
-*/
       AddVar_Insert( this_ptr);
-/* The following types are missing: wxSizerItem
       AddVar_Insert_2( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_Insert_3( this_ptr);
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
       AddVar_Insert_4( this_ptr);
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
       AddVar_Insert_5( this_ptr);
-*/
-/* The following types are missing: wxSizerItem, wxSizerItem
       AddVar_Insert_6( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_InsertSpacer( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_InsertStretchSpacer( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_Prepend_1( this_ptr);
-*/
       AddVar_Prepend( this_ptr);
-/* The following types are missing: wxSizerItem
       AddVar_Prepend_2( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_Prepend_3( this_ptr);
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
       AddVar_Prepend_4( this_ptr);
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
       AddVar_Prepend_5( this_ptr);
-*/
-/* The following types are missing: wxSizerItem, wxSizerItem
       AddVar_Prepend_6( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_PrependSpacer( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_PrependStretchSpacer( this_ptr);
-*/
       AddVar_SetContainingWindow( this_ptr);
       AddVar_GetContainingWindow( this_ptr);
       AddVar_Remove_1( this_ptr);
@@ -164,9 +119,7 @@ void WrapClass_wxSizer::AddMethods(WrapClass<wxSizer>::ptr this_ptr )
       AddVar_Replace_1( this_ptr);
       AddVar_Replace( this_ptr);
       AddVar_Replace_2( this_ptr);
-/* The following types are missing: wxSizerItem
       AddVar_Replace_3( this_ptr);
-*/
       AddVar_Clear( this_ptr);
       AddVar_DeleteWindows( this_ptr);
       AddVar_SetMinSize_1( this_ptr);
@@ -180,9 +133,7 @@ void WrapClass_wxSizer::AddMethods(WrapClass<wxSizer>::ptr this_ptr )
       AddVar_SetItemMinSize_5( this_ptr);
       AddVar_SetItemMinSize_6( this_ptr);
       AddVar_GetSize( this_ptr);
-/* The following types are missing: wxPoint
       AddVar_GetPosition( this_ptr);
-*/
       AddVar_GetMinSize( this_ptr);
       AddVar_Layout( this_ptr);
       AddVar_ComputeFittingClientSize( this_ptr);
@@ -191,20 +142,12 @@ void WrapClass_wxSizer::AddMethods(WrapClass<wxSizer>::ptr this_ptr )
       AddVar_FitInside( this_ptr);
       AddVar_SetSizeHints( this_ptr);
       AddVar_SetVirtualSizeHints( this_ptr);
-/* The following types are missing: wxSizerItemList
       AddVar_GetChildren( this_ptr);
-*/
       AddVar_SetDimension( this_ptr);
-/* The following types are missing: wxSizerItem
       AddVar_GetItem_1( this_ptr);
-*/
       AddVar_GetItem( this_ptr);
-/* The following types are missing: wxSizerItem
       AddVar_GetItem_2( this_ptr);
-*/
-/* The following types are missing: wxSizerItem
       AddVar_GetItem_3( this_ptr);
-*/
       AddVar_Show_1( this_ptr);
       AddVar_Show( this_ptr);
       AddVar_Show_2( this_ptr);
@@ -233,7 +176,6 @@ void WrapClass_wxSizer::AddMethods(WrapClass<wxSizer>::ptr this_ptr )
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Add(wxWindow * window, int proportion = 0, int flag = 0, int border = 0, wxObject * userData = 0l)
@@ -275,9 +217,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxObject* userData = userData_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Add(window, proportion, flag, border, userData);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxSizer::Add(...)
@@ -291,9 +233,26 @@ BasicVariable::ptr WrapClass_wxSizer::
     wrap_Add::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxSizer::wrap_Add_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Add_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Add_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Add_4 m4(this->_objectptr);
+  res = m4.CallMember(_p);
+  if (!m4.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Add_5 m5(this->_objectptr);
+  res = m5.CallMember(_p);
+  if (!m5.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Add_6 m6(this->_objectptr);
+  res = m6.CallMember(_p);
+  if (!m6.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Add(wxSizer * sizer, int proportion = 0, int flag = 0, int border = 0, wxObject * userData = 0l)
@@ -335,10 +294,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxObject* userData = userData_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Add(sizer, proportion, flag, border, userData);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Add(int width, int height, int proportion = 0, int flag = 0, int border = 0, wxObject * userData = 0l)
@@ -383,10 +341,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxObject* userData = userData_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Add(width, height, proportion, flag, border, userData);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Add(wxWindow * window, wxSizerFlags const & flags)
@@ -416,10 +373,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerFlags const & flags = *flags_smtptr;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Add(window, flags);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Add(wxSizer * sizer, wxSizerFlags const & flags)
@@ -449,10 +405,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerFlags const & flags = *flags_smtptr;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Add(sizer, flags);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Add(wxSizerItem * item)
@@ -477,10 +432,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerItem* item = item_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Add(item);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::AddSpacer(int size)
@@ -504,10 +458,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(size,_p,_n)) ClassHelpAndReturn;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->AddSpacer(size);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::AddStretchSpacer(int prop = 1)
@@ -531,10 +484,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(prop,_p,_n)) ClassHelpAndReturn;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->AddStretchSpacer(prop);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Insert(size_t index, wxWindow * window, int proportion = 0, int flag = 0, int border = 0, wxObject * userData = 0l)
@@ -581,9 +533,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxObject* userData = userData_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Insert(index, window, proportion, flag, border, userData);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxSizer::Insert(...)
@@ -597,9 +549,26 @@ BasicVariable::ptr WrapClass_wxSizer::
     wrap_Insert::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxSizer::wrap_Insert_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Insert_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Insert_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Insert_4 m4(this->_objectptr);
+  res = m4.CallMember(_p);
+  if (!m4.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Insert_5 m5(this->_objectptr);
+  res = m5.CallMember(_p);
+  if (!m5.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Insert_6 m6(this->_objectptr);
+  res = m6.CallMember(_p);
+  if (!m6.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Insert(size_t index, wxSizer * sizer, int proportion = 0, int flag = 0, int border = 0, wxObject * userData = 0l)
@@ -646,10 +615,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxObject* userData = userData_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Insert(index, sizer, proportion, flag, border, userData);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Insert(size_t index, int width, int height, int proportion = 0, int flag = 0, int border = 0, wxObject * userData = 0l)
@@ -699,10 +667,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxObject* userData = userData_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Insert(index, width, height, proportion, flag, border, userData);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Insert(size_t index, wxWindow * window, wxSizerFlags const & flags)
@@ -737,10 +704,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerFlags const & flags = *flags_smtptr;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Insert(index, window, flags);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Insert(size_t index, wxSizer * sizer, wxSizerFlags const & flags)
@@ -775,10 +741,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerFlags const & flags = *flags_smtptr;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Insert(index, sizer, flags);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Insert(size_t index, wxSizerItem * item)
@@ -808,10 +773,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerItem* item = item_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Insert(index, item);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::InsertSpacer(size_t index, int size)
@@ -840,10 +804,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(size,_p,_n)) ClassHelpAndReturn;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->InsertSpacer(index, size);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::InsertStretchSpacer(size_t index, int prop = 1)
@@ -872,10 +835,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(prop,_p,_n)) ClassHelpAndReturn;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->InsertStretchSpacer(index, prop);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Prepend(wxWindow * window, int proportion = 0, int flag = 0, int border = 0, wxObject * userData = 0l)
@@ -917,9 +879,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxObject* userData = userData_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Prepend(window, proportion, flag, border, userData);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxSizer::Prepend(...)
@@ -933,9 +895,26 @@ BasicVariable::ptr WrapClass_wxSizer::
     wrap_Prepend::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxSizer::wrap_Prepend_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Prepend_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Prepend_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Prepend_4 m4(this->_objectptr);
+  res = m4.CallMember(_p);
+  if (!m4.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Prepend_5 m5(this->_objectptr);
+  res = m5.CallMember(_p);
+  if (!m5.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Prepend_6 m6(this->_objectptr);
+  res = m6.CallMember(_p);
+  if (!m6.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Prepend(wxSizer * sizer, int proportion = 0, int flag = 0, int border = 0, wxObject * userData = 0l)
@@ -977,10 +956,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxObject* userData = userData_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Prepend(sizer, proportion, flag, border, userData);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Prepend(int width, int height, int proportion = 0, int flag = 0, int border = 0, wxObject * userData = 0l)
@@ -1025,10 +1003,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxObject* userData = userData_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Prepend(width, height, proportion, flag, border, userData);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Prepend(wxWindow * window, wxSizerFlags const & flags)
@@ -1058,10 +1035,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerFlags const & flags = *flags_smtptr;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Prepend(window, flags);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem, wxSizerFlags
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Prepend(wxSizer * sizer, wxSizerFlags const & flags)
@@ -1091,10 +1067,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerFlags const & flags = *flags_smtptr;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Prepend(sizer, flags);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::Prepend(wxSizerItem * item)
@@ -1119,10 +1094,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerItem* item = item_smtptr.get();
 
   wxSizerItem * res =   this->_objectptr->GetObj()->Prepend(item);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::PrependSpacer(int size)
@@ -1146,10 +1120,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(size,_p,_n)) ClassHelpAndReturn;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->PrependSpacer(size);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::PrependStretchSpacer(int prop = 1)
@@ -1173,9 +1146,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(prop,_p,_n)) ClassHelpAndReturn;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->PrependStretchSpacer(prop);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxSizer::SetContainingWindow(wxWindow * window)
@@ -1455,6 +1428,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   WrapClass_wxSizer::wrap_Replace_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_Replace_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -1494,7 +1470,6 @@ BasicVariable::ptr WrapClass_wxSizer::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of bool wxSizer::Replace(size_t index, wxSizerItem * newitem)
@@ -1527,7 +1502,6 @@ BasicVariable::ptr WrapClass_wxSizer::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxSizer::Clear(bool delete_windows = false)
@@ -1898,7 +1872,6 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSize res =   this->_objectptr->GetObj()->GetSize();
   return AMILabType<wxSize >::CreateVar(res);
 }
-/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxSizer::GetPosition()
@@ -1918,7 +1891,6 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxPoint res =   this->_objectptr->GetObj()->GetPosition();
   return AMILabType<wxPoint >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxSize wxSizer::GetMinSize()
@@ -2109,7 +2081,6 @@ BasicVariable::ptr WrapClass_wxSizer::
   this->_objectptr->GetObj()->SetVirtualSizeHints(window);
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxSizerItemList
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItemList & wxSizer::GetChildren()
@@ -2129,7 +2100,6 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerItemList & res =   this->_objectptr->GetObj()->GetChildren();
   return AMILabType<wxSizerItemList >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxSizer::SetDimension(int x, int y, int width, int height)
@@ -2166,7 +2136,6 @@ BasicVariable::ptr WrapClass_wxSizer::
   this->_objectptr->GetObj()->SetDimension(x, y, width, height);
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::GetItem(wxWindow * window, bool recursive = false)
@@ -2196,9 +2165,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   bool recursive = (bool) (recursive_int>0.5);
 
   wxSizerItem * res =   this->_objectptr->GetObj()->GetItem(window, recursive);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxSizer::GetItem(...)
@@ -2212,9 +2181,17 @@ BasicVariable::ptr WrapClass_wxSizer::
     wrap_GetItem::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxSizer::wrap_GetItem_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_GetItem_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxSizer::wrap_GetItem_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::GetItem(wxSizer * sizer, bool recursive = false)
@@ -2244,10 +2221,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   bool recursive = (bool) (recursive_int>0.5);
 
   wxSizerItem * res =   this->_objectptr->GetObj()->GetItem(sizer, recursive);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxSizer::GetItem(size_t index)
@@ -2272,9 +2248,9 @@ BasicVariable::ptr WrapClass_wxSizer::
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   wxSizerItem * res =   this->_objectptr->GetObj()->GetItem(index);
-  return AMILabType<wxSizerItem >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxSizer::Show(wxWindow * window, bool show = true, bool recursive = false)

@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxSizerFlags.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -23,6 +21,9 @@
 #include "wrap_wxSizerFlags.h"
 
 
+#include "wrap_wxSizerFlags.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -39,6 +40,7 @@ AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxSizerFlags);
 AMI_DEFINE_VARFROMSMTPTR(wxSizerFlags);
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxSizerFlags
 //
@@ -54,6 +56,51 @@ Variable<AMIObject>::ptr WrapClass_wxSizerFlags::CreateVar( wxSizerFlags* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxSizerFlags::AddMethods(WrapClass<wxSizerFlags>::ptr this_ptr )
+{
+  
+
+
+  // check that the method name is not a token
+  
+      // Adding copy method 
+      AddVar___copy__( this_ptr);
+      // Adding standard methods 
+      AddVar_Proportion( this_ptr);
+      AddVar_Align( this_ptr);
+      AddVar_Expand( this_ptr);
+      AddVar_Centre( this_ptr);
+      AddVar_Center( this_ptr);
+      AddVar_Left( this_ptr);
+      AddVar_Right( this_ptr);
+      AddVar_Top( this_ptr);
+      AddVar_Bottom( this_ptr);
+      AddVar_Border_1( this_ptr);
+      AddVar_Border( this_ptr);
+      AddVar_Border_2( this_ptr);
+      AddVar_DoubleBorder( this_ptr);
+      AddVar_TripleBorder( this_ptr);
+      AddVar_HorzBorder( this_ptr);
+      AddVar_DoubleHorzBorder( this_ptr);
+      AddVar_Shaped( this_ptr);
+      AddVar_FixedMinSize( this_ptr);
+      AddVar_ReserveSpaceEvenIfHidden( this_ptr);
+      AddVar_GetProportion( this_ptr);
+      AddVar_GetFlags( this_ptr);
+      AddVar_GetBorderInPixels( this_ptr);
+
+      // Adding operators
+      AddVar___assign__( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -126,6 +173,25 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   wxSizerFlags* _newobj = new wxSizerFlags(proportion);
   BasicVariable::ptr res = WrapClass_wxSizerFlags::CreateVar(_newobj);
   return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxSizerFlags::GetDefaultBorder()
+//---------------------------------------------------
+void WrapClass_wxSizerFlags::
+    wrap_GetDefaultBorder::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxSizerFlags::
+    wrap_GetDefaultBorder::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  int res =   wxSizerFlags::GetDefaultBorder();
+  return AMILabType<int >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -325,25 +391,6 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
 
   wxSizerFlags & res =   this->_objectptr->GetObj()->Bottom();
   return AMILabType<wxSizerFlags >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of int wxSizerFlags::GetDefaultBorder()
-//---------------------------------------------------
-void WrapClass_wxSizerFlags::
-    wrap_GetDefaultBorder::SetParametersComments()
-{
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxSizerFlags::
-    wrap_GetDefaultBorder::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  int res =   this->_objectptr->GetObj()->GetDefaultBorder();
-  return AMILabType<int >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -624,7 +671,7 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxSizerFlags & wxSizerFlags::=(wxSizerFlags const & param0)
+//  Wrapping of wxSizerFlags & wxSizerFlags::operator =(wxSizerFlags const & param0)
 //---------------------------------------------------
 void WrapClass_wxSizerFlags::
     wrap___assign__::SetParametersComments()

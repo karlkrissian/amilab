@@ -198,12 +198,12 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : (wxEmptyString) );
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxObject > data_smtptr;
   if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
@@ -283,7 +283,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : wxString(wxEmptyString) );
 
   int kind_int = (int) wxITEM_NORMAL;;
   if (!get_val_param<int >(kind_int,_p,_n)) ClassReturnEmptyVar;
@@ -332,17 +332,17 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : (wxNullBitmap) );
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxBitmap(wxNullBitmap) );
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : (wxEmptyString) );
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxObject > data_smtptr;
   if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n)) ClassHelpAndReturn;
@@ -391,17 +391,17 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : (wxNullBitmap) );
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxBitmap(wxNullBitmap) );
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : (wxEmptyString) );
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxObject > data_smtptr;
   if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n)) ClassHelpAndReturn;
@@ -456,7 +456,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : (wxNullBitmap) );
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxBitmap(wxNullBitmap) );
 
   int kind_int = (int) wxITEM_NORMAL;;
   if (!get_val_param<int >(kind_int,_p,_n)) ClassReturnEmptyVar;
@@ -465,12 +465,12 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : (wxEmptyString) );
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxObject > clientData_smtptr;
   if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n)) ClassReturnEmptyVar;
@@ -1724,7 +1724,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : (wxNullBitmap) );
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxBitmap(wxNullBitmap) );
 
   int toggle_int = ((false==true)?1:0);;
   if (!get_val_param<int >(toggle_int,_p,_n)) ClassReturnEmptyVar;

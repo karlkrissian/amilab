@@ -64,7 +64,7 @@ class vtkGPURayCasting : public wxFrame
 
   public:
     
-    vtkGPURayCasting(vtkImageData_ptr image);
+    vtkGPURayCasting(vtkImageData_ptr image, bool clip=true);
     ~vtkGPURayCasting();
     
     void SetClip(int val) { clip = val; }

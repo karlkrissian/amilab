@@ -55,7 +55,7 @@ class WrapClass_wxClassInfo : public WrapClass<wxClassInfo>
     }
 
     
-    /* The following types are missing: _8997
+    /* The following types are missing: _8995
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxClassInfo,"Constructor wxClassInfo::wxClassInfo(wxChar const * className, wxClassInfo const * baseInfo1, wxClassInfo const * baseInfo2, int size, wxObjectConstructorFn ctor) (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#wxclassinfo).");
     */
@@ -77,9 +77,7 @@ class WrapClass_wxClassInfo : public WrapClass<wxClassInfo>
     // Standard methods
     
     // Adding standard methods
-/* The following types are missing: wxObject
     ADD_CLASS_METHOD(CreateObject,"wxObject * wxClassInfo::CreateObject()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#createobject)")
-*/
     ADD_CLASS_METHOD(IsDynamic,"bool wxClassInfo::IsDynamic()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#isdynamic)")
     ADD_CLASS_METHOD(GetClassName,"wxChar const * wxClassInfo::GetClassName()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getclassname)")
     ADD_CLASS_METHOD(GetBaseClassName1,"wxChar const * wxClassInfo::GetBaseClassName1()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getbaseclassname1)")
@@ -87,7 +85,7 @@ class WrapClass_wxClassInfo : public WrapClass<wxClassInfo>
     ADD_CLASS_METHOD(GetBaseClass1,"wxClassInfo const * wxClassInfo::GetBaseClass1()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getbaseclass1)")
     ADD_CLASS_METHOD(GetBaseClass2,"wxClassInfo const * wxClassInfo::GetBaseClass2()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getbaseclass2)")
     ADD_CLASS_METHOD(GetSize,"int wxClassInfo::GetSize()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getsize)")
-/* The following types are missing: _8997
+/* The following types are missing: _8995
     ADD_CLASS_METHOD(GetConstructor,"wxObjectConstructorFn wxClassInfo::GetConstructor()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getconstructor)")
 */
     ADD_CLASS_METHOD(GetNext,"wxClassInfo const * wxClassInfo::GetNext()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getnext)")

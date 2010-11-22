@@ -23,14 +23,15 @@
 
 // include what is needed for inheritence and for types ...
 
-//#include "wrap_wxEvtHandler.h"
+#include "wrap_wxEvtHandler.h"
+
 
 
 AMI_DECLARE_TYPE(wxValidator);
 
 // TODO: check for inheritence ...
 class WrapClass_wxValidator : public WrapClass<wxValidator>
-    //, public  WrapClass_wxEvtHandler
+    , public   WrapClass_wxEvtHandler
 {
   DEFINE_CLASS(WrapClass_wxValidator);
 
@@ -45,7 +46,7 @@ class WrapClass_wxValidator : public WrapClass<wxValidator>
     /// Constructor
     WrapClass_wxValidator(boost::shared_ptr<wxValidator > si): 
     WrapClass<wxValidator>(si)
-    //, WrapClass_wxEvtHandler(si)
+    , WrapClass_wxEvtHandler(si)
     {}
 
     /// Destructor
@@ -79,9 +80,7 @@ class WrapClass_wxValidator : public WrapClass<wxValidator>
     ADD_CLASS_METHOD(TransferToWindow,"bool wxValidator::TransferToWindow()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#transfertowindow)")
     ADD_CLASS_METHOD(TransferFromWindow,"bool wxValidator::TransferFromWindow()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#transferfromwindow)")
     ADD_CLASS_METHOD(GetWindow,"wxWindow * wxValidator::GetWindow()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#getwindow)")
-/* The following types are missing: wxWindowBase
     ADD_CLASS_METHOD(SetWindow,"void wxValidator::SetWindow(wxWindowBase * win)  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#setwindow)")
-*/
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxValidator::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#getclassinfo)")
 
 

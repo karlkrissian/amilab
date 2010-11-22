@@ -26,6 +26,7 @@
 #include "wrap_wxObject.h"
 
 
+
 AMI_DECLARE_TYPE(wxImage);
 
 // TODO: check for inheritence ...
@@ -71,8 +72,10 @@ class WrapClass_wxImage : public WrapClass<wxImage>
     ADD_CLASS_CONSTRUCTOR(wxImage_6,"Constructor wxImage::wxImage(wxString const & name, long int type = wxBITMAP_TYPE_ANY, int index = -0x00000000000000001) (http://docs.wxwidgets.org/stable/wx_wximage.html#wximage).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxImage_7,"Constructor wxImage::wxImage(wxString const & name, wxString const & mimetype, int index = -0x00000000000000001) (http://docs.wxwidgets.org/stable/wx_wximage.html#wximage).");
+    /* The following types are missing: char const * const *
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxImage_8,"Constructor wxImage::wxImage(char const * const * xpmData) (http://docs.wxwidgets.org/stable/wx_wximage.html#wximage).");
+    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxImage_9,"Constructor wxImage::wxImage(wxInputStream & stream, long int type = wxBITMAP_TYPE_ANY, int index = -0x00000000000000001) (http://docs.wxwidgets.org/stable/wx_wximage.html#wximage).");
     /// Wrapping of the constructor
@@ -121,7 +124,9 @@ class WrapClass_wxImage : public WrapClass<wxImage>
     ADD_CLASS_METHOD(Create,"wxImage::Create()  (http://docs.wxwidgets.org/stable/wx_wximage.html#create)")
     ADD_CLASS_METHOD(Create_2,"bool wxImage::Create(int width, int height, unsigned char * data, bool static_data = false)  (http://docs.wxwidgets.org/stable/wx_wximage.html#create)")
     ADD_CLASS_METHOD(Create_3,"bool wxImage::Create(int width, int height, unsigned char * data, unsigned char * alpha, bool static_data = false)  (http://docs.wxwidgets.org/stable/wx_wximage.html#create)")
+/* The following types are missing: char const * const *
     ADD_CLASS_METHOD(Create_4,"bool wxImage::Create(char const * const * xpmData)  (http://docs.wxwidgets.org/stable/wx_wximage.html#create)")
+*/
     ADD_CLASS_METHOD(Destroy,"void wxImage::Destroy()  (http://docs.wxwidgets.org/stable/wx_wximage.html#destroy)")
     ADD_CLASS_METHOD(Copy,"wxImage wxImage::Copy()  (http://docs.wxwidgets.org/stable/wx_wximage.html#copy)")
     ADD_CLASS_METHOD(GetSubImage,"wxImage wxImage::GetSubImage(wxRect const & rect)  (http://docs.wxwidgets.org/stable/wx_wximage.html#getsubimage)")

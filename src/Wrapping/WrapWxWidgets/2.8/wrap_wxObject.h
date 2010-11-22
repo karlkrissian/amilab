@@ -79,12 +79,8 @@ class WrapClass_wxObject : public WrapClass<wxObject>
     // Adding standard methods
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxObject::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxobject.html#getclassinfo)")
     ADD_CLASS_METHOD(IsKindOf,"bool wxObject::IsKindOf(wxClassInfo * info)  (http://docs.wxwidgets.org/stable/wx_wxobject.html#iskindof)")
-/* The following types are missing: wxObjectRefData
     ADD_CLASS_METHOD(GetRefData,"wxObjectRefData * wxObject::GetRefData()  (http://docs.wxwidgets.org/stable/wx_wxobject.html#getrefdata)")
-*/
-/* The following types are missing: wxObjectRefData
     ADD_CLASS_METHOD(SetRefData,"void wxObject::SetRefData(wxObjectRefData * data)  (http://docs.wxwidgets.org/stable/wx_wxobject.html#setrefdata)")
-*/
     ADD_CLASS_METHOD(Ref,"void wxObject::Ref(wxObject const & clone)  (http://docs.wxwidgets.org/stable/wx_wxobject.html#ref)")
     ADD_CLASS_METHOD(UnRef,"void wxObject::UnRef()  (http://docs.wxwidgets.org/stable/wx_wxobject.html#unref)")
     ADD_CLASS_METHOD(UnShare,"void wxObject::UnShare()  (http://docs.wxwidgets.org/stable/wx_wxobject.html#unshare)")

@@ -74,7 +74,7 @@ if (!exists(ScriptGui)) \
     #
     proc ::AddBitmapButton( OBJECT win, OBJECT icon_im, NUM size, STRING callback_name) \
     {
-      bmp = wx.wxBitmap(&icon_im.Scale2(size,size))
+      bmp = wx.wxBitmap(&icon_im.Scale(size,size))
       eval "return = win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
     }
 
@@ -84,7 +84,7 @@ if (!exists(ScriptGui)) \
     proc ::AddBitmapButton16( OBJECT win, OBJECT icon_im, STRING callback_name) \
     {
       size = 16
-      bmp = wx.wxBitmap(&icon_im.Scale2(size,size))
+      bmp = wx.wxBitmap(&icon_im.Scale(size,size))
       eval "win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
     }
 

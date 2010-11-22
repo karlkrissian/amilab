@@ -20,6 +20,7 @@
 // #include "..."
 #include "wrap_wxObject.h"
 #include "wrap_wxClassInfo.h"
+#include "wrap_wxObjectRefData.h"
 
 
 #include "wrap_wxObject.h"
@@ -70,12 +71,8 @@ void WrapClass_wxObject::AddMethods(WrapClass<wxObject>::ptr this_ptr )
       // Adding standard methods 
       AddVar_GetClassInfo( this_ptr);
       AddVar_IsKindOf( this_ptr);
-/* The following types are missing: wxObjectRefData
       AddVar_GetRefData( this_ptr);
-*/
-/* The following types are missing: wxObjectRefData
       AddVar_SetRefData( this_ptr);
-*/
       AddVar_Ref( this_ptr);
       AddVar_UnRef( this_ptr);
       AddVar_UnShare( this_ptr);
@@ -222,7 +219,6 @@ BasicVariable::ptr WrapClass_wxObject::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: wxObjectRefData
 
 //---------------------------------------------------
 //  Wrapping of wxObjectRefData * wxObject::GetRefData()
@@ -240,10 +236,9 @@ BasicVariable::ptr WrapClass_wxObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObjectRefData * res =   this->_objectptr->GetObj()->GetRefData();
-  return AMILabType<wxObjectRefData >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxObjectRefData::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxObjectRefData
 
 //---------------------------------------------------
 //  Wrapping of void wxObject::SetRefData(wxObjectRefData * data)
@@ -269,7 +264,6 @@ BasicVariable::ptr WrapClass_wxObject::
   this->_objectptr->GetObj()->SetRefData(data);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxObject::Ref(wxObject const & clone)
