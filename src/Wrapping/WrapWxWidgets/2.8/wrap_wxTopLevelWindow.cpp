@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxTopLevelWindow.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -27,6 +25,9 @@
 #include "wrap_wxClassInfo.h"
 
 
+#include "wrap_wxTopLevelWindow.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -40,8 +41,17 @@ BasicVariable::ptr WrapClass<wxTopLevelWindow>::CreateVar( ParamList* p)
 
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxTopLevelWindow);
+AMI_DEFINE_VARFROMSMTPTR(wxTopLevelWindow);
+
+// Implementing CreateVar for AMILabType
+BasicVariable::ptr AMILabType<wxTopLevelWindow>::CreateVar( wxTopLevelWindow* val, bool nodeleter)
+{ 
+  boost::shared_ptr<wxTopLevelWindow> obj_ptr(val,smartpointer_nodeleter<wxTopLevelWindow>());
+  return AMILabType<wxTopLevelWindow>::CreateVarFromSmtPtr(obj_ptr);
+}
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxTopLevelWindow
 //
@@ -57,6 +67,28 @@ Variable<AMIObject>::ptr WrapClass_wxTopLevelWindow::CreateVar( wxTopLevelWindow
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxTopLevelWindow::AddMethods(WrapClass<wxTopLevelWindow>::ptr this_ptr )
+{
+  
+      // Add members from wxTopLevelWindowGTK
+      WrapClass_wxTopLevelWindowGTK::ptr parent_wxTopLevelWindowGTK(        boost::dynamic_pointer_cast<WrapClass_wxTopLevelWindowGTK >(this_ptr));
+      parent_wxTopLevelWindowGTK->AddMethods(parent_wxTopLevelWindowGTK);
+
+
+  // check that the method name is not a token
+  
+      // Adding standard methods 
+      AddVar_GetClassInfo( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -136,16 +168,12 @@ BasicVariable::ptr WrapClass_wxTopLevelWindow::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?
-    (wxPoint const &) (*pos_smtptr):
-    (wxPoint const &) wxDefaultPosition);
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?
-    (wxSize const &) (*size_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   long style_long = 541072960;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
@@ -154,9 +182,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindow::
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?
-    (wxString const &) (*name_smtptr):
-    (wxString const &) wxFrameNameStr);
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxFrameNameStr) );
 
   wxTopLevelWindow* _newobj = new wxTopLevelWindow(parent, winid, title, pos, size, style, name);
   BasicVariable::ptr res = WrapClass_wxTopLevelWindow::CreateVar(_newobj);

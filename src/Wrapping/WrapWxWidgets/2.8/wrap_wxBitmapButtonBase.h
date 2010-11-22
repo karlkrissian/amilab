@@ -51,7 +51,6 @@ class WrapClass_wxBitmapButtonBase : public WrapClass<wxBitmapButtonBase>
     /// Destructor
     ~WrapClass_wxBitmapButtonBase()
     {
-      std::cout << "~WrapClass_wxBitmapButtonBase()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -64,7 +63,12 @@ class WrapClass_wxBitmapButtonBase : public WrapClass<wxBitmapButtonBase>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxBitmapButtonBase*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding standard methods
     ADD_CLASS_METHOD(SetBitmapLabel,"void wxBitmapButtonBase::SetBitmapLabel(wxBitmap const & bitmap)  (http://docs.wxwidgets.org/stable/wx_wxbitmapbuttonbase.html#setbitmaplabel)")

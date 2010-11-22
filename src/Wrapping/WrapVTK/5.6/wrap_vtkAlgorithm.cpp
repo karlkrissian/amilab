@@ -44,9 +44,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkAlgorithm);
 AMI_DEFINE_VARFROMSMTPTR(vtkAlgorithm);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkAlgorithm>::CreateVar( vtkAlgorithm* val)
+BasicVariable::ptr AMILabType<vtkAlgorithm>::CreateVar( vtkAlgorithm* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkAlgorithm> obj_ptr(val,wxwindow_nodeleter<vtkAlgorithm>());
+  boost::shared_ptr<vtkAlgorithm> obj_ptr(val,smartpointer_nodeleter<vtkAlgorithm>());
   return AMILabType<vtkAlgorithm>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -297,7 +297,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::INPUT_IS_OPTIONAL();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -318,7 +318,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::INPUT_IS_REPEATABLE();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationInformationVectorKey
@@ -339,7 +339,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationInformationVectorKey * res =   vtkAlgorithm::INPUT_REQUIRED_FIELDS();
-  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationStringVectorKey
@@ -360,7 +360,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationStringVectorKey * res =   vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE();
-  return AMILabType<vtkInformationStringVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationStringVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationInformationVectorKey
@@ -381,7 +381,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationInformationVectorKey * res =   vtkAlgorithm::INPUT_ARRAYS_TO_PROCESS();
-  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -402,7 +402,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::INPUT_PORT();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -423,7 +423,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::INPUT_CONNECTION();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkExecutive
@@ -471,7 +471,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::PRESERVES_DATASET();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -492,7 +492,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::PRESERVES_GEOMETRY();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -513,7 +513,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::PRESERVES_BOUNDS();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -534,7 +534,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::PRESERVES_TOPOLOGY();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -555,7 +555,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::PRESERVES_ATTRIBUTES();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -576,7 +576,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkAlgorithm::PRESERVES_RANGES();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 
@@ -693,7 +693,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkExecutive * res =   this->_objectptr->GetObj()->GetExecutive();
-  return AMILabType<vtkExecutive >::CreateVar(res);
+  return AMILabType<vtkExecutive >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkExecutive
@@ -865,7 +865,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(port,_p,_n)) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetInputPortInformation(port);
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation
@@ -892,7 +892,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(port,_p,_n)) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetOutputPortInformation(port);
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation
@@ -913,7 +913,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetInformation();
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation
@@ -1482,7 +1482,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(idx,_p,_n)) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetInputArrayInformation(idx);
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 
@@ -1760,7 +1760,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
 
   vtkAlgorithmOutput * res =   this->_objectptr->GetObj()->GetOutputPort(index);
-  return AMILabType<vtkAlgorithmOutput >::CreateVar(res);
+  return AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
 }
 */
 
@@ -1796,7 +1796,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkAlgorithmOutput * res =   this->_objectptr->GetObj()->GetOutputPort();
-  return AMILabType<vtkAlgorithmOutput >::CreateVar(res);
+  return AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
 }
 */
 
@@ -1871,7 +1871,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(index,_p,_n)) ClassHelpAndReturn;
 
   vtkAlgorithmOutput * res =   this->_objectptr->GetObj()->GetInputConnection(port, index);
-  return AMILabType<vtkAlgorithmOutput >::CreateVar(res);
+  return AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
 }
 */
 

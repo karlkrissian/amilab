@@ -232,7 +232,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint & wxPoint::=(wxPoint const & param0)
+//  Wrapping of wxPoint & wxPoint::operator =(wxPoint const & param0)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___assign__::SetParametersComments()
@@ -258,7 +258,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxPoint::==(wxPoint const & p)
+//  Wrapping of bool wxPoint::operator ==(wxPoint const & p)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___equal__::SetParametersComments()
@@ -285,7 +285,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxPoint::!=(wxPoint const & p)
+//  Wrapping of bool wxPoint::operator !=(wxPoint const & p)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___not_equal__::SetParametersComments()
@@ -312,7 +312,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint wxPoint::+(wxPoint const & p)
+//  Wrapping of wxPoint wxPoint::operator +(wxPoint const & p)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___add___1::SetParametersComments()
@@ -338,7 +338,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint wxPoint::-(wxPoint const & p)
+//  Wrapping of wxPoint wxPoint::operator -(wxPoint const & p)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___substract___1::SetParametersComments()
@@ -364,7 +364,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint & wxPoint::+=(wxPoint const & p)
+//  Wrapping of wxPoint & wxPoint::operator +=(wxPoint const & p)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___add_assign___1::SetParametersComments()
@@ -390,7 +390,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint & wxPoint::-=(wxPoint const & p)
+//  Wrapping of wxPoint & wxPoint::operator -=(wxPoint const & p)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___sub_assign___1::SetParametersComments()
@@ -437,7 +437,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint & wxPoint::+=(wxSize const & s)
+//  Wrapping of wxPoint & wxPoint::operator +=(wxSize const & s)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___add_assign___2::SetParametersComments()
@@ -484,7 +484,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint & wxPoint::-=(wxSize const & s)
+//  Wrapping of wxPoint & wxPoint::operator -=(wxSize const & s)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___sub_assign___2::SetParametersComments()
@@ -531,7 +531,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint wxPoint::+(wxSize const & s)
+//  Wrapping of wxPoint wxPoint::operator +(wxSize const & s)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___add___2::SetParametersComments()
@@ -581,7 +581,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint wxPoint::-(wxSize const & s)
+//  Wrapping of wxPoint wxPoint::operator -(wxSize const & s)
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___substract___2::SetParametersComments()
@@ -607,7 +607,7 @@ BasicVariable::ptr WrapClass_wxPoint::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxPoint wxPoint::-()
+//  Wrapping of wxPoint wxPoint::operator -()
 //---------------------------------------------------
 void WrapClass_wxPoint::
     wrap___substract___3::SetParametersComments()

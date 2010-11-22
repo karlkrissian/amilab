@@ -44,9 +44,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkViewport);
 AMI_DEFINE_VARFROMSMTPTR(vtkViewport);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkViewport>::CreateVar( vtkViewport* val)
+BasicVariable::ptr AMILabType<vtkViewport>::CreateVar( vtkViewport* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkViewport> obj_ptr(val,wxwindow_nodeleter<vtkViewport>());
+  boost::shared_ptr<vtkViewport> obj_ptr(val,smartpointer_nodeleter<vtkViewport>());
   return AMILabType<vtkViewport>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -515,7 +515,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkActor2DCollection * res =   this->_objectptr->GetObj()->GetActors2D();
-  return AMILabType<vtkActor2DCollection >::CreateVar(res);
+  return AMILabType<vtkActor2DCollection >::CreateVar(res,true);
 }
 */
 
@@ -613,7 +613,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetBackground();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -794,7 +794,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetBackground2();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1052,7 +1052,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetAspect();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1209,7 +1209,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetPixelAspect();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1356,7 +1356,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetViewport();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1499,7 +1499,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetDisplayPoint();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1642,7 +1642,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetViewPoint();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1789,7 +1789,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetWorldPoint();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1854,7 +1854,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetCenter();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -2432,7 +2432,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   int * res =   this->_objectptr->GetObj()->GetSize();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -2451,7 +2451,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   int * res =   this->_objectptr->GetObj()->GetOrigin();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -2556,7 +2556,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   vtkPropCollection* param2 = param2_smtptr.get();
 
   vtkAssemblyPath * res =   this->_objectptr->GetObj()->PickPropFrom(selectionX, selectionY, param2);
-  return AMILabType<vtkAssemblyPath >::CreateVar(res);
+  return AMILabType<vtkAssemblyPath >::CreateVar(res,true);
 }
 */
 

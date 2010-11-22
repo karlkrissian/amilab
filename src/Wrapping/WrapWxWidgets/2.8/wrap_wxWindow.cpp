@@ -25,7 +25,10 @@
 #include "wrap_wxWindowBase.h"
 #include "wrap_wxRect.h"
 #include "wrap_wxColour.h"
+#include "wrap_wxCursor.h"
 #include "wrap_wxFont.h"
+#include "wrap_wxIdleEvent.h"
+#include "wrap_wxEvent.h"
 #include "stdlib.h"
 #include "wrap_wxClassInfo.h"
 
@@ -49,9 +52,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxWindow);
 AMI_DEFINE_VARFROMSMTPTR(wxWindow);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<wxWindow>::CreateVar( wxWindow* val)
+BasicVariable::ptr AMILabType<wxWindow>::CreateVar( wxWindow* val, bool nodeleter)
 { 
-  boost::shared_ptr<wxWindow> obj_ptr(val,wxwindow_nodeleter<wxWindow>());
+  boost::shared_ptr<wxWindow> obj_ptr(val,smartpointer_nodeleter<wxWindow>());
   return AMILabType<wxWindow>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -103,9 +106,7 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       AddVar_ClearBackground( this_ptr);
       AddVar_SetBackgroundColour( this_ptr);
       AddVar_SetForegroundColour( this_ptr);
-/* The following types are missing: wxCursor
       AddVar_SetCursor( this_ptr);
-*/
       AddVar_SetFont( this_ptr);
       AddVar_SetBackgroundStyle( this_ptr);
       AddVar_GetCharHeight( this_ptr);
@@ -137,9 +138,7 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
 */
       AddVar_OnInternalIdle( this_ptr);
       AddVar_GtkUpdate( this_ptr);
-/* The following types are missing: wxIdleEvent
       AddVar_OnIdle( this_ptr);
-*/
       AddVar_OnParentEnable( this_ptr);
       AddVar_PreCreation( this_ptr);
       AddVar_PostCreation( this_ptr);
@@ -154,15 +153,7 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
 /* The following types are missing: _GdkEventAny
       AddVar_GTKCallbackCommonPrologue( this_ptr);
 */
-/* The following types are missing: wxEvent
       AddVar_GTKProcessEvent( this_ptr);
-*/
-/* The following types are missing: _GtkWidget
-      AddVar_GTKGetLayout( this_ptr);
-*/
-/* The following types are missing: _GtkWidget
-      AddVar_GTKSetLayout( this_ptr);
-*/
 /* The following types are missing: _PangoContext
       AddVar_GtkGetPangoDefaultContext( this_ptr);
 */
@@ -422,7 +413,6 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       }
       */
       
-      /* type not available
       // Adding public member m_nativeUpdateRegion
       boost::shared_ptr<wxRegion > var_m_nativeUpdateRegion_ptr(&GetObj()->m_nativeUpdateRegion, smartpointer_nodeleter<wxRegion >());
       BasicVariable::ptr var_m_nativeUpdateRegion = AMILabType<wxRegion >::CreateVarFromSmtPtr(var_m_nativeUpdateRegion_ptr);
@@ -430,7 +420,6 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
         var_m_nativeUpdateRegion->Rename("m_nativeUpdateRegion");
         context->AddVar(var_m_nativeUpdateRegion,context);
       }
-      */
       
       /* type not available
       // Adding public member m_dirtyTabOrder
@@ -484,8 +473,8 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_insertCallback
-      boost::shared_ptr<_13528 > var_m_insertCallback_ptr(&GetObj()->m_insertCallback, smartpointer_nodeleter<_13528 >());
-      BasicVariable::ptr var_m_insertCallback = AMILabType<_13528 >::CreateVarFromSmtPtr(var_m_insertCallback_ptr);
+      boost::shared_ptr<_13512 > var_m_insertCallback_ptr(&GetObj()->m_insertCallback, smartpointer_nodeleter<_13512 >());
+      BasicVariable::ptr var_m_insertCallback = AMILabType<_13512 >::CreateVarFromSmtPtr(var_m_insertCallback_ptr);
       if (var_m_insertCallback.get()) {
         var_m_insertCallback->Rename("m_insertCallback");
         context->AddVar(var_m_insertCallback,context);
@@ -591,6 +580,67 @@ BasicVariable::ptr WrapClass_wxWindow::
   BasicVariable::ptr res = WrapClass_wxWindow::CreateVar(_newobj);
   return res;
 }
+/* The following types are missing: _GtkWidget
+
+//---------------------------------------------------
+//  Wrapping of wxLayoutDirection wxWindow::GTKGetLayout(GtkWidget * widget)
+//---------------------------------------------------
+void WrapClass_wxWindow::
+    wrap_GTKGetLayout::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( _GtkWidget, "parameter named 'widget'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindow::
+    wrap_GTKGetLayout::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+
+  boost::shared_ptr<_GtkWidget > widget_smtptr;
+  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n)) ClassHelpAndReturn;
+  _GtkWidget* widget = widget_smtptr.get();
+
+  wxLayoutDirection res =   wxWindow::GTKGetLayout(widget);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
+}
+*/
+/* The following types are missing: _GtkWidget
+
+//---------------------------------------------------
+//  Wrapping of void wxWindow::GTKSetLayout(GtkWidget * widget, wxLayoutDirection dir)
+//---------------------------------------------------
+void WrapClass_wxWindow::
+    wrap_GTKSetLayout::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( _GtkWidget, "parameter named 'widget'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dir'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindow::
+    wrap_GTKSetLayout::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+
+  boost::shared_ptr<_GtkWidget > widget_smtptr;
+  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n)) ClassHelpAndReturn;
+  _GtkWidget* widget = widget_smtptr.get();
+
+  int dir_int;
+  if (!get_val_param<int >(dir_int,_p,_n)) ClassHelpAndReturn;
+  wxLayoutDirection dir = (wxLayoutDirection) dir_int;
+
+  wxWindow::GTKSetLayout(widget, dir);
+  return BasicVariable::ptr();
+}
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindow::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxString const & name = wxPanelNameStr)
@@ -1057,7 +1107,6 @@ BasicVariable::ptr WrapClass_wxWindow::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: wxCursor
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindow::SetCursor(wxCursor const & cursor)
@@ -1085,7 +1134,6 @@ BasicVariable::ptr WrapClass_wxWindow::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindow::SetFont(wxFont const & font)
@@ -1808,7 +1856,6 @@ BasicVariable::ptr WrapClass_wxWindow::
   this->_objectptr->GetObj()->GtkUpdate();
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxIdleEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxWindow::OnIdle(wxIdleEvent & param0)
@@ -1834,7 +1881,6 @@ BasicVariable::ptr WrapClass_wxWindow::
   this->_objectptr->GetObj()->OnIdle(param0);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxWindow::OnParentEnable(bool param0)
@@ -1976,7 +2022,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   GtkWidget * res =   this->_objectptr->GetObj()->GetConnectWidget();
-  return AMILabType<_GtkWidget >::CreateVar(res);
+  return AMILabType<_GtkWidget >::CreateVar(res,true);
 }
 */
 /* The following types are missing: _GtkWidget
@@ -2034,7 +2080,6 @@ BasicVariable::ptr WrapClass_wxWindow::
   return AMILabType<int >::CreateVar(res);
 }
 */
-/* The following types are missing: wxEvent
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindow::GTKProcessEvent(wxEvent & event)
@@ -2062,68 +2107,6 @@ BasicVariable::ptr WrapClass_wxWindow::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: _GtkWidget
-
-//---------------------------------------------------
-//  Wrapping of wxLayoutDirection wxWindow::GTKGetLayout(GtkWidget * widget)
-//---------------------------------------------------
-void WrapClass_wxWindow::
-    wrap_GTKGetLayout::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( _GtkWidget, "parameter named 'widget'")
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindow::
-    wrap_GTKGetLayout::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<_GtkWidget > widget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n)) ClassHelpAndReturn;
-  _GtkWidget* widget = widget_smtptr.get();
-
-  wxLayoutDirection res =   this->_objectptr->GetObj()->GTKGetLayout(widget);
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
-}
-*/
-/* The following types are missing: _GtkWidget
-
-//---------------------------------------------------
-//  Wrapping of void wxWindow::GTKSetLayout(GtkWidget * widget, wxLayoutDirection dir)
-//---------------------------------------------------
-void WrapClass_wxWindow::
-    wrap_GTKSetLayout::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( _GtkWidget, "parameter named 'widget'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dir'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindow::
-    wrap_GTKSetLayout::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<_GtkWidget > widget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n)) ClassHelpAndReturn;
-  _GtkWidget* widget = widget_smtptr.get();
-
-  int dir_int;
-  if (!get_val_param<int >(dir_int,_p,_n)) ClassHelpAndReturn;
-  wxLayoutDirection dir = (wxLayoutDirection) dir_int;
-
-  this->_objectptr->GetObj()->GTKSetLayout(widget, dir);
-  return BasicVariable::ptr();
-}
-*/
 /* The following types are missing: _PangoContext
 
 //---------------------------------------------------
@@ -2142,7 +2125,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   PangoContext * res =   this->_objectptr->GetObj()->GtkGetPangoDefaultContext();
-  return AMILabType<_PangoContext >::CreateVar(res);
+  return AMILabType<_PangoContext >::CreateVar(res,true);
 }
 */
 /* The following types are missing: _GtkTooltips

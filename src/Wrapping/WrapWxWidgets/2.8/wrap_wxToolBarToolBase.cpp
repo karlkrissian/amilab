@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxToolBarToolBase.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -28,6 +26,9 @@
 #include "wrap_wxClassInfo.h"
 
 
+#include "wrap_wxToolBarToolBase.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -44,13 +45,14 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxToolBarToolBase);
 AMI_DEFINE_VARFROMSMTPTR(wxToolBarToolBase);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<wxToolBarToolBase>::CreateVar( wxToolBarToolBase* val)
+BasicVariable::ptr AMILabType<wxToolBarToolBase>::CreateVar( wxToolBarToolBase* val, bool nodeleter)
 { 
-  boost::shared_ptr<wxToolBarToolBase> obj_ptr(val,wxwindow_nodeleter<wxToolBarToolBase>());
+  boost::shared_ptr<wxToolBarToolBase> obj_ptr(val,smartpointer_nodeleter<wxToolBarToolBase>());
   return AMILabType<wxToolBarToolBase>::CreateVarFromSmtPtr(obj_ptr);
 }
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxToolBarToolBase
 //
@@ -66,6 +68,59 @@ Variable<AMIObject>::ptr WrapClass_wxToolBarToolBase::CreateVar( wxToolBarToolBa
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxToolBarToolBase::AddMethods(WrapClass<wxToolBarToolBase>::ptr this_ptr )
+{
+  
+      // Add members from wxObject
+      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
+      parent_wxObject->AddMethods(parent_wxObject);
+
+
+  // check that the method name is not a token
+  
+      // Adding standard methods 
+      AddVar_GetId( this_ptr);
+      AddVar_GetControl( this_ptr);
+      AddVar_GetToolBar( this_ptr);
+      AddVar_IsButton( this_ptr);
+      AddVar_IsControl( this_ptr);
+      AddVar_IsSeparator( this_ptr);
+      AddVar_GetStyle( this_ptr);
+      AddVar_GetKind( this_ptr);
+      AddVar_IsEnabled( this_ptr);
+      AddVar_IsToggled( this_ptr);
+      AddVar_CanBeToggled( this_ptr);
+      AddVar_GetNormalBitmap( this_ptr);
+      AddVar_GetDisabledBitmap( this_ptr);
+      AddVar_GetBitmap( this_ptr);
+      AddVar_GetLabel( this_ptr);
+      AddVar_GetShortHelp( this_ptr);
+      AddVar_GetLongHelp( this_ptr);
+      AddVar_GetClientData( this_ptr);
+      AddVar_Enable( this_ptr);
+      AddVar_Toggle_1( this_ptr);
+      AddVar_SetToggle( this_ptr);
+      AddVar_SetShortHelp( this_ptr);
+      AddVar_SetLongHelp( this_ptr);
+      AddVar_Toggle( this_ptr);
+      AddVar_Toggle_2( this_ptr);
+      AddVar_SetNormalBitmap( this_ptr);
+      AddVar_SetDisabledBitmap( this_ptr);
+      AddVar_SetLabel( this_ptr);
+      AddVar_SetClientData( this_ptr);
+      AddVar_Detach( this_ptr);
+      AddVar_Attach( this_ptr);
+      AddVar_GetClassInfo( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -103,23 +158,17 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   boost::shared_ptr<wxString > label_smtptr;
   if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & label = (label_smtptr.get()?
-    (wxString const &) (*label_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & label = ( label_smtptr.get() ? (*label_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxBitmap > bmpNormal_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpNormal_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpNormal = (bmpNormal_smtptr.get()?
-    (wxBitmap const &) (*bmpNormal_smtptr):
-    (wxBitmap const &) wxNullBitmap);
+  wxBitmap const & bmpNormal = ( bmpNormal_smtptr.get() ? (*bmpNormal_smtptr) : (wxNullBitmap) );
 
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = (bmpDisabled_smtptr.get()?
-    (wxBitmap const &) (*bmpDisabled_smtptr):
-    (wxBitmap const &) wxNullBitmap);
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : (wxNullBitmap) );
 
   int kind_int = (int) wxITEM_NORMAL;;
   if (!get_val_param<int >(kind_int,_p,_n)) ClassReturnEmptyVar;
@@ -132,16 +181,12 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   boost::shared_ptr<wxString > shortHelpString_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelpString_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelpString = (shortHelpString_smtptr.get()?
-    (wxString const &) (*shortHelpString_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelpString = ( shortHelpString_smtptr.get() ? (*shortHelpString_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelpString_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelpString_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & longHelpString = (longHelpString_smtptr.get()?
-    (wxString const &) (*longHelpString_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & longHelpString = ( longHelpString_smtptr.get() ? (*longHelpString_smtptr) : wxString(wxEmptyString) );
 
   wxToolBarToolBase* _newobj = new wxToolBarToolBase(tbar, toolid, label, bmpNormal, bmpDisabled, kind, clientData, shortHelpString, longHelpString);
   BasicVariable::ptr res = WrapClass_wxToolBarToolBase::CreateVar(_newobj);

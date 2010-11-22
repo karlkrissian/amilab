@@ -46,9 +46,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkAbstractMapper);
 AMI_DEFINE_VARFROMSMTPTR(vtkAbstractMapper);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkAbstractMapper>::CreateVar( vtkAbstractMapper* val)
+BasicVariable::ptr AMILabType<vtkAbstractMapper>::CreateVar( vtkAbstractMapper* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkAbstractMapper> obj_ptr(val,wxwindow_nodeleter<vtkAbstractMapper>());
+  boost::shared_ptr<vtkAbstractMapper> obj_ptr(val,smartpointer_nodeleter<vtkAbstractMapper>());
   return AMILabType<vtkAbstractMapper>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -215,7 +215,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int & cellFlag = *cellFlag_smtptr;
 
   vtkDataArray * res =   vtkAbstractMapper::GetScalars(input, scalarMode, arrayAccessMode, arrayId, arrayName, cellFlag);
-  return AMILabType<vtkDataArray >::CreateVar(res);
+  return AMILabType<vtkDataArray >::CreateVar(res,true);
 }
 */
 
@@ -476,7 +476,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPlaneCollection * res =   this->_objectptr->GetObj()->GetClippingPlanes();
-  return AMILabType<vtkPlaneCollection >::CreateVar(res);
+  return AMILabType<vtkPlaneCollection >::CreateVar(res,true);
 }
 */
 

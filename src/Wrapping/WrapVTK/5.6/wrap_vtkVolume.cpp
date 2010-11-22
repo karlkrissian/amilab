@@ -50,9 +50,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkVolume);
 AMI_DEFINE_VARFROMSMTPTR(vtkVolume);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkVolume>::CreateVar( vtkVolume* val)
+BasicVariable::ptr AMILabType<vtkVolume>::CreateVar( vtkVolume* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkVolume> obj_ptr(val,wxwindow_nodeleter<vtkVolume>());
+  boost::shared_ptr<vtkVolume> obj_ptr(val,smartpointer_nodeleter<vtkVolume>());
   return AMILabType<vtkVolume>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -441,7 +441,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetBounds();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -742,7 +742,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetCorrectedScalarOpacityArray(param0);
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -782,7 +782,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetCorrectedScalarOpacityArray();
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -807,7 +807,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetScalarOpacityArray(param0);
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -847,7 +847,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetScalarOpacityArray();
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -872,7 +872,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetGradientOpacityArray(param0);
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -912,7 +912,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetGradientOpacityArray();
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -937,7 +937,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetGrayArray(param0);
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -977,7 +977,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetGrayArray();
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1002,7 +1002,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetRGBArray(param0);
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1042,7 +1042,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetRGBArray();
-  return AMILabType<float >::CreateVar(res);
+  return AMILabType<float >::CreateVar(res,true);
 }
 
 //---------------------------------------------------

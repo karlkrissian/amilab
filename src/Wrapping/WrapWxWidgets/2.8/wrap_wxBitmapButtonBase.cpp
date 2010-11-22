@@ -41,9 +41,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxBitmapButtonBase);
 AMI_DEFINE_VARFROMSMTPTR(wxBitmapButtonBase);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<wxBitmapButtonBase>::CreateVar( wxBitmapButtonBase* val)
+BasicVariable::ptr AMILabType<wxBitmapButtonBase>::CreateVar( wxBitmapButtonBase* val, bool nodeleter)
 { 
-  boost::shared_ptr<wxBitmapButtonBase> obj_ptr(val,wxwindow_nodeleter<wxBitmapButtonBase>());
+  boost::shared_ptr<wxBitmapButtonBase> obj_ptr(val,smartpointer_nodeleter<wxBitmapButtonBase>());
   return AMILabType<wxBitmapButtonBase>::CreateVarFromSmtPtr(obj_ptr);
 }
 

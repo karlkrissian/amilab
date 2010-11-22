@@ -51,7 +51,6 @@ class WrapClass_wxToolBarToolBase : public WrapClass<wxToolBarToolBase>
     /// Destructor
     ~WrapClass_wxToolBarToolBase()
     {
-      std::cout << "~WrapClass_wxToolBarToolBase()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -68,7 +67,12 @@ class WrapClass_wxToolBarToolBase : public WrapClass<wxToolBarToolBase>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxToolBarToolBase*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding standard methods
     ADD_CLASS_METHOD(GetId,"int wxToolBarToolBase::GetId()  (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#getid)")
@@ -108,54 +112,8 @@ class WrapClass_wxToolBarToolBase : public WrapClass<wxToolBarToolBase>
 
 
 
-    void AddMethods(WrapClass<wxToolBarToolBase>::ptr this_ptr )
-    {
-      
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
+    void AddMethods(WrapClass<wxToolBarToolBase>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-      AddVar_GetId( this_ptr);
-      AddVar_GetControl( this_ptr);
-      AddVar_GetToolBar( this_ptr);
-      AddVar_IsButton( this_ptr);
-      AddVar_IsControl( this_ptr);
-      AddVar_IsSeparator( this_ptr);
-      AddVar_GetStyle( this_ptr);
-      AddVar_GetKind( this_ptr);
-      AddVar_IsEnabled( this_ptr);
-      AddVar_IsToggled( this_ptr);
-      AddVar_CanBeToggled( this_ptr);
-      AddVar_GetNormalBitmap( this_ptr);
-      AddVar_GetDisabledBitmap( this_ptr);
-      AddVar_GetBitmap( this_ptr);
-      AddVar_GetLabel( this_ptr);
-      AddVar_GetShortHelp( this_ptr);
-      AddVar_GetLongHelp( this_ptr);
-      AddVar_GetClientData( this_ptr);
-      AddVar_Enable( this_ptr);
-      AddVar_Toggle_1( this_ptr);
-      AddVar_SetToggle( this_ptr);
-      AddVar_SetShortHelp( this_ptr);
-      AddVar_SetLongHelp( this_ptr);
-      AddVar_Toggle( this_ptr);
-      AddVar_Toggle_2( this_ptr);
-      AddVar_SetNormalBitmap( this_ptr);
-      AddVar_SetDisabledBitmap( this_ptr);
-      AddVar_SetLabel( this_ptr);
-      AddVar_SetClientData( this_ptr);
-      AddVar_Detach( this_ptr);
-      AddVar_Attach( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
-
-
-
-      
-    };
 };
 
 

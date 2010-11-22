@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxButton.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -24,9 +22,14 @@
 #include "wrap_wxString.h"
 #include "wrap_wxPoint.h"
 #include "wrap_wxSize.h"
+#include "wrap_wxValidator.h"
+#include "wrap_wxVisualAttributes.h"
 #include "wrap_wxClassInfo.h"
 
 
+#include "wrap_wxButton.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -40,8 +43,17 @@ BasicVariable::ptr WrapClass<wxButton>::CreateVar( ParamList* p)
 
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxButton);
+AMI_DEFINE_VARFROMSMTPTR(wxButton);
+
+// Implementing CreateVar for AMILabType
+BasicVariable::ptr AMILabType<wxButton>::CreateVar( wxButton* val, bool nodeleter)
+{ 
+  boost::shared_ptr<wxButton> obj_ptr(val,smartpointer_nodeleter<wxButton>());
+  return AMILabType<wxButton>::CreateVarFromSmtPtr(obj_ptr);
+}
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxButton
 //
@@ -57,6 +69,34 @@ Variable<AMIObject>::ptr WrapClass_wxButton::CreateVar( wxButton* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxButton::AddMethods(WrapClass<wxButton>::ptr this_ptr )
+{
+  
+      // Add members from wxButtonBase
+      WrapClass_wxButtonBase::ptr parent_wxButtonBase(        boost::dynamic_pointer_cast<WrapClass_wxButtonBase >(this_ptr));
+      parent_wxButtonBase->AddMethods(parent_wxButtonBase);
+
+
+  // check that the method name is not a token
+  
+      // Adding standard methods 
+      AddVar_Create( this_ptr);
+      AddVar_SetDefault( this_ptr);
+      AddVar_SetLabel( this_ptr);
+      AddVar_Enable( this_ptr);
+      AddVar_ShouldInheritColours( this_ptr);
+      AddVar_MoveWindow( this_ptr);
+      AddVar_GetClassInfo( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -93,9 +133,11 @@ BasicVariable::ptr WrapClass_wxButton::
   WrapClass_wxButton::wrap_wxButton_1 m1;
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxButton::wrap_wxButton_2 m2;
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxValidator
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxButton::wxButton(wxWindow * parent, wxWindowID id, wxString const & label = wxEmptyString, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxButtonNameStr)
@@ -131,23 +173,17 @@ BasicVariable::ptr WrapClass_wxButton::
   boost::shared_ptr<wxString > label_smtptr;
   if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & label = (label_smtptr.get()?
-    (wxString const &) (*label_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & label = ( label_smtptr.get() ? (*label_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?
-    (wxPoint const &) (*pos_smtptr):
-    (wxPoint const &) wxDefaultPosition);
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?
-    (wxSize const &) (*size_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
@@ -156,23 +192,43 @@ BasicVariable::ptr WrapClass_wxButton::
   boost::shared_ptr<wxValidator > validator_smtptr;
   if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxValidator const & validator = (validator_smtptr.get()?
-    (wxValidator const &) (*validator_smtptr):
-    (wxValidator const &) wxDefaultValidator);
+  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : (wxDefaultValidator) );
 
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?
-    (wxString const &) (*name_smtptr):
-    (wxString const &) wxButtonNameStr);
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxButtonNameStr) );
 
   wxButton* _newobj = new wxButton(parent, id, label, pos, size, style, validator, name);
   BasicVariable::ptr res = WrapClass_wxButton::CreateVar(_newobj);
   return res;
 }
-*/
-/* The following types are missing: wxValidator
+
+//---------------------------------------------------
+//  Wrapping of wxVisualAttributes wxButton::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
+//---------------------------------------------------
+void WrapClass_wxButton::
+    wrap_GetClassDefaultAttributes::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
+  return_comments="returning a variable of type wxVisualAttributes";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxButton::
+    wrap_GetClassDefaultAttributes::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+
+  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
+  if (!get_val_param<int >(variant_int,_p,_n)) ClassHelpAndReturn;
+  wxWindowVariant variant = (wxWindowVariant) variant_int;
+
+  wxVisualAttributes res =   wxButton::GetClassDefaultAttributes(variant);
+  return AMILabType<wxVisualAttributes >::CreateVar(res);
+}
 
 //---------------------------------------------------
 //  Wrapping of bool wxButton::Create(wxWindow * parent, wxWindowID id, wxString const & label = wxEmptyString, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxButtonNameStr)
@@ -209,23 +265,17 @@ BasicVariable::ptr WrapClass_wxButton::
   boost::shared_ptr<wxString > label_smtptr;
   if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & label = (label_smtptr.get()?
-    (wxString const &) (*label_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & label = ( label_smtptr.get() ? (*label_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?
-    (wxPoint const &) (*pos_smtptr):
-    (wxPoint const &) wxDefaultPosition);
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?
-    (wxSize const &) (*size_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
@@ -234,22 +284,17 @@ BasicVariable::ptr WrapClass_wxButton::
   boost::shared_ptr<wxValidator > validator_smtptr;
   if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxValidator const & validator = (validator_smtptr.get()?
-    (wxValidator const &) (*validator_smtptr):
-    (wxValidator const &) wxDefaultValidator);
+  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : (wxDefaultValidator) );
 
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?
-    (wxString const &) (*name_smtptr):
-    (wxString const &) wxButtonNameStr);
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxButtonNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, label, pos, size, style, validator, name);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxButton::SetDefault()
@@ -340,34 +385,6 @@ BasicVariable::ptr WrapClass_wxButton::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: wxVisualAttributes
-
-//---------------------------------------------------
-//  Wrapping of wxVisualAttributes wxButton::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
-//---------------------------------------------------
-void WrapClass_wxButton::
-    wrap_GetClassDefaultAttributes::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
-  return_comments="returning a variable of type wxVisualAttributes";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxButton::
-    wrap_GetClassDefaultAttributes::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
-  if (!get_val_param<int >(variant_int,_p,_n)) ClassHelpAndReturn;
-  wxWindowVariant variant = (wxWindowVariant) variant_int;
-
-  wxVisualAttributes res =   this->_objectptr->GetObj()->GetClassDefaultAttributes(variant);
-  return AMILabType<wxVisualAttributes >::CreateVar(res);
-}
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxButton::MoveWindow(int x, int y, int width, int height)

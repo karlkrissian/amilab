@@ -42,9 +42,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkWindow);
 AMI_DEFINE_VARFROMSMTPTR(vtkWindow);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkWindow>::CreateVar( vtkWindow* val)
+BasicVariable::ptr AMILabType<vtkWindow>::CreateVar( vtkWindow* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkWindow> obj_ptr(val,wxwindow_nodeleter<vtkWindow>());
+  boost::shared_ptr<vtkWindow> obj_ptr(val,smartpointer_nodeleter<vtkWindow>());
   return AMILabType<vtkWindow>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -286,7 +286,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   int * res =   this->_objectptr->GetObj()->GetPosition();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -379,7 +379,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   int * res =   this->_objectptr->GetObj()->GetSize();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -472,7 +472,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   int * res =   this->_objectptr->GetObj()->GetActualSize();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1028,7 +1028,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   int * res =   this->_objectptr->GetObj()->GetTileScale();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1232,7 +1232,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetTileViewport();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------

@@ -1,14 +1,14 @@
-//
-// C++ Interface: wrap_wxColour
-//
-// Description: 
-//
-//
-// Author: Karl Krissian <krissian@dis.ulpgc.es>, (C) 2010
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+/**
+ * C++ Interface: wrap_wxColour
+ *
+ * Description: wrapping wxColour
+ * File generated automatically
+ *
+ * Author: Karl Krissian \<krissian@dis.ulpgc.es\>, (C) 2010
+ *
+ * Copyright: See COPYING file that comes with this distribution
+ *
+ **/
 
 #ifndef _wrap_wxColour_h_
 #define _wrap_wxColour_h_
@@ -19,57 +19,102 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include <wx/colour.h>
+#include "wx/wx.h"
 
-AMI_DECLARE_TYPE(wxColour)
+// include what is needed for inheritence and for types ...
 
-template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<wxColour>::CreateVar( ParamList* p);
+#include "wrap_wxColourBase.h"
 
 
+AMI_DECLARE_TYPE(wxColour);
+
+// TODO: check for inheritence ...
 class WrapClass_wxColour : public WrapClass<wxColour>
+    , public   WrapClass_wxColourBase
 {
   DEFINE_CLASS(WrapClass_wxColour);
 
+  protected:
+    typedef WrapClass<wxColour>::ptr _parentclass_ptr;
+    typedef wxColour ObjectType;
+
   public:
+    // resolve ambiguity
+    const boost::shared_ptr<wxColour>& GetObj() const { return WrapClass<wxColour>::GetObj(); }
 
     /// Constructor
-    WrapClass_wxColour(boost::shared_ptr<wxColour> sp): 
-      WrapClass<wxColour>(sp) { }
+    WrapClass_wxColour(boost::shared_ptr<wxColour > si): 
+    WrapClass<wxColour>(si)
+    , WrapClass_wxColourBase(si)
+    {}
 
-/*
-    /// Create a variable from a standard pointer
-     static Variable<AMIObject>::ptr CreateVar( wxColour* sp);
-*/
-
-    /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR( wxColour,  "Wrapping of wxColour (see http://docs.wxwidgets.org/).");
-
-    ADD_CLASS_METHOD(Alpha,       "Returns the alpha value, on platforms where alpha is not yet supported, this always returns wxALPHA_OPAQUE.");
-    ADD_CLASS_METHOD(Blue,        "Returns the blue intensity.");
-    ADD_CLASS_METHOD(GetAsString, "Converts this colour to a wxString using the given flags.The supported flags are wxC2S_NAME, to obtain the colour name (e.g. wxColour(255,0,0) -> \"red\"), wxC2S_CSS_SYNTAX, to obtain the colour in the \"rgb(r,g,b)\" syntax (e.g. wxColour(255,0,0) -> \"rgb(255,0,0)\"), and wxC2S_HTML_SYNTAX, to obtain the colour as \"#\" followed by 6 hexadecimal digits (e.g. wxColour(255,0,0) -> \"#FF0000\").This function never fails and always returns a non-empty string.");
-    ADD_CLASS_METHOD(GetPixel,    "Returns a pixel value which is platform-dependent. On Windows, a COLORREF is returned. On X, an allocated pixel value is returned. -1 is returned if the pixel is invalid (on X, unallocated).");
-    ADD_CLASS_METHOD(Green,       "Returns the green intensity.");
-    ADD_CLASS_METHOD(IsOk,        "Returns true if the colour object is valid (the colour has been initialised with RGB values).");
-    ADD_CLASS_METHOD(Red,         "Returns the red intensity.");
-    ADD_CLASS_METHOD(Set,         "Sets the RGB intensity values using the given values (first overload), extracting them from the packed long (second overload), using the given string (third overloard). When using third form, Set() accepts: colour names (those listed in wxTheColourDatabase), the CSS-like \"RGB(r,g,b)\" syntax (case insensitive) and the HTML-like syntax (i.e. \"#\" followed by 6 hexadecimal digits for red, green, blue components).Returns true if the conversion was successful, false otherwise.");
-    ADD_CLASS_METHOD(copy,        "Copy constructor.");
-    ADD_CLASS_METHOD(assign,    "assign operation.");
-
-    void AddMethods(WrapClass<wxColour>::ptr this_ptr )
+    /// Destructor
+    ~WrapClass_wxColour()
     {
-      AddVar_Alpha(       this_ptr);
-      AddVar_Blue(        this_ptr);
-      AddVar_GetAsString( this_ptr);
-      AddVar_GetPixel(    this_ptr);
-      AddVar_Green(       this_ptr);
-      AddVar_IsOk(        this_ptr);
-      AddVar_Red(         this_ptr);
-      AddVar_Set(         this_ptr);
-      AddVar_copy(        this_ptr);
-      AddVar_assign(      this_ptr);
+      CLASS_MESSAGE("*** Destroying ***");
     }
+
+    
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxColour_1,"Constructor wxColour::wxColour(wxColour const & param0) (http://docs.wxwidgets.org/stable/wx_wxcolour.html#wxcolour).");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxColour,"Constructor wxColour::wxColour() (http://docs.wxwidgets.org/stable/wx_wxcolour.html#wxcolour).");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxColour_2,"Constructor wxColour::wxColour() (http://docs.wxwidgets.org/stable/wx_wxcolour.html#wxcolour).");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxColour_3,"Constructor wxColour::wxColour(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = wxALPHA_OPAQUE) (http://docs.wxwidgets.org/stable/wx_wxcolour.html#wxcolour).");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxColour_4,"Constructor wxColour::wxColour(long unsigned int colRGB) (http://docs.wxwidgets.org/stable/wx_wxcolour.html#wxcolour).");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxColour_5,"Constructor wxColour::wxColour(wxString const & colourName) (http://docs.wxwidgets.org/stable/wx_wxcolour.html#wxcolour).");
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxColour_6,"Constructor wxColour::wxColour(wxChar const * colourName) (http://docs.wxwidgets.org/stable/wx_wxcolour.html#wxcolour).");
+    /* The following types are missing: _GdkColor
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxColour_7,"Constructor wxColour::wxColour(GdkColor const & gdkColor) (http://docs.wxwidgets.org/stable/wx_wxcolour.html#wxcolour).");
+    */
+
+
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( wxColour*);
+
+    // Static methods
+    
+
+
+
+    // Standard methods
+    
+    // Adding copy method
+    ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
+    // Adding standard methods
+    ADD_CLASS_METHOD(Ok,"bool wxColour::Ok()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#ok)")
+    ADD_CLASS_METHOD(IsOk,"bool wxColour::IsOk()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#isok)")
+    ADD_CLASS_METHOD(Red,"unsigned char wxColour::Red()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#red)")
+    ADD_CLASS_METHOD(Green,"unsigned char wxColour::Green()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#green)")
+    ADD_CLASS_METHOD(Blue,"unsigned char wxColour::Blue()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#blue)")
+    ADD_CLASS_METHOD(Alpha,"unsigned char wxColour::Alpha()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#alpha)")
+/* The following types are missing: _GdkColormap
+    ADD_CLASS_METHOD(CalcPixel,"void wxColour::CalcPixel(GdkColormap * cmap)  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#calcpixel)")
+*/
+    ADD_CLASS_METHOD(GetPixel,"int wxColour::GetPixel()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#getpixel)")
+/* The following types are missing: _GdkColor
+    ADD_CLASS_METHOD(GetColor,"GdkColor const * wxColour::GetColor()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#getcolor)")
+*/
+    ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxColour::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#getclassinfo)")
+
+    // Operators:
+    ADD_CLASS_METHOD(__assign__,            "wxColour & wxColour::operator =(wxColour const & param0) (http://docs.wxwidgets.org/stable/wx_wxcolour.html#__assign__)")
+    ADD_CLASS_METHOD(__equal__,            "bool wxColour::operator ==(wxColour const & col) (http://docs.wxwidgets.org/stable/wx_wxcolour.html#__equal__)")
+    ADD_CLASS_METHOD(__not_equal__,            "bool wxColour::operator !=(wxColour const & col) (http://docs.wxwidgets.org/stable/wx_wxcolour.html#__not_equal__)")
+
+
+
+
+    void AddMethods(WrapClass<wxColour>::ptr this_ptr );
 
 };
 
-#endif // _wrap_wxColour_h_
+
+#endif // _wrap_wxColour_h

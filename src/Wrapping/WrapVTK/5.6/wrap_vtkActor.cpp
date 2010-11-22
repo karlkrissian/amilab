@@ -48,9 +48,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkActor);
 AMI_DEFINE_VARFROMSMTPTR(vtkActor);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkActor>::CreateVar( vtkActor* val)
+BasicVariable::ptr AMILabType<vtkActor>::CreateVar( vtkActor* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkActor> obj_ptr(val,wxwindow_nodeleter<vtkActor>());
+  boost::shared_ptr<vtkActor> obj_ptr(val,smartpointer_nodeleter<vtkActor>());
   return AMILabType<vtkActor>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -517,7 +517,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetProperty();
-  return AMILabType<vtkProperty >::CreateVar(res);
+  return AMILabType<vtkProperty >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkProperty
@@ -538,7 +538,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->MakeProperty();
-  return AMILabType<vtkProperty >::CreateVar(res);
+  return AMILabType<vtkProperty >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkProperty
@@ -586,7 +586,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetBackfaceProperty();
-  return AMILabType<vtkProperty >::CreateVar(res);
+  return AMILabType<vtkProperty >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkTexture
@@ -634,7 +634,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkTexture * res =   this->_objectptr->GetObj()->GetTexture();
-  return AMILabType<vtkTexture >::CreateVar(res);
+  return AMILabType<vtkTexture >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkMapper
@@ -682,7 +682,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMapper * res =   this->_objectptr->GetObj()->GetMapper();
-  return AMILabType<vtkMapper >::CreateVar(res);
+  return AMILabType<vtkMapper >::CreateVar(res,true);
 }
 */
 
@@ -748,7 +748,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetBounds();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------

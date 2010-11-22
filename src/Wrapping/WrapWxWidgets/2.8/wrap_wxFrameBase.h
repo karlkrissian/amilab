@@ -51,153 +51,60 @@ class WrapClass_wxFrameBase : public WrapClass<wxFrameBase>
     /// Destructor
     ~WrapClass_wxFrameBase()
     {
-      std::cout << "~WrapClass_wxFrameBase()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxFrameBase,"Wrapping of wxFrameBase, http://docs.wxwidgets.org/stable/wx_wxframebase.html#wxframebase.");
+    ADD_CLASS_CONSTRUCTOR(wxFrameBase,"Constructor wxFrameBase::wxFrameBase() (http://docs.wxwidgets.org/stable/wx_wxframebase.html#wxframebase).");
 
 
 
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxFrameBase*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding standard methods
-    ADD_CLASS_METHOD(New,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#new")
-    ADD_CLASS_METHOD(GetClientAreaOrigin,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#getclientareaorigin")
-    ADD_CLASS_METHOD(SendSizeEvent,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#sendsizeevent")
-/* The following types are missing: wxMenuBar
-    ADD_CLASS_METHOD(SetMenuBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#setmenubar")
-*/
-/* The following types are missing: wxMenuBar
-    ADD_CLASS_METHOD(GetMenuBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#getmenubar")
-*/
-    ADD_CLASS_METHOD(ProcessCommand,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#processcommand")
-/* The following types are missing: wxStatusBar
-    ADD_CLASS_METHOD(CreateStatusBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#createstatusbar")
-*/
-/* The following types are missing: wxStatusBar
-    ADD_CLASS_METHOD(OnCreateStatusBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#oncreatestatusbar")
-*/
-/* The following types are missing: wxStatusBar
-    ADD_CLASS_METHOD(GetStatusBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#getstatusbar")
-*/
-/* The following types are missing: wxStatusBar
-    ADD_CLASS_METHOD(SetStatusBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#setstatusbar")
-*/
-    ADD_CLASS_METHOD(SetStatusText,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#setstatustext")
-    ADD_CLASS_METHOD(SetStatusWidths,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#setstatuswidths")
-    ADD_CLASS_METHOD(PushStatusText,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#pushstatustext")
-    ADD_CLASS_METHOD(PopStatusText,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#popstatustext")
-    ADD_CLASS_METHOD(SetStatusBarPane,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#setstatusbarpane")
-    ADD_CLASS_METHOD(GetStatusBarPane,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#getstatusbarpane")
-/* The following types are missing: wxToolBar
-    ADD_CLASS_METHOD(CreateToolBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#createtoolbar")
-*/
-/* The following types are missing: wxToolBar
-    ADD_CLASS_METHOD(OnCreateToolBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#oncreatetoolbar")
-*/
-/* The following types are missing: wxToolBar
-    ADD_CLASS_METHOD(GetToolBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#gettoolbar")
-*/
-/* The following types are missing: wxToolBar
-    ADD_CLASS_METHOD(SetToolBar,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#settoolbar")
-*/
-/* The following types are missing: wxMenuEvent
-    ADD_CLASS_METHOD(OnMenuOpen,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#onmenuopen")
-*/
-/* The following types are missing: wxMenuEvent
-    ADD_CLASS_METHOD(OnMenuClose,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#onmenuclose")
-*/
-/* The following types are missing: wxMenuEvent
-    ADD_CLASS_METHOD(OnMenuHighlight,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#onmenuhighlight")
-*/
-/* The following types are missing: wxMenu
-    ADD_CLASS_METHOD(DoMenuUpdates,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#domenuupdates")
-*/
-    ADD_CLASS_METHOD(UpdateWindowUI,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#updatewindowui")
-    ADD_CLASS_METHOD(OnInternalIdle,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#oninternalidle")
-    ADD_CLASS_METHOD(DoGiveHelp,"http://docs.wxwidgets.org/stable/wx_wxframebase.html#dogivehelp")
+    ADD_CLASS_METHOD(New,"wxFrame * wxFrameBase::New(wxWindow * parent, wxWindowID winid, wxString const & title, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 541072960, wxString const & name = wxFrameNameStr)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#new)")
+    ADD_CLASS_METHOD(GetClientAreaOrigin,"wxPoint wxFrameBase::GetClientAreaOrigin()  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#getclientareaorigin)")
+    ADD_CLASS_METHOD(SendSizeEvent,"void wxFrameBase::SendSizeEvent()  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#sendsizeevent)")
+    ADD_CLASS_METHOD(SetMenuBar,"void wxFrameBase::SetMenuBar(wxMenuBar * menubar)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#setmenubar)")
+    ADD_CLASS_METHOD(GetMenuBar,"wxMenuBar * wxFrameBase::GetMenuBar()  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#getmenubar)")
+    ADD_CLASS_METHOD(ProcessCommand,"bool wxFrameBase::ProcessCommand(int winid)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#processcommand)")
+    ADD_CLASS_METHOD(CreateStatusBar,"wxStatusBar * wxFrameBase::CreateStatusBar(int number = 1, long int style = 65552, wxWindowID winid = 0, wxString const & name = wxStatusLineNameStr)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#createstatusbar)")
+    ADD_CLASS_METHOD(OnCreateStatusBar,"wxStatusBar * wxFrameBase::OnCreateStatusBar(int number, long int style, wxWindowID winid, wxString const & name)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#oncreatestatusbar)")
+    ADD_CLASS_METHOD(GetStatusBar,"wxStatusBar * wxFrameBase::GetStatusBar()  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#getstatusbar)")
+    ADD_CLASS_METHOD(SetStatusBar,"void wxFrameBase::SetStatusBar(wxStatusBar * statBar)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#setstatusbar)")
+    ADD_CLASS_METHOD(SetStatusText,"void wxFrameBase::SetStatusText(wxString const & text, int number = 0)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#setstatustext)")
+    ADD_CLASS_METHOD(SetStatusWidths,"void wxFrameBase::SetStatusWidths(int n, int const * widths_field)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#setstatuswidths)")
+    ADD_CLASS_METHOD(PushStatusText,"void wxFrameBase::PushStatusText(wxString const & text, int number = 0)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#pushstatustext)")
+    ADD_CLASS_METHOD(PopStatusText,"void wxFrameBase::PopStatusText(int number = 0)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#popstatustext)")
+    ADD_CLASS_METHOD(SetStatusBarPane,"void wxFrameBase::SetStatusBarPane(int n)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#setstatusbarpane)")
+    ADD_CLASS_METHOD(GetStatusBarPane,"int wxFrameBase::GetStatusBarPane()  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#getstatusbarpane)")
+    ADD_CLASS_METHOD(CreateToolBar,"wxToolBar * wxFrameBase::CreateToolBar(long int style = -0x00000000000000001, wxWindowID winid = wxID_ANY, wxString const & name = wxToolBarNameStr)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#createtoolbar)")
+    ADD_CLASS_METHOD(OnCreateToolBar,"wxToolBar * wxFrameBase::OnCreateToolBar(long int style, wxWindowID winid, wxString const & name)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#oncreatetoolbar)")
+    ADD_CLASS_METHOD(GetToolBar,"wxToolBar * wxFrameBase::GetToolBar()  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#gettoolbar)")
+    ADD_CLASS_METHOD(SetToolBar,"void wxFrameBase::SetToolBar(wxToolBar * toolbar)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#settoolbar)")
+    ADD_CLASS_METHOD(OnMenuOpen,"void wxFrameBase::OnMenuOpen(wxMenuEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#onmenuopen)")
+    ADD_CLASS_METHOD(OnMenuClose,"void wxFrameBase::OnMenuClose(wxMenuEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#onmenuclose)")
+    ADD_CLASS_METHOD(OnMenuHighlight,"void wxFrameBase::OnMenuHighlight(wxMenuEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#onmenuhighlight)")
+    ADD_CLASS_METHOD(DoMenuUpdates,"void wxFrameBase::DoMenuUpdates(wxMenu * menu = 0l)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#domenuupdates)")
+    ADD_CLASS_METHOD(UpdateWindowUI,"void wxFrameBase::UpdateWindowUI(long int flags = wxUPDATE_UI_NONE)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#updatewindowui)")
+    ADD_CLASS_METHOD(OnInternalIdle,"void wxFrameBase::OnInternalIdle()  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#oninternalidle)")
+    ADD_CLASS_METHOD(DoGiveHelp,"void wxFrameBase::DoGiveHelp(wxString const & text, bool show)  (http://docs.wxwidgets.org/stable/wx_wxframebase.html#dogivehelp)")
 
 
 
 
 
-    void AddMethods(WrapClass<wxFrameBase>::ptr this_ptr )
-    {
-      
-      // Add members from wxTopLevelWindow
-      WrapClass_wxTopLevelWindow::ptr parent_wxTopLevelWindow(        boost::dynamic_pointer_cast<WrapClass_wxTopLevelWindow >(this_ptr));
-      parent_wxTopLevelWindow->AddMethods(parent_wxTopLevelWindow);
+    void AddMethods(WrapClass<wxFrameBase>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-      AddVar_New( this_ptr);
-      AddVar_GetClientAreaOrigin( this_ptr);
-      AddVar_SendSizeEvent( this_ptr);
-/* The following types are missing: wxMenuBar
-      AddVar_SetMenuBar( this_ptr);
-*/
-/* The following types are missing: wxMenuBar
-      AddVar_GetMenuBar( this_ptr);
-*/
-      AddVar_ProcessCommand( this_ptr);
-/* The following types are missing: wxStatusBar
-      AddVar_CreateStatusBar( this_ptr);
-*/
-/* The following types are missing: wxStatusBar
-      AddVar_OnCreateStatusBar( this_ptr);
-*/
-/* The following types are missing: wxStatusBar
-      AddVar_GetStatusBar( this_ptr);
-*/
-/* The following types are missing: wxStatusBar
-      AddVar_SetStatusBar( this_ptr);
-*/
-      AddVar_SetStatusText( this_ptr);
-      AddVar_SetStatusWidths( this_ptr);
-      AddVar_PushStatusText( this_ptr);
-      AddVar_PopStatusText( this_ptr);
-      AddVar_SetStatusBarPane( this_ptr);
-      AddVar_GetStatusBarPane( this_ptr);
-/* The following types are missing: wxToolBar
-      AddVar_CreateToolBar( this_ptr);
-*/
-/* The following types are missing: wxToolBar
-      AddVar_OnCreateToolBar( this_ptr);
-*/
-/* The following types are missing: wxToolBar
-      AddVar_GetToolBar( this_ptr);
-*/
-/* The following types are missing: wxToolBar
-      AddVar_SetToolBar( this_ptr);
-*/
-/* The following types are missing: wxMenuEvent
-      AddVar_OnMenuOpen( this_ptr);
-*/
-/* The following types are missing: wxMenuEvent
-      AddVar_OnMenuClose( this_ptr);
-*/
-/* The following types are missing: wxMenuEvent
-      AddVar_OnMenuHighlight( this_ptr);
-*/
-/* The following types are missing: wxMenu
-      AddVar_DoMenuUpdates( this_ptr);
-*/
-      AddVar_UpdateWindowUI( this_ptr);
-      AddVar_OnInternalIdle( this_ptr);
-      AddVar_DoGiveHelp( this_ptr);
-
-
-
-      
-    };
 };
 
 

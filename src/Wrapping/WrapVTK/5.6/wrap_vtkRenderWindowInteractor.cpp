@@ -46,9 +46,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkRenderWindowInteractor);
 AMI_DEFINE_VARFROMSMTPTR(vtkRenderWindowInteractor);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkRenderWindowInteractor>::CreateVar( vtkRenderWindowInteractor* val)
+BasicVariable::ptr AMILabType<vtkRenderWindowInteractor>::CreateVar( vtkRenderWindowInteractor* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkRenderWindowInteractor> obj_ptr(val,wxwindow_nodeleter<vtkRenderWindowInteractor>());
+  boost::shared_ptr<vtkRenderWindowInteractor> obj_ptr(val,smartpointer_nodeleter<vtkRenderWindowInteractor>());
   return AMILabType<vtkRenderWindowInteractor>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -1557,7 +1557,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAbstractPicker * res =   this->_objectptr->GetObj()->GetPicker();
-  return AMILabType<vtkAbstractPicker >::CreateVar(res);
+  return AMILabType<vtkAbstractPicker >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkAbstractPropPicker
@@ -1578,7 +1578,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAbstractPropPicker * res =   this->_objectptr->GetObj()->CreateDefaultPicker();
-  return AMILabType<vtkAbstractPropPicker >::CreateVar(res);
+  return AMILabType<vtkAbstractPropPicker >::CreateVar(res,true);
 }
 */
 
@@ -2050,7 +2050,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   int * res =   this->_objectptr->GetObj()->GetEventPosition();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -2148,7 +2148,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   int * res =   this->_objectptr->GetObj()->GetLastEventPosition();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -2950,7 +2950,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   int * res =   this->_objectptr->GetObj()->GetSize();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -3122,7 +3122,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   int * res =   this->_objectptr->GetObj()->GetEventSize();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -3251,7 +3251,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkObserverMediator * res =   this->_objectptr->GetObj()->GetObserverMediator();
-  return AMILabType<vtkObserverMediator >::CreateVar(res);
+  return AMILabType<vtkObserverMediator >::CreateVar(res,true);
 }
 */
 

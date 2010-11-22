@@ -51,7 +51,6 @@ class WrapClass_wxPoint : public WrapClass<wxPoint>
     /// Destructor
     ~WrapClass_wxPoint()
     {
-      std::cout << "~WrapClass_wxPoint()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -70,29 +69,34 @@ class WrapClass_wxPoint : public WrapClass<wxPoint>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxPoint*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
     // Adding standard methods
 
     // Operators:
-    ADD_CLASS_METHOD(__assign__,            "wxPoint & wxPoint::=(wxPoint const & param0) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__assign__)")
-    ADD_CLASS_METHOD(__equal__,            "bool wxPoint::==(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__equal__)")
-    ADD_CLASS_METHOD(__not_equal__,            "bool wxPoint::!=(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__not_equal__)")
-    ADD_CLASS_METHOD(__add___1,            "wxPoint wxPoint::+(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add__)")
-    ADD_CLASS_METHOD(__substract___1,            "wxPoint wxPoint::-(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
-    ADD_CLASS_METHOD(__add_assign___1,            "wxPoint & wxPoint::+=(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add_assign__)")
-    ADD_CLASS_METHOD(__sub_assign___1,            "wxPoint & wxPoint::-=(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__sub_assign__)")
-    ADD_CLASS_METHOD(__add_assign__,            "wxPoint::+=() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add_assign__)")
-    ADD_CLASS_METHOD(__add_assign___2,            "wxPoint & wxPoint::+=(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add_assign__)")
-    ADD_CLASS_METHOD(__sub_assign__,            "wxPoint::-=() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__sub_assign__)")
-    ADD_CLASS_METHOD(__sub_assign___2,            "wxPoint & wxPoint::-=(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__sub_assign__)")
-    ADD_CLASS_METHOD(__add__,            "wxPoint::+() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add__)")
-    ADD_CLASS_METHOD(__add___2,            "wxPoint wxPoint::+(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add__)")
-    ADD_CLASS_METHOD(__substract__,            "wxPoint::-() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
-    ADD_CLASS_METHOD(__substract___2,            "wxPoint wxPoint::-(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
-    ADD_CLASS_METHOD(__substract___3,            "wxPoint wxPoint::-() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
+    ADD_CLASS_METHOD(__assign__,            "wxPoint & wxPoint::operator =(wxPoint const & param0) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__assign__)")
+    ADD_CLASS_METHOD(__equal__,            "bool wxPoint::operator ==(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__equal__)")
+    ADD_CLASS_METHOD(__not_equal__,            "bool wxPoint::operator !=(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__not_equal__)")
+    ADD_CLASS_METHOD(__add___1,            "wxPoint wxPoint::operator +(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add__)")
+    ADD_CLASS_METHOD(__substract___1,            "wxPoint wxPoint::operator -(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
+    ADD_CLASS_METHOD(__add_assign___1,            "wxPoint & wxPoint::operator +=(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add_assign__)")
+    ADD_CLASS_METHOD(__sub_assign___1,            "wxPoint & wxPoint::operator -=(wxPoint const & p) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__sub_assign__)")
+    ADD_CLASS_METHOD(__add_assign__,            "wxPoint::operator +=() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign___2,            "wxPoint & wxPoint::operator +=(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add_assign__)")
+    ADD_CLASS_METHOD(__sub_assign__,            "wxPoint::operator -=() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__sub_assign__)")
+    ADD_CLASS_METHOD(__sub_assign___2,            "wxPoint & wxPoint::operator -=(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__sub_assign__)")
+    ADD_CLASS_METHOD(__add__,            "wxPoint::operator +() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add__)")
+    ADD_CLASS_METHOD(__add___2,            "wxPoint wxPoint::operator +(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__add__)")
+    ADD_CLASS_METHOD(__substract__,            "wxPoint::operator -() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
+    ADD_CLASS_METHOD(__substract___2,            "wxPoint wxPoint::operator -(wxSize const & s) (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
+    ADD_CLASS_METHOD(__substract___3,            "wxPoint wxPoint::operator -() (http://docs.wxwidgets.org/stable/wx_wxpoint.html#__substract__)")
 
 
 

@@ -49,9 +49,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkRenderer);
 AMI_DEFINE_VARFROMSMTPTR(vtkRenderer);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkRenderer>::CreateVar( vtkRenderer* val)
+BasicVariable::ptr AMILabType<vtkRenderer>::CreateVar( vtkRenderer* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkRenderer> obj_ptr(val,wxwindow_nodeleter<vtkRenderer>());
+  boost::shared_ptr<vtkRenderer> obj_ptr(val,smartpointer_nodeleter<vtkRenderer>());
   return AMILabType<vtkRenderer>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -598,7 +598,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkLightCollection * res =   this->_objectptr->GetObj()->GetLights();
-  return AMILabType<vtkLightCollection >::CreateVar(res);
+  return AMILabType<vtkLightCollection >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkLightCollection
@@ -664,7 +664,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkLight * res =   this->_objectptr->GetObj()->MakeLight();
-  return AMILabType<vtkLight >::CreateVar(res);
+  return AMILabType<vtkLight >::CreateVar(res,true);
 }
 */
 
@@ -1258,7 +1258,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkCullerCollection * res =   this->_objectptr->GetObj()->GetCullers();
-  return AMILabType<vtkCullerCollection >::CreateVar(res);
+  return AMILabType<vtkCullerCollection >::CreateVar(res,true);
 }
 */
 
@@ -1356,7 +1356,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetAmbient();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1621,7 +1621,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->ComputeVisiblePropBounds();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -2553,7 +2553,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (!get_val_param<double >(selectionY,_p,_n)) ClassReturnEmptyVar;
 
   vtkAssemblyPath * res =   this->_objectptr->GetObj()->PickProp(selectionX, selectionY);
-  return AMILabType<vtkAssemblyPath >::CreateVar(res);
+  return AMILabType<vtkAssemblyPath >::CreateVar(res,true);
 }
 */
 
@@ -2607,7 +2607,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (!get_val_param<double >(selectionY2,_p,_n)) ClassReturnEmptyVar;
 
   vtkAssemblyPath * res =   this->_objectptr->GetObj()->PickProp(selectionX1, selectionY1, selectionX2, selectionY2);
-  return AMILabType<vtkAssemblyPath >::CreateVar(res);
+  return AMILabType<vtkAssemblyPath >::CreateVar(res,true);
 }
 */
 
@@ -2933,7 +2933,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRendererDelegate * res =   this->_objectptr->GetObj()->GetDelegate();
-  return AMILabType<vtkRendererDelegate >::CreateVar(res);
+  return AMILabType<vtkRendererDelegate >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkRenderPass
@@ -2981,7 +2981,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderPass * res =   this->_objectptr->GetObj()->GetPass();
-  return AMILabType<vtkRenderPass >::CreateVar(res);
+  return AMILabType<vtkRenderPass >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkHardwareSelector
@@ -3002,7 +3002,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkHardwareSelector * res =   this->_objectptr->GetObj()->GetSelector();
-  return AMILabType<vtkHardwareSelector >::CreateVar(res);
+  return AMILabType<vtkHardwareSelector >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkTexture
@@ -3050,7 +3050,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkTexture * res =   this->_objectptr->GetObj()->GetBackgroundTexture();
-  return AMILabType<vtkTexture >::CreateVar(res);
+  return AMILabType<vtkTexture >::CreateVar(res,true);
 }
 */
 

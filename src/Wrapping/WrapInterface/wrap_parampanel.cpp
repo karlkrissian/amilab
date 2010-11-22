@@ -902,7 +902,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddBitmapButton::CallMember( Param
 
   if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
   if (!get_var_param<AMIFunction>(varfunc, p, n))     ClassHelpAndReturn;
-  GET_OBJECT_PARAM(wxBitmap,bitmap,_obj);
+  GET_OBJECT_PARAM(wxBitmap,bitmap,GetObj());
   if (!bitmap.get())                              ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)")  % varfunc->GetComments() 

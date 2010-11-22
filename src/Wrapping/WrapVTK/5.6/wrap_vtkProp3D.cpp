@@ -44,9 +44,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkProp3D);
 AMI_DEFINE_VARFROMSMTPTR(vtkProp3D);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkProp3D>::CreateVar( vtkProp3D* val)
+BasicVariable::ptr AMILabType<vtkProp3D>::CreateVar( vtkProp3D* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkProp3D> obj_ptr(val,wxwindow_nodeleter<vtkProp3D>());
+  boost::shared_ptr<vtkProp3D> obj_ptr(val,smartpointer_nodeleter<vtkProp3D>());
   return AMILabType<vtkProp3D>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -415,7 +415,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetPosition();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -636,7 +636,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetOrigin();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -782,7 +782,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetScale();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -899,7 +899,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkLinearTransform * res =   this->_objectptr->GetObj()->GetUserTransform();
-  return AMILabType<vtkLinearTransform >::CreateVar(res);
+  return AMILabType<vtkLinearTransform >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkMatrix4x4
@@ -947,7 +947,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetUserMatrix();
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res);
+  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkMatrix4x4
@@ -1062,7 +1062,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetCenter();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1081,7 +1081,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetXRange();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1100,7 +1100,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetYRange();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1119,7 +1119,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetZRange();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1343,7 +1343,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetOrientation();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1408,7 +1408,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetOrientationWXYZ();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1609,7 +1609,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetMatrix();
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res);
+  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
 }
 */
 

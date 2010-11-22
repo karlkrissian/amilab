@@ -46,9 +46,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxControl);
 AMI_DEFINE_VARFROMSMTPTR(wxControl);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<wxControl>::CreateVar( wxControl* val)
+BasicVariable::ptr AMILabType<wxControl>::CreateVar( wxControl* val, bool nodeleter)
 { 
-  boost::shared_ptr<wxControl> obj_ptr(val,wxwindow_nodeleter<wxControl>());
+  boost::shared_ptr<wxControl> obj_ptr(val,smartpointer_nodeleter<wxControl>());
   return AMILabType<wxControl>::CreateVarFromSmtPtr(obj_ptr);
 }
 

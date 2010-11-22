@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxObject.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -24,6 +22,9 @@
 #include "wrap_wxClassInfo.h"
 
 
+#include "wrap_wxObject.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -40,6 +41,7 @@ AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxObject);
 AMI_DEFINE_VARFROMSMTPTR(wxObject);
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxObject
 //
@@ -55,6 +57,41 @@ Variable<AMIObject>::ptr WrapClass_wxObject::CreateVar( wxObject* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxObject::AddMethods(WrapClass<wxObject>::ptr this_ptr )
+{
+  
+
+
+  // check that the method name is not a token
+  
+      // Adding copy method 
+      AddVar___copy__( this_ptr);
+      // Adding standard methods 
+      AddVar_GetClassInfo( this_ptr);
+      AddVar_IsKindOf( this_ptr);
+/* The following types are missing: wxObjectRefData
+      AddVar_GetRefData( this_ptr);
+*/
+/* The following types are missing: wxObjectRefData
+      AddVar_SetRefData( this_ptr);
+*/
+      AddVar_Ref( this_ptr);
+      AddVar_UnRef( this_ptr);
+      AddVar_UnShare( this_ptr);
+      AddVar_IsSameAs( this_ptr);
+
+      // Adding operators
+      AddVar___assign__( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -203,7 +240,7 @@ BasicVariable::ptr WrapClass_wxObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObjectRefData * res =   this->_objectptr->GetObj()->GetRefData();
-  return AMILabType<wxObjectRefData >::CreateVar(res);
+  return AMILabType<wxObjectRefData >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxObjectRefData
@@ -323,7 +360,7 @@ BasicVariable::ptr WrapClass_wxObject::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxObject & wxObject::=(wxObject const & other)
+//  Wrapping of wxObject & wxObject::operator =(wxObject const & other)
 //---------------------------------------------------
 void WrapClass_wxObject::
     wrap___assign__::SetParametersComments()

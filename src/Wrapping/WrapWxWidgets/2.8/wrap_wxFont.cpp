@@ -278,9 +278,7 @@ BasicVariable::ptr WrapClass_wxFont::
   boost::shared_ptr<wxString > face_smtptr;
   if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & face = (face_smtptr.get()?
-    (wxString const &) (*face_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
   int encoding_int = (int) wxFONTENCODING_DEFAULT;;
   if (!get_val_param<int >(encoding_int,_p,_n)) ClassReturnEmptyVar;
@@ -350,9 +348,7 @@ BasicVariable::ptr WrapClass_wxFont::
   boost::shared_ptr<wxString > face_smtptr;
   if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & face = (face_smtptr.get()?
-    (wxString const &) (*face_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
   int encoding_int = (int) wxFONTENCODING_DEFAULT;;
   if (!get_val_param<int >(encoding_int,_p,_n)) ClassReturnEmptyVar;
@@ -563,7 +559,7 @@ BasicVariable::ptr WrapClass_wxFont::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxNativeFontInfo const * res =   this->_objectptr->GetObj()->GetNativeFontInfo();
-  return AMILabType<wxNativeFontInfo >::CreateVar(res);
+  return AMILabType<wxNativeFontInfo >::CreateVar(res,true);
 }
 */
 
@@ -826,7 +822,7 @@ BasicVariable::ptr WrapClass_wxFont::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxFont & wxFont::=(wxFont const & param0)
+//  Wrapping of wxFont & wxFont::operator =(wxFont const & param0)
 //---------------------------------------------------
 void WrapClass_wxFont::
     wrap___assign__::SetParametersComments()

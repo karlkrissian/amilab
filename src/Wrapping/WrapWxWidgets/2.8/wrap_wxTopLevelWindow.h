@@ -51,49 +51,38 @@ class WrapClass_wxTopLevelWindow : public WrapClass<wxTopLevelWindow>
     /// Destructor
     ~WrapClass_wxTopLevelWindow()
     {
-      std::cout << "~WrapClass_wxTopLevelWindow()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxTopLevelWindow_1,"Wrapping of wxTopLevelWindow, http://docs.wxwidgets.org/stable/wx_wxtoplevelwindow.html#wxtoplevelwindow.");
+    ADD_CLASS_CONSTRUCTOR(wxTopLevelWindow_1,"Constructor wxTopLevelWindow::wxTopLevelWindow() (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindow.html#wxtoplevelwindow).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxTopLevelWindow,"Wrapping of wxTopLevelWindow, http://docs.wxwidgets.org/stable/wx_wxtoplevelwindow.html#wxtoplevelwindow.");
+    ADD_CLASS_CONSTRUCTOR(wxTopLevelWindow,"Constructor wxTopLevelWindow::wxTopLevelWindow() (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindow.html#wxtoplevelwindow).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxTopLevelWindow_2,"Wrapping of wxTopLevelWindow, http://docs.wxwidgets.org/stable/wx_wxtoplevelwindow.html#wxtoplevelwindow.");
+    ADD_CLASS_CONSTRUCTOR(wxTopLevelWindow_2,"Constructor wxTopLevelWindow::wxTopLevelWindow(wxWindow * parent, wxWindowID winid, wxString const & title, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 541072960, wxString const & name = wxFrameNameStr) (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindow.html#wxtoplevelwindow).");
 
 
 
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxTopLevelWindow*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding standard methods
-    ADD_CLASS_METHOD(GetClassInfo,"http://docs.wxwidgets.org/stable/wx_wxtoplevelwindow.html#getclassinfo")
+    ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxTopLevelWindow::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindow.html#getclassinfo)")
 
 
 
 
 
-    void AddMethods(WrapClass<wxTopLevelWindow>::ptr this_ptr )
-    {
-      
-      // Add members from wxTopLevelWindowGTK
-      WrapClass_wxTopLevelWindowGTK::ptr parent_wxTopLevelWindowGTK(        boost::dynamic_pointer_cast<WrapClass_wxTopLevelWindowGTK >(this_ptr));
-      parent_wxTopLevelWindowGTK->AddMethods(parent_wxTopLevelWindowGTK);
+    void AddMethods(WrapClass<wxTopLevelWindow>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-      AddVar_GetClassInfo( this_ptr);
-
-
-
-      
-    };
 };
 
 

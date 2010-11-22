@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxToolBar.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -24,12 +22,15 @@
 #include "wrap_wxPoint.h"
 #include "wrap_wxSize.h"
 #include "wrap_wxString.h"
+#include "wrap_wxVisualAttributes.h"
 #include "wrap_wxToolBarToolBase.h"
 #include "wrap_wxBitmap.h"
-#include "wrap_wxVisualAttributes.h"
 #include "wrap_wxClassInfo.h"
 
 
+#include "wrap_wxToolBar.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -46,13 +47,14 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxToolBar);
 AMI_DEFINE_VARFROMSMTPTR(wxToolBar);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<wxToolBar>::CreateVar( wxToolBar* val)
+BasicVariable::ptr AMILabType<wxToolBar>::CreateVar( wxToolBar* val, bool nodeleter)
 { 
-  boost::shared_ptr<wxToolBar> obj_ptr(val,wxwindow_nodeleter<wxToolBar>());
+  boost::shared_ptr<wxToolBar> obj_ptr(val,smartpointer_nodeleter<wxToolBar>());
   return AMILabType<wxToolBar>::CreateVarFromSmtPtr(obj_ptr);
 }
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxToolBar
 //
@@ -68,6 +70,61 @@ Variable<AMIObject>::ptr WrapClass_wxToolBar::CreateVar( wxToolBar* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxToolBar::AddMethods(WrapClass<wxToolBar>::ptr this_ptr )
+{
+  
+      // Add members from wxToolBarBase
+      WrapClass_wxToolBarBase::ptr parent_wxToolBarBase(        boost::dynamic_pointer_cast<WrapClass_wxToolBarBase >(this_ptr));
+      parent_wxToolBarBase->AddMethods(parent_wxToolBarBase);
+
+
+  // check that the method name is not a token
+  
+      // Adding standard methods 
+      AddVar_Create( this_ptr);
+      AddVar_SetMargins( this_ptr);
+      AddVar_SetToolSeparation( this_ptr);
+      AddVar_FindToolForPosition( this_ptr);
+      AddVar_SetToolShortHelp( this_ptr);
+      AddVar_SetWindowStyleFlag( this_ptr);
+      AddVar_SetToolNormalBitmap( this_ptr);
+      AddVar_SetToolDisabledBitmap( this_ptr);
+      AddVar_OnInternalIdle( this_ptr);
+      AddVar_GetClassInfo( this_ptr);
+
+
+
+  // Add public fields
+      AMIObject::ptr tmpobj(amiobject.lock());
+      if (!tmpobj.get()) return;
+      Variables::ptr context(tmpobj->GetContext());
+      
+      /* type not available
+      // Adding public member m_toolbar
+      boost::shared_ptr<_GtkToolbar > var_m_toolbar_ptr(&GetObj()->m_toolbar, smartpointer_nodeleter<_GtkToolbar >());
+      BasicVariable::ptr var_m_toolbar = AMILabType<_GtkToolbar >::CreateVarFromSmtPtr(var_m_toolbar_ptr);
+      if (var_m_toolbar.get()) {
+        var_m_toolbar->Rename("m_toolbar");
+        context->AddVar(var_m_toolbar,context);
+      }
+      */
+      
+      /* type not available
+      // Adding public member m_blockEvent
+      boost::shared_ptr<bool > var_m_blockEvent_ptr(&GetObj()->m_blockEvent, smartpointer_nodeleter<bool >());
+      BasicVariable::ptr var_m_blockEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockEvent_ptr);
+      if (var_m_blockEvent.get()) {
+        var_m_blockEvent->Rename("m_blockEvent");
+        context->AddVar(var_m_blockEvent,context);
+      }
+      */
+
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -142,16 +199,12 @@ BasicVariable::ptr WrapClass_wxToolBar::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?
-    (wxPoint const &) (*pos_smtptr):
-    (wxPoint const &) wxDefaultPosition);
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?
-    (wxSize const &) (*size_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   long style_long = wxTB_HORIZONTAL;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
@@ -160,13 +213,37 @@ BasicVariable::ptr WrapClass_wxToolBar::
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?
-    (wxString const &) (*name_smtptr):
-    (wxString const &) wxToolBarNameStr);
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxToolBarNameStr) );
 
   wxToolBar* _newobj = new wxToolBar(parent, id, pos, size, style, name);
   BasicVariable::ptr res = WrapClass_wxToolBar::CreateVar(_newobj);
   return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxVisualAttributes wxToolBar::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
+//---------------------------------------------------
+void WrapClass_wxToolBar::
+    wrap_GetClassDefaultAttributes::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
+  return_comments="returning a variable of type wxVisualAttributes";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxToolBar::
+    wrap_GetClassDefaultAttributes::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+
+  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
+  if (!get_val_param<int >(variant_int,_p,_n)) ClassHelpAndReturn;
+  wxWindowVariant variant = (wxWindowVariant) variant_int;
+
+  wxVisualAttributes res =   wxToolBar::GetClassDefaultAttributes(variant);
+  return AMILabType<wxVisualAttributes >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -202,16 +279,12 @@ BasicVariable::ptr WrapClass_wxToolBar::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?
-    (wxPoint const &) (*pos_smtptr):
-    (wxPoint const &) wxDefaultPosition);
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?
-    (wxSize const &) (*size_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
@@ -220,9 +293,7 @@ BasicVariable::ptr WrapClass_wxToolBar::
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?
-    (wxString const &) (*name_smtptr):
-    (wxString const &) wxToolBarNameStr);
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxToolBarNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, pos, size, style, name);
   int res_int = ((res==true)?1:0);
@@ -421,32 +492,6 @@ BasicVariable::ptr WrapClass_wxToolBar::
 
   this->_objectptr->GetObj()->SetToolDisabledBitmap(id, bitmap);
   return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of wxVisualAttributes wxToolBar::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
-//---------------------------------------------------
-void WrapClass_wxToolBar::
-    wrap_GetClassDefaultAttributes::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
-  return_comments="returning a variable of type wxVisualAttributes";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxToolBar::
-    wrap_GetClassDefaultAttributes::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
-  if (!get_val_param<int >(variant_int,_p,_n)) ClassHelpAndReturn;
-  wxWindowVariant variant = (wxWindowVariant) variant_int;
-
-  wxVisualAttributes res =   this->_objectptr->GetObj()->GetClassDefaultAttributes(variant);
-  return AMILabType<wxVisualAttributes >::CreateVar(res);
 }
 
 //---------------------------------------------------

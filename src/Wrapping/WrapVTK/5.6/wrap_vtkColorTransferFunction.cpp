@@ -42,9 +42,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkColorTransferFunction);
 AMI_DEFINE_VARFROMSMTPTR(vtkColorTransferFunction);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkColorTransferFunction>::CreateVar( vtkColorTransferFunction* val)
+BasicVariable::ptr AMILabType<vtkColorTransferFunction>::CreateVar( vtkColorTransferFunction* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkColorTransferFunction> obj_ptr(val,wxwindow_nodeleter<vtkColorTransferFunction>());
+  boost::shared_ptr<vtkColorTransferFunction> obj_ptr(val,smartpointer_nodeleter<vtkColorTransferFunction>());
   return AMILabType<vtkColorTransferFunction>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -750,7 +750,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetColor(x);
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -960,7 +960,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (!get_val_param<double >(v,_p,_n)) ClassHelpAndReturn;
 
   unsigned char * res =   this->_objectptr->GetObj()->MapValue(v);
-  return AMILabType<unsigned char >::CreateVar(res);
+  return AMILabType<unsigned char >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -979,7 +979,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetRange();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1699,7 +1699,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetDataPointer();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------

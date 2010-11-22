@@ -67,7 +67,12 @@ class WrapClass_wxControl : public WrapClass<wxControl>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxControl*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding standard methods
     ADD_CLASS_METHOD(Create,"bool wxControl::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxControlNameStr)  (http://docs.wxwidgets.org/stable/wx_wxcontrol.html#create)")

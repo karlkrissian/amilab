@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxToolBarBase.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -29,6 +27,9 @@
 #include "wrap_wxSize.h"
 
 
+#include "wrap_wxToolBarBase.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -45,13 +46,14 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxToolBarBase);
 AMI_DEFINE_VARFROMSMTPTR(wxToolBarBase);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<wxToolBarBase>::CreateVar( wxToolBarBase* val)
+BasicVariable::ptr AMILabType<wxToolBarBase>::CreateVar( wxToolBarBase* val, bool nodeleter)
 { 
-  boost::shared_ptr<wxToolBarBase> obj_ptr(val,wxwindow_nodeleter<wxToolBarBase>());
+  boost::shared_ptr<wxToolBarBase> obj_ptr(val,smartpointer_nodeleter<wxToolBarBase>());
   return AMILabType<wxToolBarBase>::CreateVarFromSmtPtr(obj_ptr);
 }
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxToolBarBase
 //
@@ -67,6 +69,86 @@ Variable<AMIObject>::ptr WrapClass_wxToolBarBase::CreateVar( wxToolBarBase* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxToolBarBase::AddMethods(WrapClass<wxToolBarBase>::ptr this_ptr )
+{
+  
+      // Add members from wxControl
+      WrapClass_wxControl::ptr parent_wxControl(        boost::dynamic_pointer_cast<WrapClass_wxControl >(this_ptr));
+      parent_wxControl->AddMethods(parent_wxControl);
+
+
+  // check that the method name is not a token
+  
+      // Adding standard methods 
+      AddVar_AddTool_1( this_ptr);
+      AddVar_AddTool( this_ptr);
+      AddVar_AddTool_2( this_ptr);
+      AddVar_AddCheckTool( this_ptr);
+      AddVar_AddRadioTool( this_ptr);
+      AddVar_InsertTool_1( this_ptr);
+      AddVar_AddTool_3( this_ptr);
+      AddVar_InsertTool( this_ptr);
+      AddVar_InsertTool_2( this_ptr);
+      AddVar_AddControl( this_ptr);
+      AddVar_InsertControl( this_ptr);
+      AddVar_FindControl( this_ptr);
+      AddVar_AddSeparator( this_ptr);
+      AddVar_InsertSeparator( this_ptr);
+      AddVar_RemoveTool( this_ptr);
+      AddVar_DeleteToolByPos( this_ptr);
+      AddVar_DeleteTool( this_ptr);
+      AddVar_ClearTools( this_ptr);
+      AddVar_Realize( this_ptr);
+      AddVar_EnableTool( this_ptr);
+      AddVar_ToggleTool( this_ptr);
+      AddVar_SetToggle( this_ptr);
+      AddVar_GetToolClientData( this_ptr);
+      AddVar_SetToolClientData( this_ptr);
+      AddVar_GetToolPos( this_ptr);
+      AddVar_GetToolState( this_ptr);
+      AddVar_GetToolEnabled( this_ptr);
+      AddVar_SetToolShortHelp( this_ptr);
+      AddVar_GetToolShortHelp( this_ptr);
+      AddVar_SetToolLongHelp( this_ptr);
+      AddVar_GetToolLongHelp( this_ptr);
+      AddVar_SetMargins_1( this_ptr);
+      AddVar_SetMargins( this_ptr);
+      AddVar_SetMargins_2( this_ptr);
+      AddVar_SetToolPacking( this_ptr);
+      AddVar_SetToolSeparation( this_ptr);
+      AddVar_GetToolMargins( this_ptr);
+      AddVar_GetToolPacking( this_ptr);
+      AddVar_GetToolSeparation( this_ptr);
+      AddVar_SetRows( this_ptr);
+      AddVar_SetMaxRowsCols( this_ptr);
+      AddVar_GetMaxRows( this_ptr);
+      AddVar_GetMaxCols( this_ptr);
+      AddVar_SetToolBitmapSize( this_ptr);
+      AddVar_GetToolBitmapSize( this_ptr);
+      AddVar_GetToolSize( this_ptr);
+      AddVar_FindById( this_ptr);
+      AddVar_IsVertical( this_ptr);
+      AddVar_AddTool_4( this_ptr);
+      AddVar_AddTool_5( this_ptr);
+      AddVar_AddTool_6( this_ptr);
+      AddVar_InsertTool_3( this_ptr);
+      AddVar_OnLeftClick( this_ptr);
+      AddVar_OnRightClick( this_ptr);
+      AddVar_OnMouseEnter( this_ptr);
+      AddVar_GetMargins( this_ptr);
+      AddVar_GetToolsCount( this_ptr);
+      AddVar_UpdateWindowUI( this_ptr);
+      AddVar_AcceptsFocus( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -116,16 +198,12 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelp = (shortHelp_smtptr.get()?
-    (wxString const &) (*shortHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & longHelp = (longHelp_smtptr.get()?
-    (wxString const &) (*longHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxObject > data_smtptr;
   if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
@@ -205,9 +283,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelp = (shortHelp_smtptr.get()?
-    (wxString const &) (*shortHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
 
   int kind_int = (int) wxITEM_NORMAL;;
   if (!get_val_param<int >(kind_int,_p,_n)) ClassReturnEmptyVar;
@@ -256,23 +332,17 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = (bmpDisabled_smtptr.get()?
-    (wxBitmap const &) (*bmpDisabled_smtptr):
-    (wxBitmap const &) wxNullBitmap);
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : (wxNullBitmap) );
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & shortHelp = (shortHelp_smtptr.get()?
-    (wxString const &) (*shortHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & longHelp = (longHelp_smtptr.get()?
-    (wxString const &) (*longHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxObject > data_smtptr;
   if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n)) ClassHelpAndReturn;
@@ -321,23 +391,17 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = (bmpDisabled_smtptr.get()?
-    (wxBitmap const &) (*bmpDisabled_smtptr):
-    (wxBitmap const &) wxNullBitmap);
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : (wxNullBitmap) );
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & shortHelp = (shortHelp_smtptr.get()?
-    (wxString const &) (*shortHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & longHelp = (longHelp_smtptr.get()?
-    (wxString const &) (*longHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxObject > data_smtptr;
   if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n)) ClassHelpAndReturn;
@@ -392,9 +456,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = (bmpDisabled_smtptr.get()?
-    (wxBitmap const &) (*bmpDisabled_smtptr):
-    (wxBitmap const &) wxNullBitmap);
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : (wxNullBitmap) );
 
   int kind_int = (int) wxITEM_NORMAL;;
   if (!get_val_param<int >(kind_int,_p,_n)) ClassReturnEmptyVar;
@@ -403,16 +465,12 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelp = (shortHelp_smtptr.get()?
-    (wxString const &) (*shortHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & longHelp = (longHelp_smtptr.get()?
-    (wxString const &) (*longHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : (wxEmptyString) );
 
   boost::shared_ptr<wxObject > clientData_smtptr;
   if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n)) ClassReturnEmptyVar;
@@ -1506,16 +1564,12 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelpString_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelpString_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelpString = (shortHelpString_smtptr.get()?
-    (wxString const &) (*shortHelpString_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelpString = ( shortHelpString_smtptr.get() ? (*shortHelpString_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelpString_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelpString_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & longHelpString = (longHelpString_smtptr.get()?
-    (wxString const &) (*longHelpString_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & longHelpString = ( longHelpString_smtptr.get() ? (*longHelpString_smtptr) : wxString(wxEmptyString) );
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(toolid, bitmap, bmpDisabled, toggle, clientData, shortHelpString, longHelpString);
   BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
@@ -1553,16 +1607,12 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelpString_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelpString_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelpString = (shortHelpString_smtptr.get()?
-    (wxString const &) (*shortHelpString_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelpString = ( shortHelpString_smtptr.get() ? (*shortHelpString_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelpString_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelpString_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & longHelpString = (longHelpString_smtptr.get()?
-    (wxString const &) (*longHelpString_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & longHelpString = ( longHelpString_smtptr.get() ? (*longHelpString_smtptr) : wxString(wxEmptyString) );
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(toolid, bitmap, shortHelpString, longHelpString);
   BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
@@ -1623,16 +1673,12 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelp = (shortHelp_smtptr.get()?
-    (wxString const &) (*shortHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & longHelp = (longHelp_smtptr.get()?
-    (wxString const &) (*longHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(toolid, bitmap, bmpDisabled, toggle, xPos, yPos, clientData, shortHelp, longHelp);
   BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
@@ -1678,9 +1724,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = (bmpDisabled_smtptr.get()?
-    (wxBitmap const &) (*bmpDisabled_smtptr):
-    (wxBitmap const &) wxNullBitmap);
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : (wxNullBitmap) );
 
   int toggle_int = ((false==true)?1:0);;
   if (!get_val_param<int >(toggle_int,_p,_n)) ClassReturnEmptyVar;
@@ -1693,16 +1737,12 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & shortHelp = (shortHelp_smtptr.get()?
-    (wxString const &) (*shortHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > longHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(longHelp_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & longHelp = (longHelp_smtptr.get()?
-    (wxString const &) (*longHelp_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->InsertTool(pos, toolid, bitmap, bmpDisabled, toggle, clientData, shortHelp, longHelp);
   BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);

@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxSizerItem.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -30,6 +28,9 @@
 #include "wrap_wxClassInfo.h"
 
 
+#include "wrap_wxSizerItem.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -45,14 +46,15 @@ BasicVariable::ptr WrapClass<wxSizerItem>::CreateVar( ParamList* p)
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxSizerItem);
 AMI_DEFINE_VARFROMSMTPTR(wxSizerItem);
 
-///
-BasicVariable::ptr AMILabType<wxSizerItem>::CreateVar( wxSizerItem* val)
+// Implementing CreateVar for AMILabType
+BasicVariable::ptr AMILabType<wxSizerItem>::CreateVar( wxSizerItem* val, bool nodeleter)
 { 
-  boost::shared_ptr<wxSizerItem> obj_ptr(val,wxwindow_nodeleter<wxSizerItem>());
+  boost::shared_ptr<wxSizerItem> obj_ptr(val,smartpointer_nodeleter<wxSizerItem>());
   return AMILabType<wxSizerItem>::CreateVarFromSmtPtr(obj_ptr);
 }
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxSizerItem
 //
@@ -68,6 +70,67 @@ Variable<AMIObject>::ptr WrapClass_wxSizerItem::CreateVar( wxSizerItem* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxSizerItem::AddMethods(WrapClass<wxSizerItem>::ptr this_ptr )
+{
+  
+      // Add members from wxObject
+      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
+      parent_wxObject->AddMethods(parent_wxObject);
+
+
+  // check that the method name is not a token
+  
+      // Adding standard methods 
+      AddVar_DeleteWindows( this_ptr);
+      AddVar_DetachSizer( this_ptr);
+      AddVar_GetSize( this_ptr);
+      AddVar_CalcMin( this_ptr);
+      AddVar_SetDimension( this_ptr);
+      AddVar_GetMinSize( this_ptr);
+      AddVar_GetMinSizeWithBorder( this_ptr);
+      AddVar_SetMinSize_1( this_ptr);
+      AddVar_SetMinSize( this_ptr);
+      AddVar_SetMinSize_2( this_ptr);
+      AddVar_SetInitSize( this_ptr);
+      AddVar_SetRatio_1( this_ptr);
+      AddVar_SetRatio( this_ptr);
+      AddVar_SetRatio_2( this_ptr);
+      AddVar_SetRatio_3( this_ptr);
+      AddVar_GetRatio( this_ptr);
+      AddVar_GetRect( this_ptr);
+      AddVar_IsWindow( this_ptr);
+      AddVar_IsSizer( this_ptr);
+      AddVar_IsSpacer( this_ptr);
+      AddVar_SetProportion( this_ptr);
+      AddVar_GetProportion( this_ptr);
+      AddVar_SetFlag( this_ptr);
+      AddVar_GetFlag( this_ptr);
+      AddVar_SetBorder( this_ptr);
+      AddVar_GetBorder( this_ptr);
+      AddVar_GetWindow( this_ptr);
+      AddVar_GetSizer( this_ptr);
+      AddVar_GetSpacer( this_ptr);
+      AddVar_IsShown( this_ptr);
+      AddVar_Show( this_ptr);
+      AddVar_SetUserData( this_ptr);
+      AddVar_GetUserData( this_ptr);
+      AddVar_GetPosition( this_ptr);
+      AddVar_SetWindow( this_ptr);
+      AddVar_SetSizer( this_ptr);
+      AddVar_SetSpacer_1( this_ptr);
+      AddVar_SetSpacer( this_ptr);
+      AddVar_SetSpacer_2( this_ptr);
+      AddVar_GetClassInfo( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------

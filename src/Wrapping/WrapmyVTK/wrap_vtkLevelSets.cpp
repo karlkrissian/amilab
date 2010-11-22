@@ -57,7 +57,7 @@ BasicVariable::ptr WrapClass<vtkLevelSets>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-BasicVariable::ptr AMILabType<vtkLevelSets>::CreateVar(vtkLevelSets* val)  
+BasicVariable::ptr AMILabType<vtkLevelSets>::CreateVar(vtkLevelSets* val, bool nodeleter)  
 { 
   boost::shared_ptr<vtkLevelSets> obj_ptr(
     vtk_new<vtkLevelSets> ()(val));

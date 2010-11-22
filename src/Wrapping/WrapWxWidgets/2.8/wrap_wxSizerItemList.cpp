@@ -19,7 +19,6 @@
 // get all the required includes
 // #include "..."
 #include "wrap_wxSizerItemList.h"
-#include "wrap_wxSizerItem.h"
 #include "boost/numeric/conversion/cast.hpp"
 #include "stdlib.h"
 
@@ -83,17 +82,17 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
 /* The following types are missing: wxwxSizerItemListNode
       AddVar_Item( this_ptr);
 */
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
       AddVar_Append_1( this_ptr);
 */
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
       AddVar_Insert_1( this_ptr);
 */
       AddVar_Insert( this_ptr);
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
       AddVar_Insert_2( this_ptr);
 */
-/* The following types are missing: wxwxSizerItemListNode, wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxwxSizerItemListNode, wxSizerItem
       AddVar_Insert_3( this_ptr);
 */
       AddVar_Append( this_ptr);
@@ -109,23 +108,27 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
 /* The following types are missing: wxwxSizerItemListNode
       AddVar_DeleteNode( this_ptr);
 */
+/* The following types are missing: wxSizerItem
       AddVar_DeleteObject( this_ptr);
+*/
 /* The following types are missing: wxwxSizerItemListNode
       AddVar_Erase( this_ptr);
 */
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
       AddVar_Find_1( this_ptr);
 */
       AddVar_Find( this_ptr);
 /* The following types are missing: wxwxSizerItemListNode, wxListKey
       AddVar_Find_2( this_ptr);
 */
+/* The following types are missing: wxSizerItem
       AddVar_IndexOf( this_ptr);
-/* The following types are missing: _9505
+*/
+/* The following types are missing: _9495
       AddVar_Sort_1( this_ptr);
 */
       AddVar_Sort( this_ptr);
-/* The following types are missing: _8773
+/* The following types are missing: _8775
       AddVar_Sort_2( this_ptr);
 */
 /* The following types are missing: iterator
@@ -156,30 +159,46 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
 /* The following types are missing: const_reverse_iterator
       AddVar_rend_2( this_ptr);
 */
+/* The following types are missing: wxSizerItem
       AddVar_resize( this_ptr);
+*/
       AddVar_size( this_ptr);
       AddVar_max_size( this_ptr);
       AddVar_empty( this_ptr);
+/* The following types are missing: wxSizerItem
       AddVar_front_1( this_ptr);
+*/
       AddVar_front( this_ptr);
+/* The following types are missing: wxSizerItem
       AddVar_front_2( this_ptr);
+*/
+/* The following types are missing: wxSizerItem
       AddVar_back_1( this_ptr);
+*/
       AddVar_back( this_ptr);
+/* The following types are missing: wxSizerItem
       AddVar_back_2( this_ptr);
+*/
+/* The following types are missing: wxSizerItem
       AddVar_push_front( this_ptr);
+*/
       AddVar_pop_front( this_ptr);
+/* The following types are missing: wxSizerItem
       AddVar_push_back( this_ptr);
+*/
       AddVar_pop_back( this_ptr);
 /* The following types are missing: const_iterator, const_iterator
       AddVar_assign_1( this_ptr);
 */
       AddVar_assign( this_ptr);
+/* The following types are missing: wxSizerItem
       AddVar_assign_2( this_ptr);
-/* The following types are missing: iterator, iterator
+*/
+/* The following types are missing: iterator, iterator, wxSizerItem
       AddVar_insert_1( this_ptr);
 */
       AddVar_insert( this_ptr);
-/* The following types are missing: iterator
+/* The following types are missing: iterator, wxSizerItem
       AddVar_insert_2( this_ptr);
 */
 /* The following types are missing: iterator, const_iterator, const_iterator
@@ -203,12 +222,16 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
 /* The following types are missing: iterator, iterator
       AddVar_splice_3( this_ptr);
 */
+/* The following types are missing: wxSizerItem
       AddVar_remove( this_ptr);
+*/
       AddVar_reverse( this_ptr);
 
       // Adding operators
       AddVar___assign__( this_ptr);
+/* The following types are missing: wxSizerItem
       AddVar___at__( this_ptr);
+*/
 
 
 
@@ -264,12 +287,6 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   WrapClass_wxSizerItemList::wrap_wxSizerItemList_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxSizerItemList::wrap_wxSizerItemList_3 m3;
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
-  WrapClass_wxSizerItemList::wrap_wxSizerItemList_4 m4;
-  res = m4.CallMember(_p);
-  if (!m4.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -298,6 +315,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   BasicVariable::ptr res = WrapClass_wxSizerItemList::CreateVar(_newobj);
   return res;
 }
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxSizerItemList::wxSizerItemList(size_t count, wxSizerItem * * elements)
@@ -329,6 +347,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   BasicVariable::ptr res = WrapClass_wxSizerItemList::CreateVar(_newobj);
   return res;
 }
+*/
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxSizerItemList::wxSizerItemList(size_t n, wxSizerItem * const & v = 0u)
@@ -355,14 +375,13 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   boost::shared_ptr<wxSizerItem > v_smtptr;
   if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSizerItem * const & v = (v_smtptr.get()?
-    (wxSizerItem * const &) (*v_smtptr):
-    (wxSizerItem * const &) 0u);
+  wxSizerItem * const & v = ( v_smtptr.get() ? (*v_smtptr) : (0u) );
 
   wxSizerItemList* _newobj = new wxSizerItemList(n, v);
   BasicVariable::ptr res = WrapClass_wxSizerItemList::CreateVar(_newobj);
   return res;
 }
+*/
 /* The following types are missing: const_iterator, const_iterator
 
 //---------------------------------------------------
@@ -430,7 +449,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->GetFirst();
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxwxSizerItemListNode
@@ -451,7 +470,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->GetLast();
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxwxSizerItemListNode
@@ -479,10 +498,10 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Item(index);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxwxSizerItemListNode * wxSizerItemList::Append(wxSizerItem * object)
@@ -507,10 +526,10 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Append(object);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxwxSizerItemListNode * wxSizerItemList::Insert(wxSizerItem * object)
@@ -535,7 +554,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Insert(object);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
 
@@ -553,7 +572,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxwxSizerItemListNode * wxSizerItemList::Insert(size_t pos, wxSizerItem * object)
@@ -583,10 +602,10 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Insert(pos, object);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
-/* The following types are missing: wxwxSizerItemListNode, wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxwxSizerItemListNode, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxwxSizerItemListNode * wxSizerItemList::Insert(wxwxSizerItemListNode * prev, wxSizerItem * object)
@@ -616,7 +635,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Insert(prev, object);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
 
@@ -664,7 +683,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   void* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Append(key, object);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxwxSizerItemListNode, void
@@ -698,7 +717,7 @@ mbstowcs(key,key_string->c_str(),key_string->size()+1);
   void* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Append(key, object);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxwxSizerItemListNode, wxwxSizerItemListNode
@@ -726,7 +745,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxwxSizerItemListNode* node = node_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->DetachNode(node);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxwxSizerItemListNode
@@ -758,6 +777,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   return AMILabType<int >::CreateVar(res_int);
 }
 */
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of bool wxSizerItemList::DeleteObject(wxSizerItem * object)
@@ -785,6 +805,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 /* The following types are missing: wxwxSizerItemListNode
 
 //---------------------------------------------------
@@ -812,7 +833,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   return BasicVariable::ptr();
 }
 */
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxwxSizerItemListNode * wxSizerItemList::Find(wxSizerItem const * object)
@@ -837,7 +858,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Find(object);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
 
@@ -880,9 +901,10 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxListKey const & key = *key_smtptr;
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Find(key);
-  return AMILabType<wxwxSizerItemListNode >::CreateVar(res);
+  return AMILabType<wxwxSizerItemListNode >::CreateVar(res,true);
 }
 */
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of int wxSizerItemList::IndexOf(wxSizerItem * object)
@@ -909,7 +931,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int res =   this->_objectptr->GetObj()->IndexOf(object);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: _9505
+*/
+/* The following types are missing: _9495
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::Sort(wxSortCompareFunction func)
@@ -917,7 +940,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
 void WrapClass_wxSizerItemList::
     wrap_Sort_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9505, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _9495, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -928,8 +951,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _9505 func;
-  if (!get_val_param<_9505 >(func,_p,_n)) ClassReturnEmptyVar;
+  _9495 func;
+  if (!get_val_param<_9495 >(func,_p,_n)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -950,7 +973,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: _8773
+/* The following types are missing: _8775
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::Sort(wxSortFuncFor_wxSizerItemList func)
@@ -958,7 +981,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
 void WrapClass_wxSizerItemList::
     wrap_Sort_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _8773, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _8775, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -969,8 +992,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _8773 func;
-  if (!get_val_param<_8773 >(func,_p,_n)) ClassReturnEmptyVar;
+  _8775 func;
+  if (!get_val_param<_8775 >(func,_p,_n)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -1204,6 +1227,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   return AMILabType<const_reverse_iterator >::CreateVar(res);
 }
 */
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::resize(size_t n, wxSizerItem * v = 0u)
@@ -1234,6 +1258,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   this->_objectptr->GetObj()->resize(n, v);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of size_t wxSizerItemList::size()
@@ -1294,6 +1319,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * & wxSizerItemList::front()
@@ -1313,6 +1339,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem * & res =   this->_objectptr->GetObj()->front();
   return AMILabType<wxSizerItem >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxSizerItemList::front(...)
@@ -1326,14 +1353,9 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
     wrap_front::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxSizerItemList::wrap_front_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxSizerItemList::wrap_front_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * const & wxSizerItemList::front()
@@ -1353,6 +1375,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem * const & res =   this->_objectptr->GetObj()->front();
   return AMILabType<wxSizerItem >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * & wxSizerItemList::back()
@@ -1372,6 +1396,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem * & res =   this->_objectptr->GetObj()->back();
   return AMILabType<wxSizerItem >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxSizerItemList::back(...)
@@ -1385,14 +1410,9 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
     wrap_back::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxSizerItemList::wrap_back_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxSizerItemList::wrap_back_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * const & wxSizerItemList::back()
@@ -1412,6 +1432,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem * const & res =   this->_objectptr->GetObj()->back();
   return AMILabType<wxSizerItem >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::push_front(wxSizerItem * const & v = 0u)
@@ -1433,13 +1455,12 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   boost::shared_ptr<wxSizerItem > v_smtptr;
   if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSizerItem * const & v = (v_smtptr.get()?
-    (wxSizerItem * const &) (*v_smtptr):
-    (wxSizerItem * const &) 0u);
+  wxSizerItem * const & v = ( v_smtptr.get() ? (*v_smtptr) : (0u) );
 
   this->_objectptr->GetObj()->push_front(v);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::pop_front()
@@ -1458,6 +1479,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   this->_objectptr->GetObj()->pop_front();
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::push_back(wxSizerItem * const & v = 0u)
@@ -1479,13 +1501,12 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   boost::shared_ptr<wxSizerItem > v_smtptr;
   if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSizerItem * const & v = (v_smtptr.get()?
-    (wxSizerItem * const &) (*v_smtptr):
-    (wxSizerItem * const &) 0u);
+  wxSizerItem * const & v = ( v_smtptr.get() ? (*v_smtptr) : (0u) );
 
   this->_objectptr->GetObj()->push_back(v);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::pop_back()
@@ -1548,11 +1569,9 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
     wrap_assign::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxSizerItemList::wrap_assign_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::assign(size_t n, wxSizerItem * const & v = 0u)
@@ -1579,14 +1598,13 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   boost::shared_ptr<wxSizerItem > v_smtptr;
   if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSizerItem * const & v = (v_smtptr.get()?
-    (wxSizerItem * const &) (*v_smtptr):
-    (wxSizerItem * const &) 0u);
+  wxSizerItem * const & v = ( v_smtptr.get() ? (*v_smtptr) : (0u) );
 
   this->_objectptr->GetObj()->assign(n, v);
   return BasicVariable::ptr();
 }
-/* The following types are missing: iterator, iterator
+*/
+/* The following types are missing: iterator, iterator, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of iterator wxSizerItemList::insert(iterator const & it, wxSizerItem * const & v = 0u)
@@ -1614,9 +1632,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   boost::shared_ptr<wxSizerItem > v_smtptr;
   if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSizerItem * const & v = (v_smtptr.get()?
-    (wxSizerItem * const &) (*v_smtptr):
-    (wxSizerItem * const &) 0u);
+  wxSizerItem * const & v = ( v_smtptr.get() ? (*v_smtptr) : (0u) );
 
   iterator res =   this->_objectptr->GetObj()->insert(it, v);
   return AMILabType<iterator >::CreateVar(res);
@@ -1637,7 +1653,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: iterator
+/* The following types are missing: iterator, wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::insert(iterator const & it, size_t n, wxSizerItem * const & v = 0u)
@@ -1669,9 +1685,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   boost::shared_ptr<wxSizerItem > v_smtptr;
   if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSizerItem * const & v = (v_smtptr.get()?
-    (wxSizerItem * const &) (*v_smtptr):
-    (wxSizerItem * const &) 0u);
+  wxSizerItem * const & v = ( v_smtptr.get() ? (*v_smtptr) : (0u) );
 
   this->_objectptr->GetObj()->insert(it, n, v);
   return BasicVariable::ptr();
@@ -1933,6 +1947,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   return BasicVariable::ptr();
 }
 */
+/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::remove(wxSizerItem * const & v)
@@ -1953,11 +1968,12 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
 
   boost::shared_ptr<wxSizerItem > v_smtptr;
   if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxSizerItem * const & v = v_smtptr.get();
+  wxSizerItem * const & v = *v_smtptr;
 
   this->_objectptr->GetObj()->remove(v);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::reverse()
@@ -1978,7 +1994,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxSizerItemList & wxSizerItemList::=(wxSizerItemList const & list)
+//  Wrapping of wxSizerItemList & wxSizerItemList::operator =(wxSizerItemList const & list)
 //---------------------------------------------------
 void WrapClass_wxSizerItemList::
     wrap___assign__::SetParametersComments()
@@ -2002,9 +2018,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItemList & res =   (*this->_objectptr->GetObj()) = (list);
   return AMILabType<wxSizerItemList >::CreateVar(res);
 }
+/*
+ * The following types are missing: wxSizerItem
 
 //---------------------------------------------------
-//  Wrapping of wxSizerItem * wxSizerItemList::[](size_t index)
+//  Wrapping of wxSizerItem * wxSizerItemList::operator [](size_t index)
 //---------------------------------------------------
 void WrapClass_wxSizerItemList::
     wrap___at__::SetParametersComments()
@@ -2026,7 +2044,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   wxSizerItem * res =   (*this->_objectptr->GetObj()) [ (index)];
-  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
-  return res_var;
+  return AMILabType<wxSizerItem >::CreateVar(res,true);
 }
+*/
 

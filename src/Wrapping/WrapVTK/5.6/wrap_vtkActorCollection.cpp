@@ -43,9 +43,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkActorCollection);
 AMI_DEFINE_VARFROMSMTPTR(vtkActorCollection);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkActorCollection>::CreateVar( vtkActorCollection* val)
+BasicVariable::ptr AMILabType<vtkActorCollection>::CreateVar( vtkActorCollection* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkActorCollection> obj_ptr(val,wxwindow_nodeleter<vtkActorCollection>());
+  boost::shared_ptr<vtkActorCollection> obj_ptr(val,smartpointer_nodeleter<vtkActorCollection>());
   return AMILabType<vtkActorCollection>::CreateVarFromSmtPtr(obj_ptr);
 }
 

@@ -46,9 +46,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkVolumeProperty);
 AMI_DEFINE_VARFROMSMTPTR(vtkVolumeProperty);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkVolumeProperty>::CreateVar( vtkVolumeProperty* val)
+BasicVariable::ptr AMILabType<vtkVolumeProperty>::CreateVar( vtkVolumeProperty* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkVolumeProperty> obj_ptr(val,wxwindow_nodeleter<vtkVolumeProperty>());
+  boost::shared_ptr<vtkVolumeProperty> obj_ptr(val,smartpointer_nodeleter<vtkVolumeProperty>());
   return AMILabType<vtkVolumeProperty>::CreateVarFromSmtPtr(obj_ptr);
 }
 

@@ -45,9 +45,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkAbstractVolumeMapper);
 AMI_DEFINE_VARFROMSMTPTR(vtkAbstractVolumeMapper);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkAbstractVolumeMapper>::CreateVar( vtkAbstractVolumeMapper* val)
+BasicVariable::ptr AMILabType<vtkAbstractVolumeMapper>::CreateVar( vtkAbstractVolumeMapper* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkAbstractVolumeMapper> obj_ptr(val,wxwindow_nodeleter<vtkAbstractVolumeMapper>());
+  boost::shared_ptr<vtkAbstractVolumeMapper> obj_ptr(val,smartpointer_nodeleter<vtkAbstractVolumeMapper>());
   return AMILabType<vtkAbstractVolumeMapper>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -334,7 +334,7 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetBounds();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------

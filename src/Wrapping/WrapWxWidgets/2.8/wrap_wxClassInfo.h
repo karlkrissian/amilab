@@ -51,90 +51,54 @@ class WrapClass_wxClassInfo : public WrapClass<wxClassInfo>
     /// Destructor
     ~WrapClass_wxClassInfo()
     {
-      std::cout << "~WrapClass_wxClassInfo()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
     
-    /* The following types are missing: wchar_t, _8995
+    /* The following types are missing: _8997
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxClassInfo,"Wrapping of wxClassInfo.");
+    ADD_CLASS_CONSTRUCTOR(wxClassInfo,"Constructor wxClassInfo::wxClassInfo(wxChar const * className, wxClassInfo const * baseInfo1, wxClassInfo const * baseInfo2, int size, wxObjectConstructorFn ctor) (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#wxclassinfo).");
     */
 
 
 
     /// Create a variable from a standard pointer
-    static Variable<AMIObject>::ptr CreateVar(   wxClassInfo*);
+    static Variable<AMIObject>::ptr CreateVar( wxClassInfo*);
 
-    // here add each method
+    // Static methods
     
-    ADD_CLASS_METHOD(CreateObject,"")
-    ADD_CLASS_METHOD(IsDynamic,"")
-/* The following types are missing: wchar_t
-    ADD_CLASS_METHOD(GetClassName,"")
+    ADD_CLASS_STATICMETHOD(GetFirst,"wxClassInfo const * wxClassInfo::GetFirst() (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getfirst).");
+    ADD_CLASS_STATICMETHOD(FindClass,"wxClassInfo * wxClassInfo::FindClass(wxChar const * className) (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#findclass).");
+    ADD_CLASS_STATICMETHOD(InitializeClasses,"void wxClassInfo::InitializeClasses() (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#initializeclasses).");
+    ADD_CLASS_STATICMETHOD(CleanUpClasses,"void wxClassInfo::CleanUpClasses() (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#cleanupclasses).");
+
+
+
+    // Standard methods
+    
+    // Adding standard methods
+/* The following types are missing: wxObject
+    ADD_CLASS_METHOD(CreateObject,"wxObject * wxClassInfo::CreateObject()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#createobject)")
 */
-/* The following types are missing: wchar_t
-    ADD_CLASS_METHOD(GetBaseClassName1,"")
+    ADD_CLASS_METHOD(IsDynamic,"bool wxClassInfo::IsDynamic()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#isdynamic)")
+    ADD_CLASS_METHOD(GetClassName,"wxChar const * wxClassInfo::GetClassName()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getclassname)")
+    ADD_CLASS_METHOD(GetBaseClassName1,"wxChar const * wxClassInfo::GetBaseClassName1()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getbaseclassname1)")
+    ADD_CLASS_METHOD(GetBaseClassName2,"wxChar const * wxClassInfo::GetBaseClassName2()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getbaseclassname2)")
+    ADD_CLASS_METHOD(GetBaseClass1,"wxClassInfo const * wxClassInfo::GetBaseClass1()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getbaseclass1)")
+    ADD_CLASS_METHOD(GetBaseClass2,"wxClassInfo const * wxClassInfo::GetBaseClass2()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getbaseclass2)")
+    ADD_CLASS_METHOD(GetSize,"int wxClassInfo::GetSize()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getsize)")
+/* The following types are missing: _8997
+    ADD_CLASS_METHOD(GetConstructor,"wxObjectConstructorFn wxClassInfo::GetConstructor()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getconstructor)")
 */
-/* The following types are missing: wchar_t
-    ADD_CLASS_METHOD(GetBaseClassName2,"")
-*/
-    ADD_CLASS_METHOD(GetBaseClass1,"")
-    ADD_CLASS_METHOD(GetBaseClass2,"")
-    ADD_CLASS_METHOD(GetSize,"")
-/* The following types are missing: _8995
-    ADD_CLASS_METHOD(GetConstructor,"")
-*/
-    ADD_CLASS_METHOD(GetFirst,"")
-    ADD_CLASS_METHOD(GetNext,"")
-/* The following types are missing: wchar_t
-    ADD_CLASS_METHOD(FindClass,"")
-*/
-    ADD_CLASS_METHOD(IsKindOf,"")
-    ADD_CLASS_METHOD(InitializeClasses,"")
-    ADD_CLASS_METHOD(CleanUpClasses,"")
+    ADD_CLASS_METHOD(GetNext,"wxClassInfo const * wxClassInfo::GetNext()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getnext)")
+    ADD_CLASS_METHOD(IsKindOf,"bool wxClassInfo::IsKindOf(wxClassInfo const * info)  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#iskindof)")
 
 
 
 
 
-    void AddMethods(WrapClass<wxClassInfo>::ptr this_ptr )
-    {
-      // here inheritence
-      
+    void AddMethods(WrapClass<wxClassInfo>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      AddVar_CreateObject( this_ptr);
-      AddVar_IsDynamic( this_ptr);
-/* The following types are missing: wchar_t
-      AddVar_GetClassName( this_ptr);
-*/
-/* The following types are missing: wchar_t
-      AddVar_GetBaseClassName1( this_ptr);
-*/
-/* The following types are missing: wchar_t
-      AddVar_GetBaseClassName2( this_ptr);
-*/
-      AddVar_GetBaseClass1( this_ptr);
-      AddVar_GetBaseClass2( this_ptr);
-      AddVar_GetSize( this_ptr);
-/* The following types are missing: _8995
-      AddVar_GetConstructor( this_ptr);
-*/
-      AddVar_GetFirst( this_ptr);
-      AddVar_GetNext( this_ptr);
-/* The following types are missing: wchar_t
-      AddVar_FindClass( this_ptr);
-*/
-      AddVar_IsKindOf( this_ptr);
-      AddVar_InitializeClasses( this_ptr);
-      AddVar_CleanUpClasses( this_ptr);
-
-
-
-    };
 };
 
 

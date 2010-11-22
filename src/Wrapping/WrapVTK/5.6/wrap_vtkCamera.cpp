@@ -44,9 +44,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkCamera);
 AMI_DEFINE_VARFROMSMTPTR(vtkCamera);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkCamera>::CreateVar( vtkCamera* val)
+BasicVariable::ptr AMILabType<vtkCamera>::CreateVar( vtkCamera* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkCamera> obj_ptr(val,wxwindow_nodeleter<vtkCamera>());
+  boost::shared_ptr<vtkCamera> obj_ptr(val,smartpointer_nodeleter<vtkCamera>());
   return AMILabType<vtkCamera>::CreateVarFromSmtPtr(obj_ptr);
 }
 

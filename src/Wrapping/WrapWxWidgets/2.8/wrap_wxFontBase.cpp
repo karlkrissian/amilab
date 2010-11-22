@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxFontBase.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -26,6 +24,9 @@
 #include "wrap_wxFontBase.h"
 
 
+#include "wrap_wxFontBase.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -42,6 +43,7 @@ AMI_DEFINE_WRAPPEDTYPE_ABSTRACT(wxFontBase);
 AMI_DEFINE_VARFROMSMTPTR(wxFontBase);
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxFontBase
 //
@@ -57,6 +59,52 @@ Variable<AMIObject>::ptr WrapClass_wxFontBase::CreateVar( wxFontBase* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxFontBase::AddMethods(WrapClass<wxFontBase>::ptr this_ptr )
+{
+  
+      // Add members from wxGDIObject
+      WrapClass_wxGDIObject::ptr parent_wxGDIObject(        boost::dynamic_pointer_cast<WrapClass_wxGDIObject >(this_ptr));
+      parent_wxGDIObject->AddMethods(parent_wxGDIObject);
+
+
+  // check that the method name is not a token
+  
+      // Adding standard methods 
+      AddVar_Ok( this_ptr);
+      AddVar_IsOk( this_ptr);
+      AddVar_GetPixelSize( this_ptr);
+      AddVar_IsUsingSizeInPixels( this_ptr);
+      AddVar_IsFixedWidth( this_ptr);
+      AddVar_GetNativeFontInfoDesc( this_ptr);
+      AddVar_GetNativeFontInfoUserDesc( this_ptr);
+      AddVar_SetPixelSize( this_ptr);
+      AddVar_SetFaceName( this_ptr);
+/* The following types are missing: wxNativeFontInfo
+      AddVar_SetNativeFontInfo_1( this_ptr);
+*/
+      AddVar_SetNativeFontInfo( this_ptr);
+      AddVar_SetNativeFontInfo_2( this_ptr);
+      AddVar_SetNativeFontInfoUserDesc( this_ptr);
+      AddVar_GetFamilyString( this_ptr);
+      AddVar_GetStyleString( this_ptr);
+      AddVar_GetWeightString( this_ptr);
+      AddVar_SetNoAntiAliasing( this_ptr);
+      AddVar_GetNoAntiAliasing( this_ptr);
+
+      // Adding operators
+      AddVar___assign__( this_ptr);
+      AddVar___equal__( this_ptr);
+      AddVar___not_equal__( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -102,15 +150,13 @@ BasicVariable::ptr WrapClass_wxFontBase::
   boost::shared_ptr<wxString > face_smtptr;
   if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & face = (face_smtptr.get()?
-    (wxString const &) (*face_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
   int encoding_int = (int) wxFONTENCODING_DEFAULT;;
   if (!get_val_param<int >(encoding_int,_p,_n)) ClassReturnEmptyVar;
   wxFontEncoding encoding = (wxFontEncoding) encoding_int;
 
-  wxFont * res =   this->_objectptr->GetObj()->New(pointSize, family, style, weight, underlined, face, encoding);
+  wxFont * res =   wxFontBase::New(pointSize, family, style, weight, underlined, face, encoding);
   BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
   return res_var;
 }
@@ -127,19 +173,19 @@ BasicVariable::ptr WrapClass_wxFontBase::
     wrap_New::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxFontBase::wrap_New_1 m1(this->_objectptr);
+  WrapClass_wxFontBase::wrap_New_1 m1;
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxFontBase::wrap_New_2 m2(this->_objectptr);
+  WrapClass_wxFontBase::wrap_New_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxFontBase::wrap_New_3 m3(this->_objectptr);
+  WrapClass_wxFontBase::wrap_New_3 m3;
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
-  WrapClass_wxFontBase::wrap_New_4 m4(this->_objectptr);
+  WrapClass_wxFontBase::wrap_New_4 m4;
   res = m4.CallMember(_p);
   if (!m4.Get_arg_failure()) return res;
-  WrapClass_wxFontBase::wrap_New_6 m6(this->_objectptr);
+  WrapClass_wxFontBase::wrap_New_6 m6;
   res = m6.CallMember(_p);
   if (!m6.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -180,15 +226,13 @@ BasicVariable::ptr WrapClass_wxFontBase::
   boost::shared_ptr<wxString > face_smtptr;
   if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & face = (face_smtptr.get()?
-    (wxString const &) (*face_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
   int encoding_int = (int) wxFONTENCODING_DEFAULT;;
   if (!get_val_param<int >(encoding_int,_p,_n)) ClassReturnEmptyVar;
   wxFontEncoding encoding = (wxFontEncoding) encoding_int;
 
-  wxFont * res =   this->_objectptr->GetObj()->New(pointSize, family, flags, face, encoding);
+  wxFont * res =   wxFontBase::New(pointSize, family, flags, face, encoding);
   BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
   return res_var;
 }
@@ -237,15 +281,13 @@ BasicVariable::ptr WrapClass_wxFontBase::
   boost::shared_ptr<wxString > face_smtptr;
   if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & face = (face_smtptr.get()?
-    (wxString const &) (*face_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
   int encoding_int = (int) wxFONTENCODING_DEFAULT;;
   if (!get_val_param<int >(encoding_int,_p,_n)) ClassReturnEmptyVar;
   wxFontEncoding encoding = (wxFontEncoding) encoding_int;
 
-  wxFont * res =   this->_objectptr->GetObj()->New(pixelSize, family, style, weight, underlined, face, encoding);
+  wxFont * res =   wxFontBase::New(pixelSize, family, style, weight, underlined, face, encoding);
   BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
   return res_var;
 }
@@ -286,15 +328,13 @@ BasicVariable::ptr WrapClass_wxFontBase::
   boost::shared_ptr<wxString > face_smtptr;
   if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & face = (face_smtptr.get()?
-    (wxString const &) (*face_smtptr):
-    (wxString const &) wxEmptyString);
+  wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
   int encoding_int = (int) wxFONTENCODING_DEFAULT;;
   if (!get_val_param<int >(encoding_int,_p,_n)) ClassReturnEmptyVar;
   wxFontEncoding encoding = (wxFontEncoding) encoding_int;
 
-  wxFont * res =   this->_objectptr->GetObj()->New(pixelSize, family, flags, face, encoding);
+  wxFont * res =   wxFontBase::New(pixelSize, family, flags, face, encoding);
   BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
   return res_var;
 }
@@ -322,7 +362,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
   if (!get_val_smtptr_param<wxNativeFontInfo >(nativeFontDesc_smtptr,_p,_n)) ClassReturnEmptyVar;
   wxNativeFontInfo const & nativeFontDesc = *nativeFontDesc_smtptr;
 
-  wxFont * res =   this->_objectptr->GetObj()->New(nativeFontDesc);
+  wxFont * res =   wxFontBase::New(nativeFontDesc);
   BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
   return res_var;
 }
@@ -350,9 +390,54 @@ BasicVariable::ptr WrapClass_wxFontBase::
   if (!get_val_smtptr_param<wxString >(strNativeFontDesc_smtptr,_p,_n)) ClassReturnEmptyVar;
   wxString const & strNativeFontDesc = *strNativeFontDesc_smtptr;
 
-  wxFont * res =   this->_objectptr->GetObj()->New(strNativeFontDesc);
+  wxFont * res =   wxFontBase::New(strNativeFontDesc);
   BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
   return res_var;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxFontEncoding wxFontBase::GetDefaultEncoding()
+//---------------------------------------------------
+void WrapClass_wxFontBase::
+    wrap_GetDefaultEncoding::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxFontBase::
+    wrap_GetDefaultEncoding::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  wxFontEncoding res =   wxFontBase::GetDefaultEncoding();
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxFontBase::SetDefaultEncoding(wxFontEncoding encoding)
+//---------------------------------------------------
+void WrapClass_wxFontBase::
+    wrap_SetDefaultEncoding::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'encoding'")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxFontBase::
+    wrap_SetDefaultEncoding::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+
+  int encoding_int;
+  if (!get_val_param<int >(encoding_int,_p,_n)) ClassHelpAndReturn;
+  wxFontEncoding encoding = (wxFontEncoding) encoding_int;
+
+  wxFontBase::SetDefaultEncoding(encoding);
+  return BasicVariable::ptr();
 }
 
 //---------------------------------------------------
@@ -746,52 +831,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxFontEncoding wxFontBase::GetDefaultEncoding()
-//---------------------------------------------------
-void WrapClass_wxFontBase::
-    wrap_GetDefaultEncoding::SetParametersComments()
-{
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxFontBase::
-    wrap_GetDefaultEncoding::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxFontEncoding res =   this->_objectptr->GetObj()->GetDefaultEncoding();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
-}
-
-//---------------------------------------------------
-//  Wrapping of void wxFontBase::SetDefaultEncoding(wxFontEncoding encoding)
-//---------------------------------------------------
-void WrapClass_wxFontBase::
-    wrap_SetDefaultEncoding::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'encoding'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxFontBase::
-    wrap_SetDefaultEncoding::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  int encoding_int;
-  if (!get_val_param<int >(encoding_int,_p,_n)) ClassHelpAndReturn;
-  wxFontEncoding encoding = (wxFontEncoding) encoding_int;
-
-  this->_objectptr->GetObj()->SetDefaultEncoding(encoding);
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of wxFontBase & wxFontBase::=(wxFontBase const & param0)
+//  Wrapping of wxFontBase & wxFontBase::operator =(wxFontBase const & param0)
 //---------------------------------------------------
 void WrapClass_wxFontBase::
     wrap___assign__::SetParametersComments()
@@ -817,7 +857,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxFontBase::==(wxFont const & font)
+//  Wrapping of bool wxFontBase::operator ==(wxFont const & font)
 //---------------------------------------------------
 void WrapClass_wxFontBase::
     wrap___equal__::SetParametersComments()
@@ -844,7 +884,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxFontBase::!=(wxFont const & font)
+//  Wrapping of bool wxFontBase::operator !=(wxFont const & font)
 //---------------------------------------------------
 void WrapClass_wxFontBase::
     wrap___not_equal__::SetParametersComments()

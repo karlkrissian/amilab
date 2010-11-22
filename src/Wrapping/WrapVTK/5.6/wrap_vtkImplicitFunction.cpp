@@ -43,9 +43,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkImplicitFunction);
 AMI_DEFINE_VARFROMSMTPTR(vtkImplicitFunction);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkImplicitFunction>::CreateVar( vtkImplicitFunction* val)
+BasicVariable::ptr AMILabType<vtkImplicitFunction>::CreateVar( vtkImplicitFunction* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkImplicitFunction> obj_ptr(val,wxwindow_nodeleter<vtkImplicitFunction>());
+  boost::shared_ptr<vtkImplicitFunction> obj_ptr(val,smartpointer_nodeleter<vtkImplicitFunction>());
   return AMILabType<vtkImplicitFunction>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -418,7 +418,7 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   double* x = x_smtptr.get();
 
   double * res =   this->_objectptr->GetObj()->FunctionGradient(x);
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -451,7 +451,7 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   if (!get_val_param<double >(z,_p,_n)) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->FunctionGradient(x, y, z);
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 /* The following types are missing: vtkAbstractTransform
 
@@ -541,7 +541,7 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAbstractTransform * res =   this->_objectptr->GetObj()->GetTransform();
-  return AMILabType<vtkAbstractTransform >::CreateVar(res);
+  return AMILabType<vtkAbstractTransform >::CreateVar(res,true);
 }
 */
 

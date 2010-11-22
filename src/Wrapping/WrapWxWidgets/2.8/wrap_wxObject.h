@@ -51,7 +51,6 @@ class WrapClass_wxObject : public WrapClass<wxObject>
     /// Destructor
     ~WrapClass_wxObject()
     {
-      std::cout << "~WrapClass_wxObject()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -68,7 +67,12 @@ class WrapClass_wxObject : public WrapClass<wxObject>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxObject*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
@@ -87,41 +91,13 @@ class WrapClass_wxObject : public WrapClass<wxObject>
     ADD_CLASS_METHOD(IsSameAs,"bool wxObject::IsSameAs(wxObject const & o)  (http://docs.wxwidgets.org/stable/wx_wxobject.html#issameas)")
 
     // Operators:
-    ADD_CLASS_METHOD(__assign__,            "wxObject & wxObject::=(wxObject const & other) (http://docs.wxwidgets.org/stable/wx_wxobject.html#__assign__)")
+    ADD_CLASS_METHOD(__assign__,            "wxObject & wxObject::operator =(wxObject const & other) (http://docs.wxwidgets.org/stable/wx_wxobject.html#__assign__)")
 
 
 
 
-    void AddMethods(WrapClass<wxObject>::ptr this_ptr )
-    {
-      
+    void AddMethods(WrapClass<wxObject>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetClassInfo( this_ptr);
-      AddVar_IsKindOf( this_ptr);
-/* The following types are missing: wxObjectRefData
-      AddVar_GetRefData( this_ptr);
-*/
-/* The following types are missing: wxObjectRefData
-      AddVar_SetRefData( this_ptr);
-*/
-      AddVar_Ref( this_ptr);
-      AddVar_UnRef( this_ptr);
-      AddVar_UnShare( this_ptr);
-      AddVar_IsSameAs( this_ptr);
-
-      // Adding operators
-      AddVar___assign__( this_ptr);
-
-
-
-      
-    };
 };
 
 

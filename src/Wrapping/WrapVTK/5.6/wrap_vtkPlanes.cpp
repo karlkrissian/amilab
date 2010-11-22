@@ -42,9 +42,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkPlanes);
 AMI_DEFINE_VARFROMSMTPTR(vtkPlanes);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkPlanes>::CreateVar( vtkPlanes* val)
+BasicVariable::ptr AMILabType<vtkPlanes>::CreateVar( vtkPlanes* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkPlanes> obj_ptr(val,wxwindow_nodeleter<vtkPlanes>());
+  boost::shared_ptr<vtkPlanes> obj_ptr(val,smartpointer_nodeleter<vtkPlanes>());
   return AMILabType<vtkPlanes>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -425,7 +425,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPoints * res =   this->_objectptr->GetObj()->GetPoints();
-  return AMILabType<vtkPoints >::CreateVar(res);
+  return AMILabType<vtkPoints >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkDataArray
@@ -473,7 +473,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkDataArray * res =   this->_objectptr->GetObj()->GetNormals();
-  return AMILabType<vtkDataArray >::CreateVar(res);
+  return AMILabType<vtkDataArray >::CreateVar(res,true);
 }
 */
 
@@ -634,7 +634,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (!get_val_param<int >(i,_p,_n)) ClassReturnEmptyVar;
 
   vtkPlane * res =   this->_objectptr->GetObj()->GetPlane(i);
-  return AMILabType<vtkPlane >::CreateVar(res);
+  return AMILabType<vtkPlane >::CreateVar(res,true);
 }
 */
 

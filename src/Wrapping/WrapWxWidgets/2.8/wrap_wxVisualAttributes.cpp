@@ -86,7 +86,6 @@ void WrapClass_wxVisualAttributes::AddMethods(WrapClass<wxVisualAttributes>::ptr
         context->AddVar(var_font,context);
       }
       
-      /* type not available
       // Adding public member colFg
       boost::shared_ptr<wxColour > var_colFg_ptr(&GetObj()->colFg, smartpointer_nodeleter<wxColour >());
       BasicVariable::ptr var_colFg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colFg_ptr);
@@ -94,9 +93,7 @@ void WrapClass_wxVisualAttributes::AddMethods(WrapClass<wxVisualAttributes>::ptr
         var_colFg->Rename("colFg");
         context->AddVar(var_colFg,context);
       }
-      */
       
-      /* type not available
       // Adding public member colBg
       boost::shared_ptr<wxColour > var_colBg_ptr(&GetObj()->colBg, smartpointer_nodeleter<wxColour >());
       BasicVariable::ptr var_colBg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colBg_ptr);
@@ -104,7 +101,6 @@ void WrapClass_wxVisualAttributes::AddMethods(WrapClass<wxVisualAttributes>::ptr
         var_colBg->Rename("colBg");
         context->AddVar(var_colBg,context);
       }
-      */
 
 };
 
@@ -196,7 +192,7 @@ BasicVariable::ptr WrapClass_wxVisualAttributes::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxVisualAttributes & wxVisualAttributes::=(wxVisualAttributes const & param0)
+//  Wrapping of wxVisualAttributes & wxVisualAttributes::operator =(wxVisualAttributes const & param0)
 //---------------------------------------------------
 void WrapClass_wxVisualAttributes::
     wrap___assign__::SetParametersComments()

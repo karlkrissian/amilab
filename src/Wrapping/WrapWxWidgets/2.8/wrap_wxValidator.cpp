@@ -21,7 +21,6 @@
 #include "wrap_wxObject.h"
 #include "wrap_wxValidator.h"
 #include "wrap_wxWindow.h"
-#include "wrap_wxWindowBase.h"
 #include "wrap_wxClassInfo.h"
 
 
@@ -44,9 +43,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxValidator);
 AMI_DEFINE_VARFROMSMTPTR(wxValidator);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<wxValidator>::CreateVar( wxValidator* val)
+BasicVariable::ptr AMILabType<wxValidator>::CreateVar( wxValidator* val, bool nodeleter)
 { 
-  boost::shared_ptr<wxValidator> obj_ptr(val,wxwindow_nodeleter<wxValidator>());
+  boost::shared_ptr<wxValidator> obj_ptr(val,smartpointer_nodeleter<wxValidator>());
   return AMILabType<wxValidator>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -86,9 +85,9 @@ void WrapClass_wxValidator::AddMethods(WrapClass<wxValidator>::ptr this_ptr )
       AddVar_TransferToWindow( this_ptr);
       AddVar_TransferFromWindow( this_ptr);
       AddVar_GetWindow( this_ptr);
+/* The following types are missing: wxWindowBase
       AddVar_SetWindow( this_ptr);
-      AddVar_IsSilent( this_ptr);
-      AddVar_SetBellOnError( this_ptr);
+*/
       AddVar_GetClassInfo( this_ptr);
 
 
@@ -118,6 +117,51 @@ BasicVariable::ptr WrapClass_wxValidator::
   wxValidator* _newobj = new wxValidator();
   BasicVariable::ptr res = WrapClass_wxValidator::CreateVar(_newobj);
   return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of bool wxValidator::IsSilent()
+//---------------------------------------------------
+void WrapClass_wxValidator::
+    wrap_IsSilent::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxValidator::
+    wrap_IsSilent::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  bool res =   wxValidator::IsSilent();
+  int res_int = ((res==true)?1:0);
+  return AMILabType<int >::CreateVar(res_int);
+}
+
+//---------------------------------------------------
+//  Wrapping of void wxValidator::SetBellOnError(bool doIt = true)
+//---------------------------------------------------
+void WrapClass_wxValidator::
+    wrap_SetBellOnError::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'doIt' (def:true)")
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxValidator::
+    wrap_SetBellOnError::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+
+  int doIt_int = ((true==true)?1:0);;
+  if (!get_val_param<int >(doIt_int,_p,_n)) ClassHelpAndReturn;
+  bool doIt = (bool) (doIt_int>0.5);
+
+  wxValidator::SetBellOnError(doIt);
+  return BasicVariable::ptr();
 }
 
 //---------------------------------------------------
@@ -253,6 +297,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
   return res_var;
 }
+/* The following types are missing: wxWindowBase
 
 //---------------------------------------------------
 //  Wrapping of void wxValidator::SetWindow(wxWindowBase * win)
@@ -278,51 +323,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   this->_objectptr->GetObj()->SetWindow(win);
   return BasicVariable::ptr();
 }
-
-//---------------------------------------------------
-//  Wrapping of bool wxValidator::IsSilent()
-//---------------------------------------------------
-void WrapClass_wxValidator::
-    wrap_IsSilent::SetParametersComments()
-{
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxValidator::
-    wrap_IsSilent::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  bool res =   this->_objectptr->GetObj()->IsSilent();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
-}
-
-//---------------------------------------------------
-//  Wrapping of void wxValidator::SetBellOnError(bool doIt = true)
-//---------------------------------------------------
-void WrapClass_wxValidator::
-    wrap_SetBellOnError::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'doIt' (def:true)")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxValidator::
-    wrap_SetBellOnError::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  int doIt_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(doIt_int,_p,_n)) ClassHelpAndReturn;
-  bool doIt = (bool) (doIt_int>0.5);
-
-  this->_objectptr->GetObj()->SetBellOnError(doIt);
-  return BasicVariable::ptr();
-}
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxClassInfo * wxValidator::GetClassInfo()

@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxButtonBase.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -20,10 +18,13 @@
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxBitmap.h"
 #include "wrap_wxSize.h"
+#include "wrap_wxBitmap.h"
 
 
+#include "wrap_wxButtonBase.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -37,8 +38,17 @@ BasicVariable::ptr WrapClass<wxButtonBase>::CreateVar( ParamList* p)
 
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxButtonBase);
+AMI_DEFINE_VARFROMSMTPTR(wxButtonBase);
+
+// Implementing CreateVar for AMILabType
+BasicVariable::ptr AMILabType<wxButtonBase>::CreateVar( wxButtonBase* val, bool nodeleter)
+{ 
+  boost::shared_ptr<wxButtonBase> obj_ptr(val,smartpointer_nodeleter<wxButtonBase>());
+  return AMILabType<wxButtonBase>::CreateVarFromSmtPtr(obj_ptr);
+}
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxButtonBase
 //
@@ -54,6 +64,31 @@ Variable<AMIObject>::ptr WrapClass_wxButtonBase::CreateVar( wxButtonBase* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxButtonBase::AddMethods(WrapClass<wxButtonBase>::ptr this_ptr )
+{
+  
+      // Add members from wxControl
+      WrapClass_wxControl::ptr parent_wxControl(        boost::dynamic_pointer_cast<WrapClass_wxControl >(this_ptr));
+      parent_wxControl->AddMethods(parent_wxControl);
+
+
+  // check that the method name is not a token
+  
+      // Adding standard methods 
+      AddVar_SetImageLabel( this_ptr);
+      AddVar_SetImageMargins( this_ptr);
+      AddVar_SetDefault( this_ptr);
+      AddVar_ShouldInheritColours( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -73,6 +108,25 @@ BasicVariable::ptr WrapClass_wxButtonBase::
   wxButtonBase* _newobj = new wxButtonBase();
   BasicVariable::ptr res = WrapClass_wxButtonBase::CreateVar(_newobj);
   return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxSize wxButtonBase::GetDefaultSize()
+//---------------------------------------------------
+void WrapClass_wxButtonBase::
+    wrap_GetDefaultSize::SetParametersComments()
+{
+  return_comments="returning a variable of type wxSize";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxButtonBase::
+    wrap_GetDefaultSize::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  wxSize res =   wxButtonBase::GetDefaultSize();
+  return AMILabType<wxSize >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -164,24 +218,5 @@ BasicVariable::ptr WrapClass_wxButtonBase::
   bool res =   this->_objectptr->GetObj()->ShouldInheritColours();
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxSize wxButtonBase::GetDefaultSize()
-//---------------------------------------------------
-void WrapClass_wxButtonBase::
-    wrap_GetDefaultSize::SetParametersComments()
-{
-  return_comments="returning a variable of type wxSize";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxButtonBase::
-    wrap_GetDefaultSize::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxSize res =   this->_objectptr->GetObj()->GetDefaultSize();
-  return AMILabType<wxSize >::CreateVar(res);
 }
 

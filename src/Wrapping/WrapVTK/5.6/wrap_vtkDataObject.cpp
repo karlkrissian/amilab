@@ -43,9 +43,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkDataObject);
 AMI_DEFINE_VARFROMSMTPTR(vtkDataObject);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkDataObject>::CreateVar( vtkDataObject* val)
+BasicVariable::ptr AMILabType<vtkDataObject>::CreateVar( vtkDataObject* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkDataObject> obj_ptr(val,wxwindow_nodeleter<vtkDataObject>());
+  boost::shared_ptr<vtkDataObject> obj_ptr(val,smartpointer_nodeleter<vtkDataObject>());
   return AMILabType<vtkDataObject>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -364,7 +364,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (!get_val_param<int >(attributeType,_p,_n)) ClassHelpAndReturn;
 
   vtkInformation * res =   vtkDataObject::GetActiveFieldInformation(info, fieldAssociation, attributeType);
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation, vtkInformation
@@ -401,7 +401,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   char const * name = name_string->c_str();
 
   vtkInformation * res =   vtkDataObject::GetNamedFieldInformation(info, fieldAssociation, name);
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation
@@ -478,7 +478,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (!get_val_param<int >(attributeType,_p,_n)) ClassHelpAndReturn;
 
   vtkInformation * res =   vtkDataObject::SetActiveAttribute(info, fieldAssociation, attributeName, attributeType);
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation
@@ -612,7 +612,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationStringKey * res =   vtkDataObject::DATA_TYPE_NAME();
-  return AMILabType<vtkInformationStringKey >::CreateVar(res);
+  return AMILabType<vtkInformationStringKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationDataObjectKey
@@ -633,7 +633,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationDataObjectKey * res =   vtkDataObject::DATA_OBJECT();
-  return AMILabType<vtkInformationDataObjectKey >::CreateVar(res);
+  return AMILabType<vtkInformationDataObjectKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -654,7 +654,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::DATA_EXTENT_TYPE();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerPointerKey
@@ -675,7 +675,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerPointerKey * res =   vtkDataObject::DATA_EXTENT();
-  return AMILabType<vtkInformationIntegerPointerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerPointerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -696,7 +696,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::DATA_PIECE_NUMBER();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -717,7 +717,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::DATA_NUMBER_OF_PIECES();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -738,7 +738,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::DATA_NUMBER_OF_GHOST_LEVELS();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationDoubleKey
@@ -759,7 +759,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationDoubleKey * res =   vtkDataObject::DATA_RESOLUTION();
-  return AMILabType<vtkInformationDoubleKey >::CreateVar(res);
+  return AMILabType<vtkInformationDoubleKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationDoubleVectorKey
@@ -780,7 +780,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationDoubleVectorKey * res =   vtkDataObject::DATA_TIME_STEPS();
-  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationInformationVectorKey
@@ -801,7 +801,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationInformationVectorKey * res =   vtkDataObject::POINT_DATA_VECTOR();
-  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationInformationVectorKey
@@ -822,7 +822,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationInformationVectorKey * res =   vtkDataObject::CELL_DATA_VECTOR();
-  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationInformationVectorKey
@@ -843,7 +843,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationInformationVectorKey * res =   vtkDataObject::VERTEX_DATA_VECTOR();
-  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationInformationVectorKey
@@ -864,7 +864,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationInformationVectorKey * res =   vtkDataObject::EDGE_DATA_VECTOR();
-  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationInformationVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -885,7 +885,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::FIELD_ARRAY_TYPE();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -906,7 +906,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::FIELD_ASSOCIATION();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -927,7 +927,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::FIELD_ATTRIBUTE_TYPE();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -948,7 +948,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::FIELD_ACTIVE_ATTRIBUTE();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -969,7 +969,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::FIELD_NUMBER_OF_COMPONENTS();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -990,7 +990,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::FIELD_NUMBER_OF_TUPLES();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -1011,7 +1011,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::FIELD_OPERATION();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationDoubleVectorKey
@@ -1032,7 +1032,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationDoubleVectorKey * res =   vtkDataObject::FIELD_RANGE();
-  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationDoubleVectorKey
@@ -1053,7 +1053,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationDoubleVectorKey * res =   vtkDataObject::PIECE_FIELD_RANGE();
-  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerVectorKey
@@ -1074,7 +1074,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerVectorKey * res =   vtkDataObject::PIECE_EXTENT();
-  return AMILabType<vtkInformationIntegerVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationStringKey
@@ -1095,7 +1095,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationStringKey * res =   vtkDataObject::FIELD_NAME();
-  return AMILabType<vtkInformationStringKey >::CreateVar(res);
+  return AMILabType<vtkInformationStringKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationDoubleVectorKey
@@ -1116,7 +1116,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationDoubleVectorKey * res =   vtkDataObject::ORIGIN();
-  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationDoubleVectorKey
@@ -1137,7 +1137,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationDoubleVectorKey * res =   vtkDataObject::SPACING();
-  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res);
+  return AMILabType<vtkInformationDoubleVectorKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationIntegerKey
@@ -1158,7 +1158,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationIntegerKey * res =   vtkDataObject::DATA_GEOMETRY_UNMODIFIED();
-  return AMILabType<vtkInformationIntegerKey >::CreateVar(res);
+  return AMILabType<vtkInformationIntegerKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformationDataObjectKey
@@ -1179,7 +1179,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformationDataObjectKey * res =   vtkDataObject::SIL();
-  return AMILabType<vtkInformationDataObjectKey >::CreateVar(res);
+  return AMILabType<vtkInformationDataObjectKey >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation
@@ -1354,7 +1354,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkSource * res =   this->_objectptr->GetObj()->GetSource();
-  return AMILabType<vtkSource >::CreateVar(res);
+  return AMILabType<vtkSource >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkSource
@@ -1402,7 +1402,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetInformation();
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation
@@ -1450,7 +1450,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetPipelineInformation();
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation
@@ -1498,7 +1498,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAlgorithmOutput * res =   this->_objectptr->GetObj()->GetProducerPort();
-  return AMILabType<vtkAlgorithmOutput >::CreateVar(res);
+  return AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
 }
 */
 
@@ -1755,7 +1755,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkFieldData * res =   this->_objectptr->GetObj()->GetFieldData();
-  return AMILabType<vtkFieldData >::CreateVar(res);
+  return AMILabType<vtkFieldData >::CreateVar(res,true);
 }
 */
 
@@ -2091,7 +2091,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   int * res =   this->_objectptr->GetObj()->GetUpdateExtent();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -2654,7 +2654,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   int * res =   this->_objectptr->GetObj()->GetWholeExtent();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -2862,7 +2862,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetWholeBoundingBox();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -3252,7 +3252,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkExtentTranslator * res =   this->_objectptr->GetObj()->GetExtentTranslator();
-  return AMILabType<vtkExtentTranslator >::CreateVar(res);
+  return AMILabType<vtkExtentTranslator >::CreateVar(res,true);
 }
 */
 
@@ -3316,7 +3316,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (!get_val_param<int >(type,_p,_n)) ClassHelpAndReturn;
 
   vtkDataSetAttributes * res =   this->_objectptr->GetObj()->GetAttributes(type);
-  return AMILabType<vtkDataSetAttributes >::CreateVar(res);
+  return AMILabType<vtkDataSetAttributes >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkFieldData
@@ -3343,7 +3343,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (!get_val_param<int >(type,_p,_n)) ClassHelpAndReturn;
 
   vtkFieldData * res =   this->_objectptr->GetObj()->GetAttributesAsFieldData(type);
-  return AMILabType<vtkFieldData >::CreateVar(res);
+  return AMILabType<vtkFieldData >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkAbstractArray

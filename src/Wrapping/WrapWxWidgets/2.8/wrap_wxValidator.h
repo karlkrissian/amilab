@@ -51,7 +51,6 @@ class WrapClass_wxValidator : public WrapClass<wxValidator>
     /// Destructor
     ~WrapClass_wxValidator()
     {
-      std::cout << "~WrapClass_wxValidator()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -64,7 +63,14 @@ class WrapClass_wxValidator : public WrapClass<wxValidator>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxValidator*);
 
-    // here add each method
+    // Static methods
+    
+    ADD_CLASS_STATICMETHOD(IsSilent,"bool wxValidator::IsSilent() (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#issilent).");
+    ADD_CLASS_STATICMETHOD(SetBellOnError,"void wxValidator::SetBellOnError(bool doIt = true) (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#setbellonerror).");
+
+
+
+    // Standard methods
     
     // Adding standard methods
     ADD_CLASS_METHOD(Clone,"wxObject * wxValidator::Clone()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#clone)")
@@ -73,9 +79,9 @@ class WrapClass_wxValidator : public WrapClass<wxValidator>
     ADD_CLASS_METHOD(TransferToWindow,"bool wxValidator::TransferToWindow()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#transfertowindow)")
     ADD_CLASS_METHOD(TransferFromWindow,"bool wxValidator::TransferFromWindow()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#transferfromwindow)")
     ADD_CLASS_METHOD(GetWindow,"wxWindow * wxValidator::GetWindow()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#getwindow)")
+/* The following types are missing: wxWindowBase
     ADD_CLASS_METHOD(SetWindow,"void wxValidator::SetWindow(wxWindowBase * win)  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#setwindow)")
-    ADD_CLASS_METHOD(IsSilent,"bool wxValidator::IsSilent()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#issilent)")
-    ADD_CLASS_METHOD(SetBellOnError,"void wxValidator::SetBellOnError(bool doIt = true)  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#setbellonerror)")
+*/
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxValidator::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxvalidator.html#getclassinfo)")
 
 

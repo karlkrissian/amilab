@@ -51,7 +51,6 @@ class WrapClass_wxButton : public WrapClass<wxButton>
     /// Destructor
     ~WrapClass_wxButton()
     {
-      std::cout << "~WrapClass_wxButton()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -60,29 +59,28 @@ class WrapClass_wxButton : public WrapClass<wxButton>
     ADD_CLASS_CONSTRUCTOR(wxButton_1,"Constructor wxButton::wxButton() (http://docs.wxwidgets.org/stable/wx_wxbutton.html#wxbutton).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxButton,"Constructor wxButton::wxButton() (http://docs.wxwidgets.org/stable/wx_wxbutton.html#wxbutton).");
-    /* The following types are missing: wxValidator
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxButton_2,"Constructor wxButton::wxButton(wxWindow * parent, wxWindowID id, wxString const & label = wxEmptyString, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxButtonNameStr) (http://docs.wxwidgets.org/stable/wx_wxbutton.html#wxbutton).");
-    */
 
 
 
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxButton*);
 
-    // here add each method
+    // Static methods
+    
+    ADD_CLASS_STATICMETHOD(GetClassDefaultAttributes,"wxVisualAttributes wxButton::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL) (http://docs.wxwidgets.org/stable/wx_wxbutton.html#getclassdefaultattributes).");
+
+
+
+    // Standard methods
     
     // Adding standard methods
-/* The following types are missing: wxValidator
     ADD_CLASS_METHOD(Create,"bool wxButton::Create(wxWindow * parent, wxWindowID id, wxString const & label = wxEmptyString, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxButtonNameStr)  (http://docs.wxwidgets.org/stable/wx_wxbutton.html#create)")
-*/
     ADD_CLASS_METHOD(SetDefault,"void wxButton::SetDefault()  (http://docs.wxwidgets.org/stable/wx_wxbutton.html#setdefault)")
     ADD_CLASS_METHOD(SetLabel,"void wxButton::SetLabel(wxString const & label)  (http://docs.wxwidgets.org/stable/wx_wxbutton.html#setlabel)")
     ADD_CLASS_METHOD(Enable,"bool wxButton::Enable(bool enable = 1)  (http://docs.wxwidgets.org/stable/wx_wxbutton.html#enable)")
     ADD_CLASS_METHOD(ShouldInheritColours,"bool wxButton::ShouldInheritColours()  (http://docs.wxwidgets.org/stable/wx_wxbutton.html#shouldinheritcolours)")
-/* The following types are missing: wxVisualAttributes
-    ADD_CLASS_METHOD(GetClassDefaultAttributes,"wxVisualAttributes wxButton::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)  (http://docs.wxwidgets.org/stable/wx_wxbutton.html#getclassdefaultattributes)")
-*/
     ADD_CLASS_METHOD(MoveWindow,"void wxButton::MoveWindow(int x, int y, int width, int height)  (http://docs.wxwidgets.org/stable/wx_wxbutton.html#movewindow)")
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxButton::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxbutton.html#getclassinfo)")
 
@@ -90,34 +88,8 @@ class WrapClass_wxButton : public WrapClass<wxButton>
 
 
 
-    void AddMethods(WrapClass<wxButton>::ptr this_ptr )
-    {
-      
-      // Add members from wxButtonBase
-      WrapClass_wxButtonBase::ptr parent_wxButtonBase(        boost::dynamic_pointer_cast<WrapClass_wxButtonBase >(this_ptr));
-      parent_wxButtonBase->AddMethods(parent_wxButtonBase);
+    void AddMethods(WrapClass<wxButton>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-/* The following types are missing: wxValidator
-      AddVar_Create( this_ptr);
-*/
-      AddVar_SetDefault( this_ptr);
-      AddVar_SetLabel( this_ptr);
-      AddVar_Enable( this_ptr);
-      AddVar_ShouldInheritColours( this_ptr);
-/* The following types are missing: wxVisualAttributes
-      AddVar_GetClassDefaultAttributes( this_ptr);
-*/
-      AddVar_MoveWindow( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
-
-
-
-      
-    };
 };
 
 

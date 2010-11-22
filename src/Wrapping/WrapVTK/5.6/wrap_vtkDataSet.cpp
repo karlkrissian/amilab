@@ -44,9 +44,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkDataSet);
 AMI_DEFINE_VARFROMSMTPTR(vtkDataSet);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkDataSet>::CreateVar( vtkDataSet* val)
+BasicVariable::ptr AMILabType<vtkDataSet>::CreateVar( vtkDataSet* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkDataSet> obj_ptr(val,wxwindow_nodeleter<vtkDataSet>());
+  boost::shared_ptr<vtkDataSet> obj_ptr(val,smartpointer_nodeleter<vtkDataSet>());
   return AMILabType<vtkDataSet>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -590,7 +590,7 @@ BasicVariable::ptr WrapClass_vtkDataSet::
   double* weights = weights_smtptr.get();
 
   vtkCell * res =   this->_objectptr->GetObj()->FindAndGetCell(x, cell, cellId, tol2, subId, pcoords, weights);
-  return AMILabType<vtkCell >::CreateVar(res);
+  return AMILabType<vtkCell >::CreateVar(res,true);
 }
 */
 
@@ -631,7 +631,7 @@ BasicVariable::ptr WrapClass_vtkDataSet::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkCellData * res =   this->_objectptr->GetObj()->GetCellData();
-  return AMILabType<vtkCellData >::CreateVar(res);
+  return AMILabType<vtkCellData >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkPointData
@@ -652,7 +652,7 @@ BasicVariable::ptr WrapClass_vtkDataSet::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPointData * res =   this->_objectptr->GetObj()->GetPointData();
-  return AMILabType<vtkPointData >::CreateVar(res);
+  return AMILabType<vtkPointData >::CreateVar(res,true);
 }
 */
 
@@ -708,7 +708,7 @@ BasicVariable::ptr WrapClass_vtkDataSet::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetBounds();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -773,7 +773,7 @@ BasicVariable::ptr WrapClass_vtkDataSet::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetCenter();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -921,7 +921,7 @@ BasicVariable::ptr WrapClass_vtkDataSet::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetScalarRange();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -1073,7 +1073,7 @@ BasicVariable::ptr WrapClass_vtkDataSet::
   if (!get_val_param<int >(type,_p,_n)) ClassHelpAndReturn;
 
   vtkFieldData * res =   this->_objectptr->GetObj()->GetAttributesAsFieldData(type);
-  return AMILabType<vtkFieldData >::CreateVar(res);
+  return AMILabType<vtkFieldData >::CreateVar(res,true);
 }
 */
 /* The following types are missing: long long int

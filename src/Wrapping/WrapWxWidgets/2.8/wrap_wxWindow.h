@@ -67,7 +67,18 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxWindow*);
 
-    // here add each method
+    // Static methods
+    
+    /* The following types are missing: _GtkWidget
+    ADD_CLASS_STATICMETHOD(GTKGetLayout,"wxLayoutDirection wxWindow::GTKGetLayout(GtkWidget * widget) (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtkgetlayout).");
+    */
+    /* The following types are missing: _GtkWidget
+    ADD_CLASS_STATICMETHOD(GTKSetLayout,"void wxWindow::GTKSetLayout(GtkWidget * widget, wxLayoutDirection dir) (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtksetlayout).");
+    */
+
+
+
+    // Standard methods
     
     // Adding standard methods
     ADD_CLASS_METHOD(Create,"bool wxWindow::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxString const & name = wxPanelNameStr)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#create)")
@@ -89,9 +100,7 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
     ADD_CLASS_METHOD(ClearBackground,"void wxWindow::ClearBackground()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#clearbackground)")
     ADD_CLASS_METHOD(SetBackgroundColour,"bool wxWindow::SetBackgroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setbackgroundcolour)")
     ADD_CLASS_METHOD(SetForegroundColour,"bool wxWindow::SetForegroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setforegroundcolour)")
-/* The following types are missing: wxCursor
     ADD_CLASS_METHOD(SetCursor,"bool wxWindow::SetCursor(wxCursor const & cursor)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setcursor)")
-*/
     ADD_CLASS_METHOD(SetFont,"bool wxWindow::SetFont(wxFont const & font)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setfont)")
     ADD_CLASS_METHOD(SetBackgroundStyle,"bool wxWindow::SetBackgroundStyle(wxBackgroundStyle style)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setbackgroundstyle)")
     ADD_CLASS_METHOD(GetCharHeight,"int wxWindow::GetCharHeight()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#getcharheight)")
@@ -123,9 +132,7 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
 */
     ADD_CLASS_METHOD(OnInternalIdle,"void wxWindow::OnInternalIdle()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#oninternalidle)")
     ADD_CLASS_METHOD(GtkUpdate,"void wxWindow::GtkUpdate()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtkupdate)")
-/* The following types are missing: wxIdleEvent
     ADD_CLASS_METHOD(OnIdle,"void wxWindow::OnIdle(wxIdleEvent & param0)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#onidle)")
-*/
     ADD_CLASS_METHOD(OnParentEnable,"void wxWindow::OnParentEnable(bool param0)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#onparentenable)")
     ADD_CLASS_METHOD(PreCreation,"bool wxWindow::PreCreation(wxWindow * parent, wxPoint const & pos, wxSize const & size)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#precreation)")
     ADD_CLASS_METHOD(PostCreation,"void wxWindow::PostCreation()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#postcreation)")
@@ -140,15 +147,7 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
 /* The following types are missing: _GdkEventAny
     ADD_CLASS_METHOD(GTKCallbackCommonPrologue,"int wxWindow::GTKCallbackCommonPrologue(_GdkEventAny * event)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtkcallbackcommonprologue)")
 */
-/* The following types are missing: wxEvent
     ADD_CLASS_METHOD(GTKProcessEvent,"bool wxWindow::GTKProcessEvent(wxEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtkprocessevent)")
-*/
-/* The following types are missing: _GtkWidget
-    ADD_CLASS_METHOD(GTKGetLayout,"wxLayoutDirection wxWindow::GTKGetLayout(GtkWidget * widget)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtkgetlayout)")
-*/
-/* The following types are missing: _GtkWidget
-    ADD_CLASS_METHOD(GTKSetLayout,"void wxWindow::GTKSetLayout(GtkWidget * widget, wxLayoutDirection dir)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtksetlayout)")
-*/
 /* The following types are missing: _PangoContext
     ADD_CLASS_METHOD(GtkGetPangoDefaultContext,"PangoContext * wxWindow::GtkGetPangoDefaultContext()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtkgetpangodefaultcontext)")
 */

@@ -47,9 +47,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkProp);
 AMI_DEFINE_VARFROMSMTPTR(vtkProp);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkProp>::CreateVar( vtkProp* val)
+BasicVariable::ptr AMILabType<vtkProp>::CreateVar( vtkProp* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkProp> obj_ptr(val,wxwindow_nodeleter<vtkProp>());
+  boost::shared_ptr<vtkProp> obj_ptr(val,smartpointer_nodeleter<vtkProp>());
   return AMILabType<vtkProp>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -755,7 +755,7 @@ BasicVariable::ptr WrapClass_vtkProp::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetBounds();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -818,7 +818,7 @@ BasicVariable::ptr WrapClass_vtkProp::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAssemblyPath * res =   this->_objectptr->GetObj()->GetNextPath();
-  return AMILabType<vtkAssemblyPath >::CreateVar(res);
+  return AMILabType<vtkAssemblyPath >::CreateVar(res,true);
 }
 */
 
@@ -885,7 +885,7 @@ BasicVariable::ptr WrapClass_vtkProp::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetMatrix();
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res);
+  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation
@@ -906,7 +906,7 @@ BasicVariable::ptr WrapClass_vtkProp::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetPropertyKeys();
-  return AMILabType<vtkInformation >::CreateVar(res);
+  return AMILabType<vtkInformation >::CreateVar(res,true);
 }
 */
 /* The following types are missing: vtkInformation

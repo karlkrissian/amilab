@@ -51,7 +51,6 @@ class WrapClass_wxFont : public WrapClass<wxFont>
     /// Destructor
     ~WrapClass_wxFont()
     {
-      std::cout << "~WrapClass_wxFont()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -76,7 +75,12 @@ class WrapClass_wxFont : public WrapClass<wxFont>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxFont*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
@@ -107,7 +111,7 @@ class WrapClass_wxFont : public WrapClass<wxFont>
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxFont::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxfont.html#getclassinfo)")
 
     // Operators:
-    ADD_CLASS_METHOD(__assign__,            "wxFont & wxFont::=(wxFont const & param0) (http://docs.wxwidgets.org/stable/wx_wxfont.html#__assign__)")
+    ADD_CLASS_METHOD(__assign__,            "wxFont & wxFont::operator =(wxFont const & param0) (http://docs.wxwidgets.org/stable/wx_wxfont.html#__assign__)")
 
 
 

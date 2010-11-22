@@ -51,7 +51,6 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
     /// Destructor
     ~WrapClass_wxSizerItemList()
     {
-      std::cout << "~WrapClass_wxSizerItemList()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -62,10 +61,14 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList,"Constructor wxSizerItemList::wxSizerItemList() (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList_2,"Constructor wxSizerItemList::wxSizerItemList(wxSizerItemList const & list) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
+    /* The following types are missing: wxSizerItem
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList_3,"Constructor wxSizerItemList::wxSizerItemList(size_t count, wxSizerItem * * elements) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
+    */
+    /* The following types are missing: wxSizerItem
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList_4,"Constructor wxSizerItemList::wxSizerItemList(size_t n, wxSizerItem * const & v = 0u) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
+    */
     /* The following types are missing: const_iterator, const_iterator
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList_5,"Constructor wxSizerItemList::wxSizerItemList(const_iterator const & first, const_iterator const & last) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
@@ -76,7 +79,12 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxSizerItemList*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
@@ -90,17 +98,17 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
 /* The following types are missing: wxwxSizerItemListNode
     ADD_CLASS_METHOD(Item,"wxwxSizerItemListNode * wxSizerItemList::Item(size_t index)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#item)")
 */
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
     ADD_CLASS_METHOD(Append_1,"wxwxSizerItemListNode * wxSizerItemList::Append(wxSizerItem * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#append)")
 */
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
     ADD_CLASS_METHOD(Insert_1,"wxwxSizerItemListNode * wxSizerItemList::Insert(wxSizerItem * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#insert)")
 */
     ADD_CLASS_METHOD(Insert,"wxSizerItemList::Insert()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#insert)")
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
     ADD_CLASS_METHOD(Insert_2,"wxwxSizerItemListNode * wxSizerItemList::Insert(size_t pos, wxSizerItem * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#insert)")
 */
-/* The following types are missing: wxwxSizerItemListNode, wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxwxSizerItemListNode, wxSizerItem
     ADD_CLASS_METHOD(Insert_3,"wxwxSizerItemListNode * wxSizerItemList::Insert(wxwxSizerItemListNode * prev, wxSizerItem * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#insert)")
 */
     ADD_CLASS_METHOD(Append,"wxSizerItemList::Append()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#append)")
@@ -116,23 +124,27 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
 /* The following types are missing: wxwxSizerItemListNode
     ADD_CLASS_METHOD(DeleteNode,"bool wxSizerItemList::DeleteNode(wxwxSizerItemListNode * node)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#deletenode)")
 */
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(DeleteObject,"bool wxSizerItemList::DeleteObject(wxSizerItem * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#deleteobject)")
+*/
 /* The following types are missing: wxwxSizerItemListNode
     ADD_CLASS_METHOD(Erase,"void wxSizerItemList::Erase(wxwxSizerItemListNode * it)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#erase)")
 */
-/* The following types are missing: wxwxSizerItemListNode
+/* The following types are missing: wxwxSizerItemListNode, wxSizerItem
     ADD_CLASS_METHOD(Find_1,"wxwxSizerItemListNode * wxSizerItemList::Find(wxSizerItem const * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#find)")
 */
     ADD_CLASS_METHOD(Find,"wxSizerItemList::Find()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#find)")
 /* The following types are missing: wxwxSizerItemListNode, wxListKey
     ADD_CLASS_METHOD(Find_2,"wxwxSizerItemListNode * wxSizerItemList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#find)")
 */
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(IndexOf,"int wxSizerItemList::IndexOf(wxSizerItem * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#indexof)")
-/* The following types are missing: _9505
+*/
+/* The following types are missing: _9495
     ADD_CLASS_METHOD(Sort_1,"void wxSizerItemList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxSizerItemList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
-/* The following types are missing: _8773
+/* The following types are missing: _8775
     ADD_CLASS_METHOD(Sort_2,"void wxSizerItemList::Sort(wxSortFuncFor_wxSizerItemList func)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
 */
 /* The following types are missing: iterator
@@ -163,30 +175,46 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
 /* The following types are missing: const_reverse_iterator
     ADD_CLASS_METHOD(rend_2,"const_reverse_iterator wxSizerItemList::rend()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#rend)")
 */
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(resize,"void wxSizerItemList::resize(size_t n, wxSizerItem * v = 0u)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#resize)")
+*/
     ADD_CLASS_METHOD(size,"size_t wxSizerItemList::size()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#size)")
     ADD_CLASS_METHOD(max_size,"size_t wxSizerItemList::max_size()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#max_size)")
     ADD_CLASS_METHOD(empty,"bool wxSizerItemList::empty()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#empty)")
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(front_1,"wxSizerItem * & wxSizerItemList::front()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#front)")
+*/
     ADD_CLASS_METHOD(front,"wxSizerItemList::front()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#front)")
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(front_2,"wxSizerItem * const & wxSizerItemList::front()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#front)")
+*/
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(back_1,"wxSizerItem * & wxSizerItemList::back()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#back)")
+*/
     ADD_CLASS_METHOD(back,"wxSizerItemList::back()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#back)")
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(back_2,"wxSizerItem * const & wxSizerItemList::back()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#back)")
+*/
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(push_front,"void wxSizerItemList::push_front(wxSizerItem * const & v = 0u)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#push_front)")
+*/
     ADD_CLASS_METHOD(pop_front,"void wxSizerItemList::pop_front()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#pop_front)")
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(push_back,"void wxSizerItemList::push_back(wxSizerItem * const & v = 0u)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#push_back)")
+*/
     ADD_CLASS_METHOD(pop_back,"void wxSizerItemList::pop_back()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#pop_back)")
 /* The following types are missing: const_iterator, const_iterator
     ADD_CLASS_METHOD(assign_1,"void wxSizerItemList::assign(const_iterator first, const_iterator const & last)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#assign)")
 */
     ADD_CLASS_METHOD(assign,"wxSizerItemList::assign()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#assign)")
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(assign_2,"void wxSizerItemList::assign(size_t n, wxSizerItem * const & v = 0u)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#assign)")
-/* The following types are missing: iterator, iterator
+*/
+/* The following types are missing: iterator, iterator, wxSizerItem
     ADD_CLASS_METHOD(insert_1,"iterator wxSizerItemList::insert(iterator const & it, wxSizerItem * const & v = 0u)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#insert)")
 */
     ADD_CLASS_METHOD(insert,"wxSizerItemList::insert()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#insert)")
-/* The following types are missing: iterator
+/* The following types are missing: iterator, wxSizerItem
     ADD_CLASS_METHOD(insert_2,"void wxSizerItemList::insert(iterator const & it, size_t n, wxSizerItem * const & v = 0u)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#insert)")
 */
 /* The following types are missing: iterator, const_iterator, const_iterator
@@ -210,12 +238,16 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
 /* The following types are missing: iterator, iterator
     ADD_CLASS_METHOD(splice_3,"void wxSizerItemList::splice(iterator const & it, wxSizerItemList & l, iterator const & first)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#splice)")
 */
+/* The following types are missing: wxSizerItem
     ADD_CLASS_METHOD(remove,"void wxSizerItemList::remove(wxSizerItem * const & v)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#remove)")
+*/
     ADD_CLASS_METHOD(reverse,"void wxSizerItemList::reverse()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#reverse)")
 
     // Operators:
-    ADD_CLASS_METHOD(__assign__,            "wxSizerItemList & wxSizerItemList::=(wxSizerItemList const & list) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#__assign__)")
-    ADD_CLASS_METHOD(__at__,            "wxSizerItem * wxSizerItemList::[](size_t index) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#__at__)")
+    ADD_CLASS_METHOD(__assign__,            "wxSizerItemList & wxSizerItemList::operator =(wxSizerItemList const & list) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#__assign__)")
+/* The following types are missing: wxSizerItem
+    ADD_CLASS_METHOD(__at__,            "wxSizerItem * wxSizerItemList::operator [](size_t index) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#__at__)")
+*/
 
 
 

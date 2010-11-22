@@ -42,9 +42,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkScalarsToColors);
 AMI_DEFINE_VARFROMSMTPTR(vtkScalarsToColors);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkScalarsToColors>::CreateVar( vtkScalarsToColors* val)
+BasicVariable::ptr AMILabType<vtkScalarsToColors>::CreateVar( vtkScalarsToColors* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkScalarsToColors> obj_ptr(val,wxwindow_nodeleter<vtkScalarsToColors>());
+  boost::shared_ptr<vtkScalarsToColors> obj_ptr(val,smartpointer_nodeleter<vtkScalarsToColors>());
   return AMILabType<vtkScalarsToColors>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -335,7 +335,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   if (!get_val_param<double >(v,_p,_n)) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetColor(v);
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -463,7 +463,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   if (!get_val_param<int >(component,_p,_n)) ClassHelpAndReturn;
 
   vtkUnsignedCharArray * res =   this->_objectptr->GetObj()->MapScalars(scalars, colorMode, component);
-  return AMILabType<vtkUnsignedCharArray >::CreateVar(res);
+  return AMILabType<vtkUnsignedCharArray >::CreateVar(res,true);
 }
 */
 
@@ -704,7 +704,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   if (!get_val_param<int >(numTuples,_p,_n)) ClassHelpAndReturn;
 
   vtkUnsignedCharArray * res =   this->_objectptr->GetObj()->ConvertUnsignedCharToRGBA(colors, numComp, numTuples);
-  return AMILabType<vtkUnsignedCharArray >::CreateVar(res);
+  return AMILabType<vtkUnsignedCharArray >::CreateVar(res,true);
 }
 */
 

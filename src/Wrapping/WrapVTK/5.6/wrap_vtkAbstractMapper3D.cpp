@@ -42,9 +42,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkAbstractMapper3D);
 AMI_DEFINE_VARFROMSMTPTR(vtkAbstractMapper3D);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkAbstractMapper3D>::CreateVar( vtkAbstractMapper3D* val)
+BasicVariable::ptr AMILabType<vtkAbstractMapper3D>::CreateVar( vtkAbstractMapper3D* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkAbstractMapper3D> obj_ptr(val,wxwindow_nodeleter<vtkAbstractMapper3D>());
+  boost::shared_ptr<vtkAbstractMapper3D> obj_ptr(val,smartpointer_nodeleter<vtkAbstractMapper3D>());
   return AMILabType<vtkAbstractMapper3D>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -271,7 +271,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper3D::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetCenter();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------

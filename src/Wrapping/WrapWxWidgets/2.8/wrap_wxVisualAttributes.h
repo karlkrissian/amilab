@@ -51,7 +51,6 @@ class WrapClass_wxVisualAttributes : public WrapClass<wxVisualAttributes>
     /// Destructor
     ~WrapClass_wxVisualAttributes()
     {
-      std::cout << "~WrapClass_wxVisualAttributes()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -68,14 +67,19 @@ class WrapClass_wxVisualAttributes : public WrapClass<wxVisualAttributes>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxVisualAttributes*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
     // Adding standard methods
 
     // Operators:
-    ADD_CLASS_METHOD(__assign__,            "wxVisualAttributes & wxVisualAttributes::=(wxVisualAttributes const & param0) (http://docs.wxwidgets.org/stable/wx_wxvisualattributes.html#__assign__)")
+    ADD_CLASS_METHOD(__assign__,            "wxVisualAttributes & wxVisualAttributes::operator =(wxVisualAttributes const & param0) (http://docs.wxwidgets.org/stable/wx_wxvisualattributes.html#__assign__)")
 
 
 

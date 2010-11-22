@@ -51,7 +51,6 @@ class WrapClass_wxControlBase : public WrapClass<wxControlBase>
     /// Destructor
     ~WrapClass_wxControlBase()
     {
-      std::cout << "~WrapClass_wxControlBase()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -64,25 +63,21 @@ class WrapClass_wxControlBase : public WrapClass<wxControlBase>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxControlBase*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding standard methods
-/* The following types are missing: wxValidator
     ADD_CLASS_METHOD(Create,"bool wxControlBase::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxControlNameStr)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#create)")
-*/
     ADD_CLASS_METHOD(GetAlignment,"int wxControlBase::GetAlignment()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getalignment)")
-    ADD_CLASS_METHOD(GetLabelText_1,"wxString wxControlBase::GetLabelText(wxString const & label)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getlabeltext)")
-    ADD_CLASS_METHOD(GetLabelText,"wxControlBase::GetLabelText()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getlabeltext)")
-    ADD_CLASS_METHOD(GetLabelText_2,"wxString wxControlBase::GetLabelText()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getlabeltext)")
     ADD_CLASS_METHOD(ShouldInheritColours,"bool wxControlBase::ShouldInheritColours()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#shouldinheritcolours)")
-/* The following types are missing: wxCommandEvent
     ADD_CLASS_METHOD(Command,"void wxControlBase::Command(wxCommandEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#command)")
-*/
     ADD_CLASS_METHOD(SetLabel,"void wxControlBase::SetLabel(wxString const & label)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#setlabel)")
     ADD_CLASS_METHOD(SetFont,"bool wxControlBase::SetFont(wxFont const & font)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#setfont)")
-/* The following types are missing: wxUpdateUIEvent
     ADD_CLASS_METHOD(DoUpdateWindowUI,"void wxControlBase::DoUpdateWindowUI(wxUpdateUIEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#doupdatewindowui)")
-*/
 
 
 

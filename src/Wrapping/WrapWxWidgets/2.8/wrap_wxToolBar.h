@@ -51,7 +51,6 @@ class WrapClass_wxToolBar : public WrapClass<wxToolBar>
     /// Destructor
     ~WrapClass_wxToolBar()
     {
-      std::cout << "~WrapClass_wxToolBar()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -68,7 +67,13 @@ class WrapClass_wxToolBar : public WrapClass<wxToolBar>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxToolBar*);
 
-    // here add each method
+    // Static methods
+    
+    ADD_CLASS_STATICMETHOD(GetClassDefaultAttributes,"wxVisualAttributes wxToolBar::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL) (http://docs.wxwidgets.org/stable/wx_wxtoolbar.html#getclassdefaultattributes).");
+
+
+
+    // Standard methods
     
     // Adding standard methods
     ADD_CLASS_METHOD(Create,"bool wxToolBar::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxString const & name = wxToolBarNameStr)  (http://docs.wxwidgets.org/stable/wx_wxtoolbar.html#create)")
@@ -79,7 +84,6 @@ class WrapClass_wxToolBar : public WrapClass<wxToolBar>
     ADD_CLASS_METHOD(SetWindowStyleFlag,"void wxToolBar::SetWindowStyleFlag(long int style)  (http://docs.wxwidgets.org/stable/wx_wxtoolbar.html#setwindowstyleflag)")
     ADD_CLASS_METHOD(SetToolNormalBitmap,"void wxToolBar::SetToolNormalBitmap(int id, wxBitmap const & bitmap)  (http://docs.wxwidgets.org/stable/wx_wxtoolbar.html#settoolnormalbitmap)")
     ADD_CLASS_METHOD(SetToolDisabledBitmap,"void wxToolBar::SetToolDisabledBitmap(int id, wxBitmap const & bitmap)  (http://docs.wxwidgets.org/stable/wx_wxtoolbar.html#settooldisabledbitmap)")
-    ADD_CLASS_METHOD(GetClassDefaultAttributes,"wxVisualAttributes wxToolBar::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)  (http://docs.wxwidgets.org/stable/wx_wxtoolbar.html#getclassdefaultattributes)")
     ADD_CLASS_METHOD(OnInternalIdle,"void wxToolBar::OnInternalIdle()  (http://docs.wxwidgets.org/stable/wx_wxtoolbar.html#oninternalidle)")
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxToolBar::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxtoolbar.html#getclassinfo)")
 
@@ -87,57 +91,8 @@ class WrapClass_wxToolBar : public WrapClass<wxToolBar>
 
 
 
-    void AddMethods(WrapClass<wxToolBar>::ptr this_ptr )
-    {
-      
-      // Add members from wxToolBarBase
-      WrapClass_wxToolBarBase::ptr parent_wxToolBarBase(        boost::dynamic_pointer_cast<WrapClass_wxToolBarBase >(this_ptr));
-      parent_wxToolBarBase->AddMethods(parent_wxToolBarBase);
+    void AddMethods(WrapClass<wxToolBar>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-      AddVar_Create( this_ptr);
-      AddVar_SetMargins( this_ptr);
-      AddVar_SetToolSeparation( this_ptr);
-      AddVar_FindToolForPosition( this_ptr);
-      AddVar_SetToolShortHelp( this_ptr);
-      AddVar_SetWindowStyleFlag( this_ptr);
-      AddVar_SetToolNormalBitmap( this_ptr);
-      AddVar_SetToolDisabledBitmap( this_ptr);
-      AddVar_GetClassDefaultAttributes( this_ptr);
-      AddVar_OnInternalIdle( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
-
-
-
-      // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* type not available
-      // Adding public member m_toolbar
-      boost::shared_ptr<_GtkToolbar > var_m_toolbar_ptr(&GetObj()->m_toolbar, smartpointer_nodeleter<_GtkToolbar >());
-      BasicVariable::ptr var_m_toolbar = AMILabType<_GtkToolbar >::CreateVarFromSmtPtr(var_m_toolbar_ptr);
-      if (var_m_toolbar.get()) {
-        var_m_toolbar->Rename("m_toolbar");
-        context->AddVar(var_m_toolbar,context);
-      }
-      */
-      
-      /* type not available
-      // Adding public member m_blockEvent
-      boost::shared_ptr<bool > var_m_blockEvent_ptr(&GetObj()->m_blockEvent, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_blockEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockEvent_ptr);
-      if (var_m_blockEvent.get()) {
-        var_m_blockEvent->Rename("m_blockEvent");
-        context->AddVar(var_m_blockEvent,context);
-      }
-      */
-
-    };
 };
 
 

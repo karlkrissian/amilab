@@ -51,7 +51,6 @@ class WrapClass_wxToolBarBase : public WrapClass<wxToolBarBase>
     /// Destructor
     ~WrapClass_wxToolBarBase()
     {
-      std::cout << "~WrapClass_wxToolBarBase()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -61,7 +60,12 @@ class WrapClass_wxToolBarBase : public WrapClass<wxToolBarBase>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxToolBarBase*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding standard methods
     ADD_CLASS_METHOD(AddTool_1,"wxToolBarToolBase * wxToolBarBase::AddTool(int toolid, wxString const & label, wxBitmap const & bitmap, wxBitmap const & bmpDisabled, wxItemKind kind = wxITEM_NORMAL, wxString const & shortHelp = wxEmptyString, wxString const & longHelp = wxEmptyString, wxObject * data = 0l)  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#addtool)")
@@ -128,81 +132,8 @@ class WrapClass_wxToolBarBase : public WrapClass<wxToolBarBase>
 
 
 
-    void AddMethods(WrapClass<wxToolBarBase>::ptr this_ptr )
-    {
-      
-      // Add members from wxControl
-      WrapClass_wxControl::ptr parent_wxControl(        boost::dynamic_pointer_cast<WrapClass_wxControl >(this_ptr));
-      parent_wxControl->AddMethods(parent_wxControl);
+    void AddMethods(WrapClass<wxToolBarBase>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-      AddVar_AddTool_1( this_ptr);
-      AddVar_AddTool( this_ptr);
-      AddVar_AddTool_2( this_ptr);
-      AddVar_AddCheckTool( this_ptr);
-      AddVar_AddRadioTool( this_ptr);
-      AddVar_InsertTool_1( this_ptr);
-      AddVar_AddTool_3( this_ptr);
-      AddVar_InsertTool( this_ptr);
-      AddVar_InsertTool_2( this_ptr);
-      AddVar_AddControl( this_ptr);
-      AddVar_InsertControl( this_ptr);
-      AddVar_FindControl( this_ptr);
-      AddVar_AddSeparator( this_ptr);
-      AddVar_InsertSeparator( this_ptr);
-      AddVar_RemoveTool( this_ptr);
-      AddVar_DeleteToolByPos( this_ptr);
-      AddVar_DeleteTool( this_ptr);
-      AddVar_ClearTools( this_ptr);
-      AddVar_Realize( this_ptr);
-      AddVar_EnableTool( this_ptr);
-      AddVar_ToggleTool( this_ptr);
-      AddVar_SetToggle( this_ptr);
-      AddVar_GetToolClientData( this_ptr);
-      AddVar_SetToolClientData( this_ptr);
-      AddVar_GetToolPos( this_ptr);
-      AddVar_GetToolState( this_ptr);
-      AddVar_GetToolEnabled( this_ptr);
-      AddVar_SetToolShortHelp( this_ptr);
-      AddVar_GetToolShortHelp( this_ptr);
-      AddVar_SetToolLongHelp( this_ptr);
-      AddVar_GetToolLongHelp( this_ptr);
-      AddVar_SetMargins_1( this_ptr);
-      AddVar_SetMargins( this_ptr);
-      AddVar_SetMargins_2( this_ptr);
-      AddVar_SetToolPacking( this_ptr);
-      AddVar_SetToolSeparation( this_ptr);
-      AddVar_GetToolMargins( this_ptr);
-      AddVar_GetToolPacking( this_ptr);
-      AddVar_GetToolSeparation( this_ptr);
-      AddVar_SetRows( this_ptr);
-      AddVar_SetMaxRowsCols( this_ptr);
-      AddVar_GetMaxRows( this_ptr);
-      AddVar_GetMaxCols( this_ptr);
-      AddVar_SetToolBitmapSize( this_ptr);
-      AddVar_GetToolBitmapSize( this_ptr);
-      AddVar_GetToolSize( this_ptr);
-      AddVar_FindById( this_ptr);
-      AddVar_IsVertical( this_ptr);
-      AddVar_AddTool_4( this_ptr);
-      AddVar_AddTool_5( this_ptr);
-      AddVar_AddTool_6( this_ptr);
-      AddVar_InsertTool_3( this_ptr);
-      AddVar_OnLeftClick( this_ptr);
-      AddVar_OnRightClick( this_ptr);
-      AddVar_OnMouseEnter( this_ptr);
-      AddVar_GetMargins( this_ptr);
-      AddVar_GetToolsCount( this_ptr);
-      AddVar_UpdateWindowUI( this_ptr);
-      AddVar_AcceptsFocus( this_ptr);
-
-
-
-      
-    };
 };
 
 

@@ -43,9 +43,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkPiecewiseFunction);
 AMI_DEFINE_VARFROMSMTPTR(vtkPiecewiseFunction);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkPiecewiseFunction>::CreateVar( vtkPiecewiseFunction* val)
+BasicVariable::ptr AMILabType<vtkPiecewiseFunction>::CreateVar( vtkPiecewiseFunction* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkPiecewiseFunction> obj_ptr(val,wxwindow_nodeleter<vtkPiecewiseFunction>());
+  boost::shared_ptr<vtkPiecewiseFunction> obj_ptr(val,smartpointer_nodeleter<vtkPiecewiseFunction>());
   return AMILabType<vtkPiecewiseFunction>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -711,7 +711,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetDataPointer();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -759,7 +759,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetRange();
-  return AMILabType<double >::CreateVar(res);
+  return AMILabType<double >::CreateVar(res,true);
 }
 
 //---------------------------------------------------

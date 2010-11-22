@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxFrameBase.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -25,8 +23,16 @@
 #include "wrap_wxString.h"
 #include "wrap_wxPoint.h"
 #include "wrap_wxSize.h"
+#include "wrap_wxMenuBar.h"
+#include "wrap_wxStatusBar.h"
+#include "wrap_wxToolBar.h"
+#include "wrap_wxMenuEvent.h"
+#include "wrap_wxMenu.h"
 
 
+#include "wrap_wxFrameBase.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -40,8 +46,17 @@ BasicVariable::ptr WrapClass<wxFrameBase>::CreateVar( ParamList* p)
 
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxFrameBase);
+AMI_DEFINE_VARFROMSMTPTR(wxFrameBase);
+
+// Implementing CreateVar for AMILabType
+BasicVariable::ptr AMILabType<wxFrameBase>::CreateVar( wxFrameBase* val, bool nodeleter)
+{ 
+  boost::shared_ptr<wxFrameBase> obj_ptr(val,smartpointer_nodeleter<wxFrameBase>());
+  return AMILabType<wxFrameBase>::CreateVarFromSmtPtr(obj_ptr);
+}
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxFrameBase
 //
@@ -57,6 +72,54 @@ Variable<AMIObject>::ptr WrapClass_wxFrameBase::CreateVar( wxFrameBase* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxFrameBase::AddMethods(WrapClass<wxFrameBase>::ptr this_ptr )
+{
+  
+      // Add members from wxTopLevelWindow
+      WrapClass_wxTopLevelWindow::ptr parent_wxTopLevelWindow(        boost::dynamic_pointer_cast<WrapClass_wxTopLevelWindow >(this_ptr));
+      parent_wxTopLevelWindow->AddMethods(parent_wxTopLevelWindow);
+
+
+  // check that the method name is not a token
+  
+      // Adding standard methods 
+      AddVar_New( this_ptr);
+      AddVar_GetClientAreaOrigin( this_ptr);
+      AddVar_SendSizeEvent( this_ptr);
+      AddVar_SetMenuBar( this_ptr);
+      AddVar_GetMenuBar( this_ptr);
+      AddVar_ProcessCommand( this_ptr);
+      AddVar_CreateStatusBar( this_ptr);
+      AddVar_OnCreateStatusBar( this_ptr);
+      AddVar_GetStatusBar( this_ptr);
+      AddVar_SetStatusBar( this_ptr);
+      AddVar_SetStatusText( this_ptr);
+      AddVar_SetStatusWidths( this_ptr);
+      AddVar_PushStatusText( this_ptr);
+      AddVar_PopStatusText( this_ptr);
+      AddVar_SetStatusBarPane( this_ptr);
+      AddVar_GetStatusBarPane( this_ptr);
+      AddVar_CreateToolBar( this_ptr);
+      AddVar_OnCreateToolBar( this_ptr);
+      AddVar_GetToolBar( this_ptr);
+      AddVar_SetToolBar( this_ptr);
+      AddVar_OnMenuOpen( this_ptr);
+      AddVar_OnMenuClose( this_ptr);
+      AddVar_OnMenuHighlight( this_ptr);
+      AddVar_DoMenuUpdates( this_ptr);
+      AddVar_UpdateWindowUI( this_ptr);
+      AddVar_OnInternalIdle( this_ptr);
+      AddVar_DoGiveHelp( this_ptr);
+
+
+
+  
+};
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -116,16 +179,12 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = (pos_smtptr.get()?
-    (wxPoint const &) (*pos_smtptr):
-    (wxPoint const &) wxDefaultPosition);
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = (size_smtptr.get()?
-    (wxSize const &) (*size_smtptr):
-    (wxSize const &) wxDefaultSize);
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
 
   long style_long = 541072960;;
   if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
@@ -134,9 +193,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?
-    (wxString const &) (*name_smtptr):
-    (wxString const &) wxFrameNameStr);
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxFrameNameStr) );
 
   wxFrame * res =   this->_objectptr->GetObj()->New(parent, winid, title, pos, size, style, name);
   BasicVariable::ptr res_var = WrapClass_wxFrame::CreateVar(res);
@@ -179,7 +236,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   this->_objectptr->GetObj()->SendSizeEvent();
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxMenuBar
 
 //---------------------------------------------------
 //  Wrapping of void wxFrameBase::SetMenuBar(wxMenuBar * menubar)
@@ -205,8 +261,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   this->_objectptr->GetObj()->SetMenuBar(menubar);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxMenuBar
 
 //---------------------------------------------------
 //  Wrapping of wxMenuBar * wxFrameBase::GetMenuBar()
@@ -224,9 +278,9 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMenuBar * res =   this->_objectptr->GetObj()->GetMenuBar();
-  return AMILabType<wxMenuBar >::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxMenuBar::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxFrameBase::ProcessCommand(int winid)
@@ -253,7 +307,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: wxStatusBar
 
 //---------------------------------------------------
 //  Wrapping of wxStatusBar * wxFrameBase::CreateStatusBar(int number = 1, long int style = 65552, wxWindowID winid = 0, wxString const & name = wxStatusLineNameStr)
@@ -289,15 +342,12 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?
-    (wxString const &) (*name_smtptr):
-    (wxString const &) wxStatusLineNameStr);
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxStatusLineNameStr) );
 
   wxStatusBar * res =   this->_objectptr->GetObj()->CreateStatusBar(number, style, winid, name);
-  return AMILabType<wxStatusBar >::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxStatusBar::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxStatusBar
 
 //---------------------------------------------------
 //  Wrapping of wxStatusBar * wxFrameBase::OnCreateStatusBar(int number, long int style, wxWindowID winid, wxString const & name)
@@ -335,10 +385,9 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   wxString const & name = *name_smtptr;
 
   wxStatusBar * res =   this->_objectptr->GetObj()->OnCreateStatusBar(number, style, winid, name);
-  return AMILabType<wxStatusBar >::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxStatusBar::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxStatusBar
 
 //---------------------------------------------------
 //  Wrapping of wxStatusBar * wxFrameBase::GetStatusBar()
@@ -356,10 +405,9 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxStatusBar * res =   this->_objectptr->GetObj()->GetStatusBar();
-  return AMILabType<wxStatusBar >::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxStatusBar::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxStatusBar
 
 //---------------------------------------------------
 //  Wrapping of void wxFrameBase::SetStatusBar(wxStatusBar * statBar)
@@ -385,7 +433,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   this->_objectptr->GetObj()->SetStatusBar(statBar);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxFrameBase::SetStatusText(wxString const & text, int number = 0)
@@ -540,7 +587,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int res =   this->_objectptr->GetObj()->GetStatusBarPane();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: wxToolBar
 
 //---------------------------------------------------
 //  Wrapping of wxToolBar * wxFrameBase::CreateToolBar(long int style = -0x00000000000000001, wxWindowID winid = wxID_ANY, wxString const & name = wxToolBarNameStr)
@@ -572,15 +618,12 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   boost::shared_ptr<wxString > name_smtptr;
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = (name_smtptr.get()?
-    (wxString const &) (*name_smtptr):
-    (wxString const &) wxToolBarNameStr);
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxToolBarNameStr) );
 
   wxToolBar * res =   this->_objectptr->GetObj()->CreateToolBar(style, winid, name);
-  return AMILabType<wxToolBar >::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxToolBar::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxToolBar
 
 //---------------------------------------------------
 //  Wrapping of wxToolBar * wxFrameBase::OnCreateToolBar(long int style, wxWindowID winid, wxString const & name)
@@ -614,10 +657,9 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   wxString const & name = *name_smtptr;
 
   wxToolBar * res =   this->_objectptr->GetObj()->OnCreateToolBar(style, winid, name);
-  return AMILabType<wxToolBar >::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxToolBar::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxToolBar
 
 //---------------------------------------------------
 //  Wrapping of wxToolBar * wxFrameBase::GetToolBar()
@@ -635,10 +677,9 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxToolBar * res =   this->_objectptr->GetObj()->GetToolBar();
-  return AMILabType<wxToolBar >::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxToolBar::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxToolBar
 
 //---------------------------------------------------
 //  Wrapping of void wxFrameBase::SetToolBar(wxToolBar * toolbar)
@@ -664,8 +705,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   this->_objectptr->GetObj()->SetToolBar(toolbar);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxMenuEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxFrameBase::OnMenuOpen(wxMenuEvent & event)
@@ -691,8 +730,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   this->_objectptr->GetObj()->OnMenuOpen(event);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxMenuEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxFrameBase::OnMenuClose(wxMenuEvent & event)
@@ -718,8 +755,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   this->_objectptr->GetObj()->OnMenuClose(event);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxMenuEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxFrameBase::OnMenuHighlight(wxMenuEvent & event)
@@ -745,8 +780,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   this->_objectptr->GetObj()->OnMenuHighlight(event);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxMenu
 
 //---------------------------------------------------
 //  Wrapping of void wxFrameBase::DoMenuUpdates(wxMenu * menu = 0l)
@@ -772,7 +805,6 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   this->_objectptr->GetObj()->DoMenuUpdates(menu);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxFrameBase::UpdateWindowUI(long int flags = wxUPDATE_UI_NONE)

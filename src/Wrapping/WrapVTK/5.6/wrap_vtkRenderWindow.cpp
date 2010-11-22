@@ -44,9 +44,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkRenderWindow);
 AMI_DEFINE_VARFROMSMTPTR(vtkRenderWindow);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<vtkRenderWindow>::CreateVar( vtkRenderWindow* val)
+BasicVariable::ptr AMILabType<vtkRenderWindow>::CreateVar( vtkRenderWindow* val, bool nodeleter)
 { 
-  boost::shared_ptr<vtkRenderWindow> obj_ptr(val,wxwindow_nodeleter<vtkRenderWindow>());
+  boost::shared_ptr<vtkRenderWindow> obj_ptr(val,smartpointer_nodeleter<vtkRenderWindow>());
   return AMILabType<vtkRenderWindow>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -474,7 +474,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRendererCollection * res =   this->_objectptr->GetObj()->GetRenderers();
-  return AMILabType<vtkRendererCollection >::CreateVar(res);
+  return AMILabType<vtkRendererCollection >::CreateVar(res,true);
 }
 */
 
@@ -1645,7 +1645,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   int * res =   this->_objectptr->GetObj()->GetAnaglyphColorMask();
-  return AMILabType<int >::CreateVar(res);
+  return AMILabType<int >::CreateVar(res,true);
 }
 
 //---------------------------------------------------
@@ -2458,7 +2458,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPainterDeviceAdapter * res =   this->_objectptr->GetObj()->GetPainterDeviceAdapter();
-  return AMILabType<vtkPainterDeviceAdapter >::CreateVar(res);
+  return AMILabType<vtkPainterDeviceAdapter >::CreateVar(res,true);
 }
 */
 

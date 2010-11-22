@@ -18,17 +18,11 @@
 
 // get all the required includes
 // #include "..."
+#include "wrap_wxWindow.h"
+#include "wrap_wxString.h"
 #include "wrap_wxWindowBase.h"
-#include "wrap_wxPoint.h"
 #include "wrap_wxSize.h"
 #include "wrap_wxValidator.h"
-#include "wrap_wxString.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxWindow.h"
-#include "wrap_wxVisualAttributes.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxFont.h"
-#include "wrap_wxSizer.h"
 #include "wrap_wxClassInfo.h"
 
 
@@ -51,9 +45,9 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxWindowBase);
 AMI_DEFINE_VARFROMSMTPTR(wxWindowBase);
 
 // Implementing CreateVar for AMILabType
-BasicVariable::ptr AMILabType<wxWindowBase>::CreateVar( wxWindowBase* val)
+BasicVariable::ptr AMILabType<wxWindowBase>::CreateVar( wxWindowBase* val, bool nodeleter)
 { 
-  boost::shared_ptr<wxWindowBase> obj_ptr(val,wxwindow_nodeleter<wxWindowBase>());
+  boost::shared_ptr<wxWindowBase> obj_ptr(val,smartpointer_nodeleter<wxWindowBase>());
   return AMILabType<wxWindowBase>::CreateVarFromSmtPtr(obj_ptr);
 }
 
@@ -87,7 +81,9 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
   // check that the method name is not a token
   
       // Adding standard methods 
+/* The following types are missing: wxPoint
       AddVar_CreateBase( this_ptr);
+*/
       AddVar_Close( this_ptr);
       AddVar_Destroy( this_ptr);
       AddVar_DestroyChildren( this_ptr);
@@ -101,38 +97,55 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
       AddVar_GetLayoutDirection( this_ptr);
       AddVar_SetLayoutDirection( this_ptr);
       AddVar_AdjustForLayoutDirection( this_ptr);
-      AddVar_NewControlId( this_ptr);
-      AddVar_NextControlId( this_ptr);
-      AddVar_PrevControlId( this_ptr);
       AddVar_SetSize_1( this_ptr);
       AddVar_SetSize( this_ptr);
       AddVar_SetSize_2( this_ptr);
       AddVar_SetSize_3( this_ptr);
+/* The following types are missing: wxRect
       AddVar_SetSize_4( this_ptr);
+*/
       AddVar_Move_1( this_ptr);
       AddVar_Move( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_Move_2( this_ptr);
+*/
+/* The following types are missing: wxPoint
       AddVar_SetPosition( this_ptr);
+*/
       AddVar_SetClientSize_1( this_ptr);
       AddVar_SetClientSize( this_ptr);
       AddVar_SetClientSize_2( this_ptr);
+/* The following types are missing: wxRect
       AddVar_SetClientSize_3( this_ptr);
+*/
       AddVar_GetPosition_1( this_ptr);
       AddVar_GetPosition( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_GetPosition_2( this_ptr);
+*/
       AddVar_GetScreenPosition_1( this_ptr);
       AddVar_GetScreenPosition( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_GetScreenPosition_2( this_ptr);
+*/
       AddVar_GetSize_1( this_ptr);
       AddVar_GetSize( this_ptr);
       AddVar_GetSize_2( this_ptr);
       AddVar_GetClientSize_1( this_ptr);
       AddVar_GetClientSize( this_ptr);
       AddVar_GetClientSize_2( this_ptr);
+/* The following types are missing: wxRect
       AddVar_GetRect( this_ptr);
+*/
+/* The following types are missing: wxRect
       AddVar_GetScreenRect( this_ptr);
+*/
+/* The following types are missing: wxPoint
       AddVar_GetClientAreaOrigin( this_ptr);
+*/
+/* The following types are missing: wxRect
       AddVar_GetClientRect( this_ptr);
+*/
       AddVar_ClientToWindowSize( this_ptr);
       AddVar_WindowToClientSize( this_ptr);
       AddVar_GetBestSize_1( this_ptr);
@@ -199,8 +212,6 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
       AddVar_SetThemeEnabled( this_ptr);
       AddVar_GetThemeEnabled( this_ptr);
       AddVar_SetFocusFromKbd( this_ptr);
-      AddVar_FindFocus( this_ptr);
-      AddVar_DoFindFocus( this_ptr);
       AddVar_AcceptsFocus( this_ptr);
       AddVar_AcceptsFocusFromKeyboard( this_ptr);
       AddVar_MoveBeforeInTabOrder( this_ptr);
@@ -227,9 +238,6 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
       AddVar_FindWindow_1( this_ptr);
       AddVar_FindWindow( this_ptr);
       AddVar_FindWindow_2( this_ptr);
-      AddVar_FindWindowById( this_ptr);
-      AddVar_FindWindowByName( this_ptr);
-      AddVar_FindWindowByLabel( this_ptr);
 /* The following types are missing: wxEvtHandler
       AddVar_GetEventHandler( this_ptr);
 */
@@ -257,17 +265,22 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 /* The following types are missing: wxAcceleratorTable
       AddVar_GetAcceleratorTable( this_ptr);
 */
+/* The following types are missing: wxPoint, wxPoint
       AddVar_ConvertPixelsToDialog_1( this_ptr);
+*/
+/* The following types are missing: wxPoint, wxPoint
       AddVar_ConvertDialogToPixels_1( this_ptr);
+*/
       AddVar_ConvertPixelsToDialog( this_ptr);
       AddVar_ConvertPixelsToDialog_2( this_ptr);
       AddVar_ConvertDialogToPixels( this_ptr);
       AddVar_ConvertDialogToPixels_2( this_ptr);
       AddVar_CaptureMouse( this_ptr);
       AddVar_ReleaseMouse( this_ptr);
-      AddVar_GetCapture( this_ptr);
       AddVar_HasCapture( this_ptr);
+/* The following types are missing: wxRect
       AddVar_RefreshRect( this_ptr);
+*/
       AddVar_Update( this_ptr);
       AddVar_ClearBackground( this_ptr);
       AddVar_Freeze( this_ptr);
@@ -284,30 +297,53 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 /* The following types are missing: wxRegion
       AddVar_GetUpdateRegion_2( this_ptr);
 */
+/* The following types are missing: wxRect
       AddVar_GetUpdateClientRect( this_ptr);
+*/
       AddVar_DoIsExposed_1( this_ptr);
       AddVar_DoIsExposed( this_ptr);
       AddVar_DoIsExposed_2( this_ptr);
       AddVar_IsExposed_1( this_ptr);
       AddVar_IsExposed( this_ptr);
       AddVar_IsExposed_2( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_IsExposed_3( this_ptr);
+*/
+/* The following types are missing: wxRect
       AddVar_IsExposed_4( this_ptr);
+*/
+/* The following types are missing: wxVisualAttributes
       AddVar_GetDefaultAttributes( this_ptr);
-      AddVar_GetClassDefaultAttributes( this_ptr);
+*/
+/* The following types are missing: wxColour
       AddVar_SetBackgroundColour( this_ptr);
+*/
+/* The following types are missing: wxColour
       AddVar_SetOwnBackgroundColour( this_ptr);
+*/
+/* The following types are missing: wxColour
       AddVar_GetBackgroundColour( this_ptr);
+*/
       AddVar_InheritsBackgroundColour( this_ptr);
       AddVar_UseBgCol( this_ptr);
+/* The following types are missing: wxColour
       AddVar_SetForegroundColour( this_ptr);
+*/
+/* The following types are missing: wxColour
       AddVar_SetOwnForegroundColour( this_ptr);
+*/
+/* The following types are missing: wxColour
       AddVar_GetForegroundColour( this_ptr);
+*/
       AddVar_SetBackgroundStyle( this_ptr);
       AddVar_GetBackgroundStyle( this_ptr);
       AddVar_HasTransparentBackground( this_ptr);
+/* The following types are missing: wxFont
       AddVar_SetOwnFont( this_ptr);
+*/
+/* The following types are missing: wxFont
       AddVar_GetFont( this_ptr);
+*/
 /* The following types are missing: wxCursor
       AddVar_SetCursor( this_ptr);
 */
@@ -323,12 +359,18 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
       AddVar_ClientToScreen_1( this_ptr);
       AddVar_ScreenToClient_1( this_ptr);
       AddVar_ClientToScreen( this_ptr);
+/* The following types are missing: wxPoint, wxPoint
       AddVar_ClientToScreen_2( this_ptr);
+*/
       AddVar_ScreenToClient( this_ptr);
+/* The following types are missing: wxPoint, wxPoint
       AddVar_ScreenToClient_2( this_ptr);
+*/
       AddVar_HitTest_1( this_ptr);
       AddVar_HitTest( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_HitTest_2( this_ptr);
+*/
       AddVar_GetBorder_1( this_ptr);
       AddVar_GetBorder( this_ptr);
       AddVar_GetBorder_2( this_ptr);
@@ -336,7 +378,7 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 /* The following types are missing: wxUpdateUIEvent
       AddVar_DoUpdateWindowUI( this_ptr);
 */
-/* The following types are missing: wxMenu
+/* The following types are missing: wxMenu, wxPoint
       AddVar_PopupMenu_1( this_ptr);
 */
       AddVar_PopupMenu( this_ptr);
@@ -395,11 +437,21 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
       AddVar_SetAutoLayout( this_ptr);
       AddVar_GetAutoLayout( this_ptr);
       AddVar_Layout( this_ptr);
+/* The following types are missing: wxSizer
       AddVar_SetSizer( this_ptr);
+*/
+/* The following types are missing: wxSizer
       AddVar_SetSizerAndFit( this_ptr);
+*/
+/* The following types are missing: wxSizer
       AddVar_GetSizer( this_ptr);
+*/
+/* The following types are missing: wxSizer
       AddVar_SetContainingSizer( this_ptr);
+*/
+/* The following types are missing: wxSizer
       AddVar_GetContainingSizer( this_ptr);
+*/
       AddVar_SetTransparent( this_ptr);
       AddVar_CanSetTransparent( this_ptr);
 /* The following types are missing: wxSysColourChangedEvent
@@ -440,6 +492,260 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
+
+//---------------------------------------------------
+//  Wrapping of int wxWindowBase::NewControlId()
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_NewControlId::SetParametersComments()
+{
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_NewControlId::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  int res =   wxWindowBase::NewControlId();
+  return AMILabType<int >::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxWindowBase::NextControlId(int winid)
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_NextControlId::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_NextControlId::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+
+  int winid;
+  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
+
+  int res =   wxWindowBase::NextControlId(winid);
+  return AMILabType<int >::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of int wxWindowBase::PrevControlId(int winid)
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_PrevControlId::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
+  return_comments="returning a variable of type int";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_PrevControlId::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+
+  int winid;
+  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
+
+  int res =   wxWindowBase::PrevControlId(winid);
+  return AMILabType<int >::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxWindow * wxWindowBase::FindFocus()
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_FindFocus::SetParametersComments()
+{
+  return_comments="returning a variable of type wxWindow";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_FindFocus::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  wxWindow * res =   wxWindowBase::FindFocus();
+  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  return res_var;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxWindow * wxWindowBase::DoFindFocus()
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_DoFindFocus::SetParametersComments()
+{
+  return_comments="returning a variable of type wxWindow";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_DoFindFocus::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  wxWindow * res =   wxWindowBase::DoFindFocus();
+  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  return res_var;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxWindow * wxWindowBase::FindWindowById(long int winid, wxWindow const * parent = 0l)
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_FindWindowById::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'winid'")
+  ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent' (def:0l)")
+  return_comments="returning a variable of type wxWindow";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_FindWindowById::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+
+  long winid_long;
+  if (!get_val_param<long >(winid_long,_p,_n)) ClassHelpAndReturn;
+  long int winid = winid_long;
+
+  boost::shared_ptr<wxWindow > parent_smtptr;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxWindow* parent = parent_smtptr.get();
+
+  wxWindow * res =   wxWindowBase::FindWindowById(winid, parent);
+  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  return res_var;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxWindow * wxWindowBase::FindWindowByName(wxString const & name, wxWindow const * parent = 0l)
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_FindWindowByName::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
+  ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent' (def:0l)")
+  return_comments="returning a variable of type wxWindow";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_FindWindowByName::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+
+  boost::shared_ptr<wxString > name_smtptr;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxString const & name = *name_smtptr;
+
+  boost::shared_ptr<wxWindow > parent_smtptr;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxWindow* parent = parent_smtptr.get();
+
+  wxWindow * res =   wxWindowBase::FindWindowByName(name, parent);
+  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  return res_var;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxWindow * wxWindowBase::FindWindowByLabel(wxString const & label, wxWindow const * parent = 0l)
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_FindWindowByLabel::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'label'")
+  ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent' (def:0l)")
+  return_comments="returning a variable of type wxWindow";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_FindWindowByLabel::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+
+  boost::shared_ptr<wxString > label_smtptr;
+  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxString const & label = *label_smtptr;
+
+  boost::shared_ptr<wxWindow > parent_smtptr;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  wxWindow* parent = parent_smtptr.get();
+
+  wxWindow * res =   wxWindowBase::FindWindowByLabel(label, parent);
+  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  return res_var;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxWindow * wxWindowBase::GetCapture()
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_GetCapture::SetParametersComments()
+{
+  return_comments="returning a variable of type wxWindow";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_GetCapture::CallMember( ParamList* _p)
+{
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
+  wxWindow * res =   wxWindowBase::GetCapture();
+  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  return res_var;
+}
+/* The following types are missing: wxVisualAttributes
+
+//---------------------------------------------------
+//  Wrapping of wxVisualAttributes wxWindowBase::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
+//---------------------------------------------------
+void WrapClass_wxWindowBase::
+    wrap_GetClassDefaultAttributes::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
+  return_comments="returning a variable of type wxVisualAttributes";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindowBase::
+    wrap_GetClassDefaultAttributes::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+
+  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
+  if (!get_val_param<int >(variant_int,_p,_n)) ClassHelpAndReturn;
+  wxWindowVariant variant = (wxWindowVariant) variant_int;
+
+  wxVisualAttributes res =   wxWindowBase::GetClassDefaultAttributes(variant);
+  return AMILabType<wxVisualAttributes >::CreateVar(res);
+}
+*/
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::CreateBase(wxWindowBase * parent, wxWindowID winid, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxPanelNameStr)
@@ -500,6 +806,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::Close(bool force = false)
@@ -799,75 +1106,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 }
 
 //---------------------------------------------------
-//  Wrapping of int wxWindowBase::NewControlId()
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_NewControlId::SetParametersComments()
-{
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_NewControlId::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  int res =   this->_objectptr->GetObj()->NewControlId();
-  return AMILabType<int >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of int wxWindowBase::NextControlId(int winid)
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_NextControlId::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_NextControlId::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  int winid;
-  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
-
-  int res =   this->_objectptr->GetObj()->NextControlId(winid);
-  return AMILabType<int >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of int wxWindowBase::PrevControlId(int winid)
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_PrevControlId::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_PrevControlId::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  int winid;
-  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
-
-  int res =   this->_objectptr->GetObj()->PrevControlId(winid);
-  return AMILabType<int >::CreateVar(res);
-}
-
-//---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetSize(int x, int y, int width, int height, int sizeFlags = 3)
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
@@ -928,9 +1166,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   WrapClass_wxWindowBase::wrap_SetSize_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_SetSize_4 m4(this->_objectptr);
-  res = m4.CallMember(_p);
-  if (!m4.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -986,6 +1221,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetSize(size);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetSize(wxRect const & rect, int sizeFlags = 3)
@@ -1015,6 +1251,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetSize(rect, sizeFlags);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::Move(int x, int y, int flags = 0)
@@ -1063,11 +1300,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   WrapClass_wxWindowBase::wrap_Move_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_Move_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::Move(wxPoint const & pt, int flags = 0)
@@ -1097,6 +1332,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->Move(pt, flags);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetPosition(wxPoint const & pt)
@@ -1122,6 +1359,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetPosition(pt);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetClientSize(int width, int height)
@@ -1169,9 +1407,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   WrapClass_wxWindowBase::wrap_SetClientSize_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_SetClientSize_3 m3(this->_objectptr);
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -1199,6 +1434,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetClientSize(size);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetClientSize(wxRect const & rect)
@@ -1224,6 +1460,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetClientSize(rect);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::GetPosition(int * x, int * y)
@@ -1270,11 +1507,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   WrapClass_wxWindowBase::wrap_GetPosition_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_GetPosition_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxWindowBase::GetPosition()
@@ -1294,6 +1529,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint res =   this->_objectptr->GetObj()->GetPosition();
   return AMILabType<wxPoint >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::GetScreenPosition(int * x, int * y)
@@ -1340,11 +1576,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   WrapClass_wxWindowBase::wrap_GetScreenPosition_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_GetScreenPosition_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxWindowBase::GetScreenPosition()
@@ -1364,6 +1598,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint res =   this->_objectptr->GetObj()->GetScreenPosition();
   return AMILabType<wxPoint >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::GetSize(int * w, int * h)
@@ -1504,6 +1739,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxSize res =   this->_objectptr->GetObj()->GetClientSize();
   return AMILabType<wxSize >::CreateVar(res);
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of wxRect wxWindowBase::GetRect()
@@ -1523,6 +1759,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxRect res =   this->_objectptr->GetObj()->GetRect();
   return AMILabType<wxRect >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of wxRect wxWindowBase::GetScreenRect()
@@ -1542,6 +1780,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxRect res =   this->_objectptr->GetObj()->GetScreenRect();
   return AMILabType<wxRect >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxWindowBase::GetClientAreaOrigin()
@@ -1561,6 +1801,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint res =   this->_objectptr->GetObj()->GetClientAreaOrigin();
   return AMILabType<wxPoint >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of wxRect wxWindowBase::GetClientRect()
@@ -1580,6 +1822,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxRect res =   this->_objectptr->GetObj()->GetClientRect();
   return AMILabType<wxRect >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxSize wxWindowBase::ClientToWindowSize(wxSize const & size)
@@ -1747,7 +1990,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxScrollHelper * res =   this->_objectptr->GetObj()->GetScrollHelper();
-  return AMILabType<wxScrollHelper >::CreateVar(res);
+  return AMILabType<wxScrollHelper >::CreateVar(res,true);
 }
 */
 
@@ -3048,46 +3291,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxWindow * wxWindowBase::FindFocus()
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_FindFocus::SetParametersComments()
-{
-  return_comments="returning a variable of type wxWindow";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_FindFocus::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxWindow * res =   this->_objectptr->GetObj()->FindFocus();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxWindow * wxWindowBase::DoFindFocus()
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_DoFindFocus::SetParametersComments()
-{
-  return_comments="returning a variable of type wxWindow";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_DoFindFocus::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxWindow * res =   this->_objectptr->GetObj()->DoFindFocus();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
 //  Wrapping of bool wxWindowBase::AcceptsFocus()
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
@@ -3531,102 +3734,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
   return res_var;
 }
-
-//---------------------------------------------------
-//  Wrapping of wxWindow * wxWindowBase::FindWindowById(long int winid, wxWindow const * parent = 0l)
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_FindWindowById::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( long, "parameter named 'winid'")
-  ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent' (def:0l)")
-  return_comments="returning a variable of type wxWindow";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_FindWindowById::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
-  int _n=0;
-
-  long winid_long;
-  if (!get_val_param<long >(winid_long,_p,_n)) ClassHelpAndReturn;
-  long int winid = winid_long;
-
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
-
-  wxWindow * res =   this->_objectptr->GetObj()->FindWindowById(winid, parent);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxWindow * wxWindowBase::FindWindowByName(wxString const & name, wxWindow const * parent = 0l)
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_FindWindowByName::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
-  ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent' (def:0l)")
-  return_comments="returning a variable of type wxWindow";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_FindWindowByName::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxString const & name = *name_smtptr;
-
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
-
-  wxWindow * res =   this->_objectptr->GetObj()->FindWindowByName(name, parent);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxWindow * wxWindowBase::FindWindowByLabel(wxString const & label, wxWindow const * parent = 0l)
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_FindWindowByLabel::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'label'")
-  ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent' (def:0l)")
-  return_comments="returning a variable of type wxWindow";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_FindWindowByLabel::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<wxString > label_smtptr;
-  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxString const & label = *label_smtptr;
-
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
-
-  wxWindow * res =   this->_objectptr->GetObj()->FindWindowByLabel(label, parent);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
-  return res_var;
-}
 /* The following types are missing: wxEvtHandler
 
 //---------------------------------------------------
@@ -3645,7 +3752,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvtHandler * res =   this->_objectptr->GetObj()->GetEventHandler();
-  return AMILabType<wxEvtHandler >::CreateVar(res);
+  return AMILabType<wxEvtHandler >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxEvtHandler
@@ -3727,7 +3834,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   bool deleteHandler = (bool) (deleteHandler_int>0.5);
 
   wxEvtHandler * res =   this->_objectptr->GetObj()->PopEventHandler(deleteHandler);
-  return AMILabType<wxEvtHandler >::CreateVar(res);
+  return AMILabType<wxEvtHandler >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxEvtHandler
@@ -3927,9 +4034,10 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxAcceleratorTable * res =   this->_objectptr->GetObj()->GetAcceleratorTable();
-  return AMILabType<wxAcceleratorTable >::CreateVar(res);
+  return AMILabType<wxAcceleratorTable >::CreateVar(res,true);
 }
 */
+/* The following types are missing: wxPoint, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxWindowBase::ConvertPixelsToDialog(wxPoint const & pt)
@@ -3956,6 +4064,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint res =   this->_objectptr->GetObj()->ConvertPixelsToDialog(pt);
   return AMILabType<wxPoint >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxPoint, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxWindowBase::ConvertDialogToPixels(wxPoint const & pt)
@@ -3982,6 +4092,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint res =   this->_objectptr->GetObj()->ConvertDialogToPixels(pt);
   return AMILabType<wxPoint >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxWindowBase::ConvertPixelsToDialog(...)
@@ -3995,9 +4106,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
     wrap_ConvertPixelsToDialog::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxWindowBase::wrap_ConvertPixelsToDialog_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxWindowBase::wrap_ConvertPixelsToDialog_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -4042,9 +4150,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
     wrap_ConvertDialogToPixels::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxWindowBase::wrap_ConvertDialogToPixels_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxWindowBase::wrap_ConvertDialogToPixels_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -4114,26 +4219,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxWindow * wxWindowBase::GetCapture()
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_GetCapture::SetParametersComments()
-{
-  return_comments="returning a variable of type wxWindow";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_GetCapture::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxWindow * res =   this->_objectptr->GetObj()->GetCapture();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
 //  Wrapping of bool wxWindowBase::HasCapture()
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
@@ -4152,6 +4237,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::RefreshRect(wxRect const & rect, bool eraseBackground = true)
@@ -4182,6 +4268,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->RefreshRect(rect, eraseBackground);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::Update()
@@ -4378,6 +4465,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   return AMILabType<wxRegion >::CreateVar(res);
 }
 */
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of wxRect wxWindowBase::GetUpdateClientRect()
@@ -4397,6 +4485,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxRect res =   this->_objectptr->GetObj()->GetUpdateClientRect();
   return AMILabType<wxRect >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::DoIsExposed(int x, int y)
@@ -4535,12 +4624,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   WrapClass_wxWindowBase::wrap_IsExposed_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_IsExposed_3 m3(this->_objectptr);
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_IsExposed_4 m4(this->_objectptr);
-  res = m4.CallMember(_p);
-  if (!m4.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -4581,6 +4664,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::IsExposed(wxPoint const & pt)
@@ -4608,6 +4692,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::IsExposed(wxRect const & rect)
@@ -4635,6 +4721,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
+/* The following types are missing: wxVisualAttributes
 
 //---------------------------------------------------
 //  Wrapping of wxVisualAttributes wxWindowBase::GetDefaultAttributes()
@@ -4654,32 +4742,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxVisualAttributes res =   this->_objectptr->GetObj()->GetDefaultAttributes();
   return AMILabType<wxVisualAttributes >::CreateVar(res);
 }
-
-//---------------------------------------------------
-//  Wrapping of wxVisualAttributes wxWindowBase::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
-//---------------------------------------------------
-void WrapClass_wxWindowBase::
-    wrap_GetClassDefaultAttributes::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
-  return_comments="returning a variable of type wxVisualAttributes";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_GetClassDefaultAttributes::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
-  if (!get_val_param<int >(variant_int,_p,_n)) ClassHelpAndReturn;
-  wxWindowVariant variant = (wxWindowVariant) variant_int;
-
-  wxVisualAttributes res =   this->_objectptr->GetObj()->GetClassDefaultAttributes(variant);
-  return AMILabType<wxVisualAttributes >::CreateVar(res);
-}
+*/
+/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::SetBackgroundColour(wxColour const & colour)
@@ -4707,6 +4771,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
+/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetOwnBackgroundColour(wxColour const & colour)
@@ -4732,6 +4798,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetOwnBackgroundColour(colour);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of wxColour wxWindowBase::GetBackgroundColour()
@@ -4751,6 +4819,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxColour res =   this->_objectptr->GetObj()->GetBackgroundColour();
   return AMILabType<wxColour >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::InheritsBackgroundColour()
@@ -4791,6 +4860,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::SetForegroundColour(wxColour const & colour)
@@ -4818,6 +4888,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
+/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetOwnForegroundColour(wxColour const & colour)
@@ -4843,6 +4915,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetOwnForegroundColour(colour);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxColour
 
 //---------------------------------------------------
 //  Wrapping of wxColour wxWindowBase::GetForegroundColour()
@@ -4862,6 +4936,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxColour res =   this->_objectptr->GetObj()->GetForegroundColour();
   return AMILabType<wxColour >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::SetBackgroundStyle(wxBackgroundStyle style)
@@ -4929,6 +5004,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxFont
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetOwnFont(wxFont const & font)
@@ -4954,6 +5030,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetOwnFont(font);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxFont
 
 //---------------------------------------------------
 //  Wrapping of wxFont wxWindowBase::GetFont()
@@ -4973,6 +5051,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxFont res =   this->_objectptr->GetObj()->GetFont();
   return AMILabType<wxFont >::CreateVar(res);
 }
+*/
 /* The following types are missing: wxCursor
 
 //---------------------------------------------------
@@ -5068,7 +5147,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxCaret * res =   this->_objectptr->GetObj()->GetCaret();
-  return AMILabType<wxCaret >::CreateVar(res);
+  return AMILabType<wxCaret >::CreateVar(res,true);
 }
 */
 
@@ -5147,11 +5226,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   WrapClass_wxWindowBase::wrap_ClientToScreen_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_ClientToScreen_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxWindowBase::ClientToScreen(wxPoint const & pt)
@@ -5178,6 +5255,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint res =   this->_objectptr->GetObj()->ClientToScreen(pt);
   return AMILabType<wxPoint >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxWindowBase::ScreenToClient(...)
@@ -5194,11 +5272,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   WrapClass_wxWindowBase::wrap_ScreenToClient_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_ScreenToClient_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxWindowBase::ScreenToClient(wxPoint const & pt)
@@ -5225,6 +5301,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint res =   this->_objectptr->GetObj()->ScreenToClient(pt);
   return AMILabType<wxPoint >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxHitTest wxWindowBase::HitTest(wxCoord x, wxCoord y)
@@ -5271,11 +5348,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   WrapClass_wxWindowBase::wrap_HitTest_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxWindowBase::wrap_HitTest_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxHitTest wxWindowBase::HitTest(wxPoint const & pt)
@@ -5303,6 +5378,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = (int) res;
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxBorder wxWindowBase::GetBorder(long int flags)
@@ -5423,7 +5499,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   return BasicVariable::ptr();
 }
 */
-/* The following types are missing: wxMenu
+/* The following types are missing: wxMenu, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::PopupMenu(wxMenu * menu, wxPoint const & pos = wxDefaultPosition)
@@ -5863,7 +5939,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxToolTip * res =   this->_objectptr->GetObj()->GetToolTip();
-  return AMILabType<wxToolTip >::CreateVar(res);
+  return AMILabType<wxToolTip >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxDropTarget
@@ -5884,7 +5960,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxDropTarget * res =   this->_objectptr->GetObj()->GetDropTarget();
-  return AMILabType<wxDropTarget >::CreateVar(res);
+  return AMILabType<wxDropTarget >::CreateVar(res,true);
 }
 */
 
@@ -5957,7 +6033,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxLayoutConstraints * res =   this->_objectptr->GetObj()->GetConstraints();
-  return AMILabType<wxLayoutConstraints >::CreateVar(res);
+  return AMILabType<wxLayoutConstraints >::CreateVar(res,true);
 }
 */
 /* The following types are missing: wxLayoutConstraints
@@ -6005,7 +6081,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindowList * res =   this->_objectptr->GetObj()->GetConstraintsInvolvedIn();
-  return AMILabType<wxWindowList >::CreateVar(res);
+  return AMILabType<wxWindowList >::CreateVar(res,true);
 }
 */
 
@@ -6418,6 +6494,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxSizer
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetSizer(wxSizer * sizer, bool deleteOld = true)
@@ -6448,6 +6525,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetSizer(sizer, deleteOld);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxSizer
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetSizerAndFit(wxSizer * sizer, bool deleteOld = true)
@@ -6478,6 +6557,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetSizerAndFit(sizer, deleteOld);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxSizer
 
 //---------------------------------------------------
 //  Wrapping of wxSizer * wxWindowBase::GetSizer()
@@ -6495,9 +6576,10 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxSizer * res =   this->_objectptr->GetObj()->GetSizer();
-  BasicVariable::ptr res_var = WrapClass_wxSizer::CreateVar(res);
-  return res_var;
+  return AMILabType<wxSizer >::CreateVar(res,true);
 }
+*/
+/* The following types are missing: wxSizer
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetContainingSizer(wxSizer * sizer)
@@ -6523,6 +6605,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   this->_objectptr->GetObj()->SetContainingSizer(sizer);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxSizer
 
 //---------------------------------------------------
 //  Wrapping of wxSizer * wxWindowBase::GetContainingSizer()
@@ -6540,9 +6624,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxSizer * res =   this->_objectptr->GetObj()->GetContainingSizer();
-  BasicVariable::ptr res_var = WrapClass_wxSizer::CreateVar(res);
-  return res_var;
+  return AMILabType<wxSizer >::CreateVar(res,true);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::SetTransparent(wxByte param0)

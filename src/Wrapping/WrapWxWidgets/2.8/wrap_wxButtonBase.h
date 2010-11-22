@@ -51,7 +51,6 @@ class WrapClass_wxButtonBase : public WrapClass<wxButtonBase>
     /// Destructor
     ~WrapClass_wxButtonBase()
     {
-      std::cout << "~WrapClass_wxButtonBase()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -64,40 +63,26 @@ class WrapClass_wxButtonBase : public WrapClass<wxButtonBase>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxButtonBase*);
 
-    // here add each method
+    // Static methods
+    
+    ADD_CLASS_STATICMETHOD(GetDefaultSize,"wxSize wxButtonBase::GetDefaultSize() (http://docs.wxwidgets.org/stable/wx_wxbuttonbase.html#getdefaultsize).");
+
+
+
+    // Standard methods
     
     // Adding standard methods
     ADD_CLASS_METHOD(SetImageLabel,"void wxButtonBase::SetImageLabel(wxBitmap const & param0)  (http://docs.wxwidgets.org/stable/wx_wxbuttonbase.html#setimagelabel)")
     ADD_CLASS_METHOD(SetImageMargins,"void wxButtonBase::SetImageMargins(wxCoord param0, wxCoord param1)  (http://docs.wxwidgets.org/stable/wx_wxbuttonbase.html#setimagemargins)")
     ADD_CLASS_METHOD(SetDefault,"void wxButtonBase::SetDefault()  (http://docs.wxwidgets.org/stable/wx_wxbuttonbase.html#setdefault)")
     ADD_CLASS_METHOD(ShouldInheritColours,"bool wxButtonBase::ShouldInheritColours()  (http://docs.wxwidgets.org/stable/wx_wxbuttonbase.html#shouldinheritcolours)")
-    ADD_CLASS_METHOD(GetDefaultSize,"wxSize wxButtonBase::GetDefaultSize()  (http://docs.wxwidgets.org/stable/wx_wxbuttonbase.html#getdefaultsize)")
 
 
 
 
 
-    void AddMethods(WrapClass<wxButtonBase>::ptr this_ptr )
-    {
-      
-      // Add members from wxControl
-      WrapClass_wxControl::ptr parent_wxControl(        boost::dynamic_pointer_cast<WrapClass_wxControl >(this_ptr));
-      parent_wxControl->AddMethods(parent_wxControl);
+    void AddMethods(WrapClass<wxButtonBase>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-      AddVar_SetImageLabel( this_ptr);
-      AddVar_SetImageMargins( this_ptr);
-      AddVar_SetDefault( this_ptr);
-      AddVar_ShouldInheritColours( this_ptr);
-      AddVar_GetDefaultSize( this_ptr);
-
-
-
-      
-    };
 };
 
 
