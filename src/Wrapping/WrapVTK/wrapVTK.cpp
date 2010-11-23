@@ -54,15 +54,26 @@ extern VarContexts  Vars;
 #include "vtkAnisoGaussSeidel.h"
 #include "vtkSkeleton2Lines.h"
 #include "wxMedical3Frame.h"
+#include "wxVTKFrame.h"
 
-#include "wrap_vtkRenderer.h"
+#include "wrap_wxVTKRenderWindowInteractor.h"
+
+#include "wrap_vtkImageData.h"
 #include "wrap_vtkRenderWindowInteractor.h"
+#include "wrap_vtkRenderer.h"
+#include "wrap_vtkVolume.h"
+#include "wrap_vtkGPUVolumeRayCastMapper.h"
+#include "wrap_vtkBoxWidget.h"
+#include "wrap_vtkVolumeProperty.h"
 
 #include "wrap_vtkVolumeMapper.h"
+#include "wrap_vtkInteractorStyleTrackballCamera.h"
 #include "wrap_vtkInteractorStyleTrackball.h"
 #include "wrap_vtkInteractorStyleImage.h"
 #include "wrap_vtkPiecewiseFunction.h"
 #include "wrap_vtkColorTransferFunction.h"
+
+// #include "vtkImageData.h"
 
 #endif // _WITHOUT_VTK_
 
@@ -76,21 +87,39 @@ void AddWrapVTK() {
     ADDVAR_NAME( C_wrap_varfunction,   "vtkSphere",            Wrap_vtkSphere);
     ADDVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     wrap_vtkGPURayCasting);
     ADDVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        wrap_wxVTKMedical3);
+    ADDVAR_NAME( C_wrap_varfunction,   "wxVTKFrame",           wrap_wxVTKFrame);
 
+    ADDVAR_NAME( C_wrap_varfunction,   "ToVtkImageData", wrap_ToVtkImageData);
+
+// #include "wrap_vtkInteractorStyleTrackballCamera.h"
+// #include "wrap_vtkInteractorStyleTrackball.h"
+// #include "wrap_vtkInteractorStyleImage.h"
+
+    
     Variables::ptr current_context=Vars.GetCurrentContext();
-    WrapClass_vtkPiecewiseFunction::
-      AddVar_New(current_context,"vtkPiecewiseFunction_New");
-    WrapClass_vtkColorTransferFunction::
-      AddVar_New(current_context,"vtkColorTransferFunction_New");
 
-    WrapClass_vtkVolumeMapper::
-      AddVar_New(current_context,"vtkVolumeMapper_New");
-    WrapClass_vtkVolumeMapper::
-      AddVar_SafeDownCast(current_context,"vtkVolumeMapper_SafeDownCast");
-    WrapClass_vtkInteractorStyleTrackball::
-      AddVar_New(current_context,"vtkInteractorStyleTrackball_New");
-    WrapClass_vtkInteractorStyleImage::
-      AddVar_New(current_context,"vtkInteractorStyleImage_New");
+    #define ADDVTKStatic(classname,methodname) \
+        WrapClass_##classname:: \
+          AddVar_##methodname(current_context,std::string(#classname)+"_"+#methodname);
+    
+    ADDVTKStatic(vtkRenderWindowInteractor, New)
+    ADDVTKStatic(vtkRenderer,               New)
+    ADDVTKStatic(vtkVolume,                 New)
+    ADDVTKStatic(vtkGPUVolumeRayCastMapper, New)
+    ADDVTKStatic(vtkBoxWidget,              New)
+    ADDVTKStatic(vtkVolumeProperty,         New)
+
+    ADDVTKStatic(vtkVolumeMapper,           New)
+    ADDVTKStatic(vtkVolumeMapper,           SafeDownCast)
+
+    ADDVTKStatic(vtkInteractorStyleTrackballCamera, New)
+    ADDVTKStatic(vtkInteractorStyleTrackball,  New)
+    ADDVTKStatic(vtkInteractorStyleImage,      New)
+
+    ADDVTKStatic(vtkPiecewiseFunction,      New)
+    ADDVTKStatic(vtkColorTransferFunction,  New)
+   
+  #undef ADDVTKStatic
 
 }
 
@@ -347,3 +376,54 @@ BasicVariable::ptr wrap_wxVTKMedical3(ParamList* p)
 
 
 } // wrap_wxVTKMedical3()
+
+
+//
+BasicVariable::ptr wrap_ToVtkImageData(ParamList* p)
+{
+
+  char functionname[] = "ToVtkImageData";
+  char description[]=" \n\
+                      ";
+  char parameters[] =" convert InrImage variable to vtkImageData variable\n\
+                      Parameters:\n\
+                        InrImage variable\n\
+                      Return: Returns a variable of type vtkImageData\n\
+                      \n\
+                      ";
+
+  InrImage* input;
+  int   n=0;
+
+  vtkImageData_ptr                vtk_image;
+  //  printf("1 \n");
+
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
+  vtk_image = (vtkImageData_ptr) (*input);
+
+  return AMILabType<vtkImageData>::CreateVarFromSmtPtr(vtk_image);
+
+} // wrap_ToVtkImageData()
+
+
+//
+BasicVariable::ptr wrap_wxVTKFrame(ParamList* p)
+{
+
+  char functionname[] = "wxVTKFrame";
+  char description[]=" \n\
+                      ";
+  char parameters[] =" wxFrame with a vtkWindowInteractor inside\n\
+                      Parameters:\
+                      Return: Returns a variable of type vtkRenderWindowInterator\
+                      \n\
+                      ";
+
+  // create the main application window
+  wxVTKFrame *vtkframe = new wxVTKFrame(_T("wxWindows-VTK App"),
+          wxPoint(50, 50), wxSize(450, 340));
+  vtkframe->Show(TRUE);
+  wxVTKRenderWindowInteractor* renwininteract = vtkframe->GetRenderWindowInteractor();
+  return AMILabType<wxVTKRenderWindowInteractor>::CreateVar(renwininteract);
+
+} // wrap_wxVTKFrame()

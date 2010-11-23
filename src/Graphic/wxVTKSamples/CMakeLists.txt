@@ -39,11 +39,14 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 SET(wxVTKSmaples_HDRS
+  wxMedical3Frame.h
+  wxVTKFrame.h
 )
 
 SET(wxVTKSamples_SRCS
-   wxMedical3.cxx
-   ${wxVTKSamples_HDRS}
+  wxMedical3.cxx
+  wxVTKFrame.cxx
+  ${wxVTKSamples_HDRS}
 )
 
 my_add_library ( wxVTKSamples)

@@ -16,3 +16,4 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkInteractorStyleTrackball.h>
 #include <vtkRendererCollection.h>
+#include <vtkGPUVolumeRayCastMapper.h>

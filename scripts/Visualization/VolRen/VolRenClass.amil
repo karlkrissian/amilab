@@ -15,7 +15,6 @@ if (!exists(VolRenClass)) {
 
   Class VolRenClass : public ScriptGui {
 
-    ::ami_import = &global::ami_import
     #----------------------------
     proc ::Init() \
     {
@@ -25,6 +24,7 @@ if (!exists(VolRenClass)) {
       ::opacitywindow = 1000, "Opacity Window"
       ::opacitylevel  = 1000, "Opacity Level"
       ::clip = UCHAR(1), "Enable/Disable clipping box"
+      ::initialized=0
       #::Gui()
     }
     
@@ -56,6 +56,14 @@ if (!exists(VolRenClass)) {
     }
 
     #----------------------------
+    proc ::DeleteVariables() {
+      del ::renwin_interact
+      del ::renwin
+      del ::renderer
+      # etc ...
+    }
+
+    #----------------------------
     proc ::Start() \
     {
       if (!exists(::input)) {
@@ -65,8 +73,8 @@ if (!exists(VolRenClass)) {
         ::blend_type, ::opacitywindow, ::opacitylevel, ::clip)
       ::renwin   = ::renwin_interact.GetRenderWindow()
       ::renderer = ::renwin.GetRenderers().GetFirstRenderer()
-      #interact = global::vtkInteractorStyleImage_New()
-      #::rendwin_interact.SetInteractorStyle(&interact)
+      interact = global::vtkInteractorStyleTrackballCamera_New()
+      ::renwin_interact.SetInteractorStyle(&interact)
       #::renderer.Render()
       vols = ::renderer.GetVolumes()
       vols.InitTraversal()
@@ -75,6 +83,68 @@ if (!exists(VolRenClass)) {
       mapper   = ::vol.GetMapper()
       ::volmapper = global::vtkVolumeMapper_SafeDownCast(&mapper)
       #::renwin_interact.Render()
+
+    }
+
+    #----------------------------
+    proc ::StartNew() \
+    {
+      if (!exists(::input)) {
+        ::load_input()
+      }
+      ::initialized=0
+      ::renwin_interact = global::wxVTKFrame()
+      ::renwin   = ::renwin_interact.GetRenderWindow()
+      ::renderer = global::vtkRenderer_New()
+      ::renwin.AddRenderer(&::renderer)
+      interact = global::vtkInteractorStyleTrackballCamera_New()
+      ::renwin_interact.SetInteractorStyle(&interact)
+
+
+      # 10/(1+clip) in c++ code
+      ::renwin_interact.SetDesiredUpdateRate(10)
+
+      # check that we have a volume
+      if (::input.tx<2)||(::input.ty<2)||(::input.tz<2) {
+        InfoDialog "Input image is not a volume!"
+      } else {
+        ::vol       = global::vtkVolume_New()
+        ::volmapper = global::vtkGPUVolumeRayCastMapper_New()
+        # don't put the boxwidget for the moment
+        # convert input to vtkimage
+        ::vtkinput  = global::ToVtkImageData(&::input)
+        ::volmapper.SetInput(&::vtkinput)
+
+        ::volmapper.SetSampleDistance()
+
+        # Create our transfer function
+        ::colorFun=global::vtkColorTransferFunction_New()
+        ::opacityFun=global::vtkPiecewiseFunction_New()
+        
+        # Create the property and attach the transfer functions
+        ::property = global::vtkVolumeProperty_New()
+        ::property.SetIndependentComponents(1)
+        ::property.SetColor( &::colorFun )
+        ::property.SetScalarOpacity( &::opacityFun )
+        ::property.SetInterpolationTypeToLinear()
+ 
+        # connect up the volume to the property and the mapper
+        ::vol.SetProperty( &::property )
+        ::vol.SetMapper( &::volmapper )
+
+        # Add the volume to the scene
+        ::renderer.AddVolume( &::vol )
+        ::renderer.ResetCamera()
+
+        # interact with data
+        #  renWin->Render()
+        #  m_pVTKWindow->Start()
+        ::renderer->ResetCameraClippingRange()
+        ::initialized=1
+        ::OnRender()
+        ::renwin_interact.Render()
+
+      }
 
     }
 
@@ -96,8 +166,8 @@ if (!exists(VolRenClass)) {
       ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
                              ::opacitylevel + 0.5*::opacitywindow, 1.0 )
 
-      ::property.ShadeOff()
       ::volmapper.SetBlendModeToComposite()
+      ::property.ShadeOff()
     }
 
     #----------------------------
@@ -181,32 +251,47 @@ if (!exists(VolRenClass)) {
       ::property.SetScalarOpacityUnitDistance(0.8919);
     }
 
+    
+
     #----------------------------
     proc ::OnRender() \
     {
-      if exists(::colorFun)   { ::colorFun.Delete(); del ::colorFun; }
-      if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
-      ::colorFun=global::vtkColorTransferFunction_New()
-      ::opacityFun=global::vtkPiecewiseFunction_New()
+      if (exists(::renwin_interact)&&(::initialized>0.5)) {
+        if exists(::colorFun)   { ::colorFun.Delete(); del ::colorFun; }
+        if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
+        if exists(::property)   { ::property.Delete(); del ::property; }
 
-      if (::blend_type==0) { ::BlendMIP();                }
-      if (::blend_type==1) { ::BlendCompositeRamp();      }
-      if (::blend_type==2) { ::BlendCompositeShadeRamp(); }
-      if (::blend_type==3) { ::BlendCTSkin();             }
-      if (::blend_type==4) { ::BlendCTBones();            }
-      if (::blend_type==5) { ::BlendCTMuscles();          }
+        ::colorFun=global::vtkColorTransferFunction_New()
+        ::opacityFun=global::vtkPiecewiseFunction_New()
 
-      ::property.SetColor( &::colorFun )
-      ::property.SetScalarOpacity( &::opacityFun )
-      ::renwin_interact.Render()
+        # Create the property and attach the transfer functions
+        ::property = global::vtkVolumeProperty_New()
+        ::property.SetIndependentComponents(1)
+        ::property.SetColor( &::colorFun )
+        ::property.SetScalarOpacity( &::opacityFun )
+        ::property.SetInterpolationTypeToLinear()
+ 
+        # connect up the volume to the property and the mapper
+        ::vol.SetProperty( &::property )
+
+        if (::blend_type==0) { ::BlendMIP();                }
+        if (::blend_type==1) { ::BlendCompositeRamp();      }
+        if (::blend_type==2) { ::BlendCompositeShadeRamp(); }
+        if (::blend_type==3) { ::BlendCTSkin();             }
+        if (::blend_type==4) { ::BlendCTBones();            }
+        if (::blend_type==5) { ::BlendCTMuscles();          }
+
+        #::property.SetColor( &::colorFun )
+        #::property.SetScalarOpacity( &::opacityFun )
+        ::renwin_interact.Render()
+      }
     }
 
     #----------------------------
     proc ::Gui() {
     
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("VolRen")
+      ::win = global::ami_import.ParamPanel("VolRen")
       
       ::win.BeginBook()
     
@@ -239,7 +324,8 @@ if (!exists(VolRenClass)) {
             ::win.AddBoolean(&::clip, "Clipping box")
           ::win.EndBoxPanel()
 
-          ::win.AddButton("Start",::Start)
+          ::win.AddButton("Start",   ::Start)
+          ::win.AddButton("StartNew",::StartNew)
   
       ::win.EndBook()
 

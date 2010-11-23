@@ -674,17 +674,16 @@ if ( reductionFactor < 1.0 )
   // interact with data
 //  renWin->Render();
 //  m_pVTKWindow->Start();
-  
+ 
+  renderer->ResetCameraClippingRange ();
+ 
   opacityFun->Delete();
   colorFun->Delete();
   property->Delete();
-
-/*
   box->Delete();
   volume->Delete();
-  */
+  mapper->Delete();
 
-//  mapper->Delete();
 //  resample->Delete();
 //  renWin->Delete();
 //  iren->Delete();
