@@ -21,7 +21,7 @@ if (!exists(VolRenClass)) {
     {
       ::input_name =  "", "name of the input image"
 
-      ::blend_type = INT(1), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->RGB_Composite"
+      ::blend_type = INT(1), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->CT_Muscles, 6->RGB_Composite"
       ::opacitywindow = 1000, "Opacity Window"
       ::opacitylevel  = 1000, "Opacity Level"
       ::clip = UCHAR(1), "Enable/Disable clipping box"
@@ -61,8 +61,144 @@ if (!exists(VolRenClass)) {
       if (!exists(::input)) {
         ::load_input()
       }
-      ::renderer = global::vtkGPURayCasting(&::input, \
+      ::renwin_interact = global::vtkGPURayCasting(&::input, \
         ::blend_type, ::opacitywindow, ::opacitylevel, ::clip)
+      ::renwin   = ::renwin_interact.GetRenderWindow()
+      ::renderer = ::renwin.GetRenderers().GetFirstRenderer()
+      #interact = global::vtkInteractorStyleImage_New()
+      #::rendwin_interact.SetInteractorStyle(&interact)
+      #::renderer.Render()
+      vols = ::renderer.GetVolumes()
+      vols.InitTraversal()
+      ::vol      =  vols.GetNextVolume()
+      ::property = ::vol.GetProperty()
+      mapper   = ::vol.GetMapper()
+      ::volmapper = global::vtkVolumeMapper_SafeDownCast(&mapper)
+      #::renwin_interact.Render()
+
+    }
+
+    #----------------------------
+    proc ::BlendMIP() \
+    {
+      ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
+      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
+                             ::opacitylevel + 0.5*::opacitywindow, 1.0 );
+      ::volmapper.SetBlendModeToMaximumIntensity();
+    }
+
+    #----------------------------
+    proc ::BlendCompositeRamp() \
+    {
+      ::colorFun.AddRGBSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, 0.0, 0.0, \
+                              ::opacitylevel + 0.5*::opacitywindow, 1.0, 1.0, 1.0 )
+
+      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
+                             ::opacitylevel + 0.5*::opacitywindow, 1.0 )
+
+      ::property.ShadeOff()
+      ::volmapper.SetBlendModeToComposite()
+    }
+
+    #----------------------------
+    proc ::BlendCompositeShadeRamp() \
+    {
+      ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
+      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
+                               ::opacitylevel + 0.5*::opacitywindow, 1.0 );
+      ::volmapper.SetBlendModeToComposite();
+      ::property.ShadeOn();
+    }
+
+
+    #----------------------------
+    proc ::BlendCTSkin() \
+    {
+      ::colorFun.AddRGBPoint( -3024, 0, 0, 0, 0.5, 0.0 );
+      ::colorFun.AddRGBPoint( -1000, 0.62, 0.36, 0.18, 0.5, 0.0 );
+      ::colorFun.AddRGBPoint( -500, 0.88, 0.60, 0.29, 0.33, 0.45 );
+      ::colorFun.AddRGBPoint( 3071, 0.83, 0.66, 1, 0.5, 0.0 );
+      
+      ::opacityFun.AddPoint(-3024, 0, 0.5, 0.0 );
+      ::opacityFun.AddPoint(-1000, 0, 0.5, 0.0 );
+      ::opacityFun.AddPoint(-500, 1.0, 0.33, 0.45 );
+      ::opacityFun.AddPoint(3071, 1.0, 0.5, 0.0);
+
+      ::volmapper.SetBlendModeToComposite();
+      ::property.ShadeOn();
+      ::property.SetAmbient(0.1);
+      ::property.SetDiffuse(0.9);
+      ::property.SetSpecular(0.2);
+      ::property.SetSpecularPower(10.0);
+      ::property.SetScalarOpacityUnitDistance(0.8919);
+    }
+
+
+    #----------------------------
+    proc ::BlendCTBones() \
+    {
+      ::colorFun.AddRGBPoint( -3024, 0, 0, 0, 0.5, 0.0 );
+      ::colorFun.AddRGBPoint( -16, 0.73, 0.25, 0.30, 0.49, 0.61 );
+      ::colorFun.AddRGBPoint( 641, 0.90, 0.82, 0.56, 0.5, 0.0 );
+      ::colorFun.AddRGBPoint( 3071, 1, 1, 1, 0.5, 0.0 );
+      
+      ::opacityFun.AddPoint(-3024, 0, 0.5, 0.0 );
+      ::opacityFun.AddPoint(-16, 0, 0.49, 0.61 );
+      ::opacityFun.AddPoint(641, 0.72, 0.5, 0.0 );
+      ::opacityFun.AddPoint(3071, 0.71, 0.5, 0.0);
+
+      ::volmapper.SetBlendModeToComposite();
+      ::property.ShadeOn();
+      ::property.SetAmbient(0.1);
+      ::property.SetDiffuse(0.9);
+      ::property.SetSpecular(0.2);
+      ::property.SetSpecularPower(10.0);
+      ::property.SetScalarOpacityUnitDistance(0.8919);
+    }
+
+
+    #----------------------------
+    proc ::BlendCTMuscles() \
+    {
+      ::colorFun.AddRGBPoint( -3024, 0, 0, 0, 0.5, 0.0 );
+      ::colorFun.AddRGBPoint( -155, 0.55, 0.25, 0.15, 0.5, 0.92 );
+      ::colorFun.AddRGBPoint( 217, 0.88, 0.60, 0.29, 0.33, 0.45 );
+      ::colorFun.AddRGBPoint( 420, 1, 0.94, 0.95, 0.5, 0.0 );
+      ::colorFun.AddRGBPoint( 3071, 0.83, 0.66, 1, 0.5, 0.0 );
+      
+      ::opacityFun.AddPoint(-3024, 0, 0.5, 0.0 );
+      ::opacityFun.AddPoint(-155, 0, 0.5, 0.92 );
+      ::opacityFun.AddPoint(217, 0.68, 0.33, 0.45 );
+      ::opacityFun.AddPoint(420, 0.83, 0.5, 0.0);
+      ::opacityFun.AddPoint(3071, 0.80, 0.5, 0.0);
+
+      ::volmapper.SetBlendModeToComposite();
+      ::property.ShadeOn();
+      ::property.SetAmbient(0.1);
+      ::property.SetDiffuse(0.9);
+      ::property.SetSpecular(0.2);
+      ::property.SetSpecularPower(10.0);
+      ::property.SetScalarOpacityUnitDistance(0.8919);
+    }
+
+    #----------------------------
+    proc ::OnRender() \
+    {
+      if exists(::colorFun)   { ::colorFun.Delete(); del ::colorFun; }
+      if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
+      ::colorFun=global::vtkColorTransferFunction_New()
+      ::opacityFun=global::vtkPiecewiseFunction_New()
+
+      if (::blend_type==0) { ::BlendMIP();                }
+      if (::blend_type==1) { ::BlendCompositeRamp();      }
+      if (::blend_type==2) { ::BlendCompositeShadeRamp(); }
+      if (::blend_type==3) { ::BlendCTSkin();             }
+      if (::blend_type==4) { ::BlendCTBones();            }
+      if (::blend_type==5) { ::BlendCTMuscles();          }
+
+      ::property.SetColor( &::colorFun )
+      ::property.SetScalarOpacity( &::opacityFun )
+      ::renwin_interact.Render()
     }
 
     #----------------------------
@@ -92,9 +228,14 @@ if (!exists(VolRenClass)) {
               ::win.AddEnumChoice(::blend_type_id,"Composite Shade Ramp")
               ::win.AddEnumChoice(::blend_type_id,"CT Skin")
               ::win.AddEnumChoice(::blend_type_id,"CT Bone")
+              ::win.AddEnumChoice(::blend_type_id,"CT Muscles")
               ::win.AddEnumChoice(::blend_type_id,"RGB Composite")
+            ::win.SetCallback( &::OnRender)
+
             ::opacitywindow_id = ::win.AddFloat(&::opacitywindow,"Window",0,5000)
+            ::win.SetCallback( &::OnRender)
             ::opacitylevel_id = ::win.AddFloat(&::opacitylevel,"Level",0,5000)
+            ::win.SetCallback( &::OnRender)
             ::win.AddBoolean(&::clip, "Clipping box")
           ::win.EndBoxPanel()
 

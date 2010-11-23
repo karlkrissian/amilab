@@ -79,6 +79,11 @@ class vtkGPURayCasting : public wxFrame
   
     vtkRenderer* GetRenderer() { return renderer; }
 
+    vtkRenderWindowInteractor* GetRenderWindowInteractor() 
+    { 
+      return m_pVTKWindow; 
+    }
+
 
     bool Display();
 

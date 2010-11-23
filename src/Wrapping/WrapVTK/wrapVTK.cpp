@@ -56,7 +56,11 @@ extern VarContexts  Vars;
 #include "wxMedical3Frame.h"
 
 #include "wrap_vtkRenderer.h"
+#include "wrap_vtkRenderWindowInteractor.h"
 
+#include "wrap_vtkVolumeMapper.h"
+#include "wrap_vtkInteractorStyleTrackball.h"
+#include "wrap_vtkInteractorStyleImage.h"
 #include "wrap_vtkPiecewiseFunction.h"
 #include "wrap_vtkColorTransferFunction.h"
 
@@ -75,9 +79,19 @@ void AddWrapVTK() {
 
     Variables::ptr current_context=Vars.GetCurrentContext();
     WrapClass_vtkPiecewiseFunction::
-      AddVar_New(current_context,"vtkPiecewiseFunction");
+      AddVar_New(current_context,"vtkPiecewiseFunction_New");
     WrapClass_vtkColorTransferFunction::
-      AddVar_New(current_context,"vtkColorTransferFunction");
+      AddVar_New(current_context,"vtkColorTransferFunction_New");
+
+    WrapClass_vtkVolumeMapper::
+      AddVar_New(current_context,"vtkVolumeMapper_New");
+    WrapClass_vtkVolumeMapper::
+      AddVar_SafeDownCast(current_context,"vtkVolumeMapper_SafeDownCast");
+    WrapClass_vtkInteractorStyleTrackball::
+      AddVar_New(current_context,"vtkInteractorStyleTrackball_New");
+    WrapClass_vtkInteractorStyleImage::
+      AddVar_New(current_context,"vtkInteractorStyleImage_New");
+
 }
 
 
@@ -292,9 +306,9 @@ BasicVariable::ptr wrap_vtkGPURayCasting(ParamList* p)
     //volren->SetClip(clip);
     //volren->Display();
     volren->Show(TRUE);
-    vtkRenderer* ren = volren->GetRenderer();
+    vtkRenderWindowInteractor* renwininteract = volren->GetRenderWindowInteractor();
 
-    return AMILabType<vtkRenderer>::CreateVar(ren);
+    return AMILabType<vtkRenderWindowInteractor>::CreateVar(renwininteract);
 
 } // Wrap_vtkSkeleton2Lines()
 

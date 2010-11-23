@@ -26,6 +26,7 @@
 #include "wrap_vtkWindow.h"
 
 
+
 AMI_DECLARE_TYPE(vtkRenderWindow);
 
 // TODO: check for inheritence ...
@@ -80,9 +81,7 @@ class WrapClass_vtkRenderWindow : public WrapClass<vtkRenderWindow>
     ADD_CLASS_METHOD(AddRenderer,"void vtkRenderWindow::AddRenderer(vtkRenderer * param0)  (http://docs.wxwidgets.org/stable/wx_vtkrenderwindow.html#addrenderer)")
     ADD_CLASS_METHOD(RemoveRenderer,"void vtkRenderWindow::RemoveRenderer(vtkRenderer * param0)  (http://docs.wxwidgets.org/stable/wx_vtkrenderwindow.html#removerenderer)")
     ADD_CLASS_METHOD(HasRenderer,"int vtkRenderWindow::HasRenderer(vtkRenderer * param0)  (http://docs.wxwidgets.org/stable/wx_vtkrenderwindow.html#hasrenderer)")
-/* The following types are missing: vtkRendererCollection
     ADD_CLASS_METHOD(GetRenderers,"vtkRendererCollection * vtkRenderWindow::GetRenderers()  (http://docs.wxwidgets.org/stable/wx_vtkrenderwindow.html#getrenderers)")
-*/
     ADD_CLASS_METHOD(Render,"void vtkRenderWindow::Render()  (http://docs.wxwidgets.org/stable/wx_vtkrenderwindow.html#render)")
     ADD_CLASS_METHOD(CopyResultFrame,"void vtkRenderWindow::CopyResultFrame()  (http://docs.wxwidgets.org/stable/wx_vtkrenderwindow.html#copyresultframe)")
     ADD_CLASS_METHOD(MakeRenderWindowInteractor,"vtkRenderWindowInteractor * vtkRenderWindow::MakeRenderWindowInteractor()  (http://docs.wxwidgets.org/stable/wx_vtkrenderwindow.html#makerenderwindowinteractor)")

@@ -22,6 +22,7 @@
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
 #include "wrap_vtkRenderer.h"
+#include "wrap_vtkRendererCollection.h"
 #include "wrap_vtkRenderWindowInteractor.h"
 
 
@@ -87,9 +88,7 @@ void WrapClass_vtkRenderWindow::AddMethods(WrapClass<vtkRenderWindow>::ptr this_
       AddVar_AddRenderer( this_ptr);
       AddVar_RemoveRenderer( this_ptr);
       AddVar_HasRenderer( this_ptr);
-/* The following types are missing: vtkRendererCollection
       AddVar_GetRenderers( this_ptr);
-*/
       AddVar_Render( this_ptr);
       AddVar_CopyResultFrame( this_ptr);
       AddVar_MakeRenderWindowInteractor( this_ptr);
@@ -456,7 +455,6 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int res =   this->_objectptr->GetObj()->HasRenderer(param0);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: vtkRendererCollection
 
 //---------------------------------------------------
 //  Wrapping of vtkRendererCollection * vtkRenderWindow::GetRenderers()
@@ -474,9 +472,9 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRendererCollection * res =   this->_objectptr->GetObj()->GetRenderers();
-  return AMILabType<vtkRendererCollection >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkRendererCollection::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkRenderWindow::Render()
