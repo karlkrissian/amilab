@@ -94,7 +94,7 @@ void WrapClass_wxMask::AddMethods(WrapClass<wxMask>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_bitmap
-      boost::shared_ptr<_GdkDrawable > var_m_bitmap_ptr(&GetObj()->m_bitmap, smartpointer_nodeleter<_GdkDrawable >());
+      boost::shared_ptr<_GdkDrawable > var_m_bitmap_ptr(GetObj()->m_bitmap, smartpointer_nodeleter<_GdkDrawable >());
       BasicVariable::ptr var_m_bitmap = AMILabType<_GdkDrawable >::CreateVarFromSmtPtr(var_m_bitmap_ptr);
       if (var_m_bitmap.get()) {
         var_m_bitmap->Rename("m_bitmap");
@@ -127,7 +127,7 @@ BasicVariable::ptr WrapClass_wxMask::
   int _n=0;
 
   boost::shared_ptr<wxMask > param0_smtptr;
-  if (!get_val_smtptr_param<wxMask >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMask >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxMask const & param0 = *param0_smtptr;
 
   wxMask* _newobj = new wxMask(param0);
@@ -203,11 +203,11 @@ BasicVariable::ptr WrapClass_wxMask::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   boost::shared_ptr<wxColour > colour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & colour = *colour_smtptr;
 
   wxMask* _newobj = new wxMask(bitmap, colour);
@@ -234,11 +234,11 @@ BasicVariable::ptr WrapClass_wxMask::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   int paletteIndex;
-  if (!get_val_param<int >(paletteIndex,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(paletteIndex,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxMask* _newobj = new wxMask(bitmap, paletteIndex);
   BasicVariable::ptr res = WrapClass_wxMask::CreateVar(_newobj);
@@ -263,7 +263,7 @@ BasicVariable::ptr WrapClass_wxMask::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   wxMask* _newobj = new wxMask(bitmap);
@@ -307,11 +307,11 @@ BasicVariable::ptr WrapClass_wxMask::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   boost::shared_ptr<wxColour > colour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & colour = *colour_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Create(bitmap, colour);
@@ -363,11 +363,11 @@ BasicVariable::ptr WrapClass_wxMask::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   int paletteIndex;
-  if (!get_val_param<int >(paletteIndex,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(paletteIndex,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Create(bitmap, paletteIndex);
   int res_int = ((res==true)?1:0);
@@ -393,7 +393,7 @@ BasicVariable::ptr WrapClass_wxMask::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Create(bitmap);
@@ -461,7 +461,7 @@ BasicVariable::ptr WrapClass_wxMask::
   int _n=0;
 
   boost::shared_ptr<wxMask > param0_smtptr;
-  if (!get_val_smtptr_param<wxMask >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMask >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMask const & param0 = *param0_smtptr;
 
   wxMask & res =   (*this->_objectptr->GetObj()) = (param0);

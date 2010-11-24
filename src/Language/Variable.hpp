@@ -111,7 +111,7 @@ class AMILabType {
       else {\
         BasicVariable::ptr converted = var->TryCast(AMILabType<type>::name_as_string());\
         if (!converted.get()) {\
-          FILE_ERROR(boost::format("Cannot not be converted to type %1%.") % AMILabType<type>::name_as_string());\
+          /*FILE_ERROR(boost::format("Cannot be converted to type %1%.") % AMILabType<type>::name_as_string());*/\
           return boost::shared_ptr<type>(); \
         } else { \
           boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(converted)); \
@@ -171,10 +171,10 @@ class AMILabType {
         if (wc.get()) { \
           return wc->GetObj(); \
         } else { \
-          FILE_ERROR("Could not cast dynamically the variable.")\
+          /*FILE_ERROR("Could not cast dynamically the variable.")*/;\
         } \
       }  else { \
-        FILE_ERROR("Need a wrapped object or compatible variable as parameter.") \
+        /*FILE_ERROR("Need a wrapped object or compatible variable as parameter.")*/; \
       } \
       return boost::shared_ptr<type>();\
     } 

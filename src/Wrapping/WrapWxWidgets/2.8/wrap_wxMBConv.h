@@ -51,7 +51,6 @@ class WrapClass_wxMBConv : public WrapClass<wxMBConv>
     /// Destructor
     ~WrapClass_wxMBConv()
     {
-      std::cout << "~WrapClass_wxMBConv()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -61,64 +60,39 @@ class WrapClass_wxMBConv : public WrapClass<wxMBConv>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxMBConv*);
 
-    // here add each method
+    // Static methods
+    
+    ADD_CLASS_STATICMETHOD(GetMaxMBNulLen,"size_t wxMBConv::GetMaxMBNulLen() (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#getmaxmbnullen).");
+
+
+
+    // Standard methods
     
     // Adding standard methods
-    ADD_CLASS_METHOD(ToWChar,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#towchar")
-    ADD_CLASS_METHOD(FromWChar,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#fromwchar")
-    ADD_CLASS_METHOD(cMB2WC_1,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc")
-    ADD_CLASS_METHOD(cWC2MB_1,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb")
-    ADD_CLASS_METHOD(cMB2WC,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc")
-    ADD_CLASS_METHOD(cMB2WC_2,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc")
-    ADD_CLASS_METHOD(cWC2MB,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb")
-    ADD_CLASS_METHOD(cWC2MB_2,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb")
-    ADD_CLASS_METHOD(cMB2WX,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wx")
-    ADD_CLASS_METHOD(cWX2MB,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwx2mb")
-    ADD_CLASS_METHOD(cWC2WX,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2wx")
-    ADD_CLASS_METHOD(cWX2WC,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwx2wc")
-    ADD_CLASS_METHOD(GetMBNulLen,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#getmbnullen")
-    ADD_CLASS_METHOD(GetMaxMBNulLen,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#getmaxmbnullen")
-    ADD_CLASS_METHOD(MB2WC,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#mb2wc")
-    ADD_CLASS_METHOD(WC2MB,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#wc2mb")
+    ADD_CLASS_METHOD(ToWChar,"size_t wxMBConv::ToWChar(wchar_t * dst, size_t dstLen, char const * src, size_t srcLen = -1u)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#towchar)")
+    ADD_CLASS_METHOD(FromWChar,"size_t wxMBConv::FromWChar(char * dst, size_t dstLen, wchar_t const * src, size_t srcLen = -1u)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#fromwchar)")
+    ADD_CLASS_METHOD(cMB2WC_1,"wxWCharBuffer const wxMBConv::cMB2WC(char const * in)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc)")
+    ADD_CLASS_METHOD(cWC2MB_1,"wxCharBuffer const wxMBConv::cWC2MB(wchar_t const * in)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb)")
+    ADD_CLASS_METHOD(cMB2WC,"wxMBConv::cMB2WC()  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc)")
+    ADD_CLASS_METHOD(cMB2WC_2,"wxWCharBuffer const wxMBConv::cMB2WC(char const * in, size_t inLen, size_t * outLen)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wc)")
+    ADD_CLASS_METHOD(cWC2MB,"wxMBConv::cWC2MB()  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb)")
+    ADD_CLASS_METHOD(cWC2MB_2,"wxCharBuffer const wxMBConv::cWC2MB(wchar_t const * in, size_t inLen, size_t * outLen)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2mb)")
+    ADD_CLASS_METHOD(cMB2WX,"wxWCharBuffer const wxMBConv::cMB2WX(char const * psz)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cmb2wx)")
+    ADD_CLASS_METHOD(cWX2MB,"wxCharBuffer const wxMBConv::cWX2MB(wchar_t const * psz)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwx2mb)")
+    ADD_CLASS_METHOD(cWC2WX,"wchar_t const * wxMBConv::cWC2WX(wchar_t const * psz)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwc2wx)")
+    ADD_CLASS_METHOD(cWX2WC,"wchar_t const * wxMBConv::cWX2WC(wchar_t const * psz)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#cwx2wc)")
+    ADD_CLASS_METHOD(GetMBNulLen,"size_t wxMBConv::GetMBNulLen()  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#getmbnullen)")
+    ADD_CLASS_METHOD(MB2WC,"size_t wxMBConv::MB2WC(wchar_t * out, char const * in, size_t outLen)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#mb2wc)")
+    ADD_CLASS_METHOD(WC2MB,"size_t wxMBConv::WC2MB(char * out, wchar_t const * in, size_t outLen)  (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#wc2mb)")
 
     // Operators:
-    ADD_CLASS_METHOD(__assign__,"http://docs.wxwidgets.org/stable/wx_wxmbconv.html#__assign__")
+    ADD_CLASS_METHOD(__assign__,            "wxMBConv & wxMBConv::operator =(wxMBConv const & param0) (http://docs.wxwidgets.org/stable/wx_wxmbconv.html#__assign__)")
 
 
 
 
-    void AddMethods(WrapClass<wxMBConv>::ptr this_ptr )
-    {
-      
+    void AddMethods(WrapClass<wxMBConv>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-      AddVar_ToWChar( this_ptr);
-      AddVar_FromWChar( this_ptr);
-      AddVar_cMB2WC_1( this_ptr);
-      AddVar_cWC2MB_1( this_ptr);
-      AddVar_cMB2WC( this_ptr);
-      AddVar_cMB2WC_2( this_ptr);
-      AddVar_cWC2MB( this_ptr);
-      AddVar_cWC2MB_2( this_ptr);
-      AddVar_cMB2WX( this_ptr);
-      AddVar_cWX2MB( this_ptr);
-      AddVar_cWC2WX( this_ptr);
-      AddVar_cWX2WC( this_ptr);
-      AddVar_GetMBNulLen( this_ptr);
-      AddVar_GetMaxMBNulLen( this_ptr);
-      AddVar_MB2WC( this_ptr);
-      AddVar_WC2MB( this_ptr);
-
-      // Adding operators
-      AddVar___assign__( this_ptr);
-
-
-
-      
-    };
 };
 
 

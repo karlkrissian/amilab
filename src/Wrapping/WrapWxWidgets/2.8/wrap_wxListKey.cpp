@@ -70,7 +70,9 @@ void WrapClass_wxListKey::AddMethods(WrapClass<wxListKey>::ptr this_ptr )
       // Adding copy method 
       AddVar___copy__( this_ptr);
       // Adding standard methods 
+/* The following types are missing: wxKeyType
       AddVar_GetKeyType( this_ptr);
+*/
       AddVar_GetString( this_ptr);
       AddVar_GetNumber( this_ptr);
 
@@ -108,7 +110,7 @@ BasicVariable::ptr WrapClass_wxListKey::
   int _n=0;
 
   boost::shared_ptr<wxListKey > param0_smtptr;
-  if (!get_val_smtptr_param<wxListKey >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxListKey >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxListKey const & param0 = *param0_smtptr;
 
   wxListKey* _newobj = new wxListKey(param0);
@@ -183,7 +185,7 @@ BasicVariable::ptr WrapClass_wxListKey::
   int _n=0;
 
   long i_long;
-  if (!get_val_param<long >(i_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(i_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int i = i_long;
 
   wxListKey* _newobj = new wxListKey(i);
@@ -209,7 +211,7 @@ BasicVariable::ptr WrapClass_wxListKey::
   int _n=0;
 
   boost::shared_ptr<std::string > s_string;
-  if (!get_val_smtptr_param<std::string >(s_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(s_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t s[s_string->size()+1];
 mbstowcs(s,s_string->c_str(),s_string->size()+1);
 
@@ -236,7 +238,7 @@ BasicVariable::ptr WrapClass_wxListKey::
   int _n=0;
 
   boost::shared_ptr<wxString > s_smtptr;
-  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & s = *s_smtptr;
 
   wxListKey* _newobj = new wxListKey(s);
@@ -259,6 +261,7 @@ BasicVariable::ptr WrapClass_wxListKey::
 {
     return AMILabType<wxListKey >::CreateVar( new wxListKey(*(this->_objectptr->GetObj())));
 }
+/* The following types are missing: wxKeyType
 
 //---------------------------------------------------
 //  Wrapping of wxKeyType wxListKey::GetKeyType()
@@ -266,7 +269,7 @@ BasicVariable::ptr WrapClass_wxListKey::
 void WrapClass_wxListKey::
     wrap_GetKeyType::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxKeyType";
 }
 
 //---------------------------------------------------
@@ -276,9 +279,9 @@ BasicVariable::ptr WrapClass_wxListKey::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxKeyType res =   this->_objectptr->GetObj()->GetKeyType();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxKeyType >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxChar const * wxListKey::GetString()
@@ -346,7 +349,7 @@ BasicVariable::ptr WrapClass_wxListKey::
   int _n=0;
 
   boost::shared_ptr<wxListKey > param0_smtptr;
-  if (!get_val_smtptr_param<wxListKey >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxListKey >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxListKey const & param0 = *param0_smtptr;
 
   wxListKey & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -374,7 +377,7 @@ BasicVariable::ptr WrapClass_wxListKey::
   int _n=0;
 
   wxListKeyValue value;
-  if (!get_val_param<wxListKeyValue >(value,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<wxListKeyValue >(value,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   (*this->_objectptr->GetObj()) == (value);
   int res_int = ((res==true)?1:0);

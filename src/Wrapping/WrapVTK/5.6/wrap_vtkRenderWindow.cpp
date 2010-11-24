@@ -229,7 +229,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkRenderWindow::IsTypeOf(type);
@@ -255,7 +255,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkRenderWindow * res =   vtkRenderWindow::SafeDownCast(o);
@@ -322,7 +322,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -369,11 +369,11 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -398,7 +398,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->AddRenderer(param0);
@@ -423,7 +423,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->RemoveRenderer(param0);
@@ -449,7 +449,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* param0 = param0_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->HasRenderer(param0);
@@ -551,10 +551,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   int param1;
-  if (!get_val_param<int >(param1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param1,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetCursorPosition(param0, param1);
   return BasicVariable::ptr();
@@ -578,7 +578,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetCurrentCursor(_arg);
   return BasicVariable::ptr();
@@ -676,7 +676,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetBorders(_arg);
   return BasicVariable::ptr();
@@ -810,7 +810,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int capable;
-  if (!get_val_param<int >(capable,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(capable,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStereoCapableWindow(capable);
   return BasicVariable::ptr();
@@ -853,7 +853,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int stereo;
-  if (!get_val_param<int >(stereo,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(stereo,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStereoRender(stereo);
   return BasicVariable::ptr();
@@ -913,7 +913,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAlphaBitPlanes(_arg);
   return BasicVariable::ptr();
@@ -992,7 +992,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetPointSmoothing(_arg);
   return BasicVariable::ptr();
@@ -1071,7 +1071,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLineSmoothing(_arg);
   return BasicVariable::ptr();
@@ -1150,7 +1150,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetPolygonSmoothing(_arg);
   return BasicVariable::ptr();
@@ -1248,7 +1248,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStereoType(_arg);
   return BasicVariable::ptr();
@@ -1490,7 +1490,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAnaglyphColorSaturation(_arg);
   return BasicVariable::ptr();
@@ -1572,10 +1572,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg1;
-  if (!get_val_param<int >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int _arg2;
-  if (!get_val_param<int >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetAnaglyphColorMask(_arg1, _arg2);
   return BasicVariable::ptr();
@@ -1620,7 +1620,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetAnaglyphColorMask(_arg);
@@ -1685,7 +1685,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<int > data_smtptr;
-  if (!get_val_smtptr_param<int >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->GetAnaglyphColorMask(data);
@@ -1710,7 +1710,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetSwapBuffers(_arg);
   return BasicVariable::ptr();
@@ -1791,10 +1791,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   float res =   this->_objectptr->GetObj()->GetZbufferDataAtPoint(x, y);
   return AMILabType<float >::CreateVar(res);
@@ -1837,7 +1837,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAAFrames(_arg);
   return BasicVariable::ptr();
@@ -1880,7 +1880,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetFDFrames(_arg);
   return BasicVariable::ptr();
@@ -1923,7 +1923,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int subFrames;
-  if (!get_val_param<int >(subFrames,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(subFrames,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetSubFrames(subFrames);
   return BasicVariable::ptr();
@@ -1985,7 +1985,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAbortRender(_arg);
   return BasicVariable::ptr();
@@ -2028,7 +2028,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetInAbortCheck(_arg);
   return BasicVariable::ptr();
@@ -2090,7 +2090,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetIsPicking(_arg);
   return BasicVariable::ptr();
@@ -2187,7 +2187,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDesiredUpdateRate(param0);
   return BasicVariable::ptr();
@@ -2249,7 +2249,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetNumberOfLayers(_arg);
   return BasicVariable::ptr();
@@ -2331,7 +2331,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<vtkRenderWindowInteractor > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderWindowInteractor* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetInteractor(param0);
@@ -2356,7 +2356,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   this->_objectptr->GetObj()->UnRegister(o);
@@ -2478,7 +2478,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMultiSamples(_arg);
   return BasicVariable::ptr();
@@ -2521,7 +2521,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStencilCapable(_arg);
   return BasicVariable::ptr();
@@ -2600,7 +2600,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetReportGraphicErrors(_arg);
   return BasicVariable::ptr();

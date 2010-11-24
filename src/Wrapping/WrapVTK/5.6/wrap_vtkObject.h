@@ -26,6 +26,7 @@
 #include "wrap_vtkObjectBase.h"
 
 
+
 AMI_DECLARE_TYPE(vtkObject);
 
 // TODO: check for inheritence ...

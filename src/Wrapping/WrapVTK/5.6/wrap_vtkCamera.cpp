@@ -247,7 +247,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkCamera::IsTypeOf(type);
@@ -273,7 +273,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkCamera * res =   vtkCamera::SafeDownCast(o);
@@ -321,11 +321,11 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -351,7 +351,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -398,13 +398,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double z;
-  if (!get_val_param<double >(z,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(z,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetPosition(x, y, z);
   return BasicVariable::ptr();
@@ -449,7 +449,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->SetPosition(a);
@@ -519,15 +519,15 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   boost::shared_ptr<double > _arg3_smtptr;
-  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg3 = *_arg3_smtptr;
 
   this->_objectptr->GetObj()->GetPosition(_arg1, _arg2, _arg3);
@@ -552,7 +552,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetPosition(_arg);
@@ -579,13 +579,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double z;
-  if (!get_val_param<double >(z,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(z,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetFocalPoint(x, y, z);
   return BasicVariable::ptr();
@@ -630,7 +630,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->SetFocalPoint(a);
@@ -700,15 +700,15 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   boost::shared_ptr<double > _arg3_smtptr;
-  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg3 = *_arg3_smtptr;
 
   this->_objectptr->GetObj()->GetFocalPoint(_arg1, _arg2, _arg3);
@@ -733,7 +733,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetFocalPoint(_arg);
@@ -760,13 +760,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double vx;
-  if (!get_val_param<double >(vx,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(vx,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double vy;
-  if (!get_val_param<double >(vy,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(vy,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double vz;
-  if (!get_val_param<double >(vz,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(vz,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetViewUp(vx, vy, vz);
   return BasicVariable::ptr();
@@ -811,7 +811,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->SetViewUp(a);
@@ -881,15 +881,15 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   boost::shared_ptr<double > _arg3_smtptr;
-  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg3 = *_arg3_smtptr;
 
   this->_objectptr->GetObj()->GetViewUp(_arg1, _arg2, _arg3);
@@ -914,7 +914,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetViewUp(_arg);
@@ -957,7 +957,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDistance(param0);
   return BasicVariable::ptr();
@@ -1045,15 +1045,15 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   boost::shared_ptr<double > _arg3_smtptr;
-  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg3 = *_arg3_smtptr;
 
   this->_objectptr->GetObj()->GetDirectionOfProjection(_arg1, _arg2, _arg3);
@@ -1078,7 +1078,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetDirectionOfProjection(_arg);
@@ -1103,7 +1103,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(value,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Dolly(value);
   return BasicVariable::ptr();
@@ -1127,7 +1127,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(angle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetRoll(angle);
   return BasicVariable::ptr();
@@ -1170,7 +1170,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(angle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Roll(angle);
   return BasicVariable::ptr();
@@ -1194,7 +1194,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(angle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Azimuth(angle);
   return BasicVariable::ptr();
@@ -1218,7 +1218,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(angle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Yaw(angle);
   return BasicVariable::ptr();
@@ -1242,7 +1242,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(angle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Elevation(angle);
   return BasicVariable::ptr();
@@ -1266,7 +1266,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(angle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Pitch(angle);
   return BasicVariable::ptr();
@@ -1290,7 +1290,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   int flag;
-  if (!get_val_param<int >(flag,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(flag,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetParallelProjection(flag);
   return BasicVariable::ptr();
@@ -1369,7 +1369,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   int flag;
-  if (!get_val_param<int >(flag,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(flag,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetUseHorizontalViewAngle(flag);
   return BasicVariable::ptr();
@@ -1448,7 +1448,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(angle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetViewAngle(angle);
   return BasicVariable::ptr();
@@ -1491,7 +1491,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double scale;
-  if (!get_val_param<double >(scale,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(scale,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetParallelScale(scale);
   return BasicVariable::ptr();
@@ -1534,7 +1534,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double factor;
-  if (!get_val_param<double >(factor,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(factor,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Zoom(factor);
   return BasicVariable::ptr();
@@ -1559,10 +1559,10 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double dNear;
-  if (!get_val_param<double >(dNear,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(dNear,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double dFar;
-  if (!get_val_param<double >(dFar,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(dFar,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetClippingRange(dNear, dFar);
   return BasicVariable::ptr();
@@ -1607,7 +1607,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->SetClippingRange(a);
@@ -1676,11 +1676,11 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   this->_objectptr->GetObj()->GetClippingRange(_arg1, _arg2);
@@ -1705,7 +1705,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetClippingRange(_arg);
@@ -1730,7 +1730,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetThickness(param0);
   return BasicVariable::ptr();
@@ -1774,10 +1774,10 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetWindowCenter(x, y);
   return BasicVariable::ptr();
@@ -1845,11 +1845,11 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   this->_objectptr->GetObj()->GetWindowCenter(_arg1, _arg2);
@@ -1874,7 +1874,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetWindowCenter(_arg);
@@ -1900,10 +1900,10 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double alpha;
-  if (!get_val_param<double >(alpha,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(alpha,_p,_n,true,false)) ClassHelpAndReturn;
 
   double beta;
-  if (!get_val_param<double >(beta,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(beta,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetObliqueAngles(alpha, beta);
   return BasicVariable::ptr();
@@ -1928,7 +1928,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<vtkTransform > t_smtptr;
-  if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkTransform* t = t_smtptr.get();
 
   this->_objectptr->GetObj()->ApplyTransform(t);
@@ -1999,15 +1999,15 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   boost::shared_ptr<double > _arg3_smtptr;
-  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg3 = *_arg3_smtptr;
 
   this->_objectptr->GetObj()->GetViewPlaneNormal(_arg1, _arg2, _arg3);
@@ -2032,7 +2032,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetViewPlaneNormal(_arg);
@@ -2059,13 +2059,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double dxdz;
-  if (!get_val_param<double >(dxdz,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(dxdz,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double dydz;
-  if (!get_val_param<double >(dydz,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(dydz,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double center;
-  if (!get_val_param<double >(center,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(center,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetViewShear(dxdz, dydz, center);
   return BasicVariable::ptr();
@@ -2110,7 +2110,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > d_smtptr;
-  if (!get_val_smtptr_param<double >(d_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(d_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* d = d_smtptr.get();
 
   this->_objectptr->GetObj()->SetViewShear(d);
@@ -2180,15 +2180,15 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   boost::shared_ptr<double > _arg3_smtptr;
-  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg3 = *_arg3_smtptr;
 
   this->_objectptr->GetObj()->GetViewShear(_arg1, _arg2, _arg3);
@@ -2213,7 +2213,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetViewShear(_arg);
@@ -2238,7 +2238,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double _arg;
-  if (!get_val_param<double >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetEyeAngle(_arg);
   return BasicVariable::ptr();
@@ -2281,7 +2281,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double _arg;
-  if (!get_val_param<double >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetFocalDisk(_arg);
   return BasicVariable::ptr();
@@ -2370,13 +2370,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double aspect;
-  if (!get_val_param<double >(aspect,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(aspect,_p,_n,true,false)) ClassHelpAndReturn;
 
   double nearz;
-  if (!get_val_param<double >(nearz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(nearz,_p,_n,true,false)) ClassHelpAndReturn;
 
   double farz;
-  if (!get_val_param<double >(farz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetPerspectiveTransformMatrix(aspect, nearz, farz);
   return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
@@ -2405,13 +2405,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double aspect;
-  if (!get_val_param<double >(aspect,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(aspect,_p,_n,true,false)) ClassHelpAndReturn;
 
   double nearz;
-  if (!get_val_param<double >(nearz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(nearz,_p,_n,true,false)) ClassHelpAndReturn;
 
   double farz;
-  if (!get_val_param<double >(farz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetProjectionTransformMatrix(aspect, nearz, farz);
   return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
@@ -2440,13 +2440,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double aspect;
-  if (!get_val_param<double >(aspect,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(aspect,_p,_n,true,false)) ClassHelpAndReturn;
 
   double nearz;
-  if (!get_val_param<double >(nearz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(nearz,_p,_n,true,false)) ClassHelpAndReturn;
 
   double farz;
-  if (!get_val_param<double >(farz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkPerspectiveTransform * res =   this->_objectptr->GetObj()->GetProjectionTransformObject(aspect, nearz, farz);
   return AMILabType<vtkPerspectiveTransform >::CreateVar(res,true);
@@ -2475,13 +2475,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double aspect;
-  if (!get_val_param<double >(aspect,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(aspect,_p,_n,true,false)) ClassHelpAndReturn;
 
   double nearz;
-  if (!get_val_param<double >(nearz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(nearz,_p,_n,true,false)) ClassHelpAndReturn;
 
   double farz;
-  if (!get_val_param<double >(farz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetCompositePerspectiveTransformMatrix(aspect, nearz, farz);
   return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
@@ -2510,13 +2510,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double aspect;
-  if (!get_val_param<double >(aspect,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(aspect,_p,_n,true,false)) ClassHelpAndReturn;
 
   double nearz;
-  if (!get_val_param<double >(nearz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(nearz,_p,_n,true,false)) ClassHelpAndReturn;
 
   double farz;
-  if (!get_val_param<double >(farz,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetCompositeProjectionTransformMatrix(aspect, nearz, farz);
   return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
@@ -2542,7 +2542,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<vtkHomogeneousTransform > transform_smtptr;
-  if (!get_val_smtptr_param<vtkHomogeneousTransform >(transform_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkHomogeneousTransform >(transform_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkHomogeneousTransform* transform = transform_smtptr.get();
 
   this->_objectptr->GetObj()->SetUserViewTransform(transform);
@@ -2590,7 +2590,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<vtkHomogeneousTransform > transform_smtptr;
-  if (!get_val_smtptr_param<vtkHomogeneousTransform >(transform_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkHomogeneousTransform >(transform_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkHomogeneousTransform* transform = transform_smtptr.get();
 
   this->_objectptr->GetObj()->SetUserTransform(transform);
@@ -2637,7 +2637,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->Render(param0);
@@ -2701,10 +2701,10 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double aspect;
-  if (!get_val_param<double >(aspect,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(aspect,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > planes_smtptr;
-  if (!get_val_smtptr_param<double >(planes_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(planes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* planes = planes_smtptr.get();
 
   this->_objectptr->GetObj()->GetFrustumPlanes(aspect, planes);
@@ -2769,13 +2769,13 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double z;
-  if (!get_val_param<double >(z,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(z,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetViewPlaneNormal(x, y, z);
   return BasicVariable::ptr();
@@ -2820,7 +2820,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->SetViewPlaneNormal(a);
@@ -2884,7 +2884,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->UpdateViewport(param0);
@@ -2909,7 +2909,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLeftEye(_arg);
   return BasicVariable::ptr();
@@ -2952,7 +2952,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<vtkCamera > source_smtptr;
-  if (!get_val_smtptr_param<vtkCamera >(source_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkCamera >(source_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkCamera* source = source_smtptr.get();
 
   this->_objectptr->GetObj()->ShallowCopy(source);
@@ -2977,7 +2977,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   int _n=0;
 
   boost::shared_ptr<vtkCamera > source_smtptr;
-  if (!get_val_smtptr_param<vtkCamera >(source_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkCamera >(source_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkCamera* source = source_smtptr.get();
 
   this->_objectptr->GetObj()->DeepCopy(source);

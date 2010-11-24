@@ -1,0 +1,11 @@
+
+#include "wrap_wxEvtHandler.cpp"
+#include "wrap_wxFileName.cpp"
+#include "wrap_wxFontBase.cpp"
+#include "wrap_wxFont.cpp"
+#include "wrap_wxFrameBase.cpp"
+#include "wrap_wxFrame.cpp"
+#include "wrap_wxGDIObject.cpp"
+#include "wrap_wxHelpEvent.cpp"
+#include "wrap_wxHtmlWindow.cpp"
+#include "wrap_wxIconBundle.cpp"

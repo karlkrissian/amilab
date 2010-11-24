@@ -199,7 +199,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxImage > param0_smtptr;
-  if (!get_val_smtptr_param<wxImage >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImage >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxImage const & param0 = *param0_smtptr;
 
   wxImage* _newobj = new wxImage(param0);
@@ -288,13 +288,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int clear_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(clear_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(clear_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool clear = (bool) (clear_int>0.5);
 
   wxImage* _newobj = new wxImage(width, height, clear);
@@ -323,17 +323,17 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* data = data_smtptr.get();
 
   int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool static_data = (bool) (static_data_int>0.5);
 
   wxImage* _newobj = new wxImage(width, height, data, static_data);
@@ -363,21 +363,21 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* data = data_smtptr.get();
 
   boost::shared_ptr<unsigned char > alpha_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* alpha = alpha_smtptr.get();
 
   int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool static_data = (bool) (static_data_int>0.5);
 
   wxImage* _newobj = new wxImage(width, height, data, alpha, static_data);
@@ -405,15 +405,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   long type_long = wxBITMAP_TYPE_ANY;;
-  if (!get_val_param<long >(type_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(type_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int type = type_long;
 
   int index = -0x00000000000000001;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxImage* _newobj = new wxImage(name, type, index);
   BasicVariable::ptr res = WrapClass_wxImage::CreateVar(_newobj);
@@ -440,15 +440,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   boost::shared_ptr<wxString > mimetype_smtptr;
-  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & mimetype = *mimetype_smtptr;
 
   int index = -0x00000000000000001;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxImage* _newobj = new wxImage(name, mimetype, index);
   BasicVariable::ptr res = WrapClass_wxImage::CreateVar(_newobj);
@@ -474,7 +474,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<std::string > xpmData_string;
-  if (!get_val_smtptr_param<std::string >(xpmData_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(xpmData_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * const * xpmData = xpmData_string->c_str();
 
   wxImage* _newobj = new wxImage(xpmData);
@@ -503,15 +503,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxInputStream & stream = *stream_smtptr;
 
   long type_long = wxBITMAP_TYPE_ANY;;
-  if (!get_val_param<long >(type_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(type_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int type = type_long;
 
   int index = -0x00000000000000001;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxImage* _newobj = new wxImage(stream, type, index);
   BasicVariable::ptr res = WrapClass_wxImage::CreateVar(_newobj);
@@ -538,15 +538,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxInputStream & stream = *stream_smtptr;
 
   boost::shared_ptr<wxString > mimetype_smtptr;
-  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & mimetype = *mimetype_smtptr;
 
   int index = -0x00000000000000001;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxImage* _newobj = new wxImage(stream, mimetype, index);
   BasicVariable::ptr res = WrapClass_wxImage::CreateVar(_newobj);
@@ -572,7 +572,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   bool res =   wxImage::CanRead(name);
@@ -600,11 +600,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   long type_long = wxBITMAP_TYPE_ANY;;
-  if (!get_val_param<long >(type_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(type_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int type = type_long;
 
   int res =   wxImage::GetImageCount(name, type);
@@ -651,7 +651,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxInputStream & stream = *stream_smtptr;
 
   bool res =   wxImage::CanRead(stream);
@@ -700,11 +700,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxInputStream & stream = *stream_smtptr;
 
   long type_long = wxBITMAP_TYPE_ANY;;
-  if (!get_val_param<long >(type_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(type_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int type = type_long;
 
   int res =   wxImage::GetImageCount(stream, type);
@@ -748,7 +748,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxImageHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxImageHandler >(handler_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHandler* handler = handler_smtptr.get();
 
   wxImage::AddHandler(handler);
@@ -773,7 +773,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxImageHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxImageHandler >(handler_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHandler* handler = handler_smtptr.get();
 
   wxImage::InsertHandler(handler);
@@ -799,7 +799,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   bool res =   wxImage::RemoveHandler(name);
@@ -826,7 +826,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   wxImageHandler * res =   wxImage::FindHandler(name);
@@ -878,11 +878,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > extension_smtptr;
-  if (!get_val_smtptr_param<wxString >(extension_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(extension_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & extension = *extension_smtptr;
 
   long imageType_long;
-  if (!get_val_param<long >(imageType_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(imageType_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int imageType = imageType_long;
 
   wxImageHandler * res =   wxImage::FindHandler(extension, imageType);
@@ -909,7 +909,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   long imageType_long;
-  if (!get_val_param<long >(imageType_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(imageType_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int imageType = imageType_long;
 
   wxImageHandler * res =   wxImage::FindHandler(imageType);
@@ -936,7 +936,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > mimetype_smtptr;
-  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & mimetype = *mimetype_smtptr;
 
   wxImageHandler * res =   wxImage::FindHandlerMime(mimetype);
@@ -1019,7 +1019,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<RGBValue > rgb_smtptr;
-  if (!get_val_smtptr_param<RGBValue >(rgb_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<RGBValue >(rgb_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   RGBValue const & rgb = *rgb_smtptr;
 
   HSVValue res =   wxImage::RGBtoHSV(rgb);
@@ -1047,7 +1047,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<HSVValue > hsv_smtptr;
-  if (!get_val_smtptr_param<HSVValue >(hsv_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<HSVValue >(hsv_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   HSVValue const & hsv = *hsv_smtptr;
 
   RGBValue res =   wxImage::HSVtoRGB(hsv);
@@ -1092,13 +1092,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int clear_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(clear_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(clear_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool clear = (bool) (clear_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->Create(width, height, clear);
@@ -1152,17 +1152,17 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* data = data_smtptr.get();
 
   int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool static_data = (bool) (static_data_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->Create(width, height, data, static_data);
@@ -1193,21 +1193,21 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* data = data_smtptr.get();
 
   boost::shared_ptr<unsigned char > alpha_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* alpha = alpha_smtptr.get();
 
   int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool static_data = (bool) (static_data_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->Create(width, height, data, alpha, static_data);
@@ -1235,7 +1235,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<std::string > xpmData_string;
-  if (!get_val_smtptr_param<std::string >(xpmData_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(xpmData_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * const * xpmData = xpmData_string->c_str();
 
   bool res =   this->_objectptr->GetObj()->Create(xpmData);
@@ -1300,7 +1300,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRect const & rect = *rect_smtptr;
 
   wxImage res =   this->_objectptr->GetObj()->GetSubImage(rect);
@@ -1330,21 +1330,21 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & size = *size_smtptr;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint const & pos = *pos_smtptr;
 
   int r = -0x00000000000000001;
-  if (!get_val_param<int >(r,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(r,_p,_n,false,false)) ClassHelpAndReturn;
 
   int g = -0x00000000000000001;
-  if (!get_val_param<int >(g,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(g,_p,_n,false,false)) ClassHelpAndReturn;
 
   int b = -0x00000000000000001;
-  if (!get_val_param<int >(b,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->Size(size, pos, r, g, b);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1370,14 +1370,14 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxImage > image_smtptr;
-  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImage const & image = *image_smtptr;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Paste(image, x, y);
   return BasicVariable::ptr();
@@ -1404,13 +1404,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(height,_p,_n,true,false)) ClassHelpAndReturn;
 
   int quality = wxIMAGE_QUALITY_NORMAL;
-  if (!get_val_param<int >(quality,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(quality,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->Scale(width, height, quality);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1436,10 +1436,10 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(height,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->ResampleBox(width, height);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1465,10 +1465,10 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(height,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->ResampleBicubic(width, height);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1493,7 +1493,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int radius;
-  if (!get_val_param<int >(radius,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(radius,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->Blur(radius);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1518,7 +1518,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int radius;
-  if (!get_val_param<int >(radius,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(radius,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->BlurHorizontal(radius);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1543,7 +1543,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int radius;
-  if (!get_val_param<int >(radius,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(radius,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->BlurVertical(radius);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1569,10 +1569,10 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int xFactor;
-  if (!get_val_param<int >(xFactor,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(xFactor,_p,_n,true,false)) ClassHelpAndReturn;
 
   int yFactor;
-  if (!get_val_param<int >(yFactor,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(yFactor,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->ShrinkBy(xFactor, yFactor);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1599,13 +1599,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(height,_p,_n,true,false)) ClassHelpAndReturn;
 
   int quality = wxIMAGE_QUALITY_NORMAL;
-  if (!get_val_param<int >(quality,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(quality,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxImage & res =   this->_objectptr->GetObj()->Rescale(width, height, quality);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1634,21 +1634,21 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & size = *size_smtptr;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint const & pos = *pos_smtptr;
 
   int r = -0x00000000000000001;
-  if (!get_val_param<int >(r,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(r,_p,_n,false,false)) ClassHelpAndReturn;
 
   int g = -0x00000000000000001;
-  if (!get_val_param<int >(g,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(g,_p,_n,false,false)) ClassHelpAndReturn;
 
   int b = -0x00000000000000001;
-  if (!get_val_param<int >(b,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxImage & res =   this->_objectptr->GetObj()->Resize(size, pos, r, g, b);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1676,18 +1676,18 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(angle,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxPoint > centre_of_rotation_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(centre_of_rotation_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(centre_of_rotation_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint const & centre_of_rotation = *centre_of_rotation_smtptr;
 
   int interpolating_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(interpolating_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(interpolating_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool interpolating = (bool) (interpolating_int>0.5);
 
   boost::shared_ptr<wxPoint > offset_after_rotation_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(offset_after_rotation_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(offset_after_rotation_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint* offset_after_rotation = offset_after_rotation_smtptr.get();
 
   wxImage res =   this->_objectptr->GetObj()->Rotate(angle, centre_of_rotation, interpolating, offset_after_rotation);
@@ -1713,7 +1713,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int clockwise_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(clockwise_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(clockwise_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool clockwise = (bool) (clockwise_int>0.5);
 
   wxImage res =   this->_objectptr->GetObj()->Rotate90(clockwise);
@@ -1739,7 +1739,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int horizontally_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(horizontally_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(horizontally_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool horizontally = (bool) (horizontally_int>0.5);
 
   wxImage res =   this->_objectptr->GetObj()->Mirror(horizontally);
@@ -1769,22 +1769,22 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   unsigned char r1;
-  if (!get_val_param<unsigned char >(r1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(r1,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char g1;
-  if (!get_val_param<unsigned char >(g1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(g1,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char b1;
-  if (!get_val_param<unsigned char >(b1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(b1,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char r2;
-  if (!get_val_param<unsigned char >(r2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(r2,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char g2;
-  if (!get_val_param<unsigned char >(g2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(g2,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char b2;
-  if (!get_val_param<unsigned char >(b2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(b2,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Replace(r1, g1, b1, r2, g2, b2);
   return BasicVariable::ptr();
@@ -1811,13 +1811,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   double lr = 2.98999999999999988009591334048309363424777984619140625e-1;
-  if (!get_val_param<double >(lr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(lr,_p,_n,false,false)) ClassHelpAndReturn;
 
   double lg = 5.869999999999999662492200513952411711215972900390625e-1;
-  if (!get_val_param<double >(lg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(lg,_p,_n,false,false)) ClassHelpAndReturn;
 
   double lb = 1.1400000000000000410782519111307919956743717193603515625e-1;
-  if (!get_val_param<double >(lb,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(lb,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->ConvertToGreyscale(lr, lg, lb);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1844,13 +1844,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   unsigned char r;
-  if (!get_val_param<unsigned char >(r,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(r,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char g;
-  if (!get_val_param<unsigned char >(g,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(g,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char b;
-  if (!get_val_param<unsigned char >(b,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(b,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->ConvertToMono(r, g, b);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1878,19 +1878,19 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char r;
-  if (!get_val_param<unsigned char >(r,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(r,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char g;
-  if (!get_val_param<unsigned char >(g,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(g,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char b;
-  if (!get_val_param<unsigned char >(b,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetRGB(x, y, r, g, b);
   return BasicVariable::ptr();
@@ -1938,17 +1938,17 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   unsigned char r;
-  if (!get_val_param<unsigned char >(r,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(r,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char g;
-  if (!get_val_param<unsigned char >(g,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(g,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char b;
-  if (!get_val_param<unsigned char >(b,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetRGB(rect, r, g, b);
   return BasicVariable::ptr();
@@ -1974,10 +1974,10 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char res =   this->_objectptr->GetObj()->GetRed(x, y);
   return AMILabType<unsigned char >::CreateVar(res);
@@ -2003,10 +2003,10 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char res =   this->_objectptr->GetObj()->GetGreen(x, y);
   return AMILabType<unsigned char >::CreateVar(res);
@@ -2032,10 +2032,10 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char res =   this->_objectptr->GetObj()->GetBlue(x, y);
   return AMILabType<unsigned char >::CreateVar(res);
@@ -2061,13 +2061,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char alpha;
-  if (!get_val_param<unsigned char >(alpha,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(alpha,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetAlpha(x, y, alpha);
   return BasicVariable::ptr();
@@ -2093,10 +2093,10 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char res =   this->_objectptr->GetObj()->GetAlpha(x, y);
   return AMILabType<unsigned char >::CreateVar(res);
@@ -2126,25 +2126,25 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<unsigned char > r_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* r = r_smtptr.get();
 
   boost::shared_ptr<unsigned char > g_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* g = g_smtptr.get();
 
   boost::shared_ptr<unsigned char > b_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* b = b_smtptr.get();
 
   unsigned char startR = 1;
-  if (!get_val_param<unsigned char >(startR,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(startR,_p,_n,false,false)) ClassHelpAndReturn;
 
   unsigned char startG = 0;
-  if (!get_val_param<unsigned char >(startG,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(startG,_p,_n,false,false)) ClassHelpAndReturn;
 
   unsigned char startB = 0;
-  if (!get_val_param<unsigned char >(startB,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(startB,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->FindFirstUnusedColour(r, g, b, startR, startG, startB);
   int res_int = ((res==true)?1:0);
@@ -2173,17 +2173,17 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxImage > mask_smtptr;
-  if (!get_val_smtptr_param<wxImage >(mask_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImage >(mask_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImage const & mask = *mask_smtptr;
 
   unsigned char mr;
-  if (!get_val_param<unsigned char >(mr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(mr,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char mg;
-  if (!get_val_param<unsigned char >(mg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(mg,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char mb;
-  if (!get_val_param<unsigned char >(mb,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(mb,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->SetMaskFromImage(mask, mr, mg, mb);
   int res_int = ((res==true)?1:0);
@@ -2209,7 +2209,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   unsigned char threshold = wxIMAGE_ALPHA_THRESHOLD;
-  if (!get_val_param<unsigned char >(threshold,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(threshold,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ConvertAlphaToMask(threshold);
   int res_int = ((res==true)?1:0);
@@ -2237,13 +2237,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   unsigned char r;
-  if (!get_val_param<unsigned char >(r,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(r,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char g;
-  if (!get_val_param<unsigned char >(g,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(g,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char b;
-  if (!get_val_param<unsigned char >(b,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(b,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ConvertColourToAlpha(r, g, b);
   int res_int = ((res==true)?1:0);
@@ -2271,15 +2271,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   long type_long = wxBITMAP_TYPE_ANY;;
-  if (!get_val_param<long >(type_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(type_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int type = type_long;
 
   int index = -0x00000000000000001;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(name, type, index);
   int res_int = ((res==true)?1:0);
@@ -2334,15 +2334,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   boost::shared_ptr<wxString > mimetype_smtptr;
-  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & mimetype = *mimetype_smtptr;
 
   int index = -0x00000000000000001;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(name, mimetype, index);
   int res_int = ((res==true)?1:0);
@@ -2370,15 +2370,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxInputStream & stream = *stream_smtptr;
 
   long type_long = wxBITMAP_TYPE_ANY;;
-  if (!get_val_param<long >(type_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(type_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int type = type_long;
 
   int index = -0x00000000000000001;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(stream, type, index);
   int res_int = ((res==true)?1:0);
@@ -2406,15 +2406,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxInputStream & stream = *stream_smtptr;
 
   boost::shared_ptr<wxString > mimetype_smtptr;
-  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & mimetype = *mimetype_smtptr;
 
   int index = -0x00000000000000001;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(stream, mimetype, index);
   int res_int = ((res==true)?1:0);
@@ -2440,7 +2440,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(name);
@@ -2498,11 +2498,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   int type;
-  if (!get_val_param<int >(type,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(type,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(name, type);
   int res_int = ((res==true)?1:0);
@@ -2529,11 +2529,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   boost::shared_ptr<wxString > mimetype_smtptr;
-  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & mimetype = *mimetype_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(name, mimetype);
@@ -2561,11 +2561,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxOutputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxOutputStream >(stream_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxOutputStream >(stream_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxOutputStream & stream = *stream_smtptr;
 
   int type;
-  if (!get_val_param<int >(type,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(type,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(stream, type);
   int res_int = ((res==true)?1:0);
@@ -2592,11 +2592,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxOutputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxOutputStream >(stream_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxOutputStream >(stream_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxOutputStream & stream = *stream_smtptr;
 
   boost::shared_ptr<wxString > mimetype_smtptr;
-  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(mimetype_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & mimetype = *mimetype_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(stream, mimetype);
@@ -2720,11 +2720,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* data = data_smtptr.get();
 
   int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool static_data = (bool) (static_data_int>0.5);
 
   this->_objectptr->GetObj()->SetData(data, static_data);
@@ -2773,17 +2773,17 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* data = data_smtptr.get();
 
   int new_width;
-  if (!get_val_param<int >(new_width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(new_width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int new_height;
-  if (!get_val_param<int >(new_height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(new_height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool static_data = (bool) (static_data_int>0.5);
 
   this->_objectptr->GetObj()->SetData(data, new_width, new_height, static_data);
@@ -2890,11 +2890,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<unsigned char > alpha_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* alpha = alpha_smtptr.get();
 
   int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool static_data = (bool) (static_data_int>0.5);
 
   this->_objectptr->GetObj()->SetAlpha(alpha, static_data);
@@ -2940,13 +2940,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char threshold = wxIMAGE_ALPHA_THRESHOLD;
-  if (!get_val_param<unsigned char >(threshold,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(threshold,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsTransparent(x, y, threshold);
   int res_int = ((res==true)?1:0);
@@ -2973,13 +2973,13 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   unsigned char r;
-  if (!get_val_param<unsigned char >(r,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(r,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char g;
-  if (!get_val_param<unsigned char >(g,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(g,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char b;
-  if (!get_val_param<unsigned char >(b,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(b,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaskColour(r, g, b);
   return BasicVariable::ptr();
@@ -3006,15 +3006,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<unsigned char > r_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* r = r_smtptr.get();
 
   boost::shared_ptr<unsigned char > g_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* g = g_smtptr.get();
 
   boost::shared_ptr<unsigned char > b_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* b = b_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->GetOrFindMaskColour(r, g, b);
@@ -3097,7 +3097,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   int mask_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(mask_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(mask_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool mask = (bool) (mask_int>0.5);
 
   this->_objectptr->GetObj()->SetMask(mask);
@@ -3181,7 +3181,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxPalette > palette_smtptr;
-  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPalette const & palette = *palette_smtptr;
 
   this->_objectptr->GetObj()->SetPalette(palette);
@@ -3207,11 +3207,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   boost::shared_ptr<wxString > value_smtptr;
-  if (!get_val_smtptr_param<wxString >(value_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(value_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & value = *value_smtptr;
 
   this->_objectptr->GetObj()->SetOption(name, value);
@@ -3258,11 +3258,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   int value;
-  if (!get_val_param<int >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(value,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetOption(name, value);
   return BasicVariable::ptr();
@@ -3287,7 +3287,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   wxString res =   this->_objectptr->GetObj()->GetOption(name);
@@ -3313,7 +3313,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   int res =   this->_objectptr->GetObj()->GetOptionInt(name);
@@ -3339,7 +3339,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   bool res =   this->_objectptr->GetObj()->HasOption(name);
@@ -3366,7 +3366,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   long stopafter_long = boost::numeric_cast<long >(-1ul);;
-  if (!get_val_param<long >(stopafter_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(stopafter_long,_p,_n,false,false)) ClassHelpAndReturn;
   long unsigned int stopafter = boost::numeric_cast<long unsigned int >(stopafter_long);
 
   long unsigned int res =   this->_objectptr->GetObj()->CountColours(stopafter);
@@ -3393,7 +3393,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogram > h_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogram >(h_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHistogram >(h_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHistogram & h = *h_smtptr;
 
   long unsigned int res =   this->_objectptr->GetObj()->ComputeHistogram(h);
@@ -3419,7 +3419,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(angle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->RotateHue(angle);
   return BasicVariable::ptr();
@@ -3464,7 +3464,7 @@ BasicVariable::ptr WrapClass_wxImage::
   int _n=0;
 
   boost::shared_ptr<wxImage > param0_smtptr;
-  if (!get_val_smtptr_param<wxImage >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImage >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImage const & param0 = *param0_smtptr;
 
   wxImage & res =   (*this->_objectptr->GetObj()) = (param0);

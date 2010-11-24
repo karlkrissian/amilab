@@ -168,7 +168,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkPiecewiseFunction::IsTypeOf(type);
@@ -194,7 +194,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkPiecewiseFunction * res =   vtkPiecewiseFunction::SafeDownCast(o);
@@ -222,7 +222,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkInformation* info = info_smtptr.get();
 
   vtkPiecewiseFunction * res =   vtkPiecewiseFunction::GetData(info);
@@ -267,11 +267,11 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<vtkInformationVector > v_smtptr;
-  if (!get_val_smtptr_param<vtkInformationVector >(v_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkInformationVector >(v_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkInformationVector* v = v_smtptr.get();
 
   int i = 0;
-  if (!get_val_param<int >(i,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(i,_p,_n,false,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   vtkPiecewiseFunction::GetData(v, i);
   BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
@@ -298,7 +298,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -345,11 +345,11 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -374,7 +374,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<vtkDataObject > f_smtptr;
-  if (!get_val_smtptr_param<vtkDataObject >(f_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataObject >(f_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataObject* f = f_smtptr.get();
 
   this->_objectptr->GetObj()->DeepCopy(f);
@@ -399,7 +399,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<vtkDataObject > f_smtptr;
-  if (!get_val_smtptr_param<vtkDataObject >(f_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataObject >(f_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataObject* f = f_smtptr.get();
 
   this->_objectptr->GetObj()->ShallowCopy(f);
@@ -464,10 +464,10 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->AddPoint(x, y);
   return AMILabType<int >::CreateVar(res);
@@ -516,16 +516,16 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double midpoint;
-  if (!get_val_param<double >(midpoint,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(midpoint,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double sharpness;
-  if (!get_val_param<double >(sharpness,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(sharpness,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->AddPoint(x, y, midpoint, sharpness);
   return AMILabType<int >::CreateVar(res);
@@ -550,7 +550,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->RemovePoint(x);
   return AMILabType<int >::CreateVar(res);
@@ -595,16 +595,16 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double y1;
-  if (!get_val_param<double >(y1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(y1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x2,_p,_n,true,false)) ClassHelpAndReturn;
 
   double y2;
-  if (!get_val_param<double >(y2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(y2,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->AddSegment(x1, y1, x2, y2);
   return BasicVariable::ptr();
@@ -629,7 +629,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double res =   this->_objectptr->GetObj()->GetValue(x);
   return AMILabType<double >::CreateVar(res);
@@ -655,10 +655,10 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(index,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* val = val_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->GetNodeValue(index, val);
@@ -685,10 +685,10 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(index,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* val = val_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->SetNodeValue(index, val);
@@ -733,10 +733,10 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > param1_smtptr;
-  if (!get_val_smtptr_param<double >(param1_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* param1 = param1_smtptr.get();
 
   this->_objectptr->GetObj()->FillFromDataPointer(param0, param1);
@@ -805,11 +805,11 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   this->_objectptr->GetObj()->GetRange(_arg1, _arg2);
@@ -834,7 +834,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetRange(_arg);
@@ -860,7 +860,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   boost::shared_ptr<double > range_smtptr;
-  if (!get_val_smtptr_param<double >(range_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* range = range_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->AdjustRange(range);
@@ -889,20 +889,20 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int size;
-  if (!get_val_param<int >(size,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(size,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<float > table_smtptr;
-  if (!get_val_smtptr_param<float >(table_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<float >(table_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   float* table = table_smtptr.get();
 
   int stride = 1;
-  if (!get_val_param<int >(stride,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(stride,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->GetTable(x1, x2, size, table, stride);
   return BasicVariable::ptr();
@@ -951,20 +951,20 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int size;
-  if (!get_val_param<int >(size,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(size,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<double > table_smtptr;
-  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* table = table_smtptr.get();
 
   int stride = 1;
-  if (!get_val_param<int >(stride,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(stride,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->GetTable(x1, x2, size, table, stride);
   return BasicVariable::ptr();
@@ -992,20 +992,20 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x2,_p,_n,true,false)) ClassHelpAndReturn;
 
   int size;
-  if (!get_val_param<int >(size,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(size,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > table_smtptr;
-  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* table = table_smtptr.get();
 
   int stride = 1;
-  if (!get_val_param<int >(stride,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(stride,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->BuildFunctionFromTable(x1, x2, size, table, stride);
   return BasicVariable::ptr();
@@ -1029,7 +1029,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetClamping(_arg);
   return BasicVariable::ptr();
@@ -1165,7 +1165,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAllowDuplicateScalars(_arg);
   return BasicVariable::ptr();

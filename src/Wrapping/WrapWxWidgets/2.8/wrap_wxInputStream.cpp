@@ -92,7 +92,9 @@ void WrapClass_wxInputStream::AddMethods(WrapClass<wxInputStream>::ptr this_ptr 
 */
       AddVar_Ungetch( this_ptr);
       AddVar_Ungetch_2( this_ptr);
+/* The following types are missing: wxSeekMode
       AddVar_SeekI( this_ptr);
+*/
       AddVar_TellI( this_ptr);
 
       // Adding operators
@@ -172,11 +174,11 @@ BasicVariable::ptr WrapClass_wxInputStream::
   int _n=0;
 
   boost::shared_ptr<void > buffer_smtptr;
-  if (!get_val_smtptr_param<void >(buffer_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(buffer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   void* buffer = buffer_smtptr.get();
 
   long size_long;
-  if (!get_val_param<long >(size_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(size_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int size = boost::numeric_cast<long unsigned int >(size_long);
 
   wxInputStream & res =   this->_objectptr->GetObj()->Read(buffer, size);
@@ -221,7 +223,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
   int _n=0;
 
   boost::shared_ptr<wxOutputStream > streamOut_smtptr;
-  if (!get_val_smtptr_param<wxOutputStream >(streamOut_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxOutputStream >(streamOut_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxOutputStream & streamOut = *streamOut_smtptr;
 
   wxInputStream & res =   this->_objectptr->GetObj()->Read(streamOut);
@@ -309,11 +311,11 @@ BasicVariable::ptr WrapClass_wxInputStream::
   int _n=0;
 
   boost::shared_ptr<void > buffer_smtptr;
-  if (!get_val_smtptr_param<void >(buffer_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(buffer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   void* buffer = buffer_smtptr.get();
 
   long size_long;
-  if (!get_val_param<long >(size_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(size_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int size = boost::numeric_cast<long unsigned int >(size_long);
 
   size_t res =   this->_objectptr->GetObj()->Ungetch(buffer, size);
@@ -359,7 +361,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
   int _n=0;
 
   std::string c_string;
-  if (!get_val_param<std::string >(c_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(c_string,_p,_n,true,true)) ClassReturnEmptyVar;
   char c = ' ';
 if (c_string.size()>0) c = c_string[0];
 
@@ -367,6 +369,7 @@ if (c_string.size()>0) c = c_string[0];
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxSeekMode
 
 //---------------------------------------------------
 //  Wrapping of wxFileOffset wxInputStream::SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart)
@@ -375,7 +378,7 @@ void WrapClass_wxInputStream::
     wrap_SeekI::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'pos'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'mode' (def:wxFromStart)")
+  ADDPARAMCOMMENT_TYPE( wxSeekMode, "parameter named 'mode' (def:wxFromStart)")
   return_comments="returning a variable of type long";
 }
 
@@ -388,17 +391,17 @@ BasicVariable::ptr WrapClass_wxInputStream::
   int _n=0;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int pos = pos_long;
 
-  int mode_int = (int) wxFromStart;;
-  if (!get_val_param<int >(mode_int,_p,_n)) ClassHelpAndReturn;
-  wxSeekMode mode = (wxSeekMode) mode_int;
+  wxSeekMode mode = wxFromStart;
+  if (!get_val_param<wxSeekMode >(mode,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxFileOffset res =   this->_objectptr->GetObj()->SeekI(pos, mode);
   long res_long = res;
   return AMILabType<long >::CreateVar(res_long);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxFileOffset wxInputStream::TellI()
@@ -441,7 +444,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
   int _n=0;
 
   boost::shared_ptr<wxOutputStream > out_smtptr;
-  if (!get_val_smtptr_param<wxOutputStream >(out_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxOutputStream >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxOutputStream & out = *out_smtptr;
 
   wxInputStream & res =   this->_objectptr->GetObj()->>>(out);
@@ -489,7 +492,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
   int _n=0;
 
   _12813 func;
-  if (!get_val_param<_12813 >(func,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<_12813 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxInputStream & res =   this->_objectptr->GetObj()->>>(func);
   return AMILabType<wxInputStream >::CreateVar(res);

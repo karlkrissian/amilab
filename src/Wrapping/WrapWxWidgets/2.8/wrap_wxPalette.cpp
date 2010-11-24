@@ -110,7 +110,7 @@ BasicVariable::ptr WrapClass_wxPalette::
   int _n=0;
 
   boost::shared_ptr<wxPalette > param0_smtptr;
-  if (!get_val_smtptr_param<wxPalette >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPalette >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxPalette const & param0 = *param0_smtptr;
 
   wxPalette* _newobj = new wxPalette(param0);
@@ -182,18 +182,18 @@ BasicVariable::ptr WrapClass_wxPalette::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<unsigned char > red_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* red = red_smtptr.get();
 
   boost::shared_ptr<unsigned char > green_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* green = green_smtptr.get();
 
   boost::shared_ptr<unsigned char > blue_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* blue = blue_smtptr.get();
 
   wxPalette* _newobj = new wxPalette(n, red, green, blue);
@@ -279,18 +279,18 @@ BasicVariable::ptr WrapClass_wxPalette::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<unsigned char > red_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* red = red_smtptr.get();
 
   boost::shared_ptr<unsigned char > green_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* green = green_smtptr.get();
 
   boost::shared_ptr<unsigned char > blue_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* blue = blue_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Create(n, red, green, blue);
@@ -319,13 +319,13 @@ BasicVariable::ptr WrapClass_wxPalette::
   int _n=0;
 
   unsigned char red;
-  if (!get_val_param<unsigned char >(red,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(red,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char green;
-  if (!get_val_param<unsigned char >(green,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(green,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char blue;
-  if (!get_val_param<unsigned char >(blue,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(blue,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->GetPixel(red, green, blue);
   return AMILabType<int >::CreateVar(res);
@@ -353,18 +353,18 @@ BasicVariable::ptr WrapClass_wxPalette::
   int _n=0;
 
   int pixel;
-  if (!get_val_param<int >(pixel,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(pixel,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<unsigned char > red_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* red = red_smtptr.get();
 
   boost::shared_ptr<unsigned char > green_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* green = green_smtptr.get();
 
   boost::shared_ptr<unsigned char > blue_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* blue = blue_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->GetRGB(pixel, red, green, blue);
@@ -430,7 +430,7 @@ BasicVariable::ptr WrapClass_wxPalette::
   int _n=0;
 
   boost::shared_ptr<wxPalette > param0_smtptr;
-  if (!get_val_smtptr_param<wxPalette >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPalette >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPalette const & param0 = *param0_smtptr;
 
   wxPalette & res =   (*this->_objectptr->GetObj()) = (param0);

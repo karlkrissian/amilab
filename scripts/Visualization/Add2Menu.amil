@@ -13,10 +13,9 @@ proc AddSegMenu() {
   ami.MainFrame.AddToMenu("&Scripts",category,"&Parametric Surfaces",  dir+"ParametricSurfaces")
   ami.MainFrame.AddToMenu("&Scripts",category,"2D &Function plot",  dir+"Functions2D")
   ami.MainFrame.AddToMenu("&Scripts",category,"Image &Grid",  dir+"ImageGrid")
-  ami.MainFrame.AddToMenu("&Scripts",category,"Image &Histogram",  dir+"ImageHistogram")
   
   
-  for subdir in  "RGBScale","VolRen" \
+  for subdir in  "RGBScale","VolRen","ImageHistogram" \
   {
     curfile=GetScriptsDir+"/Visualization/"+subdir+"/Add2Menu.amil"
     if FileExists(curfile) {

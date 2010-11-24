@@ -26,6 +26,7 @@
 #include "wrap_vtkAbstractMapper3D.h"
 
 
+
 AMI_DECLARE_TYPE(vtkAbstractVolumeMapper);
 
 // TODO: check for inheritence ...

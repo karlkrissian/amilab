@@ -1,0 +1,12 @@
+
+func "Visualization/ImageHistogram/ImageHistogramClass"
+
+#----------------------------
+if (!exists(ImageHistogram_obj)) {
+  ImageHistogramClass ImageHistogram_obj
+  ImageHistogram_obj.Gui()
+  
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

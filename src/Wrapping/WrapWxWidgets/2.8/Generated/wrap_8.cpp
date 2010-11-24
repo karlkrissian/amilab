@@ -1,0 +1,11 @@
+
+#include "wrap_wxMenuItemList.cpp"
+#include "wrap_wxMouseEvent.cpp"
+#include "wrap_wxNodeBase.cpp"
+#include "wrap_wxObject.cpp"
+#include "wrap_wxObjectList.cpp"
+#include "wrap_wxObjectListNode.cpp"
+#include "wrap_wxObjectRefData.cpp"
+#include "wrap_wxOutputStream.cpp"
+#include "wrap_wxPaintEvent.cpp"
+#include "wrap_wxPaletteBase.cpp"

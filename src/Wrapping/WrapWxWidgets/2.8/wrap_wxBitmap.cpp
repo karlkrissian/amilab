@@ -156,7 +156,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > param0_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxBitmap const & param0 = *param0_smtptr;
 
   wxBitmap* _newobj = new wxBitmap(param0);
@@ -233,13 +233,13 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int depth = -0x00000000000000001;
-  if (!get_val_param<int >(depth,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(depth,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxBitmap* _newobj = new wxBitmap(width, height, depth);
   BasicVariable::ptr res = WrapClass_wxBitmap::CreateVar(_newobj);
@@ -267,17 +267,17 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<std::string > bits_string;
-  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * bits = bits_string->c_str();
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int depth = 1;
-  if (!get_val_param<int >(depth,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(depth,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxBitmap* _newobj = new wxBitmap(bits, width, height, depth);
   BasicVariable::ptr res = WrapClass_wxBitmap::CreateVar(_newobj);
@@ -303,7 +303,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<std::string > bits_string;
-  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * const * bits = bits_string->c_str();
 
   wxBitmap* _newobj = new wxBitmap(bits);
@@ -332,11 +332,11 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxString > filename_smtptr;
-  if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & filename = *filename_smtptr;
 
   wxBitmapType type = wxBITMAP_TYPE_XPM;
-  if (!get_val_param<wxBitmapType >(type,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<wxBitmapType >(type,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxBitmap* _newobj = new wxBitmap(filename, type);
   BasicVariable::ptr res = WrapClass_wxBitmap::CreateVar(_newobj);
@@ -363,11 +363,11 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxImage > image_smtptr;
-  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxImage const & image = *image_smtptr;
 
   int depth = -0x00000000000000001;
-  if (!get_val_param<int >(depth,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(depth,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxBitmap* _newobj = new wxBitmap(image, depth);
   BasicVariable::ptr res = WrapClass_wxBitmap::CreateVar(_newobj);
@@ -469,13 +469,13 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(height,_p,_n,true,false)) ClassHelpAndReturn;
 
   int depth = -0x00000000000000001;
-  if (!get_val_param<int >(depth,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(depth,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Create(width, height, depth);
   int res_int = ((res==true)?1:0);
@@ -577,7 +577,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxIcon > icon_smtptr;
-  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIcon const & icon = *icon_smtptr;
 
   bool res =   this->_objectptr->GetObj()->CopyFromIcon(icon);
@@ -623,7 +623,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxMask > mask_smtptr;
-  if (!get_val_smtptr_param<wxMask >(mask_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMask >(mask_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMask* mask = mask_smtptr.get();
 
   this->_objectptr->GetObj()->SetMask(mask);
@@ -649,7 +649,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRect const & rect = *rect_smtptr;
 
   wxBitmap res =   this->_objectptr->GetObj()->GetSubBitmap(rect);
@@ -678,14 +678,14 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   wxBitmapType type;
-  if (!get_val_param<wxBitmapType >(type,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<wxBitmapType >(type,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxPalette > palette_smtptr;
-  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPalette* palette = palette_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->SaveFile(name, type, palette);
@@ -715,11 +715,11 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   wxBitmapType type = wxBITMAP_TYPE_XPM;
-  if (!get_val_param<wxBitmapType >(type,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<wxBitmapType >(type,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(name, type);
   int res_int = ((res==true)?1:0);
@@ -765,7 +765,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxPalette > palette_smtptr;
-  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPalette const & palette = *palette_smtptr;
 
   this->_objectptr->GetObj()->SetPalette(palette);
@@ -810,7 +810,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(height,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetHeight(height);
   return BasicVariable::ptr();
@@ -834,7 +834,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetWidth(width);
   return BasicVariable::ptr();
@@ -858,7 +858,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   int depth;
-  if (!get_val_param<int >(depth,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(depth,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDepth(depth);
   return BasicVariable::ptr();
@@ -883,7 +883,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<_GdkDrawable > pixmap_smtptr;
-  if (!get_val_smtptr_param<_GdkDrawable >(pixmap_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GdkDrawable >(pixmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GdkDrawable* pixmap = pixmap_smtptr.get();
 
   this->_objectptr->GetObj()->SetPixmap(pixmap);
@@ -911,11 +911,11 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<_GdkPixbuf > pixbuf_smtptr;
-  if (!get_val_smtptr_param<_GdkPixbuf >(pixbuf_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GdkPixbuf >(pixbuf_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GdkPixbuf* pixbuf = pixbuf_smtptr.get();
 
   int depth = 0;
-  if (!get_val_param<int >(depth,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(depth,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetPixbuf(pixbuf, depth);
   return BasicVariable::ptr();
@@ -1028,22 +1028,22 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   int clipx;
-  if (!get_val_param<int >(clipx,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(clipx,_p,_n,true,false)) ClassHelpAndReturn;
 
   int clipy;
-  if (!get_val_param<int >(clipy,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(clipy,_p,_n,true,false)) ClassHelpAndReturn;
 
   int clipwidth;
-  if (!get_val_param<int >(clipwidth,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(clipwidth,_p,_n,true,false)) ClassHelpAndReturn;
 
   int clipheight;
-  if (!get_val_param<int >(clipheight,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(clipheight,_p,_n,true,false)) ClassHelpAndReturn;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(height,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxBitmap res =   this->_objectptr->GetObj()->Rescale(clipx, clipy, clipwidth, clipheight, width, height);
   return AMILabType<wxBitmap >::CreateVar(res);
@@ -1069,11 +1069,11 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxPixelDataBase > data_smtptr;
-  if (!get_val_smtptr_param<wxPixelDataBase >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPixelDataBase >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPixelDataBase & data = *data_smtptr;
 
   int bpp;
-  if (!get_val_param<int >(bpp,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(bpp,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->GetRawData(data, bpp);
   return BasicVariable::ptr();
@@ -1099,7 +1099,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxPixelDataBase > data_smtptr;
-  if (!get_val_smtptr_param<wxPixelDataBase >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPixelDataBase >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPixelDataBase & data = *data_smtptr;
 
   this->_objectptr->GetObj()->UngetRawData(data);
@@ -1184,7 +1184,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > param0_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & param0 = *param0_smtptr;
 
   wxBitmap & res =   (*this->_objectptr->GetObj()) = (param0);

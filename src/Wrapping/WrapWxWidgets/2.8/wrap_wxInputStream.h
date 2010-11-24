@@ -26,6 +26,7 @@
 #include "wrap_wxStreamBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxInputStream);
 
 // TODO: check for inheritence ...
@@ -83,7 +84,9 @@ class WrapClass_wxInputStream : public WrapClass<wxInputStream>
 */
     ADD_CLASS_METHOD(Ungetch,"wxInputStream::Ungetch()  (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#ungetch)")
     ADD_CLASS_METHOD(Ungetch_2,"bool wxInputStream::Ungetch(char c)  (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#ungetch)")
+/* The following types are missing: wxSeekMode
     ADD_CLASS_METHOD(SeekI,"wxFileOffset wxInputStream::SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart)  (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#seeki)")
+*/
     ADD_CLASS_METHOD(TellI,"wxFileOffset wxInputStream::TellI()  (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#telli)")
 
     // Operators:

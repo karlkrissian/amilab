@@ -26,6 +26,7 @@
 #include "wrap_vtkPropCollection.h"
 
 
+
 AMI_DECLARE_TYPE(vtkVolumeCollection);
 
 // TODO: check for inheritence ...

@@ -26,6 +26,7 @@
 #include "wrap_wxObject.h"
 
 
+
 AMI_DECLARE_TYPE(wxListBase);
 
 // TODO: check for inheritence ...
@@ -73,8 +74,12 @@ class WrapClass_wxListBase : public WrapClass<wxListBase>
     ADD_CLASS_METHOD(Clear,"void wxListBase::Clear()  (http://docs.wxwidgets.org/stable/wx_wxlistbase.html#clear)")
     ADD_CLASS_METHOD(DeleteContents,"void wxListBase::DeleteContents(bool destroy)  (http://docs.wxwidgets.org/stable/wx_wxlistbase.html#deletecontents)")
     ADD_CLASS_METHOD(GetDeleteContents,"bool wxListBase::GetDeleteContents()  (http://docs.wxwidgets.org/stable/wx_wxlistbase.html#getdeletecontents)")
+/* The following types are missing: wxKeyType
     ADD_CLASS_METHOD(GetKeyType,"wxKeyType wxListBase::GetKeyType()  (http://docs.wxwidgets.org/stable/wx_wxlistbase.html#getkeytype)")
+*/
+/* The following types are missing: wxKeyType
     ADD_CLASS_METHOD(SetKeyType,"void wxListBase::SetKeyType(wxKeyType keyType)  (http://docs.wxwidgets.org/stable/wx_wxlistbase.html#setkeytype)")
+*/
     ADD_CLASS_METHOD(Number,"int wxListBase::Number()  (http://docs.wxwidgets.org/stable/wx_wxlistbase.html#number)")
     ADD_CLASS_METHOD(First,"wxNode * wxListBase::First()  (http://docs.wxwidgets.org/stable/wx_wxlistbase.html#first)")
     ADD_CLASS_METHOD(Last,"wxNode * wxListBase::Last()  (http://docs.wxwidgets.org/stable/wx_wxlistbase.html#last)")

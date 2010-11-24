@@ -149,7 +149,7 @@ BasicVariable::ptr WrapClass_wxObject::
   int _n=0;
 
   boost::shared_ptr<wxObject > other_smtptr;
-  if (!get_val_smtptr_param<wxObject >(other_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxObject >(other_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxObject const & other = *other_smtptr;
 
   wxObject* _newobj = new wxObject(other);
@@ -212,7 +212,7 @@ BasicVariable::ptr WrapClass_wxObject::
   int _n=0;
 
   boost::shared_ptr<wxClassInfo > info_smtptr;
-  if (!get_val_smtptr_param<wxClassInfo >(info_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxClassInfo >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxClassInfo* info = info_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->IsKindOf(info);
@@ -258,7 +258,7 @@ BasicVariable::ptr WrapClass_wxObject::
   int _n=0;
 
   boost::shared_ptr<wxObjectRefData > data_smtptr;
-  if (!get_val_smtptr_param<wxObjectRefData >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxObjectRefData >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxObjectRefData* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->SetRefData(data);
@@ -283,7 +283,7 @@ BasicVariable::ptr WrapClass_wxObject::
   int _n=0;
 
   boost::shared_ptr<wxObject > clone_smtptr;
-  if (!get_val_smtptr_param<wxObject >(clone_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxObject >(clone_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxObject const & clone = *clone_smtptr;
 
   this->_objectptr->GetObj()->Ref(clone);
@@ -345,7 +345,7 @@ BasicVariable::ptr WrapClass_wxObject::
   int _n=0;
 
   boost::shared_ptr<wxObject > o_smtptr;
-  if (!get_val_smtptr_param<wxObject >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxObject >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxObject const & o = *o_smtptr;
 
   bool res =   this->_objectptr->GetObj()->IsSameAs(o);
@@ -372,7 +372,7 @@ BasicVariable::ptr WrapClass_wxObject::
   int _n=0;
 
   boost::shared_ptr<wxObject > other_smtptr;
-  if (!get_val_smtptr_param<wxObject >(other_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxObject >(other_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxObject const & other = *other_smtptr;
 
   wxObject & res =   (*this->_objectptr->GetObj()) = (other);

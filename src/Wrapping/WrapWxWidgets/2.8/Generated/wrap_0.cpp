@@ -1,0 +1,11 @@
+
+#include "wrap_wxAcceleratorEntry.cpp"
+#include "wrap_wxAcceleratorTable.cpp"
+#include "wrap_wxActivateEvent.cpp"
+#include "wrap_wxArrayInt.cpp"
+#include "wrap_wxAuiManager.cpp"
+#include "wrap_wxAuiPaneInfo.cpp"
+#include "wrap_wxAuiToolBarArt.cpp"
+#include "wrap_wxAuiToolBar.cpp"
+#include "wrap_wxAuiToolBarItemArray.cpp"
+#include "wrap_wxAuiToolBarItem.cpp"

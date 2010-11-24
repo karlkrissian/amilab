@@ -26,6 +26,7 @@
 #include "wrap_wxColourBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxColour);
 
 // TODO: check for inheritence ...

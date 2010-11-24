@@ -26,6 +26,7 @@
 #include "wrap_vtkScalarsToColors.h"
 
 
+
 AMI_DECLARE_TYPE(vtkColorTransferFunction);
 
 // TODO: check for inheritence ...

@@ -26,6 +26,7 @@
 #include "wrap_vtkObject.h"
 
 
+
 AMI_DECLARE_TYPE(vtkWindow);
 
 // TODO: check for inheritence ...

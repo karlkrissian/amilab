@@ -26,6 +26,7 @@
 #include "wrap_wxStreamBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxOutputStream);
 
 // TODO: check for inheritence ...
@@ -77,7 +78,9 @@ class WrapClass_wxOutputStream : public WrapClass<wxOutputStream>
 */
     ADD_CLASS_METHOD(Write,"wxOutputStream::Write()  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#write)")
     ADD_CLASS_METHOD(Write_2,"wxOutputStream & wxOutputStream::Write(wxInputStream & stream_in)  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#write)")
+/* The following types are missing: wxSeekMode
     ADD_CLASS_METHOD(SeekO,"wxFileOffset wxOutputStream::SeekO(wxFileOffset pos, wxSeekMode mode = wxFromStart)  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#seeko)")
+*/
     ADD_CLASS_METHOD(TellO,"wxFileOffset wxOutputStream::TellO()  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#tello)")
     ADD_CLASS_METHOD(LastWrite,"size_t wxOutputStream::LastWrite()  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#lastwrite)")
     ADD_CLASS_METHOD(Sync,"void wxOutputStream::Sync()  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#sync)")

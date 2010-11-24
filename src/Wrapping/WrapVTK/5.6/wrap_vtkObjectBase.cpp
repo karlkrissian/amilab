@@ -126,7 +126,7 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   boost::shared_ptr<std::string > name_string;
-  if (!get_val_smtptr_param<std::string >(name_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(name_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * name = name_string->c_str();
 
   int res =   vtkObjectBase::IsTypeOf(name);
@@ -192,7 +192,7 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   boost::shared_ptr<std::string > name_string;
-  if (!get_val_smtptr_param<std::string >(name_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(name_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * name = name_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(name);
@@ -254,7 +254,7 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   this->_objectptr->GetObj()->Print(os);
@@ -282,11 +282,11 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -313,11 +313,11 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintHeader(os, indent);
   return BasicVariable::ptr();
@@ -344,11 +344,11 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintTrailer(os, indent);
   return BasicVariable::ptr();
@@ -373,7 +373,7 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   this->_objectptr->GetObj()->Register(o);
@@ -398,7 +398,7 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   this->_objectptr->GetObj()->UnRegister(o);
@@ -442,7 +442,7 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetReferenceCount(param0);
   return BasicVariable::ptr();
@@ -467,7 +467,7 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   this->_objectptr->GetObj()->PrintRevisions(os);

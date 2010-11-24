@@ -5,14 +5,14 @@
 # or lines from an image
 #
 
-comments="ImageHistoClass: this class allows to draw the histogram of an image."
+comments="ImageHistogramClass: this class allows to draw the histogram of an image."
 
 func "Common/ScriptGui"
 
 
-if (!exists(ImageHistoClass)) {
+if (!exists(ImageHistogramClass)) {
 
-  Class ImageHistoClass : public ScriptGui {
+  Class ImageHistogramClass : public ScriptGui {
 
     ::ami_import = &global::ami_import
     #----------------------------
@@ -22,8 +22,8 @@ if (!exists(ImageHistoClass)) {
       ::minval = 0, "minimal value of the histogram"
       ::maxval = 255, "maximal value of the histogram"
       ::step = 1, "histogram step"
+      ::standalone = 1, "1: runs standalone with input image selector, 0: runs within other Gui."
       ::InitColours()
-      ::Gui()
     }
 
     #---------------------------
@@ -112,9 +112,9 @@ if (!exists(ImageHistoClass)) {
     #----------------------------
     proc ::LoadInput() \
     {
-      SetStatusText("LoadInput")
-      printn "evaluation of --> ::input <<="+::input_name+";"
-      eval "::input <<="+::input_name+";"
+      SetStatusText("LoadInput use a reference to the input image.")
+      if exists(::input) { del ::input; }
+      eval "::input = &"+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
         #::win.update
@@ -126,6 +126,24 @@ if (!exists(ImageHistoClass)) {
     }
     Comments(::LoadInput,"Load and initialize input image.")
 
+    #----------------------------
+    proc ::SetInput( IMAGE input_im) \
+    {
+      if exists(::input) { del ::input; }
+      ::input = &input_im
+      ::standalone = 0
+      ::UpdateImage()
+      ::Update()
+    }
+    Comments(::SetInput,"Manually sets the input image and the standalone mode is set to 0.")
+
+    #-------------------------------------------------------------------
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
+      ::standalone = 0
+    }
+    
     #-------------------------------------------------------------------
     proc ::UpdateImage() {
       SetStatusText("UpdateImage")
@@ -141,7 +159,7 @@ if (!exists(ImageHistoClass)) {
       ::win.FloatConstraints(::minval_id,Imin,Imax,::minval)
       ::win.FloatConstraints(::maxval_id,Imin,Imax,::maxval)
       ::win.FloatConstraints(::step_id,  0,(Imax-Imin)/20,::step)
-printn "4"
+      SetStatusText("UpdateImage OK")
     }
 
     #-------------------------------------------------------------------
@@ -179,11 +197,12 @@ printn "4"
         ::dw.GetControlledCurves().push_back(&curve)
       }
     }
+    Comments(::Update,"Recomputes input image limits and resets the histogram.")
 
     #--------------------------------------------------
     proc ::ColormapMinMax() \
     {
-      printn "::ColormapMinMax()"
+      #printn "::ColormapMinMax()"
       curves = ::dw.GetControlledCurves()
       for c=0 to curves.size()-1 {
         ctrlpts = curves[c].GetControlPoints()
@@ -290,9 +309,8 @@ printn "xmax = %1%" % xmax
     }
 
     #--------------------------------------------------
-    proc ::UpdateCM() \
+    proc ::UpdateCM_old() \
     {
-      printn "::UpdateCM()"
       ::cm.SetXLimits(-1,256)
       ::cm.SetYLimits(-1,256)
       # remove all control points
@@ -305,7 +323,7 @@ printn "xmax = %1%" % xmax
         if (exists(points)) { del points; }
         curve = ::dw.GetControlledCurves()[i]
         points = curve.GetControlPoints();
-        printn "nb points %1% " % points.size()
+        #printn "nb points %1% " % points.size()
         for k=0 to points.size()-1 {
           cp = points[k]
           newpos = (cp.GetX()-::cm_min)/cm_range*255
@@ -353,6 +371,68 @@ printn "xmax = %1%" % xmax
       #::cm.Refresh(1)
     }
 
+    #--------------------------------------------------
+    # don't rescale in X to simplify ...
+    #
+    proc ::UpdateCM() \
+    {
+      ::cm.SetYLimits(-5,255+5)
+      # remove all control points
+      ::cm.GetControlledCurves().clear()
+      cm_range = ::cm_max-::cm_min
+      hmax = max(::h[0])
+
+      for i=0 to ::dw.GetControlledCurves().size()-1 {
+        if (exists(curve)) { del curve; }
+        if (exists(points)) { del points; }
+        curve = ::dw.GetControlledCurves()[i]
+        points = curve.GetControlPoints();
+        printn "nb points %1% " % points.size()
+        for k=0 to points.size()-1 {
+          cp = points[k]
+          if (cp.GetType()==1) {
+            cp.SetY(127)
+          } else {
+            cp.SetY(cp.GetY()/hmax*255)
+          }
+          points.setelement(k,&cp)
+        }
+        ::cm.GetControlledCurves().push_back(&curve)
+      }
+
+      # add the corresponding histogram
+
+      #  rescale histogram
+      if (exists(::cm_min)&&exists(::cm_max)&&exists(::h)) {
+        #printn "xmax = %1% " % xmax
+        #printn "xmin = %1% " % xmin
+        ::h1 <<= (FLOAT)::h[0]
+
+        # rescale to the maximum in the current range
+        minpos = (::cm_min-::h1.trx)/::h1.vx
+        maxpos = (::cm_max-::h1.trx)/::h1.vx
+        cm_range = max(0.1,::cm_max-::cm_min)
+       ::cm.SetXLimits(::cm_min-0.02*cm_range,::cm_max+0.02*cm_range)
+
+        subhist = ::h1[minpos:maxpos,0:0]
+        ::dw->SetCurve(subhist,2)
+        ::dw->SetCurveProperties(2,"#0077FF")
+
+        ::h1 = ::h1/max(subhist)*255
+
+        ::cm->SetCurve(::h1,0)
+        ::cm->SetCurveProperties(0,"#0000FF")
+        # update image colormap in image viewer
+        if (exists(::input_draw)) {
+          cm = ::dw.GetColormapImage()
+          ::input_draw.SetUserColormap(cm)
+          ::input_draw.UpdateColormap()
+        }
+      }
+      ::cm._Paint()
+      #::cm.Refresh(1)
+    }
+
     #----------------------------
     proc ::ShowImage() {
       if (!exists(::input)) {
@@ -366,33 +446,39 @@ printn "xmax = %1%" % xmax
     proc ::Gui() {
     
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("ImHist")
+      # parameters window
+      if (exists(::parent_panel)) {
+        ::win = global::ami_import.ParamPanel("ImHist",&::parent_panel)
+      } else {
+        ::win = global::ami_import.ParamPanel("ImHist")
+      }
       
       ::win.BeginBook()
     
         ::win.AddPage("Main")
 
-          # set the input image drawing window
-          ::win.BeginBoxPanel("Input")
+          if (::standalone>0.5) {
+            # set the input image drawing window
+            ::win.BeginBoxPanel("Input")
+              ::win.BeginHorizontal()
+                ::win.AddImageChoice( &::input_name, "")
+                ::AddBitmapButton(&::win, &::icons._Copy,   32, "LoadInput")
+                ::win.SetPositionProp(-1,0)
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel()
+
             ::win.BeginHorizontal()
-              ::win.AddImageChoice( &::input_name, "")
-              ::AddBitmapButton(&::win, &::icons._Copy,   32, "LoadInput")
+              ::AddBitmapButton(&::win, &::icons._Refresh,   32, "Update")
+              ::win.SetPositionProp(-1,0)
+              ::AddBitmapButton(&::win, &::icons._Show,   32, "ShowImage")
               ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
-          ::win.EndBoxPanel()
-
-          ::win.BeginHorizontal()
-            ::AddBitmapButton(&::win, &::icons._Refresh,   32, "Update")
-            ::win.SetPositionProp(-1,0)
-            ::AddBitmapButton(&::win, &::icons._Show,   32, "ShowImage")
-            ::win.SetPositionProp(-1,0)
-          ::win.EndHorizontal()
+          }
 
 
           # add Drawing Window
           d = ::win.CurrentParent()
-          ::dw = import->wxDrawingWindow(&d)
+          ::dw = global::ami_import.wxDrawingWindow(&d)
           # sets minimal size here
           ::dw.SetMinSize(&wx.wxSize(80,80));
           ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
@@ -400,7 +486,7 @@ printn "xmax = %1%" % xmax
 
           # add User Colormap Drawing Window
           d = ::win.CurrentParent()
-          ::cm = import->wxDrawingWindow(&d)
+          ::cm = global::ami_import.wxDrawingWindow(&d)
           # sets minimal size here
           ::cm.SetMinSize(&wx.wxSize(80,70));
           ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
@@ -418,31 +504,27 @@ printn "xmax = %1%" % xmax
 
       ::win.EndBook()
 
-      ::AddStandardButtons(&::win)
+      if (::standalone>0.5) {
+        ::AddStandardButtons(&::win)
+      } else  {
+        #::AddLimitedButtons(&::win)
+      }
       
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
       ::win.Update(-1)
-      ::win.Display()
 
       ::dw.SetCtrlPointCallback(&::OnCtrlPoint)
    }
 
     ::Init()
   } 
-  # Class ImageHistoClass
-  Comments( ImageHistoClass, comments)
+  # Class ImageHistogramClass
+  Comments( ImageHistogramClass, comments)
 } 
-# end if (!exists(ImageHistoClass))
+# end if (!exists(ImageHistogramClass))
   
   
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(imhist)) {
-
-  ImageHistoClass imhist
-  
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
-

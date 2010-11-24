@@ -145,7 +145,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkActorCollection::IsTypeOf(type);
@@ -171,7 +171,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkActorCollection * res =   vtkActorCollection::SafeDownCast(o);
@@ -198,7 +198,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -245,11 +245,11 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -274,7 +274,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   int _n=0;
 
   boost::shared_ptr<vtkActor > a_smtptr;
-  if (!get_val_smtptr_param<vtkActor >(a_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkActor >(a_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkActor* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->AddItem(a);
@@ -380,7 +380,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   int _n=0;
 
   boost::shared_ptr<vtkProperty > p_smtptr;
-  if (!get_val_smtptr_param<vtkProperty >(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkProperty >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkProperty* p = p_smtptr.get();
 
   this->_objectptr->GetObj()->ApplyProperties(p);
@@ -426,7 +426,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   int _n=0;
 
   boost::shared_ptr<void > cookie_smtptr;
-  if (!get_val_smtptr_param<void >(cookie_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(cookie_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCollectionSimpleIterator & cookie = *cookie_smtptr;
 
   vtkActor * res =   this->_objectptr->GetObj()->GetNextActor(cookie);

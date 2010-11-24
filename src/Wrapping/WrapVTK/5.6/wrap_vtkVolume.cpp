@@ -161,7 +161,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkVolume::IsTypeOf(type);
@@ -187,7 +187,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkVolume * res =   vtkVolume::SafeDownCast(o);
@@ -234,7 +234,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -281,11 +281,11 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -310,7 +310,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<vtkAbstractVolumeMapper > mapper_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractVolumeMapper >(mapper_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkAbstractVolumeMapper >(mapper_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkAbstractVolumeMapper* mapper = mapper_smtptr.get();
 
   this->_objectptr->GetObj()->SetMapper(mapper);
@@ -355,7 +355,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<vtkVolumeProperty > property_smtptr;
-  if (!get_val_smtptr_param<vtkVolumeProperty >(property_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkVolumeProperty >(property_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkVolumeProperty* property = property_smtptr.get();
 
   this->_objectptr->GetObj()->SetProperty(property);
@@ -400,7 +400,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<vtkPropCollection > vc_smtptr;
-  if (!get_val_smtptr_param<vtkPropCollection >(vc_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkPropCollection >(vc_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkPropCollection* vc = vc_smtptr.get();
 
   this->_objectptr->GetObj()->GetVolumes(vc);
@@ -483,7 +483,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* bounds = bounds_smtptr.get();
 
   this->_objectptr->GetObj()->GetBounds(bounds);
@@ -662,7 +662,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<vtkProp > prop_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(prop_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkProp >(prop_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkProp* prop = prop_smtptr.get();
 
   this->_objectptr->GetObj()->ShallowCopy(prop);
@@ -688,7 +688,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<vtkViewport > viewport_smtptr;
-  if (!get_val_smtptr_param<vtkViewport >(viewport_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkViewport >(viewport_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkViewport* viewport = viewport_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->RenderVolumetricGeometry(viewport);
@@ -713,7 +713,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<vtkWindow > param0_smtptr;
-  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkWindow* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->ReleaseGraphicsResources(param0);
@@ -739,7 +739,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetCorrectedScalarOpacityArray(param0);
   return AMILabType<float >::CreateVar(res,true);
@@ -804,7 +804,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetScalarOpacityArray(param0);
   return AMILabType<float >::CreateVar(res,true);
@@ -869,7 +869,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetGradientOpacityArray(param0);
   return AMILabType<float >::CreateVar(res,true);
@@ -934,7 +934,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetGrayArray(param0);
   return AMILabType<float >::CreateVar(res,true);
@@ -999,7 +999,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   float * res =   this->_objectptr->GetObj()->GetRGBArray(param0);
   return AMILabType<float >::CreateVar(res,true);
@@ -1064,7 +1064,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   float res =   this->_objectptr->GetObj()->GetGradientOpacityConstant(param0);
   return AMILabType<float >::CreateVar(res);
@@ -1147,7 +1147,7 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* ren = ren_smtptr.get();
 
   this->_objectptr->GetObj()->UpdateTransferFunctions(ren);
@@ -1173,11 +1173,11 @@ BasicVariable::ptr WrapClass_vtkVolume::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* ren = ren_smtptr.get();
 
   float sample_distance;
-  if (!get_val_param<float >(sample_distance,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(sample_distance,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->UpdateScalarOpacityforSampleSize(ren, sample_distance);
   return BasicVariable::ptr();

@@ -124,19 +124,19 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   boost::shared_ptr<wxImage > image_smtptr;
-  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImage* image = image_smtptr.get();
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxInputStream & stream = *stream_smtptr;
 
   int verbose_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(verbose_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(verbose_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool verbose = (bool) (verbose_int>0.5);
 
   int index = -0x00000000000000001;
-  if (!get_val_param<int >(index,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(index,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(image, stream, verbose, index);
   int res_int = ((res==true)?1:0);
@@ -164,15 +164,15 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   boost::shared_ptr<wxImage > image_smtptr;
-  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImage* image = image_smtptr.get();
 
   boost::shared_ptr<wxOutputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxOutputStream >(stream_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxOutputStream >(stream_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxOutputStream & stream = *stream_smtptr;
 
   int verbose_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(verbose_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(verbose_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool verbose = (bool) (verbose_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->SaveFile(image, stream, verbose);
@@ -199,7 +199,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxInputStream & stream = *stream_smtptr;
 
   int res =   this->_objectptr->GetObj()->GetImageCount(stream);
@@ -225,7 +225,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
-  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxInputStream & stream = *stream_smtptr;
 
   bool res =   this->_objectptr->GetObj()->CanRead(stream);
@@ -273,7 +273,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & name = *name_smtptr;
 
   bool res =   this->_objectptr->GetObj()->CanRead(name);
@@ -299,7 +299,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   this->_objectptr->GetObj()->SetName(name);
@@ -324,7 +324,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   boost::shared_ptr<wxString > ext_smtptr;
-  if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & ext = *ext_smtptr;
 
   this->_objectptr->GetObj()->SetExtension(ext);
@@ -349,7 +349,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   long type_long;
-  if (!get_val_param<long >(type_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(type_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int type = type_long;
 
   this->_objectptr->GetObj()->SetType(type);
@@ -374,7 +374,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   boost::shared_ptr<wxString > type_smtptr;
-  if (!get_val_smtptr_param<wxString >(type_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(type_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & type = *type_smtptr;
 
   this->_objectptr->GetObj()->SetMimeType(type);
@@ -497,7 +497,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   int _n=0;
 
   boost::shared_ptr<wxImageHandler > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHandler >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHandler >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHandler const & param0 = *param0_smtptr;
 
   wxImageHandler & res =   (*this->_objectptr->GetObj()) = (param0);

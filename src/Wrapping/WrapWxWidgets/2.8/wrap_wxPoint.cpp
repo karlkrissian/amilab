@@ -135,7 +135,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxPoint > param0_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxPoint const & param0 = *param0_smtptr;
 
   wxPoint* _newobj = new wxPoint(param0);
@@ -205,10 +205,10 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   int xx;
-  if (!get_val_param<int >(xx,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xx,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int yy;
-  if (!get_val_param<int >(yy,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(yy,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxPoint* _newobj = new wxPoint(xx, yy);
   BasicVariable::ptr res = WrapClass_wxPoint::CreateVar(_newobj);
@@ -250,7 +250,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxPoint > param0_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint const & param0 = *param0_smtptr;
 
   wxPoint & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -276,7 +276,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxPoint > p_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint const & p = *p_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (p);
@@ -303,7 +303,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxPoint > p_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint const & p = *p_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (p);
@@ -330,7 +330,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxPoint > p_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & p = *p_smtptr;
 
   wxPoint res =   (*this->_objectptr->GetObj()) + (p);
@@ -356,7 +356,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxPoint > p_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & p = *p_smtptr;
 
   wxPoint res =   (*this->_objectptr->GetObj()) - (p);
@@ -382,7 +382,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxPoint > p_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & p = *p_smtptr;
 
   wxPoint & res =   (*this->_objectptr->GetObj()) += (p);
@@ -408,7 +408,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxPoint > p_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(p_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & p = *p_smtptr;
 
   wxPoint & res =   (*this->_objectptr->GetObj()) -= (p);
@@ -455,7 +455,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxSize > s_smtptr;
-  if (!get_val_smtptr_param<wxSize >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & s = *s_smtptr;
 
   wxPoint & res =   (*this->_objectptr->GetObj()) += (s);
@@ -502,7 +502,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxSize > s_smtptr;
-  if (!get_val_smtptr_param<wxSize >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & s = *s_smtptr;
 
   wxPoint & res =   (*this->_objectptr->GetObj()) -= (s);
@@ -549,7 +549,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxSize > s_smtptr;
-  if (!get_val_smtptr_param<wxSize >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & s = *s_smtptr;
 
   wxPoint res =   (*this->_objectptr->GetObj()) + (s);
@@ -599,7 +599,7 @@ BasicVariable::ptr WrapClass_wxPoint::
   int _n=0;
 
   boost::shared_ptr<wxSize > s_smtptr;
-  if (!get_val_smtptr_param<wxSize >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & s = *s_smtptr;
 
   wxPoint res =   (*this->_objectptr->GetObj()) - (s);

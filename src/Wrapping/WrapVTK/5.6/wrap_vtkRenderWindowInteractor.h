@@ -26,6 +26,7 @@
 #include "wrap_vtkObject.h"
 
 
+
 AMI_DECLARE_TYPE(vtkRenderWindowInteractor);
 
 // TODO: check for inheritence ...

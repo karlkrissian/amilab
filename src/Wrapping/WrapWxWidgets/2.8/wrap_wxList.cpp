@@ -110,7 +110,7 @@ BasicVariable::ptr WrapClass_wxList::
   int _n=0;
 
   boost::shared_ptr<wxList > param0_smtptr;
-  if (!get_val_smtptr_param<wxList >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxList >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxList const & param0 = *param0_smtptr;
 
   wxList* _newobj = new wxList(param0);
@@ -157,7 +157,7 @@ BasicVariable::ptr WrapClass_wxList::
   int _n=0;
 
   int key_type = wxKEY_NONE;
-  if (!get_val_param<int >(key_type,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(key_type,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxList* _newobj = new wxList(key_type);
   BasicVariable::ptr res = WrapClass_wxList::CreateVar(_newobj);
@@ -199,7 +199,7 @@ BasicVariable::ptr WrapClass_wxList::
   int _n=0;
 
   _9505 compfunc;
-  if (!get_val_param<_9505 >(compfunc,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<_9505 >(compfunc,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(compfunc);
   return BasicVariable::ptr();
@@ -225,7 +225,7 @@ BasicVariable::ptr WrapClass_wxList::
   int _n=0;
 
   boost::shared_ptr<wxObject > object_smtptr;
-  if (!get_val_smtptr_param<wxObject >(object_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxObject >(object_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxObject* object = object_smtptr.get();
 
   wxNode * res =   this->_objectptr->GetObj()->Member(object);
@@ -272,7 +272,7 @@ BasicVariable::ptr WrapClass_wxList::
   int _n=0;
 
   boost::shared_ptr<wxList > list_smtptr;
-  if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxList const & list = *list_smtptr;
 
   wxList & res =   (*this->_objectptr->GetObj()) = (list);

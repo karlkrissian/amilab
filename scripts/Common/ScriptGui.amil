@@ -103,6 +103,21 @@ if (!exists(ScriptGui)) \
       win.EndHorizontal()  
     }
 
+    #------------------------------------
+    proc ::AddLimitedButtons( OBJECT win) \
+    {
+      win.BeginHorizontal()
+        ::AddBitmapButton16(&win, &::icons._Edit_page, "EditScript")
+        win.SetPositionProp(-1,2)
+        ::AddBitmapButton16(&win, &::icons._Refresh, "ReloadScript")
+        win.SetPositionProp(-1,2)
+        #::AddBitmapButton16(&win, &::icons._Close,   "Close")
+        #win.SetPositionProp(-1,2)
+        #::AddBitmapButton16(&win, &::icons._Delete,  "CloseAll")
+        #win.SetPositionProp(-1,2)
+      win.EndHorizontal()  
+    }
+
     #---------------------------------------------------
     # needs to have the variable ::wiki_help defined
     #

@@ -104,7 +104,7 @@ BasicVariable::ptr WrapClass_wxImageHistogram::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogram > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogram >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImageHistogram >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxImageHistogram const & param0 = *param0_smtptr;
 
   wxImageHistogram* _newobj = new wxImageHistogram(param0);
@@ -173,13 +173,13 @@ BasicVariable::ptr WrapClass_wxImageHistogram::
   int _n=0;
 
   unsigned char r;
-  if (!get_val_param<unsigned char >(r,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(r,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char g;
-  if (!get_val_param<unsigned char >(g,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(g,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char b;
-  if (!get_val_param<unsigned char >(b,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(b,_p,_n,true,false)) ClassHelpAndReturn;
 
   long unsigned int res =   wxImageHistogram::MakeKey(r, g, b);
   long res_long = boost::numeric_cast<long >(res);
@@ -226,25 +226,25 @@ BasicVariable::ptr WrapClass_wxImageHistogram::
   int _n=0;
 
   boost::shared_ptr<unsigned char > r_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* r = r_smtptr.get();
 
   boost::shared_ptr<unsigned char > g_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* g = g_smtptr.get();
 
   boost::shared_ptr<unsigned char > b_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* b = b_smtptr.get();
 
   unsigned char startR = 1;
-  if (!get_val_param<unsigned char >(startR,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(startR,_p,_n,false,false)) ClassHelpAndReturn;
 
   unsigned char startG = 0;
-  if (!get_val_param<unsigned char >(startG,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(startG,_p,_n,false,false)) ClassHelpAndReturn;
 
   unsigned char startB = 0;
-  if (!get_val_param<unsigned char >(startB,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(startB,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->FindFirstUnusedColour(r, g, b, startR, startG, startB);
   int res_int = ((res==true)?1:0);
@@ -270,7 +270,7 @@ BasicVariable::ptr WrapClass_wxImageHistogram::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogram > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogram >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHistogram >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHistogram const & param0 = *param0_smtptr;
 
   wxImageHistogram & res =   (*this->_objectptr->GetObj()) = (param0);

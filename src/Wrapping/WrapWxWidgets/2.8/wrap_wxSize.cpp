@@ -149,7 +149,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > param0_smtptr;
-  if (!get_val_smtptr_param<wxSize >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxSize const & param0 = *param0_smtptr;
 
   wxSize* _newobj = new wxSize(param0);
@@ -219,10 +219,10 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int xx;
-  if (!get_val_param<int >(xx,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xx,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int yy;
-  if (!get_val_param<int >(yy,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(yy,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxSize* _newobj = new wxSize(xx, yy);
   BasicVariable::ptr res = WrapClass_wxSize::CreateVar(_newobj);
@@ -263,7 +263,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & sz = *sz_smtptr;
 
   this->_objectptr->GetObj()->IncTo(sz);
@@ -288,7 +288,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & sz = *sz_smtptr;
 
   this->_objectptr->GetObj()->DecTo(sz);
@@ -314,10 +314,10 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int dx;
-  if (!get_val_param<int >(dx,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(dx,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int dy;
-  if (!get_val_param<int >(dy,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(dy,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->IncBy(dx, dy);
   return BasicVariable::ptr();
@@ -365,7 +365,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
   this->_objectptr->GetObj()->IncBy(sz);
@@ -390,7 +390,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int d;
-  if (!get_val_param<int >(d,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(d,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->IncBy(d);
   return BasicVariable::ptr();
@@ -415,10 +415,10 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int dx;
-  if (!get_val_param<int >(dx,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(dx,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int dy;
-  if (!get_val_param<int >(dy,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(dy,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DecBy(dx, dy);
   return BasicVariable::ptr();
@@ -466,7 +466,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
   this->_objectptr->GetObj()->DecBy(sz);
@@ -491,7 +491,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int d;
-  if (!get_val_param<int >(d,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(d,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DecBy(d);
   return BasicVariable::ptr();
@@ -517,10 +517,10 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   float xscale;
-  if (!get_val_param<float >(xscale,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(xscale,_p,_n,true,false)) ClassHelpAndReturn;
 
   float yscale;
-  if (!get_val_param<float >(yscale,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(yscale,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxSize & res =   this->_objectptr->GetObj()->Scale(xscale, yscale);
   return AMILabType<wxSize >::CreateVar(res);
@@ -545,10 +545,10 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int xx;
-  if (!get_val_param<int >(xx,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(xx,_p,_n,true,false)) ClassHelpAndReturn;
 
   int yy;
-  if (!get_val_param<int >(yy,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(yy,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Set(xx, yy);
   return BasicVariable::ptr();
@@ -572,7 +572,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int w;
-  if (!get_val_param<int >(w,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(w,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetWidth(w);
   return BasicVariable::ptr();
@@ -596,7 +596,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int h;
-  if (!get_val_param<int >(h,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(h,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetHeight(h);
   return BasicVariable::ptr();
@@ -678,7 +678,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & size = *size_smtptr;
 
   this->_objectptr->GetObj()->SetDefaults(size);
@@ -724,7 +724,7 @@ BasicVariable::ptr WrapClass_wxSize::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxSize & wxSize::=(wxSize const & param0)
+//  Wrapping of wxSize & wxSize::operator =(wxSize const & param0)
 //---------------------------------------------------
 void WrapClass_wxSize::
     wrap___assign__::SetParametersComments()
@@ -742,7 +742,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > param0_smtptr;
-  if (!get_val_smtptr_param<wxSize >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & param0 = *param0_smtptr;
 
   wxSize & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -750,7 +750,7 @@ BasicVariable::ptr WrapClass_wxSize::
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxSize::==(wxSize const & sz)
+//  Wrapping of bool wxSize::operator ==(wxSize const & sz)
 //---------------------------------------------------
 void WrapClass_wxSize::
     wrap___equal__::SetParametersComments()
@@ -768,7 +768,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & sz = *sz_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (sz);
@@ -777,7 +777,7 @@ BasicVariable::ptr WrapClass_wxSize::
 }
 
 //---------------------------------------------------
-//  Wrapping of bool wxSize::!=(wxSize const & sz)
+//  Wrapping of bool wxSize::operator !=(wxSize const & sz)
 //---------------------------------------------------
 void WrapClass_wxSize::
     wrap___not_equal__::SetParametersComments()
@@ -795,7 +795,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & sz = *sz_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (sz);
@@ -804,7 +804,7 @@ BasicVariable::ptr WrapClass_wxSize::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxSize wxSize::+(wxSize const & sz)
+//  Wrapping of wxSize wxSize::operator +(wxSize const & sz)
 //---------------------------------------------------
 void WrapClass_wxSize::
     wrap___add__::SetParametersComments()
@@ -822,7 +822,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & sz = *sz_smtptr;
 
   wxSize res =   (*this->_objectptr->GetObj()) + (sz);
@@ -830,7 +830,7 @@ BasicVariable::ptr WrapClass_wxSize::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxSize wxSize::-(wxSize const & sz)
+//  Wrapping of wxSize wxSize::operator -(wxSize const & sz)
 //---------------------------------------------------
 void WrapClass_wxSize::
     wrap___substract__::SetParametersComments()
@@ -848,7 +848,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & sz = *sz_smtptr;
 
   wxSize res =   (*this->_objectptr->GetObj()) - (sz);
@@ -876,7 +876,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxSize res =   this->_objectptr->GetObj()->/(i);
   return AMILabType<wxSize >::CreateVar(res);
@@ -904,7 +904,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxSize res =   this->_objectptr->GetObj()->*(i);
   return AMILabType<wxSize >::CreateVar(res);
@@ -912,7 +912,7 @@ BasicVariable::ptr WrapClass_wxSize::
 */
 
 //---------------------------------------------------
-//  Wrapping of wxSize & wxSize::+=(wxSize const & sz)
+//  Wrapping of wxSize & wxSize::operator +=(wxSize const & sz)
 //---------------------------------------------------
 void WrapClass_wxSize::
     wrap___add_assign__::SetParametersComments()
@@ -930,7 +930,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & sz = *sz_smtptr;
 
   wxSize & res =   (*this->_objectptr->GetObj()) += (sz);
@@ -938,7 +938,7 @@ BasicVariable::ptr WrapClass_wxSize::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxSize & wxSize::-=(wxSize const & sz)
+//  Wrapping of wxSize & wxSize::operator -=(wxSize const & sz)
 //---------------------------------------------------
 void WrapClass_wxSize::
     wrap___sub_assign__::SetParametersComments()
@@ -956,7 +956,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & sz = *sz_smtptr;
 
   wxSize & res =   (*this->_objectptr->GetObj()) -= (sz);
@@ -984,7 +984,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxSize & res =   this->_objectptr->GetObj()->/=(i);
   return AMILabType<wxSize >::CreateVar(res);
@@ -1012,7 +1012,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxSize & res =   this->_objectptr->GetObj()->*=(i);
   return AMILabType<wxSize >::CreateVar(res);

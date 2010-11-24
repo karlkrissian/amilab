@@ -185,7 +185,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkGPUVolumeRayCastMapper::IsTypeOf(type);
@@ -211,7 +211,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkGPUVolumeRayCastMapper * res =   vtkGPUVolumeRayCastMapper::SafeDownCast(o);
@@ -238,7 +238,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -285,11 +285,11 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -314,7 +314,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAutoAdjustSampleDistances(_arg);
   return BasicVariable::ptr();
@@ -431,7 +431,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetSampleDistance(_arg);
   return BasicVariable::ptr();
@@ -474,7 +474,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetImageSampleDistance(_arg);
   return BasicVariable::ptr();
@@ -555,7 +555,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMinimumImageSampleDistance(_arg);
   return BasicVariable::ptr();
@@ -636,7 +636,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaximumImageSampleDistance(_arg);
   return BasicVariable::ptr();
@@ -717,7 +717,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetFinalColorWindow(_arg);
   return BasicVariable::ptr();
@@ -760,7 +760,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetFinalColorLevel(_arg);
   return BasicVariable::ptr();
@@ -804,7 +804,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   long long int _arg;
-  if (!get_val_param<long long int >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<long long int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaxMemoryInBytes(_arg);
   return BasicVariable::ptr();
@@ -850,7 +850,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaxMemoryFraction(_arg);
   return BasicVariable::ptr();
@@ -931,7 +931,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   int _arg_int;
-  if (!get_val_param<int >(_arg_int,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool _arg = (bool) (_arg_int>0.5);
 
   this->_objectptr->GetObj()->SetReportProgress(_arg);
@@ -978,11 +978,11 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<vtkRenderWindow > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindow >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderWindow* param0 = param0_smtptr.get();
 
   boost::shared_ptr<vtkVolumeProperty > param1_smtptr;
-  if (!get_val_smtptr_param<vtkVolumeProperty >(param1_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkVolumeProperty >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkVolumeProperty* param1 = param1_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->IsRenderSupported(param0, param1);
@@ -1012,26 +1012,26 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* ren = ren_smtptr.get();
 
   boost::shared_ptr<vtkVolume > volume_smtptr;
-  if (!get_val_smtptr_param<vtkVolume >(volume_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkVolume >(volume_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkVolume* volume = volume_smtptr.get();
 
   boost::shared_ptr<vtkImageData > image_smtptr;
-  if (!get_val_smtptr_param<vtkImageData >(image_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkImageData >(image_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkImageData* image = image_smtptr.get();
 
   int blend_mode;
-  if (!get_val_param<int >(blend_mode,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<int >(blend_mode,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > viewDirection_smtptr;
-  if (!get_val_smtptr_param<double >(viewDirection_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(viewDirection_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* viewDirection = viewDirection_smtptr.get();
 
   boost::shared_ptr<double > viewUp_smtptr;
-  if (!get_val_smtptr_param<double >(viewUp_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(viewUp_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* viewUp = viewUp_smtptr.get();
 
   this->_objectptr->GetObj()->CreateCanonicalView(ren, volume, image, blend_mode, viewDirection, viewUp);
@@ -1056,7 +1056,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<vtkImageData > mask_smtptr;
-  if (!get_val_smtptr_param<vtkImageData >(mask_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkImageData >(mask_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkImageData* mask = mask_smtptr.get();
 
   this->_objectptr->GetObj()->SetMaskInput(mask);
@@ -1101,7 +1101,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaskBlendFactor(_arg);
   return BasicVariable::ptr();
@@ -1183,11 +1183,11 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* param0 = param0_smtptr.get();
 
   boost::shared_ptr<vtkVolume > param1_smtptr;
-  if (!get_val_smtptr_param<vtkVolume >(param1_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkVolume >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkVolume* param1 = param1_smtptr.get();
 
   this->_objectptr->GetObj()->Render(param0, param1);
@@ -1213,11 +1213,11 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* param0 = param0_smtptr.get();
 
   boost::shared_ptr<vtkVolume > param1_smtptr;
-  if (!get_val_smtptr_param<vtkVolume >(param1_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkVolume >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkVolume* param1 = param1_smtptr.get();
 
   this->_objectptr->GetObj()->GPURender(param0, param1);
@@ -1242,7 +1242,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   boost::shared_ptr<vtkWindow > param0_smtptr;
-  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkWindow* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->ReleaseGraphicsResources(param0);

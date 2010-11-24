@@ -26,6 +26,7 @@
 #include "wrap_wxStringBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxString);
 
 // TODO: check for inheritence ...
@@ -51,7 +52,6 @@ class WrapClass_wxString : public WrapClass<wxString>
     /// Destructor
     ~WrapClass_wxString()
     {
-      std::cout << "~WrapClass_wxString()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -94,7 +94,25 @@ class WrapClass_wxString : public WrapClass<wxString>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxString*);
 
-    // here add each method
+    // Static methods
+    
+    ADD_CLASS_STATICMETHOD(FromAscii_1,"wxString wxString::FromAscii(char const * ascii) (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromascii).");
+    ADD_CLASS_STATICMETHOD(FromAscii,"wxString::FromAscii() (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromascii).");
+    ADD_CLASS_STATICMETHOD(FromAscii_2,"wxString wxString::FromAscii(char const ascii) (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromascii).");
+    ADD_CLASS_STATICMETHOD(FromUTF8_1,"wxString wxString::FromUTF8(char const * utf8) (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromutf8).");
+    ADD_CLASS_STATICMETHOD(FromUTF8,"wxString::FromUTF8() (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromutf8).");
+    ADD_CLASS_STATICMETHOD(FromUTF8_2,"wxString wxString::FromUTF8(char const * utf8, size_t len) (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromutf8).");
+    ADD_CLASS_STATICMETHOD(From8BitData_1,"wxString wxString::From8BitData(char const * data, size_t len) (http://docs.wxwidgets.org/stable/wx_wxstring.html#from8bitdata).");
+    ADD_CLASS_STATICMETHOD(From8BitData,"wxString::From8BitData() (http://docs.wxwidgets.org/stable/wx_wxstring.html#from8bitdata).");
+    ADD_CLASS_STATICMETHOD(From8BitData_2,"wxString wxString::From8BitData(char const * data) (http://docs.wxwidgets.org/stable/wx_wxstring.html#from8bitdata).");
+    ADD_CLASS_STATICMETHOD(Format,"wxString wxString::Format(wxChar const * pszFormat) (http://docs.wxwidgets.org/stable/wx_wxstring.html#format).");
+    /* The following types are missing: __va_list_tag
+    ADD_CLASS_STATICMETHOD(FormatV,"wxString wxString::FormatV(wxChar const * pszFormat, __va_list_tag * argptr) (http://docs.wxwidgets.org/stable/wx_wxstring.html#formatv).");
+    */
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
@@ -115,24 +133,11 @@ class WrapClass_wxString : public WrapClass<wxString>
     ADD_CLASS_METHOD(Last_2,"wxChar & wxString::Last()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#last)")
     ADD_CLASS_METHOD(wx_str,"wxChar const * wxString::wx_str()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#wx_str)")
     ADD_CLASS_METHOD(GetData,"wxChar const * wxString::GetData()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#getdata)")
-/* The following types are missing: wxWritableCharBuffer
     ADD_CLASS_METHOD(char_str,"wxWritableCharBuffer wxString::char_str(wxMBConv const & conv = wxConvLibc)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#char_str)")
-*/
-/* The following types are missing: wxWritableWCharBuffer
     ADD_CLASS_METHOD(wchar_str,"wxWritableWCharBuffer wxString::wchar_str()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#wchar_str)")
-*/
-    ADD_CLASS_METHOD(FromAscii_1,"wxString wxString::FromAscii(char const * ascii)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromascii)")
-    ADD_CLASS_METHOD(FromAscii,"wxString::FromAscii()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromascii)")
-    ADD_CLASS_METHOD(FromAscii_2,"wxString wxString::FromAscii(char const ascii)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromascii)")
     ADD_CLASS_METHOD(ToAscii,"wxCharBuffer const wxString::ToAscii()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#toascii)")
-    ADD_CLASS_METHOD(FromUTF8_1,"wxString wxString::FromUTF8(char const * utf8)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromutf8)")
-    ADD_CLASS_METHOD(FromUTF8,"wxString::FromUTF8()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromutf8)")
-    ADD_CLASS_METHOD(FromUTF8_2,"wxString wxString::FromUTF8(char const * utf8, size_t len)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#fromutf8)")
     ADD_CLASS_METHOD(utf8_str,"wxCharBuffer const wxString::utf8_str()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#utf8_str)")
     ADD_CLASS_METHOD(ToUTF8,"wxCharBuffer const wxString::ToUTF8()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#toutf8)")
-    ADD_CLASS_METHOD(From8BitData_1,"wxString wxString::From8BitData(char const * data, size_t len)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#from8bitdata)")
-    ADD_CLASS_METHOD(From8BitData,"wxString::From8BitData()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#from8bitdata)")
-    ADD_CLASS_METHOD(From8BitData_2,"wxString wxString::From8BitData(char const * data)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#from8bitdata)")
     ADD_CLASS_METHOD(To8BitData,"wxCharBuffer const wxString::To8BitData()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#to8bitdata)")
     ADD_CLASS_METHOD(mb_str,"wxCharBuffer const wxString::mb_str(wxMBConv const & conv = wxConvLibc)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#mb_str)")
     ADD_CLASS_METHOD(mbc_str,"wxCharBuffer const wxString::mbc_str()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#mbc_str)")
@@ -189,10 +194,6 @@ class WrapClass_wxString : public WrapClass<wxString>
     ADD_CLASS_METHOD(Printf,"int wxString::Printf(wxChar const * pszFormat)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#printf)")
 /* The following types are missing: __va_list_tag
     ADD_CLASS_METHOD(PrintfV,"int wxString::PrintfV(wxChar const * pszFormat, __va_list_tag * argptr)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#printfv)")
-*/
-    ADD_CLASS_METHOD(Format,"wxString wxString::Format(wxChar const * pszFormat)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#format)")
-/* The following types are missing: __va_list_tag
-    ADD_CLASS_METHOD(FormatV,"wxString wxString::FormatV(wxChar const * pszFormat, __va_list_tag * argptr)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#formatv)")
 */
     ADD_CLASS_METHOD(Alloc,"bool wxString::Alloc(size_t nLen)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#alloc)")
     ADD_CLASS_METHOD(Shrink,"bool wxString::Shrink()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#shrink)")
@@ -260,23 +261,23 @@ class WrapClass_wxString : public WrapClass<wxString>
     ADD_CLASS_METHOD(replace_10,"wxString & wxString::replace(wxChar * first, wxChar * last, wxChar const * first1, wxChar const * last1)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#replace)")
 
     // Operators:
-    ADD_CLASS_METHOD(__assign___1,            "wxString & wxString::=(wxString const & param0) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
+    ADD_CLASS_METHOD(__assign___1,            "wxString & wxString::operator =(wxString const & param0) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
     // ADD_CLASS_METHOD(operator not available,"bool wxString::!() (http://docs.wxwidgets.org/stable/wx_wxstring.html#!)")
-    ADD_CLASS_METHOD(__at___1,            "wxChar & wxString::[](int n) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__at__)")
-    ADD_CLASS_METHOD(__at__,            "wxString::[]() (http://docs.wxwidgets.org/stable/wx_wxstring.html#__at__)")
-    ADD_CLASS_METHOD(__at___2,            "wxChar & wxString::[](size_t n) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__at__)")
-    ADD_CLASS_METHOD(__at___3,            "wxChar & wxString::[](unsigned int n) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__at__)")
-    ADD_CLASS_METHOD(__assign__,            "wxString::=() (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
-    ADD_CLASS_METHOD(__assign___2,            "wxString & wxString::=(wxStringBase const & stringSrc) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
-    ADD_CLASS_METHOD(__assign___3,            "wxString & wxString::=(wxChar ch) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
-    ADD_CLASS_METHOD(__assign___4,            "wxString & wxString::=(wxChar const * psz) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
-    ADD_CLASS_METHOD(__assign___5,            "wxString & wxString::=(wxWCharBuffer const & psz) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
+    ADD_CLASS_METHOD(__at___1,            "wxChar & wxString::operator [](int n) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__at__)")
+    ADD_CLASS_METHOD(__at__,            "wxString::operator []() (http://docs.wxwidgets.org/stable/wx_wxstring.html#__at__)")
+    ADD_CLASS_METHOD(__at___2,            "wxChar & wxString::operator [](size_t n) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__at__)")
+    ADD_CLASS_METHOD(__at___3,            "wxChar & wxString::operator [](unsigned int n) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__at__)")
+    ADD_CLASS_METHOD(__assign__,            "wxString::operator =() (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
+    ADD_CLASS_METHOD(__assign___2,            "wxString & wxString::operator =(wxStringBase const & stringSrc) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
+    ADD_CLASS_METHOD(__assign___3,            "wxString & wxString::operator =(wxChar ch) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
+    ADD_CLASS_METHOD(__assign___4,            "wxString & wxString::operator =(wxChar const * psz) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
+    ADD_CLASS_METHOD(__assign___5,            "wxString & wxString::operator =(wxWCharBuffer const & psz) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__assign__)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(wxString const & s) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString::<<() (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(wxChar const * psz) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(wxChar ch) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(wxWCharBuffer const & s) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
-    ADD_CLASS_METHOD(__add_assign___1,            "void wxString::+=(wxWCharBuffer const & s) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign___1,            "void wxString::operator +=(wxWCharBuffer const & s) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(int i) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(unsigned int ui) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(long int l) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
@@ -290,10 +291,10 @@ class WrapClass_wxString : public WrapClass<wxString>
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(float f) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(double d) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString wxString::()(size_t start, size_t len) (http://docs.wxwidgets.org/stable/wx_wxstring.html#())")
-    ADD_CLASS_METHOD(__add_assign__,            "wxString::+=() (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
-    ADD_CLASS_METHOD(__add_assign___2,            "wxString & wxString::+=(wxString const & s) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
-    ADD_CLASS_METHOD(__add_assign___3,            "wxString & wxString::+=(wxChar const * psz) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
-    ADD_CLASS_METHOD(__add_assign___4,            "wxString & wxString::+=(wxChar ch) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign__,            "wxString::operator +=() (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign___2,            "wxString & wxString::operator +=(wxString const & s) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign___3,            "wxString & wxString::operator +=(wxChar const * psz) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign___4,            "wxString & wxString::operator +=(wxChar ch) (http://docs.wxwidgets.org/stable/wx_wxstring.html#__add_assign__)")
 
 
 

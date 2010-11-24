@@ -122,7 +122,7 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   boost::shared_ptr<wxColour > param0_smtptr;
-  if (!get_val_smtptr_param<wxColour >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxColour const & param0 = *param0_smtptr;
 
   wxColour* _newobj = new wxColour(param0);
@@ -203,16 +203,16 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   unsigned char red;
-  if (!get_val_param<unsigned char >(red,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(red,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char green;
-  if (!get_val_param<unsigned char >(green,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(green,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char blue;
-  if (!get_val_param<unsigned char >(blue,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(blue,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char alpha = wxALPHA_OPAQUE;
-  if (!get_val_param<unsigned char >(alpha,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(alpha,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxColour* _newobj = new wxColour(red, green, blue, alpha);
   BasicVariable::ptr res = WrapClass_wxColour::CreateVar(_newobj);
@@ -237,7 +237,7 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   long colRGB_long;
-  if (!get_val_param<long >(colRGB_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(colRGB_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int colRGB = boost::numeric_cast<long unsigned int >(colRGB_long);
 
   wxColour* _newobj = new wxColour(colRGB);
@@ -263,7 +263,7 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   boost::shared_ptr<wxString > colourName_smtptr;
-  if (!get_val_smtptr_param<wxString >(colourName_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(colourName_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & colourName = *colourName_smtptr;
 
   wxColour* _newobj = new wxColour(colourName);
@@ -289,7 +289,7 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   boost::shared_ptr<std::string > colourName_string;
-  if (!get_val_smtptr_param<std::string >(colourName_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(colourName_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t colourName[colourName_string->size()+1];
 mbstowcs(colourName,colourName_string->c_str(),colourName_string->size()+1);
 
@@ -317,7 +317,7 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   boost::shared_ptr<_GdkColor > gdkColor_smtptr;
-  if (!get_val_smtptr_param<_GdkColor >(gdkColor_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<_GdkColor >(gdkColor_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   GdkColor const & gdkColor = *gdkColor_smtptr;
 
   wxColour* _newobj = new wxColour(gdkColor);
@@ -477,7 +477,7 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   boost::shared_ptr<_GdkColormap > cmap_smtptr;
-  if (!get_val_smtptr_param<_GdkColormap >(cmap_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GdkColormap >(cmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GdkColormap* cmap = cmap_smtptr.get();
 
   this->_objectptr->GetObj()->CalcPixel(cmap);
@@ -521,7 +521,7 @@ BasicVariable::ptr WrapClass_wxColour::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   GdkColor const * res =   this->_objectptr->GetObj()->GetColor();
-  return AMILabType<_GdkColor >::CreateVar(res,true);
+  return AMILabType<_GdkColor >::CreateVar(const_cast<GdkColor *>(res),true);
 }
 */
 
@@ -564,7 +564,7 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   boost::shared_ptr<wxColour > param0_smtptr;
-  if (!get_val_smtptr_param<wxColour >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColour >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColour const & param0 = *param0_smtptr;
 
   wxColour & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -590,7 +590,7 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   boost::shared_ptr<wxColour > col_smtptr;
-  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColour const & col = *col_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (col);
@@ -617,7 +617,7 @@ BasicVariable::ptr WrapClass_wxColour::
   int _n=0;
 
   boost::shared_ptr<wxColour > col_smtptr;
-  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColour const & col = *col_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (col);

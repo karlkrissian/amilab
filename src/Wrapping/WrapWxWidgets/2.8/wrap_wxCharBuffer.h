@@ -51,73 +51,52 @@ class WrapClass_wxCharBuffer : public WrapClass<wxCharBuffer>
     /// Destructor
     ~WrapClass_wxCharBuffer()
     {
-      std::cout << "~WrapClass_wxCharBuffer()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxCharBuffer1,"Wrapping of wxCharBuffer, http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#wxcharbuffer.");
+    ADD_CLASS_CONSTRUCTOR(wxCharBuffer_1,"Constructor wxCharBuffer::wxCharBuffer(char const * str = 0l) (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#wxcharbuffer).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxCharBuffer,"Wrapping of wxCharBuffer, http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#wxcharbuffer.");
+    ADD_CLASS_CONSTRUCTOR(wxCharBuffer,"Constructor wxCharBuffer::wxCharBuffer() (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#wxcharbuffer).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxCharBuffer2,"Wrapping of wxCharBuffer, http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#wxcharbuffer.");
+    ADD_CLASS_CONSTRUCTOR(wxCharBuffer_2,"Constructor wxCharBuffer::wxCharBuffer(size_t len) (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#wxcharbuffer).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxCharBuffer3,"Wrapping of wxCharBuffer, http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#wxcharbuffer.");
+    ADD_CLASS_CONSTRUCTOR(wxCharBuffer_3,"Constructor wxCharBuffer::wxCharBuffer(wxCharBuffer const & src) (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#wxcharbuffer).");
 
 
 
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxCharBuffer*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding copy method
-    ADD_CLASS_METHOD(copy,"Copy method, uses the copy constructor.");
+    ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
     // Adding standard methods
-    ADD_CLASS_METHOD(release,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#release")
-    ADD_CLASS_METHOD(reset,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#reset")
-    ADD_CLASS_METHOD(extend,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#extend")
-    ADD_CLASS_METHOD(data1,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#data")
-    ADD_CLASS_METHOD(data,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#data")
-    ADD_CLASS_METHOD(data2,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#data")
+    ADD_CLASS_METHOD(release,"char * wxCharBuffer::release()  (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#release)")
+    ADD_CLASS_METHOD(reset,"void wxCharBuffer::reset()  (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#reset)")
+    ADD_CLASS_METHOD(extend,"bool wxCharBuffer::extend(size_t len)  (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#extend)")
+    ADD_CLASS_METHOD(data_1,"char * wxCharBuffer::data()  (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#data)")
+    ADD_CLASS_METHOD(data,"wxCharBuffer::data()  (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#data)")
+    ADD_CLASS_METHOD(data_2,"char const * wxCharBuffer::data()  (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#data)")
 
     // Operators:
-    ADD_CLASS_METHOD(assign1,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#assign")
-    ADD_CLASS_METHOD(assign,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#assign")
-    ADD_CLASS_METHOD(assign2,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#assign")
-    ADD_CLASS_METHOD(at,"http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#at")
+    ADD_CLASS_METHOD(__assign___1,            "wxCharBuffer & wxCharBuffer::operator =(char const * str) (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#__assign__)")
+    ADD_CLASS_METHOD(__assign__,            "wxCharBuffer::operator =() (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#__assign__)")
+    ADD_CLASS_METHOD(__assign___2,            "wxCharBuffer & wxCharBuffer::operator =(wxCharBuffer const & src) (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#__assign__)")
+    ADD_CLASS_METHOD(__at__,            "char wxCharBuffer::operator [](size_t n) (http://docs.wxwidgets.org/stable/wx_wxcharbuffer.html#__at__)")
 
 
 
 
-    void AddMethods(WrapClass<wxCharBuffer>::ptr this_ptr )
-    {
-      
+    void AddMethods(WrapClass<wxCharBuffer>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding copy method 
-      AddVar_copy( this_ptr);
-      // Adding standard methods 
-      AddVar_release( this_ptr);
-      AddVar_reset( this_ptr);
-      AddVar_extend( this_ptr);
-      AddVar_data1( this_ptr);
-      AddVar_data( this_ptr);
-      AddVar_data2( this_ptr);
-
-      // Adding operators
-      AddVar_assign1( this_ptr);
-      AddVar_assign( this_ptr);
-      AddVar_assign2( this_ptr);
-      AddVar_at( this_ptr);
-
-
-
-      
-    };
 };
 
 

@@ -195,7 +195,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkColorTransferFunction::IsTypeOf(type);
@@ -221,7 +221,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkColorTransferFunction * res =   vtkColorTransferFunction::SafeDownCast(o);
@@ -248,7 +248,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -293,7 +293,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<vtkColorTransferFunction > f_smtptr;
-  if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkColorTransferFunction* f = f_smtptr.get();
 
   this->_objectptr->GetObj()->DeepCopy(f);
@@ -318,7 +318,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<vtkColorTransferFunction > f_smtptr;
-  if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkColorTransferFunction* f = f_smtptr.get();
 
   this->_objectptr->GetObj()->ShallowCopy(f);
@@ -345,11 +345,11 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -397,16 +397,16 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double r;
-  if (!get_val_param<double >(r,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(r,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double g;
-  if (!get_val_param<double >(g,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(g,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double b;
-  if (!get_val_param<double >(b,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->AddRGBPoint(x, r, g, b);
   return AMILabType<int >::CreateVar(res);
@@ -457,22 +457,22 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double r;
-  if (!get_val_param<double >(r,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(r,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double g;
-  if (!get_val_param<double >(g,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(g,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double b;
-  if (!get_val_param<double >(b,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double midpoint;
-  if (!get_val_param<double >(midpoint,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(midpoint,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double sharpness;
-  if (!get_val_param<double >(sharpness,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(sharpness,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->AddRGBPoint(x, r, g, b, midpoint, sharpness);
   return AMILabType<int >::CreateVar(res);
@@ -500,16 +500,16 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double h;
-  if (!get_val_param<double >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double s;
-  if (!get_val_param<double >(s,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(s,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double v;
-  if (!get_val_param<double >(v,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(v,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->AddHSVPoint(x, h, s, v);
   return AMILabType<int >::CreateVar(res);
@@ -560,22 +560,22 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double h;
-  if (!get_val_param<double >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double s;
-  if (!get_val_param<double >(s,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(s,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double v;
-  if (!get_val_param<double >(v,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(v,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double midpoint;
-  if (!get_val_param<double >(midpoint,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(midpoint,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double sharpness;
-  if (!get_val_param<double >(sharpness,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(sharpness,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->AddHSVPoint(x, h, s, v, midpoint, sharpness);
   return AMILabType<int >::CreateVar(res);
@@ -600,7 +600,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->RemovePoint(x);
   return AMILabType<int >::CreateVar(res);
@@ -631,28 +631,28 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double r1;
-  if (!get_val_param<double >(r1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(r1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double g1;
-  if (!get_val_param<double >(g1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(g1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double b1;
-  if (!get_val_param<double >(b1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(b1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x2,_p,_n,true,false)) ClassHelpAndReturn;
 
   double r2;
-  if (!get_val_param<double >(r2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(r2,_p,_n,true,false)) ClassHelpAndReturn;
 
   double g2;
-  if (!get_val_param<double >(g2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(g2,_p,_n,true,false)) ClassHelpAndReturn;
 
   double b2;
-  if (!get_val_param<double >(b2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(b2,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->AddRGBSegment(x1, r1, g1, b1, x2, r2, g2, b2);
   return BasicVariable::ptr();
@@ -683,28 +683,28 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double h1;
-  if (!get_val_param<double >(h1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(h1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double s1;
-  if (!get_val_param<double >(s1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(s1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double v1;
-  if (!get_val_param<double >(v1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(v1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x2,_p,_n,true,false)) ClassHelpAndReturn;
 
   double h2;
-  if (!get_val_param<double >(h2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(h2,_p,_n,true,false)) ClassHelpAndReturn;
 
   double s2;
-  if (!get_val_param<double >(s2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(s2,_p,_n,true,false)) ClassHelpAndReturn;
 
   double v2;
-  if (!get_val_param<double >(v2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(v2,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->AddHSVSegment(x1, h1, s1, v1, x2, h2, s2, v2);
   return BasicVariable::ptr();
@@ -747,7 +747,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->GetColor(x);
   return AMILabType<double >::CreateVar(res,true);
@@ -793,10 +793,10 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<double > rgb_smtptr;
-  if (!get_val_smtptr_param<double >(rgb_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(rgb_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* rgb = rgb_smtptr.get();
 
   this->_objectptr->GetObj()->GetColor(x, rgb);
@@ -822,7 +822,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double res =   this->_objectptr->GetObj()->GetRedValue(x);
   return AMILabType<double >::CreateVar(res);
@@ -847,7 +847,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double res =   this->_objectptr->GetObj()->GetGreenValue(x);
   return AMILabType<double >::CreateVar(res);
@@ -872,7 +872,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double res =   this->_objectptr->GetObj()->GetBlueValue(x);
   return AMILabType<double >::CreateVar(res);
@@ -898,10 +898,10 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(index,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* val = val_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->GetNodeValue(index, val);
@@ -928,10 +928,10 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(index,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* val = val_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->SetNodeValue(index, val);
@@ -957,7 +957,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double v;
-  if (!get_val_param<double >(v,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(v,_p,_n,true,false)) ClassHelpAndReturn;
 
   unsigned char * res =   this->_objectptr->GetObj()->MapValue(v);
   return AMILabType<unsigned char >::CreateVar(res,true);
@@ -1025,11 +1025,11 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   this->_objectptr->GetObj()->GetRange(_arg1, _arg2);
@@ -1054,7 +1054,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetRange(_arg);
@@ -1080,7 +1080,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<double > range_smtptr;
-  if (!get_val_smtptr_param<double >(range_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* range = range_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->AdjustRange(range);
@@ -1108,16 +1108,16 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<double > table_smtptr;
-  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* table = table_smtptr.get();
 
   this->_objectptr->GetObj()->GetTable(x1, x2, n, table);
@@ -1169,16 +1169,16 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<float > table_smtptr;
-  if (!get_val_smtptr_param<float >(table_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<float >(table_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   float* table = table_smtptr.get();
 
   this->_objectptr->GetObj()->GetTable(x1, x2, n, table);
@@ -1206,16 +1206,16 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char const * res =   this->_objectptr->GetObj()->GetTable(x1, x2, n);
-  return AMILabType<unsigned char >::CreateVar(*res);
+  return AMILabType<unsigned char >::CreateVar(const_cast<unsigned char *>(res),true);
 }
 
 //---------------------------------------------------
@@ -1239,16 +1239,16 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double x2;
-  if (!get_val_param<double >(x2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x2,_p,_n,true,false)) ClassHelpAndReturn;
 
   int size;
-  if (!get_val_param<int >(size,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(size,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > table_smtptr;
-  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* table = table_smtptr.get();
 
   this->_objectptr->GetObj()->BuildFunctionFromTable(x1, x2, size, table);
@@ -1273,7 +1273,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetClamping(_arg);
   return BasicVariable::ptr();
@@ -1390,7 +1390,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetColorSpace(_arg);
   return BasicVariable::ptr();
@@ -1543,7 +1543,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetHSVWrap(_arg);
   return BasicVariable::ptr();
@@ -1622,7 +1622,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetScale(_arg);
   return BasicVariable::ptr();
@@ -1721,10 +1721,10 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > param1_smtptr;
-  if (!get_val_smtptr_param<double >(param1_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* param1 = param1_smtptr.get();
 
   this->_objectptr->GetObj()->FillFromDataPointer(param0, param1);
@@ -1755,24 +1755,24 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   boost::shared_ptr<void > input_smtptr;
-  if (!get_val_smtptr_param<void >(input_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<void >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   void* input = input_smtptr.get();
 
   boost::shared_ptr<unsigned char > output_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   unsigned char* output = output_smtptr.get();
 
   int inputDataType;
-  if (!get_val_param<int >(inputDataType,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(inputDataType,_p,_n,true,false)) ClassHelpAndReturn;
 
   int numberOfValues;
-  if (!get_val_param<int >(numberOfValues,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(numberOfValues,_p,_n,true,false)) ClassHelpAndReturn;
 
   int inputIncrement;
-  if (!get_val_param<int >(inputIncrement,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(inputIncrement,_p,_n,true,false)) ClassHelpAndReturn;
 
   int outputIncrement;
-  if (!get_val_param<int >(outputIncrement,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(outputIncrement,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->MapScalarsThroughTable2(input, output, inputDataType, numberOfValues, inputIncrement, outputIncrement);
   return BasicVariable::ptr();
@@ -1797,7 +1797,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAllowDuplicateScalars(_arg);
   return BasicVariable::ptr();

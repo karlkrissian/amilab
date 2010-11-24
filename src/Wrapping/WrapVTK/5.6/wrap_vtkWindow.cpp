@@ -159,7 +159,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkWindow::IsTypeOf(type);
@@ -185,7 +185,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkWindow * res =   vtkWindow::SafeDownCast(o);
@@ -212,7 +212,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -259,11 +259,11 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -308,10 +308,10 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int param1;
-  if (!get_val_param<int >(param1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetPosition(param0, param1);
   return BasicVariable::ptr();
@@ -356,7 +356,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<int > a_smtptr;
-  if (!get_val_smtptr_param<int >(a_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->SetPosition(a);
@@ -401,10 +401,10 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int param1;
-  if (!get_val_param<int >(param1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetSize(param0, param1);
   return BasicVariable::ptr();
@@ -449,7 +449,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<int > a_smtptr;
-  if (!get_val_smtptr_param<int >(a_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->SetSize(a);
@@ -493,7 +493,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMapped(_arg);
   return BasicVariable::ptr();
@@ -572,7 +572,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetErase(_arg);
   return BasicVariable::ptr();
@@ -651,7 +651,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDoubleBuffer(_arg);
   return BasicVariable::ptr();
@@ -750,7 +750,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<std::string > _arg_string;
-  if (!get_val_smtptr_param<std::string >(_arg_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(_arg_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * _arg = _arg_string->c_str();
 
   this->_objectptr->GetObj()->SetWindowName(_arg);
@@ -794,7 +794,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDPI(_arg);
   return BasicVariable::ptr();
@@ -856,7 +856,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetOffScreenRendering(_arg);
   return BasicVariable::ptr();
@@ -954,10 +954,10 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   int _arg1;
-  if (!get_val_param<int >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int _arg2;
-  if (!get_val_param<int >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetTileScale(_arg1, _arg2);
   return BasicVariable::ptr();
@@ -1005,7 +1005,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetTileScale(_arg);
@@ -1074,11 +1074,11 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<int > _arg1_smtptr;
-  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<int > _arg2_smtptr;
-  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg2 = *_arg2_smtptr;
 
   this->_objectptr->GetObj()->GetTileScale(_arg1, _arg2);
@@ -1103,7 +1103,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetTileScale(_arg);
@@ -1128,7 +1128,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   int s;
-  if (!get_val_param<int >(s,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(s,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetTileScale(s);
   return BasicVariable::ptr();
@@ -1155,16 +1155,16 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   double _arg1;
-  if (!get_val_param<double >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg2;
-  if (!get_val_param<double >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg3;
-  if (!get_val_param<double >(_arg3,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg3,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg4;
-  if (!get_val_param<double >(_arg4,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg4,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetTileViewport(_arg1, _arg2, _arg3, _arg4);
   return BasicVariable::ptr();
@@ -1209,7 +1209,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetTileViewport(_arg);
@@ -1280,19 +1280,19 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<double > _arg1_smtptr;
-  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<double > _arg2_smtptr;
-  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg2 = *_arg2_smtptr;
 
   boost::shared_ptr<double > _arg3_smtptr;
-  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg3_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg3 = *_arg3_smtptr;
 
   boost::shared_ptr<double > _arg4_smtptr;
-  if (!get_val_smtptr_param<double >(_arg4_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg4_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & _arg4 = *_arg4_smtptr;
 
   this->_objectptr->GetObj()->GetTileViewport(_arg1, _arg2, _arg3, _arg4);
@@ -1317,7 +1317,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetTileViewport(_arg);

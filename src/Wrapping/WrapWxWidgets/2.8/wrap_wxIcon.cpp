@@ -108,7 +108,7 @@ BasicVariable::ptr WrapClass_wxIcon::
   int _n=0;
 
   boost::shared_ptr<wxIcon > param0_smtptr;
-  if (!get_val_smtptr_param<wxIcon >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIcon >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxIcon const & param0 = *param0_smtptr;
 
   wxIcon* _newobj = new wxIcon(param0);
@@ -180,14 +180,14 @@ BasicVariable::ptr WrapClass_wxIcon::
   int _n=0;
 
   boost::shared_ptr<std::string > bits_string;
-  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * * bits = bits_string->c_str();
 
   int width = -0x00000000000000001;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int height = -0x00000000000000001;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxIcon* _newobj = new wxIcon(bits, width, height);
   BasicVariable::ptr res = WrapClass_wxIcon::CreateVar(_newobj);
@@ -216,14 +216,14 @@ BasicVariable::ptr WrapClass_wxIcon::
   int _n=0;
 
   boost::shared_ptr<std::string > bits_string;
-  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char * * bits = bits_string->c_str();
 
   int width = -0x00000000000000001;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int height = -0x00000000000000001;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxIcon* _newobj = new wxIcon(bits, width, height);
   BasicVariable::ptr res = WrapClass_wxIcon::CreateVar(_newobj);
@@ -253,17 +253,17 @@ BasicVariable::ptr WrapClass_wxIcon::
   int _n=0;
 
   boost::shared_ptr<wxString > filename_smtptr;
-  if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & filename = *filename_smtptr;
 
   wxBitmapType type = wxBITMAP_TYPE_XPM;
-  if (!get_val_param<wxBitmapType >(type,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<wxBitmapType >(type,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int param2 = -0x00000000000000001;
-  if (!get_val_param<int >(param2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param2,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int param3 = -0x00000000000000001;
-  if (!get_val_param<int >(param3,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(param3,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxIcon* _newobj = new wxIcon(filename, type, param2, param3);
   BasicVariable::ptr res = WrapClass_wxIcon::CreateVar(_newobj);
@@ -289,7 +289,7 @@ BasicVariable::ptr WrapClass_wxIcon::
   int _n=0;
 
   boost::shared_ptr<wxIconLocation > loc_smtptr;
-  if (!get_val_smtptr_param<wxIconLocation >(loc_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIconLocation >(loc_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxIconLocation const & loc = *loc_smtptr;
 
   wxIcon* _newobj = new wxIcon(loc);
@@ -331,7 +331,7 @@ BasicVariable::ptr WrapClass_wxIcon::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bmp_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & bmp = *bmp_smtptr;
 
   this->_objectptr->GetObj()->CopyFromBitmap(bmp);
@@ -377,7 +377,7 @@ BasicVariable::ptr WrapClass_wxIcon::
   int _n=0;
 
   boost::shared_ptr<wxIcon > param0_smtptr;
-  if (!get_val_smtptr_param<wxIcon >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIcon >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIcon const & param0 = *param0_smtptr;
 
   wxIcon & res =   (*this->_objectptr->GetObj()) = (param0);

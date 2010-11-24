@@ -105,7 +105,7 @@ BasicVariable::ptr WrapClass_vtkTimeStamp::
   int _n=0;
 
   boost::shared_ptr<vtkTimeStamp > param0_smtptr;
-  if (!get_val_smtptr_param<vtkTimeStamp >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkTimeStamp >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   vtkTimeStamp const & param0 = *param0_smtptr;
 
   vtkTimeStamp* _newobj = new vtkTimeStamp(param0);
@@ -264,7 +264,7 @@ BasicVariable::ptr WrapClass_vtkTimeStamp::
   int _n=0;
 
   boost::shared_ptr<vtkTimeStamp > param0_smtptr;
-  if (!get_val_smtptr_param<vtkTimeStamp >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkTimeStamp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkTimeStamp const & param0 = *param0_smtptr;
 
   vtkTimeStamp & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -292,7 +292,7 @@ BasicVariable::ptr WrapClass_vtkTimeStamp::
   int _n=0;
 
   boost::shared_ptr<vtkTimeStamp > ts_smtptr;
-  if (!get_val_smtptr_param<vtkTimeStamp >(ts_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkTimeStamp >(ts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkTimeStamp & ts = *ts_smtptr;
 
   bool res =   this->_objectptr->GetObj()->>(ts);
@@ -322,7 +322,7 @@ BasicVariable::ptr WrapClass_vtkTimeStamp::
   int _n=0;
 
   boost::shared_ptr<vtkTimeStamp > ts_smtptr;
-  if (!get_val_smtptr_param<vtkTimeStamp >(ts_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkTimeStamp >(ts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkTimeStamp & ts = *ts_smtptr;
 
   bool res =   this->_objectptr->GetObj()-><(ts);

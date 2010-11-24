@@ -25,6 +25,8 @@
 #include "wrap_wxMBConv.h"
 #include "wrap_wxWCharBuffer.h"
 #include "wchar.h"
+#include "wrap_wxWritableCharBuffer.h"
+#include "wrap_wxWritableWCharBuffer.h"
 #include "wrap_wxCharBuffer.h"
 
 
@@ -93,24 +95,11 @@ void WrapClass_wxString::AddMethods(WrapClass<wxString>::ptr this_ptr )
       AddVar_Last_2( this_ptr);
       AddVar_wx_str( this_ptr);
       AddVar_GetData( this_ptr);
-/* The following types are missing: wxWritableCharBuffer
       AddVar_char_str( this_ptr);
-*/
-/* The following types are missing: wxWritableWCharBuffer
       AddVar_wchar_str( this_ptr);
-*/
-      AddVar_FromAscii_1( this_ptr);
-      AddVar_FromAscii( this_ptr);
-      AddVar_FromAscii_2( this_ptr);
       AddVar_ToAscii( this_ptr);
-      AddVar_FromUTF8_1( this_ptr);
-      AddVar_FromUTF8( this_ptr);
-      AddVar_FromUTF8_2( this_ptr);
       AddVar_utf8_str( this_ptr);
       AddVar_ToUTF8( this_ptr);
-      AddVar_From8BitData_1( this_ptr);
-      AddVar_From8BitData( this_ptr);
-      AddVar_From8BitData_2( this_ptr);
       AddVar_To8BitData( this_ptr);
       AddVar_mb_str( this_ptr);
       AddVar_mbc_str( this_ptr);
@@ -167,10 +156,6 @@ void WrapClass_wxString::AddMethods(WrapClass<wxString>::ptr this_ptr )
       AddVar_Printf( this_ptr);
 /* The following types are missing: __va_list_tag
       AddVar_PrintfV( this_ptr);
-*/
-      AddVar_Format( this_ptr);
-/* The following types are missing: __va_list_tag
-      AddVar_FormatV( this_ptr);
 */
       AddVar_Alloc( this_ptr);
       AddVar_Shrink( this_ptr);
@@ -368,7 +353,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxStringBase > stringSrc_smtptr;
-  if (!get_val_smtptr_param<wxStringBase >(stringSrc_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxStringBase >(stringSrc_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxStringBase const & stringSrc = *stringSrc_smtptr;
 
   wxString* _newobj = new wxString(stringSrc);
@@ -394,7 +379,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > stringSrc_smtptr;
-  if (!get_val_smtptr_param<wxString >(stringSrc_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(stringSrc_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxString const & stringSrc = *stringSrc_smtptr;
 
   wxString* _newobj = new wxString(stringSrc);
@@ -421,7 +406,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -429,7 +414,7 @@ BasicVariable::ptr WrapClass_wxString::
 
 
   long nRepeat_long = boost::numeric_cast<long >(1);;
-  if (!get_val_param<long >(nRepeat_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nRepeat_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long unsigned int nRepeat = boost::numeric_cast<long unsigned int >(nRepeat_long);
 
   wxString* _newobj = new wxString(ch, nRepeat);
@@ -456,11 +441,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nRepeat_long;
-  if (!get_val_param<long >(nRepeat_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nRepeat_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nRepeat = boost::numeric_cast<long unsigned int >(nRepeat_long);
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -490,7 +475,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
@@ -518,12 +503,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
   long nLength_long;
-  if (!get_val_param<long >(nLength_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLength_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLength = boost::numeric_cast<long unsigned int >(nLength_long);
 
   wxString* _newobj = new wxString(psz, nLength);
@@ -551,16 +536,16 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
   boost::shared_ptr<wxMBConv > param1_smtptr;
-  if (!get_val_smtptr_param<wxMBConv >(param1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMBConv >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMBConv const & param1 = *param1_smtptr;
 
   long nLength_long = boost::numeric_cast<long >(wxStringBase::npos);;
-  if (!get_val_param<long >(nLength_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLength_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long unsigned int nLength = boost::numeric_cast<long unsigned int >(nLength_long);
 
   wxString* _newobj = new wxString(psz, param1, nLength);
@@ -587,7 +572,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > > s_smtptr;
-  if (!get_val_smtptr_param<basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxStdString const & s = *s_smtptr;
 
   wxString* _newobj = new wxString(s);
@@ -616,15 +601,15 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * psz = psz_string->c_str();
 
   boost::shared_ptr<wxMBConv > conv_smtptr;
-  if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMBConv const & conv = *conv_smtptr;
 
   long nLength_long = boost::numeric_cast<long >(wxStringBase::npos);;
-  if (!get_val_param<long >(nLength_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLength_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long unsigned int nLength = boost::numeric_cast<long unsigned int >(nLength_long);
 
   wxString* _newobj = new wxString(psz, conv, nLength);
@@ -650,7 +635,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxWCharBuffer > psz_smtptr;
-  if (!get_val_smtptr_param<wxWCharBuffer >(psz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxWCharBuffer >(psz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWCharBuffer const & psz = *psz_smtptr;
 
   wxString* _newobj = new wxString(psz);
@@ -678,15 +663,15 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   long nPos_long;
-  if (!get_val_param<long >(nPos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nPos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nPos = boost::numeric_cast<long unsigned int >(nPos_long);
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   wxString* _newobj = new wxString(str, nPos, nLen);
@@ -714,16 +699,307 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<void > pStart_smtptr;
-  if (!get_val_smtptr_param<void >(pStart_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(pStart_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   void* pStart = pStart_smtptr.get();
 
   boost::shared_ptr<void > pEnd_smtptr;
-  if (!get_val_smtptr_param<void >(pEnd_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(pEnd_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   void* pEnd = pEnd_smtptr.get();
 
   wxString* _newobj = new wxString(pStart, pEnd);
   BasicVariable::ptr res = WrapClass_wxString::CreateVar(_newobj);
   return res;
+}
+*/
+
+//---------------------------------------------------
+//  Wrapping of wxString wxString::FromAscii(char const * ascii)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_FromAscii_1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'ascii'")
+  return_comments="returning a variable of type wxString";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_FromAscii_1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
+  int _n=0;
+
+  boost::shared_ptr<std::string > ascii_string;
+  if (!get_val_smtptr_param<std::string >(ascii_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  char const * ascii = ascii_string->c_str();
+
+  wxString res =   wxString::FromAscii(ascii);
+  return AMILabType<wxString >::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxString::FromAscii(...)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_FromAscii::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_FromAscii::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxString::wrap_FromAscii_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxString::wrap_FromAscii_2 m2;
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxString wxString::FromAscii(char const ascii)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_FromAscii_2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'ascii'")
+  return_comments="returning a variable of type wxString";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_FromAscii_2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
+  int _n=0;
+
+  std::string ascii_string;
+  if (!get_val_param<std::string >(ascii_string,_p,_n,true,true)) ClassReturnEmptyVar;
+  char ascii = ' ';
+if (ascii_string.size()>0) ascii = ascii_string[0];
+
+  wxString res =   wxString::FromAscii(ascii);
+  return AMILabType<wxString >::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxString wxString::FromUTF8(char const * utf8)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_FromUTF8_1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'utf8'")
+  return_comments="returning a variable of type wxString";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_FromUTF8_1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
+  int _n=0;
+
+  boost::shared_ptr<std::string > utf8_string;
+  if (!get_val_smtptr_param<std::string >(utf8_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  char const * utf8 = utf8_string->c_str();
+
+  wxString res =   wxString::FromUTF8(utf8);
+  return AMILabType<wxString >::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxString::FromUTF8(...)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_FromUTF8::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_FromUTF8::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxString::wrap_FromUTF8_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxString::wrap_FromUTF8_2 m2;
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxString wxString::FromUTF8(char const * utf8, size_t len)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_FromUTF8_2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'utf8'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'len'")
+  return_comments="returning a variable of type wxString";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_FromUTF8_2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
+  int _n=0;
+
+  boost::shared_ptr<std::string > utf8_string;
+  if (!get_val_smtptr_param<std::string >(utf8_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  char const * utf8 = utf8_string->c_str();
+
+  long len_long;
+  if (!get_val_param<long >(len_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long unsigned int len = boost::numeric_cast<long unsigned int >(len_long);
+
+  wxString res =   wxString::FromUTF8(utf8, len);
+  return AMILabType<wxString >::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxString wxString::From8BitData(char const * data, size_t len)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_From8BitData_1::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'data'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'len'")
+  return_comments="returning a variable of type wxString";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_From8BitData_1::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
+  int _n=0;
+
+  boost::shared_ptr<std::string > data_string;
+  if (!get_val_smtptr_param<std::string >(data_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  char const * data = data_string->c_str();
+
+  long len_long;
+  if (!get_val_param<long >(len_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long unsigned int len = boost::numeric_cast<long unsigned int >(len_long);
+
+  wxString res =   wxString::From8BitData(data, len);
+  return AMILabType<wxString >::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of multipled defined method:... wxString::From8BitData(...)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_From8BitData::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_From8BitData::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxString::wrap_From8BitData_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxString::wrap_From8BitData_2 m2;
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
+//  Wrapping of wxString wxString::From8BitData(char const * data)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_From8BitData_2::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'data'")
+  return_comments="returning a variable of type wxString";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_From8BitData_2::CallMember( ParamList* _p)
+{
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
+  int _n=0;
+
+  boost::shared_ptr<std::string > data_string;
+  if (!get_val_smtptr_param<std::string >(data_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  char const * data = data_string->c_str();
+
+  wxString res =   wxString::From8BitData(data);
+  return AMILabType<wxString >::CreateVar(res);
+}
+
+//---------------------------------------------------
+//  Wrapping of wxString wxString::Format(wxChar const * pszFormat)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_Format::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'pszFormat'")
+  return_comments="returning a variable of type wxString";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_Format::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
+  int _n=0;
+
+  boost::shared_ptr<std::string > pszFormat_string;
+  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wchar_t pszFormat[pszFormat_string->size()+1];
+mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
+
+  wxString res =   wxString::Format(pszFormat);
+  return AMILabType<wxString >::CreateVar(res);
+}
+/* The following types are missing: __va_list_tag
+
+//---------------------------------------------------
+//  Wrapping of wxString wxString::FormatV(wxChar const * pszFormat, __va_list_tag * argptr)
+//---------------------------------------------------
+void WrapClass_wxString::
+    wrap_FormatV::SetParametersComments()
+{
+  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'pszFormat'")
+  ADDPARAMCOMMENT_TYPE( __va_list_tag, "parameter named 'argptr'")
+  return_comments="returning a variable of type wxString";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+    wrap_FormatV::CallMember( ParamList* _p)
+{
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
+  int _n=0;
+
+  boost::shared_ptr<std::string > pszFormat_string;
+  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wchar_t pszFormat[pszFormat_string->size()+1];
+mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
+
+  boost::shared_ptr<__va_list_tag > argptr_smtptr;
+  if (!get_val_smtptr_param<__va_list_tag >(argptr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  __va_list_tag* argptr = argptr_smtptr.get();
+
+  wxString res =   wxString::FormatV(pszFormat, argptr);
+  return AMILabType<wxString >::CreateVar(res);
 }
 */
 
@@ -802,7 +1078,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long uiLen_long;
-  if (!get_val_param<long >(uiLen_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(uiLen_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int uiLen = boost::numeric_cast<long unsigned int >(uiLen_long);
 
   wxString & res =   this->_objectptr->GetObj()->Truncate(uiLen);
@@ -924,7 +1200,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(n_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxChar res =   this->_objectptr->GetObj()->GetChar(n);
@@ -957,7 +1233,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(n_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxChar & res =   this->_objectptr->GetObj()->GetWritableChar(n);
@@ -990,11 +1266,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(n_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,false)) ClassHelpAndReturn;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -1134,7 +1410,6 @@ BasicVariable::ptr WrapClass_wxString::
   }
   return AMILabType<std::string >::CreateVar(res_string);
 }
-/* The following types are missing: wxWritableCharBuffer
 
 //---------------------------------------------------
 //  Wrapping of wxWritableCharBuffer wxString::char_str(wxMBConv const & conv = wxConvLibc)
@@ -1155,17 +1430,13 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxMBConv > conv_smtptr;
-  if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxMBConv const & conv = (conv_smtptr.get()?
-    (wxMBConv const &) (*conv_smtptr):
-    (wxMBConv const &) wxConvLibc);
+  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : wxConvLibc );
 
   wxWritableCharBuffer res =   this->_objectptr->GetObj()->char_str(conv);
   return AMILabType<wxWritableCharBuffer >::CreateVar(res);
 }
-*/
-/* The following types are missing: wxWritableWCharBuffer
 
 //---------------------------------------------------
 //  Wrapping of wxWritableWCharBuffer wxString::wchar_str()
@@ -1185,81 +1456,6 @@ BasicVariable::ptr WrapClass_wxString::
   wxWritableWCharBuffer res =   this->_objectptr->GetObj()->wchar_str();
   return AMILabType<wxWritableWCharBuffer >::CreateVar(res);
 }
-*/
-
-//---------------------------------------------------
-//  Wrapping of wxString wxString::FromAscii(char const * ascii)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_FromAscii_1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'ascii'")
-  return_comments="returning a variable of type wxString";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_FromAscii_1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
-  int _n=0;
-
-  boost::shared_ptr<std::string > ascii_string;
-  if (!get_val_smtptr_param<std::string >(ascii_string,_p,_n)) ClassReturnEmptyVar;
-  char const * ascii = ascii_string->c_str();
-
-  wxString res =   this->_objectptr->GetObj()->FromAscii(ascii);
-  return AMILabType<wxString >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of multipled defined method:... wxString::FromAscii(...)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_FromAscii::SetParametersComments()
-{}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_FromAscii::CallMember( ParamList* _p)
-{
-  BasicVariable::ptr res;
-  WrapClass_wxString::wrap_FromAscii_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_FromAscii_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  ClassHelpAndReturn;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxString wxString::FromAscii(char const ascii)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_FromAscii_2::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'ascii'")
-  return_comments="returning a variable of type wxString";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_FromAscii_2::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
-  int _n=0;
-
-  std::string ascii_string;
-  if (!get_val_param<std::string >(ascii_string,_p,_n)) ClassReturnEmptyVar;
-  char ascii = ' ';
-if (ascii_string.size()>0) ascii = ascii_string[0];
-
-  wxString res =   this->_objectptr->GetObj()->FromAscii(ascii);
-  return AMILabType<wxString >::CreateVar(res);
-}
 
 //---------------------------------------------------
 //  Wrapping of wxCharBuffer const wxString::ToAscii()
@@ -1278,84 +1474,6 @@ BasicVariable::ptr WrapClass_wxString::
 
   wxCharBuffer const res =   this->_objectptr->GetObj()->ToAscii();
   return AMILabType<wxCharBuffer >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxString wxString::FromUTF8(char const * utf8)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_FromUTF8_1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'utf8'")
-  return_comments="returning a variable of type wxString";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_FromUTF8_1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
-  int _n=0;
-
-  boost::shared_ptr<std::string > utf8_string;
-  if (!get_val_smtptr_param<std::string >(utf8_string,_p,_n)) ClassReturnEmptyVar;
-  char const * utf8 = utf8_string->c_str();
-
-  wxString res =   this->_objectptr->GetObj()->FromUTF8(utf8);
-  return AMILabType<wxString >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of multipled defined method:... wxString::FromUTF8(...)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_FromUTF8::SetParametersComments()
-{}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_FromUTF8::CallMember( ParamList* _p)
-{
-  BasicVariable::ptr res;
-  WrapClass_wxString::wrap_FromUTF8_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_FromUTF8_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  ClassHelpAndReturn;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxString wxString::FromUTF8(char const * utf8, size_t len)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_FromUTF8_2::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'utf8'")
-  ADDPARAMCOMMENT_TYPE( long, "parameter named 'len'")
-  return_comments="returning a variable of type wxString";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_FromUTF8_2::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
-  int _n=0;
-
-  boost::shared_ptr<std::string > utf8_string;
-  if (!get_val_smtptr_param<std::string >(utf8_string,_p,_n)) ClassReturnEmptyVar;
-  char const * utf8 = utf8_string->c_str();
-
-  long len_long;
-  if (!get_val_param<long >(len_long,_p,_n)) ClassReturnEmptyVar;
-  long unsigned int len = boost::numeric_cast<long unsigned int >(len_long);
-
-  wxString res =   this->_objectptr->GetObj()->FromUTF8(utf8, len);
-  return AMILabType<wxString >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1397,84 +1515,6 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxString wxString::From8BitData(char const * data, size_t len)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_From8BitData_1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'data'")
-  ADDPARAMCOMMENT_TYPE( long, "parameter named 'len'")
-  return_comments="returning a variable of type wxString";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_From8BitData_1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
-  int _n=0;
-
-  boost::shared_ptr<std::string > data_string;
-  if (!get_val_smtptr_param<std::string >(data_string,_p,_n)) ClassReturnEmptyVar;
-  char const * data = data_string->c_str();
-
-  long len_long;
-  if (!get_val_param<long >(len_long,_p,_n)) ClassReturnEmptyVar;
-  long unsigned int len = boost::numeric_cast<long unsigned int >(len_long);
-
-  wxString res =   this->_objectptr->GetObj()->From8BitData(data, len);
-  return AMILabType<wxString >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of multipled defined method:... wxString::From8BitData(...)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_From8BitData::SetParametersComments()
-{}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_From8BitData::CallMember( ParamList* _p)
-{
-  BasicVariable::ptr res;
-  WrapClass_wxString::wrap_From8BitData_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_From8BitData_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  ClassHelpAndReturn;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxString wxString::From8BitData(char const * data)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_From8BitData_2::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'data'")
-  return_comments="returning a variable of type wxString";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_From8BitData_2::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
-  int _n=0;
-
-  boost::shared_ptr<std::string > data_string;
-  if (!get_val_smtptr_param<std::string >(data_string,_p,_n)) ClassReturnEmptyVar;
-  char const * data = data_string->c_str();
-
-  wxString res =   this->_objectptr->GetObj()->From8BitData(data);
-  return AMILabType<wxString >::CreateVar(res);
-}
-
-//---------------------------------------------------
 //  Wrapping of wxCharBuffer const wxString::To8BitData()
 //---------------------------------------------------
 void WrapClass_wxString::
@@ -1512,11 +1552,9 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxMBConv > conv_smtptr;
-  if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxMBConv const & conv = (conv_smtptr.get()?
-    (wxMBConv const &) (*conv_smtptr):
-    (wxMBConv const &) wxConvLibc);
+  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : wxConvLibc );
 
   wxCharBuffer const res =   this->_objectptr->GetObj()->mb_str(conv);
   return AMILabType<wxCharBuffer >::CreateVar(res);
@@ -1608,7 +1646,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxMBConv > param0_smtptr;
-  if (!get_val_smtptr_param<wxMBConv >(param0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMBConv >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMBConv const & param0 = *param0_smtptr;
 
   wxChar const * res =   this->_objectptr->GetObj()->wc_str(param0);
@@ -1661,7 +1699,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > s_smtptr;
-  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & s = *s_smtptr;
 
   wxString & res =   this->_objectptr->GetObj()->Append(s);
@@ -1714,7 +1752,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
@@ -1742,7 +1780,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -1750,7 +1788,7 @@ BasicVariable::ptr WrapClass_wxString::
 
 
   long count_long = boost::numeric_cast<long >(1u);;
-  if (!get_val_param<long >(count_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(count_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long unsigned int count = boost::numeric_cast<long unsigned int >(count_long);
 
   wxString & res =   this->_objectptr->GetObj()->Append(ch, count);
@@ -1777,12 +1815,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   wxString & res =   this->_objectptr->GetObj()->Append(psz, nLen);
@@ -1808,7 +1846,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   wxString & res =   this->_objectptr->GetObj()->Prepend(str);
@@ -1834,7 +1872,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
@@ -1882,7 +1920,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > s_smtptr;
-  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & s = *s_smtptr;
 
   int res =   this->_objectptr->GetObj()->Cmp(s);
@@ -1908,7 +1946,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
@@ -1956,7 +1994,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > s_smtptr;
-  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & s = *s_smtptr;
 
   int res =   this->_objectptr->GetObj()->CmpNoCase(s);
@@ -1983,12 +2021,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
   int compareWithCase_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(compareWithCase_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(compareWithCase_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool compareWithCase = (bool) (compareWithCase_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->IsSameAs(psz, compareWithCase);
@@ -2037,7 +2075,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string c_string;
-  if (!get_val_param<std::string >(c_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(c_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t c = 0;
 {
   if (c_string.size()>0) mbstowcs(&c, &c_string[0],1);
@@ -2045,7 +2083,7 @@ BasicVariable::ptr WrapClass_wxString::
 
 
   int compareWithCase_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(compareWithCase_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(compareWithCase_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool compareWithCase = (bool) (compareWithCase_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->IsSameAs(c, compareWithCase);
@@ -2073,11 +2111,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nFirst_long;
-  if (!get_val_param<long >(nFirst_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(nFirst_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int nFirst = boost::numeric_cast<long unsigned int >(nFirst_long);
 
   long nCount_long = boost::numeric_cast<long >(wxStringBase::npos);;
-  if (!get_val_param<long >(nCount_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(nCount_long,_p,_n,false,false)) ClassHelpAndReturn;
   long unsigned int nCount = boost::numeric_cast<long unsigned int >(nCount_long);
 
   wxString res =   this->_objectptr->GetObj()->Mid(nFirst, nCount);
@@ -2104,12 +2142,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > prefix_string;
-  if (!get_val_smtptr_param<std::string >(prefix_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(prefix_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t prefix[prefix_string->size()+1];
 mbstowcs(prefix,prefix_string->c_str(),prefix_string->size()+1);
 
   boost::shared_ptr<wxString > rest_smtptr;
-  if (!get_val_smtptr_param<wxString >(rest_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(rest_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString* rest = rest_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->StartsWith(prefix, rest);
@@ -2137,12 +2175,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > suffix_string;
-  if (!get_val_smtptr_param<std::string >(suffix_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(suffix_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t suffix[suffix_string->size()+1];
 mbstowcs(suffix,suffix_string->c_str(),suffix_string->size()+1);
 
   boost::shared_ptr<wxString > rest_smtptr;
-  if (!get_val_smtptr_param<wxString >(rest_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(rest_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString* rest = rest_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->EndsWith(suffix, rest);
@@ -2169,7 +2207,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nCount_long;
-  if (!get_val_param<long >(nCount_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(nCount_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int nCount = boost::numeric_cast<long unsigned int >(nCount_long);
 
   wxString res =   this->_objectptr->GetObj()->Left(nCount);
@@ -2195,7 +2233,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nCount_long;
-  if (!get_val_param<long >(nCount_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(nCount_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int nCount = boost::numeric_cast<long unsigned int >(nCount_long);
 
   wxString res =   this->_objectptr->GetObj()->Right(nCount);
@@ -2221,7 +2259,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,false)) ClassHelpAndReturn;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -2251,7 +2289,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,false)) ClassHelpAndReturn;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -2281,7 +2319,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,false)) ClassHelpAndReturn;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -2311,7 +2349,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,false)) ClassHelpAndReturn;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -2341,7 +2379,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,false)) ClassHelpAndReturn;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -2371,7 +2409,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,false)) ClassHelpAndReturn;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -2477,7 +2515,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   int bFromRight_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(bFromRight_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(bFromRight_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool bFromRight = (bool) (bFromRight_int>0.5);
 
   wxString & res =   this->_objectptr->GetObj()->Trim(bFromRight);
@@ -2505,7 +2543,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nCount_long;
-  if (!get_val_param<long >(nCount_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(nCount_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int nCount = boost::numeric_cast<long unsigned int >(nCount_long);
 
   std::string chPad_string;
@@ -2515,7 +2553,7 @@ BasicVariable::ptr WrapClass_wxString::
     size_t conv_res = wcstombs(&char_conv,&val,1);
     if (conv_res>0) chPad_string = std::string(1,char_conv);
   };
-  if (!get_val_param<std::string >(chPad_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(chPad_string,_p,_n,false,false)) ClassHelpAndReturn;
   wchar_t chPad = 0;
 {
   if (chPad_string.size()>0) mbstowcs(&chPad, &chPad_string[0],1);
@@ -2523,7 +2561,7 @@ BasicVariable::ptr WrapClass_wxString::
 
 
   int bFromRight_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(bFromRight_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(bFromRight_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool bFromRight = (bool) (bFromRight_int>0.5);
 
   wxString & res =   this->_objectptr->GetObj()->Pad(nCount, chPad, bFromRight);
@@ -2550,7 +2588,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -2558,7 +2596,7 @@ BasicVariable::ptr WrapClass_wxString::
 
 
   int bFromEnd_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(bFromEnd_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(bFromEnd_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool bFromEnd = (bool) (bFromEnd_int>0.5);
 
   int res =   this->_objectptr->GetObj()->Find(ch, bFromEnd);
@@ -2605,7 +2643,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > pszSub_string;
-  if (!get_val_smtptr_param<std::string >(pszSub_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(pszSub_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t pszSub[pszSub_string->size()+1];
 mbstowcs(pszSub,pszSub_string->c_str(),pszSub_string->size()+1);
 
@@ -2634,17 +2672,17 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > szOld_string;
-  if (!get_val_smtptr_param<std::string >(szOld_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(szOld_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t szOld[szOld_string->size()+1];
 mbstowcs(szOld,szOld_string->c_str(),szOld_string->size()+1);
 
   boost::shared_ptr<std::string > szNew_string;
-  if (!get_val_smtptr_param<std::string >(szNew_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(szNew_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t szNew[szNew_string->size()+1];
 mbstowcs(szNew,szNew_string->c_str(),szNew_string->size()+1);
 
   int bReplaceAll_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(bReplaceAll_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(bReplaceAll_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool bReplaceAll = (bool) (bReplaceAll_int>0.5);
 
   size_t res =   this->_objectptr->GetObj()->Replace(szOld, szNew, bReplaceAll);
@@ -2671,7 +2709,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > szMask_string;
-  if (!get_val_smtptr_param<std::string >(szMask_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(szMask_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t szMask[szMask_string->size()+1];
 mbstowcs(szMask,szMask_string->c_str(),szMask_string->size()+1);
 
@@ -2700,12 +2738,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<long > val_long;
-  if (!get_val_smtptr_param<long >(val_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<long >(val_long,_p,_n,true,false,false)) ClassHelpAndReturn;
   long int val_val = *val_long;
   long int* val = &val_val;
 
   int base = 10;
-  if (!get_val_param<int >(base,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ToLong(val, base);
   int res_int = ((res==true)?1:0);
@@ -2732,12 +2770,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<long > val_long;
-  if (!get_val_smtptr_param<long >(val_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<long >(val_long,_p,_n,true,false,false)) ClassHelpAndReturn;
   long unsigned int val_val = boost::numeric_cast<long unsigned int >(*val_long);
   long unsigned int* val = &val_val;
 
   int base = 10;
-  if (!get_val_param<int >(base,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ToULong(val, base);
   int res_int = ((res==true)?1:0);
@@ -2765,11 +2803,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<long long int > val_smtptr;
-  if (!get_val_smtptr_param<long long int >(val_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<long long int >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   long long int* val = val_smtptr.get();
 
   int base = 10;
-  if (!get_val_param<int >(base,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ToLongLong(val, base);
   int res_int = ((res==true)?1:0);
@@ -2798,11 +2836,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<long long unsigned int > val_smtptr;
-  if (!get_val_smtptr_param<long long unsigned int >(val_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<long long unsigned int >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   long long unsigned int* val = val_smtptr.get();
 
   int base = 10;
-  if (!get_val_param<int >(base,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ToULongLong(val, base);
   int res_int = ((res==true)?1:0);
@@ -2829,7 +2867,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* val = val_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->ToDouble(val);
@@ -2856,7 +2894,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > pszFormat_string;
-  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t pszFormat[pszFormat_string->size()+1];
 mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
 
@@ -2885,77 +2923,16 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > pszFormat_string;
-  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t pszFormat[pszFormat_string->size()+1];
 mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
 
   boost::shared_ptr<__va_list_tag > argptr_smtptr;
-  if (!get_val_smtptr_param<__va_list_tag >(argptr_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<__va_list_tag >(argptr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   __va_list_tag* argptr = argptr_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->PrintfV(pszFormat, argptr);
   return AMILabType<int >::CreateVar(res);
-}
-*/
-
-//---------------------------------------------------
-//  Wrapping of wxString wxString::Format(wxChar const * pszFormat)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_Format::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'pszFormat'")
-  return_comments="returning a variable of type wxString";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_Format::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<std::string > pszFormat_string;
-  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n)) ClassHelpAndReturn;
-  wchar_t pszFormat[pszFormat_string->size()+1];
-mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
-
-  wxString res =   this->_objectptr->GetObj()->Format(pszFormat);
-  return AMILabType<wxString >::CreateVar(res);
-}
-/* The following types are missing: __va_list_tag
-
-//---------------------------------------------------
-//  Wrapping of wxString wxString::FormatV(wxChar const * pszFormat, __va_list_tag * argptr)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_FormatV::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'pszFormat'")
-  ADDPARAMCOMMENT_TYPE( __va_list_tag, "parameter named 'argptr'")
-  return_comments="returning a variable of type wxString";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_FormatV::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<std::string > pszFormat_string;
-  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n)) ClassHelpAndReturn;
-  wchar_t pszFormat[pszFormat_string->size()+1];
-mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
-
-  boost::shared_ptr<__va_list_tag > argptr_smtptr;
-  if (!get_val_smtptr_param<__va_list_tag >(argptr_smtptr,_p,_n)) ClassHelpAndReturn;
-  __va_list_tag* argptr = argptr_smtptr.get();
-
-  wxString res =   this->_objectptr->GetObj()->FormatV(pszFormat, argptr);
-  return AMILabType<wxString >::CreateVar(res);
 }
 */
 
@@ -2978,7 +2955,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   bool res =   this->_objectptr->GetObj()->Alloc(nLen);
@@ -3025,7 +3002,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   wxChar * res =   this->_objectptr->GetObj()->GetWriteBuf(nLen);
@@ -3097,7 +3074,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   this->_objectptr->GetObj()->UngetWriteBuf(nLen);
@@ -3124,11 +3101,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long from_long;
-  if (!get_val_param<long >(from_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(from_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int from = boost::numeric_cast<long unsigned int >(from_long);
 
   long to_long;
-  if (!get_val_param<long >(to_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(to_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int to = boost::numeric_cast<long unsigned int >(to_long);
 
   wxString res =   this->_objectptr->GetObj()->SubString(from, to);
@@ -3154,7 +3131,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > pszFormat_string;
-  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t pszFormat[pszFormat_string->size()+1];
 mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
 
@@ -3201,7 +3178,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,false)) ClassHelpAndReturn;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -3267,7 +3244,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
@@ -3316,7 +3293,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -3347,7 +3324,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(pos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   wxString & res =   this->_objectptr->GetObj()->Remove(pos);
@@ -3373,7 +3350,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long n_long = boost::numeric_cast<long >(1);;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(n_long,_p,_n,false,false)) ClassHelpAndReturn;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxString & res =   this->_objectptr->GetObj()->RemoveLast(n);
@@ -3421,11 +3398,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nStart_long;
-  if (!get_val_param<long >(nStart_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nStart_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nStart = boost::numeric_cast<long unsigned int >(nStart_long);
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   wxString & res =   this->_objectptr->GetObj()->Remove(nStart, nLen);
@@ -3451,7 +3428,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -3505,7 +3482,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
@@ -3532,7 +3509,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   int res =   this->_objectptr->GetObj()->First(str);
@@ -3558,7 +3535,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -3588,7 +3565,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Contains(str);
@@ -3637,15 +3614,15 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(pos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxString & res =   this->_objectptr->GetObj()->append(str, pos, n);
@@ -3704,7 +3681,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   wxString & res =   this->_objectptr->GetObj()->append(str);
@@ -3730,7 +3707,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > sz_string;
-  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t sz[sz_string->size()+1];
 mbstowcs(sz,sz_string->c_str(),sz_string->size()+1);
 
@@ -3758,12 +3735,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > sz_string;
-  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t sz[sz_string->size()+1];
 mbstowcs(sz,sz_string->c_str(),sz_string->size()+1);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxString & res =   this->_objectptr->GetObj()->append(sz, n);
@@ -3790,11 +3767,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -3825,12 +3802,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
   boost::shared_ptr<std::string > last_string;
-  if (!get_val_smtptr_param<std::string >(last_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last[last_string->size()+1];
 mbstowcs(last,last_string->c_str(),last_string->size()+1);
 
@@ -3857,7 +3834,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   wxString & res =   this->_objectptr->GetObj()->assign(str);
@@ -3918,15 +3895,15 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(pos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxString & res =   this->_objectptr->GetObj()->assign(str, pos, n);
@@ -3952,7 +3929,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > sz_string;
-  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t sz[sz_string->size()+1];
 mbstowcs(sz,sz_string->c_str(),sz_string->size()+1);
 
@@ -3980,12 +3957,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > sz_string;
-  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t sz[sz_string->size()+1];
 mbstowcs(sz,sz_string->c_str(),sz_string->size()+1);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxString & res =   this->_objectptr->GetObj()->assign(sz, n);
@@ -4012,11 +3989,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -4047,12 +4024,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
   boost::shared_ptr<std::string > last_string;
-  if (!get_val_smtptr_param<std::string >(last_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last[last_string->size()+1];
 mbstowcs(last,last_string->c_str(),last_string->size()+1);
 
@@ -4080,11 +4057,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nPos_long;
-  if (!get_val_param<long >(nPos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nPos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nPos = boost::numeric_cast<long unsigned int >(nPos_long);
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   wxString & res =   this->_objectptr->GetObj()->insert(nPos, str);
@@ -4152,19 +4129,19 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nPos_long;
-  if (!get_val_param<long >(nPos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nPos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nPos = boost::numeric_cast<long unsigned int >(nPos_long);
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   long nStart_long;
-  if (!get_val_param<long >(nStart_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nStart_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nStart = boost::numeric_cast<long unsigned int >(nStart_long);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxString & res =   this->_objectptr->GetObj()->insert(nPos, str, nStart, n);
@@ -4191,11 +4168,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nPos_long;
-  if (!get_val_param<long >(nPos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nPos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nPos = boost::numeric_cast<long unsigned int >(nPos_long);
 
   boost::shared_ptr<std::string > sz_string;
-  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t sz[sz_string->size()+1];
 mbstowcs(sz,sz_string->c_str(),sz_string->size()+1);
 
@@ -4224,16 +4201,16 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nPos_long;
-  if (!get_val_param<long >(nPos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nPos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nPos = boost::numeric_cast<long unsigned int >(nPos_long);
 
   boost::shared_ptr<std::string > sz_string;
-  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t sz[sz_string->size()+1];
 mbstowcs(sz,sz_string->c_str(),sz_string->size()+1);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxString & res =   this->_objectptr->GetObj()->insert(nPos, sz, n);
@@ -4261,15 +4238,15 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nPos_long;
-  if (!get_val_param<long >(nPos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nPos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nPos = boost::numeric_cast<long unsigned int >(nPos_long);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -4300,12 +4277,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > it_string;
-  if (!get_val_smtptr_param<std::string >(it_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(it_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t it[it_string->size()+1];
 mbstowcs(it,it_string->c_str(),it_string->size()+1);
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -4344,17 +4321,17 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > it_string;
-  if (!get_val_smtptr_param<std::string >(it_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(it_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t it[it_string->size()+1];
 mbstowcs(it,it_string->c_str(),it_string->size()+1);
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
   boost::shared_ptr<std::string > last_string;
-  if (!get_val_smtptr_param<std::string >(last_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last[last_string->size()+1];
 mbstowcs(last,last_string->c_str(),last_string->size()+1);
 
@@ -4382,16 +4359,16 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > it_string;
-  if (!get_val_smtptr_param<std::string >(it_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(it_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t it[it_string->size()+1];
 mbstowcs(it,it_string->c_str(),it_string->size()+1);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -4422,11 +4399,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long pos_long = boost::numeric_cast<long >(0);;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(pos_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   long n_long = boost::numeric_cast<long >(wxStringBase::npos);;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxString & res =   this->_objectptr->GetObj()->erase(pos, n);
@@ -4477,12 +4454,12 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
   boost::shared_ptr<std::string > last_string;
-  if (!get_val_smtptr_param<std::string >(last_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last[last_string->size()+1];
 mbstowcs(last,last_string->c_str(),last_string->size()+1);
 
@@ -4517,7 +4494,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
@@ -4554,15 +4531,15 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nStart_long;
-  if (!get_val_param<long >(nStart_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nStart_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nStart = boost::numeric_cast<long unsigned int >(nStart_long);
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   boost::shared_ptr<std::string > sz_string;
-  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t sz[sz_string->size()+1];
 mbstowcs(sz,sz_string->c_str(),sz_string->size()+1);
 
@@ -4636,15 +4613,15 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nStart_long;
-  if (!get_val_param<long >(nStart_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nStart_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nStart = boost::numeric_cast<long unsigned int >(nStart_long);
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   wxString & res =   this->_objectptr->GetObj()->replace(nStart, nLen, str);
@@ -4673,19 +4650,19 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nStart_long;
-  if (!get_val_param<long >(nStart_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nStart_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nStart = boost::numeric_cast<long unsigned int >(nStart_long);
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   long nCount_long;
-  if (!get_val_param<long >(nCount_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nCount_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nCount = boost::numeric_cast<long unsigned int >(nCount_long);
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -4719,23 +4696,23 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nStart_long;
-  if (!get_val_param<long >(nStart_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nStart_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nStart = boost::numeric_cast<long unsigned int >(nStart_long);
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   long nStart2_long;
-  if (!get_val_param<long >(nStart2_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nStart2_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nStart2 = boost::numeric_cast<long unsigned int >(nStart2_long);
 
   long nLen2_long;
-  if (!get_val_param<long >(nLen2_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen2_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen2 = boost::numeric_cast<long unsigned int >(nLen2_long);
 
   wxString & res =   this->_objectptr->GetObj()->replace(nStart, nLen, str, nStart2, nLen2);
@@ -4764,20 +4741,20 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long nStart_long;
-  if (!get_val_param<long >(nStart_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nStart_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nStart = boost::numeric_cast<long unsigned int >(nStart_long);
 
   long nLen_long;
-  if (!get_val_param<long >(nLen_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nLen_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   boost::shared_ptr<std::string > sz_string;
-  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(sz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t sz[sz_string->size()+1];
 mbstowcs(sz,sz_string->c_str(),sz_string->size()+1);
 
   long nCount_long;
-  if (!get_val_param<long >(nCount_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(nCount_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int nCount = boost::numeric_cast<long unsigned int >(nCount_long);
 
   wxString & res =   this->_objectptr->GetObj()->replace(nStart, nLen, sz, nCount);
@@ -4805,17 +4782,17 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
   boost::shared_ptr<std::string > last_string;
-  if (!get_val_smtptr_param<std::string >(last_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last[last_string->size()+1];
 mbstowcs(last,last_string->c_str(),last_string->size()+1);
 
   boost::shared_ptr<std::string > s_string;
-  if (!get_val_smtptr_param<std::string >(s_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(s_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t s[s_string->size()+1];
 mbstowcs(s,s_string->c_str(),s_string->size()+1);
 
@@ -4845,22 +4822,22 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
   boost::shared_ptr<std::string > last_string;
-  if (!get_val_smtptr_param<std::string >(last_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last[last_string->size()+1];
 mbstowcs(last,last_string->c_str(),last_string->size()+1);
 
   boost::shared_ptr<std::string > s_string;
-  if (!get_val_smtptr_param<std::string >(s_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(s_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t s[s_string->size()+1];
 mbstowcs(s,s_string->c_str(),s_string->size()+1);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxString & res =   this->_objectptr->GetObj()->replace(first, last, s, n);
@@ -4888,17 +4865,17 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
   boost::shared_ptr<std::string > last_string;
-  if (!get_val_smtptr_param<std::string >(last_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last[last_string->size()+1];
 mbstowcs(last,last_string->c_str(),last_string->size()+1);
 
   boost::shared_ptr<wxString > s_smtptr;
-  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & s = *s_smtptr;
 
   wxString & res =   this->_objectptr->GetObj()->replace(first, last, s);
@@ -4927,21 +4904,21 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
   boost::shared_ptr<std::string > last_string;
-  if (!get_val_smtptr_param<std::string >(last_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last[last_string->size()+1];
 mbstowcs(last,last_string->c_str(),last_string->size()+1);
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   std::string c_string;
-  if (!get_val_param<std::string >(c_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(c_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t c = 0;
 {
   if (c_string.size()>0) mbstowcs(&c, &c_string[0],1);
@@ -4974,22 +4951,22 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > first_string;
-  if (!get_val_smtptr_param<std::string >(first_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first[first_string->size()+1];
 mbstowcs(first,first_string->c_str(),first_string->size()+1);
 
   boost::shared_ptr<std::string > last_string;
-  if (!get_val_smtptr_param<std::string >(last_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last[last_string->size()+1];
 mbstowcs(last,last_string->c_str(),last_string->size()+1);
 
   boost::shared_ptr<std::string > first1_string;
-  if (!get_val_smtptr_param<std::string >(first1_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(first1_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t first1[first1_string->size()+1];
 mbstowcs(first1,first1_string->c_str(),first1_string->size()+1);
 
   boost::shared_ptr<std::string > last1_string;
-  if (!get_val_smtptr_param<std::string >(last1_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(last1_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t last1[last1_string->size()+1];
 mbstowcs(last1,last1_string->c_str(),last1_string->size()+1);
 
@@ -4998,7 +4975,7 @@ mbstowcs(last1,last1_string->c_str(),last1_string->size()+1);
 }
 
 //---------------------------------------------------
-//  Wrapping of wxString & wxString::=(wxString const & param0)
+//  Wrapping of wxString & wxString::operator =(wxString const & param0)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___assign___1::SetParametersComments()
@@ -5016,7 +4993,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > param0_smtptr;
-  if (!get_val_smtptr_param<wxString >(param0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & param0 = *param0_smtptr;
 
   wxString & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -5047,7 +5024,7 @@ BasicVariable::ptr WrapClass_wxString::
 */
 
 //---------------------------------------------------
-//  Wrapping of wxChar & wxString::[](int n)
+//  Wrapping of wxChar & wxString::operator [](int n)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___at___1::SetParametersComments()
@@ -5065,7 +5042,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxChar & res =   (*this->_objectptr->GetObj()) [ (n)];
   std::string res_string;
@@ -5103,7 +5080,7 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxChar & wxString::[](size_t n)
+//  Wrapping of wxChar & wxString::operator [](size_t n)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___at___2::SetParametersComments()
@@ -5121,7 +5098,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxChar & res =   (*this->_objectptr->GetObj()) [ (n)];
@@ -5136,7 +5113,7 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxChar & wxString::[](unsigned int n)
+//  Wrapping of wxChar & wxString::operator [](unsigned int n)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___at___3::SetParametersComments()
@@ -5154,7 +5131,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   unsigned int n = boost::numeric_cast<unsigned int >(n_long);
 
   wxChar & res =   (*this->_objectptr->GetObj()) [ (n)];
@@ -5199,7 +5176,7 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxString & wxString::=(wxStringBase const & stringSrc)
+//  Wrapping of wxString & wxString::operator =(wxStringBase const & stringSrc)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___assign___2::SetParametersComments()
@@ -5217,7 +5194,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxStringBase > stringSrc_smtptr;
-  if (!get_val_smtptr_param<wxStringBase >(stringSrc_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxStringBase >(stringSrc_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxStringBase const & stringSrc = *stringSrc_smtptr;
 
   wxString & res =   (*this->_objectptr->GetObj()) = (stringSrc);
@@ -5225,7 +5202,7 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxString & wxString::=(wxChar ch)
+//  Wrapping of wxString & wxString::operator =(wxChar ch)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___assign___3::SetParametersComments()
@@ -5243,7 +5220,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -5255,7 +5232,7 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxString & wxString::=(wxChar const * psz)
+//  Wrapping of wxString & wxString::operator =(wxChar const * psz)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___assign___4::SetParametersComments()
@@ -5273,7 +5250,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
@@ -5282,7 +5259,7 @@ mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 }
 
 //---------------------------------------------------
-//  Wrapping of wxString & wxString::=(wxWCharBuffer const & psz)
+//  Wrapping of wxString & wxString::operator =(wxWCharBuffer const & psz)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___assign___5::SetParametersComments()
@@ -5300,7 +5277,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxWCharBuffer > psz_smtptr;
-  if (!get_val_smtptr_param<wxWCharBuffer >(psz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxWCharBuffer >(psz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWCharBuffer const & psz = *psz_smtptr;
 
   wxString & res =   (*this->_objectptr->GetObj()) = (psz);
@@ -5328,7 +5305,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > s_smtptr;
-  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & s = *s_smtptr;
 
   wxString & res =   this->_objectptr->GetObj()-><<(s);
@@ -5350,42 +5327,6 @@ BasicVariable::ptr WrapClass_wxString::
     wrap_operator not available::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxString::wrap_operator not available_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_3 m3(this->_objectptr);
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_4 m4(this->_objectptr);
-  res = m4.CallMember(_p);
-  if (!m4.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_5 m5(this->_objectptr);
-  res = m5.CallMember(_p);
-  if (!m5.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_6 m6(this->_objectptr);
-  res = m6.CallMember(_p);
-  if (!m6.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_7 m7(this->_objectptr);
-  res = m7.CallMember(_p);
-  if (!m7.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_8 m8(this->_objectptr);
-  res = m8.CallMember(_p);
-  if (!m8.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_9 m9(this->_objectptr);
-  res = m9.CallMember(_p);
-  if (!m9.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_10 m10(this->_objectptr);
-  res = m10.CallMember(_p);
-  if (!m10.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_11 m11(this->_objectptr);
-  res = m11.CallMember(_p);
-  if (!m11.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_operator not available_12 m12(this->_objectptr);
-  res = m12.CallMember(_p);
-  if (!m12.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 */
@@ -5411,7 +5352,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
@@ -5441,7 +5382,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);
@@ -5474,7 +5415,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxWCharBuffer > s_smtptr;
-  if (!get_val_smtptr_param<wxWCharBuffer >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxWCharBuffer >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWCharBuffer const & s = *s_smtptr;
 
   wxString & res =   this->_objectptr->GetObj()-><<(s);
@@ -5483,7 +5424,7 @@ BasicVariable::ptr WrapClass_wxString::
 */
 
 //---------------------------------------------------
-//  Wrapping of void wxString::+=(wxWCharBuffer const & s)
+//  Wrapping of void wxString::operator +=(wxWCharBuffer const & s)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___add_assign___1::SetParametersComments()
@@ -5500,7 +5441,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxWCharBuffer > s_smtptr;
-  if (!get_val_smtptr_param<wxWCharBuffer >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxWCharBuffer >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWCharBuffer const & s = *s_smtptr;
 
   (*this->_objectptr->GetObj()) += (s);
@@ -5528,7 +5469,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(i,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxString & res =   this->_objectptr->GetObj()-><<(i);
   return AMILabType<wxString >::CreateVar(res);
@@ -5556,7 +5497,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long ui_long;
-  if (!get_val_param<long >(ui_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(ui_long,_p,_n,true,true)) ClassReturnEmptyVar;
   unsigned int ui = boost::numeric_cast<unsigned int >(ui_long);
 
   wxString & res =   this->_objectptr->GetObj()-><<(ui);
@@ -5585,7 +5526,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long l_long;
-  if (!get_val_param<long >(l_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(l_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int l = l_long;
 
   wxString & res =   this->_objectptr->GetObj()-><<(l);
@@ -5614,7 +5555,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long ul_long;
-  if (!get_val_param<long >(ul_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(ul_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int ul = boost::numeric_cast<long unsigned int >(ul_long);
 
   wxString & res =   this->_objectptr->GetObj()-><<(ul);
@@ -5644,7 +5585,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long long int ll;
-  if (!get_val_param<long long int >(ll,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long long int >(ll,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxString & res =   this->_objectptr->GetObj()-><<(ll);
   return AMILabType<wxString >::CreateVar(res);
@@ -5673,7 +5614,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long long unsigned int ull;
-  if (!get_val_param<long long unsigned int >(ull,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long long unsigned int >(ull,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxString & res =   this->_objectptr->GetObj()-><<(ull);
   return AMILabType<wxString >::CreateVar(res);
@@ -5701,7 +5642,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   float f;
-  if (!get_val_param<float >(f,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<float >(f,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxString & res =   this->_objectptr->GetObj()-><<(f);
   return AMILabType<wxString >::CreateVar(res);
@@ -5729,7 +5670,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   double d;
-  if (!get_val_param<double >(d,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(d,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxString & res =   this->_objectptr->GetObj()-><<(d);
   return AMILabType<wxString >::CreateVar(res);
@@ -5758,11 +5699,11 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   long start_long;
-  if (!get_val_param<long >(start_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(start_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int start = boost::numeric_cast<long unsigned int >(start_long);
 
   long len_long;
-  if (!get_val_param<long >(len_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(len_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int len = boost::numeric_cast<long unsigned int >(len_long);
 
   wxString res =   this->_objectptr->GetObj()->()(start, len);
@@ -5798,7 +5739,7 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxString & wxString::+=(wxString const & s)
+//  Wrapping of wxString & wxString::operator +=(wxString const & s)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___add_assign___2::SetParametersComments()
@@ -5816,7 +5757,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<wxString > s_smtptr;
-  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & s = *s_smtptr;
 
   wxString & res =   (*this->_objectptr->GetObj()) += (s);
@@ -5824,7 +5765,7 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxString & wxString::+=(wxChar const * psz)
+//  Wrapping of wxString & wxString::operator +=(wxChar const * psz)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___add_assign___3::SetParametersComments()
@@ -5842,7 +5783,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   boost::shared_ptr<std::string > psz_string;
-  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(psz_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
@@ -5851,7 +5792,7 @@ mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 }
 
 //---------------------------------------------------
-//  Wrapping of wxString & wxString::+=(wxChar ch)
+//  Wrapping of wxString & wxString::operator +=(wxChar ch)
 //---------------------------------------------------
 void WrapClass_wxString::
     wrap___add_assign___4::SetParametersComments()
@@ -5869,7 +5810,7 @@ BasicVariable::ptr WrapClass_wxString::
   int _n=0;
 
   std::string ch_string;
-  if (!get_val_param<std::string >(ch_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<std::string >(ch_string,_p,_n,true,true)) ClassReturnEmptyVar;
   wchar_t ch = 0;
 {
   if (ch_string.size()>0) mbstowcs(&ch, &ch_string[0],1);

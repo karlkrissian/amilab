@@ -15,6 +15,11 @@ if (!exists(VolRenClass)) {
 
   Class VolRenClass : public ScriptGui {
 
+
+    # load the ImageHistogram script
+    func "Visualization/ImageHistogram/ImageHistogramClass.amil"
+    ImageHistogramClass            ::imhisto1
+
     #----------------------------
     proc ::Init() \
     {
@@ -41,7 +46,9 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::UpdateIntensityLimits() {
       if (exists(::input)) {
+        printn "min"
         ::min_val = min(::input)
+        printn "max"
         ::max_val = max(::input)
         ::win.FloatConstraints(::opacitylevel_id,::min_val,::max_val,::opacitylevel)
         ::win.FloatConstraints(::opacitywindow_id,::min_val,::max_val,::opacitywindow)
@@ -54,6 +61,17 @@ if (!exists(VolRenClass)) {
     {
       ::load_input()
     }
+    Comments(::ImReload,"(Re)Loads the input image.")
+
+    #----------------------------
+    proc ::UpdateHistogram() \
+    {
+      if (exists(::imhisto1))&&(exists(::input)) {
+        printn "*"
+        ::imhisto1.SetInput(&::input)
+      }
+    }
+    Comments(::UpdateHistogram,"Updates the histogram with the current input image.")
 
     #----------------------------
     proc ::DeleteVariables() {
@@ -92,7 +110,6 @@ if (!exists(VolRenClass)) {
       if (!exists(::input)) {
         ::load_input()
       }
-printn "1"
       ::initialized=0
       ::renwin_interact = global::wxVTKFrame()
       ::renwin   = ::renwin_interact.GetRenderWindow()
@@ -102,7 +119,6 @@ printn "1"
       ::renwin_interact.SetInteractorStyle(&interact)
 
 
-printn "2"
       # 10/(1+clip) in c++ code
       #::renwin_interact.SetDesiredUpdateRate(10)
 
@@ -119,7 +135,6 @@ printn "2"
 
         #::volmapper.SetSampleDistance()
 
-printn "3"
         # Create our transfer function
         ::colorFun=global::vtkColorTransferFunction_New()
         ::opacityFun=global::vtkPiecewiseFunction_New()
@@ -134,8 +149,6 @@ printn "3"
         # connect up the volume to the property and the mapper
         ::vol.SetProperty( &::property )
         ::vol.SetMapper( &::volmapper )
-printn "4"
-
 
         # interact with data
         #  renWin->Render()
@@ -147,9 +160,7 @@ printn "4"
         # Add the volume to the scene
         ::renderer.AddVolume( &::vol )
         ::renderer.ResetCamera()
-printn "5"
         #::renwin_interact.Render()
-printn "6"
 
       }
 
@@ -261,16 +272,13 @@ printn "6"
     #----------------------------
     proc ::ReCompute() \
     {
-printn "Recompute 1"
         if exists(::colorFun)   { ::colorFun.Delete(); del ::colorFun; }
         if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
         if exists(::property)   { ::property.Delete(); del ::property; }
 
-printn "Recompute 2"
         ::colorFun=global::vtkColorTransferFunction_New()
         ::opacityFun=global::vtkPiecewiseFunction_New()
 
-printn "Recompute 3"
         # Create the property and attach the transfer functions
         ::property = global::vtkVolumeProperty_New()
         ::property.SetIndependentComponents(1)
@@ -281,14 +289,12 @@ printn "Recompute 3"
         # connect up the volume to the property and the mapper
         ::vol.SetProperty( &::property )
 
-printn "Recompute 4"
         if (::blend_type==0) { ::BlendMIP();                }
         if (::blend_type==1) { ::BlendCompositeRamp();      }
         if (::blend_type==2) { ::BlendCompositeShadeRamp(); }
         if (::blend_type==3) { ::BlendCTSkin();             }
         if (::blend_type==4) { ::BlendCTBones();            }
         if (::blend_type==5) { ::BlendCTMuscles();          }
-printn "Recompute 5"
 
         #::property.SetColor( &::colorFun )
         #::property.SetScalarOpacity( &::opacityFun )
@@ -305,14 +311,60 @@ printn "Recompute 5"
     }
 
     #----------------------------
+    proc ::Draw_vtkColorTransferFunction() \
+    {
+      ctf = &::colorFun
+      if (exists(::imhisto1->h)) {
+        h = (FLOAT )::imhisto1.h[0]
+        h1 = Resize(h,256,1,1,1)
+        ::ctf_color = (RGB) h1
+        spos = SpacePos(::ctf_color)
+        pos = spos[0]
+        print "\n"
+        for x=0 to ::ctf_color.tx-1 {
+          print x; print "\t"
+          ::ctf_color.setpos(x,0,0)
+          xpos = pos(x)
+          print xpos
+          print "\t %1%" % ctf.GetRedValue(  xpos)
+          print "\t %1%" % ctf.GetGreenValue(  xpos)
+          print "\t %1%" % ctf.GetBlueValue(  xpos)
+          printn
+
+          ::ctf_color.set(ctf.GetRedValue(  xpos)*250, \
+                          ctf.GetGreenValue(xpos)*250, \
+                          ctf.GetBlueValue( xpos)*250 )
+        }
+        print "\n"
+        # position curves in ColorMap window of ::imhist1
+        #newvoxsize=vsize*255.0/(::imhisto1.cm_max-::imhisto1.cm_min)
+        #::ctf_color.settranslation(-::imhisto1.cm_min/newvoxsize,0,0)
+        #::ctf_color.setvoxelsize(newvoxsize,1,1)
+        #numcurves = ::imhisto1.cm.GetCurves().size()
+        ::imhisto1.cm.SetCurve(::ctf_color[0],2)
+        ::imhisto1.cm.SetCurve(::ctf_color[1],3)
+        ::imhisto1.cm.SetCurve(::ctf_color[2],4)
+
+        ::imhisto1.cm.SetCurveProperties(2,"#FF0000")
+        ::imhisto1.cm.SetCurveProperties(3,"#00FF00")
+        ::imhisto1.cm.SetCurveProperties(4,"#0000FF")
+        
+      }
+    }
+
+    #----------------------------
     proc ::Gui() {
     
       # parameters window
-      ::win = global::ami_import.ParamPanel("VolRen")
+      if (exists(::parent_panel)) {
+        ::win = global::ami_import.ParamPanel("VolRen",&::parent_panel)
+      } else {
+        ::win = global::ami_import.ParamPanel("VolRen")
+      }
       
       ::win.BeginBook()
     
-        ::win.AddPage("Param")
+        ::win.AddPage("VolRen")
 
           # set the input image drawing window
           ::win.BeginBoxPanel("Input")
@@ -338,18 +390,37 @@ printn "Recompute 5"
             ::win.SetCallback( &::OnRender)
             ::opacitylevel_id = ::win.AddFloat(&::opacitylevel,"Level",0,5000)
             ::win.SetCallback( &::OnRender)
-            ::win.AddBoolean(&::clip, "Clipping box")
+            ::win.BeginHorizontal()
+              ::win.AddBoolean(&::clip, "Clip")
+              ::AddBitmapButton16(&::win, &::icons._Show, "StartNew")
+              ::icons.LoadIconPNG2("Chart xy","Chart_xy")
+              ::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
+              ::win.AddButton("DrawTr",&::Draw_vtkColorTransferFunction)
+            ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
-          ::win.AddButton("Start",   ::Start)
-          ::win.AddButton("StartNew",::StartNew)
+          #::win.AddButton("Start",   ::Start)
+          #::icons.LoadIconPNG("Play")
   
+
+      ::win.EndBook()
+
+      ::win.BeginBook()
+          # Adding histogram page
+        ::imhisto1.SetParentPanel(&::win)
+        ::imhisto1.Gui()
+        #::sizer_item = ::win.AddWidget(&::imhisto1.win,1)
+        ::win.AddPage("Hist",&::imhisto1.win)
       ::win.EndBook()
 
       ::AddStandardButtons(&::win)
       
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
       ::win.Update(-1)
-      ::win.Display()
    }
 
     ::Init()

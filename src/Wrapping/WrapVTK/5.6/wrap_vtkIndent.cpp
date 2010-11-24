@@ -101,7 +101,7 @@ BasicVariable::ptr WrapClass_vtkIndent::
   int _n=0;
 
   boost::shared_ptr<vtkIndent > param0_smtptr;
-  if (!get_val_smtptr_param<vtkIndent >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkIndent >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   vtkIndent const & param0 = *param0_smtptr;
 
   vtkIndent* _newobj = new vtkIndent(param0);
@@ -148,7 +148,7 @@ BasicVariable::ptr WrapClass_vtkIndent::
   int _n=0;
 
   int ind = 0;
-  if (!get_val_param<int >(ind,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(ind,_p,_n,false,true)) ClassReturnEmptyVar;
 
   vtkIndent* _newobj = new vtkIndent(ind);
   BasicVariable::ptr res = WrapClass_vtkIndent::CreateVar(_newobj);
@@ -247,7 +247,7 @@ BasicVariable::ptr WrapClass_vtkIndent::
   int _n=0;
 
   boost::shared_ptr<vtkIndent > param0_smtptr;
-  if (!get_val_smtptr_param<vtkIndent >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkIndent >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkIndent const & param0 = *param0_smtptr;
 
   vtkIndent & res =   (*this->_objectptr->GetObj()) = (param0);

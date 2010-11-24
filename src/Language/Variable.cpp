@@ -205,7 +205,7 @@ AMI_DEFINE_BASICTYPE(VarArray);
       else {\
         BasicVariable::ptr converted = var->TryCast(AMILabType<type>::name_as_string());\
         if (!converted.get()) {\
-          FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<type>::name_as_string().c_str());\
+          /*FILE_ERROR(boost::format("Cannot be converted to type %2%.") % AMILabType<type>::name_as_string().c_str());*/\
           return boost::shared_ptr<type>(); \
         } else { \
           boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(converted)); \

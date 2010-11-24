@@ -75,8 +75,12 @@ void WrapClass_wxListBase::AddMethods(WrapClass<wxListBase>::ptr this_ptr )
       AddVar_Clear( this_ptr);
       AddVar_DeleteContents( this_ptr);
       AddVar_GetDeleteContents( this_ptr);
+/* The following types are missing: wxKeyType
       AddVar_GetKeyType( this_ptr);
+*/
+/* The following types are missing: wxKeyType
       AddVar_SetKeyType( this_ptr);
+*/
       AddVar_Number( this_ptr);
       AddVar_First( this_ptr);
       AddVar_Last( this_ptr);
@@ -171,7 +175,7 @@ BasicVariable::ptr WrapClass_wxListBase::
   int _n=0;
 
   int destroy_int;
-  if (!get_val_param<int >(destroy_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(destroy_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool destroy = (bool) (destroy_int>0.5);
 
   this->_objectptr->GetObj()->DeleteContents(destroy);
@@ -197,6 +201,7 @@ BasicVariable::ptr WrapClass_wxListBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxKeyType
 
 //---------------------------------------------------
 //  Wrapping of wxKeyType wxListBase::GetKeyType()
@@ -204,7 +209,7 @@ BasicVariable::ptr WrapClass_wxListBase::
 void WrapClass_wxListBase::
     wrap_GetKeyType::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxKeyType";
 }
 
 //---------------------------------------------------
@@ -214,9 +219,10 @@ BasicVariable::ptr WrapClass_wxListBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxKeyType res =   this->_objectptr->GetObj()->GetKeyType();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxKeyType >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxKeyType
 
 //---------------------------------------------------
 //  Wrapping of void wxListBase::SetKeyType(wxKeyType keyType)
@@ -224,7 +230,7 @@ BasicVariable::ptr WrapClass_wxListBase::
 void WrapClass_wxListBase::
     wrap_SetKeyType::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'keyType'")
+  ADDPARAMCOMMENT_TYPE( wxKeyType, "parameter named 'keyType'")
 }
 
 //---------------------------------------------------
@@ -235,13 +241,13 @@ BasicVariable::ptr WrapClass_wxListBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int keyType_int;
-  if (!get_val_param<int >(keyType_int,_p,_n)) ClassHelpAndReturn;
-  wxKeyType keyType = (wxKeyType) keyType_int;
+  wxKeyType keyType;
+  if (!get_val_param<wxKeyType >(keyType,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetKeyType(keyType);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of int wxListBase::Number()
@@ -321,7 +327,7 @@ BasicVariable::ptr WrapClass_wxListBase::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(n_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   wxNode * res =   this->_objectptr->GetObj()->Nth(n);
@@ -348,7 +354,7 @@ BasicVariable::ptr WrapClass_wxListBase::
   int _n=0;
 
   boost::shared_ptr<wxListBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxListBase >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxListBase >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxListBase const & param0 = *param0_smtptr;
 
   wxListBase & res =   (*this->_objectptr->GetObj()) = (param0);

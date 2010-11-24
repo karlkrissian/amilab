@@ -137,7 +137,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkPropCollection::IsTypeOf(type);
@@ -163,7 +163,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkPropCollection * res =   vtkPropCollection::SafeDownCast(o);
@@ -190,7 +190,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -235,7 +235,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   int _n=0;
 
   boost::shared_ptr<vtkProp > a_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(a_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkProp >(a_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkProp* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->AddItem(a);
@@ -339,7 +339,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   int _n=0;
 
   boost::shared_ptr<void > cookie_smtptr;
-  if (!get_val_smtptr_param<void >(cookie_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(cookie_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCollectionSimpleIterator & cookie = *cookie_smtptr;
 
   vtkProp * res =   this->_objectptr->GetObj()->GetNextProp(cookie);

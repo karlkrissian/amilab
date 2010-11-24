@@ -26,6 +26,7 @@
 #include "wrap_wxObjectList.h"
 
 
+
 AMI_DECLARE_TYPE(wxList);
 
 // TODO: check for inheritence ...

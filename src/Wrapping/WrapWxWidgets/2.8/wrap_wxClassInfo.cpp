@@ -182,23 +182,23 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   int _n=0;
 
   boost::shared_ptr<std::string > className_string;
-  if (!get_val_smtptr_param<std::string >(className_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(className_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t className[className_string->size()+1];
 mbstowcs(className,className_string->c_str(),className_string->size()+1);
 
   boost::shared_ptr<wxClassInfo > baseInfo1_smtptr;
-  if (!get_val_smtptr_param<wxClassInfo >(baseInfo1_smtptr,_p,_n,true,true)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxClassInfo >(baseInfo1_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
   wxClassInfo* baseInfo1 = baseInfo1_smtptr.get();
 
   boost::shared_ptr<wxClassInfo > baseInfo2_smtptr;
-  if (!get_val_smtptr_param<wxClassInfo >(baseInfo2_smtptr,_p,_n,true,true)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxClassInfo >(baseInfo2_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
   wxClassInfo* baseInfo2 = baseInfo2_smtptr.get();
 
   int size;
-  if (!get_val_param<int >(size,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(size,_p,_n,true,false)) ClassHelpAndReturn;
 
   _8995 ctor;
-  if (!get_val_param<_8995 >(ctor,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<_8995 >(ctor,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxClassInfo* _newobj = new wxClassInfo(className, baseInfo1, baseInfo2, size, ctor);
   BasicVariable::ptr res = WrapClass_wxClassInfo::CreateVar(_newobj);
@@ -245,7 +245,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   int _n=0;
 
   boost::shared_ptr<std::string > className_string;
-  if (!get_val_smtptr_param<std::string >(className_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(className_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t className[className_string->size()+1];
 mbstowcs(className,className_string->c_str(),className_string->size()+1);
 
@@ -530,7 +530,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   int _n=0;
 
   boost::shared_ptr<wxClassInfo > info_smtptr;
-  if (!get_val_smtptr_param<wxClassInfo >(info_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxClassInfo >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxClassInfo* info = info_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->IsKindOf(info);

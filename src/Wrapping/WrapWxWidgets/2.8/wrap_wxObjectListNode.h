@@ -26,6 +26,7 @@
 #include "wrap_wxNodeBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxObjectListNode);
 
 // TODO: check for inheritence ...

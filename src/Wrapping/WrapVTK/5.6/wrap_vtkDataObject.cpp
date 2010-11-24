@@ -255,7 +255,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkDataObject::IsTypeOf(type);
@@ -281,7 +281,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkDataObject * res =   vtkDataObject::SafeDownCast(o);
@@ -307,7 +307,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int val;
-  if (!get_val_param<int >(val,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(val,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkDataObject::SetGlobalReleaseDataFlag(val);
   return BasicVariable::ptr();
@@ -354,14 +354,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInformation* info = info_smtptr.get();
 
   int fieldAssociation;
-  if (!get_val_param<int >(fieldAssociation,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(fieldAssociation,_p,_n,true,false)) ClassHelpAndReturn;
 
   int attributeType;
-  if (!get_val_param<int >(attributeType,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(attributeType,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkInformation * res =   vtkDataObject::GetActiveFieldInformation(info, fieldAssociation, attributeType);
   return AMILabType<vtkInformation >::CreateVar(res,true);
@@ -390,14 +390,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInformation* info = info_smtptr.get();
 
   int fieldAssociation;
-  if (!get_val_param<int >(fieldAssociation,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(fieldAssociation,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<std::string > name_string;
-  if (!get_val_smtptr_param<std::string >(name_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(name_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * name = name_string->c_str();
 
   vtkInformation * res =   vtkDataObject::GetNamedFieldInformation(info, fieldAssociation, name);
@@ -426,14 +426,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInformation* info = info_smtptr.get();
 
   int fieldAssociation;
-  if (!get_val_param<int >(fieldAssociation,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(fieldAssociation,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<std::string > name_string;
-  if (!get_val_smtptr_param<std::string >(name_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(name_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * name = name_string->c_str();
 
   vtkDataObject::RemoveNamedFieldInformation(info, fieldAssociation, name);
@@ -464,18 +464,18 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInformation* info = info_smtptr.get();
 
   int fieldAssociation;
-  if (!get_val_param<int >(fieldAssociation,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(fieldAssociation,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<std::string > attributeName_string;
-  if (!get_val_smtptr_param<std::string >(attributeName_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(attributeName_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * attributeName = attributeName_string->c_str();
 
   int attributeType;
-  if (!get_val_param<int >(attributeType,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(attributeType,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkInformation * res =   vtkDataObject::SetActiveAttribute(info, fieldAssociation, attributeName, attributeType);
   return AMILabType<vtkInformation >::CreateVar(res,true);
@@ -507,27 +507,27 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInformation* info = info_smtptr.get();
 
   int fieldAssociation;
-  if (!get_val_param<int >(fieldAssociation,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(fieldAssociation,_p,_n,true,false)) ClassHelpAndReturn;
 
   int attributeType;
-  if (!get_val_param<int >(attributeType,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(attributeType,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<std::string > name_string;
-  if (!get_val_smtptr_param<std::string >(name_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(name_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * name = name_string->c_str();
 
   int arrayType;
-  if (!get_val_param<int >(arrayType,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(arrayType,_p,_n,true,false)) ClassHelpAndReturn;
 
   int numComponents;
-  if (!get_val_param<int >(numComponents,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(numComponents,_p,_n,true,false)) ClassHelpAndReturn;
 
   int numTuples;
-  if (!get_val_param<int >(numTuples,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(numTuples,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkDataObject::SetActiveAttributeInfo(info, fieldAssociation, attributeType, name, arrayType, numComponents, numTuples);
   return BasicVariable::ptr();
@@ -555,14 +555,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInformation* info = info_smtptr.get();
 
   int arrayType;
-  if (!get_val_param<int >(arrayType,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(arrayType,_p,_n,true,false)) ClassHelpAndReturn;
 
   int numComponents;
-  if (!get_val_param<int >(numComponents,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(numComponents,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkDataObject::SetPointDataActiveScalarInfo(info, arrayType, numComponents);
   return BasicVariable::ptr();
@@ -588,7 +588,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int associationType;
-  if (!get_val_param<int >(associationType,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(associationType,_p,_n,true,false)) ClassHelpAndReturn;
 
   char const * res =   vtkDataObject::GetAssociationTypeAsString(associationType);
   std::string res_string = std::string(res);
@@ -1203,7 +1203,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkInformation* info = info_smtptr.get();
 
   vtkDataObject * res =   vtkDataObject::GetData(info);
@@ -1248,11 +1248,11 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformationVector > v_smtptr;
-  if (!get_val_smtptr_param<vtkInformationVector >(v_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkInformationVector >(v_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkInformationVector* v = v_smtptr.get();
 
   int i = 0;
-  if (!get_val_param<int >(i,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(i,_p,_n,false,true)) ClassReturnEmptyVar;
 
   vtkDataObject * res =   vtkDataObject::GetData(v, i);
   BasicVariable::ptr res_var = WrapClass_vtkDataObject::CreateVar(res);
@@ -1279,7 +1279,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -1326,11 +1326,11 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -1377,7 +1377,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkSource > s_smtptr;
-  if (!get_val_smtptr_param<vtkSource >(s_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkSource >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkSource* s = s_smtptr.get();
 
   this->_objectptr->GetObj()->SetSource(s);
@@ -1425,7 +1425,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > param0_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInformation >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInformation* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetInformation(param0);
@@ -1473,7 +1473,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > param0_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInformation >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInformation* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetPipelineInformation(param0);
@@ -1614,7 +1614,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetReleaseDataFlag(param0);
   return BasicVariable::ptr();
@@ -1730,7 +1730,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkFieldData > param0_smtptr;
-  if (!get_val_smtptr_param<vtkFieldData >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkFieldData >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkFieldData* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetFieldData(param0);
@@ -1777,7 +1777,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   this->_objectptr->GetObj()->Register(o);
@@ -1802,7 +1802,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   this->_objectptr->GetObj()->UnRegister(o);
@@ -1939,13 +1939,13 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int piece;
-  if (!get_val_param<int >(piece,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(piece,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int numPieces;
-  if (!get_val_param<int >(numPieces,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(numPieces,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int ghostLevel;
-  if (!get_val_param<int >(ghostLevel,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(ghostLevel,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetUpdateExtent(piece, numPieces, ghostLevel);
   return BasicVariable::ptr();
@@ -1997,10 +1997,10 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int piece;
-  if (!get_val_param<int >(piece,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(piece,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int numPieces;
-  if (!get_val_param<int >(numPieces,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(numPieces,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetUpdateExtent(piece, numPieces);
   return BasicVariable::ptr();
@@ -2029,22 +2029,22 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int x0;
-  if (!get_val_param<int >(x0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int x1;
-  if (!get_val_param<int >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y0;
-  if (!get_val_param<int >(y0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y1;
-  if (!get_val_param<int >(y1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int z0;
-  if (!get_val_param<int >(z0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(z0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int z1;
-  if (!get_val_param<int >(z1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(z1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetUpdateExtent(x0, x1, y0, y1, z0, z1);
   return BasicVariable::ptr();
@@ -2068,7 +2068,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<int > extent_smtptr;
-  if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* extent = extent_smtptr.get();
 
   this->_objectptr->GetObj()->SetUpdateExtent(extent);
@@ -2141,27 +2141,27 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<int > x0_smtptr;
-  if (!get_val_smtptr_param<int >(x0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(x0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & x0 = *x0_smtptr;
 
   boost::shared_ptr<int > x1_smtptr;
-  if (!get_val_smtptr_param<int >(x1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(x1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & x1 = *x1_smtptr;
 
   boost::shared_ptr<int > y0_smtptr;
-  if (!get_val_smtptr_param<int >(y0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(y0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & y0 = *y0_smtptr;
 
   boost::shared_ptr<int > y1_smtptr;
-  if (!get_val_smtptr_param<int >(y1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(y1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & y1 = *y1_smtptr;
 
   boost::shared_ptr<int > z0_smtptr;
-  if (!get_val_smtptr_param<int >(z0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(z0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & z0 = *z0_smtptr;
 
   boost::shared_ptr<int > z1_smtptr;
-  if (!get_val_smtptr_param<int >(z1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(z1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & z1 = *z1_smtptr;
 
   this->_objectptr->GetObj()->GetUpdateExtent(x0, x1, y0, y1, z0, z1);
@@ -2186,7 +2186,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<int > extent_smtptr;
-  if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* extent = extent_smtptr.get();
 
   this->_objectptr->GetObj()->GetUpdateExtent(extent);
@@ -2308,7 +2308,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkDataObject > data_smtptr;
-  if (!get_val_smtptr_param<vtkDataObject >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataObject >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataObject* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->CopyInformation(data);
@@ -2333,7 +2333,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkDataObject > data_smtptr;
-  if (!get_val_smtptr_param<vtkDataObject >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataObject >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataObject* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->CopyTypeSpecificInformation(data);
@@ -2358,7 +2358,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int piece;
-  if (!get_val_param<int >(piece,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(piece,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetUpdatePiece(piece);
   return BasicVariable::ptr();
@@ -2382,7 +2382,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int num;
-  if (!get_val_param<int >(num,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(num,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetUpdateNumberOfPieces(num);
   return BasicVariable::ptr();
@@ -2444,7 +2444,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int level;
-  if (!get_val_param<int >(level,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(level,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetUpdateGhostLevel(level);
   return BasicVariable::ptr();
@@ -2487,7 +2487,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int flag;
-  if (!get_val_param<int >(flag,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(flag,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetRequestExactExtent(flag);
   return BasicVariable::ptr();
@@ -2571,22 +2571,22 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int x0;
-  if (!get_val_param<int >(x0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int x1;
-  if (!get_val_param<int >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y0;
-  if (!get_val_param<int >(y0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y1;
-  if (!get_val_param<int >(y1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int z0;
-  if (!get_val_param<int >(z0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(z0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int z1;
-  if (!get_val_param<int >(z1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(z1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetWholeExtent(x0, x1, y0, y1, z0, z1);
   return BasicVariable::ptr();
@@ -2631,7 +2631,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<int > extent_smtptr;
-  if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* extent = extent_smtptr.get();
 
   this->_objectptr->GetObj()->SetWholeExtent(extent);
@@ -2704,27 +2704,27 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<int > x0_smtptr;
-  if (!get_val_smtptr_param<int >(x0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(x0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & x0 = *x0_smtptr;
 
   boost::shared_ptr<int > x1_smtptr;
-  if (!get_val_smtptr_param<int >(x1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(x1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & x1 = *x1_smtptr;
 
   boost::shared_ptr<int > y0_smtptr;
-  if (!get_val_smtptr_param<int >(y0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(y0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & y0 = *y0_smtptr;
 
   boost::shared_ptr<int > y1_smtptr;
-  if (!get_val_smtptr_param<int >(y1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(y1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & y1 = *y1_smtptr;
 
   boost::shared_ptr<int > z0_smtptr;
-  if (!get_val_smtptr_param<int >(z0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(z0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & z0 = *z0_smtptr;
 
   boost::shared_ptr<int > z1_smtptr;
-  if (!get_val_smtptr_param<int >(z1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(z1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & z1 = *z1_smtptr;
 
   this->_objectptr->GetObj()->GetWholeExtent(x0, x1, y0, y1, z0, z1);
@@ -2749,7 +2749,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<int > extent_smtptr;
-  if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* extent = extent_smtptr.get();
 
   this->_objectptr->GetObj()->GetWholeExtent(extent);
@@ -2779,22 +2779,22 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   double x0;
-  if (!get_val_param<double >(x0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double x1;
-  if (!get_val_param<double >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y0;
-  if (!get_val_param<double >(y0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y1;
-  if (!get_val_param<double >(y1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double z0;
-  if (!get_val_param<double >(z0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(z0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double z1;
-  if (!get_val_param<double >(z1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(z1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetWholeBoundingBox(x0, x1, y0, y1, z0, z1);
   return BasicVariable::ptr();
@@ -2839,7 +2839,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<double > bb_smtptr;
-  if (!get_val_smtptr_param<double >(bb_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(bb_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* bb = bb_smtptr.get();
 
   this->_objectptr->GetObj()->SetWholeBoundingBox(bb);
@@ -2912,27 +2912,27 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<double > x0_smtptr;
-  if (!get_val_smtptr_param<double >(x0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(x0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & x0 = *x0_smtptr;
 
   boost::shared_ptr<double > x1_smtptr;
-  if (!get_val_smtptr_param<double >(x1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(x1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & x1 = *x1_smtptr;
 
   boost::shared_ptr<double > y0_smtptr;
-  if (!get_val_smtptr_param<double >(y0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(y0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & y0 = *y0_smtptr;
 
   boost::shared_ptr<double > y1_smtptr;
-  if (!get_val_smtptr_param<double >(y1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(y1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & y1 = *y1_smtptr;
 
   boost::shared_ptr<double > z0_smtptr;
-  if (!get_val_smtptr_param<double >(z0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(z0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & z0 = *z0_smtptr;
 
   boost::shared_ptr<double > z1_smtptr;
-  if (!get_val_smtptr_param<double >(z1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(z1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double & z1 = *z1_smtptr;
 
   this->_objectptr->GetObj()->GetWholeBoundingBox(x0, x1, y0, y1, z0, z1);
@@ -2957,7 +2957,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<double > extent_smtptr;
-  if (!get_val_smtptr_param<double >(extent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(extent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* extent = extent_smtptr.get();
 
   this->_objectptr->GetObj()->GetWholeBoundingBox(extent);
@@ -2982,7 +2982,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaximumNumberOfPieces(param0);
   return BasicVariable::ptr();
@@ -3029,19 +3029,19 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > request_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkInformation* request = request_smtptr.get();
 
   boost::shared_ptr<vtkInformation > input_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(input_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkInformation >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkInformation* input = input_smtptr.get();
 
   boost::shared_ptr<vtkInformation > output_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(output_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkInformation >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkInformation* output = output_smtptr.get();
 
   int forceCopy;
-  if (!get_val_param<int >(forceCopy,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(forceCopy,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->CopyInformationToPipeline(request, input, output, forceCopy);
   return BasicVariable::ptr();
@@ -3083,11 +3083,11 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > request_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkInformation* request = request_smtptr.get();
 
   boost::shared_ptr<vtkInformation > input_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(input_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkInformation >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkInformation* input = input_smtptr.get();
 
   this->_objectptr->GetObj()->CopyInformationToPipeline(request, input);
@@ -3114,7 +3114,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkInformation > request_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInformation* request = request_smtptr.get();
 
   this->_objectptr->GetObj()->CopyInformationFromPipeline(request);
@@ -3176,7 +3176,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkDataObject > src_smtptr;
-  if (!get_val_smtptr_param<vtkDataObject >(src_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataObject >(src_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataObject* src = src_smtptr.get();
 
   this->_objectptr->GetObj()->ShallowCopy(src);
@@ -3201,7 +3201,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkDataObject > src_smtptr;
-  if (!get_val_smtptr_param<vtkDataObject >(src_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataObject >(src_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataObject* src = src_smtptr.get();
 
   this->_objectptr->GetObj()->DeepCopy(src);
@@ -3227,7 +3227,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkExtentTranslator > translator_smtptr;
-  if (!get_val_smtptr_param<vtkExtentTranslator >(translator_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkExtentTranslator >(translator_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkExtentTranslator* translator = translator_smtptr.get();
 
   this->_objectptr->GetObj()->SetExtentTranslator(translator);
@@ -3313,7 +3313,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int type;
-  if (!get_val_param<int >(type,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(type,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkDataSetAttributes * res =   this->_objectptr->GetObj()->GetAttributes(type);
   return AMILabType<vtkDataSetAttributes >::CreateVar(res,true);
@@ -3340,7 +3340,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int type;
-  if (!get_val_param<int >(type,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(type,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkFieldData * res =   this->_objectptr->GetObj()->GetAttributesAsFieldData(type);
   return AMILabType<vtkFieldData >::CreateVar(res,true);
@@ -3367,7 +3367,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   boost::shared_ptr<vtkAbstractArray > arr_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractArray >(arr_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkAbstractArray >(arr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkAbstractArray* arr = arr_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->GetAttributeTypeForArray(arr);
@@ -3395,7 +3395,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int _n=0;
 
   int type;
-  if (!get_val_param<int >(type,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(type,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetNumberOfElements(type);
   return AMILabType<long long int >::CreateVar(res);

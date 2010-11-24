@@ -26,6 +26,7 @@
 #include "wrap_vtkPropCollection.h"
 
 
+
 AMI_DECLARE_TYPE(vtkActorCollection);
 
 // TODO: check for inheritence ...

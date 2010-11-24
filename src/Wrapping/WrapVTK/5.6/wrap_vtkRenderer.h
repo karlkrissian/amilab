@@ -26,6 +26,7 @@
 #include "wrap_vtkViewport.h"
 
 
+
 AMI_DECLARE_TYPE(vtkRenderer);
 
 // TODO: check for inheritence ...

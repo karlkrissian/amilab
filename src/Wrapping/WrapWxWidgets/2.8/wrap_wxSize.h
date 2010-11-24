@@ -51,7 +51,6 @@ class WrapClass_wxSize : public WrapClass<wxSize>
     /// Destructor
     ~WrapClass_wxSize()
     {
-      std::cout << "~WrapClass_wxSize()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -70,7 +69,12 @@ class WrapClass_wxSize : public WrapClass<wxSize>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxSize*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
@@ -97,15 +101,15 @@ class WrapClass_wxSize : public WrapClass<wxSize>
     ADD_CLASS_METHOD(GetY,"int wxSize::GetY()  (http://docs.wxwidgets.org/stable/wx_wxsize.html#gety)")
 
     // Operators:
-    ADD_CLASS_METHOD(__assign__,            "wxSize & wxSize::=(wxSize const & param0) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__assign__)")
-    ADD_CLASS_METHOD(__equal__,            "bool wxSize::==(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__equal__)")
-    ADD_CLASS_METHOD(__not_equal__,            "bool wxSize::!=(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__not_equal__)")
-    ADD_CLASS_METHOD(__add__,            "wxSize wxSize::+(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__add__)")
-    ADD_CLASS_METHOD(__substract__,            "wxSize wxSize::-(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__substract__)")
+    ADD_CLASS_METHOD(__assign__,            "wxSize & wxSize::operator =(wxSize const & param0) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__assign__)")
+    ADD_CLASS_METHOD(__equal__,            "bool wxSize::operator ==(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__equal__)")
+    ADD_CLASS_METHOD(__not_equal__,            "bool wxSize::operator !=(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__not_equal__)")
+    ADD_CLASS_METHOD(__add__,            "wxSize wxSize::operator +(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__add__)")
+    ADD_CLASS_METHOD(__substract__,            "wxSize wxSize::operator -(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__substract__)")
     // ADD_CLASS_METHOD(operator not available,"wxSize wxSize::/(int i) (http://docs.wxwidgets.org/stable/wx_wxsize.html#/)")
     // ADD_CLASS_METHOD(operator not available,"wxSize wxSize::*(int i) (http://docs.wxwidgets.org/stable/wx_wxsize.html#*)")
-    ADD_CLASS_METHOD(__add_assign__,            "wxSize & wxSize::+=(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__add_assign__)")
-    ADD_CLASS_METHOD(__sub_assign__,            "wxSize & wxSize::-=(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__sub_assign__)")
+    ADD_CLASS_METHOD(__add_assign__,            "wxSize & wxSize::operator +=(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__add_assign__)")
+    ADD_CLASS_METHOD(__sub_assign__,            "wxSize & wxSize::operator -=(wxSize const & sz) (http://docs.wxwidgets.org/stable/wx_wxsize.html#__sub_assign__)")
     // ADD_CLASS_METHOD(operator not available,"wxSize & wxSize::/=(int const i) (http://docs.wxwidgets.org/stable/wx_wxsize.html#/=)")
     // ADD_CLASS_METHOD(operator not available,"wxSize & wxSize::*=(int const i) (http://docs.wxwidgets.org/stable/wx_wxsize.html#*=)")
 

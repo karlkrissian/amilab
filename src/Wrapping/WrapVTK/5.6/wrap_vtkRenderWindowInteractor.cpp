@@ -270,7 +270,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkRenderWindowInteractor::IsTypeOf(type);
@@ -296,7 +296,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkRenderWindowInteractor * res =   vtkRenderWindowInteractor::SafeDownCast(o);
@@ -323,7 +323,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -370,11 +370,11 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -435,7 +435,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   this->_objectptr->GetObj()->UnRegister(o);
@@ -569,7 +569,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg_int;
-  if (!get_val_param<int >(_arg_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool _arg = (bool) (_arg_int>0.5);
 
   this->_objectptr->GetObj()->SetEnableRender(_arg);
@@ -614,7 +614,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<vtkRenderWindow > aren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindow >(aren_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderWindow >(aren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderWindow* aren = aren_smtptr.get();
 
   this->_objectptr->GetObj()->SetRenderWindow(aren);
@@ -660,10 +660,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->UpdateSize(x, y);
   return BasicVariable::ptr();
@@ -688,7 +688,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int timerType;
-  if (!get_val_param<int >(timerType,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(timerType,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->CreateTimer(timerType);
   return AMILabType<int >::CreateVar(res);
@@ -732,7 +732,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   long duration_long;
-  if (!get_val_param<long >(duration_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(duration_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int duration = boost::numeric_cast<long unsigned int >(duration_long);
 
   int res =   this->_objectptr->GetObj()->CreateRepeatingTimer(duration);
@@ -758,7 +758,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   long duration_long;
-  if (!get_val_param<long >(duration_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(duration_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int duration = boost::numeric_cast<long unsigned int >(duration_long);
 
   int res =   this->_objectptr->GetObj()->CreateOneShotTimer(duration);
@@ -784,7 +784,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int timerId;
-  if (!get_val_param<int >(timerId,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(timerId,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->IsOneShotTimer(timerId);
   return AMILabType<int >::CreateVar(res);
@@ -809,7 +809,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int timerId;
-  if (!get_val_param<int >(timerId,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(timerId,_p,_n,true,true)) ClassReturnEmptyVar;
 
   long unsigned int res =   this->_objectptr->GetObj()->GetTimerDuration(timerId);
   long res_long = boost::numeric_cast<long >(res);
@@ -835,7 +835,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int timerId;
-  if (!get_val_param<int >(timerId,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(timerId,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->ResetTimer(timerId);
   return AMILabType<int >::CreateVar(res);
@@ -881,7 +881,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int timerId;
-  if (!get_val_param<int >(timerId,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(timerId,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->DestroyTimer(timerId);
   return AMILabType<int >::CreateVar(res);
@@ -906,7 +906,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int platformTimerId;
-  if (!get_val_param<int >(platformTimerId,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(platformTimerId,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->GetVTKTimerId(platformTimerId);
   return AMILabType<int >::CreateVar(res);
@@ -930,7 +930,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   long _arg_long;
-  if (!get_val_param<long >(_arg_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(_arg_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int _arg = boost::numeric_cast<long unsigned int >(_arg_long);
 
   this->_objectptr->GetObj()->SetTimerDuration(_arg);
@@ -1036,7 +1036,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetTimerEventId(_arg);
   return BasicVariable::ptr();
@@ -1079,7 +1079,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetTimerEventType(_arg);
   return BasicVariable::ptr();
@@ -1122,7 +1122,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetTimerEventDuration(_arg);
   return BasicVariable::ptr();
@@ -1165,7 +1165,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetTimerEventPlatformId(_arg);
   return BasicVariable::ptr();
@@ -1226,7 +1226,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<vtkInteractorObserver > param0_smtptr;
-  if (!get_val_smtptr_param<vtkInteractorObserver >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkInteractorObserver >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkInteractorObserver* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetInteractorStyle(param0);
@@ -1271,7 +1271,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLightFollowCamera(_arg);
   return BasicVariable::ptr();
@@ -1350,7 +1350,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   double _arg;
-  if (!get_val_param<double >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDesiredUpdateRate(_arg);
   return BasicVariable::ptr();
@@ -1431,7 +1431,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   double _arg;
-  if (!get_val_param<double >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStillUpdateRate(_arg);
   return BasicVariable::ptr();
@@ -1532,7 +1532,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<vtkAbstractPicker > param0_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractPicker >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkAbstractPicker >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkAbstractPicker* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetPicker(param0);
@@ -1673,11 +1673,11 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* x = x_smtptr.get();
 
   boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* y = y_smtptr.get();
 
   this->_objectptr->GetObj()->GetMousePosition(x, y);
@@ -1759,17 +1759,17 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkRenderer* ren = ren_smtptr.get();
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double z;
-  if (!get_val_param<double >(z,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(z,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->FlyTo(ren, x, y, z);
   return BasicVariable::ptr();
@@ -1815,11 +1815,11 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkRenderer* ren = ren_smtptr.get();
 
   boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* x = x_smtptr.get();
 
   this->_objectptr->GetObj()->FlyTo(ren, x);
@@ -1846,14 +1846,14 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkRenderer* ren = ren_smtptr.get();
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->FlyToImage(ren, x, y);
   return BasicVariable::ptr();
@@ -1899,11 +1899,11 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkRenderer* ren = ren_smtptr.get();
 
   boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* x = x_smtptr.get();
 
   this->_objectptr->GetObj()->FlyToImage(ren, x);
@@ -1928,7 +1928,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetNumberOfFlyFrames(_arg);
   return BasicVariable::ptr();
@@ -2009,7 +2009,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   double _arg;
-  if (!get_val_param<double >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDolly(_arg);
   return BasicVariable::ptr();
@@ -2096,11 +2096,11 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg1_smtptr;
-  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<int > _arg2_smtptr;
-  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg2 = *_arg2_smtptr;
 
   this->_objectptr->GetObj()->GetEventPosition(_arg1, _arg2);
@@ -2125,7 +2125,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetEventPosition(_arg);
@@ -2194,11 +2194,11 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg1_smtptr;
-  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<int > _arg2_smtptr;
-  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg2 = *_arg2_smtptr;
 
   this->_objectptr->GetObj()->GetLastEventPosition(_arg1, _arg2);
@@ -2223,7 +2223,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetLastEventPosition(_arg);
@@ -2249,10 +2249,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg1;
-  if (!get_val_param<int >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int _arg2;
-  if (!get_val_param<int >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetLastEventPosition(_arg1, _arg2);
   return BasicVariable::ptr();
@@ -2297,7 +2297,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetLastEventPosition(_arg);
@@ -2323,10 +2323,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetEventPosition(x, y);
   return BasicVariable::ptr();
@@ -2371,7 +2371,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > pos_smtptr;
-  if (!get_val_smtptr_param<int >(pos_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(pos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* pos = pos_smtptr.get();
 
   this->_objectptr->GetObj()->SetEventPosition(pos);
@@ -2397,10 +2397,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetEventPositionFlipY(x, y);
   return BasicVariable::ptr();
@@ -2445,7 +2445,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > pos_smtptr;
-  if (!get_val_smtptr_param<int >(pos_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(pos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* pos = pos_smtptr.get();
 
   this->_objectptr->GetObj()->SetEventPositionFlipY(pos);
@@ -2470,7 +2470,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAltKey(_arg);
   return BasicVariable::ptr();
@@ -2513,7 +2513,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetControlKey(_arg);
   return BasicVariable::ptr();
@@ -2556,7 +2556,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetShiftKey(_arg);
   return BasicVariable::ptr();
@@ -2599,7 +2599,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   std::string _arg_string;
-  if (!get_val_param<std::string >(_arg_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(_arg_string,_p,_n,true,false)) ClassHelpAndReturn;
   char _arg = ' ';
 if (_arg_string.size()>0) _arg = _arg_string[0];
 
@@ -2645,7 +2645,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetRepeatCount(_arg);
   return BasicVariable::ptr();
@@ -2688,7 +2688,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<std::string > _arg_string;
-  if (!get_val_smtptr_param<std::string >(_arg_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(_arg_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * _arg = _arg_string->c_str();
 
   this->_objectptr->GetObj()->SetKeySym(_arg);
@@ -2739,27 +2739,27 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   int ctrl = 0;
-  if (!get_val_param<int >(ctrl,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(ctrl,_p,_n,false,false)) ClassHelpAndReturn;
 
   int shift = 0;
-  if (!get_val_param<int >(shift,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(shift,_p,_n,false,false)) ClassHelpAndReturn;
 
   std::string keycode_string = std::string(1,0);;
-  if (!get_val_param<std::string >(keycode_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(keycode_string,_p,_n,false,false)) ClassHelpAndReturn;
   char keycode = ' ';
 if (keycode_string.size()>0) keycode = keycode_string[0];
 
   int repeatcount = 0;
-  if (!get_val_param<int >(repeatcount,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(repeatcount,_p,_n,false,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<std::string > keysym_string;
-  if (!get_val_smtptr_param<std::string >(keysym_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(keysym_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * keysym = keysym_string->c_str();
 
   this->_objectptr->GetObj()->SetEventInformation(x, y, ctrl, shift, keycode, repeatcount, keysym);
@@ -2790,27 +2790,27 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   int ctrl = 0;
-  if (!get_val_param<int >(ctrl,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(ctrl,_p,_n,false,false)) ClassHelpAndReturn;
 
   int shift = 0;
-  if (!get_val_param<int >(shift,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(shift,_p,_n,false,false)) ClassHelpAndReturn;
 
   std::string keycode_string = std::string(1,0);;
-  if (!get_val_param<std::string >(keycode_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(keycode_string,_p,_n,false,false)) ClassHelpAndReturn;
   char keycode = ' ';
 if (keycode_string.size()>0) keycode = keycode_string[0];
 
   int repeatcount = 0;
-  if (!get_val_param<int >(repeatcount,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(repeatcount,_p,_n,false,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<std::string > keysym_string;
-  if (!get_val_smtptr_param<std::string >(keysym_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(keysym_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * keysym = keysym_string->c_str();
 
   this->_objectptr->GetObj()->SetEventInformationFlipY(x, y, ctrl, shift, keycode, repeatcount, keysym);
@@ -2839,21 +2839,21 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int ctrl = 0;
-  if (!get_val_param<int >(ctrl,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(ctrl,_p,_n,false,false)) ClassHelpAndReturn;
 
   int shift = 0;
-  if (!get_val_param<int >(shift,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(shift,_p,_n,false,false)) ClassHelpAndReturn;
 
   std::string keycode_string = std::string(1,0);;
-  if (!get_val_param<std::string >(keycode_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string >(keycode_string,_p,_n,false,false)) ClassHelpAndReturn;
   char keycode = ' ';
 if (keycode_string.size()>0) keycode = keycode_string[0];
 
   int repeatcount = 0;
-  if (!get_val_param<int >(repeatcount,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(repeatcount,_p,_n,false,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<std::string > keysym_string;
-  if (!get_val_smtptr_param<std::string >(keysym_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(keysym_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * keysym = keysym_string->c_str();
 
   this->_objectptr->GetObj()->SetKeyEventInformation(ctrl, shift, keycode, repeatcount, keysym);
@@ -2879,10 +2879,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg1;
-  if (!get_val_param<int >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int _arg2;
-  if (!get_val_param<int >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetSize(_arg1, _arg2);
   return BasicVariable::ptr();
@@ -2927,7 +2927,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetSize(_arg);
@@ -2996,11 +2996,11 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg1_smtptr;
-  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<int > _arg2_smtptr;
-  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg2 = *_arg2_smtptr;
 
   this->_objectptr->GetObj()->GetSize(_arg1, _arg2);
@@ -3025,7 +3025,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetSize(_arg);
@@ -3051,10 +3051,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg1;
-  if (!get_val_param<int >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int _arg2;
-  if (!get_val_param<int >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetEventSize(_arg1, _arg2);
   return BasicVariable::ptr();
@@ -3099,7 +3099,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetEventSize(_arg);
@@ -3168,11 +3168,11 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg1_smtptr;
-  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg1 = *_arg1_smtptr;
 
   boost::shared_ptr<int > _arg2_smtptr;
-  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int & _arg2 = *_arg2_smtptr;
 
   this->_objectptr->GetObj()->GetEventSize(_arg1, _arg2);
@@ -3197,7 +3197,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->GetEventSize(_arg);
@@ -3224,10 +3224,10 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   int param1;
-  if (!get_val_param<int >(param1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param1,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkRenderer * res =   this->_objectptr->GetObj()->FindPokedRenderer(param0, param1);
   BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
@@ -3273,7 +3273,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   int _n=0;
 
   int _arg_int;
-  if (!get_val_param<int >(_arg_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool _arg = (bool) (_arg_int>0.5);
 
   this->_objectptr->GetObj()->SetUseTDx(_arg);

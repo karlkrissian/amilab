@@ -51,7 +51,6 @@ class WrapClass_wxStringBase : public WrapClass<wxStringBase>
     /// Destructor
     ~WrapClass_wxStringBase()
     {
-      std::cout << "~WrapClass_wxStringBase()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -82,7 +81,12 @@ class WrapClass_wxStringBase : public WrapClass<wxStringBase>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxStringBase*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
@@ -195,14 +199,14 @@ class WrapClass_wxStringBase : public WrapClass<wxStringBase>
     ADD_CLASS_METHOD(substr,"wxStringBase wxStringBase::substr(size_t nStart = 0, size_t nLen = wxStringBase::npos)  (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#substr)")
 
     // Operators:
-    ADD_CLASS_METHOD(__assign___1,            "wxStringBase & wxStringBase::=(wxStringBase const & stringSrc) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__assign__)")
-    ADD_CLASS_METHOD(__assign__,            "wxStringBase::=() (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__assign__)")
-    ADD_CLASS_METHOD(__assign___2,            "wxStringBase & wxStringBase::=(wxChar ch) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__assign__)")
-    ADD_CLASS_METHOD(__assign___3,            "wxStringBase & wxStringBase::=(wxChar const * psz) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__assign__)")
-    ADD_CLASS_METHOD(__add_assign___1,            "wxStringBase & wxStringBase::+=(wxStringBase const & s) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__add_assign__)")
-    ADD_CLASS_METHOD(__add_assign__,            "wxStringBase::+=() (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__add_assign__)")
-    ADD_CLASS_METHOD(__add_assign___2,            "wxStringBase & wxStringBase::+=(wxChar const * psz) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__add_assign__)")
-    ADD_CLASS_METHOD(__add_assign___3,            "wxStringBase & wxStringBase::+=(wxChar ch) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__add_assign__)")
+    ADD_CLASS_METHOD(__assign___1,            "wxStringBase & wxStringBase::operator =(wxStringBase const & stringSrc) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__assign__)")
+    ADD_CLASS_METHOD(__assign__,            "wxStringBase::operator =() (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__assign__)")
+    ADD_CLASS_METHOD(__assign___2,            "wxStringBase & wxStringBase::operator =(wxChar ch) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__assign__)")
+    ADD_CLASS_METHOD(__assign___3,            "wxStringBase & wxStringBase::operator =(wxChar const * psz) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__assign__)")
+    ADD_CLASS_METHOD(__add_assign___1,            "wxStringBase & wxStringBase::operator +=(wxStringBase const & s) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign__,            "wxStringBase::operator +=() (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign___2,            "wxStringBase & wxStringBase::operator +=(wxChar const * psz) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__add_assign__)")
+    ADD_CLASS_METHOD(__add_assign___3,            "wxStringBase & wxStringBase::operator +=(wxChar ch) (http://docs.wxwidgets.org/stable/wx_wxstringbase.html#__add_assign__)")
 
 
 

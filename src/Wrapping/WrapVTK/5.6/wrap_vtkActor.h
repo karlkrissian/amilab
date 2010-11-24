@@ -26,6 +26,7 @@
 #include "wrap_vtkProp3D.h"
 
 
+
 AMI_DECLARE_TYPE(vtkActor);
 
 // TODO: check for inheritence ...

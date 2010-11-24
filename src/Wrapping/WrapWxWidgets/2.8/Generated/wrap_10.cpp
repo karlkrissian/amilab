@@ -1,0 +1,11 @@
+
+#include "wrap_wxSizer.cpp"
+#include "wrap_wxSizerFlags.cpp"
+#include "wrap_wxSizerItem.cpp"
+#include "wrap_wxSizerItemList.cpp"
+#include "wrap_wxStatusBarBase.cpp"
+#include "wrap_wxStatusBar.cpp"
+#include "wrap_wxStreamBase.cpp"
+#include "wrap_wxStringBase.cpp"
+#include "wrap_wxString.cpp"
+#include "wrap_wxSysColourChangedEvent.cpp"

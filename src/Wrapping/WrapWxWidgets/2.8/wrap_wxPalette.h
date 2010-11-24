@@ -26,6 +26,7 @@
 #include "wrap_wxPaletteBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxPalette);
 
 // TODO: check for inheritence ...

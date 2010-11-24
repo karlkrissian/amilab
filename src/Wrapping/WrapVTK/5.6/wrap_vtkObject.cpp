@@ -147,7 +147,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkObject::IsTypeOf(type);
@@ -173,7 +173,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkObject * res =   vtkObject::SafeDownCast(o);
@@ -237,7 +237,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   int val;
-  if (!get_val_param<int >(val,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(val,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkObject::SetGlobalWarningDisplay(val);
   return BasicVariable::ptr();
@@ -317,7 +317,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -417,7 +417,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   unsigned char debugFlag;
-  if (!get_val_param<unsigned char >(debugFlag,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(debugFlag,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDebug(debugFlag);
   return BasicVariable::ptr();
@@ -481,11 +481,11 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -513,15 +513,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   long event_long;
-  if (!get_val_param<long >(event_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
   boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCommand* param1 = param1_smtptr.get();
 
   float priority = 0.0f;
-  if (!get_val_param<float >(priority,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<float >(priority,_p,_n,false,true)) ClassReturnEmptyVar;
 
   long unsigned int res =   this->_objectptr->GetObj()->AddObserver(event, param1, priority);
   long res_long = boost::numeric_cast<long >(res);
@@ -570,15 +570,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<std::string > event_string;
-  if (!get_val_smtptr_param<std::string >(event_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
   boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCommand* param1 = param1_smtptr.get();
 
   float priority = 0.0f;
-  if (!get_val_param<float >(priority,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<float >(priority,_p,_n,false,true)) ClassReturnEmptyVar;
 
   long unsigned int res =   this->_objectptr->GetObj()->AddObserver(event, param1, priority);
   long res_long = boost::numeric_cast<long >(res);
@@ -604,7 +604,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   long tag_long;
-  if (!get_val_param<long >(tag_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(tag_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int tag = boost::numeric_cast<long unsigned int >(tag_long);
 
   vtkCommand * res =   this->_objectptr->GetObj()->GetCommand(tag);
@@ -630,7 +630,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<vtkCommand > param0_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkCommand >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCommand* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->RemoveObserver(param0);
@@ -656,11 +656,11 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   long event_long;
-  if (!get_val_param<long >(event_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
   boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCommand* param1 = param1_smtptr.get();
 
   this->_objectptr->GetObj()->RemoveObservers(event, param1);
@@ -713,11 +713,11 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<std::string > event_string;
-  if (!get_val_smtptr_param<std::string >(event_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
   boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCommand* param1 = param1_smtptr.get();
 
   this->_objectptr->GetObj()->RemoveObservers(event, param1);
@@ -744,11 +744,11 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   long event_long;
-  if (!get_val_param<long >(event_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
   boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCommand* param1 = param1_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->HasObserver(event, param1);
@@ -802,11 +802,11 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<std::string > event_string;
-  if (!get_val_smtptr_param<std::string >(event_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
   boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCommand* param1 = param1_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->HasObserver(event, param1);
@@ -852,7 +852,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   long tag_long;
-  if (!get_val_param<long >(tag_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(tag_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int tag = boost::numeric_cast<long unsigned int >(tag_long);
 
   this->_objectptr->GetObj()->RemoveObserver(tag);
@@ -877,7 +877,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   long event_long;
-  if (!get_val_param<long >(event_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
   this->_objectptr->GetObj()->RemoveObservers(event);
@@ -902,7 +902,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<std::string > event_string;
-  if (!get_val_smtptr_param<std::string >(event_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
   this->_objectptr->GetObj()->RemoveObservers(event);
@@ -946,7 +946,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   long event_long;
-  if (!get_val_param<long >(event_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
   int res =   this->_objectptr->GetObj()->HasObserver(event);
@@ -972,7 +972,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<std::string > event_string;
-  if (!get_val_smtptr_param<std::string >(event_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
   int res =   this->_objectptr->GetObj()->HasObserver(event);
@@ -1000,11 +1000,11 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   long event_long;
-  if (!get_val_param<long >(event_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
   boost::shared_ptr<void > callData_smtptr;
-  if (!get_val_smtptr_param<void >(callData_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(callData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   void* callData = callData_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->InvokeEvent(event, callData);
@@ -1054,11 +1054,11 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<std::string > event_string;
-  if (!get_val_smtptr_param<std::string >(event_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
   boost::shared_ptr<void > callData_smtptr;
-  if (!get_val_smtptr_param<void >(callData_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(callData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   void* callData = callData_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->InvokeEvent(event, callData);
@@ -1085,7 +1085,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   long event_long;
-  if (!get_val_param<long >(event_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
   int res =   this->_objectptr->GetObj()->InvokeEvent(event);
@@ -1111,7 +1111,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   int _n=0;
 
   boost::shared_ptr<std::string > event_string;
-  if (!get_val_smtptr_param<std::string >(event_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
   int res =   this->_objectptr->GetObj()->InvokeEvent(event);
