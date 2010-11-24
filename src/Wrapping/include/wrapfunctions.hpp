@@ -337,7 +337,7 @@ bool get_var_param( BasicVariable::ptr& var,
  */
 template<class T>
 bool get_val_param( T& arg, 
-                ParamList*p, int& num);
+                ParamList*p, int& num, bool required=false);
 
 
 /**

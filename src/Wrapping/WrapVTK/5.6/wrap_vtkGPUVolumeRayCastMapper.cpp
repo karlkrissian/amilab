@@ -289,7 +289,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -314,7 +314,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAutoAdjustSampleDistances(_arg);
   return BasicVariable::ptr();
@@ -431,7 +431,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetSampleDistance(_arg);
   return BasicVariable::ptr();
@@ -474,7 +474,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetImageSampleDistance(_arg);
   return BasicVariable::ptr();
@@ -555,7 +555,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMinimumImageSampleDistance(_arg);
   return BasicVariable::ptr();
@@ -636,7 +636,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaximumImageSampleDistance(_arg);
   return BasicVariable::ptr();
@@ -717,7 +717,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetFinalColorWindow(_arg);
   return BasicVariable::ptr();
@@ -760,7 +760,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetFinalColorLevel(_arg);
   return BasicVariable::ptr();
@@ -804,7 +804,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   long long int _arg;
-  if (!get_val_param<long long int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long long int >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaxMemoryInBytes(_arg);
   return BasicVariable::ptr();
@@ -850,7 +850,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaxMemoryFraction(_arg);
   return BasicVariable::ptr();
@@ -931,7 +931,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   int _arg_int;
-  if (!get_val_param<int >(_arg_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg_int,_p,_n,true)) ClassHelpAndReturn;
   bool _arg = (bool) (_arg_int>0.5);
 
   this->_objectptr->GetObj()->SetReportProgress(_arg);
@@ -1024,7 +1024,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   vtkImageData* image = image_smtptr.get();
 
   int blend_mode;
-  if (!get_val_param<int >(blend_mode,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(blend_mode,_p,_n,true)) ClassHelpAndReturn;
 
   boost::shared_ptr<double > viewDirection_smtptr;
   if (!get_val_smtptr_param<double >(viewDirection_smtptr,_p,_n)) ClassHelpAndReturn;
@@ -1101,7 +1101,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   int _n=0;
 
   float _arg;
-  if (!get_val_param<float >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<float >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMaskBlendFactor(_arg);
   return BasicVariable::ptr();

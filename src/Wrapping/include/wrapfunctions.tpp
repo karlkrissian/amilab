@@ -99,13 +99,18 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.
  */
 template<class T>
-bool get_val_param(T& arg, ParamList*p, int& num)
+bool get_val_param(T& arg, ParamList*p, int& num, bool required)
 {
   if (!p) return false;
   // if the parameter number is too high, skip it (use default value)
   if (num>=p->GetNumParam()) {
-    FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
-    return true;
+    if (required)
+      return false;
+    else
+    {
+      FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
+      return true;
+    }
   }
   BasicVariable::ptr varparam( p->GetParam(num++));
   boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(varparam);

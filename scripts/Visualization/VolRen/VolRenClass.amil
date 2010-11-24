@@ -92,6 +92,7 @@ if (!exists(VolRenClass)) {
       if (!exists(::input)) {
         ::load_input()
       }
+printn "1"
       ::initialized=0
       ::renwin_interact = global::wxVTKFrame()
       ::renwin   = ::renwin_interact.GetRenderWindow()
@@ -101,8 +102,9 @@ if (!exists(VolRenClass)) {
       ::renwin_interact.SetInteractorStyle(&interact)
 
 
+printn "2"
       # 10/(1+clip) in c++ code
-      ::renwin_interact.SetDesiredUpdateRate(10)
+      #::renwin_interact.SetDesiredUpdateRate(10)
 
       # check that we have a volume
       if (::input.tx<2)||(::input.ty<2)||(::input.tz<2) {
@@ -115,8 +117,9 @@ if (!exists(VolRenClass)) {
         ::vtkinput  = global::ToVtkImageData(&::input)
         ::volmapper.SetInput(&::vtkinput)
 
-        ::volmapper.SetSampleDistance()
+        #::volmapper.SetSampleDistance()
 
+printn "3"
         # Create our transfer function
         ::colorFun=global::vtkColorTransferFunction_New()
         ::opacityFun=global::vtkPiecewiseFunction_New()
@@ -131,6 +134,7 @@ if (!exists(VolRenClass)) {
         # connect up the volume to the property and the mapper
         ::vol.SetProperty( &::property )
         ::vol.SetMapper( &::volmapper )
+printn "4"
 
 
         # interact with data
@@ -143,7 +147,9 @@ if (!exists(VolRenClass)) {
         # Add the volume to the scene
         ::renderer.AddVolume( &::vol )
         ::renderer.ResetCamera()
-        ::renwin_interact.Render()
+printn "5"
+        #::renwin_interact.Render()
+printn "6"
 
       }
 
@@ -252,16 +258,19 @@ if (!exists(VolRenClass)) {
       ::property.SetScalarOpacityUnitDistance(0.8919);
     }
 
-    #
+    #----------------------------
     proc ::ReCompute() \
     {
+printn "Recompute 1"
         if exists(::colorFun)   { ::colorFun.Delete(); del ::colorFun; }
         if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
         if exists(::property)   { ::property.Delete(); del ::property; }
 
+printn "Recompute 2"
         ::colorFun=global::vtkColorTransferFunction_New()
         ::opacityFun=global::vtkPiecewiseFunction_New()
 
+printn "Recompute 3"
         # Create the property and attach the transfer functions
         ::property = global::vtkVolumeProperty_New()
         ::property.SetIndependentComponents(1)
@@ -272,12 +281,14 @@ if (!exists(VolRenClass)) {
         # connect up the volume to the property and the mapper
         ::vol.SetProperty( &::property )
 
+printn "Recompute 4"
         if (::blend_type==0) { ::BlendMIP();                }
         if (::blend_type==1) { ::BlendCompositeRamp();      }
         if (::blend_type==2) { ::BlendCompositeShadeRamp(); }
         if (::blend_type==3) { ::BlendCTSkin();             }
         if (::blend_type==4) { ::BlendCTBones();            }
         if (::blend_type==5) { ::BlendCTMuscles();          }
+printn "Recompute 5"
 
         #::property.SetColor( &::colorFun )
         #::property.SetScalarOpacity( &::opacityFun )
@@ -315,8 +326,8 @@ if (!exists(VolRenClass)) {
           ::win.BeginBoxPanel("Parameters")
             ::blend_type_id = ::win.AddEnum(&::blend_type,"Blend")
               ::win.AddEnumChoice(::blend_type_id,"MIP")
-              ::win.AddEnumChoice(::blend_type_id,"Composite Ramp")
-              ::win.AddEnumChoice(::blend_type_id,"Composite Shade Ramp")
+              ::win.AddEnumChoice(::blend_type_id,"Comp. Ramp")
+              ::win.AddEnumChoice(::blend_type_id,"Comp. Shade Ramp")
               ::win.AddEnumChoice(::blend_type_id,"CT Skin")
               ::win.AddEnumChoice(::blend_type_id,"CT Bone")
               ::win.AddEnumChoice(::blend_type_id,"CT Muscles")

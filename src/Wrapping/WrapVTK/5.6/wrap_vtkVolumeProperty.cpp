@@ -353,7 +353,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -423,7 +423,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetIndependentComponents(_arg);
   return BasicVariable::ptr();
@@ -540,7 +540,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetInterpolationType(_arg);
   return BasicVariable::ptr();
@@ -678,10 +678,10 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassHelpAndReturn;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(value,_p,_n,true)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetComponentWeight(index, value);
   return BasicVariable::ptr();
@@ -706,7 +706,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassHelpAndReturn;
 
   double res =   this->_objectptr->GetObj()->GetComponentWeight(index);
   return AMILabType<double >::CreateVar(res);
@@ -731,7 +731,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
   if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n)) ClassReturnEmptyVar;
@@ -812,7 +812,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<vtkColorTransferFunction > function_smtptr;
   if (!get_val_smtptr_param<vtkColorTransferFunction >(function_smtptr,_p,_n)) ClassReturnEmptyVar;
@@ -866,7 +866,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->GetColorChannels(index);
   return AMILabType<int >::CreateVar(res);
@@ -931,7 +931,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetGrayTransferFunction(index);
   BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
@@ -998,7 +998,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   vtkColorTransferFunction * res =   this->_objectptr->GetObj()->GetRGBTransferFunction(index);
   BasicVariable::ptr res_var = WrapClass_vtkColorTransferFunction::CreateVar(res);
@@ -1065,7 +1065,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
   if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n)) ClassReturnEmptyVar;
@@ -1140,7 +1140,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetScalarOpacity(index);
   BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
@@ -1207,10 +1207,10 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double distance;
-  if (!get_val_param<double >(distance,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(distance,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetScalarOpacityUnitDistance(index, distance);
   return BasicVariable::ptr();
@@ -1255,7 +1255,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   double distance;
-  if (!get_val_param<double >(distance,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(distance,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetScalarOpacityUnitDistance(distance);
   return BasicVariable::ptr();
@@ -1280,7 +1280,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double res =   this->_objectptr->GetObj()->GetScalarOpacityUnitDistance(index);
   return AMILabType<double >::CreateVar(res);
@@ -1345,7 +1345,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
   if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n)) ClassReturnEmptyVar;
@@ -1420,7 +1420,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetGradientOpacity(index);
   BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
@@ -1487,10 +1487,10 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   int value;
-  if (!get_val_param<int >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetDisableGradientOpacity(index, value);
   return BasicVariable::ptr();
@@ -1535,7 +1535,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int value;
-  if (!get_val_param<int >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetDisableGradientOpacity(value);
   return BasicVariable::ptr();
@@ -1559,7 +1559,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DisableGradientOpacityOn(index);
   return BasicVariable::ptr();
@@ -1622,7 +1622,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DisableGradientOpacityOff(index);
   return BasicVariable::ptr();
@@ -1686,7 +1686,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->GetDisableGradientOpacity(index);
   return AMILabType<int >::CreateVar(res);
@@ -1751,7 +1751,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetStoredGradientOpacity(index);
   BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
@@ -1818,10 +1818,10 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   int value;
-  if (!get_val_param<int >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetShade(index, value);
   return BasicVariable::ptr();
@@ -1866,7 +1866,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int value;
-  if (!get_val_param<int >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetShade(value);
   return BasicVariable::ptr();
@@ -1891,7 +1891,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->GetShade(index);
   return AMILabType<int >::CreateVar(res);
@@ -1955,7 +1955,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->ShadeOn(index);
   return BasicVariable::ptr();
@@ -2018,7 +2018,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->ShadeOff(index);
   return BasicVariable::ptr();
@@ -2082,10 +2082,10 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetAmbient(index, value);
   return BasicVariable::ptr();
@@ -2130,7 +2130,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetAmbient(value);
   return BasicVariable::ptr();
@@ -2155,7 +2155,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double res =   this->_objectptr->GetObj()->GetAmbient(index);
   return AMILabType<double >::CreateVar(res);
@@ -2220,10 +2220,10 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetDiffuse(index, value);
   return BasicVariable::ptr();
@@ -2268,7 +2268,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetDiffuse(value);
   return BasicVariable::ptr();
@@ -2293,7 +2293,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double res =   this->_objectptr->GetObj()->GetDiffuse(index);
   return AMILabType<double >::CreateVar(res);
@@ -2358,10 +2358,10 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetSpecular(index, value);
   return BasicVariable::ptr();
@@ -2406,7 +2406,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetSpecular(value);
   return BasicVariable::ptr();
@@ -2431,7 +2431,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double res =   this->_objectptr->GetObj()->GetSpecular(index);
   return AMILabType<double >::CreateVar(res);
@@ -2496,10 +2496,10 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetSpecularPower(index, value);
   return BasicVariable::ptr();
@@ -2544,7 +2544,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   double value;
-  if (!get_val_param<double >(value,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(value,_p,_n,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetSpecularPower(value);
   return BasicVariable::ptr();
@@ -2569,7 +2569,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   double res =   this->_objectptr->GetObj()->GetSpecularPower(index);
   return AMILabType<double >::CreateVar(res);
@@ -2652,7 +2652,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   vtkTimeStamp res =   this->_objectptr->GetObj()->GetGradientOpacityMTime(index);
   return AMILabType<vtkTimeStamp >::CreateVar(res);
@@ -2717,7 +2717,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   vtkTimeStamp res =   this->_objectptr->GetObj()->GetScalarOpacityMTime(index);
   return AMILabType<vtkTimeStamp >::CreateVar(res);
@@ -2782,7 +2782,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   vtkTimeStamp res =   this->_objectptr->GetObj()->GetRGBTransferFunctionMTime(index);
   return AMILabType<vtkTimeStamp >::CreateVar(res);
@@ -2847,7 +2847,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int _n=0;
 
   int index;
-  if (!get_val_param<int >(index,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(index,_p,_n,true)) ClassReturnEmptyVar;
 
   vtkTimeStamp res =   this->_objectptr->GetObj()->GetGrayTransferFunctionMTime(index);
   return AMILabType<vtkTimeStamp >::CreateVar(res);
