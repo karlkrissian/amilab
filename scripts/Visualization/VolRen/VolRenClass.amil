@@ -132,16 +132,17 @@ if (!exists(VolRenClass)) {
         ::vol.SetProperty( &::property )
         ::vol.SetMapper( &::volmapper )
 
-        # Add the volume to the scene
-        ::renderer.AddVolume( &::vol )
-        ::renderer.ResetCamera()
 
         # interact with data
         #  renWin->Render()
         #  m_pVTKWindow->Start()
         ::renderer->ResetCameraClippingRange()
         ::initialized=1
-        ::OnRender()
+        ::ReCompute()
+
+        # Add the volume to the scene
+        ::renderer.AddVolume( &::vol )
+        ::renderer.ResetCamera()
         ::renwin_interact.Render()
 
       }
@@ -251,12 +252,9 @@ if (!exists(VolRenClass)) {
       ::property.SetScalarOpacityUnitDistance(0.8919);
     }
 
-    
-
-    #----------------------------
-    proc ::OnRender() \
+    #
+    proc ::ReCompute() \
     {
-      if (exists(::renwin_interact)&&(::initialized>0.5)) {
         if exists(::colorFun)   { ::colorFun.Delete(); del ::colorFun; }
         if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
         if exists(::property)   { ::property.Delete(); del ::property; }
@@ -283,6 +281,14 @@ if (!exists(VolRenClass)) {
 
         #::property.SetColor( &::colorFun )
         #::property.SetScalarOpacity( &::opacityFun )
+      
+    }
+
+    #----------------------------
+    proc ::OnRender() \
+    {
+      if (exists(::renwin_interact)&&(::initialized>0.5)) {
+        ::ReCompute()
         ::renwin_interact.Render()
       }
     }
