@@ -314,7 +314,6 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SubpixelDenoising
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("SubpixelDenoising2D");
   int size = sp->getBorderPixelVector().size();
-  cout << "el tamaño del vector es " << size << endl;
   //InrImages for params
   InrImage::ptr AIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
                                                         "aintensity.inr.gz"));
