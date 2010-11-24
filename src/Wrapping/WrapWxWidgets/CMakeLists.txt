@@ -15,7 +15,7 @@ INCLUDE( ${wxWidgets_USE_FILE})
 
 
 file(GLOB wx_HDRS  "${AMI_WXWIDGETS_VERSION}/*.h"  )
-file(GLOB wx_SRCS   "${AMI_WXWIDGETS_VERSION}/*.cpp")
+file(GLOB wx_SRCS   "${AMI_WXWIDGETS_VERSION}/Generated/*.cpp")
 
 
 SET(  WrapWxWidgets_SRCS
