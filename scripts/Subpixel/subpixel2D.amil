@@ -509,7 +509,7 @@ if (!exists(Subpixel2DClass)){
           
         #New page for change contour and normals parameters
         ::win.AddPage("Set.")
-          ::win.AddBoolean(&::change, "Change defaul settings")
+          ::win.AddBoolean(&::change, "Change default settings")
           ::win.SetCallback(&::Enable)
           #New book for edge and normals parameters
           ::win.BeginBook()
