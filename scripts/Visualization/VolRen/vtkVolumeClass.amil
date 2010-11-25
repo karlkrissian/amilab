@@ -16,7 +16,7 @@ if (!exists(vtkVolumeClass)) {
 
     #----------------------------
     proc ::Init( ) {
-      ::blend_type = INT(1), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->CT_Muscles, 6->RGB_Composite"
+      ::blend_type = INT(1), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->CT_Muscles, 6->RGB_Composite, 7->Linear Curve 1"
       ::opacitywindow = 1000, "Opacity Window"
       ::opacitylevel  = 1000, "Opacity Level"
 
@@ -32,6 +32,9 @@ if (!exists(vtkVolumeClass)) {
 
       ::clip = UCHAR(1), "Enable/Disable clipping box"
       ::initialized=0
+
+      ::cm_active_blend_curves = 0, "Number of curves created for the current blend type in the Colormap  drawing area."
+      ::dw_active_blend_curves = 0, "Number of curves created for the current blend type in the Histogram drawing area."
 
     }
 
@@ -240,6 +243,88 @@ if (!exists(vtkVolumeClass)) {
     }
 
     #----------------------------
+    proc ::ResetLinearCurve1() \
+    {
+      if (!exists(::imhisto1->h)) {
+        ::UpdateHistogram()
+      }
+      if (exists(::imhisto1->h)) {
+        hmax = max(::imhisto1.h[0])
+
+        # Create the curve
+        curve = ami.dwControlledCurve()
+
+        # black point
+        cp0 = ami.dwControlPoint(-950,0)
+        cp0.SetColour(wx.wxColour(0,0,0))
+        curve.GetControlPoints().push_back(&cp0)
+
+        # red point
+        cp1 = ami.dwControlPoint(-920,0.005*hmax)
+        cp1.SetColour(wx.wxColour(255,0,0))
+        curve.GetControlPoints().push_back(&cp1)
+
+        # yellow point
+        cp2 = ami.dwControlPoint(-908,0.08*hmax)
+        cp2.SetColour(wx.wxColour(255,255,0))
+        curve.GetControlPoints().push_back(&cp2)
+
+        # white point
+        cp3 = ami.dwControlPoint(-500,0.5*hmax)
+        cp3.SetColour(wx.wxColour(255,255,255))
+        curve.GetControlPoints().push_back(&cp3)
+
+        curve.SetType(1) # solid
+
+        if (!exists(::linearcurve1)) {
+          ::linearcurve1 = curve
+          ::imhisto1.dw.GetControlledCurves().push_back(&::linearcurve1)
+        } else {
+          ::linearcurve1 = curve
+        }
+      } else {
+        InfoDialog "No histogram available."
+      }
+        
+    }
+
+    #----------------------------
+    proc ::BlendLinearCurve1() \
+    {
+      if (!exists(::imhisto1->h)) {
+        ::UpdateHistogram()
+      }
+      if (exists(::imhisto1->h)) {
+        curves = ::imhisto1.dw.GetControlledCurves()
+        numcurves = curves.size()
+        if (!exists(::linearcurve1_id)) {
+          ::linearcurve1_id   = numcurves
+          ::ResetLinearCurve1()
+        }
+
+        # Create colors based on the curve
+        hmax = max(::imhisto1.h[0])
+        ctrlpoints = ::linearcurve1.GetControlPoints()
+        for n=0 to ctrlpoints.size()-1 {
+          cp = ctrlpoints[n]
+          col = cp.GetColour()
+          ::colorFun.AddRGBPoint( cp.GetX(), 1./255*col.Red(), 1./255*col.Green(),1./255*col.Blue() );
+          ::opacityFun.AddPoint(  cp.GetX(), 1.0/hmax*cp.GetY() );
+        }
+        
+        ::volmapper.SetBlendModeToComposite();
+        ::property.ShadeOn();
+        ::property.SetAmbient(0.15);
+        ::property.SetDiffuse(0.9);
+        ::property.SetSpecular(0.3);
+        ::property.SetSpecularPower(15.0);
+        ::property.SetScalarOpacityUnitDistance(0.8919);
+      } else {
+        InfoDialog "No histogram available."
+      }
+    }
+
+    #----------------------------
     proc ::ReCompute() \
     {
         if exists(::colorFun)   { ::colorFun.Delete(); del ::colorFun; }
@@ -266,6 +351,8 @@ if (!exists(vtkVolumeClass)) {
         if (::blend_type==4) { ::BlendCTBones();            }
         if (::blend_type==5) { ::BlendCTMuscles();          }
 
+        if (::blend_type==7) { ::BlendLinearCurve1();       }
+
         #::property.SetColor( &::colorFun )
         #::property.SetScalarOpacity( &::opacityFun )
       
@@ -289,14 +376,16 @@ if (!exists(vtkVolumeClass)) {
                           ctf.GetGreenValue(xpos)*250, \
                           ctf.GetBlueValue( xpos)*250 )
         }
-        # position curves in ColorMap window of ::imhist1
-        numcurves = ::imhisto1.cm.GetCurves().size()
-        printn numcurves
+        # position curves in ColorMap window of ::imhisto1
+        curves = ::imhisto1.cm.GetCurves()
+        numcurves = curves.size()
+        
         if (!exists(::red_id)) {
           ::red_id   = numcurves
           ::green_id = numcurves+1
           ::blue_id  = numcurves+2
         }
+
         ::imhisto1.cm.SetCurve(::ctf_color[0],::red_id)
         ::imhisto1.cm.SetCurve(::ctf_color[1],::green_id)
         ::imhisto1.cm.SetCurve(::ctf_color[2],::blue_id)
@@ -323,7 +412,7 @@ if (!exists(vtkVolumeClass)) {
           ::ctf_color.set(ctf.GetRedValue(pos(x)))
         }
         ::ctf_color = ::ctf_color*250
-        # position curves in ColorMap window of ::imhist1
+        # position curves in ColorMap window of ::imhisto1
         numcurves = ::imhisto1.cm.GetCurves().size()
         printn numcurves
         if (!exists(::red_id)) {
@@ -356,7 +445,7 @@ if (!exists(vtkVolumeClass)) {
           ::otf_im.setpos(x,0,0)
           ::otf_im.set(otf.GetValue(pos(x)))
         }
-        # position curves in ColorMap window of ::imhist1
+        # position curves in ColorMap window of ::imhisto1
         numcurves = ::imhisto1.cm.GetCurves().size()
         printn numcurves
         if (!exists(::otf_id)) {
@@ -457,6 +546,7 @@ if (!exists(vtkVolumeClass)) {
         ::win.AddEnumChoice(::blend_type_id,"CT Bone")
         ::win.AddEnumChoice(::blend_type_id,"CT Muscles")
         ::win.AddEnumChoice(::blend_type_id,"RGB Composite")
+        ::win.AddEnumChoice(::blend_type_id,"Linear Curve 1")
       ::win.SetCallback( &::OnBlendType)
 
       #::win.SetPositionProp(0)
