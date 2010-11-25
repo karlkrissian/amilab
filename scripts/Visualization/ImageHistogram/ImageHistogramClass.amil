@@ -137,6 +137,17 @@ if (!exists(ImageHistogramClass)) {
     }
     Comments(::SetInput,"Manually sets the input image and the standalone mode is set to 0.")
 
+    #----------------------------
+    proc ::SetInput2( IMAGE input_im, NUM minval, NUM maxval) \
+    {
+      if exists(::input) { del ::input; }
+      ::input = &input_im
+      ::standalone = 0
+      ::UpdateLimits(minval,maxval)
+      ::Update()
+    }
+    Comments(::SetInput,"Manually sets the input image and the standalone mode is set to 0.")
+
     #-------------------------------------------------------------------
     proc ::SetParentPanel(OBJECT pp) \
     {
@@ -145,20 +156,29 @@ if (!exists(ImageHistogramClass)) {
     }
     
     #-------------------------------------------------------------------
+    proc ::UpdateLimits( NUM minval, NUM maxval) {
+      ::minval = minval
+      ::maxval = maxval
+      ::step = 1
+      if (exists(::minval_id)) {
+        ::win.FloatConstraints(::minval_id,minval,maxval,minval)
+        ::win.FloatConstraints(::maxval_id,minval,maxval,maxval)
+        ::win.FloatConstraints(::step_id,  0,(maxval-minval)/20,::step)
+      }
+    }
+
+    #-------------------------------------------------------------------
     proc ::UpdateImage() {
-      SetStatusText("UpdateImage")
+      SetStatusText("UpdateImage min")
       Imin = min(::input[0])
+      SetStatusText("UpdateImage max")
       Imax = max(::input[0])
+      SetStatusText("UpdateImage others")
       for n=1 to ::input.vdim-1 {
         Imin = -max(-Imin,-min(::input[n]))
         Imax = max(Imax,max(::input[n]))          
       }
-      ::minval = Imin
-      ::maxval = Imax
-      ::step = 1
-      ::win.FloatConstraints(::minval_id,Imin,Imax,::minval)
-      ::win.FloatConstraints(::maxval_id,Imin,Imax,::maxval)
-      ::win.FloatConstraints(::step_id,  0,(Imax-Imin)/20,::step)
+      ::UpdateLimits(Imin,Imax)
       SetStatusText("UpdateImage OK")
     }
 
@@ -443,21 +463,35 @@ printn "xmax = %1%" % xmax
     }
 
     #----------------------------
-    proc ::Gui() {
+    proc ::SimpleGui() {
+      # parameters window
+
+      # add Drawing Window
+      d = ::win.CurrentParent()
+      ::dw = global::ami_import.wxDrawingWindow(&d)
+      # sets minimal size here
+      ::dw.SetMinSize(&wx.wxSize(80,80));
+      ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
+      ::sizer_item = ::win.AddWidget(&::dw,0)
+
+      # add User Colormap Drawing Window
+      d = ::win.CurrentParent()
+      ::cm = global::ami_import.wxDrawingWindow(&d)
+      # sets minimal size here
+      ::cm.SetMinSize(&wx.wxSize(80,70));
+      ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
+      ::sizer_item = ::win.AddWidget(&::cm,0)
+
+    }
+
+    #----------------------------
+    proc ::StandardGui() {
     
       # parameters window
-      # parameters window
-      if (exists(::parent_panel)) {
-        ::win = global::ami_import.ParamPanel("ImHist",&::parent_panel)
-      } else {
-        ::win = global::ami_import.ParamPanel("ImHist")
-      }
-      
       ::win.BeginBook()
     
         ::win.AddPage("Main")
 
-          if (::standalone>0.5) {
             # set the input image drawing window
             ::win.BeginBoxPanel("Input")
               ::win.BeginHorizontal()
@@ -473,7 +507,6 @@ printn "xmax = %1%" % xmax
               ::AddBitmapButton(&::win, &::icons._Show,   32, "ShowImage")
               ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
-          }
 
 
           # add Drawing Window
@@ -503,6 +536,27 @@ printn "xmax = %1%" % xmax
           ::win.EndBoxPanel()
 
       ::win.EndBook()
+
+      ::AddStandardButtons(&::win)
+      
+    }
+
+    #----------------------------
+    proc ::Gui() {
+    
+      # parameters window
+      # parameters window
+      if (exists(::parent_panel)) {
+        ::win = global::ami_import.ParamPanel("ImHist",&::parent_panel)
+      } else {
+        ::win = global::ami_import.ParamPanel("ImHist")
+      }
+      
+      if (::standalone>0.5) {
+        ::StandardGui() 
+      } else {
+        ::SimpleGui()
+      }
 
       if (::standalone>0.5) {
         ::AddStandardButtons(&::win)
