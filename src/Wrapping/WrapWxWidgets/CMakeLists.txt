@@ -19,36 +19,31 @@ file(GLOB wx_SRCS  "${AMI_WXWIDGETS_VERSION}/*.cpp")
 
 MESSAGE("Wrapping wxWidgets...")
 
+SET(counter 1)
+SET(counter_file 0)
+SET(num 10)
 SET(output_src)
-FOREACH(loop_var ${wx_SRCS})
-  SET(include_header "#include \"${loop_var}\"")
-  SET(output_src ${output_src} ${include_header})
-ENDFOREACH(loop_var)
-
 SET(wx_source_list "")
 SET(output_dir_path "${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/Generated/")
-LIST(LENGTH output_src output_src_length)
-SET(N 9)
+FOREACH(loop_var ${wx_SRCS})
 
-WHILE(output_src_length)
+  SET(include_header "#include \"${loop_var}\"\n")
+  SET(output_src ${output_src} ${include_header})
 
-  SET(include_list "")
-  FOREACH(counter RANGE ${N})
+  IF(counter EQUAL num)
 
-    IF(output_src_length)
-      LIST(GET output_src -1 element_src)
-      SET(include_list "${include_list} ${element_src}\n")
-      LIST(REMOVE_AT output_src -1)
-      LIST(LENGTH output_src output_src_length)
-    ENDIF(output_src_length)
+    SET(name_output "wrap_wx${AMI_WXWIDGETS_VERSION}_${counter_file}.cpp")
+    FILE(WRITE "${output_dir_path}${name_output}" ${output_src})
+    SET(wx_source_list ${wx_source_list} "Generated/${name_output}")
+    SET(counter 1)
+    MATH(EXPR counter_file "${counter_file}+1")
+    SET(output_src "")
 
-  ENDFOREACH(counter)
-
-  SET(name_output "wrap_wx${AMI_WXWIDGETS_VERSION}_${output_src_length}.cpp")
-  FILE(WRITE "${output_dir_path}${name_output}" ${include_list})
-  SET(wx_source_list ${wx_source_list} "Generated/${name_output}")
-
-ENDWHILE(output_src_length)
+  ELSE(counter EQUAL num)
+    MATH(EXPR counter "${counter}+1")
+  ENDIF(counter EQUAL num)
+  
+ENDFOREACH(loop_var)
 
 MESSAGE("wxWidgets ${AMI_WXWIDGETS_VERSION} wrap files: ${wx_source_list}\n")
 
