@@ -72,6 +72,7 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
 /*  switch(v.Type()) {
     //      case type_void     : printf("void";     break;
     case type_image           : o << "image    "; break;
+    case type_bool            : o << "bool     "; break;
     case type_float           : o << "float    "; break;
     case type_int             : o << "int      "; break;
     case type_uchar           : o << "uchar    "; break;

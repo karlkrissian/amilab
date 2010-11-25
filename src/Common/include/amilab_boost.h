@@ -30,6 +30,7 @@ class CreateSmartPointer
 };
 
 typedef boost::shared_ptr<float>           float_ptr;
+typedef boost::shared_ptr<bool>            bool_ptr;   /// New (added: 19/11/2010)
 typedef boost::shared_ptr<double>          double_ptr; /// New (added: 24/05/2010) 
 typedef boost::shared_ptr<long int>        long_ptr;   /// New (added: 27/05/2010) 
 typedef boost::shared_ptr<int>             int_ptr;

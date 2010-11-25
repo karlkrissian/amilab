@@ -53,6 +53,7 @@ class VarArray;
 
 
 VARTYPE_PROP( InrImage,             type_image,           false);
+VARTYPE_PROP( bool,                 type_bool,            true);
 VARTYPE_PROP( float,                type_float,           true);
 VARTYPE_PROP( double,               type_double,          true); /// New (added: 24/05/2010)
 VARTYPE_PROP( long,                 type_long,            true); /// New (added: 27/05/2010)
@@ -85,12 +86,13 @@ VARTYPE_PROP( VarArray,             type_array,           false)
   template <> double Variable<type>::GetValueAsDouble() const { return 0.0; } 
 
 
-VARTYPE_STRING_DOUBLE( float,                Value(),               Value())
-VARTYPE_STRING_DOUBLE( double,               Value(),               Value())
-VARTYPE_STRING_DOUBLE( long,                 Value(),               Value()) /// New (added: 27/05/2010)
-VARTYPE_STRING_DOUBLE( int,                  Value(),               Value())
-VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),          Value())
-VARTYPE_STRING_DOUBLE( std::string,          Value(),               0)
+VARTYPE_STRING_DOUBLE( float,                Value(),                   Value())
+VARTYPE_STRING_DOUBLE( double,               Value(),                   Value())
+VARTYPE_STRING_DOUBLE( long,                 Value(),                   Value()) /// New (added: 27/05/2010)
+VARTYPE_STRING_DOUBLE( bool,                 (Value()?"true":"false"),  (Value()?1:0)) /// New (added: 19/11/2010)
+VARTYPE_STRING_DOUBLE( int,                  Value(),                   Value())
+VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),              Value())
+VARTYPE_STRING_DOUBLE( std::string,          Value(),                   0)
 
 // FloatMatrix
 template <> std::string Variable<FloatMatrix>::GetValueAsString() const 
@@ -176,6 +178,7 @@ BasicVariable::ptr operator +(const boost::shared_ptr<Variable<float> >& a,
 #include "wrapfunction_class.h"
 #include "ami_function.h"
 
+AMI_DEFINE_BASICTYPE(bool);
 AMI_DEFINE_BASICTYPE(float);
 AMI_DEFINE_BASICTYPE(double);
 AMI_DEFINE_BASICTYPE(long);

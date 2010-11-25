@@ -219,7 +219,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator %=
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(unsigned char,Value()<b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()<b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -229,7 +229,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator <(
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(unsigned char,Value()<=b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()<=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -239,7 +239,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator <=
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(unsigned char,Value()>b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()>b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -249,7 +249,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator >(
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(unsigned char,Value()>=b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()>=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -259,7 +259,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator >=
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(unsigned char,Value()!=b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()!=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -271,7 +271,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator ==
 { 
   //std::cout << __func__ << std::endl;
   if (b->IsNumeric()) {
-    RETURN_VARPTR(unsigned char,Value()==b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()==b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -281,13 +281,13 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator ==
 
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator !() 
 {
-  RETURN_VARPTR(unsigned char,!(Value()>0.5));
+  RETURN_VARPTR(bool,!(Value()>0.5));
 }
 
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator &&(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(unsigned char,(Value()>0.5)&& (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(bool,(Value()>0.5)&& (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -296,7 +296,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator &&
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator ||(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(unsigned char,(Value()>0.5) || (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(bool,(Value()>0.5) || (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -346,7 +346,11 @@ BasicVariable::ptr Variable<unsigned char>::TryCast(
     // cast to float
     if (type_string==AMILabType<float>::name_as_string()) {
       RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
-    } else 
+    } else
+    // cast to long
+    if (type_string==AMILabType<long int>::name_as_string()) {
+      RETURN_VARPTR(long int, boost::numeric_cast<long int>(Value()));
+    } else
     // cast to long
     if (type_string==AMILabType<long>::name_as_string()) {
       RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
@@ -354,7 +358,11 @@ BasicVariable::ptr Variable<unsigned char>::TryCast(
     // cast to int
     if (type_string==AMILabType<int>::name_as_string()) {
       RETURN_VARPTR(int, boost::numeric_cast<int>(Value()));
-    } else 
+    } else
+    // cast to bool
+    if (type_string==AMILabType<bool>::name_as_string()) {
+      RETURN_VARPTR(bool, boost::numeric_cast<bool>(Value()));
+    } else
     {
       // make default conversion to double??
       CLASS_ERROR(boost::format("No convertion available for variable %1% from 'unsigned char' to %2%") % _name % type_string);

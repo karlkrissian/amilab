@@ -31,6 +31,7 @@ SET(Language_SRCS
     VarContexts.cpp
     BasicVariable.cpp
     Variable.cpp
+    Variable_bool.cpp
     Variable_long.cpp
     Variable_int.cpp
     Variable_uchar.cpp
@@ -66,6 +67,7 @@ SET(Language_HDRS
     VarContexts.tpp
     BasicVariable.h
     Variable.hpp
+    Variable_bool.h
     Variable_long.h
     Variable_int.h
     Variable_uchar.h

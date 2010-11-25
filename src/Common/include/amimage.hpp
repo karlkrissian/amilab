@@ -97,13 +97,14 @@
 #define ANALYZE_BE_MAGIC "\134\001\000\000"
 /* Magic header for ANALYZE files written in big endian format */
 
+/*
 #ifndef false
   #define false 0
 #endif
 #ifndef true
   #define true  1
 #endif
-
+*/
 
 typedef enum {
   AMI_DATAINT,      // data are in the same file as the header
