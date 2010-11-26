@@ -280,6 +280,13 @@ if (!exists(vtkVolumeClass)) {
     }
 
     #----------------------------
+    proc ::SaveCurve( OBJECT c ) \
+    {
+      ctrlpts = curve.GetControlPoints()
+      pt = ctrlpts[n] 
+    }
+
+    #----------------------------
     proc ::ResetLinearCurve1() \
     {
       if (!exists(::imhisto1->h)) {
