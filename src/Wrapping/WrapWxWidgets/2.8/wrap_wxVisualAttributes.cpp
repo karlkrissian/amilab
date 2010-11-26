@@ -18,6 +18,8 @@
 
 // get all the required includes
 // #include "..."
+#include "wrap_wxFont.h"
+#include "wrap_wxColour.h"
 #include "wrap_wxVisualAttributes.h"
 
 
