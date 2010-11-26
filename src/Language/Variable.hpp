@@ -79,7 +79,7 @@ class AMILabType {
     static BasicVariable::ptr CreateVar(const T& val)
     { return BasicVariable::ptr(); }
 
-    static BasicVariable::ptr CreateVar(T* val)
+    static BasicVariable::ptr CreateVar(T* val, bool nodeleter=false)
     { return BasicVariable::ptr(); }
 };
 
@@ -91,7 +91,7 @@ class AMILabType {
 	    static std::string name_as_string();\
       static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false);\
       static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
-      static BasicVariable::ptr CreateVar(type* val);\
+      static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
       static BasicVariable::ptr CreateVar(const type& val);\
   };
 
@@ -111,7 +111,7 @@ class AMILabType {
       else {\
         BasicVariable::ptr converted = var->TryCast(AMILabType<type>::name_as_string());\
         if (!converted.get()) {\
-          FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<type>::name_as_string());\
+          /*FILE_ERROR(boost::format("Cannot be converted to type %1%.") % AMILabType<type>::name_as_string());*/\
           return boost::shared_ptr<type>(); \
         } else { \
           boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(converted)); \
@@ -128,9 +128,13 @@ class AMILabType {
       return Variable<type>::ptr( new Variable<type>(valptr));\
     }\
     \
-    BasicVariable::ptr AMILabType<type>::CreateVar(type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar(type* val, bool nodeleter)  \
     { \
-      boost::shared_ptr<type> valptr(val);\
+      boost::shared_ptr<type> valptr; \
+      if (nodeleter) \
+        valptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        valptr = boost::shared_ptr<type>(val);\
       return CreateVarFromSmtPtr(valptr); \
     } \
     \
@@ -160,17 +164,17 @@ class AMILabType {
         param->AddParam(var); \
         BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get());\
         tmp = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);\
-      } \
+      } else { FILE_MESSAGE("first cast ok"); }\
       if (tmp.get()) { \
         WrapClassBase::ptr object( tmp->Pointer()->GetWrappedObject()); \
         boost::shared_ptr<WrapClass<type> > wc( boost::dynamic_pointer_cast<WrapClass<type> >(object));\
         if (wc.get()) { \
           return wc->GetObj(); \
         } else { \
-          FILE_ERROR("Could not cast dynamically the variable.")\
+          /*FILE_ERROR("Could not cast dynamically the variable.")*/;\
         } \
       }  else { \
-        FILE_ERROR("Need a wrapped object or compatible variable as parameter.") \
+        /*FILE_ERROR("Need a wrapped object or compatible variable as parameter.")*/; \
       } \
       return boost::shared_ptr<type>();\
     } 
@@ -186,7 +190,7 @@ class AMILabType {
 
 
 #define AMI_DEFINE_WRAPPEDTYPE_NOCOPY_CREATEFROMPTR(type) \
-    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
     { \
       boost::shared_ptr<type> obj_ptr(val,smartpointer_nodeleter<type>());\
       return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
@@ -195,15 +199,38 @@ class AMILabType {
 #define AMI_DEFINE_WRAPPEDTYPE_HASCOPY(type) \
     AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
     \
-    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
     { \
-      boost::shared_ptr<type> obj_ptr(val);\
+      boost::shared_ptr<type> obj_ptr; \
+      if (nodeleter) \
+        obj_ptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        obj_ptr = boost::shared_ptr<type>(val);\
       return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
     } \
     \
     BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
     { \
       return AMILabType<type>::CreateVar(new type(val));\
+    } 
+
+// Abstract classes
+#define AMI_DEFINE_WRAPPEDTYPE_ABSTRACT(type) \
+    AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
+    { \
+      boost::shared_ptr<type> obj_ptr; \
+      if (nodeleter) \
+        obj_ptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        obj_ptr = boost::shared_ptr<type>(val);\
+      return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
+    } \
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return BasicVariable::ptr();\
     } 
 
 #define AMI_DEFINE_VARFROMSMTPTR(type) \
@@ -222,6 +249,13 @@ class AMILabType {
         new WrapClass_##name1<type2>(obj_ptr));\
   } 
 
+#define AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2(type1,type2) \
+  BasicVariable::ptr AMILabType<type1 >::CreateVarFromSmtPtr(boost::shared_ptr<type1 >& obj_ptr) \
+  { \
+    return \
+      WrapClass<type1 >::CreateVar( \
+        new WrapClass_##type2(obj_ptr));\
+  } 
 
 template<typename> 
 struct to_string {

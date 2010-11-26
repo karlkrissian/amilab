@@ -99,18 +99,27 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.
  */
 template<class T>
-bool get_val_param(T& arg, ParamList*p, int& num)
+bool get_val_param(T& arg, ParamList*p, int& num, bool required, bool quiet)
 {
   if (!p) return false;
   // if the parameter number is too high, skip it (use default value)
   if (num>=p->GetNumParam()) {
-    FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
-    return true;
+    if (required)
+      return false;
+    else
+    {
+      if (!quiet) {
+        FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
+      }
+      return true;
+    }
   }
   BasicVariable::ptr varparam( p->GetParam(num++));
   boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(varparam);
   if (!val_ptr.get()) {
-    FILE_ERROR(boost::format("Problem with %1% parameter.") % num);
+    if (!quiet) {
+      FILE_ERROR(boost::format("Problem with %1% parameter.") % num);
+    }
     return false;
   } else {
     arg = *val_ptr;
@@ -157,34 +166,50 @@ bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required, bool nocon
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to its value.
  */
 template<class T>
-bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool required)
+bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, 
+                          bool required, bool noconstr, bool quiet)
 {
   if (!p) return false;
   // if the parameter number is too high, skip it (use default value)
   if (num>=p->GetNumParam()) {
     if (!required) {
-      FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
+      if (!quiet) {
+        FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
+      }
       return true;
     } else {
-      FILE_MESSAGE( boost::format("Missing required parameter number %1%") % num);
+      if (!quiet) {
+        FILE_MESSAGE( boost::format("Missing required parameter number %1%") % num);
+      }
       return false;
     }
   }
   BasicVariable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
+    boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(temp,noconstr);
+    if (!val_ptr.get()) {
+      if (!quiet) {
+        FILE_ERROR(boost::format("Parameter %1% failed.") % num);
+      }
+      return false;
+    }
+    /*
     boost::shared_ptr<Variable<T> > temp1(
       boost::dynamic_pointer_cast<Variable<T> >(temp));
     if (!temp1.get()) {
       FILE_ERROR(boost::format("Parameter %1% is dynamic cast failed.")%num);
       return false;
     }
-    arg= boost::shared_ptr<T>(temp1->Pointer());
+    */
+    arg= boost::shared_ptr<T>(val_ptr);
     return true;
   }
   else
   {
     if (required) {
-      FILE_ERROR(boost::format("Parameter %d not found ") % num);
+      if (!quiet) {
+        FILE_ERROR(boost::format("Parameter %d not found ") % num);
+      }
       return false;
     } else
       return true;
@@ -221,7 +246,7 @@ template<class T> bool get_obj_param( Variable<AMIObject>::ptr& var, boost::shar
       FILE_ERROR("Could not cast dynamically the variable.")
     }
   }  else {
-    FILE_ERROR("Need a wrapped object or compatible variable as parameter.")
+    /*FILE_ERROR("Need a wrapped object or compatible variable as parameter.")*/;
   }
   return ok;
 }

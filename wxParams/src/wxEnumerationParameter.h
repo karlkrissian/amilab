@@ -50,17 +50,37 @@ class myChoice: public wxChoice
         const wxValidator& validator = wxDefaultValidator,
         const wxString& name = wxChoiceNameStr) :
         wxChoice(parent,id,pos,size,n,choices,style,validator,name)        
-    {   }
+  { 
+    _calldata = _callback = NULL;
+    _updatelist_calldata = _updatelist_callback = NULL;
+  }
     
   void SetCallback(void* cb, void* cd) { _callback=cb; _calldata=cd;}
+  void SetUpdateListCallback(void* cb, void* cd) 
+  {
+     _updatelist_callback=cb;
+     _updatelist_calldata=cd;
+  }
+
   void OnChoiceUpdate( wxCommandEvent &WXUNUSED(event) )
   {
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
   }
+
+  void Callback();
+
+  void UpdateListCallback();
+
+  void OnFocus( wxFocusEvent &event );
+  void OnLeftDown( wxMouseEvent& event );
+
 protected:
   void* _callback;
   void* _calldata;
+
+  void* _updatelist_callback;
+  void* _updatelist_calldata;
 private:
     DECLARE_EVENT_TABLE()
 };
@@ -104,7 +124,7 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   
   wxString GetStringSelection();
 
-  void AddUpdateButton(void* update_cb,
+  void AddUpdateCallback(void* update_cb,
   const std::string& tooltip);
 
   void SetSelection(int n);

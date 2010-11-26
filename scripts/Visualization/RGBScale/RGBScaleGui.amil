@@ -1,0 +1,12 @@
+
+func "Visualization/RGBScale/RGBScaleClass"
+
+#----------------------------
+if (!exists(RGBScale_obj)) {
+  RGBScaleClass RGBScale_obj
+  RGBScale_obj.Gui()
+  
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

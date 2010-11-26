@@ -23,7 +23,7 @@ if (argc>=4) {
   }
 
   # hide main window ?
-  ami.MainFrame.ShowWin(usegraphics)
+  ami.MainFrame.Show(usegraphics)
 
   AnisoNRADClass anisoNRAD
 

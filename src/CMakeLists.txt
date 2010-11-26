@@ -20,7 +20,7 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH}
 #-----------------------------------------------------
 
 SET(AMILAB_VERSION_MAJOR "3")
-SET(AMILAB_VERSION_MINOR "0")
+SET(AMILAB_VERSION_MINOR "1")
 SET(AMILAB_VERSION_PATCH "0")
 SET(AMILAB_VERSION "${AMILAB_VERSION_MAJOR}.${AMILAB_VERSION_MINOR}.${AMILAB_VERSION_PATCH}")
 
@@ -306,7 +306,14 @@ OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
 
 IF(AMI_USE_VTK)
   FIND_PACKAGE ( VTK )
+
+  IF(VTK_FOUND)
+    SET(AMI_VTK_VERSION "${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
+    MESSAGE("VTK version: ${AMI_VTK_VERSION}\n")
+  ENDIF(VTK_FOUND)
+
 ENDIF(AMI_USE_VTK)
+
 
 OPTION(AMI_USE_ITK "Use ITK: recommended" ON)
 
@@ -337,12 +344,12 @@ IF(wxWidgets_FOUND)
     MESSAGE("path of file \"wx/version.h\": ${WX_VERSION_PATH}")
     FILE(STRINGS "${WX_VERSION_PATH}/wx/version.h"
          FILE_WX_MAJOR_VERSION
-         REGEX "^#define( +)wxM[AJ|IN].*OR_VERSION( +)[0-9+]")
+         REGEX "^#define( +)wxM[AJ|IN].*OR_VERSION( +)[0-9]+")
     MESSAGE("File filtering: ${FILE_WX_MAJOR_VERSION}\n")
     LIST(GET FILE_WX_MAJOR_VERSION 0 MAJOR_VERSION)
     LIST(GET FILE_WX_MAJOR_VERSION -1 MINOR_VERSION)
-    STRING(REGEX MATCH "[0-9+]" WX_MAJOR_VERSION ${MAJOR_VERSION})
-    STRING(REGEX MATCH "[0-9+]" WX_MINOR_VERSION ${MINOR_VERSION})
+    STRING(REGEX MATCH "[0-9]+" WX_MAJOR_VERSION ${MAJOR_VERSION})
+    STRING(REGEX MATCH "[0-9]+" WX_MINOR_VERSION ${MINOR_VERSION})
     SET(AMI_WXWIDGETS_VERSION "${WX_MAJOR_VERSION}.${WX_MINOR_VERSION}")
     MESSAGE("wxWidgets version: ${AMI_WXWIDGETS_VERSION}\n")
   ELSE(WX_VERSION_PATH)
@@ -483,7 +490,7 @@ add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (AMILab)
 
-add_subdirectory (Plugins/AboutBox)
+#add_subdirectory (Plugins/AboutBox)
 
 
 #add_subdirectory (libamiFluid)
@@ -503,7 +510,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
-  ${AMILAB_SOURCE_DIR}/Plugins/
+#  ${AMILAB_SOURCE_DIR}/Plugins/
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}
@@ -582,6 +589,7 @@ SET(amilab_ownlibs
   WrapImage
   Language
   WrapVTK
+  WrapWxVTK
   WrapWII
   WrapITK
   AMILab
@@ -594,6 +602,8 @@ SET(amilab_ownlibs
   penguin
   wxStcFrame
   wxTreeListCtrl
+  wxVTKSamples
+  wxVTK
 )
 
 

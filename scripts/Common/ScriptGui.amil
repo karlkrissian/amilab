@@ -65,7 +65,7 @@ if (!exists(ScriptGui)) \
       # add wxEditor widget
       ed = ami->MainFrame.GetAmilabEditor()
       ed.FileOpen( ::classfilename)
-      ed.ShowWin()
+      ed.Show()
     }
     Comments( ::EditScript, "Open AmilabEditor to edit the current script :)")
 
@@ -74,7 +74,7 @@ if (!exists(ScriptGui)) \
     #
     proc ::AddBitmapButton( OBJECT win, OBJECT icon_im, NUM size, STRING callback_name) \
     {
-      bmp = wx.wxBitmap(&icon_im.Scale2(size,size))
+      bmp = wx.wxBitmap(&icon_im.Scale(size,size))
       eval "return = win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
     }
 
@@ -84,7 +84,7 @@ if (!exists(ScriptGui)) \
     proc ::AddBitmapButton16( OBJECT win, OBJECT icon_im, STRING callback_name) \
     {
       size = 16
-      bmp = wx.wxBitmap(&icon_im.Scale2(size,size))
+      bmp = wx.wxBitmap(&icon_im.Scale(size,size))
       eval "win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
     }
 
@@ -100,6 +100,21 @@ if (!exists(ScriptGui)) \
         win.SetPositionProp(-1,2)
         ::AddBitmapButton16(&win, &::icons._Delete,  "CloseAll")
         win.SetPositionProp(-1,2)
+      win.EndHorizontal()  
+    }
+
+    #------------------------------------
+    proc ::AddLimitedButtons( OBJECT win) \
+    {
+      win.BeginHorizontal()
+        ::AddBitmapButton16(&win, &::icons._Edit_page, "EditScript")
+        win.SetPositionProp(-1,2)
+        ::AddBitmapButton16(&win, &::icons._Refresh, "ReloadScript")
+        win.SetPositionProp(-1,2)
+        #::AddBitmapButton16(&win, &::icons._Close,   "Close")
+        #win.SetPositionProp(-1,2)
+        #::AddBitmapButton16(&win, &::icons._Delete,  "CloseAll")
+        #win.SetPositionProp(-1,2)
       win.EndHorizontal()  
     }
 
@@ -150,17 +165,17 @@ if (!exists(ScriptGui)) \
 
           if (wikipng.IsOk()) {
             win.AddBitmapButton("Wiki", &::LaunchWiki, \
-            &wx.wxBitmap(&wikipng.Scale2(16,16)))
+            &wx.wxBitmap(&wikipng.Scale(16,16)))
           } else {
             win.AddButton("Wiki", &::LaunchWiki)
           }
           
-          win.AddBitmapButton("Home", &::HtmlHome, &wx.wxBitmap(&::icons._Home.Scale2(16,16)))
+          win.AddBitmapButton("Home", &::HtmlHome, &wx.wxBitmap(&::icons._Home.Scale(16,16)))
           win.SetPositionProp(-1,2)
-          win.AddBitmapButton("<--",  ::HtmlBack, &wx.wxBitmap(&::icons._Back.Scale2(16,16)))
+          win.AddBitmapButton("<--",  ::HtmlBack, &wx.wxBitmap(&::icons._Back.Scale(16,16)))
           win.SetPositionProp(-1,2)
           win.AddBitmapButton("-->",  ::HtmlForward, \
-            &wx.wxBitmap(&::icons._Forward.Scale2(16,16)))
+            &wx.wxBitmap(&::icons._Forward.Scale(16,16)))
           win.SetPositionProp(-1,2)
         win.EndHorizontal()
         # add html widget

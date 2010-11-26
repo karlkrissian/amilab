@@ -103,8 +103,6 @@ enum
     wxID_HelpForward,
 
     wxID_ProgressBar,
-
-    ID_PLUGINS,
 };
 
 enum {
@@ -140,8 +138,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(ID_Quit,              MainFrame::OnQuit)
 
     EVT_MENU(ID_View_Reset,        MainFrame::OnViewReset)
-
-//    EVT_MENU(ID_PLUGIN_ABOUT, MainFrame::OnPluginAbout)
 
     EVT_CLOSE(MainFrame::OnClose)
 
@@ -275,16 +271,15 @@ void MainFrame::CreateMenu()
   menuView = new wxMenu;
   menuView->Append( ID_View_Reset, GetwxStr("&Reset") );
 
-//   menuPlugin = new wxMenu;
-//   menuPlugin->Append( ID_PLUGIN_ABOUT, GetwxStr("&About") );
+
 
   menuScripts = new wxMenu;
+
 
   menuBar = new wxMenuBar;
   menuBar->Append( menuFile,    GetwxStr("&File") );
   menuBar->Append( menuView,    GetwxStr("&View") );
   menuBar->Append( menuScripts, GetwxStr("&Scripts") );
-  //menuBar->Append( menuPlugin,  GetwxStr("&Plugins") );  
 
   SetMenuBar( menuBar );
 
@@ -332,46 +327,6 @@ wxToolBar* MainFrame::CreateToolbar( wxWindow* parent)
 
 } // CreateToolbar()
 
-//-------------------------------------------------------
-void MainFrame::_LoadPlugins(void)
-{
-  wxString LibName = wxT("/home/roncali/proyectos/amilab/branch-amilab/build/debug/Plugins/AboutBox/libAboutBoxPluginExample.so");
-  if (_plugin_manager.Load(LibName))
-  {
-    CLASS_MESSAGE("Plugin: " + LibName + " is loaded.");
-    _plugin = _plugin_manager.GetPluginHandle();
-    if (_plugin->IsGraphicMode())
-    {
-      _plugin->SetwxWindow(this);
-      wxString msg = "&" + _plugin->GetName();
-      int menuid = ID_PLUGINS;
-      wxMenu* my_menu = new wxMenu;
-      my_menu->Append( menuid, msg );
-      menuBar->Append(my_menu,  GetwxStr("&Plugins") );
-      std::cout << "MenuID = " << menuid << std::endl;
-      // connecting
-      Connect(menuid,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(MainFrame::OnPlugins));
-    }
-    std::cout << "MainFrame::_LoadPlugins->Plugin info: (BEGIN)" << std::endl;
-    std::cout << "  Name:         " << _plugin->GetName()          << std::endl;
-    std::cout << "  Description:  " << _plugin->GetDescription()   << std::endl;
-    std::cout << "  Version:      " << _plugin->GetVersion()       << std::endl;
-    std::cout << "  Author:       " << _plugin->GetAuthor()        << std::endl;
-    std::cout << "MainFrame::_LoadPlugins->Plugin info: (END)"   << std::endl;
-  }
-  else
-    CLASS_ERROR("Plugin: " + LibName + " could not be loaded.");
-} //_LoadPlugins
-
-
-//-------------------------------------------------------
-void MainFrame::OnPlugins ( wxCommandEvent& event )
-{
-  if (_plugin->Execute())
-    CLASS_MESSAGE("The plugin: has been executed.")
-  else
-    CLASS_MESSAGE("The plugin: has not been executed.");
-} //OnPlugins
 
 //-------------------------------------------------------
 MainFrame::MainFrame( const wxString& title,
@@ -511,8 +466,6 @@ MainFrame::MainFrame( const wxString& title,
                   Name(wxT("tb1")).Caption(wxT("Big Toolbar")).
                   ToolbarPane().Top().
                   LeftDockable(false).RightDockable(false));
-
-  _LoadPlugins();
 
   // tell the manager to "commit" all the changes just made
   m_mgr.Update();

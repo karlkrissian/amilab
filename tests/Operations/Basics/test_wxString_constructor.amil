@@ -6,7 +6,7 @@
 NoMessageDialog(1)
 
 # Hide main frame
-ami.MainFrame.ShowWin(0)
+ami.MainFrame.Show(0)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # test_wxString_constructor.amil

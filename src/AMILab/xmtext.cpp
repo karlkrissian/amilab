@@ -428,8 +428,10 @@ bool TextControl::ProcessReturn()
 
   // Add now the newline character ...
   in_changed_value = 0;
-  if (GB_main_wxFrame)
-    GB_main_wxFrame->UpdateVarsDisplay();
+
+  // Too slow now, need a clever way to update only visible information ...
+  //if (GB_main_wxFrame)
+  //  GB_main_wxFrame->UpdateVarsDisplay();
 
   return parseok;
   // event.Skip();

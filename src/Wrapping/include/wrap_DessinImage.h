@@ -26,7 +26,7 @@
 
 AMI_DECLARE_TYPE(DessinImage);
 
-class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual WrapClass_FenetreDessin
+class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_FenetreDessin
 {
   DEFINE_CLASS(WrapClass_DessinImage);
 
@@ -39,7 +39,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
     const boost::shared_ptr<DessinImage>& GetObj() const { return WrapClass<DessinImage>::GetObj(); }
 
     /// Constructor
-    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass_FenetreDessin(si), WrapClass<DessinImage>(si)
+    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si) 
     {}
 
     /// Destructor
@@ -55,7 +55,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( DessinImage*);
 
-    ADD_CLASS_METHOD(reference,       "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
+    ADD_CLASS_METHOD(__reference__,       "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
 
     ADD_CLASS_METHOD(setpos,                 "Set the cursor position on a imagedraw window");
     ADD_CLASS_METHOD(showcursor,             "Displays or hides the cursor of a imagedraw window");
@@ -112,7 +112,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
         boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
       parent_obj->AddMethods(parent_obj);
 
-      AddVar_reference(             this_ptr);
+      AddVar___reference__(             this_ptr);
       AddVar_setpos(                this_ptr, "_setpos");
       AddVar_showcursor(            this_ptr);
       AddVar_update(                this_ptr);

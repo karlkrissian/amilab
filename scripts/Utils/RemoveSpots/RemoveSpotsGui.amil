@@ -1,0 +1,12 @@
+
+func "RemoveSpotsClass"
+
+#----------------------------
+if (!exists(RemoveSpots_obj)) {
+  RemoveSpotsClass RemoveSpots_obj
+  RemoveSpots_obj.Gui()
+  
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

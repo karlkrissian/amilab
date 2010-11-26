@@ -74,11 +74,14 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::TryCast(const s
 /// Copy contents to new variable
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::NewCopy() const
 {
-  APPLY_MEMBER_NOPARAM("copy", varres)
-  if (varres.get())
-    return varres;
-  else
-    return BasicVariable::ptr();
+  APPLY_MEMBER_NOPARAM("__copy__", varres)
+  if (varres.get()) return varres;
+  {
+    // for compatibility only
+    APPLY_MEMBER_NOPARAM("copy", varres)
+    if (varres.get()) return varres;
+  }
+  return BasicVariable::ptr();
 }
 
 
@@ -91,10 +94,10 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::NewReference() 
   // copy the comments
   ref->SetComments(_comments);
   // give the oportunity to deal with this new reference
-// TODO: find a solution, are there too many variable references ???
-// could this slow down considerably amilab??
-// should we have a boolean saying that the reference needs special treatment?
-  APPLY_MEMBER_PARAM1("reference", ref, varres);
+  // TODO: find a solution, are there too many variable references ???
+  // could this slow down considerably amilab??
+  // should we have a boolean saying that the reference needs special treatment?
+  APPLY_MEMBER_PARAM1("__reference__", ref, varres);
   return ref;
 }
 
@@ -140,88 +143,54 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --(int
 /// a+b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +(const BasicVariable::ptr& b)
 {
-/*
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),+,b->GetValueAsDouble());
+  APPLY_MEMBER_PARAM1("__add__", b, varres)
+  if (varres.get()) return varres;
+  {
+    // for compatibility only
+    APPLY_MEMBER_PARAM1("add", b, varres)
+    if (varres.get()) return varres;
   }
-  else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),+);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference();
-*/
-  //Modified: Added (02-07-2010)
-  APPLY_MEMBER_PARAM1("add", b, varres)
-  if (varres.get())
-    return varres;
-  else
-    return BasicVariable::ptr();
+  return BasicVariable::ptr();
 }
 
 
 /// a+=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +=(const BasicVariable::ptr& b)
 { 
-  //Modified: Added (17-06-2010)
-  APPLY_MEMBER_PARAM1("add_assign", b, varres)
-  if (varres.get())
-    return varres;
-  else
-    return BasicVariable::ptr();
-/*
-//  if (b->IsNumeric()) {
-//    RefValue() += b->GetValueAsDouble();
-
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    if (var_im2.get()) {
-      // copy option
-      (*Pointer())+=(*var_im2->Pointer());
-    } else {
-      GB_driver.err_print("Error, parameter of += operator points to NULL image\n");
-    }
-  } else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
-*/
+  APPLY_MEMBER_PARAM1("__add_assign__", b, varres)
+  if (varres.get()) return varres;
+  {
+    // for compatibility only
+    APPLY_MEMBER_PARAM1("add_assign", b, varres)
+    if (varres.get()) return varres;
+  }
+  return BasicVariable::ptr();
 }
-/*
+
 /// a-b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariable::ptr& b)
 {
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),-,b->GetValueAsDouble());
-  } 
-  else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),-);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  APPLY_MEMBER_PARAM1("__substract__", b, varres)
+  if (varres.get()) return varres;
+  {
+    // for compatibility only
+    APPLY_MEMBER_PARAM1("substract", b, varres)
+    if (varres.get()) return varres;
+  }
+  return BasicVariable::ptr();
 }
-*/
 
 /// a-=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b)
 { 
-  //Modified: Added (17-06-2010)
-  APPLY_MEMBER_PARAM1("sub_assign", b, varres)
-  if (varres.get())
-    return varres;
-  else
-    return BasicVariable::ptr();
-/*
-  if (b->IsNumeric()) {
-    RefValue() -= b->GetValueAsDouble();
-  } else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference();
-*/
+  APPLY_MEMBER_PARAM1("__sub_assign__", b, varres)
+  if (varres.get()) return varres;
+  {
+    // for compatibility only
+    APPLY_MEMBER_PARAM1("sub_assign", b, varres)
+    if (varres.get()) return varres;
+  }
+  return BasicVariable::ptr();
 }
 
 /*
@@ -366,48 +335,27 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator >=(con
 /// a!=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator !=(const BasicVariable::ptr& b)
 { 
-/*
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),!=,b->GetValueAsDouble());
+  APPLY_MEMBER_PARAM1("__not_equal__", b, varres)
+  if (varres.get()) return varres;
+  {
+    // for compatibility only
+    APPLY_MEMBER_PARAM1("not_equal", b, varres)
+    if (varres.get()) return varres;
   }
-  else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),!=);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference();
-*/
-  //Modified: Added (02-07-2010)
-  APPLY_MEMBER_PARAM1("not_equal", b, varres)
-  if (varres.get())
-    return varres;
-  else
-    return BasicVariable::ptr();
+  return BasicVariable::ptr();
 }
+
 /// a==b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ==(const BasicVariable::ptr& b)
 { 
-/*  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),==,b->GetValueAsDouble());
+  APPLY_MEMBER_PARAM1("__equal__", b, varres)
+  if (varres.get()) return varres;
+  {
+    // for compatibility only
+    APPLY_MEMBER_PARAM1("equal", b, varres)
+    if (varres.get()) return varres;
   }
-  else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),==);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference();
-*/
-  //Modified: Added (02-07-2010)
-  APPLY_MEMBER_PARAM1("equal", b, varres)
-  if (varres.get())
-    return varres;
-  else
-    return BasicVariable::ptr();
-
+  return BasicVariable::ptr();
 }
 
 
@@ -628,21 +576,26 @@ BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
 
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
 {
-  CLASS_MESSAGE("start");
-  APPLY_MEMBER_PARAM1("assign", b, varres)
-  if (varres.get())
-    return varres;
-  else
-    return BasicVariable::ptr();
+  APPLY_MEMBER_PARAM1("__assign__", b, varres)
+  if (varres.get()) return varres;
+  {
+    // for compatibility only
+    APPLY_MEMBER_PARAM1("assign", b, varres)
+    if (varres.get()) return varres;
+  }
+  return BasicVariable::ptr();
 }
 
 
 // TODO: put this code within a macro???
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::left_assign(const BasicVariable::ptr& b)
 {
-  APPLY_MEMBER_PARAM1("left_assign", b, varres)
-  if (varres.get())
-    return varres;
-  else
-    return BasicVariable::ptr();
+  APPLY_MEMBER_PARAM1("__left_assign__", b, varres)
+  if (varres.get()) return varres;
+  {
+    // for compatibility only
+    APPLY_MEMBER_PARAM1("left_assign", b, varres)
+    if (varres.get()) return varres;
+  }
+  return BasicVariable::ptr();
 }

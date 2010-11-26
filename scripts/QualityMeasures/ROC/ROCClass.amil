@@ -1,0 +1,243 @@
+#
+# Drawing ROC curve
+#
+
+
+func "Common/ScriptGui"
+
+if (!exists(ROCClass)){
+
+  Class ROCClass : public ScriptGui \
+  {
+
+    proc ::Init() {
+      # Read Segmented Result
+      #i  = Image "/home/karl/projects/data/Mariem/Retine/260410/diff_closing5.ami.gz" 
+      #i = -i
+      #i = i*(i>0)
+      ::input_name    =  "", "Name of input image"
+      ::gt_name       =  "", "Name of ground truth image"
+      ::original_name =  "", "Name of the original image"
+
+      ::min_val = 0,  "minimal threshold value"
+      ::max_val = 10, "maximal threshold value"
+      ::num_val = INT(256), "number of values"
+      # read Ground Truth
+      #gt = Image   "/home/karl/projects/data/Mariem/Retine/260410/15_manual1.png" 
+      #gt1 = norm(gt)
+
+      ::draw_lines  = UCHAR(1), "draw the lines of the curve"
+      ::draw_points = UCHAR(0), "draw the points of the curve"
+      
+      ::AUC_string = "", "Area Under the Curve (AUC)"
+
+      #::Gui()
+    }
+
+
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+      ::min_val = min(::input)
+      ::max_val = max(::input)
+      ::win.FloatConstraints(::minval_id,::min_val,::max_val,::min_val)
+      ::win.FloatConstraints(::maxval_id,::min_val,::max_val,::max_val)
+      ::win.Update(-1)      
+    }
+    Comments(::LoadInput,"Load Input Image")
+
+    #----------------------------
+    proc ::LoadGT() \
+    {
+      eval "::gt <<="+::gt_name+";"
+      if (::gt_name=="BrowseImage") {
+        ::gt_name = "::gt"
+        ::win.Update(-1)
+      }
+      ::win.Update(-1)
+      ::gt_reloaded=1
+    }
+    Comments(::LoadGT,"Load Ground Truth Image")
+
+    #----------------------------
+    proc ::LoadOriginal() \
+    {
+      eval "::original <<="+::original_name+";"
+      if (::original_name=="BrowseImage") {
+        ::original_name = "::original"
+        ::win.Update(-1)
+      }
+      ::win.Update(-1)
+    }
+    Comments(::LoadOriginal,"Load Original (initial) Image")
+
+
+    #----------------------------
+    proc ::ROC_val(NUM s, NUM tp, NUM fp) \
+    {
+      if (!exists(::gt_in)||(::gt_reloaded)) {
+        # Pre-calculations on the ground truth
+        ::gt_in  = ::gt>0
+        ::gt_out = ::gt==0
+        ::gt_in_count  = count(::gt_in)
+        ::gt_out_count = count(::gt_out)
+        # flag to check if the GT image has been reloaded
+        ::gt_reloaded=0
+      }
+      #if (::use_mask)&&(exists(::mask)) {
+        #segim=(::input*(::mask>::mask_threshold))>=s
+      #} else { 
+      #}
+      segim=::input>=s
+      # True Positive
+      tp= count(segim*::gt_in)/::gt_in_count; 
+      # False Positive
+      fp= count(segim*::gt_out)/::gt_out_count; 
+    }
+
+
+    #----------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) { ::LoadInput(); }
+      if (!exists(::gt))    { ::LoadGT();    }
+      tp = 0; fp = 0
+      ::roc <<= Image(FLOAT,::num_val,1,1,2)
+      ::AUC = 0.0
+      Comments(::AUC,"Area Under the Curve")
+      for n=0 to ::num_val-1 { 
+        ::current_progress = ((FLOAT)n)/(::num_val-1)*100
+        SetProgress(::current_progress)
+        value = ::min_val + (::max_val-::min_val)/(::num_val-1)*n
+        print "val:%1%\t" % value
+        ::ROC_val(value,&tp,&fp); 
+        ::roc.setpos(n,0,0)
+        ::roc.set(0,fp)
+        ::roc.set(1,tp)
+        print "fp = %1%, " % fp
+        printn "tp = %1%" % tp
+        if (n>0) {
+          ::AUC += (tp+tp_prev)/2.0*(fp_prev-fp)
+        }
+        # save values to compute area
+        fp_prev=fp
+        tp_prev=tp
+      }
+      SetProgress(0)
+      ::AUC=abs(::AUC)
+      ::AUC_string = "%1%" % ::AUC
+      ::current_max_val = ::max_val
+      ::current_min_val = ::min_val
+      ::current_num_val = ::num_val
+
+      ::win.Update(-1)
+      epsilon = 0.02
+      ::dw->SetXLimits(0-epsilon,1+epsilon)
+      ::dw->SetYLimits(0-epsilon,1+epsilon)
+      ::dw->SetCurve(::roc)
+      ::dw->SetCurveDrawLines( 0,::draw_lines)
+      ::dw->SetCurveDrawPoints(0,::draw_points)
+      ::dw->SetCurveProperties(0,"#F05050")
+    }
+    Comments(::Run,"Computes ROC and AUC")
+
+    #----------------------------
+    proc ::Display() \
+    {
+      show ::input; ::input_draw.update()
+      show ::gt; ::gt_draw.update()
+      ::input_draw.compare(&::gt_draw)
+      if (exists(::original)) {
+        show ::original
+        ::input_draw.compare(&::original_draw)
+      }
+    }
+    Comments(::Display,"Display and compare both images")
+    
+    #----------------------------
+    proc ::Gui() {
+      
+      # parameters window
+      import = &global::ami_import
+      ::win = import.ParamPanel("ROC")
+      
+      # add Drawing Window
+      d = ::win.CurrentParent()
+      ::dw = import.wxDrawingWindow(&d)
+      ::dw.SetMinSize(&wx.wxSize(50,200))
+      ::win.AddWidget(&::dw,0)
+      ::dw.SetBackgroundColour(&wx.wxColour(255,255,255))
+
+      ::win.BeginBook()
+
+        ::win.AddPage("IO")
+          # set the input image
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",&::LoadInput)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          # set the GT image
+          ::win.BeginBoxPanel("Ground Truth")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::gt_name, "")
+              ::win.AddButton("Load",&::LoadGT)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          # set the Original image to segment
+          ::win.BeginBoxPanel("Original Image")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::original_name, "")
+              ::win.AddButton("Load",&::LoadOriginal)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Params")
+          # Parameters
+          ::minval_id = ::win.AddFloat( &::min_val,"min",0,100)
+          ::maxval_id = ::win.AddFloat( &::max_val,"max",0,100)
+          ::win.AddInt( &::num_val,"nb",1,256)
+          
+          ::win.BeginBoxPanel("Draw")
+            ::win.BeginHorizontal()
+              ::win.AddBoolean(&::draw_lines,  "Lines")
+              ::win.AddBoolean(&::draw_points, "Points")
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+
+          # Run
+          ::win.BeginHorizontal()
+            ::AddBitmapButton(&::win, &::icons._Apply,  32, "Run")
+            ::win.SetPositionProp(-1,0)
+            ::AddBitmapButton(&::win, &::icons._Show,   32, "Display")
+            ::win.SetPositionProp(-1,0)
+            # Area Under the curve
+            ::win.AddString(&::AUC_string,"AUC")
+            ::win.SetPositionProp(1,2)
+          ::win.EndHorizontal()
+          #::win.AddButton("Run",     &::Run)
+          #::win.AddButton("Display", &::Display)
+          
+
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      ::win.Update(-1)
+      ::win.Display()
+    }
+
+    ::Init()
+
+  }
+}
+

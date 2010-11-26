@@ -337,7 +337,7 @@ bool get_var_param( BasicVariable::ptr& var,
  */
 template<class T>
 bool get_val_param( T& arg, 
-                ParamList*p, int& num);
+                ParamList*p, int& num, bool required=false, bool quiet=false);
 
 
 /**
@@ -353,7 +353,8 @@ template<class T>
 bool get_val_ptr_param( T*& arg, 
                     ParamList*p, int& num, 
                     bool required=true,
-                    bool noconstr=false);
+                    bool noconstr=false
+                      );
 
 
 /**
@@ -365,8 +366,11 @@ bool get_val_ptr_param( T*& arg,
  * @return true/false for success/failure
  */
 template<class T> bool get_val_smtptr_param( boost::shared_ptr<T>& arg, 
-                       ParamList*p, int& num, 
-                       bool required=true);
+                                              ParamList*p, int& num, 
+                                              bool required=true,
+                                             bool noconstr=false,
+                                             bool quiet=false
+                                           );
 
 /**
  * Returning the wrapped object of the given type and its corresponding variable

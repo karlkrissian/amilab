@@ -12,6 +12,7 @@
   return Variable<type>::ptr( new Variable<type>(newval));
 
 #include "inrimage.hpp"
+#include <boost/numeric/conversion/cast.hpp>  
 
 
 
@@ -324,6 +325,44 @@ VAR_IMPL_FUNC(long int,  log,  1.0/log(10.0)*log)
 VAR_IMPL_FUNC(long int,  ln,   log)
 VAR_IMPL_FUNC(long int,  norm, fabs)
 VAR_IMPL_FUNC(long int,  sqrt, sqrt)
+
+//---------------------------------------------------
+template<> AMI_DLLEXPORT
+BasicVariable::ptr Variable<long int>::TryCast(
+    const std::string& type_string) const
+{
+  if (type_string==AMILabType<long>::name_as_string()) 
+    return NewCopy();
+  try
+  {
+    // cast to double
+    if (type_string==AMILabType<double>::name_as_string()) {
+      RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
+    } else 
+    // cast to float
+    if (type_string==AMILabType<float>::name_as_string()) {
+      RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
+    } else 
+    // cast to int
+    if (type_string==AMILabType<long>::name_as_string()) {
+      RETURN_VARPTR(long, boost::numeric_cast<int>(Value()));
+    } else 
+    // cast to unsigned char
+    if (type_string==AMILabType<unsigned char>::name_as_string()) {
+      RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
+    } else 
+    {
+      // make default conversion to double??
+      CLASS_ERROR(boost::format("No convertion available for variable %1% from int to %2%") % _name % type_string);
+    }
+  } catch (std::bad_cast &e)
+  {
+    CLASS_ERROR(boost::format("%1%, for variable %2% from int to %3%") % e.what() % _name % type_string);
+    return BasicVariable::ptr();
+  }
+  return BasicVariable::ptr();
+}
+
 
 //
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::BasicCast(const int& type)

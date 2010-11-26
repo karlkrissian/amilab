@@ -5,6 +5,8 @@
 add_subdirectory (wxCode/wxTreeListCtrl)
 add_subdirectory (wxSamples/penguin)
 add_subdirectory (wxStcFrame)
+add_subdirectory (wxVTK)
+add_subdirectory (wxVTKSamples)
 
 
 # Make sure the compiler can find include files from our Hello library.
@@ -14,6 +16,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Graphic/include
+  ${AMILAB_SOURCE_DIR}/Graphic/wxVTK
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
