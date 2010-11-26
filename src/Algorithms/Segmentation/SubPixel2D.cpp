@@ -1456,253 +1456,466 @@ void SubPixel2D::DenoisingGus()
 //poniendo luego en función de eso el valor del peso en la imagencita chica
 //sintética
 
+
+//LO ESTABA HACIENDO MAL: Las funciones eran CalculaColorVentanita y
+//CalculaColorVentanita Curva
+
+//ComputeWindowColor
+void ComputeWindowColor (unsigned char edgeCase, double gx, double gy, double des,
+                         double A, double B, double *win)
+{
+  
+}
+void CalculaColorVentanita (unsigned char caso, float gx, float gy, float des, 
+					float A, float B, float *vent, int debug)
+/* Dado un borde <gx,gy> con desplazamiento des y colores A y B, generamos
+  una subimagen 9x5 sintética con una rampa ideal para esos valores.
+  Si la pendiente es mayor que 1, la subimagen será 5x9 (horizontal).
+  En realidad no es según la pendiente, sino segun el caso (YMAX o XMAX).
+  La subventanita viene grabada por columnas, de izquierda a derecha, y aunque
+  es rectangular, luego solo se utilizaran columnas de 7 tomadas en diagonal, y 
+  columnas de 1 solo pixel en las laterales (para el error que habia en los
+  45º del círculo. */
+{
+int i, j, n, s;
+float m;
+float absgx = fabs(gx);
+float absgy = fabs(gy);
+int pen;
+
+// si la pendiente es mayor que 1, invertimos los ejes x e y. 
+if (caso == XMAX) { 
+	SWAP_FLOAT (gx, gy); 
+	SWAP_FLOAT (absgx, absgy);
+ }
+
+// ahora gx<gy en valor absoluto. Si gy<0, invertimos la situación
+if (gy<0) {
+	gx = -gx;
+	gy = -gy; 
+	SWAP_FLOAT (A, B); 
+ }
+
+if (debug) printf ("en ventanita: radio=inf G=(%f,%f) des=%f\n",
+		gx,gy,des);
+
+// calculamos la ventanita
+m = absgx / absgy; 
+for (i=-2; i<=2; i++) 
+	for (j=Lims[i+2][0]; j<=Lims[i+2][1]; j++) {
+		s = 9*i + j + 22;  //(i+2)*9+(j+4);
+		vent[s] = CalculaColorPixel (absgx, absgy, des-j-i*m, A, B);
+	 }
+	 
+// si gx<0, intercambiamos las columnas laterales
+if (gx<0) for (n=0; n<9; n++) { 
+	SWAP_FLOAT (vent[n+9], vent[n+27]);
+	//SWAP_FLOAT (vent[n], vent[n+36]);
+	vent[5] = vent[41];
+	vent[39] = vent[3];
+ }
+
+if (!debug) return;
+
+// imprimimos resultados ventanita 
+if (caso == YMAX) {			// ventanita vertical
+	for (j=-4; j<=4; j++) {
+		for (i=-2; i<=2; i++) printf ("%f ", vent[(i+2)*9+(j+4)]);
+		printf ("\n");
+	 }
+ } else {			// ventanita horizontal
+	for (i=-2; i<=2; i++) {
+		for (j=-4; j<=4; j++) printf ("%f ", vent[(i+2)*9+(j+4)]);
+		printf ("\n");
+	 }
+ }
+}
+
+
+//ComputeCurveWindowColor
+void ComputeCurveWindowColor (unsigned char edgeCase, double gx, double gy,
+                              double des, double cu, double A, double B,
+                              double *win, int winsize)
+{
+  
+}
+void CalculaColorVentanitaCurva (unsigned char caso, float gx, float gy, 
+					float des, float cu,
+					float A, float B, float *vent, 
+					int debug, int tamvent)
+/* Dado un borde <gx,gy> con desplazamiento des y colores A y B, generamos
+  una subimagen 9x5 sintética con una parábola ideal para esos valores.
+  Para ello calculamos la curva y=a+bx+cx2 (-v=a+bu+cu2).
+  Si la pendiente es mayor que 1, la subimagen será 5x9 (horizontal). 
+  Si solo1pixel=true, la subimagen generada es 1x1.
+  En realidad no es según la pendiente, sino segun el caso (YMAX o XMAX).
+  La subventanita viene grabada por columnas, de izquierda a derecha, y aunque
+  es rectangular, luego solo se utilizaran columnas de 7 tomadas en diagonal, y 
+  columnas de 1 solo pixel en las laterales (para el error que habia en los
+  45º del círculo). 
+  tamvent indica el tamaño de la ventana a generar
+   1: 1 solo pixel
+   3: 3x3 (al final esta no se esta usando, sino que se llama a la funcion
+   		CalculaVentanita3x3)
+   9: 9x5     */
+{
+double a, b, c, t;
+int n, i, j;
+double absgx = fabs(gx);
+double absgy = fabs(gy); 
+double xc, yc, r, mod;
+int pen, s;
+double D, F;
+
+/***********************
+// calculamos los coeficientes de la parabola
+a = -des;
+b = absgx / absgy;
+t = sqrt (1+b*b);
+c = - t * t * t * cu / 2;
+if (debug) printf ("a=%f b=%f c=%f\n",a,b,c);
+
+// calculamos la ventanita
+for (n=0, j=-3; j<=3; j++) for (i=-1; i<=1; i++, n++) 
+	vent[n] = CalculaColorPixelCurvo_viejo (a+b*i+c*i*i+j, b+2*c*i, c, A, B);
+return;	
+/***********************************/
+
+// si el radio es muy grande, consideramos un caso plano
+if (fabs(cu) < 0.001) {
+	CalculaColorVentanita (caso, gx, gy, des, A, B, vent, debug);
+	return;
+ }
+
+// si la pendiente es mayor que 1, invertimos los ejes x e y. 
+if (caso == XMAX) { 
+	SWAP_FLOAT (gx, gy); 
+	SWAP_DOUBLE (absgx, absgy);
+ }
+
+// ahora gx<gy en valor absoluto. Si gy<0, invertimos colores y curvatura
+if (gy<0) { 
+	SWAP_FLOAT (A, B);
+	cu = -cu;
+ }
+
+// calculamos el radio del círculo
+r = 1.0 / cu;
+
+// si es muy chico ponemos otro
+if (tamvent!=3 && fabs(r)<RMINGAUSS) r = (r>0)? RMINGAUSS : -RMINGAUSS;
+
+// en parametricas caminamos desde el circulo para hallar el centro
+mod = sqrt (absgx*absgx+absgy*absgy);
+xc = r * absgx / mod;
+yc = -des - (absgy * r)/mod; 
+
+if (debug) printf ("en ventanita: radio=%f centro=(%f,%f) G=(%f,%f) des=%f\n",
+		r,xc,yc,gx,gy,des);
+
+// calculamos la pendiente de la ventanita
+pen = (gx*gy>=0.0)? 1 : -1;
+
+// calculamos los colores dentro y fuera
+if (r>0) { D=A; F=B;} else { D=B; F=A;}
+r = fabs(r);
+
+// calculamos la ventanita
+switch (tamvent) {
+   	case 1: vent[0] = CalculaColorPixelCurvo (xc, yc, r, D, F);
+	 	break;
+		
+	case 3: for (j=-1; j<=1; j++) for (i=-1; i<=1; i++) {
+			s = 9*i + j + 22;  //(i+2)*9+(j+4);
+			vent[s] = CalculaColorPixelCurvo (xc-i, yc+j, r, D, F);
+		 }
+		break;
+
+	case 9: for (i=-2; i<=2; i++) for (j=Lims[i+2][0]; j<=Lims[i+2][1]; j++) {
+			s = 9*i + j + 22;  //(i+2)*9+(j+4);
+			vent[s] = CalculaColorPixelCurvo (xc-i, yc+j, r, D, F);
+		 }
+		break;
+ } 	
+	 
+// si la pendiente es negativa, intercambiamos las columnas laterales
+if (pen<0) for (n=0; n<9; n++) {
+	SWAP_FLOAT (vent[n+9], vent[n+27]); 
+	//SWAP_FLOAT (vent[n], vent[n+36]);
+	vent[5] = vent[41];
+	vent[39] = vent[3];
+ }
+
+if (!debug) return;
+
+// imprimimos resultados ventanita 
+switch (tamvent) {
+	case 1: printf ("color calculado para el pixel = %f\n", vent[0]);
+		break;
+	
+	case 9:
+	if (caso == YMAX) {		// ventanita vertical
+		for (j=-4; j<=4; j++) {
+			for (i=-2; i<=2; i++) printf ("%f ", vent[(i+2)*9+(j+4)]);
+			printf ("\n");
+		 }
+	  } else {			// ventanita horizontal
+	 	for (i=-2; i<=2; i++) {
+			for (j=-4; j<=4; j++) printf ("%f ", vent[(i+2)*9+(j+4)]);
+			printf ("\n");
+	  	 }
+ 	
+ 	 }
+ }
+}
+
 //Compute the pixel intensity value based on line equation and up and down 
 //intensities
-double ComputeStraightPixelColor(double a, double b, double A, double B)
-{
-  //Given the line y=a+bx, with A down and B up, we compute the pixel color
-  double x0=-0.5, x1=0.5;
-  double area;
-  
-  //We make b always positive
-  if (b<0) 
-    b = -b;
-  
-  //If the line don't cross the pixel, return B or A
-  if (a+0.5*b < -0.5) 
-    return (B);
-  if (a-0.5*b > 0.5) 
-    return (A);
-  
-  //Horizontal
-  if (b<1e-4) 
-    area = a+0.5;
-  else 
-  { 
-    //Compute the cuts and integrate
-    if (a-0.5*b < -0.5) 
-      x0 = (-0.5-a) / b; 
-    if (a+0.5*b > 0.5)  
-      x1 = (0.5-a) / b;
-    area = (a+0.5)*(x1-x0) + b/2*(x1*x1-x0*x0);
-    if (x1<0.5) 
-      area += 0.5-x1;
-  }
-	
-  //Return the color
-//  if (isnan(area*A + (1-area)*B)) {
-//    cout << "intensidad nan en recto" << endl;
-//    cout << "a:" << a << " b:" << b << " A:" << A << " B:" << B << endl;
+//double ComputeStraightPixelColor(double a, double b, double A, double B)
+//{
+//  //Given the line y=a+bx, with A down and B up, we compute the pixel color
+//  double x0=-0.5, x1=0.5;
+//  double area;
+//  
+//  //We make b always positive
+//  if (b<0) 
+//    b = -b;
+//  
+//  //If the line don't cross the pixel, return B or A
+//  if (a+0.5*b < -0.5) 
+//    return (B);
+//  if (a-0.5*b > 0.5) 
+//    return (A);
+//  
+//  //Horizontal
+//  if (b<1e-4) 
+//    area = a+0.5;
+//  else 
+//  { 
+//    //Compute the cuts and integrate
+//    if (a-0.5*b < -0.5) 
+//      x0 = (-0.5-a) / b; 
+//    if (a+0.5*b > 0.5)  
+//      x1 = (0.5-a) / b;
+//    area = (a+0.5)*(x1-x0) + b/2*(x1*x1-x0*x0);
+//    if (x1<0.5) 
+//      area += 0.5-x1;
 //  }
-
-  return (area*A + (1-area)*B);
-}
+//	
+//  //Return the color
+////  if (isnan(area*A + (1-area)*B)) {
+////    cout << "intensidad nan en recto" << endl;
+////    cout << "a:" << a << " b:" << b << " A:" << A << " B:" << B << endl;
+////  }
+//
+//  return (area*A + (1-area)*B);
+//}
 
 //Compute the pixel intensity value based on circle equation and inside and
 //outside intensities
-double ComputeCurvePixelColor(double xc, double yc, double r, double D, double F)
-{
-  //With the circunference (x-xc)2 + (y-yc)2 = r2, the intensity D in and the
-  //intensity F out, we compute the pixel color
-  double t, x0, x1, area;
-  
-  //cout << "xc=" << xc << " yc=" << yc << " r=" << r << " D=" << D << " F=" << F << endl;
-  
-  //Pass the center to right down (xc>0, yc<0, xc>-yc)
-  xc = fabs(xc);
-  yc = fabs(yc);
-  if (xc < yc) 
-  { 
-    SWAP_DOUBLE (xc, yc);
-  }
-  yc = -yc;
-  
-  //If the pixel is outside, we return F
-  if (yc+r<=-0.5 || xc-r>=0.5) 
-    return (F);
-  
-  //Compute the cuts
-  x0 = xc - sqrt(r*r - (-0.5-yc)*(-0.5-yc));
-  if (x0 < xc-r) 
-    x0 = xc-r;
-  if (yc+r <= 0.5) 
-    x1 = 0.5;
-	else 
-    x1 = xc - sqrt( r*r - (0.5-yc)*(0.5-yc));
-	
-  //If the pixel is inside, we return D
-  if (x1 <= -0.5) 
-    return (D); 
-  
-  // miramos los casos (ver folio aparte) ¿¿comorl??
-  //All posible cases
-  if (yc <= -0.5) 
-  {
-  	if (x0 >= 0.5) 
-      return (F);
-    if (x0 > -0.5) 
-    {
-      if (x1 < 0.5)  
-        area = P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
-      else 
-        area = P(0.5) - P(x0) - 0.5*x0 + 0.25;
-    } 
-    else 
-    {
-      if (x1 < 0.5)
-        area = P(x1) - P(-0.5) - 0.5*x1 + 0.75;
-      else 
-        area = P(0.5) - P(-0.5) + 0.5;
-    }
-  } 
-  else 
-  {
-    t = xc - r;
-    if (x1 < 0.5) 
-    {
-      if (t >= -0.5)
-        area = 2 * (P(x0) - P(t) - yc*(x0-t)) +
-				P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
-      else 
-        area = 2 * (P(x0) - P(-0.5) - yc*(x0+0.5)) +
-				P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
-    } 
-    else 
-    {
-      if (x0 <= 0.5)
-        area = 2 * (P(x0) - P(t) - yc*(x0-t)) +
-				P(0.5) - P(x0) - 0.5*x0 + 0.25;
-      else 
-        area = 2 * (P(0.5) - P(t) - yc*(0.5-t));
-    }
-  }
-  
-  //Return the color
-//  if (isnan(F + area*(D-F))) {
-//    cout << "intensidad nan en curvo" << endl;
-//    cout << "xc:" << xc << " yc:" << yc << " r:" << r << " D:" << D << " F:" << F << endl;
-//    cout << "area: " << area << endl;
+//double ComputeCurvePixelColor(double xc, double yc, double r, double D, double F)
+//{
+//  //With the circunference (x-xc)2 + (y-yc)2 = r2, the intensity D in and the
+//  //intensity F out, we compute the pixel color
+//  double t, x0, x1, area;
+//  
+//  //cout << "xc=" << xc << " yc=" << yc << " r=" << r << " D=" << D << " F=" << F << endl;
+//  
+//  //Pass the center to right down (xc>0, yc<0, xc>-yc)
+//  xc = fabs(xc);
+//  yc = fabs(yc);
+//  if (xc < yc) 
+//  { 
+//    SWAP_DOUBLE (xc, yc);
 //  }
-  return (F + area*(D-F));
-}
+//  yc = -yc;
+//  
+//  //If the pixel is outside, we return F
+//  if (yc+r<=-0.5 || xc-r>=0.5) 
+//    return (F);
+//  
+//  //Compute the cuts
+//  x0 = xc - sqrt(r*r - (-0.5-yc)*(-0.5-yc));
+//  if (x0 < xc-r) 
+//    x0 = xc-r;
+//  if (yc+r <= 0.5) 
+//    x1 = 0.5;
+//	else 
+//    x1 = xc - sqrt( r*r - (0.5-yc)*(0.5-yc));
+//	
+//  //If the pixel is inside, we return D
+//  if (x1 <= -0.5) 
+//    return (D); 
+//  
+//  // miramos los casos (ver folio aparte) ¿¿comorl??
+//  //All posible cases
+//  if (yc <= -0.5) 
+//  {
+//  	if (x0 >= 0.5) 
+//      return (F);
+//    if (x0 > -0.5) 
+//    {
+//      if (x1 < 0.5)  
+//        area = P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
+//      else 
+//        area = P(0.5) - P(x0) - 0.5*x0 + 0.25;
+//    } 
+//    else 
+//    {
+//      if (x1 < 0.5)
+//        area = P(x1) - P(-0.5) - 0.5*x1 + 0.75;
+//      else 
+//        area = P(0.5) - P(-0.5) + 0.5;
+//    }
+//  } 
+//  else 
+//  {
+//    t = xc - r;
+//    if (x1 < 0.5) 
+//    {
+//      if (t >= -0.5)
+//        area = 2 * (P(x0) - P(t) - yc*(x0-t)) +
+//				P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
+//      else 
+//        area = 2 * (P(x0) - P(-0.5) - yc*(x0+0.5)) +
+//				P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
+//    } 
+//    else 
+//    {
+//      if (x0 <= 0.5)
+//        area = 2 * (P(x0) - P(t) - yc*(x0-t)) +
+//				P(0.5) - P(x0) - 0.5*x0 + 0.25;
+//      else 
+//        area = 2 * (P(0.5) - P(t) - yc*(0.5-t));
+//    }
+//  }
+//  
+//  //Return the color
+////  if (isnan(F + area*(D-F))) {
+////    cout << "intensidad nan en curvo" << endl;
+////    cout << "xc:" << xc << " yc:" << yc << " r:" << r << " D:" << D << " F:" << F << endl;
+////    cout << "area: " << area << endl;
+////  }
+//  return (F + area*(D-F));
+//}
 
 //With the parable a+bx+cx^2, using the limits, it goes refining a circle
-bool SearchCircle(double &a, double &b, double &c, double A, double B, int l1,
-                  int l2, int m1, int m2, int r1, int r2)
-{
-  double vents[55], vent[55]/*, ventprev[55]*/;	// la ventana donde voy a generar es de 11x5
-  double raiz, r, xc, yc, D, F;
-  int i, j, n, k, iter=0;
-  double a0, a1/*, a2*/, b0, b1/*, b2*/, c0, c1/*, c2*/;
-  double SL, SM, SR, f;
-  double aprev, bprev, cprev;
-  double fa, fb, fc;
-  //double err, errprev=1e10;
-  /*
-   // parametros para imagenes sinteticas
-   int maxiter=1000;	// número máximo de iteraciones para converger
-   double umbral1=1e-7;	// si a,b,c varían menos de esto, ya podemos acabar
-   double umbral2=1e-1;	// si despues de maxiter a,b,c varían menos de esto, ya acabamos
-   */
-  // parametros para imagenes reales
-  int maxiter=100;	// número máximo de iteraciones para converger
-  double umbral1=1e-5;	// si a,b,c varían menos de esto, ya podemos acabar
-  double umbral2=1e-2;	// si despues de maxiter a,b,c varían menos de esto, ya acabamos
-  
-  // guardamos la parábola original
-  aprev=a0=a; bprev=b0=b; cprev=c0=c;
-  
-  //for (n=0; n<55; n++) ventprev[n] = 0;
-  
-  // iteramos hasta converger
-  do {
-    
-    // generamos una ventanita sintetica
-    raiz = sqrt (1+b*b);
-    r = raiz * raiz * raiz / (-2*c);
-    if (isnan(r) || fabs(r)>RMAX) {	
-      // caso recto, por lo que generamos una recta
-      //		if (iter>95) printf ("---R=inf a=%f b=%f c=%f\n", a, b, c);  
-      for (i=-2; i<=2; i++) for (j=-2; j<=2; j++)
-        vent[(i+2)*11+j+5] = ComputeStraightPixelColor(a+i*b+j, b, A, B);		
-      /*			
-       for (j=-2; j<=2; j++) {
-       for (i=-2; i<=2; i++) printf ("%.1f ", vent[(i+2)*11+j+5]);
-       printf ("\n");
-       }
-       */		
-			
-    } else {
-      // caso curvo, por lo que generamos un circulo
-      xc = b * r / raiz;
-      yc = a - r / raiz;	
-      if (c<=0) { D=A; F=B;} else { D=B; F=A;}
-      //if (iter>995) printf ("iter %d ---R=%f C=(%f,%f) a=%f b=%f c=%f\n",iter,r, xc, yc, a, b, c);	
-      for (i=-2; i<=2; i++) for (j=-2; j<=2; j++)
-        vent[(i+2)*11+j+5] = ComputeCurvePixelColor(xc-i, yc+j, fabs(r), D, F);
-    }
-    
-    // suavizamos la imagen
-    for (i=-1; i<=1; i++) for (j=-1; j<=1; j++) {
-      n = (i+2)*11+j+5;
-      vents[n] = (vent[n-12]+vent[n-11]+vent[n-10]+vent[n-1]+vent[n]+vent[n+1]+vent[n+10]+vent[n+11]+vent[n+12]) / 9;
-    }
-    
-    // sumamos las columnas
-    for (SL=0, k=l1; k<=l2; k++) SL += vents[11+k+5];
-    for (SM=0, k=m1; k<=m2; k++) SM += vents[22+k+5];
-    for (SR=0, k=r1; k<=r2; k++) SR += vents[33+k+5];
-    //	printf ("S = %f %f %f\n", SL, SM, SR);
-    
-    // buscamos la parabola que daria mi metodo
-    f = 2 * (A-B);
-    c1 = (SL + SR - 2*SM + A*(2*m2-l2-r2) - B*(2*m1-l1-r1)) / f;
-    b1 = (SR - SL + A*(l2-r2) + B*(r1-l1)) / f;		
-    a1 = (2*SM - (1+2*m2)*A - (1-2*m1)*B) / f - 0.75*c1;
-    //printf ("  estimada a1=%f b1=%f c1=%f\n", a1, b1, c1);
-    
-    // actualizamos la nueva parábola
-    a = a0 - a1 + a;
-    b = b0 - b1 + b;
-    c = c0 - c1 + c;
-    //	printf ("a=%f a0=%f a1=%f\n", a, a0, a1);
-    //tot_iter++;
-		
-    // miramos si hay convergencia
-    fa=fabs(a-aprev); fb=fabs(b-bprev); fc=fabs(c-cprev); 
-    //	if (iter>95) printf ("iter=%d fa=%f fb=%f fc=%f\n", iter, fa, fb, fc);
-    if (fa>1 || fb>1 || fc>1 || isnan(a) || isnan(b) || isnan(c)) break;
-    if (fa<umbral1 && fb<umbral1 && fc<umbral1) return(true); 
-    if (++iter>maxiter) {
-      if (fa<umbral2 && fb<umbral2 && fc<umbral2) return(true); 
-      else break;
-    }
-    aprev=a; bprev=b; cprev=c;
-    
-    /*
-     // miramos si hay convergencia
-     double dif;
-     iter++;
-     if (isnan(a) || isnan(b) || isnan(c)) break;
-     for (err=0,i=-1; i<=1; i++) for (j=-1; j<=1; j++) {
-     n = (i+2)*11+j+5;
-     dif = vent[n] - ventprev[n];
-     err += dif * dif;
-     ventprev[n] = vent[n];
-     }
-     printf ("iter %d error=%f\n", iter, err);
-     //	if (++iter>maxiter && err>0.1) break;
-     if (err>errprev) break; else errprev=err;
-     if (err<1e-6) {return(true);}
-     */
-    
-  } while (true);  
-  
-  // no converge
-  a=a0; b=b0; c=c0;
-  // printf ("no converge\n");
-  return(false);
-}
+//bool SearchCircle(double &a, double &b, double &c, double A, double B, int l1,
+//                  int l2, int m1, int m2, int r1, int r2)
+//{
+//  double vents[55], vent[55]/*, ventprev[55]*/;	// la ventana donde voy a generar es de 11x5
+//  double raiz, r, xc, yc, D, F;
+//  int i, j, n, k, iter=0;
+//  double a0, a1/*, a2*/, b0, b1/*, b2*/, c0, c1/*, c2*/;
+//  double SL, SM, SR, f;
+//  double aprev, bprev, cprev;
+//  double fa, fb, fc;
+//  //double err, errprev=1e10;
+//  /*
+//   // parametros para imagenes sinteticas
+//   int maxiter=1000;	// número máximo de iteraciones para converger
+//   double umbral1=1e-7;	// si a,b,c varían menos de esto, ya podemos acabar
+//   double umbral2=1e-1;	// si despues de maxiter a,b,c varían menos de esto, ya acabamos
+//   */
+//  // parametros para imagenes reales
+//  int maxiter=100;	// número máximo de iteraciones para converger
+//  double umbral1=1e-5;	// si a,b,c varían menos de esto, ya podemos acabar
+//  double umbral2=1e-2;	// si despues de maxiter a,b,c varían menos de esto, ya acabamos
+//  
+//  // guardamos la parábola original
+//  aprev=a0=a; bprev=b0=b; cprev=c0=c;
+//  
+//  //for (n=0; n<55; n++) ventprev[n] = 0;
+//  
+//  // iteramos hasta converger
+//  do {
+//    
+//    // generamos una ventanita sintetica
+//    raiz = sqrt (1+b*b);
+//    r = raiz * raiz * raiz / (-2*c);
+//    if (isnan(r) || fabs(r)>RMAX) {	
+//      // caso recto, por lo que generamos una recta
+//      //		if (iter>95) printf ("---R=inf a=%f b=%f c=%f\n", a, b, c);  
+//      for (i=-2; i<=2; i++) for (j=-2; j<=2; j++)
+//        vent[(i+2)*11+j+5] = ComputeStraightPixelColor(a+i*b+j, b, A, B);		
+//      /*			
+//       for (j=-2; j<=2; j++) {
+//       for (i=-2; i<=2; i++) printf ("%.1f ", vent[(i+2)*11+j+5]);
+//       printf ("\n");
+//       }
+//       */		
+//			
+//    } else {
+//      // caso curvo, por lo que generamos un circulo
+//      xc = b * r / raiz;
+//      yc = a - r / raiz;	
+//      if (c<=0) { D=A; F=B;} else { D=B; F=A;}
+//      //if (iter>995) printf ("iter %d ---R=%f C=(%f,%f) a=%f b=%f c=%f\n",iter,r, xc, yc, a, b, c);	
+//      for (i=-2; i<=2; i++) for (j=-2; j<=2; j++)
+//        vent[(i+2)*11+j+5] = ComputeCurvePixelColor(xc-i, yc+j, fabs(r), D, F);
+//    }
+//    
+//    // suavizamos la imagen
+//    for (i=-1; i<=1; i++) for (j=-1; j<=1; j++) {
+//      n = (i+2)*11+j+5;
+//      vents[n] = (vent[n-12]+vent[n-11]+vent[n-10]+vent[n-1]+vent[n]+vent[n+1]+vent[n+10]+vent[n+11]+vent[n+12]) / 9;
+//    }
+//    
+//    // sumamos las columnas
+//    for (SL=0, k=l1; k<=l2; k++) SL += vents[11+k+5];
+//    for (SM=0, k=m1; k<=m2; k++) SM += vents[22+k+5];
+//    for (SR=0, k=r1; k<=r2; k++) SR += vents[33+k+5];
+//    //	printf ("S = %f %f %f\n", SL, SM, SR);
+//    
+//    // buscamos la parabola que daria mi metodo
+//    f = 2 * (A-B);
+//    c1 = (SL + SR - 2*SM + A*(2*m2-l2-r2) - B*(2*m1-l1-r1)) / f;
+//    b1 = (SR - SL + A*(l2-r2) + B*(r1-l1)) / f;		
+//    a1 = (2*SM - (1+2*m2)*A - (1-2*m1)*B) / f - 0.75*c1;
+//    //printf ("  estimada a1=%f b1=%f c1=%f\n", a1, b1, c1);
+//    
+//    // actualizamos la nueva parábola
+//    a = a0 - a1 + a;
+//    b = b0 - b1 + b;
+//    c = c0 - c1 + c;
+//    //	printf ("a=%f a0=%f a1=%f\n", a, a0, a1);
+//    //tot_iter++;
+//		
+//    // miramos si hay convergencia
+//    fa=fabs(a-aprev); fb=fabs(b-bprev); fc=fabs(c-cprev); 
+//    //	if (iter>95) printf ("iter=%d fa=%f fb=%f fc=%f\n", iter, fa, fb, fc);
+//    if (fa>1 || fb>1 || fc>1 || isnan(a) || isnan(b) || isnan(c)) break;
+//    if (fa<umbral1 && fb<umbral1 && fc<umbral1) return(true); 
+//    if (++iter>maxiter) {
+//      if (fa<umbral2 && fb<umbral2 && fc<umbral2) return(true); 
+//      else break;
+//    }
+//    aprev=a; bprev=b; cprev=c;
+//    
+//    /*
+//     // miramos si hay convergencia
+//     double dif;
+//     iter++;
+//     if (isnan(a) || isnan(b) || isnan(c)) break;
+//     for (err=0,i=-1; i<=1; i++) for (j=-1; j<=1; j++) {
+//     n = (i+2)*11+j+5;
+//     dif = vent[n] - ventprev[n];
+//     err += dif * dif;
+//     ventprev[n] = vent[n];
+//     }
+//     printf ("iter %d error=%f\n", iter, err);
+//     //	if (++iter>maxiter && err>0.1) break;
+//     if (err>errprev) break; else errprev=err;
+//     if (err<1e-6) {return(true);}
+//     */
+//    
+//  } while (true);  
+//  
+//  // no converge
+//  a=a0; b=b0; c=c0;
+//  // printf ("no converge\n");
+//  return(false);
+//}
 
 void UpdateImages(InrImage* C, InrImage* I, int x, int y, int z, 
                   unsigned char edgeCase, double a, double b, double c, double A,
@@ -1798,201 +2011,6 @@ void UpdateImages(InrImage* C, InrImage* I, int x, int y, int z,
 
 
 //Versión con la ventana de tamaño fijo 9x3
-/*void SubPixel2D::SubpixelDenoising(int niter)
-{
-  int margin = 4;
-  //Crear imagen de contadores y de intensidades e inicializarlas a cero
-  InrImage::ptr C = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
-                                               input->DimZ(), WT_DOUBLE,
-                                               "counters.inr.gz"));
-  InrImage::ptr I = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
-                                               input->DimZ(), WT_DOUBLE,
-                                               "intensities.inr.gz"));
-  InrImage::ptr G = InrImage::ptr(new InrImage(input->DimX(), input->DimY(),
-                                               input->DimZ(), WT_DOUBLE,
-                                               "averaged.inr.gz"));
-
-  //For third dimension
-  int z = 0;
-  //Partial derivatives
-  float parx, pary, partial;
-  //Pointers to upos and vpos
-  int *u, *v;
-  int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Partials
-                 0, 1, 1, 0,-1,-1,              //A and B
-                 -1,-1,-1,-1,-1,-1,-1,          //Sums of the columns 
-                 0, 0, 0, 0, 0, 0, 0, 
-                 1, 1, 1, 1, 1, 1, 1 };
-  int vpos[] = { 1,-1,-1,-3, 0,-2, 2, 0, 3, 1,	//Partials
-                 4, 3, 4,-4,-3,-4,              //A and B
-                -2,-1, 0, 1, 2, 3, 4,           //Sums of the columns
-                -3,-2,-1, 0, 1, 2, 3,	
-                -4,-3,-2,-1, 0, 1, 2 };
-  borderPixel pixel;
-  double A, B, S1, S2, S3;
-  double a, b, c, d;
-  double gx_n, gy_n, des_n, cu_n, abscu;
-  double f = (1+24*A01+48*A11) / 12;
-  int m;
-  
-  for(int index=0; index<niter; index++)
-  {
-    C->InitZero();
-    I->InitZero();
-    G->InitZero();
-    
-    //1º Se promedia la imagen de entrada y se deja en G
-    Promedio3x3(input, G.get(), A00, A01, A11);
-    
-    //Para que funcionen las macros de parciales tengo que jincar G como input
-    //setInput(G.get());
-    copyImage(input, G.get(), margin);
-    //*input = *(G.get());
-    //Para todos los pixels de G
-
-    borderPixelVector.clear();
-   
-    for(int y = margin; y < G->DimY()-margin; y++)
-    {
-      for(int x = margin; x < G->DimX()-margin; x++)
-      {
-        pary = ffy(x,y,z);
-        parx = ffx(x,y,z);
-        if (parx*parx + pary*pary < threshold*threshold) continue;
-        if (fabs(pary) >= fabs(parx))
-        {
-          //Vertical window
-          u = upos;
-          v = vpos;
-          //The partial must be maximum in the column
-          partial = fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z));
-          if (partial < threshold) continue;
-          if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
-          if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
-          if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-          if (fabs(FF(x+u[8],y+v[8],z) - FF(x+u[9],y+v[9],z)) > partial) continue;
-          
-          m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
-          B = ((double) FF(x-m,y-3,z) + FF(x-m,y-4,z) + FF(x,y-4,z)) / 3.0;
-          A = ((double) FF(x,y+4,z) + FF(x+m,y+4,z) + FF(x+m,y+3,z)) / 3.0;
-          if (fabs(A-B)<threshold) continue;
-          
-          //Calculamos las sumas y los coeficientes de la parábola
-          S1 = S2 = S3 = 0.0;
-          for (int t=-3; t<=3; t++) 
-          {
-            S1 += FF(x+u[19+t],y+v[19+t],z);
-            S2 += FF(x+u[26+t],y+v[26+t],z);
-            S3 += FF(x+u[33+t],y+v[33+t],z);
-          }
-          
-          //Calculate the coefficients of the parable
-          a = (2*S2 - 7*(A+B)) / (2*(A-B));
-          b = 1.0 + (S3-S1) / (2*(A-B));
-          c = (linear_case) ? 0 : (S3+S1-2*S2) / (2*(A-B)); //In 1st order, c=0
-          a -= f * c;
-          
-          //Calculate curvature
-          cu_n  = sqrt (1+b*b);
-          cu_n *= cu_n * cu_n;
-          cu_n  = 2*c / cu_n;
-          abscu = fabs(cu_n);
-          
-          //Calculate gradient and displacement
-          d = (A-B) / sqrt(1+b*b);
-          
-          gx_n  = (ffx(x,y,z)>0) ? b*d : -b*d;
-          gy_n  = (ffy(x,y,z)>0) ? d   : -d;
-          des_n = (ffy(x,y,z)>0) ? -a  : a;
-          
-          if (ffy(x,y,z)<0) cu_n = -cu_n;
-          
-          //Set the calculated values on the borderPixel object
-          pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu_n, x, y);
-          //Add edge pixel to the vector
-          borderPixelVector.push_back(pixel);
-          
-//          UpdateImages(input, C.get(), I.get(), x, y, z, YMAX, borderPixelVector,
-//                       linear_case, threshold);
-          UpdateImages(C.get(), I.get(), x, y, z, YMAX, a, b, c, A, B);
-        }
-        else
-        {
-          //Horizontal window
-          u = vpos;
-          v = upos;
-          //The partial must be maximum in the row
-          partial = fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z));
-          if (partial < threshold) continue;
-          if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
-          if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
-          if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-          if (fabs(FF(x+u[8],y+v[8],z) - FF(x+u[9],y+v[9],z)) > partial) continue;
-
-          m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
-          B = ((double) FF(x-3,y-m,z) + FF(x-4,y-m,z) + FF(x-4,y,z)) / 3.0;
-          A = ((double) FF(x+4,y,z) + FF(x+4,y+m,z) + FF(x+3,y+m,z)) / 3.0;
-          if (fabs(A-B)<threshold) continue;
-
-          //Calculamos las sumas y los coeficientes de la parábola
-          S1 = S2 = S3 = 0.0;
-          for (int t=-3; t<=3; t++) 
-          {
-            S1 += FF(x+u[19+t],y+v[19+t],z);
-            S2 += FF(x+u[26+t],y+v[26+t],z);
-            S3 += FF(x+u[33+t],y+v[33+t],z);
-          }
-
-          //Calculate the coefficients of the parable
-          a = (2*S2 - 7*(A+B)) / (2*(A-B));
-          b = 1.0 + (S3-S1) / (2*(A-B));
-          c = (linear_case) ? 0 : (S3+S1-2*S2) / (2*(A-B)); //In 1st order, c=0
-          a -= f * c;
-
-          //Calculate curvature
-          cu_n  = sqrt (1+b*b);
-          cu_n *= cu_n * cu_n;
-          cu_n  = 2*c / cu_n;
-          abscu = fabs(cu_n);
-          
-          //Calculate gradient and displacement
-          d = (A-B) / sqrt(1+b*b);
-          
-          gx_n  = (ffx(x,y,z)>0) ? d   : -d;
-          gy_n  = (ffy(x,y,z)>0) ? b*d : -b*d; 
-          des_n = (ffx(x,y,z)>0) ? -a  : a;
-          
-          if (ffx(x,y,z)<0) cu_n = -cu_n;
-                    
-          //Set the calculated values on the borderPixel object
-          pixel.setBorderPixelValues(A, B, XMAX, a, b, c, cu_n, x, y);
-          //Add edge pixel to the vector
-          borderPixelVector.push_back(pixel);
-          
-//          UpdateImages(input, C.get(), I.get(), x, y, z, XMAX, borderPixelVector,
-//                       linear_case, threshold);
-          UpdateImages(C.get(), I.get(), x, y, z, XMAX, a, b, c, A, B);
-        }
-      }
-    }
-    //*input = *(G.get());
-    //Con las imágenes resultantes, se rellena la nueva imagen de entrada
-    for (int y = margin; y < G->DimY()-margin; y++)
-    {
-      for (int x = margin; x < G->DimX()-margin; x++)
-      {
-        if ((*C)(x,y,z) > 0)
-        {
-          input->BufferPos(x,y,z);
-          input->FixeValeur(((*I)(x,y,z))/((*C)(x,y,z)));
-        }
-      }
-    }
-  }
-}*/
-
-
-//Versión con ventana flotante y bordes muy cercanos
 void SubPixel2D::SubpixelDenoising(int niter)
 {
   int margin = 4;
@@ -2185,6 +2203,201 @@ void SubPixel2D::SubpixelDenoising(int niter)
     }
   }
 }
+
+
+//Versión con ventana flotante y bordes muy cercanos (aún no)
+/*void SubPixel2D::SubpixelDenoising(int niter)
+{
+  int margin = 4;
+  //Crear imagen de contadores y de intensidades e inicializarlas a cero
+  InrImage::ptr C = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
+                                               input->DimZ(), WT_DOUBLE,
+                                               "counters.inr.gz"));
+  InrImage::ptr I = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
+                                               input->DimZ(), WT_DOUBLE,
+                                               "intensities.inr.gz"));
+  InrImage::ptr G = InrImage::ptr(new InrImage(input->DimX(), input->DimY(),
+                                               input->DimZ(), WT_DOUBLE,
+                                               "averaged.inr.gz"));
+
+  //For third dimension
+  int z = 0;
+  //Partial derivatives
+  float parx, pary, partial;
+  //Pointers to upos and vpos
+  int *u, *v;
+  int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Partials
+                 0, 1, 1, 0,-1,-1,              //A and B
+                 -1,-1,-1,-1,-1,-1,-1,          //Sums of the columns 
+                 0, 0, 0, 0, 0, 0, 0, 
+                 1, 1, 1, 1, 1, 1, 1 };
+  int vpos[] = { 1,-1,-1,-3, 0,-2, 2, 0, 3, 1,	//Partials
+                 4, 3, 4,-4,-3,-4,              //A and B
+                -2,-1, 0, 1, 2, 3, 4,           //Sums of the columns
+                -3,-2,-1, 0, 1, 2, 3,	
+                -4,-3,-2,-1, 0, 1, 2 };
+  borderPixel pixel;
+  double A, B, S1, S2, S3;
+  double a, b, c, d;
+  double gx_n, gy_n, des_n, cu_n, abscu;
+  double f = (1+24*A01+48*A11) / 12;
+  int m;
+  
+  for(int index=0; index<niter; index++)
+  {
+    C->InitZero();
+    I->InitZero();
+    G->InitZero();
+    
+    //1º Se promedia la imagen de entrada y se deja en G
+    Promedio3x3(input, G.get(), A00, A01, A11);
+    
+    //Para que funcionen las macros de parciales tengo que jincar G como input
+    //setInput(G.get());
+    copyImage(input, G.get(), margin);
+    //*input = *(G.get());
+    //Para todos los pixels de G
+
+    borderPixelVector.clear();
+   
+    for(int y = margin; y < G->DimY()-margin; y++)
+    {
+      for(int x = margin; x < G->DimX()-margin; x++)
+      {
+        pary = ffy(x,y,z);
+        parx = ffx(x,y,z);
+        if (parx*parx + pary*pary < threshold*threshold) continue;
+        if (fabs(pary) >= fabs(parx))
+        {
+          //Vertical window
+          u = upos;
+          v = vpos;
+          //The partial must be maximum in the column
+          partial = fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z));
+          if (partial < threshold) continue;
+          if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
+          if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
+          if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
+          if (fabs(FF(x+u[8],y+v[8],z) - FF(x+u[9],y+v[9],z)) > partial) continue;
+          
+          m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
+          B = ((double) FF(x-m,y-3,z) + FF(x-m,y-4,z) + FF(x,y-4,z)) / 3.0;
+          A = ((double) FF(x,y+4,z) + FF(x+m,y+4,z) + FF(x+m,y+3,z)) / 3.0;
+          if (fabs(A-B)<threshold) continue;
+          
+          //Calculamos las sumas y los coeficientes de la parábola
+          S1 = S2 = S3 = 0.0;
+          for (int t=-3; t<=3; t++) 
+          {
+            S1 += FF(x+u[19+t],y+v[19+t],z);
+            S2 += FF(x+u[26+t],y+v[26+t],z);
+            S3 += FF(x+u[33+t],y+v[33+t],z);
+          }
+          
+          //Calculate the coefficients of the parable
+          a = (2*S2 - 7*(A+B)) / (2*(A-B));
+          b = 1.0 + (S3-S1) / (2*(A-B));
+          c = (linear_case) ? 0 : (S3+S1-2*S2) / (2*(A-B)); //In 1st order, c=0
+          a -= f * c;
+          
+          //Calculate curvature
+          cu_n  = sqrt (1+b*b);
+          cu_n *= cu_n * cu_n;
+          cu_n  = 2*c / cu_n;
+          abscu = fabs(cu_n);
+          
+          //Calculate gradient and displacement
+          d = (A-B) / sqrt(1+b*b);
+          
+          gx_n  = (ffx(x,y,z)>0) ? b*d : -b*d;
+          gy_n  = (ffy(x,y,z)>0) ? d   : -d;
+          des_n = (ffy(x,y,z)>0) ? -a  : a;
+          
+          if (ffy(x,y,z)<0) cu_n = -cu_n;
+          
+          //Set the calculated values on the borderPixel object
+          pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu_n, x, y);
+          //Add edge pixel to the vector
+          borderPixelVector.push_back(pixel);
+          
+//          UpdateImages(input, C.get(), I.get(), x, y, z, YMAX, borderPixelVector,
+//                       linear_case, threshold);
+          UpdateImages(C.get(), I.get(), x, y, z, YMAX, a, b, c, A, B);
+        }
+        else
+        {
+          //Horizontal window
+          u = vpos;
+          v = upos;
+          //The partial must be maximum in the row
+          partial = fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z));
+          if (partial < threshold) continue;
+          if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
+          if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
+          if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
+          if (fabs(FF(x+u[8],y+v[8],z) - FF(x+u[9],y+v[9],z)) > partial) continue;
+
+          m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
+          B = ((double) FF(x-3,y-m,z) + FF(x-4,y-m,z) + FF(x-4,y,z)) / 3.0;
+          A = ((double) FF(x+4,y,z) + FF(x+4,y+m,z) + FF(x+3,y+m,z)) / 3.0;
+          if (fabs(A-B)<threshold) continue;
+
+          //Calculamos las sumas y los coeficientes de la parábola
+          S1 = S2 = S3 = 0.0;
+          for (int t=-3; t<=3; t++) 
+          {
+            S1 += FF(x+u[19+t],y+v[19+t],z);
+            S2 += FF(x+u[26+t],y+v[26+t],z);
+            S3 += FF(x+u[33+t],y+v[33+t],z);
+          }
+
+          //Calculate the coefficients of the parable
+          a = (2*S2 - 7*(A+B)) / (2*(A-B));
+          b = 1.0 + (S3-S1) / (2*(A-B));
+          c = (linear_case) ? 0 : (S3+S1-2*S2) / (2*(A-B)); //In 1st order, c=0
+          a -= f * c;
+
+          //Calculate curvature
+          cu_n  = sqrt (1+b*b);
+          cu_n *= cu_n * cu_n;
+          cu_n  = 2*c / cu_n;
+          abscu = fabs(cu_n);
+          
+          //Calculate gradient and displacement
+          d = (A-B) / sqrt(1+b*b);
+          
+          gx_n  = (ffx(x,y,z)>0) ? d   : -d;
+          gy_n  = (ffy(x,y,z)>0) ? b*d : -b*d; 
+          des_n = (ffx(x,y,z)>0) ? -a  : a;
+          
+          if (ffx(x,y,z)<0) cu_n = -cu_n;
+                    
+          //Set the calculated values on the borderPixel object
+          pixel.setBorderPixelValues(A, B, XMAX, a, b, c, cu_n, x, y);
+          //Add edge pixel to the vector
+          borderPixelVector.push_back(pixel);
+          
+//          UpdateImages(input, C.get(), I.get(), x, y, z, XMAX, borderPixelVector,
+//                       linear_case, threshold);
+          UpdateImages(C.get(), I.get(), x, y, z, XMAX, a, b, c, A, B);
+        }
+      }
+    }
+    //*input = *(G.get());
+    //Con las imágenes resultantes, se rellena la nueva imagen de entrada
+    for (int y = margin; y < G->DimY()-margin; y++)
+    {
+      for (int x = margin; x < G->DimX()-margin; x++)
+      {
+        if ((*C)(x,y,z) > 0)
+        {
+          input->BufferPos(x,y,z);
+          input->FixeValeur(((*I)(x,y,z))/((*C)(x,y,z)));
+        }
+      }
+    }
+  }
+}*/
 
 
 
