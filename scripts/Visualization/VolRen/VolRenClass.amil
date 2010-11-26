@@ -150,6 +150,7 @@ if (!exists(VolRenClass)) {
         #  m_pVTKWindow->Start()
         ::renderer->ResetCameraClippingRange()
         ::vtkvol1.SetInteractor(&::renwin_interact)
+        ::vtkvol1.SetRenderer(&::renderer)
         ::vtkvol1.ReCompute()
 
         # Add the volume to the scene

@@ -22,6 +22,9 @@
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
 #include "wrap_vtkPlanes.h"
+#include "wrap_vtkTransform.h"
+#include "wrap_vtkPolyData.h"
+#include "wrap_vtkProperty.h"
 
 
 #include "wrap_vtkBoxWidget.h"
@@ -93,35 +96,17 @@ void WrapClass_vtkBoxWidget::AddMethods(WrapClass<vtkBoxWidget>::ptr this_ptr )
       AddVar_GetInsideOut( this_ptr);
       AddVar_InsideOutOn( this_ptr);
       AddVar_InsideOutOff( this_ptr);
-/* The following types are missing: vtkTransform
       AddVar_GetTransform( this_ptr);
-*/
-/* The following types are missing: vtkTransform
       AddVar_SetTransform( this_ptr);
-*/
-/* The following types are missing: vtkPolyData
       AddVar_GetPolyData( this_ptr);
-*/
-/* The following types are missing: vtkProperty
       AddVar_GetHandleProperty( this_ptr);
-*/
-/* The following types are missing: vtkProperty
       AddVar_GetSelectedHandleProperty( this_ptr);
-*/
       AddVar_HandlesOn( this_ptr);
       AddVar_HandlesOff( this_ptr);
-/* The following types are missing: vtkProperty
       AddVar_GetFaceProperty( this_ptr);
-*/
-/* The following types are missing: vtkProperty
       AddVar_GetSelectedFaceProperty( this_ptr);
-*/
-/* The following types are missing: vtkProperty
       AddVar_GetOutlineProperty( this_ptr);
-*/
-/* The following types are missing: vtkProperty
       AddVar_GetSelectedOutlineProperty( this_ptr);
-*/
       AddVar_SetOutlineFaceWires( this_ptr);
       AddVar_GetOutlineFaceWires( this_ptr);
       AddVar_OutlineFaceWiresOn( this_ptr);
@@ -192,7 +177,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkBoxWidget::IsTypeOf(type);
@@ -218,7 +203,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkBoxWidget * res =   vtkBoxWidget::SafeDownCast(o);
@@ -245,7 +230,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -292,11 +277,11 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -321,7 +306,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetEnabled(param0);
   return BasicVariable::ptr();
@@ -345,7 +330,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* bounds = bounds_smtptr.get();
 
   this->_objectptr->GetObj()->PlaceWidget(bounds);
@@ -417,22 +402,22 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   double xmin;
-  if (!get_val_param<double >(xmin,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(xmin,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double xmax;
-  if (!get_val_param<double >(xmax,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(xmax,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double ymin;
-  if (!get_val_param<double >(ymin,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(ymin,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double ymax;
-  if (!get_val_param<double >(ymax,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(ymax,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double zmin;
-  if (!get_val_param<double >(zmin,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(zmin,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double zmax;
-  if (!get_val_param<double >(zmax,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(zmax,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->PlaceWidget(xmin, xmax, ymin, ymax, zmin, zmax);
   return BasicVariable::ptr();
@@ -456,7 +441,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   boost::shared_ptr<vtkPlanes > planes_smtptr;
-  if (!get_val_smtptr_param<vtkPlanes >(planes_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkPlanes >(planes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkPlanes* planes = planes_smtptr.get();
 
   this->_objectptr->GetObj()->GetPlanes(planes);
@@ -481,7 +466,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetInsideOut(_arg);
   return BasicVariable::ptr();
@@ -541,7 +526,6 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   this->_objectptr->GetObj()->InsideOutOff();
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkTransform
 
 //---------------------------------------------------
 //  Wrapping of void vtkBoxWidget::GetTransform(vtkTransform * t)
@@ -561,14 +545,12 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   boost::shared_ptr<vtkTransform > t_smtptr;
-  if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkTransform* t = t_smtptr.get();
 
   this->_objectptr->GetObj()->GetTransform(t);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkTransform
 
 //---------------------------------------------------
 //  Wrapping of void vtkBoxWidget::SetTransform(vtkTransform * t)
@@ -588,14 +570,12 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   boost::shared_ptr<vtkTransform > t_smtptr;
-  if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkTransform* t = t_smtptr.get();
 
   this->_objectptr->GetObj()->SetTransform(t);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkPolyData
 
 //---------------------------------------------------
 //  Wrapping of void vtkBoxWidget::GetPolyData(vtkPolyData * pd)
@@ -615,14 +595,12 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   boost::shared_ptr<vtkPolyData > pd_smtptr;
-  if (!get_val_smtptr_param<vtkPolyData >(pd_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkPolyData >(pd_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkPolyData* pd = pd_smtptr.get();
 
   this->_objectptr->GetObj()->GetPolyData(pd);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of vtkProperty * vtkBoxWidget::GetHandleProperty()
@@ -640,10 +618,9 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetHandleProperty();
-  return AMILabType<vtkProperty >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of vtkProperty * vtkBoxWidget::GetSelectedHandleProperty()
@@ -661,9 +638,9 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetSelectedHandleProperty();
-  return AMILabType<vtkProperty >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkBoxWidget::HandlesOn()
@@ -700,7 +677,6 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   this->_objectptr->GetObj()->HandlesOff();
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of vtkProperty * vtkBoxWidget::GetFaceProperty()
@@ -718,10 +694,9 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetFaceProperty();
-  return AMILabType<vtkProperty >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of vtkProperty * vtkBoxWidget::GetSelectedFaceProperty()
@@ -739,10 +714,9 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetSelectedFaceProperty();
-  return AMILabType<vtkProperty >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of vtkProperty * vtkBoxWidget::GetOutlineProperty()
@@ -760,10 +734,9 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetOutlineProperty();
-  return AMILabType<vtkProperty >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of vtkProperty * vtkBoxWidget::GetSelectedOutlineProperty()
@@ -781,9 +754,9 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetSelectedOutlineProperty();
-  return AMILabType<vtkProperty >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkBoxWidget::SetOutlineFaceWires(int param0)
@@ -803,7 +776,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetOutlineFaceWires(param0);
   return BasicVariable::ptr();
@@ -882,7 +855,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetOutlineCursorWires(param0);
   return BasicVariable::ptr();
@@ -961,7 +934,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetTranslationEnabled(_arg);
   return BasicVariable::ptr();
@@ -1040,7 +1013,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetScalingEnabled(_arg);
   return BasicVariable::ptr();
@@ -1119,7 +1092,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetRotationEnabled(_arg);
   return BasicVariable::ptr();

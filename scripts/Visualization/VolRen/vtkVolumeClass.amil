@@ -30,7 +30,7 @@ if (!exists(vtkVolumeClass)) {
       ::muscles2 =  217, "Muscles second control point"
       ::muscles3 =  420, "Muscles third control point"
 
-      ::clip = UCHAR(1), "Enable/Disable clipping box"
+      ::clip = UCHAR(0), "Enable/Disable clipping box"
       ::initialized=0
 
       ::cm_active_blend_curves = 0, "Number of curves created for the current blend type in the Colormap  drawing area."
@@ -41,6 +41,11 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::SetInteractor( OBJECT inter ) {
       ::renwininter = &inter
+    }
+
+    #----------------------------
+    proc ::SetRenderer( OBJECT ren ) {
+      ::renderer = &ren
     }
 
     # Inputs:
@@ -89,7 +94,30 @@ if (!exists(vtkVolumeClass)) {
         ::vol.SetProperty( &::property )
         ::vol.SetMapper( &::volmapper )
         ::initialized = 1
+
         return = 1
+      }
+    }
+
+    #----------------------------
+    proc ::InitBoxWidget() \
+    {
+      ::box = global::vtkBoxWidget_New()
+      if (::clip) \
+      {
+        ::box.SetInteractor(&::renwininter)
+        ::box.SetPlaceFactor(1.01)
+        ::box.SetInput(&::vtkinput)
+        
+        ::box.SetDefaultRenderer(&::renderer)
+        ::box.InsideOutOn()
+        ::box.PlaceWidget()
+        #vtkBoxWidgetCallback *callback = vtkBoxWidgetCallback::New();
+        #callback->SetMapper(mapper);
+        #::box.AddObserver(vtkCommand::InteractionEvent, callback);
+        #callback->Delete();
+        ::box.EnabledOn()
+        #::box.GetSelectedFaceProperty().SetOpacity(0.0)
       }
     }
 
@@ -539,6 +567,29 @@ printn "point number %1%" %n
     Comments(::UpdateHistogram,"Updates the histogram with the current input image.")
 
     #----------------------------
+    proc ::OnClip() \
+    {
+      if (exists(::box)) {
+        ::box.SetEnabled(::clip)
+      } else {
+        ::InitBoxWidget()
+      }
+    }
+
+    #----------------------------
+    proc ::ApplyClip() \
+    {
+      if (::clip) {
+        # to do: vtkPlanes
+        planes = global::vtkPlanes_New()
+        ::box.GetPlanes(&planes)
+        ::volmapper.SetClippingPlanes(&planes)
+        planes.Delete()
+        ::renwininter.Render()
+      }
+    }
+
+    #----------------------------
     proc ::AddGui( OBJECT win ) \
     {
       printn "vtkVolumeClass::AddGui begin"
@@ -546,10 +597,12 @@ printn "point number %1%" %n
 
       ::win.BeginHorizontal()
         ::win.AddBoolean(&::clip, "Clip")
+        ::win.SetCallback( &::OnClip)
         ::icons.LoadIconPNG2("Chart xy","Chart_xy")
         ::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
         ::win.AddButton("DrawTr",&::Draw_Functions)
       ::win.EndHorizontal()
+      ::win.AddButton( "Apply Clip",&::ApplyClip)
 
       ::blend_type_id = ::win.AddEnum(&::blend_type,"Blend")
         ::win.AddEnumChoice(::blend_type_id,"MIP")
@@ -561,6 +614,14 @@ printn "point number %1%" %n
         ::win.AddEnumChoice(::blend_type_id,"RGB Composite")
         ::win.AddEnumChoice(::blend_type_id,"Linear Curve 1")
       ::win.SetCallback( &::OnBlendType)
+
+      ##::win.BeginBook()
+          ## Adding histogram page
+        #::imhisto1.SetParentPanel(&::win)
+        #::imhisto1.Gui()
+        #::win.AddWidget(&::imhisto1->win,0)
+        ##::win.AddPage("Hist", &::imhisto1->win)
+      ##::win.EndBook()
 
       #::win.SetPositionProp(0)
       ::blend_book = ::win.BeginBook()
@@ -590,7 +651,7 @@ printn "point number %1%" %n
           ::win.SetCallback( &::OnBlendType)
           ::AddBitmapButton16(&::win, &::icons._Refresh, "MusclesReset")
       ::win.EndBook()
-      #::win.SetPositionProp(0)
+
       ::win.BeginBook()
           # Adding histogram page
         ::imhisto1.SetParentPanel(&::win)

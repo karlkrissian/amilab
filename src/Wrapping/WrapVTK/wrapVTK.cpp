@@ -64,6 +64,7 @@ extern VarContexts  Vars;
 #include "wrap_vtkVolume.h"
 #include "wrap_vtkGPUVolumeRayCastMapper.h"
 #include "wrap_vtkBoxWidget.h"
+#include "wrap_vtkPlanes.h"
 #include "wrap_vtkVolumeProperty.h"
 
 #include "wrap_vtkVolumeMapper.h"
@@ -107,6 +108,7 @@ void AddWrapVTK() {
     ADDVTKStatic(vtkVolume,                 New)
     ADDVTKStatic(vtkGPUVolumeRayCastMapper, New)
     ADDVTKStatic(vtkBoxWidget,              New)
+    ADDVTKStatic(vtkPlanes,                 New)
     ADDVTKStatic(vtkVolumeProperty,         New)
 
     ADDVTKStatic(vtkVolumeMapper,           New)
