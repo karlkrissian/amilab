@@ -131,35 +131,42 @@ if (!exists(VolRenClass)) {
       if (!exists(::input)) {
         ::load_input()
       }
-      if (exists(::renwin_interact)) { del ::renwin_interact; }
-      ::renwin_interact = global::wxVTKFrame()
-      ::renwin   = ::renwin_interact.GetRenderWindow()
-      ::renderer = global::vtkRenderer_New()
-      ::renwin.AddRenderer(&::renderer)
-      interact = global::vtkInteractorStyleTrackballCamera_New()
-      ::renwin_interact.SetInteractorStyle(&interact)
+      if (exists(::renderer)) {
+        InfoDialog "Rendering already started, we don't allow restart ..."
+      } else {
+        #if (exists(::renwin_interact)) { del ::renwin_interact; }
+        if (!exists(::renwin_interact)) {
+          ::renwin_interact = global::wxVTKFrame()
+        }
+        ::renwin   = ::renwin_interact.GetRenderWindow()
+        ::renderer = global::vtkRenderer_New()
+        ::renwin.AddRenderer(&::renderer)
+        interact = global::vtkInteractorStyleTrackballCamera_New()
+        ::renwin_interact.SetInteractorStyle(&interact)
 
-      if (::vtkvol1.initialized>0.5) {
-        ::vtkvol1.ResetVTK()
-      }
-      volok = ::vtkvol1.CreateVTK( &::input)
+        if (::vtkvol1.initialized>0.5) {
+          ::vtkvol1.ResetVTK()
+        }
+        volok = ::vtkvol1.CreateVTK( &::input)
 
-      if (volok>0.5) {
-        # interact with data
-        #  renWin->Render()
-        #  m_pVTKWindow->Start()
-        ::renderer->ResetCameraClippingRange()
-        ::vtkvol1.SetInteractor(&::renwin_interact)
-        ::vtkvol1.SetRenderer(&::renderer)
-        ::vtkvol1.ReCompute()
+        if (volok>0.5) {
+          # interact with data
+          #  renWin->Render()
+          #  m_pVTKWindow->Start()
+          ::renderer->ResetCameraClippingRange()
+          ::vtkvol1.SetInteractor(&::renwin_interact)
+          ::vtkvol1.SetRenderer(&::renderer)
+          ::vtkvol1.ReCompute()
 
-        # Add the volume to the scene
-        ::renderer.AddVolume( &::vtkvol1.vol )
-        ::renderer.ResetCamera()
-        #::renwin_interact.Render()
+          # Add the volume to the scene
+          ::renderer.AddVolume( &::vtkvol1.vol )
+          ::renderer.ResetCamera()
+          #::renwin_interact.Render()
+        }
       }
 
     }
+    Comments(::StartNew,"Starts rendering of first volume.")
 
 
     #----------------------------
@@ -189,6 +196,55 @@ if (!exists(VolRenClass)) {
       }
 
     }
+    Comments(::AddVolume2,"Adds rendering of second volume.")
+
+
+    #----------------------------
+    proc ::MainBook_AddVolRenTab()  \
+    {
+      mb = ami.MainFrame.GetMainBook()
+
+      panel = wx.wxPanel(&ami.MainFrame)
+      sbox = wx.wxStaticBox(&panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
+      wxVERTICAL=0x0008
+      sbox_sizer = wx.wxStaticBoxSizer(&sbox,wxVERTICAL)
+      panel.SetSizer(&sbox_sizer)
+      # create widget here
+
+      ::renwin_interact = global::wxVTKRenderWindowInteractor(&panel)
+      ::renwin_interact.UseCaptureMouseOn()
+      ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
+      # Still drawing problem (missed exposed events???)
+      ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
+      sbox_sizer.Add(&::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1) )
+
+      
+      ::icons.LoadIconPNG2("Transparent background","Transparent_background")
+
+      # Add to main book
+      mb.AddPage( &panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+      ::volren_pageindex = mb.GetPageIndex(&panel)
+      #mb.SetSelection(::volren_pageindex)
+    }
+
+    #----------------------------
+    proc ::MainBook_CloseTab()  \
+    {
+      if (exists(::volren_pageindex)){
+        mb = ami.MainFrame.GetMainBook()
+        mb.DeletePage(::volren_pageindex)
+      }
+    }
+
+    #----------------------------
+    # Redefinition of Close to close the panel tab in main_book
+    #
+    proc ::Close() {
+      ::MainBook_CloseTab()
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
 
     #----------------------------
     proc ::Gui() {
@@ -200,6 +256,14 @@ if (!exists(VolRenClass)) {
         ::win = global::ami_import.ParamPanel("VolRen")
       }
       
+      ::win.BeginHorizontal()
+        ::AddBitmapButton16(&::win, &::icons._Show, "StartNew")
+        ::win.SetPositionProp(1)
+        ::icons.LoadIconPNG("Add")
+        ::AddBitmapButton16(&::win, &::icons._Add, "AddVolume2")
+        ::win.SetPositionProp(1)
+      ::win.EndHorizontal()
+
       ::win.BeginBook()
     
         ::win.AddPage("IO")
@@ -220,26 +284,25 @@ if (!exists(VolRenClass)) {
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
+
         ::win.AddPage("Param")
 
-        ::win.BeginHorizontal()
-          ::AddBitmapButton16(&::win, &::icons._Show, "StartNew")
-          ::win.SetPositionProp(1)
-          ::icons.LoadIconPNG("Add")
-          ::AddBitmapButton16(&::win, &::icons._Add, "AddVolume2")
-          ::win.SetPositionProp(1)
-        ::win.EndHorizontal()
-        ::win.BeginBook()
-          ::vol1_page = ::win.AddPage("Vol1")
-            ::vtkvol1.AddGui( &::win)
-          ::vol2_page = ::win.AddPage("Vol2")
-            ::vtkvol2.AddGui( &::win)
-        ::win.EndBook()
+          ::win.BeginBook()
+            ::vol1_page = ::win.AddPage("Vol1")
+              ::vtkvol1.AddGui( &::win)
+            ::vol2_page = ::win.AddPage("Vol2")
+              ::vtkvol2.AddGui( &::win)
+          ::win.EndBook()
           #::win.EndBoxPanel()
 
           #::win.AddButton("Start",   ::Start)
           #::icons.LoadIconPNG("Play")
   
+        #::win.AddPage("Viewer")
+          #d = ::win.CurrentParent()
+          #::renwin_interact = global::wxVTKRenderWindowInteractor(&d)
+          #::renwin_interact.SetMinSize(&wx.wxSize(100,400));
+          #::sizer_item = ::win.AddWidget(&::renwin_interact,0)
 
       ::win.EndBook()
 
@@ -253,6 +316,7 @@ if (!exists(VolRenClass)) {
       }
       ::UpdateVolPages()
       ::win.Update(-1)
+      ::MainBook_AddVolRenTab()
    }
 
     ::Init()

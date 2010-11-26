@@ -223,6 +223,9 @@ public:
   boost::shared_ptr<wxFileHistory> GetImagesHistory()  { return images_history;  }
   boost::shared_ptr<wxFileHistory> GetScriptsHistory() { return scripts_history; }
 
+
+  wxAuiNotebook* GetMainBook() { return _main_book; }
+
 protected:
 
 //   void OnBeginDrag( wxDataViewEvent &event );

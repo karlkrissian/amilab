@@ -36,6 +36,7 @@ if (!exists(vtkVolumeClass)) {
       ::cm_active_blend_curves = 0, "Number of curves created for the current blend type in the Colormap  drawing area."
       ::dw_active_blend_curves = 0, "Number of curves created for the current blend type in the Histogram drawing area."
 
+      ::opacity_attenuation = 1, "Attenuation factor for the opacity"
     }
 
     #----------------------------
@@ -145,7 +146,7 @@ if (!exists(vtkVolumeClass)) {
     {
       ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
       ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
-                             ::opacitylevel + 0.5*::opacitywindow, 1.0 );
+                             ::opacitylevel + 0.5*::opacitywindow, ::opacity_attenuation );
       ::volmapper.SetBlendModeToMaximumIntensity();
     }
 
@@ -156,7 +157,7 @@ if (!exists(vtkVolumeClass)) {
                               ::opacitylevel + 0.5*::opacitywindow, 1.0, 1.0, 1.0 )
 
       ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
-                             ::opacitylevel + 0.5*::opacitywindow, 1.0 )
+                             ::opacitylevel + 0.5*::opacitywindow, ::opacity_attenuation )
 
       ::volmapper.SetBlendModeToComposite()
       ::property.ShadeOff()
@@ -167,7 +168,7 @@ if (!exists(vtkVolumeClass)) {
     {
       ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
       ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
-                               ::opacitylevel + 0.5*::opacitywindow, 1.0 );
+                               ::opacitylevel + 0.5*::opacitywindow, ::opacity_attenuation );
       ::volmapper.SetBlendModeToComposite();
       ::property.ShadeOn();
     }
@@ -192,7 +193,7 @@ if (!exists(vtkVolumeClass)) {
       
       ::opacityFun.AddPoint(-3024, 0, 0.5, 0.0 );
       ::opacityFun.AddPoint(::skin1, 0, 0.5, 0.0 );
-      ::opacityFun.AddPoint(::skin2, 1.0, 0.33, 0.45 );
+      ::opacityFun.AddPoint(::skin2, 1.0*::opacity_attenuation, 0.33, 0.45 );
       ::opacityFun.AddPoint(3071, 1.0, 0.5, 0.0);
 
       ::volmapper.SetBlendModeToComposite();
@@ -223,8 +224,8 @@ if (!exists(vtkVolumeClass)) {
       ::colorFun.AddRGBPoint( 3071, 1, 1, 1, 0.5, 0.0 );
       
       ::opacityFun.AddPoint(-3024, 0, 0.5, 0.0 );
-      ::opacityFun.AddPoint(::bones1, 0, 0.49, 0.61 );
-      ::opacityFun.AddPoint(::bones2, 0.72, 0.5, 0.0 );
+      ::opacityFun.AddPoint(::bones1, 0   *::opacity_attenuation, 0.49, 0.61 );
+      ::opacityFun.AddPoint(::bones2, 0.72*::opacity_attenuation, 0.5, 0.0 );
       ::opacityFun.AddPoint(3071, 0.71, 0.5, 0.0);
 
       ::volmapper.SetBlendModeToComposite();
@@ -256,9 +257,9 @@ if (!exists(vtkVolumeClass)) {
       ::colorFun.AddRGBPoint( 3071, 0.83, 0.66, 1, 0.5, 0.0 );
       
       ::opacityFun.AddPoint(-3024, 0, 0.5, 0.0 );
-      ::opacityFun.AddPoint(::muscles1, 0, 0.5, 0.92 );
-      ::opacityFun.AddPoint(::muscles2, 0.68, 0.33, 0.45 );
-      ::opacityFun.AddPoint(::muscles3, 0.83, 0.5, 0.0);
+      ::opacityFun.AddPoint(::muscles1, 0   *::opacity_attenuation, 0.5, 0.92 );
+      ::opacityFun.AddPoint(::muscles2, 0.68*::opacity_attenuation, 0.33, 0.45 );
+      ::opacityFun.AddPoint(::muscles3, 0.83*::opacity_attenuation, 0.5, 0.0);
       ::opacityFun.AddPoint(3071, 0.80, 0.5, 0.0);
 
       ::volmapper.SetBlendModeToComposite();
@@ -357,7 +358,7 @@ printn "point number %1%" %n
           cp = ctrlpoints[n]
           col = cp.GetColour()
           ::colorFun.AddRGBPoint( cp.GetX(), 1.0/255*col.Red(), 1.0/255*col.Green(),1.0/255*col.Blue() );
-          ::opacityFun.AddPoint(  cp.GetX(), 1.0/hmax*cp.GetY() );
+          ::opacityFun.AddPoint(  cp.GetX(), ::opacity_attenuation/hmax*cp.GetY() );
         }
         
         ::volmapper.SetBlendModeToComposite();
@@ -610,6 +611,9 @@ printn "point number %1%" %n
         ::win.AddButton("DrawTr",&::Draw_Functions)
       ::win.EndHorizontal()
       ::win.AddButton( "Apply Clip",&::ApplyClip)
+      ::win.AddFloat(&::opacity_attenuation,"Opacity factor",0,1)
+      ::win.SetCallback( &::OnWindow)
+
 
       ::blend_type_id = ::win.AddEnum(&::blend_type,"Blend")
         ::win.AddEnumChoice(::blend_type_id,"MIP")
@@ -631,6 +635,14 @@ printn "point number %1%" %n
       ##::win.EndBook()
 
       #::win.SetPositionProp(0)
+
+      ::win.BeginBook()
+          # Adding histogram page
+        ::imhisto1.SetParentPanel(&::win)
+        ::imhisto1.Gui()
+        ::win.AddPage("Hist", &::imhisto1->win)
+      ::win.EndBook()
+
       ::blend_book = ::win.BeginBook()
         ::ramp_page = ::win.AddPage("Ramp")
           ::opacitywindow_id = ::win.AddFloat(&::opacitywindow,"Window",0,5000)
@@ -659,12 +671,6 @@ printn "point number %1%" %n
           ::AddBitmapButton16(&::win, &::icons._Refresh, "MusclesReset")
       ::win.EndBook()
 
-      ::win.BeginBook()
-          # Adding histogram page
-        ::imhisto1.SetParentPanel(&::win)
-        ::imhisto1.Gui()
-        ::win.AddPage("Hist", &::imhisto1->win)
-      ::win.EndBook()
       printn "vtkVolumeClass::AddGui end"
     }
   } # end Class
