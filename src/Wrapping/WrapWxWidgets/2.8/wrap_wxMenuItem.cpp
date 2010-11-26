@@ -136,27 +136,27 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   int _n=0;
 
   boost::shared_ptr<wxMenu > parentMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenu* parentMenu = parentMenu_smtptr.get();
 
   int id = wxID_SEPARATOR;
-  if (!get_val_param<int >(id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(id,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxString const & text = ( text_smtptr.get() ? (*text_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > help_smtptr;
-  if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxMenu > subMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenu* subMenu = subMenu_smtptr.get();
 
   wxMenuItem* _newobj = new wxMenuItem(parentMenu, id, text, help, kind, subMenu);
@@ -206,26 +206,26 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   int _n=0;
 
   boost::shared_ptr<wxMenu > parentMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenu* parentMenu = parentMenu_smtptr.get();
 
   int id;
-  if (!get_val_param<int >(id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & text = *text_smtptr;
 
   boost::shared_ptr<wxString > help_smtptr;
-  if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & help = *help_smtptr;
 
   int isCheckable_int;
-  if (!get_val_param<int >(isCheckable_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(isCheckable_int,_p,_n,true,true)) ClassReturnEmptyVar;
   bool isCheckable = (bool) (isCheckable_int>0.5);
 
   boost::shared_ptr<wxMenu > subMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenu* subMenu = subMenu_smtptr.get();
 
   wxMenuItem* _newobj = new wxMenuItem(parentMenu, id, text, help, isCheckable, subMenu);
@@ -253,11 +253,11 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   boost::shared_ptr<wxString > hotKey_smtptr;
-  if (!get_val_smtptr_param<wxString >(hotKey_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(hotKey_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString* hotKey = hotKey_smtptr.get();
 
   wxString res =   wxMenuItem::GTKProcessMenuItemLabel(str, hotKey);
@@ -282,7 +282,7 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   this->_objectptr->GetObj()->SetText(str);
@@ -307,7 +307,7 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   int _n=0;
 
   int enable_int = ((1==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(enable_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool enable = (bool) (enable_int>0.5);
 
   this->_objectptr->GetObj()->Enable(enable);
@@ -332,7 +332,7 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   int _n=0;
 
   int check_int = ((1==true)?1:0);;
-  if (!get_val_param<int >(check_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(check_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool check = (bool) (check_int>0.5);
 
   this->_objectptr->GetObj()->Check(check);
@@ -377,7 +377,7 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   this->_objectptr->GetObj()->SetBitmap(bitmap);
@@ -442,7 +442,7 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   int _n=0;
 
   boost::shared_ptr<_GtkWidget > menuItem_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(menuItem_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkWidget >(menuItem_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkWidget* menuItem = menuItem_smtptr.get();
 
   this->_objectptr->GetObj()->SetMenuItem(menuItem);
@@ -511,7 +511,7 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   int _n=0;
 
   boost::shared_ptr<_GtkWidget > labelWidget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(labelWidget_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkWidget >(labelWidget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkWidget* labelWidget = labelWidget_smtptr.get();
 
   this->_objectptr->GetObj()->SetLabelWidget(labelWidget);

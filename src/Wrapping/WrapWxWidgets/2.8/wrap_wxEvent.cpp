@@ -184,7 +184,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   int _n=0;
 
   int typ;
-  if (!get_val_param<int >(typ,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(typ,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetEventType(typ);
   return BasicVariable::ptr();
@@ -247,7 +247,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   int _n=0;
 
   boost::shared_ptr<wxObject > obj_smtptr;
-  if (!get_val_smtptr_param<wxObject >(obj_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxObject >(obj_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxObject* obj = obj_smtptr.get();
 
   this->_objectptr->GetObj()->SetEventObject(obj);
@@ -292,7 +292,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   int _n=0;
 
   long ts_long = 0;;
-  if (!get_val_param<long >(ts_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(ts_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int ts = ts_long;
 
   this->_objectptr->GetObj()->SetTimestamp(ts);
@@ -336,7 +336,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   int _n=0;
 
   int Id;
-  if (!get_val_param<int >(Id,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(Id,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetId(Id);
   return BasicVariable::ptr();
@@ -360,7 +360,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   int _n=0;
 
   int skip_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(skip_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(skip_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool skip = (bool) (skip_int>0.5);
 
   this->_objectptr->GetObj()->Skip(skip);
@@ -464,7 +464,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   int _n=0;
 
   int propagationLevel;
-  if (!get_val_param<int >(propagationLevel,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(propagationLevel,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->ResumePropagation(propagationLevel);
   return BasicVariable::ptr();

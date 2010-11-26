@@ -134,7 +134,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   boost::shared_ptr<wxFont > param0_smtptr;
-  if (!get_val_smtptr_param<wxFont >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxFont >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxFont const & param0 = *param0_smtptr;
 
   wxFont* _newobj = new wxFont(param0);
@@ -203,7 +203,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   boost::shared_ptr<wxString > fontname_smtptr;
-  if (!get_val_smtptr_param<wxString >(fontname_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(fontname_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & fontname = *fontname_smtptr;
 
   wxFont* _newobj = new wxFont(fontname);
@@ -230,7 +230,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   boost::shared_ptr<wxNativeFontInfo > info_smtptr;
-  if (!get_val_smtptr_param<wxNativeFontInfo >(info_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxNativeFontInfo >(info_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxNativeFontInfo const & info = *info_smtptr;
 
   wxFont* _newobj = new wxFont(info);
@@ -264,28 +264,28 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   int size;
-  if (!get_val_param<int >(size,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(size,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int family;
-  if (!get_val_param<int >(family,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(family,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int style;
-  if (!get_val_param<int >(style,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(style,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int weight;
-  if (!get_val_param<int >(weight,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(weight,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int underlined_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(underlined_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(underlined_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool underlined = (bool) (underlined_int>0.5);
 
   boost::shared_ptr<wxString > face_smtptr;
-  if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
   wxFontEncoding encoding = wxFONTENCODING_DEFAULT;
-  if (!get_val_param<wxFontEncoding >(encoding,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<wxFontEncoding >(encoding,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxFont* _newobj = new wxFont(size, family, style, weight, underlined, face, encoding);
   BasicVariable::ptr res = WrapClass_wxFont::CreateVar(_newobj);
@@ -335,28 +335,28 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   int size;
-  if (!get_val_param<int >(size,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(size,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int family;
-  if (!get_val_param<int >(family,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(family,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int style;
-  if (!get_val_param<int >(style,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(style,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int weight;
-  if (!get_val_param<int >(weight,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(weight,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int underlined_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(underlined_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(underlined_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool underlined = (bool) (underlined_int>0.5);
 
   boost::shared_ptr<wxString > face_smtptr;
-  if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(face_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxString const & face = ( face_smtptr.get() ? (*face_smtptr) : wxString(wxEmptyString) );
 
   wxFontEncoding encoding = wxFONTENCODING_DEFAULT;
-  if (!get_val_param<wxFontEncoding >(encoding,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<wxFontEncoding >(encoding,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Create(size, family, style, weight, underlined, face, encoding);
   int res_int = ((res==true)?1:0);
@@ -401,7 +401,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   boost::shared_ptr<wxString > fontname_smtptr;
-  if (!get_val_smtptr_param<wxString >(fontname_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(fontname_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & fontname = *fontname_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Create(fontname);
@@ -604,7 +604,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   int pointSize;
-  if (!get_val_param<int >(pointSize,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(pointSize,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetPointSize(pointSize);
   return BasicVariable::ptr();
@@ -628,7 +628,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   int family;
-  if (!get_val_param<int >(family,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(family,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetFamily(family);
   return BasicVariable::ptr();
@@ -652,7 +652,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   int style;
-  if (!get_val_param<int >(style,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(style,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStyle(style);
   return BasicVariable::ptr();
@@ -676,7 +676,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   int weight;
-  if (!get_val_param<int >(weight,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(weight,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetWeight(weight);
   return BasicVariable::ptr();
@@ -701,7 +701,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   boost::shared_ptr<wxString > faceName_smtptr;
-  if (!get_val_smtptr_param<wxString >(faceName_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(faceName_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & faceName = *faceName_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetFaceName(faceName);
@@ -727,7 +727,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   int underlined_int;
-  if (!get_val_param<int >(underlined_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(underlined_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool underlined = (bool) (underlined_int>0.5);
 
   this->_objectptr->GetObj()->SetUnderlined(underlined);
@@ -753,7 +753,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   wxFontEncoding encoding;
-  if (!get_val_param<wxFontEncoding >(encoding,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<wxFontEncoding >(encoding,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetEncoding(encoding);
   return BasicVariable::ptr();
@@ -778,7 +778,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   int no_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(no_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(no_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool no = (bool) (no_int>0.5);
 
   this->_objectptr->GetObj()->SetNoAntiAliasing(no);
@@ -844,7 +844,7 @@ BasicVariable::ptr WrapClass_wxFont::
   int _n=0;
 
   boost::shared_ptr<wxFont > param0_smtptr;
-  if (!get_val_smtptr_param<wxFont >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxFont >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxFont const & param0 = *param0_smtptr;
 
   wxFont & res =   (*this->_objectptr->GetObj()) = (param0);

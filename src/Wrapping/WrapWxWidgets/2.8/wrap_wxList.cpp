@@ -73,7 +73,7 @@ void WrapClass_wxList::AddMethods(WrapClass<wxList>::ptr this_ptr )
       // Adding copy method 
       AddVar___copy__( this_ptr);
       // Adding standard methods 
-/* The following types are missing: _9505
+/* The following types are missing: _9495
       AddVar_Sort( this_ptr);
 */
       AddVar_Member( this_ptr);
@@ -179,7 +179,7 @@ BasicVariable::ptr WrapClass_wxList::
 {
     return AMILabType<wxList >::CreateVar( new wxList(*(this->_objectptr->GetObj())));
 }
-/* The following types are missing: _9505
+/* The following types are missing: _9495
 
 //---------------------------------------------------
 //  Wrapping of void wxList::Sort(wxSortCompareFunction compfunc)
@@ -187,7 +187,7 @@ BasicVariable::ptr WrapClass_wxList::
 void WrapClass_wxList::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9505, "parameter named 'compfunc'")
+  ADDPARAMCOMMENT_TYPE( _9495, "parameter named 'compfunc'")
 }
 
 //---------------------------------------------------
@@ -198,8 +198,8 @@ BasicVariable::ptr WrapClass_wxList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _9505 compfunc;
-  if (!get_val_param<_9505 >(compfunc,_p,_n,true,false)) ClassHelpAndReturn;
+  _9495 compfunc;
+  if (!get_val_param<_9495 >(compfunc,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(compfunc);
   return BasicVariable::ptr();

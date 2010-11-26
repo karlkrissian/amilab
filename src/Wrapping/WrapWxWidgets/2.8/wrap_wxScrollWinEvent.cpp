@@ -129,13 +129,13 @@ BasicVariable::ptr WrapClass_wxScrollWinEvent::
   int _n=0;
 
   int commandType = wxEVT_NULL;
-  if (!get_val_param<int >(commandType,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(commandType,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int pos = 0;
-  if (!get_val_param<int >(pos,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(pos,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int orient = 0;
-  if (!get_val_param<int >(orient,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(orient,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxScrollWinEvent* _newobj = new wxScrollWinEvent(commandType, pos, orient);
   BasicVariable::ptr res = WrapClass_wxScrollWinEvent::CreateVar(_newobj);
@@ -181,7 +181,7 @@ BasicVariable::ptr WrapClass_wxScrollWinEvent::
   int _n=0;
 
   boost::shared_ptr<wxScrollWinEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxScrollWinEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxScrollWinEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxScrollWinEvent const & event = *event_smtptr;
 
   wxScrollWinEvent* _newobj = new wxScrollWinEvent(event);
@@ -261,7 +261,7 @@ BasicVariable::ptr WrapClass_wxScrollWinEvent::
   int _n=0;
 
   int orient;
-  if (!get_val_param<int >(orient,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(orient,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetOrientation(orient);
   return BasicVariable::ptr();
@@ -285,7 +285,7 @@ BasicVariable::ptr WrapClass_wxScrollWinEvent::
   int _n=0;
 
   int pos;
-  if (!get_val_param<int >(pos,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(pos,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetPosition(pos);
   return BasicVariable::ptr();

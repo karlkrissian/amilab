@@ -261,7 +261,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   int mouseType = wxEVT_NULL;
-  if (!get_val_param<int >(mouseType,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(mouseType,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxMouseEvent* _newobj = new wxMouseEvent(mouseType);
   BasicVariable::ptr res = WrapClass_wxMouseEvent::CreateVar(_newobj);
@@ -307,7 +307,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   boost::shared_ptr<wxMouseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxMouseEvent const & event = *event_smtptr;
 
   wxMouseEvent* _newobj = new wxMouseEvent(event);
@@ -370,7 +370,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   int but = wxMOUSE_BTN_ANY;
-  if (!get_val_param<int >(but,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(but,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ButtonDown(but);
   int res_int = ((res==true)?1:0);
@@ -396,7 +396,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   int but = wxMOUSE_BTN_ANY;
-  if (!get_val_param<int >(but,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(but,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ButtonDClick(but);
   int res_int = ((res==true)?1:0);
@@ -422,7 +422,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   int but = wxMOUSE_BTN_ANY;
-  if (!get_val_param<int >(but,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(but,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ButtonUp(but);
   int res_int = ((res==true)?1:0);
@@ -448,7 +448,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   int but;
-  if (!get_val_param<int >(but,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(but,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Button(but);
   int res_int = ((res==true)?1:0);
@@ -474,7 +474,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   int but;
-  if (!get_val_param<int >(but,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(but,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ButtonIsDown(but);
   int res_int = ((res==true)?1:0);
@@ -939,11 +939,11 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   boost::shared_ptr<int > xpos_smtptr;
-  if (!get_val_smtptr_param<int >(xpos_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(xpos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* xpos = xpos_smtptr.get();
 
   boost::shared_ptr<int > ypos_smtptr;
-  if (!get_val_smtptr_param<int >(ypos_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(ypos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* ypos = ypos_smtptr.get();
 
   this->_objectptr->GetObj()->GetPosition(xpos, ypos);
@@ -993,12 +993,12 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   boost::shared_ptr<long > xpos_long;
-  if (!get_val_smtptr_param<long >(xpos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(xpos_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int xpos_val = *xpos_long;
   long int* xpos = &xpos_val;
 
   boost::shared_ptr<long > ypos_long;
-  if (!get_val_smtptr_param<long >(ypos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(ypos_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int ypos_val = *ypos_long;
   long int* ypos = &ypos_val;
 
@@ -1044,7 +1044,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   boost::shared_ptr<wxDC > dc_smtptr;
-  if (!get_val_smtptr_param<wxDC >(dc_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxDC >(dc_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxDC const & dc = *dc_smtptr;
 
   wxPoint res =   this->_objectptr->GetObj()->GetLogicalPosition(dc);
@@ -1225,7 +1225,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   int _n=0;
 
   boost::shared_ptr<wxMouseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMouseEvent const & event = *event_smtptr;
 
   wxMouseEvent & res =   (*this->_objectptr->GetObj()) = (event);

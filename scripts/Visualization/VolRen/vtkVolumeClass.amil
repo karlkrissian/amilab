@@ -242,6 +242,15 @@ if (!exists(vtkVolumeClass)) {
       ::property.SetScalarOpacityUnitDistance(0.8919);
     }
 
+    #---------------------------
+    proc ::OnCtrlPoint() \
+    {
+      #::dw._Paint()
+      ::imhisto1.ColormapMinMax()
+      ::imhisto1.UpdateCM()
+      ::OnRender()
+    }
+
     #----------------------------
     proc ::ResetLinearCurve1() \
     {
@@ -282,6 +291,7 @@ if (!exists(vtkVolumeClass)) {
         } else {
           ::linearcurve1 = curve
         }
+        ::imhisto1.dw.SetCtrlPointCallback(&::OnCtrlPoint)
       } else {
         InfoDialog "No histogram available."
       }
@@ -291,6 +301,7 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::BlendLinearCurve1() \
     {
+      printn "BlendLinearCurve1"
       if (!exists(::imhisto1->h)) {
         ::UpdateHistogram()
       }
@@ -298,17 +309,19 @@ if (!exists(vtkVolumeClass)) {
         curves = ::imhisto1.dw.GetControlledCurves()
         numcurves = curves.size()
         if (!exists(::linearcurve1_id)) {
+printn "--"
           ::linearcurve1_id   = numcurves
           ::ResetLinearCurve1()
         }
 
         # Create colors based on the curve
         hmax = max(::imhisto1.h[0])
-        ctrlpoints = ::linearcurve1.GetControlPoints()
+        ctrlpoints = curves[::linearcurve1_id].GetControlPoints()
         for n=0 to ctrlpoints.size()-1 {
+printn "point number %1%" %n
           cp = ctrlpoints[n]
           col = cp.GetColour()
-          ::colorFun.AddRGBPoint( cp.GetX(), 1./255*col.Red(), 1./255*col.Green(),1./255*col.Blue() );
+          ::colorFun.AddRGBPoint( cp.GetX(), 1.0/255*col.Red(), 1.0/255*col.Green(),1.0/255*col.Blue() );
           ::opacityFun.AddPoint(  cp.GetX(), 1.0/hmax*cp.GetY() );
         }
         

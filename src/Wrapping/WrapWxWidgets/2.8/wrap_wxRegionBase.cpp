@@ -80,11 +80,19 @@ void WrapClass_wxRegionBase::AddMethods(WrapClass<wxRegionBase>::ptr this_ptr )
       AddVar_GetBox_1( this_ptr);
       AddVar_GetBox( this_ptr);
       AddVar_GetBox_2( this_ptr);
+/* The following types are missing: wxRegionContain
       AddVar_Contains_1( this_ptr);
+*/
       AddVar_Contains( this_ptr);
+/* The following types are missing: wxRegionContain
       AddVar_Contains_2( this_ptr);
+*/
+/* The following types are missing: wxRegionContain
       AddVar_Contains_3( this_ptr);
+*/
+/* The following types are missing: wxRegionContain
       AddVar_Contains_4( this_ptr);
+*/
       AddVar_Offset_1( this_ptr);
       AddVar_Offset( this_ptr);
       AddVar_Offset_2( this_ptr);
@@ -202,7 +210,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->IsEqual(region);
@@ -232,19 +240,19 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxCoord & x = *x_smtptr;
 
   boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxCoord & y = *y_smtptr;
 
   boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxCoord & w = *w_smtptr;
 
   boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxCoord & h = *h_smtptr;
 
   bool res =   this->_objectptr->GetObj()->GetBox(x, y, w, h);
@@ -291,6 +299,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRect res =   this->_objectptr->GetObj()->GetBox();
   return AMILabType<wxRect >::CreateVar(res);
 }
+/* The following types are missing: wxRegionContain
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxCoord x, wxCoord y)
@@ -300,7 +309,7 @@ void WrapClass_wxRegionBase::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxRegionContain";
 }
 
 //---------------------------------------------------
@@ -312,15 +321,15 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxRegionContain res =   this->_objectptr->GetObj()->Contains(x, y);
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxRegionContain >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxRegionBase::Contains(...)
@@ -334,20 +343,9 @@ BasicVariable::ptr WrapClass_wxRegionBase::
     wrap_Contains::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxRegionBase::wrap_Contains_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxRegionBase::wrap_Contains_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxRegionBase::wrap_Contains_3 m3(this->_objectptr);
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
-  WrapClass_wxRegionBase::wrap_Contains_4 m4(this->_objectptr);
-  res = m4.CallMember(_p);
-  if (!m4.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRegionContain
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxPoint const & pt)
@@ -356,7 +354,7 @@ void WrapClass_wxRegionBase::
     wrap_Contains_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxRegionContain";
 }
 
 //---------------------------------------------------
@@ -368,13 +366,14 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   wxRegionContain res =   this->_objectptr->GetObj()->Contains(pt);
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxRegionContain >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxRegionContain
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxCoord x, wxCoord y, wxCoord w, wxCoord h)
@@ -386,7 +385,7 @@ void WrapClass_wxRegionBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxRegionContain";
 }
 
 //---------------------------------------------------
@@ -398,21 +397,22 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int w;
-  if (!get_val_param<int >(w,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(w,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int h;
-  if (!get_val_param<int >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxRegionContain res =   this->_objectptr->GetObj()->Contains(x, y, w, h);
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxRegionContain >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxRegionContain
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxRect const & rect)
@@ -421,7 +421,7 @@ void WrapClass_wxRegionBase::
     wrap_Contains_4::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxRegionContain";
 }
 
 //---------------------------------------------------
@@ -433,13 +433,13 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   wxRegionContain res =   this->_objectptr->GetObj()->Contains(rect);
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxRegionContain >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Offset(wxCoord x, wxCoord y)
@@ -461,10 +461,10 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Offset(x, y);
   int res_int = ((res==true)?1:0);
@@ -511,7 +511,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Offset(pt);
@@ -541,16 +541,16 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int w;
-  if (!get_val_param<int >(w,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(w,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int h;
-  if (!get_val_param<int >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Union(x, y, w, h);
   int res_int = ((res==true)?1:0);
@@ -606,7 +606,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Union(rect);
@@ -633,7 +633,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Union(region);
@@ -660,7 +660,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bmp_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bmp = *bmp_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Union(bmp);
@@ -689,15 +689,15 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bmp_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bmp = *bmp_smtptr;
 
   boost::shared_ptr<wxColour > transp_smtptr;
-  if (!get_val_smtptr_param<wxColour >(transp_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(transp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & transp = *transp_smtptr;
 
   int tolerance = 0;
-  if (!get_val_param<int >(tolerance,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(tolerance,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Union(bmp, transp, tolerance);
   int res_int = ((res==true)?1:0);
@@ -726,16 +726,16 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int w;
-  if (!get_val_param<int >(w,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(w,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int h;
-  if (!get_val_param<int >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Intersect(x, y, w, h);
   int res_int = ((res==true)?1:0);
@@ -785,7 +785,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Intersect(rect);
@@ -812,7 +812,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Intersect(region);
@@ -842,16 +842,16 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int w;
-  if (!get_val_param<int >(w,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(w,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int h;
-  if (!get_val_param<int >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Subtract(x, y, w, h);
   int res_int = ((res==true)?1:0);
@@ -901,7 +901,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Subtract(rect);
@@ -928,7 +928,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Subtract(region);
@@ -958,16 +958,16 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int w;
-  if (!get_val_param<int >(w,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(w,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int h;
-  if (!get_val_param<int >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Xor(x, y, w, h);
   int res_int = ((res==true)?1:0);
@@ -1017,7 +1017,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Xor(rect);
@@ -1044,7 +1044,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Xor(region);
@@ -1090,7 +1090,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRegionBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxRegionBase >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRegionBase >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRegionBase const & param0 = *param0_smtptr;
 
   wxRegionBase & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -1116,7 +1116,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRegion const & region = *region_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (region);
@@ -1143,7 +1143,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRegion const & region = *region_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (region);

@@ -108,7 +108,9 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       AddVar_SetForegroundColour( this_ptr);
       AddVar_SetCursor( this_ptr);
       AddVar_SetFont( this_ptr);
+/* The following types are missing: wxBackgroundStyle
       AddVar_SetBackgroundStyle( this_ptr);
+*/
       AddVar_GetCharHeight( this_ptr);
       AddVar_GetCharWidth( this_ptr);
       AddVar_GetTextExtent( this_ptr);
@@ -125,8 +127,12 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
 */
       AddVar_AddChild( this_ptr);
       AddVar_RemoveChild( this_ptr);
+/* The following types are missing: wxLayoutDirection
       AddVar_SetLayoutDirection( this_ptr);
+*/
+/* The following types are missing: wxLayoutDirection
       AddVar_GetLayoutDirection( this_ptr);
+*/
       AddVar_AdjustForLayoutDirection( this_ptr);
       AddVar_DoIsExposed_1( this_ptr);
       AddVar_DoIsExposed( this_ptr);
@@ -235,7 +241,7 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_widget
-      boost::shared_ptr<_GtkWidget > var_m_widget_ptr(&GetObj()->m_widget, smartpointer_nodeleter<_GtkWidget >());
+      boost::shared_ptr<_GtkWidget > var_m_widget_ptr(GetObj()->m_widget, smartpointer_nodeleter<_GtkWidget >());
       BasicVariable::ptr var_m_widget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_widget_ptr);
       if (var_m_widget.get()) {
         var_m_widget->Rename("m_widget");
@@ -245,7 +251,7 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_wxwindow
-      boost::shared_ptr<_GtkWidget > var_m_wxwindow_ptr(&GetObj()->m_wxwindow, smartpointer_nodeleter<_GtkWidget >());
+      boost::shared_ptr<_GtkWidget > var_m_wxwindow_ptr(GetObj()->m_wxwindow, smartpointer_nodeleter<_GtkWidget >());
       BasicVariable::ptr var_m_wxwindow = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_wxwindow_ptr);
       if (var_m_wxwindow.get()) {
         var_m_wxwindow->Rename("m_wxwindow");
@@ -255,7 +261,7 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_focusWidget
-      boost::shared_ptr<_GtkWidget > var_m_focusWidget_ptr(&GetObj()->m_focusWidget, smartpointer_nodeleter<_GtkWidget >());
+      boost::shared_ptr<_GtkWidget > var_m_focusWidget_ptr(GetObj()->m_focusWidget, smartpointer_nodeleter<_GtkWidget >());
       BasicVariable::ptr var_m_focusWidget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_focusWidget_ptr);
       if (var_m_focusWidget.get()) {
         var_m_focusWidget->Rename("m_focusWidget");
@@ -265,7 +271,7 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_imData
-      boost::shared_ptr<wxGtkIMData > var_m_imData_ptr(&GetObj()->m_imData, smartpointer_nodeleter<wxGtkIMData >());
+      boost::shared_ptr<wxGtkIMData > var_m_imData_ptr(GetObj()->m_imData, smartpointer_nodeleter<wxGtkIMData >());
       BasicVariable::ptr var_m_imData = AMILabType<wxGtkIMData >::CreateVarFromSmtPtr(var_m_imData_ptr);
       if (var_m_imData.get()) {
         var_m_imData->Rename("m_imData");
@@ -473,8 +479,8 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_insertCallback
-      boost::shared_ptr<_13528 > var_m_insertCallback_ptr(&GetObj()->m_insertCallback, smartpointer_nodeleter<_13528 >());
-      BasicVariable::ptr var_m_insertCallback = AMILabType<_13528 >::CreateVarFromSmtPtr(var_m_insertCallback_ptr);
+      boost::shared_ptr<_13512 > var_m_insertCallback_ptr(&GetObj()->m_insertCallback, smartpointer_nodeleter<_13512 >());
+      BasicVariable::ptr var_m_insertCallback = AMILabType<_13512 >::CreateVarFromSmtPtr(var_m_insertCallback_ptr);
       if (var_m_insertCallback.get()) {
         var_m_insertCallback->Rename("m_insertCallback");
         context->AddVar(var_m_insertCallback,context);
@@ -551,36 +557,36 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxWindow* parent = parent_smtptr.get();
 
   int id;
-  if (!get_val_param<int >(id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
 
   long style_long = 0;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(style_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int style = style_long;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxPanelNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxPanelNameStr) );
 
   wxWindow* _newobj = new wxWindow(parent, id, pos, size, style, name);
   BasicVariable::ptr res = WrapClass_wxWindow::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: _GtkWidget
+/* The following types are missing: wxLayoutDirection, _GtkWidget
 
 //---------------------------------------------------
 //  Wrapping of wxLayoutDirection wxWindow::GTKGetLayout(GtkWidget * widget)
@@ -589,7 +595,7 @@ void WrapClass_wxWindow::
     wrap_GTKGetLayout::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( _GtkWidget, "parameter named 'widget'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxLayoutDirection";
 }
 
 //---------------------------------------------------
@@ -601,15 +607,14 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<_GtkWidget > widget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkWidget* widget = widget_smtptr.get();
 
   wxLayoutDirection res =   wxWindow::GTKGetLayout(widget);
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxLayoutDirection >::CreateVar(res);
 }
 */
-/* The following types are missing: _GtkWidget
+/* The following types are missing: _GtkWidget, wxLayoutDirection
 
 //---------------------------------------------------
 //  Wrapping of void wxWindow::GTKSetLayout(GtkWidget * widget, wxLayoutDirection dir)
@@ -618,7 +623,7 @@ void WrapClass_wxWindow::
     wrap_GTKSetLayout::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( _GtkWidget, "parameter named 'widget'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dir'")
+  ADDPARAMCOMMENT_TYPE( wxLayoutDirection, "parameter named 'dir'")
 }
 
 //---------------------------------------------------
@@ -630,12 +635,11 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<_GtkWidget > widget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkWidget* widget = widget_smtptr.get();
 
-  int dir_int;
-  if (!get_val_param<int >(dir_int,_p,_n)) ClassHelpAndReturn;
-  wxLayoutDirection dir = (wxLayoutDirection) dir_int;
+  wxLayoutDirection dir;
+  if (!get_val_param<wxLayoutDirection >(dir,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxWindow::GTKSetLayout(widget, dir);
   return BasicVariable::ptr();
@@ -666,30 +670,30 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* parent = parent_smtptr.get();
 
   int id;
-  if (!get_val_param<int >(id,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
 
   long style_long = 0;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxPanelNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxPanelNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, pos, size, style, name);
   int res_int = ((res==true)?1:0);
@@ -714,7 +718,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxString > param0_smtptr;
-  if (!get_val_smtptr_param<wxString >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & param0 = *param0_smtptr;
 
   this->_objectptr->GetObj()->SetLabel(param0);
@@ -815,7 +819,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int show_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(show_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(show_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool show = (bool) (show_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->Show(show);
@@ -842,7 +846,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int enable_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(enable_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool enable = (bool) (enable_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->Enable(enable);
@@ -868,7 +872,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   long style_long;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   this->_objectptr->GetObj()->SetWindowStyleFlag(style);
@@ -952,7 +956,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxWindowBase > newParent_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(newParent_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindowBase >(newParent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindowBase* newParent = newParent_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Reparent(newParent);
@@ -979,10 +983,10 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->WarpPointer(x, y);
   return BasicVariable::ptr();
@@ -1007,11 +1011,11 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int eraseBackground_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(eraseBackground_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(eraseBackground_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool eraseBackground = (bool) (eraseBackground_int>0.5);
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRect* rect = rect_smtptr.get();
 
   this->_objectptr->GetObj()->Refresh(eraseBackground, rect);
@@ -1073,7 +1077,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxColour > colour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColour const & colour = *colour_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetBackgroundColour(colour);
@@ -1100,7 +1104,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxColour > colour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColour const & colour = *colour_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetForegroundColour(colour);
@@ -1127,7 +1131,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxCursor > cursor_smtptr;
-  if (!get_val_smtptr_param<wxCursor >(cursor_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxCursor >(cursor_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxCursor const & cursor = *cursor_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetCursor(cursor);
@@ -1154,13 +1158,14 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxFont > font_smtptr;
-  if (!get_val_smtptr_param<wxFont >(font_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxFont >(font_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxFont const & font = *font_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetFont(font);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxBackgroundStyle
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindow::SetBackgroundStyle(wxBackgroundStyle style)
@@ -1168,7 +1173,7 @@ BasicVariable::ptr WrapClass_wxWindow::
 void WrapClass_wxWindow::
     wrap_SetBackgroundStyle::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'style'")
+  ADDPARAMCOMMENT_TYPE( wxBackgroundStyle, "parameter named 'style'")
   return_comments="returning a variable of type int";
 }
 
@@ -1180,14 +1185,14 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int style_int;
-  if (!get_val_param<int >(style_int,_p,_n)) ClassHelpAndReturn;
-  wxBackgroundStyle style = (wxBackgroundStyle) style_int;
+  wxBackgroundStyle style;
+  if (!get_val_param<wxBackgroundStyle >(style,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->SetBackgroundStyle(style);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of int wxWindow::GetCharHeight()
@@ -1250,27 +1255,27 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxString > string_smtptr;
-  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & string = *string_smtptr;
 
   boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* x = x_smtptr.get();
 
   boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* y = y_smtptr.get();
 
   boost::shared_ptr<int > descent_smtptr;
-  if (!get_val_smtptr_param<int >(descent_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(descent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* descent = descent_smtptr.get();
 
   boost::shared_ptr<int > externalLeading_smtptr;
-  if (!get_val_smtptr_param<int >(externalLeading_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(externalLeading_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* externalLeading = externalLeading_smtptr.get();
 
   boost::shared_ptr<wxFont > theFont_smtptr;
-  if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxFont* theFont = theFont_smtptr.get();
 
   this->_objectptr->GetObj()->GetTextExtent(string, x, y, descent, externalLeading, theFont);
@@ -1299,19 +1304,19 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int orient;
-  if (!get_val_param<int >(orient,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(orient,_p,_n,true,false)) ClassHelpAndReturn;
 
   int pos;
-  if (!get_val_param<int >(pos,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(pos,_p,_n,true,false)) ClassHelpAndReturn;
 
   int thumbVisible;
-  if (!get_val_param<int >(thumbVisible,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(thumbVisible,_p,_n,true,false)) ClassHelpAndReturn;
 
   int range;
-  if (!get_val_param<int >(range,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(range,_p,_n,true,false)) ClassHelpAndReturn;
 
   int refresh_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(refresh_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(refresh_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool refresh = (bool) (refresh_int>0.5);
 
   this->_objectptr->GetObj()->SetScrollbar(orient, pos, thumbVisible, range, refresh);
@@ -1338,13 +1343,13 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int orient;
-  if (!get_val_param<int >(orient,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(orient,_p,_n,true,false)) ClassHelpAndReturn;
 
   int pos;
-  if (!get_val_param<int >(pos,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(pos,_p,_n,true,false)) ClassHelpAndReturn;
 
   int refresh_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(refresh_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(refresh_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool refresh = (bool) (refresh_int>0.5);
 
   this->_objectptr->GetObj()->SetScrollPos(orient, pos, refresh);
@@ -1370,7 +1375,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int orient;
-  if (!get_val_param<int >(orient,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(orient,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->GetScrollPos(orient);
   return AMILabType<int >::CreateVar(res);
@@ -1395,7 +1400,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int orient;
-  if (!get_val_param<int >(orient,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(orient,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->GetScrollThumb(orient);
   return AMILabType<int >::CreateVar(res);
@@ -1420,7 +1425,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int orient;
-  if (!get_val_param<int >(orient,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(orient,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->GetScrollRange(orient);
   return AMILabType<int >::CreateVar(res);
@@ -1446,13 +1451,13 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int dx;
-  if (!get_val_param<int >(dx,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(dx,_p,_n,true,false)) ClassHelpAndReturn;
 
   int dy;
-  if (!get_val_param<int >(dy,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(dy,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRect* rect = rect_smtptr.get();
 
   this->_objectptr->GetObj()->ScrollWindow(dx, dy, rect);
@@ -1478,7 +1483,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int lines;
-  if (!get_val_param<int >(lines,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(lines,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ScrollLines(lines);
   int res_int = ((res==true)?1:0);
@@ -1504,7 +1509,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int pages;
-  if (!get_val_param<int >(pages,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(pages,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ScrollPages(pages);
   int res_int = ((res==true)?1:0);
@@ -1530,7 +1535,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxDropTarget > dropTarget_smtptr;
-  if (!get_val_smtptr_param<wxDropTarget >(dropTarget_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxDropTarget >(dropTarget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxDropTarget* dropTarget = dropTarget_smtptr.get();
 
   this->_objectptr->GetObj()->SetDropTarget(dropTarget);
@@ -1556,7 +1561,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindowBase* child = child_smtptr.get();
 
   this->_objectptr->GetObj()->AddChild(child);
@@ -1581,12 +1586,13 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindowBase* child = child_smtptr.get();
 
   this->_objectptr->GetObj()->RemoveChild(child);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxLayoutDirection
 
 //---------------------------------------------------
 //  Wrapping of void wxWindow::SetLayoutDirection(wxLayoutDirection dir)
@@ -1594,7 +1600,7 @@ BasicVariable::ptr WrapClass_wxWindow::
 void WrapClass_wxWindow::
     wrap_SetLayoutDirection::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dir'")
+  ADDPARAMCOMMENT_TYPE( wxLayoutDirection, "parameter named 'dir'")
 }
 
 //---------------------------------------------------
@@ -1605,13 +1611,14 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int dir_int;
-  if (!get_val_param<int >(dir_int,_p,_n)) ClassHelpAndReturn;
-  wxLayoutDirection dir = (wxLayoutDirection) dir_int;
+  wxLayoutDirection dir;
+  if (!get_val_param<wxLayoutDirection >(dir,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLayoutDirection(dir);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxLayoutDirection
 
 //---------------------------------------------------
 //  Wrapping of wxLayoutDirection wxWindow::GetLayoutDirection()
@@ -1619,7 +1626,7 @@ BasicVariable::ptr WrapClass_wxWindow::
 void WrapClass_wxWindow::
     wrap_GetLayoutDirection::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxLayoutDirection";
 }
 
 //---------------------------------------------------
@@ -1629,9 +1636,9 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxLayoutDirection res =   this->_objectptr->GetObj()->GetLayoutDirection();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxLayoutDirection >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxCoord wxWindow::AdjustForLayoutDirection(wxCoord x, wxCoord width, wxCoord widthTotal)
@@ -1654,13 +1661,13 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   int widthTotal;
-  if (!get_val_param<int >(widthTotal,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(widthTotal,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxCoord res =   this->_objectptr->GetObj()->AdjustForLayoutDirection(x, width, widthTotal);
   return AMILabType<int >::CreateVar(res);
@@ -1686,10 +1693,10 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->DoIsExposed(x, y);
   int res_int = ((res==true)?1:0);
@@ -1739,16 +1746,16 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int w;
-  if (!get_val_param<int >(w,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(w,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int h;
-  if (!get_val_param<int >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->DoIsExposed(x, y, w, h);
   int res_int = ((res==true)?1:0);
@@ -1773,7 +1780,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int on_int;
-  if (!get_val_param<int >(on_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(on_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool on = (bool) (on_int>0.5);
 
   this->_objectptr->GetObj()->SetDoubleBuffered(on);
@@ -1875,7 +1882,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxIdleEvent > param0_smtptr;
-  if (!get_val_smtptr_param<wxIdleEvent >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIdleEvent >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIdleEvent & param0 = *param0_smtptr;
 
   this->_objectptr->GetObj()->OnIdle(param0);
@@ -1900,7 +1907,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   int param0_int;
-  if (!get_val_param<int >(param0_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool param0 = (bool) (param0_int>0.5);
 
   this->_objectptr->GetObj()->OnParentEnable(param0);
@@ -1928,15 +1935,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* parent = parent_smtptr.get();
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint const & pos = *pos_smtptr;
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & size = *size_smtptr;
 
   bool res =   this->_objectptr->GetObj()->PreCreation(parent, pos, size);
@@ -1980,7 +1987,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxWindow > child_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(child_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* child = child_smtptr.get();
 
   this->_objectptr->GetObj()->DoAddChild(child);
@@ -2045,7 +2052,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<_GtkWidget > widget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkWidget* widget = widget_smtptr.get();
 
   this->_objectptr->GetObj()->ConnectWidget(widget);
@@ -2073,7 +2080,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<_GdkEventAny > event_smtptr;
-  if (!get_val_smtptr_param<_GdkEventAny >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GdkEventAny >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GdkEventAny* event = event_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->GTKCallbackCommonPrologue(event);
@@ -2100,7 +2107,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<wxEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxEvent & event = *event_smtptr;
 
   bool res =   this->_objectptr->GetObj()->GTKProcessEvent(event);
@@ -2149,11 +2156,11 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<_GtkTooltips > tips_smtptr;
-  if (!get_val_smtptr_param<_GtkTooltips >(tips_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkTooltips >(tips_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkTooltips* tips = tips_smtptr.get();
 
   boost::shared_ptr<std::string > tip_string;
-  if (!get_val_smtptr_param<std::string >(tip_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(tip_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t tip[tip_string->size()+1];
 mbstowcs(tip,tip_string->c_str(),tip_string->size()+1);
 
@@ -2239,15 +2246,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<_GtkWidget > param0_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkWidget >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkWidget* param0 = param0_smtptr.get();
 
   boost::shared_ptr<int > param1_smtptr;
-  if (!get_val_smtptr_param<int >(param1_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxCoord & param1 = *param1_smtptr;
 
   boost::shared_ptr<int > param2_smtptr;
-  if (!get_val_smtptr_param<int >(param2_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(param2_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxCoord & param2 = *param2_smtptr;
 
   this->_objectptr->GetObj()->FixUpMouseEvent(param0, param1, param2);
@@ -2315,7 +2322,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<_GtkRange > range_smtptr;
-  if (!get_val_smtptr_param<_GtkRange >(range_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkRange >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkRange* range = range_smtptr.get();
 
   wxEventType res =   this->_objectptr->GetObj()->GetScrollEventType(range);
@@ -2361,7 +2368,7 @@ BasicVariable::ptr WrapClass_wxWindow::
 /* The following types are missing: _GtkRange
 
 //---------------------------------------------------
-//  Wrapping of ScrollDir wxWindow::ScrollDirFromRange(GtkRange * range)
+//  Wrapping of wxWindow::ScrollDir wxWindow::ScrollDirFromRange(GtkRange * range)
 //---------------------------------------------------
 void WrapClass_wxWindow::
     wrap_ScrollDirFromRange::SetParametersComments()
@@ -2379,10 +2386,10 @@ BasicVariable::ptr WrapClass_wxWindow::
   int _n=0;
 
   boost::shared_ptr<_GtkRange > range_smtptr;
-  if (!get_val_smtptr_param<_GtkRange >(range_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkRange >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkRange* range = range_smtptr.get();
 
-  ScrollDir res =   this->_objectptr->GetObj()->ScrollDirFromRange(range);
+  wxWindow::ScrollDir res =   this->_objectptr->GetObj()->ScrollDirFromRange(range);
   int res_int = (int) res;
   return AMILabType<int >::CreateVar(res_int);
 }

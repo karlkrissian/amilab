@@ -26,6 +26,7 @@
 #include "wrap_wxCommandEvent.h"
 
 
+
 AMI_DECLARE_TYPE(wxChildFocusEvent);
 
 // TODO: check for inheritence ...

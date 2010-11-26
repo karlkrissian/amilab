@@ -103,7 +103,7 @@ BasicVariable::ptr WrapClass_wxSysColourChangedEvent::
   int _n=0;
 
   boost::shared_ptr<wxSysColourChangedEvent > param0_smtptr;
-  if (!get_val_smtptr_param<wxSysColourChangedEvent >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSysColourChangedEvent >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxSysColourChangedEvent const & param0 = *param0_smtptr;
 
   wxSysColourChangedEvent* _newobj = new wxSysColourChangedEvent(param0);

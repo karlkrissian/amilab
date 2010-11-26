@@ -117,7 +117,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   int _n=0;
 
   int commandId = 0;
-  if (!get_val_param<int >(commandId,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(commandId,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxUpdateUIEvent* _newobj = new wxUpdateUIEvent(commandId);
   BasicVariable::ptr res = WrapClass_wxUpdateUIEvent::CreateVar(_newobj);
@@ -163,7 +163,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   int _n=0;
 
   boost::shared_ptr<wxUpdateUIEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxUpdateUIEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxUpdateUIEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxUpdateUIEvent const & event = *event_smtptr;
 
   wxUpdateUIEvent* _newobj = new wxUpdateUIEvent(event);
@@ -189,7 +189,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   int _n=0;
 
   long updateInterval_long;
-  if (!get_val_param<long >(updateInterval_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(updateInterval_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int updateInterval = updateInterval_long;
 
   wxUpdateUIEvent::SetUpdateInterval(updateInterval);
@@ -235,7 +235,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   int _n=0;
 
   boost::shared_ptr<wxWindowBase > win_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindowBase* win = win_smtptr.get();
 
   bool res =   wxUpdateUIEvent::CanUpdate(win);
@@ -260,6 +260,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   wxUpdateUIEvent::ResetUpdateTime();
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxUpdateUIMode
 
 //---------------------------------------------------
 //  Wrapping of void wxUpdateUIEvent::SetMode(wxUpdateUIMode mode)
@@ -267,7 +268,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_SetMode::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'mode'")
+  ADDPARAMCOMMENT_TYPE( wxUpdateUIMode, "parameter named 'mode'")
 }
 
 //---------------------------------------------------
@@ -278,13 +279,14 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int mode_int;
-  if (!get_val_param<int >(mode_int,_p,_n)) ClassHelpAndReturn;
-  wxUpdateUIMode mode = (wxUpdateUIMode) mode_int;
+  wxUpdateUIMode mode;
+  if (!get_val_param<wxUpdateUIMode >(mode,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxUpdateUIEvent::SetMode(mode);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxUpdateUIMode
 
 //---------------------------------------------------
 //  Wrapping of wxUpdateUIMode wxUpdateUIEvent::GetMode()
@@ -292,7 +294,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_GetMode::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxUpdateUIMode";
 }
 
 //---------------------------------------------------
@@ -302,9 +304,9 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxUpdateUIMode res =   wxUpdateUIEvent::GetMode();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxUpdateUIMode >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of 'copy' method for wxUpdateUIEvent.
@@ -499,7 +501,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   int _n=0;
 
   int check_int;
-  if (!get_val_param<int >(check_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(check_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool check = (bool) (check_int>0.5);
 
   this->_objectptr->GetObj()->Check(check);
@@ -524,7 +526,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   int _n=0;
 
   int enable_int;
-  if (!get_val_param<int >(enable_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(enable_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool enable = (bool) (enable_int>0.5);
 
   this->_objectptr->GetObj()->Enable(enable);
@@ -549,7 +551,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   int _n=0;
 
   int show_int;
-  if (!get_val_param<int >(show_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(show_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool show = (bool) (show_int>0.5);
 
   this->_objectptr->GetObj()->Show(show);
@@ -574,7 +576,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & text = *text_smtptr;
 
   this->_objectptr->GetObj()->SetText(text);

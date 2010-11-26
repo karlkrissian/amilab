@@ -26,6 +26,7 @@
 #include "wrap_wxNodeBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxwxSizerItemListNode);
 
 // TODO: check for inheritence ...

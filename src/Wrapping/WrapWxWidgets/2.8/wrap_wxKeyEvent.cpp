@@ -235,7 +235,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   int _n=0;
 
   int keyType = wxEVT_NULL;
-  if (!get_val_param<int >(keyType,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(keyType,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxKeyEvent* _newobj = new wxKeyEvent(keyType);
   BasicVariable::ptr res = WrapClass_wxKeyEvent::CreateVar(_newobj);
@@ -281,7 +281,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   int _n=0;
 
   boost::shared_ptr<wxKeyEvent > evt_smtptr;
-  if (!get_val_smtptr_param<wxKeyEvent >(evt_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxKeyEvent >(evt_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxKeyEvent const & evt = *evt_smtptr;
 
   wxKeyEvent* _newobj = new wxKeyEvent(evt);
@@ -548,11 +548,11 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   int _n=0;
 
   boost::shared_ptr<int > xpos_smtptr;
-  if (!get_val_smtptr_param<int >(xpos_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(xpos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* xpos = xpos_smtptr.get();
 
   boost::shared_ptr<int > ypos_smtptr;
-  if (!get_val_smtptr_param<int >(ypos_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(ypos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* ypos = ypos_smtptr.get();
 
   this->_objectptr->GetObj()->GetPosition(xpos, ypos);
@@ -602,12 +602,12 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   int _n=0;
 
   boost::shared_ptr<long > xpos_long;
-  if (!get_val_smtptr_param<long >(xpos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(xpos_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int xpos_val = *xpos_long;
   long int* xpos = &xpos_val;
 
   boost::shared_ptr<long > ypos_long;
-  if (!get_val_smtptr_param<long >(ypos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(ypos_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int ypos_val = *ypos_long;
   long int* ypos = &ypos_val;
 
@@ -751,7 +751,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   int _n=0;
 
   boost::shared_ptr<wxKeyEvent > evt_smtptr;
-  if (!get_val_smtptr_param<wxKeyEvent >(evt_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxKeyEvent >(evt_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxKeyEvent const & evt = *evt_smtptr;
 
   wxKeyEvent & res =   (*this->_objectptr->GetObj()) = (evt);

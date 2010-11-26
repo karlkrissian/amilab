@@ -100,7 +100,7 @@ void WrapClass_wxInputStream::AddMethods(WrapClass<wxInputStream>::ptr this_ptr 
       // Adding operators
       // AddVar_operator not available( this_ptr);
       // AddVar_operator not available( this_ptr);
-/* The following types are missing: _12813
+/* The following types are missing: _12803
       // AddVar_operator not available( this_ptr);
 */
 
@@ -470,7 +470,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
 }
 */
 /*
- * The following types are missing: _12813
+ * The following types are missing: _12803
  * operator not available 
 
 //---------------------------------------------------
@@ -479,7 +479,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
 void WrapClass_wxInputStream::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _12813, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _12803, "parameter named 'func'")
   return_comments="returning a variable of type wxInputStream";
 }
 
@@ -491,8 +491,8 @@ BasicVariable::ptr WrapClass_wxInputStream::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _12813 func;
-  if (!get_val_param<_12813 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _12803 func;
+  if (!get_val_param<_12803 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxInputStream & res =   this->_objectptr->GetObj()->>>(func);
   return AMILabType<wxInputStream >::CreateVar(res);

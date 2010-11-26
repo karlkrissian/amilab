@@ -123,7 +123,7 @@ BasicVariable::ptr WrapClass_wxEventTable::
   int _n=0;
 
   boost::shared_ptr<wxEventTable > param0_smtptr;
-  if (!get_val_smtptr_param<wxEventTable >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxEventTable >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxEventTable const & param0 = *param0_smtptr;
 
   wxEventTable* _newobj = new wxEventTable(param0);
@@ -206,7 +206,7 @@ BasicVariable::ptr WrapClass_wxEventTable::
   int _n=0;
 
   boost::shared_ptr<wxEventTable > param0_smtptr;
-  if (!get_val_smtptr_param<wxEventTable >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxEventTable >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxEventTable const & param0 = *param0_smtptr;
 
   wxEventTable & res =   (*this->_objectptr->GetObj()) = (param0);

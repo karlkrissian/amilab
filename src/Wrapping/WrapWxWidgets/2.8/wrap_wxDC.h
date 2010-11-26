@@ -26,6 +26,7 @@
 #include "wrap_wxDCBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxDC);
 
 // TODO: check for inheritence ...

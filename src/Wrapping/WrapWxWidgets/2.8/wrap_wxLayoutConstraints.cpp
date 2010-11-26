@@ -191,7 +191,7 @@ BasicVariable::ptr WrapClass_wxLayoutConstraints::
   int _n=0;
 
   boost::shared_ptr<wxLayoutConstraints > param0_smtptr;
-  if (!get_val_smtptr_param<wxLayoutConstraints >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxLayoutConstraints >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxLayoutConstraints const & param0 = *param0_smtptr;
 
   wxLayoutConstraints* _newobj = new wxLayoutConstraints(param0);
@@ -275,11 +275,11 @@ BasicVariable::ptr WrapClass_wxLayoutConstraints::
   int _n=0;
 
   boost::shared_ptr<wxWindowBase > win_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindowBase* win = win_smtptr.get();
 
   boost::shared_ptr<int > noChanges_smtptr;
-  if (!get_val_smtptr_param<int >(noChanges_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(noChanges_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* noChanges = noChanges_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->SatisfyConstraints(win, noChanges);
@@ -346,7 +346,7 @@ BasicVariable::ptr WrapClass_wxLayoutConstraints::
   int _n=0;
 
   boost::shared_ptr<wxLayoutConstraints > param0_smtptr;
-  if (!get_val_smtptr_param<wxLayoutConstraints >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxLayoutConstraints >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxLayoutConstraints const & param0 = *param0_smtptr;
 
   wxLayoutConstraints & res =   (*this->_objectptr->GetObj()) = (param0);

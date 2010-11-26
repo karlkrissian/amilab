@@ -78,7 +78,7 @@ class WrapClass_wxList : public WrapClass<wxList>
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
     // Adding standard methods
-/* The following types are missing: _9505
+/* The following types are missing: _9495
     ADD_CLASS_METHOD(Sort,"void wxList::Sort(wxSortCompareFunction compfunc)  (http://docs.wxwidgets.org/stable/wx_wxlist.html#sort)")
 */
     ADD_CLASS_METHOD(Member,"wxNode * wxList::Member(wxObject * object)  (http://docs.wxwidgets.org/stable/wx_wxlist.html#member)")

@@ -111,7 +111,7 @@ BasicVariable::ptr WrapClass_wxCursor::
   int _n=0;
 
   boost::shared_ptr<wxCursor > param0_smtptr;
-  if (!get_val_smtptr_param<wxCursor >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxCursor >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxCursor const & param0 = *param0_smtptr;
 
   wxCursor* _newobj = new wxCursor(param0);
@@ -186,7 +186,7 @@ BasicVariable::ptr WrapClass_wxCursor::
   int _n=0;
 
   int cursorId;
-  if (!get_val_param<int >(cursorId,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(cursorId,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxCursor* _newobj = new wxCursor(cursorId);
   BasicVariable::ptr res = WrapClass_wxCursor::CreateVar(_newobj);
@@ -211,7 +211,7 @@ BasicVariable::ptr WrapClass_wxCursor::
   int _n=0;
 
   boost::shared_ptr<wxImage > image_smtptr;
-  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxImage const & image = *image_smtptr;
 
   wxCursor* _newobj = new wxCursor(image);
@@ -244,31 +244,31 @@ BasicVariable::ptr WrapClass_wxCursor::
   int _n=0;
 
   boost::shared_ptr<std::string > bits_string;
-  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(bits_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * bits = bits_string->c_str();
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int hotSpotX = -0x00000000000000001;
-  if (!get_val_param<int >(hotSpotX,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(hotSpotX,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int hotSpotY = -0x00000000000000001;
-  if (!get_val_param<int >(hotSpotY,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(hotSpotY,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<std::string > maskBits_string;
-  if (!get_val_smtptr_param<std::string >(maskBits_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(maskBits_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * maskBits = maskBits_string->c_str();
 
   boost::shared_ptr<wxColour > fg_smtptr;
-  if (!get_val_smtptr_param<wxColour >(fg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(fg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour* fg = fg_smtptr.get();
 
   boost::shared_ptr<wxColour > bg_smtptr;
-  if (!get_val_smtptr_param<wxColour >(bg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(bg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour* bg = bg_smtptr.get();
 
   wxCursor* _newobj = new wxCursor(bits, width, height, hotSpotX, hotSpotY, maskBits, fg, bg);
@@ -392,7 +392,7 @@ BasicVariable::ptr WrapClass_wxCursor::
   int _n=0;
 
   boost::shared_ptr<wxCursor > param0_smtptr;
-  if (!get_val_smtptr_param<wxCursor >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxCursor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxCursor const & param0 = *param0_smtptr;
 
   wxCursor & res =   (*this->_objectptr->GetObj()) = (param0);

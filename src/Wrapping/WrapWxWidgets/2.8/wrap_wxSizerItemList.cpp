@@ -19,8 +19,8 @@
 // get all the required includes
 // #include "..."
 #include "wrap_wxSizerItemList.h"
-#include "wrap_wxSizerItem.h"
 #include "boost/numeric/conversion/cast.hpp"
+#include "wrap_wxSizerItem.h"
 #include "wrap_wxwxSizerItemListNode.h"
 #include "stdlib.h"
 #include "wrap_wxListKey.h"
@@ -98,11 +98,11 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
       AddVar_Find( this_ptr);
       AddVar_Find_2( this_ptr);
       AddVar_IndexOf( this_ptr);
-/* The following types are missing: _9505
+/* The following types are missing: _9495
       AddVar_Sort_1( this_ptr);
 */
       AddVar_Sort( this_ptr);
-/* The following types are missing: _8773
+/* The following types are missing: _8775
       AddVar_Sort_2( this_ptr);
 */
 /* The following types are missing: iterator
@@ -196,6 +196,7 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
+/* The following types are missing: wxKeyType
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxSizerItemList::wxSizerItemList(wxKeyType keyType = wxKEY_NONE)
@@ -203,7 +204,7 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
 void WrapClass_wxSizerItemList::
     wrap_wxSizerItemList_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'keyType' (def:wxKEY_NONE)")
+  ADDPARAMCOMMENT_TYPE( wxKeyType, "parameter named 'keyType' (def:wxKEY_NONE)")
 }
 
 //---------------------------------------------------
@@ -214,14 +215,14 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  int keyType_int = (int) wxKEY_NONE;;
-  if (!get_val_param<int >(keyType_int,_p,_n)) ClassReturnEmptyVar;
-  wxKeyType keyType = (wxKeyType) keyType_int;
+  wxKeyType keyType = wxKEY_NONE;
+  if (!get_val_param<wxKeyType >(keyType,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxSizerItemList* _newobj = new wxSizerItemList(keyType);
   BasicVariable::ptr res = WrapClass_wxSizerItemList::CreateVar(_newobj);
   return res;
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... Constructor wxSizerItemList::wxSizerItemList(...)
@@ -235,15 +236,9 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
     wrap_wxSizerItemList::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxSizerItemList::wrap_wxSizerItemList_1 m1;
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxSizerItemList::wrap_wxSizerItemList_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxSizerItemList::wrap_wxSizerItemList_3 m3;
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
   WrapClass_wxSizerItemList::wrap_wxSizerItemList_4 m4;
   res = m4.CallMember(_p);
   if (!m4.Get_arg_failure()) return res;
@@ -268,13 +263,14 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItemList > list_smtptr;
-  if (!get_val_smtptr_param<wxSizerItemList >(list_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItemList >(list_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxSizerItemList const & list = *list_smtptr;
 
   wxSizerItemList* _newobj = new wxSizerItemList(list);
   BasicVariable::ptr res = WrapClass_wxSizerItemList::CreateVar(_newobj);
   return res;
 }
+/* The following types are missing: wxSizerItem * *
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxSizerItemList::wxSizerItemList(size_t count, wxSizerItem * * elements)
@@ -295,17 +291,18 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   long count_long;
-  if (!get_val_param<long >(count_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(count_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int count = boost::numeric_cast<long unsigned int >(count_long);
 
   boost::shared_ptr<wxSizerItem > elements_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(elements_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizerItem* elements = elements_smtptr.get();
 
   wxSizerItemList* _newobj = new wxSizerItemList(count, elements);
   BasicVariable::ptr res = WrapClass_wxSizerItemList::CreateVar(_newobj);
   return res;
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxSizerItemList::wxSizerItemList(size_t n, wxSizerItem * const & v = 0u)
@@ -326,11 +323,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   boost::shared_ptr<wxSizerItem > v_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxSizerItem * const & v = ( v_smtptr.get() ? v_smtptr.get() : (0u) );
 
@@ -359,11 +356,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<const_iterator > first_smtptr;
-  if (!get_val_smtptr_param<const_iterator >(first_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<const_iterator >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   const_iterator const & first = *first_smtptr;
 
   boost::shared_ptr<const_iterator > last_smtptr;
-  if (!get_val_smtptr_param<const_iterator >(last_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<const_iterator >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   const_iterator const & last = *last_smtptr;
 
   wxSizerItemList* _newobj = new wxSizerItemList(first, last);
@@ -447,7 +444,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   long index_long;
-  if (!get_val_param<long >(index_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(index_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Item(index);
@@ -474,7 +471,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItem > object_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Append(object);
@@ -501,7 +498,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItem > object_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Insert(object);
@@ -553,11 +550,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(pos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   boost::shared_ptr<wxSizerItem > object_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Insert(pos, object);
@@ -585,11 +582,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxwxSizerItemListNode > prev_smtptr;
-  if (!get_val_smtptr_param<wxwxSizerItemListNode >(prev_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxwxSizerItemListNode >(prev_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxwxSizerItemListNode* prev = prev_smtptr.get();
 
   boost::shared_ptr<wxSizerItem > object_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Insert(prev, object);
@@ -636,11 +633,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   long key_long;
-  if (!get_val_param<long >(key_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(key_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int key = key_long;
 
   boost::shared_ptr<void > object_smtptr;
-  if (!get_val_smtptr_param<void >(object_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   void* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Append(key, object);
@@ -670,12 +667,12 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<std::string > key_string;
-  if (!get_val_smtptr_param<std::string >(key_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(key_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t key[key_string->size()+1];
 mbstowcs(key,key_string->c_str(),key_string->size()+1);
 
   boost::shared_ptr<void > object_smtptr;
-  if (!get_val_smtptr_param<void >(object_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   void* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Append(key, object);
@@ -703,7 +700,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxwxSizerItemListNode > node_smtptr;
-  if (!get_val_smtptr_param<wxwxSizerItemListNode >(node_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxwxSizerItemListNode >(node_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxwxSizerItemListNode* node = node_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->DetachNode(node);
@@ -730,7 +727,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxwxSizerItemListNode > node_smtptr;
-  if (!get_val_smtptr_param<wxwxSizerItemListNode >(node_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxwxSizerItemListNode >(node_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxwxSizerItemListNode* node = node_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->DeleteNode(node);
@@ -757,7 +754,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItem > object_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizerItem* object = object_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->DeleteObject(object);
@@ -783,7 +780,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxwxSizerItemListNode > it_smtptr;
-  if (!get_val_smtptr_param<wxwxSizerItemListNode >(it_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxwxSizerItemListNode >(it_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxwxSizerItemListNode* it = it_smtptr.get();
 
   this->_objectptr->GetObj()->Erase(it);
@@ -809,7 +806,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItem > object_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizerItem* object = object_smtptr.get();
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Find(object);
@@ -857,7 +854,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxListKey > key_smtptr;
-  if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxListKey const & key = *key_smtptr;
 
   wxwxSizerItemListNode * res =   this->_objectptr->GetObj()->Find(key);
@@ -884,13 +881,13 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItem > object_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerItem >(object_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizerItem* object = object_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->IndexOf(object);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: _9505
+/* The following types are missing: _9495
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::Sort(wxSortCompareFunction func)
@@ -898,7 +895,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
 void WrapClass_wxSizerItemList::
     wrap_Sort_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9505, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _9495, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -909,8 +906,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _9505 func;
-  if (!get_val_param<_9505 >(func,_p,_n)) ClassReturnEmptyVar;
+  _9495 func;
+  if (!get_val_param<_9495 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -931,7 +928,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: _8773
+/* The following types are missing: _8775
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::Sort(wxSortFuncFor_wxSizerItemList func)
@@ -939,7 +936,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
 void WrapClass_wxSizerItemList::
     wrap_Sort_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _8773, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _8775, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -950,8 +947,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _8773 func;
-  if (!get_val_param<_8773 >(func,_p,_n)) ClassReturnEmptyVar;
+  _8775 func;
+  if (!get_val_param<_8775 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -1205,11 +1202,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(n_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   boost::shared_ptr<wxSizerItem > v_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizerItem* v = v_smtptr.get();
 
   this->_objectptr->GetObj()->resize(n, v);
@@ -1412,7 +1409,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItem > v_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
   wxSizerItem * const & v = ( v_smtptr.get() ? v_smtptr.get() : (0u) );
 
@@ -1456,7 +1453,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItem > v_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
   wxSizerItem * const & v = ( v_smtptr.get() ? v_smtptr.get() : (0u) );
 
@@ -1502,10 +1499,10 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   const_iterator first;
-  if (!get_val_param<const_iterator >(first,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<const_iterator >(first,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<const_iterator > last_smtptr;
-  if (!get_val_smtptr_param<const_iterator >(last_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<const_iterator >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   const_iterator const & last = *last_smtptr;
 
   this->_objectptr->GetObj()->assign(first, last);
@@ -1550,11 +1547,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   boost::shared_ptr<wxSizerItem > v_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxSizerItem * const & v = ( v_smtptr.get() ? v_smtptr.get() : (0u) );
 
@@ -1583,11 +1580,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<iterator > it_smtptr;
-  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & it = *it_smtptr;
 
   boost::shared_ptr<wxSizerItem > v_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxSizerItem * const & v = ( v_smtptr.get() ? v_smtptr.get() : (0u) );
 
@@ -1632,15 +1629,15 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<iterator > it_smtptr;
-  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & it = *it_smtptr;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   boost::shared_ptr<wxSizerItem > v_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxSizerItem * const & v = ( v_smtptr.get() ? v_smtptr.get() : (0u) );
 
@@ -1670,14 +1667,14 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<iterator > it_smtptr;
-  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & it = *it_smtptr;
 
   const_iterator first;
-  if (!get_val_param<const_iterator >(first,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<const_iterator >(first,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<const_iterator > last_smtptr;
-  if (!get_val_smtptr_param<const_iterator >(last_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<const_iterator >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   const_iterator const & last = *last_smtptr;
 
   this->_objectptr->GetObj()->insert(it, first, last);
@@ -1705,7 +1702,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<iterator > it_smtptr;
-  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & it = *it_smtptr;
 
   iterator res =   this->_objectptr->GetObj()->erase(it);
@@ -1749,11 +1746,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<iterator > first_smtptr;
-  if (!get_val_smtptr_param<iterator >(first_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & first = *first_smtptr;
 
   boost::shared_ptr<iterator > last_smtptr;
-  if (!get_val_smtptr_param<iterator >(last_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & last = *last_smtptr;
 
   iterator res =   this->_objectptr->GetObj()->erase(first, last);
@@ -1801,19 +1798,19 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<iterator > it_smtptr;
-  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & it = *it_smtptr;
 
   boost::shared_ptr<wxSizerItemList > l_smtptr;
-  if (!get_val_smtptr_param<wxSizerItemList >(l_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItemList >(l_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizerItemList & l = *l_smtptr;
 
   boost::shared_ptr<iterator > first_smtptr;
-  if (!get_val_smtptr_param<iterator >(first_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & first = *first_smtptr;
 
   boost::shared_ptr<iterator > last_smtptr;
-  if (!get_val_smtptr_param<iterator >(last_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & last = *last_smtptr;
 
   this->_objectptr->GetObj()->splice(it, l, first, last);
@@ -1856,11 +1853,11 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<iterator > it_smtptr;
-  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & it = *it_smtptr;
 
   boost::shared_ptr<wxSizerItemList > l_smtptr;
-  if (!get_val_smtptr_param<wxSizerItemList >(l_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItemList >(l_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizerItemList & l = *l_smtptr;
 
   this->_objectptr->GetObj()->splice(it, l);
@@ -1889,15 +1886,15 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<iterator > it_smtptr;
-  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & it = *it_smtptr;
 
   boost::shared_ptr<wxSizerItemList > l_smtptr;
-  if (!get_val_smtptr_param<wxSizerItemList >(l_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerItemList >(l_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizerItemList & l = *l_smtptr;
 
   boost::shared_ptr<iterator > first_smtptr;
-  if (!get_val_smtptr_param<iterator >(first_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & first = *first_smtptr;
 
   this->_objectptr->GetObj()->splice(it, l, first);
@@ -1923,7 +1920,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItem > v_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerItem >(v_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizerItem * const & v = v_smtptr.get();
 
   this->_objectptr->GetObj()->remove(v);
@@ -1967,7 +1964,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   boost::shared_ptr<wxSizerItemList > list_smtptr;
-  if (!get_val_smtptr_param<wxSizerItemList >(list_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerItemList >(list_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizerItemList const & list = *list_smtptr;
 
   wxSizerItemList & res =   (*this->_objectptr->GetObj()) = (list);
@@ -1993,7 +1990,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int _n=0;
 
   long index_long;
-  if (!get_val_param<long >(index_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(index_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   wxSizerItem * res =   (*this->_objectptr->GetObj()) [ (index)];

@@ -199,7 +199,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxIcon > icon_smtptr;
-  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIcon const & icon = *icon_smtptr;
 
   this->_objectptr->GetObj()->SetIcon(icon);
@@ -224,7 +224,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxIconBundle > icons_smtptr;
-  if (!get_val_smtptr_param<wxIconBundle >(icons_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIconBundle >(icons_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIconBundle const & icons = *icons_smtptr;
 
   this->_objectptr->GetObj()->SetIcons(icons);
@@ -250,7 +250,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   int param0_int;
-  if (!get_val_param<int >(param0_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool param0 = (bool) (param0_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->EnableCloseButton(param0);
@@ -277,7 +277,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > param0_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRegion >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRegion const & param0 = *param0_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetShape(param0);
@@ -303,7 +303,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   int flags = wxUSER_ATTENTION_INFO;
-  if (!get_val_param<int >(flags,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(flags,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->RequestUserAttention(flags);
   return BasicVariable::ptr();
@@ -367,7 +367,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   int dir = wxBOTH;
-  if (!get_val_param<int >(dir,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(dir,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->CentreOnScreen(dir);
   return BasicVariable::ptr();
@@ -391,7 +391,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   int dir = wxBOTH;
-  if (!get_val_param<int >(dir,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(dir,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->CenterOnScreen(dir);
   return BasicVariable::ptr();
@@ -415,7 +415,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindowBase* child = child_smtptr.get();
 
   this->_objectptr->GetObj()->RemoveChild(child);
@@ -461,7 +461,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* win = win_smtptr.get();
 
   wxWindow * res =   this->_objectptr->GetObj()->SetDefaultItem(win);
@@ -508,7 +508,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* win = win_smtptr.get();
 
   wxWindow * res =   this->_objectptr->GetObj()->SetTmpDefaultItem(win);
@@ -594,7 +594,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxCloseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxCloseEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxCloseEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxCloseEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnCloseWindow(event);
@@ -619,7 +619,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxSizeEvent > param0_smtptr;
-  if (!get_val_smtptr_param<wxSizeEvent >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizeEvent >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizeEvent & param0 = *param0_smtptr;
 
   this->_objectptr->GetObj()->OnSize(param0);
@@ -647,19 +647,19 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* x = x_smtptr.get();
 
   boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* y = y_smtptr.get();
 
   boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* w = w_smtptr.get();
 
   boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* h = h_smtptr.get();
 
   this->_objectptr->GetObj()->GetRectForTopLevelChildren(x, y, w, h);
@@ -684,7 +684,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxActivateEvent > param0_smtptr;
-  if (!get_val_smtptr_param<wxActivateEvent >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxActivateEvent >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxActivateEvent & param0 = *param0_smtptr;
 
   this->_objectptr->GetObj()->OnActivate(param0);
@@ -709,7 +709,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxUpdateUIEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxUpdateUIEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxUpdateUIEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxUpdateUIEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->DoUpdateWindowUI(event);
@@ -734,7 +734,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxSize > minSize_smtptr;
-  if (!get_val_smtptr_param<wxSize >(minSize_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(minSize_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & minSize = *minSize_smtptr;
 
   this->_objectptr->GetObj()->SetMinSize(minSize);
@@ -759,7 +759,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   boost::shared_ptr<wxSize > maxSize_smtptr;
-  if (!get_val_smtptr_param<wxSize >(maxSize_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(maxSize_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSize const & maxSize = *maxSize_smtptr;
 
   this->_objectptr->GetObj()->SetMaxSize(maxSize);
@@ -789,22 +789,22 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int _n=0;
 
   int minW;
-  if (!get_val_param<int >(minW,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(minW,_p,_n,true,false)) ClassHelpAndReturn;
 
   int minH;
-  if (!get_val_param<int >(minH,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(minH,_p,_n,true,false)) ClassHelpAndReturn;
 
   int maxW = wxDefaultCoord;
-  if (!get_val_param<int >(maxW,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(maxW,_p,_n,false,false)) ClassHelpAndReturn;
 
   int maxH = wxDefaultCoord;
-  if (!get_val_param<int >(maxH,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(maxH,_p,_n,false,false)) ClassHelpAndReturn;
 
   int incW = wxDefaultCoord;
-  if (!get_val_param<int >(incW,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(incW,_p,_n,false,false)) ClassHelpAndReturn;
 
   int incH = wxDefaultCoord;
-  if (!get_val_param<int >(incH,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(incH,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->DoSetSizeHints(minW, minH, maxW, maxH, incW, incH);
   return BasicVariable::ptr();

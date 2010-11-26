@@ -103,7 +103,7 @@ BasicVariable::ptr WrapClass_wxPaintEvent::
   int _n=0;
 
   boost::shared_ptr<wxPaintEvent > param0_smtptr;
-  if (!get_val_smtptr_param<wxPaintEvent >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPaintEvent >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxPaintEvent const & param0 = *param0_smtptr;
 
   wxPaintEvent* _newobj = new wxPaintEvent(param0);
@@ -150,7 +150,7 @@ BasicVariable::ptr WrapClass_wxPaintEvent::
   int _n=0;
 
   int Id = 0;
-  if (!get_val_param<int >(Id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(Id,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxPaintEvent* _newobj = new wxPaintEvent(Id);
   BasicVariable::ptr res = WrapClass_wxPaintEvent::CreateVar(_newobj);

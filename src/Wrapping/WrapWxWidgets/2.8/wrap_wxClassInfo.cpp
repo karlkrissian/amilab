@@ -83,7 +83,7 @@ void WrapClass_wxClassInfo::AddMethods(WrapClass<wxClassInfo>::ptr this_ptr )
       AddVar_GetBaseClass1( this_ptr);
       AddVar_GetBaseClass2( this_ptr);
       AddVar_GetSize( this_ptr);
-/* The following types are missing: _8995
+/* The following types are missing: _8997
       AddVar_GetConstructor( this_ptr);
 */
       AddVar_GetNext( this_ptr);
@@ -116,8 +116,8 @@ void WrapClass_wxClassInfo::AddMethods(WrapClass<wxClassInfo>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_objectConstructor
-      boost::shared_ptr<_8995 > var_m_objectConstructor_ptr(&GetObj()->m_objectConstructor, smartpointer_nodeleter<_8995 >());
-      BasicVariable::ptr var_m_objectConstructor = AMILabType<_8995 >::CreateVarFromSmtPtr(var_m_objectConstructor_ptr);
+      boost::shared_ptr<_8997 > var_m_objectConstructor_ptr(&GetObj()->m_objectConstructor, smartpointer_nodeleter<_8997 >());
+      BasicVariable::ptr var_m_objectConstructor = AMILabType<_8997 >::CreateVarFromSmtPtr(var_m_objectConstructor_ptr);
       if (var_m_objectConstructor.get()) {
         var_m_objectConstructor->Rename("m_objectConstructor");
         context->AddVar(var_m_objectConstructor,context);
@@ -158,7 +158,7 @@ void WrapClass_wxClassInfo::AddMethods(WrapClass<wxClassInfo>::ptr this_ptr )
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: _8995
+/* The following types are missing: _8997
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxClassInfo::wxClassInfo(wxChar const * className, wxClassInfo const * baseInfo1, wxClassInfo const * baseInfo2, int size, wxObjectConstructorFn ctor)
@@ -170,7 +170,7 @@ void WrapClass_wxClassInfo::
   ADDPARAMCOMMENT_TYPE( wxClassInfo, "parameter named 'baseInfo1'")
   ADDPARAMCOMMENT_TYPE( wxClassInfo, "parameter named 'baseInfo2'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'size'")
-  ADDPARAMCOMMENT_TYPE( _8995, "parameter named 'ctor'")
+  ADDPARAMCOMMENT_TYPE( _8997, "parameter named 'ctor'")
 }
 
 //---------------------------------------------------
@@ -197,8 +197,8 @@ mbstowcs(className,className_string->c_str(),className_string->size()+1);
   int size;
   if (!get_val_param<int >(size,_p,_n,true,false)) ClassHelpAndReturn;
 
-  _8995 ctor;
-  if (!get_val_param<_8995 >(ctor,_p,_n,true,false)) ClassHelpAndReturn;
+  _8997 ctor;
+  if (!get_val_param<_8997 >(ctor,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxClassInfo* _newobj = new wxClassInfo(className, baseInfo1, baseInfo2, size, ctor);
   BasicVariable::ptr res = WrapClass_wxClassInfo::CreateVar(_newobj);
@@ -469,7 +469,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   int res =   this->_objectptr->GetObj()->GetSize();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: _8995
+/* The following types are missing: _8997
 
 //---------------------------------------------------
 //  Wrapping of wxObjectConstructorFn wxClassInfo::GetConstructor()
@@ -477,7 +477,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
 void WrapClass_wxClassInfo::
     wrap_GetConstructor::SetParametersComments()
 {
-  return_comments="returning a variable of type _8995";
+  return_comments="returning a variable of type _8997";
 }
 
 //---------------------------------------------------
@@ -487,7 +487,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObjectConstructorFn res =   this->_objectptr->GetObj()->GetConstructor();
-  return AMILabType<_8995 >::CreateVar(res);
+  return AMILabType<_8997 >::CreateVar(res);
 }
 */
 

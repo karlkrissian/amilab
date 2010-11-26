@@ -55,8 +55,8 @@ MESSAGE("wxWidgets ${AMI_WXWIDGETS_VERSION} wrap files: ${wx_source_list}\n")
 SET(  WrapWxWidgets_SRCS
   wrap_wxsamples.cpp
   wrap_wxfunctions.cpp
-#  ${wx_source_list}
-  ${wx_SRCS}
+  ${wx_source_list}
+  #${wx_SRCS}
 )
 
 

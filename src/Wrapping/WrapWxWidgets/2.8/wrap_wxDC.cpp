@@ -166,7 +166,7 @@ BasicVariable::ptr WrapClass_wxDC::
   int _n=0;
 
   boost::shared_ptr<wxPalette > palette_smtptr;
-  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPalette const & palette = *palette_smtptr;
 
   this->_objectptr->GetObj()->SetColourMap(palette);
@@ -211,7 +211,7 @@ BasicVariable::ptr WrapClass_wxDC::
   int _n=0;
 
   boost::shared_ptr<wxString > param0_smtptr;
-  if (!get_val_smtptr_param<wxString >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & param0 = *param0_smtptr;
 
   bool res =   this->_objectptr->GetObj()->StartDoc(param0);
@@ -291,7 +291,7 @@ BasicVariable::ptr WrapClass_wxDC::
   int _n=0;
 
   int mode;
-  if (!get_val_param<int >(mode,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(mode,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMapMode(mode);
   return BasicVariable::ptr();
@@ -316,10 +316,10 @@ BasicVariable::ptr WrapClass_wxDC::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetUserScale(x, y);
   return BasicVariable::ptr();
@@ -344,10 +344,10 @@ BasicVariable::ptr WrapClass_wxDC::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLogicalScale(x, y);
   return BasicVariable::ptr();
@@ -372,10 +372,10 @@ BasicVariable::ptr WrapClass_wxDC::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLogicalOrigin(x, y);
   return BasicVariable::ptr();
@@ -400,10 +400,10 @@ BasicVariable::ptr WrapClass_wxDC::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDeviceOrigin(x, y);
   return BasicVariable::ptr();
@@ -428,11 +428,11 @@ BasicVariable::ptr WrapClass_wxDC::
   int _n=0;
 
   int xLeftRight_int;
-  if (!get_val_param<int >(xLeftRight_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(xLeftRight_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool xLeftRight = (bool) (xLeftRight_int>0.5);
 
   int yBottomUp_int;
-  if (!get_val_param<int >(yBottomUp_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(yBottomUp_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool yBottomUp = (bool) (yBottomUp_int>0.5);
 
   this->_objectptr->GetObj()->SetAxisOrientation(xLeftRight, yBottomUp);

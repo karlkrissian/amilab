@@ -105,7 +105,7 @@ BasicVariable::ptr WrapClass_wxChildFocusEvent::
   int _n=0;
 
   boost::shared_ptr<wxChildFocusEvent > param0_smtptr;
-  if (!get_val_smtptr_param<wxChildFocusEvent >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxChildFocusEvent >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxChildFocusEvent const & param0 = *param0_smtptr;
 
   wxChildFocusEvent* _newobj = new wxChildFocusEvent(param0);
@@ -152,7 +152,7 @@ BasicVariable::ptr WrapClass_wxChildFocusEvent::
   int _n=0;
 
   boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWindow* win = win_smtptr.get();
 
   wxChildFocusEvent* _newobj = new wxChildFocusEvent(win);

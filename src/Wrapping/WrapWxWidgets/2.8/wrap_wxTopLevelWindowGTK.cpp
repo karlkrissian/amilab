@@ -18,6 +18,7 @@
 
 // get all the required includes
 // #include "..."
+#include "wrap_wxRect.h"
 #include "wrap_wxWindow.h"
 #include "wrap_wxString.h"
 #include "wrap_wxPoint.h"
@@ -135,7 +136,7 @@ void WrapClass_wxTopLevelWindowGTK::AddMethods(WrapClass<wxTopLevelWindowGTK>::p
       
       /* type not available
       // Adding public member m_mainWidget
-      boost::shared_ptr<_GtkWidget > var_m_mainWidget_ptr(&GetObj()->m_mainWidget, smartpointer_nodeleter<_GtkWidget >());
+      boost::shared_ptr<_GtkWidget > var_m_mainWidget_ptr(GetObj()->m_mainWidget, smartpointer_nodeleter<_GtkWidget >());
       BasicVariable::ptr var_m_mainWidget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_mainWidget_ptr);
       if (var_m_mainWidget.get()) {
         var_m_mainWidget->Rename("m_mainWidget");
@@ -290,34 +291,34 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWindow* parent = parent_smtptr.get();
 
   int id;
-  if (!get_val_param<int >(id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxString > title_smtptr;
-  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & title = *title_smtptr;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
 
   long style_long = 541072960;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(style_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int style = style_long;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxFrameNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxFrameNameStr) );
 
   wxTopLevelWindowGTK* _newobj = new wxTopLevelWindowGTK(parent, id, title, pos, size, style, name);
   BasicVariable::ptr res = WrapClass_wxTopLevelWindowGTK::CreateVar(_newobj);
@@ -349,34 +350,34 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* parent = parent_smtptr.get();
 
   int id;
-  if (!get_val_param<int >(id,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxString > title_smtptr;
-  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & title = *title_smtptr;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
 
   long style_long = 541072960;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxFrameNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxFrameNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, title, pos, size, style, name);
   int res_int = ((res==true)?1:0);
@@ -401,7 +402,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   int maximize_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(maximize_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(maximize_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool maximize = (bool) (maximize_int>0.5);
 
   this->_objectptr->GetObj()->Maximize(maximize);
@@ -446,7 +447,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   int iconize_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(iconize_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(iconize_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool iconize = (bool) (iconize_int>0.5);
 
   this->_objectptr->GetObj()->Iconize(iconize);
@@ -491,7 +492,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   boost::shared_ptr<wxIcon > icon_smtptr;
-  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIcon const & icon = *icon_smtptr;
 
   this->_objectptr->GetObj()->SetIcon(icon);
@@ -516,7 +517,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   boost::shared_ptr<wxIconBundle > icons_smtptr;
-  if (!get_val_smtptr_param<wxIconBundle >(icons_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIconBundle >(icons_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIconBundle const & icons = *icons_smtptr;
 
   this->_objectptr->GetObj()->SetIcons(icons);
@@ -560,7 +561,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   int enable_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(enable_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool enable = (bool) (enable_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->EnableCloseButton(enable);
@@ -588,11 +589,11 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   int show_int;
-  if (!get_val_param<int >(show_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(show_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool show = (bool) (show_int>0.5);
 
   long style_long = wxFULLSCREEN_ALL;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   bool res =   this->_objectptr->GetObj()->ShowFullScreen(show, style);
@@ -639,7 +640,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetShape(region);
@@ -665,7 +666,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   int flags = wxUSER_ATTENTION_INFO;
-  if (!get_val_param<int >(flags,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(flags,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->RequestUserAttention(flags);
   return BasicVariable::ptr();
@@ -689,7 +690,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   long style_long;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   this->_objectptr->GetObj()->SetWindowStyleFlag(style);
@@ -715,7 +716,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   int show_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(show_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(show_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool show = (bool) (show_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->Show(show);
@@ -779,7 +780,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   boost::shared_ptr<wxString > title_smtptr;
-  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & title = *title_smtptr;
 
   this->_objectptr->GetObj()->SetTitle(title);
@@ -824,7 +825,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   unsigned char alpha;
-  if (!get_val_param<unsigned char >(alpha,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char >(alpha,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->SetTransparent(alpha);
   int res_int = ((res==true)?1:0);
@@ -961,7 +962,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   int iconic_int;
-  if (!get_val_param<int >(iconic_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(iconic_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool iconic = (bool) (iconic_int>0.5);
 
   this->_objectptr->GetObj()->SetIconizeState(iconic);
@@ -991,22 +992,22 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   int _n=0;
 
   int minW;
-  if (!get_val_param<int >(minW,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(minW,_p,_n,true,false)) ClassHelpAndReturn;
 
   int minH;
-  if (!get_val_param<int >(minH,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(minH,_p,_n,true,false)) ClassHelpAndReturn;
 
   int maxW = wxDefaultCoord;
-  if (!get_val_param<int >(maxW,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(maxW,_p,_n,false,false)) ClassHelpAndReturn;
 
   int maxH = wxDefaultCoord;
-  if (!get_val_param<int >(maxH,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(maxH,_p,_n,false,false)) ClassHelpAndReturn;
 
   int incW = wxDefaultCoord;
-  if (!get_val_param<int >(incW,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(incW,_p,_n,false,false)) ClassHelpAndReturn;
 
   int incH = wxDefaultCoord;
-  if (!get_val_param<int >(incH,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(incH,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->DoSetSizeHints(minW, minH, maxW, maxH, incW, incH);
   return BasicVariable::ptr();

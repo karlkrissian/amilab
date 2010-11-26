@@ -146,11 +146,11 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenu* menu = menu_smtptr.get();
 
   boost::shared_ptr<wxString > title_smtptr;
-  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & title = *title_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Append(menu, title);
@@ -179,15 +179,15 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenu* menu = menu_smtptr.get();
 
   boost::shared_ptr<wxString > title_smtptr;
-  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & title = *title_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Insert(pos, menu, title);
@@ -234,7 +234,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   wxMenu * res =   this->_objectptr->GetObj()->GetMenu(pos);
@@ -263,15 +263,15 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenu* menu = menu_smtptr.get();
 
   boost::shared_ptr<wxString > title_smtptr;
-  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & title = *title_smtptr;
 
   wxMenu * res =   this->_objectptr->GetObj()->Replace(pos, menu, title);
@@ -298,7 +298,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   wxMenu * res =   this->_objectptr->GetObj()->Remove(pos);
@@ -325,7 +325,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   long param0_long;
-  if (!get_val_param<long >(param0_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(param0_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int param0 = boost::numeric_cast<long unsigned int >(param0_long);
 
   bool res =   this->_objectptr->GetObj()->IsEnabledTop(param0);
@@ -353,11 +353,11 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   boost::shared_ptr<wxString > menu_smtptr;
-  if (!get_val_smtptr_param<wxString >(menu_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & menu = *menu_smtptr;
 
   boost::shared_ptr<wxString > item_smtptr;
-  if (!get_val_smtptr_param<wxString >(item_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(item_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & item = *item_smtptr;
 
   int res =   this->_objectptr->GetObj()->FindMenuItem(menu, item);
@@ -385,10 +385,10 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenu* menu = menu_smtptr.get();
 
   wxMenuItem * res =   this->_objectptr->GetObj()->FindItem(itemid, menu);
@@ -416,7 +416,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   boost::shared_ptr<wxString > title_smtptr;
-  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & title = *title_smtptr;
 
   int res =   this->_objectptr->GetObj()->FindMenu(title);
@@ -442,10 +442,10 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int enable_int;
-  if (!get_val_param<int >(enable_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(enable_int,_p,_n,true,true)) ClassReturnEmptyVar;
   bool enable = (bool) (enable_int>0.5);
 
   this->_objectptr->GetObj()->Enable(itemid, enable);
@@ -471,10 +471,10 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
   int check_int;
-  if (!get_val_param<int >(check_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(check_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool check = (bool) (check_int>0.5);
 
   this->_objectptr->GetObj()->Check(itemid, check);
@@ -500,7 +500,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsChecked(itemid);
   int res_int = ((res==true)?1:0);
@@ -526,7 +526,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->IsEnabled(itemid);
   int res_int = ((res==true)?1:0);
@@ -593,10 +593,10 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxString > label_smtptr;
-  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & label = *label_smtptr;
 
   this->_objectptr->GetObj()->SetLabel(itemid, label);
@@ -622,7 +622,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxString res =   this->_objectptr->GetObj()->GetLabel(itemid);
   return AMILabType<wxString >::CreateVar(res);
@@ -647,10 +647,10 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxString > helpString_smtptr;
-  if (!get_val_smtptr_param<wxString >(helpString_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(helpString_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & helpString = *helpString_smtptr;
 
   this->_objectptr->GetObj()->SetHelpString(itemid, helpString);
@@ -676,7 +676,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxString res =   this->_objectptr->GetObj()->GetHelpString(itemid);
   return AMILabType<wxString >::CreateVar(res);
@@ -740,7 +740,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   boost::shared_ptr<wxFrame > frame_smtptr;
-  if (!get_val_smtptr_param<wxFrame >(frame_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxFrame >(frame_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxFrame* frame = frame_smtptr.get();
 
   this->_objectptr->GetObj()->Attach(frame);
@@ -805,7 +805,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   int enable_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(enable_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool enable = (bool) (enable_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->Enable(enable);
@@ -852,7 +852,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   boost::shared_ptr<wxString > s_smtptr;
-  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & s = *s_smtptr;
 
   this->_objectptr->GetObj()->SetLabel(s);
@@ -956,11 +956,11 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   boost::shared_ptr<wxString > label_smtptr;
-  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & label = *label_smtptr;
 
   this->_objectptr->GetObj()->SetMenuLabel(pos, label);
@@ -986,7 +986,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int _n=0;
 
   long pos_long;
-  if (!get_val_param<long >(pos_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   wxString res =   this->_objectptr->GetObj()->GetMenuLabelText(pos);

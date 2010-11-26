@@ -127,7 +127,7 @@ BasicVariable::ptr WrapClass_wxVisualAttributes::
   int _n=0;
 
   boost::shared_ptr<wxVisualAttributes > param0_smtptr;
-  if (!get_val_smtptr_param<wxVisualAttributes >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxVisualAttributes >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxVisualAttributes const & param0 = *param0_smtptr;
 
   wxVisualAttributes* _newobj = new wxVisualAttributes(param0);
@@ -210,7 +210,7 @@ BasicVariable::ptr WrapClass_wxVisualAttributes::
   int _n=0;
 
   boost::shared_ptr<wxVisualAttributes > param0_smtptr;
-  if (!get_val_smtptr_param<wxVisualAttributes >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxVisualAttributes >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxVisualAttributes const & param0 = *param0_smtptr;
 
   wxVisualAttributes & res =   (*this->_objectptr->GetObj()) = (param0);

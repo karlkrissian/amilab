@@ -99,7 +99,7 @@ BasicVariable::ptr WrapClass_wxClientData::
   int _n=0;
 
   boost::shared_ptr<wxClientData > param0_smtptr;
-  if (!get_val_smtptr_param<wxClientData >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxClientData >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxClientData const & param0 = *param0_smtptr;
 
   wxClientData* _newobj = new wxClientData(param0);
@@ -182,7 +182,7 @@ BasicVariable::ptr WrapClass_wxClientData::
   int _n=0;
 
   boost::shared_ptr<wxClientData > param0_smtptr;
-  if (!get_val_smtptr_param<wxClientData >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxClientData >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxClientData const & param0 = *param0_smtptr;
 
   wxClientData & res =   (*this->_objectptr->GetObj()) = (param0);
