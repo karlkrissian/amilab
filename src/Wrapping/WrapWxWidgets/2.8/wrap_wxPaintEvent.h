@@ -26,6 +26,7 @@
 #include "wrap_wxEvent.h"
 
 
+
 AMI_DECLARE_TYPE(wxPaintEvent);
 
 // TODO: check for inheritence ...

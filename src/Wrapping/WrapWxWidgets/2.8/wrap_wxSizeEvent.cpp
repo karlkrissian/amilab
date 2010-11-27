@@ -175,11 +175,11 @@ BasicVariable::ptr WrapClass_wxSizeEvent::
   int _n=0;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
   int winid = 0;
-  if (!get_val_param<int >(winid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(winid,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxSizeEvent* _newobj = new wxSizeEvent(sz, winid);
   BasicVariable::ptr res = WrapClass_wxSizeEvent::CreateVar(_newobj);
@@ -204,7 +204,7 @@ BasicVariable::ptr WrapClass_wxSizeEvent::
   int _n=0;
 
   boost::shared_ptr<wxSizeEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxSizeEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizeEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxSizeEvent const & event = *event_smtptr;
 
   wxSizeEvent* _newobj = new wxSizeEvent(event);
@@ -231,11 +231,11 @@ BasicVariable::ptr WrapClass_wxSizeEvent::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   int id = 0;
-  if (!get_val_param<int >(id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(id,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxSizeEvent* _newobj = new wxSizeEvent(rect, id);
   BasicVariable::ptr res = WrapClass_wxSizeEvent::CreateVar(_newobj);
@@ -314,7 +314,7 @@ BasicVariable::ptr WrapClass_wxSizeEvent::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRect const & rect = *rect_smtptr;
 
   this->_objectptr->GetObj()->SetRect(rect);

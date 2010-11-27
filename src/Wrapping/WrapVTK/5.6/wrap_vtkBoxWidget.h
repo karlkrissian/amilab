@@ -88,35 +88,17 @@ class WrapClass_vtkBoxWidget : public WrapClass<vtkBoxWidget>
     ADD_CLASS_METHOD(GetInsideOut,"int vtkBoxWidget::GetInsideOut()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#getinsideout)")
     ADD_CLASS_METHOD(InsideOutOn,"void vtkBoxWidget::InsideOutOn()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#insideouton)")
     ADD_CLASS_METHOD(InsideOutOff,"void vtkBoxWidget::InsideOutOff()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#insideoutoff)")
-/* The following types are missing: vtkTransform
     ADD_CLASS_METHOD(GetTransform,"void vtkBoxWidget::GetTransform(vtkTransform * t)  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#gettransform)")
-*/
-/* The following types are missing: vtkTransform
     ADD_CLASS_METHOD(SetTransform,"void vtkBoxWidget::SetTransform(vtkTransform * t)  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#settransform)")
-*/
-/* The following types are missing: vtkPolyData
     ADD_CLASS_METHOD(GetPolyData,"void vtkBoxWidget::GetPolyData(vtkPolyData * pd)  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#getpolydata)")
-*/
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(GetHandleProperty,"vtkProperty * vtkBoxWidget::GetHandleProperty()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#gethandleproperty)")
-*/
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(GetSelectedHandleProperty,"vtkProperty * vtkBoxWidget::GetSelectedHandleProperty()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#getselectedhandleproperty)")
-*/
     ADD_CLASS_METHOD(HandlesOn,"void vtkBoxWidget::HandlesOn()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#handleson)")
     ADD_CLASS_METHOD(HandlesOff,"void vtkBoxWidget::HandlesOff()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#handlesoff)")
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(GetFaceProperty,"vtkProperty * vtkBoxWidget::GetFaceProperty()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#getfaceproperty)")
-*/
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(GetSelectedFaceProperty,"vtkProperty * vtkBoxWidget::GetSelectedFaceProperty()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#getselectedfaceproperty)")
-*/
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(GetOutlineProperty,"vtkProperty * vtkBoxWidget::GetOutlineProperty()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#getoutlineproperty)")
-*/
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(GetSelectedOutlineProperty,"vtkProperty * vtkBoxWidget::GetSelectedOutlineProperty()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#getselectedoutlineproperty)")
-*/
     ADD_CLASS_METHOD(SetOutlineFaceWires,"void vtkBoxWidget::SetOutlineFaceWires(int param0)  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#setoutlinefacewires)")
     ADD_CLASS_METHOD(GetOutlineFaceWires,"int vtkBoxWidget::GetOutlineFaceWires()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#getoutlinefacewires)")
     ADD_CLASS_METHOD(OutlineFaceWiresOn,"void vtkBoxWidget::OutlineFaceWiresOn()  (http://docs.wxwidgets.org/stable/wx_vtkboxwidget.html#outlinefacewireson)")

@@ -26,6 +26,7 @@
 #include "wrap_wxCommandEvent.h"
 
 
+
 AMI_DECLARE_TYPE(wxUpdateUIEvent);
 
 // TODO: check for inheritence ...
@@ -73,8 +74,12 @@ class WrapClass_wxUpdateUIEvent : public WrapClass<wxUpdateUIEvent>
     ADD_CLASS_STATICMETHOD(GetUpdateInterval,"long int wxUpdateUIEvent::GetUpdateInterval() (http://docs.wxwidgets.org/stable/wx_wxupdateuievent.html#getupdateinterval).");
     ADD_CLASS_STATICMETHOD(CanUpdate,"bool wxUpdateUIEvent::CanUpdate(wxWindowBase * win) (http://docs.wxwidgets.org/stable/wx_wxupdateuievent.html#canupdate).");
     ADD_CLASS_STATICMETHOD(ResetUpdateTime,"void wxUpdateUIEvent::ResetUpdateTime() (http://docs.wxwidgets.org/stable/wx_wxupdateuievent.html#resetupdatetime).");
+    /* The following types are missing: wxUpdateUIMode
     ADD_CLASS_STATICMETHOD(SetMode,"void wxUpdateUIEvent::SetMode(wxUpdateUIMode mode) (http://docs.wxwidgets.org/stable/wx_wxupdateuievent.html#setmode).");
+    */
+    /* The following types are missing: wxUpdateUIMode
     ADD_CLASS_STATICMETHOD(GetMode,"wxUpdateUIMode wxUpdateUIEvent::GetMode() (http://docs.wxwidgets.org/stable/wx_wxupdateuievent.html#getmode).");
+    */
 
 
 

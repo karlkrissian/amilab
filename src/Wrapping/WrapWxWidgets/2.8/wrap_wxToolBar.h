@@ -26,6 +26,7 @@
 #include "wrap_wxToolBarBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxToolBar);
 
 // TODO: check for inheritence ...
@@ -69,7 +70,9 @@ class WrapClass_wxToolBar : public WrapClass<wxToolBar>
 
     // Static methods
     
+    /* The following types are missing: wxWindowVariant
     ADD_CLASS_STATICMETHOD(GetClassDefaultAttributes,"wxVisualAttributes wxToolBar::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL) (http://docs.wxwidgets.org/stable/wx_wxtoolbar.html#getclassdefaultattributes).");
+    */
 
 
 

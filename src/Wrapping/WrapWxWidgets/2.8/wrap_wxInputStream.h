@@ -92,7 +92,7 @@ class WrapClass_wxInputStream : public WrapClass<wxInputStream>
     // Operators:
     // ADD_CLASS_METHOD(operator not available,"wxInputStream & wxInputStream::>>(wxOutputStream & out) (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#>>)")
     // ADD_CLASS_METHOD(operator not available,"wxInputStream::>>() (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#>>)")
-/* The following types are missing: _12813
+/* The following types are missing: _12803
     // ADD_CLASS_METHOD(operator not available,"wxInputStream & wxInputStream::>>(__wxInputManip func) (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#>>)")
 */
 

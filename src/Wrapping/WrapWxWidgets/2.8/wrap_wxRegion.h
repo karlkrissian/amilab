@@ -26,6 +26,7 @@
 #include "wrap_wxRegionBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxRegion);
 
 // TODO: check for inheritence ...

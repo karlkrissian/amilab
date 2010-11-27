@@ -26,6 +26,7 @@
 #include "wrap_wxGDIObject.h"
 
 
+
 AMI_DECLARE_TYPE(wxRegionBase);
 
 // TODO: check for inheritence ...
@@ -75,11 +76,19 @@ class WrapClass_wxRegionBase : public WrapClass<wxRegionBase>
     ADD_CLASS_METHOD(GetBox_1,"bool wxRegionBase::GetBox(wxCoord & x, wxCoord & y, wxCoord & w, wxCoord & h)  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#getbox)")
     ADD_CLASS_METHOD(GetBox,"wxRegionBase::GetBox()  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#getbox)")
     ADD_CLASS_METHOD(GetBox_2,"wxRect wxRegionBase::GetBox()  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#getbox)")
+/* The following types are missing: wxRegionContain
     ADD_CLASS_METHOD(Contains_1,"wxRegionContain wxRegionBase::Contains(wxCoord x, wxCoord y)  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#contains)")
+*/
     ADD_CLASS_METHOD(Contains,"wxRegionBase::Contains()  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#contains)")
+/* The following types are missing: wxRegionContain
     ADD_CLASS_METHOD(Contains_2,"wxRegionContain wxRegionBase::Contains(wxPoint const & pt)  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#contains)")
+*/
+/* The following types are missing: wxRegionContain
     ADD_CLASS_METHOD(Contains_3,"wxRegionContain wxRegionBase::Contains(wxCoord x, wxCoord y, wxCoord w, wxCoord h)  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#contains)")
+*/
+/* The following types are missing: wxRegionContain
     ADD_CLASS_METHOD(Contains_4,"wxRegionContain wxRegionBase::Contains(wxRect const & rect)  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#contains)")
+*/
     ADD_CLASS_METHOD(Offset_1,"bool wxRegionBase::Offset(wxCoord x, wxCoord y)  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#offset)")
     ADD_CLASS_METHOD(Offset,"wxRegionBase::Offset()  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#offset)")
     ADD_CLASS_METHOD(Offset_2,"bool wxRegionBase::Offset(wxPoint const & pt)  (http://docs.wxwidgets.org/stable/wx_wxregionbase.html#offset)")

@@ -26,6 +26,7 @@
 #include "wrap_wxTopLevelWindowGTK.h"
 
 
+
 AMI_DECLARE_TYPE(wxTopLevelWindow);
 
 // TODO: check for inheritence ...

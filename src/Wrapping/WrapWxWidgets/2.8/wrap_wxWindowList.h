@@ -56,14 +56,18 @@ class WrapClass_wxWindowList : public WrapClass<wxWindowList>
     }
 
     
+    /* The following types are missing: wxKeyType
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxWindowList_1,"Constructor wxWindowList::wxWindowList(wxKeyType keyType = wxKEY_NONE) (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#wxwindowlist).");
+    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxWindowList,"Constructor wxWindowList::wxWindowList() (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#wxwindowlist).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxWindowList_2,"Constructor wxWindowList::wxWindowList(wxWindowList const & list) (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#wxwindowlist).");
+    /* The following types are missing: wxWindow * *
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxWindowList_3,"Constructor wxWindowList::wxWindowList(size_t count, wxWindow * * elements) (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#wxwindowlist).");
+    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxWindowList_4,"Constructor wxWindowList::wxWindowList(size_t n, wxWindow * const & v = 0u) (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#wxwindowlist).");
     /* The following types are missing: const_iterator, const_iterator
@@ -109,11 +113,11 @@ class WrapClass_wxWindowList : public WrapClass<wxWindowList>
     ADD_CLASS_METHOD(Find,"wxWindowList::Find()  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxWindowListNode * wxWindowList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxWindowList::IndexOf(wxWindowBase * object)  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#indexof)")
-/* The following types are missing: _9505
+/* The following types are missing: _9495
     ADD_CLASS_METHOD(Sort_1,"void wxWindowList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxWindowList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#sort)")
-/* The following types are missing: _10213
+/* The following types are missing: _10245
     ADD_CLASS_METHOD(Sort_2,"void wxWindowList::Sort(wxSortFuncFor_wxWindowList func)  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#sort)")
 */
 /* The following types are missing: iterator

@@ -1432,7 +1432,7 @@ BasicVariable::ptr WrapClass_wxString::
   boost::shared_ptr<wxMBConv > conv_smtptr;
   if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : wxConvLibc );
+  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : (wxConvLibc) );
 
   wxWritableCharBuffer res =   this->_objectptr->GetObj()->char_str(conv);
   return AMILabType<wxWritableCharBuffer >::CreateVar(res);
@@ -1554,7 +1554,7 @@ BasicVariable::ptr WrapClass_wxString::
   boost::shared_ptr<wxMBConv > conv_smtptr;
   if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : wxConvLibc );
+  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : (wxConvLibc) );
 
   wxCharBuffer const res =   this->_objectptr->GetObj()->mb_str(conv);
   return AMILabType<wxCharBuffer >::CreateVar(res);

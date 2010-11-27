@@ -121,7 +121,7 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   int _n=0;
 
   boost::shared_ptr<wxSizerFlags > param0_smtptr;
-  if (!get_val_smtptr_param<wxSizerFlags >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSizerFlags >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxSizerFlags const & param0 = *param0_smtptr;
 
   wxSizerFlags* _newobj = new wxSizerFlags(param0);
@@ -168,7 +168,7 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   int _n=0;
 
   int proportion = 0;
-  if (!get_val_param<int >(proportion,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(proportion,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxSizerFlags* _newobj = new wxSizerFlags(proportion);
   BasicVariable::ptr res = WrapClass_wxSizerFlags::CreateVar(_newobj);
@@ -229,7 +229,7 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   int _n=0;
 
   int proportion;
-  if (!get_val_param<int >(proportion,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(proportion,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxSizerFlags & res =   this->_objectptr->GetObj()->Proportion(proportion);
   return AMILabType<wxSizerFlags >::CreateVar(res);
@@ -254,7 +254,7 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   int _n=0;
 
   int alignment;
-  if (!get_val_param<int >(alignment,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(alignment,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxSizerFlags & res =   this->_objectptr->GetObj()->Align(alignment);
   return AMILabType<wxSizerFlags >::CreateVar(res);
@@ -413,10 +413,10 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   int _n=0;
 
   int direction;
-  if (!get_val_param<int >(direction,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(direction,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int borderInPixels;
-  if (!get_val_param<int >(borderInPixels,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(borderInPixels,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxSizerFlags & res =   this->_objectptr->GetObj()->Border(direction, borderInPixels);
   return AMILabType<wxSizerFlags >::CreateVar(res);
@@ -462,7 +462,7 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   int _n=0;
 
   int direction = wxALL;
-  if (!get_val_param<int >(direction,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(direction,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxSizerFlags & res =   this->_objectptr->GetObj()->Border(direction);
   return AMILabType<wxSizerFlags >::CreateVar(res);
@@ -487,7 +487,7 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   int _n=0;
 
   int direction = wxALL;
-  if (!get_val_param<int >(direction,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(direction,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxSizerFlags & res =   this->_objectptr->GetObj()->DoubleBorder(direction);
   return AMILabType<wxSizerFlags >::CreateVar(res);
@@ -512,7 +512,7 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   int _n=0;
 
   int direction = wxALL;
-  if (!get_val_param<int >(direction,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(direction,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxSizerFlags & res =   this->_objectptr->GetObj()->TripleBorder(direction);
   return AMILabType<wxSizerFlags >::CreateVar(res);
@@ -689,7 +689,7 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
   int _n=0;
 
   boost::shared_ptr<wxSizerFlags > param0_smtptr;
-  if (!get_val_smtptr_param<wxSizerFlags >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerFlags >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizerFlags const & param0 = *param0_smtptr;
 
   wxSizerFlags & res =   (*this->_objectptr->GetObj()) = (param0);

@@ -78,8 +78,12 @@ void WrapClass_wxMenu::AddMethods(WrapClass<wxMenu>::ptr this_ptr )
   
       // Adding standard methods 
       AddVar_Attach( this_ptr);
+/* The following types are missing: wxLayoutDirection
       AddVar_SetLayoutDirection( this_ptr);
+*/
+/* The following types are missing: wxLayoutDirection
       AddVar_GetLayoutDirection( this_ptr);
+*/
 /* The following types are missing: _GtkWidget
       AddVar_FindMenuIdByMenuItem( this_ptr);
 */
@@ -94,7 +98,7 @@ void WrapClass_wxMenu::AddMethods(WrapClass<wxMenu>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_menu
-      boost::shared_ptr<_GtkWidget > var_m_menu_ptr(&GetObj()->m_menu, smartpointer_nodeleter<_GtkWidget >());
+      boost::shared_ptr<_GtkWidget > var_m_menu_ptr(GetObj()->m_menu, smartpointer_nodeleter<_GtkWidget >());
       BasicVariable::ptr var_m_menu = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_menu_ptr);
       if (var_m_menu.get()) {
         var_m_menu->Rename("m_menu");
@@ -104,7 +108,7 @@ void WrapClass_wxMenu::AddMethods(WrapClass<wxMenu>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_owner
-      boost::shared_ptr<_GtkWidget > var_m_owner_ptr(&GetObj()->m_owner, smartpointer_nodeleter<_GtkWidget >());
+      boost::shared_ptr<_GtkWidget > var_m_owner_ptr(GetObj()->m_owner, smartpointer_nodeleter<_GtkWidget >());
       BasicVariable::ptr var_m_owner = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_owner_ptr);
       if (var_m_owner.get()) {
         var_m_owner->Rename("m_owner");
@@ -114,7 +118,7 @@ void WrapClass_wxMenu::AddMethods(WrapClass<wxMenu>::ptr this_ptr )
       
       /* type not available
       // Adding public member m_accel
-      boost::shared_ptr<_GtkAccelGroup > var_m_accel_ptr(&GetObj()->m_accel, smartpointer_nodeleter<_GtkAccelGroup >());
+      boost::shared_ptr<_GtkAccelGroup > var_m_accel_ptr(GetObj()->m_accel, smartpointer_nodeleter<_GtkAccelGroup >());
       BasicVariable::ptr var_m_accel = AMILabType<_GtkAccelGroup >::CreateVarFromSmtPtr(var_m_accel_ptr);
       if (var_m_accel.get()) {
         var_m_accel->Rename("m_accel");
@@ -148,11 +152,11 @@ BasicVariable::ptr WrapClass_wxMenu::
   int _n=0;
 
   boost::shared_ptr<wxString > title_smtptr;
-  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & title = *title_smtptr;
 
   long style_long = 0;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(style_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int style = style_long;
 
   wxMenu* _newobj = new wxMenu(title, style);
@@ -199,7 +203,7 @@ BasicVariable::ptr WrapClass_wxMenu::
   int _n=0;
 
   long style_long = 0;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(style_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int style = style_long;
 
   wxMenu* _newobj = new wxMenu(style);
@@ -225,12 +229,13 @@ BasicVariable::ptr WrapClass_wxMenu::
   int _n=0;
 
   boost::shared_ptr<wxMenuBarBase > menubar_smtptr;
-  if (!get_val_smtptr_param<wxMenuBarBase >(menubar_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenuBarBase >(menubar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenuBarBase* menubar = menubar_smtptr.get();
 
   this->_objectptr->GetObj()->Attach(menubar);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxLayoutDirection
 
 //---------------------------------------------------
 //  Wrapping of void wxMenu::SetLayoutDirection(wxLayoutDirection const dir)
@@ -238,7 +243,7 @@ BasicVariable::ptr WrapClass_wxMenu::
 void WrapClass_wxMenu::
     wrap_SetLayoutDirection::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'dir'")
+  ADDPARAMCOMMENT_TYPE( wxLayoutDirection, "parameter named 'dir'")
 }
 
 //---------------------------------------------------
@@ -249,13 +254,14 @@ BasicVariable::ptr WrapClass_wxMenu::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int dir_int;
-  if (!get_val_param<int >(dir_int,_p,_n)) ClassHelpAndReturn;
-  wxLayoutDirection dir = (wxLayoutDirection) dir_int;
+  wxLayoutDirection dir;
+  if (!get_val_param<wxLayoutDirection >(dir,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLayoutDirection(dir);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxLayoutDirection
 
 //---------------------------------------------------
 //  Wrapping of wxLayoutDirection wxMenu::GetLayoutDirection()
@@ -263,7 +269,7 @@ BasicVariable::ptr WrapClass_wxMenu::
 void WrapClass_wxMenu::
     wrap_GetLayoutDirection::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxLayoutDirection";
 }
 
 //---------------------------------------------------
@@ -273,9 +279,9 @@ BasicVariable::ptr WrapClass_wxMenu::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxLayoutDirection res =   this->_objectptr->GetObj()->GetLayoutDirection();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxLayoutDirection >::CreateVar(res);
 }
+*/
 /* The following types are missing: _GtkWidget
 
 //---------------------------------------------------
@@ -297,7 +303,7 @@ BasicVariable::ptr WrapClass_wxMenu::
   int _n=0;
 
   boost::shared_ptr<_GtkWidget > menuItem_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(menuItem_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<_GtkWidget >(menuItem_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _GtkWidget* menuItem = menuItem_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->FindMenuIdByMenuItem(menuItem);

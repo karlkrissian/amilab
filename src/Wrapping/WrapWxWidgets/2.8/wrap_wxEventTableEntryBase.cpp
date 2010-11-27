@@ -94,8 +94,8 @@ void WrapClass_wxEventTableEntryBase::AddMethods(WrapClass<wxEventTableEntryBase
       
       /* type not available
       // Adding public member m_fn
-      boost::shared_ptr<_13558 > var_m_fn_ptr(&GetObj()->m_fn, smartpointer_nodeleter<_13558 >());
-      BasicVariable::ptr var_m_fn = AMILabType<_13558 >::CreateVarFromSmtPtr(var_m_fn_ptr);
+      boost::shared_ptr<_13542 > var_m_fn_ptr(&GetObj()->m_fn, smartpointer_nodeleter<_13542 >());
+      BasicVariable::ptr var_m_fn = AMILabType<_13542 >::CreateVarFromSmtPtr(var_m_fn_ptr);
       if (var_m_fn.get()) {
         var_m_fn->Rename("m_fn");
         context->AddVar(var_m_fn,context);
@@ -116,7 +116,7 @@ void WrapClass_wxEventTableEntryBase::AddMethods(WrapClass<wxEventTableEntryBase
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: _13558
+/* The following types are missing: _13542
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxEventTableEntryBase::wxEventTableEntryBase(int winid, int idLast, wxObjectEventFunction fn, wxObject * data)
@@ -126,7 +126,7 @@ void WrapClass_wxEventTableEntryBase::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'idLast'")
-  ADDPARAMCOMMENT_TYPE( _13558, "parameter named 'fn'")
+  ADDPARAMCOMMENT_TYPE( _13542, "parameter named 'fn'")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'data'")
 }
 
@@ -139,16 +139,16 @@ BasicVariable::ptr WrapClass_wxEventTableEntryBase::
   int _n=0;
 
   int winid;
-  if (!get_val_param<int >(winid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(winid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int idLast;
-  if (!get_val_param<int >(idLast,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(idLast,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  _13558 fn;
-  if (!get_val_param<_13558 >(fn,_p,_n)) ClassReturnEmptyVar;
+  _13542 fn;
+  if (!get_val_param<_13542 >(fn,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > data_smtptr;
-  if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxObject* data = data_smtptr.get();
 
   wxEventTableEntryBase* _newobj = new wxEventTableEntryBase(winid, idLast, fn, data);
@@ -193,7 +193,7 @@ BasicVariable::ptr WrapClass_wxEventTableEntryBase::
   int _n=0;
 
   boost::shared_ptr<wxEventTableEntryBase > event_smtptr;
-  if (!get_val_smtptr_param<wxEventTableEntryBase >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxEventTableEntryBase >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxEventTableEntryBase const & event = *event_smtptr;
 
   wxEventTableEntryBase* _newobj = new wxEventTableEntryBase(event);

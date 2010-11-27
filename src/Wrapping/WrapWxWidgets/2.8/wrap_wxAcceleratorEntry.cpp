@@ -115,16 +115,16 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int _n=0;
 
   int flags = 0;
-  if (!get_val_param<int >(flags,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(flags,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int keyCode = 0;
-  if (!get_val_param<int >(keyCode,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(keyCode,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int cmd = 0;
-  if (!get_val_param<int >(cmd,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(cmd,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxMenuItem > item_smtptr;
-  if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenuItem* item = item_smtptr.get();
 
   wxAcceleratorEntry* _newobj = new wxAcceleratorEntry(flags, keyCode, cmd, item);
@@ -171,7 +171,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int _n=0;
 
   boost::shared_ptr<wxAcceleratorEntry > entry_smtptr;
-  if (!get_val_smtptr_param<wxAcceleratorEntry >(entry_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxAcceleratorEntry >(entry_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxAcceleratorEntry const & entry = *entry_smtptr;
 
   wxAcceleratorEntry* _newobj = new wxAcceleratorEntry(entry);
@@ -198,7 +198,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   wxAcceleratorEntry * res =   wxAcceleratorEntry::Create(str);
@@ -243,16 +243,16 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int _n=0;
 
   int flags;
-  if (!get_val_param<int >(flags,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(flags,_p,_n,true,false)) ClassHelpAndReturn;
 
   int keyCode;
-  if (!get_val_param<int >(keyCode,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(keyCode,_p,_n,true,false)) ClassHelpAndReturn;
 
   int cmd;
-  if (!get_val_param<int >(cmd,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(cmd,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxMenuItem > item_smtptr;
-  if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenuItem* item = item_smtptr.get();
 
   this->_objectptr->GetObj()->Set(flags, keyCode, cmd, item);
@@ -277,7 +277,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int _n=0;
 
   boost::shared_ptr<wxMenuItem > item_smtptr;
-  if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenuItem* item = item_smtptr.get();
 
   this->_objectptr->GetObj()->SetMenuItem(item);
@@ -419,7 +419,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   bool res =   this->_objectptr->GetObj()->FromString(str);
@@ -446,7 +446,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int _n=0;
 
   boost::shared_ptr<wxAcceleratorEntry > entry_smtptr;
-  if (!get_val_smtptr_param<wxAcceleratorEntry >(entry_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxAcceleratorEntry >(entry_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxAcceleratorEntry const & entry = *entry_smtptr;
 
   wxAcceleratorEntry & res =   (*this->_objectptr->GetObj()) = (entry);
@@ -472,7 +472,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int _n=0;
 
   boost::shared_ptr<wxAcceleratorEntry > entry_smtptr;
-  if (!get_val_smtptr_param<wxAcceleratorEntry >(entry_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxAcceleratorEntry >(entry_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxAcceleratorEntry const & entry = *entry_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (entry);
@@ -499,7 +499,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int _n=0;
 
   boost::shared_ptr<wxAcceleratorEntry > entry_smtptr;
-  if (!get_val_smtptr_param<wxAcceleratorEntry >(entry_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxAcceleratorEntry >(entry_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxAcceleratorEntry const & entry = *entry_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (entry);

@@ -116,18 +116,18 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   int _n=0;
 
   int type = wxEVT_NULL;
-  if (!get_val_param<int >(type,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(type,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int winid = 0;
-  if (!get_val_param<int >(winid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(winid,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxPoint const & pt = ( pt_smtptr.get() ? (*pt_smtptr) : wxPoint(wxDefaultPosition) );
 
   int origin_int = (int) wxHelpEvent::Origin_Unknown;;
-  if (!get_val_param<int >(origin_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(origin_int,_p,_n,false,true)) ClassReturnEmptyVar;
   wxHelpEvent::Origin origin = (wxHelpEvent::Origin) origin_int;
 
   wxHelpEvent* _newobj = new wxHelpEvent(type, winid, pt, origin);
@@ -174,7 +174,7 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   int _n=0;
 
   boost::shared_ptr<wxHelpEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxHelpEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxHelpEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxHelpEvent const & event = *event_smtptr;
 
   wxHelpEvent* _newobj = new wxHelpEvent(event);
@@ -235,7 +235,7 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint const & pos = *pos_smtptr;
 
   this->_objectptr->GetObj()->SetPosition(pos);
@@ -279,7 +279,7 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   int _n=0;
 
   boost::shared_ptr<wxString > link_smtptr;
-  if (!get_val_smtptr_param<wxString >(link_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(link_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & link = *link_smtptr;
 
   this->_objectptr->GetObj()->SetLink(link);
@@ -323,7 +323,7 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   int _n=0;
 
   boost::shared_ptr<wxString > target_smtptr;
-  if (!get_val_smtptr_param<wxString >(target_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(target_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & target = *target_smtptr;
 
   this->_objectptr->GetObj()->SetTarget(target);
@@ -388,7 +388,7 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   int _n=0;
 
   int origin_int;
-  if (!get_val_param<int >(origin_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(origin_int,_p,_n,true,false)) ClassHelpAndReturn;
   wxHelpEvent::Origin origin = (wxHelpEvent::Origin) origin_int;
 
   this->_objectptr->GetObj()->SetOrigin(origin);

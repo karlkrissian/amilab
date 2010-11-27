@@ -146,13 +146,14 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   int _n=0;
 
   boost::shared_ptr<wxIdleEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxIdleEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIdleEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxIdleEvent const & event = *event_smtptr;
 
   wxIdleEvent* _newobj = new wxIdleEvent(event);
   BasicVariable::ptr res = WrapClass_wxIdleEvent::CreateVar(_newobj);
   return res;
 }
+/* The following types are missing: wxIdleMode
 
 //---------------------------------------------------
 //  Wrapping of void wxIdleEvent::SetMode(wxIdleMode mode)
@@ -160,7 +161,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
 void WrapClass_wxIdleEvent::
     wrap_SetMode::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'mode'")
+  ADDPARAMCOMMENT_TYPE( wxIdleMode, "parameter named 'mode'")
 }
 
 //---------------------------------------------------
@@ -171,13 +172,14 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int mode_int;
-  if (!get_val_param<int >(mode_int,_p,_n)) ClassHelpAndReturn;
-  wxIdleMode mode = (wxIdleMode) mode_int;
+  wxIdleMode mode;
+  if (!get_val_param<wxIdleMode >(mode,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxIdleEvent::SetMode(mode);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxIdleMode
 
 //---------------------------------------------------
 //  Wrapping of wxIdleMode wxIdleEvent::GetMode()
@@ -185,7 +187,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
 void WrapClass_wxIdleEvent::
     wrap_GetMode::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxIdleMode";
 }
 
 //---------------------------------------------------
@@ -195,9 +197,9 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxIdleMode res =   wxIdleEvent::GetMode();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxIdleMode >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxIdleEvent::CanSend(wxWindow * win)
@@ -218,7 +220,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   int _n=0;
 
   boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* win = win_smtptr.get();
 
   bool res =   wxIdleEvent::CanSend(win);
@@ -260,7 +262,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   int _n=0;
 
   int needMore_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(needMore_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(needMore_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool needMore = (bool) (needMore_int>0.5);
 
   this->_objectptr->GetObj()->RequestMore(needMore);

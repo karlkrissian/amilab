@@ -114,7 +114,7 @@ BasicVariable::ptr WrapClass_wxRegion::
   int _n=0;
 
   boost::shared_ptr<wxRegion > param0_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRegion >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxRegion const & param0 = *param0_smtptr;
 
   wxRegion* _newobj = new wxRegion(param0);
@@ -201,16 +201,16 @@ BasicVariable::ptr WrapClass_wxRegion::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int w;
-  if (!get_val_param<int >(w,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(w,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int h;
-  if (!get_val_param<int >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxRegion* _newobj = new wxRegion(x, y, w, h);
   BasicVariable::ptr res = WrapClass_wxRegion::CreateVar(_newobj);
@@ -236,11 +236,11 @@ BasicVariable::ptr WrapClass_wxRegion::
   int _n=0;
 
   boost::shared_ptr<wxPoint > topLeft_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(topLeft_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(topLeft_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & topLeft = *topLeft_smtptr;
 
   boost::shared_ptr<wxPoint > bottomRight_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(bottomRight_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(bottomRight_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & bottomRight = *bottomRight_smtptr;
 
   wxRegion* _newobj = new wxRegion(topLeft, bottomRight);
@@ -266,7 +266,7 @@ BasicVariable::ptr WrapClass_wxRegion::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   wxRegion* _newobj = new wxRegion(rect);
@@ -294,15 +294,15 @@ BasicVariable::ptr WrapClass_wxRegion::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint* points = points_smtptr.get();
 
   int fillStyle = wxODDEVEN_RULE;
-  if (!get_val_param<int >(fillStyle,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(fillStyle,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxRegion* _newobj = new wxRegion(n, points, fillStyle);
   BasicVariable::ptr res = WrapClass_wxRegion::CreateVar(_newobj);
@@ -327,7 +327,7 @@ BasicVariable::ptr WrapClass_wxRegion::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bmp_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bmp = *bmp_smtptr;
 
   wxRegion* _newobj = new wxRegion(bmp);
@@ -355,15 +355,15 @@ BasicVariable::ptr WrapClass_wxRegion::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bmp_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bmp = *bmp_smtptr;
 
   boost::shared_ptr<wxColour > transColour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(transColour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(transColour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & transColour = *transColour_smtptr;
 
   int tolerance = 0;
-  if (!get_val_param<int >(tolerance,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(tolerance,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxRegion* _newobj = new wxRegion(bmp, transColour, tolerance);
   BasicVariable::ptr res = WrapClass_wxRegion::CreateVar(_newobj);
@@ -389,7 +389,7 @@ BasicVariable::ptr WrapClass_wxRegion::
   int _n=0;
 
   boost::shared_ptr<_GdkRegion > region_smtptr;
-  if (!get_val_smtptr_param<_GdkRegion >(region_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<_GdkRegion >(region_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   _GdkRegion* region = region_smtptr.get();
 
   wxRegion* _newobj = new wxRegion(region);
@@ -512,7 +512,7 @@ BasicVariable::ptr WrapClass_wxRegion::
   int _n=0;
 
   boost::shared_ptr<wxRegion > param0_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRegion >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRegion const & param0 = *param0_smtptr;
 
   wxRegion & res =   (*this->_objectptr->GetObj()) = (param0);

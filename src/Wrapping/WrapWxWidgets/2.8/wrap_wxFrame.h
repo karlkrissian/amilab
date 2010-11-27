@@ -26,6 +26,7 @@
 #include "wrap_wxFrameBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxFrame);
 
 // TODO: check for inheritence ...

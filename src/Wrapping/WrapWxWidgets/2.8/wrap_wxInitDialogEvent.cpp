@@ -103,7 +103,7 @@ BasicVariable::ptr WrapClass_wxInitDialogEvent::
   int _n=0;
 
   boost::shared_ptr<wxInitDialogEvent > param0_smtptr;
-  if (!get_val_smtptr_param<wxInitDialogEvent >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxInitDialogEvent >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxInitDialogEvent const & param0 = *param0_smtptr;
 
   wxInitDialogEvent* _newobj = new wxInitDialogEvent(param0);
@@ -150,7 +150,7 @@ BasicVariable::ptr WrapClass_wxInitDialogEvent::
   int _n=0;
 
   int Id = 0;
-  if (!get_val_param<int >(Id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(Id,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxInitDialogEvent* _newobj = new wxInitDialogEvent(Id);
   BasicVariable::ptr res = WrapClass_wxInitDialogEvent::CreateVar(_newobj);

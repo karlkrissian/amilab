@@ -115,25 +115,25 @@ BasicVariable::ptr WrapClass_wxwxSizerItemListNode::
   int _n=0;
 
   boost::shared_ptr<wxListBase > list_smtptr;
-  if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxListBase* list = list_smtptr.get();
 
   boost::shared_ptr<wxwxSizerItemListNode > previous_smtptr;
-  if (!get_val_smtptr_param<wxwxSizerItemListNode >(previous_smtptr,_p,_n,true,true)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxwxSizerItemListNode >(previous_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
   wxwxSizerItemListNode* previous = previous_smtptr.get();
 
   boost::shared_ptr<wxwxSizerItemListNode > next_smtptr;
-  if (!get_val_smtptr_param<wxwxSizerItemListNode >(next_smtptr,_p,_n,true,true)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxwxSizerItemListNode >(next_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
   wxwxSizerItemListNode* next = next_smtptr.get();
 
   boost::shared_ptr<wxSizerItem > data_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerItem >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizerItem* data = data_smtptr.get();
 
   boost::shared_ptr<wxListKey > key_smtptr;
-  if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxListKey const & key = ( key_smtptr.get() ? (*key_smtptr) : (wxDefaultListKey) );
+  wxListKey const & key = ( key_smtptr.get() ? (*key_smtptr) : wxListKey(wxDefaultListKey) );
 
   wxwxSizerItemListNode* _newobj = new wxwxSizerItemListNode(list, previous, next, data, key);
   BasicVariable::ptr res = WrapClass_wxwxSizerItemListNode::CreateVar(_newobj);
@@ -218,7 +218,7 @@ BasicVariable::ptr WrapClass_wxwxSizerItemListNode::
   int _n=0;
 
   boost::shared_ptr<wxSizerItem > data_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizerItem >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizerItem* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->SetData(data);

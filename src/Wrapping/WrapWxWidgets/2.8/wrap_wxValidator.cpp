@@ -155,7 +155,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   int _n=0;
 
   int doIt_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(doIt_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(doIt_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool doIt = (bool) (doIt_int>0.5);
 
   wxValidator::SetBellOnError(doIt);
@@ -201,7 +201,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   int _n=0;
 
   boost::shared_ptr<wxValidator > val_smtptr;
-  if (!get_val_smtptr_param<wxValidator >(val_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxValidator >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxValidator const & val = *val_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Copy(val);
@@ -228,7 +228,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   int _n=0;
 
   boost::shared_ptr<wxWindow > param0_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* param0 = param0_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Validate(param0);
@@ -314,7 +314,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   int _n=0;
 
   boost::shared_ptr<wxWindowBase > win_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindowBase* win = win_smtptr.get();
 
   this->_objectptr->GetObj()->SetWindow(win);

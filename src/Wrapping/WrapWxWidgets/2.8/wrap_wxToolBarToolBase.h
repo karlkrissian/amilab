@@ -56,8 +56,10 @@ class WrapClass_wxToolBarToolBase : public WrapClass<wxToolBarToolBase>
     }
 
     
+    /* The following types are missing: wxItemKind
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxToolBarToolBase_1,"Constructor wxToolBarToolBase::wxToolBarToolBase(wxToolBarBase * tbar = 0u, int toolid = wxID_SEPARATOR, wxString const & label = wxEmptyString, wxBitmap const & bmpNormal = wxNullBitmap, wxBitmap const & bmpDisabled = wxNullBitmap, wxItemKind kind = wxITEM_NORMAL, wxObject * clientData = 0u, wxString const & shortHelpString = wxEmptyString, wxString const & longHelpString = wxEmptyString) (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#wxtoolbartoolbase).");
+    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxToolBarToolBase,"Constructor wxToolBarToolBase::wxToolBarToolBase() (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#wxtoolbartoolbase).");
     /// Wrapping of the constructor
@@ -83,7 +85,9 @@ class WrapClass_wxToolBarToolBase : public WrapClass<wxToolBarToolBase>
     ADD_CLASS_METHOD(IsControl,"bool wxToolBarToolBase::IsControl()  (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#iscontrol)")
     ADD_CLASS_METHOD(IsSeparator,"bool wxToolBarToolBase::IsSeparator()  (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#isseparator)")
     ADD_CLASS_METHOD(GetStyle,"int wxToolBarToolBase::GetStyle()  (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#getstyle)")
+/* The following types are missing: wxItemKind
     ADD_CLASS_METHOD(GetKind,"wxItemKind wxToolBarToolBase::GetKind()  (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#getkind)")
+*/
     ADD_CLASS_METHOD(IsEnabled,"bool wxToolBarToolBase::IsEnabled()  (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#isenabled)")
     ADD_CLASS_METHOD(IsToggled,"bool wxToolBarToolBase::IsToggled()  (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#istoggled)")
     ADD_CLASS_METHOD(CanBeToggled,"bool wxToolBarToolBase::CanBeToggled()  (http://docs.wxwidgets.org/stable/wx_wxtoolbartoolbase.html#canbetoggled)")

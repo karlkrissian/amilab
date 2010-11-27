@@ -26,6 +26,7 @@
 #include "wrap_wxEvent.h"
 
 
+
 AMI_DECLARE_TYPE(wxInitDialogEvent);
 
 // TODO: check for inheritence ...

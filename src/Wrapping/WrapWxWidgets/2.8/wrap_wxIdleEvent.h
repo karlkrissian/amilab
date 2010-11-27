@@ -26,6 +26,7 @@
 #include "wrap_wxEvent.h"
 
 
+
 AMI_DECLARE_TYPE(wxIdleEvent);
 
 // TODO: check for inheritence ...
@@ -69,8 +70,12 @@ class WrapClass_wxIdleEvent : public WrapClass<wxIdleEvent>
 
     // Static methods
     
+    /* The following types are missing: wxIdleMode
     ADD_CLASS_STATICMETHOD(SetMode,"void wxIdleEvent::SetMode(wxIdleMode mode) (http://docs.wxwidgets.org/stable/wx_wxidleevent.html#setmode).");
+    */
+    /* The following types are missing: wxIdleMode
     ADD_CLASS_STATICMETHOD(GetMode,"wxIdleMode wxIdleEvent::GetMode() (http://docs.wxwidgets.org/stable/wx_wxidleevent.html#getmode).");
+    */
     ADD_CLASS_STATICMETHOD(CanSend,"bool wxIdleEvent::CanSend(wxWindow * win) (http://docs.wxwidgets.org/stable/wx_wxidleevent.html#cansend).");
 
 

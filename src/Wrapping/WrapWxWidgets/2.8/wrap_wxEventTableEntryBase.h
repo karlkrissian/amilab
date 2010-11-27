@@ -55,7 +55,7 @@ class WrapClass_wxEventTableEntryBase : public WrapClass<wxEventTableEntryBase>
     }
 
     
-    /* The following types are missing: _13558
+    /* The following types are missing: _13542
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxEventTableEntryBase_1,"Constructor wxEventTableEntryBase::wxEventTableEntryBase(int winid, int idLast, wxObjectEventFunction fn, wxObject * data) (http://docs.wxwidgets.org/stable/wx_wxeventtableentrybase.html#wxeventtableentrybase).");
     */

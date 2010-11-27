@@ -26,6 +26,7 @@
 #include "wrap_wxControlBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxControl);
 
 // TODO: check for inheritence ...

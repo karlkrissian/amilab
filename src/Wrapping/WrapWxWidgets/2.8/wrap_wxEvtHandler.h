@@ -26,6 +26,7 @@
 #include "wrap_wxObject.h"
 
 
+
 AMI_DECLARE_TYPE(wxEvtHandler);
 
 // TODO: check for inheritence ...
@@ -82,24 +83,24 @@ class WrapClass_wxEvtHandler : public WrapClass<wxEvtHandler>
     ADD_CLASS_METHOD(AddPendingEvent,"void wxEvtHandler::AddPendingEvent(wxEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#addpendingevent)")
     ADD_CLASS_METHOD(ProcessPendingEvents,"void wxEvtHandler::ProcessPendingEvents()  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#processpendingevents)")
     ADD_CLASS_METHOD(ProcessThreadEvent,"bool wxEvtHandler::ProcessThreadEvent(wxEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#processthreadevent)")
-/* The following types are missing: _13558
+/* The following types are missing: _13542
     ADD_CLASS_METHOD(Connect_1,"void wxEvtHandler::Connect(int winid, int lastId, int eventType, wxObjectEventFunction func, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#connect)")
 */
     ADD_CLASS_METHOD(Connect,"wxEvtHandler::Connect()  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#connect)")
-/* The following types are missing: _13558
+/* The following types are missing: _13542
     ADD_CLASS_METHOD(Connect_2,"void wxEvtHandler::Connect(int winid, int eventType, wxObjectEventFunction func, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#connect)")
 */
-/* The following types are missing: _13558
+/* The following types are missing: _13542
     ADD_CLASS_METHOD(Connect_3,"void wxEvtHandler::Connect(int eventType, wxObjectEventFunction func, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#connect)")
 */
-/* The following types are missing: _13558
+/* The following types are missing: _13542
     ADD_CLASS_METHOD(Disconnect_1,"bool wxEvtHandler::Disconnect(int winid, int lastId, wxEventType eventType, wxObjectEventFunction func = 0l, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#disconnect)")
 */
     ADD_CLASS_METHOD(Disconnect,"wxEvtHandler::Disconnect()  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#disconnect)")
-/* The following types are missing: _13558
+/* The following types are missing: _13542
     ADD_CLASS_METHOD(Disconnect_2,"bool wxEvtHandler::Disconnect(int winid = wxID_ANY, wxEventType eventType = wxEVT_NULL, wxObjectEventFunction func = 0l, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#disconnect)")
 */
-/* The following types are missing: _13558
+/* The following types are missing: _13542
     ADD_CLASS_METHOD(Disconnect_3,"bool wxEvtHandler::Disconnect(wxEventType eventType, wxObjectEventFunction func, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#disconnect)")
 */
     ADD_CLASS_METHOD(GetDynamicEventTable,"wxList * wxEvtHandler::GetDynamicEventTable()  (http://docs.wxwidgets.org/stable/wx_wxevthandler.html#getdynamiceventtable)")

@@ -26,6 +26,7 @@
 #include "wrap_wxEvent.h"
 
 
+
 AMI_DECLARE_TYPE(wxSysColourChangedEvent);
 
 // TODO: check for inheritence ...

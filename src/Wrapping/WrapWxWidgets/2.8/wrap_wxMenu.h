@@ -26,6 +26,7 @@
 #include "wrap_wxMenuBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxMenu);
 
 // TODO: check for inheritence ...
@@ -76,8 +77,12 @@ class WrapClass_wxMenu : public WrapClass<wxMenu>
     
     // Adding standard methods
     ADD_CLASS_METHOD(Attach,"void wxMenu::Attach(wxMenuBarBase * menubar)  (http://docs.wxwidgets.org/stable/wx_wxmenu.html#attach)")
+/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(SetLayoutDirection,"void wxMenu::SetLayoutDirection(wxLayoutDirection const dir)  (http://docs.wxwidgets.org/stable/wx_wxmenu.html#setlayoutdirection)")
+*/
+/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(GetLayoutDirection,"wxLayoutDirection wxMenu::GetLayoutDirection()  (http://docs.wxwidgets.org/stable/wx_wxmenu.html#getlayoutdirection)")
+*/
 /* The following types are missing: _GtkWidget
     ADD_CLASS_METHOD(FindMenuIdByMenuItem,"int wxMenu::FindMenuIdByMenuItem(GtkWidget * menuItem)  (http://docs.wxwidgets.org/stable/wx_wxmenu.html#findmenuidbymenuitem)")
 */
