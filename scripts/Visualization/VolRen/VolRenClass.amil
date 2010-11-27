@@ -1,8 +1,7 @@
 #!/usr/bin/amilab
 
 #
-# Script for drawing 2D functions
-# or lines from an image
+# Script for Volume Rendering using VTK
 #
 
 comments="VolRen: VTK GPU RayCasting."
@@ -13,30 +12,26 @@ import_vtk
 
 if (!exists(VolRenClass)) {
 
+
+  #-----------------------------------------------------
+  #  VolRenClass
+  #-----------------------------------------------------
   Class VolRenClass : public ScriptGui {
 
+    func "vtkVolumeClass.amil"
 
-    # load the ImageHistogram script
-    func "Visualization/ImageHistogram/ImageHistogramClass.amil"
-    ImageHistogramClass            ::imhisto1
+    # volume 1
+    vtkVolumeClass                  ::vtkvol1
+    # volume 2
+    vtkVolumeClass                  ::vtkvol2
 
     #----------------------------
     proc ::Init() \
     {
-      ::input_name =  "", "name of the input image"
-
-      ::blend_type = INT(1), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->CT_Muscles, 6->RGB_Composite"
-      ::opacitywindow = 1000, "Opacity Window"
-      ::opacitylevel  = 1000, "Opacity Level"
-
-      ::skin1 = -1000, "Skin first control point"
-      ::skin2 =  -500, "Skin second control point"
-
-      ::bones1 = -16,  "Bones first control point"
-      ::bones2 =  641, "Bones second control point"
-
-      ::clip = UCHAR(1), "Enable/Disable clipping box"
-      ::initialized=0
+      ::input_name  =  "", "name of the input image"
+      ::input2_name =  "", "name of the second input image"
+      ::vtkvol1.Init()
+      ::vtkvol2.Init()
       #::Gui()
     }
     
@@ -46,10 +41,31 @@ if (!exists(VolRenClass)) {
       eval "::input = &"+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
+        ::UpdateVolPages()
         ::win.Update(-1)
       }
     }
   
+    #----------------------------
+    proc ::load_input2() {
+      if (exists(::input2)) { del ::input2; }
+      eval "::input2 = &"+::input2_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input2"
+        ::UpdateVolPages()
+        ::win.Update(-1)
+      }
+    }
+  
+    #----------------------------
+    proc ::UpdateVolPages() \
+    {
+      ::win.EnablePanel(::vol1_page , 1)
+#exists(::input))
+      ::win.EnablePanel(::vol2_page , 1)
+#exists(::input2))
+    }
+
     #----------------------------
     proc ::UpdateIntensityLimits() {
       if (exists(::input)) {
@@ -70,19 +86,13 @@ if (!exists(VolRenClass)) {
     }
     Comments(::ImReload,"(Re)Loads the input image.")
 
+
     #----------------------------
-    proc ::UpdateHistogram() \
+    proc ::ImReload2() \
     {
-      if (exists(::imhisto1))&&(exists(::input)) {
-        #printn "*"
-        if (exists(::min_val)) {
-          ::imhisto1.SetInput2(&::input,::min_val,::max_val)
-        } else {
-          ::imhisto1.SetInput(&::input)
-        }
-      }
+      ::load_input2()
     }
-    Comments(::UpdateHistogram,"Updates the histogram with the current input image.")
+    Comments(::ImReload2,"(Re)Loads the second input image.")
 
     #----------------------------
     proc ::DeleteVariables() {
@@ -93,27 +103,27 @@ if (!exists(VolRenClass)) {
     }
 
     #----------------------------
-    proc ::Start() \
-    {
-      if (!exists(::input)) {
-        ::load_input()
-      }
-      ::renwin_interact = global::vtkGPURayCasting(&::input, \
-        ::blend_type, ::opacitywindow, ::opacitylevel, ::clip)
-      ::renwin   = ::renwin_interact.GetRenderWindow()
-      ::renderer = ::renwin.GetRenderers().GetFirstRenderer()
-      interact = global::vtkInteractorStyleTrackballCamera_New()
-      ::renwin_interact.SetInteractorStyle(&interact)
-      #::renderer.Render()
-      vols = ::renderer.GetVolumes()
-      vols.InitTraversal()
-      ::vol      =  vols.GetNextVolume()
-      ::property = ::vol.GetProperty()
-      mapper   = ::vol.GetMapper()
-      ::volmapper = global::vtkVolumeMapper_SafeDownCast(&mapper)
-      #::renwin_interact.Render()
+    #proc ::Start() \
+    #{
+      #if (!exists(::input)) {
+        #::load_input()
+      #}
+      #::renwin_interact = global::vtkGPURayCasting(&::input, \
+        #::blend_type, ::opacitywindow, ::opacitylevel, ::clip)
+      #::renwin   = ::renwin_interact.GetRenderWindow()
+      #::renderer = ::renwin.GetRenderers().GetFirstRenderer()
+      #interact = global::vtkInteractorStyleTrackballCamera_New()
+      #::renwin_interact.SetInteractorStyle(&interact)
+      ##::renderer.Render()
+      #vols = ::renderer.GetVolumes()
+      #vols.InitTraversal()
+      #::vol      =  vols.GetNextVolume()
+      #::property = ::vol.GetProperty()
+      #mapper   = ::vol.GetMapper()
+      #::volmapper = global::vtkVolumeMapper_SafeDownCast(&mapper)
+      ##::renwin_interact.Render()
 
-    }
+    #}
 
     #----------------------------
     proc ::StartNew() \
@@ -121,353 +131,120 @@ if (!exists(VolRenClass)) {
       if (!exists(::input)) {
         ::load_input()
       }
-      ::initialized=0
-      ::renwin_interact = global::wxVTKFrame()
-      ::renwin   = ::renwin_interact.GetRenderWindow()
-      ::renderer = global::vtkRenderer_New()
-      ::renwin.AddRenderer(&::renderer)
-      interact = global::vtkInteractorStyleTrackballCamera_New()
-      ::renwin_interact.SetInteractorStyle(&interact)
-
-
-      # 10/(1+clip) in c++ code
-      #::renwin_interact.SetDesiredUpdateRate(10)
-
-      # check that we have a volume
-      if (::input.tx<2)||(::input.ty<2)||(::input.tz<2) {
-        InfoDialog "Input image is not a volume!"
+      if (exists(::renderer)) {
+        InfoDialog "Rendering already started, we don't allow restart ..."
       } else {
-        ::vol       = global::vtkVolume_New()
-        ::volmapper = global::vtkGPUVolumeRayCastMapper_New()
-        # don't put the boxwidget for the moment
-        # convert input to vtkimage
-        ::vtkinput  = global::ToVtkImageData(&::input)
-        ::volmapper.SetInput(&::vtkinput)
+        #if (exists(::renwin_interact)) { del ::renwin_interact; }
+        if (!exists(::renwin_interact)) {
+          ::renwin_interact = global::wxVTKFrame()
+        }
+        ::renwin   = ::renwin_interact.GetRenderWindow()
+        ::renderer = global::vtkRenderer_New()
+        ::renwin.AddRenderer(&::renderer)
+        interact = global::vtkInteractorStyleTrackballCamera_New()
+        ::renwin_interact.SetInteractorStyle(&interact)
 
-        #::volmapper.SetSampleDistance()
+        if (::vtkvol1.initialized>0.5) {
+          ::vtkvol1.ResetVTK()
+        }
+        volok = ::vtkvol1.CreateVTK( &::input)
 
-        # Create our transfer function
-        ::colorFun=global::vtkColorTransferFunction_New()
-        ::opacityFun=global::vtkPiecewiseFunction_New()
-        
-        # Create the property and attach the transfer functions
-        ::property = global::vtkVolumeProperty_New()
-        ::property.SetIndependentComponents(1)
-        ::property.SetColor( &::colorFun )
-        ::property.SetScalarOpacity( &::opacityFun )
-        ::property.SetInterpolationTypeToLinear()
- 
-        # connect up the volume to the property and the mapper
-        ::vol.SetProperty( &::property )
-        ::vol.SetMapper( &::volmapper )
+        if (volok>0.5) {
+          # interact with data
+          #  renWin->Render()
+          #  m_pVTKWindow->Start()
+          ::renderer->ResetCameraClippingRange()
+          ::vtkvol1.SetInteractor(&::renwin_interact)
+          ::vtkvol1.SetRenderer(&::renderer)
+          ::vtkvol1.ReCompute()
 
-        # interact with data
-        #  renWin->Render()
-        #  m_pVTKWindow->Start()
-        ::renderer->ResetCameraClippingRange()
-        ::initialized=1
-        ::ReCompute()
-
-        # Add the volume to the scene
-        ::renderer.AddVolume( &::vol )
-        ::renderer.ResetCamera()
-        #::renwin_interact.Render()
-
+          # Add the volume to the scene
+          ::renderer.AddVolume( &::vtkvol1.vol )
+          ::renderer.ResetCamera()
+          #::renwin_interact.Render()
+        }
       }
 
     }
+    Comments(::StartNew,"Starts rendering of first volume.")
+
 
     #----------------------------
-    proc ::BlendMIP() \
+    proc ::AddVolume2() \
     {
-      ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
-      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
-                             ::opacitylevel + 0.5*::opacitywindow, 1.0 );
-      ::volmapper.SetBlendModeToMaximumIntensity();
+      if (!exists(::input2)) {
+        ::load_input2()
+      }
+
+      if (exists(::renwin_interact)) \
+      {
+
+        if (::vtkvol2.initialized>0.5) {
+          ::vtkvol2.ResetVTK()
+        }
+        volok = ::vtkvol2.CreateVTK( &::input2)
+
+        if (volok>0.5) {
+          ::vtkvol2.SetInteractor(&::renwin_interact)
+          ::vtkvol2.ReCompute()
+
+          # Add the volume to the scene
+          ::renderer.AddVolume( &::vtkvol2.vol )
+          #::renderer.ResetCamera()
+          ::renwin_interact.Render()
+        }
+      }
+
     }
-
-    #----------------------------
-    proc ::BlendCompositeRamp() \
-    {
-      ::colorFun.AddRGBSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, 0.0, 0.0, \
-                              ::opacitylevel + 0.5*::opacitywindow, 1.0, 1.0, 1.0 )
-
-      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
-                             ::opacitylevel + 0.5*::opacitywindow, 1.0 )
-
-      ::volmapper.SetBlendModeToComposite()
-      ::property.ShadeOff()
-    }
-
-    #----------------------------
-    proc ::BlendCompositeShadeRamp() \
-    {
-      ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
-      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
-                               ::opacitylevel + 0.5*::opacitywindow, 1.0 );
-      ::volmapper.SetBlendModeToComposite();
-      ::property.ShadeOn();
-    }
+    Comments(::AddVolume2,"Adds rendering of second volume.")
 
 
     #----------------------------
-    proc ::SkinReset() \
+    proc ::MainBook_AddVolRenTab()  \
     {
-      ::skin1 = -1000
-      ::skin2 =  -500
-      ::win.Update(-1)
-      ::OnRender()
-    }
+      mb = ami.MainFrame.GetMainBook()
 
-    #----------------------------
-    proc ::BlendCTSkin() \
-    {
-      ::colorFun.AddRGBPoint( -3024, 0, 0, 0, 0.5, 0.0 );
-      ::colorFun.AddRGBPoint( ::skin1, 0.62, 0.36, 0.18, 0.5, 0.0 );
-      ::colorFun.AddRGBPoint( ::skin2, 0.88, 0.60, 0.29, 0.33, 0.45 );
-      ::colorFun.AddRGBPoint( 3071, 0.83, 0.66, 1, 0.5, 0.0 );
+      panel = wx.wxPanel(&ami.MainFrame)
+      sbox = wx.wxStaticBox(&panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
+      wxVERTICAL=0x0008
+      sbox_sizer = wx.wxStaticBoxSizer(&sbox,wxVERTICAL)
+      panel.SetSizer(&sbox_sizer)
+      # create widget here
+
+      ::renwin_interact = global::wxVTKRenderWindowInteractor(&panel)
+      ::renwin_interact.UseCaptureMouseOn()
+      ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
+      # Still drawing problem (missed exposed events???)
+      ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
+      sbox_sizer.Add(&::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1) )
+
       
-      ::opacityFun.AddPoint(-3024, 0, 0.5, 0.0 );
-      ::opacityFun.AddPoint(::skin1, 0, 0.5, 0.0 );
-      ::opacityFun.AddPoint(::skin2, 1.0, 0.33, 0.45 );
-      ::opacityFun.AddPoint(3071, 1.0, 0.5, 0.0);
+      ::icons.LoadIconPNG2("Transparent background","Transparent_background")
 
-      ::volmapper.SetBlendModeToComposite();
-      ::property.ShadeOn();
-      ::property.SetAmbient(0.1);
-      ::property.SetDiffuse(0.9);
-      ::property.SetSpecular(0.2);
-      ::property.SetSpecularPower(10.0);
-      ::property.SetScalarOpacityUnitDistance(0.8919);
-    }
-
-
-    #----------------------------
-    proc ::BonesReset() \
-    {
-      ::bones1 = -16
-      ::bones2 =  641
-      ::win.Update(-1)
-      ::OnRender()
+      # Add to main book
+      mb.AddPage( &panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+      ::volren_pageindex = mb.GetPageIndex(&panel)
+      #mb.SetSelection(::volren_pageindex)
     }
 
     #----------------------------
-    proc ::BlendCTBones() \
+    proc ::MainBook_CloseTab()  \
     {
-      ::colorFun.AddRGBPoint( -3024, 0, 0, 0, 0.5, 0.0 );
-      ::colorFun.AddRGBPoint( ::bones1, 0.73, 0.25, 0.30, 0.49, 0.61 );
-      ::colorFun.AddRGBPoint( ::bones2, 0.90, 0.82, 0.56, 0.5, 0.0 );
-      ::colorFun.AddRGBPoint( 3071, 1, 1, 1, 0.5, 0.0 );
-      
-      ::opacityFun.AddPoint(-3024, 0, 0.5, 0.0 );
-      ::opacityFun.AddPoint(::bones1, 0, 0.49, 0.61 );
-      ::opacityFun.AddPoint(::bones2, 0.72, 0.5, 0.0 );
-      ::opacityFun.AddPoint(3071, 0.71, 0.5, 0.0);
-
-      ::volmapper.SetBlendModeToComposite();
-      ::property.ShadeOn();
-      ::property.SetAmbient(0.1);
-      ::property.SetDiffuse(0.9);
-      ::property.SetSpecular(0.2);
-      ::property.SetSpecularPower(10.0);
-      ::property.SetScalarOpacityUnitDistance(0.8919);
-    }
-
-
-    #----------------------------
-    proc ::BlendCTMuscles() \
-    {
-      ::colorFun.AddRGBPoint( -3024, 0, 0, 0, 0.5, 0.0 );
-      ::colorFun.AddRGBPoint( -155, 0.55, 0.25, 0.15, 0.5, 0.92 );
-      ::colorFun.AddRGBPoint( 217, 0.88, 0.60, 0.29, 0.33, 0.45 );
-      ::colorFun.AddRGBPoint( 420, 1, 0.94, 0.95, 0.5, 0.0 );
-      ::colorFun.AddRGBPoint( 3071, 0.83, 0.66, 1, 0.5, 0.0 );
-      
-      ::opacityFun.AddPoint(-3024, 0, 0.5, 0.0 );
-      ::opacityFun.AddPoint(-155, 0, 0.5, 0.92 );
-      ::opacityFun.AddPoint(217, 0.68, 0.33, 0.45 );
-      ::opacityFun.AddPoint(420, 0.83, 0.5, 0.0);
-      ::opacityFun.AddPoint(3071, 0.80, 0.5, 0.0);
-
-      ::volmapper.SetBlendModeToComposite();
-      ::property.ShadeOn();
-      ::property.SetAmbient(0.1);
-      ::property.SetDiffuse(0.9);
-      ::property.SetSpecular(0.2);
-      ::property.SetSpecularPower(10.0);
-      ::property.SetScalarOpacityUnitDistance(0.8919);
-    }
-
-    #----------------------------
-    proc ::ReCompute() \
-    {
-        if exists(::colorFun)   { ::colorFun.Delete(); del ::colorFun; }
-        if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
-        if exists(::property)   { ::property.Delete(); del ::property; }
-
-        ::colorFun=global::vtkColorTransferFunction_New()
-        ::opacityFun=global::vtkPiecewiseFunction_New()
-
-        # Create the property and attach the transfer functions
-        ::property = global::vtkVolumeProperty_New()
-        ::property.SetIndependentComponents(1)
-        ::property.SetColor( &::colorFun )
-        ::property.SetScalarOpacity( &::opacityFun )
-        ::property.SetInterpolationTypeToLinear()
- 
-        # connect up the volume to the property and the mapper
-        ::vol.SetProperty( &::property )
-
-        if (::blend_type==0) { ::BlendMIP();                }
-        if (::blend_type==1) { ::BlendCompositeRamp();      }
-        if (::blend_type==2) { ::BlendCompositeShadeRamp(); }
-        if (::blend_type==3) { ::BlendCTSkin();             }
-        if (::blend_type==4) { ::BlendCTBones();            }
-        if (::blend_type==5) { ::BlendCTMuscles();          }
-
-        #::property.SetColor( &::colorFun )
-        #::property.SetScalarOpacity( &::opacityFun )
-      
-    }
-
-    #----------------------------
-    proc ::OnRender() \
-    {
-      if (exists(::renwin_interact)&&(::initialized>0.5)) {
-        ::ReCompute()
-        ::renwin_interact.Render()
+      if (exists(::volren_pageindex)){
+        mb = ami.MainFrame.GetMainBook()
+        mb.DeletePage(::volren_pageindex)
       }
     }
 
     #----------------------------
-    proc ::OnBlendType() \
-    {
-      ::OnRender()
-      ::Draw_Functions()
+    # Redefinition of Close to close the panel tab in main_book
+    #
+    proc ::Close() {
+      ::MainBook_CloseTab()
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
     }
-
-    #----------------------------
-    proc ::OnWindow() \
-    {
-      ::OnRender()
-      ::Draw_Functions()
-    }
-
-    #----------------------------
-    proc ::OnLevel() \
-    {
-      ::OnRender()
-      ::Draw_Functions()
-    }
-
-
-    #----------------------------
-    proc ::Draw_colorFun() \
-    {
-      ctf = &::colorFun
-      if (exists(::imhisto1->h)) {
-        h = (FLOAT)::imhisto1.h[0]
-        h1 = Resize(h,256,1,1,1)
-        ::ctf_color <<= (RGB) h1
-        spos = SpacePos(::ctf_color)
-        pos = spos[0]
-        #print "\n"
-        for x=0 to ::ctf_color.tx-1 {
-          ::ctf_color.setpos(x,0,0)
-          xpos = pos(x)
-          ::ctf_color.set(ctf.GetRedValue(  xpos)*250, \
-                          ctf.GetGreenValue(xpos)*250, \
-                          ctf.GetBlueValue( xpos)*250 )
-        }
-        # position curves in ColorMap window of ::imhist1
-        numcurves = ::imhisto1.cm.GetCurves().size()
-        printn numcurves
-        if (!exists(::red_id)) {
-          ::red_id   = numcurves
-          ::green_id = numcurves+1
-          ::blue_id  = numcurves+2
-        }
-        ::imhisto1.cm.SetCurve(::ctf_color[0],::red_id)
-        ::imhisto1.cm.SetCurve(::ctf_color[1],::green_id)
-        ::imhisto1.cm.SetCurve(::ctf_color[2],::blue_id)
-
-        ::imhisto1.cm.SetCurveProperties(::red_id,  "#FF0000")
-        ::imhisto1.cm.SetCurveProperties(::green_id,"#00FF00")
-        ::imhisto1.cm.SetCurveProperties(::blue_id, "#0000FF")
-        
-      }
-    }
-
-    #----------------------------
-    proc ::Draw_greycolorFun() \
-    {
-      ctf = &::colorFun
-      if (exists(::imhisto1->h)) {
-        h = (FLOAT)::imhisto1.h[0]
-        ::ctf_color <<= Resize(h,256,1,1,1)
-        spos = SpacePos(::ctf_color)
-        pos = spos[0]
-        #print "\n"
-        for x=0 to ::ctf_color.tx-1 {
-          ::ctf_color.setpos(x,0,0)
-          ::ctf_color.set(ctf.GetRedValue(pos(x)))
-        }
-        ::ctf_color = ::ctf_color*250
-        # position curves in ColorMap window of ::imhist1
-        numcurves = ::imhisto1.cm.GetCurves().size()
-        printn numcurves
-        if (!exists(::red_id)) {
-          ::red_id   = numcurves
-          ::green_id = numcurves+1
-          ::blue_id  = numcurves+2
-        }
-        ::imhisto1.cm.SetCurve(&::ctf_color,::red_id)
-        ::imhisto1.cm.SetCurve(&::ctf_color,::green_id)
-        ::imhisto1.cm.SetCurve(&::ctf_color,::blue_id)
-
-        ::imhisto1.cm.SetCurveProperties(::red_id,  "#606060")
-        ::imhisto1.cm.SetCurveProperties(::green_id,"#606060")
-        ::imhisto1.cm.SetCurveProperties(::blue_id, "#606060")
-        
-      }
-    }
-
-    #----------------------------
-    proc ::Draw_opacityFun() \
-    {
-      otf = &::opacityFun
-      if (exists(::imhisto1->h)) {
-        h = (FLOAT)::imhisto1.h[0]
-        ::otf_im <<= Resize(h,256,1,1,1)
-        spos = SpacePos(::otf_im)
-        pos = spos[0]
-        #print "\n"
-        for x=0 to ::otf_im.tx-1 {
-          ::otf_im.setpos(x,0,0)
-          ::otf_im.set(otf.GetValue(pos(x)))
-        }
-        # position curves in ColorMap window of ::imhist1
-        numcurves = ::imhisto1.cm.GetCurves().size()
-        printn numcurves
-        if (!exists(::otf_id)) {
-          ::otf_id   = numcurves
-        }
-        ::otf_im = ::otf_im*250
-        ::imhisto1.cm.SetCurve(::otf_im,::otf_id)
-        ::imhisto1.cm.SetCurveProperties(::otf_id,  "#202020")
-      }
-    }
-
-    #----------------------------
-    proc ::Draw_Functions() {
-      if (::blend_type<=2) {
-        ::Draw_greycolorFun()
-      } else {
-        ::Draw_colorFun()
-      }
-      ::Draw_opacityFun()
-      ::imhisto1.cm._Paint()
-    }
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
 
     #----------------------------
     proc ::Gui() {
@@ -479,6 +256,14 @@ if (!exists(VolRenClass)) {
         ::win = global::ami_import.ParamPanel("VolRen")
       }
       
+      ::win.BeginHorizontal()
+        ::AddBitmapButton16(&::win, &::icons._Show, "StartNew")
+        ::win.SetPositionProp(1)
+        ::icons.LoadIconPNG("Add")
+        ::AddBitmapButton16(&::win, &::icons._Add, "AddVolume2")
+        ::win.SetPositionProp(1)
+      ::win.EndHorizontal()
+
       ::win.BeginBook()
     
         ::win.AddPage("IO")
@@ -491,61 +276,36 @@ if (!exists(VolRenClass)) {
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
+          ::win.BeginBoxPanel("Second Volume")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input2_name, "")
+              ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload2")
+              #::win.AddButton( "ImReload",&::ImReload)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+
         ::win.AddPage("Param")
 
-            ::win.BeginHorizontal()
-              ::win.AddBoolean(&::clip, "Clip")
-              ::AddBitmapButton16(&::win, &::icons._Show, "StartNew")
-              ::icons.LoadIconPNG2("Chart xy","Chart_xy")
-              ::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
-              ::win.AddButton("DrawTr",&::Draw_Functions)
-            ::win.EndHorizontal()
-
-            ::blend_type_id = ::win.AddEnum(&::blend_type,"Blend")
-              ::win.AddEnumChoice(::blend_type_id,"MIP")
-              ::win.AddEnumChoice(::blend_type_id,"Comp. Ramp")
-              ::win.AddEnumChoice(::blend_type_id,"Comp. Shade Ramp")
-              ::win.AddEnumChoice(::blend_type_id,"CT Skin")
-              ::win.AddEnumChoice(::blend_type_id,"CT Bone")
-              ::win.AddEnumChoice(::blend_type_id,"CT Muscles")
-              ::win.AddEnumChoice(::blend_type_id,"RGB Composite")
-            ::win.SetCallback( &::OnBlendType)
-
-            ::win.BeginBook()
-              ::win.AddPage("Ramp")
-                ::opacitywindow_id = ::win.AddFloat(&::opacitywindow,"Window",0,5000)
-                ::win.SetCallback( &::OnWindow)
-                ::opacitylevel_id = ::win.AddFloat(&::opacitylevel,"Level",0,5000)
-                ::win.SetCallback( &::OnLevel)
-              ::win.AddPage("Skin")
-                ::win.AddFloat(&::skin1,"Ctrl_1",-3000,1000)
-                ::win.SetCallback( &::OnBlendType)
-                ::win.AddFloat(&::skin2,"Ctrl_2",-3000,1000)
-                ::win.SetCallback( &::OnBlendType)
-                ::AddBitmapButton16(&::win, &::icons._Refresh, "SkinReset")
-              ::win.AddPage("Bones")
-                ::win.AddFloat(&::bones1,"Ctrl_1",-3000,1000)
-                ::win.SetCallback( &::OnBlendType)
-                ::win.AddFloat(&::bones2,"Ctrl_2",-1000,3000)
-                ::win.SetCallback( &::OnBlendType)
-                ::AddBitmapButton16(&::win, &::icons._Refresh, "BonesReset")
-              ::win.AddPage("Muscles")
-            ::win.EndBook()
+          ::win.BeginBook()
+            ::vol1_page = ::win.AddPage("Vol1")
+              ::vtkvol1.AddGui( &::win)
+            ::vol2_page = ::win.AddPage("Vol2")
+              ::vtkvol2.AddGui( &::win)
+          ::win.EndBook()
           #::win.EndBoxPanel()
 
           #::win.AddButton("Start",   ::Start)
           #::icons.LoadIconPNG("Play")
   
+        #::win.AddPage("Viewer")
+          #d = ::win.CurrentParent()
+          #::renwin_interact = global::wxVTKRenderWindowInteractor(&d)
+          #::renwin_interact.SetMinSize(&wx.wxSize(100,400));
+          #::sizer_item = ::win.AddWidget(&::renwin_interact,0)
 
       ::win.EndBook()
 
-      ::win.BeginBook()
-          # Adding histogram page
-        ::imhisto1.SetParentPanel(&::win)
-        ::imhisto1.Gui()
-        #::sizer_item = ::win.AddWidget(&::imhisto1.win,0)
-        ::win.AddPage("Hist",&::imhisto1.win)
-      ::win.EndBook()
 
       ::AddStandardButtons(&::win)
       
@@ -554,7 +314,9 @@ if (!exists(VolRenClass)) {
       } else {
         ::win.Display()
       }
+      ::UpdateVolPages()
       ::win.Update(-1)
+      ::MainBook_AddVolRenTab()
    }
 
     ::Init()
