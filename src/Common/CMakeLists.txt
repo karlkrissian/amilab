@@ -47,6 +47,9 @@ SET(Common_SRCS
   #      inrimage_base.cpp
   #      inrimage_compressee.cpp
   #      inrimage_all.cpp
+
+  # from Plugin
+  PluginManager.cpp
 )
 
 SET(Common_HDRS
@@ -102,6 +105,11 @@ SET(Common_HDRS
   include/InrImageIterator.tpp
   include/InrImageConstIterator.h
   include/InrImageConstIterator.tpp
+
+  # from Plugin
+  include/PluginInterface.h
+  include/PluginManager.h
+  include/PluginBase.h
 )
 
 SET (Common_SRCS

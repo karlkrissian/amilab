@@ -81,6 +81,7 @@ SET(options "test_fibonacci.amil"                       "test_factorial.amil"
             "test_area_of_circle.amil"                  "test_inc_and_dec_operator.amil" 
             "test_trigonometric_functions.amil"         "test_int_type.amil" 
             "test_float_type.amil"                      "test_double_type.amil" 
+            "test_bool_type.amil"
     # DESSINIMAGE
             "test_dessinimage_compare.amil"             "test_dessinimage_isocontour.amil"    
             "test_dessinimage_update.amil"              "test_dessinimage_drawcircle.amil"

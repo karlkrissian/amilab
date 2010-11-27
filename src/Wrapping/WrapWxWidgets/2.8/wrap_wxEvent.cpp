@@ -100,44 +100,44 @@ void WrapClass_wxEvent::AddMethods(WrapClass<wxEvent>::ptr this_ptr )
       Variables::ptr context(tmpobj->GetContext());
       
       // Adding public member m_eventObject
-      boost::shared_ptr<wxObject > var_m_eventObject_ptr(GetObj()->m_eventObject, smartpointer_nodeleter<wxObject >());
-      BasicVariable::ptr var_m_eventObject = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_eventObject_ptr);
-      if (var_m_eventObject.get()) {
-        var_m_eventObject->Rename("m_eventObject");
-        context->AddVar(var_m_eventObject,context);
-      }
+//       boost::shared_ptr<wxObject > var_m_eventObject_ptr(GetObj()->m_eventObject, smartpointer_nodeleter<wxObject >());
+//       BasicVariable::ptr var_m_eventObject = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_eventObject_ptr);
+//       if (var_m_eventObject.get()) {
+//         var_m_eventObject->Rename("m_eventObject");
+//         context->AddVar(var_m_eventObject,context);
+//       }
       
       // Adding public member m_eventType
-      boost::shared_ptr<int > var_m_eventType_ptr(&GetObj()->m_eventType, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_eventType = AMILabType<int >::CreateVarFromSmtPtr(var_m_eventType_ptr);
-      if (var_m_eventType.get()) {
-        var_m_eventType->Rename("m_eventType");
-        context->AddVar(var_m_eventType,context);
-      }
+//       boost::shared_ptr<int > var_m_eventType_ptr(&GetObj()->m_eventType, smartpointer_nodeleter<int >());
+//       BasicVariable::ptr var_m_eventType = AMILabType<int >::CreateVarFromSmtPtr(var_m_eventType_ptr);
+//       if (var_m_eventType.get()) {
+//         var_m_eventType->Rename("m_eventType");
+//         context->AddVar(var_m_eventType,context);
+//       }
       
       // Adding public member m_timeStamp
-      boost::shared_ptr<long int > var_m_timeStamp_ptr(&GetObj()->m_timeStamp, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_timeStamp = AMILabType<long int >::CreateVarFromSmtPtr(var_m_timeStamp_ptr);
-      if (var_m_timeStamp.get()) {
-        var_m_timeStamp->Rename("m_timeStamp");
-        context->AddVar(var_m_timeStamp,context);
-      }
+//       boost::shared_ptr<long int > var_m_timeStamp_ptr(&GetObj()->m_timeStamp, smartpointer_nodeleter<long int >());
+//       BasicVariable::ptr var_m_timeStamp = AMILabType<long int >::CreateVarFromSmtPtr(var_m_timeStamp_ptr);
+//       if (var_m_timeStamp.get()) {
+//         var_m_timeStamp->Rename("m_timeStamp");
+//         context->AddVar(var_m_timeStamp,context);
+//       }
       
       // Adding public member m_id
-      boost::shared_ptr<int > var_m_id_ptr(&GetObj()->m_id, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_id = AMILabType<int >::CreateVarFromSmtPtr(var_m_id_ptr);
-      if (var_m_id.get()) {
-        var_m_id->Rename("m_id");
-        context->AddVar(var_m_id,context);
-      }
+//       boost::shared_ptr<int > var_m_id_ptr(&GetObj()->m_id, smartpointer_nodeleter<int >());
+//       BasicVariable::ptr var_m_id = AMILabType<int >::CreateVarFromSmtPtr(var_m_id_ptr);
+//       if (var_m_id.get()) {
+//         var_m_id->Rename("m_id");
+//         context->AddVar(var_m_id,context);
+//       }
       
       // Adding public member m_callbackUserData
-      boost::shared_ptr<wxObject > var_m_callbackUserData_ptr(GetObj()->m_callbackUserData, smartpointer_nodeleter<wxObject >());
-      BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
-      if (var_m_callbackUserData.get()) {
-        var_m_callbackUserData->Rename("m_callbackUserData");
-        context->AddVar(var_m_callbackUserData,context);
-      }
+//       boost::shared_ptr<wxObject > var_m_callbackUserData_ptr(GetObj()->m_callbackUserData, smartpointer_nodeleter<wxObject >());
+//       BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
+//       if (var_m_callbackUserData.get()) {
+//         var_m_callbackUserData->Rename("m_callbackUserData");
+//         context->AddVar(var_m_callbackUserData,context);
+//       }
       
       /* type not available
       // Adding public member m_skipped

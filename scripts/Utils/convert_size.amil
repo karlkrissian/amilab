@@ -1,6 +1,6 @@
 #!/home/karl/projects/Sourceforge/builds/amilab/amilab_2.1.0_debug 
 
-ami.MainFrame.ShowWin(0)
+ami.MainFrame.Show(0)
 printn argc
 for n=1 to argc {
   eval "imname = $%1%;" % n

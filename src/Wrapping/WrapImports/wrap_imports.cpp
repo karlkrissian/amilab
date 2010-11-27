@@ -174,6 +174,13 @@ void AddWrapWxWidgets()
 
 void AddWrapAmilab()
 {
+  
+  BasicVariable::ptr vartrue  = AMILabType<bool>::CreateVar(true);
+  BasicVariable::ptr varfalse = AMILabType<bool>::CreateVar(false);
+  
+  Vars.GetBuiltinContext()->AddVar( "true",vartrue,Vars.GetBuiltinContext());
+  Vars.GetBuiltinContext()->AddVar( "false",varfalse,Vars.GetBuiltinContext());
+  
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("ami");

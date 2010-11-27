@@ -221,7 +221,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator %=(cons
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()<b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()<b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -231,7 +231,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator <(const
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()<=b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()<=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -241,7 +241,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator <=(cons
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()>b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()>b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -251,7 +251,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator >(const
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()>=b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()>=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -261,7 +261,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator >=(cons
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()!=b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()!=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -273,7 +273,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ==(cons
 { 
   //std::cout << __func__ << std::endl;
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()==b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()==b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -283,13 +283,13 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ==(cons
 
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator !() 
 {
-  RETURN_VARPTR(long int,!(Value()>0.5));
+  RETURN_VARPTR(bool,!(Value()>0.5));
 }
 
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator &&(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()&& (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(bool,Value()&& (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -298,7 +298,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator &&(cons
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ||(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value() || (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(bool,Value() || (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -380,7 +380,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::BasicCast(const 
     default:
       std::cerr << boost::format("Conversion to type %1% not available")%((WORDTYPE)type) << std::endl;
   }
-  RETURN_VARPTR(float, res);
+  RETURN_VARPTR(long int, res);
 }
 
 //

@@ -87,20 +87,20 @@ void WrapClass_wxScrollWinEvent::AddMethods(WrapClass<wxScrollWinEvent>::ptr thi
       Variables::ptr context(tmpobj->GetContext());
       
       // Adding public member m_commandInt
-      boost::shared_ptr<int > var_m_commandInt_ptr(&GetObj()->m_commandInt, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_commandInt = AMILabType<int >::CreateVarFromSmtPtr(var_m_commandInt_ptr);
-      if (var_m_commandInt.get()) {
-        var_m_commandInt->Rename("m_commandInt");
-        context->AddVar(var_m_commandInt,context);
-      }
+//       boost::shared_ptr<int > var_m_commandInt_ptr(&GetObj()->m_commandInt, smartpointer_nodeleter<int >());
+//       BasicVariable::ptr var_m_commandInt = AMILabType<int >::CreateVarFromSmtPtr(var_m_commandInt_ptr);
+//       if (var_m_commandInt.get()) {
+//         var_m_commandInt->Rename("m_commandInt");
+//         context->AddVar(var_m_commandInt,context);
+//       }
       
       // Adding public member m_extraLong
-      boost::shared_ptr<long int > var_m_extraLong_ptr(&GetObj()->m_extraLong, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_extraLong = AMILabType<long int >::CreateVarFromSmtPtr(var_m_extraLong_ptr);
-      if (var_m_extraLong.get()) {
-        var_m_extraLong->Rename("m_extraLong");
-        context->AddVar(var_m_extraLong,context);
-      }
+//       boost::shared_ptr<long int > var_m_extraLong_ptr(&GetObj()->m_extraLong, smartpointer_nodeleter<long int >());
+//       BasicVariable::ptr var_m_extraLong = AMILabType<long int >::CreateVarFromSmtPtr(var_m_extraLong_ptr);
+//       if (var_m_extraLong.get()) {
+//         var_m_extraLong->Rename("m_extraLong");
+//         context->AddVar(var_m_extraLong,context);
+//       }
 
 };
 

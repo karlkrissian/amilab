@@ -239,7 +239,6 @@ CONFIGURE_FILE(
 #  End of Configuration files
 #-------------------------------------------------------------------------------
 
-
 OPTION(AMI_USE_STATIC_LIBS     "Look for static libraries" ON)
 OPTION(AMI_USE_PRECOMP_HEADERS "Use precompiled headers when available" OFF)
 
@@ -303,8 +302,6 @@ IF(AMI_CHECK_BRANCH)
   
 ENDIF(AMI_CHECK_BRANCH)
 
-
-
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
 
 IF(AMI_USE_VTK)
@@ -347,7 +344,7 @@ IF(wxWidgets_FOUND)
     MESSAGE("path of file \"wx/version.h\": ${WX_VERSION_PATH}")
     FILE(STRINGS "${WX_VERSION_PATH}/wx/version.h"
          FILE_WX_MAJOR_VERSION
-         REGEX "^#define( +)wxM[AJ|IN].*OR_VERSION( +)[0-9]")
+         REGEX "^#define( +)wxM[AJ|IN].*OR_VERSION( +)[0-9]+")
     MESSAGE("File filtering: ${FILE_WX_MAJOR_VERSION}\n")
     LIST(GET FILE_WX_MAJOR_VERSION 0 MAJOR_VERSION)
     LIST(GET FILE_WX_MAJOR_VERSION -1 MINOR_VERSION)
@@ -493,6 +490,8 @@ add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (AMILab)
 
+#add_subdirectory (Plugins/AboutBox)
+
 
 #add_subdirectory (libamiFluid)
 
@@ -511,6 +510,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
+#  ${AMILAB_SOURCE_DIR}/Plugins/
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}

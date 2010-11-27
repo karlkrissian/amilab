@@ -268,7 +268,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
-  wxClassInfo::InitializeClasses();
+  //wxClassInfo::InitializeClasses();
   return BasicVariable::ptr();
 }
 
@@ -286,7 +286,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
-  wxClassInfo::CleanUpClasses();
+//  wxClassInfo::CleanUpClasses();
   return BasicVariable::ptr();
 }
 

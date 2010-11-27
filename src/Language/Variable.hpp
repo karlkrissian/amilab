@@ -303,6 +303,7 @@ class AMIClass;
 class AMIObject;
 class VarArray;
 
+AMI_DECLARE_TYPE(bool);
 AMI_DECLARE_TYPE(float);
 AMI_DECLARE_TYPE(double);
 AMI_DECLARE_TYPE(long);
@@ -786,6 +787,7 @@ class VarArray;
 template<> BasicVariable::ptr Variable<type>::m_##fname();
 
 #include "Variable_float.h"
+#include "Variable_bool.h"   /// New (added: 19/11/2010)
 #include "Variable_double.h" /// New (added: 24/05/2010)
 #include "Variable_long.h"   /// New (added: 27/05/2010)
 #include "Variable_int.h"

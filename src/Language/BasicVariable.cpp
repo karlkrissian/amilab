@@ -29,7 +29,8 @@ const string BasicVariable::GetTypeName() const
   if (_type==type_void) { return string("deleted"); }
   switch(_type) {
     //      case type_void     : printf("void";     
-    case type_image           : return string( "image"); 
+    case type_image           : return string( "image");
+    case type_bool            : return string( "bool");
     case type_float           : return string( "float"); 
     case type_double          : return string( "double"); /// New (added: 24/05/2010)
     case type_long            : return string( "long int");  /// New (added: 27/05/2010)

@@ -198,6 +198,7 @@ INT           return(token::T_INT); /*{INT,T_INT}*/
 UINT          return(token::T_UINT); /*{UINT,T_UINT}*/
 FLOAT         return(token::T_FLOAT); /*{FLOAT,T_FLOAT}*/
 LONG          return(token::T_LONG); /*{LONG,T_LONG}*/ /// New (added: 27/05/2010)
+BOOL          return(token::T_BOOL); /*{BOOL,T_BOOL}*/ /// New (added: 19/11/2010)
 DOUBLE        return(token::T_DOUBLE); /*{DOUBLE,T_DOUBLE}*/
 RGB           return(token::T_RGB); /*{RGB,T_RGB}*/
 FLOAT_VECTOR  return(token::T_FLOAT_VECTOR); /*{FLOAT_VECTOR,T_FLOAT_VECTOR}*/
@@ -1066,6 +1067,7 @@ yyip::Parser::token::yytokentype checkvar(
     switch(var->Type()) {
       case type_image:            return token::VAR_IMAGE;
         /*{$variable_image,VAR_IMAGE}*/
+      case type_bool:
       case type_float:
       case type_long:
       case type_double:

@@ -4035,7 +4035,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (!get_val_param<int >(param0_int,_p,_n)) ClassHelpAndReturn;
   bool param0 = (bool) (param0_int>0.5);
 
-  this->_objectptr->GetObj()->SetOptimization(param0);
+//  this->_objectptr->GetObj()->SetOptimization(param0);
   return BasicVariable::ptr();
 }
 
@@ -4054,9 +4054,10 @@ BasicVariable::ptr WrapClass_wxDCBase::
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
-  bool res =   this->_objectptr->GetObj()->GetOptimization();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+//   bool res =   this->_objectptr->GetObj()->GetOptimization();
+//   int res_int = ((res==true)?1:0);
+//   return AMILabType<int >::CreateVar(res_int);
+  return BasicVariable::ptr();  
 }
 
 //---------------------------------------------------

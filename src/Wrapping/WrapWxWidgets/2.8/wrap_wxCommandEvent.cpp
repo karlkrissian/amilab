@@ -110,28 +110,28 @@ void WrapClass_wxCommandEvent::AddMethods(WrapClass<wxCommandEvent>::ptr this_pt
       */
       
       // Adding public member m_cmdString
-      boost::shared_ptr<wxString > var_m_cmdString_ptr(&GetObj()->m_cmdString, smartpointer_nodeleter<wxString >());
-      BasicVariable::ptr var_m_cmdString = AMILabType<wxString >::CreateVarFromSmtPtr(var_m_cmdString_ptr);
-      if (var_m_cmdString.get()) {
-        var_m_cmdString->Rename("m_cmdString");
-        context->AddVar(var_m_cmdString,context);
-      }
+//       boost::shared_ptr<wxString > var_m_cmdString_ptr(&GetObj()->m_cmdString, smartpointer_nodeleter<wxString >());
+//       BasicVariable::ptr var_m_cmdString = AMILabType<wxString >::CreateVarFromSmtPtr(var_m_cmdString_ptr);
+//       if (var_m_cmdString.get()) {
+//         var_m_cmdString->Rename("m_cmdString");
+//         context->AddVar(var_m_cmdString,context);
+//       }
       
       // Adding public member m_commandInt
-      boost::shared_ptr<int > var_m_commandInt_ptr(&GetObj()->m_commandInt, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_commandInt = AMILabType<int >::CreateVarFromSmtPtr(var_m_commandInt_ptr);
-      if (var_m_commandInt.get()) {
-        var_m_commandInt->Rename("m_commandInt");
-        context->AddVar(var_m_commandInt,context);
-      }
+//       boost::shared_ptr<int > var_m_commandInt_ptr(&GetObj()->m_commandInt, smartpointer_nodeleter<int >());
+//       BasicVariable::ptr var_m_commandInt = AMILabType<int >::CreateVarFromSmtPtr(var_m_commandInt_ptr);
+//       if (var_m_commandInt.get()) {
+//         var_m_commandInt->Rename("m_commandInt");
+//         context->AddVar(var_m_commandInt,context);
+//       }
       
       // Adding public member m_extraLong
-      boost::shared_ptr<long int > var_m_extraLong_ptr(&GetObj()->m_extraLong, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_extraLong = AMILabType<long int >::CreateVarFromSmtPtr(var_m_extraLong_ptr);
-      if (var_m_extraLong.get()) {
-        var_m_extraLong->Rename("m_extraLong");
-        context->AddVar(var_m_extraLong,context);
-      }
+//       boost::shared_ptr<long int > var_m_extraLong_ptr(&GetObj()->m_extraLong, smartpointer_nodeleter<long int >());
+//       BasicVariable::ptr var_m_extraLong = AMILabType<long int >::CreateVarFromSmtPtr(var_m_extraLong_ptr);
+//       if (var_m_extraLong.get()) {
+//         var_m_extraLong->Rename("m_extraLong");
+//         context->AddVar(var_m_extraLong,context);
+//       }
       
       /* Cannot wrap void* 
       // Adding public member m_clientData
@@ -144,12 +144,12 @@ void WrapClass_wxCommandEvent::AddMethods(WrapClass<wxCommandEvent>::ptr this_pt
       */
       
       // Adding public member m_clientObject
-      boost::shared_ptr<wxClientData > var_m_clientObject_ptr(GetObj()->m_clientObject, smartpointer_nodeleter<wxClientData >());
-      BasicVariable::ptr var_m_clientObject = AMILabType<wxClientData >::CreateVarFromSmtPtr(var_m_clientObject_ptr);
-      if (var_m_clientObject.get()) {
-        var_m_clientObject->Rename("m_clientObject");
-        context->AddVar(var_m_clientObject,context);
-      }
+//       boost::shared_ptr<wxClientData > var_m_clientObject_ptr(GetObj()->m_clientObject, smartpointer_nodeleter<wxClientData >());
+//       BasicVariable::ptr var_m_clientObject = AMILabType<wxClientData >::CreateVarFromSmtPtr(var_m_clientObject_ptr);
+//       if (var_m_clientObject.get()) {
+//         var_m_clientObject->Rename("m_clientObject");
+//         context->AddVar(var_m_clientObject,context);
+//       }
 
 };
 
