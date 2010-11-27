@@ -19,7 +19,7 @@ file(GLOB wx_SRCS  "${AMI_WXWIDGETS_VERSION}/*.cpp")
 
 MESSAGE("Wrapping wxWidgets...")
 
-SET(output_src)
+SET(output_src "")
 FOREACH(loop_var ${wx_SRCS})
   SET(include_header "#include \"${loop_var}\"")
   SET(output_src ${output_src} ${include_header})
@@ -55,8 +55,8 @@ MESSAGE("wxWidgets ${AMI_WXWIDGETS_VERSION} wrap files: ${wx_source_list}\n")
 SET(  WrapWxWidgets_SRCS
   wrap_wxsamples.cpp
   wrap_wxfunctions.cpp
-#  ${wx_source_list}
-  ${wx_SRCS}
+  ${wx_source_list}
+  #${wx_SRCS}
 )
 
 

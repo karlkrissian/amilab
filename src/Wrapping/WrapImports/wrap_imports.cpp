@@ -46,6 +46,9 @@
 #include "wrap_wxBitmapButton.h"
 #include "wrap_wxBoxSizer.h"
 #include "wrap_wxSizerFlags.h"
+#include "wrap_wxPanel.h"
+#include "wrap_wxStaticBox.h"
+#include "wrap_wxStaticBoxSizer.h"
 
 #include "wrap_wxRect.h"
 #include "wrap_wxPoint.h"
@@ -133,6 +136,9 @@ void AddWrapWxWidgets()
 
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow); DEPRECATED
 
+#define ADDWXCLASS(classname) \
+  WrapClass_##classname      ::AddVar_##classname( amiobject->GetContext());
+  
   WrapClass_wxWindow::AddVar_wxWindow( amiobject->GetContext(), "wxWindow");
 
   WrapClass_wxSize      ::AddVar_wxSize( amiobject->GetContext());
@@ -151,9 +157,12 @@ void AddWrapWxWidgets()
   WrapClass_wxToolBar    ::AddVar_wxToolBar   ( amiobject->GetContext());
 
   WrapClass_wxButton     ::AddVar_wxButton    ( amiobject->GetContext());
-  WrapClass_wxBitmapButton ::AddVar_wxBitmapButton    ( amiobject->GetContext());
-  WrapClass_wxBoxSizer   ::AddVar_wxBoxSizer  ( amiobject->GetContext());
+  WrapClass_wxBitmapButton ::AddVar_wxBitmapButton ( amiobject->GetContext());
+  WrapClass_wxBoxSizer   ::AddVar_wxBoxSizer   ( amiobject->GetContext());
   WrapClass_wxSizerFlags ::AddVar_wxSizerFlags ( amiobject->GetContext());
+  ADDWXCLASS( wxPanel )
+  ADDWXCLASS( wxStaticBox )
+  ADDWXCLASS( wxStaticBoxSizer )
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

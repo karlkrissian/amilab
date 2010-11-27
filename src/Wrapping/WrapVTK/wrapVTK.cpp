@@ -64,6 +64,7 @@ extern VarContexts  Vars;
 #include "wrap_vtkVolume.h"
 #include "wrap_vtkGPUVolumeRayCastMapper.h"
 #include "wrap_vtkBoxWidget.h"
+#include "wrap_vtkPlanes.h"
 #include "wrap_vtkVolumeProperty.h"
 
 #include "wrap_vtkVolumeMapper.h"
@@ -102,14 +103,16 @@ void AddWrapVTK() {
         WrapClass_##classname:: \
           AddVar_##methodname(current_context,std::string(#classname)+"_"+#methodname);
     
-    ADDVTKStatic(vtkRenderWindowInteractor, New)
-    ADDVTKStatic(vtkRenderer,               New)
-    ADDVTKStatic(vtkVolume,                 New)
-    ADDVTKStatic(vtkGPUVolumeRayCastMapper, New)
-    ADDVTKStatic(vtkBoxWidget,              New)
-    ADDVTKStatic(vtkVolumeProperty,         New)
+    WrapClass_wxVTKRenderWindowInteractor::AddVar_wxVTKRenderWindowInteractor(current_context);
+    ADDVTKStatic(vtkRenderWindowInteractor,     New)
+    ADDVTKStatic(vtkRenderer,                   New)
+    ADDVTKStatic(vtkVolume,                     New)
+    ADDVTKStatic(vtkGPUVolumeRayCastMapper,     New)
+    ADDVTKStatic(vtkBoxWidget,                  New)
+    ADDVTKStatic(vtkPlanes,                     New)
+    ADDVTKStatic(vtkVolumeProperty,             New)
 
-    ADDVTKStatic(vtkVolumeMapper,           New)
+    ADDVTKStatic(vtkVolumeMapper,               New)
     ADDVTKStatic(vtkVolumeMapper,           SafeDownCast)
 
     ADDVTKStatic(vtkInteractorStyleTrackballCamera, New)

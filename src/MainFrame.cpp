@@ -501,7 +501,9 @@ void MainFrame::CreateMainBook(wxWindow* parent)
                                     wxPoint(client_size.x, client_size.y),
                                     wxDefaultSize,
                                     wxAUI_NB_TOP          |
-                                    wxAUI_NB_TAB_SPLIT    |
+                                    #ifndef __WXGTK__ 
+                                      wxAUI_NB_TAB_SPLIT    |
+                                    #endif
                                     wxAUI_NB_TAB_MOVE     |
                                     wxAUI_NB_SCROLL_BUTTONS
                                   );

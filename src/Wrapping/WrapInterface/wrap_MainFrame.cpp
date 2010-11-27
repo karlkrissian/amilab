@@ -22,6 +22,7 @@
 #include "MainFrame.h"
 
 #include "wrap_wxAuiManager.h"
+#include "wrap_wxAuiNotebook.h"
 
 //
 // static member for creating a variable from a ParamList
@@ -146,4 +147,19 @@ BasicVariable::ptr WrapClass_MainFrame::
 {
   wxAuiManager& mgr =   this->_objectptr->_obj->GetAuiManager();
   return WrapClass_wxAuiManager::CreateVar(&mgr);
+}
+
+//---------------------------------------------------
+//  GetMainBook
+//---------------------------------------------------
+void WrapClass_MainFrame::
+      wrap_GetMainBook::SetParametersComments() 
+{
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_MainFrame::
+      wrap_GetMainBook::CallMember( ParamList* p)
+{
+  wxAuiNotebook* nb =   this->_objectptr->_obj->GetMainBook();
+  return AMILabType<wxAuiNotebook>::CreateVar(nb);
 }
