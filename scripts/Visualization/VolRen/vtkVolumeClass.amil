@@ -301,6 +301,7 @@ if (!exists(vtkVolumeClass)) {
 
         # black point
         cp0 = ami.dwControlPoint(-950,0)
+        cp0.SetYLocked(1)
         cp0.SetColour(wx.wxColour(0,0,0))
         curve.GetControlPoints().push_back(&cp0)
 
@@ -355,7 +356,7 @@ printn "--"
         ctrlpoints = curves[::linearcurve1_id].GetControlPoints()
         for n=0 to ctrlpoints.size()-1 {
 printn "point number %1%" %n
-          cp = ctrlpoints[n]
+          cp = ctrlpoints[n].copy()
           col = cp.GetColour()
           ::colorFun.AddRGBPoint( cp.GetX(), 1.0/255*col.Red(), 1.0/255*col.Green(),1.0/255*col.Blue() );
           ::opacityFun.AddPoint(  cp.GetX(), ::opacity_attenuation/hmax*cp.GetY() );
