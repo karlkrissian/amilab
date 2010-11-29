@@ -767,7 +767,7 @@ unsigned char ParamPanel::AddBitmapButton( int* id,  const char* libelle,
 unsigned char ParamPanel::AddColor( int* id,
 //                      --------
                     const char* libelle,
-                    ClasseCouleur*  couleur,
+                    wxColour*  couleur,
                     const std::string& tt
                     )
 {

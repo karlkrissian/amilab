@@ -451,7 +451,7 @@ public:
   unsigned char AddColor( int* id, 
   //            -------
                 const char* libelle, 
-                ClasseCouleur* couleur,
+                wxColour* couleur,
                 const std::string& tt=""
               );
 //@}
