@@ -21,6 +21,8 @@
 #include "wrap_vtkScalarsToColors.h"
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
+#include "wrap_vtkUnsignedCharArray.h"
+#include "wrap_vtkDataArray.h"
 
 
 #include "wrap_vtkScalarsToColors.h"
@@ -90,25 +92,17 @@ void WrapClass_vtkScalarsToColors::AddMethods(WrapClass<vtkScalarsToColors>::ptr
       AddVar_GetLuminance( this_ptr);
       AddVar_SetAlpha( this_ptr);
       AddVar_GetAlpha( this_ptr);
-/* The following types are missing: vtkUnsignedCharArray, vtkDataArray
       AddVar_MapScalars( this_ptr);
-*/
       AddVar_SetVectorMode( this_ptr);
       AddVar_GetVectorMode( this_ptr);
       AddVar_SetVectorModeToMagnitude( this_ptr);
       AddVar_SetVectorModeToComponent( this_ptr);
       AddVar_SetVectorComponent( this_ptr);
       AddVar_GetVectorComponent( this_ptr);
-/* The following types are missing: vtkDataArray
       AddVar_MapScalarsThroughTable_1( this_ptr);
-*/
       AddVar_MapScalarsThroughTable( this_ptr);
-/* The following types are missing: vtkDataArray
       AddVar_MapScalarsThroughTable_2( this_ptr);
-*/
-/* The following types are missing: vtkUnsignedCharArray, vtkUnsignedCharArray
       AddVar_ConvertUnsignedCharToRGBA( this_ptr);
-*/
       AddVar_UsingLogScale( this_ptr);
 
 
@@ -125,7 +119,7 @@ void WrapClass_vtkScalarsToColors::AddMethods(WrapClass<vtkScalarsToColors>::ptr
 //  Wrapping of int vtkScalarsToColors::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkScalarsToColors::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -133,14 +127,14 @@ void WrapClass_vtkScalarsToColors::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkScalarsToColors::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkScalarsToColors::IsTypeOf(type);
@@ -151,7 +145,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
 //  Wrapping of vtkScalarsToColors * vtkScalarsToColors::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkScalarsToColors::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkScalarsToColors";
@@ -159,14 +153,14 @@ void WrapClass_vtkScalarsToColors::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkScalarsToColors::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkScalarsToColors * res =   vtkScalarsToColors::SafeDownCast(o);
@@ -193,7 +187,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -240,11 +234,11 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -306,7 +300,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   boost::shared_ptr<double > rng_smtptr;
-  if (!get_val_smtptr_param<double >(rng_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(rng_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* rng = rng_smtptr.get();
 
   this->_objectptr->GetObj()->SetRange(rng);
@@ -332,7 +326,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   double v;
-  if (!get_val_param<double >(v,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(v,_p,_n,true,false)) ClassHelpAndReturn;
 
   double * res =   this->_objectptr->GetObj()->GetColor(v);
   return AMILabType<double >::CreateVar(res,true);
@@ -357,7 +351,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   double res =   this->_objectptr->GetObj()->GetOpacity(param0);
   return AMILabType<double >::CreateVar(res);
@@ -382,7 +376,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double res =   this->_objectptr->GetObj()->GetLuminance(x);
   return AMILabType<double >::CreateVar(res);
@@ -406,7 +400,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   double alpha;
-  if (!get_val_param<double >(alpha,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(alpha,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAlpha(alpha);
   return BasicVariable::ptr();
@@ -430,7 +424,6 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   double res =   this->_objectptr->GetObj()->GetAlpha();
   return AMILabType<double >::CreateVar(res);
 }
-/* The following types are missing: vtkUnsignedCharArray, vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of vtkUnsignedCharArray * vtkScalarsToColors::MapScalars(vtkDataArray * scalars, int colorMode, int component)
@@ -453,19 +446,19 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   boost::shared_ptr<vtkDataArray > scalars_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataArray* scalars = scalars_smtptr.get();
 
   int colorMode;
-  if (!get_val_param<int >(colorMode,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(colorMode,_p,_n,true,false)) ClassHelpAndReturn;
 
   int component;
-  if (!get_val_param<int >(component,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(component,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkUnsignedCharArray * res =   this->_objectptr->GetObj()->MapScalars(scalars, colorMode, component);
-  return AMILabType<vtkUnsignedCharArray >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkUnsignedCharArray::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkScalarsToColors::SetVectorMode(int _arg)
@@ -485,7 +478,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetVectorMode(_arg);
   return BasicVariable::ptr();
@@ -564,7 +557,7 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetVectorComponent(_arg);
   return BasicVariable::ptr();
@@ -588,7 +581,6 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int res =   this->_objectptr->GetObj()->GetVectorComponent();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of void vtkScalarsToColors::MapScalarsThroughTable(vtkDataArray * scalars, unsigned char * output, int outputFormat)
@@ -610,20 +602,19 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   boost::shared_ptr<vtkDataArray > scalars_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkDataArray* scalars = scalars_smtptr.get();
 
   boost::shared_ptr<unsigned char > output_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* output = output_smtptr.get();
 
   int outputFormat;
-  if (!get_val_param<int >(outputFormat,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(outputFormat,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->MapScalarsThroughTable(scalars, output, outputFormat);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkScalarsToColors::MapScalarsThroughTable(...)
@@ -637,9 +628,14 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
     wrap_MapScalarsThroughTable::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkScalarsToColors::wrap_MapScalarsThroughTable_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkScalarsToColors::wrap_MapScalarsThroughTable_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of void vtkScalarsToColors::MapScalarsThroughTable(vtkDataArray * scalars, unsigned char * output)
@@ -660,18 +656,16 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   boost::shared_ptr<vtkDataArray > scalars_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkDataArray* scalars = scalars_smtptr.get();
 
   boost::shared_ptr<unsigned char > output_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* output = output_smtptr.get();
 
   this->_objectptr->GetObj()->MapScalarsThroughTable(scalars, output);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkUnsignedCharArray, vtkUnsignedCharArray
 
 //---------------------------------------------------
 //  Wrapping of vtkUnsignedCharArray * vtkScalarsToColors::ConvertUnsignedCharToRGBA(vtkUnsignedCharArray * colors, int numComp, int numTuples)
@@ -694,19 +688,19 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   int _n=0;
 
   boost::shared_ptr<vtkUnsignedCharArray > colors_smtptr;
-  if (!get_val_smtptr_param<vtkUnsignedCharArray >(colors_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkUnsignedCharArray >(colors_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkUnsignedCharArray* colors = colors_smtptr.get();
 
   int numComp;
-  if (!get_val_param<int >(numComp,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(numComp,_p,_n,true,false)) ClassHelpAndReturn;
 
   int numTuples;
-  if (!get_val_param<int >(numTuples,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(numTuples,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkUnsignedCharArray * res =   this->_objectptr->GetObj()->ConvertUnsignedCharToRGBA(colors, numComp, numTuples);
-  return AMILabType<vtkUnsignedCharArray >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkUnsignedCharArray::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int vtkScalarsToColors::UsingLogScale()

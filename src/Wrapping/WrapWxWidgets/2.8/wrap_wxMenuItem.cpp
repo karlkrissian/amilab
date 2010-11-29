@@ -237,7 +237,7 @@ BasicVariable::ptr WrapClass_wxMenuItem::
 //  Wrapping of wxString wxMenuItem::GTKProcessMenuItemLabel(wxString const & str, wxString * hotKey)
 //---------------------------------------------------
 void WrapClass_wxMenuItem::
-    wrap_GTKProcessMenuItemLabel::SetParametersComments()
+    wrap_static_GTKProcessMenuItemLabel::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'str'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'hotKey'")
@@ -246,7 +246,7 @@ void WrapClass_wxMenuItem::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMenuItem::
-    wrap_GTKProcessMenuItemLabel::CallMember( ParamList* _p)
+    wrap_static_GTKProcessMenuItemLabel::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;

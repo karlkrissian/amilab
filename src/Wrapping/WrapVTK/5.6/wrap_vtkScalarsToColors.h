@@ -26,6 +26,7 @@
 #include "wrap_vtkObject.h"
 
 
+
 AMI_DECLARE_TYPE(vtkScalarsToColors);
 
 // TODO: check for inheritence ...
@@ -83,25 +84,17 @@ class WrapClass_vtkScalarsToColors : public WrapClass<vtkScalarsToColors>
     ADD_CLASS_METHOD(GetLuminance,"double vtkScalarsToColors::GetLuminance(double x)  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#getluminance)")
     ADD_CLASS_METHOD(SetAlpha,"void vtkScalarsToColors::SetAlpha(double alpha)  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#setalpha)")
     ADD_CLASS_METHOD(GetAlpha,"double vtkScalarsToColors::GetAlpha()  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#getalpha)")
-/* The following types are missing: vtkUnsignedCharArray, vtkDataArray
     ADD_CLASS_METHOD(MapScalars,"vtkUnsignedCharArray * vtkScalarsToColors::MapScalars(vtkDataArray * scalars, int colorMode, int component)  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#mapscalars)")
-*/
     ADD_CLASS_METHOD(SetVectorMode,"void vtkScalarsToColors::SetVectorMode(int _arg)  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#setvectormode)")
     ADD_CLASS_METHOD(GetVectorMode,"int vtkScalarsToColors::GetVectorMode()  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#getvectormode)")
     ADD_CLASS_METHOD(SetVectorModeToMagnitude,"void vtkScalarsToColors::SetVectorModeToMagnitude()  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#setvectormodetomagnitude)")
     ADD_CLASS_METHOD(SetVectorModeToComponent,"void vtkScalarsToColors::SetVectorModeToComponent()  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#setvectormodetocomponent)")
     ADD_CLASS_METHOD(SetVectorComponent,"void vtkScalarsToColors::SetVectorComponent(int _arg)  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#setvectorcomponent)")
     ADD_CLASS_METHOD(GetVectorComponent,"int vtkScalarsToColors::GetVectorComponent()  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#getvectorcomponent)")
-/* The following types are missing: vtkDataArray
     ADD_CLASS_METHOD(MapScalarsThroughTable_1,"void vtkScalarsToColors::MapScalarsThroughTable(vtkDataArray * scalars, unsigned char * output, int outputFormat)  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#mapscalarsthroughtable)")
-*/
     ADD_CLASS_METHOD(MapScalarsThroughTable,"vtkScalarsToColors::MapScalarsThroughTable()  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#mapscalarsthroughtable)")
-/* The following types are missing: vtkDataArray
     ADD_CLASS_METHOD(MapScalarsThroughTable_2,"void vtkScalarsToColors::MapScalarsThroughTable(vtkDataArray * scalars, unsigned char * output)  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#mapscalarsthroughtable)")
-*/
-/* The following types are missing: vtkUnsignedCharArray, vtkUnsignedCharArray
     ADD_CLASS_METHOD(ConvertUnsignedCharToRGBA,"vtkUnsignedCharArray * vtkScalarsToColors::ConvertUnsignedCharToRGBA(vtkUnsignedCharArray * colors, int numComp, int numTuples)  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#convertunsignedchartorgba)")
-*/
     ADD_CLASS_METHOD(UsingLogScale,"int vtkScalarsToColors::UsingLogScale()  (http://docs.wxwidgets.org/stable/wx_vtkscalarstocolors.html#usinglogscale)")
 
 

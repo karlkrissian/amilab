@@ -184,9 +184,9 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 /**\
  * description_str\
  **/\
-class wrap_##methodname : public WrapClassMember { \
+class wrap_static_##methodname : public WrapClassMember { \
   public: \
-    wrap_##methodname() { \
+    wrap_static_##methodname() { \
       Set_arg_failure(false);\
       SetParametersComments(); \
     } \
@@ -200,7 +200,7 @@ class wrap_##methodname : public WrapClassMember { \
 }; \
 \
 static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
+  boost::shared_ptr<WrapClassMember> tmp( new wrap_static_##methodname());\
   _context->AddVar<WrapClassMember>(newname, tmp, _context); \
 }
 

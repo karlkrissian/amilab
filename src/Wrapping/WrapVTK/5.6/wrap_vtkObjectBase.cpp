@@ -31,8 +31,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkObjectBase>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkObjectBase::wrap_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -111,7 +111,7 @@ void WrapClass_vtkObjectBase::AddMethods(WrapClass<vtkObjectBase>::ptr this_ptr 
 //  Wrapping of int vtkObjectBase::IsTypeOf(char const * name)
 //---------------------------------------------------
 void WrapClass_vtkObjectBase::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'name'")
   return_comments="returning a variable of type int";
@@ -119,7 +119,7 @@ void WrapClass_vtkObjectBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObjectBase::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -137,14 +137,14 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
 //  Wrapping of vtkObjectBase * vtkObjectBase::New()
 //---------------------------------------------------
 void WrapClass_vtkObjectBase::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkObjectBase";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObjectBase::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

@@ -89,7 +89,7 @@ void WrapClass_wxPen::AddMethods(WrapClass<wxPen>::ptr this_ptr )
       AddVar_GetJoin( this_ptr);
       AddVar_GetStyle( this_ptr);
       AddVar_GetWidth( this_ptr);
-/* The following types are missing: signed char
+/* The following types are missing: wxDash * *
       AddVar_GetDashes( this_ptr);
 */
       AddVar_GetDashCount( this_ptr);
@@ -131,7 +131,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   boost::shared_ptr<wxPen > param0_smtptr;
-  if (!get_val_smtptr_param<wxPen >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPen >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxPen const & param0 = *param0_smtptr;
 
   wxPen* _newobj = new wxPen(param0);
@@ -202,14 +202,14 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   boost::shared_ptr<wxColour > colour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & colour = *colour_smtptr;
 
   int width = 1;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int style = wxSOLID;
-  if (!get_val_param<int >(style,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(style,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxPen* _newobj = new wxPen(colour, width, style);
   BasicVariable::ptr res = WrapClass_wxPen::CreateVar(_newobj);
@@ -290,7 +290,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   boost::shared_ptr<wxColour > colour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & colour = *colour_smtptr;
 
   this->_objectptr->GetObj()->SetColour(colour);
@@ -338,13 +338,13 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   unsigned char red;
-  if (!get_val_param<unsigned char >(red,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(red,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char green;
-  if (!get_val_param<unsigned char >(green,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(green,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char blue;
-  if (!get_val_param<unsigned char >(blue,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(blue,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetColour(red, green, blue);
   return BasicVariable::ptr();
@@ -368,7 +368,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   int capStyle;
-  if (!get_val_param<int >(capStyle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(capStyle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetCap(capStyle);
   return BasicVariable::ptr();
@@ -392,7 +392,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   int joinStyle;
-  if (!get_val_param<int >(joinStyle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(joinStyle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetJoin(joinStyle);
   return BasicVariable::ptr();
@@ -416,7 +416,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   int style;
-  if (!get_val_param<int >(style,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(style,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStyle(style);
   return BasicVariable::ptr();
@@ -440,7 +440,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetWidth(width);
   return BasicVariable::ptr();
@@ -466,10 +466,10 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   int number_of_dashes;
-  if (!get_val_param<int >(number_of_dashes,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(number_of_dashes,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<signed char > dash_smtptr;
-  if (!get_val_smtptr_param<signed char >(dash_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<signed char >(dash_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   signed char* dash = dash_smtptr.get();
 
   this->_objectptr->GetObj()->SetDashes(number_of_dashes, dash);
@@ -571,7 +571,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int res =   this->_objectptr->GetObj()->GetWidth();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: signed char
+/* The following types are missing: wxDash * *
 
 //---------------------------------------------------
 //  Wrapping of int wxPen::GetDashes(wxDash * * ptr)
@@ -592,7 +592,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   boost::shared_ptr<signed char > ptr_smtptr;
-  if (!get_val_smtptr_param<signed char >(ptr_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<signed char >(ptr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   signed char* ptr = ptr_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->GetDashes(ptr);
@@ -679,7 +679,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   boost::shared_ptr<wxPen > param0_smtptr;
-  if (!get_val_smtptr_param<wxPen >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPen >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPen const & param0 = *param0_smtptr;
 
   wxPen & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -705,7 +705,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   boost::shared_ptr<wxPen > pen_smtptr;
-  if (!get_val_smtptr_param<wxPen >(pen_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPen >(pen_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPen const & pen = *pen_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (pen);
@@ -732,7 +732,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int _n=0;
 
   boost::shared_ptr<wxPen > pen_smtptr;
-  if (!get_val_smtptr_param<wxPen >(pen_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPen >(pen_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPen const & pen = *pen_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (pen);

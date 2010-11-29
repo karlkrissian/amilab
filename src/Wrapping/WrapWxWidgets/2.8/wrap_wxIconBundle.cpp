@@ -169,11 +169,11 @@ BasicVariable::ptr WrapClass_wxIconBundle::
   int _n=0;
 
   boost::shared_ptr<wxString > file_smtptr;
-  if (!get_val_smtptr_param<wxString >(file_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(file_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & file = *file_smtptr;
 
   long type_long;
-  if (!get_val_param<long >(type_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(type_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int type = type_long;
 
   wxIconBundle* _newobj = new wxIconBundle(file, type);
@@ -199,7 +199,7 @@ BasicVariable::ptr WrapClass_wxIconBundle::
   int _n=0;
 
   boost::shared_ptr<wxIcon > icon_smtptr;
-  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxIcon const & icon = *icon_smtptr;
 
   wxIconBundle* _newobj = new wxIconBundle(icon);
@@ -225,7 +225,7 @@ BasicVariable::ptr WrapClass_wxIconBundle::
   int _n=0;
 
   boost::shared_ptr<wxIconBundle > ic_smtptr;
-  if (!get_val_smtptr_param<wxIconBundle >(ic_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIconBundle >(ic_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxIconBundle const & ic = *ic_smtptr;
 
   wxIconBundle* _newobj = new wxIconBundle(ic);
@@ -268,11 +268,11 @@ BasicVariable::ptr WrapClass_wxIconBundle::
   int _n=0;
 
   boost::shared_ptr<wxString > file_smtptr;
-  if (!get_val_smtptr_param<wxString >(file_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(file_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & file = *file_smtptr;
 
   long type_long;
-  if (!get_val_param<long >(type_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(type_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int type = type_long;
 
   this->_objectptr->GetObj()->AddIcon(file, type);
@@ -318,7 +318,7 @@ BasicVariable::ptr WrapClass_wxIconBundle::
   int _n=0;
 
   boost::shared_ptr<wxIcon > icon_smtptr;
-  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxIcon const & icon = *icon_smtptr;
 
   this->_objectptr->GetObj()->AddIcon(icon);
@@ -344,7 +344,7 @@ BasicVariable::ptr WrapClass_wxIconBundle::
   int _n=0;
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & size = *size_smtptr;
 
   wxIcon const & res =   this->_objectptr->GetObj()->GetIcon(size);
@@ -391,7 +391,7 @@ BasicVariable::ptr WrapClass_wxIconBundle::
   int _n=0;
 
   int size = wxDefaultCoord;
-  if (!get_val_param<int >(size,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(size,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxIcon const & res =   this->_objectptr->GetObj()->GetIcon(size);
   return AMILabType<wxIcon >::CreateVar(res);
@@ -416,7 +416,7 @@ BasicVariable::ptr WrapClass_wxIconBundle::
   int _n=0;
 
   boost::shared_ptr<wxIconBundle > ic_smtptr;
-  if (!get_val_smtptr_param<wxIconBundle >(ic_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIconBundle >(ic_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIconBundle const & ic = *ic_smtptr;
 
   wxIconBundle const & res =   (*this->_objectptr->GetObj()) = (ic);

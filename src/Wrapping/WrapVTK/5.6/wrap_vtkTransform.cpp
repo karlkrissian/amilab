@@ -20,7 +20,10 @@
 // #include "..."
 #include "wrap_vtkTransform.h"
 #include "wrap_vtkObjectBase.h"
+#include "wrap_vtkMatrix4x4.h"
 #include "wrap_vtkIndent.h"
+#include "wrap_vtkLinearTransform.h"
+#include "wrap_vtkAbstractTransform.h"
 #include "boost/numeric/conversion/cast.hpp"
 
 
@@ -33,7 +36,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkTransform>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkTransform::wrap_New construct;
+  WrapClass_vtkTransform::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -69,11 +72,10 @@ Variable<AMIObject>::ptr WrapClass_vtkTransform::CreateVar( vtkTransform* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkTransform::AddMethods(WrapClass<vtkTransform>::ptr this_ptr )
 {
-  /*
+  
       // Add members from vtkLinearTransform
       WrapClass_vtkLinearTransform::ptr parent_vtkLinearTransform(        boost::dynamic_pointer_cast<WrapClass_vtkLinearTransform >(this_ptr));
       parent_vtkLinearTransform->AddMethods(parent_vtkLinearTransform);
-      */
 
 
   // check that the method name is not a token
@@ -101,25 +103,17 @@ void WrapClass_vtkTransform::AddMethods(WrapClass<vtkTransform>::ptr this_ptr )
       AddVar_Scale( this_ptr);
       AddVar_Scale_2( this_ptr);
       AddVar_Scale_3( this_ptr);
-/* The following types are missing: vtkMatrix4x4
       AddVar_SetMatrix_1( this_ptr);
-*/
       AddVar_SetMatrix( this_ptr);
       AddVar_SetMatrix_2( this_ptr);
-/* The following types are missing: vtkMatrix4x4
       AddVar_Concatenate_1( this_ptr);
-*/
       AddVar_Concatenate( this_ptr);
       AddVar_Concatenate_2( this_ptr);
-/* The following types are missing: vtkLinearTransform
       AddVar_Concatenate_3( this_ptr);
-*/
       AddVar_PreMultiply( this_ptr);
       AddVar_PostMultiply( this_ptr);
       AddVar_GetNumberOfConcatenatedTransforms( this_ptr);
-/* The following types are missing: vtkLinearTransform
       AddVar_GetConcatenatedTransform( this_ptr);
-*/
       AddVar_GetOrientation_1( this_ptr);
       AddVar_GetOrientation( this_ptr);
       AddVar_GetOrientation_2( this_ptr);
@@ -136,31 +130,17 @@ void WrapClass_vtkTransform::AddMethods(WrapClass<vtkTransform>::ptr this_ptr )
       AddVar_GetScale( this_ptr);
       AddVar_GetScale_2( this_ptr);
       AddVar_GetScale_3( this_ptr);
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetInverse_1( this_ptr);
-*/
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetTranspose( this_ptr);
-*/
-/* The following types are missing: vtkLinearTransform
       AddVar_SetInput( this_ptr);
-*/
-/* The following types are missing: vtkLinearTransform
       AddVar_GetInput( this_ptr);
-*/
       AddVar_GetInverseFlag( this_ptr);
       AddVar_Push( this_ptr);
       AddVar_Pop( this_ptr);
-/* The following types are missing: vtkAbstractTransform
       AddVar_CircuitCheck( this_ptr);
-*/
       AddVar_GetInverse( this_ptr);
-/* The following types are missing: vtkAbstractTransform
       AddVar_GetInverse_2( this_ptr);
-*/
-/* The following types are missing: vtkAbstractTransform
       AddVar_MakeTransform( this_ptr);
-*/
       AddVar_GetMTime( this_ptr);
       AddVar_MultiplyPoint_1( this_ptr);
       AddVar_MultiplyPoint( this_ptr);
@@ -180,14 +160,14 @@ void WrapClass_vtkTransform::AddMethods(WrapClass<vtkTransform>::ptr this_ptr )
 //  Wrapping of vtkTransform * vtkTransform::New()
 //---------------------------------------------------
 void WrapClass_vtkTransform::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkTransform";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkTransform::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -200,7 +180,7 @@ BasicVariable::ptr WrapClass_vtkTransform::
 //  Wrapping of int vtkTransform::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkTransform::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -208,7 +188,7 @@ void WrapClass_vtkTransform::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkTransform::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -226,7 +206,7 @@ BasicVariable::ptr WrapClass_vtkTransform::
 //  Wrapping of vtkTransform * vtkTransform::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkTransform::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkTransform";
@@ -234,7 +214,7 @@ void WrapClass_vtkTransform::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkTransform::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -248,13 +228,12 @@ BasicVariable::ptr WrapClass_vtkTransform::
   BasicVariable::ptr res_var = WrapClass_vtkTransform::CreateVar(res);
   return res_var;
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of void vtkTransform::GetOrientation(double * orient, vtkMatrix4x4 * matrix)
 //---------------------------------------------------
 void WrapClass_vtkTransform::
-    wrap_GetOrientation_4::SetParametersComments()
+    wrap_static_GetOrientation::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'orient'")
   ADDPARAMCOMMENT_TYPE( vtkMatrix4x4, "parameter named 'matrix'")
@@ -262,24 +241,23 @@ void WrapClass_vtkTransform::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkTransform::
-    wrap_GetOrientation_4::CallMember( ParamList* _p)
+    wrap_static_GetOrientation::CallMember( ParamList* _p)
 {
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
+  if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<double > orient_smtptr;
-  if (!get_val_smtptr_param<double >(orient_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(orient_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* orient = orient_smtptr.get();
 
   boost::shared_ptr<vtkMatrix4x4 > matrix_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkMatrix4x4* matrix = matrix_smtptr.get();
 
   vtkTransform::GetOrientation(orient, matrix);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int vtkTransform::IsA(char const * type)
@@ -795,7 +773,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->Scale(s);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of void vtkTransform::SetMatrix(vtkMatrix4x4 * matrix)
@@ -821,7 +798,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->SetMatrix(matrix);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkTransform::SetMatrix(...)
@@ -835,6 +811,9 @@ BasicVariable::ptr WrapClass_vtkTransform::
     wrap_SetMatrix::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkTransform::wrap_SetMatrix_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_vtkTransform::wrap_SetMatrix_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -865,7 +844,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->SetMatrix(elements);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of void vtkTransform::Concatenate(vtkMatrix4x4 * matrix)
@@ -891,7 +869,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->Concatenate(matrix);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkTransform::Concatenate(...)
@@ -905,9 +882,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
     wrap_Concatenate::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkTransform::wrap_Concatenate_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_vtkTransform::wrap_Concatenate_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
+  WrapClass_vtkTransform::wrap_Concatenate_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -935,7 +918,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->Concatenate(elements);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkLinearTransform
 
 //---------------------------------------------------
 //  Wrapping of void vtkTransform::Concatenate(vtkLinearTransform * transform)
@@ -961,7 +943,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->Concatenate(transform);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkTransform::PreMultiply()
@@ -1017,7 +998,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   int res =   this->_objectptr->GetObj()->GetNumberOfConcatenatedTransforms();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: vtkLinearTransform
 
 //---------------------------------------------------
 //  Wrapping of vtkLinearTransform * vtkTransform::GetConcatenatedTransform(int i)
@@ -1041,9 +1021,9 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkLinearTransform * res =   this->_objectptr->GetObj()->GetConcatenatedTransform(i);
-  return AMILabType<vtkLinearTransform >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkLinearTransform::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkTransform::GetOrientation(double * orient)
@@ -1416,7 +1396,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   double * res =   this->_objectptr->GetObj()->GetScale();
   return AMILabType<double >::CreateVar(res,true);
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of void vtkTransform::GetInverse(vtkMatrix4x4 * inverse)
@@ -1442,8 +1421,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->GetInverse(inverse);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of void vtkTransform::GetTranspose(vtkMatrix4x4 * transpose)
@@ -1469,8 +1446,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->GetTranspose(transpose);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkLinearTransform
 
 //---------------------------------------------------
 //  Wrapping of void vtkTransform::SetInput(vtkLinearTransform * input)
@@ -1496,8 +1471,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->SetInput(input);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkLinearTransform
 
 //---------------------------------------------------
 //  Wrapping of vtkLinearTransform * vtkTransform::GetInput()
@@ -1515,9 +1488,9 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkLinearTransform * res =   this->_objectptr->GetObj()->GetInput();
-  return AMILabType<vtkLinearTransform >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkLinearTransform::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int vtkTransform::GetInverseFlag()
@@ -1573,7 +1546,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   this->_objectptr->GetObj()->Pop();
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkAbstractTransform
 
 //---------------------------------------------------
 //  Wrapping of int vtkTransform::CircuitCheck(vtkAbstractTransform * transform)
@@ -1600,7 +1572,6 @@ BasicVariable::ptr WrapClass_vtkTransform::
   int res =   this->_objectptr->GetObj()->CircuitCheck(transform);
   return AMILabType<int >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkTransform::GetInverse(...)
@@ -1614,9 +1585,14 @@ BasicVariable::ptr WrapClass_vtkTransform::
     wrap_GetInverse::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkTransform::wrap_GetInverse_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkTransform::wrap_GetInverse_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: vtkAbstractTransform
 
 //---------------------------------------------------
 //  Wrapping of vtkAbstractTransform * vtkTransform::GetInverse()
@@ -1634,10 +1610,9 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkAbstractTransform * res =   this->_objectptr->GetObj()->GetInverse();
-  return AMILabType<vtkAbstractTransform >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkAbstractTransform::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkAbstractTransform
 
 //---------------------------------------------------
 //  Wrapping of vtkAbstractTransform * vtkTransform::MakeTransform()
@@ -1655,9 +1630,9 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAbstractTransform * res =   this->_objectptr->GetObj()->MakeTransform();
-  return AMILabType<vtkAbstractTransform >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkAbstractTransform::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of long unsigned int vtkTransform::GetMTime()

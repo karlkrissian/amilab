@@ -157,14 +157,14 @@ BasicVariable::ptr WrapClass_vtkTimeStamp::
 //  Wrapping of vtkTimeStamp * vtkTimeStamp::New()
 //---------------------------------------------------
 void WrapClass_vtkTimeStamp::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkTimeStamp";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkTimeStamp::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

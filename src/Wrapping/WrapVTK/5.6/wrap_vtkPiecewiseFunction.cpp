@@ -33,7 +33,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkPiecewiseFunction>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkPiecewiseFunction::wrap_New construct;
+  WrapClass_vtkPiecewiseFunction::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -133,14 +133,14 @@ void WrapClass_vtkPiecewiseFunction::AddMethods(WrapClass<vtkPiecewiseFunction>:
 //  Wrapping of vtkPiecewiseFunction * vtkPiecewiseFunction::New()
 //---------------------------------------------------
 void WrapClass_vtkPiecewiseFunction::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkPiecewiseFunction";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -153,7 +153,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
 //  Wrapping of int vtkPiecewiseFunction::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkPiecewiseFunction::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -161,7 +161,7 @@ void WrapClass_vtkPiecewiseFunction::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -179,7 +179,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
 //  Wrapping of vtkPiecewiseFunction * vtkPiecewiseFunction::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkPiecewiseFunction::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkPiecewiseFunction";
@@ -187,7 +187,7 @@ void WrapClass_vtkPiecewiseFunction::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -207,7 +207,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
 //  Wrapping of vtkPiecewiseFunction * vtkPiecewiseFunction::GetData(vtkInformation * info)
 //---------------------------------------------------
 void WrapClass_vtkPiecewiseFunction::
-    wrap_GetData_1::SetParametersComments()
+    wrap_static_GetData_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   return_comments="returning a variable of type vtkPiecewiseFunction";
@@ -215,7 +215,7 @@ void WrapClass_vtkPiecewiseFunction::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
-    wrap_GetData_1::CallMember( ParamList* _p)
+    wrap_static_GetData_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -232,15 +232,15 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
 */
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... vtkPiecewiseFunction::GetData(...)
+//  Wrapping of multipled defined method:... static vtkPiecewiseFunction::GetData(...)
 //---------------------------------------------------
 void WrapClass_vtkPiecewiseFunction::
-    wrap_GetData::SetParametersComments()
+    wrap_static_GetData::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
-    wrap_GetData::CallMember( ParamList* _p)
+    wrap_static_GetData::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
   ClassHelpAndReturn;
@@ -251,7 +251,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
 //  Wrapping of vtkPiecewiseFunction * vtkPiecewiseFunction::GetData(vtkInformationVector * v, int i = 0)
 //---------------------------------------------------
 void WrapClass_vtkPiecewiseFunction::
-    wrap_GetData_2::SetParametersComments()
+    wrap_static_GetData_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformationVector, "parameter named 'v'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'i' (def:0)")
@@ -260,7 +260,7 @@ void WrapClass_vtkPiecewiseFunction::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
-    wrap_GetData_2::CallMember( ParamList* _p)
+    wrap_static_GetData_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;

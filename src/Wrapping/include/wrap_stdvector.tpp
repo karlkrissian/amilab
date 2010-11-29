@@ -196,8 +196,10 @@ BasicVariable::ptr WrapClass_StdVector<T>::wrap_at::CallMember( ParamList* p)
     return BasicVariable::ptr();
   else
   {
-    T val = this->_objectptr->_obj->at(pos);
-    return AMILabType<T>::CreateVar(new T(val));
+//    T val = this->_objectptr->_obj->at(pos);
+//    return AMILabType<T>::CreateVar(new T(val));
+    // try to return a reference, no deleter
+    return AMILabType<T>::CreateVar(&this->_objectptr->_obj->at(pos),true);
   }
 }
 

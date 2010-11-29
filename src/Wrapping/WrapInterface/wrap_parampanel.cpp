@@ -24,6 +24,7 @@
 #include "wrap_wxSizerItem.h"
 
 #include "wrap_wxBitmap.h"
+#include "wrap_wxColour.h"
 
 #define RETURN_VARINT(val,name)             \
   std::string varname = (boost::format("%1%_id")%name).str();\
@@ -919,6 +920,37 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddBitmapButton::CallMember( Param
   // create integer variable to return
   RETURN_VARINT(var_id,varfunc->Name());
 }
+
+//--------------------------------------------------
+// AddColor
+//--------------------------------------------------
+void WrapClass_ParamPanel::wrap_AddColor::SetParametersComments()
+{
+  ADDPARAMCOMMENT("String: button label.");
+  ADDPARAMCOMMENT("wxColour parameter.");
+  return_comments = "Identifier of the new widget (int variable).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_AddColor::CallMember( ParamList* p)
+{
+  std::string* label = NULL;
+  int  n = 0;
+  int  var_id;
+
+  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+
+  GET_OBJECT_PARAM(wxColour,colour,GetObj());
+  if (!colour.get())                              ClassHelpAndReturn;
+
+  //cout << " button pointer  = "<<  ((AMIFunction::ptr*) var->Pointer())->get() << std::endl;
+  this->_objectptr->GetObj()->AddColor( &var_id, 
+                label->c_str(),
+                colour.get());
+
+  // create integer variable to return
+  RETURN_VAR(int,var_id);
+}
+
 
 
 //--------------------------------------------------

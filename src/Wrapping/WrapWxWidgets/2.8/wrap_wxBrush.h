@@ -23,14 +23,15 @@
 
 // include what is needed for inheritence and for types ...
 
-#include "wrap_wxBrushBase.h"
+//#include "wrap_wxBrushBase.h"
+
 
 
 AMI_DECLARE_TYPE(wxBrush);
 
 // TODO: check for inheritence ...
 class WrapClass_wxBrush : public WrapClass<wxBrush>
-    , public   WrapClass_wxBrushBase
+    //, public  WrapClass_wxBrushBase
 {
   DEFINE_CLASS(WrapClass_wxBrush);
 
@@ -45,7 +46,7 @@ class WrapClass_wxBrush : public WrapClass<wxBrush>
     /// Constructor
     WrapClass_wxBrush(boost::shared_ptr<wxBrush > si): 
     WrapClass<wxBrush>(si)
-    , WrapClass_wxBrushBase(si)
+    //, WrapClass_wxBrushBase(si)
     {}
 
     /// Destructor

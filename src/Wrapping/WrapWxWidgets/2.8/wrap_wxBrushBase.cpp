@@ -122,7 +122,7 @@ BasicVariable::ptr WrapClass_wxBrushBase::
   int _n=0;
 
   boost::shared_ptr<wxBrushBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxBrushBase >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBrushBase >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBrushBase const & param0 = *param0_smtptr;
 
   wxBrushBase & res =   (*this->_objectptr->GetObj()) = (param0);

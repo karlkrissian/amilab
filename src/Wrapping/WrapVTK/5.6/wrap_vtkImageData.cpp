@@ -23,6 +23,7 @@
 #include "wrap_vtkIndent.h"
 #include "wrap_vtkDataSet.h"
 #include "boost/numeric/conversion/cast.hpp"
+#include "wrap_vtkDataArray.h"
 #include "wrap_vtkDataObject.h"
 
 
@@ -35,7 +36,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkImageData>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkImageData::wrap_New construct;
+  WrapClass_vtkImageData::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -87,53 +88,37 @@ void WrapClass_vtkImageData::AddMethods(WrapClass<vtkImageData>::ptr this_ptr )
 */
       AddVar_CopyStructure( this_ptr);
       AddVar_GetDataObjectType( this_ptr);
-/* The following types are missing: long long int
       AddVar_GetNumberOfCells( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetNumberOfPoints( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetPoint_1( this_ptr);
-*/
       AddVar_GetPoint( this_ptr);
-/* The following types are missing: long long int
       AddVar_GetPoint_2( this_ptr);
-*/
-/* The following types are missing: vtkCell, long long int
+/* The following types are missing: vtkCell
       AddVar_GetCell_1( this_ptr);
 */
       AddVar_GetCell( this_ptr);
-/* The following types are missing: long long int, vtkGenericCell
+/* The following types are missing: vtkGenericCell
       AddVar_GetCell_2( this_ptr);
 */
-/* The following types are missing: long long int
       AddVar_GetCellBounds( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_FindPoint_1( this_ptr);
-*/
       AddVar_FindPoint( this_ptr);
-/* The following types are missing: long long int
       AddVar_FindPoint_2( this_ptr);
-*/
-/* The following types are missing: long long int, vtkCell, long long int
+/* The following types are missing: vtkCell
       AddVar_FindCell_1( this_ptr);
 */
       AddVar_FindCell( this_ptr);
-/* The following types are missing: long long int, vtkCell, vtkGenericCell, long long int
+/* The following types are missing: vtkCell, vtkGenericCell
       AddVar_FindCell_2( this_ptr);
 */
-/* The following types are missing: vtkCell, vtkCell, long long int
+/* The following types are missing: vtkCell, vtkCell
       AddVar_FindAndGetCell( this_ptr);
 */
-/* The following types are missing: long long int
       AddVar_GetCellType( this_ptr);
-*/
-/* The following types are missing: long long int, vtkIdList
+/* The following types are missing: vtkIdList
       AddVar_GetCellPoints( this_ptr);
 */
-/* The following types are missing: long long int, vtkIdList
+/* The following types are missing: vtkIdList
       AddVar_GetPointCells( this_ptr);
 */
       AddVar_ComputeBounds( this_ptr);
@@ -146,19 +131,11 @@ void WrapClass_vtkImageData::AddMethods(WrapClass<vtkImageData>::ptr this_ptr )
       AddVar_GetDimensions( this_ptr);
       AddVar_GetDimensions_2( this_ptr);
       AddVar_ComputeStructuredCoordinates( this_ptr);
-/* The following types are missing: vtkDataArray, vtkDataArray
       AddVar_GetVoxelGradient( this_ptr);
-*/
-/* The following types are missing: vtkDataArray
       AddVar_GetPointGradient( this_ptr);
-*/
       AddVar_GetDataDimension( this_ptr);
-/* The following types are missing: long long int
       AddVar_ComputePointId( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_ComputeCellId( this_ptr);
-*/
       AddVar_SetAxisUpdateExtent( this_ptr);
       AddVar_GetAxisUpdateExtent( this_ptr);
       AddVar_UpdateInformation( this_ptr);
@@ -173,19 +150,11 @@ void WrapClass_vtkImageData::AddMethods(WrapClass<vtkImageData>::ptr this_ptr )
       AddVar_GetScalarTypeMin( this_ptr);
       AddVar_GetScalarTypeMax( this_ptr);
       AddVar_GetScalarSize( this_ptr);
-/* The following types are missing: long long int
       AddVar_GetIncrements_1( this_ptr);
-*/
       AddVar_GetIncrements( this_ptr);
-/* The following types are missing: long long int, long long int, long long int
       AddVar_GetIncrements_2( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetIncrements_3( this_ptr);
-*/
-/* The following types are missing: long long int, long long int, long long int
       AddVar_GetContinuousIncrements( this_ptr);
-*/
       AddVar_GetScalarPointerForExtent( this_ptr);
       AddVar_GetScalarPointer_1( this_ptr);
       AddVar_GetScalarPointer( this_ptr);
@@ -241,15 +210,9 @@ void WrapClass_vtkImageData::AddMethods(WrapClass<vtkImageData>::ptr this_ptr )
       AddVar_PrepareForNewData( this_ptr);
       AddVar_ShallowCopy( this_ptr);
       AddVar_DeepCopy( this_ptr);
-/* The following types are missing: vtkDataArray
       AddVar_GetArrayPointerForExtent( this_ptr);
-*/
-/* The following types are missing: vtkDataArray
       AddVar_GetArrayPointer( this_ptr);
-*/
-/* The following types are missing: vtkDataArray, long long int
       AddVar_GetArrayIncrements( this_ptr);
-*/
       AddVar_ComputeInternalExtent( this_ptr);
       AddVar_GetExtentType( this_ptr);
 
@@ -267,14 +230,14 @@ void WrapClass_vtkImageData::AddMethods(WrapClass<vtkImageData>::ptr this_ptr )
 //  Wrapping of vtkImageData * vtkImageData::New()
 //---------------------------------------------------
 void WrapClass_vtkImageData::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkImageData";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkImageData::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -287,7 +250,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 //  Wrapping of int vtkImageData::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkImageData::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -295,7 +258,7 @@ void WrapClass_vtkImageData::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkImageData::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -313,7 +276,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 //  Wrapping of vtkImageData * vtkImageData::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkImageData::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkImageData";
@@ -321,7 +284,7 @@ void WrapClass_vtkImageData::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkImageData::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -341,7 +304,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 //  Wrapping of vtkImageData * vtkImageData::GetData(vtkInformation * info)
 //---------------------------------------------------
 void WrapClass_vtkImageData::
-    wrap_GetData_1::SetParametersComments()
+    wrap_static_GetData_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   return_comments="returning a variable of type vtkImageData";
@@ -349,7 +312,7 @@ void WrapClass_vtkImageData::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkImageData::
-    wrap_GetData_1::CallMember( ParamList* _p)
+    wrap_static_GetData_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -366,15 +329,15 @@ BasicVariable::ptr WrapClass_vtkImageData::
 */
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... vtkImageData::GetData(...)
+//  Wrapping of multipled defined method:... static vtkImageData::GetData(...)
 //---------------------------------------------------
 void WrapClass_vtkImageData::
-    wrap_GetData::SetParametersComments()
+    wrap_static_GetData::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkImageData::
-    wrap_GetData::CallMember( ParamList* _p)
+    wrap_static_GetData::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
   ClassHelpAndReturn;
@@ -385,7 +348,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 //  Wrapping of vtkImageData * vtkImageData::GetData(vtkInformationVector * v, int i = 0)
 //---------------------------------------------------
 void WrapClass_vtkImageData::
-    wrap_GetData_2::SetParametersComments()
+    wrap_static_GetData_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformationVector, "parameter named 'v'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'i' (def:0)")
@@ -394,7 +357,7 @@ void WrapClass_vtkImageData::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkImageData::
-    wrap_GetData_2::CallMember( ParamList* _p)
+    wrap_static_GetData_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
@@ -533,7 +496,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   int res =   this->_objectptr->GetObj()->GetDataObjectType();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkImageData::GetNumberOfCells()
@@ -541,7 +503,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetNumberOfCells::SetParametersComments()
 {
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -551,10 +513,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetNumberOfCells();
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkImageData::GetNumberOfPoints()
@@ -562,7 +523,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetNumberOfPoints::SetParametersComments()
 {
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -572,10 +533,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetNumberOfPoints();
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of double * vtkImageData::GetPoint(vtkIdType ptId)
@@ -583,7 +543,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetPoint_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'ptId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'ptId'")
   return_comments="returning a variable of type double";
 }
 
@@ -595,13 +555,13 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int ptId;
-  if (!get_val_param<long long int >(ptId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long ptId_long;
+  if (!get_val_param<long >(ptId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int ptId = boost::numeric_cast<long long int >(ptId_long);
 
   double * res =   this->_objectptr->GetObj()->GetPoint(ptId);
   return AMILabType<double >::CreateVar(res,true);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkImageData::GetPoint(...)
@@ -615,9 +575,14 @@ BasicVariable::ptr WrapClass_vtkImageData::
     wrap_GetPoint::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkImageData::wrap_GetPoint_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkImageData::wrap_GetPoint_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetPoint(vtkIdType id, double * x)
@@ -625,7 +590,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetPoint_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'id'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'id'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'x'")
 }
 
@@ -637,8 +602,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int id;
-  if (!get_val_param<long long int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
+  long id_long;
+  if (!get_val_param<long >(id_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int id = boost::numeric_cast<long long int >(id_long);
 
   boost::shared_ptr<double > x_smtptr;
   if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -647,8 +613,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
   this->_objectptr->GetObj()->GetPoint(id, x);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkCell, long long int
+/* The following types are missing: vtkCell
 
 //---------------------------------------------------
 //  Wrapping of vtkCell * vtkImageData::GetCell(vtkIdType cellId)
@@ -656,7 +621,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetCell_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   return_comments="returning a variable of type vtkCell";
 }
 
@@ -668,8 +633,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   vtkCell * res =   this->_objectptr->GetObj()->GetCell(cellId);
   return AMILabType<vtkCell >::CreateVar(res,true);
@@ -690,7 +656,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: long long int, vtkGenericCell
+/* The following types are missing: vtkGenericCell
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetCell(vtkIdType cellId, vtkGenericCell * cell)
@@ -698,7 +664,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetCell_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( vtkGenericCell, "parameter named 'cell'")
 }
 
@@ -710,8 +676,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   boost::shared_ptr<vtkGenericCell > cell_smtptr;
   if (!get_val_smtptr_param<vtkGenericCell >(cell_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -721,7 +688,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   return BasicVariable::ptr();
 }
 */
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetCellBounds(vtkIdType cellId, double * bounds)
@@ -729,7 +695,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetCellBounds::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'bounds'")
 }
 
@@ -741,8 +707,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   boost::shared_ptr<double > bounds_smtptr;
   if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -751,8 +718,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   this->_objectptr->GetObj()->GetCellBounds(cellId, bounds);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkImageData::FindPoint(double x, double y, double z)
@@ -763,7 +728,7 @@ void WrapClass_vtkImageData::
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'z'")
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -784,9 +749,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (!get_val_param<double >(z,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkIdType res =   this->_objectptr->GetObj()->FindPoint(x, y, z);
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkImageData::FindPoint(...)
@@ -800,9 +765,14 @@ BasicVariable::ptr WrapClass_vtkImageData::
     wrap_FindPoint::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkImageData::wrap_FindPoint_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkImageData::wrap_FindPoint_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkImageData::FindPoint(double * x)
@@ -811,7 +781,7 @@ void WrapClass_vtkImageData::
     wrap_FindPoint_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'x'")
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -827,10 +797,10 @@ BasicVariable::ptr WrapClass_vtkImageData::
   double* x = x_smtptr.get();
 
   vtkIdType res =   this->_objectptr->GetObj()->FindPoint(x);
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
-/* The following types are missing: long long int, vtkCell, long long int
+/* The following types are missing: vtkCell
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkImageData::FindCell(double * x, vtkCell * cell, vtkIdType cellId, double tol2, int & subId, double * pcoords, double * weights)
@@ -840,12 +810,12 @@ void WrapClass_vtkImageData::
 {
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( vtkCell, "parameter named 'cell'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'tol2'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'subId'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'pcoords'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'weights'")
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -864,8 +834,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (!get_val_smtptr_param<vtkCell >(cell_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCell* cell = cell_smtptr.get();
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   double tol2;
   if (!get_val_param<double >(tol2,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -883,7 +854,8 @@ BasicVariable::ptr WrapClass_vtkImageData::
   double* weights = weights_smtptr.get();
 
   vtkIdType res =   this->_objectptr->GetObj()->FindCell(x, cell, cellId, tol2, subId, pcoords, weights);
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
 */
 
@@ -901,7 +873,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: long long int, vtkCell, vtkGenericCell, long long int
+/* The following types are missing: vtkCell, vtkGenericCell
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkImageData::FindCell(double * x, vtkCell * cell, vtkGenericCell * gencell, vtkIdType cellId, double tol2, int & subId, double * pcoords, double * weights)
@@ -912,12 +884,12 @@ void WrapClass_vtkImageData::
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( vtkCell, "parameter named 'cell'")
   ADDPARAMCOMMENT_TYPE( vtkGenericCell, "parameter named 'gencell'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'tol2'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'subId'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'pcoords'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'weights'")
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -940,8 +912,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (!get_val_smtptr_param<vtkGenericCell >(gencell_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkGenericCell* gencell = gencell_smtptr.get();
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   double tol2;
   if (!get_val_param<double >(tol2,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -959,10 +932,11 @@ BasicVariable::ptr WrapClass_vtkImageData::
   double* weights = weights_smtptr.get();
 
   vtkIdType res =   this->_objectptr->GetObj()->FindCell(x, cell, gencell, cellId, tol2, subId, pcoords, weights);
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
 */
-/* The following types are missing: vtkCell, vtkCell, long long int
+/* The following types are missing: vtkCell, vtkCell
 
 //---------------------------------------------------
 //  Wrapping of vtkCell * vtkImageData::FindAndGetCell(double * x, vtkCell * cell, vtkIdType cellId, double tol2, int & subId, double * pcoords, double * weights)
@@ -972,7 +946,7 @@ void WrapClass_vtkImageData::
 {
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( vtkCell, "parameter named 'cell'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'tol2'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'subId'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'pcoords'")
@@ -996,8 +970,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (!get_val_smtptr_param<vtkCell >(cell_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkCell* cell = cell_smtptr.get();
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   double tol2;
   if (!get_val_param<double >(tol2,_p,_n,true,false)) ClassHelpAndReturn;
@@ -1018,7 +993,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   return AMILabType<vtkCell >::CreateVar(res,true);
 }
 */
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of int vtkImageData::GetCellType(vtkIdType cellId)
@@ -1026,7 +1000,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetCellType::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   return_comments="returning a variable of type int";
 }
 
@@ -1038,14 +1012,14 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   int res =   this->_objectptr->GetObj()->GetCellType(cellId);
   return AMILabType<int >::CreateVar(res);
 }
-*/
-/* The following types are missing: long long int, vtkIdList
+/* The following types are missing: vtkIdList
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetCellPoints(vtkIdType cellId, vtkIdList * ptIds)
@@ -1053,7 +1027,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetCellPoints::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( vtkIdList, "parameter named 'ptIds'")
 }
 
@@ -1065,8 +1039,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   boost::shared_ptr<vtkIdList > ptIds_smtptr;
   if (!get_val_smtptr_param<vtkIdList >(ptIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -1076,7 +1051,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
   return BasicVariable::ptr();
 }
 */
-/* The following types are missing: long long int, vtkIdList
+/* The following types are missing: vtkIdList
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetPointCells(vtkIdType ptId, vtkIdList * cellIds)
@@ -1084,7 +1059,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetPointCells::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'ptId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'ptId'")
   ADDPARAMCOMMENT_TYPE( vtkIdList, "parameter named 'cellIds'")
 }
 
@@ -1096,8 +1071,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  long long int ptId;
-  if (!get_val_param<long long int >(ptId,_p,_n,true,false)) ClassHelpAndReturn;
+  long ptId_long;
+  if (!get_val_param<long >(ptId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int ptId = boost::numeric_cast<long long int >(ptId_long);
 
   boost::shared_ptr<vtkIdList > cellIds_smtptr;
   if (!get_val_smtptr_param<vtkIdList >(cellIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -1341,7 +1317,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   int res =   this->_objectptr->GetObj()->ComputeStructuredCoordinates(x, ijk, pcoords);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: vtkDataArray, vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetVoxelGradient(int i, int j, int k, vtkDataArray * s, vtkDataArray * g)
@@ -1384,8 +1359,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   this->_objectptr->GetObj()->GetVoxelGradient(i, j, k, s, g);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetPointGradient(int i, int j, int k, vtkDataArray * s, double * g)
@@ -1428,7 +1401,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   this->_objectptr->GetObj()->GetPointGradient(i, j, k, s, g);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int vtkImageData::GetDataDimension()
@@ -1448,7 +1420,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   int res =   this->_objectptr->GetObj()->GetDataDimension();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkImageData::ComputePointId(int * ijk)
@@ -1457,7 +1428,7 @@ void WrapClass_vtkImageData::
     wrap_ComputePointId::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'ijk'")
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -1473,10 +1444,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   int* ijk = ijk_smtptr.get();
 
   vtkIdType res =   this->_objectptr->GetObj()->ComputePointId(ijk);
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkImageData::ComputeCellId(int * ijk)
@@ -1485,7 +1455,7 @@ void WrapClass_vtkImageData::
     wrap_ComputeCellId::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'ijk'")
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -1501,9 +1471,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   int* ijk = ijk_smtptr.get();
 
   vtkIdType res =   this->_objectptr->GetObj()->ComputeCellId(ijk);
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::SetAxisUpdateExtent(int axis, int min, int max)
@@ -1873,7 +1843,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   int res =   this->_objectptr->GetObj()->GetScalarSize();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType * vtkImageData::GetIncrements()
@@ -1881,7 +1850,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetIncrements_1::SetParametersComments()
 {
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -1891,9 +1860,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkIdType * res =   this->_objectptr->GetObj()->GetIncrements();
-  return AMILabType<long long int >::CreateVar(res,true);
+  long res_long = boost::numeric_cast<long >((unsigned int)*res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkImageData::GetIncrements(...)
@@ -1907,9 +1876,17 @@ BasicVariable::ptr WrapClass_vtkImageData::
     wrap_GetIncrements::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkImageData::wrap_GetIncrements_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkImageData::wrap_GetIncrements_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_vtkImageData::wrap_GetIncrements_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: long long int, long long int, long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetIncrements(vtkIdType & incX, vtkIdType & incY, vtkIdType & incZ)
@@ -1917,9 +1894,9 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetIncrements_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'incX'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'incY'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'incZ'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'incX'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'incY'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'incZ'")
 }
 
 //---------------------------------------------------
@@ -1945,8 +1922,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   this->_objectptr->GetObj()->GetIncrements(incX, incY, incZ);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetIncrements(vtkIdType * inc)
@@ -1954,7 +1929,7 @@ BasicVariable::ptr WrapClass_vtkImageData::
 void WrapClass_vtkImageData::
     wrap_GetIncrements_3::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'inc'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'inc'")
 }
 
 //---------------------------------------------------
@@ -1965,15 +1940,14 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<long long int > inc_smtptr;
-  if (!get_val_smtptr_param<long long int >(inc_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  long long int* inc = inc_smtptr.get();
+  boost::shared_ptr<long > inc_long;
+  if (!get_val_smtptr_param<long >(inc_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  long long int inc_val = boost::numeric_cast<long long int >(*inc_long);
+  long long int* inc = &inc_val;
 
   this->_objectptr->GetObj()->GetIncrements(inc);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int, long long int, long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetContinuousIncrements(int * extent, vtkIdType & incX, vtkIdType & incY, vtkIdType & incZ)
@@ -1982,9 +1956,9 @@ void WrapClass_vtkImageData::
     wrap_GetContinuousIncrements::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'extent'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'incX'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'incY'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'incZ'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'incX'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'incY'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'incZ'")
 }
 
 //---------------------------------------------------
@@ -2014,7 +1988,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   this->_objectptr->GetObj()->GetContinuousIncrements(extent, incX, incY, incZ);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void * vtkImageData::GetScalarPointerForExtent(int * extent)
@@ -3276,7 +3249,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   this->_objectptr->GetObj()->DeepCopy(src);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of void * vtkImageData::GetArrayPointerForExtent(vtkDataArray * array, int * extent)
@@ -3307,8 +3279,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   this->_objectptr->GetObj()->GetArrayPointerForExtent(array, extent);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of void * vtkImageData::GetArrayPointer(vtkDataArray * array, int * coordinates)
@@ -3339,8 +3309,6 @@ BasicVariable::ptr WrapClass_vtkImageData::
   this->_objectptr->GetObj()->GetArrayPointer(array, coordinates);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkDataArray, long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::GetArrayIncrements(vtkDataArray * array, vtkIdType * increments)
@@ -3349,7 +3317,7 @@ void WrapClass_vtkImageData::
     wrap_GetArrayIncrements::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkDataArray, "parameter named 'array'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'increments'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'increments'")
 }
 
 //---------------------------------------------------
@@ -3364,14 +3332,14 @@ BasicVariable::ptr WrapClass_vtkImageData::
   if (!get_val_smtptr_param<vtkDataArray >(array_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataArray* array = array_smtptr.get();
 
-  boost::shared_ptr<long long int > increments_smtptr;
-  if (!get_val_smtptr_param<long long int >(increments_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  long long int* increments = increments_smtptr.get();
+  boost::shared_ptr<long > increments_long;
+  if (!get_val_smtptr_param<long >(increments_long,_p,_n,true,false,false)) ClassHelpAndReturn;
+  long long int increments_val = boost::numeric_cast<long long int >(*increments_long);
+  long long int* increments = &increments_val;
 
   this->_objectptr->GetObj()->GetArrayIncrements(array, increments);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkImageData::ComputeInternalExtent(int * intExt, int * tgtExt, int * bnds)

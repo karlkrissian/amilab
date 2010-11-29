@@ -24,6 +24,7 @@
 #include "wrap_vtkDataSet.h"
 #include "boost/numeric/conversion/cast.hpp"
 #include "wrap_vtkDataObject.h"
+#include "wrap_vtkDataArray.h"
 
 
 #include "wrap_vtkPolyData.h"
@@ -35,7 +36,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkPolyData>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkPolyData::wrap_New construct;
+  WrapClass_vtkPolyData::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -71,11 +72,10 @@ Variable<AMIObject>::ptr WrapClass_vtkPolyData::CreateVar( vtkPolyData* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
 {
-  /*
+  
       // Add members from vtkPointSet
       WrapClass_vtkPointSet::ptr parent_vtkPointSet(        boost::dynamic_pointer_cast<WrapClass_vtkPointSet >(this_ptr));
       parent_vtkPointSet->AddMethods(parent_vtkPointSet);
-      */
 
 
   // check that the method name is not a token
@@ -88,33 +88,21 @@ void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
 */
       AddVar_GetDataObjectType( this_ptr);
       AddVar_CopyStructure( this_ptr);
-/* The following types are missing: long long int
       AddVar_GetNumberOfCells( this_ptr);
-*/
-/* The following types are missing: vtkCell, long long int
+/* The following types are missing: vtkCell
       AddVar_GetCell_1( this_ptr);
 */
       AddVar_GetCell( this_ptr);
-/* The following types are missing: long long int, vtkGenericCell
+/* The following types are missing: vtkGenericCell
       AddVar_GetCell_2( this_ptr);
 */
-/* The following types are missing: long long int
       AddVar_GetCellType( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetCellBounds( this_ptr);
-*/
-/* The following types are missing: long long int, vtkIdList, vtkIdList
+/* The following types are missing: vtkIdList, vtkIdList
       AddVar_GetCellNeighbors( this_ptr);
 */
 /* The following types are missing: vtkIdList, vtkPointLocator
       AddVar_CopyCells( this_ptr);
-*/
-/* The following types are missing: long long int, vtkIdList
-      AddVar_GetCellPoints_1( this_ptr);
-*/
-/* The following types are missing: long long int, vtkIdList
-      AddVar_GetPointCells_1( this_ptr);
 */
       AddVar_ComputeBounds( this_ptr);
       AddVar_Squeeze( this_ptr);
@@ -143,28 +131,14 @@ void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
 /* The following types are missing: vtkCellArray
       AddVar_GetStrips( this_ptr);
 */
-/* The following types are missing: long long int
       AddVar_GetNumberOfVerts( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetNumberOfLines( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetNumberOfPolys( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetNumberOfStrips( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_Allocate_1( this_ptr);
-*/
       AddVar_Allocate( this_ptr);
-/* The following types are missing: long long int
       AddVar_Allocate_2( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_InsertNextCell_1( this_ptr);
-*/
       AddVar_InsertNextCell( this_ptr);
 /* The following types are missing: vtkIdList
       AddVar_InsertNextCell_2( this_ptr);
@@ -174,64 +148,28 @@ void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
       AddVar_BuildLinks( this_ptr);
       AddVar_DeleteCells( this_ptr);
       AddVar_DeleteLinks( this_ptr);
-      AddVar_GetPointCells( this_ptr);
-/* The following types are missing: long long int, short unsigned int, long long int
-      AddVar_GetPointCells_2( this_ptr);
-*/
-/* The following types are missing: long long int, long long int, long long int, vtkIdList
+/* The following types are missing: vtkIdList
       AddVar_GetCellEdgeNeighbors( this_ptr);
 */
-      AddVar_GetCellPoints( this_ptr);
-/* The following types are missing: long long int, long long int, long long int
-      AddVar_GetCellPoints_2( this_ptr);
-*/
       AddVar_IsTriangle( this_ptr);
-/* The following types are missing: long long int, long long int
       AddVar_IsEdge( this_ptr);
-*/
-/* The following types are missing: long long int, long long int
       AddVar_IsPointUsedByCell( this_ptr);
-*/
-/* The following types are missing: long long int, long long int
       AddVar_ReplaceCell( this_ptr);
-*/
-/* The following types are missing: long long int, long long int, long long int
       AddVar_ReplaceCellPoint( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_ReverseCell( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_DeletePoint( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_DeleteCell( this_ptr);
-*/
       AddVar_RemoveDeletedCells( this_ptr);
       AddVar_InsertNextLinkedPoint_1( this_ptr);
       AddVar_InsertNextLinkedPoint( this_ptr);
       AddVar_InsertNextLinkedPoint_2( this_ptr);
-/* The following types are missing: long long int
       AddVar_InsertNextLinkedCell( this_ptr);
-*/
-/* The following types are missing: long long int, long long int
       AddVar_ReplaceLinkedCell( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_RemoveCellReference( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_AddCellReference( this_ptr);
-*/
-/* The following types are missing: long long int, long long int
       AddVar_RemoveReferenceToCell( this_ptr);
-*/
-/* The following types are missing: long long int, long long int
       AddVar_AddReferenceToCell( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_ResizeCellList( this_ptr);
-*/
       AddVar_Initialize( this_ptr);
       AddVar_GetUpdateExtent_1( this_ptr);
       AddVar_GetUpdateExtent( this_ptr);
@@ -245,16 +183,10 @@ void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
       AddVar_ShallowCopy( this_ptr);
       AddVar_DeepCopy( this_ptr);
       AddVar_RemoveGhostCells( this_ptr);
-/* The following types are missing: long long int, vtkDataArray
       AddVar_GetScalarFieldCriticalIndex_1( this_ptr);
-*/
       AddVar_GetScalarFieldCriticalIndex( this_ptr);
-/* The following types are missing: long long int
       AddVar_GetScalarFieldCriticalIndex_2( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetScalarFieldCriticalIndex_3( this_ptr);
-*/
 
 
 
@@ -270,14 +202,14 @@ void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
 //  Wrapping of vtkPolyData * vtkPolyData::New()
 //---------------------------------------------------
 void WrapClass_vtkPolyData::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkPolyData";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -290,7 +222,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 //  Wrapping of int vtkPolyData::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkPolyData::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -298,7 +230,7 @@ void WrapClass_vtkPolyData::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -316,7 +248,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 //  Wrapping of vtkPolyData * vtkPolyData::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkPolyData::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkPolyData";
@@ -324,7 +256,7 @@ void WrapClass_vtkPolyData::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -344,7 +276,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 //  Wrapping of vtkPolyData * vtkPolyData::GetData(vtkInformation * info)
 //---------------------------------------------------
 void WrapClass_vtkPolyData::
-    wrap_GetData_1::SetParametersComments()
+    wrap_static_GetData_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   return_comments="returning a variable of type vtkPolyData";
@@ -352,7 +284,7 @@ void WrapClass_vtkPolyData::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_GetData_1::CallMember( ParamList* _p)
+    wrap_static_GetData_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -369,15 +301,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 */
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... vtkPolyData::GetData(...)
+//  Wrapping of multipled defined method:... static vtkPolyData::GetData(...)
 //---------------------------------------------------
 void WrapClass_vtkPolyData::
-    wrap_GetData::SetParametersComments()
+    wrap_static_GetData::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_GetData::CallMember( ParamList* _p)
+    wrap_static_GetData::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
   ClassHelpAndReturn;
@@ -388,7 +320,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 //  Wrapping of vtkPolyData * vtkPolyData::GetData(vtkInformationVector * v, int i = 0)
 //---------------------------------------------------
 void WrapClass_vtkPolyData::
-    wrap_GetData_2::SetParametersComments()
+    wrap_static_GetData_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformationVector, "parameter named 'v'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'i' (def:0)")
@@ -397,7 +329,7 @@ void WrapClass_vtkPolyData::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_GetData_2::CallMember( ParamList* _p)
+    wrap_static_GetData_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
@@ -536,7 +468,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   this->_objectptr->GetObj()->CopyStructure(ds);
   return BasicVariable::ptr();
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkPolyData::GetNumberOfCells()
@@ -544,7 +475,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetNumberOfCells::SetParametersComments()
 {
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -554,10 +485,10 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetNumberOfCells();
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
-/* The following types are missing: vtkCell, long long int
+/* The following types are missing: vtkCell
 
 //---------------------------------------------------
 //  Wrapping of vtkCell * vtkPolyData::GetCell(vtkIdType cellId)
@@ -565,7 +496,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetCell_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   return_comments="returning a variable of type vtkCell";
 }
 
@@ -577,8 +508,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   vtkCell * res =   this->_objectptr->GetObj()->GetCell(cellId);
   return AMILabType<vtkCell >::CreateVar(res,true);
@@ -599,7 +531,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: long long int, vtkGenericCell
+/* The following types are missing: vtkGenericCell
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::GetCell(vtkIdType cellId, vtkGenericCell * cell)
@@ -607,7 +539,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetCell_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( vtkGenericCell, "parameter named 'cell'")
 }
 
@@ -619,8 +551,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   boost::shared_ptr<vtkGenericCell > cell_smtptr;
   if (!get_val_smtptr_param<vtkGenericCell >(cell_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -630,7 +563,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   return BasicVariable::ptr();
 }
 */
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of int vtkPolyData::GetCellType(vtkIdType cellId)
@@ -638,7 +570,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetCellType::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   return_comments="returning a variable of type int";
 }
 
@@ -650,14 +582,13 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   int res =   this->_objectptr->GetObj()->GetCellType(cellId);
   return AMILabType<int >::CreateVar(res);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::GetCellBounds(vtkIdType cellId, double * bounds)
@@ -665,7 +596,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetCellBounds::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'bounds'")
 }
 
@@ -677,8 +608,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   boost::shared_ptr<double > bounds_smtptr;
   if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -687,8 +619,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   this->_objectptr->GetObj()->GetCellBounds(cellId, bounds);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int, vtkIdList, vtkIdList
+/* The following types are missing: vtkIdList, vtkIdList
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::GetCellNeighbors(vtkIdType cellId, vtkIdList * ptIds, vtkIdList * cellIds)
@@ -696,7 +627,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetCellNeighbors::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( vtkIdList, "parameter named 'ptIds'")
   ADDPARAMCOMMENT_TYPE( vtkIdList, "parameter named 'cellIds'")
 }
@@ -709,8 +640,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   boost::shared_ptr<vtkIdList > ptIds_smtptr;
   if (!get_val_smtptr_param<vtkIdList >(ptIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -758,68 +690,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   vtkPointLocator* locator = locator_smtptr.get();
 
   this->_objectptr->GetObj()->CopyCells(pd, idList, locator);
-  return BasicVariable::ptr();
-}
-*/
-/* The following types are missing: long long int, vtkIdList
-
-//---------------------------------------------------
-//  Wrapping of void vtkPolyData::GetCellPoints(vtkIdType cellId, vtkIdList * ptIds)
-//---------------------------------------------------
-void WrapClass_vtkPolyData::
-    wrap_GetCellPoints_1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
-  ADDPARAMCOMMENT_TYPE( vtkIdList, "parameter named 'ptIds'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_GetCellPoints_1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
-  int _n=0;
-
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,true)) ClassReturnEmptyVar;
-
-  boost::shared_ptr<vtkIdList > ptIds_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(ptIds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkIdList* ptIds = ptIds_smtptr.get();
-
-  this->_objectptr->GetObj()->GetCellPoints(cellId, ptIds);
-  return BasicVariable::ptr();
-}
-*/
-/* The following types are missing: long long int, vtkIdList
-
-//---------------------------------------------------
-//  Wrapping of void vtkPolyData::GetPointCells(vtkIdType ptId, vtkIdList * cellIds)
-//---------------------------------------------------
-void WrapClass_vtkPolyData::
-    wrap_GetPointCells_1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'ptId'")
-  ADDPARAMCOMMENT_TYPE( vtkIdList, "parameter named 'cellIds'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_GetPointCells_1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>2) ClassReturnEmptyVar;
-  int _n=0;
-
-  long long int ptId;
-  if (!get_val_param<long long int >(ptId,_p,_n,true,true)) ClassReturnEmptyVar;
-
-  boost::shared_ptr<vtkIdList > cellIds_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(cellIds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkIdList* cellIds = cellIds_smtptr.get();
-
-  this->_objectptr->GetObj()->GetPointCells(ptId, cellIds);
   return BasicVariable::ptr();
 }
 */
@@ -1070,7 +940,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   return AMILabType<vtkCellArray >::CreateVar(res,true);
 }
 */
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkPolyData::GetNumberOfVerts()
@@ -1078,7 +947,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetNumberOfVerts::SetParametersComments()
 {
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -1088,10 +957,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetNumberOfVerts();
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkPolyData::GetNumberOfLines()
@@ -1099,7 +967,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetNumberOfLines::SetParametersComments()
 {
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -1109,10 +977,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetNumberOfLines();
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkPolyData::GetNumberOfPolys()
@@ -1120,7 +987,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetNumberOfPolys::SetParametersComments()
 {
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -1130,10 +997,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetNumberOfPolys();
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkPolyData::GetNumberOfStrips()
@@ -1141,7 +1007,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetNumberOfStrips::SetParametersComments()
 {
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -1151,10 +1017,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetNumberOfStrips();
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::Allocate(vtkIdType numCells = 1000, int extSize = 1000)
@@ -1162,7 +1027,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_Allocate_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'numCells' (def:1000)")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'numCells' (def:1000)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'extSize' (def:1000)")
 }
 
@@ -1174,8 +1039,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int numCells = 1000;
-  if (!get_val_param<long long int >(numCells,_p,_n,false,true)) ClassReturnEmptyVar;
+  long numCells_long = boost::numeric_cast<long >((unsigned int)1000);;
+  if (!get_val_param<long >(numCells_long,_p,_n,false,true)) ClassReturnEmptyVar;
+  long long int numCells = boost::numeric_cast<long long int >(numCells_long);
 
   int extSize = 1000;
   if (!get_val_param<int >(extSize,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1183,7 +1049,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   this->_objectptr->GetObj()->Allocate(numCells, extSize);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkPolyData::Allocate(...)
@@ -1197,9 +1062,14 @@ BasicVariable::ptr WrapClass_vtkPolyData::
     wrap_Allocate::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkPolyData::wrap_Allocate_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkPolyData::wrap_Allocate_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::Allocate(vtkPolyData * inPolyData, vtkIdType numCells = 1000, int extSize = 1000)
@@ -1208,7 +1078,7 @@ void WrapClass_vtkPolyData::
     wrap_Allocate_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkPolyData, "parameter named 'inPolyData'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'numCells' (def:1000)")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'numCells' (def:1000)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'extSize' (def:1000)")
 }
 
@@ -1224,8 +1094,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (!get_val_smtptr_param<vtkPolyData >(inPolyData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkPolyData* inPolyData = inPolyData_smtptr.get();
 
-  long long int numCells = 1000;
-  if (!get_val_param<long long int >(numCells,_p,_n,false,true)) ClassReturnEmptyVar;
+  long numCells_long = boost::numeric_cast<long >((unsigned int)1000);;
+  if (!get_val_param<long >(numCells_long,_p,_n,false,true)) ClassReturnEmptyVar;
+  long long int numCells = boost::numeric_cast<long long int >(numCells_long);
 
   int extSize = 1000;
   if (!get_val_param<int >(extSize,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1233,8 +1104,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   this->_objectptr->GetObj()->Allocate(inPolyData, numCells, extSize);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of int vtkPolyData::InsertNextCell(int type, int npts, vtkIdType * pts)
@@ -1244,7 +1113,7 @@ void WrapClass_vtkPolyData::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'type'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'npts'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'pts'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'pts'")
   return_comments="returning a variable of type int";
 }
 
@@ -1262,14 +1131,14 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   int npts;
   if (!get_val_param<int >(npts,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<long long int > pts_smtptr;
-  if (!get_val_smtptr_param<long long int >(pts_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  long long int* pts = pts_smtptr.get();
+  boost::shared_ptr<long > pts_long;
+  if (!get_val_smtptr_param<long >(pts_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  long long int pts_val = boost::numeric_cast<long long int >(*pts_long);
+  long long int* pts = &pts_val;
 
   int res =   this->_objectptr->GetObj()->InsertNextCell(type, npts, pts);
   return AMILabType<int >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkPolyData::InsertNextCell(...)
@@ -1283,6 +1152,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
     wrap_InsertNextCell::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkPolyData::wrap_InsertNextCell_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 /* The following types are missing: vtkIdList
@@ -1413,58 +1285,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   this->_objectptr->GetObj()->DeleteLinks();
   return BasicVariable::ptr();
 }
-
-//---------------------------------------------------
-//  Wrapping of multipled defined method:... vtkPolyData::GetPointCells(...)
-//---------------------------------------------------
-void WrapClass_vtkPolyData::
-    wrap_GetPointCells::SetParametersComments()
-{}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_GetPointCells::CallMember( ParamList* _p)
-{
-  BasicVariable::ptr res;
-  ClassHelpAndReturn;
-}
-/* The following types are missing: long long int, short unsigned int, long long int
-
-//---------------------------------------------------
-//  Wrapping of void vtkPolyData::GetPointCells(vtkIdType ptId, short unsigned int & ncells, vtkIdType * & cells)
-//---------------------------------------------------
-void WrapClass_vtkPolyData::
-    wrap_GetPointCells_2::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'ptId'")
-  ADDPARAMCOMMENT_TYPE( short unsigned int, "parameter named 'ncells'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cells'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_GetPointCells_2::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>3) ClassReturnEmptyVar;
-  int _n=0;
-
-  long long int ptId;
-  if (!get_val_param<long long int >(ptId,_p,_n,true,true)) ClassReturnEmptyVar;
-
-  boost::shared_ptr<short unsigned int > ncells_smtptr;
-  if (!get_val_smtptr_param<short unsigned int >(ncells_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  short unsigned int & ncells = *ncells_smtptr;
-
-  boost::shared_ptr<long long int > cells_smtptr;
-  if (!get_val_smtptr_param<long long int >(cells_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkIdType * & cells = *cells_smtptr;
-
-  this->_objectptr->GetObj()->GetPointCells(ptId, ncells, cells);
-  return BasicVariable::ptr();
-}
-*/
-/* The following types are missing: long long int, long long int, long long int, vtkIdList
+/* The following types are missing: vtkIdList
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::GetCellEdgeNeighbors(vtkIdType cellId, vtkIdType p1, vtkIdType p2, vtkIdList * cellIds)
@@ -1472,9 +1293,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetCellEdgeNeighbors::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'p1'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'p2'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'p1'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'p2'")
   ADDPARAMCOMMENT_TYPE( vtkIdList, "parameter named 'cellIds'")
 }
 
@@ -1486,71 +1307,23 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>4) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
-  long long int p1;
-  if (!get_val_param<long long int >(p1,_p,_n,true,false)) ClassHelpAndReturn;
+  long p1_long;
+  if (!get_val_param<long >(p1_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int p1 = boost::numeric_cast<long long int >(p1_long);
 
-  long long int p2;
-  if (!get_val_param<long long int >(p2,_p,_n,true,false)) ClassHelpAndReturn;
+  long p2_long;
+  if (!get_val_param<long >(p2_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int p2 = boost::numeric_cast<long long int >(p2_long);
 
   boost::shared_ptr<vtkIdList > cellIds_smtptr;
   if (!get_val_smtptr_param<vtkIdList >(cellIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkIdList* cellIds = cellIds_smtptr.get();
 
   this->_objectptr->GetObj()->GetCellEdgeNeighbors(cellId, p1, p2, cellIds);
-  return BasicVariable::ptr();
-}
-*/
-
-//---------------------------------------------------
-//  Wrapping of multipled defined method:... vtkPolyData::GetCellPoints(...)
-//---------------------------------------------------
-void WrapClass_vtkPolyData::
-    wrap_GetCellPoints::SetParametersComments()
-{}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_GetCellPoints::CallMember( ParamList* _p)
-{
-  BasicVariable::ptr res;
-  ClassHelpAndReturn;
-}
-/* The following types are missing: long long int, long long int, long long int
-
-//---------------------------------------------------
-//  Wrapping of void vtkPolyData::GetCellPoints(vtkIdType cellId, vtkIdType & npts, vtkIdType * & pts)
-//---------------------------------------------------
-void WrapClass_vtkPolyData::
-    wrap_GetCellPoints_2::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'npts'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'pts'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkPolyData::
-    wrap_GetCellPoints_2::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>3) ClassReturnEmptyVar;
-  int _n=0;
-
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,true)) ClassReturnEmptyVar;
-
-  boost::shared_ptr<long long int > npts_smtptr;
-  if (!get_val_smtptr_param<long long int >(npts_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkIdType & npts = *npts_smtptr;
-
-  boost::shared_ptr<long long int > pts_smtptr;
-  if (!get_val_smtptr_param<long long int >(pts_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkIdType * & pts = *pts_smtptr;
-
-  this->_objectptr->GetObj()->GetCellPoints(cellId, npts, pts);
   return BasicVariable::ptr();
 }
 */
@@ -1587,7 +1360,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   int res =   this->_objectptr->GetObj()->IsTriangle(v1, v2, v3);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: long long int, long long int
 
 //---------------------------------------------------
 //  Wrapping of int vtkPolyData::IsEdge(vtkIdType p1, vtkIdType p2)
@@ -1595,8 +1367,8 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_IsEdge::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'p1'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'p2'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'p1'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'p2'")
   return_comments="returning a variable of type int";
 }
 
@@ -1608,17 +1380,17 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  long long int p1;
-  if (!get_val_param<long long int >(p1,_p,_n,true,false)) ClassHelpAndReturn;
+  long p1_long;
+  if (!get_val_param<long >(p1_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int p1 = boost::numeric_cast<long long int >(p1_long);
 
-  long long int p2;
-  if (!get_val_param<long long int >(p2,_p,_n,true,false)) ClassHelpAndReturn;
+  long p2_long;
+  if (!get_val_param<long >(p2_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int p2 = boost::numeric_cast<long long int >(p2_long);
 
   int res =   this->_objectptr->GetObj()->IsEdge(p1, p2);
   return AMILabType<int >::CreateVar(res);
 }
-*/
-/* The following types are missing: long long int, long long int
 
 //---------------------------------------------------
 //  Wrapping of int vtkPolyData::IsPointUsedByCell(vtkIdType ptId, vtkIdType cellId)
@@ -1626,8 +1398,8 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_IsPointUsedByCell::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'ptId'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'ptId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   return_comments="returning a variable of type int";
 }
 
@@ -1639,17 +1411,17 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  long long int ptId;
-  if (!get_val_param<long long int >(ptId,_p,_n,true,false)) ClassHelpAndReturn;
+  long ptId_long;
+  if (!get_val_param<long >(ptId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int ptId = boost::numeric_cast<long long int >(ptId_long);
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   int res =   this->_objectptr->GetObj()->IsPointUsedByCell(ptId, cellId);
   return AMILabType<int >::CreateVar(res);
 }
-*/
-/* The following types are missing: long long int, long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::ReplaceCell(vtkIdType cellId, int npts, vtkIdType * pts)
@@ -1657,9 +1429,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_ReplaceCell::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'npts'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'pts'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'pts'")
 }
 
 //---------------------------------------------------
@@ -1670,21 +1442,21 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   int npts;
   if (!get_val_param<int >(npts,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<long long int > pts_smtptr;
-  if (!get_val_smtptr_param<long long int >(pts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  long long int* pts = pts_smtptr.get();
+  boost::shared_ptr<long > pts_long;
+  if (!get_val_smtptr_param<long >(pts_long,_p,_n,true,false,false)) ClassHelpAndReturn;
+  long long int pts_val = boost::numeric_cast<long long int >(*pts_long);
+  long long int* pts = &pts_val;
 
   this->_objectptr->GetObj()->ReplaceCell(cellId, npts, pts);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int, long long int, long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::ReplaceCellPoint(vtkIdType cellId, vtkIdType oldPtId, vtkIdType newPtId)
@@ -1692,9 +1464,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_ReplaceCellPoint::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'oldPtId'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'newPtId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'oldPtId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'newPtId'")
 }
 
 //---------------------------------------------------
@@ -1705,20 +1477,21 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
-  long long int oldPtId;
-  if (!get_val_param<long long int >(oldPtId,_p,_n,true,false)) ClassHelpAndReturn;
+  long oldPtId_long;
+  if (!get_val_param<long >(oldPtId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int oldPtId = boost::numeric_cast<long long int >(oldPtId_long);
 
-  long long int newPtId;
-  if (!get_val_param<long long int >(newPtId,_p,_n,true,false)) ClassHelpAndReturn;
+  long newPtId_long;
+  if (!get_val_param<long >(newPtId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int newPtId = boost::numeric_cast<long long int >(newPtId_long);
 
   this->_objectptr->GetObj()->ReplaceCellPoint(cellId, oldPtId, newPtId);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::ReverseCell(vtkIdType cellId)
@@ -1726,7 +1499,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_ReverseCell::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
 }
 
 //---------------------------------------------------
@@ -1737,14 +1510,13 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   this->_objectptr->GetObj()->ReverseCell(cellId);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::DeletePoint(vtkIdType ptId)
@@ -1752,7 +1524,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_DeletePoint::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'ptId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'ptId'")
 }
 
 //---------------------------------------------------
@@ -1763,14 +1535,13 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  long long int ptId;
-  if (!get_val_param<long long int >(ptId,_p,_n,true,false)) ClassHelpAndReturn;
+  long ptId_long;
+  if (!get_val_param<long >(ptId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int ptId = boost::numeric_cast<long long int >(ptId_long);
 
   this->_objectptr->GetObj()->DeletePoint(ptId);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::DeleteCell(vtkIdType cellId)
@@ -1778,7 +1549,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_DeleteCell::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
 }
 
 //---------------------------------------------------
@@ -1789,13 +1560,13 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   this->_objectptr->GetObj()->DeleteCell(cellId);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::RemoveDeletedCells()
@@ -1890,7 +1661,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   int res =   this->_objectptr->GetObj()->InsertNextLinkedPoint(x, numLinks);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of int vtkPolyData::InsertNextLinkedCell(int type, int npts, vtkIdType * pts)
@@ -1900,7 +1670,7 @@ void WrapClass_vtkPolyData::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'type'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'npts'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'pts'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'pts'")
   return_comments="returning a variable of type int";
 }
 
@@ -1918,15 +1688,14 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   int npts;
   if (!get_val_param<int >(npts,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<long long int > pts_smtptr;
-  if (!get_val_smtptr_param<long long int >(pts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  long long int* pts = pts_smtptr.get();
+  boost::shared_ptr<long > pts_long;
+  if (!get_val_smtptr_param<long >(pts_long,_p,_n,true,false,false)) ClassHelpAndReturn;
+  long long int pts_val = boost::numeric_cast<long long int >(*pts_long);
+  long long int* pts = &pts_val;
 
   int res =   this->_objectptr->GetObj()->InsertNextLinkedCell(type, npts, pts);
   return AMILabType<int >::CreateVar(res);
 }
-*/
-/* The following types are missing: long long int, long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::ReplaceLinkedCell(vtkIdType cellId, int npts, vtkIdType * pts)
@@ -1934,9 +1703,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_ReplaceLinkedCell::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'npts'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'pts'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'pts'")
 }
 
 //---------------------------------------------------
@@ -1947,21 +1716,21 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   int npts;
   if (!get_val_param<int >(npts,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<long long int > pts_smtptr;
-  if (!get_val_smtptr_param<long long int >(pts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  long long int* pts = pts_smtptr.get();
+  boost::shared_ptr<long > pts_long;
+  if (!get_val_smtptr_param<long >(pts_long,_p,_n,true,false,false)) ClassHelpAndReturn;
+  long long int pts_val = boost::numeric_cast<long long int >(*pts_long);
+  long long int* pts = &pts_val;
 
   this->_objectptr->GetObj()->ReplaceLinkedCell(cellId, npts, pts);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::RemoveCellReference(vtkIdType cellId)
@@ -1969,7 +1738,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_RemoveCellReference::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
 }
 
 //---------------------------------------------------
@@ -1980,14 +1749,13 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   this->_objectptr->GetObj()->RemoveCellReference(cellId);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::AddCellReference(vtkIdType cellId)
@@ -1995,7 +1763,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_AddCellReference::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
 }
 
 //---------------------------------------------------
@@ -2006,14 +1774,13 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   this->_objectptr->GetObj()->AddCellReference(cellId);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int, long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::RemoveReferenceToCell(vtkIdType ptId, vtkIdType cellId)
@@ -2021,8 +1788,8 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_RemoveReferenceToCell::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'ptId'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'ptId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
 }
 
 //---------------------------------------------------
@@ -2033,17 +1800,17 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  long long int ptId;
-  if (!get_val_param<long long int >(ptId,_p,_n,true,false)) ClassHelpAndReturn;
+  long ptId_long;
+  if (!get_val_param<long >(ptId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int ptId = boost::numeric_cast<long long int >(ptId_long);
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   this->_objectptr->GetObj()->RemoveReferenceToCell(ptId, cellId);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int, long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::AddReferenceToCell(vtkIdType ptId, vtkIdType cellId)
@@ -2051,8 +1818,8 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_AddReferenceToCell::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'ptId'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'cellId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'ptId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'cellId'")
 }
 
 //---------------------------------------------------
@@ -2063,17 +1830,17 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  long long int ptId;
-  if (!get_val_param<long long int >(ptId,_p,_n,true,false)) ClassHelpAndReturn;
+  long ptId_long;
+  if (!get_val_param<long >(ptId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int ptId = boost::numeric_cast<long long int >(ptId_long);
 
-  long long int cellId;
-  if (!get_val_param<long long int >(cellId,_p,_n,true,false)) ClassHelpAndReturn;
+  long cellId_long;
+  if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
   this->_objectptr->GetObj()->AddReferenceToCell(ptId, cellId);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::ResizeCellList(vtkIdType ptId, int size)
@@ -2081,7 +1848,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_ResizeCellList::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'ptId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'ptId'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'size'")
 }
 
@@ -2093,8 +1860,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  long long int ptId;
-  if (!get_val_param<long long int >(ptId,_p,_n,true,false)) ClassHelpAndReturn;
+  long ptId_long;
+  if (!get_val_param<long >(ptId_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int ptId = boost::numeric_cast<long long int >(ptId_long);
 
   int size;
   if (!get_val_param<int >(size,_p,_n,true,false)) ClassHelpAndReturn;
@@ -2102,7 +1870,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   this->_objectptr->GetObj()->ResizeCellList(ptId, size);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkPolyData::Initialize()
@@ -2428,7 +2195,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   this->_objectptr->GetObj()->RemoveGhostCells(level);
   return BasicVariable::ptr();
 }
-/* The following types are missing: long long int, vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of int vtkPolyData::GetScalarFieldCriticalIndex(vtkIdType pointId, vtkDataArray * scalarField)
@@ -2436,7 +2202,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetScalarFieldCriticalIndex_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'pointId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'pointId'")
   ADDPARAMCOMMENT_TYPE( vtkDataArray, "parameter named 'scalarField'")
   return_comments="returning a variable of type int";
 }
@@ -2449,8 +2215,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int pointId;
-  if (!get_val_param<long long int >(pointId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long pointId_long;
+  if (!get_val_param<long >(pointId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int pointId = boost::numeric_cast<long long int >(pointId_long);
 
   boost::shared_ptr<vtkDataArray > scalarField_smtptr;
   if (!get_val_smtptr_param<vtkDataArray >(scalarField_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -2459,7 +2226,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   int res =   this->_objectptr->GetObj()->GetScalarFieldCriticalIndex(pointId, scalarField);
   return AMILabType<int >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkPolyData::GetScalarFieldCriticalIndex(...)
@@ -2473,9 +2239,17 @@ BasicVariable::ptr WrapClass_vtkPolyData::
     wrap_GetScalarFieldCriticalIndex::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkPolyData::wrap_GetScalarFieldCriticalIndex_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkPolyData::wrap_GetScalarFieldCriticalIndex_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_vtkPolyData::wrap_GetScalarFieldCriticalIndex_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of int vtkPolyData::GetScalarFieldCriticalIndex(vtkIdType pointId, int fieldId)
@@ -2483,7 +2257,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetScalarFieldCriticalIndex_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'pointId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'pointId'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'fieldId'")
   return_comments="returning a variable of type int";
 }
@@ -2496,8 +2270,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int pointId;
-  if (!get_val_param<long long int >(pointId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long pointId_long;
+  if (!get_val_param<long >(pointId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int pointId = boost::numeric_cast<long long int >(pointId_long);
 
   int fieldId;
   if (!get_val_param<int >(fieldId,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -2505,8 +2280,6 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   int res =   this->_objectptr->GetObj()->GetScalarFieldCriticalIndex(pointId, fieldId);
   return AMILabType<int >::CreateVar(res);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of int vtkPolyData::GetScalarFieldCriticalIndex(vtkIdType pointId, char const * fieldName)
@@ -2514,7 +2287,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
 void WrapClass_vtkPolyData::
     wrap_GetScalarFieldCriticalIndex_3::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'pointId'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'pointId'")
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'fieldName'")
   return_comments="returning a variable of type int";
 }
@@ -2527,8 +2300,9 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int pointId;
-  if (!get_val_param<long long int >(pointId,_p,_n,true,true)) ClassReturnEmptyVar;
+  long pointId_long;
+  if (!get_val_param<long >(pointId_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int pointId = boost::numeric_cast<long long int >(pointId_long);
 
   boost::shared_ptr<std::string > fieldName_string;
   if (!get_val_smtptr_param<std::string >(fieldName_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -2537,5 +2311,4 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   int res =   this->_objectptr->GetObj()->GetScalarFieldCriticalIndex(pointId, fieldName);
   return AMILabType<int >::CreateVar(res);
 }
-*/
 

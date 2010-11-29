@@ -105,12 +105,8 @@ class WrapClass_vtkProp : public WrapClass<vtkProp>
     ADD_CLASS_METHOD(GetNextPath,"vtkAssemblyPath * vtkProp::GetNextPath()  (http://docs.wxwidgets.org/stable/wx_vtkprop.html#getnextpath)")
 */
     ADD_CLASS_METHOD(GetNumberOfPaths,"int vtkProp::GetNumberOfPaths()  (http://docs.wxwidgets.org/stable/wx_vtkprop.html#getnumberofpaths)")
-/* The following types are missing: vtkMatrix4x4
     ADD_CLASS_METHOD(PokeMatrix,"void vtkProp::PokeMatrix(vtkMatrix4x4 * param0)  (http://docs.wxwidgets.org/stable/wx_vtkprop.html#pokematrix)")
-*/
-/* The following types are missing: vtkMatrix4x4
     ADD_CLASS_METHOD(GetMatrix,"vtkMatrix4x4 * vtkProp::GetMatrix()  (http://docs.wxwidgets.org/stable/wx_vtkprop.html#getmatrix)")
-*/
 /* The following types are missing: vtkInformation
     ADD_CLASS_METHOD(GetPropertyKeys,"vtkInformation * vtkProp::GetPropertyKeys()  (http://docs.wxwidgets.org/stable/wx_vtkprop.html#getpropertykeys)")
 */

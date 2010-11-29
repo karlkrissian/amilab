@@ -214,7 +214,7 @@ void WrapClass_vtkRenderWindow::AddMethods(WrapClass<vtkRenderWindow>::ptr this_
 //  Wrapping of int vtkRenderWindow::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkRenderWindow::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -222,7 +222,7 @@ void WrapClass_vtkRenderWindow::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkRenderWindow::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -240,7 +240,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
 //  Wrapping of vtkRenderWindow * vtkRenderWindow::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkRenderWindow::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkRenderWindow";
@@ -248,7 +248,7 @@ void WrapClass_vtkRenderWindow::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkRenderWindow::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -267,14 +267,14 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
 //  Wrapping of vtkRenderWindow * vtkRenderWindow::New()
 //---------------------------------------------------
 void WrapClass_vtkRenderWindow::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkRenderWindow";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkRenderWindow::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -287,14 +287,14 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
 //  Wrapping of char const * vtkRenderWindow::GetRenderLibrary()
 //---------------------------------------------------
 void WrapClass_vtkRenderWindow::
-    wrap_GetRenderLibrary::SetParametersComments()
+    wrap_static_GetRenderLibrary::SetParametersComments()
 {
   return_comments="returning a variable of type std::string";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkRenderWindow::
-    wrap_GetRenderLibrary::CallMember( ParamList* _p)
+    wrap_static_GetRenderLibrary::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

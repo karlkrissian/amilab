@@ -53,7 +53,7 @@
 /// Copy contents to new variable
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<double>::NewCopy() const
 {
-  double_ptr newval( new double(Value()));
+  boost::shared_ptr<double> newval( new double(Value()));
   Variable<double>::ptr newvar(new Variable<double>(newval));
   return newvar;
 }
@@ -340,10 +340,6 @@ BasicVariable::ptr Variable<double>::TryCast(
     if (type_string==AMILabType<float>::name_as_string()) {
       RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
     } else
-    // cast to long
-    if (type_string==AMILabType<long int>::name_as_string()) {
-      RETURN_VARPTR(long int, boost::numeric_cast<long int>(Value()));
-    } else 
     // cast to int
     if (type_string==AMILabType<int>::name_as_string()) {
       RETURN_VARPTR(int, boost::numeric_cast<int>(Value()));

@@ -26,6 +26,7 @@
 #include "wrap_wxControl.h"
 
 
+
 AMI_DECLARE_TYPE(wxButtonBase);
 
 // TODO: check for inheritence ...

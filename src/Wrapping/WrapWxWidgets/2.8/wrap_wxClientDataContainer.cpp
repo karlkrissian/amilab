@@ -106,7 +106,7 @@ BasicVariable::ptr WrapClass_wxClientDataContainer::
   int _n=0;
 
   boost::shared_ptr<wxClientDataContainer > param0_smtptr;
-  if (!get_val_smtptr_param<wxClientDataContainer >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxClientDataContainer >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxClientDataContainer const & param0 = *param0_smtptr;
 
   wxClientDataContainer* _newobj = new wxClientDataContainer(param0);
@@ -188,7 +188,7 @@ BasicVariable::ptr WrapClass_wxClientDataContainer::
   int _n=0;
 
   boost::shared_ptr<wxClientData > data_smtptr;
-  if (!get_val_smtptr_param<wxClientData >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxClientData >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxClientData* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->SetClientObject(data);
@@ -234,7 +234,7 @@ BasicVariable::ptr WrapClass_wxClientDataContainer::
   int _n=0;
 
   boost::shared_ptr<void > data_smtptr;
-  if (!get_val_smtptr_param<void >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<void >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   void* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->SetClientData(data);
@@ -279,7 +279,7 @@ BasicVariable::ptr WrapClass_wxClientDataContainer::
   int _n=0;
 
   boost::shared_ptr<wxClientDataContainer > param0_smtptr;
-  if (!get_val_smtptr_param<wxClientDataContainer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxClientDataContainer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxClientDataContainer const & param0 = *param0_smtptr;
 
   wxClientDataContainer & res =   (*this->_objectptr->GetObj()) = (param0);

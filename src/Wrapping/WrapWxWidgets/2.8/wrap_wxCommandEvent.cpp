@@ -18,9 +18,9 @@
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxCommandEvent.h"
-#include "wrap_wxClientData.h"
 #include "wrap_wxString.h"
+#include "wrap_wxClientData.h"
+#include "wrap_wxCommandEvent.h"
 #include "wrap_wxEvent.h"
 #include "wrap_wxClassInfo.h"
 
@@ -177,10 +177,10 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   int _n=0;
 
   int commandType = wxEVT_NULL;
-  if (!get_val_param<int >(commandType,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(commandType,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int winid = 0;
-  if (!get_val_param<int >(winid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(winid,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxCommandEvent* _newobj = new wxCommandEvent(commandType, winid);
   BasicVariable::ptr res = WrapClass_wxCommandEvent::CreateVar(_newobj);
@@ -226,7 +226,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   int _n=0;
 
   boost::shared_ptr<wxCommandEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxCommandEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxCommandEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxCommandEvent const & event = *event_smtptr;
 
   wxCommandEvent* _newobj = new wxCommandEvent(event);
@@ -269,7 +269,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   int _n=0;
 
   boost::shared_ptr<void > clientData_smtptr;
-  if (!get_val_smtptr_param<void >(clientData_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<void >(clientData_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   void* clientData = clientData_smtptr.get();
 
   this->_objectptr->GetObj()->SetClientData(clientData);
@@ -313,7 +313,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   int _n=0;
 
   boost::shared_ptr<wxClientData > clientObject_smtptr;
-  if (!get_val_smtptr_param<wxClientData >(clientObject_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxClientData >(clientObject_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxClientData* clientObject = clientObject_smtptr.get();
 
   this->_objectptr->GetObj()->SetClientObject(clientObject);
@@ -377,7 +377,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   int _n=0;
 
   boost::shared_ptr<wxString > s_smtptr;
-  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & s = *s_smtptr;
 
   this->_objectptr->GetObj()->SetString(s);
@@ -461,7 +461,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   int _n=0;
 
   long extraLong_long;
-  if (!get_val_param<long >(extraLong_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(extraLong_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int extraLong = extraLong_long;
 
   this->_objectptr->GetObj()->SetExtraLong(extraLong);
@@ -506,7 +506,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetInt(i);
   return BasicVariable::ptr();

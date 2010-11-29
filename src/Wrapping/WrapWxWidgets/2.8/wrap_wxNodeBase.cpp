@@ -120,25 +120,25 @@ BasicVariable::ptr WrapClass_wxNodeBase::
   int _n=0;
 
   boost::shared_ptr<wxListBase > list_smtptr;
-  if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxListBase* list = list_smtptr.get();
 
   boost::shared_ptr<wxNodeBase > previous_smtptr;
-  if (!get_val_smtptr_param<wxNodeBase >(previous_smtptr,_p,_n,true,true)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxNodeBase >(previous_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
   wxNodeBase* previous = previous_smtptr.get();
 
   boost::shared_ptr<wxNodeBase > next_smtptr;
-  if (!get_val_smtptr_param<wxNodeBase >(next_smtptr,_p,_n,true,true)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxNodeBase >(next_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
   wxNodeBase* next = next_smtptr.get();
 
   boost::shared_ptr<void > data_smtptr;
-  if (!get_val_smtptr_param<void >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<void >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   void* data = data_smtptr.get();
 
   boost::shared_ptr<wxListKey > key_smtptr;
-  if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxListKey const & key = ( key_smtptr.get() ? (*key_smtptr) : wxListKey(wxDefaultListKey) );
+  wxListKey const & key = ( key_smtptr.get() ? (*key_smtptr) : wxDefaultListKey );
 
   wxNodeBase* _newobj = new wxNodeBase(list, previous, next, data, key);
   BasicVariable::ptr res = WrapClass_wxNodeBase::CreateVar(_newobj);
@@ -211,7 +211,7 @@ BasicVariable::ptr WrapClass_wxNodeBase::
   int _n=0;
 
   boost::shared_ptr<std::string > s_string;
-  if (!get_val_smtptr_param<std::string >(s_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(s_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   wchar_t s[s_string->size()+1];
 mbstowcs(s,s_string->c_str(),s_string->size()+1);
 
@@ -237,7 +237,7 @@ BasicVariable::ptr WrapClass_wxNodeBase::
   int _n=0;
 
   long i_long;
-  if (!get_val_param<long >(i_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(i_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int i = i_long;
 
   this->_objectptr->GetObj()->SetKeyInteger(i);

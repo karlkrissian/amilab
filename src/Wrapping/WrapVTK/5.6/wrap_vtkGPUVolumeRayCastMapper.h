@@ -101,12 +101,8 @@ class WrapClass_vtkGPUVolumeRayCastMapper : public WrapClass<vtkGPUVolumeRayCast
     ADD_CLASS_METHOD(GetFinalColorWindow,"float vtkGPUVolumeRayCastMapper::GetFinalColorWindow()  (http://docs.wxwidgets.org/stable/wx_vtkgpuvolumeraycastmapper.html#getfinalcolorwindow)")
     ADD_CLASS_METHOD(SetFinalColorLevel,"void vtkGPUVolumeRayCastMapper::SetFinalColorLevel(float _arg)  (http://docs.wxwidgets.org/stable/wx_vtkgpuvolumeraycastmapper.html#setfinalcolorlevel)")
     ADD_CLASS_METHOD(GetFinalColorLevel,"float vtkGPUVolumeRayCastMapper::GetFinalColorLevel()  (http://docs.wxwidgets.org/stable/wx_vtkgpuvolumeraycastmapper.html#getfinalcolorlevel)")
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(SetMaxMemoryInBytes,"void vtkGPUVolumeRayCastMapper::SetMaxMemoryInBytes(vtkIdType _arg)  (http://docs.wxwidgets.org/stable/wx_vtkgpuvolumeraycastmapper.html#setmaxmemoryinbytes)")
-*/
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetMaxMemoryInBytes,"vtkIdType vtkGPUVolumeRayCastMapper::GetMaxMemoryInBytes()  (http://docs.wxwidgets.org/stable/wx_vtkgpuvolumeraycastmapper.html#getmaxmemoryinbytes)")
-*/
     ADD_CLASS_METHOD(SetMaxMemoryFraction,"void vtkGPUVolumeRayCastMapper::SetMaxMemoryFraction(float _arg)  (http://docs.wxwidgets.org/stable/wx_vtkgpuvolumeraycastmapper.html#setmaxmemoryfraction)")
     ADD_CLASS_METHOD(GetMaxMemoryFractionMinValue,"float vtkGPUVolumeRayCastMapper::GetMaxMemoryFractionMinValue()  (http://docs.wxwidgets.org/stable/wx_vtkgpuvolumeraycastmapper.html#getmaxmemoryfractionminvalue)")
     ADD_CLASS_METHOD(GetMaxMemoryFractionMaxValue,"float vtkGPUVolumeRayCastMapper::GetMaxMemoryFractionMaxValue()  (http://docs.wxwidgets.org/stable/wx_vtkgpuvolumeraycastmapper.html#getmaxmemoryfractionmaxvalue)")

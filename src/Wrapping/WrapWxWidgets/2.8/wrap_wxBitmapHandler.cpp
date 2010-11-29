@@ -104,7 +104,7 @@ BasicVariable::ptr WrapClass_wxBitmapHandler::
   int _n=0;
 
   boost::shared_ptr<wxBitmapHandler > param0_smtptr;
-  if (!get_val_smtptr_param<wxBitmapHandler >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmapHandler >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxBitmapHandler const & param0 = *param0_smtptr;
 
   wxBitmapHandler* _newobj = new wxBitmapHandler(param0);
@@ -207,7 +207,7 @@ BasicVariable::ptr WrapClass_wxBitmapHandler::
   int _n=0;
 
   boost::shared_ptr<wxBitmapHandler > param0_smtptr;
-  if (!get_val_smtptr_param<wxBitmapHandler >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmapHandler >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmapHandler const & param0 = *param0_smtptr;
 
   wxBitmapHandler & res =   (*this->_objectptr->GetObj()) = (param0);

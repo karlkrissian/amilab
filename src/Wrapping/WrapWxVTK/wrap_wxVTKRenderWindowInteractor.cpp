@@ -205,28 +205,28 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWindow* parent = parent_smtptr.get();
 
   int id;
-  if (!get_val_param<int >(id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxDefaultSize );
 
   long style_long = 262144;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(style_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int style = style_long;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxPanelNameStr) );
 
@@ -239,7 +239,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
 //  Wrapping of int wxVTKRenderWindowInteractor::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_wxVTKRenderWindowInteractor::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -247,14 +247,14 @@ void WrapClass_wxVTKRenderWindowInteractor::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   wxVTKRenderWindowInteractor::IsTypeOf(type);
@@ -265,7 +265,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
 //  Wrapping of wxVTKRenderWindowInteractor * wxVTKRenderWindowInteractor::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_wxVTKRenderWindowInteractor::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type wxVTKRenderWindowInteractor";
@@ -273,14 +273,14 @@ void WrapClass_wxVTKRenderWindowInteractor::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   wxVTKRenderWindowInteractor * res =   wxVTKRenderWindowInteractor::SafeDownCast(o);
@@ -292,14 +292,14 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
 //  Wrapping of wxVTKRenderWindowInteractor * wxVTKRenderWindowInteractor::New()
 //---------------------------------------------------
 void WrapClass_wxVTKRenderWindowInteractor::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type wxVTKRenderWindowInteractor";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -347,7 +347,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -394,11 +394,11 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -481,7 +481,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   int enable_int;
-  if (!get_val_param<int >(enable_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(enable_int,_p,_n,true,true)) ClassReturnEmptyVar;
   bool enable = (bool) (enable_int>0.5);
 
   bool res =   this->_objectptr->GetObj()->Enable(enable);
@@ -544,10 +544,10 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->UpdateSize(x, y);
   return BasicVariable::ptr();
@@ -572,7 +572,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   int timertype;
-  if (!get_val_param<int >(timertype,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(timertype,_p,_n,true,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->CreateTimer(timertype);
   return AMILabType<int >::CreateVar(res);
@@ -633,7 +633,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxPaintEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxPaintEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPaintEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPaintEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnPaint(event);
@@ -659,7 +659,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxEraseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxEraseEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxEraseEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxEraseEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnEraseBackground(event);
@@ -685,7 +685,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxMouseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMouseEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnMotion(event);
@@ -710,7 +710,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxMouseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMouseEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnButtonDown(event);
@@ -735,7 +735,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxMouseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMouseEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnButtonUp(event);
@@ -760,7 +760,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxMouseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMouseEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnEnter(event);
@@ -785,7 +785,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxMouseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMouseEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnLeave(event);
@@ -810,7 +810,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxKeyEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxKeyEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxKeyEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxKeyEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnKeyDown(event);
@@ -835,7 +835,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxKeyEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxKeyEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxKeyEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxKeyEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnKeyUp(event);
@@ -860,7 +860,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxKeyEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxKeyEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxKeyEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxKeyEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnChar(event);
@@ -886,7 +886,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxTimerEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxTimerEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxTimerEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxTimerEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnTimer(event);
@@ -912,7 +912,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxSizeEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxSizeEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSizeEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizeEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnSize(event);
@@ -937,7 +937,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   boost::shared_ptr<wxMouseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMouseEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMouseEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnMouseWheel(event);
@@ -980,7 +980,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   int newValue;
-  if (!get_val_param<int >(newValue,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(newValue,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetRenderWhenDisabled(newValue);
   return BasicVariable::ptr();
@@ -1059,7 +1059,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   int capable;
-  if (!get_val_param<int >(capable,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(capable,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStereo(capable);
   return BasicVariable::ptr();
@@ -1083,7 +1083,7 @@ BasicVariable::ptr WrapClass_wxVTKRenderWindowInteractor::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetUseCaptureMouse(_arg);
   return BasicVariable::ptr();

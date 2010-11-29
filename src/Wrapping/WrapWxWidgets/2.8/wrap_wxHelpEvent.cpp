@@ -124,7 +124,7 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   boost::shared_ptr<wxPoint > pt_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pt = ( pt_smtptr.get() ? (*pt_smtptr) : wxPoint(wxDefaultPosition) );
+  wxPoint const & pt = ( pt_smtptr.get() ? (*pt_smtptr) : wxDefaultPosition );
 
   int origin_int = (int) wxHelpEvent::Origin_Unknown;;
   if (!get_val_param<int >(origin_int,_p,_n,false,true)) ClassReturnEmptyVar;

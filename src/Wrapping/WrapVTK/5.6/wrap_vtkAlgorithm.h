@@ -26,6 +26,7 @@
 #include "wrap_vtkObject.h"
 
 
+
 AMI_DECLARE_TYPE(vtkAlgorithm);
 
 // TODO: check for inheritence ...
@@ -126,10 +127,10 @@ class WrapClass_vtkAlgorithm : public WrapClass<vtkAlgorithm>
 /* The following types are missing: vtkExecutive
     ADD_CLASS_METHOD(SetExecutive,"void vtkAlgorithm::SetExecutive(vtkExecutive * executive)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setexecutive)")
 */
-/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
+/* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
     ADD_CLASS_METHOD(ProcessRequest,"int vtkAlgorithm::ProcessRequest(vtkInformation * request, vtkInformationVector * * inInfo, vtkInformationVector * outInfo)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#processrequest)")
 */
-/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
+/* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
     ADD_CLASS_METHOD(ComputePipelineMTime,"int vtkAlgorithm::ComputePipelineMTime(vtkInformation * request, vtkInformationVector * * inInfoVec, vtkInformationVector * outInfoVec, int requestFromOutputPort, long unsigned int * mtime)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#computepipelinemtime)")
 */
 /* The following types are missing: vtkInformation

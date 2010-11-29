@@ -179,14 +179,14 @@ BasicVariable::ptr WrapClass_wxSizerFlags::
 //  Wrapping of int wxSizerFlags::GetDefaultBorder()
 //---------------------------------------------------
 void WrapClass_wxSizerFlags::
-    wrap_GetDefaultBorder::SetParametersComments()
+    wrap_static_GetDefaultBorder::SetParametersComments()
 {
   return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxSizerFlags::
-    wrap_GetDefaultBorder::CallMember( ParamList* _p)
+    wrap_static_GetDefaultBorder::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

@@ -175,14 +175,14 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 //  Wrapping of void wxUpdateUIEvent::SetUpdateInterval(long int updateInterval)
 //---------------------------------------------------
 void WrapClass_wxUpdateUIEvent::
-    wrap_SetUpdateInterval::SetParametersComments()
+    wrap_static_SetUpdateInterval::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'updateInterval'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxUpdateUIEvent::
-    wrap_SetUpdateInterval::CallMember( ParamList* _p)
+    wrap_static_SetUpdateInterval::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -200,14 +200,14 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 //  Wrapping of long int wxUpdateUIEvent::GetUpdateInterval()
 //---------------------------------------------------
 void WrapClass_wxUpdateUIEvent::
-    wrap_GetUpdateInterval::SetParametersComments()
+    wrap_static_GetUpdateInterval::SetParametersComments()
 {
   return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxUpdateUIEvent::
-    wrap_GetUpdateInterval::CallMember( ParamList* _p)
+    wrap_static_GetUpdateInterval::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -220,7 +220,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 //  Wrapping of bool wxUpdateUIEvent::CanUpdate(wxWindowBase * win)
 //---------------------------------------------------
 void WrapClass_wxUpdateUIEvent::
-    wrap_CanUpdate::SetParametersComments()
+    wrap_static_CanUpdate::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindowBase, "parameter named 'win'")
   return_comments="returning a variable of type int";
@@ -228,7 +228,7 @@ void WrapClass_wxUpdateUIEvent::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxUpdateUIEvent::
-    wrap_CanUpdate::CallMember( ParamList* _p)
+    wrap_static_CanUpdate::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -247,13 +247,13 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 //  Wrapping of void wxUpdateUIEvent::ResetUpdateTime()
 //---------------------------------------------------
 void WrapClass_wxUpdateUIEvent::
-    wrap_ResetUpdateTime::SetParametersComments()
+    wrap_static_ResetUpdateTime::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxUpdateUIEvent::
-    wrap_ResetUpdateTime::CallMember( ParamList* _p)
+    wrap_static_ResetUpdateTime::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -266,14 +266,14 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 //  Wrapping of void wxUpdateUIEvent::SetMode(wxUpdateUIMode mode)
 //---------------------------------------------------
 void WrapClass_wxUpdateUIEvent::
-    wrap_SetMode::SetParametersComments()
+    wrap_static_SetMode::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxUpdateUIMode, "parameter named 'mode'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxUpdateUIEvent::
-    wrap_SetMode::CallMember( ParamList* _p)
+    wrap_static_SetMode::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -292,14 +292,14 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 //  Wrapping of wxUpdateUIMode wxUpdateUIEvent::GetMode()
 //---------------------------------------------------
 void WrapClass_wxUpdateUIEvent::
-    wrap_GetMode::SetParametersComments()
+    wrap_static_GetMode::SetParametersComments()
 {
   return_comments="returning a variable of type wxUpdateUIMode";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxUpdateUIEvent::
-    wrap_GetMode::CallMember( ParamList* _p)
+    wrap_static_GetMode::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

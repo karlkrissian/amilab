@@ -81,10 +81,14 @@ void WrapClass_wxBitmapHandlerBase::AddMethods(WrapClass<wxBitmapHandlerBase>::p
       AddVar_SaveFile( this_ptr);
       AddVar_SetName( this_ptr);
       AddVar_SetExtension( this_ptr);
+/* The following types are missing: wxBitmapType
       AddVar_SetType( this_ptr);
+*/
       AddVar_GetName( this_ptr);
       AddVar_GetExtension( this_ptr);
+/* The following types are missing: wxBitmapType
       AddVar_GetType( this_ptr);
+*/
       AddVar_GetClassInfo( this_ptr);
 
       // Adding operators
@@ -118,7 +122,7 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmapHandlerBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxBitmapHandlerBase >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmapHandlerBase >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxBitmapHandlerBase const & param0 = *param0_smtptr;
 
   wxBitmapHandlerBase* _newobj = new wxBitmapHandlerBase(param0);
@@ -207,25 +211,25 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap* bitmap = bitmap_smtptr.get();
 
   boost::shared_ptr<void > data_smtptr;
-  if (!get_val_smtptr_param<void >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<void >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   void* data = data_smtptr.get();
 
   long flags_long;
-  if (!get_val_param<long >(flags_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(flags_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int flags = flags_long;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(width,_p,_n,true,false)) ClassHelpAndReturn;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(height,_p,_n,true,false)) ClassHelpAndReturn;
 
   int depth = 1;
-  if (!get_val_param<int >(depth,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(depth,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Create(bitmap, data, flags, width, height, depth);
   int res_int = ((res==true)?1:0);
@@ -256,22 +260,22 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap* bitmap = bitmap_smtptr.get();
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   long flags_long;
-  if (!get_val_param<long >(flags_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(flags_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int flags = flags_long;
 
   int desiredWidth;
-  if (!get_val_param<int >(desiredWidth,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(desiredWidth,_p,_n,true,false)) ClassHelpAndReturn;
 
   int desiredHeight;
-  if (!get_val_param<int >(desiredHeight,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(desiredHeight,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(bitmap, name, flags, desiredWidth, desiredHeight);
   int res_int = ((res==true)?1:0);
@@ -300,18 +304,18 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap* bitmap = bitmap_smtptr.get();
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   int type;
-  if (!get_val_param<int >(type,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(type,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxPalette > palette_smtptr;
-  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPalette* palette = palette_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->SaveFile(bitmap, name, type, palette);
@@ -337,7 +341,7 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   this->_objectptr->GetObj()->SetName(name);
@@ -362,12 +366,13 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   int _n=0;
 
   boost::shared_ptr<wxString > ext_smtptr;
-  if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & ext = *ext_smtptr;
 
   this->_objectptr->GetObj()->SetExtension(ext);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxBitmapType
 
 //---------------------------------------------------
 //  Wrapping of void wxBitmapHandlerBase::SetType(wxBitmapType type)
@@ -375,7 +380,7 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
 void WrapClass_wxBitmapHandlerBase::
     wrap_SetType::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'type'")
+  ADDPARAMCOMMENT_TYPE( wxBitmapType, "parameter named 'type'")
 }
 
 //---------------------------------------------------
@@ -386,13 +391,13 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int type_int;
-  if (!get_val_param<int >(type_int,_p,_n)) ClassHelpAndReturn;
-  wxBitmapType type = (wxBitmapType) type_int;
+  wxBitmapType type;
+  if (!get_val_param<wxBitmapType >(type,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetType(type);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxString const & wxBitmapHandlerBase::GetName()
@@ -431,6 +436,7 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   wxString const & res =   this->_objectptr->GetObj()->GetExtension();
   return AMILabType<wxString >::CreateVar(res);
 }
+/* The following types are missing: wxBitmapType
 
 //---------------------------------------------------
 //  Wrapping of wxBitmapType wxBitmapHandlerBase::GetType()
@@ -438,7 +444,7 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
 void WrapClass_wxBitmapHandlerBase::
     wrap_GetType::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxBitmapType";
 }
 
 //---------------------------------------------------
@@ -448,9 +454,9 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxBitmapType res =   this->_objectptr->GetObj()->GetType();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxBitmapType >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxClassInfo * wxBitmapHandlerBase::GetClassInfo()
@@ -491,7 +497,7 @@ BasicVariable::ptr WrapClass_wxBitmapHandlerBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmapHandlerBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxBitmapHandlerBase >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmapHandlerBase >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmapHandlerBase const & param0 = *param0_smtptr;
 
   wxBitmapHandlerBase & res =   (*this->_objectptr->GetObj()) = (param0);

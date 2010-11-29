@@ -110,10 +110,10 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   int _n=0;
 
   int type = wxEVT_NULL;
-  if (!get_val_param<int >(type,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(type,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int winid = 0;
-  if (!get_val_param<int >(winid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(winid,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxCloseEvent* _newobj = new wxCloseEvent(type, winid);
   BasicVariable::ptr res = WrapClass_wxCloseEvent::CreateVar(_newobj);
@@ -159,7 +159,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   int _n=0;
 
   boost::shared_ptr<wxCloseEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxCloseEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxCloseEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxCloseEvent const & event = *event_smtptr;
 
   wxCloseEvent* _newobj = new wxCloseEvent(event);
@@ -201,7 +201,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   int _n=0;
 
   int logOff_int;
-  if (!get_val_param<int >(logOff_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(logOff_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool logOff = (bool) (logOff_int>0.5);
 
   this->_objectptr->GetObj()->SetLoggingOff(logOff);
@@ -246,7 +246,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   int _n=0;
 
   int veto_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(veto_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(veto_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool veto = (bool) (veto_int>0.5);
 
   this->_objectptr->GetObj()->Veto(veto);
@@ -271,7 +271,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   int _n=0;
 
   int canVeto_int;
-  if (!get_val_param<int >(canVeto_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(canVeto_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool canVeto = (bool) (canVeto_int>0.5);
 
   this->_objectptr->GetObj()->SetCanVeto(canVeto);

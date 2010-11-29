@@ -102,7 +102,7 @@ void WrapClass_vtkCommand::AddMethods(WrapClass<vtkCommand>::ptr this_ptr )
 //  Wrapping of char const * vtkCommand::GetStringFromEventId(long unsigned int event)
 //---------------------------------------------------
 void WrapClass_vtkCommand::
-    wrap_GetStringFromEventId::SetParametersComments()
+    wrap_static_GetStringFromEventId::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'event'")
   return_comments="returning a variable of type std::string";
@@ -110,7 +110,7 @@ void WrapClass_vtkCommand::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkCommand::
-    wrap_GetStringFromEventId::CallMember( ParamList* _p)
+    wrap_static_GetStringFromEventId::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -129,7 +129,7 @@ BasicVariable::ptr WrapClass_vtkCommand::
 //  Wrapping of long unsigned int vtkCommand::GetEventIdFromString(char const * event)
 //---------------------------------------------------
 void WrapClass_vtkCommand::
-    wrap_GetEventIdFromString::SetParametersComments()
+    wrap_static_GetEventIdFromString::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'event'")
   return_comments="returning a variable of type long";
@@ -137,7 +137,7 @@ void WrapClass_vtkCommand::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkCommand::
-    wrap_GetEventIdFromString::CallMember( ParamList* _p)
+    wrap_static_GetEventIdFromString::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

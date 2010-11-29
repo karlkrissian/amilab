@@ -304,12 +304,12 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxDefaultSize );
 
   long style_long = 541072960;;
   if (!get_val_param<long >(style_long,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -363,12 +363,12 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxDefaultSize );
 
   long style_long = 541072960;;
   if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;

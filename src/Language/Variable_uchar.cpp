@@ -348,10 +348,6 @@ BasicVariable::ptr Variable<unsigned char>::TryCast(
       RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
     } else
     // cast to long
-    if (type_string==AMILabType<long int>::name_as_string()) {
-      RETURN_VARPTR(long int, boost::numeric_cast<long int>(Value()));
-    } else
-    // cast to long
     if (type_string==AMILabType<long>::name_as_string()) {
       RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
     } else 

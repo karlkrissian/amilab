@@ -26,6 +26,7 @@
 #include "wrap_vtkAlgorithm.h"
 
 
+
 AMI_DECLARE_TYPE(vtkAbstractMapper);
 
 // TODO: check for inheritence ...
@@ -65,9 +66,7 @@ class WrapClass_vtkAbstractMapper : public WrapClass<vtkAbstractMapper>
     
     ADD_CLASS_STATICMETHOD(IsTypeOf,"int vtkAbstractMapper::IsTypeOf(char const * type) (http://docs.wxwidgets.org/stable/wx_vtkabstractmapper.html#istypeof).");
     ADD_CLASS_STATICMETHOD(SafeDownCast,"vtkAbstractMapper * vtkAbstractMapper::SafeDownCast(vtkObjectBase * o) (http://docs.wxwidgets.org/stable/wx_vtkabstractmapper.html#safedowncast).");
-    /* The following types are missing: vtkDataArray
     ADD_CLASS_STATICMETHOD(GetScalars,"vtkDataArray * vtkAbstractMapper::GetScalars(vtkDataSet * input, int scalarMode, int arrayAccessMode, int arrayId, char const * arrayName, int & cellFlag) (http://docs.wxwidgets.org/stable/wx_vtkabstractmapper.html#getscalars).");
-    */
 
 
 

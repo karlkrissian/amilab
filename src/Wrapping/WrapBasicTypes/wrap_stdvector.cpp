@@ -31,3 +31,10 @@ BasicVariable::ptr WrapClass<std::vector<float> >::CreateVar( ParamList* p)
   WrapClass_StdVector<float>::wrap_StdVector construct;
   return construct.CallMember(p);
 }
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<std::vector<double> >::CreateVar( ParamList* p)
+{
+  WrapClass_StdVector<double>::wrap_StdVector construct;
+  return construct.CallMember(p);
+}

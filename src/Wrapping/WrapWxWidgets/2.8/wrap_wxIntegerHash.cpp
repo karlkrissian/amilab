@@ -78,10 +78,8 @@ void WrapClass_wxIntegerHash::AddMethods(WrapClass<wxIntegerHash>::ptr this_ptr 
 /* The following types are missing: short int
       // AddVar_operator not available( this_ptr);
 */
-/* The following types are missing: short unsigned int
       // AddVar_operator not available( this_ptr);
-*/
-/* The following types are missing: long long unsigned int, long long int
+/* The following types are missing: long long unsigned int
       // AddVar_operator not available( this_ptr);
 */
 /* The following types are missing: long long unsigned int, long long unsigned int
@@ -117,7 +115,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   int _n=0;
 
   boost::shared_ptr<wxIntegerHash > param0_smtptr;
-  if (!get_val_smtptr_param<wxIntegerHash >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIntegerHash >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxIntegerHash const & param0 = *param0_smtptr;
 
   wxIntegerHash* _newobj = new wxIntegerHash(param0);
@@ -202,7 +200,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   int _n=0;
 
   long x_long;
-  if (!get_val_param<long >(x_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(x_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int x = x_long;
 
   long unsigned int res =   this->_objectptr->GetObj()->()(x);
@@ -250,7 +248,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   int _n=0;
 
   long x_long;
-  if (!get_val_param<long >(x_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(x_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int x = boost::numeric_cast<long unsigned int >(x_long);
 
   long unsigned int res =   this->_objectptr->GetObj()->()(x);
@@ -280,7 +278,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   long unsigned int res =   this->_objectptr->GetObj()->()(x);
   long res_long = boost::numeric_cast<long >(res);
@@ -309,7 +307,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   int _n=0;
 
   long x_long;
-  if (!get_val_param<long >(x_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(x_long,_p,_n,true,true)) ClassReturnEmptyVar;
   unsigned int x = boost::numeric_cast<unsigned int >(x_long);
 
   long unsigned int res =   this->_objectptr->GetObj()->()(x);
@@ -340,7 +338,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   int _n=0;
 
   short int x;
-  if (!get_val_param<short int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<short int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   long unsigned int res =   this->_objectptr->GetObj()->()(x);
   long res_long = boost::numeric_cast<long >(res);
@@ -348,7 +346,6 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
 }
 */
 /*
- * The following types are missing: short unsigned int
  * operator not available 
 
 //---------------------------------------------------
@@ -357,7 +354,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
 void WrapClass_wxIntegerHash::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( short unsigned int, "parameter named 'x'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   return_comments="returning a variable of type long";
 }
 
@@ -369,8 +366,9 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  short unsigned int x;
-  if (!get_val_param<short unsigned int >(x,_p,_n)) ClassReturnEmptyVar;
+  int x_int;
+  if (!get_val_param<int >(x_int,_p,_n,true,true)) ClassReturnEmptyVar;
+  short unsigned int x = boost::numeric_cast<short unsigned int >(x_int);
 
   long unsigned int res =   this->_objectptr->GetObj()->()(x);
   long res_long = boost::numeric_cast<long >(res);
@@ -378,7 +376,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
 }
 */
 /*
- * The following types are missing: long long unsigned int, long long int
+ * The following types are missing: long long unsigned int
  * operator not available 
 
 //---------------------------------------------------
@@ -387,7 +385,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
 void WrapClass_wxIntegerHash::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'x'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'x'")
   return_comments="returning a variable of type long long unsigned int";
 }
 
@@ -399,8 +397,9 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int x;
-  if (!get_val_param<long long int >(x,_p,_n)) ClassReturnEmptyVar;
+  long x_long;
+  if (!get_val_param<long >(x_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int x = boost::numeric_cast<long long int >(x_long);
 
   long long unsigned int res =   this->_objectptr->GetObj()->()(x);
   return AMILabType<long long unsigned int >::CreateVar(res);
@@ -429,7 +428,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   int _n=0;
 
   long long unsigned int x;
-  if (!get_val_param<long long unsigned int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long long unsigned int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   long long unsigned int res =   this->_objectptr->GetObj()->()(x);
   return AMILabType<long long unsigned int >::CreateVar(res);
@@ -455,7 +454,7 @@ BasicVariable::ptr WrapClass_wxIntegerHash::
   int _n=0;
 
   boost::shared_ptr<wxIntegerHash > param0_smtptr;
-  if (!get_val_smtptr_param<wxIntegerHash >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIntegerHash >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIntegerHash const & param0 = *param0_smtptr;
 
   wxIntegerHash & res =   (*this->_objectptr->GetObj()) = (param0);

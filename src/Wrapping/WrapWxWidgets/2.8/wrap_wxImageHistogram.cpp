@@ -156,7 +156,7 @@ BasicVariable::ptr WrapClass_wxImageHistogram::
 //  Wrapping of long unsigned int wxImageHistogram::MakeKey(unsigned char r, unsigned char g, unsigned char b)
 //---------------------------------------------------
 void WrapClass_wxImageHistogram::
-    wrap_MakeKey::SetParametersComments()
+    wrap_static_MakeKey::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'r'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'g'")
@@ -166,7 +166,7 @@ void WrapClass_wxImageHistogram::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImageHistogram::
-    wrap_MakeKey::CallMember( ParamList* _p)
+    wrap_static_MakeKey::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>3) ClassHelpAndReturn;

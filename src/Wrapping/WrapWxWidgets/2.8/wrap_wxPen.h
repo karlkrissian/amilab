@@ -26,6 +26,7 @@
 #include "wrap_wxGDIObject.h"
 
 
+
 AMI_DECLARE_TYPE(wxPen);
 
 // TODO: check for inheritence ...
@@ -96,7 +97,7 @@ class WrapClass_wxPen : public WrapClass<wxPen>
     ADD_CLASS_METHOD(GetJoin,"int wxPen::GetJoin()  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getjoin)")
     ADD_CLASS_METHOD(GetStyle,"int wxPen::GetStyle()  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getstyle)")
     ADD_CLASS_METHOD(GetWidth,"int wxPen::GetWidth()  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getwidth)")
-/* The following types are missing: signed char
+/* The following types are missing: wxDash * *
     ADD_CLASS_METHOD(GetDashes,"int wxPen::GetDashes(wxDash * * ptr)  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getdashes)")
 */
     ADD_CLASS_METHOD(GetDashCount,"int wxPen::GetDashCount()  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getdashcount)")

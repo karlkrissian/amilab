@@ -26,6 +26,7 @@
 #include "wrap_vtkImplicitFunction.h"
 
 
+
 AMI_DECLARE_TYPE(vtkPlanes);
 
 // TODO: check for inheritence ...
@@ -81,18 +82,10 @@ class WrapClass_vtkPlanes : public WrapClass<vtkPlanes>
     ADD_CLASS_METHOD(EvaluateFunction,"vtkPlanes::EvaluateFunction()  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#evaluatefunction)")
     ADD_CLASS_METHOD(EvaluateFunction_2,"double vtkPlanes::EvaluateFunction(double x, double y, double z)  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#evaluatefunction)")
     ADD_CLASS_METHOD(EvaluateGradient,"void vtkPlanes::EvaluateGradient(double * x, double * n)  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#evaluategradient)")
-/* The following types are missing: vtkPoints
     ADD_CLASS_METHOD(SetPoints,"void vtkPlanes::SetPoints(vtkPoints * param0)  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#setpoints)")
-*/
-/* The following types are missing: vtkPoints
     ADD_CLASS_METHOD(GetPoints,"vtkPoints * vtkPlanes::GetPoints()  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#getpoints)")
-*/
-/* The following types are missing: vtkDataArray
     ADD_CLASS_METHOD(SetNormals,"void vtkPlanes::SetNormals(vtkDataArray * normals)  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#setnormals)")
-*/
-/* The following types are missing: vtkDataArray
     ADD_CLASS_METHOD(GetNormals,"vtkDataArray * vtkPlanes::GetNormals()  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#getnormals)")
-*/
     ADD_CLASS_METHOD(SetFrustumPlanes,"void vtkPlanes::SetFrustumPlanes(double * planes)  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#setfrustumplanes)")
     ADD_CLASS_METHOD(SetBounds_1,"void vtkPlanes::SetBounds(double * bounds)  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#setbounds)")
     ADD_CLASS_METHOD(SetBounds,"vtkPlanes::SetBounds()  (http://docs.wxwidgets.org/stable/wx_vtkplanes.html#setbounds)")

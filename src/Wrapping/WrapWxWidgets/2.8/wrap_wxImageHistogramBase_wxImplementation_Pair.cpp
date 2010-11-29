@@ -18,8 +18,8 @@
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxImageHistogramBase_wxImplementation_Pair.h"
 #include "wrap_wxImageHistogramEntry.h"
+#include "wrap_wxImageHistogramBase_wxImplementation_Pair.h"
 
 
 #include "wrap_wxImageHistogramBase_wxImplementation_Pair.h"
@@ -122,7 +122,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_Pair::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_Pair > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_Pair >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_Pair >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxImageHistogramBase_wxImplementation_Pair const & param0 = *param0_smtptr;
 
   wxImageHistogramBase_wxImplementation_Pair* _newobj = new wxImageHistogramBase_wxImplementation_Pair(param0);
@@ -170,11 +170,11 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_Pair::
   int _n=0;
 
   boost::shared_ptr<long unsigned int > f_smtptr;
-  if (!get_val_smtptr_param<long unsigned int >(f_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long unsigned int >(f_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long unsigned int const & f = *f_smtptr;
 
   boost::shared_ptr<wxImageHistogramEntry > s_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramEntry >(s_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImageHistogramEntry >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxImageHistogramEntry const & s = *s_smtptr;
 
   wxImageHistogramBase_wxImplementation_Pair* _newobj = new wxImageHistogramBase_wxImplementation_Pair(f, s);
@@ -217,7 +217,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_Pair::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_Pair > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_Pair >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_Pair >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHistogramBase_wxImplementation_Pair const & param0 = *param0_smtptr;
 
   wxImageHistogramBase_wxImplementation_Pair & res =   (*this->_objectptr->GetObj()) = (param0);

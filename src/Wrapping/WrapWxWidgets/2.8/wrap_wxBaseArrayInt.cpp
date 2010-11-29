@@ -152,7 +152,7 @@ BasicVariable::ptr WrapClass_wxBaseArrayInt::
   int _n=0;
 
   boost::shared_ptr<wxBaseArrayInt > array_smtptr;
-  if (!get_val_smtptr_param<wxBaseArrayInt >(array_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBaseArrayInt >(array_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxBaseArrayInt const & array = *array_smtptr;
 
   wxBaseArrayInt* _newobj = new wxBaseArrayInt(array);
@@ -230,7 +230,7 @@ BasicVariable::ptr WrapClass_wxBaseArrayInt::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(n_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   this->_objectptr->GetObj()->Alloc(n);
@@ -294,11 +294,11 @@ BasicVariable::ptr WrapClass_wxBaseArrayInt::
   int _n=0;
 
   long n_long;
-  if (!get_val_param<long >(n_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(n_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
   int defval = 0;
-  if (!get_val_param<int >(defval,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(defval,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetCount(n, defval);
   return BasicVariable::ptr();
@@ -441,7 +441,7 @@ BasicVariable::ptr WrapClass_wxBaseArrayInt::
   int _n=0;
 
   boost::shared_ptr<wxBaseArrayInt > src_smtptr;
-  if (!get_val_smtptr_param<wxBaseArrayInt >(src_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBaseArrayInt >(src_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBaseArrayInt const & src = *src_smtptr;
 
   wxBaseArrayInt & res =   (*this->_objectptr->GetObj()) = (src);

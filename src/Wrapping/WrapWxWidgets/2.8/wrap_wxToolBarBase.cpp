@@ -334,7 +334,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxBitmap(wxNullBitmap) );
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxNullBitmap );
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
@@ -393,7 +393,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxBitmap(wxNullBitmap) );
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxNullBitmap );
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
@@ -459,7 +459,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxBitmap(wxNullBitmap) );
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxNullBitmap );
 
   wxItemKind kind = wxITEM_NORMAL;
   if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1724,7 +1724,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxBitmap(wxNullBitmap) );
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxNullBitmap );
 
   int toggle_int = ((false==true)?1:0);;
   if (!get_val_param<int >(toggle_int,_p,_n,false,true)) ClassReturnEmptyVar;

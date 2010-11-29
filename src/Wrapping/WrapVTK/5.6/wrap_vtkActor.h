@@ -87,21 +87,11 @@ class WrapClass_vtkActor : public WrapClass<vtkActor>
 */
     ADD_CLASS_METHOD(ShallowCopy,"void vtkActor::ShallowCopy(vtkProp * prop)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#shallowcopy)")
     ADD_CLASS_METHOD(ReleaseGraphicsResources,"void vtkActor::ReleaseGraphicsResources(vtkWindow * param0)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#releasegraphicsresources)")
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(SetProperty,"void vtkActor::SetProperty(vtkProperty * lut)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#setproperty)")
-*/
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(GetProperty,"vtkProperty * vtkActor::GetProperty()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getproperty)")
-*/
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(MakeProperty,"vtkProperty * vtkActor::MakeProperty()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#makeproperty)")
-*/
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(SetBackfaceProperty,"void vtkActor::SetBackfaceProperty(vtkProperty * lut)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#setbackfaceproperty)")
-*/
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(GetBackfaceProperty,"vtkProperty * vtkActor::GetBackfaceProperty()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getbackfaceproperty)")
-*/
 /* The following types are missing: vtkTexture
     ADD_CLASS_METHOD(SetTexture,"void vtkActor::SetTexture(vtkTexture * param0)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#settexture)")
 */

@@ -87,12 +87,8 @@ class WrapClass_wxIntegerEqual : public WrapClass<wxIntegerEqual>
 /* The following types are missing: short int, short int
     // ADD_CLASS_METHOD(operator not available,"bool wxIntegerEqual::()(short int a, short int b) (http://docs.wxwidgets.org/stable/wx_wxintegerequal.html#())")
 */
-/* The following types are missing: short unsigned int, short unsigned int
     // ADD_CLASS_METHOD(operator not available,"bool wxIntegerEqual::()(short unsigned int a, short unsigned int b) (http://docs.wxwidgets.org/stable/wx_wxintegerequal.html#())")
-*/
-/* The following types are missing: long long int, long long int
     // ADD_CLASS_METHOD(operator not available,"bool wxIntegerEqual::()(long long int a, long long int b) (http://docs.wxwidgets.org/stable/wx_wxintegerequal.html#())")
-*/
 /* The following types are missing: long long unsigned int, long long unsigned int
     // ADD_CLASS_METHOD(operator not available,"bool wxIntegerEqual::()(long long unsigned int a, long long unsigned int b) (http://docs.wxwidgets.org/stable/wx_wxintegerequal.html#())")
 */

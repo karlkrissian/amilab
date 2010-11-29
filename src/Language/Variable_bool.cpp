@@ -53,7 +53,7 @@
 /// Copy contents to new variable
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<bool>::NewCopy() const
 {
-  bool_ptr newval( new bool(Value()));
+  boost::shared_ptr<bool> newval( new bool(Value()));
   Variable<bool>::ptr newvar(new Variable<bool>(newval));
   return newvar;
 }

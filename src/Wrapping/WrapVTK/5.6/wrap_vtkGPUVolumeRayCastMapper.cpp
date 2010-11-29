@@ -21,6 +21,7 @@
 #include "wrap_vtkGPUVolumeRayCastMapper.h"
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
+#include "boost/numeric/conversion/cast.hpp"
 #include "wrap_vtkRenderWindow.h"
 #include "wrap_vtkVolumeProperty.h"
 #include "wrap_vtkRenderer.h"
@@ -112,12 +113,8 @@ void WrapClass_vtkGPUVolumeRayCastMapper::AddMethods(WrapClass<vtkGPUVolumeRayCa
       AddVar_GetFinalColorWindow( this_ptr);
       AddVar_SetFinalColorLevel( this_ptr);
       AddVar_GetFinalColorLevel( this_ptr);
-/* The following types are missing: long long int
       AddVar_SetMaxMemoryInBytes( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetMaxMemoryInBytes( this_ptr);
-*/
       AddVar_SetMaxMemoryFraction( this_ptr);
       AddVar_GetMaxMemoryFractionMinValue( this_ptr);
       AddVar_GetMaxMemoryFractionMaxValue( this_ptr);
@@ -150,14 +147,14 @@ void WrapClass_vtkGPUVolumeRayCastMapper::AddMethods(WrapClass<vtkGPUVolumeRayCa
 //  Wrapping of vtkGPUVolumeRayCastMapper * vtkGPUVolumeRayCastMapper::New()
 //---------------------------------------------------
 void WrapClass_vtkGPUVolumeRayCastMapper::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkGPUVolumeRayCastMapper";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -170,7 +167,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
 //  Wrapping of int vtkGPUVolumeRayCastMapper::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkGPUVolumeRayCastMapper::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -178,7 +175,7 @@ void WrapClass_vtkGPUVolumeRayCastMapper::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -196,7 +193,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
 //  Wrapping of vtkGPUVolumeRayCastMapper * vtkGPUVolumeRayCastMapper::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkGPUVolumeRayCastMapper::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkGPUVolumeRayCastMapper";
@@ -204,7 +201,7 @@ void WrapClass_vtkGPUVolumeRayCastMapper::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -784,7 +781,6 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   float res =   this->_objectptr->GetObj()->GetFinalColorLevel();
   return AMILabType<float >::CreateVar(res);
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of void vtkGPUVolumeRayCastMapper::SetMaxMemoryInBytes(vtkIdType _arg)
@@ -792,7 +788,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
 void WrapClass_vtkGPUVolumeRayCastMapper::
     wrap_SetMaxMemoryInBytes::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named '_arg'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named '_arg'")
 }
 
 //---------------------------------------------------
@@ -803,14 +799,13 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  long long int _arg;
-  if (!get_val_param<long long int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
+  long _arg_long;
+  if (!get_val_param<long >(_arg_long,_p,_n,true,false)) ClassHelpAndReturn;
+  long long int _arg = boost::numeric_cast<long long int >(_arg_long);
 
   this->_objectptr->GetObj()->SetMaxMemoryInBytes(_arg);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkGPUVolumeRayCastMapper::GetMaxMemoryInBytes()
@@ -818,7 +813,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
 void WrapClass_vtkGPUVolumeRayCastMapper::
     wrap_GetMaxMemoryInBytes::SetParametersComments()
 {
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -828,9 +823,9 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetMaxMemoryInBytes();
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkGPUVolumeRayCastMapper::SetMaxMemoryFraction(float _arg)

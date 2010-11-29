@@ -114,14 +114,14 @@ BasicVariable::ptr WrapClass_wxButtonBase::
 //  Wrapping of wxSize wxButtonBase::GetDefaultSize()
 //---------------------------------------------------
 void WrapClass_wxButtonBase::
-    wrap_GetDefaultSize::SetParametersComments()
+    wrap_static_GetDefaultSize::SetParametersComments()
 {
   return_comments="returning a variable of type wxSize";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxButtonBase::
-    wrap_GetDefaultSize::CallMember( ParamList* _p)
+    wrap_static_GetDefaultSize::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -147,7 +147,7 @@ BasicVariable::ptr WrapClass_wxButtonBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > param0_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & param0 = *param0_smtptr;
 
   this->_objectptr->GetObj()->SetImageLabel(param0);
@@ -173,10 +173,10 @@ BasicVariable::ptr WrapClass_wxButtonBase::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   int param1;
-  if (!get_val_param<int >(param1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param1,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetImageMargins(param0, param1);
   return BasicVariable::ptr();

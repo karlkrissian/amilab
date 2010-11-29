@@ -26,6 +26,7 @@
 #include "wrap_vtkRenderer.h"
 #include "wrap_vtkProp.h"
 #include "wrap_vtkWindow.h"
+#include "wrap_vtkProperty.h"
 #include "boost/numeric/conversion/cast.hpp"
 
 
@@ -38,7 +39,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkActor>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkActor::wrap_New construct;
+  WrapClass_vtkActor::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -97,21 +98,11 @@ void WrapClass_vtkActor::AddMethods(WrapClass<vtkActor>::ptr this_ptr )
 */
       AddVar_ShallowCopy( this_ptr);
       AddVar_ReleaseGraphicsResources( this_ptr);
-/* The following types are missing: vtkProperty
       AddVar_SetProperty( this_ptr);
-*/
-/* The following types are missing: vtkProperty
       AddVar_GetProperty( this_ptr);
-*/
-/* The following types are missing: vtkProperty
       AddVar_MakeProperty( this_ptr);
-*/
-/* The following types are missing: vtkProperty
       AddVar_SetBackfaceProperty( this_ptr);
-*/
-/* The following types are missing: vtkProperty
       AddVar_GetBackfaceProperty( this_ptr);
-*/
 /* The following types are missing: vtkTexture
       AddVar_SetTexture( this_ptr);
 */
@@ -149,7 +140,7 @@ void WrapClass_vtkActor::AddMethods(WrapClass<vtkActor>::ptr this_ptr )
 //  Wrapping of int vtkActor::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkActor::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -157,7 +148,7 @@ void WrapClass_vtkActor::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkActor::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -175,7 +166,7 @@ BasicVariable::ptr WrapClass_vtkActor::
 //  Wrapping of vtkActor * vtkActor::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkActor::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkActor";
@@ -183,7 +174,7 @@ void WrapClass_vtkActor::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkActor::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -202,14 +193,14 @@ BasicVariable::ptr WrapClass_vtkActor::
 //  Wrapping of vtkActor * vtkActor::New()
 //---------------------------------------------------
 void WrapClass_vtkActor::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkActor";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkActor::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -472,7 +463,6 @@ BasicVariable::ptr WrapClass_vtkActor::
   this->_objectptr->GetObj()->ReleaseGraphicsResources(param0);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of void vtkActor::SetProperty(vtkProperty * lut)
@@ -498,8 +488,6 @@ BasicVariable::ptr WrapClass_vtkActor::
   this->_objectptr->GetObj()->SetProperty(lut);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of vtkProperty * vtkActor::GetProperty()
@@ -517,10 +505,9 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetProperty();
-  return AMILabType<vtkProperty >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of vtkProperty * vtkActor::MakeProperty()
@@ -538,10 +525,9 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->MakeProperty();
-  return AMILabType<vtkProperty >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of void vtkActor::SetBackfaceProperty(vtkProperty * lut)
@@ -567,8 +553,6 @@ BasicVariable::ptr WrapClass_vtkActor::
   this->_objectptr->GetObj()->SetBackfaceProperty(lut);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of vtkProperty * vtkActor::GetBackfaceProperty()
@@ -586,9 +570,9 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetBackfaceProperty();
-  return AMILabType<vtkProperty >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  return res_var;
 }
-*/
 /* The following types are missing: vtkTexture
 
 //---------------------------------------------------

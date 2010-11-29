@@ -378,13 +378,13 @@ BasicVariable::ptr WrapClass_wxBitmap::
 //  Wrapping of void wxBitmap::InitStandardHandlers()
 //---------------------------------------------------
 void WrapClass_wxBitmap::
-    wrap_InitStandardHandlers::SetParametersComments()
+    wrap_static_InitStandardHandlers::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxBitmap::
-    wrap_InitStandardHandlers::CallMember( ParamList* _p)
+    wrap_static_InitStandardHandlers::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

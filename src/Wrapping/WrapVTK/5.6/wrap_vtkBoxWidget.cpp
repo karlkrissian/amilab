@@ -36,7 +36,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkBoxWidget>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkBoxWidget::wrap_New construct;
+  WrapClass_vtkBoxWidget::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -142,14 +142,14 @@ void WrapClass_vtkBoxWidget::AddMethods(WrapClass<vtkBoxWidget>::ptr this_ptr )
 //  Wrapping of vtkBoxWidget * vtkBoxWidget::New()
 //---------------------------------------------------
 void WrapClass_vtkBoxWidget::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkBoxWidget";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkBoxWidget::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -162,7 +162,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
 //  Wrapping of int vtkBoxWidget::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkBoxWidget::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -170,7 +170,7 @@ void WrapClass_vtkBoxWidget::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkBoxWidget::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -188,7 +188,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
 //  Wrapping of vtkBoxWidget * vtkBoxWidget::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkBoxWidget::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkBoxWidget";
@@ -196,7 +196,7 @@ void WrapClass_vtkBoxWidget::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkBoxWidget::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

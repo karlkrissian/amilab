@@ -306,12 +306,8 @@ class WrapClass_vtkDataObject : public WrapClass<vtkDataObject>
 /* The following types are missing: vtkFieldData
     ADD_CLASS_METHOD(GetAttributesAsFieldData,"vtkFieldData * vtkDataObject::GetAttributesAsFieldData(int type)  (http://docs.wxwidgets.org/stable/wx_vtkdataobject.html#getattributesasfielddata)")
 */
-/* The following types are missing: vtkAbstractArray
     ADD_CLASS_METHOD(GetAttributeTypeForArray,"int vtkDataObject::GetAttributeTypeForArray(vtkAbstractArray * arr)  (http://docs.wxwidgets.org/stable/wx_vtkdataobject.html#getattributetypeforarray)")
-*/
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetNumberOfElements,"vtkIdType vtkDataObject::GetNumberOfElements(int type)  (http://docs.wxwidgets.org/stable/wx_vtkdataobject.html#getnumberofelements)")
-*/
 
 
 

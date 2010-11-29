@@ -409,14 +409,14 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 //  Wrapping of int wxWindowBase::NewControlId()
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_NewControlId::SetParametersComments()
+    wrap_static_NewControlId::SetParametersComments()
 {
   return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_NewControlId::CallMember( ParamList* _p)
+    wrap_static_NewControlId::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -428,7 +428,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 //  Wrapping of int wxWindowBase::NextControlId(int winid)
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_NextControlId::SetParametersComments()
+    wrap_static_NextControlId::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
   return_comments="returning a variable of type int";
@@ -436,7 +436,7 @@ void WrapClass_wxWindowBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_NextControlId::CallMember( ParamList* _p)
+    wrap_static_NextControlId::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -453,7 +453,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 //  Wrapping of int wxWindowBase::PrevControlId(int winid)
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_PrevControlId::SetParametersComments()
+    wrap_static_PrevControlId::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
   return_comments="returning a variable of type int";
@@ -461,7 +461,7 @@ void WrapClass_wxWindowBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_PrevControlId::CallMember( ParamList* _p)
+    wrap_static_PrevControlId::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -478,14 +478,14 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 //  Wrapping of wxWindow * wxWindowBase::FindFocus()
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_FindFocus::SetParametersComments()
+    wrap_static_FindFocus::SetParametersComments()
 {
   return_comments="returning a variable of type wxWindow";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_FindFocus::CallMember( ParamList* _p)
+    wrap_static_FindFocus::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -498,14 +498,14 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 //  Wrapping of wxWindow * wxWindowBase::DoFindFocus()
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_DoFindFocus::SetParametersComments()
+    wrap_static_DoFindFocus::SetParametersComments()
 {
   return_comments="returning a variable of type wxWindow";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_DoFindFocus::CallMember( ParamList* _p)
+    wrap_static_DoFindFocus::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -518,7 +518,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 //  Wrapping of wxWindow * wxWindowBase::FindWindowById(long int winid, wxWindow const * parent = 0l)
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_FindWindowById::SetParametersComments()
+    wrap_static_FindWindowById::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'winid'")
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent' (def:0l)")
@@ -527,7 +527,7 @@ void WrapClass_wxWindowBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_FindWindowById::CallMember( ParamList* _p)
+    wrap_static_FindWindowById::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
@@ -550,7 +550,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 //  Wrapping of wxWindow * wxWindowBase::FindWindowByName(wxString const & name, wxWindow const * parent = 0l)
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_FindWindowByName::SetParametersComments()
+    wrap_static_FindWindowByName::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent' (def:0l)")
@@ -559,7 +559,7 @@ void WrapClass_wxWindowBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_FindWindowByName::CallMember( ParamList* _p)
+    wrap_static_FindWindowByName::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
@@ -582,7 +582,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 //  Wrapping of wxWindow * wxWindowBase::FindWindowByLabel(wxString const & label, wxWindow const * parent = 0l)
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_FindWindowByLabel::SetParametersComments()
+    wrap_static_FindWindowByLabel::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'label'")
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'parent' (def:0l)")
@@ -591,7 +591,7 @@ void WrapClass_wxWindowBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_FindWindowByLabel::CallMember( ParamList* _p)
+    wrap_static_FindWindowByLabel::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
@@ -614,14 +614,14 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 //  Wrapping of wxWindow * wxWindowBase::GetCapture()
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_GetCapture::SetParametersComments()
+    wrap_static_GetCapture::SetParametersComments()
 {
   return_comments="returning a variable of type wxWindow";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_GetCapture::CallMember( ParamList* _p)
+    wrap_static_GetCapture::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -635,7 +635,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 //  Wrapping of wxVisualAttributes wxWindowBase::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
 //---------------------------------------------------
 void WrapClass_wxWindowBase::
-    wrap_GetClassDefaultAttributes::SetParametersComments()
+    wrap_static_GetClassDefaultAttributes::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindowVariant, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
   return_comments="returning a variable of type wxVisualAttributes";
@@ -643,7 +643,7 @@ void WrapClass_wxWindowBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindowBase::
-    wrap_GetClassDefaultAttributes::CallMember( ParamList* _p)
+    wrap_static_GetClassDefaultAttributes::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

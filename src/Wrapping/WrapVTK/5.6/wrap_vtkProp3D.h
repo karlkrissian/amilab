@@ -26,6 +26,7 @@
 #include "wrap_vtkProp.h"
 
 
+
 AMI_DECLARE_TYPE(vtkProp3D);
 
 // TODO: check for inheritence ...
@@ -98,21 +99,11 @@ class WrapClass_vtkProp3D : public WrapClass<vtkProp3D>
     ADD_CLASS_METHOD(GetScale,"vtkProp3D::GetScale()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getscale)")
     ADD_CLASS_METHOD(GetScale_2,"void vtkProp3D::GetScale(double * data)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getscale)")
     ADD_CLASS_METHOD(SetScale_3,"void vtkProp3D::SetScale(double s)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#setscale)")
-/* The following types are missing: vtkLinearTransform
     ADD_CLASS_METHOD(SetUserTransform,"void vtkProp3D::SetUserTransform(vtkLinearTransform * transform)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#setusertransform)")
-*/
-/* The following types are missing: vtkLinearTransform
     ADD_CLASS_METHOD(GetUserTransform,"vtkLinearTransform * vtkProp3D::GetUserTransform()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getusertransform)")
-*/
-/* The following types are missing: vtkMatrix4x4
     ADD_CLASS_METHOD(SetUserMatrix,"void vtkProp3D::SetUserMatrix(vtkMatrix4x4 * matrix)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#setusermatrix)")
-*/
-/* The following types are missing: vtkMatrix4x4
     ADD_CLASS_METHOD(GetUserMatrix,"vtkMatrix4x4 * vtkProp3D::GetUserMatrix()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getusermatrix)")
-*/
-/* The following types are missing: vtkMatrix4x4
     ADD_CLASS_METHOD(GetMatrix_1,"void vtkProp3D::GetMatrix(vtkMatrix4x4 * m)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getmatrix)")
-*/
     ADD_CLASS_METHOD(GetMatrix,"vtkProp3D::GetMatrix()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getmatrix)")
     ADD_CLASS_METHOD(GetMatrix_2,"void vtkProp3D::GetMatrix(double * m)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getmatrix)")
     ADD_CLASS_METHOD(GetBounds,"void vtkProp3D::GetBounds(double * bounds)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getbounds)")
@@ -135,16 +126,12 @@ class WrapClass_vtkProp3D : public WrapClass<vtkProp3D>
     ADD_CLASS_METHOD(AddOrientation_1,"void vtkProp3D::AddOrientation(double param0, double param1, double param2)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#addorientation)")
     ADD_CLASS_METHOD(AddOrientation,"vtkProp3D::AddOrientation()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#addorientation)")
     ADD_CLASS_METHOD(AddOrientation_2,"void vtkProp3D::AddOrientation(double * a)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#addorientation)")
-/* The following types are missing: vtkMatrix4x4
     ADD_CLASS_METHOD(PokeMatrix,"void vtkProp3D::PokeMatrix(vtkMatrix4x4 * matrix)  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#pokematrix)")
-*/
     ADD_CLASS_METHOD(InitPathTraversal,"void vtkProp3D::InitPathTraversal()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#initpathtraversal)")
     ADD_CLASS_METHOD(GetMTime,"long unsigned int vtkProp3D::GetMTime()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getmtime)")
     ADD_CLASS_METHOD(GetUserTransformMatrixMTime,"long unsigned int vtkProp3D::GetUserTransformMatrixMTime()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getusertransformmatrixmtime)")
     ADD_CLASS_METHOD(ComputeMatrix,"void vtkProp3D::ComputeMatrix()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#computematrix)")
-/* The following types are missing: vtkMatrix4x4
     ADD_CLASS_METHOD(GetMatrix_3,"vtkMatrix4x4 * vtkProp3D::GetMatrix()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getmatrix)")
-*/
     ADD_CLASS_METHOD(GetIsIdentity,"int vtkProp3D::GetIsIdentity()  (http://docs.wxwidgets.org/stable/wx_vtkprop3d.html#getisidentity)")
 
 

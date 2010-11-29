@@ -18,10 +18,7 @@
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxDrawObject.h"
 #include "wrap_wxColour.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxRect.h"
 #include "wrap_wxSize.h"
 #include "wrap_wxList.h"
 #include "wrap_wxIcon.h"
@@ -30,9 +27,6 @@
 #include "wrap_wxDC.h"
 #include "wrap_wxRegion.h"
 #include "wrap_wxFont.h"
-#include "wrap_wxArrayInt.h"
-#include "wrap_wxBrush.h"
-#include "wrap_wxPen.h"
 #include "wrap_wxClassInfo.h"
 
 
@@ -90,79 +84,141 @@ void WrapClass_wxDCBase::AddMethods(WrapClass<wxDCBase>::ptr this_ptr )
   // check that the method name is not a token
   
       // Adding standard methods 
+/* The following types are missing: wxDrawObject
       AddVar_DrawObject( this_ptr);
+*/
       AddVar_FloodFill_1( this_ptr);
       AddVar_FloodFill( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_FloodFill_2( this_ptr);
+*/
+/* The following types are missing: wxRect
       AddVar_GradientFillConcentric_1( this_ptr);
+*/
       AddVar_GradientFillConcentric( this_ptr);
+/* The following types are missing: wxRect, wxPoint
       AddVar_GradientFillConcentric_2( this_ptr);
+*/
+/* The following types are missing: wxRect, wxDirection
       AddVar_GradientFillLinear( this_ptr);
+*/
       AddVar_GetPixel_1( this_ptr);
       AddVar_GetPixel( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_GetPixel_2( this_ptr);
+*/
       AddVar_DrawLine_1( this_ptr);
       AddVar_DrawLine( this_ptr);
+/* The following types are missing: wxPoint, wxPoint
       AddVar_DrawLine_2( this_ptr);
+*/
       AddVar_CrossHair_1( this_ptr);
       AddVar_CrossHair( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_CrossHair_2( this_ptr);
+*/
       AddVar_DrawArc_1( this_ptr);
       AddVar_DrawArc( this_ptr);
+/* The following types are missing: wxPoint, wxPoint, wxPoint
       AddVar_DrawArc_2( this_ptr);
+*/
       AddVar_DrawCheckMark_1( this_ptr);
       AddVar_DrawCheckMark( this_ptr);
+/* The following types are missing: wxRect
       AddVar_DrawCheckMark_2( this_ptr);
+*/
       AddVar_DrawEllipticArc_1( this_ptr);
       AddVar_DrawEllipticArc( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawEllipticArc_2( this_ptr);
+*/
       AddVar_DrawPoint_1( this_ptr);
       AddVar_DrawPoint( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawPoint_2( this_ptr);
+*/
+/* The following types are missing: wxPoint
       AddVar_DrawLines_1( this_ptr);
+*/
       AddVar_DrawLines( this_ptr);
       AddVar_DrawLines_2( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawPolygon_1( this_ptr);
+*/
       AddVar_DrawPolygon( this_ptr);
       AddVar_DrawPolygon_2( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawPolyPolygon( this_ptr);
+*/
       AddVar_DrawRectangle_1( this_ptr);
       AddVar_DrawRectangle( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawRectangle_2( this_ptr);
+*/
+/* The following types are missing: wxRect
       AddVar_DrawRectangle_3( this_ptr);
+*/
       AddVar_DrawRoundedRectangle_1( this_ptr);
       AddVar_DrawRoundedRectangle( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawRoundedRectangle_2( this_ptr);
+*/
+/* The following types are missing: wxRect
       AddVar_DrawRoundedRectangle_3( this_ptr);
+*/
       AddVar_DrawCircle_1( this_ptr);
       AddVar_DrawCircle( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawCircle_2( this_ptr);
+*/
       AddVar_DrawEllipse_1( this_ptr);
       AddVar_DrawEllipse( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawEllipse_2( this_ptr);
+*/
+/* The following types are missing: wxRect
       AddVar_DrawEllipse_3( this_ptr);
+*/
       AddVar_DrawIcon_1( this_ptr);
       AddVar_DrawIcon( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawIcon_2( this_ptr);
+*/
       AddVar_DrawBitmap_1( this_ptr);
       AddVar_DrawBitmap( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawBitmap_2( this_ptr);
+*/
       AddVar_DrawText_1( this_ptr);
       AddVar_DrawText( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawText_2( this_ptr);
+*/
       AddVar_DrawRotatedText_1( this_ptr);
       AddVar_DrawRotatedText( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawRotatedText_2( this_ptr);
+*/
+/* The following types are missing: wxRect, wxRect
       AddVar_DrawLabel_1( this_ptr);
+*/
       AddVar_DrawLabel( this_ptr);
+/* The following types are missing: wxRect
       AddVar_DrawLabel_2( this_ptr);
+*/
       AddVar_Blit_1( this_ptr);
       AddVar_Blit( this_ptr);
+/* The following types are missing: wxPoint, wxPoint, wxPoint
       AddVar_Blit_2( this_ptr);
+*/
+/* The following types are missing: wxRect
       AddVar_GetAsBitmap( this_ptr);
+*/
       AddVar_DrawSpline_1( this_ptr);
       AddVar_DrawSpline( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_DrawSpline_2( this_ptr);
+*/
       AddVar_DrawSpline_3( this_ptr);
       AddVar_StartDoc( this_ptr);
       AddVar_EndDoc( this_ptr);
@@ -172,21 +228,29 @@ void WrapClass_wxDCBase::AddMethods(WrapClass<wxDCBase>::ptr this_ptr )
       AddVar_EndDrawing( this_ptr);
       AddVar_SetClippingRegion_1( this_ptr);
       AddVar_SetClippingRegion( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_SetClippingRegion_2( this_ptr);
+*/
+/* The following types are missing: wxRect
       AddVar_SetClippingRegion_3( this_ptr);
+*/
       AddVar_SetClippingRegion_4( this_ptr);
       AddVar_SetDeviceClippingRegion( this_ptr);
       AddVar_DestroyClippingRegion( this_ptr);
       AddVar_GetClippingBox_1( this_ptr);
       AddVar_GetClippingBox( this_ptr);
+/* The following types are missing: wxRect
       AddVar_GetClippingBox_2( this_ptr);
+*/
       AddVar_GetTextExtent_1( this_ptr);
       AddVar_GetTextExtent( this_ptr);
       AddVar_GetTextExtent_2( this_ptr);
       AddVar_GetMultiLineTextExtent_1( this_ptr);
       AddVar_GetMultiLineTextExtent( this_ptr);
       AddVar_GetMultiLineTextExtent_2( this_ptr);
+/* The following types are missing: wxArrayInt
       AddVar_GetPartialTextExtents( this_ptr);
+*/
       AddVar_GetSize_1( this_ptr);
       AddVar_GetSize( this_ptr);
       AddVar_GetSize_2( this_ptr);
@@ -204,10 +268,16 @@ void WrapClass_wxDCBase::AddMethods(WrapClass<wxDCBase>::ptr this_ptr )
       AddVar_Ok( this_ptr);
       AddVar_IsOk( this_ptr);
       AddVar_GetBackgroundMode( this_ptr);
+/* The following types are missing: wxBrush
       AddVar_GetBackground( this_ptr);
+*/
+/* The following types are missing: wxBrush
       AddVar_GetBrush( this_ptr);
+*/
       AddVar_GetFont( this_ptr);
+/* The following types are missing: wxPen
       AddVar_GetPen( this_ptr);
+*/
       AddVar_GetTextForeground( this_ptr);
       AddVar_GetTextBackground( this_ptr);
       AddVar_SetTextForeground( this_ptr);
@@ -218,10 +288,14 @@ void WrapClass_wxDCBase::AddMethods(WrapClass<wxDCBase>::ptr this_ptr )
       AddVar_SetLogicalScale( this_ptr);
       AddVar_GetLogicalOrigin_1( this_ptr);
       AddVar_GetLogicalOrigin( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_GetLogicalOrigin_2( this_ptr);
+*/
       AddVar_GetDeviceOrigin_1( this_ptr);
       AddVar_GetDeviceOrigin( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_GetDeviceOrigin_2( this_ptr);
+*/
       AddVar_ComputeScaleAndOrigin( this_ptr);
       AddVar_GetLogicalFunction( this_ptr);
       AddVar_SetOptimization( this_ptr);
@@ -236,8 +310,12 @@ void WrapClass_wxDCBase::AddMethods(WrapClass<wxDCBase>::ptr this_ptr )
       AddVar_GetLogicalOrigin_3( this_ptr);
       AddVar_GetDeviceOrigin_3( this_ptr);
       AddVar_GetClippingBox_3( this_ptr);
+/* The following types are missing: wxLayoutDirection
       AddVar_GetLayoutDirection( this_ptr);
+*/
+/* The following types are missing: wxLayoutDirection
       AddVar_SetLayoutDirection( this_ptr);
+*/
       AddVar_GetClassInfo( this_ptr);
 
 
@@ -249,6 +327,7 @@ void WrapClass_wxDCBase::AddMethods(WrapClass<wxDCBase>::ptr this_ptr )
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
+/* The following types are missing: wxDrawObject
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawObject(wxDrawObject * drawobject)
@@ -268,12 +347,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxDrawObject > drawobject_smtptr;
-  if (!get_val_smtptr_param<wxDrawObject >(drawobject_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxDrawObject >(drawobject_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxDrawObject* drawobject = drawobject_smtptr.get();
 
   this->_objectptr->GetObj()->DrawObject(drawobject);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxDCBase::FloodFill(wxCoord x, wxCoord y, wxColour const & col, int style = wxFLOOD_SURFACE)
@@ -297,17 +377,17 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxColour > col_smtptr;
-  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & col = *col_smtptr;
 
   int style = wxFLOOD_SURFACE;
-  if (!get_val_param<int >(style,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(style,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->FloodFill(x, y, col, style);
   int res_int = ((res==true)?1:0);
@@ -329,11 +409,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_FloodFill_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_FloodFill_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxDCBase::FloodFill(wxPoint const & pt, wxColour const & col, int style = wxFLOOD_SURFACE)
@@ -356,20 +434,22 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   boost::shared_ptr<wxColour > col_smtptr;
-  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & col = *col_smtptr;
 
   int style = wxFLOOD_SURFACE;
-  if (!get_val_param<int >(style,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(style,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->FloodFill(pt, col, style);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::GradientFillConcentric(wxRect const & rect, wxColour const & initialColour, wxColour const & destColour)
@@ -391,20 +471,21 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   boost::shared_ptr<wxColour > initialColour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(initialColour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(initialColour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & initialColour = *initialColour_smtptr;
 
   boost::shared_ptr<wxColour > destColour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(destColour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(destColour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & destColour = *destColour_smtptr;
 
   this->_objectptr->GetObj()->GradientFillConcentric(rect, initialColour, destColour);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxDCBase::GradientFillConcentric(...)
@@ -418,14 +499,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
     wrap_GradientFillConcentric::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxDCBase::wrap_GradientFillConcentric_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_GradientFillConcentric_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRect, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::GradientFillConcentric(wxRect const & rect, wxColour const & initialColour, wxColour const & destColour, wxPoint const & circleCenter)
@@ -448,24 +524,26 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   boost::shared_ptr<wxColour > initialColour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(initialColour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(initialColour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & initialColour = *initialColour_smtptr;
 
   boost::shared_ptr<wxColour > destColour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(destColour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(destColour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & destColour = *destColour_smtptr;
 
   boost::shared_ptr<wxPoint > circleCenter_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(circleCenter_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(circleCenter_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & circleCenter = *circleCenter_smtptr;
 
   this->_objectptr->GetObj()->GradientFillConcentric(rect, initialColour, destColour, circleCenter);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxRect, wxDirection
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::GradientFillLinear(wxRect const & rect, wxColour const & initialColour, wxColour const & destColour, wxDirection nDirection = wxRIGHT)
@@ -476,7 +554,7 @@ void WrapClass_wxDCBase::
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
   ADDPARAMCOMMENT_TYPE( wxColour, "parameter named 'initialColour'")
   ADDPARAMCOMMENT_TYPE( wxColour, "parameter named 'destColour'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'nDirection' (def:wxRIGHT)")
+  ADDPARAMCOMMENT_TYPE( wxDirection, "parameter named 'nDirection' (def:wxRIGHT)")
 }
 
 //---------------------------------------------------
@@ -488,24 +566,24 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRect const & rect = *rect_smtptr;
 
   boost::shared_ptr<wxColour > initialColour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(initialColour_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColour >(initialColour_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColour const & initialColour = *initialColour_smtptr;
 
   boost::shared_ptr<wxColour > destColour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(destColour_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColour >(destColour_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColour const & destColour = *destColour_smtptr;
 
-  int nDirection_int = (int) wxRIGHT;;
-  if (!get_val_param<int >(nDirection_int,_p,_n)) ClassHelpAndReturn;
-  wxDirection nDirection = (wxDirection) nDirection_int;
+  wxDirection nDirection = wxRIGHT;
+  if (!get_val_param<wxDirection >(nDirection,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->GradientFillLinear(rect, initialColour, destColour, nDirection);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxDCBase::GetPixel(wxCoord x, wxCoord y, wxColour * col)
@@ -528,13 +606,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxColour > col_smtptr;
-  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour* col = col_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->GetPixel(x, y, col);
@@ -557,11 +635,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_GetPixel_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_GetPixel_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxDCBase::GetPixel(wxPoint const & pt, wxColour * col)
@@ -583,17 +659,18 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   boost::shared_ptr<wxColour > col_smtptr;
-  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour* col = col_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->GetPixel(pt, col);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
@@ -616,16 +693,16 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x1;
-  if (!get_val_param<int >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y1;
-  if (!get_val_param<int >(y1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int x2;
-  if (!get_val_param<int >(x2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y2;
-  if (!get_val_param<int >(y2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawLine(x1, y1, x2, y2);
   return BasicVariable::ptr();
@@ -646,11 +723,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawLine_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawLine_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawLine(wxPoint const & pt1, wxPoint const & pt2)
@@ -671,16 +746,17 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt1_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt1 = *pt1_smtptr;
 
   boost::shared_ptr<wxPoint > pt2_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt2 = *pt2_smtptr;
 
   this->_objectptr->GetObj()->DrawLine(pt1, pt2);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::CrossHair(wxCoord x, wxCoord y)
@@ -701,10 +777,10 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->CrossHair(x, y);
   return BasicVariable::ptr();
@@ -725,11 +801,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_CrossHair_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_CrossHair_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::CrossHair(wxPoint const & pt)
@@ -749,12 +823,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   this->_objectptr->GetObj()->CrossHair(pt);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawArc(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, wxCoord xc, wxCoord yc)
@@ -779,22 +854,22 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x1;
-  if (!get_val_param<int >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y1;
-  if (!get_val_param<int >(y1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int x2;
-  if (!get_val_param<int >(x2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y2;
-  if (!get_val_param<int >(y2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int xc;
-  if (!get_val_param<int >(xc,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xc,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int yc;
-  if (!get_val_param<int >(yc,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(yc,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawArc(x1, y1, x2, y2, xc, yc);
   return BasicVariable::ptr();
@@ -815,11 +890,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawArc_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawArc_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint, wxPoint, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawArc(wxPoint const & pt1, wxPoint const & pt2, wxPoint const & centre)
@@ -841,20 +914,21 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt1_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt1_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt1 = *pt1_smtptr;
 
   boost::shared_ptr<wxPoint > pt2_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt2_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt2 = *pt2_smtptr;
 
   boost::shared_ptr<wxPoint > centre_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(centre_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(centre_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & centre = *centre_smtptr;
 
   this->_objectptr->GetObj()->DrawArc(pt1, pt2, centre);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawCheckMark(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
@@ -877,16 +951,16 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawCheckMark(x, y, width, height);
   return BasicVariable::ptr();
@@ -907,11 +981,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawCheckMark_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawCheckMark_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawCheckMark(wxRect const & rect)
@@ -931,12 +1003,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   this->_objectptr->GetObj()->DrawCheckMark(rect);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawEllipticArc(wxCoord x, wxCoord y, wxCoord w, wxCoord h, double sa, double ea)
@@ -961,22 +1034,22 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int w;
-  if (!get_val_param<int >(w,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(w,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int h;
-  if (!get_val_param<int >(h,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double sa;
-  if (!get_val_param<double >(sa,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(sa,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double ea;
-  if (!get_val_param<double >(ea,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(ea,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawEllipticArc(x, y, w, h, sa, ea);
   return BasicVariable::ptr();
@@ -997,11 +1070,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawEllipticArc_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawEllipticArc_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawEllipticArc(wxPoint const & pt, wxSize const & sz, double sa, double ea)
@@ -1024,22 +1095,23 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
   double sa;
-  if (!get_val_param<double >(sa,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(sa,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double ea;
-  if (!get_val_param<double >(ea,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(ea,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawEllipticArc(pt, sz, sa, ea);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawPoint(wxCoord x, wxCoord y)
@@ -1060,10 +1132,10 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawPoint(x, y);
   return BasicVariable::ptr();
@@ -1084,11 +1156,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawPoint_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawPoint_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawPoint(wxPoint const & pt)
@@ -1108,12 +1178,14 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   this->_objectptr->GetObj()->DrawPoint(pt);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawLines(int n, wxPoint * points, wxCoord xoffset = 0, wxCoord yoffset = 0)
@@ -1136,21 +1208,22 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint* points = points_smtptr.get();
 
   int xoffset = 0;
-  if (!get_val_param<int >(xoffset,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xoffset,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int yoffset = 0;
-  if (!get_val_param<int >(yoffset,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(yoffset,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawLines(n, points, xoffset, yoffset);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxDCBase::DrawLines(...)
@@ -1164,9 +1237,6 @@ BasicVariable::ptr WrapClass_wxDCBase::
     wrap_DrawLines::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxDCBase::wrap_DrawLines_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxDCBase::wrap_DrawLines_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -1193,18 +1263,19 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxList > list_smtptr;
-  if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxList* list = list_smtptr.get();
 
   int xoffset = 0;
-  if (!get_val_param<int >(xoffset,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xoffset,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int yoffset = 0;
-  if (!get_val_param<int >(yoffset,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(yoffset,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawLines(list, xoffset, yoffset);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawPolygon(int n, wxPoint * points, wxCoord xoffset = 0, wxCoord yoffset = 0, int fillStyle = wxODDEVEN_RULE)
@@ -1228,24 +1299,25 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint* points = points_smtptr.get();
 
   int xoffset = 0;
-  if (!get_val_param<int >(xoffset,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xoffset,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int yoffset = 0;
-  if (!get_val_param<int >(yoffset,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(yoffset,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int fillStyle = wxODDEVEN_RULE;
-  if (!get_val_param<int >(fillStyle,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(fillStyle,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawPolygon(n, points, xoffset, yoffset, fillStyle);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxDCBase::DrawPolygon(...)
@@ -1259,9 +1331,6 @@ BasicVariable::ptr WrapClass_wxDCBase::
     wrap_DrawPolygon::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxDCBase::wrap_DrawPolygon_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxDCBase::wrap_DrawPolygon_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -1289,21 +1358,22 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxList > list_smtptr;
-  if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxList* list = list_smtptr.get();
 
   int xoffset = 0;
-  if (!get_val_param<int >(xoffset,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xoffset,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int yoffset = 0;
-  if (!get_val_param<int >(yoffset,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(yoffset,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int fillStyle = wxODDEVEN_RULE;
-  if (!get_val_param<int >(fillStyle,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(fillStyle,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawPolygon(list, xoffset, yoffset, fillStyle);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawPolyPolygon(int n, int * count, wxPoint * points, wxCoord xoffset = 0, wxCoord yoffset = 0, int fillStyle = wxODDEVEN_RULE)
@@ -1328,28 +1398,29 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<int > count_smtptr;
-  if (!get_val_smtptr_param<int >(count_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(count_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* count = count_smtptr.get();
 
   boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint* points = points_smtptr.get();
 
   int xoffset = 0;
-  if (!get_val_param<int >(xoffset,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(xoffset,_p,_n,false,false)) ClassHelpAndReturn;
 
   int yoffset = 0;
-  if (!get_val_param<int >(yoffset,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(yoffset,_p,_n,false,false)) ClassHelpAndReturn;
 
   int fillStyle = wxODDEVEN_RULE;
-  if (!get_val_param<int >(fillStyle,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(fillStyle,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->DrawPolyPolygon(n, count, points, xoffset, yoffset, fillStyle);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
@@ -1372,16 +1443,16 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawRectangle(x, y, width, height);
   return BasicVariable::ptr();
@@ -1402,14 +1473,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawRectangle_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawRectangle_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawRectangle_3 m3(this->_objectptr);
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawRectangle(wxPoint const & pt, wxSize const & sz)
@@ -1430,16 +1496,18 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
   this->_objectptr->GetObj()->DrawRectangle(pt, sz);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawRectangle(wxRect const & rect)
@@ -1459,12 +1527,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   this->_objectptr->GetObj()->DrawRectangle(rect);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawRoundedRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height, double radius)
@@ -1488,19 +1557,19 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double radius;
-  if (!get_val_param<double >(radius,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(radius,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawRoundedRectangle(x, y, width, height, radius);
   return BasicVariable::ptr();
@@ -1521,14 +1590,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawRoundedRectangle_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawRoundedRectangle_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawRoundedRectangle_3 m3(this->_objectptr);
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawRoundedRectangle(wxPoint const & pt, wxSize const & sz, double radius)
@@ -1550,19 +1614,21 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
   double radius;
-  if (!get_val_param<double >(radius,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(radius,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawRoundedRectangle(pt, sz, radius);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawRoundedRectangle(wxRect const & r, double radius)
@@ -1583,15 +1649,16 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > r_smtptr;
-  if (!get_val_smtptr_param<wxRect >(r_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(r_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & r = *r_smtptr;
 
   double radius;
-  if (!get_val_param<double >(radius,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(radius,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawRoundedRectangle(r, radius);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawCircle(wxCoord x, wxCoord y, wxCoord radius)
@@ -1613,13 +1680,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int radius;
-  if (!get_val_param<int >(radius,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(radius,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawCircle(x, y, radius);
   return BasicVariable::ptr();
@@ -1640,11 +1707,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawCircle_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawCircle_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawCircle(wxPoint const & pt, wxCoord radius)
@@ -1665,15 +1730,16 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   int radius;
-  if (!get_val_param<int >(radius,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(radius,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawCircle(pt, radius);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
@@ -1696,16 +1762,16 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawEllipse(x, y, width, height);
   return BasicVariable::ptr();
@@ -1726,14 +1792,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawEllipse_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawEllipse_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawEllipse_3 m3(this->_objectptr);
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawEllipse(wxPoint const & pt, wxSize const & sz)
@@ -1754,16 +1815,18 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
   this->_objectptr->GetObj()->DrawEllipse(pt, sz);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawEllipse(wxRect const & rect)
@@ -1783,12 +1846,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   this->_objectptr->GetObj()->DrawEllipse(rect);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawIcon(wxIcon const & icon, wxCoord x, wxCoord y)
@@ -1810,14 +1874,14 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxIcon > icon_smtptr;
-  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxIcon const & icon = *icon_smtptr;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawIcon(icon, x, y);
   return BasicVariable::ptr();
@@ -1838,11 +1902,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawIcon_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawIcon_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawIcon(wxIcon const & icon, wxPoint const & pt)
@@ -1863,16 +1925,17 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxIcon > icon_smtptr;
-  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIcon >(icon_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxIcon const & icon = *icon_smtptr;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   this->_objectptr->GetObj()->DrawIcon(icon, pt);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawBitmap(wxBitmap const & bmp, wxCoord x, wxCoord y, bool useMask = false)
@@ -1895,17 +1958,17 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bmp_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bmp = *bmp_smtptr;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int useMask_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(useMask_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(useMask_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool useMask = (bool) (useMask_int>0.5);
 
   this->_objectptr->GetObj()->DrawBitmap(bmp, x, y, useMask);
@@ -1927,11 +1990,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawBitmap_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawBitmap_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawBitmap(wxBitmap const & bmp, wxPoint const & pt, bool useMask = false)
@@ -1953,20 +2014,21 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bmp_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bmp = *bmp_smtptr;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   int useMask_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(useMask_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(useMask_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool useMask = (bool) (useMask_int>0.5);
 
   this->_objectptr->GetObj()->DrawBitmap(bmp, pt, useMask);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawText(wxString const & text, wxCoord x, wxCoord y)
@@ -1988,14 +2050,14 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & text = *text_smtptr;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawText(text, x, y);
   return BasicVariable::ptr();
@@ -2016,11 +2078,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawText_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawText_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawText(wxString const & text, wxPoint const & pt)
@@ -2041,16 +2101,17 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & text = *text_smtptr;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   this->_objectptr->GetObj()->DrawText(text, pt);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawRotatedText(wxString const & text, wxCoord x, wxCoord y, double angle)
@@ -2073,17 +2134,17 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & text = *text_smtptr;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(angle,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawRotatedText(text, x, y, angle);
   return BasicVariable::ptr();
@@ -2104,11 +2165,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawRotatedText_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawRotatedText_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawRotatedText(wxString const & text, wxPoint const & pt, double angle)
@@ -2130,19 +2189,21 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & text = *text_smtptr;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   double angle;
-  if (!get_val_param<double >(angle,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(angle,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawRotatedText(text, pt, angle);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxRect, wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawLabel(wxString const & text, wxBitmap const & image, wxRect const & rect, int alignment = 0, int indexAccel = -0x00000000000000001, wxRect * rectBounding = 0l)
@@ -2167,30 +2228,31 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & text = *text_smtptr;
 
   boost::shared_ptr<wxBitmap > image_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(image_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(image_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & image = *image_smtptr;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   int alignment = 0;
-  if (!get_val_param<int >(alignment,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(alignment,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int indexAccel = -0x00000000000000001;
-  if (!get_val_param<int >(indexAccel,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(indexAccel,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxRect > rectBounding_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rectBounding_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rectBounding_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect* rectBounding = rectBounding_smtptr.get();
 
   this->_objectptr->GetObj()->DrawLabel(text, image, rect, alignment, indexAccel, rectBounding);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxDCBase::DrawLabel(...)
@@ -2204,14 +2266,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
     wrap_DrawLabel::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxDCBase::wrap_DrawLabel_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawLabel_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawLabel(wxString const & text, wxRect const & rect, int alignment = 0, int indexAccel = -0x00000000000000001)
@@ -2234,22 +2291,23 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & text = *text_smtptr;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   int alignment = 0;
-  if (!get_val_param<int >(alignment,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(alignment,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int indexAccel = -0x00000000000000001;
-  if (!get_val_param<int >(indexAccel,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(indexAccel,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawLabel(text, rect, alignment, indexAccel);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxDCBase::Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height, wxDC * source, wxCoord xsrc, wxCoord ysrc, int rop = wxCOPY, bool useMask = false, wxCoord xsrcMask = wxDefaultCoord, wxCoord ysrcMask = wxDefaultCoord)
@@ -2280,39 +2338,39 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int xdest;
-  if (!get_val_param<int >(xdest,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xdest,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int ydest;
-  if (!get_val_param<int >(ydest,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(ydest,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxDC > source_smtptr;
-  if (!get_val_smtptr_param<wxDC >(source_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxDC >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxDC* source = source_smtptr.get();
 
   int xsrc;
-  if (!get_val_param<int >(xsrc,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xsrc,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int ysrc;
-  if (!get_val_param<int >(ysrc,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(ysrc,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int rop = wxCOPY;
-  if (!get_val_param<int >(rop,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(rop,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int useMask_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(useMask_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(useMask_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool useMask = (bool) (useMask_int>0.5);
 
   int xsrcMask = wxDefaultCoord;
-  if (!get_val_param<int >(xsrcMask,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(xsrcMask,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int ysrcMask = wxDefaultCoord;
-  if (!get_val_param<int >(ysrcMask,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(ysrcMask,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Blit(xdest, ydest, width, height, source, xsrc, ysrc, rop, useMask, xsrcMask, ysrcMask);
   int res_int = ((res==true)?1:0);
@@ -2334,11 +2392,9 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_Blit_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_Blit_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint, wxPoint, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxDCBase::Blit(wxPoint const & destPt, wxSize const & sz, wxDC * source, wxPoint const & srcPt, int rop = wxCOPY, bool useMask = false, wxPoint const & srcPtMask = wxDefaultPosition)
@@ -2365,37 +2421,39 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > destPt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(destPt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(destPt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & destPt = *destPt_smtptr;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
   boost::shared_ptr<wxDC > source_smtptr;
-  if (!get_val_smtptr_param<wxDC >(source_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxDC >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxDC* source = source_smtptr.get();
 
   boost::shared_ptr<wxPoint > srcPt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(srcPt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(srcPt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & srcPt = *srcPt_smtptr;
 
   int rop = wxCOPY;
-  if (!get_val_param<int >(rop,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(rop,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int useMask_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(useMask_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(useMask_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool useMask = (bool) (useMask_int>0.5);
 
   boost::shared_ptr<wxPoint > srcPtMask_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(srcPtMask_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(srcPtMask_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & srcPtMask = ( srcPtMask_smtptr.get() ? (*srcPtMask_smtptr) : (wxDefaultPosition) );
+  wxPoint const & srcPtMask = ( srcPtMask_smtptr.get() ? (*srcPtMask_smtptr) : wxDefaultPosition );
 
   bool res =   this->_objectptr->GetObj()->Blit(destPt, sz, source, srcPt, rop, useMask, srcPtMask);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of wxBitmap wxDCBase::GetAsBitmap(wxRect const * subrect = 0u)
@@ -2416,12 +2474,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > subrect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(subrect_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRect >(subrect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRect* subrect = subrect_smtptr.get();
 
   wxBitmap res =   this->_objectptr->GetObj()->GetAsBitmap(subrect);
   return AMILabType<wxBitmap >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawSpline(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, wxCoord x3, wxCoord y3)
@@ -2446,22 +2505,22 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x1;
-  if (!get_val_param<int >(x1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y1;
-  if (!get_val_param<int >(y1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int x2;
-  if (!get_val_param<int >(x2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y2;
-  if (!get_val_param<int >(y2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int x3;
-  if (!get_val_param<int >(x3,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x3,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y3;
-  if (!get_val_param<int >(y3,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y3,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->DrawSpline(x1, y1, x2, y2, x3, y3);
   return BasicVariable::ptr();
@@ -2482,14 +2541,12 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_DrawSpline_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_DrawSpline_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxDCBase::wrap_DrawSpline_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawSpline(int n, wxPoint * points)
@@ -2510,15 +2567,16 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint* points = points_smtptr.get();
 
   this->_objectptr->GetObj()->DrawSpline(n, points);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::DrawSpline(wxList * points)
@@ -2538,7 +2596,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxList > points_smtptr;
-  if (!get_val_smtptr_param<wxList >(points_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxList >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxList* points = points_smtptr.get();
 
   this->_objectptr->GetObj()->DrawSpline(points);
@@ -2564,7 +2622,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > param0_smtptr;
-  if (!get_val_smtptr_param<wxString >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & param0 = *param0_smtptr;
 
   bool res =   this->_objectptr->GetObj()->StartDoc(param0);
@@ -2683,16 +2741,16 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int width;
-  if (!get_val_param<int >(width,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(width,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int height;
-  if (!get_val_param<int >(height,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetClippingRegion(x, y, width, height);
   return BasicVariable::ptr();
@@ -2713,17 +2771,12 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_SetClippingRegion_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_SetClippingRegion_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_SetClippingRegion_3 m3(this->_objectptr);
-  res = m3.CallMember(_p);
-  if (!m3.Get_arg_failure()) return res;
   WrapClass_wxDCBase::wrap_SetClippingRegion_4 m4(this->_objectptr);
   res = m4.CallMember(_p);
   if (!m4.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::SetClippingRegion(wxPoint const & pt, wxSize const & sz)
@@ -2744,16 +2797,18 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxPoint > pt_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
   boost::shared_ptr<wxSize > sz_smtptr;
-  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
   this->_objectptr->GetObj()->SetClippingRegion(pt, sz);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::SetClippingRegion(wxRect const & rect)
@@ -2773,12 +2828,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect const & rect = *rect_smtptr;
 
   this->_objectptr->GetObj()->SetClippingRegion(rect);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::SetClippingRegion(wxRegion const & region)
@@ -2798,7 +2854,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRegion const & region = *region_smtptr;
 
   this->_objectptr->GetObj()->SetClippingRegion(region);
@@ -2823,7 +2879,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRegion > region_smtptr;
-  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxRegion >(region_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRegion const & region = *region_smtptr;
 
   this->_objectptr->GetObj()->SetDeviceClippingRegion(region);
@@ -2869,19 +2925,19 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* x = x_smtptr.get();
 
   boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* y = y_smtptr.get();
 
   boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* w = w_smtptr.get();
 
   boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* h = h_smtptr.get();
 
   this->_objectptr->GetObj()->GetClippingBox(x, y, w, h);
@@ -2903,14 +2959,12 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_GetClippingBox_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_GetClippingBox_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxDCBase::wrap_GetClippingBox_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::GetClippingBox(wxRect & rect)
@@ -2930,12 +2984,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxRect & rect = *rect_smtptr;
 
   this->_objectptr->GetObj()->GetClippingBox(rect);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::GetTextExtent(wxString const & string, wxCoord * x, wxCoord * y, wxCoord * descent = 0l, wxCoord * externalLeading = 0l, wxFont * theFont = 0l)
@@ -2960,27 +3015,27 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > string_smtptr;
-  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & string = *string_smtptr;
 
   boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* x = x_smtptr.get();
 
   boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* y = y_smtptr.get();
 
   boost::shared_ptr<int > descent_smtptr;
-  if (!get_val_smtptr_param<int >(descent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(descent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* descent = descent_smtptr.get();
 
   boost::shared_ptr<int > externalLeading_smtptr;
-  if (!get_val_smtptr_param<int >(externalLeading_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(externalLeading_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* externalLeading = externalLeading_smtptr.get();
 
   boost::shared_ptr<wxFont > theFont_smtptr;
-  if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxFont* theFont = theFont_smtptr.get();
 
   this->_objectptr->GetObj()->GetTextExtent(string, x, y, descent, externalLeading, theFont);
@@ -3030,7 +3085,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > string_smtptr;
-  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & string = *string_smtptr;
 
   wxSize res =   this->_objectptr->GetObj()->GetTextExtent(string);
@@ -3059,23 +3114,23 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > string_smtptr;
-  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & string = *string_smtptr;
 
   boost::shared_ptr<int > width_smtptr;
-  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* width = width_smtptr.get();
 
   boost::shared_ptr<int > height_smtptr;
-  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* height = height_smtptr.get();
 
   boost::shared_ptr<int > heightLine_smtptr;
-  if (!get_val_smtptr_param<int >(heightLine_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(heightLine_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* heightLine = heightLine_smtptr.get();
 
   boost::shared_ptr<wxFont > font_smtptr;
-  if (!get_val_smtptr_param<wxFont >(font_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxFont >(font_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxFont* font = font_smtptr.get();
 
   this->_objectptr->GetObj()->GetMultiLineTextExtent(string, width, height, heightLine, font);
@@ -3122,12 +3177,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > string_smtptr;
-  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & string = *string_smtptr;
 
   wxSize res =   this->_objectptr->GetObj()->GetMultiLineTextExtent(string);
   return AMILabType<wxSize >::CreateVar(res);
 }
+/* The following types are missing: wxArrayInt
 
 //---------------------------------------------------
 //  Wrapping of bool wxDCBase::GetPartialTextExtents(wxString const & text, wxArrayInt & widths)
@@ -3149,17 +3205,18 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & text = *text_smtptr;
 
   boost::shared_ptr<wxArrayInt > widths_smtptr;
-  if (!get_val_smtptr_param<wxArrayInt >(widths_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxArrayInt >(widths_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxArrayInt & widths = *widths_smtptr;
 
   bool res =   this->_objectptr->GetObj()->GetPartialTextExtents(text, widths);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::GetSize(int * width, int * height)
@@ -3180,11 +3237,11 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<int > width_smtptr;
-  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* width = width_smtptr.get();
 
   boost::shared_ptr<int > height_smtptr;
-  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* height = height_smtptr.get();
 
   this->_objectptr->GetObj()->GetSize(width, height);
@@ -3250,11 +3307,11 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<int > width_smtptr;
-  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* width = width_smtptr.get();
 
   boost::shared_ptr<int > height_smtptr;
-  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* height = height_smtptr.get();
 
   this->_objectptr->GetObj()->GetSizeMM(width, height);
@@ -3320,7 +3377,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxCoord res =   this->_objectptr->GetObj()->DeviceToLogicalX(x);
   return AMILabType<int >::CreateVar(res);
@@ -3345,7 +3402,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxCoord res =   this->_objectptr->GetObj()->DeviceToLogicalY(y);
   return AMILabType<int >::CreateVar(res);
@@ -3370,7 +3427,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxCoord res =   this->_objectptr->GetObj()->DeviceToLogicalXRel(x);
   return AMILabType<int >::CreateVar(res);
@@ -3395,7 +3452,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxCoord res =   this->_objectptr->GetObj()->DeviceToLogicalYRel(y);
   return AMILabType<int >::CreateVar(res);
@@ -3420,7 +3477,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxCoord res =   this->_objectptr->GetObj()->LogicalToDeviceX(x);
   return AMILabType<int >::CreateVar(res);
@@ -3445,7 +3502,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxCoord res =   this->_objectptr->GetObj()->LogicalToDeviceY(y);
   return AMILabType<int >::CreateVar(res);
@@ -3470,7 +3527,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxCoord res =   this->_objectptr->GetObj()->LogicalToDeviceXRel(x);
   return AMILabType<int >::CreateVar(res);
@@ -3495,7 +3552,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxCoord res =   this->_objectptr->GetObj()->LogicalToDeviceYRel(y);
   return AMILabType<int >::CreateVar(res);
@@ -3559,6 +3616,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int res =   this->_objectptr->GetObj()->GetBackgroundMode();
   return AMILabType<int >::CreateVar(res);
 }
+/* The following types are missing: wxBrush
 
 //---------------------------------------------------
 //  Wrapping of wxBrush const & wxDCBase::GetBackground()
@@ -3578,6 +3636,8 @@ BasicVariable::ptr WrapClass_wxDCBase::
   wxBrush const & res =   this->_objectptr->GetObj()->GetBackground();
   return AMILabType<wxBrush >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxBrush
 
 //---------------------------------------------------
 //  Wrapping of wxBrush const & wxDCBase::GetBrush()
@@ -3597,6 +3657,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   wxBrush const & res =   this->_objectptr->GetObj()->GetBrush();
   return AMILabType<wxBrush >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxFont const & wxDCBase::GetFont()
@@ -3616,6 +3677,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   wxFont const & res =   this->_objectptr->GetObj()->GetFont();
   return AMILabType<wxFont >::CreateVar(res);
 }
+/* The following types are missing: wxPen
 
 //---------------------------------------------------
 //  Wrapping of wxPen const & wxDCBase::GetPen()
@@ -3635,6 +3697,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   wxPen const & res =   this->_objectptr->GetObj()->GetPen();
   return AMILabType<wxPen >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxColour const & wxDCBase::GetTextForeground()
@@ -3692,7 +3755,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxColour > colour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColour const & colour = *colour_smtptr;
 
   this->_objectptr->GetObj()->SetTextForeground(colour);
@@ -3717,7 +3780,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxColour > colour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColour const & colour = *colour_smtptr;
 
   this->_objectptr->GetObj()->SetTextBackground(colour);
@@ -3762,11 +3825,11 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* x = x_smtptr.get();
 
   boost::shared_ptr<double > y_smtptr;
-  if (!get_val_smtptr_param<double >(y_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* y = y_smtptr.get();
 
   this->_objectptr->GetObj()->GetUserScale(x, y);
@@ -3792,11 +3855,11 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* x = x_smtptr.get();
 
   boost::shared_ptr<double > y_smtptr;
-  if (!get_val_smtptr_param<double >(y_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* y = y_smtptr.get();
 
   this->_objectptr->GetObj()->GetLogicalScale(x, y);
@@ -3822,10 +3885,10 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLogicalScale(x, y);
   return BasicVariable::ptr();
@@ -3850,11 +3913,11 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* x = x_smtptr.get();
 
   boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* y = y_smtptr.get();
 
   this->_objectptr->GetObj()->GetLogicalOrigin(x, y);
@@ -3876,14 +3939,12 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_GetLogicalOrigin_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_GetLogicalOrigin_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxDCBase::wrap_GetLogicalOrigin_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxDCBase::GetLogicalOrigin()
@@ -3903,6 +3964,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   wxPoint res =   this->_objectptr->GetObj()->GetLogicalOrigin();
   return AMILabType<wxPoint >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::GetDeviceOrigin(wxCoord * x, wxCoord * y)
@@ -3923,11 +3985,11 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* x = x_smtptr.get();
 
   boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   int* y = y_smtptr.get();
 
   this->_objectptr->GetObj()->GetDeviceOrigin(x, y);
@@ -3949,14 +4011,12 @@ BasicVariable::ptr WrapClass_wxDCBase::
   WrapClass_wxDCBase::wrap_GetDeviceOrigin_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxDCBase::wrap_GetDeviceOrigin_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxDCBase::wrap_GetDeviceOrigin_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxDCBase::GetDeviceOrigin()
@@ -3976,6 +4036,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   wxPoint res =   this->_objectptr->GetObj()->GetDeviceOrigin();
   return AMILabType<wxPoint >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::ComputeScaleAndOrigin()
@@ -4032,7 +4093,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int param0_int;
-  if (!get_val_param<int >(param0_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool param0 = (bool) (param0_int>0.5);
 
 //  this->_objectptr->GetObj()->SetOptimization(param0);
@@ -4079,10 +4140,10 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->CalcBoundingBox(x, y);
   return BasicVariable::ptr();
@@ -4205,31 +4266,31 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<wxString > string_smtptr;
-  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & string = *string_smtptr;
 
   boost::shared_ptr<long > x_long;
-  if (!get_val_smtptr_param<long >(x_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(x_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int x_val = *x_long;
   long int* x = &x_val;
 
   boost::shared_ptr<long > y_long;
-  if (!get_val_smtptr_param<long >(y_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(y_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int y_val = *y_long;
   long int* y = &y_val;
 
   boost::shared_ptr<long > descent_long;
-  if (!get_val_smtptr_param<long >(descent_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(descent_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int descent_val = *descent_long;
   long int* descent = &descent_val;
 
   boost::shared_ptr<long > externalLeading_long;
-  if (!get_val_smtptr_param<long >(externalLeading_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(externalLeading_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int externalLeading_val = *externalLeading_long;
   long int* externalLeading = &externalLeading_val;
 
   boost::shared_ptr<wxFont > theFont_smtptr;
-  if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxFont* theFont = theFont_smtptr.get();
 
   this->_objectptr->GetObj()->GetTextExtent(string, x, y, descent, externalLeading, theFont);
@@ -4255,12 +4316,12 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<long > x_long;
-  if (!get_val_smtptr_param<long >(x_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(x_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int x_val = *x_long;
   long int* x = &x_val;
 
   boost::shared_ptr<long > y_long;
-  if (!get_val_smtptr_param<long >(y_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(y_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int y_val = *y_long;
   long int* y = &y_val;
 
@@ -4287,12 +4348,12 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<long > x_long;
-  if (!get_val_smtptr_param<long >(x_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(x_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int x_val = *x_long;
   long int* x = &x_val;
 
   boost::shared_ptr<long > y_long;
-  if (!get_val_smtptr_param<long >(y_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(y_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int y_val = *y_long;
   long int* y = &y_val;
 
@@ -4321,28 +4382,29 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int _n=0;
 
   boost::shared_ptr<long > x_long;
-  if (!get_val_smtptr_param<long >(x_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(x_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int x_val = *x_long;
   long int* x = &x_val;
 
   boost::shared_ptr<long > y_long;
-  if (!get_val_smtptr_param<long >(y_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(y_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int y_val = *y_long;
   long int* y = &y_val;
 
   boost::shared_ptr<long > w_long;
-  if (!get_val_smtptr_param<long >(w_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(w_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int w_val = *w_long;
   long int* w = &w_val;
 
   boost::shared_ptr<long > h_long;
-  if (!get_val_smtptr_param<long >(h_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long >(h_long,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long int h_val = *h_long;
   long int* h = &h_val;
 
   this->_objectptr->GetObj()->GetClippingBox(x, y, w, h);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxLayoutDirection
 
 //---------------------------------------------------
 //  Wrapping of wxLayoutDirection wxDCBase::GetLayoutDirection()
@@ -4350,7 +4412,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
 void WrapClass_wxDCBase::
     wrap_GetLayoutDirection::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxLayoutDirection";
 }
 
 //---------------------------------------------------
@@ -4360,9 +4422,10 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxLayoutDirection res =   this->_objectptr->GetObj()->GetLayoutDirection();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxLayoutDirection >::CreateVar(res);
 }
+*/
+/* The following types are missing: wxLayoutDirection
 
 //---------------------------------------------------
 //  Wrapping of void wxDCBase::SetLayoutDirection(wxLayoutDirection param0)
@@ -4370,7 +4433,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
 void WrapClass_wxDCBase::
     wrap_SetLayoutDirection::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'param0'")
+  ADDPARAMCOMMENT_TYPE( wxLayoutDirection, "parameter named 'param0'")
 }
 
 //---------------------------------------------------
@@ -4381,13 +4444,13 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int param0_int;
-  if (!get_val_param<int >(param0_int,_p,_n)) ClassHelpAndReturn;
-  wxLayoutDirection param0 = (wxLayoutDirection) param0_int;
+  wxLayoutDirection param0;
+  if (!get_val_param<wxLayoutDirection >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLayoutDirection(param0);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of wxClassInfo * wxDCBase::GetClassInfo()

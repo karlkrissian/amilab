@@ -210,14 +210,14 @@ mbstowcs(className,className_string->c_str(),className_string->size()+1);
 //  Wrapping of wxClassInfo const * wxClassInfo::GetFirst()
 //---------------------------------------------------
 void WrapClass_wxClassInfo::
-    wrap_GetFirst::SetParametersComments()
+    wrap_static_GetFirst::SetParametersComments()
 {
   return_comments="returning a variable of type wxClassInfo";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxClassInfo::
-    wrap_GetFirst::CallMember( ParamList* _p)
+    wrap_static_GetFirst::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -230,7 +230,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
 //  Wrapping of wxClassInfo * wxClassInfo::FindClass(wxChar const * className)
 //---------------------------------------------------
 void WrapClass_wxClassInfo::
-    wrap_FindClass::SetParametersComments()
+    wrap_static_FindClass::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'className'")
   return_comments="returning a variable of type wxClassInfo";
@@ -238,7 +238,7 @@ void WrapClass_wxClassInfo::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxClassInfo::
-    wrap_FindClass::CallMember( ParamList* _p)
+    wrap_static_FindClass::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -258,13 +258,13 @@ mbstowcs(className,className_string->c_str(),className_string->size()+1);
 //  Wrapping of void wxClassInfo::InitializeClasses()
 //---------------------------------------------------
 void WrapClass_wxClassInfo::
-    wrap_InitializeClasses::SetParametersComments()
+    wrap_static_InitializeClasses::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxClassInfo::
-    wrap_InitializeClasses::CallMember( ParamList* _p)
+    wrap_static_InitializeClasses::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -276,13 +276,13 @@ BasicVariable::ptr WrapClass_wxClassInfo::
 //  Wrapping of void wxClassInfo::CleanUpClasses()
 //---------------------------------------------------
 void WrapClass_wxClassInfo::
-    wrap_CleanUpClasses::SetParametersComments()
+    wrap_static_CleanUpClasses::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxClassInfo::
-    wrap_CleanUpClasses::CallMember( ParamList* _p)
+    wrap_static_CleanUpClasses::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

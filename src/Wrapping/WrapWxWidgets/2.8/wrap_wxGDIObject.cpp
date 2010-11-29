@@ -105,7 +105,7 @@ BasicVariable::ptr WrapClass_wxGDIObject::
   int _n=0;
 
   boost::shared_ptr<wxGDIObject > param0_smtptr;
-  if (!get_val_smtptr_param<wxGDIObject >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxGDIObject >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxGDIObject const & param0 = *param0_smtptr;
 
   wxGDIObject* _newobj = new wxGDIObject(param0);
@@ -228,7 +228,7 @@ BasicVariable::ptr WrapClass_wxGDIObject::
   int _n=0;
 
   boost::shared_ptr<wxGDIObject > param0_smtptr;
-  if (!get_val_smtptr_param<wxGDIObject >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxGDIObject >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxGDIObject const & param0 = *param0_smtptr;
 
   wxGDIObject & res =   (*this->_objectptr->GetObj()) = (param0);

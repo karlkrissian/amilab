@@ -21,6 +21,7 @@
 #include "wrap_vtkVolumeMapper.h"
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
+#include "wrap_vtkImageData.h"
 #include "wrap_vtkDataSet.h"
 #include "wrap_vtkWindow.h"
 
@@ -84,14 +85,10 @@ void WrapClass_vtkVolumeMapper::AddMethods(WrapClass<vtkVolumeMapper>::ptr this_
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
       AddVar_PrintSelf( this_ptr);
 */
-/* The following types are missing: vtkImageData
       AddVar_SetInput_1( this_ptr);
-*/
       AddVar_SetInput( this_ptr);
       AddVar_SetInput_2( this_ptr);
-/* The following types are missing: vtkImageData
       AddVar_GetInput( this_ptr);
-*/
       AddVar_SetBlendMode( this_ptr);
       AddVar_SetBlendModeToComposite( this_ptr);
       AddVar_SetBlendModeToMaximumIntensity( this_ptr);
@@ -137,7 +134,7 @@ void WrapClass_vtkVolumeMapper::AddMethods(WrapClass<vtkVolumeMapper>::ptr this_
 //  Wrapping of int vtkVolumeMapper::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkVolumeMapper::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -145,14 +142,14 @@ void WrapClass_vtkVolumeMapper::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkVolumeMapper::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkVolumeMapper::IsTypeOf(type);
@@ -163,7 +160,7 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
 //  Wrapping of vtkVolumeMapper * vtkVolumeMapper::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkVolumeMapper::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkVolumeMapper";
@@ -171,14 +168,14 @@ void WrapClass_vtkVolumeMapper::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkVolumeMapper::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkVolumeMapper * res =   vtkVolumeMapper::SafeDownCast(o);
@@ -205,7 +202,7 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -252,17 +249,16 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
 }
 */
-/* The following types are missing: vtkImageData
 
 //---------------------------------------------------
 //  Wrapping of void vtkVolumeMapper::SetInput(vtkImageData * param0)
@@ -282,13 +278,12 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   boost::shared_ptr<vtkImageData > param0_smtptr;
-  if (!get_val_smtptr_param<vtkImageData >(param0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkImageData >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkImageData* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetInput(param0);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkVolumeMapper::SetInput(...)
@@ -302,6 +297,9 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
     wrap_SetInput::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkVolumeMapper::wrap_SetInput_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_vtkVolumeMapper::wrap_SetInput_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -326,13 +324,12 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   boost::shared_ptr<vtkDataSet > param0_smtptr;
-  if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkDataSet* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetInput(param0);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkImageData
 
 //---------------------------------------------------
 //  Wrapping of vtkImageData * vtkVolumeMapper::GetInput()
@@ -350,9 +347,9 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkImageData * res =   this->_objectptr->GetObj()->GetInput();
-  return AMILabType<vtkImageData >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkImageData::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkVolumeMapper::SetBlendMode(int _arg)
@@ -372,7 +369,7 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetBlendMode(_arg);
   return BasicVariable::ptr();
@@ -469,7 +466,7 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetCropping(_arg);
   return BasicVariable::ptr();
@@ -591,22 +588,22 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   double _arg1;
-  if (!get_val_param<double >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg2;
-  if (!get_val_param<double >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg3;
-  if (!get_val_param<double >(_arg3,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg3,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg4;
-  if (!get_val_param<double >(_arg4,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg4,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg5;
-  if (!get_val_param<double >(_arg5,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg5,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg6;
-  if (!get_val_param<double >(_arg6,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg6,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetCroppingRegionPlanes(_arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
   return BasicVariable::ptr();
@@ -651,7 +648,7 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetCroppingRegionPlanes(_arg);
@@ -716,7 +713,7 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->GetCroppingRegionPlanes(data);
@@ -781,7 +778,7 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->GetVoxelCroppingRegionPlanes(data);
@@ -806,7 +803,7 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetCroppingRegionFlags(_arg);
   return BasicVariable::ptr();
@@ -977,7 +974,7 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   int _n=0;
 
   boost::shared_ptr<vtkWindow > param0_smtptr;
-  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkWindow* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->ReleaseGraphicsResources(param0);

@@ -78,12 +78,8 @@ void WrapClass_wxIntegerEqual::AddMethods(WrapClass<wxIntegerEqual>::ptr this_pt
 /* The following types are missing: short int, short int
       // AddVar_operator not available( this_ptr);
 */
-/* The following types are missing: short unsigned int, short unsigned int
       // AddVar_operator not available( this_ptr);
-*/
-/* The following types are missing: long long int, long long int
       // AddVar_operator not available( this_ptr);
-*/
 /* The following types are missing: long long unsigned int, long long unsigned int
       // AddVar_operator not available( this_ptr);
 */
@@ -117,7 +113,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   int _n=0;
 
   boost::shared_ptr<wxIntegerEqual > param0_smtptr;
-  if (!get_val_smtptr_param<wxIntegerEqual >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIntegerEqual >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxIntegerEqual const & param0 = *param0_smtptr;
 
   wxIntegerEqual* _newobj = new wxIntegerEqual(param0);
@@ -203,11 +199,11 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   int _n=0;
 
   long a_long;
-  if (!get_val_param<long >(a_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(a_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int a = a_long;
 
   long b_long;
-  if (!get_val_param<long >(b_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(b_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int b = b_long;
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
@@ -256,11 +252,11 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   int _n=0;
 
   long a_long;
-  if (!get_val_param<long >(a_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(a_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int a = boost::numeric_cast<long unsigned int >(a_long);
 
   long b_long;
-  if (!get_val_param<long >(b_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(b_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int b = boost::numeric_cast<long unsigned int >(b_long);
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
@@ -291,10 +287,10 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   int _n=0;
 
   int a;
-  if (!get_val_param<int >(a,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(a,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int b;
-  if (!get_val_param<int >(b,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
   int res_int = ((res==true)?1:0);
@@ -324,11 +320,11 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   int _n=0;
 
   long a_long;
-  if (!get_val_param<long >(a_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(a_long,_p,_n,true,true)) ClassReturnEmptyVar;
   unsigned int a = boost::numeric_cast<unsigned int >(a_long);
 
   long b_long;
-  if (!get_val_param<long >(b_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(b_long,_p,_n,true,true)) ClassReturnEmptyVar;
   unsigned int b = boost::numeric_cast<unsigned int >(b_long);
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
@@ -360,10 +356,10 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   int _n=0;
 
   short int a;
-  if (!get_val_param<short int >(a,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<short int >(a,_p,_n,true,true)) ClassReturnEmptyVar;
 
   short int b;
-  if (!get_val_param<short int >(b,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<short int >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
   int res_int = ((res==true)?1:0);
@@ -371,7 +367,6 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
 }
 */
 /*
- * The following types are missing: short unsigned int, short unsigned int
  * operator not available 
 
 //---------------------------------------------------
@@ -380,8 +375,8 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
 void WrapClass_wxIntegerEqual::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( short unsigned int, "parameter named 'a'")
-  ADDPARAMCOMMENT_TYPE( short unsigned int, "parameter named 'b'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'a'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b'")
   return_comments="returning a variable of type int";
 }
 
@@ -393,11 +388,13 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  short unsigned int a;
-  if (!get_val_param<short unsigned int >(a,_p,_n)) ClassReturnEmptyVar;
+  int a_int;
+  if (!get_val_param<int >(a_int,_p,_n,true,true)) ClassReturnEmptyVar;
+  short unsigned int a = boost::numeric_cast<short unsigned int >(a_int);
 
-  short unsigned int b;
-  if (!get_val_param<short unsigned int >(b,_p,_n)) ClassReturnEmptyVar;
+  int b_int;
+  if (!get_val_param<int >(b_int,_p,_n,true,true)) ClassReturnEmptyVar;
+  short unsigned int b = boost::numeric_cast<short unsigned int >(b_int);
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
   int res_int = ((res==true)?1:0);
@@ -405,7 +402,6 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
 }
 */
 /*
- * The following types are missing: long long int, long long int
  * operator not available 
 
 //---------------------------------------------------
@@ -414,8 +410,8 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
 void WrapClass_wxIntegerEqual::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'a'")
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'b'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'a'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'b'")
   return_comments="returning a variable of type int";
 }
 
@@ -427,11 +423,13 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int a;
-  if (!get_val_param<long long int >(a,_p,_n)) ClassReturnEmptyVar;
+  long a_long;
+  if (!get_val_param<long >(a_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int a = boost::numeric_cast<long long int >(a_long);
 
-  long long int b;
-  if (!get_val_param<long long int >(b,_p,_n)) ClassReturnEmptyVar;
+  long b_long;
+  if (!get_val_param<long >(b_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int b = boost::numeric_cast<long long int >(b_long);
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
   int res_int = ((res==true)?1:0);
@@ -462,10 +460,10 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   int _n=0;
 
   long long unsigned int a;
-  if (!get_val_param<long long unsigned int >(a,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long long unsigned int >(a,_p,_n,true,true)) ClassReturnEmptyVar;
 
   long long unsigned int b;
-  if (!get_val_param<long long unsigned int >(b,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long long unsigned int >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
   int res_int = ((res==true)?1:0);
@@ -492,7 +490,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   int _n=0;
 
   boost::shared_ptr<wxIntegerEqual > param0_smtptr;
-  if (!get_val_smtptr_param<wxIntegerEqual >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIntegerEqual >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIntegerEqual const & param0 = *param0_smtptr;
 
   wxIntegerEqual & res =   (*this->_objectptr->GetObj()) = (param0);

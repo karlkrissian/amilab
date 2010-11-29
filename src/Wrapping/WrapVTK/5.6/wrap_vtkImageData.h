@@ -87,53 +87,37 @@ class WrapClass_vtkImageData : public WrapClass<vtkImageData>
 */
     ADD_CLASS_METHOD(CopyStructure,"void vtkImageData::CopyStructure(vtkDataSet * ds)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#copystructure)")
     ADD_CLASS_METHOD(GetDataObjectType,"int vtkImageData::GetDataObjectType()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getdataobjecttype)")
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetNumberOfCells,"vtkIdType vtkImageData::GetNumberOfCells()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getnumberofcells)")
-*/
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetNumberOfPoints,"vtkIdType vtkImageData::GetNumberOfPoints()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getnumberofpoints)")
-*/
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetPoint_1,"double * vtkImageData::GetPoint(vtkIdType ptId)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getpoint)")
-*/
     ADD_CLASS_METHOD(GetPoint,"vtkImageData::GetPoint()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getpoint)")
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetPoint_2,"void vtkImageData::GetPoint(vtkIdType id, double * x)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getpoint)")
-*/
-/* The following types are missing: vtkCell, long long int
+/* The following types are missing: vtkCell
     ADD_CLASS_METHOD(GetCell_1,"vtkCell * vtkImageData::GetCell(vtkIdType cellId)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getcell)")
 */
     ADD_CLASS_METHOD(GetCell,"vtkImageData::GetCell()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getcell)")
-/* The following types are missing: long long int, vtkGenericCell
+/* The following types are missing: vtkGenericCell
     ADD_CLASS_METHOD(GetCell_2,"void vtkImageData::GetCell(vtkIdType cellId, vtkGenericCell * cell)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getcell)")
 */
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetCellBounds,"void vtkImageData::GetCellBounds(vtkIdType cellId, double * bounds)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getcellbounds)")
-*/
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(FindPoint_1,"vtkIdType vtkImageData::FindPoint(double x, double y, double z)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#findpoint)")
-*/
     ADD_CLASS_METHOD(FindPoint,"vtkImageData::FindPoint()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#findpoint)")
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(FindPoint_2,"vtkIdType vtkImageData::FindPoint(double * x)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#findpoint)")
-*/
-/* The following types are missing: long long int, vtkCell, long long int
+/* The following types are missing: vtkCell
     ADD_CLASS_METHOD(FindCell_1,"vtkIdType vtkImageData::FindCell(double * x, vtkCell * cell, vtkIdType cellId, double tol2, int & subId, double * pcoords, double * weights)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#findcell)")
 */
     ADD_CLASS_METHOD(FindCell,"vtkImageData::FindCell()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#findcell)")
-/* The following types are missing: long long int, vtkCell, vtkGenericCell, long long int
+/* The following types are missing: vtkCell, vtkGenericCell
     ADD_CLASS_METHOD(FindCell_2,"vtkIdType vtkImageData::FindCell(double * x, vtkCell * cell, vtkGenericCell * gencell, vtkIdType cellId, double tol2, int & subId, double * pcoords, double * weights)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#findcell)")
 */
-/* The following types are missing: vtkCell, vtkCell, long long int
+/* The following types are missing: vtkCell, vtkCell
     ADD_CLASS_METHOD(FindAndGetCell,"vtkCell * vtkImageData::FindAndGetCell(double * x, vtkCell * cell, vtkIdType cellId, double tol2, int & subId, double * pcoords, double * weights)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#findandgetcell)")
 */
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetCellType,"int vtkImageData::GetCellType(vtkIdType cellId)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getcelltype)")
-*/
-/* The following types are missing: long long int, vtkIdList
+/* The following types are missing: vtkIdList
     ADD_CLASS_METHOD(GetCellPoints,"void vtkImageData::GetCellPoints(vtkIdType cellId, vtkIdList * ptIds)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getcellpoints)")
 */
-/* The following types are missing: long long int, vtkIdList
+/* The following types are missing: vtkIdList
     ADD_CLASS_METHOD(GetPointCells,"void vtkImageData::GetPointCells(vtkIdType ptId, vtkIdList * cellIds)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getpointcells)")
 */
     ADD_CLASS_METHOD(ComputeBounds,"void vtkImageData::ComputeBounds()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#computebounds)")
@@ -146,19 +130,11 @@ class WrapClass_vtkImageData : public WrapClass<vtkImageData>
     ADD_CLASS_METHOD(GetDimensions,"vtkImageData::GetDimensions()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getdimensions)")
     ADD_CLASS_METHOD(GetDimensions_2,"void vtkImageData::GetDimensions(int * dims)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getdimensions)")
     ADD_CLASS_METHOD(ComputeStructuredCoordinates,"int vtkImageData::ComputeStructuredCoordinates(double * x, int * ijk, double * pcoords)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#computestructuredcoordinates)")
-/* The following types are missing: vtkDataArray, vtkDataArray
     ADD_CLASS_METHOD(GetVoxelGradient,"void vtkImageData::GetVoxelGradient(int i, int j, int k, vtkDataArray * s, vtkDataArray * g)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getvoxelgradient)")
-*/
-/* The following types are missing: vtkDataArray
     ADD_CLASS_METHOD(GetPointGradient,"void vtkImageData::GetPointGradient(int i, int j, int k, vtkDataArray * s, double * g)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getpointgradient)")
-*/
     ADD_CLASS_METHOD(GetDataDimension,"int vtkImageData::GetDataDimension()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getdatadimension)")
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(ComputePointId,"vtkIdType vtkImageData::ComputePointId(int * ijk)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#computepointid)")
-*/
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(ComputeCellId,"vtkIdType vtkImageData::ComputeCellId(int * ijk)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#computecellid)")
-*/
     ADD_CLASS_METHOD(SetAxisUpdateExtent,"void vtkImageData::SetAxisUpdateExtent(int axis, int min, int max)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#setaxisupdateextent)")
     ADD_CLASS_METHOD(GetAxisUpdateExtent,"void vtkImageData::GetAxisUpdateExtent(int axis, int & min, int & max)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getaxisupdateextent)")
     ADD_CLASS_METHOD(UpdateInformation,"void vtkImageData::UpdateInformation()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#updateinformation)")
@@ -173,19 +149,11 @@ class WrapClass_vtkImageData : public WrapClass<vtkImageData>
     ADD_CLASS_METHOD(GetScalarTypeMin,"double vtkImageData::GetScalarTypeMin()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getscalartypemin)")
     ADD_CLASS_METHOD(GetScalarTypeMax,"double vtkImageData::GetScalarTypeMax()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getscalartypemax)")
     ADD_CLASS_METHOD(GetScalarSize,"int vtkImageData::GetScalarSize()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getscalarsize)")
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetIncrements_1,"vtkIdType * vtkImageData::GetIncrements()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getincrements)")
-*/
     ADD_CLASS_METHOD(GetIncrements,"vtkImageData::GetIncrements()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getincrements)")
-/* The following types are missing: long long int, long long int, long long int
     ADD_CLASS_METHOD(GetIncrements_2,"void vtkImageData::GetIncrements(vtkIdType & incX, vtkIdType & incY, vtkIdType & incZ)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getincrements)")
-*/
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetIncrements_3,"void vtkImageData::GetIncrements(vtkIdType * inc)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getincrements)")
-*/
-/* The following types are missing: long long int, long long int, long long int
     ADD_CLASS_METHOD(GetContinuousIncrements,"void vtkImageData::GetContinuousIncrements(int * extent, vtkIdType & incX, vtkIdType & incY, vtkIdType & incZ)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getcontinuousincrements)")
-*/
     ADD_CLASS_METHOD(GetScalarPointerForExtent,"void * vtkImageData::GetScalarPointerForExtent(int * extent)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getscalarpointerforextent)")
     ADD_CLASS_METHOD(GetScalarPointer_1,"void * vtkImageData::GetScalarPointer(int * coordinates)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getscalarpointer)")
     ADD_CLASS_METHOD(GetScalarPointer,"vtkImageData::GetScalarPointer()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getscalarpointer)")
@@ -241,15 +209,9 @@ class WrapClass_vtkImageData : public WrapClass<vtkImageData>
     ADD_CLASS_METHOD(PrepareForNewData,"void vtkImageData::PrepareForNewData()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#preparefornewdata)")
     ADD_CLASS_METHOD(ShallowCopy,"void vtkImageData::ShallowCopy(vtkDataObject * src)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#shallowcopy)")
     ADD_CLASS_METHOD(DeepCopy,"void vtkImageData::DeepCopy(vtkDataObject * src)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#deepcopy)")
-/* The following types are missing: vtkDataArray
     ADD_CLASS_METHOD(GetArrayPointerForExtent,"void * vtkImageData::GetArrayPointerForExtent(vtkDataArray * array, int * extent)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getarraypointerforextent)")
-*/
-/* The following types are missing: vtkDataArray
     ADD_CLASS_METHOD(GetArrayPointer,"void * vtkImageData::GetArrayPointer(vtkDataArray * array, int * coordinates)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getarraypointer)")
-*/
-/* The following types are missing: vtkDataArray, long long int
     ADD_CLASS_METHOD(GetArrayIncrements,"void vtkImageData::GetArrayIncrements(vtkDataArray * array, vtkIdType * increments)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getarrayincrements)")
-*/
     ADD_CLASS_METHOD(ComputeInternalExtent,"void vtkImageData::ComputeInternalExtent(int * intExt, int * tgtExt, int * bnds)  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#computeinternalextent)")
     ADD_CLASS_METHOD(GetExtentType,"int vtkImageData::GetExtentType()  (http://docs.wxwidgets.org/stable/wx_vtkimagedata.html#getextenttype)")
 

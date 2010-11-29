@@ -127,7 +127,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImageHistogramBase >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxImageHistogramBase const & param0 = *param0_smtptr;
 
   wxImageHistogramBase* _newobj = new wxImageHistogramBase(param0);
@@ -176,14 +176,14 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   long hint_long = boost::numeric_cast<long >(100);;
-  if (!get_val_param<long >(hint_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(hint_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long unsigned int hint = boost::numeric_cast<long unsigned int >(hint_long);
 
   wxIntegerHash hf = wxIntegerHash();
-  if (!get_val_param<wxIntegerHash >(hf,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<wxIntegerHash >(hf,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxIntegerEqual eq = wxIntegerEqual();
-  if (!get_val_param<wxIntegerEqual >(eq,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<wxIntegerEqual >(eq,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxImageHistogramBase* _newobj = new wxImageHistogramBase(hint, hf, eq);
   BasicVariable::ptr res = WrapClass_wxImageHistogramBase::CreateVar(_newobj);
@@ -226,7 +226,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<long unsigned int > key_smtptr;
-  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long unsigned int const & key = *key_smtptr;
 
   const_iterator res =   this->_objectptr->GetObj()->find(key);
@@ -269,7 +269,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<long unsigned int > key_smtptr;
-  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long unsigned int const & key = *key_smtptr;
 
   iterator res =   this->_objectptr->GetObj()->find(key);
@@ -297,7 +297,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_Pair > v_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_Pair >(v_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_Pair >(v_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHistogramBase_wxImplementation_Pair const & v = *v_smtptr;
 
   Insert_Result res =   this->_objectptr->GetObj()->insert(v);
@@ -324,7 +324,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<long unsigned int > k_smtptr;
-  if (!get_val_smtptr_param<long unsigned int >(k_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<long unsigned int >(k_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   long unsigned int const & k = *k_smtptr;
 
   size_t res =   this->_objectptr->GetObj()->erase(k);
@@ -369,7 +369,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<iterator > it_smtptr;
-  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<iterator >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   iterator const & it = *it_smtptr;
 
   this->_objectptr->GetObj()->erase(it);
@@ -396,7 +396,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<const_iterator > it_smtptr;
-  if (!get_val_smtptr_param<const_iterator >(it_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<const_iterator >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   const_iterator const & it = *it_smtptr;
 
   this->_objectptr->GetObj()->erase(it);
@@ -423,7 +423,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<long unsigned int > key_smtptr;
-  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   long unsigned int const & key = *key_smtptr;
 
   size_t res =   this->_objectptr->GetObj()->count(key);
@@ -450,7 +450,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHistogramBase >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHistogramBase const & param0 = *param0_smtptr;
 
   wxImageHistogramBase & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -476,7 +476,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase::
   int _n=0;
 
   boost::shared_ptr<long unsigned int > key_smtptr;
-  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   long unsigned int const & key = *key_smtptr;
 
   wxImageHistogramEntry & res =   (*this->_objectptr->GetObj()) [ (key)];

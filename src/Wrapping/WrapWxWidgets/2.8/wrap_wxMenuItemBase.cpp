@@ -126,7 +126,7 @@ void WrapClass_wxMenuItemBase::AddMethods(WrapClass<wxMenuItemBase>::ptr this_pt
 //  Wrapping of wxMenuItem * wxMenuItemBase::New(wxMenu * parentMenu = 0u, int itemid = wxID_SEPARATOR, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL, wxMenu * subMenu = 0u)
 //---------------------------------------------------
 void WrapClass_wxMenuItemBase::
-    wrap_New_1::SetParametersComments()
+    wrap_static_New_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxMenu, "parameter named 'parentMenu' (def:0u)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid' (def:wxID_SEPARATOR)")
@@ -139,34 +139,34 @@ void WrapClass_wxMenuItemBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMenuItemBase::
-    wrap_New_1::CallMember( ParamList* _p)
+    wrap_static_New_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>6) ClassReturnEmptyVar;
   int _n=0;
 
   boost::shared_ptr<wxMenu > parentMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenu* parentMenu = parentMenu_smtptr.get();
 
   int itemid = wxID_SEPARATOR;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(itemid,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxString const & text = ( text_smtptr.get() ? (*text_smtptr) : wxString(wxEmptyString) );
 
   boost::shared_ptr<wxString > help_smtptr;
-  if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxMenu > subMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenu* subMenu = subMenu_smtptr.get();
 
   wxMenuItem * res =   wxMenuItemBase::New(parentMenu, itemid, text, help, kind, subMenu);
@@ -179,7 +179,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 //  Wrapping of wxString wxMenuItemBase::GetLabelFromText(wxString const & text)
 //---------------------------------------------------
 void WrapClass_wxMenuItemBase::
-    wrap_GetLabelFromText::SetParametersComments()
+    wrap_static_GetLabelFromText::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text'")
   return_comments="returning a variable of type wxString";
@@ -187,14 +187,14 @@ void WrapClass_wxMenuItemBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMenuItemBase::
-    wrap_GetLabelFromText::CallMember( ParamList* _p)
+    wrap_static_GetLabelFromText::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & text = *text_smtptr;
 
   wxString res =   wxMenuItemBase::GetLabelFromText(text);
@@ -202,18 +202,18 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 }
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... wxMenuItemBase::New(...)
+//  Wrapping of multipled defined method:... static wxMenuItemBase::New(...)
 //---------------------------------------------------
 void WrapClass_wxMenuItemBase::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMenuItemBase::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxMenuItemBase::wrap_New_2 m2;
+  WrapClass_wxMenuItemBase::wrap_static_New_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -223,7 +223,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 //  Wrapping of wxMenuItem * wxMenuItemBase::New(wxMenu * parentMenu, int itemid, wxString const & text, wxString const & help, bool isCheckable, wxMenu * subMenu = 0u)
 //---------------------------------------------------
 void WrapClass_wxMenuItemBase::
-    wrap_New_2::SetParametersComments()
+    wrap_static_New_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxMenu, "parameter named 'parentMenu'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
@@ -236,33 +236,33 @@ void WrapClass_wxMenuItemBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMenuItemBase::
-    wrap_New_2::CallMember( ParamList* _p)
+    wrap_static_New_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>6) ClassReturnEmptyVar;
   int _n=0;
 
   boost::shared_ptr<wxMenu > parentMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenu* parentMenu = parentMenu_smtptr.get();
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & text = *text_smtptr;
 
   boost::shared_ptr<wxString > help_smtptr;
-  if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & help = *help_smtptr;
 
   int isCheckable_int;
-  if (!get_val_param<int >(isCheckable_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(isCheckable_int,_p,_n,true,true)) ClassReturnEmptyVar;
   bool isCheckable = (bool) (isCheckable_int>0.5);
 
   boost::shared_ptr<wxMenu > subMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenu* subMenu = subMenu_smtptr.get();
 
   wxMenuItem * res =   wxMenuItemBase::New(parentMenu, itemid, text, help, isCheckable, subMenu);
@@ -274,7 +274,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 //  Wrapping of wxString wxMenuItemBase::GetLabelText(wxString const & label)
 //---------------------------------------------------
 void WrapClass_wxMenuItemBase::
-    wrap_GetLabelText::SetParametersComments()
+    wrap_static_GetLabelText::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'label'")
   return_comments="returning a variable of type wxString";
@@ -282,14 +282,14 @@ void WrapClass_wxMenuItemBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMenuItemBase::
-    wrap_GetLabelText::CallMember( ParamList* _p)
+    wrap_static_GetLabelText::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<wxString > label_smtptr;
-  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & label = *label_smtptr;
 
   wxString res =   wxMenuItemBase::GetLabelText(label);
@@ -334,7 +334,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenu* menu = menu_smtptr.get();
 
   this->_objectptr->GetObj()->SetMenu(menu);
@@ -359,7 +359,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   int itemid;
-  if (!get_val_param<int >(itemid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetId(itemid);
   return BasicVariable::ptr();
@@ -422,7 +422,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   this->_objectptr->GetObj()->SetText(str);
@@ -507,7 +507,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   wxItemKind kind;
-  if (!get_val_param<wxItemKind >(kind,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<wxItemKind >(kind,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetKind(kind);
   return BasicVariable::ptr();
@@ -532,7 +532,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   int checkable_int;
-  if (!get_val_param<int >(checkable_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(checkable_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool checkable = (bool) (checkable_int>0.5);
 
   this->_objectptr->GetObj()->SetCheckable(checkable);
@@ -597,7 +597,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenu* menu = menu_smtptr.get();
 
   this->_objectptr->GetObj()->SetSubMenu(menu);
@@ -642,7 +642,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   int enable_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(enable_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool enable = (bool) (enable_int>0.5);
 
   this->_objectptr->GetObj()->Enable(enable);
@@ -687,7 +687,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   int check_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(check_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(check_int,_p,_n,false,false)) ClassHelpAndReturn;
   bool check = (bool) (check_int>0.5);
 
   this->_objectptr->GetObj()->Check(check);
@@ -750,7 +750,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   this->_objectptr->GetObj()->SetHelp(str);
@@ -814,7 +814,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   boost::shared_ptr<wxAcceleratorEntry > accel_smtptr;
-  if (!get_val_smtptr_param<wxAcceleratorEntry >(accel_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxAcceleratorEntry >(accel_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxAcceleratorEntry* accel = accel_smtptr.get();
 
   this->_objectptr->GetObj()->SetAccel(accel);
@@ -839,7 +839,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   this->_objectptr->GetObj()->SetName(str);
@@ -883,7 +883,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
   this->_objectptr->GetObj()->SetItemLabel(str);
