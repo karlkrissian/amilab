@@ -87,7 +87,7 @@ WHILE(output_src_length)
 
 ENDWHILE(output_src_length)
 
-FILE(WRITE "${output_dir_path}/wrap_source_list.txt" ${file_source_list})
+FILE(WRITE "${output_dir_path}wrap_source_list.txt" ${file_source_list})
 
 MESSAGE("wxWidgets ${AMI_WXWIDGETS_VERSION} wrap files: ${new_source_list}\n")
 
