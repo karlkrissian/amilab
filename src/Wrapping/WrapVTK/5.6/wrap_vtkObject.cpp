@@ -34,7 +34,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkObject>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkObject::wrap_New construct;
+  WrapClass_vtkObject::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -132,7 +132,7 @@ void WrapClass_vtkObject::AddMethods(WrapClass<vtkObject>::ptr this_ptr )
 //  Wrapping of int vtkObject::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkObject::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -140,7 +140,7 @@ void WrapClass_vtkObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObject::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -158,7 +158,7 @@ BasicVariable::ptr WrapClass_vtkObject::
 //  Wrapping of vtkObject * vtkObject::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkObject::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkObject";
@@ -166,7 +166,7 @@ void WrapClass_vtkObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObject::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -185,14 +185,14 @@ BasicVariable::ptr WrapClass_vtkObject::
 //  Wrapping of vtkObject * vtkObject::New()
 //---------------------------------------------------
 void WrapClass_vtkObject::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkObject";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObject::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -205,13 +205,13 @@ BasicVariable::ptr WrapClass_vtkObject::
 //  Wrapping of void vtkObject::BreakOnError()
 //---------------------------------------------------
 void WrapClass_vtkObject::
-    wrap_BreakOnError::SetParametersComments()
+    wrap_static_BreakOnError::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObject::
-    wrap_BreakOnError::CallMember( ParamList* _p)
+    wrap_static_BreakOnError::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -223,14 +223,14 @@ BasicVariable::ptr WrapClass_vtkObject::
 //  Wrapping of void vtkObject::SetGlobalWarningDisplay(int val)
 //---------------------------------------------------
 void WrapClass_vtkObject::
-    wrap_SetGlobalWarningDisplay::SetParametersComments()
+    wrap_static_SetGlobalWarningDisplay::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'val'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObject::
-    wrap_SetGlobalWarningDisplay::CallMember( ParamList* _p)
+    wrap_static_SetGlobalWarningDisplay::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -247,13 +247,13 @@ BasicVariable::ptr WrapClass_vtkObject::
 //  Wrapping of void vtkObject::GlobalWarningDisplayOn()
 //---------------------------------------------------
 void WrapClass_vtkObject::
-    wrap_GlobalWarningDisplayOn::SetParametersComments()
+    wrap_static_GlobalWarningDisplayOn::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObject::
-    wrap_GlobalWarningDisplayOn::CallMember( ParamList* _p)
+    wrap_static_GlobalWarningDisplayOn::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -265,13 +265,13 @@ BasicVariable::ptr WrapClass_vtkObject::
 //  Wrapping of void vtkObject::GlobalWarningDisplayOff()
 //---------------------------------------------------
 void WrapClass_vtkObject::
-    wrap_GlobalWarningDisplayOff::SetParametersComments()
+    wrap_static_GlobalWarningDisplayOff::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObject::
-    wrap_GlobalWarningDisplayOff::CallMember( ParamList* _p)
+    wrap_static_GlobalWarningDisplayOff::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -283,14 +283,14 @@ BasicVariable::ptr WrapClass_vtkObject::
 //  Wrapping of int vtkObject::GetGlobalWarningDisplay()
 //---------------------------------------------------
 void WrapClass_vtkObject::
-    wrap_GetGlobalWarningDisplay::SetParametersComments()
+    wrap_static_GetGlobalWarningDisplay::SetParametersComments()
 {
   return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkObject::
-    wrap_GetGlobalWarningDisplay::CallMember( ParamList* _p)
+    wrap_static_GetGlobalWarningDisplay::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

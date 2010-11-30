@@ -121,14 +121,14 @@ BasicVariable::ptr WrapClass_wxValidator::
 //  Wrapping of bool wxValidator::IsSilent()
 //---------------------------------------------------
 void WrapClass_wxValidator::
-    wrap_IsSilent::SetParametersComments()
+    wrap_static_IsSilent::SetParametersComments()
 {
   return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxValidator::
-    wrap_IsSilent::CallMember( ParamList* _p)
+    wrap_static_IsSilent::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -141,14 +141,14 @@ BasicVariable::ptr WrapClass_wxValidator::
 //  Wrapping of void wxValidator::SetBellOnError(bool doIt = true)
 //---------------------------------------------------
 void WrapClass_wxValidator::
-    wrap_SetBellOnError::SetParametersComments()
+    wrap_static_SetBellOnError::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'doIt' (def:true)")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxValidator::
-    wrap_SetBellOnError::CallMember( ParamList* _p)
+    wrap_static_SetBellOnError::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

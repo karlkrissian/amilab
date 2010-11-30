@@ -83,9 +83,7 @@ class WrapClass_vtkActorCollection : public WrapClass<vtkActorCollection>
     ADD_CLASS_METHOD(GetLastActor,"vtkActor * vtkActorCollection::GetLastActor()  (http://docs.wxwidgets.org/stable/wx_vtkactorcollection.html#getlastactor)")
     ADD_CLASS_METHOD(GetNextItem,"vtkActor * vtkActorCollection::GetNextItem()  (http://docs.wxwidgets.org/stable/wx_vtkactorcollection.html#getnextitem)")
     ADD_CLASS_METHOD(GetLastItem,"vtkActor * vtkActorCollection::GetLastItem()  (http://docs.wxwidgets.org/stable/wx_vtkactorcollection.html#getlastitem)")
-/* The following types are missing: vtkProperty
     ADD_CLASS_METHOD(ApplyProperties,"void vtkActorCollection::ApplyProperties(vtkProperty * p)  (http://docs.wxwidgets.org/stable/wx_vtkactorcollection.html#applyproperties)")
-*/
     ADD_CLASS_METHOD(GetNextActor,"vtkActorCollection::GetNextActor()  (http://docs.wxwidgets.org/stable/wx_vtkactorcollection.html#getnextactor)")
 /* The following types are missing: void
     ADD_CLASS_METHOD(GetNextActor_2,"vtkActor * vtkActorCollection::GetNextActor(vtkCollectionSimpleIterator & cookie)  (http://docs.wxwidgets.org/stable/wx_vtkactorcollection.html#getnextactor)")

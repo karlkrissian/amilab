@@ -363,8 +363,6 @@ void CB_update_imagelist( void* imagelist_gui);
   char*                   astring;
   AmiInstructionBlock*    ablock;
   float                   afloat;
-  long int                along;  /// New (added: 27/05/2010)
-  bool                    abool;  /// New (added: 19/11/2010)
   double                  adouble;
   int                     aint;
   ParamList*              paramlist; // here smart pointer
@@ -1718,7 +1716,7 @@ command:
       **/
         IdentifierInfo::ptr ident($1);
 
-        bool_ptr varboolean (new bool((bool)$5));
+        boost::shared_ptr<bool> varboolean (new bool((bool)$5));
         Vars.AddVar<bool>(ident,varboolean);
       }
       |
@@ -1735,7 +1733,7 @@ command:
         IdentifierInfo::ptr ident($1);
         boost::shared_array<char> comments( $8);
 
-        bool_ptr varboolean (new bool((bool)$5));
+        boost::shared_ptr<bool> varboolean (new bool((bool)$5));
         BasicVariable::ptr var=Vars.AddVar<bool>(ident,varboolean);
         if (var.get())
           var->SetComments(comments.get());

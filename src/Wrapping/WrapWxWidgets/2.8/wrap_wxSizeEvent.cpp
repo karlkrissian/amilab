@@ -19,8 +19,8 @@
 // get all the required includes
 // #include "..."
 #include "wrap_wxSize.h"
-#include "wrap_wxSizeEvent.h"
 #include "wrap_wxRect.h"
+#include "wrap_wxSizeEvent.h"
 #include "wrap_wxEvent.h"
 #include "wrap_wxClassInfo.h"
 

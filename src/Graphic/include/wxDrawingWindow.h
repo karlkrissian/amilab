@@ -367,6 +367,7 @@ public:
 //  void OnColormapPoint(           wxCommandEvent& event);
   void OnColormapControlledCurve( wxCommandEvent& event);
   void OnVerticalLine(            wxCommandEvent& event);
+  void OnYLocked(                 wxCommandEvent& event);
   void OnControlColour(           wxCommandEvent& event);
   void OnShowGrid(                wxCommandEvent& event);
 

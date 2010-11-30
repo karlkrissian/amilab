@@ -84,22 +84,14 @@ class WrapClass_vtkDataSet : public WrapClass<vtkDataSet>
     ADD_CLASS_METHOD(PrintSelf,"void vtkDataSet::PrintSelf(ostream & os, vtkIndent indent)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#printself)")
 */
     ADD_CLASS_METHOD(CopyAttributes,"void vtkDataSet::CopyAttributes(vtkDataSet * ds)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#copyattributes)")
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetPoint,"void vtkDataSet::GetPoint(vtkIdType id, double * x)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#getpoint)")
-*/
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetCellBounds,"void vtkDataSet::GetCellBounds(vtkIdType cellId, double * bounds)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#getcellbounds)")
-*/
-/* The following types are missing: vtkCellTypes
     ADD_CLASS_METHOD(GetCellTypes,"void vtkDataSet::GetCellTypes(vtkCellTypes * types)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#getcelltypes)")
-*/
-/* The following types are missing: long long int, vtkIdList, vtkIdList
+/* The following types are missing: vtkIdList, vtkIdList
     ADD_CLASS_METHOD(GetCellNeighbors,"void vtkDataSet::GetCellNeighbors(vtkIdType cellId, vtkIdList * ptIds, vtkIdList * cellIds)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#getcellneighbors)")
 */
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(FindPoint,"vtkIdType vtkDataSet::FindPoint(double x, double y, double z)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#findpoint)")
-*/
-/* The following types are missing: vtkCell, vtkCell, long long int
+/* The following types are missing: vtkCell, vtkCell
     ADD_CLASS_METHOD(FindAndGetCell,"vtkCell * vtkDataSet::FindAndGetCell(double * x, vtkCell * cell, vtkIdType cellId, double tol2, int & subId, double * pcoords, double * weights)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#findandgetcell)")
 */
     ADD_CLASS_METHOD(GetMTime,"long unsigned int vtkDataSet::GetMTime()  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#getmtime)")
@@ -131,9 +123,7 @@ class WrapClass_vtkDataSet : public WrapClass<vtkDataSet>
 /* The following types are missing: vtkFieldData
     ADD_CLASS_METHOD(GetAttributesAsFieldData,"vtkFieldData * vtkDataSet::GetAttributesAsFieldData(int type)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#getattributesasfielddata)")
 */
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(GetNumberOfElements,"vtkIdType vtkDataSet::GetNumberOfElements(int type)  (http://docs.wxwidgets.org/stable/wx_vtkdataset.html#getnumberofelements)")
-*/
 
 
 

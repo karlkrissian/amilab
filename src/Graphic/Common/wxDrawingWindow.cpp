@@ -38,6 +38,7 @@ enum {
   wxID_ColormapControlledCurve,
 //  wxID_ColormapPoint,
   wxID_VerticalLine,
+  wxID_YLocked,
   wxID_SetControlColour,
   wxID_ShowGrid,
 };
@@ -58,6 +59,7 @@ BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_MENU(         wxID_DuplicateControl,      wxDrawingWindow::OnDuplicateControl)
 //  EVT_MENU(         wxID_ColormapPoint,      wxDrawingWindow::OnColormapPoint)
   EVT_MENU(         wxID_VerticalLine,       wxDrawingWindow::OnVerticalLine)
+  EVT_MENU(         wxID_YLocked,       wxDrawingWindow::OnYLocked)
   EVT_MENU(         wxID_SetControlColour,   wxDrawingWindow::OnControlColour)
   EVT_MENU(         wxID_ShowGrid,           wxDrawingWindow::OnShowGrid)
 END_EVENT_TABLE();
@@ -911,6 +913,10 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
       menu_vl->Check(_focus_point->GetVerticalLine());
     }
 
+    wxMenuItem* menu_ly =
+      menu.AppendCheckItem(wxID_YLocked, wxT("&Lock Y coord."));
+    menu_ly->Check(_focus_point->GetYLocked());
+
     menu.Append(wxID_SetControlColour, wxT("&Colour"));
    }
    _within_popupmenu = true;
@@ -931,6 +937,10 @@ int wxDrawingWindow::CheckCtrlPoint( boost::shared_ptr<vector_dwControlPoint>& l
     wxPoint p;
     p = (*list)[i].GetwxPoint();
     (*list)[i].SetFocus(false);
+/*    std::cout << "point " << i 
+              << "p.x=" << p.x
+              << "p.y=" << p.y
+              << std::endl;*/
     double tmp = (p.x-_mouse_x)*(p.x-_mouse_x)+(p.y-_mouse_y)*(p.y-_mouse_y);
     if (tmp<(*list)[i].GetRadius()*(*list)[i].GetRadius()) {
       if (closest==-1) {
@@ -959,6 +969,7 @@ void wxDrawingWindow::CheckCtrlPoint()
   res = CheckCtrlPoint(_controlpoints);
   int i=0;
   while ((res==-1)&&(i<(int)_controlled_curves->size())) {
+/*    std::cout << "curve " << i << std::endl;*/
     res = CheckCtrlPoint((*_controlled_curves)[i].GetControlPoints());
     if (res!=-1)
       // TODO: improve this "false" smart pointer
@@ -1218,6 +1229,13 @@ void wxDrawingWindow::OnColormapControlledCurve(wxCommandEvent& event)
 void wxDrawingWindow::OnVerticalLine(wxCommandEvent& event)
 {
   _focus_point->SetVerticalLine(event.IsChecked());
+  Refresh(false);
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnYLocked(wxCommandEvent& event)
+{
+  _focus_point->SetYLocked(event.IsChecked());
   Refresh(false);
 }
 

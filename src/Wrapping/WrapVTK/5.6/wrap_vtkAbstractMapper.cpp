@@ -20,6 +20,7 @@
 // #include "..."
 #include "wrap_vtkAbstractMapper.h"
 #include "wrap_vtkObjectBase.h"
+#include "wrap_vtkDataArray.h"
 #include "wrap_vtkDataSet.h"
 #include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
@@ -120,7 +121,7 @@ void WrapClass_vtkAbstractMapper::AddMethods(WrapClass<vtkAbstractMapper>::ptr t
 //  Wrapping of int vtkAbstractMapper::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkAbstractMapper::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -128,14 +129,14 @@ void WrapClass_vtkAbstractMapper::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkAbstractMapper::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkAbstractMapper::IsTypeOf(type);
@@ -146,7 +147,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
 //  Wrapping of vtkAbstractMapper * vtkAbstractMapper::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkAbstractMapper::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkAbstractMapper";
@@ -154,27 +155,26 @@ void WrapClass_vtkAbstractMapper::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkAbstractMapper::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkAbstractMapper * res =   vtkAbstractMapper::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkAbstractMapper::CreateVar(res);
   return res_var;
 }
-/* The following types are missing: vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of vtkDataArray * vtkAbstractMapper::GetScalars(vtkDataSet * input, int scalarMode, int arrayAccessMode, int arrayId, char const * arrayName, int & cellFlag)
 //---------------------------------------------------
 void WrapClass_vtkAbstractMapper::
-    wrap_GetScalars::SetParametersComments()
+    wrap_static_GetScalars::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkDataSet, "parameter named 'input'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'scalarMode'")
@@ -187,37 +187,37 @@ void WrapClass_vtkAbstractMapper::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkAbstractMapper::
-    wrap_GetScalars::CallMember( ParamList* _p)
+    wrap_static_GetScalars::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>6) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkDataSet > input_smtptr;
-  if (!get_val_smtptr_param<vtkDataSet >(input_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataSet >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataSet* input = input_smtptr.get();
 
   int scalarMode;
-  if (!get_val_param<int >(scalarMode,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(scalarMode,_p,_n,true,false)) ClassHelpAndReturn;
 
   int arrayAccessMode;
-  if (!get_val_param<int >(arrayAccessMode,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(arrayAccessMode,_p,_n,true,false)) ClassHelpAndReturn;
 
   int arrayId;
-  if (!get_val_param<int >(arrayId,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(arrayId,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<std::string > arrayName_string;
-  if (!get_val_smtptr_param<std::string >(arrayName_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(arrayName_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * arrayName = arrayName_string->c_str();
 
   boost::shared_ptr<int > cellFlag_smtptr;
-  if (!get_val_smtptr_param<int >(cellFlag_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(cellFlag_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int & cellFlag = *cellFlag_smtptr;
 
   vtkDataArray * res =   vtkAbstractMapper::GetScalars(input, scalarMode, arrayAccessMode, arrayId, arrayName, cellFlag);
-  return AMILabType<vtkDataArray >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkDataArray::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int vtkAbstractMapper::IsA(char const * type)
@@ -238,7 +238,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -285,11 +285,11 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -334,7 +334,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int _n=0;
 
   boost::shared_ptr<vtkWindow > param0_smtptr;
-  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkWindow* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->ReleaseGraphicsResources(param0);
@@ -379,7 +379,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int _n=0;
 
   boost::shared_ptr<vtkPlane > plane_smtptr;
-  if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkPlane* plane = plane_smtptr.get();
 
   this->_objectptr->GetObj()->AddClippingPlane(plane);
@@ -406,7 +406,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int _n=0;
 
   boost::shared_ptr<vtkPlane > plane_smtptr;
-  if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkPlane* plane = plane_smtptr.get();
 
   this->_objectptr->GetObj()->RemoveClippingPlane(plane);
@@ -451,7 +451,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int _n=0;
 
   boost::shared_ptr<vtkPlaneCollection > param0_smtptr;
-  if (!get_val_smtptr_param<vtkPlaneCollection >(param0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkPlaneCollection >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkPlaneCollection* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetClippingPlanes(param0);
@@ -516,7 +516,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int _n=0;
 
   boost::shared_ptr<vtkPlanes > planes_smtptr;
-  if (!get_val_smtptr_param<vtkPlanes >(planes_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkPlanes >(planes_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkPlanes* planes = planes_smtptr.get();
 
   this->_objectptr->GetObj()->SetClippingPlanes(planes);
@@ -541,7 +541,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int _n=0;
 
   boost::shared_ptr<vtkAbstractMapper > m_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractMapper >(m_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkAbstractMapper >(m_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkAbstractMapper* m = m_smtptr.get();
 
   this->_objectptr->GetObj()->ShallowCopy(m);

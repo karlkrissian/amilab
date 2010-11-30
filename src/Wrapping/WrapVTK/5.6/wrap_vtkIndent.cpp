@@ -159,14 +159,14 @@ BasicVariable::ptr WrapClass_vtkIndent::
 //  Wrapping of vtkIndent * vtkIndent::New()
 //---------------------------------------------------
 void WrapClass_vtkIndent::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkIndent";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkIndent::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

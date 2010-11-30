@@ -21,6 +21,8 @@
 #include "wrap_vtkPlanes.h"
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
+#include "wrap_vtkPoints.h"
+#include "wrap_vtkDataArray.h"
 
 
 #include "wrap_vtkPlanes.h"
@@ -32,7 +34,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkPlanes>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkPlanes::wrap_New construct;
+  WrapClass_vtkPlanes::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -86,18 +88,10 @@ void WrapClass_vtkPlanes::AddMethods(WrapClass<vtkPlanes>::ptr this_ptr )
       AddVar_EvaluateFunction( this_ptr);
       AddVar_EvaluateFunction_2( this_ptr);
       AddVar_EvaluateGradient( this_ptr);
-/* The following types are missing: vtkPoints
       AddVar_SetPoints( this_ptr);
-*/
-/* The following types are missing: vtkPoints
       AddVar_GetPoints( this_ptr);
-*/
-/* The following types are missing: vtkDataArray
       AddVar_SetNormals( this_ptr);
-*/
-/* The following types are missing: vtkDataArray
       AddVar_GetNormals( this_ptr);
-*/
       AddVar_SetFrustumPlanes( this_ptr);
       AddVar_SetBounds_1( this_ptr);
       AddVar_SetBounds( this_ptr);
@@ -125,14 +119,14 @@ void WrapClass_vtkPlanes::AddMethods(WrapClass<vtkPlanes>::ptr this_ptr )
 //  Wrapping of vtkPlanes * vtkPlanes::New()
 //---------------------------------------------------
 void WrapClass_vtkPlanes::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkPlanes";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPlanes::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -145,7 +139,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
 //  Wrapping of int vtkPlanes::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkPlanes::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -153,14 +147,14 @@ void WrapClass_vtkPlanes::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPlanes::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkPlanes::IsTypeOf(type);
@@ -171,7 +165,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
 //  Wrapping of vtkPlanes * vtkPlanes::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkPlanes::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkPlanes";
@@ -179,14 +173,14 @@ void WrapClass_vtkPlanes::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkPlanes::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkPlanes * res =   vtkPlanes::SafeDownCast(o);
@@ -213,7 +207,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -260,11 +254,11 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -290,7 +284,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* x = x_smtptr.get();
 
   double res =   this->_objectptr->GetObj()->EvaluateFunction(x);
@@ -339,13 +333,13 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double z;
-  if (!get_val_param<double >(z,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(z,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double res =   this->_objectptr->GetObj()->EvaluateFunction(x, y, z);
   return AMILabType<double >::CreateVar(res);
@@ -370,17 +364,16 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* x = x_smtptr.get();
 
   boost::shared_ptr<double > n_smtptr;
-  if (!get_val_smtptr_param<double >(n_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(n_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* n = n_smtptr.get();
 
   this->_objectptr->GetObj()->EvaluateGradient(x, n);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkPoints
 
 //---------------------------------------------------
 //  Wrapping of void vtkPlanes::SetPoints(vtkPoints * param0)
@@ -400,14 +393,12 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   boost::shared_ptr<vtkPoints > param0_smtptr;
-  if (!get_val_smtptr_param<vtkPoints >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkPoints >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkPoints* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetPoints(param0);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkPoints
 
 //---------------------------------------------------
 //  Wrapping of vtkPoints * vtkPlanes::GetPoints()
@@ -425,10 +416,9 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPoints * res =   this->_objectptr->GetObj()->GetPoints();
-  return AMILabType<vtkPoints >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkPoints::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of void vtkPlanes::SetNormals(vtkDataArray * normals)
@@ -448,14 +438,12 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   boost::shared_ptr<vtkDataArray > normals_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(normals_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataArray >(normals_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataArray* normals = normals_smtptr.get();
 
   this->_objectptr->GetObj()->SetNormals(normals);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkDataArray
 
 //---------------------------------------------------
 //  Wrapping of vtkDataArray * vtkPlanes::GetNormals()
@@ -473,9 +461,9 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkDataArray * res =   this->_objectptr->GetObj()->GetNormals();
-  return AMILabType<vtkDataArray >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkDataArray::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkPlanes::SetFrustumPlanes(double * planes)
@@ -495,7 +483,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   boost::shared_ptr<double > planes_smtptr;
-  if (!get_val_smtptr_param<double >(planes_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(planes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* planes = planes_smtptr.get();
 
   this->_objectptr->GetObj()->SetFrustumPlanes(planes);
@@ -520,7 +508,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* bounds = bounds_smtptr.get();
 
   this->_objectptr->GetObj()->SetBounds(bounds);
@@ -571,22 +559,22 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   double xmin;
-  if (!get_val_param<double >(xmin,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(xmin,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double xmax;
-  if (!get_val_param<double >(xmax,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(xmax,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double ymin;
-  if (!get_val_param<double >(ymin,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(ymin,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double ymax;
-  if (!get_val_param<double >(ymax,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(ymax,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double zmin;
-  if (!get_val_param<double >(zmin,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(zmin,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double zmax;
-  if (!get_val_param<double >(zmax,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(zmax,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetBounds(xmin, xmax, ymin, ymax, zmin, zmax);
   return BasicVariable::ptr();
@@ -631,7 +619,7 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(i,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkPlane * res =   this->_objectptr->GetObj()->GetPlane(i);
   return AMILabType<vtkPlane >::CreateVar(res,true);
@@ -673,10 +661,10 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(i,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<vtkPlane > plane_smtptr;
-  if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkPlane* plane = plane_smtptr.get();
 
   this->_objectptr->GetObj()->GetPlane(i, plane);

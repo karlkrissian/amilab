@@ -33,7 +33,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkVolumeCollection>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkVolumeCollection::wrap_New construct;
+  WrapClass_vtkVolumeCollection::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -105,14 +105,14 @@ void WrapClass_vtkVolumeCollection::AddMethods(WrapClass<vtkVolumeCollection>::p
 //  Wrapping of vtkVolumeCollection * vtkVolumeCollection::New()
 //---------------------------------------------------
 void WrapClass_vtkVolumeCollection::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkVolumeCollection";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkVolumeCollection::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -125,7 +125,7 @@ BasicVariable::ptr WrapClass_vtkVolumeCollection::
 //  Wrapping of int vtkVolumeCollection::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkVolumeCollection::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -133,7 +133,7 @@ void WrapClass_vtkVolumeCollection::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkVolumeCollection::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -151,7 +151,7 @@ BasicVariable::ptr WrapClass_vtkVolumeCollection::
 //  Wrapping of vtkVolumeCollection * vtkVolumeCollection::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkVolumeCollection::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkVolumeCollection";
@@ -159,7 +159,7 @@ void WrapClass_vtkVolumeCollection::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkVolumeCollection::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

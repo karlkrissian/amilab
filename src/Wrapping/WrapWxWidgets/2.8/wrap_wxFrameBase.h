@@ -26,6 +26,7 @@
 #include "wrap_wxTopLevelWindow.h"
 
 
+
 AMI_DECLARE_TYPE(wxFrameBase);
 
 // TODO: check for inheritence ...

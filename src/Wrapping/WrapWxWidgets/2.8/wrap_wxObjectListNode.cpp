@@ -133,7 +133,7 @@ BasicVariable::ptr WrapClass_wxObjectListNode::
   boost::shared_ptr<wxListKey > key_smtptr;
   if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxListKey const & key = ( key_smtptr.get() ? (*key_smtptr) : wxListKey(wxDefaultListKey) );
+  wxListKey const & key = ( key_smtptr.get() ? (*key_smtptr) : wxDefaultListKey );
 
   wxObjectListNode* _newobj = new wxObjectListNode(list, previous, next, data, key);
   BasicVariable::ptr res = WrapClass_wxObjectListNode::CreateVar(_newobj);

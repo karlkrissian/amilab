@@ -32,7 +32,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkColorTransferFunction>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkColorTransferFunction::wrap_New construct;
+  WrapClass_vtkColorTransferFunction::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -160,14 +160,14 @@ void WrapClass_vtkColorTransferFunction::AddMethods(WrapClass<vtkColorTransferFu
 //  Wrapping of vtkColorTransferFunction * vtkColorTransferFunction::New()
 //---------------------------------------------------
 void WrapClass_vtkColorTransferFunction::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkColorTransferFunction";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkColorTransferFunction::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -180,7 +180,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
 //  Wrapping of int vtkColorTransferFunction::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkColorTransferFunction::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -188,7 +188,7 @@ void WrapClass_vtkColorTransferFunction::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkColorTransferFunction::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -206,7 +206,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
 //  Wrapping of vtkColorTransferFunction * vtkColorTransferFunction::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkColorTransferFunction::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkColorTransferFunction";
@@ -214,7 +214,7 @@ void WrapClass_vtkColorTransferFunction::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkColorTransferFunction::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

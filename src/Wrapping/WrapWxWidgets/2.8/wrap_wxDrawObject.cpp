@@ -105,7 +105,7 @@ BasicVariable::ptr WrapClass_wxDrawObject::
   int _n=0;
 
   boost::shared_ptr<wxDCBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxDCBase >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxDCBase >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxDCBase & param0 = *param0_smtptr;
 
   this->_objectptr->GetObj()->Draw(param0);
@@ -131,10 +131,10 @@ BasicVariable::ptr WrapClass_wxDrawObject::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->CalcBoundingBox(x, y);
   return BasicVariable::ptr();
@@ -253,7 +253,7 @@ BasicVariable::ptr WrapClass_wxDrawObject::
   int _n=0;
 
   boost::shared_ptr<wxDrawObject > param0_smtptr;
-  if (!get_val_smtptr_param<wxDrawObject >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxDrawObject >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxDrawObject const & param0 = *param0_smtptr;
 
   wxDrawObject & res =   (*this->_objectptr->GetObj()) = (param0);

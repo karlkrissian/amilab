@@ -109,13 +109,13 @@ BasicVariable::ptr WrapClass_wxMenuEvent::
   int _n=0;
 
   int type = wxEVT_NULL;
-  if (!get_val_param<int >(type,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(type,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int winid = 0;
-  if (!get_val_param<int >(winid,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(winid,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxMenu* menu = menu_smtptr.get();
 
   wxMenuEvent* _newobj = new wxMenuEvent(type, winid, menu);
@@ -162,7 +162,7 @@ BasicVariable::ptr WrapClass_wxMenuEvent::
   int _n=0;
 
   boost::shared_ptr<wxMenuEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMenuEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxMenuEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxMenuEvent const & event = *event_smtptr;
 
   wxMenuEvent* _newobj = new wxMenuEvent(event);

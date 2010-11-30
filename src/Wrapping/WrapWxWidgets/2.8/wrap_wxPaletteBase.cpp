@@ -142,7 +142,7 @@ BasicVariable::ptr WrapClass_wxPaletteBase::
   int _n=0;
 
   boost::shared_ptr<wxPaletteBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxPaletteBase >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPaletteBase >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPaletteBase const & param0 = *param0_smtptr;
 
   wxPaletteBase & res =   (*this->_objectptr->GetObj()) = (param0);

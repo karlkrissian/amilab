@@ -166,12 +166,12 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   boost::shared_ptr<wxBitmap > bmpNormal_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpNormal_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpNormal = ( bmpNormal_smtptr.get() ? (*bmpNormal_smtptr) : wxBitmap(wxNullBitmap) );
+  wxBitmap const & bmpNormal = ( bmpNormal_smtptr.get() ? (*bmpNormal_smtptr) : wxNullBitmap );
 
   boost::shared_ptr<wxBitmap > bmpDisabled_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxBitmap(wxNullBitmap) );
+  wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxNullBitmap );
 
   wxItemKind kind = wxITEM_NORMAL;
   if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;

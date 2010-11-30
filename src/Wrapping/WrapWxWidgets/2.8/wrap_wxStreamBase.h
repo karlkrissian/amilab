@@ -71,7 +71,9 @@ class WrapClass_wxStreamBase : public WrapClass<wxStreamBase>
     // Standard methods
     
     // Adding standard methods
+/* The following types are missing: wxStreamError
     ADD_CLASS_METHOD(GetLastError,"wxStreamError wxStreamBase::GetLastError()  (http://docs.wxwidgets.org/stable/wx_wxstreambase.html#getlasterror)")
+*/
     ADD_CLASS_METHOD(IsOk,"bool wxStreamBase::IsOk()  (http://docs.wxwidgets.org/stable/wx_wxstreambase.html#isok)")
     ADD_CLASS_METHOD(Reset,"void wxStreamBase::Reset()  (http://docs.wxwidgets.org/stable/wx_wxstreambase.html#reset)")
     ADD_CLASS_METHOD(GetSize,"size_t wxStreamBase::GetSize()  (http://docs.wxwidgets.org/stable/wx_wxstreambase.html#getsize)")

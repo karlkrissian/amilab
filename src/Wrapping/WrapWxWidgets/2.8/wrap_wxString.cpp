@@ -146,9 +146,7 @@ void WrapClass_wxString::AddMethods(WrapClass<wxString>::ptr this_ptr )
       AddVar_Matches( this_ptr);
       AddVar_ToLong( this_ptr);
       AddVar_ToULong( this_ptr);
-/* The following types are missing: long long int
       AddVar_ToLongLong( this_ptr);
-*/
 /* The following types are missing: long long unsigned int
       AddVar_ToULongLong( this_ptr);
 */
@@ -244,9 +242,7 @@ void WrapClass_wxString::AddMethods(WrapClass<wxString>::ptr this_ptr )
       // AddVar_operator not available( this_ptr);
       // AddVar_operator not available( this_ptr);
       // AddVar_operator not available( this_ptr);
-/* The following types are missing: long long int
       // AddVar_operator not available( this_ptr);
-*/
 /* The following types are missing: long long unsigned int
       // AddVar_operator not available( this_ptr);
 */
@@ -716,7 +712,7 @@ BasicVariable::ptr WrapClass_wxString::
 //  Wrapping of wxString wxString::FromAscii(char const * ascii)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_FromAscii_1::SetParametersComments()
+    wrap_static_FromAscii_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'ascii'")
   return_comments="returning a variable of type wxString";
@@ -724,7 +720,7 @@ void WrapClass_wxString::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_FromAscii_1::CallMember( ParamList* _p)
+    wrap_static_FromAscii_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -739,21 +735,21 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... wxString::FromAscii(...)
+//  Wrapping of multipled defined method:... static wxString::FromAscii(...)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_FromAscii::SetParametersComments()
+    wrap_static_FromAscii::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_FromAscii::CallMember( ParamList* _p)
+    wrap_static_FromAscii::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxString::wrap_FromAscii_1 m1;
+  WrapClass_wxString::wrap_static_FromAscii_1 m1;
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_FromAscii_2 m2;
+  WrapClass_wxString::wrap_static_FromAscii_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -763,7 +759,7 @@ BasicVariable::ptr WrapClass_wxString::
 //  Wrapping of wxString wxString::FromAscii(char const ascii)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_FromAscii_2::SetParametersComments()
+    wrap_static_FromAscii_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'ascii'")
   return_comments="returning a variable of type wxString";
@@ -771,7 +767,7 @@ void WrapClass_wxString::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_FromAscii_2::CallMember( ParamList* _p)
+    wrap_static_FromAscii_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -790,7 +786,7 @@ if (ascii_string.size()>0) ascii = ascii_string[0];
 //  Wrapping of wxString wxString::FromUTF8(char const * utf8)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_FromUTF8_1::SetParametersComments()
+    wrap_static_FromUTF8_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'utf8'")
   return_comments="returning a variable of type wxString";
@@ -798,7 +794,7 @@ void WrapClass_wxString::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_FromUTF8_1::CallMember( ParamList* _p)
+    wrap_static_FromUTF8_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -813,21 +809,21 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... wxString::FromUTF8(...)
+//  Wrapping of multipled defined method:... static wxString::FromUTF8(...)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_FromUTF8::SetParametersComments()
+    wrap_static_FromUTF8::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_FromUTF8::CallMember( ParamList* _p)
+    wrap_static_FromUTF8::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxString::wrap_FromUTF8_1 m1;
+  WrapClass_wxString::wrap_static_FromUTF8_1 m1;
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_FromUTF8_2 m2;
+  WrapClass_wxString::wrap_static_FromUTF8_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -837,7 +833,7 @@ BasicVariable::ptr WrapClass_wxString::
 //  Wrapping of wxString wxString::FromUTF8(char const * utf8, size_t len)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_FromUTF8_2::SetParametersComments()
+    wrap_static_FromUTF8_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'utf8'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'len'")
@@ -846,7 +842,7 @@ void WrapClass_wxString::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_FromUTF8_2::CallMember( ParamList* _p)
+    wrap_static_FromUTF8_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
@@ -868,7 +864,7 @@ BasicVariable::ptr WrapClass_wxString::
 //  Wrapping of wxString wxString::From8BitData(char const * data, size_t len)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_From8BitData_1::SetParametersComments()
+    wrap_static_From8BitData_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'data'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'len'")
@@ -877,7 +873,7 @@ void WrapClass_wxString::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_From8BitData_1::CallMember( ParamList* _p)
+    wrap_static_From8BitData_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
@@ -896,21 +892,21 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... wxString::From8BitData(...)
+//  Wrapping of multipled defined method:... static wxString::From8BitData(...)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_From8BitData::SetParametersComments()
+    wrap_static_From8BitData::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_From8BitData::CallMember( ParamList* _p)
+    wrap_static_From8BitData::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxString::wrap_From8BitData_1 m1;
+  WrapClass_wxString::wrap_static_From8BitData_1 m1;
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxString::wrap_From8BitData_2 m2;
+  WrapClass_wxString::wrap_static_From8BitData_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -920,7 +916,7 @@ BasicVariable::ptr WrapClass_wxString::
 //  Wrapping of wxString wxString::From8BitData(char const * data)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_From8BitData_2::SetParametersComments()
+    wrap_static_From8BitData_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'data'")
   return_comments="returning a variable of type wxString";
@@ -928,7 +924,7 @@ void WrapClass_wxString::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_From8BitData_2::CallMember( ParamList* _p)
+    wrap_static_From8BitData_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -946,7 +942,7 @@ BasicVariable::ptr WrapClass_wxString::
 //  Wrapping of wxString wxString::Format(wxChar const * pszFormat)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_Format::SetParametersComments()
+    wrap_static_Format::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'pszFormat'")
   return_comments="returning a variable of type wxString";
@@ -954,7 +950,7 @@ void WrapClass_wxString::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_Format::CallMember( ParamList* _p)
+    wrap_static_Format::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -974,7 +970,7 @@ mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
 //  Wrapping of wxString wxString::FormatV(wxChar const * pszFormat, __va_list_tag * argptr)
 //---------------------------------------------------
 void WrapClass_wxString::
-    wrap_FormatV::SetParametersComments()
+    wrap_static_FormatV::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'pszFormat'")
   ADDPARAMCOMMENT_TYPE( __va_list_tag, "parameter named 'argptr'")
@@ -983,7 +979,7 @@ void WrapClass_wxString::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
-    wrap_FormatV::CallMember( ParamList* _p)
+    wrap_static_FormatV::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
@@ -1432,7 +1428,7 @@ BasicVariable::ptr WrapClass_wxString::
   boost::shared_ptr<wxMBConv > conv_smtptr;
   if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : (wxConvLibc) );
+  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : wxConvLibc );
 
   wxWritableCharBuffer res =   this->_objectptr->GetObj()->char_str(conv);
   return AMILabType<wxWritableCharBuffer >::CreateVar(res);
@@ -1554,7 +1550,7 @@ BasicVariable::ptr WrapClass_wxString::
   boost::shared_ptr<wxMBConv > conv_smtptr;
   if (!get_val_smtptr_param<wxMBConv >(conv_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : (wxConvLibc) );
+  wxMBConv const & conv = ( conv_smtptr.get() ? (*conv_smtptr) : wxConvLibc );
 
   wxCharBuffer const res =   this->_objectptr->GetObj()->mb_str(conv);
   return AMILabType<wxCharBuffer >::CreateVar(res);
@@ -2781,7 +2777,6 @@ BasicVariable::ptr WrapClass_wxString::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of bool wxString::ToLongLong(long long int * val, int base = 10)
@@ -2789,7 +2784,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_ToLongLong::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'val'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'val'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'base' (def:10)")
   return_comments="returning a variable of type int";
 }
@@ -2802,9 +2797,10 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<long long int > val_smtptr;
-  if (!get_val_smtptr_param<long long int >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  long long int* val = val_smtptr.get();
+  boost::shared_ptr<long > val_long;
+  if (!get_val_smtptr_param<long >(val_long,_p,_n,true,false,false)) ClassHelpAndReturn;
+  long long int val_val = boost::numeric_cast<long long int >(*val_long);
+  long long int* val = &val_val;
 
   int base = 10;
   if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
@@ -2813,7 +2809,6 @@ BasicVariable::ptr WrapClass_wxString::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
 /* The following types are missing: long long unsigned int
 
 //---------------------------------------------------
@@ -5563,7 +5558,6 @@ BasicVariable::ptr WrapClass_wxString::
 }
 */
 /*
- * The following types are missing: long long int
  * operator not available 
 
 //---------------------------------------------------
@@ -5572,7 +5566,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( long long int, "parameter named 'll'")
+  ADDPARAMCOMMENT_TYPE( long, "parameter named 'll'")
   return_comments="returning a variable of type wxString";
 }
 
@@ -5584,8 +5578,9 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  long long int ll;
-  if (!get_val_param<long long int >(ll,_p,_n,true,true)) ClassReturnEmptyVar;
+  long ll_long;
+  if (!get_val_param<long >(ll_long,_p,_n,true,true)) ClassReturnEmptyVar;
+  long long int ll = boost::numeric_cast<long long int >(ll_long);
 
   wxString & res =   this->_objectptr->GetObj()-><<(ll);
   return AMILabType<wxString >::CreateVar(res);

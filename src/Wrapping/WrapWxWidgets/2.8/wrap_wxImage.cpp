@@ -557,7 +557,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of bool wxImage::CanRead(wxString const & name)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_CanRead_1::SetParametersComments()
+    wrap_static_CanRead_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   return_comments="returning a variable of type int";
@@ -565,7 +565,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_CanRead_1::CallMember( ParamList* _p)
+    wrap_static_CanRead_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -584,7 +584,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of int wxImage::GetImageCount(wxString const & name, long int type = wxBITMAP_TYPE_ANY)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_GetImageCount_1::SetParametersComments()
+    wrap_static_GetImageCount_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'type' (def:wxBITMAP_TYPE_ANY)")
@@ -593,7 +593,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_GetImageCount_1::CallMember( ParamList* _p)
+    wrap_static_GetImageCount_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
@@ -612,21 +612,21 @@ BasicVariable::ptr WrapClass_wxImage::
 }
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... wxImage::CanRead(...)
+//  Wrapping of multipled defined method:... static wxImage::CanRead(...)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_CanRead::SetParametersComments()
+    wrap_static_CanRead::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_CanRead::CallMember( ParamList* _p)
+    wrap_static_CanRead::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxImage::wrap_CanRead_1 m1;
+  WrapClass_wxImage::wrap_static_CanRead_1 m1;
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxImage::wrap_CanRead_2 m2;
+  WrapClass_wxImage::wrap_static_CanRead_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -636,7 +636,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of bool wxImage::CanRead(wxInputStream & stream)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_CanRead_2::SetParametersComments()
+    wrap_static_CanRead_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxInputStream, "parameter named 'stream'")
   return_comments="returning a variable of type int";
@@ -644,7 +644,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_CanRead_2::CallMember( ParamList* _p)
+    wrap_static_CanRead_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -660,21 +660,21 @@ BasicVariable::ptr WrapClass_wxImage::
 }
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... wxImage::GetImageCount(...)
+//  Wrapping of multipled defined method:... static wxImage::GetImageCount(...)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_GetImageCount::SetParametersComments()
+    wrap_static_GetImageCount::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_GetImageCount::CallMember( ParamList* _p)
+    wrap_static_GetImageCount::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxImage::wrap_GetImageCount_1 m1;
+  WrapClass_wxImage::wrap_static_GetImageCount_1 m1;
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxImage::wrap_GetImageCount_2 m2;
+  WrapClass_wxImage::wrap_static_GetImageCount_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -684,7 +684,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of int wxImage::GetImageCount(wxInputStream & stream, long int type = wxBITMAP_TYPE_ANY)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_GetImageCount_2::SetParametersComments()
+    wrap_static_GetImageCount_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxInputStream, "parameter named 'stream'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'type' (def:wxBITMAP_TYPE_ANY)")
@@ -693,7 +693,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_GetImageCount_2::CallMember( ParamList* _p)
+    wrap_static_GetImageCount_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
@@ -715,14 +715,14 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of wxList & wxImage::GetHandlers()
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_GetHandlers::SetParametersComments()
+    wrap_static_GetHandlers::SetParametersComments()
 {
   return_comments="returning a variable of type wxList";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_GetHandlers::CallMember( ParamList* _p)
+    wrap_static_GetHandlers::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -734,14 +734,14 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of void wxImage::AddHandler(wxImageHandler * handler)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_AddHandler::SetParametersComments()
+    wrap_static_AddHandler::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxImageHandler, "parameter named 'handler'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_AddHandler::CallMember( ParamList* _p)
+    wrap_static_AddHandler::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -759,14 +759,14 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of void wxImage::InsertHandler(wxImageHandler * handler)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_InsertHandler::SetParametersComments()
+    wrap_static_InsertHandler::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxImageHandler, "parameter named 'handler'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_InsertHandler::CallMember( ParamList* _p)
+    wrap_static_InsertHandler::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -784,7 +784,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of bool wxImage::RemoveHandler(wxString const & name)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_RemoveHandler::SetParametersComments()
+    wrap_static_RemoveHandler::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   return_comments="returning a variable of type int";
@@ -792,7 +792,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_RemoveHandler::CallMember( ParamList* _p)
+    wrap_static_RemoveHandler::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -811,7 +811,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of wxImageHandler * wxImage::FindHandler(wxString const & name)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_FindHandler_1::SetParametersComments()
+    wrap_static_FindHandler_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   return_comments="returning a variable of type wxImageHandler";
@@ -819,7 +819,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_FindHandler_1::CallMember( ParamList* _p)
+    wrap_static_FindHandler_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -835,24 +835,24 @@ BasicVariable::ptr WrapClass_wxImage::
 }
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... wxImage::FindHandler(...)
+//  Wrapping of multipled defined method:... static wxImage::FindHandler(...)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_FindHandler::SetParametersComments()
+    wrap_static_FindHandler::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_FindHandler::CallMember( ParamList* _p)
+    wrap_static_FindHandler::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
-  WrapClass_wxImage::wrap_FindHandler_1 m1;
+  WrapClass_wxImage::wrap_static_FindHandler_1 m1;
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxImage::wrap_FindHandler_2 m2;
+  WrapClass_wxImage::wrap_static_FindHandler_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
-  WrapClass_wxImage::wrap_FindHandler_3 m3;
+  WrapClass_wxImage::wrap_static_FindHandler_3 m3;
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
@@ -862,7 +862,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of wxImageHandler * wxImage::FindHandler(wxString const & extension, long int imageType)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_FindHandler_2::SetParametersComments()
+    wrap_static_FindHandler_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'extension'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'imageType'")
@@ -871,7 +871,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_FindHandler_2::CallMember( ParamList* _p)
+    wrap_static_FindHandler_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
@@ -894,7 +894,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of wxImageHandler * wxImage::FindHandler(long int imageType)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_FindHandler_3::SetParametersComments()
+    wrap_static_FindHandler_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'imageType'")
   return_comments="returning a variable of type wxImageHandler";
@@ -902,7 +902,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_FindHandler_3::CallMember( ParamList* _p)
+    wrap_static_FindHandler_3::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -921,7 +921,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of wxImageHandler * wxImage::FindHandlerMime(wxString const & mimetype)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_FindHandlerMime::SetParametersComments()
+    wrap_static_FindHandlerMime::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'mimetype'")
   return_comments="returning a variable of type wxImageHandler";
@@ -929,7 +929,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_FindHandlerMime::CallMember( ParamList* _p)
+    wrap_static_FindHandlerMime::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -948,14 +948,14 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of wxString wxImage::GetImageExtWildcard()
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_GetImageExtWildcard::SetParametersComments()
+    wrap_static_GetImageExtWildcard::SetParametersComments()
 {
   return_comments="returning a variable of type wxString";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_GetImageExtWildcard::CallMember( ParamList* _p)
+    wrap_static_GetImageExtWildcard::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -967,13 +967,13 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of void wxImage::CleanUpHandlers()
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_CleanUpHandlers::SetParametersComments()
+    wrap_static_CleanUpHandlers::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_CleanUpHandlers::CallMember( ParamList* _p)
+    wrap_static_CleanUpHandlers::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -985,13 +985,13 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of void wxImage::InitStandardHandlers()
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_InitStandardHandlers::SetParametersComments()
+    wrap_static_InitStandardHandlers::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_InitStandardHandlers::CallMember( ParamList* _p)
+    wrap_static_InitStandardHandlers::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1004,7 +1004,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of HSVValue wxImage::RGBtoHSV(RGBValue const & rgb)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_RGBtoHSV::SetParametersComments()
+    wrap_static_RGBtoHSV::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( RGBValue, "parameter named 'rgb'")
   return_comments="returning a variable of type HSVValue";
@@ -1012,7 +1012,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_RGBtoHSV::CallMember( ParamList* _p)
+    wrap_static_RGBtoHSV::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -1032,7 +1032,7 @@ BasicVariable::ptr WrapClass_wxImage::
 //  Wrapping of RGBValue wxImage::HSVtoRGB(HSVValue const & hsv)
 //---------------------------------------------------
 void WrapClass_wxImage::
-    wrap_HSVtoRGB::SetParametersComments()
+    wrap_static_HSVtoRGB::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( HSVValue, "parameter named 'hsv'")
   return_comments="returning a variable of type RGBValue";
@@ -1040,7 +1040,7 @@ void WrapClass_wxImage::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxImage::
-    wrap_HSVtoRGB::CallMember( ParamList* _p)
+    wrap_static_HSVtoRGB::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

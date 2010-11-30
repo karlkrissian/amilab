@@ -103,14 +103,14 @@ void WrapClass_wxMBConv::AddMethods(WrapClass<wxMBConv>::ptr this_ptr )
 //  Wrapping of size_t wxMBConv::GetMaxMBNulLen()
 //---------------------------------------------------
 void WrapClass_wxMBConv::
-    wrap_GetMaxMBNulLen::SetParametersComments()
+    wrap_static_GetMaxMBNulLen::SetParametersComments()
 {
   return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxMBConv::
-    wrap_GetMaxMBNulLen::CallMember( ParamList* _p)
+    wrap_static_GetMaxMBNulLen::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

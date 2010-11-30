@@ -32,7 +32,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyleTrackball>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkInteractorStyleTrackball::wrap_New construct;
+  WrapClass_vtkInteractorStyleTrackball::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -97,14 +97,14 @@ void WrapClass_vtkInteractorStyleTrackball::AddMethods(WrapClass<vtkInteractorSt
 //  Wrapping of vtkInteractorStyleTrackball * vtkInteractorStyleTrackball::New()
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyleTrackball::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInteractorStyleTrackball";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -117,7 +117,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
 //  Wrapping of int vtkInteractorStyleTrackball::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyleTrackball::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -125,14 +125,14 @@ void WrapClass_vtkInteractorStyleTrackball::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkInteractorStyleTrackball::IsTypeOf(type);
@@ -143,7 +143,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
 //  Wrapping of vtkInteractorStyleTrackball * vtkInteractorStyleTrackball::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyleTrackball::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkInteractorStyleTrackball";
@@ -151,14 +151,14 @@ void WrapClass_vtkInteractorStyleTrackball::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkInteractorStyleTrackball * res =   vtkInteractorStyleTrackball::SafeDownCast(o);
@@ -185,7 +185,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -232,11 +232,11 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();

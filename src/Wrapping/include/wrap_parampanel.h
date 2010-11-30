@@ -76,6 +76,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
     ADD_CLASS_METHOD(AddBoolean,       "Adds a boolean selection.");
     ADD_CLASS_METHOD(AddButton,        "Adds a button.");
     ADD_CLASS_METHOD(AddBitmapButton,  "Adds a bitmap button.");
+    ADD_CLASS_METHOD(AddColor,         "Adds a color parameter.");
     ADD_CLASS_METHOD(SetCallback,      "Sets a callback on the last parameter.");
     ADD_CLASS_METHOD(SetDragCallback,  "Activate/Desactivate the drag callback.");
     ADD_CLASS_METHOD(EnablePanel,      "Enable/Disable a panel.");
@@ -128,6 +129,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
       AddVar_AddImageChoice(    this_ptr);
       AddVar_AddButton(         this_ptr);
       AddVar_AddBitmapButton(   this_ptr);
+      AddVar_AddColor(          this_ptr);
       AddVar_AddBoolean(        this_ptr);
       AddVar_SetCallback(       this_ptr);
       AddVar_SetDragCallback(   this_ptr);

@@ -87,10 +87,8 @@ class WrapClass_wxIntegerHash : public WrapClass<wxIntegerHash>
 /* The following types are missing: short int
     // ADD_CLASS_METHOD(operator not available,"long unsigned int wxIntegerHash::()(short int x) (http://docs.wxwidgets.org/stable/wx_wxintegerhash.html#())")
 */
-/* The following types are missing: short unsigned int
     // ADD_CLASS_METHOD(operator not available,"long unsigned int wxIntegerHash::()(short unsigned int x) (http://docs.wxwidgets.org/stable/wx_wxintegerhash.html#())")
-*/
-/* The following types are missing: long long unsigned int, long long int
+/* The following types are missing: long long unsigned int
     // ADD_CLASS_METHOD(operator not available,"long long unsigned int wxIntegerHash::()(long long int x) (http://docs.wxwidgets.org/stable/wx_wxintegerhash.html#())")
 */
 /* The following types are missing: long long unsigned int, long long unsigned int

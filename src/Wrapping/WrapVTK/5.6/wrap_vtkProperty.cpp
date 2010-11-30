@@ -35,7 +35,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkProperty>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkProperty::wrap_New construct;
+  WrapClass_vtkProperty::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -255,7 +255,7 @@ void WrapClass_vtkProperty::AddMethods(WrapClass<vtkProperty>::ptr this_ptr )
 //  Wrapping of int vtkProperty::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkProperty::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -263,7 +263,7 @@ void WrapClass_vtkProperty::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkProperty::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -281,7 +281,7 @@ BasicVariable::ptr WrapClass_vtkProperty::
 //  Wrapping of vtkProperty * vtkProperty::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkProperty::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkProperty";
@@ -289,7 +289,7 @@ void WrapClass_vtkProperty::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkProperty::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -308,14 +308,14 @@ BasicVariable::ptr WrapClass_vtkProperty::
 //  Wrapping of vtkProperty * vtkProperty::New()
 //---------------------------------------------------
 void WrapClass_vtkProperty::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkProperty";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkProperty::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 

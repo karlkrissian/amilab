@@ -23,6 +23,7 @@
 #include "wrap_vtkIndent.h"
 #include "wrap_vtkPropCollection.h"
 #include "boost/numeric/conversion/cast.hpp"
+#include "wrap_vtkMatrix4x4.h"
 #include "wrap_vtkViewport.h"
 #include "wrap_vtkWindow.h"
 #include "wrap_vtkObject.h"
@@ -115,12 +116,8 @@ void WrapClass_vtkProp::AddMethods(WrapClass<vtkProp>::ptr this_ptr )
       AddVar_GetNextPath( this_ptr);
 */
       AddVar_GetNumberOfPaths( this_ptr);
-/* The following types are missing: vtkMatrix4x4
       AddVar_PokeMatrix( this_ptr);
-*/
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetMatrix( this_ptr);
-*/
 /* The following types are missing: vtkInformation
       AddVar_GetPropertyKeys( this_ptr);
 */
@@ -182,7 +179,7 @@ void WrapClass_vtkProp::AddMethods(WrapClass<vtkProp>::ptr this_ptr )
 //  Wrapping of int vtkProp::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkProp::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -190,7 +187,7 @@ void WrapClass_vtkProp::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkProp::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -208,7 +205,7 @@ BasicVariable::ptr WrapClass_vtkProp::
 //  Wrapping of vtkProp * vtkProp::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkProp::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkProp";
@@ -216,7 +213,7 @@ void WrapClass_vtkProp::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkProp::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -840,7 +837,6 @@ BasicVariable::ptr WrapClass_vtkProp::
   int res =   this->_objectptr->GetObj()->GetNumberOfPaths();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of void vtkProp::PokeMatrix(vtkMatrix4x4 * param0)
@@ -866,8 +862,6 @@ BasicVariable::ptr WrapClass_vtkProp::
   this->_objectptr->GetObj()->PokeMatrix(param0);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkProp::GetMatrix()
@@ -885,9 +879,9 @@ BasicVariable::ptr WrapClass_vtkProp::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetMatrix();
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  return res_var;
 }
-*/
 /* The following types are missing: vtkInformation
 
 //---------------------------------------------------

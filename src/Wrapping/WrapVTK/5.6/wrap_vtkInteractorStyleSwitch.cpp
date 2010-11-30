@@ -35,7 +35,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyleSwitch>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkInteractorStyleSwitch::wrap_New construct;
+  WrapClass_vtkInteractorStyleSwitch::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -110,14 +110,14 @@ void WrapClass_vtkInteractorStyleSwitch::AddMethods(WrapClass<vtkInteractorStyle
 //  Wrapping of vtkInteractorStyleSwitch * vtkInteractorStyleSwitch::New()
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyleSwitch::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInteractorStyleSwitch";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -130,7 +130,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
 //  Wrapping of int vtkInteractorStyleSwitch::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyleSwitch::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -138,14 +138,14 @@ void WrapClass_vtkInteractorStyleSwitch::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkInteractorStyleSwitch::IsTypeOf(type);
@@ -156,7 +156,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
 //  Wrapping of vtkInteractorStyleSwitch * vtkInteractorStyleSwitch::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyleSwitch::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkInteractorStyleSwitch";
@@ -164,14 +164,14 @@ void WrapClass_vtkInteractorStyleSwitch::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkInteractorStyleSwitch * res =   vtkInteractorStyleSwitch::SafeDownCast(o);
@@ -198,7 +198,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -245,11 +245,11 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -274,7 +274,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   int _n=0;
 
   boost::shared_ptr<vtkRenderWindowInteractor > iren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(iren_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(iren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderWindowInteractor* iren = iren_smtptr.get();
 
   this->_objectptr->GetObj()->SetInteractor(iren);
@@ -299,7 +299,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   int _n=0;
 
   int value;
-  if (!get_val_param<int >(value,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(value,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAutoAdjustCameraClippingRange(value);
   return BasicVariable::ptr();
@@ -433,7 +433,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetDefaultRenderer(param0);
@@ -458,7 +458,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   int _n=0;
 
   boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderer* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetCurrentRenderer(param0);

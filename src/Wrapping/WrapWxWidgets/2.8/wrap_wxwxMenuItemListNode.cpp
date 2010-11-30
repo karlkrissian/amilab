@@ -115,25 +115,25 @@ BasicVariable::ptr WrapClass_wxwxMenuItemListNode::
   int _n=0;
 
   boost::shared_ptr<wxListBase > list_smtptr;
-  if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxListBase* list = list_smtptr.get();
 
   boost::shared_ptr<wxwxMenuItemListNode > previous_smtptr;
-  if (!get_val_smtptr_param<wxwxMenuItemListNode >(previous_smtptr,_p,_n,true,true)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxwxMenuItemListNode >(previous_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
   wxwxMenuItemListNode* previous = previous_smtptr.get();
 
   boost::shared_ptr<wxwxMenuItemListNode > next_smtptr;
-  if (!get_val_smtptr_param<wxwxMenuItemListNode >(next_smtptr,_p,_n,true,true)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxwxMenuItemListNode >(next_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
   wxwxMenuItemListNode* next = next_smtptr.get();
 
   boost::shared_ptr<wxMenuItem > data_smtptr;
-  if (!get_val_smtptr_param<wxMenuItem >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenuItem >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenuItem* data = data_smtptr.get();
 
   boost::shared_ptr<wxListKey > key_smtptr;
-  if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxListKey const & key = ( key_smtptr.get() ? (*key_smtptr) : (wxDefaultListKey) );
+  wxListKey const & key = ( key_smtptr.get() ? (*key_smtptr) : wxDefaultListKey );
 
   wxwxMenuItemListNode* _newobj = new wxwxMenuItemListNode(list, previous, next, data, key);
   BasicVariable::ptr res = WrapClass_wxwxMenuItemListNode::CreateVar(_newobj);
@@ -218,7 +218,7 @@ BasicVariable::ptr WrapClass_wxwxMenuItemListNode::
   int _n=0;
 
   boost::shared_ptr<wxMenuItem > data_smtptr;
-  if (!get_val_smtptr_param<wxMenuItem >(data_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenuItem >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenuItem* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->SetData(data);

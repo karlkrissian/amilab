@@ -99,7 +99,7 @@ void WrapClass_wxColourBase::AddMethods(WrapClass<wxColourBase>::ptr this_ptr )
 //  Wrapping of wxColour wxColourBase::CreateByName(wxString const & name)
 //---------------------------------------------------
 void WrapClass_wxColourBase::
-    wrap_CreateByName::SetParametersComments()
+    wrap_static_CreateByName::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   return_comments="returning a variable of type wxColour";
@@ -107,14 +107,14 @@ void WrapClass_wxColourBase::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxColourBase::
-    wrap_CreateByName::CallMember( ParamList* _p)
+    wrap_static_CreateByName::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   wxColour res =   wxColourBase::CreateByName(name);
@@ -142,16 +142,16 @@ BasicVariable::ptr WrapClass_wxColourBase::
   int _n=0;
 
   unsigned char red;
-  if (!get_val_param<unsigned char >(red,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(red,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char green;
-  if (!get_val_param<unsigned char >(green,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(green,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char blue;
-  if (!get_val_param<unsigned char >(blue,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(blue,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char alpha = wxALPHA_OPAQUE;
-  if (!get_val_param<unsigned char >(alpha,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(alpha,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Set(red, green, blue, alpha);
   return BasicVariable::ptr();
@@ -203,7 +203,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
   int _n=0;
 
   boost::shared_ptr<std::string > str_string;
-  if (!get_val_smtptr_param<std::string >(str_string,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<std::string >(str_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wchar_t str[str_string->size()+1];
 mbstowcs(str,str_string->c_str(),str_string->size()+1);
 
@@ -231,7 +231,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
   int _n=0;
 
   boost::shared_ptr<wxString > str_smtptr;
-  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & str = *str_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Set(str);
@@ -257,7 +257,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
   int _n=0;
 
   long colRGB_long;
-  if (!get_val_param<long >(colRGB_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(colRGB_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int colRGB = boost::numeric_cast<long unsigned int >(colRGB_long);
 
   this->_objectptr->GetObj()->Set(colRGB);
@@ -322,7 +322,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
   int _n=0;
 
   long flags_long = 3;;
-  if (!get_val_param<long >(flags_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(flags_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int flags = flags_long;
 
   wxString res =   this->_objectptr->GetObj()->GetAsString(flags);
@@ -347,7 +347,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
   int _n=0;
 
   boost::shared_ptr<wxString > col_smtptr;
-  if (!get_val_smtptr_param<wxString >(col_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(col_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & col = *col_smtptr;
 
   this->_objectptr->GetObj()->InitFromName(col);
@@ -373,7 +373,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
   int _n=0;
 
   boost::shared_ptr<wxColourBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxColourBase >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxColourBase >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxColourBase const & param0 = *param0_smtptr;
 
   wxColourBase & res =   (*this->_objectptr->GetObj()) = (param0);

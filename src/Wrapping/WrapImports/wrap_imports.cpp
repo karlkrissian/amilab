@@ -267,6 +267,7 @@ void AddWrapBasicTypes()
 
   WrapClass_StdVector<int>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_int");
   WrapClass_StdVector<float>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_float");
+  WrapClass_StdVector<double>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_double");
 
   WrapClass_File::AddVar_File( Vars.GetBuiltinContext());
 //  AddVar_VarList( Vars.GetBuiltinContext());

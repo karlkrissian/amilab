@@ -125,7 +125,7 @@ void WrapClass_vtkInteractorObserver::AddMethods(WrapClass<vtkInteractorObserver
 //  Wrapping of int vtkInteractorObserver::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkInteractorObserver::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -133,7 +133,7 @@ void WrapClass_vtkInteractorObserver::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorObserver::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -151,7 +151,7 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
 //  Wrapping of vtkInteractorObserver * vtkInteractorObserver::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkInteractorObserver::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkInteractorObserver";
@@ -159,7 +159,7 @@ void WrapClass_vtkInteractorObserver::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorObserver::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -178,7 +178,7 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
 //  Wrapping of void vtkInteractorObserver::ComputeDisplayToWorld(vtkRenderer * ren, double x, double y, double z, double * worldPt)
 //---------------------------------------------------
 void WrapClass_vtkInteractorObserver::
-    wrap_ComputeDisplayToWorld::SetParametersComments()
+    wrap_static_ComputeDisplayToWorld::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkRenderer, "parameter named 'ren'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'x'")
@@ -189,7 +189,7 @@ void WrapClass_vtkInteractorObserver::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorObserver::
-    wrap_ComputeDisplayToWorld::CallMember( ParamList* _p)
+    wrap_static_ComputeDisplayToWorld::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>5) ClassHelpAndReturn;
@@ -220,7 +220,7 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
 //  Wrapping of void vtkInteractorObserver::ComputeWorldToDisplay(vtkRenderer * ren, double x, double y, double z, double * displayPt)
 //---------------------------------------------------
 void WrapClass_vtkInteractorObserver::
-    wrap_ComputeWorldToDisplay::SetParametersComments()
+    wrap_static_ComputeWorldToDisplay::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkRenderer, "parameter named 'ren'")
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'x'")
@@ -231,7 +231,7 @@ void WrapClass_vtkInteractorObserver::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorObserver::
-    wrap_ComputeWorldToDisplay::CallMember( ParamList* _p)
+    wrap_static_ComputeWorldToDisplay::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>5) ClassHelpAndReturn;

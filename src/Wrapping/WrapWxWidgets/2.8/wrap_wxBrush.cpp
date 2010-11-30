@@ -62,10 +62,11 @@ Variable<AMIObject>::ptr WrapClass_wxBrush::CreateVar( wxBrush* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxBrush::AddMethods(WrapClass<wxBrush>::ptr this_ptr )
 {
-  
+  /*
       // Add members from wxBrushBase
       WrapClass_wxBrushBase::ptr parent_wxBrushBase(        boost::dynamic_pointer_cast<WrapClass_wxBrushBase >(this_ptr));
       parent_wxBrushBase->AddMethods(parent_wxBrushBase);
+      */
 
 
   // check that the method name is not a token
@@ -118,7 +119,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   boost::shared_ptr<wxBrush > param0_smtptr;
-  if (!get_val_smtptr_param<wxBrush >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBrush >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxBrush const & param0 = *param0_smtptr;
 
   wxBrush* _newobj = new wxBrush(param0);
@@ -191,11 +192,11 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   boost::shared_ptr<wxColour > colour_smtptr;
-  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(colour_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & colour = *colour_smtptr;
 
   int style = wxSOLID;
-  if (!get_val_param<int >(style,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(style,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxBrush* _newobj = new wxBrush(colour, style);
   BasicVariable::ptr res = WrapClass_wxBrush::CreateVar(_newobj);
@@ -220,7 +221,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > stippleBitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(stippleBitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(stippleBitmap_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & stippleBitmap = *stippleBitmap_smtptr;
 
   wxBrush* _newobj = new wxBrush(stippleBitmap);
@@ -360,7 +361,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   boost::shared_ptr<wxColour > col_smtptr;
-  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxColour const & col = *col_smtptr;
 
   this->_objectptr->GetObj()->SetColour(col);
@@ -408,13 +409,13 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   unsigned char r;
-  if (!get_val_param<unsigned char >(r,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(r,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char g;
-  if (!get_val_param<unsigned char >(g,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(g,_p,_n,true,true)) ClassReturnEmptyVar;
 
   unsigned char b;
-  if (!get_val_param<unsigned char >(b,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<unsigned char >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetColour(r, g, b);
   return BasicVariable::ptr();
@@ -438,7 +439,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   int style;
-  if (!get_val_param<int >(style,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(style,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStyle(style);
   return BasicVariable::ptr();
@@ -462,7 +463,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > stipple_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(stipple_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(stipple_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & stipple = *stipple_smtptr;
 
   this->_objectptr->GetObj()->SetStipple(stipple);
@@ -508,7 +509,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   boost::shared_ptr<wxBrush > param0_smtptr;
-  if (!get_val_smtptr_param<wxBrush >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBrush >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBrush const & param0 = *param0_smtptr;
 
   wxBrush & res =   (*this->_objectptr->GetObj()) = (param0);
@@ -534,7 +535,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   boost::shared_ptr<wxBrush > brush_smtptr;
-  if (!get_val_smtptr_param<wxBrush >(brush_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBrush >(brush_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBrush const & brush = *brush_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (brush);
@@ -561,7 +562,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   int _n=0;
 
   boost::shared_ptr<wxBrush > brush_smtptr;
-  if (!get_val_smtptr_param<wxBrush >(brush_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBrush >(brush_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBrush const & brush = *brush_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (brush);

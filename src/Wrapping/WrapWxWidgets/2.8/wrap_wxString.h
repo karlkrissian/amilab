@@ -184,9 +184,7 @@ class WrapClass_wxString : public WrapClass<wxString>
     ADD_CLASS_METHOD(Matches,"bool wxString::Matches(wxChar const * szMask)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#matches)")
     ADD_CLASS_METHOD(ToLong,"bool wxString::ToLong(long int * val, int base = 10)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#tolong)")
     ADD_CLASS_METHOD(ToULong,"bool wxString::ToULong(long unsigned int * val, int base = 10)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#toulong)")
-/* The following types are missing: long long int
     ADD_CLASS_METHOD(ToLongLong,"bool wxString::ToLongLong(long long int * val, int base = 10)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#tolonglong)")
-*/
 /* The following types are missing: long long unsigned int
     ADD_CLASS_METHOD(ToULongLong,"bool wxString::ToULongLong(long long unsigned int * val, int base = 10)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#toulonglong)")
 */
@@ -282,9 +280,7 @@ class WrapClass_wxString : public WrapClass<wxString>
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(unsigned int ui) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(long int l) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(long unsigned int ul) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
-/* The following types are missing: long long int
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(long long int ll) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
-*/
 /* The following types are missing: long long unsigned int
     // ADD_CLASS_METHOD(operator not available,"wxString & wxString::<<(long long unsigned int ull) (http://docs.wxwidgets.org/stable/wx_wxstring.html#<<)")
 */

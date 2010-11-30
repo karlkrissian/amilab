@@ -26,6 +26,7 @@
 #include "wrap_wxImageHistogramBase_wxImplementation_HashTable.h"
 
 
+
 AMI_DECLARE_TYPE(wxImageHistogramBase);
 
 // TODO: check for inheritence ...

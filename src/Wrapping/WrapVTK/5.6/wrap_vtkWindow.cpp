@@ -144,7 +144,7 @@ void WrapClass_vtkWindow::AddMethods(WrapClass<vtkWindow>::ptr this_ptr )
 //  Wrapping of int vtkWindow::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkWindow::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -152,7 +152,7 @@ void WrapClass_vtkWindow::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkWindow::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -170,7 +170,7 @@ BasicVariable::ptr WrapClass_vtkWindow::
 //  Wrapping of vtkWindow * vtkWindow::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkWindow::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkWindow";
@@ -178,7 +178,7 @@ void WrapClass_vtkWindow::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkWindow::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

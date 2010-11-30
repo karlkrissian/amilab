@@ -127,23 +127,23 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_HashTable::
   int _n=0;
 
   long sz_long = boost::numeric_cast<long >(10);;
-  if (!get_val_param<long >(sz_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(sz_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long unsigned int sz = boost::numeric_cast<long unsigned int >(sz_long);
 
   boost::shared_ptr<wxIntegerHash > hfun_smtptr;
-  if (!get_val_smtptr_param<wxIntegerHash >(hfun_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIntegerHash >(hfun_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxIntegerHash const & hfun = ( hfun_smtptr.get() ? (*hfun_smtptr) : (wxIntegerHash()) );
+  wxIntegerHash const & hfun = ( hfun_smtptr.get() ? (*hfun_smtptr) : wxIntegerHash(wxIntegerHash()) );
 
   boost::shared_ptr<wxIntegerEqual > k_eq_smtptr;
-  if (!get_val_smtptr_param<wxIntegerEqual >(k_eq_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIntegerEqual >(k_eq_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxIntegerEqual const & k_eq = ( k_eq_smtptr.get() ? (*k_eq_smtptr) : (wxIntegerEqual()) );
+  wxIntegerEqual const & k_eq = ( k_eq_smtptr.get() ? (*k_eq_smtptr) : wxIntegerEqual(wxIntegerEqual()) );
 
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_KeyEx > k_ex_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_KeyEx >(k_ex_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_KeyEx >(k_ex_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxImageHistogramBase_wxImplementation_KeyEx const & k_ex = ( k_ex_smtptr.get() ? (*k_ex_smtptr) : (wxImageHistogramBase_wxImplementation_KeyEx()) );
+  wxImageHistogramBase_wxImplementation_KeyEx const & k_ex = ( k_ex_smtptr.get() ? (*k_ex_smtptr) : wxImageHistogramBase_wxImplementation_KeyEx(wxImageHistogramBase_wxImplementation_KeyEx()) );
 
   wxImageHistogramBase_wxImplementation_HashTable* _newobj = new wxImageHistogramBase_wxImplementation_HashTable(sz, hfun, k_eq, k_ex);
   BasicVariable::ptr res = WrapClass_wxImageHistogramBase_wxImplementation_HashTable::CreateVar(_newobj);
@@ -189,7 +189,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_HashTable::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_HashTable > ht_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_HashTable >(ht_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_HashTable >(ht_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxImageHistogramBase_wxImplementation_HashTable const & ht = *ht_smtptr;
 
   wxImageHistogramBase_wxImplementation_HashTable* _newobj = new wxImageHistogramBase_wxImplementation_HashTable(ht);
@@ -462,7 +462,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_HashTable::
   int _n=0;
 
   boost::shared_ptr<long unsigned int > key_smtptr;
-  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<long unsigned int >(key_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   long unsigned int const & key = *key_smtptr;
 
   size_t res =   this->_objectptr->GetObj()->erase(key);
@@ -489,7 +489,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_HashTable::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_HashTable > ht_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_HashTable >(ht_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_HashTable >(ht_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHistogramBase_wxImplementation_HashTable const & ht = *ht_smtptr;
 
   wxImageHistogramBase_wxImplementation_HashTable const & res =   (*this->_objectptr->GetObj()) = (ht);

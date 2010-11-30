@@ -159,14 +159,14 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
 //  Wrapping of void wxIdleEvent::SetMode(wxIdleMode mode)
 //---------------------------------------------------
 void WrapClass_wxIdleEvent::
-    wrap_SetMode::SetParametersComments()
+    wrap_static_SetMode::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxIdleMode, "parameter named 'mode'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxIdleEvent::
-    wrap_SetMode::CallMember( ParamList* _p)
+    wrap_static_SetMode::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -185,14 +185,14 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
 //  Wrapping of wxIdleMode wxIdleEvent::GetMode()
 //---------------------------------------------------
 void WrapClass_wxIdleEvent::
-    wrap_GetMode::SetParametersComments()
+    wrap_static_GetMode::SetParametersComments()
 {
   return_comments="returning a variable of type wxIdleMode";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxIdleEvent::
-    wrap_GetMode::CallMember( ParamList* _p)
+    wrap_static_GetMode::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -205,7 +205,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
 //  Wrapping of bool wxIdleEvent::CanSend(wxWindow * win)
 //---------------------------------------------------
 void WrapClass_wxIdleEvent::
-    wrap_CanSend::SetParametersComments()
+    wrap_static_CanSend::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'win'")
   return_comments="returning a variable of type int";
@@ -213,7 +213,7 @@ void WrapClass_wxIdleEvent::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxIdleEvent::
-    wrap_CanSend::CallMember( ParamList* _p)
+    wrap_static_CanSend::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

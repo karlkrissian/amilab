@@ -18,6 +18,7 @@
 
 // get all the required includes
 // #include "..."
+#include "wrap_wxRegion.h"
 #include "wrap_wxWindow.h"
 #include "wrap_wxPoint.h"
 #include "wrap_wxSize.h"
@@ -566,12 +567,12 @@ BasicVariable::ptr WrapClass_wxWindow::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxDefaultSize );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -592,7 +593,7 @@ BasicVariable::ptr WrapClass_wxWindow::
 //  Wrapping of wxLayoutDirection wxWindow::GTKGetLayout(GtkWidget * widget)
 //---------------------------------------------------
 void WrapClass_wxWindow::
-    wrap_GTKGetLayout::SetParametersComments()
+    wrap_static_GTKGetLayout::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( _GtkWidget, "parameter named 'widget'")
   return_comments="returning a variable of type wxLayoutDirection";
@@ -600,7 +601,7 @@ void WrapClass_wxWindow::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindow::
-    wrap_GTKGetLayout::CallMember( ParamList* _p)
+    wrap_static_GTKGetLayout::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -620,7 +621,7 @@ BasicVariable::ptr WrapClass_wxWindow::
 //  Wrapping of void wxWindow::GTKSetLayout(GtkWidget * widget, wxLayoutDirection dir)
 //---------------------------------------------------
 void WrapClass_wxWindow::
-    wrap_GTKSetLayout::SetParametersComments()
+    wrap_static_GTKSetLayout::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( _GtkWidget, "parameter named 'widget'")
   ADDPARAMCOMMENT_TYPE( wxLayoutDirection, "parameter named 'dir'")
@@ -628,7 +629,7 @@ void WrapClass_wxWindow::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindow::
-    wrap_GTKSetLayout::CallMember( ParamList* _p)
+    wrap_static_GTKSetLayout::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
@@ -679,12 +680,12 @@ BasicVariable::ptr WrapClass_wxWindow::
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxPoint(wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   boost::shared_ptr<wxSize > size_smtptr;
   if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxSize(wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxDefaultSize );
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;

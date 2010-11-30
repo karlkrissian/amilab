@@ -22,6 +22,8 @@
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
 #include "wrap_vtkProp.h"
+#include "wrap_vtkLinearTransform.h"
+#include "wrap_vtkMatrix4x4.h"
 #include "boost/numeric/conversion/cast.hpp"
 
 
@@ -107,21 +109,11 @@ void WrapClass_vtkProp3D::AddMethods(WrapClass<vtkProp3D>::ptr this_ptr )
       AddVar_GetScale( this_ptr);
       AddVar_GetScale_2( this_ptr);
       AddVar_SetScale_3( this_ptr);
-/* The following types are missing: vtkLinearTransform
       AddVar_SetUserTransform( this_ptr);
-*/
-/* The following types are missing: vtkLinearTransform
       AddVar_GetUserTransform( this_ptr);
-*/
-/* The following types are missing: vtkMatrix4x4
       AddVar_SetUserMatrix( this_ptr);
-*/
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetUserMatrix( this_ptr);
-*/
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetMatrix_1( this_ptr);
-*/
       AddVar_GetMatrix( this_ptr);
       AddVar_GetMatrix_2( this_ptr);
       AddVar_GetBounds( this_ptr);
@@ -144,16 +136,12 @@ void WrapClass_vtkProp3D::AddMethods(WrapClass<vtkProp3D>::ptr this_ptr )
       AddVar_AddOrientation_1( this_ptr);
       AddVar_AddOrientation( this_ptr);
       AddVar_AddOrientation_2( this_ptr);
-/* The following types are missing: vtkMatrix4x4
       AddVar_PokeMatrix( this_ptr);
-*/
       AddVar_InitPathTraversal( this_ptr);
       AddVar_GetMTime( this_ptr);
       AddVar_GetUserTransformMatrixMTime( this_ptr);
       AddVar_ComputeMatrix( this_ptr);
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetMatrix_3( this_ptr);
-*/
       AddVar_GetIsIdentity( this_ptr);
 
 
@@ -170,7 +158,7 @@ void WrapClass_vtkProp3D::AddMethods(WrapClass<vtkProp3D>::ptr this_ptr )
 //  Wrapping of int vtkProp3D::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkProp3D::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -178,14 +166,14 @@ void WrapClass_vtkProp3D::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkProp3D::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkProp3D::IsTypeOf(type);
@@ -196,7 +184,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
 //  Wrapping of vtkProp3D * vtkProp3D::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkProp3D::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkProp3D";
@@ -204,14 +192,14 @@ void WrapClass_vtkProp3D::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkProp3D::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkProp3D * res =   vtkProp3D::SafeDownCast(o);
@@ -238,7 +226,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -285,11 +273,11 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -314,7 +302,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<vtkProp > prop_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(prop_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkProp >(prop_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkProp* prop = prop_smtptr.get();
 
   this->_objectptr->GetObj()->ShallowCopy(prop);
@@ -341,13 +329,13 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double _arg1;
-  if (!get_val_param<double >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg2;
-  if (!get_val_param<double >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg3;
-  if (!get_val_param<double >(_arg3,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg3,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetPosition(_arg1, _arg2, _arg3);
   return BasicVariable::ptr();
@@ -392,7 +380,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetPosition(_arg);
@@ -457,7 +445,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->GetPosition(data);
@@ -482,7 +470,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > deltaPosition_smtptr;
-  if (!get_val_smtptr_param<double >(deltaPosition_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(deltaPosition_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* deltaPosition = deltaPosition_smtptr.get();
 
   this->_objectptr->GetObj()->AddPosition(deltaPosition);
@@ -530,13 +518,13 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double deltaX;
-  if (!get_val_param<double >(deltaX,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(deltaX,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double deltaY;
-  if (!get_val_param<double >(deltaY,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(deltaY,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double deltaZ;
-  if (!get_val_param<double >(deltaZ,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(deltaZ,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->AddPosition(deltaX, deltaY, deltaZ);
   return BasicVariable::ptr();
@@ -562,13 +550,13 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double _arg1;
-  if (!get_val_param<double >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg2;
-  if (!get_val_param<double >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg3;
-  if (!get_val_param<double >(_arg3,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg3,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetOrigin(_arg1, _arg2, _arg3);
   return BasicVariable::ptr();
@@ -613,7 +601,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetOrigin(_arg);
@@ -678,7 +666,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->GetOrigin(data);
@@ -705,13 +693,13 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double _arg1;
-  if (!get_val_param<double >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg2;
-  if (!get_val_param<double >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg3;
-  if (!get_val_param<double >(_arg3,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg3,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetScale(_arg1, _arg2, _arg3);
   return BasicVariable::ptr();
@@ -759,7 +747,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetScale(_arg);
@@ -824,7 +812,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->GetScale(data);
@@ -849,12 +837,11 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double s;
-  if (!get_val_param<double >(s,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(s,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetScale(s);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkLinearTransform
 
 //---------------------------------------------------
 //  Wrapping of void vtkProp3D::SetUserTransform(vtkLinearTransform * transform)
@@ -874,14 +861,12 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<vtkLinearTransform > transform_smtptr;
-  if (!get_val_smtptr_param<vtkLinearTransform >(transform_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkLinearTransform >(transform_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkLinearTransform* transform = transform_smtptr.get();
 
   this->_objectptr->GetObj()->SetUserTransform(transform);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkLinearTransform
 
 //---------------------------------------------------
 //  Wrapping of vtkLinearTransform * vtkProp3D::GetUserTransform()
@@ -899,10 +884,9 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkLinearTransform * res =   this->_objectptr->GetObj()->GetUserTransform();
-  return AMILabType<vtkLinearTransform >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkLinearTransform::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of void vtkProp3D::SetUserMatrix(vtkMatrix4x4 * matrix)
@@ -922,14 +906,12 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<vtkMatrix4x4 > matrix_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkMatrix4x4* matrix = matrix_smtptr.get();
 
   this->_objectptr->GetObj()->SetUserMatrix(matrix);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkProp3D::GetUserMatrix()
@@ -947,10 +929,9 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetUserMatrix();
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of void vtkProp3D::GetMatrix(vtkMatrix4x4 * m)
@@ -970,13 +951,12 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<vtkMatrix4x4 > m_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(m_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkMatrix4x4 >(m_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkMatrix4x4* m = m_smtptr.get();
 
   this->_objectptr->GetObj()->GetMatrix(m);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkProp3D::GetMatrix(...)
@@ -990,9 +970,15 @@ BasicVariable::ptr WrapClass_vtkProp3D::
     wrap_GetMatrix::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkProp3D::wrap_GetMatrix_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_vtkProp3D::wrap_GetMatrix_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
+  WrapClass_vtkProp3D::wrap_GetMatrix_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -1014,7 +1000,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > m_smtptr;
-  if (!get_val_smtptr_param<double >(m_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(m_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* m = m_smtptr.get();
 
   this->_objectptr->GetObj()->GetMatrix(m);
@@ -1039,7 +1025,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   double* bounds = bounds_smtptr.get();
 
   this->_objectptr->GetObj()->GetBounds(bounds);
@@ -1159,7 +1145,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->RotateX(param0);
   return BasicVariable::ptr();
@@ -1183,7 +1169,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->RotateY(param0);
   return BasicVariable::ptr();
@@ -1207,7 +1193,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->RotateZ(param0);
   return BasicVariable::ptr();
@@ -1234,16 +1220,16 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   double param1;
-  if (!get_val_param<double >(param1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param1,_p,_n,true,false)) ClassHelpAndReturn;
 
   double param2;
-  if (!get_val_param<double >(param2,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param2,_p,_n,true,false)) ClassHelpAndReturn;
 
   double param3;
-  if (!get_val_param<double >(param3,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(param3,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->RotateWXYZ(param0, param1, param2, param3);
   return BasicVariable::ptr();
@@ -1269,13 +1255,13 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double param1;
-  if (!get_val_param<double >(param1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(param1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double param2;
-  if (!get_val_param<double >(param2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(param2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetOrientation(param0, param1, param2);
   return BasicVariable::ptr();
@@ -1320,7 +1306,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->SetOrientation(a);
@@ -1385,7 +1371,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > o_smtptr;
-  if (!get_val_smtptr_param<double >(o_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(o_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* o = o_smtptr.get();
 
   this->_objectptr->GetObj()->GetOrientation(o);
@@ -1431,13 +1417,13 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   double param0;
-  if (!get_val_param<double >(param0,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(param0,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double param1;
-  if (!get_val_param<double >(param1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(param1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double param2;
-  if (!get_val_param<double >(param2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(param2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->AddOrientation(param0, param1, param2);
   return BasicVariable::ptr();
@@ -1482,13 +1468,12 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* a = a_smtptr.get();
 
   this->_objectptr->GetObj()->AddOrientation(a);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of void vtkProp3D::PokeMatrix(vtkMatrix4x4 * matrix)
@@ -1508,13 +1493,12 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   int _n=0;
 
   boost::shared_ptr<vtkMatrix4x4 > matrix_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkMatrix4x4* matrix = matrix_smtptr.get();
 
   this->_objectptr->GetObj()->PokeMatrix(matrix);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkProp3D::InitPathTraversal()
@@ -1591,7 +1575,6 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   this->_objectptr->GetObj()->ComputeMatrix();
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkProp3D::GetMatrix()
@@ -1609,9 +1592,9 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetMatrix();
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int vtkProp3D::GetIsIdentity()

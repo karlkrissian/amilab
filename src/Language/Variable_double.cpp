@@ -53,7 +53,7 @@
 /// Copy contents to new variable
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<double>::NewCopy() const
 {
-  double_ptr newval( new double(Value()));
+  boost::shared_ptr<double> newval( new double(Value()));
   Variable<double>::ptr newvar(new Variable<double>(newval));
   return newvar;
 }

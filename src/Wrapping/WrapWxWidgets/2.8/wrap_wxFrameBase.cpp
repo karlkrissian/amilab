@@ -166,34 +166,34 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* parent = parent_smtptr.get();
 
   int winid;
-  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(winid,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxString > title_smtptr;
-  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & title = *title_smtptr;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxDefaultSize );
 
   long style_long = 541072960;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxFrameNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxFrameNameStr) );
 
   wxFrame * res =   this->_objectptr->GetObj()->New(parent, winid, title, pos, size, style, name);
   BasicVariable::ptr res_var = WrapClass_wxFrame::CreateVar(res);
@@ -255,7 +255,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxMenuBar > menubar_smtptr;
-  if (!get_val_smtptr_param<wxMenuBar >(menubar_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenuBar >(menubar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenuBar* menubar = menubar_smtptr.get();
 
   this->_objectptr->GetObj()->SetMenuBar(menubar);
@@ -301,7 +301,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   int winid;
-  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(winid,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ProcessCommand(winid);
   int res_int = ((res==true)?1:0);
@@ -330,19 +330,19 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   int number = 1;
-  if (!get_val_param<int >(number,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(number,_p,_n,false,false)) ClassHelpAndReturn;
 
   long style_long = 65552;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   int winid = 0;
-  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(winid,_p,_n,false,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxStatusLineNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxStatusLineNameStr) );
 
   wxStatusBar * res =   this->_objectptr->GetObj()->CreateStatusBar(number, style, winid, name);
   BasicVariable::ptr res_var = WrapClass_wxStatusBar::CreateVar(res);
@@ -371,17 +371,17 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   int number;
-  if (!get_val_param<int >(number,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(number,_p,_n,true,false)) ClassHelpAndReturn;
 
   long style_long;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   int winid;
-  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(winid,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   wxStatusBar * res =   this->_objectptr->GetObj()->OnCreateStatusBar(number, style, winid, name);
@@ -427,7 +427,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxStatusBar > statBar_smtptr;
-  if (!get_val_smtptr_param<wxStatusBar >(statBar_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxStatusBar >(statBar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxStatusBar* statBar = statBar_smtptr.get();
 
   this->_objectptr->GetObj()->SetStatusBar(statBar);
@@ -453,11 +453,11 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & text = *text_smtptr;
 
   int number = 0;
-  if (!get_val_param<int >(number,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(number,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStatusText(text, number);
   return BasicVariable::ptr();
@@ -482,10 +482,10 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<int > widths_field_smtptr;
-  if (!get_val_smtptr_param<int >(widths_field_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(widths_field_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* widths_field = widths_field_smtptr.get();
 
   this->_objectptr->GetObj()->SetStatusWidths(n, widths_field);
@@ -511,11 +511,11 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & text = *text_smtptr;
 
   int number = 0;
-  if (!get_val_param<int >(number,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(number,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PushStatusText(text, number);
   return BasicVariable::ptr();
@@ -539,7 +539,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   int number = 0;
-  if (!get_val_param<int >(number,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(number,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PopStatusText(number);
   return BasicVariable::ptr();
@@ -563,7 +563,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetStatusBarPane(n);
   return BasicVariable::ptr();
@@ -609,16 +609,16 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   long style_long = -0x00000000000000001;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   int winid = wxID_ANY;
-  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(winid,_p,_n,false,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxToolBarNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxToolBarNameStr) );
 
   wxToolBar * res =   this->_objectptr->GetObj()->CreateToolBar(style, winid, name);
   BasicVariable::ptr res_var = WrapClass_wxToolBar::CreateVar(res);
@@ -646,14 +646,14 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   long style_long;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   int winid;
-  if (!get_val_param<int >(winid,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(winid,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
   wxToolBar * res =   this->_objectptr->GetObj()->OnCreateToolBar(style, winid, name);
@@ -699,7 +699,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxToolBar > toolbar_smtptr;
-  if (!get_val_smtptr_param<wxToolBar >(toolbar_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxToolBar >(toolbar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxToolBar* toolbar = toolbar_smtptr.get();
 
   this->_objectptr->GetObj()->SetToolBar(toolbar);
@@ -724,7 +724,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxMenuEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMenuEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenuEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenuEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnMenuOpen(event);
@@ -749,7 +749,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxMenuEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMenuEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenuEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenuEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnMenuClose(event);
@@ -774,7 +774,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxMenuEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxMenuEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenuEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenuEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->OnMenuHighlight(event);
@@ -799,7 +799,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxMenu* menu = menu_smtptr.get();
 
   this->_objectptr->GetObj()->DoMenuUpdates(menu);
@@ -824,7 +824,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   long flags_long = wxUPDATE_UI_NONE;;
-  if (!get_val_param<long >(flags_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(flags_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int flags = flags_long;
 
   this->_objectptr->GetObj()->UpdateWindowUI(flags);
@@ -868,11 +868,11 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & text = *text_smtptr;
 
   int show_int;
-  if (!get_val_param<int >(show_int,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(show_int,_p,_n,true,false)) ClassHelpAndReturn;
   bool show = (bool) (show_int>0.5);
 
   this->_objectptr->GetObj()->DoGiveHelp(text, show);

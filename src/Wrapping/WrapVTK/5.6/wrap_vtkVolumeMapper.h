@@ -76,14 +76,10 @@ class WrapClass_vtkVolumeMapper : public WrapClass<vtkVolumeMapper>
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
     ADD_CLASS_METHOD(PrintSelf,"void vtkVolumeMapper::PrintSelf(ostream & os, vtkIndent indent)  (http://docs.wxwidgets.org/stable/wx_vtkvolumemapper.html#printself)")
 */
-/* The following types are missing: vtkImageData
     ADD_CLASS_METHOD(SetInput_1,"void vtkVolumeMapper::SetInput(vtkImageData * param0)  (http://docs.wxwidgets.org/stable/wx_vtkvolumemapper.html#setinput)")
-*/
     ADD_CLASS_METHOD(SetInput,"vtkVolumeMapper::SetInput()  (http://docs.wxwidgets.org/stable/wx_vtkvolumemapper.html#setinput)")
     ADD_CLASS_METHOD(SetInput_2,"void vtkVolumeMapper::SetInput(vtkDataSet * param0)  (http://docs.wxwidgets.org/stable/wx_vtkvolumemapper.html#setinput)")
-/* The following types are missing: vtkImageData
     ADD_CLASS_METHOD(GetInput,"vtkImageData * vtkVolumeMapper::GetInput()  (http://docs.wxwidgets.org/stable/wx_vtkvolumemapper.html#getinput)")
-*/
     ADD_CLASS_METHOD(SetBlendMode,"void vtkVolumeMapper::SetBlendMode(int _arg)  (http://docs.wxwidgets.org/stable/wx_vtkvolumemapper.html#setblendmode)")
     ADD_CLASS_METHOD(SetBlendModeToComposite,"void vtkVolumeMapper::SetBlendModeToComposite()  (http://docs.wxwidgets.org/stable/wx_vtkvolumemapper.html#setblendmodetocomposite)")
     ADD_CLASS_METHOD(SetBlendModeToMaximumIntensity,"void vtkVolumeMapper::SetBlendModeToMaximumIntensity()  (http://docs.wxwidgets.org/stable/wx_vtkvolumemapper.html#setblendmodetomaximumintensity)")

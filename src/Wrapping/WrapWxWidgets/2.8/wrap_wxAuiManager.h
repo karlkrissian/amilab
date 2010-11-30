@@ -23,14 +23,15 @@
 
 // include what is needed for inheritence and for types ...
 
-//#include "wrap_wxEvtHandler.h"
+#include "wrap_wxEvtHandler.h"
+
 
 
 AMI_DECLARE_TYPE(wxAuiManager);
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
-    //, public virtual WrapClass_wxEvtHandler
+    , public   WrapClass_wxEvtHandler
 {
   DEFINE_CLASS(WrapClass_wxAuiManager);
 
@@ -45,150 +46,77 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
     /// Constructor
     WrapClass_wxAuiManager(boost::shared_ptr<wxAuiManager > si): 
     WrapClass<wxAuiManager>(si)
-    //, WrapClass_wxEvtHandler(si)
+    , WrapClass_wxEvtHandler(si)
     {}
 
     /// Destructor
     ~WrapClass_wxAuiManager()
     {
-      std::cout << "~WrapClass_wxAuiManager()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxAuiManager,"Wrapping of wxAuiManager, http://docs.wxwidgets.org/stable/wx_wxauimanager.html#wxauimanager.");
+    ADD_CLASS_CONSTRUCTOR(wxAuiManager,"Constructor wxAuiManager::wxAuiManager(wxWindow * managed_wnd = 0l, unsigned int flags = wxAUI_MGR_DEFAULT) (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#wxauimanager).");
 
 
 
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxAuiManager*);
 
-    // here add each method
+    // Static methods
+    
+    ADD_CLASS_STATICMETHOD(GetManager,"wxAuiManager * wxAuiManager::GetManager(wxWindow * window) (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getmanager).");
+
+
+
+    // Standard methods
     
     // Adding standard methods
-    ADD_CLASS_METHOD(UnInit,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#uninit")
-    ADD_CLASS_METHOD(SetFlags,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#setflags")
-    ADD_CLASS_METHOD(GetFlags,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getflags")
-    ADD_CLASS_METHOD(SetManagedWindow,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#setmanagedwindow")
-    ADD_CLASS_METHOD(GetManagedWindow,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getmanagedwindow")
-    ADD_CLASS_METHOD(GetManager,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getmanager")
-/* The following types are missing: wxAuiDockArt
-    ADD_CLASS_METHOD(SetArtProvider,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#setartprovider")
-*/
-/* The following types are missing: wxAuiDockArt
-    ADD_CLASS_METHOD(GetArtProvider,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getartprovider")
-*/
-    ADD_CLASS_METHOD(GetPane1,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getpane")
-    ADD_CLASS_METHOD(GetPane,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getpane")
-    ADD_CLASS_METHOD(GetPane2,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getpane")
-/* The following types are missing: wxAuiPaneInfoArray
-    ADD_CLASS_METHOD(GetAllPanes,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getallpanes")
-*/
-    ADD_CLASS_METHOD(AddPane1,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#addpane")
-    ADD_CLASS_METHOD(AddPane,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#addpane")
-    ADD_CLASS_METHOD(AddPane2,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#addpane")
-    ADD_CLASS_METHOD(AddPane3,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#addpane")
-    ADD_CLASS_METHOD(InsertPane,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#insertpane")
-    ADD_CLASS_METHOD(DetachPane,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#detachpane")
-    ADD_CLASS_METHOD(Update,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#update")
-    ADD_CLASS_METHOD(SavePaneInfo,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#savepaneinfo")
-    ADD_CLASS_METHOD(LoadPaneInfo,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#loadpaneinfo")
-    ADD_CLASS_METHOD(SavePerspective,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#saveperspective")
-    ADD_CLASS_METHOD(LoadPerspective,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#loadperspective")
-    ADD_CLASS_METHOD(SetDockSizeConstraint,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#setdocksizeconstraint")
-    ADD_CLASS_METHOD(GetDockSizeConstraint,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getdocksizeconstraint")
-    ADD_CLASS_METHOD(ClosePane,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#closepane")
-    ADD_CLASS_METHOD(MaximizePane,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#maximizepane")
-    ADD_CLASS_METHOD(RestorePane,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#restorepane")
-    ADD_CLASS_METHOD(RestoreMaximizedPane,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#restoremaximizedpane")
-/* The following types are missing: wxAuiFloatingFrame
-    ADD_CLASS_METHOD(CreateFloatingFrame,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#createfloatingframe")
-*/
-    ADD_CLASS_METHOD(StartPaneDrag,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#startpanedrag")
-    ADD_CLASS_METHOD(CalculateHintRect,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#calculatehintrect")
-    ADD_CLASS_METHOD(DrawHintRect,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#drawhintrect")
-    ADD_CLASS_METHOD(ShowHint,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#showhint")
-    ADD_CLASS_METHOD(HideHint,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#hidehint")
-/* The following types are missing: wxAuiManagerEvent
-    ADD_CLASS_METHOD(OnRender,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#onrender")
-*/
-/* The following types are missing: wxAuiManagerEvent
-    ADD_CLASS_METHOD(OnPaneButton,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#onpanebutton")
-*/
-    ADD_CLASS_METHOD(GetClassInfo,"http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getclassinfo")
+    ADD_CLASS_METHOD(UnInit,"void wxAuiManager::UnInit()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#uninit)")
+    ADD_CLASS_METHOD(SetFlags,"void wxAuiManager::SetFlags(unsigned int flags)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#setflags)")
+    ADD_CLASS_METHOD(GetFlags,"unsigned int wxAuiManager::GetFlags()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getflags)")
+    ADD_CLASS_METHOD(SetManagedWindow,"void wxAuiManager::SetManagedWindow(wxWindow * managed_wnd)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#setmanagedwindow)")
+    ADD_CLASS_METHOD(GetManagedWindow,"wxWindow * wxAuiManager::GetManagedWindow()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getmanagedwindow)")
+    ADD_CLASS_METHOD(SetArtProvider,"void wxAuiManager::SetArtProvider(wxAuiDockArt * art_provider)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#setartprovider)")
+    ADD_CLASS_METHOD(GetArtProvider,"wxAuiDockArt * wxAuiManager::GetArtProvider()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getartprovider)")
+    ADD_CLASS_METHOD(GetPane_1,"wxAuiPaneInfo & wxAuiManager::GetPane(wxWindow * window)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getpane)")
+    ADD_CLASS_METHOD(GetPane,"wxAuiManager::GetPane()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getpane)")
+    ADD_CLASS_METHOD(GetPane_2,"wxAuiPaneInfo & wxAuiManager::GetPane(wxString const & name)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getpane)")
+    ADD_CLASS_METHOD(GetAllPanes,"wxAuiPaneInfoArray & wxAuiManager::GetAllPanes()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getallpanes)")
+    ADD_CLASS_METHOD(AddPane_1,"bool wxAuiManager::AddPane(wxWindow * window, wxAuiPaneInfo const & pane_info)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#addpane)")
+    ADD_CLASS_METHOD(AddPane,"wxAuiManager::AddPane()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#addpane)")
+    ADD_CLASS_METHOD(AddPane_2,"bool wxAuiManager::AddPane(wxWindow * window, wxAuiPaneInfo const & pane_info, wxPoint const & drop_pos)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#addpane)")
+    ADD_CLASS_METHOD(AddPane_3,"bool wxAuiManager::AddPane(wxWindow * window, int direction = wxLEFT, wxString const & caption = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#addpane)")
+    ADD_CLASS_METHOD(InsertPane,"bool wxAuiManager::InsertPane(wxWindow * window, wxAuiPaneInfo const & insert_location, int insert_level = wxAUI_INSERT_PANE)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#insertpane)")
+    ADD_CLASS_METHOD(DetachPane,"bool wxAuiManager::DetachPane(wxWindow * window)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#detachpane)")
+    ADD_CLASS_METHOD(Update,"void wxAuiManager::Update()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#update)")
+    ADD_CLASS_METHOD(SavePaneInfo,"wxString wxAuiManager::SavePaneInfo(wxAuiPaneInfo & pane)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#savepaneinfo)")
+    ADD_CLASS_METHOD(LoadPaneInfo,"void wxAuiManager::LoadPaneInfo(wxString pane_part, wxAuiPaneInfo & pane)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#loadpaneinfo)")
+    ADD_CLASS_METHOD(SavePerspective,"wxString wxAuiManager::SavePerspective()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#saveperspective)")
+    ADD_CLASS_METHOD(LoadPerspective,"bool wxAuiManager::LoadPerspective(wxString const & perspective, bool update = true)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#loadperspective)")
+    ADD_CLASS_METHOD(SetDockSizeConstraint,"void wxAuiManager::SetDockSizeConstraint(double width_pct, double height_pct)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#setdocksizeconstraint)")
+    ADD_CLASS_METHOD(GetDockSizeConstraint,"void wxAuiManager::GetDockSizeConstraint(double * width_pct, double * height_pct)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getdocksizeconstraint)")
+    ADD_CLASS_METHOD(ClosePane,"void wxAuiManager::ClosePane(wxAuiPaneInfo & pane_info)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#closepane)")
+    ADD_CLASS_METHOD(MaximizePane,"void wxAuiManager::MaximizePane(wxAuiPaneInfo & pane_info)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#maximizepane)")
+    ADD_CLASS_METHOD(RestorePane,"void wxAuiManager::RestorePane(wxAuiPaneInfo & pane_info)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#restorepane)")
+    ADD_CLASS_METHOD(RestoreMaximizedPane,"void wxAuiManager::RestoreMaximizedPane()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#restoremaximizedpane)")
+    ADD_CLASS_METHOD(CreateFloatingFrame,"wxAuiFloatingFrame * wxAuiManager::CreateFloatingFrame(wxWindow * parent, wxAuiPaneInfo const & p)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#createfloatingframe)")
+    ADD_CLASS_METHOD(StartPaneDrag,"void wxAuiManager::StartPaneDrag(wxWindow * pane_window, wxPoint const & offset)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#startpanedrag)")
+    ADD_CLASS_METHOD(CalculateHintRect,"wxRect wxAuiManager::CalculateHintRect(wxWindow * pane_window, wxPoint const & pt, wxPoint const & offset)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#calculatehintrect)")
+    ADD_CLASS_METHOD(DrawHintRect,"void wxAuiManager::DrawHintRect(wxWindow * pane_window, wxPoint const & pt, wxPoint const & offset)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#drawhintrect)")
+    ADD_CLASS_METHOD(ShowHint,"void wxAuiManager::ShowHint(wxRect const & rect)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#showhint)")
+    ADD_CLASS_METHOD(HideHint,"void wxAuiManager::HideHint()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#hidehint)")
+    ADD_CLASS_METHOD(OnRender,"void wxAuiManager::OnRender(wxAuiManagerEvent & evt)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#onrender)")
+    ADD_CLASS_METHOD(OnPaneButton,"void wxAuiManager::OnPaneButton(wxAuiManagerEvent & evt)  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#onpanebutton)")
+    ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxAuiManager::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxauimanager.html#getclassinfo)")
 
 
 
 
 
-    void AddMethods(WrapClass<wxAuiManager>::ptr this_ptr )
-    {
-      /*
-      // Add members from wxEvtHandler
-      WrapClass_wxEvtHandler::ptr parent_wxEvtHandler(        boost::dynamic_pointer_cast<WrapClass_wxEvtHandler>(this_ptr));
-      parent_wxEvtHandler->AddMethods(parent_wxEvtHandler);
-      */
+    void AddMethods(WrapClass<wxAuiManager>::ptr this_ptr );
 
-
-      // check that the method name is not a token
-      
-      // Adding standard methods 
-      AddVar_UnInit( this_ptr);
-      AddVar_SetFlags( this_ptr);
-      AddVar_GetFlags( this_ptr);
-      AddVar_SetManagedWindow( this_ptr);
-      AddVar_GetManagedWindow( this_ptr);
-      AddVar_GetManager( this_ptr);
-/* The following types are missing: wxAuiDockArt
-      AddVar_SetArtProvider( this_ptr);
-*/
-/* The following types are missing: wxAuiDockArt
-      AddVar_GetArtProvider( this_ptr);
-*/
-      AddVar_GetPane1( this_ptr);
-      AddVar_GetPane( this_ptr);
-      AddVar_GetPane2( this_ptr);
-/* The following types are missing: wxAuiPaneInfoArray
-      AddVar_GetAllPanes( this_ptr);
-*/
-      AddVar_AddPane1( this_ptr);
-      AddVar_AddPane( this_ptr);
-      AddVar_AddPane2( this_ptr);
-      AddVar_AddPane3( this_ptr);
-      AddVar_InsertPane( this_ptr);
-      AddVar_DetachPane( this_ptr);
-      AddVar_Update( this_ptr);
-      AddVar_SavePaneInfo( this_ptr);
-      AddVar_LoadPaneInfo( this_ptr);
-      AddVar_SavePerspective( this_ptr);
-      AddVar_LoadPerspective( this_ptr);
-      AddVar_SetDockSizeConstraint( this_ptr);
-      AddVar_GetDockSizeConstraint( this_ptr);
-      AddVar_ClosePane( this_ptr);
-      AddVar_MaximizePane( this_ptr);
-      AddVar_RestorePane( this_ptr);
-      AddVar_RestoreMaximizedPane( this_ptr);
-/* The following types are missing: wxAuiFloatingFrame
-      AddVar_CreateFloatingFrame( this_ptr);
-*/
-      AddVar_StartPaneDrag( this_ptr);
-      AddVar_CalculateHintRect( this_ptr);
-      AddVar_DrawHintRect( this_ptr);
-      AddVar_ShowHint( this_ptr);
-      AddVar_HideHint( this_ptr);
-/* The following types are missing: wxAuiManagerEvent
-      AddVar_OnRender( this_ptr);
-*/
-/* The following types are missing: wxAuiManagerEvent
-      AddVar_OnPaneButton( this_ptr);
-*/
-      AddVar_GetClassInfo( this_ptr);
-
-
-
-      
-    };
 };
 
 

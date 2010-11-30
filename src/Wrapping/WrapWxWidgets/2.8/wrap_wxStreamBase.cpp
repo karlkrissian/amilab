@@ -72,7 +72,9 @@ void WrapClass_wxStreamBase::AddMethods(WrapClass<wxStreamBase>::ptr this_ptr )
   // check that the method name is not a token
   
       // Adding standard methods 
+/* The following types are missing: wxStreamError
       AddVar_GetLastError( this_ptr);
+*/
       AddVar_IsOk( this_ptr);
       AddVar_Reset( this_ptr);
       AddVar_GetSize( this_ptr);
@@ -110,6 +112,7 @@ BasicVariable::ptr WrapClass_wxStreamBase::
   BasicVariable::ptr res = WrapClass_wxStreamBase::CreateVar(_newobj);
   return res;
 }
+/* The following types are missing: wxStreamError
 
 //---------------------------------------------------
 //  Wrapping of wxStreamError wxStreamBase::GetLastError()
@@ -117,7 +120,7 @@ BasicVariable::ptr WrapClass_wxStreamBase::
 void WrapClass_wxStreamBase::
     wrap_GetLastError::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type wxStreamError";
 }
 
 //---------------------------------------------------
@@ -127,9 +130,9 @@ BasicVariable::ptr WrapClass_wxStreamBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxStreamError res =   this->_objectptr->GetObj()->GetLastError();
-  int res_int = (int) res;
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<wxStreamError >::CreateVar(res);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxStreamBase::IsOk()

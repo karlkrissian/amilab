@@ -26,6 +26,7 @@
 #include "wrap_wxBitmapHandlerBase.h"
 
 
+
 AMI_DECLARE_TYPE(wxBitmapHandler);
 
 // TODO: check for inheritence ...

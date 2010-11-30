@@ -183,7 +183,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
 //  Wrapping of wxAcceleratorEntry * wxAcceleratorEntry::Create(wxString const & str)
 //---------------------------------------------------
 void WrapClass_wxAcceleratorEntry::
-    wrap_Create::SetParametersComments()
+    wrap_static_Create::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'str'")
   return_comments="returning a variable of type wxAcceleratorEntry";
@@ -191,7 +191,7 @@ void WrapClass_wxAcceleratorEntry::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAcceleratorEntry::
-    wrap_Create::CallMember( ParamList* _p)
+    wrap_static_Create::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

@@ -61,6 +61,9 @@ class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>
     ADD_CLASS_SETGET(unsigned char,VerticalLine,  
                       "vertical line property: 0 or 1.");
 
+    ADD_CLASS_SETGET(unsigned char,YLocked,  
+                      "Lock/Unlock y coordinate: 1 or 0.");
+
     ADD_CLASS_SETGET(int,Type,"the point type, 0 for normal_point, 1 for colormap point");
 
     ADD_CLASS_METHOD(GetColour, "Gets the colour.");
@@ -76,6 +79,7 @@ class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>
       AddVar_SetGetHorizontalLine( this_ptr);
       AddVar_SetGetVerticalLine(   this_ptr);
       AddVar_SetGetType(           this_ptr);
+      AddVar_SetGetYLocked(        this_ptr);
 
       AddVar_GetColour(         this_ptr);
       AddVar_SetColour(         this_ptr);

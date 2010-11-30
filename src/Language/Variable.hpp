@@ -145,8 +145,8 @@ class AMILabType {
 
 
 #define AMI_DEFINE_WRAPPEDTYPE_COMMON(type) \
-	std::string AMILabType<type>::name_as_string() { \
-	  std::string name = std::string("wrap_")+std::string(#type); \
+    std::string AMILabType<type>::name_as_string() { \
+    std::string name = std::string("wrap_")+std::string(#type); \
       return name; \
     } \
     \

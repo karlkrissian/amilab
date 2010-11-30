@@ -127,7 +127,7 @@ void WrapClass_vtkAbstractVolumeMapper::AddMethods(WrapClass<vtkAbstractVolumeMa
 //  Wrapping of int vtkAbstractVolumeMapper::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkAbstractVolumeMapper::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -135,7 +135,7 @@ void WrapClass_vtkAbstractVolumeMapper::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -153,7 +153,7 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
 //  Wrapping of vtkAbstractVolumeMapper * vtkAbstractVolumeMapper::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkAbstractVolumeMapper::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkAbstractVolumeMapper";
@@ -161,7 +161,7 @@ void WrapClass_vtkAbstractVolumeMapper::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

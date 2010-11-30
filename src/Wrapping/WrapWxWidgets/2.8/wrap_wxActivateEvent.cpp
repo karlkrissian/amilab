@@ -106,14 +106,14 @@ BasicVariable::ptr WrapClass_wxActivateEvent::
   int _n=0;
 
   int type = wxEVT_NULL;
-  if (!get_val_param<int >(type,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(type,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int active_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(active_int,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(active_int,_p,_n,false,true)) ClassReturnEmptyVar;
   bool active = (bool) (active_int>0.5);
 
   int Id = 0;
-  if (!get_val_param<int >(Id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(Id,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxActivateEvent* _newobj = new wxActivateEvent(type, active, Id);
   BasicVariable::ptr res = WrapClass_wxActivateEvent::CreateVar(_newobj);
@@ -159,7 +159,7 @@ BasicVariable::ptr WrapClass_wxActivateEvent::
   int _n=0;
 
   boost::shared_ptr<wxActivateEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxActivateEvent >(event_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxActivateEvent >(event_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxActivateEvent const & event = *event_smtptr;
 
   wxActivateEvent* _newobj = new wxActivateEvent(event);

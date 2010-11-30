@@ -22,6 +22,7 @@
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
 #include "wrap_vtkActor.h"
+#include "wrap_vtkProperty.h"
 
 
 #include "wrap_vtkActorCollection.h"
@@ -33,7 +34,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkActorCollection>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkActorCollection::wrap_New construct;
+  WrapClass_vtkActorCollection::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -88,9 +89,7 @@ void WrapClass_vtkActorCollection::AddMethods(WrapClass<vtkActorCollection>::ptr
       AddVar_GetLastActor( this_ptr);
       AddVar_GetNextItem( this_ptr);
       AddVar_GetLastItem( this_ptr);
-/* The following types are missing: vtkProperty
       AddVar_ApplyProperties( this_ptr);
-*/
       AddVar_GetNextActor( this_ptr);
 /* The following types are missing: void
       AddVar_GetNextActor_2( this_ptr);
@@ -110,14 +109,14 @@ void WrapClass_vtkActorCollection::AddMethods(WrapClass<vtkActorCollection>::ptr
 //  Wrapping of vtkActorCollection * vtkActorCollection::New()
 //---------------------------------------------------
 void WrapClass_vtkActorCollection::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkActorCollection";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkActorCollection::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -130,7 +129,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
 //  Wrapping of int vtkActorCollection::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkActorCollection::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -138,7 +137,7 @@ void WrapClass_vtkActorCollection::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkActorCollection::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -156,7 +155,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
 //  Wrapping of vtkActorCollection * vtkActorCollection::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkActorCollection::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkActorCollection";
@@ -164,7 +163,7 @@ void WrapClass_vtkActorCollection::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkActorCollection::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -360,7 +359,6 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
   return res_var;
 }
-/* The following types are missing: vtkProperty
 
 //---------------------------------------------------
 //  Wrapping of void vtkActorCollection::ApplyProperties(vtkProperty * p)
@@ -386,7 +384,6 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   this->_objectptr->GetObj()->ApplyProperties(p);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkActorCollection::GetNextActor(...)

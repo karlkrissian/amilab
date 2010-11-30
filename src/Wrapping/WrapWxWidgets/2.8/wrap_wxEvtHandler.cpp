@@ -158,7 +158,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
 //  Wrapping of bool wxEvtHandler::ProcessEventIfMatches(wxEventTableEntryBase const & tableEntry, wxEvtHandler * handler, wxEvent & event)
 //---------------------------------------------------
 void WrapClass_wxEvtHandler::
-    wrap_ProcessEventIfMatches::SetParametersComments()
+    wrap_static_ProcessEventIfMatches::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxEventTableEntryBase, "parameter named 'tableEntry'")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'handler'")
@@ -168,7 +168,7 @@ void WrapClass_wxEvtHandler::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxEvtHandler::
-    wrap_ProcessEventIfMatches::CallMember( ParamList* _p)
+    wrap_static_ProcessEventIfMatches::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>3) ClassHelpAndReturn;

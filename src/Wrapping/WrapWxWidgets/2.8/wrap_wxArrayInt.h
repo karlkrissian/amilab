@@ -19,11 +19,11 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/aui/aui.h"
+#include "wx/wx.h"
 
 // include what is needed for inheritence and for types ...
 
-#include "wrap_wxBaseArrayInt.h"
+//#include "wrap_wxBaseArrayInt.h"
 
 
 
@@ -31,7 +31,7 @@ AMI_DECLARE_TYPE(wxArrayInt);
 
 // TODO: check for inheritence ...
 class WrapClass_wxArrayInt : public WrapClass<wxArrayInt>
-    , public   WrapClass_wxBaseArrayInt
+    //, public  WrapClass_wxBaseArrayInt
 {
   DEFINE_CLASS(WrapClass_wxArrayInt);
 
@@ -46,7 +46,7 @@ class WrapClass_wxArrayInt : public WrapClass<wxArrayInt>
     /// Constructor
     WrapClass_wxArrayInt(boost::shared_ptr<wxArrayInt > si): 
     WrapClass<wxArrayInt>(si)
-    , WrapClass_wxBaseArrayInt(si)
+    //, WrapClass_wxBaseArrayInt(si)
     {}
 
     /// Destructor
@@ -89,7 +89,7 @@ class WrapClass_wxArrayInt : public WrapClass<wxArrayInt>
     ADD_CLASS_METHOD(Insert,"void wxArrayInt::Insert(_wxArraywxArrayInt lItem, size_t uiIndex, size_t nInsert = 1)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#insert)")
     ADD_CLASS_METHOD(RemoveAt,"void wxArrayInt::RemoveAt(size_t uiIndex, size_t nRemove = 1)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#removeat)")
     ADD_CLASS_METHOD(Remove,"void wxArrayInt::Remove(_wxArraywxArrayInt lItem)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#remove)")
-/* The following types are missing: _9862
+/* The following types are missing: _9852
     ADD_CLASS_METHOD(Sort,"void wxArrayInt::Sort(CMPFUNC_wxArraywxArrayInt fCmp)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#sort)")
 */
     ADD_CLASS_METHOD(assign_1,"void wxArrayInt::assign(_wxArraywxArrayInt const * first, _wxArraywxArrayInt const * last)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#assign)")

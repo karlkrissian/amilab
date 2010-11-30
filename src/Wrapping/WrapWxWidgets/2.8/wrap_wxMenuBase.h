@@ -23,7 +23,7 @@
 
 // include what is needed for inheritence and for types ...
 
-#include "wrap_wxEvtHandler.h"
+//#include "wrap_wxEvtHandler.h"
 
 
 
@@ -31,7 +31,7 @@ AMI_DECLARE_TYPE(wxMenuBase);
 
 // TODO: check for inheritence ...
 class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
-    , public   WrapClass_wxEvtHandler
+    //, public  WrapClass_wxEvtHandler
 {
   DEFINE_CLASS(WrapClass_wxMenuBase);
 
@@ -46,7 +46,7 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
     /// Constructor
     WrapClass_wxMenuBase(boost::shared_ptr<wxMenuBase > si): 
     WrapClass<wxMenuBase>(si)
-    , WrapClass_wxEvtHandler(si)
+    //, WrapClass_wxEvtHandler(si)
     {}
 
     /// Destructor
@@ -115,9 +115,13 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
     ADD_CLASS_METHOD(Destroy,"wxMenuBase::Destroy()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#destroy)")
     ADD_CLASS_METHOD(Destroy_2,"bool wxMenuBase::Destroy(wxMenuItem * item)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#destroy)")
     ADD_CLASS_METHOD(GetMenuItemCount,"size_t wxMenuBase::GetMenuItemCount()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenuitemcount)")
+/* The following types are missing: wxMenuItemList
     ADD_CLASS_METHOD(GetMenuItems_1,"wxMenuItemList const & wxMenuBase::GetMenuItems()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenuitems)")
+*/
     ADD_CLASS_METHOD(GetMenuItems,"wxMenuBase::GetMenuItems()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenuitems)")
+/* The following types are missing: wxMenuItemList
     ADD_CLASS_METHOD(GetMenuItems_2,"wxMenuItemList & wxMenuBase::GetMenuItems()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenuitems)")
+*/
     ADD_CLASS_METHOD(FindItem_1,"int wxMenuBase::FindItem(wxString const & item)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#finditem)")
     ADD_CLASS_METHOD(FindItem,"wxMenuBase::FindItem()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#finditem)")
 /* The following types are missing: wxMenu * *
@@ -134,12 +138,18 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
     ADD_CLASS_METHOD(GetHelpString,"wxString wxMenuBase::GetHelpString(int itemid)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#gethelpstring)")
     ADD_CLASS_METHOD(SetTitle,"void wxMenuBase::SetTitle(wxString const & title)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#settitle)")
     ADD_CLASS_METHOD(GetTitle,"wxString const wxMenuBase::GetTitle()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#gettitle)")
+/* The following types are missing: wxEvtHandler
     ADD_CLASS_METHOD(SetEventHandler,"void wxMenuBase::SetEventHandler(wxEvtHandler * handler)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#seteventhandler)")
+*/
+/* The following types are missing: wxEvtHandler
     ADD_CLASS_METHOD(GetEventHandler,"wxEvtHandler * wxMenuBase::GetEventHandler()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#geteventhandler)")
+*/
     ADD_CLASS_METHOD(SetInvokingWindow,"void wxMenuBase::SetInvokingWindow(wxWindow * win)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#setinvokingwindow)")
     ADD_CLASS_METHOD(GetInvokingWindow,"wxWindow * wxMenuBase::GetInvokingWindow()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getinvokingwindow)")
     ADD_CLASS_METHOD(GetStyle,"long int wxMenuBase::GetStyle()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getstyle)")
+/* The following types are missing: wxEvtHandler
     ADD_CLASS_METHOD(UpdateUI,"void wxMenuBase::UpdateUI(wxEvtHandler * source = 0u)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#updateui)")
+*/
     ADD_CLASS_METHOD(GetMenuBar,"wxMenuBar * wxMenuBase::GetMenuBar()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenubar)")
     ADD_CLASS_METHOD(Attach,"void wxMenuBase::Attach(wxMenuBarBase * menubar)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#attach)")
     ADD_CLASS_METHOD(Detach,"void wxMenuBase::Detach()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#detach)")

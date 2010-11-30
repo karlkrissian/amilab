@@ -114,7 +114,7 @@ void WrapClass_vtk3DWidget::AddMethods(WrapClass<vtk3DWidget>::ptr this_ptr )
 //  Wrapping of int vtk3DWidget::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtk3DWidget::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -122,14 +122,14 @@ void WrapClass_vtk3DWidget::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtk3DWidget::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtk3DWidget::IsTypeOf(type);
@@ -140,7 +140,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
 //  Wrapping of vtk3DWidget * vtk3DWidget::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtk3DWidget::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtk3DWidget";
@@ -148,14 +148,14 @@ void WrapClass_vtk3DWidget::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtk3DWidget::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtk3DWidget * res =   vtk3DWidget::SafeDownCast(o);
@@ -182,7 +182,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -229,11 +229,11 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -302,22 +302,22 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   int _n=0;
 
   double xmin;
-  if (!get_val_param<double >(xmin,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(xmin,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double xmax;
-  if (!get_val_param<double >(xmax,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(xmax,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double ymin;
-  if (!get_val_param<double >(ymin,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(ymin,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double ymax;
-  if (!get_val_param<double >(ymax,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(ymax,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double zmin;
-  if (!get_val_param<double >(zmin,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(zmin,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double zmax;
-  if (!get_val_param<double >(zmax,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(zmax,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->PlaceWidget(xmin, xmax, ymin, ymax, zmin, zmax);
   return BasicVariable::ptr();
@@ -341,7 +341,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   int _n=0;
 
   boost::shared_ptr<vtkProp3D > param0_smtptr;
-  if (!get_val_smtptr_param<vtkProp3D >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkProp3D >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkProp3D* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetProp3D(param0);
@@ -386,7 +386,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   int _n=0;
 
   boost::shared_ptr<vtkDataSet > param0_smtptr;
-  if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkDataSet* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetInput(param0);
@@ -431,7 +431,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   int _n=0;
 
   double _arg;
-  if (!get_val_param<double >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetPlaceFactor(_arg);
   return BasicVariable::ptr();
@@ -512,7 +512,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   int _n=0;
 
   double _arg;
-  if (!get_val_param<double >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetHandleSize(_arg);
   return BasicVariable::ptr();

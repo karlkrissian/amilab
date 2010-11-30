@@ -32,6 +32,9 @@ if (!exists(VolRenClass)) {
       ::input2_name =  "", "name of the second input image"
       ::vtkvol1.Init()
       ::vtkvol2.Init()
+      ::background_color  = wx.wxColour(173,216,230)
+      ::background_color2 = wx.wxColour(144,238,144)
+      ::UseGradientBackground = UCHAR(1)
       #::Gui()
     }
     
@@ -159,6 +162,7 @@ if (!exists(VolRenClass)) {
           ::vtkvol1.ReCompute()
 
           # Add the volume to the scene
+          ::SetRendererBg()
           ::renderer.AddVolume( &::vtkvol1.vol )
           ::renderer.ResetCamera()
           #::renwin_interact.Render()
@@ -168,6 +172,22 @@ if (!exists(VolRenClass)) {
     }
     Comments(::StartNew,"Starts rendering of first volume.")
 
+
+    #----------------------------
+    proc ::SetRendererBg() \
+    {
+      if (exists(::renderer)) {
+        ::renderer.SetBackground( \
+          (FLOAT) ::background_color.Red() /255, \
+          (FLOAT) ::background_color.Green() /255, \
+          (FLOAT) ::background_color.Blue() /255)
+        ::renderer.SetBackground2( \
+          (FLOAT) ::background_color2.Red() /255, \
+          (FLOAT) ::background_color2.Green() /255, \
+          (FLOAT) ::background_color2.Blue() /255)
+        ::renderer.SetGradientBackground( ::UseGradientBackground)
+      }
+    }
 
     #----------------------------
     proc ::AddVolume2() \
@@ -211,7 +231,7 @@ if (!exists(VolRenClass)) {
       panel.SetSizer(&sbox_sizer)
       # create widget here
 
-      ::renwin_interact = global::wxVTKRenderWindowInteractor(&panel)
+      ::renwin_interact = global::wxVTKRenderWindowInteractor(&panel,-1)
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
       # Still drawing problem (missed exposed events???)
@@ -285,7 +305,7 @@ if (!exists(VolRenClass)) {
           ::win.EndBoxPanel()
 
 
-        ::win.AddPage("Param")
+        ::win.AddPage("Volumes")
 
           ::win.BeginBook()
             ::vol1_page = ::win.AddPage("Vol1")
@@ -293,7 +313,18 @@ if (!exists(VolRenClass)) {
             ::vol2_page = ::win.AddPage("Vol2")
               ::vtkvol2.AddGui( &::win)
           ::win.EndBook()
-          #::win.EndBoxPanel()
+
+        ::win.AddPage("Scene")
+          ::win.BeginBoxPanel("Background")
+            ::win.BeginHorizontal()
+              ::win.AddColor("Color",&::background_color)
+              ::win.SetCallback(&::SetRendererBg)
+              ::win.AddColor("Color 2",&::background_color2)
+              ::win.SetCallback(&::SetRendererBg)
+            ::win.EndHorizontal()
+            ::win.AddBoolean(&::UseGradientBackground,"Gradient")
+            ::win.SetCallback(&::SetRendererBg)
+          ::win.EndBoxPanel()
 
           #::win.AddButton("Start",   ::Start)
           #::icons.LoadIconPNG("Play")

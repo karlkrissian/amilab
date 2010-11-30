@@ -123,7 +123,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramEntry::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramEntry > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramEntry >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImageHistogramEntry >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxImageHistogramEntry const & param0 = *param0_smtptr;
 
   wxImageHistogramEntry* _newobj = new wxImageHistogramEntry(param0);
@@ -206,7 +206,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramEntry::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramEntry > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramEntry >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHistogramEntry >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHistogramEntry const & param0 = *param0_smtptr;
 
   wxImageHistogramEntry & res =   (*this->_objectptr->GetObj()) = (param0);

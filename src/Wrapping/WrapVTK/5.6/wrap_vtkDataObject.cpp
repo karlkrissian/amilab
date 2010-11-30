@@ -22,6 +22,7 @@
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
+#include "wrap_vtkAbstractArray.h"
 
 
 #include "wrap_vtkDataObject.h"
@@ -33,7 +34,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkDataObject>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkDataObject::wrap_New construct;
+  WrapClass_vtkDataObject::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -199,12 +200,8 @@ void WrapClass_vtkDataObject::AddMethods(WrapClass<vtkDataObject>::ptr this_ptr 
 /* The following types are missing: vtkFieldData
       AddVar_GetAttributesAsFieldData( this_ptr);
 */
-/* The following types are missing: vtkAbstractArray
       AddVar_GetAttributeTypeForArray( this_ptr);
-*/
-/* The following types are missing: long long int
       AddVar_GetNumberOfElements( this_ptr);
-*/
 
 
 
@@ -220,14 +217,14 @@ void WrapClass_vtkDataObject::AddMethods(WrapClass<vtkDataObject>::ptr this_ptr 
 //  Wrapping of vtkDataObject * vtkDataObject::New()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkDataObject";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -240,7 +237,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of int vtkDataObject::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -248,7 +245,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -266,7 +263,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkDataObject * vtkDataObject::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkDataObject";
@@ -274,7 +271,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -293,14 +290,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of void vtkDataObject::SetGlobalReleaseDataFlag(int val)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_SetGlobalReleaseDataFlag::SetParametersComments()
+    wrap_static_SetGlobalReleaseDataFlag::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'val'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_SetGlobalReleaseDataFlag::CallMember( ParamList* _p)
+    wrap_static_SetGlobalReleaseDataFlag::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -317,14 +314,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of int vtkDataObject::GetGlobalReleaseDataFlag()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_GetGlobalReleaseDataFlag::SetParametersComments()
+    wrap_static_GetGlobalReleaseDataFlag::SetParametersComments()
 {
   return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_GetGlobalReleaseDataFlag::CallMember( ParamList* _p)
+    wrap_static_GetGlobalReleaseDataFlag::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -337,7 +334,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformation * vtkDataObject::GetActiveFieldInformation(vtkInformation * info, int fieldAssociation, int attributeType)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_GetActiveFieldInformation::SetParametersComments()
+    wrap_static_GetActiveFieldInformation::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'fieldAssociation'")
@@ -347,7 +344,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_GetActiveFieldInformation::CallMember( ParamList* _p)
+    wrap_static_GetActiveFieldInformation::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
@@ -373,7 +370,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformation * vtkDataObject::GetNamedFieldInformation(vtkInformation * info, int fieldAssociation, char const * name)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_GetNamedFieldInformation::SetParametersComments()
+    wrap_static_GetNamedFieldInformation::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'fieldAssociation'")
@@ -383,7 +380,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_GetNamedFieldInformation::CallMember( ParamList* _p)
+    wrap_static_GetNamedFieldInformation::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
@@ -410,7 +407,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of void vtkDataObject::RemoveNamedFieldInformation(vtkInformation * info, int fieldAssociation, char const * name)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_RemoveNamedFieldInformation::SetParametersComments()
+    wrap_static_RemoveNamedFieldInformation::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'fieldAssociation'")
@@ -419,7 +416,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_RemoveNamedFieldInformation::CallMember( ParamList* _p)
+    wrap_static_RemoveNamedFieldInformation::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
@@ -446,7 +443,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformation * vtkDataObject::SetActiveAttribute(vtkInformation * info, int fieldAssociation, char const * attributeName, int attributeType)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_SetActiveAttribute::SetParametersComments()
+    wrap_static_SetActiveAttribute::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'fieldAssociation'")
@@ -457,7 +454,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_SetActiveAttribute::CallMember( ParamList* _p)
+    wrap_static_SetActiveAttribute::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>4) ClassHelpAndReturn;
@@ -487,7 +484,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of void vtkDataObject::SetActiveAttributeInfo(vtkInformation * info, int fieldAssociation, int attributeType, char const * name, int arrayType, int numComponents, int numTuples)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_SetActiveAttributeInfo::SetParametersComments()
+    wrap_static_SetActiveAttributeInfo::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'fieldAssociation'")
@@ -500,7 +497,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_SetActiveAttributeInfo::CallMember( ParamList* _p)
+    wrap_static_SetActiveAttributeInfo::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>7) ClassHelpAndReturn;
@@ -539,7 +536,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of void vtkDataObject::SetPointDataActiveScalarInfo(vtkInformation * info, int arrayType, int numComponents)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_SetPointDataActiveScalarInfo::SetParametersComments()
+    wrap_static_SetPointDataActiveScalarInfo::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'arrayType'")
@@ -548,7 +545,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_SetPointDataActiveScalarInfo::CallMember( ParamList* _p)
+    wrap_static_SetPointDataActiveScalarInfo::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
@@ -573,7 +570,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of char const * vtkDataObject::GetAssociationTypeAsString(int associationType)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_GetAssociationTypeAsString::SetParametersComments()
+    wrap_static_GetAssociationTypeAsString::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'associationType'")
   return_comments="returning a variable of type std::string";
@@ -581,7 +578,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_GetAssociationTypeAsString::CallMember( ParamList* _p)
+    wrap_static_GetAssociationTypeAsString::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -600,14 +597,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationStringKey * vtkDataObject::DATA_TYPE_NAME()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_TYPE_NAME::SetParametersComments()
+    wrap_static_DATA_TYPE_NAME::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationStringKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_TYPE_NAME::CallMember( ParamList* _p)
+    wrap_static_DATA_TYPE_NAME::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -621,14 +618,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationDataObjectKey * vtkDataObject::DATA_OBJECT()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_OBJECT::SetParametersComments()
+    wrap_static_DATA_OBJECT::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationDataObjectKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_OBJECT::CallMember( ParamList* _p)
+    wrap_static_DATA_OBJECT::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -642,14 +639,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::DATA_EXTENT_TYPE()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_EXTENT_TYPE::SetParametersComments()
+    wrap_static_DATA_EXTENT_TYPE::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_EXTENT_TYPE::CallMember( ParamList* _p)
+    wrap_static_DATA_EXTENT_TYPE::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -663,14 +660,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerPointerKey * vtkDataObject::DATA_EXTENT()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_EXTENT::SetParametersComments()
+    wrap_static_DATA_EXTENT::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerPointerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_EXTENT::CallMember( ParamList* _p)
+    wrap_static_DATA_EXTENT::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -684,14 +681,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::DATA_PIECE_NUMBER()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_PIECE_NUMBER::SetParametersComments()
+    wrap_static_DATA_PIECE_NUMBER::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_PIECE_NUMBER::CallMember( ParamList* _p)
+    wrap_static_DATA_PIECE_NUMBER::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -705,14 +702,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::DATA_NUMBER_OF_PIECES()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_NUMBER_OF_PIECES::SetParametersComments()
+    wrap_static_DATA_NUMBER_OF_PIECES::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_NUMBER_OF_PIECES::CallMember( ParamList* _p)
+    wrap_static_DATA_NUMBER_OF_PIECES::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -726,14 +723,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::DATA_NUMBER_OF_GHOST_LEVELS()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_NUMBER_OF_GHOST_LEVELS::SetParametersComments()
+    wrap_static_DATA_NUMBER_OF_GHOST_LEVELS::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_NUMBER_OF_GHOST_LEVELS::CallMember( ParamList* _p)
+    wrap_static_DATA_NUMBER_OF_GHOST_LEVELS::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -747,14 +744,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationDoubleKey * vtkDataObject::DATA_RESOLUTION()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_RESOLUTION::SetParametersComments()
+    wrap_static_DATA_RESOLUTION::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationDoubleKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_RESOLUTION::CallMember( ParamList* _p)
+    wrap_static_DATA_RESOLUTION::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -768,14 +765,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationDoubleVectorKey * vtkDataObject::DATA_TIME_STEPS()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_TIME_STEPS::SetParametersComments()
+    wrap_static_DATA_TIME_STEPS::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationDoubleVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_TIME_STEPS::CallMember( ParamList* _p)
+    wrap_static_DATA_TIME_STEPS::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -789,14 +786,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationInformationVectorKey * vtkDataObject::POINT_DATA_VECTOR()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_POINT_DATA_VECTOR::SetParametersComments()
+    wrap_static_POINT_DATA_VECTOR::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationInformationVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_POINT_DATA_VECTOR::CallMember( ParamList* _p)
+    wrap_static_POINT_DATA_VECTOR::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -810,14 +807,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationInformationVectorKey * vtkDataObject::CELL_DATA_VECTOR()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_CELL_DATA_VECTOR::SetParametersComments()
+    wrap_static_CELL_DATA_VECTOR::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationInformationVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_CELL_DATA_VECTOR::CallMember( ParamList* _p)
+    wrap_static_CELL_DATA_VECTOR::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -831,14 +828,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationInformationVectorKey * vtkDataObject::VERTEX_DATA_VECTOR()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_VERTEX_DATA_VECTOR::SetParametersComments()
+    wrap_static_VERTEX_DATA_VECTOR::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationInformationVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_VERTEX_DATA_VECTOR::CallMember( ParamList* _p)
+    wrap_static_VERTEX_DATA_VECTOR::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -852,14 +849,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationInformationVectorKey * vtkDataObject::EDGE_DATA_VECTOR()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_EDGE_DATA_VECTOR::SetParametersComments()
+    wrap_static_EDGE_DATA_VECTOR::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationInformationVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_EDGE_DATA_VECTOR::CallMember( ParamList* _p)
+    wrap_static_EDGE_DATA_VECTOR::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -873,14 +870,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::FIELD_ARRAY_TYPE()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_FIELD_ARRAY_TYPE::SetParametersComments()
+    wrap_static_FIELD_ARRAY_TYPE::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_FIELD_ARRAY_TYPE::CallMember( ParamList* _p)
+    wrap_static_FIELD_ARRAY_TYPE::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -894,14 +891,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::FIELD_ASSOCIATION()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_FIELD_ASSOCIATION::SetParametersComments()
+    wrap_static_FIELD_ASSOCIATION::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_FIELD_ASSOCIATION::CallMember( ParamList* _p)
+    wrap_static_FIELD_ASSOCIATION::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -915,14 +912,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::FIELD_ATTRIBUTE_TYPE()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_FIELD_ATTRIBUTE_TYPE::SetParametersComments()
+    wrap_static_FIELD_ATTRIBUTE_TYPE::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_FIELD_ATTRIBUTE_TYPE::CallMember( ParamList* _p)
+    wrap_static_FIELD_ATTRIBUTE_TYPE::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -936,14 +933,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::FIELD_ACTIVE_ATTRIBUTE()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_FIELD_ACTIVE_ATTRIBUTE::SetParametersComments()
+    wrap_static_FIELD_ACTIVE_ATTRIBUTE::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_FIELD_ACTIVE_ATTRIBUTE::CallMember( ParamList* _p)
+    wrap_static_FIELD_ACTIVE_ATTRIBUTE::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -957,14 +954,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::FIELD_NUMBER_OF_COMPONENTS()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_FIELD_NUMBER_OF_COMPONENTS::SetParametersComments()
+    wrap_static_FIELD_NUMBER_OF_COMPONENTS::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_FIELD_NUMBER_OF_COMPONENTS::CallMember( ParamList* _p)
+    wrap_static_FIELD_NUMBER_OF_COMPONENTS::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -978,14 +975,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::FIELD_NUMBER_OF_TUPLES()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_FIELD_NUMBER_OF_TUPLES::SetParametersComments()
+    wrap_static_FIELD_NUMBER_OF_TUPLES::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_FIELD_NUMBER_OF_TUPLES::CallMember( ParamList* _p)
+    wrap_static_FIELD_NUMBER_OF_TUPLES::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -999,14 +996,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::FIELD_OPERATION()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_FIELD_OPERATION::SetParametersComments()
+    wrap_static_FIELD_OPERATION::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_FIELD_OPERATION::CallMember( ParamList* _p)
+    wrap_static_FIELD_OPERATION::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1020,14 +1017,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationDoubleVectorKey * vtkDataObject::FIELD_RANGE()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_FIELD_RANGE::SetParametersComments()
+    wrap_static_FIELD_RANGE::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationDoubleVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_FIELD_RANGE::CallMember( ParamList* _p)
+    wrap_static_FIELD_RANGE::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1041,14 +1038,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationDoubleVectorKey * vtkDataObject::PIECE_FIELD_RANGE()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_PIECE_FIELD_RANGE::SetParametersComments()
+    wrap_static_PIECE_FIELD_RANGE::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationDoubleVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_PIECE_FIELD_RANGE::CallMember( ParamList* _p)
+    wrap_static_PIECE_FIELD_RANGE::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1062,14 +1059,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerVectorKey * vtkDataObject::PIECE_EXTENT()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_PIECE_EXTENT::SetParametersComments()
+    wrap_static_PIECE_EXTENT::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_PIECE_EXTENT::CallMember( ParamList* _p)
+    wrap_static_PIECE_EXTENT::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1083,14 +1080,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationStringKey * vtkDataObject::FIELD_NAME()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_FIELD_NAME::SetParametersComments()
+    wrap_static_FIELD_NAME::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationStringKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_FIELD_NAME::CallMember( ParamList* _p)
+    wrap_static_FIELD_NAME::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1104,14 +1101,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationDoubleVectorKey * vtkDataObject::ORIGIN()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_ORIGIN::SetParametersComments()
+    wrap_static_ORIGIN::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationDoubleVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_ORIGIN::CallMember( ParamList* _p)
+    wrap_static_ORIGIN::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1125,14 +1122,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationDoubleVectorKey * vtkDataObject::SPACING()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_SPACING::SetParametersComments()
+    wrap_static_SPACING::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationDoubleVectorKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_SPACING::CallMember( ParamList* _p)
+    wrap_static_SPACING::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1146,14 +1143,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationIntegerKey * vtkDataObject::DATA_GEOMETRY_UNMODIFIED()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_DATA_GEOMETRY_UNMODIFIED::SetParametersComments()
+    wrap_static_DATA_GEOMETRY_UNMODIFIED::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationIntegerKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_DATA_GEOMETRY_UNMODIFIED::CallMember( ParamList* _p)
+    wrap_static_DATA_GEOMETRY_UNMODIFIED::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1167,14 +1164,14 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkInformationDataObjectKey * vtkDataObject::SIL()
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_SIL::SetParametersComments()
+    wrap_static_SIL::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInformationDataObjectKey";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_SIL::CallMember( ParamList* _p)
+    wrap_static_SIL::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1188,7 +1185,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkDataObject * vtkDataObject::GetData(vtkInformation * info)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_GetData_1::SetParametersComments()
+    wrap_static_GetData_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformation, "parameter named 'info'")
   return_comments="returning a variable of type vtkDataObject";
@@ -1196,7 +1193,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_GetData_1::CallMember( ParamList* _p)
+    wrap_static_GetData_1::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
@@ -1213,15 +1210,15 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 */
 
 //---------------------------------------------------
-//  Wrapping of multipled defined method:... vtkDataObject::GetData(...)
+//  Wrapping of multipled defined method:... static vtkDataObject::GetData(...)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_GetData::SetParametersComments()
+    wrap_static_GetData::SetParametersComments()
 {}
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_GetData::CallMember( ParamList* _p)
+    wrap_static_GetData::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
   ClassHelpAndReturn;
@@ -1232,7 +1229,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
 //  Wrapping of vtkDataObject * vtkDataObject::GetData(vtkInformationVector * v, int i = 0)
 //---------------------------------------------------
 void WrapClass_vtkDataObject::
-    wrap_GetData_2::SetParametersComments()
+    wrap_static_GetData_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkInformationVector, "parameter named 'v'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'i' (def:0)")
@@ -1241,7 +1238,7 @@ void WrapClass_vtkDataObject::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkDataObject::
-    wrap_GetData_2::CallMember( ParamList* _p)
+    wrap_static_GetData_2::CallMember( ParamList* _p)
 {
   if (!_p) ClassReturnEmptyVar;
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
@@ -3346,7 +3343,6 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   return AMILabType<vtkFieldData >::CreateVar(res,true);
 }
 */
-/* The following types are missing: vtkAbstractArray
 
 //---------------------------------------------------
 //  Wrapping of int vtkDataObject::GetAttributeTypeForArray(vtkAbstractArray * arr)
@@ -3373,8 +3369,6 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   int res =   this->_objectptr->GetObj()->GetAttributeTypeForArray(arr);
   return AMILabType<int >::CreateVar(res);
 }
-*/
-/* The following types are missing: long long int
 
 //---------------------------------------------------
 //  Wrapping of vtkIdType vtkDataObject::GetNumberOfElements(int type)
@@ -3383,7 +3377,7 @@ void WrapClass_vtkDataObject::
     wrap_GetNumberOfElements::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'type'")
-  return_comments="returning a variable of type long long int";
+  return_comments="returning a variable of type long";
 }
 
 //---------------------------------------------------
@@ -3398,7 +3392,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (!get_val_param<int >(type,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkIdType res =   this->_objectptr->GetObj()->GetNumberOfElements(type);
-  return AMILabType<long long int >::CreateVar(res);
+  long res_long = boost::numeric_cast<long >((unsigned int)res);
+  return AMILabType<long >::CreateVar(res_long);
 }
-*/
 

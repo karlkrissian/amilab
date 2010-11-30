@@ -36,7 +36,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkRenderWindowInteractor>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkRenderWindowInteractor::wrap_New construct;
+  WrapClass_vtkRenderWindowInteractor::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -235,14 +235,14 @@ void WrapClass_vtkRenderWindowInteractor::AddMethods(WrapClass<vtkRenderWindowIn
 //  Wrapping of vtkRenderWindowInteractor * vtkRenderWindowInteractor::New()
 //---------------------------------------------------
 void WrapClass_vtkRenderWindowInteractor::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkRenderWindowInteractor";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -255,7 +255,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
 //  Wrapping of int vtkRenderWindowInteractor::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkRenderWindowInteractor::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -263,7 +263,7 @@ void WrapClass_vtkRenderWindowInteractor::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -281,7 +281,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
 //  Wrapping of vtkRenderWindowInteractor * vtkRenderWindowInteractor::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkRenderWindowInteractor::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkRenderWindowInteractor";
@@ -289,7 +289,7 @@ void WrapClass_vtkRenderWindowInteractor::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;

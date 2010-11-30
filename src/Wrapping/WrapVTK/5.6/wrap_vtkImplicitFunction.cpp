@@ -22,6 +22,7 @@
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
+#include "wrap_vtkAbstractTransform.h"
 
 
 #include "wrap_vtkImplicitFunction.h"
@@ -91,14 +92,10 @@ void WrapClass_vtkImplicitFunction::AddMethods(WrapClass<vtkImplicitFunction>::p
       AddVar_FunctionGradient( this_ptr);
       AddVar_FunctionGradient_2( this_ptr);
       AddVar_FunctionGradient_3( this_ptr);
-/* The following types are missing: vtkAbstractTransform
       AddVar_SetTransform_1( this_ptr);
-*/
       AddVar_SetTransform( this_ptr);
       AddVar_SetTransform_2( this_ptr);
-/* The following types are missing: vtkAbstractTransform
       AddVar_GetTransform( this_ptr);
-*/
       AddVar_EvaluateFunction( this_ptr);
 
 
@@ -115,7 +112,7 @@ void WrapClass_vtkImplicitFunction::AddMethods(WrapClass<vtkImplicitFunction>::p
 //  Wrapping of int vtkImplicitFunction::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkImplicitFunction::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -123,14 +120,14 @@ void WrapClass_vtkImplicitFunction::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkImplicitFunction::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkImplicitFunction::IsTypeOf(type);
@@ -141,7 +138,7 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
 //  Wrapping of vtkImplicitFunction * vtkImplicitFunction::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkImplicitFunction::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkImplicitFunction";
@@ -149,14 +146,14 @@ void WrapClass_vtkImplicitFunction::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkImplicitFunction::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkImplicitFunction * res =   vtkImplicitFunction::SafeDownCast(o);
@@ -183,7 +180,7 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -230,11 +227,11 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -280,7 +277,7 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* x = x_smtptr.get();
 
   double res =   this->_objectptr->GetObj()->FunctionValue(x);
@@ -329,13 +326,13 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double z;
-  if (!get_val_param<double >(z,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(z,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double res =   this->_objectptr->GetObj()->FunctionValue(x, y, z);
   return AMILabType<double >::CreateVar(res);
@@ -360,11 +357,11 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* x = x_smtptr.get();
 
   boost::shared_ptr<double > g_smtptr;
-  if (!get_val_smtptr_param<double >(g_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(g_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* g = g_smtptr.get();
 
   this->_objectptr->GetObj()->FunctionGradient(x, g);
@@ -414,7 +411,7 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* x = x_smtptr.get();
 
   double * res =   this->_objectptr->GetObj()->FunctionGradient(x);
@@ -442,18 +439,17 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double z;
-  if (!get_val_param<double >(z,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(z,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double * res =   this->_objectptr->GetObj()->FunctionGradient(x, y, z);
   return AMILabType<double >::CreateVar(res,true);
 }
-/* The following types are missing: vtkAbstractTransform
 
 //---------------------------------------------------
 //  Wrapping of void vtkImplicitFunction::SetTransform(vtkAbstractTransform * param0)
@@ -473,13 +469,12 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   boost::shared_ptr<vtkAbstractTransform > param0_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractTransform >(param0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkAbstractTransform >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkAbstractTransform* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->SetTransform(param0);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkImplicitFunction::SetTransform(...)
@@ -493,6 +488,9 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
     wrap_SetTransform::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkImplicitFunction::wrap_SetTransform_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_vtkImplicitFunction::wrap_SetTransform_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -517,13 +515,12 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   boost::shared_ptr<double > elements_smtptr;
-  if (!get_val_smtptr_param<double >(elements_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* elements = elements_smtptr.get();
 
   this->_objectptr->GetObj()->SetTransform(elements);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkAbstractTransform
 
 //---------------------------------------------------
 //  Wrapping of vtkAbstractTransform * vtkImplicitFunction::GetTransform()
@@ -541,9 +538,9 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAbstractTransform * res =   this->_objectptr->GetObj()->GetTransform();
-  return AMILabType<vtkAbstractTransform >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkAbstractTransform::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of double vtkImplicitFunction::EvaluateFunction(double x, double y, double z)
@@ -566,13 +563,13 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   int _n=0;
 
   double x;
-  if (!get_val_param<double >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   double y;
-  if (!get_val_param<double >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   double z;
-  if (!get_val_param<double >(z,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(z,_p,_n,true,false)) ClassHelpAndReturn;
 
   double res =   this->_objectptr->GetObj()->EvaluateFunction(x, y, z);
   return AMILabType<double >::CreateVar(res);

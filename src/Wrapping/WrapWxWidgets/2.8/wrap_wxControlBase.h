@@ -26,6 +26,7 @@
 #include "wrap_wxWindow.h"
 
 
+
 AMI_DECLARE_TYPE(wxControlBase);
 
 // TODO: check for inheritence ...
@@ -71,7 +72,9 @@ class WrapClass_wxControlBase : public WrapClass<wxControlBase>
     // Standard methods
     
     // Adding standard methods
+/* The following types are missing: wxPoint
     ADD_CLASS_METHOD(Create,"bool wxControlBase::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxControlNameStr)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#create)")
+*/
     ADD_CLASS_METHOD(GetAlignment,"int wxControlBase::GetAlignment()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#getalignment)")
     ADD_CLASS_METHOD(ShouldInheritColours,"bool wxControlBase::ShouldInheritColours()  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#shouldinheritcolours)")
     ADD_CLASS_METHOD(Command,"void wxControlBase::Command(wxCommandEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxcontrolbase.html#command)")

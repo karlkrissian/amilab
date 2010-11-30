@@ -19,7 +19,6 @@
 // get all the required includes
 // #include "..."
 #include "wrap_wxWindow.h"
-#include "wrap_wxPoint.h"
 #include "wrap_wxSize.h"
 #include "wrap_wxValidator.h"
 #include "wrap_wxString.h"
@@ -82,7 +81,9 @@ void WrapClass_wxControlBase::AddMethods(WrapClass<wxControlBase>::ptr this_ptr 
   // check that the method name is not a token
   
       // Adding standard methods 
+/* The following types are missing: wxPoint
       AddVar_Create( this_ptr);
+*/
       AddVar_GetAlignment( this_ptr);
       AddVar_ShouldInheritColours( this_ptr);
       AddVar_Command( this_ptr);
@@ -118,6 +119,7 @@ BasicVariable::ptr WrapClass_wxControlBase::
   BasicVariable::ptr res = WrapClass_wxControlBase::CreateVar(_newobj);
   return res;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxControlBase::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxControlNameStr)
@@ -144,40 +146,41 @@ BasicVariable::ptr WrapClass_wxControlBase::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* parent = parent_smtptr.get();
 
   int id;
-  if (!get_val_param<int >(id,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxDefaultSize );
 
   long style_long = 0;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   boost::shared_ptr<wxValidator > validator_smtptr;
-  if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : (wxDefaultValidator) );
+  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : wxDefaultValidator );
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxControlNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxControlNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, pos, size, style, validator, name);
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of int wxControlBase::GetAlignment()
@@ -236,7 +239,7 @@ BasicVariable::ptr WrapClass_wxControlBase::
   int _n=0;
 
   boost::shared_ptr<wxCommandEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxCommandEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxCommandEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxCommandEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->Command(event);
@@ -261,7 +264,7 @@ BasicVariable::ptr WrapClass_wxControlBase::
   int _n=0;
 
   boost::shared_ptr<wxString > label_smtptr;
-  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & label = *label_smtptr;
 
   this->_objectptr->GetObj()->SetLabel(label);
@@ -287,7 +290,7 @@ BasicVariable::ptr WrapClass_wxControlBase::
   int _n=0;
 
   boost::shared_ptr<wxFont > font_smtptr;
-  if (!get_val_smtptr_param<wxFont >(font_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxFont >(font_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxFont const & font = *font_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetFont(font);
@@ -313,7 +316,7 @@ BasicVariable::ptr WrapClass_wxControlBase::
   int _n=0;
 
   boost::shared_ptr<wxUpdateUIEvent > event_smtptr;
-  if (!get_val_smtptr_param<wxUpdateUIEvent >(event_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxUpdateUIEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxUpdateUIEvent & event = *event_smtptr;
 
   this->_objectptr->GetObj()->DoUpdateWindowUI(event);

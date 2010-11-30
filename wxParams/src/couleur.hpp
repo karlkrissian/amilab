@@ -98,7 +98,17 @@ public:
   }
 
 
-  const rgb_color& GetCompactColor() const { return compact_color; }
+  const rgb_color& GetCompactColor() const
+  { 
+    return compact_color;
+/*
+    rgb_color res;
+    res.r = Red();
+    res.g = Green();
+    res.b = Blue();
+    return res; 
+*/
+  }
 
   /*
   ///

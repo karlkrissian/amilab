@@ -19,8 +19,6 @@
 // get all the required includes
 // #include "..."
 #include "wrap_wxRegion.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxPoint.h"
 #include "wrap_wxBitmap.h"
 #include "wrap_wxColour.h"
 #include "wrap_wxRegionBase.h"
@@ -79,40 +77,52 @@ void WrapClass_wxRegionBase::AddMethods(WrapClass<wxRegionBase>::ptr this_ptr )
       AddVar_IsEqual( this_ptr);
       AddVar_GetBox_1( this_ptr);
       AddVar_GetBox( this_ptr);
+/* The following types are missing: wxRect
       AddVar_GetBox_2( this_ptr);
+*/
 /* The following types are missing: wxRegionContain
       AddVar_Contains_1( this_ptr);
 */
       AddVar_Contains( this_ptr);
-/* The following types are missing: wxRegionContain
+/* The following types are missing: wxRegionContain, wxPoint
       AddVar_Contains_2( this_ptr);
 */
 /* The following types are missing: wxRegionContain
       AddVar_Contains_3( this_ptr);
 */
-/* The following types are missing: wxRegionContain
+/* The following types are missing: wxRegionContain, wxRect
       AddVar_Contains_4( this_ptr);
 */
       AddVar_Offset_1( this_ptr);
       AddVar_Offset( this_ptr);
+/* The following types are missing: wxPoint
       AddVar_Offset_2( this_ptr);
+*/
       AddVar_Union_1( this_ptr);
       AddVar_Union( this_ptr);
+/* The following types are missing: wxRect
       AddVar_Union_2( this_ptr);
+*/
       AddVar_Union_3( this_ptr);
       AddVar_Union_4( this_ptr);
       AddVar_Union_5( this_ptr);
       AddVar_Intersect_1( this_ptr);
       AddVar_Intersect( this_ptr);
+/* The following types are missing: wxRect
       AddVar_Intersect_2( this_ptr);
+*/
       AddVar_Intersect_3( this_ptr);
       AddVar_Subtract_1( this_ptr);
       AddVar_Subtract( this_ptr);
+/* The following types are missing: wxRect
       AddVar_Subtract_2( this_ptr);
+*/
       AddVar_Subtract_3( this_ptr);
       AddVar_Xor_1( this_ptr);
       AddVar_Xor( this_ptr);
+/* The following types are missing: wxRect
       AddVar_Xor_2( this_ptr);
+*/
       AddVar_Xor_3( this_ptr);
       AddVar_ConvertToBitmap( this_ptr);
 
@@ -275,11 +285,9 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_GetBox_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxRegionBase::wrap_GetBox_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of wxRect wxRegionBase::GetBox()
@@ -299,6 +307,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRect res =   this->_objectptr->GetObj()->GetBox();
   return AMILabType<wxRect >::CreateVar(res);
 }
+*/
 /* The following types are missing: wxRegionContain
 
 //---------------------------------------------------
@@ -345,7 +354,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxRegionContain
+/* The following types are missing: wxRegionContain, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxPoint const & pt)
@@ -412,7 +421,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   return AMILabType<wxRegionContain >::CreateVar(res);
 }
 */
-/* The following types are missing: wxRegionContain
+/* The following types are missing: wxRegionContain, wxRect
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxRect const & rect)
@@ -486,11 +495,9 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Offset_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxRegionBase::wrap_Offset_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Offset(wxPoint const & pt)
@@ -518,6 +525,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Union(wxCoord x, wxCoord y, wxCoord w, wxCoord h)
@@ -572,9 +580,6 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Union_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxRegionBase::wrap_Union_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxRegionBase::wrap_Union_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
@@ -586,6 +591,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!m5.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Union(wxRect const & rect)
@@ -613,6 +619,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Union(wxRegion const & region)
@@ -757,14 +764,12 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Intersect_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxRegionBase::wrap_Intersect_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxRegionBase::wrap_Intersect_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Intersect(wxRect const & rect)
@@ -792,6 +797,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Intersect(wxRegion const & region)
@@ -873,14 +879,12 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Subtract_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxRegionBase::wrap_Subtract_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxRegionBase::wrap_Subtract_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Subtract(wxRect const & rect)
@@ -908,6 +912,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Subtract(wxRegion const & region)
@@ -989,14 +994,12 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Xor_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxRegionBase::wrap_Xor_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxRegionBase::wrap_Xor_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
+/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Xor(wxRect const & rect)
@@ -1024,6 +1027,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Xor(wxRegion const & region)

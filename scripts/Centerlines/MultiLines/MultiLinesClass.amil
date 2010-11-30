@@ -106,11 +106,13 @@ if (!exists(MultiLinesClass)) {
     proc ::set_mask( IMAGE mask) \
     {
       ::mask <<= (UCHAR) (mask>0.1)*255
+      ::mask_name = "::mask"
     }
     
     proc ::set_input(IMAGE im)  \
     {
       ::input <<= im
+      ::input_name = "::input"
     }
     
     proc ::set_result(IMAGE im) \
@@ -379,6 +381,8 @@ if (!exists(MultiLinesClass)) {
  #       ::all_radii.push_back(radius)
         ::current_rad = ::current_rad*_step
         SetProgress(i/::numrad*100)
+        # process several graphic events
+        ProcessEvents(100)
       }
     
       

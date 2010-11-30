@@ -21,6 +21,7 @@
 #include "wrap_vtkCamera.h"
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
+#include "wrap_vtkTransform.h"
 #include "wrap_vtkRenderer.h"
 #include "boost/numeric/conversion/cast.hpp"
 
@@ -34,8 +35,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkCamera>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkCamera::wrap_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -148,9 +149,7 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
       AddVar_GetWindowCenter_2( this_ptr);
       AddVar_GetWindowCenter_3( this_ptr);
       AddVar_SetObliqueAngles( this_ptr);
-/* The following types are missing: vtkTransform
       AddVar_ApplyTransform( this_ptr);
-*/
       AddVar_GetViewPlaneNormal_1( this_ptr);
       AddVar_GetViewPlaneNormal( this_ptr);
       AddVar_GetViewPlaneNormal_2( this_ptr);
@@ -169,9 +168,7 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
 /* The following types are missing: vtkMatrix4x4
       AddVar_GetViewTransformMatrix( this_ptr);
 */
-/* The following types are missing: vtkTransform
       AddVar_GetViewTransformObject( this_ptr);
-*/
 /* The following types are missing: vtkMatrix4x4
       AddVar_GetPerspectiveTransformMatrix( this_ptr);
 */
@@ -232,7 +229,7 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
 //  Wrapping of int vtkCamera::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkCamera::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -240,7 +237,7 @@ void WrapClass_vtkCamera::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkCamera::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -258,7 +255,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
 //  Wrapping of vtkCamera * vtkCamera::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkCamera::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkCamera";
@@ -266,7 +263,7 @@ void WrapClass_vtkCamera::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkCamera::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
@@ -285,14 +282,14 @@ BasicVariable::ptr WrapClass_vtkCamera::
 //  Wrapping of vtkCamera * vtkCamera::New()
 //---------------------------------------------------
 void WrapClass_vtkCamera::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkCamera";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkCamera::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -1908,7 +1905,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   this->_objectptr->GetObj()->SetObliqueAngles(alpha, beta);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkTransform
 
 //---------------------------------------------------
 //  Wrapping of void vtkCamera::ApplyTransform(vtkTransform * t)
@@ -1934,7 +1930,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   this->_objectptr->GetObj()->ApplyTransform(t);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of double * vtkCamera::GetViewPlaneNormal()
@@ -2326,7 +2321,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
 }
 */
-/* The following types are missing: vtkTransform
 
 //---------------------------------------------------
 //  Wrapping of vtkTransform * vtkCamera::GetViewTransformObject()
@@ -2344,9 +2338,9 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkTransform * res =   this->_objectptr->GetObj()->GetViewTransformObject();
-  return AMILabType<vtkTransform >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkTransform::CreateVar(res);
+  return res_var;
 }
-*/
 /* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------

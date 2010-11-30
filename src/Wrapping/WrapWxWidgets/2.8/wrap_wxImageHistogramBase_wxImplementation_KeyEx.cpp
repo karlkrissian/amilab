@@ -102,7 +102,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_KeyEx > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_KeyEx >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_KeyEx >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxImageHistogramBase_wxImplementation_KeyEx const & param0 = *param0_smtptr;
 
   wxImageHistogramBase_wxImplementation_KeyEx* _newobj = new wxImageHistogramBase_wxImplementation_KeyEx(param0);
@@ -187,7 +187,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_Pair > pair_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_Pair >(pair_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_Pair >(pair_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHistogramBase_wxImplementation_Pair const & pair = *pair_smtptr;
 
   long unsigned int const & res =   this->_objectptr->GetObj()->()(pair);
@@ -215,7 +215,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::
   int _n=0;
 
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_KeyEx > param0_smtptr;
-  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_KeyEx >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxImageHistogramBase_wxImplementation_KeyEx >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxImageHistogramBase_wxImplementation_KeyEx const & param0 = *param0_smtptr;
 
   wxImageHistogramBase_wxImplementation_KeyEx & res =   (*this->_objectptr->GetObj()) = (param0);

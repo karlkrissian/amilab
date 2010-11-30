@@ -112,10 +112,10 @@ BasicVariable::ptr WrapClass_wxStatusBarBase::
   int _n=0;
 
   int number = 1;
-  if (!get_val_param<int >(number,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(number,_p,_n,false,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<int > widths_smtptr;
-  if (!get_val_smtptr_param<int >(widths_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(widths_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* widths = widths_smtptr.get();
 
   this->_objectptr->GetObj()->SetFieldsCount(number, widths);
@@ -160,11 +160,11 @@ BasicVariable::ptr WrapClass_wxStatusBarBase::
   int _n=0;
 
   boost::shared_ptr<wxString > text_smtptr;
-  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & text = *text_smtptr;
 
   int number = 0;
-  if (!get_val_param<int >(number,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(number,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PushStatusText(text, number);
   return BasicVariable::ptr();
@@ -188,7 +188,7 @@ BasicVariable::ptr WrapClass_wxStatusBarBase::
   int _n=0;
 
   int number = 0;
-  if (!get_val_param<int >(number,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(number,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PopStatusText(number);
   return BasicVariable::ptr();
@@ -213,10 +213,10 @@ BasicVariable::ptr WrapClass_wxStatusBarBase::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<int > widths_smtptr;
-  if (!get_val_smtptr_param<int >(widths_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(widths_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* widths = widths_smtptr.get();
 
   this->_objectptr->GetObj()->SetStatusWidths(n, widths);
@@ -242,10 +242,10 @@ BasicVariable::ptr WrapClass_wxStatusBarBase::
   int _n=0;
 
   int n;
-  if (!get_val_param<int >(n,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<int > styles_smtptr;
-  if (!get_val_smtptr_param<int >(styles_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<int >(styles_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   int* styles = styles_smtptr.get();
 
   this->_objectptr->GetObj()->SetStatusStyles(n, styles);

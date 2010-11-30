@@ -20,13 +20,8 @@
 // #include "..."
 #include "wrap_wxIcon.h"
 #include "wrap_wxIconBundle.h"
-#include "wrap_wxRegion.h"
 #include "wrap_wxWindowBase.h"
 #include "wrap_wxWindow.h"
-#include "wrap_wxCloseEvent.h"
-#include "wrap_wxSizeEvent.h"
-#include "wrap_wxActivateEvent.h"
-#include "wrap_wxUpdateUIEvent.h"
 #include "wrap_wxSize.h"
 
 
@@ -90,7 +85,9 @@ void WrapClass_wxTopLevelWindowBase::AddMethods(WrapClass<wxTopLevelWindowBase>:
       AddVar_SetIcon( this_ptr);
       AddVar_SetIcons( this_ptr);
       AddVar_EnableCloseButton( this_ptr);
+/* The following types are missing: wxRegion
       AddVar_SetShape( this_ptr);
+*/
       AddVar_RequestUserAttention( this_ptr);
       AddVar_IsActive( this_ptr);
       AddVar_ShouldPreventAppExit( this_ptr);
@@ -104,11 +101,19 @@ void WrapClass_wxTopLevelWindowBase::AddMethods(WrapClass<wxTopLevelWindowBase>:
       AddVar_Destroy( this_ptr);
       AddVar_IsTopLevel( this_ptr);
       AddVar_IsVisible( this_ptr);
+/* The following types are missing: wxCloseEvent
       AddVar_OnCloseWindow( this_ptr);
+*/
+/* The following types are missing: wxSizeEvent
       AddVar_OnSize( this_ptr);
+*/
       AddVar_GetRectForTopLevelChildren( this_ptr);
+/* The following types are missing: wxActivateEvent
       AddVar_OnActivate( this_ptr);
+*/
+/* The following types are missing: wxUpdateUIEvent
       AddVar_DoUpdateWindowUI( this_ptr);
+*/
       AddVar_SetMinSize( this_ptr);
       AddVar_SetMaxSize( this_ptr);
       AddVar_DoSetSizeHints( this_ptr);
@@ -257,6 +262,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxRegion
 
 //---------------------------------------------------
 //  Wrapping of bool wxTopLevelWindowBase::SetShape(wxRegion const & param0)
@@ -284,6 +290,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::RequestUserAttention(int flags = wxUSER_ATTENTION_INFO)
@@ -575,6 +582,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
+/* The following types are missing: wxCloseEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::OnCloseWindow(wxCloseEvent & event)
@@ -600,6 +608,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->OnCloseWindow(event);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxSizeEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::OnSize(wxSizeEvent & param0)
@@ -625,6 +635,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->OnSize(param0);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::GetRectForTopLevelChildren(int * x, int * y, int * w, int * h)
@@ -665,6 +676,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->GetRectForTopLevelChildren(x, y, w, h);
   return BasicVariable::ptr();
 }
+/* The following types are missing: wxActivateEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::OnActivate(wxActivateEvent & param0)
@@ -690,6 +702,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->OnActivate(param0);
   return BasicVariable::ptr();
 }
+*/
+/* The following types are missing: wxUpdateUIEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::DoUpdateWindowUI(wxUpdateUIEvent & event)
@@ -715,6 +729,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->DoUpdateWindowUI(event);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::SetMinSize(wxSize const & minSize)

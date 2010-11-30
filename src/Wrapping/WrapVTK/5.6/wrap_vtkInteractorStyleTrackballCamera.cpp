@@ -32,7 +32,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyleTrackballCamera>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkInteractorStyleTrackballCamera::wrap_New construct;
+  WrapClass_vtkInteractorStyleTrackballCamera::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -112,14 +112,14 @@ void WrapClass_vtkInteractorStyleTrackballCamera::AddMethods(WrapClass<vtkIntera
 //  Wrapping of vtkInteractorStyleTrackballCamera * vtkInteractorStyleTrackballCamera::New()
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyleTrackballCamera::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInteractorStyleTrackballCamera";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -132,7 +132,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
 //  Wrapping of int vtkInteractorStyleTrackballCamera::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyleTrackballCamera::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -140,14 +140,14 @@ void WrapClass_vtkInteractorStyleTrackballCamera::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkInteractorStyleTrackballCamera::IsTypeOf(type);
@@ -158,7 +158,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
 //  Wrapping of vtkInteractorStyleTrackballCamera * vtkInteractorStyleTrackballCamera::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyleTrackballCamera::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkInteractorStyleTrackballCamera";
@@ -166,14 +166,14 @@ void WrapClass_vtkInteractorStyleTrackballCamera::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkInteractorStyleTrackballCamera * res =   vtkInteractorStyleTrackballCamera::SafeDownCast(o);
@@ -200,7 +200,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -247,11 +247,11 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -510,7 +510,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
   int _n=0;
 
   double _arg;
-  if (!get_val_param<double >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMotionFactor(_arg);
   return BasicVariable::ptr();

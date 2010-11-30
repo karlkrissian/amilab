@@ -103,7 +103,7 @@ BasicVariable::ptr WrapClass_wxIconLocationBase::
   int _n=0;
 
   boost::shared_ptr<wxIconLocationBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxIconLocationBase >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxIconLocationBase >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxIconLocationBase const & param0 = *param0_smtptr;
 
   wxIconLocationBase* _newobj = new wxIconLocationBase(param0);
@@ -150,7 +150,7 @@ BasicVariable::ptr WrapClass_wxIconLocationBase::
   int _n=0;
 
   boost::shared_ptr<wxString > filename_smtptr;
-  if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
   wxString const & filename = ( filename_smtptr.get() ? (*filename_smtptr) : wxString(wxEmptyString) );
 
@@ -213,7 +213,7 @@ BasicVariable::ptr WrapClass_wxIconLocationBase::
   int _n=0;
 
   boost::shared_ptr<wxString > filename_smtptr;
-  if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & filename = *filename_smtptr;
 
   this->_objectptr->GetObj()->SetFileName(filename);
@@ -258,7 +258,7 @@ BasicVariable::ptr WrapClass_wxIconLocationBase::
   int _n=0;
 
   boost::shared_ptr<wxIconLocationBase > param0_smtptr;
-  if (!get_val_smtptr_param<wxIconLocationBase >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxIconLocationBase >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxIconLocationBase const & param0 = *param0_smtptr;
 
   wxIconLocationBase & res =   (*this->_objectptr->GetObj()) = (param0);

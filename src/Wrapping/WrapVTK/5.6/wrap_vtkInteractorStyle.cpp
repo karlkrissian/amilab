@@ -36,7 +36,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyle>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkInteractorStyle::wrap_New construct;
+  WrapClass_vtkInteractorStyle::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -188,14 +188,14 @@ void WrapClass_vtkInteractorStyle::AddMethods(WrapClass<vtkInteractorStyle>::ptr
 //  Wrapping of vtkInteractorStyle * vtkInteractorStyle::New()
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyle::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkInteractorStyle";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyle::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -208,7 +208,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
 //  Wrapping of int vtkInteractorStyle::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyle::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -216,14 +216,14 @@ void WrapClass_vtkInteractorStyle::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyle::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkInteractorStyle::IsTypeOf(type);
@@ -234,7 +234,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
 //  Wrapping of vtkInteractorStyle * vtkInteractorStyle::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkInteractorStyle::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkInteractorStyle";
@@ -242,14 +242,14 @@ void WrapClass_vtkInteractorStyle::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkInteractorStyle::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkInteractorStyle * res =   vtkInteractorStyle::SafeDownCast(o);
@@ -276,7 +276,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -323,11 +323,11 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -352,7 +352,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   boost::shared_ptr<vtkRenderWindowInteractor > interactor_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(interactor_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(interactor_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkRenderWindowInteractor* interactor = interactor_smtptr.get();
 
   this->_objectptr->GetObj()->SetInteractor(interactor);
@@ -377,7 +377,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetEnabled(param0);
   return BasicVariable::ptr();
@@ -401,7 +401,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAutoAdjustCameraClippingRange(_arg);
   return BasicVariable::ptr();
@@ -519,10 +519,10 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   int param0;
-  if (!get_val_param<int >(param0,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   int param1;
-  if (!get_val_param<int >(param1,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(param1,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->FindPokedRenderer(param0, param1);
   return BasicVariable::ptr();
@@ -584,7 +584,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetUseTimers(_arg);
   return BasicVariable::ptr();
@@ -644,7 +644,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   long _arg_long;
-  if (!get_val_param<long >(_arg_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(_arg_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int _arg = boost::numeric_cast<long unsigned int >(_arg_long);
 
   this->_objectptr->GetObj()->SetTimerDuration(_arg);
@@ -729,7 +729,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   int _arg;
-  if (!get_val_param<int >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetHandleObservers(_arg);
   return BasicVariable::ptr();
@@ -1258,7 +1258,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   int newstate;
-  if (!get_val_param<int >(newstate,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(newstate,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->StartState(newstate);
   return BasicVariable::ptr();
@@ -1588,7 +1588,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   boost::shared_ptr<vtkProp > prop_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(prop_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkProp >(prop_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkProp* prop = prop_smtptr.get();
 
   this->_objectptr->GetObj()->HighlightProp(prop);
@@ -1614,7 +1614,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   boost::shared_ptr<vtkActor2D > actor2D_smtptr;
-  if (!get_val_smtptr_param<vtkActor2D >(actor2D_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkActor2D >(actor2D_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkActor2D* actor2D = actor2D_smtptr.get();
 
   this->_objectptr->GetObj()->HighlightActor2D(actor2D);
@@ -1640,7 +1640,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   boost::shared_ptr<vtkProp3D > prop3D_smtptr;
-  if (!get_val_smtptr_param<vtkProp3D >(prop3D_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkProp3D >(prop3D_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkProp3D* prop3D = prop3D_smtptr.get();
 
   this->_objectptr->GetObj()->HighlightProp3D(prop3D);
@@ -1667,13 +1667,13 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   double _arg1;
-  if (!get_val_param<double >(_arg1,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg1,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg2;
-  if (!get_val_param<double >(_arg2,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg2,_p,_n,true,true)) ClassReturnEmptyVar;
 
   double _arg3;
-  if (!get_val_param<double >(_arg3,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<double >(_arg3,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetPickColor(_arg1, _arg2, _arg3);
   return BasicVariable::ptr();
@@ -1718,7 +1718,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* _arg = _arg_smtptr.get();
 
   this->_objectptr->GetObj()->SetPickColor(_arg);
@@ -1783,7 +1783,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   double* data = data_smtptr.get();
 
   this->_objectptr->GetObj()->GetPickColor(data);
@@ -1808,7 +1808,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   double _arg;
-  if (!get_val_param<double >(_arg,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<double >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMouseWheelMotionFactor(_arg);
   return BasicVariable::ptr();
@@ -1873,7 +1873,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   boost::shared_ptr<vtkTDxInteractorStyle > tdxStyle_smtptr;
-  if (!get_val_smtptr_param<vtkTDxInteractorStyle >(tdxStyle_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkTDxInteractorStyle >(tdxStyle_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkTDxInteractorStyle* tdxStyle = tdxStyle_smtptr.get();
 
   this->_objectptr->GetObj()->SetTDxStyle(tdxStyle);
@@ -1901,11 +1901,11 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   int _n=0;
 
   long event_long;
-  if (!get_val_param<long >(event_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(event_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
   boost::shared_ptr<void > calldata_smtptr;
-  if (!get_val_smtptr_param<void >(calldata_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<void >(calldata_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   void* calldata = calldata_smtptr.get();
 
   this->_objectptr->GetObj()->DelegateTDxEvent(event, calldata);

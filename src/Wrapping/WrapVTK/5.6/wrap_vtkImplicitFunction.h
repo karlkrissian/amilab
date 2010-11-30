@@ -26,6 +26,7 @@
 #include "wrap_vtkObject.h"
 
 
+
 AMI_DECLARE_TYPE(vtkImplicitFunction);
 
 // TODO: check for inheritence ...
@@ -83,14 +84,10 @@ class WrapClass_vtkImplicitFunction : public WrapClass<vtkImplicitFunction>
     ADD_CLASS_METHOD(FunctionGradient,"vtkImplicitFunction::FunctionGradient()  (http://docs.wxwidgets.org/stable/wx_vtkimplicitfunction.html#functiongradient)")
     ADD_CLASS_METHOD(FunctionGradient_2,"double * vtkImplicitFunction::FunctionGradient(double const * x)  (http://docs.wxwidgets.org/stable/wx_vtkimplicitfunction.html#functiongradient)")
     ADD_CLASS_METHOD(FunctionGradient_3,"double * vtkImplicitFunction::FunctionGradient(double x, double y, double z)  (http://docs.wxwidgets.org/stable/wx_vtkimplicitfunction.html#functiongradient)")
-/* The following types are missing: vtkAbstractTransform
     ADD_CLASS_METHOD(SetTransform_1,"void vtkImplicitFunction::SetTransform(vtkAbstractTransform * param0)  (http://docs.wxwidgets.org/stable/wx_vtkimplicitfunction.html#settransform)")
-*/
     ADD_CLASS_METHOD(SetTransform,"vtkImplicitFunction::SetTransform()  (http://docs.wxwidgets.org/stable/wx_vtkimplicitfunction.html#settransform)")
     ADD_CLASS_METHOD(SetTransform_2,"void vtkImplicitFunction::SetTransform(double * elements)  (http://docs.wxwidgets.org/stable/wx_vtkimplicitfunction.html#settransform)")
-/* The following types are missing: vtkAbstractTransform
     ADD_CLASS_METHOD(GetTransform,"vtkAbstractTransform * vtkImplicitFunction::GetTransform()  (http://docs.wxwidgets.org/stable/wx_vtkimplicitfunction.html#gettransform)")
-*/
     ADD_CLASS_METHOD(EvaluateFunction,"double vtkImplicitFunction::EvaluateFunction(double x, double y, double z)  (http://docs.wxwidgets.org/stable/wx_vtkimplicitfunction.html#evaluatefunction)")
 
 

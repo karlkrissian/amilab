@@ -33,7 +33,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkCollection>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkCollection::wrap_New construct;
+  WrapClass_vtkCollection::wrap_static_New construct;
   return construct.CallMember(p);
 
 }
@@ -123,7 +123,7 @@ void WrapClass_vtkCollection::AddMethods(WrapClass<vtkCollection>::ptr this_ptr 
 //  Wrapping of int vtkCollection::IsTypeOf(char const * type)
 //---------------------------------------------------
 void WrapClass_vtkCollection::
-    wrap_IsTypeOf::SetParametersComments()
+    wrap_static_IsTypeOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'type'")
   return_comments="returning a variable of type int";
@@ -131,14 +131,14 @@ void WrapClass_vtkCollection::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkCollection::
-    wrap_IsTypeOf::CallMember( ParamList* _p)
+    wrap_static_IsTypeOf::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   vtkCollection::IsTypeOf(type);
@@ -149,7 +149,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
 //  Wrapping of vtkCollection * vtkCollection::SafeDownCast(vtkObjectBase * o)
 //---------------------------------------------------
 void WrapClass_vtkCollection::
-    wrap_SafeDownCast::SetParametersComments()
+    wrap_static_SafeDownCast::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkObjectBase, "parameter named 'o'")
   return_comments="returning a variable of type vtkCollection";
@@ -157,14 +157,14 @@ void WrapClass_vtkCollection::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkCollection::
-    wrap_SafeDownCast::CallMember( ParamList* _p)
+    wrap_static_SafeDownCast::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   vtkCollection * res =   vtkCollection::SafeDownCast(o);
@@ -176,14 +176,14 @@ BasicVariable::ptr WrapClass_vtkCollection::
 //  Wrapping of vtkCollection * vtkCollection::New()
 //---------------------------------------------------
 void WrapClass_vtkCollection::
-    wrap_New::SetParametersComments()
+    wrap_static_New::SetParametersComments()
 {
   return_comments="returning a variable of type vtkCollection";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_vtkCollection::
-    wrap_New::CallMember( ParamList* _p)
+    wrap_static_New::CallMember( ParamList* _p)
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
@@ -211,7 +211,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   boost::shared_ptr<std::string > type_string;
-  if (!get_val_smtptr_param<std::string >(type_string,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<std::string >(type_string,_p,_n,true,false,false)) ClassHelpAndReturn;
   char const * type = type_string->c_str();
 
   int res =   this->_objectptr->GetObj()->IsA(type);
@@ -258,11 +258,11 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   boost::shared_ptr<basic_ostream<char,std::char_traits<char> > > os_smtptr;
-  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<basic_ostream<char,std::char_traits<char> > >(os_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   ostream & os = *os_smtptr;
 
   vtkIndent indent;
-  if (!get_val_param<vtkIndent >(indent,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<vtkIndent >(indent,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->PrintSelf(os, indent);
   return BasicVariable::ptr();
@@ -287,7 +287,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   boost::shared_ptr<vtkObject > param0_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObject >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObject* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->AddItem(param0);
@@ -313,10 +313,10 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<vtkObject > param1_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(param1_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObject >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObject* param1 = param1_smtptr.get();
 
   this->_objectptr->GetObj()->InsertItem(i, param1);
@@ -342,10 +342,10 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<vtkObject > param1_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(param1_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObject >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObject* param1 = param1_smtptr.get();
 
   this->_objectptr->GetObj()->ReplaceItem(i, param1);
@@ -370,7 +370,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(i,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->RemoveItem(i);
   return BasicVariable::ptr();
@@ -415,7 +415,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   boost::shared_ptr<vtkObject > param0_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(param0_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<vtkObject >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkObject* param0 = param0_smtptr.get();
 
   this->_objectptr->GetObj()->RemoveItem(param0);
@@ -459,7 +459,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   boost::shared_ptr<vtkObject > a_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(a_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObject >(a_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObject* a = a_smtptr.get();
 
   int res =   this->_objectptr->GetObj()->IsItemPresent(a);
@@ -540,7 +540,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   boost::shared_ptr<void > cookie_smtptr;
-  if (!get_val_smtptr_param<void >(cookie_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<void >(cookie_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   vtkCollectionSimpleIterator & cookie = *cookie_smtptr;
 
   this->_objectptr->GetObj()->InitTraversal(cookie);
@@ -587,7 +587,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   int i;
-  if (!get_val_param<int >(i,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkObject * res =   this->_objectptr->GetObj()->GetItemAsObject(i);
   BasicVariable::ptr res_var = WrapClass_vtkObject::CreateVar(res);
@@ -632,8 +632,8 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   boost::shared_ptr<void > cookie_smtptr;
-  if (!get_val_smtptr_param<void >(cookie_smtptr,_p,_n)) ClassReturnEmptyVar;
-  void * & cookie = *cookie_smtptr;
+  if (!get_val_smtptr_param<void >(cookie_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  void * & cookie = cookie_smtptr.get();
 
   vtkObject * res =   this->_objectptr->GetObj()->GetNextItemAsObject(cookie);
   BasicVariable::ptr res_var = WrapClass_vtkObject::CreateVar(res);
@@ -680,7 +680,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   this->_objectptr->GetObj()->Register(o);
@@ -705,7 +705,7 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int _n=0;
 
   boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   vtkObjectBase* o = o_smtptr.get();
 
   this->_objectptr->GetObj()->UnRegister(o);

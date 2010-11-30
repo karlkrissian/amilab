@@ -142,9 +142,7 @@ class WrapClass_vtkCamera : public WrapClass<vtkCamera>
     ADD_CLASS_METHOD(GetWindowCenter_2,"void vtkCamera::GetWindowCenter(double & _arg1, double & _arg2)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getwindowcenter)")
     ADD_CLASS_METHOD(GetWindowCenter_3,"void vtkCamera::GetWindowCenter(double * _arg)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getwindowcenter)")
     ADD_CLASS_METHOD(SetObliqueAngles,"void vtkCamera::SetObliqueAngles(double alpha, double beta)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#setobliqueangles)")
-/* The following types are missing: vtkTransform
     ADD_CLASS_METHOD(ApplyTransform,"void vtkCamera::ApplyTransform(vtkTransform * t)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#applytransform)")
-*/
     ADD_CLASS_METHOD(GetViewPlaneNormal_1,"double * vtkCamera::GetViewPlaneNormal()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getviewplanenormal)")
     ADD_CLASS_METHOD(GetViewPlaneNormal,"vtkCamera::GetViewPlaneNormal()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getviewplanenormal)")
     ADD_CLASS_METHOD(GetViewPlaneNormal_2,"void vtkCamera::GetViewPlaneNormal(double & _arg1, double & _arg2, double & _arg3)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getviewplanenormal)")
@@ -163,9 +161,7 @@ class WrapClass_vtkCamera : public WrapClass<vtkCamera>
 /* The following types are missing: vtkMatrix4x4
     ADD_CLASS_METHOD(GetViewTransformMatrix,"vtkMatrix4x4 * vtkCamera::GetViewTransformMatrix()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getviewtransformmatrix)")
 */
-/* The following types are missing: vtkTransform
     ADD_CLASS_METHOD(GetViewTransformObject,"vtkTransform * vtkCamera::GetViewTransformObject()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getviewtransformobject)")
-*/
 /* The following types are missing: vtkMatrix4x4
     ADD_CLASS_METHOD(GetPerspectiveTransformMatrix,"vtkMatrix4x4 * vtkCamera::GetPerspectiveTransformMatrix(double aspect, double nearz, double farz)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getperspectivetransformmatrix)")
 */
