@@ -21,6 +21,7 @@
 #include "wrap_wxEventTableEntryBase.h"
 #include "wrap_wxEvtHandler.h"
 #include "wrap_wxEvent.h"
+#include "wrap_wxObjectEventFunction.h"
 #include "wrap_wxObject.h"
 #include "wrap_wxList.h"
 #include "wrap_wxClientData.h"
@@ -92,26 +93,14 @@ void WrapClass_wxEvtHandler::AddMethods(WrapClass<wxEvtHandler>::ptr this_ptr )
       AddVar_AddPendingEvent( this_ptr);
       AddVar_ProcessPendingEvents( this_ptr);
       AddVar_ProcessThreadEvent( this_ptr);
-/* The following types are missing: _13542
       AddVar_Connect_1( this_ptr);
-*/
       AddVar_Connect( this_ptr);
-/* The following types are missing: _13542
       AddVar_Connect_2( this_ptr);
-*/
-/* The following types are missing: _13542
       AddVar_Connect_3( this_ptr);
-*/
-/* The following types are missing: _13542
       AddVar_Disconnect_1( this_ptr);
-*/
       AddVar_Disconnect( this_ptr);
-/* The following types are missing: _13542
       AddVar_Disconnect_2( this_ptr);
-*/
-/* The following types are missing: _13542
       AddVar_Disconnect_3( this_ptr);
-*/
       AddVar_GetDynamicEventTable( this_ptr);
       AddVar_SetClientObject( this_ptr);
       AddVar_GetClientObject( this_ptr);
@@ -422,7 +411,6 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: _13542
 
 //---------------------------------------------------
 //  Wrapping of void wxEvtHandler::Connect(int winid, int lastId, int eventType, wxObjectEventFunction func, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)
@@ -433,7 +421,7 @@ void WrapClass_wxEvtHandler::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'lastId'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'eventType'")
-  ADDPARAMCOMMENT_TYPE( _13542, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'func'")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'userData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'eventSink' (def:0u)")
 }
@@ -455,8 +443,8 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int eventType;
   if (!get_val_param<int >(eventType,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  _13542 func;
-  if (!get_val_param<_13542 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxObjectEventFunction func;
+  if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > userData_smtptr;
   if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -469,7 +457,6 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   this->_objectptr->GetObj()->Connect(winid, lastId, eventType, func, userData, eventSink);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxEvtHandler::Connect(...)
@@ -483,9 +470,17 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
     wrap_Connect::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxEvtHandler::wrap_Connect_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxEvtHandler::wrap_Connect_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxEvtHandler::wrap_Connect_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: _13542
 
 //---------------------------------------------------
 //  Wrapping of void wxEvtHandler::Connect(int winid, int eventType, wxObjectEventFunction func, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)
@@ -495,7 +490,7 @@ void WrapClass_wxEvtHandler::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'eventType'")
-  ADDPARAMCOMMENT_TYPE( _13542, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'func'")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'userData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'eventSink' (def:0u)")
 }
@@ -514,8 +509,8 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int eventType;
   if (!get_val_param<int >(eventType,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  _13542 func;
-  if (!get_val_param<_13542 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxObjectEventFunction func;
+  if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > userData_smtptr;
   if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -528,8 +523,6 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   this->_objectptr->GetObj()->Connect(winid, eventType, func, userData, eventSink);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: _13542
 
 //---------------------------------------------------
 //  Wrapping of void wxEvtHandler::Connect(int eventType, wxObjectEventFunction func, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)
@@ -538,7 +531,7 @@ void WrapClass_wxEvtHandler::
     wrap_Connect_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'eventType'")
-  ADDPARAMCOMMENT_TYPE( _13542, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'func'")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'userData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'eventSink' (def:0u)")
 }
@@ -554,8 +547,8 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int eventType;
   if (!get_val_param<int >(eventType,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  _13542 func;
-  if (!get_val_param<_13542 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxObjectEventFunction func;
+  if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > userData_smtptr;
   if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -568,8 +561,6 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   this->_objectptr->GetObj()->Connect(eventType, func, userData, eventSink);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: _13542
 
 //---------------------------------------------------
 //  Wrapping of bool wxEvtHandler::Disconnect(int winid, int lastId, wxEventType eventType, wxObjectEventFunction func = 0l, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)
@@ -580,7 +571,7 @@ void WrapClass_wxEvtHandler::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'lastId'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'eventType'")
-  ADDPARAMCOMMENT_TYPE( _13542, "parameter named 'func' (def:0l)")
+  ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'func' (def:0l)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'userData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'eventSink' (def:0u)")
   return_comments="returning a variable of type int";
@@ -603,8 +594,8 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int eventType;
   if (!get_val_param<int >(eventType,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  _13542 func = 0l;
-  if (!get_val_param<_13542 >(func,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxObjectEventFunction func = 0l;
+  if (!get_val_param<wxObjectEventFunction >(func,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > userData_smtptr;
   if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -618,7 +609,6 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxEvtHandler::Disconnect(...)
@@ -632,9 +622,17 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
     wrap_Disconnect::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxEvtHandler::wrap_Disconnect_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxEvtHandler::wrap_Disconnect_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxEvtHandler::wrap_Disconnect_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: _13542
 
 //---------------------------------------------------
 //  Wrapping of bool wxEvtHandler::Disconnect(int winid = wxID_ANY, wxEventType eventType = wxEVT_NULL, wxObjectEventFunction func = 0l, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)
@@ -644,7 +642,7 @@ void WrapClass_wxEvtHandler::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid' (def:wxID_ANY)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'eventType' (def:wxEVT_NULL)")
-  ADDPARAMCOMMENT_TYPE( _13542, "parameter named 'func' (def:0l)")
+  ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'func' (def:0l)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'userData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'eventSink' (def:0u)")
   return_comments="returning a variable of type int";
@@ -664,8 +662,8 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int eventType = wxEVT_NULL;
   if (!get_val_param<int >(eventType,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  _13542 func = 0l;
-  if (!get_val_param<_13542 >(func,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxObjectEventFunction func = 0l;
+  if (!get_val_param<wxObjectEventFunction >(func,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > userData_smtptr;
   if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -679,8 +677,6 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: _13542
 
 //---------------------------------------------------
 //  Wrapping of bool wxEvtHandler::Disconnect(wxEventType eventType, wxObjectEventFunction func, wxObject * userData = 0u, wxEvtHandler * eventSink = 0u)
@@ -689,7 +685,7 @@ void WrapClass_wxEvtHandler::
     wrap_Disconnect_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'eventType'")
-  ADDPARAMCOMMENT_TYPE( _13542, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'func'")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'userData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'eventSink' (def:0u)")
   return_comments="returning a variable of type int";
@@ -706,8 +702,8 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int eventType;
   if (!get_val_param<int >(eventType,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  _13542 func;
-  if (!get_val_param<_13542 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxObjectEventFunction func;
+  if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > userData_smtptr;
   if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -721,7 +717,6 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   int res_int = ((res==true)?1:0);
   return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxList * wxEvtHandler::GetDynamicEventTable()

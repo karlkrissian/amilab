@@ -49,6 +49,7 @@
 #include "wrap_wxPanel.h"
 #include "wrap_wxStaticBox.h"
 #include "wrap_wxStaticBoxSizer.h"
+#include "wrap_wxAmiEventHandler.h"
 
 #include "wrap_wxRect.h"
 #include "wrap_wxPoint.h"
@@ -163,6 +164,8 @@ void AddWrapWxWidgets()
   ADDWXCLASS( wxPanel )
   ADDWXCLASS( wxStaticBox )
   ADDWXCLASS( wxStaticBoxSizer )
+
+  ADDWXCLASS( wxAmiEventHandler )
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
