@@ -121,6 +121,43 @@ void WrapClass_vtkUnicodeString::AddMethods(WrapClass<vtkUnicodeString>::ptr thi
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkUnicodeString::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkUnicodeString");
+    WrapClass_vtkUnicodeString::AddVar_vtkUnicodeString_1(amiobject->GetContext());
+  WrapClass_vtkUnicodeString::AddVar_vtkUnicodeString(amiobject->GetContext());
+  WrapClass_vtkUnicodeString::AddVar_vtkUnicodeString_2(amiobject->GetContext());
+  WrapClass_vtkUnicodeString::AddVar_vtkUnicodeString_3(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkUnicodeString::AddVar_vtkUnicodeString_4(amiobject->GetContext());
+  */
+
+
+  // Static methods 
+  WrapClass_vtkUnicodeString::AddVar_is_utf8_1(amiobject->GetContext());
+  WrapClass_vtkUnicodeString::AddVar_is_utf8(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkUnicodeString::AddVar_is_utf8_2(amiobject->GetContext());
+  */
+  WrapClass_vtkUnicodeString::AddVar_from_utf8_1(amiobject->GetContext());
+  WrapClass_vtkUnicodeString::AddVar_from_utf8(amiobject->GetContext());
+  WrapClass_vtkUnicodeString::AddVar_from_utf8_2(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkUnicodeString::AddVar_from_utf8_3(amiobject->GetContext());
+  */
+  WrapClass_vtkUnicodeString::AddVar_from_utf16(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

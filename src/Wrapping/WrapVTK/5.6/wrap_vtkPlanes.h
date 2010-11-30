@@ -104,6 +104,11 @@ class WrapClass_vtkPlanes : public WrapClass<vtkPlanes>
 
 
     void AddMethods(WrapClass<vtkPlanes>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

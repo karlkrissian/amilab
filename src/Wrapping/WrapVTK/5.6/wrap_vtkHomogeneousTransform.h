@@ -91,6 +91,11 @@ class WrapClass_vtkHomogeneousTransform : public WrapClass<vtkHomogeneousTransfo
 
 
     void AddMethods(WrapClass<vtkHomogeneousTransform>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

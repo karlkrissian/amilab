@@ -96,6 +96,26 @@ void WrapClass_vtkVolumeCollection::AddMethods(WrapClass<vtkVolumeCollection>::p
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkVolumeCollection::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkVolumeCollection");
+  
+  // Static methods 
+  WrapClass_vtkVolumeCollection::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkVolumeCollection::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkVolumeCollection::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

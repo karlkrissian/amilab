@@ -105,6 +105,26 @@ void WrapClass_vtkUnsignedCharArray::AddMethods(WrapClass<vtkUnsignedCharArray>:
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkUnsignedCharArray::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkUnsignedCharArray");
+  
+  // Static methods 
+  WrapClass_vtkUnsignedCharArray::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkUnsignedCharArray::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkUnsignedCharArray::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

@@ -102,6 +102,11 @@ class WrapClass_vtkScalarsToColors : public WrapClass<vtkScalarsToColors>
 
 
     void AddMethods(WrapClass<vtkScalarsToColors>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

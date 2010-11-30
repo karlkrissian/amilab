@@ -88,6 +88,26 @@ void WrapClass_vtkInteractorStyleTrackball::AddMethods(WrapClass<vtkInteractorSt
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkInteractorStyleTrackball::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkInteractorStyleTrackball");
+  
+  // Static methods 
+  WrapClass_vtkInteractorStyleTrackball::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkInteractorStyleTrackball::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkInteractorStyleTrackball::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

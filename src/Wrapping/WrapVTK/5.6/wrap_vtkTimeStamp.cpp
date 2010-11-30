@@ -82,6 +82,28 @@ void WrapClass_vtkTimeStamp::AddMethods(WrapClass<vtkTimeStamp>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkTimeStamp::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkTimeStamp");
+    WrapClass_vtkTimeStamp::AddVar_vtkTimeStamp_1(amiobject->GetContext());
+  WrapClass_vtkTimeStamp::AddVar_vtkTimeStamp(amiobject->GetContext());
+  WrapClass_vtkTimeStamp::AddVar_vtkTimeStamp_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_vtkTimeStamp::AddVar_New(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

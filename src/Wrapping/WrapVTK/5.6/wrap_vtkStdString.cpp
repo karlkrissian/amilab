@@ -81,6 +81,32 @@ void WrapClass_vtkStdString::AddMethods(WrapClass<vtkStdString>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkStdString::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkStdString");
+    WrapClass_vtkStdString::AddVar_vtkStdString_1(amiobject->GetContext());
+  WrapClass_vtkStdString::AddVar_vtkStdString(amiobject->GetContext());
+  WrapClass_vtkStdString::AddVar_vtkStdString_2(amiobject->GetContext());
+  WrapClass_vtkStdString::AddVar_vtkStdString_3(amiobject->GetContext());
+  WrapClass_vtkStdString::AddVar_vtkStdString_4(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkStdString::AddVar_vtkStdString_5(amiobject->GetContext());
+  */
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

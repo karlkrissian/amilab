@@ -220,6 +220,11 @@ class WrapClass_vtkImageData : public WrapClass<vtkImageData>
 
 
     void AddMethods(WrapClass<vtkImageData>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

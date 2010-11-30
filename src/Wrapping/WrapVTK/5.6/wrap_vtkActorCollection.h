@@ -94,6 +94,11 @@ class WrapClass_vtkActorCollection : public WrapClass<vtkActorCollection>
 
 
     void AddMethods(WrapClass<vtkActorCollection>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

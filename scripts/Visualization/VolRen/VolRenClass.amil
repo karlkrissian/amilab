@@ -115,7 +115,7 @@ if (!exists(VolRenClass)) {
         #::blend_type, ::opacitywindow, ::opacitylevel, ::clip)
       #::renwin   = ::renwin_interact.GetRenderWindow()
       #::renderer = ::renwin.GetRenderers().GetFirstRenderer()
-      #interact = global::vtkInteractorStyleTrackballCamera_New()
+      #interact = global::vtkInteractorStyleTrackballCamera.New()
       #::renwin_interact.SetInteractorStyle(&interact)
       ##::renderer.Render()
       #vols = ::renderer.GetVolumes()
@@ -142,14 +142,17 @@ if (!exists(VolRenClass)) {
           ::renwin_interact = global::wxVTKFrame()
         }
         ::renwin   = ::renwin_interact.GetRenderWindow()
-        ::renderer = global::vtkRenderer_New()
+        ::renderer = global::vtkRenderer.New()
         ::renwin.AddRenderer(&::renderer)
-        interact = global::vtkInteractorStyleTrackballCamera_New()
+        interact = global::vtkInteractorStyleTrackballCamera.New()
         ::renwin_interact.SetInteractorStyle(&interact)
 
         if (::vtkvol1.initialized>0.5) {
           ::vtkvol1.ResetVTK()
         }
+        ::vtkvol1.SetInteractor(&::renwin_interact)
+        ::vtkvol1.SetRenderer(&::renderer)
+        ::vtkvol1.SetRenderWindow(&::renwin)
         volok = ::vtkvol1.CreateVTK( &::input)
 
         if (volok>0.5) {
@@ -157,8 +160,6 @@ if (!exists(VolRenClass)) {
           #  renWin->Render()
           #  m_pVTKWindow->Start()
           ::renderer->ResetCameraClippingRange()
-          ::vtkvol1.SetInteractor(&::renwin_interact)
-          ::vtkvol1.SetRenderer(&::renderer)
           ::vtkvol1.ReCompute()
 
           # Add the volume to the scene
@@ -202,10 +203,12 @@ if (!exists(VolRenClass)) {
         if (::vtkvol2.initialized>0.5) {
           ::vtkvol2.ResetVTK()
         }
+        ::vtkvol2.SetInteractor(&::renwin_interact)
+        ::vtkvol2.SetRenderer(&::renderer)
+        ::vtkvol2.SetRenderWindow(&::renwin)
         volok = ::vtkvol2.CreateVTK( &::input2)
 
         if (volok>0.5) {
-          ::vtkvol2.SetInteractor(&::renwin_interact)
           ::vtkvol2.ReCompute()
 
           # Add the volume to the scene

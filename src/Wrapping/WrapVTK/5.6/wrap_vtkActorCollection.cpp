@@ -100,6 +100,26 @@ void WrapClass_vtkActorCollection::AddMethods(WrapClass<vtkActorCollection>::ptr
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkActorCollection::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkActorCollection");
+  
+  // Static methods 
+  WrapClass_vtkActorCollection::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkActorCollection::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkActorCollection::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

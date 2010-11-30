@@ -132,6 +132,32 @@ void WrapClass_vtkDataSet::AddMethods(WrapClass<vtkDataSet>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkDataSet::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkDataSet");
+  
+  // Static methods 
+  WrapClass_vtkDataSet::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkDataSet::AddVar_SafeDownCast(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkDataSet::AddVar_GetData_1(amiobject->GetContext());
+  */
+  WrapClass_vtkDataSet::AddVar_GetData(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkDataSet::AddVar_GetData_2(amiobject->GetContext());
+  */
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

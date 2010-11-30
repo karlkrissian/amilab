@@ -113,6 +113,11 @@ class WrapClass_vtkPointSet : public WrapClass<vtkPointSet>
 
 
     void AddMethods(WrapClass<vtkPointSet>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

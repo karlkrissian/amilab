@@ -135,6 +135,25 @@ void WrapClass_vtkWindow::AddMethods(WrapClass<vtkWindow>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkWindow::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkWindow");
+  
+  // Static methods 
+  WrapClass_vtkWindow::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkWindow::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

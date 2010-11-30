@@ -94,6 +94,11 @@ class WrapClass_vtkStdString : public WrapClass<vtkStdString>
 
 
     void AddMethods(WrapClass<vtkStdString>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

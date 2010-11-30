@@ -103,6 +103,26 @@ void WrapClass_vtkInteractorStyleTrackballCamera::AddMethods(WrapClass<vtkIntera
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkInteractorStyleTrackballCamera::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkInteractorStyleTrackballCamera");
+  
+  // Static methods 
+  WrapClass_vtkInteractorStyleTrackballCamera::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkInteractorStyleTrackballCamera::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkInteractorStyleTrackballCamera::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

@@ -12,7 +12,9 @@
 #include "vtkRenderWindowInteractor.h"
 #include "vtkVolume.h"
 #include "vtkVolumeProperty.h"
-#include "vtkGPUVolumeRayCastMapper.h"
+#include <vtkGPUVolumeRayCastMapper.h>
+#include <vtkVolumeRayCastMapper.h>
+#include <vtkVolumeRayCastCompositeFunction.h> 
 #include <vtkInteractorStyleImage.h>
 #include <vtkInteractorStyleTrackball.h>
 #include <vtkRendererCollection.h>

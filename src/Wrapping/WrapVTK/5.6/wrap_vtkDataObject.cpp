@@ -208,6 +208,138 @@ void WrapClass_vtkDataObject::AddMethods(WrapClass<vtkDataObject>::ptr this_ptr 
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkDataObject::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkDataObject");
+  
+  // Static methods 
+  WrapClass_vtkDataObject::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkDataObject::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkDataObject::AddVar_SafeDownCast(amiobject->GetContext());
+  WrapClass_vtkDataObject::AddVar_SetGlobalReleaseDataFlag(amiobject->GetContext());
+  WrapClass_vtkDataObject::AddVar_GetGlobalReleaseDataFlag(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_GetActiveFieldInformation(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_GetNamedFieldInformation(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_RemoveNamedFieldInformation(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_SetActiveAttribute(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_SetActiveAttributeInfo(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_SetPointDataActiveScalarInfo(amiobject->GetContext());
+  */
+  WrapClass_vtkDataObject::AddVar_GetAssociationTypeAsString(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_TYPE_NAME(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_OBJECT(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_EXTENT_TYPE(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_EXTENT(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_PIECE_NUMBER(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_NUMBER_OF_PIECES(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_NUMBER_OF_GHOST_LEVELS(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_RESOLUTION(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_TIME_STEPS(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_POINT_DATA_VECTOR(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_CELL_DATA_VECTOR(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_VERTEX_DATA_VECTOR(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_EDGE_DATA_VECTOR(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_FIELD_ARRAY_TYPE(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_FIELD_ASSOCIATION(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_FIELD_ATTRIBUTE_TYPE(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_FIELD_ACTIVE_ATTRIBUTE(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_FIELD_NUMBER_OF_COMPONENTS(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_FIELD_NUMBER_OF_TUPLES(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_FIELD_OPERATION(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_FIELD_RANGE(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_PIECE_FIELD_RANGE(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_PIECE_EXTENT(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_FIELD_NAME(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_ORIGIN(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_SPACING(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_DATA_GEOMETRY_UNMODIFIED(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_SIL(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_GetData_1(amiobject->GetContext());
+  */
+  WrapClass_vtkDataObject::AddVar_GetData(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkDataObject::AddVar_GetData_2(amiobject->GetContext());
+  */
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

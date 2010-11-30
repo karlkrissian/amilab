@@ -31,8 +31,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkObjectBase>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkObjectBase::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -101,6 +101,25 @@ void WrapClass_vtkObjectBase::AddMethods(WrapClass<vtkObjectBase>::ptr this_ptr 
 
   
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkObjectBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkObjectBase");
+  
+  // Static methods 
+  WrapClass_vtkObjectBase::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkObjectBase::AddVar_New(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

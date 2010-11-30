@@ -138,6 +138,51 @@ void WrapClass_vtkVariant::AddMethods(WrapClass<vtkVariant>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkVariant::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkVariant");
+    WrapClass_vtkVariant::AddVar_vtkVariant_1(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_2(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_3(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_4(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_5(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkVariant::AddVar_vtkVariant_6(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkVariant::AddVar_vtkVariant_7(amiobject->GetContext());
+  */
+  WrapClass_vtkVariant::AddVar_vtkVariant_8(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_9(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_10(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_11(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_12(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_13(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkVariant::AddVar_vtkVariant_14(amiobject->GetContext());
+  */
+  WrapClass_vtkVariant::AddVar_vtkVariant_15(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_16(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_17(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_18(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_19(amiobject->GetContext());
+  WrapClass_vtkVariant::AddVar_vtkVariant_20(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

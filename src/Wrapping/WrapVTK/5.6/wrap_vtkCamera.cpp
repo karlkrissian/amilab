@@ -22,6 +22,8 @@
 #include "wrap_vtkObjectBase.h"
 #include "wrap_vtkIndent.h"
 #include "wrap_vtkTransform.h"
+#include "wrap_vtkMatrix4x4.h"
+#include "wrap_vtkHomogeneousTransform.h"
 #include "wrap_vtkRenderer.h"
 #include "boost/numeric/conversion/cast.hpp"
 
@@ -35,8 +37,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkCamera>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkCamera::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -165,37 +167,19 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
       AddVar_GetEyeAngle( this_ptr);
       AddVar_SetFocalDisk( this_ptr);
       AddVar_GetFocalDisk( this_ptr);
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetViewTransformMatrix( this_ptr);
-*/
       AddVar_GetViewTransformObject( this_ptr);
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetPerspectiveTransformMatrix( this_ptr);
-*/
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetProjectionTransformMatrix( this_ptr);
-*/
 /* The following types are missing: vtkPerspectiveTransform
       AddVar_GetProjectionTransformObject( this_ptr);
 */
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetCompositePerspectiveTransformMatrix( this_ptr);
-*/
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetCompositeProjectionTransformMatrix( this_ptr);
-*/
-/* The following types are missing: vtkHomogeneousTransform
       AddVar_SetUserViewTransform( this_ptr);
-*/
-/* The following types are missing: vtkHomogeneousTransform
       AddVar_GetUserViewTransform( this_ptr);
-*/
-/* The following types are missing: vtkHomogeneousTransform
       AddVar_SetUserTransform( this_ptr);
-*/
-/* The following types are missing: vtkHomogeneousTransform
       AddVar_GetUserTransform( this_ptr);
-*/
       AddVar_Render( this_ptr);
       AddVar_GetViewingRaysMTime( this_ptr);
       AddVar_ViewingRaysModified( this_ptr);
@@ -206,9 +190,7 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
       AddVar_SetViewPlaneNormal( this_ptr);
       AddVar_SetViewPlaneNormal_2( this_ptr);
       AddVar_ComputeViewPlaneNormal( this_ptr);
-/* The following types are missing: vtkMatrix4x4
       AddVar_GetCameraLightTransformMatrix( this_ptr);
-*/
       AddVar_UpdateViewport( this_ptr);
       AddVar_SetLeftEye( this_ptr);
       AddVar_GetLeftEye( this_ptr);
@@ -219,6 +201,26 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
 
   
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkCamera::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkCamera");
+  
+  // Static methods 
+  WrapClass_vtkCamera::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkCamera::AddVar_SafeDownCast(amiobject->GetContext());
+  WrapClass_vtkCamera::AddVar_New(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -2300,7 +2302,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   double res =   this->_objectptr->GetObj()->GetFocalDisk();
   return AMILabType<double >::CreateVar(res);
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkCamera::GetViewTransformMatrix()
@@ -2318,9 +2319,9 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetViewTransformMatrix();
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of vtkTransform * vtkCamera::GetViewTransformObject()
@@ -2341,7 +2342,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   BasicVariable::ptr res_var = WrapClass_vtkTransform::CreateVar(res);
   return res_var;
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkCamera::GetPerspectiveTransformMatrix(double aspect, double nearz, double farz)
@@ -2373,10 +2373,9 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetPerspectiveTransformMatrix(aspect, nearz, farz);
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkCamera::GetProjectionTransformMatrix(double aspect, double nearz, double farz)
@@ -2408,9 +2407,9 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetProjectionTransformMatrix(aspect, nearz, farz);
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  return res_var;
 }
-*/
 /* The following types are missing: vtkPerspectiveTransform
 
 //---------------------------------------------------
@@ -2446,7 +2445,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   return AMILabType<vtkPerspectiveTransform >::CreateVar(res,true);
 }
 */
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkCamera::GetCompositePerspectiveTransformMatrix(double aspect, double nearz, double farz)
@@ -2478,10 +2476,9 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetCompositePerspectiveTransformMatrix(aspect, nearz, farz);
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkCamera::GetCompositeProjectionTransformMatrix(double aspect, double nearz, double farz)
@@ -2513,10 +2510,9 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetCompositeProjectionTransformMatrix(aspect, nearz, farz);
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkHomogeneousTransform
 
 //---------------------------------------------------
 //  Wrapping of void vtkCamera::SetUserViewTransform(vtkHomogeneousTransform * transform)
@@ -2542,8 +2538,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   this->_objectptr->GetObj()->SetUserViewTransform(transform);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkHomogeneousTransform
 
 //---------------------------------------------------
 //  Wrapping of vtkHomogeneousTransform * vtkCamera::GetUserViewTransform()
@@ -2561,10 +2555,9 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkHomogeneousTransform * res =   this->_objectptr->GetObj()->GetUserViewTransform();
-  return AMILabType<vtkHomogeneousTransform >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkHomogeneousTransform::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkHomogeneousTransform
 
 //---------------------------------------------------
 //  Wrapping of void vtkCamera::SetUserTransform(vtkHomogeneousTransform * transform)
@@ -2590,8 +2583,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   this->_objectptr->GetObj()->SetUserTransform(transform);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkHomogeneousTransform
 
 //---------------------------------------------------
 //  Wrapping of vtkHomogeneousTransform * vtkCamera::GetUserTransform()
@@ -2609,9 +2600,9 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkHomogeneousTransform * res =   this->_objectptr->GetObj()->GetUserTransform();
-  return AMILabType<vtkHomogeneousTransform >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkHomogeneousTransform::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkCamera::Render(vtkRenderer * param0)
@@ -2838,7 +2829,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   this->_objectptr->GetObj()->ComputeViewPlaneNormal();
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkMatrix4x4
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkCamera::GetCameraLightTransformMatrix()
@@ -2856,9 +2846,9 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetCameraLightTransformMatrix();
-  return AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkCamera::UpdateViewport(vtkRenderer * param0)

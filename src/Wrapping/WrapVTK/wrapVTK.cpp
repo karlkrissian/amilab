@@ -58,21 +58,24 @@ extern VarContexts  Vars;
 
 #include "wrap_wxVTKRenderWindowInteractor.h"
 
-#include "wrap_vtkImageData.h"
-#include "wrap_vtkRenderWindowInteractor.h"
-#include "wrap_vtkRenderer.h"
-#include "wrap_vtkVolume.h"
-#include "wrap_vtkGPUVolumeRayCastMapper.h"
-#include "wrap_vtkBoxWidget.h"
-#include "wrap_vtkPlanes.h"
-#include "wrap_vtkVolumeProperty.h"
-
-#include "wrap_vtkVolumeMapper.h"
-#include "wrap_vtkInteractorStyleTrackballCamera.h"
-#include "wrap_vtkInteractorStyleTrackball.h"
-#include "wrap_vtkInteractorStyleImage.h"
-#include "wrap_vtkPiecewiseFunction.h"
-#include "wrap_vtkColorTransferFunction.h"
+// #include "wrap_vtkImageData.h"
+// #include "wrap_vtkRenderWindowInteractor.h"
+// #include "wrap_vtkRenderer.h"
+// #include "wrap_vtkVolume.h"
+// #include "wrap_vtkGPUVolumeRayCastMapper.h"
+// #include "wrap_vtkVolumeRayCastMapper.h"
+// #include "wrap_vtkVolumeRayCastCompositeFunction.h"
+// #include "wrap_vtkBoxWidget.h"
+// #include "wrap_vtkPlanes.h"
+// #include "wrap_vtkVolumeProperty.h"
+// 
+// #include "wrap_vtkVolumeMapper.h"
+// #include "wrap_vtkInteractorStyleTrackballCamera.h"
+// #include "wrap_vtkInteractorStyleTrackball.h"
+// #include "wrap_vtkInteractorStyleImage.h"
+// #include "wrap_vtkPiecewiseFunction.h"
+// #include "wrap_vtkColorTransferFunction.h"
+#include "addwrap_vtk.h"
 
 // #include "vtkImageData.h"
 
@@ -83,46 +86,25 @@ extern VarContexts  Vars;
 //---------------------------------------------------------
 void AddWrapVTK() {
 
-    ADDVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
-    ADDVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
-    ADDVAR_NAME( C_wrap_varfunction,   "vtkSphere",            Wrap_vtkSphere);
-    ADDVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     wrap_vtkGPURayCasting);
-    ADDVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        wrap_wxVTKMedical3);
-    ADDVAR_NAME( C_wrap_varfunction,   "wxVTKFrame",           wrap_wxVTKFrame);
+  ADDVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
+  ADDVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
+  ADDVAR_NAME( C_wrap_varfunction,   "vtkSphere",            Wrap_vtkSphere);
+  ADDVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     wrap_vtkGPURayCasting);
+  ADDVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        wrap_wxVTKMedical3);
+  ADDVAR_NAME( C_wrap_varfunction,   "wxVTKFrame",           wrap_wxVTKFrame);
 
-    ADDVAR_NAME( C_wrap_varfunction,   "ToVtkImageData", wrap_ToVtkImageData);
+  ADDVAR_NAME( C_wrap_varfunction,   "ToVtkImageData", wrap_ToVtkImageData);
 
 // #include "wrap_vtkInteractorStyleTrackballCamera.h"
 // #include "wrap_vtkInteractorStyleTrackball.h"
 // #include "wrap_vtkInteractorStyleImage.h"
 
-    
-    Variables::ptr current_context=Vars.GetCurrentContext();
+  Variables::ptr context = Vars.GetCurrentContext();
 
-    #define ADDVTKStatic(classname,methodname) \
-        WrapClass_##classname:: \
-          AddVar_##methodname(current_context,std::string(#classname)+"_"+#methodname);
-    
-    WrapClass_wxVTKRenderWindowInteractor::AddVar_wxVTKRenderWindowInteractor(current_context);
-    ADDVTKStatic(vtkRenderWindowInteractor,     New)
-    ADDVTKStatic(vtkRenderer,                   New)
-    ADDVTKStatic(vtkVolume,                     New)
-    ADDVTKStatic(vtkGPUVolumeRayCastMapper,     New)
-    ADDVTKStatic(vtkBoxWidget,                  New)
-    ADDVTKStatic(vtkPlanes,                     New)
-    ADDVTKStatic(vtkVolumeProperty,             New)
+  WrapClass_wxVTKRenderWindowInteractor::AddVar_wxVTKRenderWindowInteractor(context);
 
-    ADDVTKStatic(vtkVolumeMapper,               New)
-    ADDVTKStatic(vtkVolumeMapper,           SafeDownCast)
+  wrap_vtk_classes(context);
 
-    ADDVTKStatic(vtkInteractorStyleTrackballCamera, New)
-    ADDVTKStatic(vtkInteractorStyleTrackball,  New)
-    ADDVTKStatic(vtkInteractorStyleImage,      New)
-
-    ADDVTKStatic(vtkPiecewiseFunction,      New)
-    ADDVTKStatic(vtkColorTransferFunction,  New)
-   
-  #undef ADDVTKStatic
 
 }
 

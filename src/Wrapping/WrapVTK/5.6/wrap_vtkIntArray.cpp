@@ -105,6 +105,26 @@ void WrapClass_vtkIntArray::AddMethods(WrapClass<vtkIntArray>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkIntArray::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkIntArray");
+  
+  // Static methods 
+  WrapClass_vtkIntArray::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkIntArray::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkIntArray::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

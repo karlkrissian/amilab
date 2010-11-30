@@ -242,6 +242,11 @@ class WrapClass_vtkRenderer : public WrapClass<vtkRenderer>
 
 
     void AddMethods(WrapClass<vtkRenderer>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

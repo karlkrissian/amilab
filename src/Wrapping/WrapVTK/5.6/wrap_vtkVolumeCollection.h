@@ -91,6 +91,11 @@ class WrapClass_vtkVolumeCollection : public WrapClass<vtkVolumeCollection>
 
 
     void AddMethods(WrapClass<vtkVolumeCollection>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

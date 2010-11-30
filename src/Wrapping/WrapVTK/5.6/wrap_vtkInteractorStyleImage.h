@@ -104,6 +104,11 @@ class WrapClass_vtkInteractorStyleImage : public WrapClass<vtkInteractorStyleIma
 
 
     void AddMethods(WrapClass<vtkInteractorStyleImage>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

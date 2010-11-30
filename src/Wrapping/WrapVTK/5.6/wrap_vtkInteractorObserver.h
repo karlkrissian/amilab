@@ -110,6 +110,11 @@ class WrapClass_vtkInteractorObserver : public WrapClass<vtkInteractorObserver>
 
 
     void AddMethods(WrapClass<vtkInteractorObserver>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

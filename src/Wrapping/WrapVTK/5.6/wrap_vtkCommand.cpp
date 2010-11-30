@@ -93,6 +93,25 @@ void WrapClass_vtkCommand::AddMethods(WrapClass<vtkCommand>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkCommand::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkCommand");
+  
+  // Static methods 
+  WrapClass_vtkCommand::AddVar_GetStringFromEventId(amiobject->GetContext());
+  WrapClass_vtkCommand::AddVar_GetEventIdFromString(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

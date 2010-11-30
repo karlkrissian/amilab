@@ -153,6 +153,38 @@ void WrapClass_vtkDataArray::AddMethods(WrapClass<vtkDataArray>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkDataArray::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkDataArray");
+  
+  // Static methods 
+  WrapClass_vtkDataArray::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkDataArray::AddVar_SafeDownCast(amiobject->GetContext());
+  WrapClass_vtkDataArray::AddVar_GetDataTypeRange(amiobject->GetContext());
+  WrapClass_vtkDataArray::AddVar_GetDataTypeMin(amiobject->GetContext());
+  WrapClass_vtkDataArray::AddVar_GetDataTypeMax(amiobject->GetContext());
+  WrapClass_vtkDataArray::AddVar_CreateDataArray(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkDataArray::AddVar_PER_COMPONENT(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataArray::AddVar_COMPONENT_RANGE(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkDataArray::AddVar_L2_NORM_RANGE(amiobject->GetContext());
+  */
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

@@ -124,6 +124,25 @@ void WrapClass_vtkAbstractTransform::AddMethods(WrapClass<vtkAbstractTransform>:
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkAbstractTransform::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkAbstractTransform");
+  
+  // Static methods 
+  WrapClass_vtkAbstractTransform::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkAbstractTransform::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

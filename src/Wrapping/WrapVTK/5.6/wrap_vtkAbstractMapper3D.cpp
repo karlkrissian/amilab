@@ -95,6 +95,25 @@ void WrapClass_vtkAbstractMapper3D::AddMethods(WrapClass<vtkAbstractMapper3D>::p
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkAbstractMapper3D::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkAbstractMapper3D");
+  
+  // Static methods 
+  WrapClass_vtkAbstractMapper3D::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkAbstractMapper3D::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

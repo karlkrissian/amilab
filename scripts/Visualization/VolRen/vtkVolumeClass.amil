@@ -49,6 +49,11 @@ if (!exists(vtkVolumeClass)) {
       ::renderer = &ren
     }
 
+    #----------------------------
+    proc ::SetRenderWindow( OBJECT renwin ) {
+      ::renwin = &renwin
+    }
+
     # Inputs:
     #   input_image : input InrImage volume
     #
@@ -71,26 +76,53 @@ if (!exists(vtkVolumeClass)) {
         InfoDialog "Input image is not a volume!"
         return = 0
       } else {
-        ::vol       = global::vtkVolume_New()
-        ::volmapper = global::vtkGPUVolumeRayCastMapper_New()
-        # don't put the boxwidget for the moment
-        # convert input to vtkimage
-        ::vtkinput  = global::ToVtkImageData(&input_image)
-        ::volmapper.SetInput(&::vtkinput)
-
-        #::volmapper.SetSampleDistance()
 
         # Create our transfer function
-        ::colorFun=global::vtkColorTransferFunction_New()
-        ::opacityFun=global::vtkPiecewiseFunction_New()
+        ::colorFun=global::vtkColorTransferFunction.New()
+        ::opacityFun=global::vtkPiecewiseFunction.New()
         
         # Create the property and attach the transfer functions
-        ::property = global::vtkVolumeProperty_New()
+        ::property = global::vtkVolumeProperty.New()
         ::property.SetIndependentComponents(1)
         ::property.SetColor( &::colorFun )
         ::property.SetScalarOpacity( &::opacityFun )
         ::property.SetInterpolationTypeToLinear()
  
+        ::vol       = global::vtkVolume.New()
+        # don't put the boxwidget for the moment
+        # convert input to vtkimage
+        ::vtkinput  = global::ToVtkImageData(&input_image)
+        ::volmapper = global::vtkGPUVolumeRayCastMapper.New()
+
+        #::volmapper.SetSampleDistance()
+
+        # Check if the rendering is supported
+        supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
+        #supported = 0
+        if (!supported) {
+          InfoDialog "vtkGPUVolumeRayCastMapper rendering is not supported, trying vtkVolumeRayCastMapper ..."
+          if (exists(::volmapper)) {
+            ::volmapper->Delete()
+            del ::volmapper
+          }
+          ::volmapper = global::vtkVolumeRayCastMapper.New()
+
+
+          compositeFunction=global::vtkVolumeRayCastCompositeFunction.New()
+          ::volmapper.SetVolumeRayCastFunction(&compositeFunction)
+
+          # don't put the boxwidget for the moment
+          # convert input to vtkimage
+          ::vtkinput  = global::ToVtkImageData(&input_image)
+
+          #supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
+          #if (!supported) {
+          #  InfoDialog "This rendering is not supported neither ..."
+          #}
+
+        }
+        ::volmapper.SetInput(&::vtkinput)
+
         # connect up the volume to the property and the mapper
         ::vol.SetProperty( &::property )
         ::vol.SetMapper( &::volmapper )
@@ -103,7 +135,7 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::InitBoxWidget() \
     {
-      ::box = global::vtkBoxWidget_New()
+      ::box = global::vtkBoxWidget.New()
       if (::clip) \
       {
         ::box.SetInteractor(&::renwininter)
@@ -381,11 +413,11 @@ printn "point number %1%" %n
         if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
         if exists(::property)   { ::property.Delete(); del ::property; }
 
-        ::colorFun=global::vtkColorTransferFunction_New()
-        ::opacityFun=global::vtkPiecewiseFunction_New()
+        ::colorFun=global::vtkColorTransferFunction.New()
+        ::opacityFun=global::vtkPiecewiseFunction.New()
 
         # Create the property and attach the transfer functions
-        ::property = global::vtkVolumeProperty_New()
+        ::property = global::vtkVolumeProperty.New()
         ::property.SetIndependentComponents(1)
         ::property.SetColor( &::colorFun )
         ::property.SetScalarOpacity( &::opacityFun )
@@ -590,7 +622,7 @@ printn "point number %1%" %n
     {
       if (::clip) {
         # to do: vtkPlanes
-        planes = global::vtkPlanes_New()
+        planes = global::vtkPlanes.New()
         ::box.GetPlanes(&planes)
         ::volmapper.SetClippingPlanes(&planes)
         planes.Delete()

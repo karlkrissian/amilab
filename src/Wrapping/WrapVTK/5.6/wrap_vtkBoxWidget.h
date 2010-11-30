@@ -125,6 +125,11 @@ class WrapClass_vtkBoxWidget : public WrapClass<vtkBoxWidget>
 
 
     void AddMethods(WrapClass<vtkBoxWidget>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

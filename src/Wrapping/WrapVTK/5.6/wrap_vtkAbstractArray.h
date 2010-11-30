@@ -113,6 +113,11 @@ class WrapClass_vtkAbstractArray : public WrapClass<vtkAbstractArray>
 
 
     void AddMethods(WrapClass<vtkAbstractArray>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

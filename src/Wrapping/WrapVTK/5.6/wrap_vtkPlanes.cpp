@@ -110,6 +110,26 @@ void WrapClass_vtkPlanes::AddMethods(WrapClass<vtkPlanes>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkPlanes::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkPlanes");
+  
+  // Static methods 
+  WrapClass_vtkPlanes::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkPlanes::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkPlanes::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

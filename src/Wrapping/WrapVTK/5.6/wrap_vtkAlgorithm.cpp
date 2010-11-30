@@ -194,13 +194,77 @@ void WrapClass_vtkAlgorithm::AddMethods(WrapClass<vtkAlgorithm>::ptr this_ptr )
       
       // Adding public member AbortExecute
       boost::shared_ptr<int > var_AbortExecute_ptr(&GetObj()->AbortExecute, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_AbortExecute = AMILabType<int >::CreateVarFromSmtPtr(var_AbortExecute_ptr);
-      if (var_AbortExecute.get()) {
-        var_AbortExecute->Rename("AbortExecute");
-        context->AddVar(var_AbortExecute,context);
+      if (var_AbortExecute_ptr.get()) {
+        BasicVariable::ptr var_AbortExecute = AMILabType<int >::CreateVarFromSmtPtr(var_AbortExecute_ptr);
+        if (var_AbortExecute.get()) {
+          var_AbortExecute->Rename("AbortExecute");
+          context->AddVar(var_AbortExecute,context);
+        }
       }
 
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkAlgorithm::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkAlgorithm");
+  
+  // Static methods 
+  WrapClass_vtkAlgorithm::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkAlgorithm::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkAlgorithm::AddVar_SafeDownCast(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_INPUT_IS_OPTIONAL(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_INPUT_IS_REPEATABLE(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_INPUT_REQUIRED_FIELDS(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_INPUT_REQUIRED_DATA_TYPE(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_INPUT_ARRAYS_TO_PROCESS(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_INPUT_PORT(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_INPUT_CONNECTION(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_SetDefaultExecutivePrototype(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_PRESERVES_DATASET(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_PRESERVES_GEOMETRY(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_PRESERVES_BOUNDS(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_PRESERVES_TOPOLOGY(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_PRESERVES_ATTRIBUTES(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_vtkAlgorithm::AddVar_PRESERVES_RANGES(amiobject->GetContext());
+  */
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

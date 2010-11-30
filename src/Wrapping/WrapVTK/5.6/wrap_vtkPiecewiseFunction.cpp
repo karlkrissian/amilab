@@ -124,6 +124,33 @@ void WrapClass_vtkPiecewiseFunction::AddMethods(WrapClass<vtkPiecewiseFunction>:
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkPiecewiseFunction::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkPiecewiseFunction");
+  
+  // Static methods 
+  WrapClass_vtkPiecewiseFunction::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkPiecewiseFunction::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkPiecewiseFunction::AddVar_SafeDownCast(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkPiecewiseFunction::AddVar_GetData_1(amiobject->GetContext());
+  */
+  WrapClass_vtkPiecewiseFunction::AddVar_GetData(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkPiecewiseFunction::AddVar_GetData_2(amiobject->GetContext());
+  */
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

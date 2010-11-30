@@ -122,6 +122,11 @@ class WrapClass_vtkObject : public WrapClass<vtkObject>
 
 
     void AddMethods(WrapClass<vtkObject>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

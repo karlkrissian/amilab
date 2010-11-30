@@ -36,8 +36,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkVolumeProperty>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkVolumeProperty::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -204,6 +204,26 @@ void WrapClass_vtkVolumeProperty::AddMethods(WrapClass<vtkVolumeProperty>::ptr t
 
   
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkVolumeProperty::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkVolumeProperty");
+  
+  // Static methods 
+  WrapClass_vtkVolumeProperty::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkVolumeProperty::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkVolumeProperty::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

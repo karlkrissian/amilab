@@ -94,6 +94,11 @@ class WrapClass_vtkInteractorStyleSwitch : public WrapClass<vtkInteractorStyleSw
 
 
     void AddMethods(WrapClass<vtkInteractorStyleSwitch>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

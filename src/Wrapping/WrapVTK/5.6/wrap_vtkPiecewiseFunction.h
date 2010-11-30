@@ -126,6 +126,11 @@ class WrapClass_vtkPiecewiseFunction : public WrapClass<vtkPiecewiseFunction>
 
 
     void AddMethods(WrapClass<vtkPiecewiseFunction>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

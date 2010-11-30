@@ -89,6 +89,11 @@ class WrapClass_vtkAbstractMapper3D : public WrapClass<vtkAbstractMapper3D>
 
 
     void AddMethods(WrapClass<vtkAbstractMapper3D>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

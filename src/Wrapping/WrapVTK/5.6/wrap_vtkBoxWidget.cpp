@@ -133,6 +133,26 @@ void WrapClass_vtkBoxWidget::AddMethods(WrapClass<vtkBoxWidget>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkBoxWidget::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkBoxWidget");
+  
+  // Static methods 
+  WrapClass_vtkBoxWidget::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkBoxWidget::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkBoxWidget::AddVar_SafeDownCast(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

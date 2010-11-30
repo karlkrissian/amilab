@@ -91,6 +91,11 @@ class WrapClass_vtkTimeStamp : public WrapClass<vtkTimeStamp>
 
 
     void AddMethods(WrapClass<vtkTimeStamp>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

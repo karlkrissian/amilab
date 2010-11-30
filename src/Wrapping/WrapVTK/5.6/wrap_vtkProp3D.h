@@ -139,6 +139,11 @@ class WrapClass_vtkProp3D : public WrapClass<vtkProp3D>
 
 
     void AddMethods(WrapClass<vtkProp3D>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

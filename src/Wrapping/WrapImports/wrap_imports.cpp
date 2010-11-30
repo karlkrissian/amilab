@@ -127,15 +127,9 @@ void AddWrapImports()
 void AddWrapWxWidgets()
 {
 
-  // Create new instance of the class
+  // Create a new context (or namespace)
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("wx");
-
-  // Set the object context
-  Variables::ptr previous_ocontext = Vars.GetObjectContext();
-  Vars.SetObjectContext(amiobject->GetContext());
-
-//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow); DEPRECATED
 
 #define ADDWXCLASS(classname) \
   WrapClass_##classname      ::AddVar_##classname( amiobject->GetContext());
@@ -166,9 +160,6 @@ void AddWrapWxWidgets()
   ADDWXCLASS( wxStaticBoxSizer )
 
   ADDWXCLASS( wxAmiEventHandler )
-
-  // Restore the object context
-  Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);

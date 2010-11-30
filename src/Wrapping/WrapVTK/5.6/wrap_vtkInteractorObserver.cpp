@@ -116,6 +116,27 @@ void WrapClass_vtkInteractorObserver::AddMethods(WrapClass<vtkInteractorObserver
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkInteractorObserver::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkInteractorObserver");
+  
+  // Static methods 
+  WrapClass_vtkInteractorObserver::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkInteractorObserver::AddVar_SafeDownCast(amiobject->GetContext());
+  WrapClass_vtkInteractorObserver::AddVar_ComputeDisplayToWorld(amiobject->GetContext());
+  WrapClass_vtkInteractorObserver::AddVar_ComputeWorldToDisplay(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

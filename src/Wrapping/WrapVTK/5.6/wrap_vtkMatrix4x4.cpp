@@ -125,14 +125,58 @@ void WrapClass_vtkMatrix4x4::AddMethods(WrapClass<vtkMatrix4x4>::ptr this_ptr )
       /* type not available
       // Adding public member Element
       boost::shared_ptr< > var_Element_ptr(&GetObj()->Element, smartpointer_nodeleter< >());
-      BasicVariable::ptr var_Element = AMILabType< >::CreateVarFromSmtPtr(var_Element_ptr);
-      if (var_Element.get()) {
-        var_Element->Rename("Element");
-        context->AddVar(var_Element,context);
+      if (var_Element_ptr.get()) {
+        BasicVariable::ptr var_Element = AMILabType< >::CreateVarFromSmtPtr(var_Element_ptr);
+        if (var_Element.get()) {
+          var_Element->Rename("Element");
+          context->AddVar(var_Element,context);
+        }
       }
       */
 
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkMatrix4x4::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkMatrix4x4");
+  
+  // Static methods 
+  WrapClass_vtkMatrix4x4::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_SafeDownCast(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_DeepCopy_1(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_DeepCopy(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_DeepCopy_2(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Zero(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Identity(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Invert_1(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Invert(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Invert_2(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Transpose_1(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Transpose(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Transpose_2(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_MultiplyPoint_1(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_MultiplyPoint(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_MultiplyPoint_2(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Multiply4x4_1(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Multiply4x4(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Multiply4x4_2(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Adjoint(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_Determinant(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_PointMultiply_1(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_PointMultiply(amiobject->GetContext());
+  WrapClass_vtkMatrix4x4::AddVar_PointMultiply_2(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

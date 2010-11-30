@@ -129,6 +129,11 @@ class WrapClass_vtkWindow : public WrapClass<vtkWindow>
 
 
     void AddMethods(WrapClass<vtkWindow>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

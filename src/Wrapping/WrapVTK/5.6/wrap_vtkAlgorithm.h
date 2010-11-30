@@ -226,6 +226,11 @@ class WrapClass_vtkAlgorithm : public WrapClass<vtkAlgorithm>
 
 
     void AddMethods(WrapClass<vtkAlgorithm>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

@@ -147,6 +147,11 @@ class WrapClass_vtkUnicodeString : public WrapClass<vtkUnicodeString>
 
 
     void AddMethods(WrapClass<vtkUnicodeString>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

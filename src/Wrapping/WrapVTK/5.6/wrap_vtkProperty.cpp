@@ -246,6 +246,26 @@ void WrapClass_vtkProperty::AddMethods(WrapClass<vtkProperty>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkProperty::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkProperty");
+  
+  // Static methods 
+  WrapClass_vtkProperty::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkProperty::AddVar_SafeDownCast(amiobject->GetContext());
+  WrapClass_vtkProperty::AddVar_New(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

@@ -100,6 +100,11 @@ class WrapClass_vtkCellTypes : public WrapClass<vtkCellTypes>
 
 
     void AddMethods(WrapClass<vtkCellTypes>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

@@ -147,6 +147,11 @@ class WrapClass_vtkColorTransferFunction : public WrapClass<vtkColorTransferFunc
 
 
     void AddMethods(WrapClass<vtkColorTransferFunction>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

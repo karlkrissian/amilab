@@ -205,6 +205,27 @@ void WrapClass_vtkRenderWindow::AddMethods(WrapClass<vtkRenderWindow>::ptr this_
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkRenderWindow::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkRenderWindow");
+  
+  // Static methods 
+  WrapClass_vtkRenderWindow::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkRenderWindow::AddVar_SafeDownCast(amiobject->GetContext());
+  WrapClass_vtkRenderWindow::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkRenderWindow::AddVar_GetRenderLibrary(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------

@@ -116,6 +116,11 @@ class WrapClass_vtkVolumeMapper : public WrapClass<vtkVolumeMapper>
 
 
     void AddMethods(WrapClass<vtkVolumeMapper>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

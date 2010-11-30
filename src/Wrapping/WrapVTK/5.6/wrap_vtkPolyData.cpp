@@ -193,6 +193,33 @@ void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
   
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_vtkPolyData::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtkPolyData");
+  
+  // Static methods 
+  WrapClass_vtkPolyData::AddVar_New(amiobject->GetContext());
+  WrapClass_vtkPolyData::AddVar_IsTypeOf(amiobject->GetContext());
+  WrapClass_vtkPolyData::AddVar_SafeDownCast(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkPolyData::AddVar_GetData_1(amiobject->GetContext());
+  */
+  WrapClass_vtkPolyData::AddVar_GetData(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_vtkPolyData::AddVar_GetData_2(amiobject->GetContext());
+  */
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
+
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------
