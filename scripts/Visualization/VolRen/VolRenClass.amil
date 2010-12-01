@@ -31,6 +31,8 @@ if (!exists(VolRenClass)) {
       ::input_name  =  "", "name of the input image"
       ::input2_name =  "", "name of the second input image"
       ::vtkvol1.Init()
+      ::input_size  = "0 Mb",  "input volume size in Mb (2^20 bytes)"
+      ::input2_size = "0 Mb", "second input volume size in Mb (2^20 bytes)"
       ::vtkvol2.Init()
       ::background_color  = wx.wxColour(173,216,230)
       ::background_color2 = wx.wxColour(144,238,144)
@@ -42,22 +44,78 @@ if (!exists(VolRenClass)) {
     proc ::load_input() {
       if (exists(::input)) { del ::input; }
       eval "::input = &"+::input_name+";"
-      if (::input_name=="Image") {
+      if (::input_name=="BrowseImage") {
         ::input_name = "::input"
-        ::UpdateVolPages()
-        ::win.Update(-1)
       }
+      ::UpdateImageInfo(&::input,&::input_size)
+      ::win.SetLabelValue(::input_size_id,::input_size)
+      ::UpdateVolPages()
+      ::win.Update(-1)
+    }
+
+    #----------------------------
+    proc ::UpdateImageInfo( IMAGE im, STRING res ) {
+      if (im.vdim>1) {
+        InfoDialog "Warning: input is a vector field ..."
+      }
+      size = im.tx*im.ty*im.tz*im.vdim
+      format_size = vector_int(11,0)
+      format_name = VarVector(11,"unknown")
+
+      format_size[0]=1 # uchar
+      format_name[0] = "uchar"
+
+      format_size[1]=2 # ushort
+      format_name[1] = "ushort"
+
+      format_size[2]=2 # short
+      format_name[2] = "short"
+
+      format_size[3]=4 # int
+      format_name[3] = "int"
+
+      format_size[4]=4 # uint
+      format_name[4] = "uint"
+
+      format_size[5]=8 # long
+      format_name[5] = "long"
+
+      format_size[6]=8 # ulong
+      format_name[6]="ulong"
+
+      format_size[7]=4 # float
+      format_name[7]="float"
+
+      format_size[8]=8 # double
+      format_name[8]="double"
+
+      format_size[9]=3 # RGB
+      format_name[9]="RGB"
+
+      format_size[10]=4 # RGBA
+      format_name[10]="RGBA"
+
+      pixel_format = im.GetFormat.val
+      if (pixel_format>10) {
+        InfoDialog "Input: Wrong pixel format (%1%) !" % format
+      }
+
+      res = "%1% Mb " % (INT) (size*format_size[pixel_format]/(1024*1024))
+      res = res+"(%1%)" % format_name[pixel_format]
+      
     }
   
     #----------------------------
     proc ::load_input2() {
       if (exists(::input2)) { del ::input2; }
       eval "::input2 = &"+::input2_name+";"
-      if (::input_name=="Image") {
-        ::input_name = "::input2"
-        ::UpdateVolPages()
-        ::win.Update(-1)
+      if (::input2_name=="BrowseImage") {
+        ::input2_name = "::input2"
       }
+      ::UpdateImageInfo(&::input2,&::input2_size)
+      ::win.SetLabelValue(::input2_size_id,::input2_size)
+      ::UpdateVolPages()
+      ::win.Update(-1)
     }
   
     #----------------------------
@@ -111,11 +169,11 @@ if (!exists(VolRenClass)) {
       #if (!exists(::input)) {
         #::load_input()
       #}
-      #::renwin_interact = global::vtkGPURayCasting(&::input, \
+      #::renwin_interact = vtk.vtkGPURayCasting(&::input, \
         #::blend_type, ::opacitywindow, ::opacitylevel, ::clip)
       #::renwin   = ::renwin_interact.GetRenderWindow()
       #::renderer = ::renwin.GetRenderers().GetFirstRenderer()
-      #interact = global::vtkInteractorStyleTrackballCamera.New()
+      #interact = vtk.vtkInteractorStyleTrackballCamera.New()
       #::renwin_interact.SetInteractorStyle(&interact)
       ##::renderer.Render()
       #vols = ::renderer.GetVolumes()
@@ -123,7 +181,7 @@ if (!exists(VolRenClass)) {
       #::vol      =  vols.GetNextVolume()
       #::property = ::vol.GetProperty()
       #mapper   = ::vol.GetMapper()
-      #::volmapper = global::vtkVolumeMapper_SafeDownCast(&mapper)
+      #::volmapper = vtk.vtkVolumeMapper_SafeDownCast(&mapper)
       ##::renwin_interact.Render()
 
     #}
@@ -142,9 +200,9 @@ if (!exists(VolRenClass)) {
           ::renwin_interact = global::wxVTKFrame()
         }
         ::renwin   = ::renwin_interact.GetRenderWindow()
-        ::renderer = global::vtkRenderer.New()
+        ::renderer = vtk.vtkRenderer.New()
         ::renwin.AddRenderer(&::renderer)
-        interact = global::vtkInteractorStyleTrackballCamera.New()
+        interact = vtk.vtkInteractorStyleTrackballCamera.New()
         ::renwin_interact.SetInteractorStyle(&interact)
 
         if (::vtkvol1.initialized>0.5) {
@@ -297,6 +355,7 @@ if (!exists(VolRenClass)) {
               ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload")
               #::win.AddButton( "ImReload",&::ImReload)
             ::win.EndHorizontal()
+            ::input_size_id = ::win.AddLabel("Size:",::input_size)
           ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Second Volume")
@@ -305,6 +364,7 @@ if (!exists(VolRenClass)) {
               ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload2")
               #::win.AddButton( "ImReload",&::ImReload)
             ::win.EndHorizontal()
+            ::input2_size_id = ::win.AddLabel("Size:",::input2_size)
           ::win.EndBoxPanel()
 
 

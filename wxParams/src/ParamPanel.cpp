@@ -803,7 +803,7 @@ unsigned char ParamPanel::AddLabel( int* id, const char* libelle,
 
 
 ///--------------------------------------------------------------
-void ParamPanel::SetLabelValue( int id,  char* value)
+void ParamPanel::SetLabelValue( int id,  const char* value)
 //             -------------
 {
    ((wxLabelParameter*) _tab_param[id].GetWidget())->SetValue( value);

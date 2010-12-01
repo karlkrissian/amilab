@@ -651,6 +651,34 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddLabel::CallMember( ParamList* p
 }
 
 
+//--------------------------------------------------
+// SetLabelValue
+//--------------------------------------------------
+void WrapClass_ParamPanel::wrap_SetLabelValue::SetParametersComments()
+{
+  ADDPARAMCOMMENT("int: index");
+  ADDPARAMCOMMENT("string expression: label value");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_SetLabelValue::CallMember( ParamList* p)
+{
+  BasicVariable::ptr var;
+  int label_id = 0;
+  std::string* label_val = NULL;
+  int  n = 0;
+  int  var_id;
+
+  if (!get_val_param<int>( label_id, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label_val, p, n)) ClassHelpAndReturn;
+
+  this->_objectptr->GetObj()->SetLabelValue( label_id,
+                label_val->c_str());
+
+  return BasicVariable::ptr();
+}
+
+
+
 
 //--------------------------------------------------
 // AddFilename

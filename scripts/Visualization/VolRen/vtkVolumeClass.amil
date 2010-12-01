@@ -16,7 +16,7 @@ if (!exists(vtkVolumeClass)) {
 
     #----------------------------
     proc ::Init( ) {
-      ::blend_type = INT(1), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->CT_Muscles, 6->RGB_Composite, 7->Linear Curve 1"
+      ::blend_type = INT(7), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->CT_Muscles, 6->RGB_Composite, 7->Linear Curve 1"
       ::opacitywindow = 1000, "Opacity Window"
       ::opacitylevel  = 1000, "Opacity Level"
 
@@ -31,12 +31,16 @@ if (!exists(vtkVolumeClass)) {
       ::muscles3 =  420, "Muscles third control point"
 
       ::clip = UCHAR(0), "Enable/Disable clipping box"
+      ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
       ::initialized=0
 
       ::cm_active_blend_curves = 0, "Number of curves created for the current blend type in the Colormap  drawing area."
       ::dw_active_blend_curves = 0, "Number of curves created for the current blend type in the Histogram drawing area."
 
       ::opacity_attenuation = 1, "Attenuation factor for the opacity"
+
+      ::maxmemory = INT(0), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
+      ::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use."
     }
 
     #----------------------------
@@ -78,21 +82,21 @@ if (!exists(vtkVolumeClass)) {
       } else {
 
         # Create our transfer function
-        ::colorFun=global::vtkColorTransferFunction.New()
-        ::opacityFun=global::vtkPiecewiseFunction.New()
+        ::colorFun=vtk.vtkColorTransferFunction.New()
+        ::opacityFun=vtk.vtkPiecewiseFunction.New()
         
         # Create the property and attach the transfer functions
-        ::property = global::vtkVolumeProperty.New()
+        ::property = vtk.vtkVolumeProperty.New()
         ::property.SetIndependentComponents(1)
         ::property.SetColor( &::colorFun )
         ::property.SetScalarOpacity( &::opacityFun )
         ::property.SetInterpolationTypeToLinear()
  
-        ::vol       = global::vtkVolume.New()
+        ::vol       = vtk.vtkVolume.New()
         # don't put the boxwidget for the moment
         # convert input to vtkimage
         ::vtkinput  = global::ToVtkImageData(&input_image)
-        ::volmapper = global::vtkGPUVolumeRayCastMapper.New()
+        ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
 
         #::volmapper.SetSampleDistance()
 
@@ -105,10 +109,10 @@ if (!exists(vtkVolumeClass)) {
             ::volmapper->Delete()
             del ::volmapper
           }
-          ::volmapper = global::vtkVolumeRayCastMapper.New()
+          ::volmapper = vtk.vtkVolumeRayCastMapper.New()
 
 
-          compositeFunction=global::vtkVolumeRayCastCompositeFunction.New()
+          compositeFunction=vtk.vtkVolumeRayCastCompositeFunction.New()
           ::volmapper.SetVolumeRayCastFunction(&compositeFunction)
 
           # don't put the boxwidget for the moment
@@ -120,6 +124,11 @@ if (!exists(vtkVolumeClass)) {
           #  InfoDialog "This rendering is not supported neither ..."
           #}
 
+        } else {
+          # update GPU information
+          ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
+          ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
+          ::win.Update(-1)
         }
         ::volmapper.SetInput(&::vtkinput)
 
@@ -135,7 +144,7 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::InitBoxWidget() \
     {
-      ::box = global::vtkBoxWidget.New()
+      ::box = vtk.vtkBoxWidget.New()
       if (::clip) \
       {
         ::box.SetInteractor(&::renwininter)
@@ -149,6 +158,7 @@ if (!exists(vtkVolumeClass)) {
         #callback->SetMapper(mapper);
         #::box.AddObserver(vtkCommand::InteractionEvent, callback);
         #callback->Delete();
+        ::box.SetRotationEnabled(::clip_enable_rotation)
         ::box.EnabledOn()
         #::box.GetSelectedFaceProperty().SetOpacity(0.0)
       }
@@ -328,27 +338,42 @@ if (!exists(vtkVolumeClass)) {
       if (exists(::imhisto1->h)) {
         hmax = max(::imhisto1.h[0])
 
+        # http://www.wikiradiography.com/page/Hounsfield++unit
+        #It is the definition for CT scanners that are calibrated with reference to water.
+        #Tissue CT number (HU)
+        #Bone  1000
+        #Liver   40 - 60
+        #White matter  ~20-30 HU
+        #Grey matter   ~37-45 HU
+        #Blood   40
+        #Muscle  10 - 40
+        #Kidney  30
+        #Cerebrospinal fluid   15
+        #Water   0
+        #Fat   -50 - -100
+        #Air   -1000
+
         # Create the curve
         curve = ami.dwControlledCurve()
 
         # black point
-        cp0 = ami.dwControlPoint(-950,0)
+        cp0 = ami.dwControlPoint(1080,0)
         cp0.SetYLocked(1)
         cp0.SetColour(wx.wxColour(0,0,0))
         curve.GetControlPoints().push_back(&cp0)
 
         # red point
-        cp1 = ami.dwControlPoint(-920,0.005*hmax)
+        cp1 = ami.dwControlPoint(1100,0.005*hmax)
         cp1.SetColour(wx.wxColour(255,0,0))
         curve.GetControlPoints().push_back(&cp1)
 
         # yellow point
-        cp2 = ami.dwControlPoint(-908,0.08*hmax)
+        cp2 = ami.dwControlPoint(1130,0.08*hmax)
         cp2.SetColour(wx.wxColour(255,255,0))
         curve.GetControlPoints().push_back(&cp2)
 
         # white point
-        cp3 = ami.dwControlPoint(-500,0.5*hmax)
+        cp3 = ami.dwControlPoint(1390,0.5*hmax)
         cp3.SetColour(wx.wxColour(255,255,255))
         curve.GetControlPoints().push_back(&cp3)
 
@@ -413,11 +438,11 @@ printn "point number %1%" %n
         if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
         if exists(::property)   { ::property.Delete(); del ::property; }
 
-        ::colorFun=global::vtkColorTransferFunction.New()
-        ::opacityFun=global::vtkPiecewiseFunction.New()
+        ::colorFun=vtk.vtkColorTransferFunction.New()
+        ::opacityFun=vtk.vtkPiecewiseFunction.New()
 
         # Create the property and attach the transfer functions
-        ::property = global::vtkVolumeProperty.New()
+        ::property = vtk.vtkVolumeProperty.New()
         ::property.SetIndependentComponents(1)
         ::property.SetColor( &::colorFun )
         ::property.SetScalarOpacity( &::opacityFun )
@@ -612,6 +637,7 @@ printn "point number %1%" %n
     {
       if (exists(::box)) {
         ::box.SetEnabled(::clip)
+        ::box.SetRotationEnabled(::clip_enable_rotation)
       } else {
         ::InitBoxWidget()
       }
@@ -622,11 +648,30 @@ printn "point number %1%" %n
     {
       if (::clip) {
         # to do: vtkPlanes
-        planes = global::vtkPlanes.New()
+        planes = vtk.vtkPlanes.New()
         ::box.GetPlanes(&planes)
         ::volmapper.SetClippingPlanes(&planes)
         planes.Delete()
         ::renwininter.Render()
+      }
+    }
+
+    #----------------------------
+    proc ::OnTextureMemory() \
+    {
+      if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
+          (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") \
+      {
+        # update volmapper GPU settings
+        ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
+        ::volmapper.SetMaxMemoryFraction(::maxmemoryfraction)
+
+        # update GPU information
+        ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
+        ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
+        ::win.Update(-1)
+      } else {
+        InfoDialog "Wrong volume mapper ..."
       }
     }
 
@@ -636,72 +681,91 @@ printn "point number %1%" %n
       printn "vtkVolumeClass::AddGui begin"
       ::win = &win
 
-      ::win.BeginHorizontal()
-        ::win.AddBoolean(&::clip, "Clip")
-        ::win.SetCallback( &::OnClip)
-        ::icons.LoadIconPNG2("Chart xy","Chart_xy")
-        ::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
-        ::win.AddButton("DrawTr",&::Draw_Functions)
-      ::win.EndHorizontal()
-      ::win.AddButton( "Apply Clip",&::ApplyClip)
-      ::win.AddFloat(&::opacity_attenuation,"Opacity factor",0,1)
-      ::win.SetCallback( &::OnWindow)
-
-
-      ::blend_type_id = ::win.AddEnum(&::blend_type,"Blend")
-        ::win.AddEnumChoice(::blend_type_id,"MIP")
-        ::win.AddEnumChoice(::blend_type_id,"Comp. Ramp")
-        ::win.AddEnumChoice(::blend_type_id,"Comp. Shade Ramp")
-        ::win.AddEnumChoice(::blend_type_id,"CT Skin")
-        ::win.AddEnumChoice(::blend_type_id,"CT Bone")
-        ::win.AddEnumChoice(::blend_type_id,"CT Muscles")
-        ::win.AddEnumChoice(::blend_type_id,"RGB Composite")
-        ::win.AddEnumChoice(::blend_type_id,"Linear Curve 1")
-      ::win.SetCallback( &::OnBlendType)
-
-      ##::win.BeginBook()
-          ## Adding histogram page
-        #::imhisto1.SetParentPanel(&::win)
-        #::imhisto1.Gui()
-        #::win.AddWidget(&::imhisto1->win,0)
-        ##::win.AddPage("Hist", &::imhisto1->win)
-      ##::win.EndBook()
-
-      #::win.SetPositionProp(0)
-
       ::win.BeginBook()
-          # Adding histogram page
-        ::imhisto1.SetParentPanel(&::win)
-        ::imhisto1.Gui()
-        ::win.AddPage("Hist", &::imhisto1->win)
-      ::win.EndBook()
 
-      ::blend_book = ::win.BeginBook()
-        ::ramp_page = ::win.AddPage("Ramp")
-          ::opacitywindow_id = ::win.AddFloat(&::opacitywindow,"Window",0,5000)
+        ::win.AddPage("Blend")
+        ::win.BeginHorizontal()
+          ::icons.LoadIconPNG2("Chart xy","Chart_xy")
+          ::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
+          ::win.AddButton("DrawTr",&::Draw_Functions)
+        ::win.EndHorizontal()
+
+
+        ::blend_type_id = ::win.AddEnum(&::blend_type,"Blend")
+          ::win.AddEnumChoice(::blend_type_id,"MIP")
+          ::win.AddEnumChoice(::blend_type_id,"Comp. Ramp")
+          ::win.AddEnumChoice(::blend_type_id,"Comp. Shade Ramp")
+          ::win.AddEnumChoice(::blend_type_id,"CT Skin")
+          ::win.AddEnumChoice(::blend_type_id,"CT Bone")
+          ::win.AddEnumChoice(::blend_type_id,"CT Muscles")
+          ::win.AddEnumChoice(::blend_type_id,"RGB Composite")
+          ::win.AddEnumChoice(::blend_type_id,"Linear Curve 1")
+        ::win.SetCallback( &::OnBlendType)
+
+        ##::win.BeginBook()
+            ## Adding histogram page
+          #::imhisto1.SetParentPanel(&::win)
+          #::imhisto1.Gui()
+          #::win.AddWidget(&::imhisto1->win,0)
+          ##::win.AddPage("Hist", &::imhisto1->win)
+        ##::win.EndBook()
+
+        #::win.SetPositionProp(0)
+
+        ::win.BeginBook()
+            # Adding histogram page
+          ::imhisto1.SetParentPanel(&::win)
+          ::imhisto1.Gui()
+          ::win.AddPage("Hist", &::imhisto1->win)
+        ::win.EndBook()
+
+        ::blend_book = ::win.BeginBook()
+          ::ramp_page = ::win.AddPage("Ramp")
+            ::opacitywindow_id = ::win.AddFloat(&::opacitywindow,"Window",0,5000)
+            ::win.SetCallback( &::OnWindow)
+            ::opacitylevel_id = ::win.AddFloat(&::opacitylevel,"Level",0,5000)
+            ::win.SetCallback( &::OnLevel)
+          ::skin_page = ::win.AddPage("Skin")
+            ::win.AddFloat(&::skin1,"Ctrl_1",-3000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::win.AddFloat(&::skin2,"Ctrl_2",-3000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::AddBitmapButton16(&::win, &::icons._Refresh, "SkinReset")
+          ::bones_page = ::win.AddPage("Bones")
+            ::win.AddFloat(&::bones1,"Ctrl_1",-1000,2000)
+            ::win.SetCallback( &::OnBlendType)
+            ::win.AddFloat(&::bones2,"Ctrl_2",-1000,2000)
+            ::win.SetCallback( &::OnBlendType)
+            ::AddBitmapButton16(&::win, &::icons._Refresh, "BonesReset")
+          ::muscles_page = ::win.AddPage("Muscles")
+            ::win.AddFloat(&::muscles1,"Ctrl_1",-1000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::win.AddFloat(&::muscles2,"Ctrl_2",-1000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::win.AddFloat(&::muscles3,"Ctrl_3",-1000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::AddBitmapButton16(&::win, &::icons._Refresh, "MusclesReset")
+        ::win.EndBook()
+
+        ::win.AddPage("Clip")
+          ::win.AddBoolean(&::clip, "Clip")
+          ::win.SetCallback( &::OnClip)
+          ::win.AddBoolean(&::clip_enable_rotation,"Rotation")
+          ::win.SetCallback( &::OnClip)
+          ::win.AddButton( "Apply Clip",&::ApplyClip)
+
+        ::win.AddPage("Opac")
+          ::win.AddFloat(&::opacity_attenuation,"Opacity factor",0,1)
           ::win.SetCallback( &::OnWindow)
-          ::opacitylevel_id = ::win.AddFloat(&::opacitylevel,"Level",0,5000)
-          ::win.SetCallback( &::OnLevel)
-        ::skin_page = ::win.AddPage("Skin")
-          ::win.AddFloat(&::skin1,"Ctrl_1",-3000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::win.AddFloat(&::skin2,"Ctrl_2",-3000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::AddBitmapButton16(&::win, &::icons._Refresh, "SkinReset")
-        ::bones_page = ::win.AddPage("Bones")
-          ::win.AddFloat(&::bones1,"Ctrl_1",-1000,2000)
-          ::win.SetCallback( &::OnBlendType)
-          ::win.AddFloat(&::bones2,"Ctrl_2",-1000,2000)
-          ::win.SetCallback( &::OnBlendType)
-          ::AddBitmapButton16(&::win, &::icons._Refresh, "BonesReset")
-        ::muscles_page = ::win.AddPage("Muscles")
-          ::win.AddFloat(&::muscles1,"Ctrl_1",-1000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::win.AddFloat(&::muscles2,"Ctrl_2",-1000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::win.AddFloat(&::muscles3,"Ctrl_3",-1000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::AddBitmapButton16(&::win, &::icons._Refresh, "MusclesReset")
+
+        ::GPU_page = ::win.AddPage("GPU")
+          ::win.BeginBoxPanel("3D texture memory")
+            ::win.AddInt(&::maxmemory,"max",50,1000)
+            ::win.SetCallback( &::OnTextureMemory)
+            ::win.AddFloat(&::maxmemoryfraction,"fraction",0.05,1)
+            ::win.SetCallback( &::OnTextureMemory)
+          ::win.EndBoxPanel()
+
       ::win.EndBook()
 
       printn "vtkVolumeClass::AddGui end"

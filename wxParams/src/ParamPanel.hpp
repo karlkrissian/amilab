@@ -468,7 +468,7 @@ public:
     const std::string& tt="");
 //@}
   
-  void SetLabelValue(int id, char* value);
+  void SetLabelValue(int id, const char* value);
 
 /** @name Type Widget */
 //@{

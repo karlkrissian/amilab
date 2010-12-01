@@ -103,7 +103,18 @@ void AddWrapVTK() {
 
   WrapClass_wxVTKRenderWindowInteractor::AddVar_wxVTKRenderWindowInteractor(context);
 
-  wrap_vtk_classes(context);
+
+  // Create vtk context
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("vtk");
+
+  // Add classes to vtk context
+  wrap_vtk_classes(amiobject->GetContext());
+
+  // Add vtk context to builtin
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+      amiobject,Vars.GetBuiltinContext());
+  
 
 
 }
