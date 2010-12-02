@@ -199,12 +199,14 @@ if (!exists(VolRenClass)) {
         if (!exists(::renwin_interact)) {
           ::renwin_interact = global::wxVTKFrame()
         }
+printn "1*"
         ::renwin   = ::renwin_interact.GetRenderWindow()
         ::renderer = vtk.vtkRenderer.New()
         ::renwin.AddRenderer(&::renderer)
         interact = vtk.vtkInteractorStyleTrackballCamera.New()
         ::renwin_interact.SetInteractorStyle(&interact)
 
+printn "2*"
         if (::vtkvol1.initialized>0.5) {
           ::vtkvol1.ResetVTK()
         }
@@ -213,6 +215,7 @@ if (!exists(VolRenClass)) {
         ::vtkvol1.SetRenderWindow(&::renwin)
         volok = ::vtkvol1.CreateVTK( &::input)
 
+printn "3*"
         if (volok>0.5) {
           # interact with data
           #  renWin->Render()
@@ -293,6 +296,8 @@ if (!exists(VolRenClass)) {
       # create widget here
 
       ::renwin_interact = global::wxVTKRenderWindowInteractor(&panel,-1)
+      #::renwin_interact = wxVTKFrame(&panel,-1)
+
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
       # Still drawing problem (missed exposed events???)
@@ -410,6 +415,7 @@ if (!exists(VolRenClass)) {
       }
       ::UpdateVolPages()
       ::win.Update(-1)
+      #    ::renwin_interact = global::wxVTKFrame()
       ::MainBook_AddVolRenTab()
    }
 

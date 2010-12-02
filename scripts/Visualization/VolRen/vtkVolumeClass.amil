@@ -41,6 +41,18 @@ if (!exists(vtkVolumeClass)) {
 
       ::maxmemory = INT(0), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
       ::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use."
+
+      ::SampleDistance = 1, "distance between samples used for rendering"
+      ::ImageSampleDistance = 1, "Sampling distance in the XY image dimensions. Default value of 1 meaning 1 ray cast per pixel. If set to 0.5, 4 rays will be cast per pixel. If set to 2.0, 1 ray will be cast for every 4 (2 by 2) pixels. This value will be adjusted to meet a desired frame rate when AutoAdjustSampleDistances is on. "
+      ::AutoAdjustSampleDistances = UCHAR(1), "Auto-adjust sample distances"
+
+      ::use_shade = UCHAR(1), "use shading"
+      ::ambient   = 0.15, "ambient coefficient"
+      ::diffuse   = 0.9, "diffuse coefficient"
+      ::specular  = 0.3, "specular coefficient"
+      ::specular_power = 15.0, "specular power"
+      ::scalar_opacity_unitdistance = 0.8919, "scalar opacity unit distance"
+
     }
 
     #----------------------------
@@ -393,6 +405,17 @@ if (!exists(vtkVolumeClass)) {
     }
 
     #----------------------------
+    proc ::SetShadingProperties() \
+    {
+      ::property.SetShade(::use_shade)
+      ::property.SetAmbient(::ambient)
+      ::property.SetDiffuse(::diffuse)
+      ::property.SetSpecular(::specular)
+      ::property.SetSpecularPower(::specular_power)
+      ::property.SetScalarOpacityUnitDistance(::scalar_opacity_unitdistance)
+    }
+
+    #----------------------------
     proc ::BlendLinearCurve1() \
     {
       printn "BlendLinearCurve1"
@@ -419,13 +442,8 @@ printn "point number %1%" %n
           ::opacityFun.AddPoint(  cp.GetX(), ::opacity_attenuation/hmax*cp.GetY() );
         }
         
-        ::volmapper.SetBlendModeToComposite();
-        ::property.ShadeOn();
-        ::property.SetAmbient(0.15);
-        ::property.SetDiffuse(0.9);
-        ::property.SetSpecular(0.3);
-        ::property.SetSpecularPower(15.0);
-        ::property.SetScalarOpacityUnitDistance(0.8919);
+        ::volmapper.SetBlendModeToComposite()
+        ::SetShadingProperties()
       } else {
         InfoDialog "No histogram available."
       }
@@ -676,6 +694,15 @@ printn "point number %1%" %n
     }
 
     #----------------------------
+    proc ::OnSampleDistance() \
+    {
+      ::volmapper.SetAutoAdjustSampleDistances(::AutoAdjustSampleDistances)
+      ::volmapper.SetSampleDistance(::SampleDistance)
+      ::volmapper.SetImageSampleDistance(::ImageSampleDistance)
+      ::renwininter.Render()
+    }
+
+    #----------------------------
     proc ::AddGui( OBJECT win ) \
     {
       printn "vtkVolumeClass::AddGui begin"
@@ -754,9 +781,26 @@ printn "point number %1%" %n
           ::win.SetCallback( &::OnClip)
           ::win.AddButton( "Apply Clip",&::ApplyClip)
 
-        ::win.AddPage("Opac")
-          ::win.AddFloat(&::opacity_attenuation,"Opacity factor",0,1)
-          ::win.SetCallback( &::OnWindow)
+        ::win.AddPage("Shade")
+          ::win.BeginBoxPanel("Global opacity")
+            ::win.AddFloat(&::opacity_attenuation,"Opacity factor",0,1)
+            ::win.SetCallback( &::OnWindow)
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Shading properties")
+            ::win.AddBoolean(&::use_shade,"Use Shade")
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::ambient,"Ambient",0,1)
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::diffuse,"Diffuse",0,1)
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::specular,"Specular",0,1)
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::specular_power,"Spec_Power",0,50)
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::scalar_opacity_unitdistance,"Opa_dist",0.2,2)
+            ::win.SetCallback( &::OnRender)
+          ::win.EndBoxPanel()
 
         ::GPU_page = ::win.AddPage("GPU")
           ::win.BeginBoxPanel("3D texture memory")
@@ -766,6 +810,17 @@ printn "point number %1%" %n
             ::win.SetCallback( &::OnTextureMemory)
           ::win.EndBoxPanel()
 
+        ::GPU_page = ::win.AddPage("Rend")
+          ::win.BeginBoxPanel("Sample distances")
+            ::win.AddBoolean(&::AutoAdjustSampleDistances,"Auto")
+            #::win.SetCallback( &::OnSampleDistance)
+            ::win.AddFloat(&::SampleDistance,"Dist",0.2,2)
+            #::win.SetCallback( &::OnSampleDistance)
+            ::win.AddFloat(&::ImageSampleDistance,"Im Dist",0.2,2)
+            ::win.AddButton("Apply",&::OnSampleDistance)
+          ::win.EndBoxPanel()
+
+          
       ::win.EndBook()
 
       printn "vtkVolumeClass::AddGui end"
