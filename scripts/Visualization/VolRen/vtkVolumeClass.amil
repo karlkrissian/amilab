@@ -392,8 +392,10 @@ if (!exists(vtkVolumeClass)) {
         curve.SetType(1) # solid
 
         if (!exists(::linearcurve1)) {
-          ::linearcurve1 = curve
-          ::imhisto1.dw.GetControlledCurves().push_back(&::linearcurve1)
+          ccurv = &::imhisto1.dw.GetControlledCurves()
+          size=ccurv.size()
+          ccurv.push_back(&curve)
+          ::linearcurve1 = &ccurv[size]
         } else {
           ::linearcurve1 = curve
         }

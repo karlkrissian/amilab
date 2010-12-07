@@ -119,7 +119,9 @@ BasicVariable::ptr WrapClass_dwControlledCurve::
   CLASS_GET_OBJECT_PARAM(dwControlledCurve,var,_obj);
 
   if (_obj.get()) {
-    this->_objectptr->_obj = _obj;
+    std::cout << "Begin->dwControlledCurve.assign" << std::endl;
+    *this->_objectptr->_obj = *_obj;
+    std::cout << "End->dwControlledCurve.assign" << std::endl;
   }
   return BasicVariable::ptr();
 }
