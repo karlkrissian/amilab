@@ -71,8 +71,8 @@ SET(WrapVTK_HDRS
 SET(WrapVTK_SRCS
      ${WrapVTK_SRCS}
      ${WrapVTK_HDRS}
-     ${vtk_source_list}
-     #${vtk_SRCS}
+     #${vtk_source_list}
+     ${vtk_SRCS}
      ${vtk_HDRS}
 )
 

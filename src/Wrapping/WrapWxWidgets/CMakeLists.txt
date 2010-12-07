@@ -1,7 +1,8 @@
 # Create a library called "Hello" which includes the source file "hello.cxx".
 # The extension is already found.  Any number of sources could be listed here.
 
-# Make sure the compiler can find include files from our Hello library.
+INCLUDE( ${wxWidgets_USE_FILE})
+
 include_directories (
   ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}
@@ -11,7 +12,6 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}
 )
 
-INCLUDE( ${wxWidgets_USE_FILE})
 
 
 file(GLOB wx_HDRS  "${AMI_WXWIDGETS_VERSION}/*.h"  )

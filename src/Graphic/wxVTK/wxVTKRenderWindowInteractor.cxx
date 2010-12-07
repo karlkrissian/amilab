@@ -35,7 +35,7 @@
 #ifdef __WXMAC__
 #include "vtkCarbonRenderWindow.h"
 #endif
-
+ 
 //Keep this for compatibilty reason, this was introduced in wxGTK 2.4.0
 #if (!wxCHECK_VERSION(2, 4, 0))
 wxWindow* wxGetTopLevelParent(wxWindow *win)
@@ -376,7 +376,9 @@ void wxVTKRenderWindowInteractor::OnPaint(wxPaintEvent& WXUNUSED(event))
   }
   // get vtk to render to the wxWindows
   Render();
-#ifdef __WXMAC__
+
+
+ #ifdef __WXMAC__
   // This solves a problem with repainting after a window resize
   // See also: http://sourceforge.net/mailarchive/forum.php?thread_id=31690967&forum_id=41789
   vtkCarbonRenderWindow* rwin = vtkCarbonRenderWindow::SafeDownCast(RenderWindow);
@@ -385,6 +387,7 @@ void wxVTKRenderWindowInteractor::OnPaint(wxPaintEvent& WXUNUSED(event))
     rwin->UpdateGLRegion();
   }
 #endif
+
 }
 //---------------------------------------------------------------------------
 void wxVTKRenderWindowInteractor::OnEraseBackground(wxEraseEvent &event)
