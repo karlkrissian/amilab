@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -55,7 +55,7 @@ class WrapClass_wxClassInfo : public WrapClass<wxClassInfo>
     }
 
     
-    /* The following types are missing: _8997
+    /* The following types are missing: _9424
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxClassInfo,"Constructor wxClassInfo::wxClassInfo(wxChar const * className, wxClassInfo const * baseInfo1, wxClassInfo const * baseInfo2, int size, wxObjectConstructorFn ctor) (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#wxclassinfo).");
     */
@@ -69,8 +69,6 @@ class WrapClass_wxClassInfo : public WrapClass<wxClassInfo>
     
     ADD_CLASS_STATICMETHOD(GetFirst,"wxClassInfo const * wxClassInfo::GetFirst() (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getfirst).");
     ADD_CLASS_STATICMETHOD(FindClass,"wxClassInfo * wxClassInfo::FindClass(wxChar const * className) (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#findclass).");
-    ADD_CLASS_STATICMETHOD(InitializeClasses,"void wxClassInfo::InitializeClasses() (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#initializeclasses).");
-    ADD_CLASS_STATICMETHOD(CleanUpClasses,"void wxClassInfo::CleanUpClasses() (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#cleanupclasses).");
 
 
 
@@ -85,7 +83,7 @@ class WrapClass_wxClassInfo : public WrapClass<wxClassInfo>
     ADD_CLASS_METHOD(GetBaseClass1,"wxClassInfo const * wxClassInfo::GetBaseClass1()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getbaseclass1)")
     ADD_CLASS_METHOD(GetBaseClass2,"wxClassInfo const * wxClassInfo::GetBaseClass2()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getbaseclass2)")
     ADD_CLASS_METHOD(GetSize,"int wxClassInfo::GetSize()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getsize)")
-/* The following types are missing: _8997
+/* The following types are missing: _9424
     ADD_CLASS_METHOD(GetConstructor,"wxObjectConstructorFn wxClassInfo::GetConstructor()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getconstructor)")
 */
     ADD_CLASS_METHOD(GetNext,"wxClassInfo const * wxClassInfo::GetNext()  (http://docs.wxwidgets.org/stable/wx_wxclassinfo.html#getnext)")
@@ -96,6 +94,11 @@ class WrapClass_wxClassInfo : public WrapClass<wxClassInfo>
 
 
     void AddMethods(WrapClass<wxClassInfo>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

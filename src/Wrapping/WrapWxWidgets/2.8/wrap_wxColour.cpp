@@ -63,13 +63,7 @@ Variable<AMIObject>::ptr WrapClass_wxColour::CreateVar( wxColour* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxColour::AddMethods(WrapClass<wxColour>::ptr this_ptr )
 {
-  
-      // Add members from wxColourBase
-      WrapClass_wxColourBase::ptr parent_wxColourBase(        boost::dynamic_pointer_cast<WrapClass_wxColourBase >(this_ptr));
-      parent_wxColourBase->AddMethods(parent_wxColourBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -83,7 +77,6 @@ void WrapClass_wxColour::AddMethods(WrapClass<wxColour>::ptr this_ptr )
 /* The following types are missing: _GdkColormap
       AddVar_CalcPixel( this_ptr);
 */
-      AddVar_GetPixel( this_ptr);
 /* The following types are missing: _GdkColor
       AddVar_GetColor( this_ptr);
 */
@@ -97,7 +90,49 @@ void WrapClass_wxColour::AddMethods(WrapClass<wxColour>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxColourBase
+  boost::shared_ptr<wxColourBase > parent_wxColourBase(  boost::dynamic_pointer_cast<wxColourBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxColourBase = AMILabType<wxColourBase >::CreateVarFromSmtPtr(parent_wxColourBase);
+  context->AddVar("wxColourBase",var_wxColourBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxColourBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxColourBase);
+  context->AddDefault(obj_wxColourBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxColour::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxColour");
+    WrapClass_wxColour::AddVar_wxColour_1(amiobject->GetContext());
+  WrapClass_wxColour::AddVar_wxColour(amiobject->GetContext());
+  WrapClass_wxColour::AddVar_wxColour_2(amiobject->GetContext());
+  WrapClass_wxColour::AddVar_wxColour_3(amiobject->GetContext());
+  WrapClass_wxColour::AddVar_wxColour_4(amiobject->GetContext());
+  WrapClass_wxColour::AddVar_wxColour_5(amiobject->GetContext());
+  WrapClass_wxColour::AddVar_wxColour_6(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxColour::AddVar_wxColour_7(amiobject->GetContext());
+  */
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -348,7 +383,7 @@ BasicVariable::ptr WrapClass_wxColour::
 void WrapClass_wxColour::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -358,8 +393,7 @@ BasicVariable::ptr WrapClass_wxColour::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -368,7 +402,7 @@ BasicVariable::ptr WrapClass_wxColour::
 void WrapClass_wxColour::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -378,8 +412,7 @@ BasicVariable::ptr WrapClass_wxColour::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -484,25 +517,6 @@ BasicVariable::ptr WrapClass_wxColour::
   return BasicVariable::ptr();
 }
 */
-
-//---------------------------------------------------
-//  Wrapping of int wxColour::GetPixel()
-//---------------------------------------------------
-void WrapClass_wxColour::
-    wrap_GetPixel::SetParametersComments()
-{
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxColour::
-    wrap_GetPixel::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  int res =   this->_objectptr->GetObj()->GetPixel();
-  return AMILabType<int >::CreateVar(res);
-}
 /* The following types are missing: _GdkColor
 
 //---------------------------------------------------
@@ -578,7 +592,7 @@ void WrapClass_wxColour::
     wrap___equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxColour, "parameter named 'col'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -594,8 +608,7 @@ BasicVariable::ptr WrapClass_wxColour::
   wxColour const & col = *col_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (col);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -605,7 +618,7 @@ void WrapClass_wxColour::
     wrap___not_equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxColour, "parameter named 'col'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -621,7 +634,6 @@ BasicVariable::ptr WrapClass_wxColour::
   wxColour const & col = *col_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (col);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 

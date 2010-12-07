@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -91,6 +91,11 @@ class WrapClass_wxClientDataContainer : public WrapClass<wxClientDataContainer>
 
 
     void AddMethods(WrapClass<wxClientDataContainer>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

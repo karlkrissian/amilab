@@ -64,13 +64,7 @@ Variable<AMIObject>::ptr WrapClass_wxImageHandler::CreateVar( wxImageHandler* sp
 //----------------------------------------------------------------------
 void WrapClass_wxImageHandler::AddMethods(WrapClass<wxImageHandler>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_LoadFile( this_ptr);
@@ -95,7 +89,38 @@ void WrapClass_wxImageHandler::AddMethods(WrapClass<wxImageHandler>::ptr this_pt
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxImageHandler::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxImageHandler");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -110,9 +135,9 @@ void WrapClass_wxImageHandler::
 {
   ADDPARAMCOMMENT_TYPE( wxImage, "parameter named 'image'")
   ADDPARAMCOMMENT_TYPE( wxInputStream, "parameter named 'stream'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'verbose' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'verbose' (def:true)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'index' (def:-0x00000000000000001)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -131,16 +156,14 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxInputStream & stream = *stream_smtptr;
 
-  int verbose_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(verbose_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool verbose = (bool) (verbose_int>0.5);
+  bool verbose = true;
+  if (!get_val_param<bool >(verbose,_p,_n,false,false)) ClassHelpAndReturn;
 
   int index = -0x00000000000000001;
   if (!get_val_param<int >(index,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(image, stream, verbose, index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -151,8 +174,8 @@ void WrapClass_wxImageHandler::
 {
   ADDPARAMCOMMENT_TYPE( wxImage, "parameter named 'image'")
   ADDPARAMCOMMENT_TYPE( wxOutputStream, "parameter named 'stream'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'verbose' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'verbose' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -171,13 +194,11 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   if (!get_val_smtptr_param<wxOutputStream >(stream_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxOutputStream & stream = *stream_smtptr;
 
-  int verbose_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(verbose_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool verbose = (bool) (verbose_int>0.5);
+  bool verbose = true;
+  if (!get_val_param<bool >(verbose,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(image, stream, verbose);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -213,7 +234,7 @@ void WrapClass_wxImageHandler::
     wrap_CanRead_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxInputStream, "parameter named 'stream'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -229,8 +250,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   wxInputStream & stream = *stream_smtptr;
 
   bool res =   this->_objectptr->GetObj()->CanRead(stream);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -261,7 +281,7 @@ void WrapClass_wxImageHandler::
     wrap_CanRead_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -277,8 +297,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   wxString const & name = *name_smtptr;
 
   bool res =   this->_objectptr->GetObj()->CanRead(name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

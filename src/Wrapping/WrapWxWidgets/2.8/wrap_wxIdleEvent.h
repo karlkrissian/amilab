@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -70,12 +70,8 @@ class WrapClass_wxIdleEvent : public WrapClass<wxIdleEvent>
 
     // Static methods
     
-    /* The following types are missing: wxIdleMode
     ADD_CLASS_STATICMETHOD(SetMode,"void wxIdleEvent::SetMode(wxIdleMode mode) (http://docs.wxwidgets.org/stable/wx_wxidleevent.html#setmode).");
-    */
-    /* The following types are missing: wxIdleMode
     ADD_CLASS_STATICMETHOD(GetMode,"wxIdleMode wxIdleEvent::GetMode() (http://docs.wxwidgets.org/stable/wx_wxidleevent.html#getmode).");
-    */
     ADD_CLASS_STATICMETHOD(CanSend,"bool wxIdleEvent::CanSend(wxWindow * win) (http://docs.wxwidgets.org/stable/wx_wxidleevent.html#cansend).");
 
 
@@ -95,6 +91,11 @@ class WrapClass_wxIdleEvent : public WrapClass<wxIdleEvent>
 
 
     void AddMethods(WrapClass<wxIdleEvent>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

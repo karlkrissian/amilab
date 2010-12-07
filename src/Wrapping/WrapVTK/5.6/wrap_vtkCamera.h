@@ -160,12 +160,10 @@ class WrapClass_vtkCamera : public WrapClass<vtkCamera>
     ADD_CLASS_METHOD(GetFocalDisk,"double vtkCamera::GetFocalDisk()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getfocaldisk)")
     ADD_CLASS_METHOD(GetViewTransformMatrix,"vtkMatrix4x4 * vtkCamera::GetViewTransformMatrix()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getviewtransformmatrix)")
     ADD_CLASS_METHOD(GetViewTransformObject,"vtkTransform * vtkCamera::GetViewTransformObject()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getviewtransformobject)")
-    ADD_CLASS_METHOD(GetPerspectiveTransformMatrix,"vtkMatrix4x4 * vtkCamera::GetPerspectiveTransformMatrix(double aspect, double nearz, double farz)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getperspectivetransformmatrix)")
     ADD_CLASS_METHOD(GetProjectionTransformMatrix,"vtkMatrix4x4 * vtkCamera::GetProjectionTransformMatrix(double aspect, double nearz, double farz)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getprojectiontransformmatrix)")
 /* The following types are missing: vtkPerspectiveTransform
     ADD_CLASS_METHOD(GetProjectionTransformObject,"vtkPerspectiveTransform * vtkCamera::GetProjectionTransformObject(double aspect, double nearz, double farz)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getprojectiontransformobject)")
 */
-    ADD_CLASS_METHOD(GetCompositePerspectiveTransformMatrix,"vtkMatrix4x4 * vtkCamera::GetCompositePerspectiveTransformMatrix(double aspect, double nearz, double farz)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getcompositeperspectivetransformmatrix)")
     ADD_CLASS_METHOD(GetCompositeProjectionTransformMatrix,"vtkMatrix4x4 * vtkCamera::GetCompositeProjectionTransformMatrix(double aspect, double nearz, double farz)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getcompositeprojectiontransformmatrix)")
     ADD_CLASS_METHOD(SetUserViewTransform,"void vtkCamera::SetUserViewTransform(vtkHomogeneousTransform * transform)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#setuserviewtransform)")
     ADD_CLASS_METHOD(GetUserViewTransform,"vtkHomogeneousTransform * vtkCamera::GetUserViewTransform()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getuserviewtransform)")
@@ -177,9 +175,6 @@ class WrapClass_vtkCamera : public WrapClass<vtkCamera>
     ADD_CLASS_METHOD(GetFrustumPlanes,"void vtkCamera::GetFrustumPlanes(double aspect, double * planes)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getfrustumplanes)")
     ADD_CLASS_METHOD(GetOrientation,"double * vtkCamera::GetOrientation()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getorientation)")
     ADD_CLASS_METHOD(GetOrientationWXYZ,"double * vtkCamera::GetOrientationWXYZ()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getorientationwxyz)")
-    ADD_CLASS_METHOD(SetViewPlaneNormal_1,"void vtkCamera::SetViewPlaneNormal(double x, double y, double z)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#setviewplanenormal)")
-    ADD_CLASS_METHOD(SetViewPlaneNormal,"vtkCamera::SetViewPlaneNormal()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#setviewplanenormal)")
-    ADD_CLASS_METHOD(SetViewPlaneNormal_2,"void vtkCamera::SetViewPlaneNormal(double const * a)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#setviewplanenormal)")
     ADD_CLASS_METHOD(ComputeViewPlaneNormal,"void vtkCamera::ComputeViewPlaneNormal()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#computeviewplanenormal)")
     ADD_CLASS_METHOD(GetCameraLightTransformMatrix,"vtkMatrix4x4 * vtkCamera::GetCameraLightTransformMatrix()  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#getcameralighttransformmatrix)")
     ADD_CLASS_METHOD(UpdateViewport,"void vtkCamera::UpdateViewport(vtkRenderer * param0)  (http://docs.wxwidgets.org/stable/wx_vtkcamera.html#updateviewport)")

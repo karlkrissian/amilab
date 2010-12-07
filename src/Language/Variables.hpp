@@ -26,9 +26,13 @@ class Variables{
   DEFINE_CLASS(Variables);
 
  protected:
-  std::vector<BasicVariable::ptr>  _vars;
-  std::string                      _context_name;
-  bool                             _global_new;
+  std::vector<BasicVariable::ptr> _vars;
+  std::string                     _context_name;
+  bool                            _global_new;
+
+  /// Default contexts to look for if the variable
+  /// is not found in this context
+  std::list<Variables::ptr>     _defaults;
 
  public:
 
@@ -46,6 +50,19 @@ class Variables{
     return BasicVariable::ptr();
   }
 
+  //--------------------------------------------
+  void AddDefault( Variables::ptr& defcontext )
+  {
+    _defaults.push_back(defcontext);
+  }
+
+  //--------------------------------------------
+  void RemoveDefault( Variables::ptr& defcontext )
+  {
+    _defaults.remove(defcontext);
+  }
+
+  //--------------------------------------------
   int GetSize()
   {
     return _vars.size();

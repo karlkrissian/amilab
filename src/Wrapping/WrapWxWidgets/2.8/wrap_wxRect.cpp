@@ -61,10 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxRect::CreateVar( wxRect* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxRect::AddMethods(WrapClass<wxRect>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -149,37 +146,73 @@ void WrapClass_wxRect::AddMethods(WrapClass<wxRect>::ptr this_ptr )
       
       // Adding public member x
       boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
-      if (var_x.get()) {
-        var_x->Rename("x");
-        context->AddVar(var_x,context);
+      if (var_x_ptr.get()) {
+        BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
+        if (var_x.get()) {
+          var_x->Rename("x");
+          context->AddVar(var_x,context);
+        }
       }
       
       // Adding public member y
       boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
-      if (var_y.get()) {
-        var_y->Rename("y");
-        context->AddVar(var_y,context);
+      if (var_y_ptr.get()) {
+        BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
+        if (var_y.get()) {
+          var_y->Rename("y");
+          context->AddVar(var_y,context);
+        }
       }
       
       // Adding public member width
       boost::shared_ptr<int > var_width_ptr(&GetObj()->width, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_width = AMILabType<int >::CreateVarFromSmtPtr(var_width_ptr);
-      if (var_width.get()) {
-        var_width->Rename("width");
-        context->AddVar(var_width,context);
+      if (var_width_ptr.get()) {
+        BasicVariable::ptr var_width = AMILabType<int >::CreateVarFromSmtPtr(var_width_ptr);
+        if (var_width.get()) {
+          var_width->Rename("width");
+          context->AddVar(var_width,context);
+        }
       }
       
       // Adding public member height
       boost::shared_ptr<int > var_height_ptr(&GetObj()->height, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_height = AMILabType<int >::CreateVarFromSmtPtr(var_height_ptr);
-      if (var_height.get()) {
-        var_height->Rename("height");
-        context->AddVar(var_height,context);
+      if (var_height_ptr.get()) {
+        BasicVariable::ptr var_height = AMILabType<int >::CreateVarFromSmtPtr(var_height_ptr);
+        if (var_height.get()) {
+          var_height->Rename("height");
+          context->AddVar(var_height,context);
+        }
       }
 
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxRect::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxRect");
+    WrapClass_wxRect::AddVar_wxRect_1(amiobject->GetContext());
+  WrapClass_wxRect::AddVar_wxRect(amiobject->GetContext());
+  WrapClass_wxRect::AddVar_wxRect_2(amiobject->GetContext());
+  WrapClass_wxRect::AddVar_wxRect_3(amiobject->GetContext());
+  WrapClass_wxRect::AddVar_wxRect_4(amiobject->GetContext());
+  WrapClass_wxRect::AddVar_wxRect_5(amiobject->GetContext());
+  WrapClass_wxRect::AddVar_wxRect_6(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -671,7 +704,7 @@ BasicVariable::ptr WrapClass_wxRect::
 void WrapClass_wxRect::
     wrap_IsEmpty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -681,8 +714,7 @@ BasicVariable::ptr WrapClass_wxRect::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEmpty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1709,7 +1741,7 @@ void WrapClass_wxRect::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1727,8 +1759,7 @@ BasicVariable::ptr WrapClass_wxRect::
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Contains(x, y);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1762,7 +1793,7 @@ void WrapClass_wxRect::
     wrap_Contains_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1778,8 +1809,7 @@ BasicVariable::ptr WrapClass_wxRect::
   wxPoint const & pt = *pt_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Contains(pt);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1789,7 +1819,7 @@ void WrapClass_wxRect::
     wrap_Contains_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1805,8 +1835,7 @@ BasicVariable::ptr WrapClass_wxRect::
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Contains(rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1816,7 +1845,7 @@ void WrapClass_wxRect::
     wrap_Intersects::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1832,8 +1861,7 @@ BasicVariable::ptr WrapClass_wxRect::
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Intersects(rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1929,7 +1957,7 @@ void WrapClass_wxRect::
     wrap___equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1945,8 +1973,7 @@ BasicVariable::ptr WrapClass_wxRect::
   wxRect const & rect = *rect_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1956,7 +1983,7 @@ void WrapClass_wxRect::
     wrap___not_equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1972,8 +1999,7 @@ BasicVariable::ptr WrapClass_wxRect::
   wxRect const & rect = *rect_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

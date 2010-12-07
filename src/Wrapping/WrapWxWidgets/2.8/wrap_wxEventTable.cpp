@@ -59,10 +59,7 @@ Variable<AMIObject>::ptr WrapClass_wxEventTable::CreateVar( wxEventTable* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxEventTable::AddMethods(WrapClass<wxEventTable>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -81,24 +78,52 @@ void WrapClass_wxEventTable::AddMethods(WrapClass<wxEventTable>::ptr this_ptr )
       /* Avoiding const pointers for the moment
       // Adding public member baseTable
       boost::shared_ptr<wxEventTable > var_baseTable_ptr(GetObj()->baseTable, smartpointer_nodeleter<wxEventTable >());
-      BasicVariable::ptr var_baseTable = AMILabType<wxEventTable >::CreateVarFromSmtPtr(var_baseTable_ptr);
-      if (var_baseTable.get()) {
-        var_baseTable->Rename("baseTable");
-        context->AddVar(var_baseTable,context);
+      if (var_baseTable_ptr.get()) {
+        BasicVariable::ptr var_baseTable = AMILabType<wxEventTable >::CreateVarFromSmtPtr(var_baseTable_ptr);
+        if (var_baseTable.get()) {
+          var_baseTable->Rename("baseTable");
+          context->AddVar(var_baseTable,context);
+        }
       }
       */
       
-      /* type not available
+      /* Type not available
       // Adding public member entries
       boost::shared_ptr<wxEventTableEntry > var_entries_ptr(GetObj()->entries, smartpointer_nodeleter<wxEventTableEntry >());
-      BasicVariable::ptr var_entries = AMILabType<wxEventTableEntry >::CreateVarFromSmtPtr(var_entries_ptr);
-      if (var_entries.get()) {
-        var_entries->Rename("entries");
-        context->AddVar(var_entries,context);
+      if (var_entries_ptr.get()) {
+        BasicVariable::ptr var_entries = AMILabType<wxEventTableEntry >::CreateVarFromSmtPtr(var_entries_ptr);
+        if (var_entries.get()) {
+          var_entries->Rename("entries");
+          context->AddVar(var_entries,context);
+        }
       }
       */
 
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxEventTable::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxEventTable");
+    WrapClass_wxEventTable::AddVar_wxEventTable_1(amiobject->GetContext());
+  WrapClass_wxEventTable::AddVar_wxEventTable(amiobject->GetContext());
+  WrapClass_wxEventTable::AddVar_wxEventTable_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

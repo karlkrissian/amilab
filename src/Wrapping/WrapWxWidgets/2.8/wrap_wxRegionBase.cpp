@@ -19,6 +19,8 @@
 // get all the required includes
 // #include "..."
 #include "wrap_wxRegion.h"
+#include "wrap_wxRect.h"
+#include "wrap_wxPoint.h"
 #include "wrap_wxBitmap.h"
 #include "wrap_wxColour.h"
 #include "wrap_wxRegionBase.h"
@@ -62,13 +64,7 @@ Variable<AMIObject>::ptr WrapClass_wxRegionBase::CreateVar( wxRegionBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxRegionBase::AddMethods(WrapClass<wxRegionBase>::ptr this_ptr )
 {
-  
-      // Add members from wxGDIObject
-      WrapClass_wxGDIObject::ptr parent_wxGDIObject(        boost::dynamic_pointer_cast<WrapClass_wxGDIObject >(this_ptr));
-      parent_wxGDIObject->AddMethods(parent_wxGDIObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Ok( this_ptr);
@@ -77,52 +73,32 @@ void WrapClass_wxRegionBase::AddMethods(WrapClass<wxRegionBase>::ptr this_ptr )
       AddVar_IsEqual( this_ptr);
       AddVar_GetBox_1( this_ptr);
       AddVar_GetBox( this_ptr);
-/* The following types are missing: wxRect
       AddVar_GetBox_2( this_ptr);
-*/
-/* The following types are missing: wxRegionContain
       AddVar_Contains_1( this_ptr);
-*/
       AddVar_Contains( this_ptr);
-/* The following types are missing: wxRegionContain, wxPoint
       AddVar_Contains_2( this_ptr);
-*/
-/* The following types are missing: wxRegionContain
       AddVar_Contains_3( this_ptr);
-*/
-/* The following types are missing: wxRegionContain, wxRect
       AddVar_Contains_4( this_ptr);
-*/
       AddVar_Offset_1( this_ptr);
       AddVar_Offset( this_ptr);
-/* The following types are missing: wxPoint
       AddVar_Offset_2( this_ptr);
-*/
       AddVar_Union_1( this_ptr);
       AddVar_Union( this_ptr);
-/* The following types are missing: wxRect
       AddVar_Union_2( this_ptr);
-*/
       AddVar_Union_3( this_ptr);
       AddVar_Union_4( this_ptr);
       AddVar_Union_5( this_ptr);
       AddVar_Intersect_1( this_ptr);
       AddVar_Intersect( this_ptr);
-/* The following types are missing: wxRect
       AddVar_Intersect_2( this_ptr);
-*/
       AddVar_Intersect_3( this_ptr);
       AddVar_Subtract_1( this_ptr);
       AddVar_Subtract( this_ptr);
-/* The following types are missing: wxRect
       AddVar_Subtract_2( this_ptr);
-*/
       AddVar_Subtract_3( this_ptr);
       AddVar_Xor_1( this_ptr);
       AddVar_Xor( this_ptr);
-/* The following types are missing: wxRect
       AddVar_Xor_2( this_ptr);
-*/
       AddVar_Xor_3( this_ptr);
       AddVar_ConvertToBitmap( this_ptr);
 
@@ -134,7 +110,38 @@ void WrapClass_wxRegionBase::AddMethods(WrapClass<wxRegionBase>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxGDIObject
+  boost::shared_ptr<wxGDIObject > parent_wxGDIObject(  boost::dynamic_pointer_cast<wxGDIObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxGDIObject = AMILabType<wxGDIObject >::CreateVarFromSmtPtr(parent_wxGDIObject);
+  context->AddVar("wxGDIObject",var_wxGDIObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxGDIObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxGDIObject);
+  context->AddDefault(obj_wxGDIObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxRegionBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxRegionBase");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -147,7 +154,7 @@ void WrapClass_wxRegionBase::AddMethods(WrapClass<wxRegionBase>::ptr this_ptr )
 void WrapClass_wxRegionBase::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -157,8 +164,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -167,7 +173,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
 void WrapClass_wxRegionBase::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -177,8 +183,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -187,7 +192,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
 void WrapClass_wxRegionBase::
     wrap_Empty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -197,8 +202,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Empty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -208,7 +212,7 @@ void WrapClass_wxRegionBase::
     wrap_IsEqual::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRegion, "parameter named 'region'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -224,8 +228,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->IsEqual(region);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -238,7 +241,7 @@ void WrapClass_wxRegionBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -266,8 +269,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxCoord & h = *h_smtptr;
 
   bool res =   this->_objectptr->GetObj()->GetBox(x, y, w, h);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -285,9 +287,11 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_GetBox_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxRegionBase::wrap_GetBox_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of wxRect wxRegionBase::GetBox()
@@ -307,8 +311,6 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRect res =   this->_objectptr->GetObj()->GetBox();
   return AMILabType<wxRect >::CreateVar(res);
 }
-*/
-/* The following types are missing: wxRegionContain
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxCoord x, wxCoord y)
@@ -318,7 +320,7 @@ void WrapClass_wxRegionBase::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type wxRegionContain";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -336,9 +338,9 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxRegionContain res =   this->_objectptr->GetObj()->Contains(x, y);
-  return AMILabType<wxRegionContain >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxRegionBase::Contains(...)
@@ -352,9 +354,20 @@ BasicVariable::ptr WrapClass_wxRegionBase::
     wrap_Contains::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxRegionBase::wrap_Contains_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxRegionBase::wrap_Contains_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxRegionBase::wrap_Contains_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
+  WrapClass_wxRegionBase::wrap_Contains_4 m4(this->_objectptr);
+  res = m4.CallMember(_p);
+  if (!m4.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxRegionContain, wxPoint
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxPoint const & pt)
@@ -363,7 +376,7 @@ void WrapClass_wxRegionBase::
     wrap_Contains_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
-  return_comments="returning a variable of type wxRegionContain";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -379,10 +392,9 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxPoint const & pt = *pt_smtptr;
 
   wxRegionContain res =   this->_objectptr->GetObj()->Contains(pt);
-  return AMILabType<wxRegionContain >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: wxRegionContain
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxCoord x, wxCoord y, wxCoord w, wxCoord h)
@@ -394,7 +406,7 @@ void WrapClass_wxRegionBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
-  return_comments="returning a variable of type wxRegionContain";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -418,10 +430,9 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxRegionContain res =   this->_objectptr->GetObj()->Contains(x, y, w, h);
-  return AMILabType<wxRegionContain >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: wxRegionContain, wxRect
 
 //---------------------------------------------------
 //  Wrapping of wxRegionContain wxRegionBase::Contains(wxRect const & rect)
@@ -430,7 +441,7 @@ void WrapClass_wxRegionBase::
     wrap_Contains_4::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type wxRegionContain";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -446,9 +457,9 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRect const & rect = *rect_smtptr;
 
   wxRegionContain res =   this->_objectptr->GetObj()->Contains(rect);
-  return AMILabType<wxRegionContain >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Offset(wxCoord x, wxCoord y)
@@ -458,7 +469,7 @@ void WrapClass_wxRegionBase::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -476,8 +487,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Offset(x, y);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -495,9 +505,11 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Offset_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxRegionBase::wrap_Offset_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxPoint
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Offset(wxPoint const & pt)
@@ -506,7 +518,7 @@ void WrapClass_wxRegionBase::
     wrap_Offset_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -522,10 +534,8 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxPoint const & pt = *pt_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Offset(pt);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Union(wxCoord x, wxCoord y, wxCoord w, wxCoord h)
@@ -537,7 +547,7 @@ void WrapClass_wxRegionBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -561,8 +571,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Union(x, y, w, h);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -580,6 +589,9 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Union_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxRegionBase::wrap_Union_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxRegionBase::wrap_Union_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
@@ -591,7 +603,6 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!m5.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Union(wxRect const & rect)
@@ -600,7 +611,7 @@ void WrapClass_wxRegionBase::
     wrap_Union_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -616,10 +627,8 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Union(rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Union(wxRegion const & region)
@@ -628,7 +637,7 @@ void WrapClass_wxRegionBase::
     wrap_Union_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRegion, "parameter named 'region'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -644,8 +653,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Union(region);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -655,7 +663,7 @@ void WrapClass_wxRegionBase::
     wrap_Union_4::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bmp'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -671,8 +679,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxBitmap const & bmp = *bmp_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Union(bmp);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -684,7 +691,7 @@ void WrapClass_wxRegionBase::
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bmp'")
   ADDPARAMCOMMENT_TYPE( wxColour, "parameter named 'transp'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'tolerance' (def:0)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -707,8 +714,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!get_val_param<int >(tolerance,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Union(bmp, transp, tolerance);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -721,7 +727,7 @@ void WrapClass_wxRegionBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -745,8 +751,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Intersect(x, y, w, h);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -764,12 +769,14 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Intersect_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxRegionBase::wrap_Intersect_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxRegionBase::wrap_Intersect_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Intersect(wxRect const & rect)
@@ -778,7 +785,7 @@ void WrapClass_wxRegionBase::
     wrap_Intersect_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -794,10 +801,8 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Intersect(rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Intersect(wxRegion const & region)
@@ -806,7 +811,7 @@ void WrapClass_wxRegionBase::
     wrap_Intersect_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRegion, "parameter named 'region'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -822,8 +827,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Intersect(region);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -836,7 +840,7 @@ void WrapClass_wxRegionBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -860,8 +864,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Subtract(x, y, w, h);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -879,12 +882,14 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Subtract_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxRegionBase::wrap_Subtract_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxRegionBase::wrap_Subtract_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Subtract(wxRect const & rect)
@@ -893,7 +898,7 @@ void WrapClass_wxRegionBase::
     wrap_Subtract_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -909,10 +914,8 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Subtract(rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Subtract(wxRegion const & region)
@@ -921,7 +924,7 @@ void WrapClass_wxRegionBase::
     wrap_Subtract_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRegion, "parameter named 'region'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -937,8 +940,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Subtract(region);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -951,7 +953,7 @@ void WrapClass_wxRegionBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -975,8 +977,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Xor(x, y, w, h);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -994,12 +995,14 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   WrapClass_wxRegionBase::wrap_Xor_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxRegionBase::wrap_Xor_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxRegionBase::wrap_Xor_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxRect
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Xor(wxRect const & rect)
@@ -1008,7 +1011,7 @@ void WrapClass_wxRegionBase::
     wrap_Xor_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1024,10 +1027,8 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Xor(rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxRegionBase::Xor(wxRegion const & region)
@@ -1036,7 +1037,7 @@ void WrapClass_wxRegionBase::
     wrap_Xor_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRegion, "parameter named 'region'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1052,8 +1053,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Xor(region);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1108,7 +1108,7 @@ void WrapClass_wxRegionBase::
     wrap___equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRegion, "parameter named 'region'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1124,8 +1124,7 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRegion const & region = *region_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (region);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1135,7 +1134,7 @@ void WrapClass_wxRegionBase::
     wrap___not_equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRegion, "parameter named 'region'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1151,7 +1150,6 @@ BasicVariable::ptr WrapClass_wxRegionBase::
   wxRegion const & region = *region_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (region);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 

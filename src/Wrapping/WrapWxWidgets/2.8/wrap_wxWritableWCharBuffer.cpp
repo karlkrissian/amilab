@@ -61,13 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxWritableWCharBuffer::CreateVar( wxWritableW
 //----------------------------------------------------------------------
 void WrapClass_wxWritableWCharBuffer::AddMethods(WrapClass<wxWritableWCharBuffer>::ptr this_ptr )
 {
-  
-      // Add members from wxWCharBuffer
-      WrapClass_wxWCharBuffer::ptr parent_wxWCharBuffer(        boost::dynamic_pointer_cast<WrapClass_wxWCharBuffer >(this_ptr));
-      parent_wxWCharBuffer->AddMethods(parent_wxWCharBuffer);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -79,7 +73,43 @@ void WrapClass_wxWritableWCharBuffer::AddMethods(WrapClass<wxWritableWCharBuffer
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxWCharBuffer
+  boost::shared_ptr<wxWCharBuffer > parent_wxWCharBuffer(  boost::dynamic_pointer_cast<wxWCharBuffer >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxWCharBuffer = AMILabType<wxWCharBuffer >::CreateVarFromSmtPtr(parent_wxWCharBuffer);
+  context->AddVar("wxWCharBuffer",var_wxWCharBuffer);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxWCharBuffer = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxWCharBuffer);
+  context->AddDefault(obj_wxWCharBuffer->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxWritableWCharBuffer::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxWritableWCharBuffer");
+    WrapClass_wxWritableWCharBuffer::AddVar_wxWritableWCharBuffer_1(amiobject->GetContext());
+  WrapClass_wxWritableWCharBuffer::AddVar_wxWritableWCharBuffer(amiobject->GetContext());
+  WrapClass_wxWritableWCharBuffer::AddVar_wxWritableWCharBuffer_2(amiobject->GetContext());
+  WrapClass_wxWritableWCharBuffer::AddVar_wxWritableWCharBuffer_3(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

@@ -1,4 +1,7 @@
 
+#ifndef _wxAmiEventHandler_h_
+#define _wxAmiEventHandler_h_
+
 #include "wx/wx.h"
 
 /* Karl*/
@@ -24,3 +27,5 @@ class wxAmiEventHandler: public wxEvtHandler
 
 };
 /*--*/
+
+#endif // _wxAmiEventHandler_h_

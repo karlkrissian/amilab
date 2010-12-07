@@ -69,13 +69,7 @@ Variable<AMIObject>::ptr WrapClass_wxAuiFloatingFrame::CreateVar( wxAuiFloatingF
 //----------------------------------------------------------------------
 void WrapClass_wxAuiFloatingFrame::AddMethods(WrapClass<wxAuiFloatingFrame>::ptr this_ptr )
 {
-  
-      // Add members from wxMiniFrame
-      WrapClass_wxMiniFrame::ptr parent_wxMiniFrame(        boost::dynamic_pointer_cast<WrapClass_wxMiniFrame >(this_ptr));
-      parent_wxMiniFrame->AddMethods(parent_wxMiniFrame);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_SetPaneWindow( this_ptr);
@@ -85,7 +79,40 @@ void WrapClass_wxAuiFloatingFrame::AddMethods(WrapClass<wxAuiFloatingFrame>::ptr
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxMiniFrame
+  boost::shared_ptr<wxMiniFrame > parent_wxMiniFrame(  boost::dynamic_pointer_cast<wxMiniFrame >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxMiniFrame = AMILabType<wxMiniFrame >::CreateVarFromSmtPtr(parent_wxMiniFrame);
+  context->AddVar("wxMiniFrame",var_wxMiniFrame);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxMiniFrame = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxMiniFrame);
+  context->AddDefault(obj_wxMiniFrame->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAuiFloatingFrame::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAuiFloatingFrame");
+    WrapClass_wxAuiFloatingFrame::AddVar_wxAuiFloatingFrame(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

@@ -66,10 +66,7 @@ Variable<AMIObject>::ptr WrapClass_wxAuiPaneInfo::CreateVar( wxAuiPaneInfo* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxAuiPaneInfo::AddMethods(WrapClass<wxAuiPaneInfo>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -208,7 +205,7 @@ void WrapClass_wxAuiPaneInfo::AddMethods(WrapClass<wxAuiPaneInfo>::ptr this_ptr 
         }
       }
       
-      /* type not available
+      /* Type not available
       // Adding public member state
       boost::shared_ptr<unsigned int > var_state_ptr(&GetObj()->state, smartpointer_nodeleter<unsigned int >());
       if (var_state_ptr.get()) {
@@ -320,7 +317,7 @@ void WrapClass_wxAuiPaneInfo::AddMethods(WrapClass<wxAuiPaneInfo>::ptr this_ptr 
         }
       }
       
-      /* type not available
+      /* Type not available
       // Adding public member buttons
       boost::shared_ptr<wxAuiPaneButtonArray > var_buttons_ptr(&GetObj()->buttons, smartpointer_nodeleter<wxAuiPaneButtonArray >());
       if (var_buttons_ptr.get()) {
@@ -342,7 +339,31 @@ void WrapClass_wxAuiPaneInfo::AddMethods(WrapClass<wxAuiPaneInfo>::ptr this_ptr 
         }
       }
 
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAuiPaneInfo::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAuiPaneInfo");
+    WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo_1(amiobject->GetContext());
+  WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo(amiobject->GetContext());
+  WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -461,7 +482,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -471,8 +492,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -481,7 +501,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsFixed::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -491,8 +511,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsFixed();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -501,7 +520,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsResizable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -511,8 +530,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsResizable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -521,7 +539,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsShown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -531,8 +549,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsShown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -541,7 +558,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsFloating::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -551,8 +568,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsFloating();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -561,7 +577,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsDocked::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -571,8 +587,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsDocked();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -581,7 +596,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsToolbar::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -591,8 +606,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsToolbar();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -601,7 +615,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsTopDockable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -611,8 +625,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsTopDockable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -621,7 +634,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsBottomDockable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -631,8 +644,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsBottomDockable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -641,7 +653,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsLeftDockable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -651,8 +663,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsLeftDockable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -661,7 +672,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsRightDockable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -671,8 +682,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsRightDockable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -681,7 +691,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsFloatable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -691,8 +701,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsFloatable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -701,7 +710,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsMovable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -711,8 +720,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsMovable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -721,7 +729,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsDestroyOnClose::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -731,8 +739,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsDestroyOnClose();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -741,7 +748,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_IsMaximized::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -751,8 +758,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsMaximized();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -761,7 +767,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_HasCaption::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -771,8 +777,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasCaption();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -781,7 +786,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_HasGripper::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -791,8 +796,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasGripper();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -801,7 +805,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_HasBorder::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -811,8 +815,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasBorder();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -821,7 +824,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_HasCloseButton::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -831,8 +834,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasCloseButton();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -841,7 +843,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_HasMaximizeButton::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -851,8 +853,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasMaximizeButton();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -861,7 +862,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_HasMinimizeButton::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -871,8 +872,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasMinimizeButton();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -881,7 +881,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_HasPinButton::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -891,8 +891,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasPinButton();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -901,7 +900,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_HasGripperTop::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -911,8 +910,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasGripperTop();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1612,7 +1610,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_Resizable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'resizable' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'resizable' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1624,9 +1622,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int resizable_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(resizable_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool resizable = (bool) (resizable_int>0.5);
+  bool resizable = true;
+  if (!get_val_param<bool >(resizable,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Resizable(resizable);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1695,7 +1692,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_Show::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1707,9 +1704,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int show_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(show_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool show = (bool) (show_int>0.5);
+  bool show = true;
+  if (!get_val_param<bool >(show,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Show(show);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1721,7 +1717,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_CaptionVisible::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'visible' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'visible' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1733,9 +1729,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int visible_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(visible_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool visible = (bool) (visible_int>0.5);
+  bool visible = true;
+  if (!get_val_param<bool >(visible,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->CaptionVisible(visible);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1785,7 +1780,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_PaneBorder::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'visible' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'visible' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1797,9 +1792,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int visible_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(visible_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool visible = (bool) (visible_int>0.5);
+  bool visible = true;
+  if (!get_val_param<bool >(visible,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->PaneBorder(visible);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1811,7 +1805,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_Gripper::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'visible' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'visible' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1823,9 +1817,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int visible_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(visible_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool visible = (bool) (visible_int>0.5);
+  bool visible = true;
+  if (!get_val_param<bool >(visible,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Gripper(visible);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1837,7 +1830,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_GripperTop::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'attop' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'attop' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1849,9 +1842,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int attop_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(attop_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool attop = (bool) (attop_int>0.5);
+  bool attop = true;
+  if (!get_val_param<bool >(attop,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->GripperTop(attop);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1863,7 +1855,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_CloseButton::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'visible' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'visible' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1875,9 +1867,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int visible_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(visible_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool visible = (bool) (visible_int>0.5);
+  bool visible = true;
+  if (!get_val_param<bool >(visible,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->CloseButton(visible);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1889,7 +1880,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_MaximizeButton::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'visible' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'visible' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1901,9 +1892,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int visible_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(visible_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool visible = (bool) (visible_int>0.5);
+  bool visible = true;
+  if (!get_val_param<bool >(visible,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MaximizeButton(visible);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1915,7 +1905,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_MinimizeButton::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'visible' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'visible' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1927,9 +1917,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int visible_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(visible_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool visible = (bool) (visible_int>0.5);
+  bool visible = true;
+  if (!get_val_param<bool >(visible,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->MinimizeButton(visible);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1941,7 +1930,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_PinButton::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'visible' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'visible' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1953,9 +1942,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int visible_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(visible_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool visible = (bool) (visible_int>0.5);
+  bool visible = true;
+  if (!get_val_param<bool >(visible,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->PinButton(visible);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1967,7 +1955,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_DestroyOnClose::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -1979,9 +1967,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int b_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(b_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+  bool b = true;
+  if (!get_val_param<bool >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->DestroyOnClose(b);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -1993,7 +1980,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_TopDockable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -2005,9 +1992,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int b_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(b_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+  bool b = true;
+  if (!get_val_param<bool >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->TopDockable(b);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -2019,7 +2005,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_BottomDockable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -2031,9 +2017,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int b_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(b_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+  bool b = true;
+  if (!get_val_param<bool >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->BottomDockable(b);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -2045,7 +2030,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_LeftDockable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -2057,9 +2042,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int b_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(b_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+  bool b = true;
+  if (!get_val_param<bool >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->LeftDockable(b);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -2071,7 +2055,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_RightDockable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -2083,9 +2067,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int b_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(b_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+  bool b = true;
+  if (!get_val_param<bool >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->RightDockable(b);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -2097,7 +2080,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_Floatable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -2109,9 +2092,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int b_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(b_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+  bool b = true;
+  if (!get_val_param<bool >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Floatable(b);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -2123,7 +2105,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_Movable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -2135,9 +2117,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int b_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(b_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+  bool b = true;
+  if (!get_val_param<bool >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Movable(b);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -2149,7 +2130,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_DockFixed::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -2161,9 +2142,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int b_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(b_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+  bool b = true;
+  if (!get_val_param<bool >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->DockFixed(b);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -2175,7 +2155,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
 void WrapClass_wxAuiPaneInfo::
     wrap_Dockable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b' (def:true)")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -2187,9 +2167,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int b_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(b_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+  bool b = true;
+  if (!get_val_param<bool >(b,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Dockable(b);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -2278,7 +2257,7 @@ void WrapClass_wxAuiPaneInfo::
     wrap_SetFlag::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'flag'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'option_state'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'option_state'")
   return_comments="returning a variable of type wxAuiPaneInfo";
 }
 
@@ -2294,9 +2273,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (!get_val_param<long >(flag_long,_p,_n,true,false)) ClassHelpAndReturn;
   unsigned int flag = boost::numeric_cast<unsigned int >(flag_long);
 
-  int option_state_int;
-  if (!get_val_param<int >(option_state_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool option_state = (bool) (option_state_int>0.5);
+  bool option_state;
+  if (!get_val_param<bool >(option_state,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->SetFlag(flag, option_state);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);
@@ -2309,7 +2287,7 @@ void WrapClass_wxAuiPaneInfo::
     wrap_HasFlag::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'flag'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2325,8 +2303,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   unsigned int flag = boost::numeric_cast<unsigned int >(flag_long);
 
   bool res =   this->_objectptr->GetObj()->HasFlag(flag);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

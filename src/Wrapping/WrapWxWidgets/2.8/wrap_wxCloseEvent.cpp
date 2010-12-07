@@ -61,13 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxCloseEvent::CreateVar( wxCloseEvent* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxCloseEvent::AddMethods(WrapClass<wxCloseEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -84,7 +78,42 @@ void WrapClass_wxCloseEvent::AddMethods(WrapClass<wxCloseEvent>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxCloseEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxCloseEvent");
+    WrapClass_wxCloseEvent::AddVar_wxCloseEvent_1(amiobject->GetContext());
+  WrapClass_wxCloseEvent::AddVar_wxCloseEvent(amiobject->GetContext());
+  WrapClass_wxCloseEvent::AddVar_wxCloseEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -189,7 +218,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
 void WrapClass_wxCloseEvent::
     wrap_SetLoggingOff::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'logOff'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'logOff'")
 }
 
 //---------------------------------------------------
@@ -200,9 +229,8 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int logOff_int;
-  if (!get_val_param<int >(logOff_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool logOff = (bool) (logOff_int>0.5);
+  bool logOff;
+  if (!get_val_param<bool >(logOff,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLoggingOff(logOff);
   return BasicVariable::ptr();
@@ -214,7 +242,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
 void WrapClass_wxCloseEvent::
     wrap_GetLoggingOff::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -224,8 +252,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetLoggingOff();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -234,7 +261,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
 void WrapClass_wxCloseEvent::
     wrap_Veto::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'veto' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'veto' (def:true)")
 }
 
 //---------------------------------------------------
@@ -245,9 +272,8 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int veto_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(veto_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool veto = (bool) (veto_int>0.5);
+  bool veto = true;
+  if (!get_val_param<bool >(veto,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Veto(veto);
   return BasicVariable::ptr();
@@ -259,7 +285,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
 void WrapClass_wxCloseEvent::
     wrap_SetCanVeto::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'canVeto'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'canVeto'")
 }
 
 //---------------------------------------------------
@@ -270,9 +296,8 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int canVeto_int;
-  if (!get_val_param<int >(canVeto_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool canVeto = (bool) (canVeto_int>0.5);
+  bool canVeto;
+  if (!get_val_param<bool >(canVeto,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetCanVeto(canVeto);
   return BasicVariable::ptr();
@@ -284,7 +309,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
 void WrapClass_wxCloseEvent::
     wrap_CanVeto::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -294,8 +319,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->CanVeto();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -304,7 +328,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
 void WrapClass_wxCloseEvent::
     wrap_GetVeto::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -314,8 +338,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetVeto();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

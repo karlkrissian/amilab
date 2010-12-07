@@ -62,13 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxChildFocusEvent::CreateVar( wxChildFocusEve
 //----------------------------------------------------------------------
 void WrapClass_wxChildFocusEvent::AddMethods(WrapClass<wxChildFocusEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxCommandEvent
-      WrapClass_wxCommandEvent::ptr parent_wxCommandEvent(        boost::dynamic_pointer_cast<WrapClass_wxCommandEvent >(this_ptr));
-      parent_wxCommandEvent->AddMethods(parent_wxCommandEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -80,7 +74,42 @@ void WrapClass_wxChildFocusEvent::AddMethods(WrapClass<wxChildFocusEvent>::ptr t
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxCommandEvent
+  boost::shared_ptr<wxCommandEvent > parent_wxCommandEvent(  boost::dynamic_pointer_cast<wxCommandEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxCommandEvent = AMILabType<wxCommandEvent >::CreateVarFromSmtPtr(parent_wxCommandEvent);
+  context->AddVar("wxCommandEvent",var_wxCommandEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxCommandEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxCommandEvent);
+  context->AddDefault(obj_wxCommandEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxChildFocusEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxChildFocusEvent");
+    WrapClass_wxChildFocusEvent::AddVar_wxChildFocusEvent_1(amiobject->GetContext());
+  WrapClass_wxChildFocusEvent::AddVar_wxChildFocusEvent(amiobject->GetContext());
+  WrapClass_wxChildFocusEvent::AddVar_wxChildFocusEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

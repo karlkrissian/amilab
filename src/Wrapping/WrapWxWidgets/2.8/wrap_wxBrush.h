@@ -19,11 +19,11 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
-//#include "wrap_wxBrushBase.h"
+#include "wrap_wxBrushBase.h"
 
 
 
@@ -31,7 +31,7 @@ AMI_DECLARE_TYPE(wxBrush);
 
 // TODO: check for inheritence ...
 class WrapClass_wxBrush : public WrapClass<wxBrush>
-    //, public  WrapClass_wxBrushBase
+    , public   WrapClass_wxBrushBase
 {
   DEFINE_CLASS(WrapClass_wxBrush);
 
@@ -46,7 +46,7 @@ class WrapClass_wxBrush : public WrapClass<wxBrush>
     /// Constructor
     WrapClass_wxBrush(boost::shared_ptr<wxBrush > si): 
     WrapClass<wxBrush>(si)
-    //, WrapClass_wxBrushBase(si)
+    , WrapClass_wxBrushBase(si)
     {}
 
     /// Destructor
@@ -103,6 +103,11 @@ class WrapClass_wxBrush : public WrapClass<wxBrush>
 
 
     void AddMethods(WrapClass<wxBrush>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

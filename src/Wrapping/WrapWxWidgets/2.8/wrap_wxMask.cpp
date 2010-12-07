@@ -62,13 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxMask::CreateVar( wxMask* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxMask::AddMethods(WrapClass<wxMask>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -92,17 +86,54 @@ void WrapClass_wxMask::AddMethods(WrapClass<wxMask>::ptr this_ptr )
       if (!tmpobj.get()) return;
       Variables::ptr context(tmpobj->GetContext());
       
-      /* type not available
+      /* Type not available
       // Adding public member m_bitmap
       boost::shared_ptr<_GdkDrawable > var_m_bitmap_ptr(GetObj()->m_bitmap, smartpointer_nodeleter<_GdkDrawable >());
-      BasicVariable::ptr var_m_bitmap = AMILabType<_GdkDrawable >::CreateVarFromSmtPtr(var_m_bitmap_ptr);
-      if (var_m_bitmap.get()) {
-        var_m_bitmap->Rename("m_bitmap");
-        context->AddVar(var_m_bitmap,context);
+      if (var_m_bitmap_ptr.get()) {
+        BasicVariable::ptr var_m_bitmap = AMILabType<_GdkDrawable >::CreateVarFromSmtPtr(var_m_bitmap_ptr);
+        if (var_m_bitmap.get()) {
+          var_m_bitmap->Rename("m_bitmap");
+          context->AddVar(var_m_bitmap,context);
+        }
       }
       */
 
+
+  // Adding Bases
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxMask::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxMask");
+    WrapClass_wxMask::AddVar_wxMask_1(amiobject->GetContext());
+  WrapClass_wxMask::AddVar_wxMask(amiobject->GetContext());
+  WrapClass_wxMask::AddVar_wxMask_2(amiobject->GetContext());
+  WrapClass_wxMask::AddVar_wxMask_3(amiobject->GetContext());
+  WrapClass_wxMask::AddVar_wxMask_4(amiobject->GetContext());
+  WrapClass_wxMask::AddVar_wxMask_5(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -295,7 +326,7 @@ void WrapClass_wxMask::
 {
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
   ADDPARAMCOMMENT_TYPE( wxColour, "parameter named 'colour'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -315,8 +346,7 @@ BasicVariable::ptr WrapClass_wxMask::
   wxColour const & colour = *colour_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Create(bitmap, colour);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -351,7 +381,7 @@ void WrapClass_wxMask::
 {
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'paletteIndex'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -370,8 +400,7 @@ BasicVariable::ptr WrapClass_wxMask::
   if (!get_val_param<int >(paletteIndex,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Create(bitmap, paletteIndex);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -381,7 +410,7 @@ void WrapClass_wxMask::
     wrap_Create_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -397,8 +426,7 @@ BasicVariable::ptr WrapClass_wxMask::
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Create(bitmap);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /* The following types are missing: _GdkDrawable
 

@@ -604,8 +604,9 @@ amiOFVar2D        return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/
 vtkDicomRead      return(token::T_vtkDicomRead); /*{vtkDicomRead,T_vtkDicomRead}*/
 vtkMINCRead       return(token::T_vtkMINCRead);  /*{vtkMINCRead,T_vtkMINCRead}*/
 
-exists            return(token::T_exists);       /*{exists,T_exists}*/
-FileExists        return(token::T_FileExists);  /*{FileExists,T_FileExists}*/
+exists            { return(token::T_exists);       //FileExists        return(token::T_FileExists);  
+// {FileExists,T_FileExists} 
+} /*{exists,T_exists}*/
 
 InfoDialog        return(token::T_InfoDialog); /*{InfoDialog,T_InfoDialog}*/
 

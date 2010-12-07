@@ -62,17 +62,12 @@ Variable<AMIObject>::ptr WrapClass_wxListKey::CreateVar( wxListKey* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxListKey::AddMethods(WrapClass<wxListKey>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
       // Adding standard methods 
-/* The following types are missing: wxKeyType
       AddVar_GetKeyType( this_ptr);
-*/
       AddVar_GetString( this_ptr);
       AddVar_GetNumber( this_ptr);
 
@@ -85,7 +80,34 @@ void WrapClass_wxListKey::AddMethods(WrapClass<wxListKey>::ptr this_ptr )
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxListKey::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxListKey");
+    WrapClass_wxListKey::AddVar_wxListKey_1(amiobject->GetContext());
+  WrapClass_wxListKey::AddVar_wxListKey(amiobject->GetContext());
+  WrapClass_wxListKey::AddVar_wxListKey_2(amiobject->GetContext());
+  WrapClass_wxListKey::AddVar_wxListKey_3(amiobject->GetContext());
+  WrapClass_wxListKey::AddVar_wxListKey_4(amiobject->GetContext());
+  WrapClass_wxListKey::AddVar_wxListKey_5(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -261,7 +283,6 @@ BasicVariable::ptr WrapClass_wxListKey::
 {
     return AMILabType<wxListKey >::CreateVar( new wxListKey(*(this->_objectptr->GetObj())));
 }
-/* The following types are missing: wxKeyType
 
 //---------------------------------------------------
 //  Wrapping of wxKeyType wxListKey::GetKeyType()
@@ -269,7 +290,7 @@ BasicVariable::ptr WrapClass_wxListKey::
 void WrapClass_wxListKey::
     wrap_GetKeyType::SetParametersComments()
 {
-  return_comments="returning a variable of type wxKeyType";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -279,9 +300,9 @@ BasicVariable::ptr WrapClass_wxListKey::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxKeyType res =   this->_objectptr->GetObj()->GetKeyType();
-  return AMILabType<wxKeyType >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxChar const * wxListKey::GetString()
@@ -365,7 +386,7 @@ void WrapClass_wxListKey::
     wrap___equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxListKeyValue, "parameter named 'value'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -380,8 +401,7 @@ BasicVariable::ptr WrapClass_wxListKey::
   if (!get_val_param<wxListKeyValue >(value,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   (*this->_objectptr->GetObj()) == (value);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 

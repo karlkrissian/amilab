@@ -19,11 +19,11 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
-//#include "wrap_wxEvtHandler.h"
+#include "wrap_wxEvtHandler.h"
 
 
 
@@ -31,7 +31,7 @@ AMI_DECLARE_TYPE(wxMenuBase);
 
 // TODO: check for inheritence ...
 class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
-    //, public  WrapClass_wxEvtHandler
+    , public   WrapClass_wxEvtHandler
 {
   DEFINE_CLASS(WrapClass_wxMenuBase);
 
@@ -46,7 +46,7 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
     /// Constructor
     WrapClass_wxMenuBase(boost::shared_ptr<wxMenuBase > si): 
     WrapClass<wxMenuBase>(si)
-    //, WrapClass_wxEvtHandler(si)
+    , WrapClass_wxEvtHandler(si)
     {}
 
     /// Destructor
@@ -77,9 +77,7 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
     // Standard methods
     
     // Adding standard methods
-/* The following types are missing: wxItemKind
     ADD_CLASS_METHOD(Append_1,"wxMenuItem * wxMenuBase::Append(int itemid, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#append)")
-*/
     ADD_CLASS_METHOD(AppendSeparator,"wxMenuItem * wxMenuBase::AppendSeparator()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#appendseparator)")
     ADD_CLASS_METHOD(AppendCheckItem,"wxMenuItem * wxMenuBase::AppendCheckItem(int itemid, wxString const & text, wxString const & help = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#appendcheckitem)")
     ADD_CLASS_METHOD(AppendRadioItem,"wxMenuItem * wxMenuBase::AppendRadioItem(int itemid, wxString const & text, wxString const & help = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#appendradioitem)")
@@ -89,18 +87,14 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
     ADD_CLASS_METHOD(Break,"void wxMenuBase::Break()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#break)")
     ADD_CLASS_METHOD(Insert_1,"wxMenuItem * wxMenuBase::Insert(size_t pos, wxMenuItem * item)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#insert)")
     ADD_CLASS_METHOD(Insert,"wxMenuBase::Insert()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#insert)")
-/* The following types are missing: wxItemKind
     ADD_CLASS_METHOD(Insert_2,"wxMenuItem * wxMenuBase::Insert(size_t pos, int itemid, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#insert)")
-*/
     ADD_CLASS_METHOD(InsertSeparator,"wxMenuItem * wxMenuBase::InsertSeparator(size_t pos)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#insertseparator)")
     ADD_CLASS_METHOD(InsertCheckItem,"wxMenuItem * wxMenuBase::InsertCheckItem(size_t pos, int itemid, wxString const & text, wxString const & help = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#insertcheckitem)")
     ADD_CLASS_METHOD(InsertRadioItem,"wxMenuItem * wxMenuBase::InsertRadioItem(size_t pos, int itemid, wxString const & text, wxString const & help = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#insertradioitem)")
     ADD_CLASS_METHOD(Insert_3,"wxMenuItem * wxMenuBase::Insert(size_t pos, int itemid, wxString const & text, wxMenu * submenu, wxString const & help = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#insert)")
     ADD_CLASS_METHOD(Prepend_1,"wxMenuItem * wxMenuBase::Prepend(wxMenuItem * item)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#prepend)")
     ADD_CLASS_METHOD(Prepend,"wxMenuBase::Prepend()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#prepend)")
-/* The following types are missing: wxItemKind
     ADD_CLASS_METHOD(Prepend_2,"wxMenuItem * wxMenuBase::Prepend(int itemid, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#prepend)")
-*/
     ADD_CLASS_METHOD(PrependSeparator,"wxMenuItem * wxMenuBase::PrependSeparator()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#prependseparator)")
     ADD_CLASS_METHOD(PrependCheckItem,"wxMenuItem * wxMenuBase::PrependCheckItem(int itemid, wxString const & text, wxString const & help = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#prependcheckitem)")
     ADD_CLASS_METHOD(PrependRadioItem,"wxMenuItem * wxMenuBase::PrependRadioItem(int itemid, wxString const & text, wxString const & help = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#prependradioitem)")
@@ -115,13 +109,9 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
     ADD_CLASS_METHOD(Destroy,"wxMenuBase::Destroy()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#destroy)")
     ADD_CLASS_METHOD(Destroy_2,"bool wxMenuBase::Destroy(wxMenuItem * item)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#destroy)")
     ADD_CLASS_METHOD(GetMenuItemCount,"size_t wxMenuBase::GetMenuItemCount()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenuitemcount)")
-/* The following types are missing: wxMenuItemList
     ADD_CLASS_METHOD(GetMenuItems_1,"wxMenuItemList const & wxMenuBase::GetMenuItems()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenuitems)")
-*/
     ADD_CLASS_METHOD(GetMenuItems,"wxMenuBase::GetMenuItems()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenuitems)")
-/* The following types are missing: wxMenuItemList
     ADD_CLASS_METHOD(GetMenuItems_2,"wxMenuItemList & wxMenuBase::GetMenuItems()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenuitems)")
-*/
     ADD_CLASS_METHOD(FindItem_1,"int wxMenuBase::FindItem(wxString const & item)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#finditem)")
     ADD_CLASS_METHOD(FindItem,"wxMenuBase::FindItem()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#finditem)")
 /* The following types are missing: wxMenu * *
@@ -138,18 +128,12 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
     ADD_CLASS_METHOD(GetHelpString,"wxString wxMenuBase::GetHelpString(int itemid)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#gethelpstring)")
     ADD_CLASS_METHOD(SetTitle,"void wxMenuBase::SetTitle(wxString const & title)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#settitle)")
     ADD_CLASS_METHOD(GetTitle,"wxString const wxMenuBase::GetTitle()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#gettitle)")
-/* The following types are missing: wxEvtHandler
     ADD_CLASS_METHOD(SetEventHandler,"void wxMenuBase::SetEventHandler(wxEvtHandler * handler)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#seteventhandler)")
-*/
-/* The following types are missing: wxEvtHandler
     ADD_CLASS_METHOD(GetEventHandler,"wxEvtHandler * wxMenuBase::GetEventHandler()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#geteventhandler)")
-*/
     ADD_CLASS_METHOD(SetInvokingWindow,"void wxMenuBase::SetInvokingWindow(wxWindow * win)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#setinvokingwindow)")
     ADD_CLASS_METHOD(GetInvokingWindow,"wxWindow * wxMenuBase::GetInvokingWindow()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getinvokingwindow)")
     ADD_CLASS_METHOD(GetStyle,"long int wxMenuBase::GetStyle()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getstyle)")
-/* The following types are missing: wxEvtHandler
     ADD_CLASS_METHOD(UpdateUI,"void wxMenuBase::UpdateUI(wxEvtHandler * source = 0u)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#updateui)")
-*/
     ADD_CLASS_METHOD(GetMenuBar,"wxMenuBar * wxMenuBase::GetMenuBar()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenubar)")
     ADD_CLASS_METHOD(Attach,"void wxMenuBase::Attach(wxMenuBarBase * menubar)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#attach)")
     ADD_CLASS_METHOD(Detach,"void wxMenuBase::Detach()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#detach)")
@@ -169,6 +153,11 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
 
 
     void AddMethods(WrapClass<wxMenuBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

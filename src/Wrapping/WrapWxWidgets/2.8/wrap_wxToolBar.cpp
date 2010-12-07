@@ -73,13 +73,7 @@ Variable<AMIObject>::ptr WrapClass_wxToolBar::CreateVar( wxToolBar* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxToolBar::AddMethods(WrapClass<wxToolBar>::ptr this_ptr )
 {
-  
-      // Add members from wxToolBarBase
-      WrapClass_wxToolBarBase::ptr parent_wxToolBarBase(        boost::dynamic_pointer_cast<WrapClass_wxToolBarBase >(this_ptr));
-      parent_wxToolBarBase->AddMethods(parent_wxToolBarBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -100,27 +94,62 @@ void WrapClass_wxToolBar::AddMethods(WrapClass<wxToolBar>::ptr this_ptr )
       if (!tmpobj.get()) return;
       Variables::ptr context(tmpobj->GetContext());
       
-      /* type not available
+      /* Type not available
       // Adding public member m_toolbar
       boost::shared_ptr<_GtkToolbar > var_m_toolbar_ptr(GetObj()->m_toolbar, smartpointer_nodeleter<_GtkToolbar >());
-      BasicVariable::ptr var_m_toolbar = AMILabType<_GtkToolbar >::CreateVarFromSmtPtr(var_m_toolbar_ptr);
-      if (var_m_toolbar.get()) {
-        var_m_toolbar->Rename("m_toolbar");
-        context->AddVar(var_m_toolbar,context);
+      if (var_m_toolbar_ptr.get()) {
+        BasicVariable::ptr var_m_toolbar = AMILabType<_GtkToolbar >::CreateVarFromSmtPtr(var_m_toolbar_ptr);
+        if (var_m_toolbar.get()) {
+          var_m_toolbar->Rename("m_toolbar");
+          context->AddVar(var_m_toolbar,context);
+        }
       }
       */
       
-      /* type not available
       // Adding public member m_blockEvent
       boost::shared_ptr<bool > var_m_blockEvent_ptr(&GetObj()->m_blockEvent, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_blockEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockEvent_ptr);
-      if (var_m_blockEvent.get()) {
-        var_m_blockEvent->Rename("m_blockEvent");
-        context->AddVar(var_m_blockEvent,context);
+      if (var_m_blockEvent_ptr.get()) {
+        BasicVariable::ptr var_m_blockEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockEvent_ptr);
+        if (var_m_blockEvent.get()) {
+          var_m_blockEvent->Rename("m_blockEvent");
+          context->AddVar(var_m_blockEvent,context);
+        }
       }
-      */
+
+
+  // Adding Bases
+
+  // Add base parent wxToolBarBase
+  boost::shared_ptr<wxToolBarBase > parent_wxToolBarBase(  boost::dynamic_pointer_cast<wxToolBarBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxToolBarBase = AMILabType<wxToolBarBase >::CreateVarFromSmtPtr(parent_wxToolBarBase);
+  context->AddVar("wxToolBarBase",var_wxToolBarBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxToolBarBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxToolBarBase);
+  context->AddDefault(obj_wxToolBarBase->Pointer()->GetContext());
 
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxToolBar::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxToolBar");
+    WrapClass_wxToolBar::AddVar_wxToolBar_1(amiobject->GetContext());
+  WrapClass_wxToolBar::AddVar_wxToolBar(amiobject->GetContext());
+  WrapClass_wxToolBar::AddVar_wxToolBar_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxToolBar::AddVar_GetClassDefaultAttributes(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -219,7 +248,6 @@ BasicVariable::ptr WrapClass_wxToolBar::
   BasicVariable::ptr res = WrapClass_wxToolBar::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: wxWindowVariant
 
 //---------------------------------------------------
 //  Wrapping of wxVisualAttributes wxToolBar::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
@@ -227,7 +255,7 @@ BasicVariable::ptr WrapClass_wxToolBar::
 void WrapClass_wxToolBar::
     wrap_static_GetClassDefaultAttributes::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxWindowVariant, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
   return_comments="returning a variable of type wxVisualAttributes";
 }
 
@@ -239,13 +267,13 @@ BasicVariable::ptr WrapClass_wxToolBar::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL;
-  if (!get_val_param<wxWindowVariant >(variant,_p,_n,false,false)) ClassHelpAndReturn;
+  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
+  if (!get_val_param<int >(variant_int,_p,_n,false,false)) ClassHelpAndReturn;
+  wxWindowVariant variant = (wxWindowVariant) variant_int;
 
   wxVisualAttributes res =   wxToolBar::GetClassDefaultAttributes(variant);
   return AMILabType<wxVisualAttributes >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxToolBar::Create(wxWindow * parent, wxWindowID id, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxString const & name = wxToolBarNameStr)
@@ -259,7 +287,7 @@ void WrapClass_wxToolBar::
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size' (def:wxDefaultSize)")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:0)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxToolBarNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -297,8 +325,7 @@ BasicVariable::ptr WrapClass_wxToolBar::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxToolBarNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, pos, size, style, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

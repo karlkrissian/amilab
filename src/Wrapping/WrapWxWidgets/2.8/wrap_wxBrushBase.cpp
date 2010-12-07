@@ -59,13 +59,7 @@ Variable<AMIObject>::ptr WrapClass_wxBrushBase::CreateVar( wxBrushBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxBrushBase::AddMethods(WrapClass<wxBrushBase>::ptr this_ptr )
 {
-  
-      // Add members from wxGDIObject
-      WrapClass_wxGDIObject::ptr parent_wxGDIObject(        boost::dynamic_pointer_cast<WrapClass_wxGDIObject >(this_ptr));
-      parent_wxGDIObject->AddMethods(parent_wxGDIObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_IsHatch( this_ptr);
@@ -76,7 +70,38 @@ void WrapClass_wxBrushBase::AddMethods(WrapClass<wxBrushBase>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxGDIObject
+  boost::shared_ptr<wxGDIObject > parent_wxGDIObject(  boost::dynamic_pointer_cast<wxGDIObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxGDIObject = AMILabType<wxGDIObject >::CreateVarFromSmtPtr(parent_wxGDIObject);
+  context->AddVar("wxGDIObject",var_wxGDIObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxGDIObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxGDIObject);
+  context->AddDefault(obj_wxGDIObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxBrushBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxBrushBase");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -89,7 +114,7 @@ void WrapClass_wxBrushBase::AddMethods(WrapClass<wxBrushBase>::ptr this_ptr )
 void WrapClass_wxBrushBase::
     wrap_IsHatch::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -99,8 +124,7 @@ BasicVariable::ptr WrapClass_wxBrushBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsHatch();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

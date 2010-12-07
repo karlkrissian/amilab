@@ -302,6 +302,33 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<int>::operator ||(const Bas
   return this->NewReference(); 
 }
 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<int>::operator ^(const BasicVariable::ptr& b) 
+{
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(int,Value() ^ (int) b->GetValueAsDouble());
+  } else
+    CLASS_ERROR("operation not defined");
+  return this->NewReference(); 
+}
+
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<int>::operator |(const BasicVariable::ptr& b) 
+{
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(int,Value() | (int) b->GetValueAsDouble());
+  } else
+    CLASS_ERROR("operation not defined");
+  return this->NewReference(); 
+}
+
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<int>::operator &(const BasicVariable::ptr& b) 
+{
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(int,Value() & (int) b->GetValueAsDouble());
+  } else
+    CLASS_ERROR("operation not defined");
+  return this->NewReference(); 
+}
+
 // Mathematical functions
 // TODO: improve type conversions here ...
 #define VAR_IMPL_FUNC(type,fname,func) \

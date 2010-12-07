@@ -69,13 +69,7 @@ Variable<AMIObject>::ptr WrapClass_wxMenuItemBase::CreateVar( wxMenuItemBase* sp
 //----------------------------------------------------------------------
 void WrapClass_wxMenuItemBase::AddMethods(WrapClass<wxMenuItemBase>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_GetMenu( this_ptr);
@@ -86,12 +80,8 @@ void WrapClass_wxMenuItemBase::AddMethods(WrapClass<wxMenuItemBase>::ptr this_pt
       AddVar_SetText( this_ptr);
       AddVar_GetLabel( this_ptr);
       AddVar_GetText( this_ptr);
-/* The following types are missing: wxItemKind
       AddVar_GetKind( this_ptr);
-*/
-/* The following types are missing: wxItemKind
       AddVar_SetKind( this_ptr);
-*/
       AddVar_SetCheckable( this_ptr);
       AddVar_IsCheckable( this_ptr);
       AddVar_IsSubMenu( this_ptr);
@@ -114,13 +104,48 @@ void WrapClass_wxMenuItemBase::AddMethods(WrapClass<wxMenuItemBase>::ptr this_pt
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxMenuItemBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxMenuItemBase");
+  
+  // Static methods 
+  WrapClass_wxMenuItemBase::AddVar_New_1(amiobject->GetContext());
+  WrapClass_wxMenuItemBase::AddVar_GetLabelFromText(amiobject->GetContext());
+  WrapClass_wxMenuItemBase::AddVar_New(amiobject->GetContext());
+  WrapClass_wxMenuItemBase::AddVar_New_2(amiobject->GetContext());
+  WrapClass_wxMenuItemBase::AddVar_GetLabelText(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItem * wxMenuItemBase::New(wxMenu * parentMenu = 0u, int itemid = wxID_SEPARATOR, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL, wxMenu * subMenu = 0u)
@@ -132,7 +157,7 @@ void WrapClass_wxMenuItemBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid' (def:wxID_SEPARATOR)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help' (def:wxEmptyString)")
-  ADDPARAMCOMMENT_TYPE( wxItemKind, "parameter named 'kind' (def:wxITEM_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'kind' (def:wxITEM_NORMAL)")
   ADDPARAMCOMMENT_TYPE( wxMenu, "parameter named 'subMenu' (def:0u)")
   return_comments="returning a variable of type wxMenuItem";
 }
@@ -162,8 +187,9 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   // Setting default value if no value is returned
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
-  wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
+  int kind_int = (int) wxITEM_NORMAL;;
+  if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxItemKind kind = (wxItemKind) kind_int;
 
   boost::shared_ptr<wxMenu > subMenu_smtptr;
   if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -173,7 +199,6 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
   return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxString wxMenuItemBase::GetLabelFromText(wxString const & text)
@@ -213,6 +238,9 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
     wrap_static_New::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxMenuItemBase::wrap_static_New_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxMenuItemBase::wrap_static_New_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -229,7 +257,7 @@ void WrapClass_wxMenuItemBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'isCheckable'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'isCheckable'")
   ADDPARAMCOMMENT_TYPE( wxMenu, "parameter named 'subMenu' (def:0u)")
   return_comments="returning a variable of type wxMenuItem";
 }
@@ -257,9 +285,8 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & help = *help_smtptr;
 
-  int isCheckable_int;
-  if (!get_val_param<int >(isCheckable_int,_p,_n,true,true)) ClassReturnEmptyVar;
-  bool isCheckable = (bool) (isCheckable_int>0.5);
+  bool isCheckable;
+  if (!get_val_param<bool >(isCheckable,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxMenu > subMenu_smtptr;
   if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -390,7 +417,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_IsSeparator::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -400,8 +427,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsSeparator();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -466,7 +492,6 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   wxString const & res =   this->_objectptr->GetObj()->GetText();
   return AMILabType<wxString >::CreateVar(res);
 }
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of wxItemKind wxMenuItemBase::GetKind()
@@ -474,7 +499,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_GetKind::SetParametersComments()
 {
-  return_comments="returning a variable of type wxItemKind";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -484,10 +509,9 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxItemKind res =   this->_objectptr->GetObj()->GetKind();
-  return AMILabType<wxItemKind >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuItemBase::SetKind(wxItemKind kind)
@@ -495,7 +519,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_SetKind::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxItemKind, "parameter named 'kind'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'kind'")
 }
 
 //---------------------------------------------------
@@ -506,13 +530,13 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxItemKind kind;
-  if (!get_val_param<wxItemKind >(kind,_p,_n,true,false)) ClassHelpAndReturn;
+  int kind_int;
+  if (!get_val_param<int >(kind_int,_p,_n,true,false)) ClassHelpAndReturn;
+  wxItemKind kind = (wxItemKind) kind_int;
 
   this->_objectptr->GetObj()->SetKind(kind);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuItemBase::SetCheckable(bool checkable)
@@ -520,7 +544,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_SetCheckable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'checkable'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'checkable'")
 }
 
 //---------------------------------------------------
@@ -531,9 +555,8 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int checkable_int;
-  if (!get_val_param<int >(checkable_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool checkable = (bool) (checkable_int>0.5);
+  bool checkable;
+  if (!get_val_param<bool >(checkable,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetCheckable(checkable);
   return BasicVariable::ptr();
@@ -545,7 +568,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_IsCheckable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -555,8 +578,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsCheckable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -565,7 +587,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_IsSubMenu::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -575,8 +597,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsSubMenu();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -630,7 +651,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_Enable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable' (def:true)")
 }
 
 //---------------------------------------------------
@@ -641,9 +662,8 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int enable_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable = true;
+  if (!get_val_param<bool >(enable,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Enable(enable);
   return BasicVariable::ptr();
@@ -655,7 +675,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_IsEnabled::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -665,8 +685,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEnabled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -675,7 +694,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_Check::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'check' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'check' (def:true)")
 }
 
 //---------------------------------------------------
@@ -686,9 +705,8 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int check_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(check_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool check = (bool) (check_int>0.5);
+  bool check = true;
+  if (!get_val_param<bool >(check,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Check(check);
   return BasicVariable::ptr();
@@ -700,7 +718,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
 void WrapClass_wxMenuItemBase::
     wrap_IsChecked::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -710,8 +728,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsChecked();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

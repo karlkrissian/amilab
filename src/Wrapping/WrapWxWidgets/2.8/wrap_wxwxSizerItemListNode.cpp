@@ -69,13 +69,7 @@ Variable<AMIObject>::ptr WrapClass_wxwxSizerItemListNode::CreateVar( wxwxSizerIt
 //----------------------------------------------------------------------
 void WrapClass_wxwxSizerItemListNode::AddMethods(WrapClass<wxwxSizerItemListNode>::ptr this_ptr )
 {
-  
-      // Add members from wxNodeBase
-      WrapClass_wxNodeBase::ptr parent_wxNodeBase(        boost::dynamic_pointer_cast<WrapClass_wxNodeBase >(this_ptr));
-      parent_wxNodeBase->AddMethods(parent_wxNodeBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_GetNext( this_ptr);
@@ -86,7 +80,40 @@ void WrapClass_wxwxSizerItemListNode::AddMethods(WrapClass<wxwxSizerItemListNode
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxNodeBase
+  boost::shared_ptr<wxNodeBase > parent_wxNodeBase(  boost::dynamic_pointer_cast<wxNodeBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxNodeBase = AMILabType<wxNodeBase >::CreateVarFromSmtPtr(parent_wxNodeBase);
+  context->AddVar("wxNodeBase",var_wxNodeBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxNodeBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxNodeBase);
+  context->AddDefault(obj_wxNodeBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxwxSizerItemListNode::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxwxSizerItemListNode");
+    WrapClass_wxwxSizerItemListNode::AddVar_wxwxSizerItemListNode(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

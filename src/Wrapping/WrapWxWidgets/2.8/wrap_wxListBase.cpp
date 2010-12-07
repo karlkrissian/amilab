@@ -19,7 +19,6 @@
 // get all the required includes
 // #include "..."
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxObjectListNode.h"
 #include "wrap_wxListBase.h"
 
 
@@ -61,13 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxListBase::CreateVar( wxListBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxListBase::AddMethods(WrapClass<wxListBase>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_GetCount( this_ptr);
@@ -75,16 +68,8 @@ void WrapClass_wxListBase::AddMethods(WrapClass<wxListBase>::ptr this_ptr )
       AddVar_Clear( this_ptr);
       AddVar_DeleteContents( this_ptr);
       AddVar_GetDeleteContents( this_ptr);
-/* The following types are missing: wxKeyType
       AddVar_GetKeyType( this_ptr);
-*/
-/* The following types are missing: wxKeyType
       AddVar_SetKeyType( this_ptr);
-*/
-      AddVar_Number( this_ptr);
-      AddVar_First( this_ptr);
-      AddVar_Last( this_ptr);
-      AddVar_Nth( this_ptr);
 
       // Adding operators
       AddVar___assign__( this_ptr);
@@ -92,7 +77,38 @@ void WrapClass_wxListBase::AddMethods(WrapClass<wxListBase>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxListBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxListBase");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -125,7 +141,7 @@ BasicVariable::ptr WrapClass_wxListBase::
 void WrapClass_wxListBase::
     wrap_IsEmpty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -135,8 +151,7 @@ BasicVariable::ptr WrapClass_wxListBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEmpty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -163,7 +178,7 @@ BasicVariable::ptr WrapClass_wxListBase::
 void WrapClass_wxListBase::
     wrap_DeleteContents::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'destroy'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'destroy'")
 }
 
 //---------------------------------------------------
@@ -174,9 +189,8 @@ BasicVariable::ptr WrapClass_wxListBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int destroy_int;
-  if (!get_val_param<int >(destroy_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool destroy = (bool) (destroy_int>0.5);
+  bool destroy;
+  if (!get_val_param<bool >(destroy,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->DeleteContents(destroy);
   return BasicVariable::ptr();
@@ -188,7 +202,7 @@ BasicVariable::ptr WrapClass_wxListBase::
 void WrapClass_wxListBase::
     wrap_GetDeleteContents::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -198,10 +212,8 @@ BasicVariable::ptr WrapClass_wxListBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetDeleteContents();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-/* The following types are missing: wxKeyType
 
 //---------------------------------------------------
 //  Wrapping of wxKeyType wxListBase::GetKeyType()
@@ -209,7 +221,7 @@ BasicVariable::ptr WrapClass_wxListBase::
 void WrapClass_wxListBase::
     wrap_GetKeyType::SetParametersComments()
 {
-  return_comments="returning a variable of type wxKeyType";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -219,10 +231,9 @@ BasicVariable::ptr WrapClass_wxListBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxKeyType res =   this->_objectptr->GetObj()->GetKeyType();
-  return AMILabType<wxKeyType >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: wxKeyType
 
 //---------------------------------------------------
 //  Wrapping of void wxListBase::SetKeyType(wxKeyType keyType)
@@ -230,7 +241,7 @@ BasicVariable::ptr WrapClass_wxListBase::
 void WrapClass_wxListBase::
     wrap_SetKeyType::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxKeyType, "parameter named 'keyType'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'keyType'")
 }
 
 //---------------------------------------------------
@@ -241,98 +252,12 @@ BasicVariable::ptr WrapClass_wxListBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxKeyType keyType;
-  if (!get_val_param<wxKeyType >(keyType,_p,_n,true,false)) ClassHelpAndReturn;
+  int keyType_int;
+  if (!get_val_param<int >(keyType_int,_p,_n,true,false)) ClassHelpAndReturn;
+  wxKeyType keyType = (wxKeyType) keyType_int;
 
   this->_objectptr->GetObj()->SetKeyType(keyType);
   return BasicVariable::ptr();
-}
-*/
-
-//---------------------------------------------------
-//  Wrapping of int wxListBase::Number()
-//---------------------------------------------------
-void WrapClass_wxListBase::
-    wrap_Number::SetParametersComments()
-{
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxListBase::
-    wrap_Number::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  int res =   this->_objectptr->GetObj()->Number();
-  return AMILabType<int >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of wxNode * wxListBase::First()
-//---------------------------------------------------
-void WrapClass_wxListBase::
-    wrap_First::SetParametersComments()
-{
-  return_comments="returning a variable of type wxObjectListNode";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxListBase::
-    wrap_First::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxNode * res =   this->_objectptr->GetObj()->First();
-  BasicVariable::ptr res_var = WrapClass_wxObjectListNode::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxNode * wxListBase::Last()
-//---------------------------------------------------
-void WrapClass_wxListBase::
-    wrap_Last::SetParametersComments()
-{
-  return_comments="returning a variable of type wxObjectListNode";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxListBase::
-    wrap_Last::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxNode * res =   this->_objectptr->GetObj()->Last();
-  BasicVariable::ptr res_var = WrapClass_wxObjectListNode::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxNode * wxListBase::Nth(size_t n)
-//---------------------------------------------------
-void WrapClass_wxListBase::
-    wrap_Nth::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( long, "parameter named 'n'")
-  return_comments="returning a variable of type wxObjectListNode";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxListBase::
-    wrap_Nth::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  long n_long;
-  if (!get_val_param<long >(n_long,_p,_n,true,false)) ClassHelpAndReturn;
-  long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
-
-  wxNode * res =   this->_objectptr->GetObj()->Nth(n);
-  BasicVariable::ptr res_var = WrapClass_wxObjectListNode::CreateVar(res);
-  return res_var;
 }
 
 //---------------------------------------------------

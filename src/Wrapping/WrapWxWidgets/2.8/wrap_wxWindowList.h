@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -56,10 +56,8 @@ class WrapClass_wxWindowList : public WrapClass<wxWindowList>
     }
 
     
-    /* The following types are missing: wxKeyType
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxWindowList_1,"Constructor wxWindowList::wxWindowList(wxKeyType keyType = wxKEY_NONE) (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#wxwindowlist).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxWindowList,"Constructor wxWindowList::wxWindowList() (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#wxwindowlist).");
     /// Wrapping of the constructor
@@ -113,11 +111,11 @@ class WrapClass_wxWindowList : public WrapClass<wxWindowList>
     ADD_CLASS_METHOD(Find,"wxWindowList::Find()  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxWindowListNode * wxWindowList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxWindowList::IndexOf(wxWindowBase * object)  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#indexof)")
-/* The following types are missing: _9495
+/* The following types are missing: _9904
     ADD_CLASS_METHOD(Sort_1,"void wxWindowList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxWindowList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#sort)")
-/* The following types are missing: _10245
+/* The following types are missing: _10742
     ADD_CLASS_METHOD(Sort_2,"void wxWindowList::Sort(wxSortFuncFor_wxWindowList func)  (http://docs.wxwidgets.org/stable/wx_wxwindowlist.html#sort)")
 */
 /* The following types are missing: iterator
@@ -206,6 +204,11 @@ class WrapClass_wxWindowList : public WrapClass<wxWindowList>
 
 
     void AddMethods(WrapClass<wxWindowList>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

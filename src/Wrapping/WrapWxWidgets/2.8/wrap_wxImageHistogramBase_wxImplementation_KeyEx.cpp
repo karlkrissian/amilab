@@ -61,10 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::
 //----------------------------------------------------------------------
 void WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::AddMethods(WrapClass<wxImageHistogramBase_wxImplementation_KeyEx>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -77,7 +74,31 @@ void WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::AddMethods(WrapClass
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxImageHistogramBase_wxImplementation_KeyEx");
+    WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::AddVar_wxImageHistogramBase_wxImplementation_KeyEx_1(amiobject->GetContext());
+  WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::AddVar_wxImageHistogramBase_wxImplementation_KeyEx(amiobject->GetContext());
+  WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::AddVar_wxImageHistogramBase_wxImplementation_KeyEx_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

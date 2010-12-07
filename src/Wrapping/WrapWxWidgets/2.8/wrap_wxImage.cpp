@@ -71,13 +71,7 @@ Variable<AMIObject>::ptr WrapClass_wxImage::CreateVar( wxImage* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxImage::AddMethods(WrapClass<wxImage>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -174,7 +168,76 @@ void WrapClass_wxImage::AddMethods(WrapClass<wxImage>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxImage::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxImage");
+    WrapClass_wxImage::AddVar_wxImage_1(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_wxImage(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_wxImage_2(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_wxImage_3(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_wxImage_4(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_wxImage_5(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_wxImage_6(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_wxImage_7(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxImage::AddVar_wxImage_8(amiobject->GetContext());
+  */
+  WrapClass_wxImage::AddVar_wxImage_9(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_wxImage_10(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxImage::AddVar_CanRead_1(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_GetImageCount_1(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_CanRead(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_CanRead_2(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_GetImageCount(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_GetImageCount_2(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_GetHandlers(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_AddHandler(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_InsertHandler(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_RemoveHandler(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_FindHandler_1(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_FindHandler(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_FindHandler_2(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_FindHandler_3(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_FindHandlerMime(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_GetImageExtWildcard(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_CleanUpHandlers(amiobject->GetContext());
+  WrapClass_wxImage::AddVar_InitStandardHandlers(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxImage::AddVar_RGBtoHSV(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_wxImage::AddVar_HSVtoRGB(amiobject->GetContext());
+  */
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -276,7 +339,7 @@ void WrapClass_wxImage::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'width'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'clear' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'clear' (def:true)")
 }
 
 //---------------------------------------------------
@@ -293,9 +356,8 @@ BasicVariable::ptr WrapClass_wxImage::
   int height;
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  int clear_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(clear_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool clear = (bool) (clear_int>0.5);
+  bool clear = true;
+  if (!get_val_param<bool >(clear,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxImage* _newobj = new wxImage(width, height, clear);
   BasicVariable::ptr res = WrapClass_wxImage::CreateVar(_newobj);
@@ -311,7 +373,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'width'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'data'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'static_data' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'static_data' (def:false)")
 }
 
 //---------------------------------------------------
@@ -332,9 +394,8 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* data = data_smtptr.get();
 
-  int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool static_data = (bool) (static_data_int>0.5);
+  bool static_data = false;
+  if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxImage* _newobj = new wxImage(width, height, data, static_data);
   BasicVariable::ptr res = WrapClass_wxImage::CreateVar(_newobj);
@@ -351,7 +412,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'data'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'alpha'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'static_data' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'static_data' (def:false)")
 }
 
 //---------------------------------------------------
@@ -376,9 +437,8 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* alpha = alpha_smtptr.get();
 
-  int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool static_data = (bool) (static_data_int>0.5);
+  bool static_data = false;
+  if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxImage* _newobj = new wxImage(width, height, data, alpha, static_data);
   BasicVariable::ptr res = WrapClass_wxImage::CreateVar(_newobj);
@@ -560,7 +620,7 @@ void WrapClass_wxImage::
     wrap_static_CanRead_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -576,8 +636,7 @@ BasicVariable::ptr WrapClass_wxImage::
   wxString const & name = *name_smtptr;
 
   bool res =   wxImage::CanRead(name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -639,7 +698,7 @@ void WrapClass_wxImage::
     wrap_static_CanRead_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxInputStream, "parameter named 'stream'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -655,8 +714,7 @@ BasicVariable::ptr WrapClass_wxImage::
   wxInputStream & stream = *stream_smtptr;
 
   bool res =   wxImage::CanRead(stream);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -787,7 +845,7 @@ void WrapClass_wxImage::
     wrap_static_RemoveHandler::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -803,8 +861,7 @@ BasicVariable::ptr WrapClass_wxImage::
   wxString const & name = *name_smtptr;
 
   bool res =   wxImage::RemoveHandler(name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1079,8 +1136,8 @@ void WrapClass_wxImage::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'width'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'clear' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'clear' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1097,13 +1154,11 @@ BasicVariable::ptr WrapClass_wxImage::
   int height;
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  int clear_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(clear_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool clear = (bool) (clear_int>0.5);
+  bool clear = true;
+  if (!get_val_param<bool >(clear,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Create(width, height, clear);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1139,8 +1194,8 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'width'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'data'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'static_data' (def:false)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'static_data' (def:false)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1161,13 +1216,11 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* data = data_smtptr.get();
 
-  int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool static_data = (bool) (static_data_int>0.5);
+  bool static_data = false;
+  if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Create(width, height, data, static_data);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1180,8 +1233,8 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'data'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'alpha'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'static_data' (def:false)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'static_data' (def:false)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1206,13 +1259,11 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* alpha = alpha_smtptr.get();
 
-  int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool static_data = (bool) (static_data_int>0.5);
+  bool static_data = false;
+  if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Create(width, height, data, alpha, static_data);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /* The following types are missing: char const * const *
 
@@ -1223,7 +1274,7 @@ void WrapClass_wxImage::
     wrap_Create_4::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'xpmData'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1239,8 +1290,7 @@ BasicVariable::ptr WrapClass_wxImage::
   char const * const * xpmData = xpmData_string->c_str();
 
   bool res =   this->_objectptr->GetObj()->Create(xpmData);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 
@@ -1662,7 +1712,7 @@ void WrapClass_wxImage::
 {
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'angle'")
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'centre_of_rotation'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'interpolating' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'interpolating' (def:true)")
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'offset_after_rotation' (def:0u)")
   return_comments="returning a variable of type wxImage";
 }
@@ -1682,9 +1732,8 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_smtptr_param<wxPoint >(centre_of_rotation_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPoint const & centre_of_rotation = *centre_of_rotation_smtptr;
 
-  int interpolating_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(interpolating_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool interpolating = (bool) (interpolating_int>0.5);
+  bool interpolating = true;
+  if (!get_val_param<bool >(interpolating,_p,_n,false,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxPoint > offset_after_rotation_smtptr;
   if (!get_val_smtptr_param<wxPoint >(offset_after_rotation_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -1700,7 +1749,7 @@ BasicVariable::ptr WrapClass_wxImage::
 void WrapClass_wxImage::
     wrap_Rotate90::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'clockwise' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'clockwise' (def:true)")
   return_comments="returning a variable of type wxImage";
 }
 
@@ -1712,9 +1761,8 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int clockwise_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(clockwise_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool clockwise = (bool) (clockwise_int>0.5);
+  bool clockwise = true;
+  if (!get_val_param<bool >(clockwise,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->Rotate90(clockwise);
   return AMILabType<wxImage >::CreateVar(res);
@@ -1726,7 +1774,7 @@ BasicVariable::ptr WrapClass_wxImage::
 void WrapClass_wxImage::
     wrap_Mirror::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'horizontally' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'horizontally' (def:true)")
   return_comments="returning a variable of type wxImage";
 }
 
@@ -1738,9 +1786,8 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int horizontally_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(horizontally_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool horizontally = (bool) (horizontally_int>0.5);
+  bool horizontally = true;
+  if (!get_val_param<bool >(horizontally,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxImage res =   this->_objectptr->GetObj()->Mirror(horizontally);
   return AMILabType<wxImage >::CreateVar(res);
@@ -2114,7 +2161,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'startR' (def:1)")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'startG' (def:0)")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'startB' (def:0)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2147,8 +2194,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<unsigned char >(startB,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->FindFirstUnusedColour(r, g, b, startR, startG, startB);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2161,7 +2207,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'mr'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'mg'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'mb'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2186,8 +2232,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<unsigned char >(mb,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->SetMaskFromImage(mask, mr, mg, mb);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2197,7 +2242,7 @@ void WrapClass_wxImage::
     wrap_ConvertAlphaToMask::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'threshold' (def:wxIMAGE_ALPHA_THRESHOLD)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2212,8 +2257,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<unsigned char >(threshold,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ConvertAlphaToMask(threshold);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2225,7 +2269,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'r'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'g'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2246,8 +2290,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<unsigned char >(b,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ConvertColourToAlpha(r, g, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2259,7 +2302,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'type' (def:wxBITMAP_TYPE_ANY)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'index' (def:-0x00000000000000001)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2282,8 +2325,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(name, type, index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2322,7 +2364,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'mimetype'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'index' (def:-0x00000000000000001)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2345,8 +2387,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(name, mimetype, index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2358,7 +2399,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( wxInputStream, "parameter named 'stream'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'type' (def:wxBITMAP_TYPE_ANY)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'index' (def:-0x00000000000000001)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2381,8 +2422,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(stream, type, index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2394,7 +2434,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( wxInputStream, "parameter named 'stream'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'mimetype'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'index' (def:-0x00000000000000001)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2417,8 +2457,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<int >(index,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(stream, mimetype, index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2428,7 +2467,7 @@ void WrapClass_wxImage::
     wrap_SaveFile_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2444,8 +2483,7 @@ BasicVariable::ptr WrapClass_wxImage::
   wxString const & name = *name_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2486,7 +2524,7 @@ void WrapClass_wxImage::
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'type'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2505,8 +2543,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<int >(type,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(name, type);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2517,7 +2554,7 @@ void WrapClass_wxImage::
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'mimetype'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2537,8 +2574,7 @@ BasicVariable::ptr WrapClass_wxImage::
   wxString const & mimetype = *mimetype_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(name, mimetype);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2549,7 +2585,7 @@ void WrapClass_wxImage::
 {
   ADDPARAMCOMMENT_TYPE( wxOutputStream, "parameter named 'stream'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'type'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2568,8 +2604,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<int >(type,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(stream, type);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2580,7 +2615,7 @@ void WrapClass_wxImage::
 {
   ADDPARAMCOMMENT_TYPE( wxOutputStream, "parameter named 'stream'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'mimetype'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2600,8 +2635,7 @@ BasicVariable::ptr WrapClass_wxImage::
   wxString const & mimetype = *mimetype_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SaveFile(stream, mimetype);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2610,7 +2644,7 @@ BasicVariable::ptr WrapClass_wxImage::
 void WrapClass_wxImage::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2620,8 +2654,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2630,7 +2663,7 @@ BasicVariable::ptr WrapClass_wxImage::
 void WrapClass_wxImage::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2640,8 +2673,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2708,7 +2740,7 @@ void WrapClass_wxImage::
     wrap_SetData_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'data'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'static_data' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'static_data' (def:false)")
 }
 
 //---------------------------------------------------
@@ -2723,9 +2755,8 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* data = data_smtptr.get();
 
-  int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool static_data = (bool) (static_data_int>0.5);
+  bool static_data = false;
+  if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetData(data, static_data);
   return BasicVariable::ptr();
@@ -2761,7 +2792,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'data'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'new_width'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'new_height'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'static_data' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'static_data' (def:false)")
 }
 
 //---------------------------------------------------
@@ -2782,9 +2813,8 @@ BasicVariable::ptr WrapClass_wxImage::
   int new_height;
   if (!get_val_param<int >(new_height,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool static_data = (bool) (static_data_int>0.5);
+  bool static_data = false;
+  if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetData(data, new_width, new_height, static_data);
   return BasicVariable::ptr();
@@ -2836,7 +2866,7 @@ BasicVariable::ptr WrapClass_wxImage::
 void WrapClass_wxImage::
     wrap_HasAlpha::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2846,8 +2876,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasAlpha();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2878,7 +2907,7 @@ void WrapClass_wxImage::
     wrap_SetAlpha_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'alpha' (def:0l)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'static_data' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'static_data' (def:false)")
 }
 
 //---------------------------------------------------
@@ -2893,9 +2922,8 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   unsigned char* alpha = alpha_smtptr.get();
 
-  int static_data_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(static_data_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool static_data = (bool) (static_data_int>0.5);
+  bool static_data = false;
+  if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->SetAlpha(alpha, static_data);
   return BasicVariable::ptr();
@@ -2928,7 +2956,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'threshold' (def:wxIMAGE_ALPHA_THRESHOLD)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2949,8 +2977,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_param<unsigned char >(threshold,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsTransparent(x, y, threshold);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2994,7 +3021,7 @@ void WrapClass_wxImage::
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'r'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'g'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3018,8 +3045,7 @@ BasicVariable::ptr WrapClass_wxImage::
   unsigned char* b = b_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->GetOrFindMaskColour(r, g, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3085,7 +3111,7 @@ BasicVariable::ptr WrapClass_wxImage::
 void WrapClass_wxImage::
     wrap_SetMask::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'mask' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'mask' (def:true)")
 }
 
 //---------------------------------------------------
@@ -3096,9 +3122,8 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int mask_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(mask_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool mask = (bool) (mask_int>0.5);
+  bool mask = true;
+  if (!get_val_param<bool >(mask,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMask(mask);
   return BasicVariable::ptr();
@@ -3110,7 +3135,7 @@ BasicVariable::ptr WrapClass_wxImage::
 void WrapClass_wxImage::
     wrap_HasMask::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3120,8 +3145,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasMask();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3130,7 +3154,7 @@ BasicVariable::ptr WrapClass_wxImage::
 void WrapClass_wxImage::
     wrap_HasPalette::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3140,8 +3164,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasPalette();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3327,7 +3350,7 @@ void WrapClass_wxImage::
     wrap_HasOption::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3343,8 +3366,7 @@ BasicVariable::ptr WrapClass_wxImage::
   wxString const & name = *name_smtptr;
 
   bool res =   this->_objectptr->GetObj()->HasOption(name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

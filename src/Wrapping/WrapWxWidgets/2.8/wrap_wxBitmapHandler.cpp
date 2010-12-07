@@ -60,13 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxBitmapHandler::CreateVar( wxBitmapHandler* 
 //----------------------------------------------------------------------
 void WrapClass_wxBitmapHandler::AddMethods(WrapClass<wxBitmapHandler>::ptr this_ptr )
 {
-  
-      // Add members from wxBitmapHandlerBase
-      WrapClass_wxBitmapHandlerBase::ptr parent_wxBitmapHandlerBase(        boost::dynamic_pointer_cast<WrapClass_wxBitmapHandlerBase >(this_ptr));
-      parent_wxBitmapHandlerBase->AddMethods(parent_wxBitmapHandlerBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -79,7 +73,42 @@ void WrapClass_wxBitmapHandler::AddMethods(WrapClass<wxBitmapHandler>::ptr this_
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxBitmapHandlerBase
+  boost::shared_ptr<wxBitmapHandlerBase > parent_wxBitmapHandlerBase(  boost::dynamic_pointer_cast<wxBitmapHandlerBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxBitmapHandlerBase = AMILabType<wxBitmapHandlerBase >::CreateVarFromSmtPtr(parent_wxBitmapHandlerBase);
+  context->AddVar("wxBitmapHandlerBase",var_wxBitmapHandlerBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxBitmapHandlerBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxBitmapHandlerBase);
+  context->AddDefault(obj_wxBitmapHandlerBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxBitmapHandler::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxBitmapHandler");
+    WrapClass_wxBitmapHandler::AddVar_wxBitmapHandler_1(amiobject->GetContext());
+  WrapClass_wxBitmapHandler::AddVar_wxBitmapHandler(amiobject->GetContext());
+  WrapClass_wxBitmapHandler::AddVar_wxBitmapHandler_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -70,9 +70,7 @@ class WrapClass_wxStaticBox : public WrapClass<wxStaticBox>
 
     // Static methods
     
-    /* The following types are missing: wxWindowVariant
     ADD_CLASS_STATICMETHOD(GetClassDefaultAttributes,"wxVisualAttributes wxStaticBox::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL) (http://docs.wxwidgets.org/stable/wx_wxstaticbox.html#getclassdefaultattributes).");
-    */
 
 
 
@@ -90,6 +88,11 @@ class WrapClass_wxStaticBox : public WrapClass<wxStaticBox>
 
 
     void AddMethods(WrapClass<wxStaticBox>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

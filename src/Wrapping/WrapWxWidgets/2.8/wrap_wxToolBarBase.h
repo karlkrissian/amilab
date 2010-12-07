@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -69,18 +69,12 @@ class WrapClass_wxToolBarBase : public WrapClass<wxToolBarBase>
     // Standard methods
     
     // Adding standard methods
-/* The following types are missing: wxItemKind
     ADD_CLASS_METHOD(AddTool_1,"wxToolBarToolBase * wxToolBarBase::AddTool(int toolid, wxString const & label, wxBitmap const & bitmap, wxBitmap const & bmpDisabled, wxItemKind kind = wxITEM_NORMAL, wxString const & shortHelp = wxEmptyString, wxString const & longHelp = wxEmptyString, wxObject * data = 0l)  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#addtool)")
-*/
     ADD_CLASS_METHOD(AddTool,"wxToolBarBase::AddTool()  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#addtool)")
-/* The following types are missing: wxItemKind
     ADD_CLASS_METHOD(AddTool_2,"wxToolBarToolBase * wxToolBarBase::AddTool(int toolid, wxString const & label, wxBitmap const & bitmap, wxString const & shortHelp = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#addtool)")
-*/
     ADD_CLASS_METHOD(AddCheckTool,"wxToolBarToolBase * wxToolBarBase::AddCheckTool(int toolid, wxString const & label, wxBitmap const & bitmap, wxBitmap const & bmpDisabled = wxNullBitmap, wxString const & shortHelp = wxEmptyString, wxString const & longHelp = wxEmptyString, wxObject * data = 0l)  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#addchecktool)")
     ADD_CLASS_METHOD(AddRadioTool,"wxToolBarToolBase * wxToolBarBase::AddRadioTool(int toolid, wxString const & label, wxBitmap const & bitmap, wxBitmap const & bmpDisabled = wxNullBitmap, wxString const & shortHelp = wxEmptyString, wxString const & longHelp = wxEmptyString, wxObject * data = 0l)  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#addradiotool)")
-/* The following types are missing: wxItemKind
     ADD_CLASS_METHOD(InsertTool_1,"wxToolBarToolBase * wxToolBarBase::InsertTool(size_t pos, int toolid, wxString const & label, wxBitmap const & bitmap, wxBitmap const & bmpDisabled = wxNullBitmap, wxItemKind kind = wxITEM_NORMAL, wxString const & shortHelp = wxEmptyString, wxString const & longHelp = wxEmptyString, wxObject * clientData = 0l)  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#inserttool)")
-*/
     ADD_CLASS_METHOD(AddTool_3,"wxToolBarToolBase * wxToolBarBase::AddTool(wxToolBarToolBase * tool)  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#addtool)")
     ADD_CLASS_METHOD(InsertTool,"wxToolBarBase::InsertTool()  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#inserttool)")
     ADD_CLASS_METHOD(InsertTool_2,"wxToolBarToolBase * wxToolBarBase::InsertTool(size_t pos, wxToolBarToolBase * tool)  (http://docs.wxwidgets.org/stable/wx_wxtoolbarbase.html#inserttool)")
@@ -140,6 +134,11 @@ class WrapClass_wxToolBarBase : public WrapClass<wxToolBarBase>
 
 
     void AddMethods(WrapClass<wxToolBarBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

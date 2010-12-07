@@ -20,8 +20,13 @@
 // #include "..."
 #include "wrap_wxIcon.h"
 #include "wrap_wxIconBundle.h"
+#include "wrap_wxRegion.h"
 #include "wrap_wxWindowBase.h"
 #include "wrap_wxWindow.h"
+#include "wrap_wxCloseEvent.h"
+#include "wrap_wxSizeEvent.h"
+#include "wrap_wxActivateEvent.h"
+#include "wrap_wxUpdateUIEvent.h"
 #include "wrap_wxSize.h"
 
 
@@ -70,13 +75,7 @@ Variable<AMIObject>::ptr WrapClass_wxTopLevelWindowBase::CreateVar( wxTopLevelWi
 //----------------------------------------------------------------------
 void WrapClass_wxTopLevelWindowBase::AddMethods(WrapClass<wxTopLevelWindowBase>::ptr this_ptr )
 {
-  
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_wxWindow(        boost::dynamic_pointer_cast<WrapClass_wxWindow >(this_ptr));
-      parent_wxWindow->AddMethods(parent_wxWindow);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_IsAlwaysMaximized( this_ptr);
@@ -85,9 +84,7 @@ void WrapClass_wxTopLevelWindowBase::AddMethods(WrapClass<wxTopLevelWindowBase>:
       AddVar_SetIcon( this_ptr);
       AddVar_SetIcons( this_ptr);
       AddVar_EnableCloseButton( this_ptr);
-/* The following types are missing: wxRegion
       AddVar_SetShape( this_ptr);
-*/
       AddVar_RequestUserAttention( this_ptr);
       AddVar_IsActive( this_ptr);
       AddVar_ShouldPreventAppExit( this_ptr);
@@ -101,19 +98,11 @@ void WrapClass_wxTopLevelWindowBase::AddMethods(WrapClass<wxTopLevelWindowBase>:
       AddVar_Destroy( this_ptr);
       AddVar_IsTopLevel( this_ptr);
       AddVar_IsVisible( this_ptr);
-/* The following types are missing: wxCloseEvent
       AddVar_OnCloseWindow( this_ptr);
-*/
-/* The following types are missing: wxSizeEvent
       AddVar_OnSize( this_ptr);
-*/
       AddVar_GetRectForTopLevelChildren( this_ptr);
-/* The following types are missing: wxActivateEvent
       AddVar_OnActivate( this_ptr);
-*/
-/* The following types are missing: wxUpdateUIEvent
       AddVar_DoUpdateWindowUI( this_ptr);
-*/
       AddVar_SetMinSize( this_ptr);
       AddVar_SetMaxSize( this_ptr);
       AddVar_DoSetSizeHints( this_ptr);
@@ -121,7 +110,38 @@ void WrapClass_wxTopLevelWindowBase::AddMethods(WrapClass<wxTopLevelWindowBase>:
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxWindow
+  boost::shared_ptr<wxWindow > parent_wxWindow(  boost::dynamic_pointer_cast<wxWindow >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxWindow = AMILabType<wxWindow >::CreateVarFromSmtPtr(parent_wxWindow);
+  context->AddVar("wxWindow",var_wxWindow);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxWindow);
+  context->AddDefault(obj_wxWindow->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxTopLevelWindowBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxTopLevelWindowBase");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -134,7 +154,7 @@ void WrapClass_wxTopLevelWindowBase::AddMethods(WrapClass<wxTopLevelWindowBase>:
 void WrapClass_wxTopLevelWindowBase::
     wrap_IsAlwaysMaximized::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -144,8 +164,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsAlwaysMaximized();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -242,8 +261,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
 void WrapClass_wxTopLevelWindowBase::
     wrap_EnableCloseButton::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'param0'")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -254,15 +273,12 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int param0_int;
-  if (!get_val_param<int >(param0_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool param0 = (bool) (param0_int>0.5);
+  bool param0;
+  if (!get_val_param<bool >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->EnableCloseButton(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-/* The following types are missing: wxRegion
 
 //---------------------------------------------------
 //  Wrapping of bool wxTopLevelWindowBase::SetShape(wxRegion const & param0)
@@ -271,7 +287,7 @@ void WrapClass_wxTopLevelWindowBase::
     wrap_SetShape::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRegion, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -287,10 +303,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   wxRegion const & param0 = *param0_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetShape(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::RequestUserAttention(int flags = wxUSER_ATTENTION_INFO)
@@ -322,7 +336,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
 void WrapClass_wxTopLevelWindowBase::
     wrap_IsActive::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -332,8 +346,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsActive();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -342,7 +355,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
 void WrapClass_wxTopLevelWindowBase::
     wrap_ShouldPreventAppExit::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -352,8 +365,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ShouldPreventAppExit();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -529,7 +541,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
 void WrapClass_wxTopLevelWindowBase::
     wrap_Destroy::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -539,8 +551,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Destroy();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -549,7 +560,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
 void WrapClass_wxTopLevelWindowBase::
     wrap_IsTopLevel::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -559,8 +570,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsTopLevel();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -569,7 +579,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
 void WrapClass_wxTopLevelWindowBase::
     wrap_IsVisible::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -579,10 +589,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsVisible();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-/* The following types are missing: wxCloseEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::OnCloseWindow(wxCloseEvent & event)
@@ -608,8 +616,6 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->OnCloseWindow(event);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxSizeEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::OnSize(wxSizeEvent & param0)
@@ -635,7 +641,6 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->OnSize(param0);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::GetRectForTopLevelChildren(int * x, int * y, int * w, int * h)
@@ -676,7 +681,6 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->GetRectForTopLevelChildren(x, y, w, h);
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxActivateEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::OnActivate(wxActivateEvent & param0)
@@ -702,8 +706,6 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->OnActivate(param0);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxUpdateUIEvent
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::DoUpdateWindowUI(wxUpdateUIEvent & event)
@@ -729,7 +731,6 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   this->_objectptr->GetObj()->DoUpdateWindowUI(event);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxTopLevelWindowBase::SetMinSize(wxSize const & minSize)

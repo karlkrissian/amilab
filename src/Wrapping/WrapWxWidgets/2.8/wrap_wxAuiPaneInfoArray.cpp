@@ -61,10 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxAuiPaneInfoArray::CreateVar( wxAuiPaneInfoA
 //----------------------------------------------------------------------
 void WrapClass_wxAuiPaneInfoArray::AddMethods(WrapClass<wxAuiPaneInfoArray>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -92,7 +89,7 @@ void WrapClass_wxAuiPaneInfoArray::AddMethods(WrapClass<wxAuiPaneInfoArray>::ptr
       AddVar_Clear( this_ptr);
       AddVar_Detach( this_ptr);
       AddVar_RemoveAt( this_ptr);
-/* The following types are missing: _10954
+/* The following types are missing: _15468
       AddVar_Sort( this_ptr);
 */
 
@@ -103,7 +100,31 @@ void WrapClass_wxAuiPaneInfoArray::AddMethods(WrapClass<wxAuiPaneInfoArray>::ptr
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAuiPaneInfoArray::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAuiPaneInfoArray");
+    WrapClass_wxAuiPaneInfoArray::AddVar_wxAuiPaneInfoArray_1(amiobject->GetContext());
+  WrapClass_wxAuiPaneInfoArray::AddVar_wxAuiPaneInfoArray(amiobject->GetContext());
+  WrapClass_wxAuiPaneInfoArray::AddVar_wxAuiPaneInfoArray_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -263,7 +284,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
 void WrapClass_wxAuiPaneInfoArray::
     wrap_IsEmpty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -273,8 +294,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEmpty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -283,7 +303,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
 void WrapClass_wxAuiPaneInfoArray::
     wrap_empty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -293,8 +313,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->empty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -387,7 +406,7 @@ void WrapClass_wxAuiPaneInfoArray::
     wrap_Index::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxAuiPaneInfo, "parameter named 'lItem'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bFromEnd' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'bFromEnd' (def:false)")
   return_comments="returning a variable of type int";
 }
 
@@ -403,9 +422,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   if (!get_val_smtptr_param<wxAuiPaneInfo >(lItem_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   _wxObjArraywxAuiPaneInfoArray const & lItem = *lItem_smtptr;
 
-  int bFromEnd_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(bFromEnd_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool bFromEnd = (bool) (bFromEnd_int>0.5);
+  bool bFromEnd = false;
+  if (!get_val_param<bool >(bFromEnd,_p,_n,false,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->Index(lItem, bFromEnd);
   return AMILabType<int >::CreateVar(res);
@@ -736,7 +754,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   this->_objectptr->GetObj()->RemoveAt(uiIndex, nRemove);
   return BasicVariable::ptr();
 }
-/* The following types are missing: _10954
+/* The following types are missing: _15468
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiPaneInfoArray::Sort(CMPFUNC_wxObjArraywxAuiPaneInfoArray fCmp)
@@ -744,7 +762,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
 void WrapClass_wxAuiPaneInfoArray::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _10954, "parameter named 'fCmp'")
+  ADDPARAMCOMMENT_TYPE( _15468, "parameter named 'fCmp'")
 }
 
 //---------------------------------------------------
@@ -755,8 +773,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _10954 fCmp;
-  if (!get_val_param<_10954 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
+  _15468 fCmp;
+  if (!get_val_param<_15468 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(fCmp);
   return BasicVariable::ptr();

@@ -75,13 +75,7 @@ Variable<AMIObject>::ptr WrapClass_wxFrameBase::CreateVar( wxFrameBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxFrameBase::AddMethods(WrapClass<wxFrameBase>::ptr this_ptr )
 {
-  
-      // Add members from wxTopLevelWindow
-      WrapClass_wxTopLevelWindow::ptr parent_wxTopLevelWindow(        boost::dynamic_pointer_cast<WrapClass_wxTopLevelWindow >(this_ptr));
-      parent_wxTopLevelWindow->AddMethods(parent_wxTopLevelWindow);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_New( this_ptr);
@@ -115,7 +109,40 @@ void WrapClass_wxFrameBase::AddMethods(WrapClass<wxFrameBase>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxTopLevelWindow
+  boost::shared_ptr<wxTopLevelWindow > parent_wxTopLevelWindow(  boost::dynamic_pointer_cast<wxTopLevelWindow >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxTopLevelWindow = AMILabType<wxTopLevelWindow >::CreateVarFromSmtPtr(parent_wxTopLevelWindow);
+  context->AddVar("wxTopLevelWindow",var_wxTopLevelWindow);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxTopLevelWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxTopLevelWindow);
+  context->AddDefault(obj_wxTopLevelWindow->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxFrameBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxFrameBase");
+    WrapClass_wxFrameBase::AddVar_wxFrameBase(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -289,7 +316,7 @@ void WrapClass_wxFrameBase::
     wrap_ProcessCommand::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -304,8 +331,7 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   if (!get_val_param<int >(winid,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ProcessCommand(winid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -856,7 +882,7 @@ void WrapClass_wxFrameBase::
     wrap_DoGiveHelp::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show'")
 }
 
 //---------------------------------------------------
@@ -871,9 +897,8 @@ BasicVariable::ptr WrapClass_wxFrameBase::
   if (!get_val_smtptr_param<wxString >(text_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & text = *text_smtptr;
 
-  int show_int;
-  if (!get_val_param<int >(show_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool show = (bool) (show_int>0.5);
+  bool show;
+  if (!get_val_param<bool >(show,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->DoGiveHelp(text, show);
   return BasicVariable::ptr();

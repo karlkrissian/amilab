@@ -72,13 +72,7 @@ Variable<AMIObject>::ptr WrapClass_wxFrame::CreateVar( wxFrame* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxFrame::AddMethods(WrapClass<wxFrame>::ptr this_ptr )
 {
-  
-      // Add members from wxFrameBase
-      WrapClass_wxFrameBase::ptr parent_wxFrameBase(        boost::dynamic_pointer_cast<WrapClass_wxFrameBase >(this_ptr));
-      parent_wxFrameBase->AddMethods(parent_wxFrameBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -99,35 +93,69 @@ void WrapClass_wxFrame::AddMethods(WrapClass<wxFrame>::ptr this_ptr )
       if (!tmpobj.get()) return;
       Variables::ptr context(tmpobj->GetContext());
       
-      /* type not available
       // Adding public member m_menuBarDetached
       boost::shared_ptr<bool > var_m_menuBarDetached_ptr(&GetObj()->m_menuBarDetached, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_menuBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_menuBarDetached_ptr);
-      if (var_m_menuBarDetached.get()) {
-        var_m_menuBarDetached->Rename("m_menuBarDetached");
-        context->AddVar(var_m_menuBarDetached,context);
+      if (var_m_menuBarDetached_ptr.get()) {
+        BasicVariable::ptr var_m_menuBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_menuBarDetached_ptr);
+        if (var_m_menuBarDetached.get()) {
+          var_m_menuBarDetached->Rename("m_menuBarDetached");
+          context->AddVar(var_m_menuBarDetached,context);
+        }
       }
-      */
       
       // Adding public member m_menuBarHeight
       boost::shared_ptr<int > var_m_menuBarHeight_ptr(&GetObj()->m_menuBarHeight, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_menuBarHeight = AMILabType<int >::CreateVarFromSmtPtr(var_m_menuBarHeight_ptr);
-      if (var_m_menuBarHeight.get()) {
-        var_m_menuBarHeight->Rename("m_menuBarHeight");
-        context->AddVar(var_m_menuBarHeight,context);
+      if (var_m_menuBarHeight_ptr.get()) {
+        BasicVariable::ptr var_m_menuBarHeight = AMILabType<int >::CreateVarFromSmtPtr(var_m_menuBarHeight_ptr);
+        if (var_m_menuBarHeight.get()) {
+          var_m_menuBarHeight->Rename("m_menuBarHeight");
+          context->AddVar(var_m_menuBarHeight,context);
+        }
       }
       
-      /* type not available
       // Adding public member m_toolBarDetached
       boost::shared_ptr<bool > var_m_toolBarDetached_ptr(&GetObj()->m_toolBarDetached, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_toolBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_toolBarDetached_ptr);
-      if (var_m_toolBarDetached.get()) {
-        var_m_toolBarDetached->Rename("m_toolBarDetached");
-        context->AddVar(var_m_toolBarDetached,context);
+      if (var_m_toolBarDetached_ptr.get()) {
+        BasicVariable::ptr var_m_toolBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_toolBarDetached_ptr);
+        if (var_m_toolBarDetached.get()) {
+          var_m_toolBarDetached->Rename("m_toolBarDetached");
+          context->AddVar(var_m_toolBarDetached,context);
+        }
       }
-      */
+
+
+  // Adding Bases
+
+  // Add base parent wxFrameBase
+  boost::shared_ptr<wxFrameBase > parent_wxFrameBase(  boost::dynamic_pointer_cast<wxFrameBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxFrameBase = AMILabType<wxFrameBase >::CreateVarFromSmtPtr(parent_wxFrameBase);
+  context->AddVar("wxFrameBase",var_wxFrameBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxFrameBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxFrameBase);
+  context->AddDefault(obj_wxFrameBase->Pointer()->GetContext());
 
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxFrame::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxFrame");
+    WrapClass_wxFrame::AddVar_wxFrame_1(amiobject->GetContext());
+  WrapClass_wxFrame::AddVar_wxFrame(amiobject->GetContext());
+  WrapClass_wxFrame::AddVar_wxFrame_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -245,7 +273,7 @@ void WrapClass_wxFrame::
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size' (def:wxDefaultSize)")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:541072960)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxFrameNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -287,8 +315,7 @@ BasicVariable::ptr WrapClass_wxFrame::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxFrameNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, title, pos, size, style, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

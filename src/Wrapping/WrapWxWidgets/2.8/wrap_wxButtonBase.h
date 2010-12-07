@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -66,7 +66,6 @@ class WrapClass_wxButtonBase : public WrapClass<wxButtonBase>
 
     // Static methods
     
-    ADD_CLASS_STATICMETHOD(GetDefaultSize,"wxSize wxButtonBase::GetDefaultSize() (http://docs.wxwidgets.org/stable/wx_wxbuttonbase.html#getdefaultsize).");
 
 
 
@@ -83,6 +82,11 @@ class WrapClass_wxButtonBase : public WrapClass<wxButtonBase>
 
 
     void AddMethods(WrapClass<wxButtonBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

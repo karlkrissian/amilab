@@ -64,13 +64,7 @@ Variable<AMIObject>::ptr WrapClass_wxKeyEvent::CreateVar( wxKeyEvent* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxKeyEvent::AddMethods(WrapClass<wxKeyEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -92,7 +86,6 @@ void WrapClass_wxKeyEvent::AddMethods(WrapClass<wxKeyEvent>::ptr this_ptr )
       AddVar_GetPosition_3( this_ptr);
       AddVar_GetX( this_ptr);
       AddVar_GetY( this_ptr);
-      AddVar_KeyCode( this_ptr);
       AddVar_Clone( this_ptr);
       AddVar_GetClassInfo( this_ptr);
 
@@ -108,109 +101,153 @@ void WrapClass_wxKeyEvent::AddMethods(WrapClass<wxKeyEvent>::ptr this_ptr )
       
       // Adding public member m_x
       boost::shared_ptr<int > var_m_x_ptr(&GetObj()->m_x, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_x = AMILabType<int >::CreateVarFromSmtPtr(var_m_x_ptr);
-      if (var_m_x.get()) {
-        var_m_x->Rename("m_x");
-        context->AddVar(var_m_x,context);
+      if (var_m_x_ptr.get()) {
+        BasicVariable::ptr var_m_x = AMILabType<int >::CreateVarFromSmtPtr(var_m_x_ptr);
+        if (var_m_x.get()) {
+          var_m_x->Rename("m_x");
+          context->AddVar(var_m_x,context);
+        }
       }
       
       // Adding public member m_y
       boost::shared_ptr<int > var_m_y_ptr(&GetObj()->m_y, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_y = AMILabType<int >::CreateVarFromSmtPtr(var_m_y_ptr);
-      if (var_m_y.get()) {
-        var_m_y->Rename("m_y");
-        context->AddVar(var_m_y,context);
+      if (var_m_y_ptr.get()) {
+        BasicVariable::ptr var_m_y = AMILabType<int >::CreateVarFromSmtPtr(var_m_y_ptr);
+        if (var_m_y.get()) {
+          var_m_y->Rename("m_y");
+          context->AddVar(var_m_y,context);
+        }
       }
       
       // Adding public member m_keyCode
       boost::shared_ptr<long int > var_m_keyCode_ptr(&GetObj()->m_keyCode, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_keyCode = AMILabType<long int >::CreateVarFromSmtPtr(var_m_keyCode_ptr);
-      if (var_m_keyCode.get()) {
-        var_m_keyCode->Rename("m_keyCode");
-        context->AddVar(var_m_keyCode,context);
+      if (var_m_keyCode_ptr.get()) {
+        BasicVariable::ptr var_m_keyCode = AMILabType<long int >::CreateVarFromSmtPtr(var_m_keyCode_ptr);
+        if (var_m_keyCode.get()) {
+          var_m_keyCode->Rename("m_keyCode");
+          context->AddVar(var_m_keyCode,context);
+        }
       }
       
-      /* type not available
       // Adding public member m_controlDown
       boost::shared_ptr<bool > var_m_controlDown_ptr(&GetObj()->m_controlDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_controlDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_controlDown_ptr);
-      if (var_m_controlDown.get()) {
-        var_m_controlDown->Rename("m_controlDown");
-        context->AddVar(var_m_controlDown,context);
+      if (var_m_controlDown_ptr.get()) {
+        BasicVariable::ptr var_m_controlDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_controlDown_ptr);
+        if (var_m_controlDown.get()) {
+          var_m_controlDown->Rename("m_controlDown");
+          context->AddVar(var_m_controlDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_shiftDown
       boost::shared_ptr<bool > var_m_shiftDown_ptr(&GetObj()->m_shiftDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_shiftDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_shiftDown_ptr);
-      if (var_m_shiftDown.get()) {
-        var_m_shiftDown->Rename("m_shiftDown");
-        context->AddVar(var_m_shiftDown,context);
+      if (var_m_shiftDown_ptr.get()) {
+        BasicVariable::ptr var_m_shiftDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_shiftDown_ptr);
+        if (var_m_shiftDown.get()) {
+          var_m_shiftDown->Rename("m_shiftDown");
+          context->AddVar(var_m_shiftDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_altDown
       boost::shared_ptr<bool > var_m_altDown_ptr(&GetObj()->m_altDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_altDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_altDown_ptr);
-      if (var_m_altDown.get()) {
-        var_m_altDown->Rename("m_altDown");
-        context->AddVar(var_m_altDown,context);
+      if (var_m_altDown_ptr.get()) {
+        BasicVariable::ptr var_m_altDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_altDown_ptr);
+        if (var_m_altDown.get()) {
+          var_m_altDown->Rename("m_altDown");
+          context->AddVar(var_m_altDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_metaDown
       boost::shared_ptr<bool > var_m_metaDown_ptr(&GetObj()->m_metaDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_metaDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_metaDown_ptr);
-      if (var_m_metaDown.get()) {
-        var_m_metaDown->Rename("m_metaDown");
-        context->AddVar(var_m_metaDown,context);
+      if (var_m_metaDown_ptr.get()) {
+        BasicVariable::ptr var_m_metaDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_metaDown_ptr);
+        if (var_m_metaDown.get()) {
+          var_m_metaDown->Rename("m_metaDown");
+          context->AddVar(var_m_metaDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_scanCode
       boost::shared_ptr<bool > var_m_scanCode_ptr(&GetObj()->m_scanCode, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_scanCode = AMILabType<bool >::CreateVarFromSmtPtr(var_m_scanCode_ptr);
-      if (var_m_scanCode.get()) {
-        var_m_scanCode->Rename("m_scanCode");
-        context->AddVar(var_m_scanCode,context);
+      if (var_m_scanCode_ptr.get()) {
+        BasicVariable::ptr var_m_scanCode = AMILabType<bool >::CreateVarFromSmtPtr(var_m_scanCode_ptr);
+        if (var_m_scanCode.get()) {
+          var_m_scanCode->Rename("m_scanCode");
+          context->AddVar(var_m_scanCode,context);
+        }
       }
-      */
       
-      /* type not available
+      /* Type not available
       // Adding public member m_uniChar
       boost::shared_ptr<wchar_t > var_m_uniChar_ptr(&GetObj()->m_uniChar, smartpointer_nodeleter<wchar_t >());
-      BasicVariable::ptr var_m_uniChar = AMILabType<wchar_t >::CreateVarFromSmtPtr(var_m_uniChar_ptr);
-      if (var_m_uniChar.get()) {
-        var_m_uniChar->Rename("m_uniChar");
-        context->AddVar(var_m_uniChar,context);
+      if (var_m_uniChar_ptr.get()) {
+        BasicVariable::ptr var_m_uniChar = AMILabType<wchar_t >::CreateVarFromSmtPtr(var_m_uniChar_ptr);
+        if (var_m_uniChar.get()) {
+          var_m_uniChar->Rename("m_uniChar");
+          context->AddVar(var_m_uniChar,context);
+        }
       }
       */
       
-      /* type not available
+      /* Type not available
       // Adding public member m_rawCode
       boost::shared_ptr<unsigned int > var_m_rawCode_ptr(&GetObj()->m_rawCode, smartpointer_nodeleter<unsigned int >());
-      BasicVariable::ptr var_m_rawCode = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_m_rawCode_ptr);
-      if (var_m_rawCode.get()) {
-        var_m_rawCode->Rename("m_rawCode");
-        context->AddVar(var_m_rawCode,context);
+      if (var_m_rawCode_ptr.get()) {
+        BasicVariable::ptr var_m_rawCode = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_m_rawCode_ptr);
+        if (var_m_rawCode.get()) {
+          var_m_rawCode->Rename("m_rawCode");
+          context->AddVar(var_m_rawCode,context);
+        }
       }
       */
       
-      /* type not available
+      /* Type not available
       // Adding public member m_rawFlags
       boost::shared_ptr<unsigned int > var_m_rawFlags_ptr(&GetObj()->m_rawFlags, smartpointer_nodeleter<unsigned int >());
-      BasicVariable::ptr var_m_rawFlags = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_m_rawFlags_ptr);
-      if (var_m_rawFlags.get()) {
-        var_m_rawFlags->Rename("m_rawFlags");
-        context->AddVar(var_m_rawFlags,context);
+      if (var_m_rawFlags_ptr.get()) {
+        BasicVariable::ptr var_m_rawFlags = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_m_rawFlags_ptr);
+        if (var_m_rawFlags.get()) {
+          var_m_rawFlags->Rename("m_rawFlags");
+          context->AddVar(var_m_rawFlags,context);
+        }
       }
       */
 
+
+  // Adding Bases
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxKeyEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxKeyEvent");
+    WrapClass_wxKeyEvent::AddVar_wxKeyEvent_1(amiobject->GetContext());
+  WrapClass_wxKeyEvent::AddVar_wxKeyEvent(amiobject->GetContext());
+  WrapClass_wxKeyEvent::AddVar_wxKeyEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -330,7 +367,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
 void WrapClass_wxKeyEvent::
     wrap_ControlDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -340,8 +377,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ControlDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -350,7 +386,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
 void WrapClass_wxKeyEvent::
     wrap_ShiftDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -360,8 +396,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ShiftDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -370,7 +405,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
 void WrapClass_wxKeyEvent::
     wrap_MetaDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -380,8 +415,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->MetaDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -390,7 +424,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
 void WrapClass_wxKeyEvent::
     wrap_AltDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -400,8 +434,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->AltDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -410,7 +443,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
 void WrapClass_wxKeyEvent::
     wrap_CmdDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -420,8 +453,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->CmdDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -430,7 +462,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
 void WrapClass_wxKeyEvent::
     wrap_HasModifiers::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -440,8 +472,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasModifiers();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -670,26 +701,6 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
 
   wxCoord res =   this->_objectptr->GetObj()->GetY();
   return AMILabType<int >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of long int wxKeyEvent::KeyCode()
-//---------------------------------------------------
-void WrapClass_wxKeyEvent::
-    wrap_KeyCode::SetParametersComments()
-{
-  return_comments="returning a variable of type long";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxKeyEvent::
-    wrap_KeyCode::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  long int res =   this->_objectptr->GetObj()->KeyCode();
-  long res_long = res;
-  return AMILabType<long >::CreateVar(res_long);
 }
 
 //---------------------------------------------------

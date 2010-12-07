@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -84,15 +84,13 @@ class WrapClass_wxInputStream : public WrapClass<wxInputStream>
 */
     ADD_CLASS_METHOD(Ungetch,"wxInputStream::Ungetch()  (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#ungetch)")
     ADD_CLASS_METHOD(Ungetch_2,"bool wxInputStream::Ungetch(char c)  (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#ungetch)")
-/* The following types are missing: wxSeekMode
     ADD_CLASS_METHOD(SeekI,"wxFileOffset wxInputStream::SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart)  (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#seeki)")
-*/
     ADD_CLASS_METHOD(TellI,"wxFileOffset wxInputStream::TellI()  (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#telli)")
 
     // Operators:
     // ADD_CLASS_METHOD(operator not available,"wxInputStream & wxInputStream::>>(wxOutputStream & out) (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#>>)")
     // ADD_CLASS_METHOD(operator not available,"wxInputStream::>>() (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#>>)")
-/* The following types are missing: _12803
+/* The following types are missing: _13697
     // ADD_CLASS_METHOD(operator not available,"wxInputStream & wxInputStream::>>(__wxInputManip func) (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#>>)")
 */
 
@@ -100,6 +98,11 @@ class WrapClass_wxInputStream : public WrapClass<wxInputStream>
 
 
     void AddMethods(WrapClass<wxInputStream>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

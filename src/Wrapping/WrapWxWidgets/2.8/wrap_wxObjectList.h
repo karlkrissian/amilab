@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -56,10 +56,8 @@ class WrapClass_wxObjectList : public WrapClass<wxObjectList>
     }
 
     
-    /* The following types are missing: wxKeyType
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxObjectList_1,"Constructor wxObjectList::wxObjectList(wxKeyType keyType = wxKEY_NONE) (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#wxobjectlist).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxObjectList,"Constructor wxObjectList::wxObjectList() (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#wxobjectlist).");
     /// Wrapping of the constructor
@@ -113,11 +111,11 @@ class WrapClass_wxObjectList : public WrapClass<wxObjectList>
     ADD_CLASS_METHOD(Find,"wxObjectList::Find()  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxObjectListNode * wxObjectList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxObjectList::IndexOf(wxObject * object)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#indexof)")
-/* The following types are missing: _9495
+/* The following types are missing: _9904
     ADD_CLASS_METHOD(Sort_1,"void wxObjectList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxObjectList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#sort)")
-/* The following types are missing: _8296
+/* The following types are missing: _8750
     ADD_CLASS_METHOD(Sort_2,"void wxObjectList::Sort(wxSortFuncFor_wxObjectList func)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#sort)")
 */
 /* The following types are missing: iterator
@@ -206,6 +204,11 @@ class WrapClass_wxObjectList : public WrapClass<wxObjectList>
 
 
     void AddMethods(WrapClass<wxObjectList>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

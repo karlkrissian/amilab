@@ -19,11 +19,9 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
-
-#include "wrap_wxObject.h"
 
 
 
@@ -31,6 +29,7 @@ AMI_DECLARE_TYPE(wxObjectEventFunction);
 
 // TODO: check for inheritence ...
 class WrapClass_wxObjectEventFunction : public WrapClass<wxObjectEventFunction>
+    
 {
   DEFINE_CLASS(WrapClass_wxObjectEventFunction);
 
@@ -45,6 +44,7 @@ class WrapClass_wxObjectEventFunction : public WrapClass<wxObjectEventFunction>
     /// Constructor
     WrapClass_wxObjectEventFunction(boost::shared_ptr<wxObjectEventFunction > si): 
     WrapClass<wxObjectEventFunction>(si)
+    
     {}
 
     /// Destructor
@@ -53,11 +53,25 @@ class WrapClass_wxObjectEventFunction : public WrapClass<wxObjectEventFunction>
       CLASS_MESSAGE("*** Destroying ***");
     }
 
+    
+
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxObjectEventFunction*);
 
     // Static methods
+    
+
+    // Standard methods
+    
+
+
+
     void AddMethods(WrapClass<wxObjectEventFunction>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

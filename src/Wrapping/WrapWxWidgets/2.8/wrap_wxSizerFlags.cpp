@@ -59,10 +59,7 @@ Variable<AMIObject>::ptr WrapClass_wxSizerFlags::CreateVar( wxSizerFlags* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxSizerFlags::AddMethods(WrapClass<wxSizerFlags>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -96,7 +93,32 @@ void WrapClass_wxSizerFlags::AddMethods(WrapClass<wxSizerFlags>::ptr this_ptr )
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxSizerFlags::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxSizerFlags");
+    WrapClass_wxSizerFlags::AddVar_wxSizerFlags_1(amiobject->GetContext());
+  WrapClass_wxSizerFlags::AddVar_wxSizerFlags(amiobject->GetContext());
+  WrapClass_wxSizerFlags::AddVar_wxSizerFlags_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxSizerFlags::AddVar_GetDefaultBorder(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

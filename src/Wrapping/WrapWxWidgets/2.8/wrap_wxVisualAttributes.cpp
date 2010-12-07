@@ -61,10 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxVisualAttributes::CreateVar( wxVisualAttrib
 //----------------------------------------------------------------------
 void WrapClass_wxVisualAttributes::AddMethods(WrapClass<wxVisualAttributes>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -82,29 +79,59 @@ void WrapClass_wxVisualAttributes::AddMethods(WrapClass<wxVisualAttributes>::ptr
       
       // Adding public member font
       boost::shared_ptr<wxFont > var_font_ptr(&GetObj()->font, smartpointer_nodeleter<wxFont >());
-      BasicVariable::ptr var_font = AMILabType<wxFont >::CreateVarFromSmtPtr(var_font_ptr);
-      if (var_font.get()) {
-        var_font->Rename("font");
-        context->AddVar(var_font,context);
+      if (var_font_ptr.get()) {
+        BasicVariable::ptr var_font = AMILabType<wxFont >::CreateVarFromSmtPtr(var_font_ptr);
+        if (var_font.get()) {
+          var_font->Rename("font");
+          context->AddVar(var_font,context);
+        }
       }
       
       // Adding public member colFg
       boost::shared_ptr<wxColour > var_colFg_ptr(&GetObj()->colFg, smartpointer_nodeleter<wxColour >());
-      BasicVariable::ptr var_colFg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colFg_ptr);
-      if (var_colFg.get()) {
-        var_colFg->Rename("colFg");
-        context->AddVar(var_colFg,context);
+      if (var_colFg_ptr.get()) {
+        BasicVariable::ptr var_colFg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colFg_ptr);
+        if (var_colFg.get()) {
+          var_colFg->Rename("colFg");
+          context->AddVar(var_colFg,context);
+        }
       }
       
       // Adding public member colBg
       boost::shared_ptr<wxColour > var_colBg_ptr(&GetObj()->colBg, smartpointer_nodeleter<wxColour >());
-      BasicVariable::ptr var_colBg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colBg_ptr);
-      if (var_colBg.get()) {
-        var_colBg->Rename("colBg");
-        context->AddVar(var_colBg,context);
+      if (var_colBg_ptr.get()) {
+        BasicVariable::ptr var_colBg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colBg_ptr);
+        if (var_colBg.get()) {
+          var_colBg->Rename("colBg");
+          context->AddVar(var_colBg,context);
+        }
       }
 
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxVisualAttributes::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxVisualAttributes");
+    WrapClass_wxVisualAttributes::AddVar_wxVisualAttributes_1(amiobject->GetContext());
+  WrapClass_wxVisualAttributes::AddVar_wxVisualAttributes(amiobject->GetContext());
+  WrapClass_wxVisualAttributes::AddVar_wxVisualAttributes_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

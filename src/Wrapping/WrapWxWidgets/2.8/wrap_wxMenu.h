@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -77,12 +77,8 @@ class WrapClass_wxMenu : public WrapClass<wxMenu>
     
     // Adding standard methods
     ADD_CLASS_METHOD(Attach,"void wxMenu::Attach(wxMenuBarBase * menubar)  (http://docs.wxwidgets.org/stable/wx_wxmenu.html#attach)")
-/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(SetLayoutDirection,"void wxMenu::SetLayoutDirection(wxLayoutDirection const dir)  (http://docs.wxwidgets.org/stable/wx_wxmenu.html#setlayoutdirection)")
-*/
-/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(GetLayoutDirection,"wxLayoutDirection wxMenu::GetLayoutDirection()  (http://docs.wxwidgets.org/stable/wx_wxmenu.html#getlayoutdirection)")
-*/
 /* The following types are missing: _GtkWidget
     ADD_CLASS_METHOD(FindMenuIdByMenuItem,"int wxMenu::FindMenuIdByMenuItem(GtkWidget * menuItem)  (http://docs.wxwidgets.org/stable/wx_wxmenu.html#findmenuidbymenuitem)")
 */
@@ -93,6 +89,11 @@ class WrapClass_wxMenu : public WrapClass<wxMenu>
 
 
     void AddMethods(WrapClass<wxMenu>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

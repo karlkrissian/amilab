@@ -62,13 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxFocusEvent::CreateVar( wxFocusEvent* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxFocusEvent::AddMethods(WrapClass<wxFocusEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -81,7 +75,42 @@ void WrapClass_wxFocusEvent::AddMethods(WrapClass<wxFocusEvent>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxFocusEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxFocusEvent");
+    WrapClass_wxFocusEvent::AddVar_wxFocusEvent_1(amiobject->GetContext());
+  WrapClass_wxFocusEvent::AddVar_wxFocusEvent(amiobject->GetContext());
+  WrapClass_wxFocusEvent::AddVar_wxFocusEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

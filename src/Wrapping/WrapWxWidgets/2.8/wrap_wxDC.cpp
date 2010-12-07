@@ -70,13 +70,7 @@ Variable<AMIObject>::ptr WrapClass_wxDC::CreateVar( wxDC* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxDC::AddMethods(WrapClass<wxDC>::ptr this_ptr )
 {
-  
-      // Add members from wxDCBase
-      WrapClass_wxDCBase::ptr parent_wxDCBase(        boost::dynamic_pointer_cast<WrapClass_wxDCBase >(this_ptr));
-      parent_wxDCBase->AddMethods(parent_wxDCBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_SetColourMap( this_ptr);
@@ -107,41 +101,73 @@ void WrapClass_wxDC::AddMethods(WrapClass<wxDC>::ptr this_ptr )
       
       // Adding public member m_mm_to_pix_x
       boost::shared_ptr<double > var_m_mm_to_pix_x_ptr(&GetObj()->m_mm_to_pix_x, smartpointer_nodeleter<double >());
-      BasicVariable::ptr var_m_mm_to_pix_x = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_x_ptr);
-      if (var_m_mm_to_pix_x.get()) {
-        var_m_mm_to_pix_x->Rename("m_mm_to_pix_x");
-        context->AddVar(var_m_mm_to_pix_x,context);
+      if (var_m_mm_to_pix_x_ptr.get()) {
+        BasicVariable::ptr var_m_mm_to_pix_x = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_x_ptr);
+        if (var_m_mm_to_pix_x.get()) {
+          var_m_mm_to_pix_x->Rename("m_mm_to_pix_x");
+          context->AddVar(var_m_mm_to_pix_x,context);
+        }
       }
       
       // Adding public member m_mm_to_pix_y
       boost::shared_ptr<double > var_m_mm_to_pix_y_ptr(&GetObj()->m_mm_to_pix_y, smartpointer_nodeleter<double >());
-      BasicVariable::ptr var_m_mm_to_pix_y = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_y_ptr);
-      if (var_m_mm_to_pix_y.get()) {
-        var_m_mm_to_pix_y->Rename("m_mm_to_pix_y");
-        context->AddVar(var_m_mm_to_pix_y,context);
+      if (var_m_mm_to_pix_y_ptr.get()) {
+        BasicVariable::ptr var_m_mm_to_pix_y = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_y_ptr);
+        if (var_m_mm_to_pix_y.get()) {
+          var_m_mm_to_pix_y->Rename("m_mm_to_pix_y");
+          context->AddVar(var_m_mm_to_pix_y,context);
+        }
       }
       
-      /* type not available
       // Adding public member m_needComputeScaleX
       boost::shared_ptr<bool > var_m_needComputeScaleX_ptr(&GetObj()->m_needComputeScaleX, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_needComputeScaleX = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleX_ptr);
-      if (var_m_needComputeScaleX.get()) {
-        var_m_needComputeScaleX->Rename("m_needComputeScaleX");
-        context->AddVar(var_m_needComputeScaleX,context);
+      if (var_m_needComputeScaleX_ptr.get()) {
+        BasicVariable::ptr var_m_needComputeScaleX = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleX_ptr);
+        if (var_m_needComputeScaleX.get()) {
+          var_m_needComputeScaleX->Rename("m_needComputeScaleX");
+          context->AddVar(var_m_needComputeScaleX,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_needComputeScaleY
       boost::shared_ptr<bool > var_m_needComputeScaleY_ptr(&GetObj()->m_needComputeScaleY, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_needComputeScaleY = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleY_ptr);
-      if (var_m_needComputeScaleY.get()) {
-        var_m_needComputeScaleY->Rename("m_needComputeScaleY");
-        context->AddVar(var_m_needComputeScaleY,context);
+      if (var_m_needComputeScaleY_ptr.get()) {
+        BasicVariable::ptr var_m_needComputeScaleY = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleY_ptr);
+        if (var_m_needComputeScaleY.get()) {
+          var_m_needComputeScaleY->Rename("m_needComputeScaleY");
+          context->AddVar(var_m_needComputeScaleY,context);
+        }
       }
-      */
+
+
+  // Adding Bases
+
+  // Add base parent wxDCBase
+  boost::shared_ptr<wxDCBase > parent_wxDCBase(  boost::dynamic_pointer_cast<wxDCBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxDCBase = AMILabType<wxDCBase >::CreateVarFromSmtPtr(parent_wxDCBase);
+  context->AddVar("wxDCBase",var_wxDCBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxDCBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxDCBase);
+  context->AddDefault(obj_wxDCBase->Pointer()->GetContext());
 
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxDC::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxDC");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -199,7 +225,7 @@ void WrapClass_wxDC::
     wrap_StartDoc::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -215,8 +241,7 @@ BasicVariable::ptr WrapClass_wxDC::
   wxString const & param0 = *param0_smtptr;
 
   bool res =   this->_objectptr->GetObj()->StartDoc(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -415,8 +440,8 @@ BasicVariable::ptr WrapClass_wxDC::
 void WrapClass_wxDC::
     wrap_SetAxisOrientation::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'xLeftRight'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'yBottomUp'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'xLeftRight'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'yBottomUp'")
 }
 
 //---------------------------------------------------
@@ -427,13 +452,11 @@ BasicVariable::ptr WrapClass_wxDC::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  int xLeftRight_int;
-  if (!get_val_param<int >(xLeftRight_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool xLeftRight = (bool) (xLeftRight_int>0.5);
+  bool xLeftRight;
+  if (!get_val_param<bool >(xLeftRight,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int yBottomUp_int;
-  if (!get_val_param<int >(yBottomUp_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool yBottomUp = (bool) (yBottomUp_int>0.5);
+  bool yBottomUp;
+  if (!get_val_param<bool >(yBottomUp,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAxisOrientation(xLeftRight, yBottomUp);
   return BasicVariable::ptr();

@@ -18,9 +18,8 @@
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxColour.h"
-#include "wrap_wxString.h"
 #include "stdlib.h"
+#include "wrap_wxString.h"
 #include "boost/numeric/conversion/cast.hpp"
 #include "wrap_wxColourBase.h"
 
@@ -63,13 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxColourBase::CreateVar( wxColourBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxColourBase::AddMethods(WrapClass<wxColourBase>::ptr this_ptr )
 {
-  
-      // Add members from wxGDIObject
-      WrapClass_wxGDIObject::ptr parent_wxGDIObject(        boost::dynamic_pointer_cast<WrapClass_wxGDIObject >(this_ptr));
-      parent_wxGDIObject->AddMethods(parent_wxGDIObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Set_1( this_ptr);
@@ -80,7 +73,6 @@ void WrapClass_wxColourBase::AddMethods(WrapClass<wxColourBase>::ptr this_ptr )
       AddVar_Ok( this_ptr);
       AddVar_Alpha( this_ptr);
       AddVar_GetAsString( this_ptr);
-      AddVar_InitFromName( this_ptr);
 
       // Adding operators
       AddVar___assign__( this_ptr);
@@ -88,38 +80,43 @@ void WrapClass_wxColourBase::AddMethods(WrapClass<wxColourBase>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxGDIObject
+  boost::shared_ptr<wxGDIObject > parent_wxGDIObject(  boost::dynamic_pointer_cast<wxGDIObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxGDIObject = AMILabType<wxGDIObject >::CreateVarFromSmtPtr(parent_wxGDIObject);
+  context->AddVar("wxGDIObject",var_wxGDIObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxGDIObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxGDIObject);
+  context->AddDefault(obj_wxGDIObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxColourBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxColourBase");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-
-//---------------------------------------------------
-//  Wrapping of wxColour wxColourBase::CreateByName(wxString const & name)
-//---------------------------------------------------
-void WrapClass_wxColourBase::
-    wrap_static_CreateByName::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
-  return_comments="returning a variable of type wxColour";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxColourBase::
-    wrap_static_CreateByName::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString const & name = *name_smtptr;
-
-  wxColour res =   wxColourBase::CreateByName(name);
-  return AMILabType<wxColour >::CreateVar(res);
-}
 
 //---------------------------------------------------
 //  Wrapping of void wxColourBase::Set(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = wxALPHA_OPAQUE)
@@ -191,7 +188,7 @@ void WrapClass_wxColourBase::
     wrap_Set_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'str'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -208,8 +205,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
 mbstowcs(str,str_string->c_str(),str_string->size()+1);
 
   bool res =   this->_objectptr->GetObj()->Set(str);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -219,7 +215,7 @@ void WrapClass_wxColourBase::
     wrap_Set_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'str'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -235,8 +231,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
   wxString const & str = *str_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Set(str);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -270,7 +265,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
 void WrapClass_wxColourBase::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -280,8 +275,7 @@ BasicVariable::ptr WrapClass_wxColourBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -327,31 +321,6 @@ BasicVariable::ptr WrapClass_wxColourBase::
 
   wxString res =   this->_objectptr->GetObj()->GetAsString(flags);
   return AMILabType<wxString >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of void wxColourBase::InitFromName(wxString const & col)
-//---------------------------------------------------
-void WrapClass_wxColourBase::
-    wrap_InitFromName::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'col'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxColourBase::
-    wrap_InitFromName::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<wxString > col_smtptr;
-  if (!get_val_smtptr_param<wxString >(col_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString const & col = *col_smtptr;
-
-  this->_objectptr->GetObj()->InitFromName(col);
-  return BasicVariable::ptr();
 }
 
 //---------------------------------------------------

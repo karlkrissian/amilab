@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxAuiToolBarItem.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -22,11 +20,15 @@
 // #include "..."
 #include "wrap_wxAuiToolBarItem.h"
 #include "wrap_wxWindow.h"
+#include "wrap_wxSizerItem.h"
 #include "wrap_wxString.h"
 #include "wrap_wxBitmap.h"
 #include "wrap_wxSize.h"
 
 
+#include "wrap_wxAuiToolBarItem.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -35,10 +37,15 @@ BasicVariable::ptr WrapClass<wxAuiToolBarItem>::CreateVar( ParamList* p)
 {
   WrapClass_wxAuiToolBarItem::wrap_wxAuiToolBarItem construct;
   return construct.CallMember(p);
+
 }
 
-AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxAuiToolBarItem);
 
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxAuiToolBarItem);
+AMI_DEFINE_VARFROMSMTPTR(wxAuiToolBarItem);
+
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxAuiToolBarItem
 //
@@ -54,46 +61,169 @@ Variable<AMIObject>::ptr WrapClass_wxAuiToolBarItem::CreateVar( wxAuiToolBarItem
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxAuiToolBarItem::AddMethods(WrapClass<wxAuiToolBarItem>::ptr this_ptr )
+{
+  // todo: check that the method name is not a token ?
+  
+      // Adding copy method 
+      AddVar___copy__( this_ptr);
+      // Adding standard methods 
+      AddVar_Assign( this_ptr);
+      AddVar_SetWindow( this_ptr);
+      AddVar_GetWindow( this_ptr);
+      AddVar_SetId( this_ptr);
+      AddVar_GetId( this_ptr);
+      AddVar_SetKind( this_ptr);
+      AddVar_GetKind( this_ptr);
+      AddVar_SetState( this_ptr);
+      AddVar_GetState( this_ptr);
+      AddVar_SetSizerItem( this_ptr);
+      AddVar_GetSizerItem( this_ptr);
+      AddVar_SetLabel( this_ptr);
+      AddVar_GetLabel( this_ptr);
+      AddVar_SetBitmap( this_ptr);
+      AddVar_GetBitmap( this_ptr);
+      AddVar_SetDisabledBitmap( this_ptr);
+      AddVar_GetDisabledBitmap( this_ptr);
+      AddVar_SetHoverBitmap( this_ptr);
+      AddVar_GetHoverBitmap( this_ptr);
+      AddVar_SetShortHelp( this_ptr);
+      AddVar_GetShortHelp( this_ptr);
+      AddVar_SetLongHelp( this_ptr);
+      AddVar_GetLongHelp( this_ptr);
+      AddVar_SetMinSize( this_ptr);
+      AddVar_GetMinSize( this_ptr);
+      AddVar_SetSpacerPixels( this_ptr);
+      AddVar_GetSpacerPixels( this_ptr);
+      AddVar_SetProportion( this_ptr);
+      AddVar_GetProportion( this_ptr);
+      AddVar_SetActive( this_ptr);
+      AddVar_IsActive( this_ptr);
+      AddVar_SetHasDropDown( this_ptr);
+      AddVar_HasDropDown( this_ptr);
+      AddVar_SetSticky( this_ptr);
+      AddVar_IsSticky( this_ptr);
+      AddVar_SetUserData( this_ptr);
+      AddVar_GetUserData( this_ptr);
+
+      // Adding operators
+      AddVar___assign__( this_ptr);
+
+
+
+  
+
+  // Adding Bases
+
+};
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAuiToolBarItem::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAuiToolBarItem");
+    WrapClass_wxAuiToolBarItem::AddVar_wxAuiToolBarItem_1(amiobject->GetContext());
+  WrapClass_wxAuiToolBarItem::AddVar_wxAuiToolBarItem(amiobject->GetContext());
+  WrapClass_wxAuiToolBarItem::AddVar_wxAuiToolBarItem_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxAuiToolBarItem::wxAuiToolBarItem()
 //---------------------------------------------------
 void WrapClass_wxAuiToolBarItem::
-    wrap_wxAuiToolBarItem::SetParametersComments()
+    wrap_wxAuiToolBarItem_1::SetParametersComments()
 {
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
-    wrap_wxAuiToolBarItem::CallMember( ParamList* _p)
+    wrap_wxAuiToolBarItem_1::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
+
   wxAuiToolBarItem* _newobj = new wxAuiToolBarItem();
   BasicVariable::ptr res = WrapClass_wxAuiToolBarItem::CreateVar(_newobj);
   return res;
 }
 
 //---------------------------------------------------
+//  Wrapping of multipled defined method:... Constructor wxAuiToolBarItem::wxAuiToolBarItem(...)
+//---------------------------------------------------
+void WrapClass_wxAuiToolBarItem::
+    wrap_wxAuiToolBarItem::SetParametersComments()
+{}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiToolBarItem::
+    wrap_wxAuiToolBarItem::CallMember( ParamList* _p)
+{
+  BasicVariable::ptr res;
+  WrapClass_wxAuiToolBarItem::wrap_wxAuiToolBarItem_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxAuiToolBarItem::wrap_wxAuiToolBarItem_2 m2;
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  ClassHelpAndReturn;
+}
+
+//---------------------------------------------------
 //  Wrapping of Constructor wxAuiToolBarItem::wxAuiToolBarItem(wxAuiToolBarItem const & c)
 //---------------------------------------------------
 void WrapClass_wxAuiToolBarItem::
-    wrap_wxAuiToolBarItem1::SetParametersComments()
+    wrap_wxAuiToolBarItem_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxAuiToolBarItem, "parameter named 'c'")
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
-    wrap_wxAuiToolBarItem1::CallMember( ParamList* _p)
+    wrap_wxAuiToolBarItem_2::CallMember( ParamList* _p)
 {
-  if (!_p) ClassHelpAndReturn;
+  if (!_p) ClassReturnEmptyVar;
+  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
-  wxAuiToolBarItem* c_ptr;
-  if (!get_val_ptr_param<wxAuiToolBarItem>(c_ptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiToolBarItem& c = *c_ptr;
+
+  boost::shared_ptr<wxAuiToolBarItem > c_smtptr;
+  if (!get_val_smtptr_param<wxAuiToolBarItem >(c_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
+  wxAuiToolBarItem const & c = *c_smtptr;
+
   wxAuiToolBarItem* _newobj = new wxAuiToolBarItem(c);
   BasicVariable::ptr res = WrapClass_wxAuiToolBarItem::CreateVar(_newobj);
   return res;
+}
+
+//---------------------------------------------------
+//  Wrapping of 'copy' method for wxAuiToolBarItem.
+//---------------------------------------------------
+void WrapClass_wxAuiToolBarItem::
+    wrap___copy__::SetParametersComments()
+{
+  return_comments="A copy of the wxAuiToolBarItem object within a new variable.";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxAuiToolBarItem::
+    wrap___copy__::CallMember( ParamList* _p)
+{
+    return AMILabType<wxAuiToolBarItem >::CreateVar( new wxAuiToolBarItem(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -110,10 +240,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_Assign::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxAuiToolBarItem* c_ptr;
-  if (!get_val_ptr_param<wxAuiToolBarItem>(c_ptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiToolBarItem& c = *c_ptr;
+
+  boost::shared_ptr<wxAuiToolBarItem > c_smtptr;
+  if (!get_val_smtptr_param<wxAuiToolBarItem >(c_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxAuiToolBarItem const & c = *c_smtptr;
+
   this->_objectptr->GetObj()->Assign(c);
   return BasicVariable::ptr();
 }
@@ -132,9 +265,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetWindow::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxWindow* w;
-  if (!get_val_ptr_param<wxWindow>(w,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxWindow > w_smtptr;
+  if (!get_val_smtptr_param<wxWindow >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxWindow* w = w_smtptr.get();
+
   this->_objectptr->GetObj()->SetWindow(w);
   return BasicVariable::ptr();
 }
@@ -152,6 +289,8 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetWindow::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxWindow * res =   this->_objectptr->GetObj()->GetWindow();
   BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
   return res_var;
@@ -171,9 +310,12 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetId::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   int new_id;
-  if (!get_val_param<int>(new_id,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(new_id,_p,_n,true,false)) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->SetId(new_id);
   return BasicVariable::ptr();
 }
@@ -191,8 +333,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetId::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   int res =   this->_objectptr->GetObj()->GetId();
-  return AMILabType<int>::CreateVar(res);
+  return AMILabType<int >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -209,9 +353,12 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetKind::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   int new_kind;
-  if (!get_val_param<int>(new_kind,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(new_kind,_p,_n,true,false)) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->SetKind(new_kind);
   return BasicVariable::ptr();
 }
@@ -229,8 +376,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetKind::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   int res =   this->_objectptr->GetObj()->GetKind();
-  return AMILabType<int>::CreateVar(res);
+  return AMILabType<int >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -247,9 +396,12 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetState::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   int new_state;
-  if (!get_val_param<int>(new_state,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(new_state,_p,_n,true,false)) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->SetState(new_state);
   return BasicVariable::ptr();
 }
@@ -267,10 +419,11 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetState::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   int res =   this->_objectptr->GetObj()->GetState();
-  return AMILabType<int>::CreateVar(res);
+  return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiToolBarItem::SetSizerItem(wxSizerItem * s)
@@ -286,14 +439,16 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetSizerItem::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxSizerItem* s;
-  if (!get_val_ptr_param<wxSizerItem>(s,_p,_n)) ClassHelpAndReturn;
+
+  boost::shared_ptr<wxSizerItem > s_smtptr;
+  if (!get_val_smtptr_param<wxSizerItem >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxSizerItem* s = s_smtptr.get();
+
   this->_objectptr->GetObj()->SetSizerItem(s);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxSizerItem
 
 //---------------------------------------------------
 //  Wrapping of wxSizerItem * wxAuiToolBarItem::GetSizerItem()
@@ -308,10 +463,12 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetSizerItem::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxSizerItem * res =   this->_objectptr->GetObj()->GetSizerItem();
-  return AMILabType<wxSizerItem>::CreateVar(res);
+  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiToolBarItem::SetLabel(wxString const & s)
@@ -327,10 +484,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetLabel::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxString* s_ptr;
-  if (!get_val_ptr_param<wxString>(s_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& s = *s_ptr;
+
+  boost::shared_ptr<wxString > s_smtptr;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxString const & s = *s_smtptr;
+
   this->_objectptr->GetObj()->SetLabel(s);
   return BasicVariable::ptr();
 }
@@ -348,8 +508,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetLabel::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxString const & res =   this->_objectptr->GetObj()->GetLabel();
-  return AMILabType<wxString>::CreateVar(res);
+  return AMILabType<wxString >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -366,10 +528,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetBitmap::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxBitmap* bmp_ptr;
-  if (!get_val_ptr_param<wxBitmap>(bmp_ptr,_p,_n)) ClassHelpAndReturn;
-  wxBitmap& bmp = *bmp_ptr;
+
+  boost::shared_ptr<wxBitmap > bmp_smtptr;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxBitmap const & bmp = *bmp_smtptr;
+
   this->_objectptr->GetObj()->SetBitmap(bmp);
   return BasicVariable::ptr();
 }
@@ -387,8 +552,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetBitmap::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxBitmap const & res =   this->_objectptr->GetObj()->GetBitmap();
-  return AMILabType<wxBitmap>::CreateVar(res);
+  return AMILabType<wxBitmap >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -405,10 +572,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetDisabledBitmap::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxBitmap* bmp_ptr;
-  if (!get_val_ptr_param<wxBitmap>(bmp_ptr,_p,_n)) ClassHelpAndReturn;
-  wxBitmap& bmp = *bmp_ptr;
+
+  boost::shared_ptr<wxBitmap > bmp_smtptr;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxBitmap const & bmp = *bmp_smtptr;
+
   this->_objectptr->GetObj()->SetDisabledBitmap(bmp);
   return BasicVariable::ptr();
 }
@@ -426,8 +596,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetDisabledBitmap::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxBitmap const & res =   this->_objectptr->GetObj()->GetDisabledBitmap();
-  return AMILabType<wxBitmap>::CreateVar(res);
+  return AMILabType<wxBitmap >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -444,10 +616,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetHoverBitmap::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxBitmap* bmp_ptr;
-  if (!get_val_ptr_param<wxBitmap>(bmp_ptr,_p,_n)) ClassHelpAndReturn;
-  wxBitmap& bmp = *bmp_ptr;
+
+  boost::shared_ptr<wxBitmap > bmp_smtptr;
+  if (!get_val_smtptr_param<wxBitmap >(bmp_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxBitmap const & bmp = *bmp_smtptr;
+
   this->_objectptr->GetObj()->SetHoverBitmap(bmp);
   return BasicVariable::ptr();
 }
@@ -465,8 +640,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetHoverBitmap::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxBitmap const & res =   this->_objectptr->GetObj()->GetHoverBitmap();
-  return AMILabType<wxBitmap>::CreateVar(res);
+  return AMILabType<wxBitmap >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -483,10 +660,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetShortHelp::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxString* s_ptr;
-  if (!get_val_ptr_param<wxString>(s_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& s = *s_ptr;
+
+  boost::shared_ptr<wxString > s_smtptr;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxString const & s = *s_smtptr;
+
   this->_objectptr->GetObj()->SetShortHelp(s);
   return BasicVariable::ptr();
 }
@@ -504,8 +684,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetShortHelp::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxString const & res =   this->_objectptr->GetObj()->GetShortHelp();
-  return AMILabType<wxString>::CreateVar(res);
+  return AMILabType<wxString >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -522,10 +704,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetLongHelp::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxString* s_ptr;
-  if (!get_val_ptr_param<wxString>(s_ptr,_p,_n)) ClassHelpAndReturn;
-  wxString& s = *s_ptr;
+
+  boost::shared_ptr<wxString > s_smtptr;
+  if (!get_val_smtptr_param<wxString >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxString const & s = *s_smtptr;
+
   this->_objectptr->GetObj()->SetLongHelp(s);
   return BasicVariable::ptr();
 }
@@ -543,8 +728,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetLongHelp::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxString const & res =   this->_objectptr->GetObj()->GetLongHelp();
-  return AMILabType<wxString>::CreateVar(res);
+  return AMILabType<wxString >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -561,10 +748,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetMinSize::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxSize* s_ptr;
-  if (!get_val_ptr_param<wxSize>(s_ptr,_p,_n)) ClassHelpAndReturn;
-  wxSize& s = *s_ptr;
+
+  boost::shared_ptr<wxSize > s_smtptr;
+  if (!get_val_smtptr_param<wxSize >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxSize const & s = *s_smtptr;
+
   this->_objectptr->GetObj()->SetMinSize(s);
   return BasicVariable::ptr();
 }
@@ -582,8 +772,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetMinSize::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   wxSize const & res =   this->_objectptr->GetObj()->GetMinSize();
-  return AMILabType<wxSize>::CreateVar(res);
+  return AMILabType<wxSize >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -600,9 +792,12 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetSpacerPixels::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   int s;
-  if (!get_val_param<int>(s,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(s,_p,_n,true,false)) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->SetSpacerPixels(s);
   return BasicVariable::ptr();
 }
@@ -620,8 +815,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetSpacerPixels::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   int res =   this->_objectptr->GetObj()->GetSpacerPixels();
-  return AMILabType<int>::CreateVar(res);
+  return AMILabType<int >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -638,9 +835,12 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetProportion::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   int p;
-  if (!get_val_param<int>(p,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(p,_p,_n,true,false)) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->SetProportion(p);
   return BasicVariable::ptr();
 }
@@ -658,8 +858,10 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetProportion::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   int res =   this->_objectptr->GetObj()->GetProportion();
-  return AMILabType<int>::CreateVar(res);
+  return AMILabType<int >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -668,7 +870,7 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
 void WrapClass_wxAuiToolBarItem::
     wrap_SetActive::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b'")
 }
 
 //---------------------------------------------------
@@ -676,10 +878,12 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetActive::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  int b_int;
-  if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+
+  bool b;
+  if (!get_val_param<bool >(b,_p,_n,true,false)) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->SetActive(b);
   return BasicVariable::ptr();
 }
@@ -690,16 +894,17 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
 void WrapClass_wxAuiToolBarItem::
     wrap_IsActive::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_IsActive::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   bool res =   this->_objectptr->GetObj()->IsActive();
-  int  res_int = ((res==true)?1:0);
-  return AMILabType<int>::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -708,7 +913,7 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
 void WrapClass_wxAuiToolBarItem::
     wrap_SetHasDropDown::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b'")
 }
 
 //---------------------------------------------------
@@ -716,10 +921,12 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetHasDropDown::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  int b_int;
-  if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+
+  bool b;
+  if (!get_val_param<bool >(b,_p,_n,true,false)) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->SetHasDropDown(b);
   return BasicVariable::ptr();
 }
@@ -730,16 +937,17 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
 void WrapClass_wxAuiToolBarItem::
     wrap_HasDropDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_HasDropDown::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   bool res =   this->_objectptr->GetObj()->HasDropDown();
-  int  res_int = ((res==true)?1:0);
-  return AMILabType<int>::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -748,7 +956,7 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
 void WrapClass_wxAuiToolBarItem::
     wrap_SetSticky::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'b'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'b'")
 }
 
 //---------------------------------------------------
@@ -756,10 +964,12 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetSticky::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  int b_int;
-  if (!get_val_param<int>(b_int,_p,_n)) ClassHelpAndReturn;
-  bool b = (bool) (b_int>0.5);
+
+  bool b;
+  if (!get_val_param<bool >(b,_p,_n,true,false)) ClassHelpAndReturn;
+
   this->_objectptr->GetObj()->SetSticky(b);
   return BasicVariable::ptr();
 }
@@ -770,16 +980,17 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
 void WrapClass_wxAuiToolBarItem::
     wrap_IsSticky::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_IsSticky::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   bool res =   this->_objectptr->GetObj()->IsSticky();
-  int  res_int = ((res==true)?1:0);
-  return AMILabType<int>::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -796,10 +1007,13 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_SetUserData::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
+
   long l_long;
-  if (!get_val_param<long>(l_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(l_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int l = l_long;
+
   this->_objectptr->GetObj()->SetUserData(l);
   return BasicVariable::ptr();
 }
@@ -817,16 +1031,18 @@ void WrapClass_wxAuiToolBarItem::
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
     wrap_GetUserData::CallMember( ParamList* _p)
 {
+  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
+
   long int res =   this->_objectptr->GetObj()->GetUserData();
-  long  res_long = res;
-  return AMILabType<long>::CreateVar(res_long);
+  long res_long = res;
+  return AMILabType<long >::CreateVar(res_long);
 }
 
 //---------------------------------------------------
-//  Wrapping of wxAuiToolBarItem & wxAuiToolBarItem::=(wxAuiToolBarItem const & c)
+//  Wrapping of wxAuiToolBarItem & wxAuiToolBarItem::operator =(wxAuiToolBarItem const & c)
 //---------------------------------------------------
 void WrapClass_wxAuiToolBarItem::
-    wrap_assign::SetParametersComments()
+    wrap___assign__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxAuiToolBarItem, "parameter named 'c'")
   return_comments="returning a variable of type wxAuiToolBarItem";
@@ -834,14 +1050,17 @@ void WrapClass_wxAuiToolBarItem::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiToolBarItem::
-    wrap_assign::CallMember( ParamList* _p)
+    wrap___assign__::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxAuiToolBarItem* c_ptr;
-  if (!get_val_ptr_param<wxAuiToolBarItem>(c_ptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiToolBarItem& c = *c_ptr;
+
+  boost::shared_ptr<wxAuiToolBarItem > c_smtptr;
+  if (!get_val_smtptr_param<wxAuiToolBarItem >(c_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxAuiToolBarItem const & c = *c_smtptr;
+
   wxAuiToolBarItem & res =   (*this->_objectptr->GetObj()) = (c);
-  return AMILabType<wxAuiToolBarItem>::CreateVar(res);
+  return AMILabType<wxAuiToolBarItem >::CreateVar(res);
 }
 

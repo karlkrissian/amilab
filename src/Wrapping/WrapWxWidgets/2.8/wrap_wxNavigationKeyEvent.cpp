@@ -62,13 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxNavigationKeyEvent::CreateVar( wxNavigation
 //----------------------------------------------------------------------
 void WrapClass_wxNavigationKeyEvent::AddMethods(WrapClass<wxNavigationKeyEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -94,21 +88,57 @@ void WrapClass_wxNavigationKeyEvent::AddMethods(WrapClass<wxNavigationKeyEvent>:
       
       // Adding public member m_flags
       boost::shared_ptr<long int > var_m_flags_ptr(&GetObj()->m_flags, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_flags = AMILabType<long int >::CreateVarFromSmtPtr(var_m_flags_ptr);
-      if (var_m_flags.get()) {
-        var_m_flags->Rename("m_flags");
-        context->AddVar(var_m_flags,context);
+      if (var_m_flags_ptr.get()) {
+        BasicVariable::ptr var_m_flags = AMILabType<long int >::CreateVarFromSmtPtr(var_m_flags_ptr);
+        if (var_m_flags.get()) {
+          var_m_flags->Rename("m_flags");
+          context->AddVar(var_m_flags,context);
+        }
       }
       
       // Adding public member m_focus
       boost::shared_ptr<wxWindow > var_m_focus_ptr(GetObj()->m_focus, smartpointer_nodeleter<wxWindow >());
-      BasicVariable::ptr var_m_focus = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_m_focus_ptr);
-      if (var_m_focus.get()) {
-        var_m_focus->Rename("m_focus");
-        context->AddVar(var_m_focus,context);
+      if (var_m_focus_ptr.get()) {
+        BasicVariable::ptr var_m_focus = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_m_focus_ptr);
+        if (var_m_focus.get()) {
+          var_m_focus->Rename("m_focus");
+          context->AddVar(var_m_focus,context);
+        }
       }
 
+
+  // Adding Bases
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxNavigationKeyEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxNavigationKeyEvent");
+    WrapClass_wxNavigationKeyEvent::AddVar_wxNavigationKeyEvent_1(amiobject->GetContext());
+  WrapClass_wxNavigationKeyEvent::AddVar_wxNavigationKeyEvent(amiobject->GetContext());
+  WrapClass_wxNavigationKeyEvent::AddVar_wxNavigationKeyEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -203,7 +233,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
 void WrapClass_wxNavigationKeyEvent::
     wrap_GetDirection::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -213,8 +243,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetDirection();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -223,7 +252,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
 void WrapClass_wxNavigationKeyEvent::
     wrap_SetDirection::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bForward'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'bForward'")
 }
 
 //---------------------------------------------------
@@ -234,9 +263,8 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int bForward_int;
-  if (!get_val_param<int >(bForward_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool bForward = (bool) (bForward_int>0.5);
+  bool bForward;
+  if (!get_val_param<bool >(bForward,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetDirection(bForward);
   return BasicVariable::ptr();
@@ -248,7 +276,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
 void WrapClass_wxNavigationKeyEvent::
     wrap_IsWindowChange::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -258,8 +286,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsWindowChange();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -268,7 +295,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
 void WrapClass_wxNavigationKeyEvent::
     wrap_SetWindowChange::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bIs'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'bIs'")
 }
 
 //---------------------------------------------------
@@ -279,9 +306,8 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int bIs_int;
-  if (!get_val_param<int >(bIs_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool bIs = (bool) (bIs_int>0.5);
+  bool bIs;
+  if (!get_val_param<bool >(bIs,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetWindowChange(bIs);
   return BasicVariable::ptr();
@@ -293,7 +319,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
 void WrapClass_wxNavigationKeyEvent::
     wrap_IsFromTab::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -303,8 +329,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsFromTab();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -313,7 +338,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
 void WrapClass_wxNavigationKeyEvent::
     wrap_SetFromTab::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bIs'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'bIs'")
 }
 
 //---------------------------------------------------
@@ -324,9 +349,8 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int bIs_int;
-  if (!get_val_param<int >(bIs_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool bIs = (bool) (bIs_int>0.5);
+  bool bIs;
+  if (!get_val_param<bool >(bIs,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetFromTab(bIs);
   return BasicVariable::ptr();

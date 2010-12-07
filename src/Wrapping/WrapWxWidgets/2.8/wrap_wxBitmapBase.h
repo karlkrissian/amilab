@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -69,12 +69,8 @@ class WrapClass_wxBitmapBase : public WrapClass<wxBitmapBase>
     ADD_CLASS_STATICMETHOD(RemoveHandler,"bool wxBitmapBase::RemoveHandler(wxString const & name) (http://docs.wxwidgets.org/stable/wx_wxbitmapbase.html#removehandler).");
     ADD_CLASS_STATICMETHOD(FindHandler_1,"wxBitmapHandler * wxBitmapBase::FindHandler(wxString const & name) (http://docs.wxwidgets.org/stable/wx_wxbitmapbase.html#findhandler).");
     ADD_CLASS_STATICMETHOD(FindHandler,"wxBitmapBase::FindHandler() (http://docs.wxwidgets.org/stable/wx_wxbitmapbase.html#findhandler).");
-    /* The following types are missing: wxBitmapType
     ADD_CLASS_STATICMETHOD(FindHandler_2,"wxBitmapHandler * wxBitmapBase::FindHandler(wxString const & extension, wxBitmapType bitmapType) (http://docs.wxwidgets.org/stable/wx_wxbitmapbase.html#findhandler).");
-    */
-    /* The following types are missing: wxBitmapType
     ADD_CLASS_STATICMETHOD(FindHandler_3,"wxBitmapHandler * wxBitmapBase::FindHandler(wxBitmapType bitmapType) (http://docs.wxwidgets.org/stable/wx_wxbitmapbase.html#findhandler).");
-    */
     ADD_CLASS_STATICMETHOD(CleanUpHandlers,"void wxBitmapBase::CleanUpHandlers() (http://docs.wxwidgets.org/stable/wx_wxbitmapbase.html#cleanuphandlers).");
 
 
@@ -93,6 +89,11 @@ class WrapClass_wxBitmapBase : public WrapClass<wxBitmapBase>
 
 
     void AddMethods(WrapClass<wxBitmapBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

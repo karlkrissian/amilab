@@ -63,13 +63,7 @@ Variable<AMIObject>::ptr WrapClass_wxHelpEvent::CreateVar( wxHelpEvent* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxHelpEvent::AddMethods(WrapClass<wxHelpEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxCommandEvent
-      WrapClass_wxCommandEvent::ptr parent_wxCommandEvent(        boost::dynamic_pointer_cast<WrapClass_wxCommandEvent >(this_ptr));
-      parent_wxCommandEvent->AddMethods(parent_wxCommandEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -88,7 +82,42 @@ void WrapClass_wxHelpEvent::AddMethods(WrapClass<wxHelpEvent>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxCommandEvent
+  boost::shared_ptr<wxCommandEvent > parent_wxCommandEvent(  boost::dynamic_pointer_cast<wxCommandEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxCommandEvent = AMILabType<wxCommandEvent >::CreateVarFromSmtPtr(parent_wxCommandEvent);
+  context->AddVar("wxCommandEvent",var_wxCommandEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxCommandEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxCommandEvent);
+  context->AddDefault(obj_wxCommandEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxHelpEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxHelpEvent");
+    WrapClass_wxHelpEvent::AddVar_wxHelpEvent_1(amiobject->GetContext());
+  WrapClass_wxHelpEvent::AddVar_wxHelpEvent(amiobject->GetContext());
+  WrapClass_wxHelpEvent::AddVar_wxHelpEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -96,7 +125,7 @@ void WrapClass_wxHelpEvent::AddMethods(WrapClass<wxHelpEvent>::ptr this_ptr )
 
 
 //---------------------------------------------------
-//  Wrapping of Constructor wxHelpEvent::wxHelpEvent(wxEventType type = wxEVT_NULL, wxWindowID winid = 0, wxPoint const & pt = wxDefaultPosition, wxHelpEvent::Origin origin = Origin_Unknown)
+//  Wrapping of Constructor wxHelpEvent::wxHelpEvent(wxEventType type = wxEVT_NULL, wxWindowID winid = 0, wxPoint const & pt = wxDefaultPosition, wxHelpEvent::Origin origin = wxHelpEvent::Origin_Unknown)
 //---------------------------------------------------
 void WrapClass_wxHelpEvent::
     wrap_wxHelpEvent_1::SetParametersComments()
@@ -104,7 +133,7 @@ void WrapClass_wxHelpEvent::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'type' (def:wxEVT_NULL)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid' (def:0)")
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt' (def:wxDefaultPosition)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'origin' (def:Origin_Unknown)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'origin' (def:wxHelpEvent::Origin_Unknown)")
 }
 
 //---------------------------------------------------
@@ -126,7 +155,7 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   // Setting default value if no value is returned
   wxPoint const & pt = ( pt_smtptr.get() ? (*pt_smtptr) : wxDefaultPosition );
 
-  int origin_int = (int) wxHelpEvent::Origin_Unknown;;
+  int origin_int = (int) wxHelpEvent::wxHelpEvent::Origin_Unknown;;
   if (!get_val_param<int >(origin_int,_p,_n,false,true)) ClassReturnEmptyVar;
   wxHelpEvent::Origin origin = (wxHelpEvent::Origin) origin_int;
 

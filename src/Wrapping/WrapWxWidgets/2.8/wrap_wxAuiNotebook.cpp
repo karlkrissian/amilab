@@ -75,13 +75,7 @@ Variable<AMIObject>::ptr WrapClass_wxAuiNotebook::CreateVar( wxAuiNotebook* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxAuiNotebook::AddMethods(WrapClass<wxAuiNotebook>::ptr this_ptr )
 {
-  
-      // Add members from wxControl
-      WrapClass_wxControl::ptr parent_wxControl(        boost::dynamic_pointer_cast<WrapClass_wxControl >(this_ptr));
-      parent_wxControl->AddMethods(parent_wxControl);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -118,7 +112,42 @@ void WrapClass_wxAuiNotebook::AddMethods(WrapClass<wxAuiNotebook>::ptr this_ptr 
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxControl
+  boost::shared_ptr<wxControl > parent_wxControl(  boost::dynamic_pointer_cast<wxControl >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxControl = AMILabType<wxControl >::CreateVarFromSmtPtr(parent_wxControl);
+  context->AddVar("wxControl",var_wxControl);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxControl = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxControl);
+  context->AddDefault(obj_wxControl->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAuiNotebook::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAuiNotebook");
+    WrapClass_wxAuiNotebook::AddVar_wxAuiNotebook_1(amiobject->GetContext());
+  WrapClass_wxAuiNotebook::AddVar_wxAuiNotebook(amiobject->GetContext());
+  WrapClass_wxAuiNotebook::AddVar_wxAuiNotebook_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -223,7 +252,7 @@ void WrapClass_wxAuiNotebook::
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pos' (def:wxDefaultPosition)")
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size' (def:wxDefaultSize)")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:0)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -256,8 +285,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   long int style = style_long;
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, pos, size, style);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -387,9 +415,9 @@ void WrapClass_wxAuiNotebook::
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'page'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'caption'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'select' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'select' (def:false)")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap' (def:wxNullBitmap)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -408,9 +436,8 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (!get_val_smtptr_param<wxString >(caption_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & caption = *caption_smtptr;
 
-  int select_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(select_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool select = (bool) (select_int>0.5);
+  bool select = false;
+  if (!get_val_param<bool >(select,_p,_n,false,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
@@ -418,8 +445,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   wxBitmap const & bitmap = ( bitmap_smtptr.get() ? (*bitmap_smtptr) : wxNullBitmap );
 
   bool res =   this->_objectptr->GetObj()->AddPage(page, caption, select, bitmap);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -431,9 +457,9 @@ void WrapClass_wxAuiNotebook::
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'page_idx'")
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'page'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'caption'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'select' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'select' (def:false)")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap' (def:wxNullBitmap)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -456,9 +482,8 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (!get_val_smtptr_param<wxString >(caption_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & caption = *caption_smtptr;
 
-  int select_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(select_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool select = (bool) (select_int>0.5);
+  bool select = false;
+  if (!get_val_param<bool >(select,_p,_n,false,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
   if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
@@ -466,8 +491,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   wxBitmap const & bitmap = ( bitmap_smtptr.get() ? (*bitmap_smtptr) : wxNullBitmap );
 
   bool res =   this->_objectptr->GetObj()->InsertPage(page_idx, page, caption, select, bitmap);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -477,7 +501,7 @@ void WrapClass_wxAuiNotebook::
     wrap_DeletePage::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'page'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -493,8 +517,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   long unsigned int page = boost::numeric_cast<long unsigned int >(page_long);
 
   bool res =   this->_objectptr->GetObj()->DeletePage(page);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -504,7 +527,7 @@ void WrapClass_wxAuiNotebook::
     wrap_RemovePage::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'page'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -520,8 +543,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   long unsigned int page = boost::numeric_cast<long unsigned int >(page_long);
 
   bool res =   this->_objectptr->GetObj()->RemovePage(page);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -605,7 +627,7 @@ void WrapClass_wxAuiNotebook::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'page'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -625,8 +647,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   wxString const & text = *text_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetPageText(page, text);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -663,7 +684,7 @@ void WrapClass_wxAuiNotebook::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'page'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -683,8 +704,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetPageBitmap(page, bitmap);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -889,7 +909,7 @@ void WrapClass_wxAuiNotebook::
     wrap_SetFont::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxFont, "parameter named 'font'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -905,8 +925,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   wxFont const & font = *font_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetFont(font);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -959,7 +978,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
 void WrapClass_wxAuiNotebook::
     wrap_AdvanceSelection::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'forward' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'forward' (def:true)")
 }
 
 //---------------------------------------------------
@@ -970,9 +989,8 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int forward_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(forward_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool forward = (bool) (forward_int>0.5);
+  bool forward = true;
+  if (!get_val_param<bool >(forward,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->AdvanceSelection(forward);
   return BasicVariable::ptr();
@@ -984,7 +1002,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
 void WrapClass_wxAuiNotebook::
     wrap_ShowWindowMenu::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -994,8 +1012,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ShowWindowMenu();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

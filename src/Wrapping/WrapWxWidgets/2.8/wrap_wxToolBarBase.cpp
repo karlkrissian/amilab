@@ -72,27 +72,15 @@ Variable<AMIObject>::ptr WrapClass_wxToolBarBase::CreateVar( wxToolBarBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxToolBarBase::AddMethods(WrapClass<wxToolBarBase>::ptr this_ptr )
 {
-  
-      // Add members from wxControl
-      WrapClass_wxControl::ptr parent_wxControl(        boost::dynamic_pointer_cast<WrapClass_wxControl >(this_ptr));
-      parent_wxControl->AddMethods(parent_wxControl);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
-/* The following types are missing: wxItemKind
       AddVar_AddTool_1( this_ptr);
-*/
       AddVar_AddTool( this_ptr);
-/* The following types are missing: wxItemKind
       AddVar_AddTool_2( this_ptr);
-*/
       AddVar_AddCheckTool( this_ptr);
       AddVar_AddRadioTool( this_ptr);
-/* The following types are missing: wxItemKind
       AddVar_InsertTool_1( this_ptr);
-*/
       AddVar_AddTool_3( this_ptr);
       AddVar_InsertTool( this_ptr);
       AddVar_InsertTool_2( this_ptr);
@@ -150,13 +138,43 @@ void WrapClass_wxToolBarBase::AddMethods(WrapClass<wxToolBarBase>::ptr this_ptr 
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxControl
+  boost::shared_ptr<wxControl > parent_wxControl(  boost::dynamic_pointer_cast<wxControl >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxControl = AMILabType<wxControl >::CreateVarFromSmtPtr(parent_wxControl);
+  context->AddVar("wxControl",var_wxControl);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxControl = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxControl);
+  context->AddDefault(obj_wxControl->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxToolBarBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxToolBarBase");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of wxToolBarToolBase * wxToolBarBase::AddTool(int toolid, wxString const & label, wxBitmap const & bitmap, wxBitmap const & bmpDisabled, wxItemKind kind = wxITEM_NORMAL, wxString const & shortHelp = wxEmptyString, wxString const & longHelp = wxEmptyString, wxObject * data = 0l)
@@ -168,7 +186,7 @@ void WrapClass_wxToolBarBase::
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'label'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bmpDisabled'")
-  ADDPARAMCOMMENT_TYPE( wxItemKind, "parameter named 'kind' (def:wxITEM_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'kind' (def:wxITEM_NORMAL)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'shortHelp' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'longHelp' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'data' (def:0l)")
@@ -198,8 +216,9 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bmpDisabled = *bmpDisabled_smtptr;
 
-  wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
+  int kind_int = (int) wxITEM_NORMAL;;
+  if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxItemKind kind = (wxItemKind) kind_int;
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
@@ -219,7 +238,6 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
   return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxToolBarBase::AddTool(...)
@@ -233,6 +251,12 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
     wrap_AddTool::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxToolBarBase::wrap_AddTool_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxToolBarBase::wrap_AddTool_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxToolBarBase::wrap_AddTool_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
@@ -247,7 +271,6 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!m6.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of wxToolBarToolBase * wxToolBarBase::AddTool(int toolid, wxString const & label, wxBitmap const & bitmap, wxString const & shortHelp = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)
@@ -259,7 +282,7 @@ void WrapClass_wxToolBarBase::
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'label'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'shortHelp' (def:wxEmptyString)")
-  ADDPARAMCOMMENT_TYPE( wxItemKind, "parameter named 'kind' (def:wxITEM_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'kind' (def:wxITEM_NORMAL)")
   return_comments="returning a variable of type wxToolBarToolBase";
 }
 
@@ -287,14 +310,14 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   // Setting default value if no value is returned
   wxString const & shortHelp = ( shortHelp_smtptr.get() ? (*shortHelp_smtptr) : wxString(wxEmptyString) );
 
-  wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
+  int kind_int = (int) wxITEM_NORMAL;;
+  if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxItemKind kind = (wxItemKind) kind_int;
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(toolid, label, bitmap, shortHelp, kind);
   BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
   return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxToolBarToolBase * wxToolBarBase::AddCheckTool(int toolid, wxString const & label, wxBitmap const & bitmap, wxBitmap const & bmpDisabled = wxNullBitmap, wxString const & shortHelp = wxEmptyString, wxString const & longHelp = wxEmptyString, wxObject * data = 0l)
@@ -413,7 +436,6 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
   return res_var;
 }
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of wxToolBarToolBase * wxToolBarBase::InsertTool(size_t pos, int toolid, wxString const & label, wxBitmap const & bitmap, wxBitmap const & bmpDisabled = wxNullBitmap, wxItemKind kind = wxITEM_NORMAL, wxString const & shortHelp = wxEmptyString, wxString const & longHelp = wxEmptyString, wxObject * clientData = 0l)
@@ -426,7 +448,7 @@ void WrapClass_wxToolBarBase::
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'label'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bmpDisabled' (def:wxNullBitmap)")
-  ADDPARAMCOMMENT_TYPE( wxItemKind, "parameter named 'kind' (def:wxITEM_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'kind' (def:wxITEM_NORMAL)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'shortHelp' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'longHelp' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'clientData' (def:0l)")
@@ -461,8 +483,9 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   // Setting default value if no value is returned
   wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxNullBitmap );
 
-  wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
+  int kind_int = (int) wxITEM_NORMAL;;
+  if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxItemKind kind = (wxItemKind) kind_int;
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
@@ -482,7 +505,6 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
   return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxToolBarToolBase * wxToolBarBase::AddTool(wxToolBarToolBase * tool)
@@ -523,6 +545,9 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
     wrap_InsertTool::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxToolBarBase::wrap_InsertTool_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxToolBarBase::wrap_InsertTool_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -729,7 +754,7 @@ void WrapClass_wxToolBarBase::
     wrap_DeleteToolByPos::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'pos'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -745,8 +770,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   bool res =   this->_objectptr->GetObj()->DeleteToolByPos(pos);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -756,7 +780,7 @@ void WrapClass_wxToolBarBase::
     wrap_DeleteTool::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -771,8 +795,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->DeleteTool(toolid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -799,7 +822,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
 void WrapClass_wxToolBarBase::
     wrap_Realize::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -809,8 +832,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Realize();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -820,7 +842,7 @@ void WrapClass_wxToolBarBase::
     wrap_EnableTool::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable'")
 }
 
 //---------------------------------------------------
@@ -834,9 +856,8 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   int toolid;
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int enable_int;
-  if (!get_val_param<int >(enable_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable;
+  if (!get_val_param<bool >(enable,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->EnableTool(toolid, enable);
   return BasicVariable::ptr();
@@ -849,7 +870,7 @@ void WrapClass_wxToolBarBase::
     wrap_ToggleTool::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'toggle'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'toggle'")
 }
 
 //---------------------------------------------------
@@ -863,9 +884,8 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   int toolid;
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int toggle_int;
-  if (!get_val_param<int >(toggle_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool toggle = (bool) (toggle_int>0.5);
+  bool toggle;
+  if (!get_val_param<bool >(toggle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->ToggleTool(toolid, toggle);
   return BasicVariable::ptr();
@@ -878,7 +898,7 @@ void WrapClass_wxToolBarBase::
     wrap_SetToggle::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'toggle'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'toggle'")
 }
 
 //---------------------------------------------------
@@ -892,9 +912,8 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   int toolid;
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int toggle_int;
-  if (!get_val_param<int >(toggle_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool toggle = (bool) (toggle_int>0.5);
+  bool toggle;
+  if (!get_val_param<bool >(toggle,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetToggle(toolid, toggle);
   return BasicVariable::ptr();
@@ -987,7 +1006,7 @@ void WrapClass_wxToolBarBase::
     wrap_GetToolState::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1002,8 +1021,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetToolState(toolid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1013,7 +1031,7 @@ void WrapClass_wxToolBarBase::
     wrap_GetToolEnabled::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1028,8 +1046,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetToolEnabled(toolid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1504,7 +1521,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
 void WrapClass_wxToolBarBase::
     wrap_IsVertical::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1514,8 +1531,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsVertical();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1527,7 +1543,7 @@ void WrapClass_wxToolBarBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bmpDisabled'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'toggle' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'toggle' (def:false)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'clientData' (def:0l)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'shortHelpString' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'longHelpString' (def:wxEmptyString)")
@@ -1553,9 +1569,8 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bmpDisabled = *bmpDisabled_smtptr;
 
-  int toggle_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(toggle_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool toggle = (bool) (toggle_int>0.5);
+  bool toggle = false;
+  if (!get_val_param<bool >(toggle,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > clientData_smtptr;
   if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -1628,7 +1643,7 @@ void WrapClass_wxToolBarBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bmpDisabled'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'toggle'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'toggle'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'xPos'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'yPos' (def:wxDefaultCoord)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'clientData' (def:0l)")
@@ -1656,9 +1671,8 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_smtptr_param<wxBitmap >(bmpDisabled_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bmpDisabled = *bmpDisabled_smtptr;
 
-  int toggle_int;
-  if (!get_val_param<int >(toggle_int,_p,_n,true,true)) ClassReturnEmptyVar;
-  bool toggle = (bool) (toggle_int>0.5);
+  bool toggle;
+  if (!get_val_param<bool >(toggle,_p,_n,true,true)) ClassReturnEmptyVar;
 
   int xPos;
   if (!get_val_param<int >(xPos,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -1695,7 +1709,7 @@ void WrapClass_wxToolBarBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bmpDisabled' (def:wxNullBitmap)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'toggle' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'toggle' (def:false)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'clientData' (def:0l)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'shortHelp' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'longHelp' (def:wxEmptyString)")
@@ -1726,9 +1740,8 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   // Setting default value if no value is returned
   wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxNullBitmap );
 
-  int toggle_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(toggle_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool toggle = (bool) (toggle_int>0.5);
+  bool toggle = false;
+  if (!get_val_param<bool >(toggle,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > clientData_smtptr;
   if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -1756,8 +1769,8 @@ void WrapClass_wxToolBarBase::
     wrap_OnLeftClick::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'toolid'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'toggleDown'")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'toggleDown'")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1771,13 +1784,11 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   int toolid;
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int toggleDown_int;
-  if (!get_val_param<int >(toggleDown_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool toggleDown = (bool) (toggleDown_int>0.5);
+  bool toggleDown;
+  if (!get_val_param<bool >(toggleDown,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->OnLeftClick(toolid, toggleDown);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1908,7 +1919,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
 void WrapClass_wxToolBarBase::
     wrap_AcceptsFocus::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1918,7 +1929,6 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->AcceptsFocus();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 

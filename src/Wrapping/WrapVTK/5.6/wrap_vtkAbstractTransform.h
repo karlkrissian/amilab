@@ -108,7 +108,6 @@ class WrapClass_vtkAbstractTransform : public WrapClass<vtkAbstractTransform>
     ADD_CLASS_METHOD(CircuitCheck,"int vtkAbstractTransform::CircuitCheck(vtkAbstractTransform * transform)  (http://docs.wxwidgets.org/stable/wx_vtkabstracttransform.html#circuitcheck)")
     ADD_CLASS_METHOD(GetMTime,"long unsigned int vtkAbstractTransform::GetMTime()  (http://docs.wxwidgets.org/stable/wx_vtkabstracttransform.html#getmtime)")
     ADD_CLASS_METHOD(UnRegister,"void vtkAbstractTransform::UnRegister(vtkObjectBase * O)  (http://docs.wxwidgets.org/stable/wx_vtkabstracttransform.html#unregister)")
-    ADD_CLASS_METHOD(Identity,"void vtkAbstractTransform::Identity()  (http://docs.wxwidgets.org/stable/wx_vtkabstracttransform.html#identity)")
 
 
 

@@ -60,13 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxImageHistogram::CreateVar( wxImageHistogram
 //----------------------------------------------------------------------
 void WrapClass_wxImageHistogram::AddMethods(WrapClass<wxImageHistogram>::ptr this_ptr )
 {
-  
-      // Add members from wxImageHistogramBase
-      WrapClass_wxImageHistogramBase::ptr parent_wxImageHistogramBase(        boost::dynamic_pointer_cast<WrapClass_wxImageHistogramBase >(this_ptr));
-      parent_wxImageHistogramBase->AddMethods(parent_wxImageHistogramBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -79,7 +73,43 @@ void WrapClass_wxImageHistogram::AddMethods(WrapClass<wxImageHistogram>::ptr thi
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxImageHistogramBase
+  boost::shared_ptr<wxImageHistogramBase > parent_wxImageHistogramBase(  boost::dynamic_pointer_cast<wxImageHistogramBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxImageHistogramBase = AMILabType<wxImageHistogramBase >::CreateVarFromSmtPtr(parent_wxImageHistogramBase);
+  context->AddVar("wxImageHistogramBase",var_wxImageHistogramBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxImageHistogramBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxImageHistogramBase);
+  context->AddDefault(obj_wxImageHistogramBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxImageHistogram::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxImageHistogram");
+    WrapClass_wxImageHistogram::AddVar_wxImageHistogram_1(amiobject->GetContext());
+  WrapClass_wxImageHistogram::AddVar_wxImageHistogram(amiobject->GetContext());
+  WrapClass_wxImageHistogram::AddVar_wxImageHistogram_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxImageHistogram::AddVar_MakeKey(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -214,7 +244,7 @@ void WrapClass_wxImageHistogram::
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'startR' (def:1)")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'startG' (def:0)")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'startB' (def:0)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -247,8 +277,7 @@ BasicVariable::ptr WrapClass_wxImageHistogram::
   if (!get_val_param<unsigned char >(startB,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->FindFirstUnusedColour(r, g, b, startR, startG, startB);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

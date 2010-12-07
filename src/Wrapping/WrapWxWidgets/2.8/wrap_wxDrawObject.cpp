@@ -60,10 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxDrawObject::CreateVar( wxDrawObject* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxDrawObject::AddMethods(WrapClass<wxDrawObject>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Draw( this_ptr);
@@ -80,7 +77,27 @@ void WrapClass_wxDrawObject::AddMethods(WrapClass<wxDrawObject>::ptr this_ptr )
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxDrawObject::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxDrawObject");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

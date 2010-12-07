@@ -18,8 +18,6 @@
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxObject.h"
-#include "wrap_wxClassInfo.h"
 
 
 #include "wrap_wxObjectEventFunction.h"
@@ -31,7 +29,7 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<wxObjectEventFunction>::CreateVar( ParamList* p)
 {
-  // No variable creation for an abstract class ...
+  // No variable creation for methodtype ...
   return BasicVariable::ptr();
 
 }
@@ -43,7 +41,6 @@ AMI_DEFINE_VARFROMSMTPTR(wxObjectEventFunction);
 // Implementing CreateVar for AMILabType
 BasicVariable::ptr AMILabType<wxObjectEventFunction>::CreateVar( wxObjectEventFunction* val, bool nodeleter)
 { 
-  // delete object???
   boost::shared_ptr<wxObjectEventFunction> obj_ptr(val,smartpointer_nodeleter<wxObjectEventFunction>());
   return AMILabType<wxObjectEventFunction>::CreateVarFromSmtPtr(obj_ptr);
 }
@@ -68,9 +65,29 @@ Variable<AMIObject>::ptr WrapClass_wxObjectEventFunction::CreateVar( wxObjectEve
 //----------------------------------------------------------------------
 void WrapClass_wxObjectEventFunction::AddMethods(WrapClass<wxObjectEventFunction>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
 
+  
+
+  
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxObjectEventFunction::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxObjectEventFunction");
+  
+  
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

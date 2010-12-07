@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/aui/aui.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -51,7 +51,6 @@ class WrapClass_wxAuiToolBarArt : public WrapClass<wxAuiToolBarArt>
     /// Destructor
     ~WrapClass_wxAuiToolBarArt()
     {
-      std::cout << "~WrapClass_wxAuiToolBarArt()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -61,29 +60,28 @@ class WrapClass_wxAuiToolBarArt : public WrapClass<wxAuiToolBarArt>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxAuiToolBarArt*);
 
-    // here add each method
+    // Static methods
     
 
+
+
+    // Standard methods
+    
+    // Adding standard methods
+
     // Operators:
-    ADD_CLASS_METHOD(assign,"")
+    ADD_CLASS_METHOD(__assign__,            "wxAuiToolBarArt & wxAuiToolBarArt::operator =(wxAuiToolBarArt const & param0) (http://docs.wxwidgets.org/stable/wx_wxauitoolbarart.html#__assign__)")
 
 
 
 
-    void AddMethods(WrapClass<wxAuiToolBarArt>::ptr this_ptr )
-    {
-      // here inheritence
-      
+    void AddMethods(WrapClass<wxAuiToolBarArt>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
-
-      // check that the method name is not a token
-      
-
-      // Operators:
-      AddVar_assign( this_ptr);
-
-
-    };
 };
 
 

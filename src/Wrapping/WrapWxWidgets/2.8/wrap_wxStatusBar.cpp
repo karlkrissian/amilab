@@ -73,13 +73,7 @@ Variable<AMIObject>::ptr WrapClass_wxStatusBar::CreateVar( wxStatusBar* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxStatusBar::AddMethods(WrapClass<wxStatusBar>::ptr this_ptr )
 {
-  
-      // Add members from wxStatusBarBase
-      WrapClass_wxStatusBarBase::ptr parent_wxStatusBarBase(        boost::dynamic_pointer_cast<WrapClass_wxStatusBarBase >(this_ptr));
-      parent_wxStatusBarBase->AddMethods(parent_wxStatusBarBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -103,7 +97,42 @@ void WrapClass_wxStatusBar::AddMethods(WrapClass<wxStatusBar>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxStatusBarBase
+  boost::shared_ptr<wxStatusBarBase > parent_wxStatusBarBase(  boost::dynamic_pointer_cast<wxStatusBarBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxStatusBarBase = AMILabType<wxStatusBarBase >::CreateVarFromSmtPtr(parent_wxStatusBarBase);
+  context->AddVar("wxStatusBarBase",var_wxStatusBarBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxStatusBarBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxStatusBarBase);
+  context->AddDefault(obj_wxStatusBarBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxStatusBar::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxStatusBar");
+    WrapClass_wxStatusBar::AddVar_wxStatusBar_1(amiobject->GetContext());
+  WrapClass_wxStatusBar::AddVar_wxStatusBar(amiobject->GetContext());
+  WrapClass_wxStatusBar::AddVar_wxStatusBar_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -201,7 +230,7 @@ void WrapClass_wxStatusBar::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid' (def:wxID_ANY)")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:16)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxStatusBarNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -229,8 +258,7 @@ BasicVariable::ptr WrapClass_wxStatusBar::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxStatusBarNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, winid, style, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -353,7 +381,7 @@ void WrapClass_wxStatusBar::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'i'")
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -372,8 +400,7 @@ BasicVariable::ptr WrapClass_wxStatusBar::
   wxRect & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->GetFieldRect(i, rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

@@ -654,6 +654,8 @@ public:
    */
   //@{
     VAR_LOGIC_OP_VAR(^);
+    VAR_LOGIC_OP_VAR(|);
+    VAR_LOGIC_OP_VAR(&);
   //@}
 
   /** @name OtherOperators

@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -75,9 +75,7 @@ class WrapClass_wxTopLevelWindowBase : public WrapClass<wxTopLevelWindowBase>
     ADD_CLASS_METHOD(SetIcon,"void wxTopLevelWindowBase::SetIcon(wxIcon const & icon)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#seticon)")
     ADD_CLASS_METHOD(SetIcons,"void wxTopLevelWindowBase::SetIcons(wxIconBundle const & icons)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#seticons)")
     ADD_CLASS_METHOD(EnableCloseButton,"bool wxTopLevelWindowBase::EnableCloseButton(bool param0)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#enableclosebutton)")
-/* The following types are missing: wxRegion
     ADD_CLASS_METHOD(SetShape,"bool wxTopLevelWindowBase::SetShape(wxRegion const & param0)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#setshape)")
-*/
     ADD_CLASS_METHOD(RequestUserAttention,"void wxTopLevelWindowBase::RequestUserAttention(int flags = wxUSER_ATTENTION_INFO)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#requestuserattention)")
     ADD_CLASS_METHOD(IsActive,"bool wxTopLevelWindowBase::IsActive()  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#isactive)")
     ADD_CLASS_METHOD(ShouldPreventAppExit,"bool wxTopLevelWindowBase::ShouldPreventAppExit()  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#shouldpreventappexit)")
@@ -91,19 +89,11 @@ class WrapClass_wxTopLevelWindowBase : public WrapClass<wxTopLevelWindowBase>
     ADD_CLASS_METHOD(Destroy,"bool wxTopLevelWindowBase::Destroy()  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#destroy)")
     ADD_CLASS_METHOD(IsTopLevel,"bool wxTopLevelWindowBase::IsTopLevel()  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#istoplevel)")
     ADD_CLASS_METHOD(IsVisible,"bool wxTopLevelWindowBase::IsVisible()  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#isvisible)")
-/* The following types are missing: wxCloseEvent
     ADD_CLASS_METHOD(OnCloseWindow,"void wxTopLevelWindowBase::OnCloseWindow(wxCloseEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#onclosewindow)")
-*/
-/* The following types are missing: wxSizeEvent
     ADD_CLASS_METHOD(OnSize,"void wxTopLevelWindowBase::OnSize(wxSizeEvent & param0)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#onsize)")
-*/
     ADD_CLASS_METHOD(GetRectForTopLevelChildren,"void wxTopLevelWindowBase::GetRectForTopLevelChildren(int * x, int * y, int * w, int * h)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#getrectfortoplevelchildren)")
-/* The following types are missing: wxActivateEvent
     ADD_CLASS_METHOD(OnActivate,"void wxTopLevelWindowBase::OnActivate(wxActivateEvent & param0)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#onactivate)")
-*/
-/* The following types are missing: wxUpdateUIEvent
     ADD_CLASS_METHOD(DoUpdateWindowUI,"void wxTopLevelWindowBase::DoUpdateWindowUI(wxUpdateUIEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#doupdatewindowui)")
-*/
     ADD_CLASS_METHOD(SetMinSize,"void wxTopLevelWindowBase::SetMinSize(wxSize const & minSize)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#setminsize)")
     ADD_CLASS_METHOD(SetMaxSize,"void wxTopLevelWindowBase::SetMaxSize(wxSize const & maxSize)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#setmaxsize)")
     ADD_CLASS_METHOD(DoSetSizeHints,"void wxTopLevelWindowBase::DoSetSizeHints(int minW, int minH, int maxW = wxDefaultCoord, int maxH = wxDefaultCoord, int incW = wxDefaultCoord, int incH = wxDefaultCoord)  (http://docs.wxwidgets.org/stable/wx_wxtoplevelwindowbase.html#dosetsizehints)")
@@ -113,6 +103,11 @@ class WrapClass_wxTopLevelWindowBase : public WrapClass<wxTopLevelWindowBase>
 
 
     void AddMethods(WrapClass<wxTopLevelWindowBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

@@ -62,10 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxIconBundle::CreateVar( wxIconBundle* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxIconBundle::AddMethods(WrapClass<wxIconBundle>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -87,17 +84,45 @@ void WrapClass_wxIconBundle::AddMethods(WrapClass<wxIconBundle>::ptr this_ptr )
       if (!tmpobj.get()) return;
       Variables::ptr context(tmpobj->GetContext());
       
-      /* type not available
+      /* Type not available
       // Adding public member m_icons
       boost::shared_ptr<wxIconArray > var_m_icons_ptr(&GetObj()->m_icons, smartpointer_nodeleter<wxIconArray >());
-      BasicVariable::ptr var_m_icons = AMILabType<wxIconArray >::CreateVarFromSmtPtr(var_m_icons_ptr);
-      if (var_m_icons.get()) {
-        var_m_icons->Rename("m_icons");
-        context->AddVar(var_m_icons,context);
+      if (var_m_icons_ptr.get()) {
+        BasicVariable::ptr var_m_icons = AMILabType<wxIconArray >::CreateVarFromSmtPtr(var_m_icons_ptr);
+        if (var_m_icons.get()) {
+          var_m_icons->Rename("m_icons");
+          context->AddVar(var_m_icons,context);
+        }
       }
       */
 
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxIconBundle::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxIconBundle");
+    WrapClass_wxIconBundle::AddVar_wxIconBundle_1(amiobject->GetContext());
+  WrapClass_wxIconBundle::AddVar_wxIconBundle(amiobject->GetContext());
+  WrapClass_wxIconBundle::AddVar_wxIconBundle_2(amiobject->GetContext());
+  WrapClass_wxIconBundle::AddVar_wxIconBundle_3(amiobject->GetContext());
+  WrapClass_wxIconBundle::AddVar_wxIconBundle_4(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

@@ -71,13 +71,7 @@ Variable<AMIObject>::ptr WrapClass_wxStaticBoxSizer::CreateVar( wxStaticBoxSizer
 //----------------------------------------------------------------------
 void WrapClass_wxStaticBoxSizer::AddMethods(WrapClass<wxStaticBoxSizer>::ptr this_ptr )
 {
-  
-      // Add members from wxBoxSizer
-      WrapClass_wxBoxSizer::ptr parent_wxBoxSizer(        boost::dynamic_pointer_cast<WrapClass_wxBoxSizer >(this_ptr));
-      parent_wxBoxSizer->AddMethods(parent_wxBoxSizer);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_RecalcSizes( this_ptr);
@@ -93,7 +87,42 @@ void WrapClass_wxStaticBoxSizer::AddMethods(WrapClass<wxStaticBoxSizer>::ptr thi
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxBoxSizer
+  boost::shared_ptr<wxBoxSizer > parent_wxBoxSizer(  boost::dynamic_pointer_cast<wxBoxSizer >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxBoxSizer = AMILabType<wxBoxSizer >::CreateVarFromSmtPtr(parent_wxBoxSizer);
+  context->AddVar("wxBoxSizer",var_wxBoxSizer);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxBoxSizer = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxBoxSizer);
+  context->AddDefault(obj_wxBoxSizer->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxStaticBoxSizer::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxStaticBoxSizer");
+    WrapClass_wxStaticBoxSizer::AddVar_wxStaticBoxSizer_1(amiobject->GetContext());
+  WrapClass_wxStaticBoxSizer::AddVar_wxStaticBoxSizer(amiobject->GetContext());
+  WrapClass_wxStaticBoxSizer::AddVar_wxStaticBoxSizer_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -250,7 +279,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
 void WrapClass_wxStaticBoxSizer::
     wrap_ShowItems::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show'")
 }
 
 //---------------------------------------------------
@@ -261,9 +290,8 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int show_int;
-  if (!get_val_param<int >(show_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool show = (bool) (show_int>0.5);
+  bool show;
+  if (!get_val_param<bool >(show,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->ShowItems(show);
   return BasicVariable::ptr();
@@ -276,7 +304,7 @@ void WrapClass_wxStaticBoxSizer::
     wrap_Detach_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -292,8 +320,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   wxWindow* window = window_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Detach(window);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -327,7 +354,7 @@ void WrapClass_wxStaticBoxSizer::
     wrap_Detach_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -343,8 +370,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   wxSizer* sizer = sizer_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Detach(sizer);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -354,7 +380,7 @@ void WrapClass_wxStaticBoxSizer::
     wrap_Detach_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'index'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -369,8 +395,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Detach(index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

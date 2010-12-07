@@ -64,13 +64,7 @@ Variable<AMIObject>::ptr WrapClass_wxSizerItemList::CreateVar( wxSizerItemList* 
 //----------------------------------------------------------------------
 void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_ptr )
 {
-  
-      // Add members from wxListBase
-      WrapClass_wxListBase::ptr parent_wxListBase(        boost::dynamic_pointer_cast<WrapClass_wxListBase >(this_ptr));
-      parent_wxListBase->AddMethods(parent_wxListBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -98,11 +92,11 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
       AddVar_Find( this_ptr);
       AddVar_Find_2( this_ptr);
       AddVar_IndexOf( this_ptr);
-/* The following types are missing: _9495
+/* The following types are missing: _9904
       AddVar_Sort_1( this_ptr);
 */
       AddVar_Sort( this_ptr);
-/* The following types are missing: _8775
+/* The following types are missing: _9172
       AddVar_Sort_2( this_ptr);
 */
 /* The following types are missing: iterator
@@ -190,13 +184,54 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxListBase
+  boost::shared_ptr<wxListBase > parent_wxListBase(  boost::dynamic_pointer_cast<wxListBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxListBase = AMILabType<wxListBase >::CreateVarFromSmtPtr(parent_wxListBase);
+  context->AddVar("wxListBase",var_wxListBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxListBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxListBase);
+  context->AddDefault(obj_wxListBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxSizerItemList::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxSizerItemList");
+    WrapClass_wxSizerItemList::AddVar_wxSizerItemList_1(amiobject->GetContext());
+  WrapClass_wxSizerItemList::AddVar_wxSizerItemList(amiobject->GetContext());
+  WrapClass_wxSizerItemList::AddVar_wxSizerItemList_2(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxSizerItemList::AddVar_wxSizerItemList_3(amiobject->GetContext());
+  */
+  WrapClass_wxSizerItemList::AddVar_wxSizerItemList_4(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxSizerItemList::AddVar_wxSizerItemList_5(amiobject->GetContext());
+  */
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: wxKeyType
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxSizerItemList::wxSizerItemList(wxKeyType keyType = wxKEY_NONE)
@@ -204,7 +239,7 @@ void WrapClass_wxSizerItemList::AddMethods(WrapClass<wxSizerItemList>::ptr this_
 void WrapClass_wxSizerItemList::
     wrap_wxSizerItemList_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxKeyType, "parameter named 'keyType' (def:wxKEY_NONE)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'keyType' (def:wxKEY_NONE)")
 }
 
 //---------------------------------------------------
@@ -215,14 +250,14 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  wxKeyType keyType = wxKEY_NONE;
-  if (!get_val_param<wxKeyType >(keyType,_p,_n,false,true)) ClassReturnEmptyVar;
+  int keyType_int = (int) wxKEY_NONE;;
+  if (!get_val_param<int >(keyType_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxKeyType keyType = (wxKeyType) keyType_int;
 
   wxSizerItemList* _newobj = new wxSizerItemList(keyType);
   BasicVariable::ptr res = WrapClass_wxSizerItemList::CreateVar(_newobj);
   return res;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... Constructor wxSizerItemList::wxSizerItemList(...)
@@ -236,6 +271,9 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
     wrap_wxSizerItemList::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxSizerItemList::wrap_wxSizerItemList_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxSizerItemList::wrap_wxSizerItemList_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -715,7 +753,7 @@ void WrapClass_wxSizerItemList::
     wrap_DeleteNode::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxwxSizerItemListNode, "parameter named 'node'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -731,8 +769,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxwxSizerItemListNode* node = node_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->DeleteNode(node);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -742,7 +779,7 @@ void WrapClass_wxSizerItemList::
     wrap_DeleteObject::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizerItem, "parameter named 'object'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -758,8 +795,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   wxSizerItem* object = object_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->DeleteObject(object);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -887,7 +923,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   int res =   this->_objectptr->GetObj()->IndexOf(object);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: _9495
+/* The following types are missing: _9904
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::Sort(wxSortCompareFunction func)
@@ -895,7 +931,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
 void WrapClass_wxSizerItemList::
     wrap_Sort_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9495, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _9904, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -906,8 +942,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _9495 func;
-  if (!get_val_param<_9495 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _9904 func;
+  if (!get_val_param<_9904 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -928,7 +964,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: _8775
+/* The following types are missing: _9172
 
 //---------------------------------------------------
 //  Wrapping of void wxSizerItemList::Sort(wxSortFuncFor_wxSizerItemList func)
@@ -936,7 +972,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
 void WrapClass_wxSizerItemList::
     wrap_Sort_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _8775, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _9172, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -947,8 +983,8 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _8775 func;
-  if (!get_val_param<_8775 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _9172 func;
+  if (!get_val_param<_9172 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -1259,7 +1295,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
 void WrapClass_wxSizerItemList::
     wrap_empty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1269,8 +1305,7 @@ BasicVariable::ptr WrapClass_wxSizerItemList::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->empty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

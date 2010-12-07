@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxAuiToolBarArt.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -23,19 +21,26 @@
 #include "wrap_wxAuiToolBarArt.h"
 
 
+#include "wrap_wxAuiToolBarArt.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<wxAuiToolBarArt>::CreateVar( ParamList* p)
 {
-//  WrapClass_wxAuiToolBarArt::wrap_wxAuiToolBarArt construct;
-//  return construct.CallMember(p);
+  // No variable creation for an abstract class ...
   return BasicVariable::ptr();
+
 }
 
-AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxAuiToolBarArt);
 
+AMI_DEFINE_WRAPPEDTYPE_ABSTRACT(wxAuiToolBarArt);
+AMI_DEFINE_VARFROMSMTPTR(wxAuiToolBarArt);
+
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxAuiToolBarArt
 //
@@ -51,13 +56,51 @@ Variable<AMIObject>::ptr WrapClass_wxAuiToolBarArt::CreateVar( wxAuiToolBarArt* 
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxAuiToolBarArt::AddMethods(WrapClass<wxAuiToolBarArt>::ptr this_ptr )
+{
+  // todo: check that the method name is not a token ?
+  
+      // Adding standard methods 
+
+      // Adding operators
+      AddVar___assign__( this_ptr);
+
+
+
+  
+
+  // Adding Bases
+
+};
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAuiToolBarArt::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAuiToolBarArt");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
-//  Wrapping of wxAuiToolBarArt & wxAuiToolBarArt::=(wxAuiToolBarArt & param0)
+//  Wrapping of wxAuiToolBarArt & wxAuiToolBarArt::operator =(wxAuiToolBarArt const & param0)
 //---------------------------------------------------
 void WrapClass_wxAuiToolBarArt::
-    wrap_assign::SetParametersComments()
+    wrap___assign__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxAuiToolBarArt, "parameter named 'param0'")
   return_comments="returning a variable of type wxAuiToolBarArt";
@@ -65,14 +108,17 @@ void WrapClass_wxAuiToolBarArt::
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxAuiToolBarArt::
-    wrap_assign::CallMember( ParamList* _p)
+    wrap___assign__::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
+  if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
-  wxAuiToolBarArt* param0_ptr;
-  if (!get_val_ptr_param<wxAuiToolBarArt>(param0_ptr,_p,_n)) ClassHelpAndReturn;
-  wxAuiToolBarArt& param0 = *param0_ptr;
+
+  boost::shared_ptr<wxAuiToolBarArt > param0_smtptr;
+  if (!get_val_smtptr_param<wxAuiToolBarArt >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  wxAuiToolBarArt const & param0 = *param0_smtptr;
+
   wxAuiToolBarArt & res =   (*this->_objectptr->GetObj()) = (param0);
-  return AMILabType<wxAuiToolBarArt>::CreateVar(res);
+  return AMILabType<wxAuiToolBarArt >::CreateVar(res);
 }
 

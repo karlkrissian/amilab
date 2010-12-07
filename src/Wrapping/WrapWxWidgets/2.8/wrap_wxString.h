@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -106,9 +106,6 @@ class WrapClass_wxString : public WrapClass<wxString>
     ADD_CLASS_STATICMETHOD(From8BitData,"wxString::From8BitData() (http://docs.wxwidgets.org/stable/wx_wxstring.html#from8bitdata).");
     ADD_CLASS_STATICMETHOD(From8BitData_2,"wxString wxString::From8BitData(char const * data) (http://docs.wxwidgets.org/stable/wx_wxstring.html#from8bitdata).");
     ADD_CLASS_STATICMETHOD(Format,"wxString wxString::Format(wxChar const * pszFormat) (http://docs.wxwidgets.org/stable/wx_wxstring.html#format).");
-    /* The following types are missing: __va_list_tag
-    ADD_CLASS_STATICMETHOD(FormatV,"wxString wxString::FormatV(wxChar const * pszFormat, __va_list_tag * argptr) (http://docs.wxwidgets.org/stable/wx_wxstring.html#formatv).");
-    */
 
 
 
@@ -190,9 +187,6 @@ class WrapClass_wxString : public WrapClass<wxString>
 */
     ADD_CLASS_METHOD(ToDouble,"bool wxString::ToDouble(double * val)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#todouble)")
     ADD_CLASS_METHOD(Printf,"int wxString::Printf(wxChar const * pszFormat)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#printf)")
-/* The following types are missing: __va_list_tag
-    ADD_CLASS_METHOD(PrintfV,"int wxString::PrintfV(wxChar const * pszFormat, __va_list_tag * argptr)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#printfv)")
-*/
     ADD_CLASS_METHOD(Alloc,"bool wxString::Alloc(size_t nLen)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#alloc)")
     ADD_CLASS_METHOD(Shrink,"bool wxString::Shrink()  (http://docs.wxwidgets.org/stable/wx_wxstring.html#shrink)")
     ADD_CLASS_METHOD(GetWriteBuf,"wxChar * wxString::GetWriteBuf(size_t nLen)  (http://docs.wxwidgets.org/stable/wx_wxstring.html#getwritebuf)")
@@ -296,6 +290,11 @@ class WrapClass_wxString : public WrapClass<wxString>
 
 
     void AddMethods(WrapClass<wxString>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

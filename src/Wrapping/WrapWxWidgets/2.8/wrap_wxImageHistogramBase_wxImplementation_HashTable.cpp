@@ -63,10 +63,7 @@ Variable<AMIObject>::ptr WrapClass_wxImageHistogramBase_wxImplementation_HashTab
 //----------------------------------------------------------------------
 void WrapClass_wxImageHistogramBase_wxImplementation_HashTable::AddMethods(WrapClass<wxImageHistogramBase_wxImplementation_HashTable>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -99,7 +96,31 @@ void WrapClass_wxImageHistogramBase_wxImplementation_HashTable::AddMethods(WrapC
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxImageHistogramBase_wxImplementation_HashTable::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxImageHistogramBase_wxImplementation_HashTable");
+    WrapClass_wxImageHistogramBase_wxImplementation_HashTable::AddVar_wxImageHistogramBase_wxImplementation_HashTable_1(amiobject->GetContext());
+  WrapClass_wxImageHistogramBase_wxImplementation_HashTable::AddVar_wxImageHistogramBase_wxImplementation_HashTable(amiobject->GetContext());
+  WrapClass_wxImageHistogramBase_wxImplementation_HashTable::AddVar_wxImageHistogramBase_wxImplementation_HashTable_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -315,7 +336,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_HashTable::
 void WrapClass_wxImageHistogramBase_wxImplementation_HashTable::
     wrap_empty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -325,8 +346,7 @@ BasicVariable::ptr WrapClass_wxImageHistogramBase_wxImplementation_HashTable::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->empty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /* The following types are missing: const_iterator
 

@@ -10,8 +10,6 @@
  *
  **/
 
-#include "wrap_wxBoxSizer.h"
-
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
@@ -25,6 +23,9 @@
 #include "wrap_wxClassInfo.h"
 
 
+#include "wrap_wxBoxSizer.h"
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -41,6 +42,7 @@ AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxBoxSizer);
 AMI_DEFINE_VARFROMSMTPTR(wxBoxSizer);
 
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to wxBoxSizer
 //
@@ -56,6 +58,66 @@ Variable<AMIObject>::ptr WrapClass_wxBoxSizer::CreateVar( wxBoxSizer* sp)
   return res;
 }
 
+//----------------------------------------------------------------------
+void WrapClass_wxBoxSizer::AddMethods(WrapClass<wxBoxSizer>::ptr this_ptr )
+{
+  // todo: check that the method name is not a token ?
+  
+      // Adding copy method 
+      AddVar___copy__( this_ptr);
+      // Adding standard methods 
+      AddVar_RecalcSizes( this_ptr);
+      AddVar_CalcMin( this_ptr);
+      AddVar_GetOrientation( this_ptr);
+      AddVar_SetOrientation( this_ptr);
+      AddVar_GetClassInfo( this_ptr);
+
+      // Adding operators
+      AddVar___assign__( this_ptr);
+
+
+
+  
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxSizer
+  boost::shared_ptr<wxSizer > parent_wxSizer(  boost::dynamic_pointer_cast<wxSizer >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxSizer = AMILabType<wxSizer >::CreateVarFromSmtPtr(parent_wxSizer);
+  context->AddVar("wxSizer",var_wxSizer);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxSizer = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxSizer);
+  context->AddDefault(obj_wxSizer->Pointer()->GetContext());
+
+};
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxBoxSizer::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxBoxSizer");
+    WrapClass_wxBoxSizer::AddVar_wxBoxSizer_1(amiobject->GetContext());
+  WrapClass_wxBoxSizer::AddVar_wxBoxSizer(amiobject->GetContext());
+  WrapClass_wxBoxSizer::AddVar_wxBoxSizer_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 
 //---------------------------------------------------
@@ -76,7 +138,7 @@ BasicVariable::ptr WrapClass_wxBoxSizer::
   int _n=0;
 
   boost::shared_ptr<wxBoxSizer > param0_smtptr;
-  if (!get_val_smtptr_param<wxBoxSizer >(param0_smtptr,_p,_n,true,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBoxSizer >(param0_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
   wxBoxSizer const & param0 = *param0_smtptr;
 
   wxBoxSizer* _newobj = new wxBoxSizer(param0);
@@ -123,7 +185,7 @@ BasicVariable::ptr WrapClass_wxBoxSizer::
   int _n=0;
 
   int orient;
-  if (!get_val_param<int >(orient,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(orient,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxBoxSizer* _newobj = new wxBoxSizer(orient);
   BasicVariable::ptr res = WrapClass_wxBoxSizer::CreateVar(_newobj);
@@ -220,7 +282,7 @@ BasicVariable::ptr WrapClass_wxBoxSizer::
   int _n=0;
 
   int orient;
-  if (!get_val_param<int >(orient,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(orient,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetOrientation(orient);
   return BasicVariable::ptr();
@@ -247,7 +309,7 @@ BasicVariable::ptr WrapClass_wxBoxSizer::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxBoxSizer & wxBoxSizer::=(wxBoxSizer const & param0)
+//  Wrapping of wxBoxSizer & wxBoxSizer::operator =(wxBoxSizer const & param0)
 //---------------------------------------------------
 void WrapClass_wxBoxSizer::
     wrap___assign__::SetParametersComments()
@@ -265,7 +327,7 @@ BasicVariable::ptr WrapClass_wxBoxSizer::
   int _n=0;
 
   boost::shared_ptr<wxBoxSizer > param0_smtptr;
-  if (!get_val_smtptr_param<wxBoxSizer >(param0_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBoxSizer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBoxSizer const & param0 = *param0_smtptr;
 
   wxBoxSizer & res =   (*this->_objectptr->GetObj()) = (param0);

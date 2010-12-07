@@ -59,10 +59,7 @@ Variable<AMIObject>::ptr WrapClass_wxImageHistogramEntry::CreateVar( wxImageHist
 //----------------------------------------------------------------------
 void WrapClass_wxImageHistogramEntry::AddMethods(WrapClass<wxImageHistogramEntry>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -78,27 +75,55 @@ void WrapClass_wxImageHistogramEntry::AddMethods(WrapClass<wxImageHistogramEntry
       if (!tmpobj.get()) return;
       Variables::ptr context(tmpobj->GetContext());
       
-      /* type not available
+      /* Type not available
       // Adding public member index
       boost::shared_ptr<long unsigned int > var_index_ptr(&GetObj()->index, smartpointer_nodeleter<long unsigned int >());
-      BasicVariable::ptr var_index = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_index_ptr);
-      if (var_index.get()) {
-        var_index->Rename("index");
-        context->AddVar(var_index,context);
+      if (var_index_ptr.get()) {
+        BasicVariable::ptr var_index = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_index_ptr);
+        if (var_index.get()) {
+          var_index->Rename("index");
+          context->AddVar(var_index,context);
+        }
       }
       */
       
-      /* type not available
+      /* Type not available
       // Adding public member value
       boost::shared_ptr<long unsigned int > var_value_ptr(&GetObj()->value, smartpointer_nodeleter<long unsigned int >());
-      BasicVariable::ptr var_value = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_value_ptr);
-      if (var_value.get()) {
-        var_value->Rename("value");
-        context->AddVar(var_value,context);
+      if (var_value_ptr.get()) {
+        BasicVariable::ptr var_value = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_value_ptr);
+        if (var_value.get()) {
+          var_value->Rename("value");
+          context->AddVar(var_value,context);
+        }
       }
       */
 
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxImageHistogramEntry::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxImageHistogramEntry");
+    WrapClass_wxImageHistogramEntry::AddVar_wxImageHistogramEntry_1(amiobject->GetContext());
+  WrapClass_wxImageHistogramEntry::AddVar_wxImageHistogramEntry(amiobject->GetContext());
+  WrapClass_wxImageHistogramEntry::AddVar_wxImageHistogramEntry_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

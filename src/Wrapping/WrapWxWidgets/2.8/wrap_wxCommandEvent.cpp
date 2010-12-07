@@ -18,9 +18,9 @@
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxString.h"
-#include "wrap_wxClientData.h"
 #include "wrap_wxCommandEvent.h"
+#include "wrap_wxClientData.h"
+#include "wrap_wxString.h"
 #include "wrap_wxEvent.h"
 #include "wrap_wxClassInfo.h"
 
@@ -63,13 +63,7 @@ Variable<AMIObject>::ptr WrapClass_wxCommandEvent::CreateVar( wxCommandEvent* sp
 //----------------------------------------------------------------------
 void WrapClass_wxCommandEvent::AddMethods(WrapClass<wxCommandEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -94,64 +88,43 @@ void WrapClass_wxCommandEvent::AddMethods(WrapClass<wxCommandEvent>::ptr this_pt
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* type not available
-      // Adding public member m_commandString
-      boost::shared_ptr<wxCommandEventStringHelper > var_m_commandString_ptr(&GetObj()->m_commandString, smartpointer_nodeleter<wxCommandEventStringHelper >());
-      BasicVariable::ptr var_m_commandString = AMILabType<wxCommandEventStringHelper >::CreateVarFromSmtPtr(var_m_commandString_ptr);
-      if (var_m_commandString.get()) {
-        var_m_commandString->Rename("m_commandString");
-        context->AddVar(var_m_commandString,context);
-      }
-      */
-      
-      // Adding public member m_cmdString
-//       boost::shared_ptr<wxString > var_m_cmdString_ptr(&GetObj()->m_cmdString, smartpointer_nodeleter<wxString >());
-//       BasicVariable::ptr var_m_cmdString = AMILabType<wxString >::CreateVarFromSmtPtr(var_m_cmdString_ptr);
-//       if (var_m_cmdString.get()) {
-//         var_m_cmdString->Rename("m_cmdString");
-//         context->AddVar(var_m_cmdString,context);
-//       }
-      
-      // Adding public member m_commandInt
-//       boost::shared_ptr<int > var_m_commandInt_ptr(&GetObj()->m_commandInt, smartpointer_nodeleter<int >());
-//       BasicVariable::ptr var_m_commandInt = AMILabType<int >::CreateVarFromSmtPtr(var_m_commandInt_ptr);
-//       if (var_m_commandInt.get()) {
-//         var_m_commandInt->Rename("m_commandInt");
-//         context->AddVar(var_m_commandInt,context);
-//       }
-      
-      // Adding public member m_extraLong
-//       boost::shared_ptr<long int > var_m_extraLong_ptr(&GetObj()->m_extraLong, smartpointer_nodeleter<long int >());
-//       BasicVariable::ptr var_m_extraLong = AMILabType<long int >::CreateVarFromSmtPtr(var_m_extraLong_ptr);
-//       if (var_m_extraLong.get()) {
-//         var_m_extraLong->Rename("m_extraLong");
-//         context->AddVar(var_m_extraLong,context);
-//       }
-      
-      /* Cannot wrap void* 
-      // Adding public member m_clientData
-      boost::shared_ptr<void > var_m_clientData_ptr(GetObj()->m_clientData, smartpointer_nodeleter<void >());
-      BasicVariable::ptr var_m_clientData = AMILabType<void >::CreateVarFromSmtPtr(var_m_clientData_ptr);
-      if (var_m_clientData.get()) {
-        var_m_clientData->Rename("m_clientData");
-        context->AddVar(var_m_clientData,context);
-      }
-      */
-      
-      // Adding public member m_clientObject
-//       boost::shared_ptr<wxClientData > var_m_clientObject_ptr(GetObj()->m_clientObject, smartpointer_nodeleter<wxClientData >());
-//       BasicVariable::ptr var_m_clientObject = AMILabType<wxClientData >::CreateVarFromSmtPtr(var_m_clientObject_ptr);
-//       if (var_m_clientObject.get()) {
-//         var_m_clientObject->Rename("m_clientObject");
-//         context->AddVar(var_m_clientObject,context);
-//       }
+  
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
 
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxCommandEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxCommandEvent");
+    WrapClass_wxCommandEvent::AddVar_wxCommandEvent_1(amiobject->GetContext());
+  WrapClass_wxCommandEvent::AddVar_wxCommandEvent(amiobject->GetContext());
+  WrapClass_wxCommandEvent::AddVar_wxCommandEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -409,7 +382,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
 void WrapClass_wxCommandEvent::
     wrap_IsChecked::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -419,8 +392,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsChecked();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -429,7 +401,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
 void WrapClass_wxCommandEvent::
     wrap_IsSelection::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -439,8 +411,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsSelection();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

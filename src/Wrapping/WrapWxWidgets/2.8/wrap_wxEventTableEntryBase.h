@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -55,10 +55,8 @@ class WrapClass_wxEventTableEntryBase : public WrapClass<wxEventTableEntryBase>
     }
 
     
-    /* The following types are missing: _13542
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxEventTableEntryBase_1,"Constructor wxEventTableEntryBase::wxEventTableEntryBase(int winid, int idLast, wxObjectEventFunction fn, wxObject * data) (http://docs.wxwidgets.org/stable/wx_wxeventtableentrybase.html#wxeventtableentrybase).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxEventTableEntryBase,"Constructor wxEventTableEntryBase::wxEventTableEntryBase() (http://docs.wxwidgets.org/stable/wx_wxeventtableentrybase.html#wxeventtableentrybase).");
     /// Wrapping of the constructor
@@ -85,6 +83,11 @@ class WrapClass_wxEventTableEntryBase : public WrapClass<wxEventTableEntryBase>
 
 
     void AddMethods(WrapClass<wxEventTableEntryBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

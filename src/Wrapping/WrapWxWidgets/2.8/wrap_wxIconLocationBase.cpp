@@ -60,10 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxIconLocationBase::CreateVar( wxIconLocation
 //----------------------------------------------------------------------
 void WrapClass_wxIconLocationBase::AddMethods(WrapClass<wxIconLocationBase>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -78,7 +75,31 @@ void WrapClass_wxIconLocationBase::AddMethods(WrapClass<wxIconLocationBase>::ptr
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxIconLocationBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxIconLocationBase");
+    WrapClass_wxIconLocationBase::AddVar_wxIconLocationBase_1(amiobject->GetContext());
+  WrapClass_wxIconLocationBase::AddVar_wxIconLocationBase(amiobject->GetContext());
+  WrapClass_wxIconLocationBase::AddVar_wxIconLocationBase_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -181,7 +202,7 @@ BasicVariable::ptr WrapClass_wxIconLocationBase::
 void WrapClass_wxIconLocationBase::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -191,8 +212,7 @@ BasicVariable::ptr WrapClass_wxIconLocationBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

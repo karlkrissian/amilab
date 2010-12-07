@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -95,7 +95,6 @@ class WrapClass_wxKeyEvent : public WrapClass<wxKeyEvent>
     ADD_CLASS_METHOD(GetPosition_3,"wxPoint wxKeyEvent::GetPosition()  (http://docs.wxwidgets.org/stable/wx_wxkeyevent.html#getposition)")
     ADD_CLASS_METHOD(GetX,"wxCoord wxKeyEvent::GetX()  (http://docs.wxwidgets.org/stable/wx_wxkeyevent.html#getx)")
     ADD_CLASS_METHOD(GetY,"wxCoord wxKeyEvent::GetY()  (http://docs.wxwidgets.org/stable/wx_wxkeyevent.html#gety)")
-    ADD_CLASS_METHOD(KeyCode,"long int wxKeyEvent::KeyCode()  (http://docs.wxwidgets.org/stable/wx_wxkeyevent.html#keycode)")
     ADD_CLASS_METHOD(Clone,"wxEvent * wxKeyEvent::Clone()  (http://docs.wxwidgets.org/stable/wx_wxkeyevent.html#clone)")
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxKeyEvent::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxkeyevent.html#getclassinfo)")
 
@@ -106,6 +105,11 @@ class WrapClass_wxKeyEvent : public WrapClass<wxKeyEvent>
 
 
     void AddMethods(WrapClass<wxKeyEvent>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

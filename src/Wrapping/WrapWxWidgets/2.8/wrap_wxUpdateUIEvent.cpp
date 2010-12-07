@@ -63,13 +63,7 @@ Variable<AMIObject>::ptr WrapClass_wxUpdateUIEvent::CreateVar( wxUpdateUIEvent* 
 //----------------------------------------------------------------------
 void WrapClass_wxUpdateUIEvent::AddMethods(WrapClass<wxUpdateUIEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxCommandEvent
-      WrapClass_wxCommandEvent::ptr parent_wxCommandEvent(        boost::dynamic_pointer_cast<WrapClass_wxCommandEvent >(this_ptr));
-      parent_wxCommandEvent->AddMethods(parent_wxCommandEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -92,7 +86,48 @@ void WrapClass_wxUpdateUIEvent::AddMethods(WrapClass<wxUpdateUIEvent>::ptr this_
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxCommandEvent
+  boost::shared_ptr<wxCommandEvent > parent_wxCommandEvent(  boost::dynamic_pointer_cast<wxCommandEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxCommandEvent = AMILabType<wxCommandEvent >::CreateVarFromSmtPtr(parent_wxCommandEvent);
+  context->AddVar("wxCommandEvent",var_wxCommandEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxCommandEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxCommandEvent);
+  context->AddDefault(obj_wxCommandEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxUpdateUIEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxUpdateUIEvent");
+    WrapClass_wxUpdateUIEvent::AddVar_wxUpdateUIEvent_1(amiobject->GetContext());
+  WrapClass_wxUpdateUIEvent::AddVar_wxUpdateUIEvent(amiobject->GetContext());
+  WrapClass_wxUpdateUIEvent::AddVar_wxUpdateUIEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxUpdateUIEvent::AddVar_SetUpdateInterval(amiobject->GetContext());
+  WrapClass_wxUpdateUIEvent::AddVar_GetUpdateInterval(amiobject->GetContext());
+  WrapClass_wxUpdateUIEvent::AddVar_CanUpdate(amiobject->GetContext());
+  WrapClass_wxUpdateUIEvent::AddVar_ResetUpdateTime(amiobject->GetContext());
+  WrapClass_wxUpdateUIEvent::AddVar_SetMode(amiobject->GetContext());
+  WrapClass_wxUpdateUIEvent::AddVar_GetMode(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -223,7 +258,7 @@ void WrapClass_wxUpdateUIEvent::
     wrap_static_CanUpdate::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindowBase, "parameter named 'win'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -239,8 +274,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   wxWindowBase* win = win_smtptr.get();
 
   bool res =   wxUpdateUIEvent::CanUpdate(win);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -260,7 +294,6 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   wxUpdateUIEvent::ResetUpdateTime();
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxUpdateUIMode
 
 //---------------------------------------------------
 //  Wrapping of void wxUpdateUIEvent::SetMode(wxUpdateUIMode mode)
@@ -268,7 +301,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_static_SetMode::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxUpdateUIMode, "parameter named 'mode'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'mode'")
 }
 
 //---------------------------------------------------
@@ -279,14 +312,13 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxUpdateUIMode mode;
-  if (!get_val_param<wxUpdateUIMode >(mode,_p,_n,true,false)) ClassHelpAndReturn;
+  int mode_int;
+  if (!get_val_param<int >(mode_int,_p,_n,true,false)) ClassHelpAndReturn;
+  wxUpdateUIMode mode = (wxUpdateUIMode) mode_int;
 
   wxUpdateUIEvent::SetMode(mode);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxUpdateUIMode
 
 //---------------------------------------------------
 //  Wrapping of wxUpdateUIMode wxUpdateUIEvent::GetMode()
@@ -294,7 +326,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_static_GetMode::SetParametersComments()
 {
-  return_comments="returning a variable of type wxUpdateUIMode";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -304,9 +336,9 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxUpdateUIMode res =   wxUpdateUIEvent::GetMode();
-  return AMILabType<wxUpdateUIMode >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of 'copy' method for wxUpdateUIEvent.
@@ -330,7 +362,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_GetChecked::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -340,8 +372,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetChecked();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -350,7 +381,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_GetEnabled::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -360,8 +391,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetEnabled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -370,7 +400,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_GetShown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -380,8 +410,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetShown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -409,7 +438,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_GetSetText::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -419,8 +448,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetSetText();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -429,7 +457,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_GetSetChecked::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -439,8 +467,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetSetChecked();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -449,7 +476,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_GetSetEnabled::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -459,8 +486,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetSetEnabled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -469,7 +495,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_GetSetShown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -479,8 +505,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetSetShown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -489,7 +514,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_Check::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'check'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'check'")
 }
 
 //---------------------------------------------------
@@ -500,9 +525,8 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int check_int;
-  if (!get_val_param<int >(check_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool check = (bool) (check_int>0.5);
+  bool check;
+  if (!get_val_param<bool >(check,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Check(check);
   return BasicVariable::ptr();
@@ -514,7 +538,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_Enable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable'")
 }
 
 //---------------------------------------------------
@@ -525,9 +549,8 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int enable_int;
-  if (!get_val_param<int >(enable_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable;
+  if (!get_val_param<bool >(enable,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Enable(enable);
   return BasicVariable::ptr();
@@ -539,7 +562,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
 void WrapClass_wxUpdateUIEvent::
     wrap_Show::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show'")
 }
 
 //---------------------------------------------------
@@ -550,9 +573,8 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int show_int;
-  if (!get_val_param<int >(show_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool show = (bool) (show_int>0.5);
+  bool show;
+  if (!get_val_param<bool >(show,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Show(show);
   return BasicVariable::ptr();

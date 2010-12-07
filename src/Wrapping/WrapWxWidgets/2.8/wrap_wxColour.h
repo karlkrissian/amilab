@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -99,7 +99,6 @@ class WrapClass_wxColour : public WrapClass<wxColour>
 /* The following types are missing: _GdkColormap
     ADD_CLASS_METHOD(CalcPixel,"void wxColour::CalcPixel(GdkColormap * cmap)  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#calcpixel)")
 */
-    ADD_CLASS_METHOD(GetPixel,"int wxColour::GetPixel()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#getpixel)")
 /* The following types are missing: _GdkColor
     ADD_CLASS_METHOD(GetColor,"GdkColor const * wxColour::GetColor()  (http://docs.wxwidgets.org/stable/wx_wxcolour.html#getcolor)")
 */
@@ -114,6 +113,11 @@ class WrapClass_wxColour : public WrapClass<wxColour>
 
 
     void AddMethods(WrapClass<wxColour>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

@@ -110,9 +110,6 @@ class WrapClass_vtkActor : public WrapClass<vtkActor>
     ADD_CLASS_METHOD(ApplyProperties,"void vtkActor::ApplyProperties()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#applyproperties)")
     ADD_CLASS_METHOD(GetMTime,"long unsigned int vtkActor::GetMTime()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getmtime)")
     ADD_CLASS_METHOD(GetRedrawMTime,"long unsigned int vtkActor::GetRedrawMTime()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getredrawmtime)")
-    ADD_CLASS_METHOD(InitPartTraversal,"void vtkActor::InitPartTraversal()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#initparttraversal)")
-    ADD_CLASS_METHOD(GetNextPart,"vtkActor * vtkActor::GetNextPart()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getnextpart)")
-    ADD_CLASS_METHOD(GetNumberOfParts,"int vtkActor::GetNumberOfParts()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getnumberofparts)")
     ADD_CLASS_METHOD(GetSupportsSelection,"bool vtkActor::GetSupportsSelection()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getsupportsselection)")
 
 

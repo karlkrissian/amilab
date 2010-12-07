@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -83,9 +83,7 @@ class WrapClass_wxListKey : public WrapClass<wxListKey>
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
     // Adding standard methods
-/* The following types are missing: wxKeyType
     ADD_CLASS_METHOD(GetKeyType,"wxKeyType wxListKey::GetKeyType()  (http://docs.wxwidgets.org/stable/wx_wxlistkey.html#getkeytype)")
-*/
     ADD_CLASS_METHOD(GetString,"wxChar const * wxListKey::GetString()  (http://docs.wxwidgets.org/stable/wx_wxlistkey.html#getstring)")
     ADD_CLASS_METHOD(GetNumber,"long int wxListKey::GetNumber()  (http://docs.wxwidgets.org/stable/wx_wxlistkey.html#getnumber)")
 
@@ -99,6 +97,11 @@ class WrapClass_wxListKey : public WrapClass<wxListKey>
 
 
     void AddMethods(WrapClass<wxListKey>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

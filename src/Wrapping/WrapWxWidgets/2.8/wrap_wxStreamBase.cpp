@@ -66,15 +66,10 @@ Variable<AMIObject>::ptr WrapClass_wxStreamBase::CreateVar( wxStreamBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxStreamBase::AddMethods(WrapClass<wxStreamBase>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
-/* The following types are missing: wxStreamError
       AddVar_GetLastError( this_ptr);
-*/
       AddVar_IsOk( this_ptr);
       AddVar_Reset( this_ptr);
       AddVar_GetSize( this_ptr);
@@ -87,7 +82,29 @@ void WrapClass_wxStreamBase::AddMethods(WrapClass<wxStreamBase>::ptr this_ptr )
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxStreamBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxStreamBase");
+    WrapClass_wxStreamBase::AddVar_wxStreamBase(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -112,7 +129,6 @@ BasicVariable::ptr WrapClass_wxStreamBase::
   BasicVariable::ptr res = WrapClass_wxStreamBase::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: wxStreamError
 
 //---------------------------------------------------
 //  Wrapping of wxStreamError wxStreamBase::GetLastError()
@@ -120,7 +136,7 @@ BasicVariable::ptr WrapClass_wxStreamBase::
 void WrapClass_wxStreamBase::
     wrap_GetLastError::SetParametersComments()
 {
-  return_comments="returning a variable of type wxStreamError";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -130,9 +146,9 @@ BasicVariable::ptr WrapClass_wxStreamBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxStreamError res =   this->_objectptr->GetObj()->GetLastError();
-  return AMILabType<wxStreamError >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxStreamBase::IsOk()
@@ -140,7 +156,7 @@ BasicVariable::ptr WrapClass_wxStreamBase::
 void WrapClass_wxStreamBase::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -150,8 +166,7 @@ BasicVariable::ptr WrapClass_wxStreamBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -218,7 +233,7 @@ BasicVariable::ptr WrapClass_wxStreamBase::
 void WrapClass_wxStreamBase::
     wrap_IsSeekable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -228,8 +243,7 @@ BasicVariable::ptr WrapClass_wxStreamBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsSeekable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /*
  * operator not available 
@@ -240,7 +254,7 @@ BasicVariable::ptr WrapClass_wxStreamBase::
 void WrapClass_wxStreamBase::
     wrap_operator not available::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -250,8 +264,7 @@ BasicVariable::ptr WrapClass_wxStreamBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->!();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 

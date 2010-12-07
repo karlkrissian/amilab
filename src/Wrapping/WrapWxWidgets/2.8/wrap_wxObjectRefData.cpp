@@ -59,10 +59,7 @@ Variable<AMIObject>::ptr WrapClass_wxObjectRefData::CreateVar( wxObjectRefData* 
 //----------------------------------------------------------------------
 void WrapClass_wxObjectRefData::AddMethods(WrapClass<wxObjectRefData>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -75,7 +72,31 @@ void WrapClass_wxObjectRefData::AddMethods(WrapClass<wxObjectRefData>::ptr this_
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxObjectRefData::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxObjectRefData");
+    WrapClass_wxObjectRefData::AddVar_wxObjectRefData_1(amiobject->GetContext());
+  WrapClass_wxObjectRefData::AddVar_wxObjectRefData(amiobject->GetContext());
+  WrapClass_wxObjectRefData::AddVar_wxObjectRefData_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

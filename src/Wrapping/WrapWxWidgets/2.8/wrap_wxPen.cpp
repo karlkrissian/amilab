@@ -61,13 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxPen::CreateVar( wxPen* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxPen::AddMethods(WrapClass<wxPen>::ptr this_ptr )
 {
-  
-      // Add members from wxGDIObject
-      WrapClass_wxGDIObject::ptr parent_wxGDIObject(        boost::dynamic_pointer_cast<WrapClass_wxGDIObject >(this_ptr));
-      parent_wxGDIObject->AddMethods(parent_wxGDIObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -106,7 +100,43 @@ void WrapClass_wxPen::AddMethods(WrapClass<wxPen>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxGDIObject
+  boost::shared_ptr<wxGDIObject > parent_wxGDIObject(  boost::dynamic_pointer_cast<wxGDIObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxGDIObject = AMILabType<wxGDIObject >::CreateVarFromSmtPtr(parent_wxGDIObject);
+  context->AddVar("wxGDIObject",var_wxGDIObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxGDIObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxGDIObject);
+  context->AddDefault(obj_wxGDIObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxPen::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxPen");
+    WrapClass_wxPen::AddVar_wxPen_1(amiobject->GetContext());
+  WrapClass_wxPen::AddVar_wxPen(amiobject->GetContext());
+  WrapClass_wxPen::AddVar_wxPen_2(amiobject->GetContext());
+  WrapClass_wxPen::AddVar_wxPen_3(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -238,7 +268,7 @@ BasicVariable::ptr WrapClass_wxPen::
 void WrapClass_wxPen::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -248,8 +278,7 @@ BasicVariable::ptr WrapClass_wxPen::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -258,7 +287,7 @@ BasicVariable::ptr WrapClass_wxPen::
 void WrapClass_wxPen::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -268,8 +297,7 @@ BasicVariable::ptr WrapClass_wxPen::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -693,7 +721,7 @@ void WrapClass_wxPen::
     wrap___equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxPen, "parameter named 'pen'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -709,8 +737,7 @@ BasicVariable::ptr WrapClass_wxPen::
   wxPen const & pen = *pen_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (pen);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -720,7 +747,7 @@ void WrapClass_wxPen::
     wrap___not_equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxPen, "parameter named 'pen'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -736,7 +763,6 @@ BasicVariable::ptr WrapClass_wxPen::
   wxPen const & pen = *pen_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (pen);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 

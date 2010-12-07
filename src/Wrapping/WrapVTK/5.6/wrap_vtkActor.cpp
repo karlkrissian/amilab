@@ -75,13 +75,7 @@ Variable<AMIObject>::ptr WrapClass_vtkActor::CreateVar( vtkActor* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkActor::AddMethods(WrapClass<vtkActor>::ptr this_ptr )
 {
-  
-      // Add members from vtkProp3D
-      WrapClass_vtkProp3D::ptr parent_vtkProp3D(        boost::dynamic_pointer_cast<WrapClass_vtkProp3D >(this_ptr));
-      parent_vtkProp3D->AddMethods(parent_vtkProp3D);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_IsA( this_ptr);
@@ -121,14 +115,25 @@ void WrapClass_vtkActor::AddMethods(WrapClass<vtkActor>::ptr this_ptr )
       AddVar_ApplyProperties( this_ptr);
       AddVar_GetMTime( this_ptr);
       AddVar_GetRedrawMTime( this_ptr);
-      AddVar_InitPartTraversal( this_ptr);
-      AddVar_GetNextPart( this_ptr);
-      AddVar_GetNumberOfParts( this_ptr);
       AddVar_GetSupportsSelection( this_ptr);
 
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkProp3D
+  boost::shared_ptr<vtkProp3D > parent_vtkProp3D(  boost::dynamic_pointer_cast<vtkProp3D >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkProp3D = AMILabType<vtkProp3D >::CreateVarFromSmtPtr(parent_vtkProp3D);
+  context->AddVar("vtkProp3D",var_vtkProp3D);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkProp3D = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkProp3D);
+  context->AddDefault(obj_vtkProp3D->Pointer()->GetContext());
+
 };
 
 
@@ -147,7 +152,7 @@ void WrapClass_vtkActor::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkActor::AddVar_New(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -814,69 +819,12 @@ BasicVariable::ptr WrapClass_vtkActor::
 }
 
 //---------------------------------------------------
-//  Wrapping of void vtkActor::InitPartTraversal()
-//---------------------------------------------------
-void WrapClass_vtkActor::
-    wrap_InitPartTraversal::SetParametersComments()
-{
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkActor::
-    wrap_InitPartTraversal::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  this->_objectptr->GetObj()->InitPartTraversal();
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of vtkActor * vtkActor::GetNextPart()
-//---------------------------------------------------
-void WrapClass_vtkActor::
-    wrap_GetNextPart::SetParametersComments()
-{
-  return_comments="returning a variable of type vtkActor";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkActor::
-    wrap_GetNextPart::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  vtkActor * res =   this->_objectptr->GetObj()->GetNextPart();
-  BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of int vtkActor::GetNumberOfParts()
-//---------------------------------------------------
-void WrapClass_vtkActor::
-    wrap_GetNumberOfParts::SetParametersComments()
-{
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkActor::
-    wrap_GetNumberOfParts::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  int res =   this->_objectptr->GetObj()->GetNumberOfParts();
-  return AMILabType<int >::CreateVar(res);
-}
-
-//---------------------------------------------------
 //  Wrapping of bool vtkActor::GetSupportsSelection()
 //---------------------------------------------------
 void WrapClass_vtkActor::
     wrap_GetSupportsSelection::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -886,7 +834,6 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetSupportsSelection();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 

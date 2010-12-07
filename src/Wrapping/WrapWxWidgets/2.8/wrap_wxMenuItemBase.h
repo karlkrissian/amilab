@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -64,9 +64,7 @@ class WrapClass_wxMenuItemBase : public WrapClass<wxMenuItemBase>
 
     // Static methods
     
-    /* The following types are missing: wxItemKind
     ADD_CLASS_STATICMETHOD(New_1,"wxMenuItem * wxMenuItemBase::New(wxMenu * parentMenu = 0u, int itemid = wxID_SEPARATOR, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL, wxMenu * subMenu = 0u) (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#new).");
-    */
     ADD_CLASS_STATICMETHOD(GetLabelFromText,"wxString wxMenuItemBase::GetLabelFromText(wxString const & text) (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#getlabelfromtext).");
     ADD_CLASS_STATICMETHOD(New,"wxMenuItemBase::New() (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#new).");
     ADD_CLASS_STATICMETHOD(New_2,"wxMenuItem * wxMenuItemBase::New(wxMenu * parentMenu, int itemid, wxString const & text, wxString const & help, bool isCheckable, wxMenu * subMenu = 0u) (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#new).");
@@ -85,12 +83,8 @@ class WrapClass_wxMenuItemBase : public WrapClass<wxMenuItemBase>
     ADD_CLASS_METHOD(SetText,"void wxMenuItemBase::SetText(wxString const & str)  (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#settext)")
     ADD_CLASS_METHOD(GetLabel,"wxString wxMenuItemBase::GetLabel()  (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#getlabel)")
     ADD_CLASS_METHOD(GetText,"wxString const & wxMenuItemBase::GetText()  (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#gettext)")
-/* The following types are missing: wxItemKind
     ADD_CLASS_METHOD(GetKind,"wxItemKind wxMenuItemBase::GetKind()  (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#getkind)")
-*/
-/* The following types are missing: wxItemKind
     ADD_CLASS_METHOD(SetKind,"void wxMenuItemBase::SetKind(wxItemKind kind)  (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#setkind)")
-*/
     ADD_CLASS_METHOD(SetCheckable,"void wxMenuItemBase::SetCheckable(bool checkable)  (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#setcheckable)")
     ADD_CLASS_METHOD(IsCheckable,"bool wxMenuItemBase::IsCheckable()  (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#ischeckable)")
     ADD_CLASS_METHOD(IsSubMenu,"bool wxMenuItemBase::IsSubMenu()  (http://docs.wxwidgets.org/stable/wx_wxmenuitembase.html#issubmenu)")
@@ -115,6 +109,11 @@ class WrapClass_wxMenuItemBase : public WrapClass<wxMenuItemBase>
 
 
     void AddMethods(WrapClass<wxMenuItemBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

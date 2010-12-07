@@ -62,13 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxIdleEvent::CreateVar( wxIdleEvent* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxIdleEvent::AddMethods(WrapClass<wxIdleEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -81,7 +75,45 @@ void WrapClass_wxIdleEvent::AddMethods(WrapClass<wxIdleEvent>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxIdleEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxIdleEvent");
+    WrapClass_wxIdleEvent::AddVar_wxIdleEvent_1(amiobject->GetContext());
+  WrapClass_wxIdleEvent::AddVar_wxIdleEvent(amiobject->GetContext());
+  WrapClass_wxIdleEvent::AddVar_wxIdleEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxIdleEvent::AddVar_SetMode(amiobject->GetContext());
+  WrapClass_wxIdleEvent::AddVar_GetMode(amiobject->GetContext());
+  WrapClass_wxIdleEvent::AddVar_CanSend(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -153,7 +185,6 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   BasicVariable::ptr res = WrapClass_wxIdleEvent::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: wxIdleMode
 
 //---------------------------------------------------
 //  Wrapping of void wxIdleEvent::SetMode(wxIdleMode mode)
@@ -161,7 +192,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
 void WrapClass_wxIdleEvent::
     wrap_static_SetMode::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxIdleMode, "parameter named 'mode'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'mode'")
 }
 
 //---------------------------------------------------
@@ -172,14 +203,13 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxIdleMode mode;
-  if (!get_val_param<wxIdleMode >(mode,_p,_n,true,false)) ClassHelpAndReturn;
+  int mode_int;
+  if (!get_val_param<int >(mode_int,_p,_n,true,false)) ClassHelpAndReturn;
+  wxIdleMode mode = (wxIdleMode) mode_int;
 
   wxIdleEvent::SetMode(mode);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxIdleMode
 
 //---------------------------------------------------
 //  Wrapping of wxIdleMode wxIdleEvent::GetMode()
@@ -187,7 +217,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
 void WrapClass_wxIdleEvent::
     wrap_static_GetMode::SetParametersComments()
 {
-  return_comments="returning a variable of type wxIdleMode";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -197,9 +227,9 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxIdleMode res =   wxIdleEvent::GetMode();
-  return AMILabType<wxIdleMode >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxIdleEvent::CanSend(wxWindow * win)
@@ -208,7 +238,7 @@ void WrapClass_wxIdleEvent::
     wrap_static_CanSend::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'win'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -224,8 +254,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   wxWindow* win = win_smtptr.get();
 
   bool res =   wxIdleEvent::CanSend(win);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -250,7 +279,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
 void WrapClass_wxIdleEvent::
     wrap_RequestMore::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'needMore' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'needMore' (def:true)")
 }
 
 //---------------------------------------------------
@@ -261,9 +290,8 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int needMore_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(needMore_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool needMore = (bool) (needMore_int>0.5);
+  bool needMore = true;
+  if (!get_val_param<bool >(needMore,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->RequestMore(needMore);
   return BasicVariable::ptr();
@@ -275,7 +303,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
 void WrapClass_wxIdleEvent::
     wrap_MoreRequested::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -285,8 +313,7 @@ BasicVariable::ptr WrapClass_wxIdleEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->MoreRequested();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

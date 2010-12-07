@@ -62,13 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxCursor::CreateVar( wxCursor* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxCursor::AddMethods(WrapClass<wxCursor>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -86,7 +80,45 @@ void WrapClass_wxCursor::AddMethods(WrapClass<wxCursor>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxCursor::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxCursor");
+    WrapClass_wxCursor::AddVar_wxCursor_1(amiobject->GetContext());
+  WrapClass_wxCursor::AddVar_wxCursor(amiobject->GetContext());
+  WrapClass_wxCursor::AddVar_wxCursor_2(amiobject->GetContext());
+  WrapClass_wxCursor::AddVar_wxCursor_3(amiobject->GetContext());
+  WrapClass_wxCursor::AddVar_wxCursor_4(amiobject->GetContext());
+  WrapClass_wxCursor::AddVar_wxCursor_5(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -298,7 +330,7 @@ BasicVariable::ptr WrapClass_wxCursor::
 void WrapClass_wxCursor::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -308,8 +340,7 @@ BasicVariable::ptr WrapClass_wxCursor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -318,7 +349,7 @@ BasicVariable::ptr WrapClass_wxCursor::
 void WrapClass_wxCursor::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -328,8 +359,7 @@ BasicVariable::ptr WrapClass_wxCursor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /* The following types are missing: _GdkCursor
 

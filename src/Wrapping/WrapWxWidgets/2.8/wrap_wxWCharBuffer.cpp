@@ -62,10 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxWCharBuffer::CreateVar( wxWCharBuffer* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxWCharBuffer::AddMethods(WrapClass<wxWCharBuffer>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -86,7 +83,32 @@ void WrapClass_wxWCharBuffer::AddMethods(WrapClass<wxWCharBuffer>::ptr this_ptr 
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxWCharBuffer::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxWCharBuffer");
+    WrapClass_wxWCharBuffer::AddVar_wxWCharBuffer_1(amiobject->GetContext());
+  WrapClass_wxWCharBuffer::AddVar_wxWCharBuffer(amiobject->GetContext());
+  WrapClass_wxWCharBuffer::AddVar_wxWCharBuffer_2(amiobject->GetContext());
+  WrapClass_wxWCharBuffer::AddVar_wxWCharBuffer_3(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -264,7 +286,7 @@ void WrapClass_wxWCharBuffer::
     wrap_extend::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'len'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -280,8 +302,7 @@ BasicVariable::ptr WrapClass_wxWCharBuffer::
   long unsigned int len = boost::numeric_cast<long unsigned int >(len_long);
 
   bool res =   this->_objectptr->GetObj()->extend(len);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

@@ -70,13 +70,7 @@ Variable<AMIObject>::ptr WrapClass_wxMenuBarBase::CreateVar( wxMenuBarBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxMenuBarBase::AddMethods(WrapClass<wxMenuBarBase>::ptr this_ptr )
 {
-  
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_wxWindow(        boost::dynamic_pointer_cast<WrapClass_wxWindow >(this_ptr));
-      parent_wxWindow->AddMethods(parent_wxWindow);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Append( this_ptr);
@@ -119,7 +113,38 @@ void WrapClass_wxMenuBarBase::AddMethods(WrapClass<wxMenuBarBase>::ptr this_ptr 
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxWindow
+  boost::shared_ptr<wxWindow > parent_wxWindow(  boost::dynamic_pointer_cast<wxWindow >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxWindow = AMILabType<wxWindow >::CreateVarFromSmtPtr(parent_wxWindow);
+  context->AddVar("wxWindow",var_wxWindow);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxWindow);
+  context->AddDefault(obj_wxWindow->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxMenuBarBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxMenuBarBase");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -134,7 +159,7 @@ void WrapClass_wxMenuBarBase::
 {
   ADDPARAMCOMMENT_TYPE( wxMenu, "parameter named 'menu'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'title'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -154,8 +179,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   wxString const & title = *title_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Append(menu, title);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -167,7 +191,7 @@ void WrapClass_wxMenuBarBase::
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'pos'")
   ADDPARAMCOMMENT_TYPE( wxMenu, "parameter named 'menu'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'title'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -191,8 +215,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   wxString const & title = *title_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Insert(pos, menu, title);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -313,7 +336,7 @@ void WrapClass_wxMenuBarBase::
     wrap_IsEnabledTop::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -329,8 +352,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   long unsigned int param0 = boost::numeric_cast<long unsigned int >(param0_long);
 
   bool res =   this->_objectptr->GetObj()->IsEnabledTop(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -430,7 +452,7 @@ void WrapClass_wxMenuBarBase::
     wrap_Enable_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable'")
 }
 
 //---------------------------------------------------
@@ -444,9 +466,8 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int itemid;
   if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  int enable_int;
-  if (!get_val_param<int >(enable_int,_p,_n,true,true)) ClassReturnEmptyVar;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable;
+  if (!get_val_param<bool >(enable,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Enable(itemid, enable);
   return BasicVariable::ptr();
@@ -459,7 +480,7 @@ void WrapClass_wxMenuBarBase::
     wrap_Check::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'check'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'check'")
 }
 
 //---------------------------------------------------
@@ -473,9 +494,8 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   int itemid;
   if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int check_int;
-  if (!get_val_param<int >(check_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool check = (bool) (check_int>0.5);
+  bool check;
+  if (!get_val_param<bool >(check,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Check(itemid, check);
   return BasicVariable::ptr();
@@ -488,7 +508,7 @@ void WrapClass_wxMenuBarBase::
     wrap_IsChecked::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -503,8 +523,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsChecked(itemid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -514,7 +533,7 @@ void WrapClass_wxMenuBarBase::
     wrap_IsEnabled_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -529,8 +548,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->IsEnabled(itemid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -560,7 +578,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
 void WrapClass_wxMenuBarBase::
     wrap_IsEnabled_2::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -570,8 +588,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->IsEnabled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -708,7 +725,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
 void WrapClass_wxMenuBarBase::
     wrap_IsAttached::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -718,8 +735,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsAttached();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -792,8 +808,8 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
 void WrapClass_wxMenuBarBase::
     wrap_Enable_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -804,13 +820,11 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  int enable_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable = true;
+  if (!get_val_param<bool >(enable,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Enable(enable);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -905,7 +919,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
 void WrapClass_wxMenuBarBase::
     wrap_AcceptsFocusFromKeyboard::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -915,8 +929,7 @@ BasicVariable::ptr WrapClass_wxMenuBarBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->AcceptsFocusFromKeyboard();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

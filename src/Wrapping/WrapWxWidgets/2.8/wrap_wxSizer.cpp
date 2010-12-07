@@ -68,16 +68,7 @@ Variable<AMIObject>::ptr WrapClass_wxSizer::CreateVar( wxSizer* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxSizer::AddMethods(WrapClass<wxSizer>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-      // Add members from wxClientDataContainer
-      WrapClass_wxClientDataContainer::ptr parent_wxClientDataContainer(        boost::dynamic_pointer_cast<WrapClass_wxClientDataContainer >(this_ptr));
-      parent_wxClientDataContainer->AddMethods(parent_wxClientDataContainer);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Add_1( this_ptr);
@@ -170,7 +161,46 @@ void WrapClass_wxSizer::AddMethods(WrapClass<wxSizer>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
+  // Add base parent wxClientDataContainer
+  boost::shared_ptr<wxClientDataContainer > parent_wxClientDataContainer(  boost::dynamic_pointer_cast<wxClientDataContainer >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxClientDataContainer = AMILabType<wxClientDataContainer >::CreateVarFromSmtPtr(parent_wxClientDataContainer);
+  context->AddVar("wxClientDataContainer",var_wxClientDataContainer);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxClientDataContainer = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxClientDataContainer);
+  context->AddDefault(obj_wxClientDataContainer->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxSizer::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxSizer");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -1202,7 +1232,7 @@ void WrapClass_wxSizer::
     wrap_Remove_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1218,8 +1248,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizer* sizer = sizer_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Remove(sizer);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1250,7 +1279,7 @@ void WrapClass_wxSizer::
     wrap_Remove_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'index'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1265,8 +1294,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Remove(index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1276,7 +1304,7 @@ void WrapClass_wxSizer::
     wrap_Detach_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1292,8 +1320,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxWindow* window = window_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Detach(window);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1327,7 +1354,7 @@ void WrapClass_wxSizer::
     wrap_Detach_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1343,8 +1370,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizer* sizer = sizer_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Detach(sizer);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1354,7 +1380,7 @@ void WrapClass_wxSizer::
     wrap_Detach_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'index'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1369,8 +1395,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Detach(index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1381,8 +1406,8 @@ void WrapClass_wxSizer::
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'oldwin'")
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'newwin'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'recursive' (def:false)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'recursive' (def:false)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1401,13 +1426,11 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_smtptr_param<wxWindow >(newwin_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWindow* newwin = newwin_smtptr.get();
 
-  int recursive_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(recursive_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool recursive = (bool) (recursive_int>0.5);
+  bool recursive = false;
+  if (!get_val_param<bool >(recursive,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Replace(oldwin, newwin, recursive);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1442,8 +1465,8 @@ void WrapClass_wxSizer::
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'oldsz'")
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'newsz'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'recursive' (def:false)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'recursive' (def:false)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1462,13 +1485,11 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_smtptr_param<wxSizer >(newsz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizer* newsz = newsz_smtptr.get();
 
-  int recursive_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(recursive_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool recursive = (bool) (recursive_int>0.5);
+  bool recursive = false;
+  if (!get_val_param<bool >(recursive,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Replace(oldsz, newsz, recursive);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1479,7 +1500,7 @@ void WrapClass_wxSizer::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'index'")
   ADDPARAMCOMMENT_TYPE( wxSizerItem, "parameter named 'newitem'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1499,8 +1520,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizerItem* newitem = newitem_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Replace(index, newitem);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1509,7 +1529,7 @@ BasicVariable::ptr WrapClass_wxSizer::
 void WrapClass_wxSizer::
     wrap_Clear::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'delete_windows' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'delete_windows' (def:false)")
 }
 
 //---------------------------------------------------
@@ -1520,9 +1540,8 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int delete_windows_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(delete_windows_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool delete_windows = (bool) (delete_windows_int>0.5);
+  bool delete_windows = false;
+  if (!get_val_param<bool >(delete_windows,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Clear(delete_windows);
   return BasicVariable::ptr();
@@ -1629,7 +1648,7 @@ void WrapClass_wxSizer::
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'width'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1651,8 +1670,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->SetItemMinSize(window, width, height);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1696,7 +1714,7 @@ void WrapClass_wxSizer::
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1716,8 +1734,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSize const & size = *size_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetItemMinSize(window, size);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1729,7 +1746,7 @@ void WrapClass_wxSizer::
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'width'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1751,8 +1768,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->SetItemMinSize(sizer, width, height);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1763,7 +1779,7 @@ void WrapClass_wxSizer::
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1783,8 +1799,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSize const & size = *size_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetItemMinSize(sizer, size);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1796,7 +1811,7 @@ void WrapClass_wxSizer::
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'index'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'width'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1818,8 +1833,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->SetItemMinSize(index, width, height);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1830,7 +1844,7 @@ void WrapClass_wxSizer::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'index'")
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1850,8 +1864,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSize const & size = *size_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetItemMinSize(index, size);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2144,7 +2157,7 @@ void WrapClass_wxSizer::
     wrap_GetItem_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'recursive' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'recursive' (def:false)")
   return_comments="returning a variable of type wxSizerItem";
 }
 
@@ -2160,9 +2173,8 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWindow* window = window_smtptr.get();
 
-  int recursive_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(recursive_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool recursive = (bool) (recursive_int>0.5);
+  bool recursive = false;
+  if (!get_val_param<bool >(recursive,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->GetItem(window, recursive);
   BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
@@ -2200,7 +2212,7 @@ void WrapClass_wxSizer::
     wrap_GetItem_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'recursive' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'recursive' (def:false)")
   return_comments="returning a variable of type wxSizerItem";
 }
 
@@ -2216,9 +2228,8 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizer* sizer = sizer_smtptr.get();
 
-  int recursive_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(recursive_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool recursive = (bool) (recursive_int>0.5);
+  bool recursive = false;
+  if (!get_val_param<bool >(recursive,_p,_n,false,true)) ClassReturnEmptyVar;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->GetItem(sizer, recursive);
   BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
@@ -2259,9 +2270,9 @@ void WrapClass_wxSizer::
     wrap_Show_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show' (def:true)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'recursive' (def:false)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'recursive' (def:false)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2276,17 +2287,14 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWindow* window = window_smtptr.get();
 
-  int show_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(show_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool show = (bool) (show_int>0.5);
+  bool show = true;
+  if (!get_val_param<bool >(show,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  int recursive_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(recursive_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool recursive = (bool) (recursive_int>0.5);
+  bool recursive = false;
+  if (!get_val_param<bool >(recursive,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Show(window, show, recursive);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2323,9 +2331,9 @@ void WrapClass_wxSizer::
     wrap_Show_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show' (def:true)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'recursive' (def:false)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'recursive' (def:false)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2340,17 +2348,14 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizer* sizer = sizer_smtptr.get();
 
-  int show_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(show_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool show = (bool) (show_int>0.5);
+  bool show = true;
+  if (!get_val_param<bool >(show,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  int recursive_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(recursive_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool recursive = (bool) (recursive_int>0.5);
+  bool recursive = false;
+  if (!get_val_param<bool >(recursive,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Show(sizer, show, recursive);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2360,8 +2365,8 @@ void WrapClass_wxSizer::
     wrap_Show_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'index'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2376,13 +2381,11 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_param<long >(index_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
-  int show_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(show_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool show = (bool) (show_int>0.5);
+  bool show = true;
+  if (!get_val_param<bool >(show,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Show(index, show);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2392,8 +2395,8 @@ void WrapClass_wxSizer::
     wrap_Hide_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'recursive' (def:false)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'recursive' (def:false)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2408,13 +2411,11 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSizer* sizer = sizer_smtptr.get();
 
-  int recursive_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(recursive_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool recursive = (bool) (recursive_int>0.5);
+  bool recursive = false;
+  if (!get_val_param<bool >(recursive,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Hide(sizer, recursive);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2448,8 +2449,8 @@ void WrapClass_wxSizer::
     wrap_Hide_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'recursive' (def:false)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'recursive' (def:false)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2464,13 +2465,11 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWindow* window = window_smtptr.get();
 
-  int recursive_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(recursive_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool recursive = (bool) (recursive_int>0.5);
+  bool recursive = false;
+  if (!get_val_param<bool >(recursive,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Hide(window, recursive);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2480,7 +2479,7 @@ void WrapClass_wxSizer::
     wrap_Hide_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'index'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2496,8 +2495,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   bool res =   this->_objectptr->GetObj()->Hide(index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2507,7 +2505,7 @@ void WrapClass_wxSizer::
     wrap_IsShown_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2523,8 +2521,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxWindow* window = window_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->IsShown(window);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2558,7 +2555,7 @@ void WrapClass_wxSizer::
     wrap_IsShown_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2574,8 +2571,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   wxSizer* sizer = sizer_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->IsShown(sizer);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2585,7 +2581,7 @@ void WrapClass_wxSizer::
     wrap_IsShown_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'index'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2601,8 +2597,7 @@ BasicVariable::ptr WrapClass_wxSizer::
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   bool res =   this->_objectptr->GetObj()->IsShown(index);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2611,7 +2606,7 @@ BasicVariable::ptr WrapClass_wxSizer::
 void WrapClass_wxSizer::
     wrap_ShowItems::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show'")
 }
 
 //---------------------------------------------------
@@ -2622,9 +2617,8 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int show_int;
-  if (!get_val_param<int >(show_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool show = (bool) (show_int>0.5);
+  bool show;
+  if (!get_val_param<bool >(show,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->ShowItems(show);
   return BasicVariable::ptr();
@@ -2636,7 +2630,7 @@ BasicVariable::ptr WrapClass_wxSizer::
 void WrapClass_wxSizer::
     wrap_Show_4::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show'")
 }
 
 //---------------------------------------------------
@@ -2647,9 +2641,8 @@ BasicVariable::ptr WrapClass_wxSizer::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  int show_int;
-  if (!get_val_param<int >(show_int,_p,_n,true,true)) ClassReturnEmptyVar;
-  bool show = (bool) (show_int>0.5);
+  bool show;
+  if (!get_val_param<bool >(show,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Show(show);
   return BasicVariable::ptr();

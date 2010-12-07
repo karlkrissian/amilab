@@ -72,13 +72,7 @@ Variable<AMIObject>::ptr WrapClass_wxControl::CreateVar( wxControl* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxControl::AddMethods(WrapClass<wxControl>::ptr this_ptr )
 {
-  
-      // Add members from wxControlBase
-      WrapClass_wxControlBase::ptr parent_wxControlBase(        boost::dynamic_pointer_cast<WrapClass_wxControlBase >(this_ptr));
-      parent_wxControlBase->AddMethods(parent_wxControlBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -91,7 +85,42 @@ void WrapClass_wxControl::AddMethods(WrapClass<wxControl>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxControlBase
+  boost::shared_ptr<wxControlBase > parent_wxControlBase(  boost::dynamic_pointer_cast<wxControlBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxControlBase = AMILabType<wxControlBase >::CreateVarFromSmtPtr(parent_wxControlBase);
+  context->AddVar("wxControlBase",var_wxControlBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxControlBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxControlBase);
+  context->AddDefault(obj_wxControlBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxControl::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxControl");
+    WrapClass_wxControl::AddVar_wxControl_1(amiobject->GetContext());
+  WrapClass_wxControl::AddVar_wxControl(amiobject->GetContext());
+  WrapClass_wxControl::AddVar_wxControl_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -210,7 +239,7 @@ void WrapClass_wxControl::
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:0)")
   ADDPARAMCOMMENT_TYPE( wxValidator, "parameter named 'validator' (def:wxDefaultValidator)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxControlNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -253,8 +282,7 @@ BasicVariable::ptr WrapClass_wxControl::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxControlNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, pos, size, style, validator, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

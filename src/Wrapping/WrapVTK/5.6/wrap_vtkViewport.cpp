@@ -70,13 +70,7 @@ Variable<AMIObject>::ptr WrapClass_vtkViewport::CreateVar( vtkViewport* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkViewport::AddMethods(WrapClass<vtkViewport>::ptr this_ptr )
 {
-  
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_IsA( this_ptr);
@@ -188,15 +182,24 @@ void WrapClass_vtkViewport::AddMethods(WrapClass<vtkViewport>::ptr this_ptr )
       AddVar_GetPickY2( this_ptr);
       AddVar_GetIsPicking( this_ptr);
       AddVar_GetPickResultProps( this_ptr);
-      AddVar_RemoveProp( this_ptr);
-      AddVar_AddProp( this_ptr);
-      AddVar_GetProps( this_ptr);
-      AddVar_HasProp( this_ptr);
-      AddVar_RemoveAllProps( this_ptr);
 
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -214,7 +217,7 @@ void WrapClass_vtkViewport::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkViewport::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -906,7 +909,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
 void WrapClass_vtkViewport::
     wrap_SetGradientBackground::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named '_arg'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named '_arg'")
 }
 
 //---------------------------------------------------
@@ -917,9 +920,8 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int _arg_int;
-  if (!get_val_param<int >(_arg_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool _arg = (bool) (_arg_int>0.5);
+  bool _arg;
+  if (!get_val_param<bool >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetGradientBackground(_arg);
   return BasicVariable::ptr();
@@ -931,7 +933,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
 void WrapClass_vtkViewport::
     wrap_GetGradientBackground::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -941,8 +943,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetGradientBackground();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2768,119 +2769,5 @@ BasicVariable::ptr WrapClass_vtkViewport::
   vtkPropCollection * res =   this->_objectptr->GetObj()->GetPickResultProps();
   BasicVariable::ptr res_var = WrapClass_vtkPropCollection::CreateVar(res);
   return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of void vtkViewport::RemoveProp(vtkProp * param0)
-//---------------------------------------------------
-void WrapClass_vtkViewport::
-    wrap_RemoveProp::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( vtkProp, "parameter named 'param0'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkViewport::
-    wrap_RemoveProp::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<vtkProp > param0_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* param0 = param0_smtptr.get();
-
-  this->_objectptr->GetObj()->RemoveProp(param0);
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of void vtkViewport::AddProp(vtkProp * param0)
-//---------------------------------------------------
-void WrapClass_vtkViewport::
-    wrap_AddProp::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( vtkProp, "parameter named 'param0'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkViewport::
-    wrap_AddProp::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<vtkProp > param0_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* param0 = param0_smtptr.get();
-
-  this->_objectptr->GetObj()->AddProp(param0);
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of vtkPropCollection * vtkViewport::GetProps()
-//---------------------------------------------------
-void WrapClass_vtkViewport::
-    wrap_GetProps::SetParametersComments()
-{
-  return_comments="returning a variable of type vtkPropCollection";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkViewport::
-    wrap_GetProps::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  vtkPropCollection * res =   this->_objectptr->GetObj()->GetProps();
-  BasicVariable::ptr res_var = WrapClass_vtkPropCollection::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of int vtkViewport::HasProp(vtkProp * param0)
-//---------------------------------------------------
-void WrapClass_vtkViewport::
-    wrap_HasProp::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( vtkProp, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkViewport::
-    wrap_HasProp::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>1) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<vtkProp > param0_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* param0 = param0_smtptr.get();
-
-  int res =   this->_objectptr->GetObj()->HasProp(param0);
-  return AMILabType<int >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of void vtkViewport::RemoveAllProps()
-//---------------------------------------------------
-void WrapClass_vtkViewport::
-    wrap_RemoveAllProps::SetParametersComments()
-{
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkViewport::
-    wrap_RemoveAllProps::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  this->_objectptr->GetObj()->RemoveAllProps();
-  return BasicVariable::ptr();
 }
 

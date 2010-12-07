@@ -19,11 +19,12 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
 #include "wrap_wxSizer.h"
+
 
 
 AMI_DECLARE_TYPE(wxBoxSizer);
@@ -51,7 +52,6 @@ class WrapClass_wxBoxSizer : public WrapClass<wxBoxSizer>
     /// Destructor
     ~WrapClass_wxBoxSizer()
     {
-      std::cout << "~WrapClass_wxBoxSizer()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
@@ -68,7 +68,12 @@ class WrapClass_wxBoxSizer : public WrapClass<wxBoxSizer>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxBoxSizer*);
 
-    // here add each method
+    // Static methods
+    
+
+
+
+    // Standard methods
     
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
@@ -80,37 +85,18 @@ class WrapClass_wxBoxSizer : public WrapClass<wxBoxSizer>
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxBoxSizer::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxboxsizer.html#getclassinfo)")
 
     // Operators:
-    ADD_CLASS_METHOD(__assign__,            "wxBoxSizer & wxBoxSizer::=(wxBoxSizer const & param0) (http://docs.wxwidgets.org/stable/wx_wxboxsizer.html#__assign__)")
+    ADD_CLASS_METHOD(__assign__,            "wxBoxSizer & wxBoxSizer::operator =(wxBoxSizer const & param0) (http://docs.wxwidgets.org/stable/wx_wxboxsizer.html#__assign__)")
 
 
 
 
-    void AddMethods(WrapClass<wxBoxSizer>::ptr this_ptr )
-    {
-      
-      // Add members from wxSizer
-      WrapClass_wxSizer::ptr parent_wxSizer(        boost::dynamic_pointer_cast<WrapClass_wxSizer >(this_ptr));
-      parent_wxSizer->AddMethods(parent_wxSizer);
+    void AddMethods(WrapClass<wxBoxSizer>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
-
-      // check that the method name is not a token
-      
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_RecalcSizes( this_ptr);
-      AddVar_CalcMin( this_ptr);
-      AddVar_GetOrientation( this_ptr);
-      AddVar_SetOrientation( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
-
-      // Adding operators
-      AddVar___assign__( this_ptr);
-
-
-
-      
-    };
 };
 
 

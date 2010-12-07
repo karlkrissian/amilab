@@ -68,13 +68,7 @@ Variable<AMIObject>::ptr WrapClass_wxString::CreateVar( wxString* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxString::AddMethods(WrapClass<wxString>::ptr this_ptr )
 {
-  
-      // Add members from wxStringBase
-      WrapClass_wxStringBase::ptr parent_wxStringBase(        boost::dynamic_pointer_cast<WrapClass_wxStringBase >(this_ptr));
-      parent_wxStringBase->AddMethods(parent_wxStringBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -152,9 +146,6 @@ void WrapClass_wxString::AddMethods(WrapClass<wxString>::ptr this_ptr )
 */
       AddVar_ToDouble( this_ptr);
       AddVar_Printf( this_ptr);
-/* The following types are missing: __va_list_tag
-      AddVar_PrintfV( this_ptr);
-*/
       AddVar_Alloc( this_ptr);
       AddVar_Shrink( this_ptr);
       AddVar_GetWriteBuf( this_ptr);
@@ -257,7 +248,67 @@ void WrapClass_wxString::AddMethods(WrapClass<wxString>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxStringBase
+  boost::shared_ptr<wxStringBase > parent_wxStringBase(  boost::dynamic_pointer_cast<wxStringBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxStringBase = AMILabType<wxStringBase >::CreateVarFromSmtPtr(parent_wxStringBase);
+  context->AddVar("wxStringBase",var_wxStringBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxStringBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxStringBase);
+  context->AddDefault(obj_wxStringBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxString::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxString");
+    WrapClass_wxString::AddVar_wxString_1(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString_2(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString_3(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString_4(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString_5(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString_6(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString_7(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString_8(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxString::AddVar_wxString_9(amiobject->GetContext());
+  */
+  WrapClass_wxString::AddVar_wxString_10(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString_11(amiobject->GetContext());
+  WrapClass_wxString::AddVar_wxString_12(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxString::AddVar_wxString_13(amiobject->GetContext());
+  */
+
+
+  // Static methods 
+  WrapClass_wxString::AddVar_FromAscii_1(amiobject->GetContext());
+  WrapClass_wxString::AddVar_FromAscii(amiobject->GetContext());
+  WrapClass_wxString::AddVar_FromAscii_2(amiobject->GetContext());
+  WrapClass_wxString::AddVar_FromUTF8_1(amiobject->GetContext());
+  WrapClass_wxString::AddVar_FromUTF8(amiobject->GetContext());
+  WrapClass_wxString::AddVar_FromUTF8_2(amiobject->GetContext());
+  WrapClass_wxString::AddVar_From8BitData_1(amiobject->GetContext());
+  WrapClass_wxString::AddVar_From8BitData(amiobject->GetContext());
+  WrapClass_wxString::AddVar_From8BitData_2(amiobject->GetContext());
+  WrapClass_wxString::AddVar_Format(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -964,40 +1015,6 @@ mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
   wxString res =   wxString::Format(pszFormat);
   return AMILabType<wxString >::CreateVar(res);
 }
-/* The following types are missing: __va_list_tag
-
-//---------------------------------------------------
-//  Wrapping of wxString wxString::FormatV(wxChar const * pszFormat, __va_list_tag * argptr)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_static_FormatV::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'pszFormat'")
-  ADDPARAMCOMMENT_TYPE( __va_list_tag, "parameter named 'argptr'")
-  return_comments="returning a variable of type wxString";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_static_FormatV::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<std::string > pszFormat_string;
-  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wchar_t pszFormat[pszFormat_string->size()+1];
-mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
-
-  boost::shared_ptr<__va_list_tag > argptr_smtptr;
-  if (!get_val_smtptr_param<__va_list_tag >(argptr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  __va_list_tag* argptr = argptr_smtptr.get();
-
-  wxString res =   wxString::FormatV(pszFormat, argptr);
-  return AMILabType<wxString >::CreateVar(res);
-}
-*/
 
 //---------------------------------------------------
 //  Wrapping of 'copy' method for wxString.
@@ -1041,7 +1058,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_IsEmpty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1051,8 +1068,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEmpty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1123,7 +1139,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_IsAscii::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1133,8 +1149,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsAscii();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1143,7 +1158,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_IsNumber::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1153,8 +1168,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsNumber();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1163,7 +1177,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_IsWord::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1173,8 +1187,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsWord();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2004,8 +2017,8 @@ void WrapClass_wxString::
     wrap_IsSameAs_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'psz'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'compareWithCase' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'compareWithCase' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2021,13 +2034,11 @@ BasicVariable::ptr WrapClass_wxString::
   wchar_t psz[psz_string->size()+1];
 mbstowcs(psz,psz_string->c_str(),psz_string->size()+1);
 
-  int compareWithCase_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(compareWithCase_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool compareWithCase = (bool) (compareWithCase_int>0.5);
+  bool compareWithCase = true;
+  if (!get_val_param<bool >(compareWithCase,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->IsSameAs(psz, compareWithCase);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2058,8 +2069,8 @@ void WrapClass_wxString::
     wrap_IsSameAs_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'c'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'compareWithCase' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'compareWithCase' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2078,13 +2089,11 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 
-  int compareWithCase_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(compareWithCase_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool compareWithCase = (bool) (compareWithCase_int>0.5);
+  bool compareWithCase = true;
+  if (!get_val_param<bool >(compareWithCase,_p,_n,false,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->IsSameAs(c, compareWithCase);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2126,7 +2135,7 @@ void WrapClass_wxString::
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'prefix'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'rest' (def:0l)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2147,8 +2156,7 @@ mbstowcs(prefix,prefix_string->c_str(),prefix_string->size()+1);
   wxString* rest = rest_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->StartsWith(prefix, rest);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2159,7 +2167,7 @@ void WrapClass_wxString::
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'suffix'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'rest' (def:0l)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2180,8 +2188,7 @@ mbstowcs(suffix,suffix_string->c_str(),suffix_string->size()+1);
   wxString* rest = rest_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->EndsWith(suffix, rest);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2498,7 +2505,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_Trim::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bFromRight' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'bFromRight' (def:true)")
   return_comments="returning a variable of type wxString";
 }
 
@@ -2510,9 +2517,8 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int bFromRight_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(bFromRight_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool bFromRight = (bool) (bFromRight_int>0.5);
+  bool bFromRight = true;
+  if (!get_val_param<bool >(bFromRight,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxString & res =   this->_objectptr->GetObj()->Trim(bFromRight);
   return AMILabType<wxString >::CreateVar(res);
@@ -2526,7 +2532,7 @@ void WrapClass_wxString::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'nCount'")
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'chPad' (def:32)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bFromRight' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'bFromRight' (def:true)")
   return_comments="returning a variable of type wxString";
 }
 
@@ -2556,9 +2562,8 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 
-  int bFromRight_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(bFromRight_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool bFromRight = (bool) (bFromRight_int>0.5);
+  bool bFromRight = true;
+  if (!get_val_param<bool >(bFromRight,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxString & res =   this->_objectptr->GetObj()->Pad(nCount, chPad, bFromRight);
   return AMILabType<wxString >::CreateVar(res);
@@ -2571,7 +2576,7 @@ void WrapClass_wxString::
     wrap_Find_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'ch'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bFromEnd' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'bFromEnd' (def:false)")
   return_comments="returning a variable of type int";
 }
 
@@ -2591,9 +2596,8 @@ BasicVariable::ptr WrapClass_wxString::
 }
 
 
-  int bFromEnd_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(bFromEnd_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool bFromEnd = (bool) (bFromEnd_int>0.5);
+  bool bFromEnd = false;
+  if (!get_val_param<bool >(bFromEnd,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int res =   this->_objectptr->GetObj()->Find(ch, bFromEnd);
   return AMILabType<int >::CreateVar(res);
@@ -2655,7 +2659,7 @@ void WrapClass_wxString::
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'szOld'")
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'szNew'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bReplaceAll' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'bReplaceAll' (def:true)")
   return_comments="returning a variable of type long";
 }
 
@@ -2677,9 +2681,8 @@ mbstowcs(szOld,szOld_string->c_str(),szOld_string->size()+1);
   wchar_t szNew[szNew_string->size()+1];
 mbstowcs(szNew,szNew_string->c_str(),szNew_string->size()+1);
 
-  int bReplaceAll_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(bReplaceAll_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool bReplaceAll = (bool) (bReplaceAll_int>0.5);
+  bool bReplaceAll = true;
+  if (!get_val_param<bool >(bReplaceAll,_p,_n,false,false)) ClassHelpAndReturn;
 
   size_t res =   this->_objectptr->GetObj()->Replace(szOld, szNew, bReplaceAll);
   long res_long = boost::numeric_cast<long >(res);
@@ -2693,7 +2696,7 @@ void WrapClass_wxString::
     wrap_Matches::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'szMask'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2710,8 +2713,7 @@ BasicVariable::ptr WrapClass_wxString::
 mbstowcs(szMask,szMask_string->c_str(),szMask_string->size()+1);
 
   bool res =   this->_objectptr->GetObj()->Matches(szMask);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2722,7 +2724,7 @@ void WrapClass_wxString::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'val'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'base' (def:10)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2742,8 +2744,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ToLong(val, base);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2754,7 +2755,7 @@ void WrapClass_wxString::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'val'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'base' (def:10)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2774,8 +2775,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ToULong(val, base);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2786,7 +2786,7 @@ void WrapClass_wxString::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'val'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'base' (def:10)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2806,8 +2806,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ToLongLong(val, base);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /* The following types are missing: long long unsigned int
 
@@ -2819,7 +2818,7 @@ void WrapClass_wxString::
 {
   ADDPARAMCOMMENT_TYPE( long long unsigned int, "parameter named 'val'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'base' (def:10)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2838,8 +2837,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ToULongLong(val, base);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 
@@ -2850,7 +2848,7 @@ void WrapClass_wxString::
     wrap_ToDouble::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( double, "parameter named 'val'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2866,8 +2864,7 @@ BasicVariable::ptr WrapClass_wxString::
   double* val = val_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->ToDouble(val);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2896,40 +2893,6 @@ mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
   int res =   this->_objectptr->GetObj()->Printf(pszFormat);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: __va_list_tag
-
-//---------------------------------------------------
-//  Wrapping of int wxString::PrintfV(wxChar const * pszFormat, __va_list_tag * argptr)
-//---------------------------------------------------
-void WrapClass_wxString::
-    wrap_PrintfV::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'pszFormat'")
-  ADDPARAMCOMMENT_TYPE( __va_list_tag, "parameter named 'argptr'")
-  return_comments="returning a variable of type int";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxString::
-    wrap_PrintfV::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>2) ClassHelpAndReturn;
-  int _n=0;
-
-  boost::shared_ptr<std::string > pszFormat_string;
-  if (!get_val_smtptr_param<std::string >(pszFormat_string,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wchar_t pszFormat[pszFormat_string->size()+1];
-mbstowcs(pszFormat,pszFormat_string->c_str(),pszFormat_string->size()+1);
-
-  boost::shared_ptr<__va_list_tag > argptr_smtptr;
-  if (!get_val_smtptr_param<__va_list_tag >(argptr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  __va_list_tag* argptr = argptr_smtptr.get();
-
-  int res =   this->_objectptr->GetObj()->PrintfV(pszFormat, argptr);
-  return AMILabType<int >::CreateVar(res);
-}
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxString::Alloc(size_t nLen)
@@ -2938,7 +2901,7 @@ void WrapClass_wxString::
     wrap_Alloc::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'nLen'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2954,8 +2917,7 @@ BasicVariable::ptr WrapClass_wxString::
   long unsigned int nLen = boost::numeric_cast<long unsigned int >(nLen_long);
 
   bool res =   this->_objectptr->GetObj()->Alloc(nLen);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2964,7 +2926,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_Shrink::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2974,8 +2936,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Shrink();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3548,7 +3509,7 @@ void WrapClass_wxString::
     wrap_Contains::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'str'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3564,8 +3525,7 @@ BasicVariable::ptr WrapClass_wxString::
   wxString const & str = *str_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Contains(str);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3574,7 +3534,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_IsNull::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3584,8 +3544,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsNull();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5003,7 +4962,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
     wrap_operator not available::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5013,8 +4972,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->!();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 

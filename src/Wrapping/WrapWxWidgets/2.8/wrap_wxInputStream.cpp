@@ -68,13 +68,7 @@ Variable<AMIObject>::ptr WrapClass_wxInputStream::CreateVar( wxInputStream* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxInputStream::AddMethods(WrapClass<wxInputStream>::ptr this_ptr )
 {
-  
-      // Add members from wxStreamBase
-      WrapClass_wxStreamBase::ptr parent_wxStreamBase(        boost::dynamic_pointer_cast<WrapClass_wxStreamBase >(this_ptr));
-      parent_wxStreamBase->AddMethods(parent_wxStreamBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Peek( this_ptr);
@@ -92,22 +86,51 @@ void WrapClass_wxInputStream::AddMethods(WrapClass<wxInputStream>::ptr this_ptr 
 */
       AddVar_Ungetch( this_ptr);
       AddVar_Ungetch_2( this_ptr);
-/* The following types are missing: wxSeekMode
       AddVar_SeekI( this_ptr);
-*/
       AddVar_TellI( this_ptr);
 
       // Adding operators
       // AddVar_operator not available( this_ptr);
       // AddVar_operator not available( this_ptr);
-/* The following types are missing: _12803
+/* The following types are missing: _13697
       // AddVar_operator not available( this_ptr);
 */
 
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxStreamBase
+  boost::shared_ptr<wxStreamBase > parent_wxStreamBase(  boost::dynamic_pointer_cast<wxStreamBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxStreamBase = AMILabType<wxStreamBase >::CreateVarFromSmtPtr(parent_wxStreamBase);
+  context->AddVar("wxStreamBase",var_wxStreamBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxStreamBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxStreamBase);
+  context->AddDefault(obj_wxStreamBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxInputStream::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxInputStream");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -256,7 +279,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
 void WrapClass_wxInputStream::
     wrap_CanRead::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -266,8 +289,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->CanRead();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -276,7 +298,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
 void WrapClass_wxInputStream::
     wrap_Eof::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -286,8 +308,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Eof();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /* The following types are missing: void
 
@@ -349,7 +370,7 @@ void WrapClass_wxInputStream::
     wrap_Ungetch_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'c'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -366,10 +387,8 @@ BasicVariable::ptr WrapClass_wxInputStream::
 if (c_string.size()>0) c = c_string[0];
 
   bool res =   this->_objectptr->GetObj()->Ungetch(c);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-/* The following types are missing: wxSeekMode
 
 //---------------------------------------------------
 //  Wrapping of wxFileOffset wxInputStream::SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart)
@@ -378,7 +397,7 @@ void WrapClass_wxInputStream::
     wrap_SeekI::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'pos'")
-  ADDPARAMCOMMENT_TYPE( wxSeekMode, "parameter named 'mode' (def:wxFromStart)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'mode' (def:wxFromStart)")
   return_comments="returning a variable of type long";
 }
 
@@ -394,14 +413,14 @@ BasicVariable::ptr WrapClass_wxInputStream::
   if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int pos = pos_long;
 
-  wxSeekMode mode = wxFromStart;
-  if (!get_val_param<wxSeekMode >(mode,_p,_n,false,false)) ClassHelpAndReturn;
+  int mode_int = (int) wxFromStart;;
+  if (!get_val_param<int >(mode_int,_p,_n,false,false)) ClassHelpAndReturn;
+  wxSeekMode mode = (wxSeekMode) mode_int;
 
   wxFileOffset res =   this->_objectptr->GetObj()->SeekI(pos, mode);
   long res_long = res;
   return AMILabType<long >::CreateVar(res_long);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxFileOffset wxInputStream::TellI()
@@ -470,7 +489,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
 }
 */
 /*
- * The following types are missing: _12803
+ * The following types are missing: _13697
  * operator not available 
 
 //---------------------------------------------------
@@ -479,7 +498,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
 void WrapClass_wxInputStream::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _12803, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _13697, "parameter named 'func'")
   return_comments="returning a variable of type wxInputStream";
 }
 
@@ -491,8 +510,8 @@ BasicVariable::ptr WrapClass_wxInputStream::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _12803 func;
-  if (!get_val_param<_12803 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _13697 func;
+  if (!get_val_param<_13697 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxInputStream & res =   this->_objectptr->GetObj()->>>(func);
   return AMILabType<wxInputStream >::CreateVar(res);

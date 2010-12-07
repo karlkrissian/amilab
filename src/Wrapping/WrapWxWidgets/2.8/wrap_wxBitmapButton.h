@@ -19,11 +19,12 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
 #include "wrap_wxBitmapButtonBase.h"
+
 
 
 AMI_DECLARE_TYPE(wxBitmapButton);
@@ -92,6 +93,11 @@ class WrapClass_wxBitmapButton : public WrapClass<wxBitmapButton>
 
 
     void AddMethods(WrapClass<wxBitmapButton>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

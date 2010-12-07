@@ -63,13 +63,7 @@ Variable<AMIObject>::ptr WrapClass_wxIcon::CreateVar( wxIcon* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxIcon::AddMethods(WrapClass<wxIcon>::ptr this_ptr )
 {
-  
-      // Add members from wxBitmap
-      WrapClass_wxBitmap::ptr parent_wxBitmap(        boost::dynamic_pointer_cast<WrapClass_wxBitmap >(this_ptr));
-      parent_wxBitmap->AddMethods(parent_wxBitmap);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -83,7 +77,50 @@ void WrapClass_wxIcon::AddMethods(WrapClass<wxIcon>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxBitmap
+  boost::shared_ptr<wxBitmap > parent_wxBitmap(  boost::dynamic_pointer_cast<wxBitmap >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxBitmap = AMILabType<wxBitmap >::CreateVarFromSmtPtr(parent_wxBitmap);
+  context->AddVar("wxBitmap",var_wxBitmap);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxBitmap = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxBitmap);
+  context->AddDefault(obj_wxBitmap->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxIcon::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxIcon");
+    WrapClass_wxIcon::AddVar_wxIcon_1(amiobject->GetContext());
+  WrapClass_wxIcon::AddVar_wxIcon(amiobject->GetContext());
+  WrapClass_wxIcon::AddVar_wxIcon_2(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxIcon::AddVar_wxIcon_3(amiobject->GetContext());
+  */
+  /* Types are missing
+  WrapClass_wxIcon::AddVar_wxIcon_4(amiobject->GetContext());
+  */
+  WrapClass_wxIcon::AddVar_wxIcon_5(amiobject->GetContext());
+  WrapClass_wxIcon::AddVar_wxIcon_6(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -134,6 +171,9 @@ BasicVariable::ptr WrapClass_wxIcon::
   WrapClass_wxIcon::wrap_wxIcon_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxIcon::wrap_wxIcon_5 m5;
+  res = m5.CallMember(_p);
+  if (!m5.Get_arg_failure()) return res;
   WrapClass_wxIcon::wrap_wxIcon_6 m6;
   res = m6.CallMember(_p);
   if (!m6.Get_arg_failure()) return res;
@@ -230,7 +270,6 @@ BasicVariable::ptr WrapClass_wxIcon::
   return res;
 }
 */
-/* The following types are missing: wxBitmapType
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxIcon::wxIcon(wxString const & filename, wxBitmapType type = wxBITMAP_TYPE_XPM, int param2 = -0x00000000000000001, int param3 = -0x00000000000000001)
@@ -239,7 +278,7 @@ void WrapClass_wxIcon::
     wrap_wxIcon_5::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'filename'")
-  ADDPARAMCOMMENT_TYPE( wxBitmapType, "parameter named 'type' (def:wxBITMAP_TYPE_XPM)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'type' (def:wxBITMAP_TYPE_XPM)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'param2' (def:-0x00000000000000001)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'param3' (def:-0x00000000000000001)")
 }
@@ -256,8 +295,9 @@ BasicVariable::ptr WrapClass_wxIcon::
   if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & filename = *filename_smtptr;
 
-  wxBitmapType type = wxBITMAP_TYPE_XPM;
-  if (!get_val_param<wxBitmapType >(type,_p,_n,false,true)) ClassReturnEmptyVar;
+  int type_int = (int) wxBITMAP_TYPE_XPM;;
+  if (!get_val_param<int >(type_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxBitmapType type = (wxBitmapType) type_int;
 
   int param2 = -0x00000000000000001;
   if (!get_val_param<int >(param2,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -269,7 +309,6 @@ BasicVariable::ptr WrapClass_wxIcon::
   BasicVariable::ptr res = WrapClass_wxIcon::CreateVar(_newobj);
   return res;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxIcon::wxIcon(wxIconLocation const & loc)

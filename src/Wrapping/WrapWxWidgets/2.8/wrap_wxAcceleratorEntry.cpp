@@ -61,10 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxAcceleratorEntry::CreateVar( wxAcceleratorE
 //----------------------------------------------------------------------
 void WrapClass_wxAcceleratorEntry::AddMethods(WrapClass<wxAcceleratorEntry>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -87,7 +84,32 @@ void WrapClass_wxAcceleratorEntry::AddMethods(WrapClass<wxAcceleratorEntry>::ptr
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAcceleratorEntry::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAcceleratorEntry");
+    WrapClass_wxAcceleratorEntry::AddVar_wxAcceleratorEntry_1(amiobject->GetContext());
+  WrapClass_wxAcceleratorEntry::AddVar_wxAcceleratorEntry(amiobject->GetContext());
+  WrapClass_wxAcceleratorEntry::AddVar_wxAcceleratorEntry_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxAcceleratorEntry::AddVar_Create(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -367,7 +389,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
 void WrapClass_wxAcceleratorEntry::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -377,8 +399,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -407,7 +428,7 @@ void WrapClass_wxAcceleratorEntry::
     wrap_FromString::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'str'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -423,8 +444,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   wxString const & str = *str_smtptr;
 
   bool res =   this->_objectptr->GetObj()->FromString(str);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -460,7 +480,7 @@ void WrapClass_wxAcceleratorEntry::
     wrap___equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxAcceleratorEntry, "parameter named 'entry'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -476,8 +496,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   wxAcceleratorEntry const & entry = *entry_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (entry);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -487,7 +506,7 @@ void WrapClass_wxAcceleratorEntry::
     wrap___not_equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxAcceleratorEntry, "parameter named 'entry'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -503,7 +522,6 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   wxAcceleratorEntry const & entry = *entry_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (entry);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 

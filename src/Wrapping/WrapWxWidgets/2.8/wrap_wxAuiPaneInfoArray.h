@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/aui/aui.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -100,7 +100,7 @@ class WrapClass_wxAuiPaneInfoArray : public WrapClass<wxAuiPaneInfoArray>
     ADD_CLASS_METHOD(Clear,"void wxAuiPaneInfoArray::Clear()  (http://docs.wxwidgets.org/stable/wx_wxauipaneinfoarray.html#clear)")
     ADD_CLASS_METHOD(Detach,"_wxObjArraywxAuiPaneInfoArray * wxAuiPaneInfoArray::Detach(size_t uiIndex)  (http://docs.wxwidgets.org/stable/wx_wxauipaneinfoarray.html#detach)")
     ADD_CLASS_METHOD(RemoveAt,"void wxAuiPaneInfoArray::RemoveAt(size_t uiIndex, size_t nRemove = 1)  (http://docs.wxwidgets.org/stable/wx_wxauipaneinfoarray.html#removeat)")
-/* The following types are missing: _10954
+/* The following types are missing: _15468
     ADD_CLASS_METHOD(Sort,"void wxAuiPaneInfoArray::Sort(CMPFUNC_wxObjArraywxAuiPaneInfoArray fCmp)  (http://docs.wxwidgets.org/stable/wx_wxauipaneinfoarray.html#sort)")
 */
 
@@ -112,6 +112,11 @@ class WrapClass_wxAuiPaneInfoArray : public WrapClass<wxAuiPaneInfoArray>
 
 
     void AddMethods(WrapClass<wxAuiPaneInfoArray>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

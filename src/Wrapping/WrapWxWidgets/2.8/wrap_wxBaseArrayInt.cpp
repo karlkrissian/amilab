@@ -60,10 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxBaseArrayInt::CreateVar( wxBaseArrayInt* sp
 //----------------------------------------------------------------------
 void WrapClass_wxBaseArrayInt::AddMethods(WrapClass<wxBaseArrayInt>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -87,7 +84,31 @@ void WrapClass_wxBaseArrayInt::AddMethods(WrapClass<wxBaseArrayInt>::ptr this_pt
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxBaseArrayInt::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxBaseArrayInt");
+    WrapClass_wxBaseArrayInt::AddVar_wxBaseArrayInt_1(amiobject->GetContext());
+  WrapClass_wxBaseArrayInt::AddVar_wxBaseArrayInt(amiobject->GetContext());
+  WrapClass_wxBaseArrayInt::AddVar_wxBaseArrayInt_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -310,7 +331,7 @@ BasicVariable::ptr WrapClass_wxBaseArrayInt::
 void WrapClass_wxBaseArrayInt::
     wrap_IsEmpty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -320,8 +341,7 @@ BasicVariable::ptr WrapClass_wxBaseArrayInt::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEmpty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -368,7 +388,7 @@ BasicVariable::ptr WrapClass_wxBaseArrayInt::
 void WrapClass_wxBaseArrayInt::
     wrap_empty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -378,8 +398,7 @@ BasicVariable::ptr WrapClass_wxBaseArrayInt::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->empty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

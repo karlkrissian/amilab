@@ -75,13 +75,7 @@ Variable<AMIObject>::ptr WrapClass_wxPanel::CreateVar( wxPanel* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxPanel::AddMethods(WrapClass<wxPanel>::ptr this_ptr )
 {
-  
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_wxWindow(        boost::dynamic_pointer_cast<WrapClass_wxWindow >(this_ptr));
-      parent_wxWindow->AddMethods(parent_wxWindow);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -99,7 +93,43 @@ void WrapClass_wxPanel::AddMethods(WrapClass<wxPanel>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxWindow
+  boost::shared_ptr<wxWindow > parent_wxWindow(  boost::dynamic_pointer_cast<wxWindow >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxWindow = AMILabType<wxWindow >::CreateVarFromSmtPtr(parent_wxWindow);
+  context->AddVar("wxWindow",var_wxWindow);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxWindow);
+  context->AddDefault(obj_wxWindow->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxPanel::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxPanel");
+    WrapClass_wxPanel::AddVar_wxPanel_1(amiobject->GetContext());
+  WrapClass_wxPanel::AddVar_wxPanel(amiobject->GetContext());
+  WrapClass_wxPanel::AddVar_wxPanel_2(amiobject->GetContext());
+  WrapClass_wxPanel::AddVar_wxPanel_3(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -267,7 +297,7 @@ void WrapClass_wxPanel::
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size' (def:wxDefaultSize)")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:2621440)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxPanelNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -305,8 +335,7 @@ BasicVariable::ptr WrapClass_wxPanel::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxPanelNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, winid, pos, size, style, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -494,7 +523,7 @@ BasicVariable::ptr WrapClass_wxPanel::
 void WrapClass_wxPanel::
     wrap_AcceptsFocus::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -504,8 +533,7 @@ BasicVariable::ptr WrapClass_wxPanel::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->AcceptsFocus();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

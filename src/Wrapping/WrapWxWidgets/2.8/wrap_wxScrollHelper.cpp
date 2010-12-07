@@ -75,10 +75,7 @@ Variable<AMIObject>::ptr WrapClass_wxScrollHelper::CreateVar( wxScrollHelper* sp
 //----------------------------------------------------------------------
 void WrapClass_wxScrollHelper::AddMethods(WrapClass<wxScrollHelper>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_SetScrollbars( this_ptr);
@@ -125,7 +122,29 @@ void WrapClass_wxScrollHelper::AddMethods(WrapClass<wxScrollHelper>::ptr this_pt
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxScrollHelper::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxScrollHelper");
+    WrapClass_wxScrollHelper::AddVar_wxScrollHelper(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -170,7 +189,7 @@ void WrapClass_wxScrollHelper::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'noUnitsY'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'xPos' (def:0)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'yPos' (def:0)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'noRefresh' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'noRefresh' (def:false)")
 }
 
 //---------------------------------------------------
@@ -199,9 +218,8 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   int yPos = 0;
   if (!get_val_param<int >(yPos,_p,_n,false,false)) ClassHelpAndReturn;
 
-  int noRefresh_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(noRefresh_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool noRefresh = (bool) (noRefresh_int>0.5);
+  bool noRefresh = false;
+  if (!get_val_param<bool >(noRefresh,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetScrollbars(pixelsPerUnitX, pixelsPerUnitY, noUnitsX, noUnitsY, xPos, yPos, noRefresh);
   return BasicVariable::ptr();
@@ -377,8 +395,8 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
 void WrapClass_wxScrollHelper::
     wrap_EnableScrolling::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'x_scrolling'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'y_scrolling'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'x_scrolling'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'y_scrolling'")
 }
 
 //---------------------------------------------------
@@ -389,13 +407,11 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  int x_scrolling_int;
-  if (!get_val_param<int >(x_scrolling_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool x_scrolling = (bool) (x_scrolling_int>0.5);
+  bool x_scrolling;
+  if (!get_val_param<bool >(x_scrolling,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int y_scrolling_int;
-  if (!get_val_param<int >(y_scrolling_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool y_scrolling = (bool) (y_scrolling_int>0.5);
+  bool y_scrolling;
+  if (!get_val_param<bool >(y_scrolling,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->EnableScrolling(x_scrolling, y_scrolling);
   return BasicVariable::ptr();
@@ -932,7 +948,7 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
 void WrapClass_wxScrollHelper::
     wrap_IsAutoScrolling::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -942,8 +958,7 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsAutoScrolling();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -971,7 +986,7 @@ void WrapClass_wxScrollHelper::
     wrap_SendAutoScrollEvents::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxScrollWinEvent, "parameter named 'event'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -987,8 +1002,7 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   wxScrollWinEvent & event = *event_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SendAutoScrollEvents(event);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

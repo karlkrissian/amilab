@@ -64,13 +64,7 @@ Variable<AMIObject>::ptr WrapClass_wxImageHistogramBase::CreateVar( wxImageHisto
 //----------------------------------------------------------------------
 void WrapClass_wxImageHistogramBase::AddMethods(WrapClass<wxImageHistogramBase>::ptr this_ptr )
 {
-  
-      // Add members from wxImageHistogramBase_wxImplementation_HashTable
-      WrapClass_wxImageHistogramBase_wxImplementation_HashTable::ptr parent_wxImageHistogramBase_wxImplementation_HashTable(        boost::dynamic_pointer_cast<WrapClass_wxImageHistogramBase_wxImplementation_HashTable >(this_ptr));
-      parent_wxImageHistogramBase_wxImplementation_HashTable->AddMethods(parent_wxImageHistogramBase_wxImplementation_HashTable);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -102,7 +96,42 @@ void WrapClass_wxImageHistogramBase::AddMethods(WrapClass<wxImageHistogramBase>:
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxImageHistogramBase_wxImplementation_HashTable
+  boost::shared_ptr<wxImageHistogramBase_wxImplementation_HashTable > parent_wxImageHistogramBase_wxImplementation_HashTable(  boost::dynamic_pointer_cast<wxImageHistogramBase_wxImplementation_HashTable >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxImageHistogramBase_wxImplementation_HashTable = AMILabType<wxImageHistogramBase_wxImplementation_HashTable >::CreateVarFromSmtPtr(parent_wxImageHistogramBase_wxImplementation_HashTable);
+  context->AddVar("wxImageHistogramBase_wxImplementation_HashTable",var_wxImageHistogramBase_wxImplementation_HashTable);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxImageHistogramBase_wxImplementation_HashTable = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxImageHistogramBase_wxImplementation_HashTable);
+  context->AddDefault(obj_wxImageHistogramBase_wxImplementation_HashTable->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxImageHistogramBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxImageHistogramBase");
+    WrapClass_wxImageHistogramBase::AddVar_wxImageHistogramBase_1(amiobject->GetContext());
+  WrapClass_wxImageHistogramBase::AddVar_wxImageHistogramBase(amiobject->GetContext());
+  WrapClass_wxImageHistogramBase::AddVar_wxImageHistogramBase_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

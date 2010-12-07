@@ -67,13 +67,7 @@ Variable<AMIObject>::ptr WrapClass_wxEvent::CreateVar( wxEvent* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxEvent::AddMethods(WrapClass<wxEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_SetEventType( this_ptr);
@@ -99,67 +93,45 @@ void WrapClass_wxEvent::AddMethods(WrapClass<wxEvent>::ptr this_ptr )
       if (!tmpobj.get()) return;
       Variables::ptr context(tmpobj->GetContext());
       
-      // Adding public member m_eventObject
-//       boost::shared_ptr<wxObject > var_m_eventObject_ptr(GetObj()->m_eventObject, smartpointer_nodeleter<wxObject >());
-//       BasicVariable::ptr var_m_eventObject = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_eventObject_ptr);
-//       if (var_m_eventObject.get()) {
-//         var_m_eventObject->Rename("m_eventObject");
-//         context->AddVar(var_m_eventObject,context);
-//       }
-      
-      // Adding public member m_eventType
-//       boost::shared_ptr<int > var_m_eventType_ptr(&GetObj()->m_eventType, smartpointer_nodeleter<int >());
-//       BasicVariable::ptr var_m_eventType = AMILabType<int >::CreateVarFromSmtPtr(var_m_eventType_ptr);
-//       if (var_m_eventType.get()) {
-//         var_m_eventType->Rename("m_eventType");
-//         context->AddVar(var_m_eventType,context);
-//       }
-      
-      // Adding public member m_timeStamp
-//       boost::shared_ptr<long int > var_m_timeStamp_ptr(&GetObj()->m_timeStamp, smartpointer_nodeleter<long int >());
-//       BasicVariable::ptr var_m_timeStamp = AMILabType<long int >::CreateVarFromSmtPtr(var_m_timeStamp_ptr);
-//       if (var_m_timeStamp.get()) {
-//         var_m_timeStamp->Rename("m_timeStamp");
-//         context->AddVar(var_m_timeStamp,context);
-//       }
-      
-      // Adding public member m_id
-//       boost::shared_ptr<int > var_m_id_ptr(&GetObj()->m_id, smartpointer_nodeleter<int >());
-//       BasicVariable::ptr var_m_id = AMILabType<int >::CreateVarFromSmtPtr(var_m_id_ptr);
-//       if (var_m_id.get()) {
-//         var_m_id->Rename("m_id");
-//         context->AddVar(var_m_id,context);
-//       }
-      
       // Adding public member m_callbackUserData
-//       boost::shared_ptr<wxObject > var_m_callbackUserData_ptr(GetObj()->m_callbackUserData, smartpointer_nodeleter<wxObject >());
-//       BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
-//       if (var_m_callbackUserData.get()) {
-//         var_m_callbackUserData->Rename("m_callbackUserData");
-//         context->AddVar(var_m_callbackUserData,context);
-//       }
-      
-      /* type not available
-      // Adding public member m_skipped
-      boost::shared_ptr<bool > var_m_skipped_ptr(&GetObj()->m_skipped, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_skipped = AMILabType<bool >::CreateVarFromSmtPtr(var_m_skipped_ptr);
-      if (var_m_skipped.get()) {
-        var_m_skipped->Rename("m_skipped");
-        context->AddVar(var_m_skipped,context);
+      boost::shared_ptr<wxObject > var_m_callbackUserData_ptr(GetObj()->m_callbackUserData, smartpointer_nodeleter<wxObject >());
+      if (var_m_callbackUserData_ptr.get()) {
+        BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
+        if (var_m_callbackUserData.get()) {
+          var_m_callbackUserData->Rename("m_callbackUserData");
+          context->AddVar(var_m_callbackUserData,context);
+        }
       }
-      */
-      
-      /* type not available
-      // Adding public member m_isCommandEvent
-      boost::shared_ptr<bool > var_m_isCommandEvent_ptr(&GetObj()->m_isCommandEvent, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_isCommandEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_isCommandEvent_ptr);
-      if (var_m_isCommandEvent.get()) {
-        var_m_isCommandEvent->Rename("m_isCommandEvent");
-        context->AddVar(var_m_isCommandEvent,context);
-      }
-      */
+
+
+  // Adding Bases
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
 
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxEvent");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -348,7 +320,7 @@ BasicVariable::ptr WrapClass_wxEvent::
 void WrapClass_wxEvent::
     wrap_Skip::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'skip' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'skip' (def:true)")
 }
 
 //---------------------------------------------------
@@ -359,9 +331,8 @@ BasicVariable::ptr WrapClass_wxEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int skip_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(skip_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool skip = (bool) (skip_int>0.5);
+  bool skip = true;
+  if (!get_val_param<bool >(skip,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Skip(skip);
   return BasicVariable::ptr();
@@ -373,7 +344,7 @@ BasicVariable::ptr WrapClass_wxEvent::
 void WrapClass_wxEvent::
     wrap_GetSkipped::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -383,8 +354,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetSkipped();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -393,7 +363,7 @@ BasicVariable::ptr WrapClass_wxEvent::
 void WrapClass_wxEvent::
     wrap_IsCommandEvent::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -403,8 +373,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsCommandEvent();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -413,7 +382,7 @@ BasicVariable::ptr WrapClass_wxEvent::
 void WrapClass_wxEvent::
     wrap_ShouldPropagate::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -423,8 +392,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ShouldPropagate();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

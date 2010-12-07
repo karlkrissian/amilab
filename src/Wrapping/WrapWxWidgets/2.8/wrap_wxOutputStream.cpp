@@ -68,13 +68,7 @@ Variable<AMIObject>::ptr WrapClass_wxOutputStream::CreateVar( wxOutputStream* sp
 //----------------------------------------------------------------------
 void WrapClass_wxOutputStream::AddMethods(WrapClass<wxOutputStream>::ptr this_ptr )
 {
-  
-      // Add members from wxStreamBase
-      WrapClass_wxStreamBase::ptr parent_wxStreamBase(        boost::dynamic_pointer_cast<WrapClass_wxStreamBase >(this_ptr));
-      parent_wxStreamBase->AddMethods(parent_wxStreamBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_PutC( this_ptr);
@@ -83,9 +77,7 @@ void WrapClass_wxOutputStream::AddMethods(WrapClass<wxOutputStream>::ptr this_pt
 */
       AddVar_Write( this_ptr);
       AddVar_Write_2( this_ptr);
-/* The following types are missing: wxSeekMode
       AddVar_SeekO( this_ptr);
-*/
       AddVar_TellO( this_ptr);
       AddVar_LastWrite( this_ptr);
       AddVar_Sync( this_ptr);
@@ -94,14 +86,47 @@ void WrapClass_wxOutputStream::AddMethods(WrapClass<wxOutputStream>::ptr this_pt
       // Adding operators
       // AddVar_operator not available( this_ptr);
       // AddVar_operator not available( this_ptr);
-/* The following types are missing: _6209
+/* The following types are missing: _6397
       // AddVar_operator not available( this_ptr);
 */
 
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxStreamBase
+  boost::shared_ptr<wxStreamBase > parent_wxStreamBase(  boost::dynamic_pointer_cast<wxStreamBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxStreamBase = AMILabType<wxStreamBase >::CreateVarFromSmtPtr(parent_wxStreamBase);
+  context->AddVar("wxStreamBase",var_wxStreamBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxStreamBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxStreamBase);
+  context->AddDefault(obj_wxStreamBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxOutputStream::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxOutputStream");
+    WrapClass_wxOutputStream::AddVar_wxOutputStream(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -229,7 +254,6 @@ BasicVariable::ptr WrapClass_wxOutputStream::
   wxOutputStream & res =   this->_objectptr->GetObj()->Write(stream_in);
   return AMILabType<wxOutputStream >::CreateVar(res);
 }
-/* The following types are missing: wxSeekMode
 
 //---------------------------------------------------
 //  Wrapping of wxFileOffset wxOutputStream::SeekO(wxFileOffset pos, wxSeekMode mode = wxFromStart)
@@ -238,7 +262,7 @@ void WrapClass_wxOutputStream::
     wrap_SeekO::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'pos'")
-  ADDPARAMCOMMENT_TYPE( wxSeekMode, "parameter named 'mode' (def:wxFromStart)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'mode' (def:wxFromStart)")
   return_comments="returning a variable of type long";
 }
 
@@ -254,14 +278,14 @@ BasicVariable::ptr WrapClass_wxOutputStream::
   if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int pos = pos_long;
 
-  wxSeekMode mode = wxFromStart;
-  if (!get_val_param<wxSeekMode >(mode,_p,_n,false,false)) ClassHelpAndReturn;
+  int mode_int = (int) wxFromStart;;
+  if (!get_val_param<int >(mode_int,_p,_n,false,false)) ClassHelpAndReturn;
+  wxSeekMode mode = (wxSeekMode) mode_int;
 
   wxFileOffset res =   this->_objectptr->GetObj()->SeekO(pos, mode);
   long res_long = res;
   return AMILabType<long >::CreateVar(res_long);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxFileOffset wxOutputStream::TellO()
@@ -327,7 +351,7 @@ BasicVariable::ptr WrapClass_wxOutputStream::
 void WrapClass_wxOutputStream::
     wrap_Close::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -337,8 +361,7 @@ BasicVariable::ptr WrapClass_wxOutputStream::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Close();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /*
  * operator not available 
@@ -388,7 +411,7 @@ BasicVariable::ptr WrapClass_wxOutputStream::
 }
 */
 /*
- * The following types are missing: _6209
+ * The following types are missing: _6397
  * operator not available 
 
 //---------------------------------------------------
@@ -397,7 +420,7 @@ BasicVariable::ptr WrapClass_wxOutputStream::
 void WrapClass_wxOutputStream::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _6209, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _6397, "parameter named 'func'")
   return_comments="returning a variable of type wxOutputStream";
 }
 
@@ -409,8 +432,8 @@ BasicVariable::ptr WrapClass_wxOutputStream::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _6209 func;
-  if (!get_val_param<_6209 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _6397 func;
+  if (!get_val_param<_6397 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxOutputStream & res =   this->_objectptr->GetObj()-><<(func);
   return AMILabType<wxOutputStream >::CreateVar(res);

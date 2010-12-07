@@ -60,13 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxIconLocation::CreateVar( wxIconLocation* sp
 //----------------------------------------------------------------------
 void WrapClass_wxIconLocation::AddMethods(WrapClass<wxIconLocation>::ptr this_ptr )
 {
-  
-      // Add members from wxIconLocationBase
-      WrapClass_wxIconLocationBase::ptr parent_wxIconLocationBase(        boost::dynamic_pointer_cast<WrapClass_wxIconLocationBase >(this_ptr));
-      parent_wxIconLocationBase->AddMethods(parent_wxIconLocationBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -78,7 +72,42 @@ void WrapClass_wxIconLocation::AddMethods(WrapClass<wxIconLocation>::ptr this_pt
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxIconLocationBase
+  boost::shared_ptr<wxIconLocationBase > parent_wxIconLocationBase(  boost::dynamic_pointer_cast<wxIconLocationBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxIconLocationBase = AMILabType<wxIconLocationBase >::CreateVarFromSmtPtr(parent_wxIconLocationBase);
+  context->AddVar("wxIconLocationBase",var_wxIconLocationBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxIconLocationBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxIconLocationBase);
+  context->AddDefault(obj_wxIconLocationBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxIconLocation::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxIconLocation");
+    WrapClass_wxIconLocation::AddVar_wxIconLocation_1(amiobject->GetContext());
+  WrapClass_wxIconLocation::AddVar_wxIconLocation(amiobject->GetContext());
+  WrapClass_wxIconLocation::AddVar_wxIconLocation_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

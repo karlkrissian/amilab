@@ -63,13 +63,7 @@ Variable<AMIObject>::ptr WrapClass_wxSizeEvent::CreateVar( wxSizeEvent* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxSizeEvent::AddMethods(WrapClass<wxSizeEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -89,21 +83,59 @@ void WrapClass_wxSizeEvent::AddMethods(WrapClass<wxSizeEvent>::ptr this_ptr )
       
       // Adding public member m_size
       boost::shared_ptr<wxSize > var_m_size_ptr(&GetObj()->m_size, smartpointer_nodeleter<wxSize >());
-      BasicVariable::ptr var_m_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_m_size_ptr);
-      if (var_m_size.get()) {
-        var_m_size->Rename("m_size");
-        context->AddVar(var_m_size,context);
+      if (var_m_size_ptr.get()) {
+        BasicVariable::ptr var_m_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_m_size_ptr);
+        if (var_m_size.get()) {
+          var_m_size->Rename("m_size");
+          context->AddVar(var_m_size,context);
+        }
       }
       
       // Adding public member m_rect
       boost::shared_ptr<wxRect > var_m_rect_ptr(&GetObj()->m_rect, smartpointer_nodeleter<wxRect >());
-      BasicVariable::ptr var_m_rect = AMILabType<wxRect >::CreateVarFromSmtPtr(var_m_rect_ptr);
-      if (var_m_rect.get()) {
-        var_m_rect->Rename("m_rect");
-        context->AddVar(var_m_rect,context);
+      if (var_m_rect_ptr.get()) {
+        BasicVariable::ptr var_m_rect = AMILabType<wxRect >::CreateVarFromSmtPtr(var_m_rect_ptr);
+        if (var_m_rect.get()) {
+          var_m_rect->Rename("m_rect");
+          context->AddVar(var_m_rect,context);
+        }
       }
 
+
+  // Adding Bases
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxSizeEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxSizeEvent");
+    WrapClass_wxSizeEvent::AddVar_wxSizeEvent_1(amiobject->GetContext());
+  WrapClass_wxSizeEvent::AddVar_wxSizeEvent(amiobject->GetContext());
+  WrapClass_wxSizeEvent::AddVar_wxSizeEvent_2(amiobject->GetContext());
+  WrapClass_wxSizeEvent::AddVar_wxSizeEvent_3(amiobject->GetContext());
+  WrapClass_wxSizeEvent::AddVar_wxSizeEvent_4(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

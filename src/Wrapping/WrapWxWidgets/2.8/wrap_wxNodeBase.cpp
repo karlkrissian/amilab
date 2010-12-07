@@ -23,8 +23,6 @@
 #include "wrap_wxListKey.h"
 #include "stdlib.h"
 #include "wchar.h"
-#include "wrap_wxObjectListNode.h"
-#include "wrap_wxObject.h"
 
 
 #include "wrap_wxNodeBase.h"
@@ -72,25 +70,39 @@ Variable<AMIObject>::ptr WrapClass_wxNodeBase::CreateVar( wxNodeBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxNodeBase::AddMethods(WrapClass<wxNodeBase>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_GetKeyString( this_ptr);
       AddVar_GetKeyInteger( this_ptr);
       AddVar_SetKeyString( this_ptr);
       AddVar_SetKeyInteger( this_ptr);
-      AddVar_Next( this_ptr);
-      AddVar_Previous( this_ptr);
-      AddVar_Data( this_ptr);
       AddVar_GetDataPtr( this_ptr);
 
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxNodeBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxNodeBase");
+  
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -242,66 +254,6 @@ BasicVariable::ptr WrapClass_wxNodeBase::
 
   this->_objectptr->GetObj()->SetKeyInteger(i);
   return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of wxNode * wxNodeBase::Next()
-//---------------------------------------------------
-void WrapClass_wxNodeBase::
-    wrap_Next::SetParametersComments()
-{
-  return_comments="returning a variable of type wxObjectListNode";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxNodeBase::
-    wrap_Next::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxNode * res =   this->_objectptr->GetObj()->Next();
-  BasicVariable::ptr res_var = WrapClass_wxObjectListNode::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxNode * wxNodeBase::Previous()
-//---------------------------------------------------
-void WrapClass_wxNodeBase::
-    wrap_Previous::SetParametersComments()
-{
-  return_comments="returning a variable of type wxObjectListNode";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxNodeBase::
-    wrap_Previous::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxNode * res =   this->_objectptr->GetObj()->Previous();
-  BasicVariable::ptr res_var = WrapClass_wxObjectListNode::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
-//  Wrapping of wxObject * wxNodeBase::Data()
-//---------------------------------------------------
-void WrapClass_wxNodeBase::
-    wrap_Data::SetParametersComments()
-{
-  return_comments="returning a variable of type wxObject";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxNodeBase::
-    wrap_Data::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  wxObject * res =   this->_objectptr->GetObj()->Data();
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
-  return res_var;
 }
 
 //---------------------------------------------------

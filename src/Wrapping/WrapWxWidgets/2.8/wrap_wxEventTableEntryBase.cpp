@@ -18,6 +18,7 @@
 
 // get all the required includes
 // #include "..."
+#include "wrap_wxObjectEventFunction.h"
 #include "wrap_wxObject.h"
 #include "wrap_wxEventTableEntryBase.h"
 
@@ -60,10 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxEventTableEntryBase::CreateVar( wxEventTabl
 //----------------------------------------------------------------------
 void WrapClass_wxEventTableEntryBase::AddMethods(WrapClass<wxEventTableEntryBase>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -78,45 +76,74 @@ void WrapClass_wxEventTableEntryBase::AddMethods(WrapClass<wxEventTableEntryBase
       
       // Adding public member m_id
       boost::shared_ptr<int > var_m_id_ptr(&GetObj()->m_id, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_id = AMILabType<int >::CreateVarFromSmtPtr(var_m_id_ptr);
-      if (var_m_id.get()) {
-        var_m_id->Rename("m_id");
-        context->AddVar(var_m_id,context);
+      if (var_m_id_ptr.get()) {
+        BasicVariable::ptr var_m_id = AMILabType<int >::CreateVarFromSmtPtr(var_m_id_ptr);
+        if (var_m_id.get()) {
+          var_m_id->Rename("m_id");
+          context->AddVar(var_m_id,context);
+        }
       }
       
       // Adding public member m_lastId
       boost::shared_ptr<int > var_m_lastId_ptr(&GetObj()->m_lastId, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_lastId = AMILabType<int >::CreateVarFromSmtPtr(var_m_lastId_ptr);
-      if (var_m_lastId.get()) {
-        var_m_lastId->Rename("m_lastId");
-        context->AddVar(var_m_lastId,context);
+      if (var_m_lastId_ptr.get()) {
+        BasicVariable::ptr var_m_lastId = AMILabType<int >::CreateVarFromSmtPtr(var_m_lastId_ptr);
+        if (var_m_lastId.get()) {
+          var_m_lastId->Rename("m_lastId");
+          context->AddVar(var_m_lastId,context);
+        }
       }
       
-      /* type not available
       // Adding public member m_fn
-      boost::shared_ptr<_13542 > var_m_fn_ptr(&GetObj()->m_fn, smartpointer_nodeleter<_13542 >());
-      BasicVariable::ptr var_m_fn = AMILabType<_13542 >::CreateVarFromSmtPtr(var_m_fn_ptr);
-      if (var_m_fn.get()) {
-        var_m_fn->Rename("m_fn");
-        context->AddVar(var_m_fn,context);
+      boost::shared_ptr<wxObjectEventFunction > var_m_fn_ptr(&GetObj()->m_fn, smartpointer_nodeleter<wxObjectEventFunction >());
+      if (var_m_fn_ptr.get()) {
+        BasicVariable::ptr var_m_fn = AMILabType<wxObjectEventFunction >::CreateVarFromSmtPtr(var_m_fn_ptr);
+        if (var_m_fn.get()) {
+          var_m_fn->Rename("m_fn");
+          context->AddVar(var_m_fn,context);
+        }
       }
-      */
       
       // Adding public member m_callbackUserData
       boost::shared_ptr<wxObject > var_m_callbackUserData_ptr(GetObj()->m_callbackUserData, smartpointer_nodeleter<wxObject >());
-      BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
-      if (var_m_callbackUserData.get()) {
-        var_m_callbackUserData->Rename("m_callbackUserData");
-        context->AddVar(var_m_callbackUserData,context);
+      if (var_m_callbackUserData_ptr.get()) {
+        BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
+        if (var_m_callbackUserData.get()) {
+          var_m_callbackUserData->Rename("m_callbackUserData");
+          context->AddVar(var_m_callbackUserData,context);
+        }
       }
 
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxEventTableEntryBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxEventTableEntryBase");
+    WrapClass_wxEventTableEntryBase::AddVar_wxEventTableEntryBase_1(amiobject->GetContext());
+  WrapClass_wxEventTableEntryBase::AddVar_wxEventTableEntryBase(amiobject->GetContext());
+  WrapClass_wxEventTableEntryBase::AddVar_wxEventTableEntryBase_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: _13542
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxEventTableEntryBase::wxEventTableEntryBase(int winid, int idLast, wxObjectEventFunction fn, wxObject * data)
@@ -126,7 +153,7 @@ void WrapClass_wxEventTableEntryBase::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'winid'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'idLast'")
-  ADDPARAMCOMMENT_TYPE( _13542, "parameter named 'fn'")
+  ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'fn'")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'data'")
 }
 
@@ -144,8 +171,8 @@ BasicVariable::ptr WrapClass_wxEventTableEntryBase::
   int idLast;
   if (!get_val_param<int >(idLast,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  _13542 fn;
-  if (!get_val_param<_13542 >(fn,_p,_n,true,true)) ClassReturnEmptyVar;
+  wxObjectEventFunction fn;
+  if (!get_val_param<wxObjectEventFunction >(fn,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > data_smtptr;
   if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -155,7 +182,6 @@ BasicVariable::ptr WrapClass_wxEventTableEntryBase::
   BasicVariable::ptr res = WrapClass_wxEventTableEntryBase::CreateVar(_newobj);
   return res;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... Constructor wxEventTableEntryBase::wxEventTableEntryBase(...)
@@ -169,6 +195,9 @@ BasicVariable::ptr WrapClass_wxEventTableEntryBase::
     wrap_wxEventTableEntryBase::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxEventTableEntryBase::wrap_wxEventTableEntryBase_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxEventTableEntryBase::wrap_wxEventTableEntryBase_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;

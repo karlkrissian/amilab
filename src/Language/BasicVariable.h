@@ -283,6 +283,8 @@ public:
    */
   //@{
     BASICVAR_LOGIC_OP_VAR(^);
+    BASICVAR_LOGIC_OP_VAR(|);
+    BASICVAR_LOGIC_OP_VAR(&);
   //@}
 
   /** @name OtherOperators

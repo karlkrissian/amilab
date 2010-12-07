@@ -21,6 +21,7 @@
 #include "wrap_wxMenuItemList.h"
 #include "boost/numeric/conversion/cast.hpp"
 #include "wrap_wxMenuItem.h"
+#include "wrap_wxwxMenuItemListNode.h"
 #include "stdlib.h"
 #include "wrap_wxListKey.h"
 
@@ -63,69 +64,39 @@ Variable<AMIObject>::ptr WrapClass_wxMenuItemList::CreateVar( wxMenuItemList* sp
 //----------------------------------------------------------------------
 void WrapClass_wxMenuItemList::AddMethods(WrapClass<wxMenuItemList>::ptr this_ptr )
 {
-  
-      // Add members from wxListBase
-      WrapClass_wxListBase::ptr parent_wxListBase(        boost::dynamic_pointer_cast<WrapClass_wxListBase >(this_ptr));
-      parent_wxListBase->AddMethods(parent_wxListBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
       // Adding standard methods 
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_GetFirst( this_ptr);
-*/
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_GetLast( this_ptr);
-*/
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_Item( this_ptr);
-*/
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_Append_1( this_ptr);
-*/
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_Insert_1( this_ptr);
-*/
       AddVar_Insert( this_ptr);
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_Insert_2( this_ptr);
-*/
-/* The following types are missing: wxwxMenuItemListNode, wxwxMenuItemListNode
       AddVar_Insert_3( this_ptr);
-*/
       AddVar_Append( this_ptr);
-/* The following types are missing: wxwxMenuItemListNode, void
+/* The following types are missing: void
       AddVar_Append_2( this_ptr);
 */
-/* The following types are missing: wxwxMenuItemListNode, void
+/* The following types are missing: void
       AddVar_Append_3( this_ptr);
 */
-/* The following types are missing: wxwxMenuItemListNode, wxwxMenuItemListNode
       AddVar_DetachNode( this_ptr);
-*/
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_DeleteNode( this_ptr);
-*/
       AddVar_DeleteObject( this_ptr);
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_Erase( this_ptr);
-*/
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_Find_1( this_ptr);
-*/
       AddVar_Find( this_ptr);
-/* The following types are missing: wxwxMenuItemListNode
       AddVar_Find_2( this_ptr);
-*/
       AddVar_IndexOf( this_ptr);
-/* The following types are missing: _9495
+/* The following types are missing: _9904
       AddVar_Sort_1( this_ptr);
 */
       AddVar_Sort( this_ptr);
-/* The following types are missing: _7934
+/* The following types are missing: _8388
       AddVar_Sort_2( this_ptr);
 */
 /* The following types are missing: iterator
@@ -213,13 +184,54 @@ void WrapClass_wxMenuItemList::AddMethods(WrapClass<wxMenuItemList>::ptr this_pt
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxListBase
+  boost::shared_ptr<wxListBase > parent_wxListBase(  boost::dynamic_pointer_cast<wxListBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxListBase = AMILabType<wxListBase >::CreateVarFromSmtPtr(parent_wxListBase);
+  context->AddVar("wxListBase",var_wxListBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxListBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxListBase);
+  context->AddDefault(obj_wxListBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxMenuItemList::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxMenuItemList");
+    WrapClass_wxMenuItemList::AddVar_wxMenuItemList_1(amiobject->GetContext());
+  WrapClass_wxMenuItemList::AddVar_wxMenuItemList(amiobject->GetContext());
+  WrapClass_wxMenuItemList::AddVar_wxMenuItemList_2(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxMenuItemList::AddVar_wxMenuItemList_3(amiobject->GetContext());
+  */
+  WrapClass_wxMenuItemList::AddVar_wxMenuItemList_4(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxMenuItemList::AddVar_wxMenuItemList_5(amiobject->GetContext());
+  */
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: wxKeyType
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxMenuItemList::wxMenuItemList(wxKeyType keyType = wxKEY_NONE)
@@ -227,7 +239,7 @@ void WrapClass_wxMenuItemList::AddMethods(WrapClass<wxMenuItemList>::ptr this_pt
 void WrapClass_wxMenuItemList::
     wrap_wxMenuItemList_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxKeyType, "parameter named 'keyType' (def:wxKEY_NONE)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'keyType' (def:wxKEY_NONE)")
 }
 
 //---------------------------------------------------
@@ -238,14 +250,14 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  wxKeyType keyType = wxKEY_NONE;
-  if (!get_val_param<wxKeyType >(keyType,_p,_n,false,true)) ClassReturnEmptyVar;
+  int keyType_int = (int) wxKEY_NONE;;
+  if (!get_val_param<int >(keyType_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxKeyType keyType = (wxKeyType) keyType_int;
 
   wxMenuItemList* _newobj = new wxMenuItemList(keyType);
   BasicVariable::ptr res = WrapClass_wxMenuItemList::CreateVar(_newobj);
   return res;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... Constructor wxMenuItemList::wxMenuItemList(...)
@@ -259,6 +271,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
     wrap_wxMenuItemList::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxMenuItemList::wrap_wxMenuItemList_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxMenuItemList::wrap_wxMenuItemList_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -407,7 +422,6 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
 {
     return AMILabType<wxMenuItemList >::CreateVar( new wxMenuItemList(*(this->_objectptr->GetObj())));
 }
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::GetFirst()
@@ -425,10 +439,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->GetFirst();
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::GetLast()
@@ -446,10 +459,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->GetLast();
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::Item(size_t index)
@@ -474,10 +486,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->Item(index);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::Append(wxMenuItem * object)
@@ -502,10 +513,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   wxMenuItem* object = object_smtptr.get();
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->Append(object);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::Insert(wxMenuItem * object)
@@ -530,9 +540,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   wxMenuItem* object = object_smtptr.get();
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->Insert(object);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxMenuItemList::Insert(...)
@@ -546,9 +556,17 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
     wrap_Insert::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxMenuItemList::wrap_Insert_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxMenuItemList::wrap_Insert_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxMenuItemList::wrap_Insert_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::Insert(size_t pos, wxMenuItem * object)
@@ -578,10 +596,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   wxMenuItem* object = object_smtptr.get();
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->Insert(pos, object);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxwxMenuItemListNode, wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::Insert(wxwxMenuItemListNode * prev, wxMenuItem * object)
@@ -611,9 +628,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   wxMenuItem* object = object_smtptr.get();
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->Insert(prev, object);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxMenuItemList::Append(...)
@@ -627,9 +644,12 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
     wrap_Append::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxMenuItemList::wrap_Append_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxwxMenuItemListNode, void
+/* The following types are missing: void
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::Append(long int key, void * object)
@@ -659,10 +679,11 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   void* object = object_smtptr.get();
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->Append(key, object);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
 */
-/* The following types are missing: wxwxMenuItemListNode, void
+/* The following types are missing: void
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::Append(wxChar const * key, void * object)
@@ -693,10 +714,10 @@ mbstowcs(key,key_string->c_str(),key_string->size()+1);
   void* object = object_smtptr.get();
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->Append(key, object);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
 */
-/* The following types are missing: wxwxMenuItemListNode, wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::DetachNode(wxwxMenuItemListNode * node)
@@ -721,10 +742,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   wxwxMenuItemListNode* node = node_smtptr.get();
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->DetachNode(node);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of bool wxMenuItemList::DeleteNode(wxwxMenuItemListNode * node)
@@ -733,7 +753,7 @@ void WrapClass_wxMenuItemList::
     wrap_DeleteNode::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxwxMenuItemListNode, "parameter named 'node'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -749,10 +769,8 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   wxwxMenuItemListNode* node = node_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->DeleteNode(node);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxMenuItemList::DeleteObject(wxMenuItem * object)
@@ -761,7 +779,7 @@ void WrapClass_wxMenuItemList::
     wrap_DeleteObject::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxMenuItem, "parameter named 'object'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -777,10 +795,8 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   wxMenuItem* object = object_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->DeleteObject(object);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuItemList::Erase(wxwxMenuItemListNode * it)
@@ -806,8 +822,6 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   this->_objectptr->GetObj()->Erase(it);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::Find(wxMenuItem const * object)
@@ -832,9 +846,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   wxMenuItem* object = object_smtptr.get();
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->Find(object);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxMenuItemList::Find(...)
@@ -848,9 +862,14 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
     wrap_Find::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxMenuItemList::wrap_Find_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxMenuItemList::wrap_Find_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxwxMenuItemListNode
 
 //---------------------------------------------------
 //  Wrapping of wxwxMenuItemListNode * wxMenuItemList::Find(wxListKey const & key)
@@ -875,9 +894,9 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   wxListKey const & key = *key_smtptr;
 
   wxwxMenuItemListNode * res =   this->_objectptr->GetObj()->Find(key);
-  return AMILabType<wxwxMenuItemListNode >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxwxMenuItemListNode::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int wxMenuItemList::IndexOf(wxMenuItem * object)
@@ -904,7 +923,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   int res =   this->_objectptr->GetObj()->IndexOf(object);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: _9495
+/* The following types are missing: _9904
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuItemList::Sort(wxSortCompareFunction func)
@@ -912,7 +931,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
 void WrapClass_wxMenuItemList::
     wrap_Sort_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9495, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _9904, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -923,8 +942,8 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _9495 func;
-  if (!get_val_param<_9495 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _9904 func;
+  if (!get_val_param<_9904 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -945,7 +964,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: _7934
+/* The following types are missing: _8388
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuItemList::Sort(wxSortFuncFor_wxMenuItemList func)
@@ -953,7 +972,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
 void WrapClass_wxMenuItemList::
     wrap_Sort_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _7934, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _8388, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -964,8 +983,8 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _7934 func;
-  if (!get_val_param<_7934 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _8388 func;
+  if (!get_val_param<_8388 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -1276,7 +1295,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
 void WrapClass_wxMenuItemList::
     wrap_empty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1286,8 +1305,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->empty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

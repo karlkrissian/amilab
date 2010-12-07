@@ -71,13 +71,7 @@ Variable<AMIObject>::ptr WrapClass_wxStaticBox::CreateVar( wxStaticBox* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxStaticBox::AddMethods(WrapClass<wxStaticBox>::ptr this_ptr )
 {
-  
-      // Add members from wxStaticBoxBase
-      WrapClass_wxStaticBoxBase::ptr parent_wxStaticBoxBase(        boost::dynamic_pointer_cast<WrapClass_wxStaticBoxBase >(this_ptr));
-      parent_wxStaticBoxBase->AddMethods(parent_wxStaticBoxBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -89,7 +83,43 @@ void WrapClass_wxStaticBox::AddMethods(WrapClass<wxStaticBox>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxStaticBoxBase
+  boost::shared_ptr<wxStaticBoxBase > parent_wxStaticBoxBase(  boost::dynamic_pointer_cast<wxStaticBoxBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxStaticBoxBase = AMILabType<wxStaticBoxBase >::CreateVarFromSmtPtr(parent_wxStaticBoxBase);
+  context->AddVar("wxStaticBoxBase",var_wxStaticBoxBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxStaticBoxBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxStaticBoxBase);
+  context->AddDefault(obj_wxStaticBoxBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxStaticBox::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxStaticBox");
+    WrapClass_wxStaticBox::AddVar_wxStaticBox_1(amiobject->GetContext());
+  WrapClass_wxStaticBox::AddVar_wxStaticBox(amiobject->GetContext());
+  WrapClass_wxStaticBox::AddVar_wxStaticBox_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxStaticBox::AddVar_GetClassDefaultAttributes(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -193,33 +223,32 @@ BasicVariable::ptr WrapClass_wxStaticBox::
   BasicVariable::ptr res = WrapClass_wxStaticBox::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: wxWindowVariant
 
 //---------------------------------------------------
 //  Wrapping of wxVisualAttributes wxStaticBox::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
 //---------------------------------------------------
 void WrapClass_wxStaticBox::
-    wrap_GetClassDefaultAttributes::SetParametersComments()
+    wrap_static_GetClassDefaultAttributes::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxWindowVariant, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
   return_comments="returning a variable of type wxVisualAttributes";
 }
 
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxStaticBox::
-    wrap_GetClassDefaultAttributes::CallMember( ParamList* _p)
+    wrap_static_GetClassDefaultAttributes::CallMember( ParamList* _p)
 {
   if (!_p) ClassHelpAndReturn;
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL;
-  if (!get_val_param<wxWindowVariant >(variant,_p,_n,false,false)) ClassHelpAndReturn;
+  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
+  if (!get_val_param<int >(variant_int,_p,_n,false,false)) ClassHelpAndReturn;
+  wxWindowVariant variant = (wxWindowVariant) variant_int;
 
   wxVisualAttributes res =   wxStaticBox::GetClassDefaultAttributes(variant);
   return AMILabType<wxVisualAttributes >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxStaticBox::Create(wxWindow * parent, wxWindowID id, wxString const & label, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxString const & name = wxStaticBoxNameStr)
@@ -234,7 +263,7 @@ void WrapClass_wxStaticBox::
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size' (def:wxDefaultSize)")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:0)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxStaticBoxNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -276,8 +305,7 @@ BasicVariable::ptr WrapClass_wxStaticBox::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxStaticBoxNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, label, pos, size, style, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -311,7 +339,7 @@ BasicVariable::ptr WrapClass_wxStaticBox::
 void WrapClass_wxStaticBox::
     wrap_IsTransparentForMouse::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -321,8 +349,7 @@ BasicVariable::ptr WrapClass_wxStaticBox::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsTransparentForMouse();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

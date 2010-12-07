@@ -60,10 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxIntegerEqual::CreateVar( wxIntegerEqual* sp
 //----------------------------------------------------------------------
 void WrapClass_wxIntegerEqual::AddMethods(WrapClass<wxIntegerEqual>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -88,7 +85,31 @@ void WrapClass_wxIntegerEqual::AddMethods(WrapClass<wxIntegerEqual>::ptr this_pt
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxIntegerEqual::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxIntegerEqual");
+    WrapClass_wxIntegerEqual::AddVar_wxIntegerEqual_1(amiobject->GetContext());
+  WrapClass_wxIntegerEqual::AddVar_wxIntegerEqual(amiobject->GetContext());
+  WrapClass_wxIntegerEqual::AddVar_wxIntegerEqual_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -187,7 +208,7 @@ void WrapClass_wxIntegerEqual::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'a'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -207,8 +228,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   long int b = b_long;
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -240,7 +260,7 @@ void WrapClass_wxIntegerEqual::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'a'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -260,8 +280,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   long unsigned int b = boost::numeric_cast<long unsigned int >(b_long);
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -275,7 +294,7 @@ void WrapClass_wxIntegerEqual::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'a'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -293,8 +312,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   if (!get_val_param<int >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -308,7 +326,7 @@ void WrapClass_wxIntegerEqual::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'a'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -328,8 +346,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   unsigned int b = boost::numeric_cast<unsigned int >(b_long);
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -344,7 +361,7 @@ void WrapClass_wxIntegerEqual::
 {
   ADDPARAMCOMMENT_TYPE( short int, "parameter named 'a'")
   ADDPARAMCOMMENT_TYPE( short int, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -362,8 +379,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   if (!get_val_param<short int >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -377,7 +393,7 @@ void WrapClass_wxIntegerEqual::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'a'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -397,8 +413,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   short unsigned int b = boost::numeric_cast<short unsigned int >(b_int);
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -412,7 +427,7 @@ void WrapClass_wxIntegerEqual::
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'a'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -432,8 +447,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   long long int b = boost::numeric_cast<long long int >(b_long);
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -448,7 +462,7 @@ void WrapClass_wxIntegerEqual::
 {
   ADDPARAMCOMMENT_TYPE( long long unsigned int, "parameter named 'a'")
   ADDPARAMCOMMENT_TYPE( long long unsigned int, "parameter named 'b'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -466,8 +480,7 @@ BasicVariable::ptr WrapClass_wxIntegerEqual::
   if (!get_val_param<long long unsigned int >(b,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->()(a, b);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 

@@ -73,13 +73,7 @@ Variable<AMIObject>::ptr WrapClass_wxTopLevelWindowGTK::CreateVar( wxTopLevelWin
 //----------------------------------------------------------------------
 void WrapClass_wxTopLevelWindowGTK::AddMethods(WrapClass<wxTopLevelWindowGTK>::ptr this_ptr )
 {
-  
-      // Add members from wxTopLevelWindowBase
-      WrapClass_wxTopLevelWindowBase::ptr parent_wxTopLevelWindowBase(        boost::dynamic_pointer_cast<WrapClass_wxTopLevelWindowBase >(this_ptr));
-      parent_wxTopLevelWindowBase->AddMethods(parent_wxTopLevelWindowBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -120,107 +114,159 @@ void WrapClass_wxTopLevelWindowGTK::AddMethods(WrapClass<wxTopLevelWindowGTK>::p
       
       // Adding public member m_miniEdge
       boost::shared_ptr<int > var_m_miniEdge_ptr(&GetObj()->m_miniEdge, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_miniEdge = AMILabType<int >::CreateVarFromSmtPtr(var_m_miniEdge_ptr);
-      if (var_m_miniEdge.get()) {
-        var_m_miniEdge->Rename("m_miniEdge");
-        context->AddVar(var_m_miniEdge,context);
+      if (var_m_miniEdge_ptr.get()) {
+        BasicVariable::ptr var_m_miniEdge = AMILabType<int >::CreateVarFromSmtPtr(var_m_miniEdge_ptr);
+        if (var_m_miniEdge.get()) {
+          var_m_miniEdge->Rename("m_miniEdge");
+          context->AddVar(var_m_miniEdge,context);
+        }
       }
       
       // Adding public member m_miniTitle
       boost::shared_ptr<int > var_m_miniTitle_ptr(&GetObj()->m_miniTitle, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_miniTitle = AMILabType<int >::CreateVarFromSmtPtr(var_m_miniTitle_ptr);
-      if (var_m_miniTitle.get()) {
-        var_m_miniTitle->Rename("m_miniTitle");
-        context->AddVar(var_m_miniTitle,context);
+      if (var_m_miniTitle_ptr.get()) {
+        BasicVariable::ptr var_m_miniTitle = AMILabType<int >::CreateVarFromSmtPtr(var_m_miniTitle_ptr);
+        if (var_m_miniTitle.get()) {
+          var_m_miniTitle->Rename("m_miniTitle");
+          context->AddVar(var_m_miniTitle,context);
+        }
       }
       
-      /* type not available
+      /* Type not available
       // Adding public member m_mainWidget
       boost::shared_ptr<_GtkWidget > var_m_mainWidget_ptr(GetObj()->m_mainWidget, smartpointer_nodeleter<_GtkWidget >());
-      BasicVariable::ptr var_m_mainWidget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_mainWidget_ptr);
-      if (var_m_mainWidget.get()) {
-        var_m_mainWidget->Rename("m_mainWidget");
-        context->AddVar(var_m_mainWidget,context);
+      if (var_m_mainWidget_ptr.get()) {
+        BasicVariable::ptr var_m_mainWidget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_mainWidget_ptr);
+        if (var_m_mainWidget.get()) {
+          var_m_mainWidget->Rename("m_mainWidget");
+          context->AddVar(var_m_mainWidget,context);
+        }
       }
       */
       
-      /* type not available
       // Adding public member m_insertInClientArea
       boost::shared_ptr<bool > var_m_insertInClientArea_ptr(&GetObj()->m_insertInClientArea, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_insertInClientArea = AMILabType<bool >::CreateVarFromSmtPtr(var_m_insertInClientArea_ptr);
-      if (var_m_insertInClientArea.get()) {
-        var_m_insertInClientArea->Rename("m_insertInClientArea");
-        context->AddVar(var_m_insertInClientArea,context);
+      if (var_m_insertInClientArea_ptr.get()) {
+        BasicVariable::ptr var_m_insertInClientArea = AMILabType<bool >::CreateVarFromSmtPtr(var_m_insertInClientArea_ptr);
+        if (var_m_insertInClientArea.get()) {
+          var_m_insertInClientArea->Rename("m_insertInClientArea");
+          context->AddVar(var_m_insertInClientArea,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_fsIsShowing
       boost::shared_ptr<bool > var_m_fsIsShowing_ptr(&GetObj()->m_fsIsShowing, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_fsIsShowing = AMILabType<bool >::CreateVarFromSmtPtr(var_m_fsIsShowing_ptr);
-      if (var_m_fsIsShowing.get()) {
-        var_m_fsIsShowing->Rename("m_fsIsShowing");
-        context->AddVar(var_m_fsIsShowing,context);
+      if (var_m_fsIsShowing_ptr.get()) {
+        BasicVariable::ptr var_m_fsIsShowing = AMILabType<bool >::CreateVarFromSmtPtr(var_m_fsIsShowing_ptr);
+        if (var_m_fsIsShowing.get()) {
+          var_m_fsIsShowing->Rename("m_fsIsShowing");
+          context->AddVar(var_m_fsIsShowing,context);
+        }
       }
-      */
       
       // Adding public member m_fsSaveGdkFunc
       boost::shared_ptr<long int > var_m_fsSaveGdkFunc_ptr(&GetObj()->m_fsSaveGdkFunc, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_fsSaveGdkFunc = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveGdkFunc_ptr);
-      if (var_m_fsSaveGdkFunc.get()) {
-        var_m_fsSaveGdkFunc->Rename("m_fsSaveGdkFunc");
-        context->AddVar(var_m_fsSaveGdkFunc,context);
+      if (var_m_fsSaveGdkFunc_ptr.get()) {
+        BasicVariable::ptr var_m_fsSaveGdkFunc = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveGdkFunc_ptr);
+        if (var_m_fsSaveGdkFunc.get()) {
+          var_m_fsSaveGdkFunc->Rename("m_fsSaveGdkFunc");
+          context->AddVar(var_m_fsSaveGdkFunc,context);
+        }
       }
       
       // Adding public member m_fsSaveGdkDecor
       boost::shared_ptr<long int > var_m_fsSaveGdkDecor_ptr(&GetObj()->m_fsSaveGdkDecor, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_fsSaveGdkDecor = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveGdkDecor_ptr);
-      if (var_m_fsSaveGdkDecor.get()) {
-        var_m_fsSaveGdkDecor->Rename("m_fsSaveGdkDecor");
-        context->AddVar(var_m_fsSaveGdkDecor,context);
+      if (var_m_fsSaveGdkDecor_ptr.get()) {
+        BasicVariable::ptr var_m_fsSaveGdkDecor = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveGdkDecor_ptr);
+        if (var_m_fsSaveGdkDecor.get()) {
+          var_m_fsSaveGdkDecor->Rename("m_fsSaveGdkDecor");
+          context->AddVar(var_m_fsSaveGdkDecor,context);
+        }
       }
       
       // Adding public member m_fsSaveFlag
       boost::shared_ptr<long int > var_m_fsSaveFlag_ptr(&GetObj()->m_fsSaveFlag, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_fsSaveFlag = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveFlag_ptr);
-      if (var_m_fsSaveFlag.get()) {
-        var_m_fsSaveFlag->Rename("m_fsSaveFlag");
-        context->AddVar(var_m_fsSaveFlag,context);
+      if (var_m_fsSaveFlag_ptr.get()) {
+        BasicVariable::ptr var_m_fsSaveFlag = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveFlag_ptr);
+        if (var_m_fsSaveFlag.get()) {
+          var_m_fsSaveFlag->Rename("m_fsSaveFlag");
+          context->AddVar(var_m_fsSaveFlag,context);
+        }
       }
       
       // Adding public member m_fsSaveFrame
       boost::shared_ptr<wxRect > var_m_fsSaveFrame_ptr(&GetObj()->m_fsSaveFrame, smartpointer_nodeleter<wxRect >());
-      BasicVariable::ptr var_m_fsSaveFrame = AMILabType<wxRect >::CreateVarFromSmtPtr(var_m_fsSaveFrame_ptr);
-      if (var_m_fsSaveFrame.get()) {
-        var_m_fsSaveFrame->Rename("m_fsSaveFrame");
-        context->AddVar(var_m_fsSaveFrame,context);
+      if (var_m_fsSaveFrame_ptr.get()) {
+        BasicVariable::ptr var_m_fsSaveFrame = AMILabType<wxRect >::CreateVarFromSmtPtr(var_m_fsSaveFrame_ptr);
+        if (var_m_fsSaveFrame.get()) {
+          var_m_fsSaveFrame->Rename("m_fsSaveFrame");
+          context->AddVar(var_m_fsSaveFrame,context);
+        }
       }
       
       // Adding public member m_gdkFunc
       boost::shared_ptr<long int > var_m_gdkFunc_ptr(&GetObj()->m_gdkFunc, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_gdkFunc = AMILabType<long int >::CreateVarFromSmtPtr(var_m_gdkFunc_ptr);
-      if (var_m_gdkFunc.get()) {
-        var_m_gdkFunc->Rename("m_gdkFunc");
-        context->AddVar(var_m_gdkFunc,context);
+      if (var_m_gdkFunc_ptr.get()) {
+        BasicVariable::ptr var_m_gdkFunc = AMILabType<long int >::CreateVarFromSmtPtr(var_m_gdkFunc_ptr);
+        if (var_m_gdkFunc.get()) {
+          var_m_gdkFunc->Rename("m_gdkFunc");
+          context->AddVar(var_m_gdkFunc,context);
+        }
       }
       
       // Adding public member m_gdkDecor
       boost::shared_ptr<long int > var_m_gdkDecor_ptr(&GetObj()->m_gdkDecor, smartpointer_nodeleter<long int >());
-      BasicVariable::ptr var_m_gdkDecor = AMILabType<long int >::CreateVarFromSmtPtr(var_m_gdkDecor_ptr);
-      if (var_m_gdkDecor.get()) {
-        var_m_gdkDecor->Rename("m_gdkDecor");
-        context->AddVar(var_m_gdkDecor,context);
+      if (var_m_gdkDecor_ptr.get()) {
+        BasicVariable::ptr var_m_gdkDecor = AMILabType<long int >::CreateVarFromSmtPtr(var_m_gdkDecor_ptr);
+        if (var_m_gdkDecor.get()) {
+          var_m_gdkDecor->Rename("m_gdkDecor");
+          context->AddVar(var_m_gdkDecor,context);
+        }
       }
       
       // Adding public member m_urgency_hint
       boost::shared_ptr<int > var_m_urgency_hint_ptr(&GetObj()->m_urgency_hint, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_urgency_hint = AMILabType<int >::CreateVarFromSmtPtr(var_m_urgency_hint_ptr);
-      if (var_m_urgency_hint.get()) {
-        var_m_urgency_hint->Rename("m_urgency_hint");
-        context->AddVar(var_m_urgency_hint,context);
+      if (var_m_urgency_hint_ptr.get()) {
+        BasicVariable::ptr var_m_urgency_hint = AMILabType<int >::CreateVarFromSmtPtr(var_m_urgency_hint_ptr);
+        if (var_m_urgency_hint.get()) {
+          var_m_urgency_hint->Rename("m_urgency_hint");
+          context->AddVar(var_m_urgency_hint,context);
+        }
       }
 
+
+  // Adding Bases
+
+  // Add base parent wxTopLevelWindowBase
+  boost::shared_ptr<wxTopLevelWindowBase > parent_wxTopLevelWindowBase(  boost::dynamic_pointer_cast<wxTopLevelWindowBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxTopLevelWindowBase = AMILabType<wxTopLevelWindowBase >::CreateVarFromSmtPtr(parent_wxTopLevelWindowBase);
+  context->AddVar("wxTopLevelWindowBase",var_wxTopLevelWindowBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxTopLevelWindowBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxTopLevelWindowBase);
+  context->AddDefault(obj_wxTopLevelWindowBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxTopLevelWindowGTK::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxTopLevelWindowGTK");
+    WrapClass_wxTopLevelWindowGTK::AddVar_wxTopLevelWindowGTK_1(amiobject->GetContext());
+  WrapClass_wxTopLevelWindowGTK::AddVar_wxTopLevelWindowGTK(amiobject->GetContext());
+  WrapClass_wxTopLevelWindowGTK::AddVar_wxTopLevelWindowGTK_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -338,7 +384,7 @@ void WrapClass_wxTopLevelWindowGTK::
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size' (def:wxDefaultSize)")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:541072960)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxFrameNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -380,8 +426,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxFrameNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, title, pos, size, style, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -390,7 +435,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_Maximize::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'maximize' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'maximize' (def:true)")
 }
 
 //---------------------------------------------------
@@ -401,9 +446,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int maximize_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(maximize_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool maximize = (bool) (maximize_int>0.5);
+  bool maximize = true;
+  if (!get_val_param<bool >(maximize,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Maximize(maximize);
   return BasicVariable::ptr();
@@ -415,7 +459,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_IsMaximized::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -425,8 +469,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsMaximized();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -435,7 +478,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_Iconize::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'iconize' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'iconize' (def:true)")
 }
 
 //---------------------------------------------------
@@ -446,9 +489,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int iconize_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(iconize_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool iconize = (bool) (iconize_int>0.5);
+  bool iconize = true;
+  if (!get_val_param<bool >(iconize,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Iconize(iconize);
   return BasicVariable::ptr();
@@ -460,7 +502,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_IsIconized::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -470,8 +512,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsIconized();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -548,8 +589,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_EnableCloseButton::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -560,13 +601,11 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int enable_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable = true;
+  if (!get_val_param<bool >(enable,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->EnableCloseButton(enable);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -575,9 +614,9 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_ShowFullScreen::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show'")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:wxFULLSCREEN_ALL)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -588,17 +627,15 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  int show_int;
-  if (!get_val_param<int >(show_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool show = (bool) (show_int>0.5);
+  bool show;
+  if (!get_val_param<bool >(show,_p,_n,true,false)) ClassHelpAndReturn;
 
   long style_long = wxFULLSCREEN_ALL;;
   if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   bool res =   this->_objectptr->GetObj()->ShowFullScreen(show, style);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -607,7 +644,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_IsFullScreen::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -617,8 +654,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsFullScreen();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -628,7 +664,7 @@ void WrapClass_wxTopLevelWindowGTK::
     wrap_SetShape::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRegion, "parameter named 'region'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -644,8 +680,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   wxRegion const & region = *region_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetShape(region);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -703,8 +738,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_Show::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -715,13 +750,11 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int show_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(show_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool show = (bool) (show_int>0.5);
+  bool show = true;
+  if (!get_val_param<bool >(show,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Show(show);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -748,7 +781,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_IsActive::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -758,8 +791,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsActive();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -813,7 +845,7 @@ void WrapClass_wxTopLevelWindowGTK::
     wrap_SetTransparent::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'alpha'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -828,8 +860,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (!get_val_param<unsigned char >(alpha,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->SetTransparent(alpha);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -838,7 +869,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_CanSetTransparent::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -848,8 +879,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->CanSetTransparent();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -894,7 +924,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_IsGrabbed::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -904,8 +934,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsGrabbed();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -950,7 +979,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
 void WrapClass_wxTopLevelWindowGTK::
     wrap_SetIconizeState::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'iconic'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'iconic'")
 }
 
 //---------------------------------------------------
@@ -961,9 +990,8 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int iconic_int;
-  if (!get_val_param<int >(iconic_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool iconic = (bool) (iconic_int>0.5);
+  bool iconic;
+  if (!get_val_param<bool >(iconic,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetIconizeState(iconic);
   return BasicVariable::ptr();

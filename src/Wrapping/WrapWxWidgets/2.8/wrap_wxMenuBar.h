@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -85,18 +85,14 @@ class WrapClass_wxMenuBar : public WrapClass<wxMenuBar>
     ADD_CLASS_METHOD(Replace,"wxMenu * wxMenuBar::Replace(size_t pos, wxMenu * menu, wxString const & title)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#replace)")
     ADD_CLASS_METHOD(Remove,"wxMenu * wxMenuBar::Remove(size_t pos)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#remove)")
     ADD_CLASS_METHOD(FindMenuItem,"int wxMenuBar::FindMenuItem(wxString const & menuString, wxString const & itemString)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#findmenuitem)")
-/* The following types are missing: wxMenuItem, wxMenu * *
+/* The following types are missing: wxMenu * *
     ADD_CLASS_METHOD(FindItem,"wxMenuItem * wxMenuBar::FindItem(int id, wxMenu * * menu = 0l)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#finditem)")
 */
     ADD_CLASS_METHOD(EnableTop,"void wxMenuBar::EnableTop(size_t pos, bool flag)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#enabletop)")
     ADD_CLASS_METHOD(SetLabelTop,"void wxMenuBar::SetLabelTop(size_t pos, wxString const & label)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#setlabeltop)")
     ADD_CLASS_METHOD(GetLabelTop,"wxString wxMenuBar::GetLabelTop(size_t pos)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#getlabeltop)")
-/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(SetLayoutDirection,"void wxMenuBar::SetLayoutDirection(wxLayoutDirection dir)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#setlayoutdirection)")
-*/
-/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(GetLayoutDirection,"wxLayoutDirection wxMenuBar::GetLayoutDirection()  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#getlayoutdirection)")
-*/
     ADD_CLASS_METHOD(Attach,"void wxMenuBar::Attach(wxFrame * frame)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#attach)")
     ADD_CLASS_METHOD(SetInvokingWindow,"void wxMenuBar::SetInvokingWindow(wxWindow * win)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#setinvokingwindow)")
     ADD_CLASS_METHOD(UnsetInvokingWindow,"void wxMenuBar::UnsetInvokingWindow(wxWindow * win)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#unsetinvokingwindow)")
@@ -109,6 +105,11 @@ class WrapClass_wxMenuBar : public WrapClass<wxMenuBar>
 
 
     void AddMethods(WrapClass<wxMenuBar>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

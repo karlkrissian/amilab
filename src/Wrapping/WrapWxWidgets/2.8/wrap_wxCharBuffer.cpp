@@ -60,10 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxCharBuffer::CreateVar( wxCharBuffer* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxCharBuffer::AddMethods(WrapClass<wxCharBuffer>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -84,7 +81,32 @@ void WrapClass_wxCharBuffer::AddMethods(WrapClass<wxCharBuffer>::ptr this_ptr )
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxCharBuffer::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxCharBuffer");
+    WrapClass_wxCharBuffer::AddVar_wxCharBuffer_1(amiobject->GetContext());
+  WrapClass_wxCharBuffer::AddVar_wxCharBuffer(amiobject->GetContext());
+  WrapClass_wxCharBuffer::AddVar_wxCharBuffer_2(amiobject->GetContext());
+  WrapClass_wxCharBuffer::AddVar_wxCharBuffer_3(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -254,7 +276,7 @@ void WrapClass_wxCharBuffer::
     wrap_extend::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'len'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -270,8 +292,7 @@ BasicVariable::ptr WrapClass_wxCharBuffer::
   long unsigned int len = boost::numeric_cast<long unsigned int >(len_long);
 
   bool res =   this->_objectptr->GetObj()->extend(len);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

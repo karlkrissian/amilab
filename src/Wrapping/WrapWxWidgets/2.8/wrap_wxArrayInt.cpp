@@ -60,14 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxArrayInt::CreateVar( wxArrayInt* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxArrayInt::AddMethods(WrapClass<wxArrayInt>::ptr this_ptr )
 {
-  /*
-      // Add members from wxBaseArrayInt
-      WrapClass_wxBaseArrayInt::ptr parent_wxBaseArrayInt(        boost::dynamic_pointer_cast<WrapClass_wxBaseArrayInt >(this_ptr));
-      parent_wxBaseArrayInt->AddMethods(parent_wxBaseArrayInt);
-      */
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -79,7 +72,7 @@ void WrapClass_wxArrayInt::AddMethods(WrapClass<wxArrayInt>::ptr this_ptr )
       AddVar_Insert( this_ptr);
       AddVar_RemoveAt( this_ptr);
       AddVar_Remove( this_ptr);
-/* The following types are missing: _9852
+/* The following types are missing: _10283
       AddVar_Sort( this_ptr);
 */
       AddVar_assign_1( this_ptr);
@@ -131,7 +124,44 @@ void WrapClass_wxArrayInt::AddMethods(WrapClass<wxArrayInt>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxBaseArrayInt
+  boost::shared_ptr<wxBaseArrayInt > parent_wxBaseArrayInt(  boost::dynamic_pointer_cast<wxBaseArrayInt >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxBaseArrayInt = AMILabType<wxBaseArrayInt >::CreateVarFromSmtPtr(parent_wxBaseArrayInt);
+  context->AddVar("wxBaseArrayInt",var_wxBaseArrayInt);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxBaseArrayInt = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxBaseArrayInt);
+  context->AddDefault(obj_wxBaseArrayInt->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxArrayInt::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxArrayInt");
+    WrapClass_wxArrayInt::AddVar_wxArrayInt_1(amiobject->GetContext());
+  WrapClass_wxArrayInt::AddVar_wxArrayInt(amiobject->GetContext());
+  WrapClass_wxArrayInt::AddVar_wxArrayInt_2(amiobject->GetContext());
+  WrapClass_wxArrayInt::AddVar_wxArrayInt_3(amiobject->GetContext());
+  WrapClass_wxArrayInt::AddVar_wxArrayInt_4(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -340,7 +370,7 @@ void WrapClass_wxArrayInt::
     wrap_Index::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'lItem'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'bFromEnd' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'bFromEnd' (def:false)")
   return_comments="returning a variable of type int";
 }
 
@@ -355,9 +385,8 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   int lItem;
   if (!get_val_param<int >(lItem,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int bFromEnd_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(bFromEnd_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool bFromEnd = (bool) (bFromEnd_int>0.5);
+  bool bFromEnd = false;
+  if (!get_val_param<bool >(bFromEnd,_p,_n,false,false)) ClassHelpAndReturn;
 
   int res =   this->_objectptr->GetObj()->Index(lItem, bFromEnd);
   return AMILabType<int >::CreateVar(res);
@@ -479,7 +508,7 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   this->_objectptr->GetObj()->Remove(lItem);
   return BasicVariable::ptr();
 }
-/* The following types are missing: _9852
+/* The following types are missing: _10283
 
 //---------------------------------------------------
 //  Wrapping of void wxArrayInt::Sort(CMPFUNC_wxArraywxArrayInt fCmp)
@@ -487,7 +516,7 @@ BasicVariable::ptr WrapClass_wxArrayInt::
 void WrapClass_wxArrayInt::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9852, "parameter named 'fCmp'")
+  ADDPARAMCOMMENT_TYPE( _10283, "parameter named 'fCmp'")
 }
 
 //---------------------------------------------------
@@ -498,8 +527,8 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _9852 fCmp;
-  if (!get_val_param<_9852 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
+  _10283 fCmp;
+  if (!get_val_param<_10283 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(fCmp);
   return BasicVariable::ptr();

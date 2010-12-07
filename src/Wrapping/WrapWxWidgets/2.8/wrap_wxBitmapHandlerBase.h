@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -85,14 +85,10 @@ class WrapClass_wxBitmapHandlerBase : public WrapClass<wxBitmapHandlerBase>
     ADD_CLASS_METHOD(SaveFile,"bool wxBitmapHandlerBase::SaveFile(wxBitmap const * bitmap, wxString const & name, int type, wxPalette const * palette = 0l)  (http://docs.wxwidgets.org/stable/wx_wxbitmaphandlerbase.html#savefile)")
     ADD_CLASS_METHOD(SetName,"void wxBitmapHandlerBase::SetName(wxString const & name)  (http://docs.wxwidgets.org/stable/wx_wxbitmaphandlerbase.html#setname)")
     ADD_CLASS_METHOD(SetExtension,"void wxBitmapHandlerBase::SetExtension(wxString const & ext)  (http://docs.wxwidgets.org/stable/wx_wxbitmaphandlerbase.html#setextension)")
-/* The following types are missing: wxBitmapType
     ADD_CLASS_METHOD(SetType,"void wxBitmapHandlerBase::SetType(wxBitmapType type)  (http://docs.wxwidgets.org/stable/wx_wxbitmaphandlerbase.html#settype)")
-*/
     ADD_CLASS_METHOD(GetName,"wxString const & wxBitmapHandlerBase::GetName()  (http://docs.wxwidgets.org/stable/wx_wxbitmaphandlerbase.html#getname)")
     ADD_CLASS_METHOD(GetExtension,"wxString const & wxBitmapHandlerBase::GetExtension()  (http://docs.wxwidgets.org/stable/wx_wxbitmaphandlerbase.html#getextension)")
-/* The following types are missing: wxBitmapType
     ADD_CLASS_METHOD(GetType,"wxBitmapType wxBitmapHandlerBase::GetType()  (http://docs.wxwidgets.org/stable/wx_wxbitmaphandlerbase.html#gettype)")
-*/
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxBitmapHandlerBase::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxbitmaphandlerbase.html#getclassinfo)")
 
     // Operators:
@@ -102,6 +98,11 @@ class WrapClass_wxBitmapHandlerBase : public WrapClass<wxBitmapHandlerBase>
 
 
     void AddMethods(WrapClass<wxBitmapHandlerBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

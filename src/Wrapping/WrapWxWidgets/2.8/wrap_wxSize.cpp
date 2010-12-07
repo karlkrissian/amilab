@@ -59,10 +59,7 @@ Variable<AMIObject>::ptr WrapClass_wxSize::CreateVar( wxSize* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxSize::AddMethods(WrapClass<wxSize>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -110,21 +107,50 @@ void WrapClass_wxSize::AddMethods(WrapClass<wxSize>::ptr this_ptr )
       
       // Adding public member x
       boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
-      if (var_x.get()) {
-        var_x->Rename("x");
-        context->AddVar(var_x,context);
+      if (var_x_ptr.get()) {
+        BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
+        if (var_x.get()) {
+          var_x->Rename("x");
+          context->AddVar(var_x,context);
+        }
       }
       
       // Adding public member y
       boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
-      if (var_y.get()) {
-        var_y->Rename("y");
-        context->AddVar(var_y,context);
+      if (var_y_ptr.get()) {
+        BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
+        if (var_y.get()) {
+          var_y->Rename("y");
+          context->AddVar(var_y,context);
+        }
       }
 
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxSize::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxSize");
+    WrapClass_wxSize::AddVar_wxSize_1(amiobject->GetContext());
+  WrapClass_wxSize::AddVar_wxSize(amiobject->GetContext());
+  WrapClass_wxSize::AddVar_wxSize_2(amiobject->GetContext());
+  WrapClass_wxSize::AddVar_wxSize_3(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -646,7 +672,7 @@ BasicVariable::ptr WrapClass_wxSize::
 void WrapClass_wxSize::
     wrap_IsFullySpecified::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -656,8 +682,7 @@ BasicVariable::ptr WrapClass_wxSize::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsFullySpecified();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -756,7 +781,7 @@ void WrapClass_wxSize::
     wrap___equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'sz'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -772,8 +797,7 @@ BasicVariable::ptr WrapClass_wxSize::
   wxSize const & sz = *sz_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (sz);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -783,7 +807,7 @@ void WrapClass_wxSize::
     wrap___not_equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'sz'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -799,8 +823,7 @@ BasicVariable::ptr WrapClass_wxSize::
   wxSize const & sz = *sz_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (sz);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

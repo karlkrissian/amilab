@@ -70,13 +70,7 @@ Variable<AMIObject>::ptr WrapClass_wxTopLevelWindow::CreateVar( wxTopLevelWindow
 //----------------------------------------------------------------------
 void WrapClass_wxTopLevelWindow::AddMethods(WrapClass<wxTopLevelWindow>::ptr this_ptr )
 {
-  
-      // Add members from wxTopLevelWindowGTK
-      WrapClass_wxTopLevelWindowGTK::ptr parent_wxTopLevelWindowGTK(        boost::dynamic_pointer_cast<WrapClass_wxTopLevelWindowGTK >(this_ptr));
-      parent_wxTopLevelWindowGTK->AddMethods(parent_wxTopLevelWindowGTK);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_GetClassInfo( this_ptr);
@@ -84,7 +78,42 @@ void WrapClass_wxTopLevelWindow::AddMethods(WrapClass<wxTopLevelWindow>::ptr thi
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxTopLevelWindowGTK
+  boost::shared_ptr<wxTopLevelWindowGTK > parent_wxTopLevelWindowGTK(  boost::dynamic_pointer_cast<wxTopLevelWindowGTK >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxTopLevelWindowGTK = AMILabType<wxTopLevelWindowGTK >::CreateVarFromSmtPtr(parent_wxTopLevelWindowGTK);
+  context->AddVar("wxTopLevelWindowGTK",var_wxTopLevelWindowGTK);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxTopLevelWindowGTK = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxTopLevelWindowGTK);
+  context->AddDefault(obj_wxTopLevelWindowGTK->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxTopLevelWindow::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxTopLevelWindow");
+    WrapClass_wxTopLevelWindow::AddVar_wxTopLevelWindow_1(amiobject->GetContext());
+  WrapClass_wxTopLevelWindow::AddVar_wxTopLevelWindow(amiobject->GetContext());
+  WrapClass_wxTopLevelWindow::AddVar_wxTopLevelWindow_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

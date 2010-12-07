@@ -63,13 +63,7 @@ Variable<AMIObject>::ptr WrapClass_wxMouseEvent::CreateVar( wxMouseEvent* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxMouseEvent::AddMethods(WrapClass<wxMouseEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -128,115 +122,157 @@ void WrapClass_wxMouseEvent::AddMethods(WrapClass<wxMouseEvent>::ptr this_ptr )
       
       // Adding public member m_x
       boost::shared_ptr<int > var_m_x_ptr(&GetObj()->m_x, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_x = AMILabType<int >::CreateVarFromSmtPtr(var_m_x_ptr);
-      if (var_m_x.get()) {
-        var_m_x->Rename("m_x");
-        context->AddVar(var_m_x,context);
+      if (var_m_x_ptr.get()) {
+        BasicVariable::ptr var_m_x = AMILabType<int >::CreateVarFromSmtPtr(var_m_x_ptr);
+        if (var_m_x.get()) {
+          var_m_x->Rename("m_x");
+          context->AddVar(var_m_x,context);
+        }
       }
       
       // Adding public member m_y
       boost::shared_ptr<int > var_m_y_ptr(&GetObj()->m_y, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_y = AMILabType<int >::CreateVarFromSmtPtr(var_m_y_ptr);
-      if (var_m_y.get()) {
-        var_m_y->Rename("m_y");
-        context->AddVar(var_m_y,context);
+      if (var_m_y_ptr.get()) {
+        BasicVariable::ptr var_m_y = AMILabType<int >::CreateVarFromSmtPtr(var_m_y_ptr);
+        if (var_m_y.get()) {
+          var_m_y->Rename("m_y");
+          context->AddVar(var_m_y,context);
+        }
       }
       
-      /* type not available
       // Adding public member m_leftDown
       boost::shared_ptr<bool > var_m_leftDown_ptr(&GetObj()->m_leftDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_leftDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_leftDown_ptr);
-      if (var_m_leftDown.get()) {
-        var_m_leftDown->Rename("m_leftDown");
-        context->AddVar(var_m_leftDown,context);
+      if (var_m_leftDown_ptr.get()) {
+        BasicVariable::ptr var_m_leftDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_leftDown_ptr);
+        if (var_m_leftDown.get()) {
+          var_m_leftDown->Rename("m_leftDown");
+          context->AddVar(var_m_leftDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_middleDown
       boost::shared_ptr<bool > var_m_middleDown_ptr(&GetObj()->m_middleDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_middleDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_middleDown_ptr);
-      if (var_m_middleDown.get()) {
-        var_m_middleDown->Rename("m_middleDown");
-        context->AddVar(var_m_middleDown,context);
+      if (var_m_middleDown_ptr.get()) {
+        BasicVariable::ptr var_m_middleDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_middleDown_ptr);
+        if (var_m_middleDown.get()) {
+          var_m_middleDown->Rename("m_middleDown");
+          context->AddVar(var_m_middleDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_rightDown
       boost::shared_ptr<bool > var_m_rightDown_ptr(&GetObj()->m_rightDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_rightDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_rightDown_ptr);
-      if (var_m_rightDown.get()) {
-        var_m_rightDown->Rename("m_rightDown");
-        context->AddVar(var_m_rightDown,context);
+      if (var_m_rightDown_ptr.get()) {
+        BasicVariable::ptr var_m_rightDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_rightDown_ptr);
+        if (var_m_rightDown.get()) {
+          var_m_rightDown->Rename("m_rightDown");
+          context->AddVar(var_m_rightDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_controlDown
       boost::shared_ptr<bool > var_m_controlDown_ptr(&GetObj()->m_controlDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_controlDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_controlDown_ptr);
-      if (var_m_controlDown.get()) {
-        var_m_controlDown->Rename("m_controlDown");
-        context->AddVar(var_m_controlDown,context);
+      if (var_m_controlDown_ptr.get()) {
+        BasicVariable::ptr var_m_controlDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_controlDown_ptr);
+        if (var_m_controlDown.get()) {
+          var_m_controlDown->Rename("m_controlDown");
+          context->AddVar(var_m_controlDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_shiftDown
       boost::shared_ptr<bool > var_m_shiftDown_ptr(&GetObj()->m_shiftDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_shiftDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_shiftDown_ptr);
-      if (var_m_shiftDown.get()) {
-        var_m_shiftDown->Rename("m_shiftDown");
-        context->AddVar(var_m_shiftDown,context);
+      if (var_m_shiftDown_ptr.get()) {
+        BasicVariable::ptr var_m_shiftDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_shiftDown_ptr);
+        if (var_m_shiftDown.get()) {
+          var_m_shiftDown->Rename("m_shiftDown");
+          context->AddVar(var_m_shiftDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_altDown
       boost::shared_ptr<bool > var_m_altDown_ptr(&GetObj()->m_altDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_altDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_altDown_ptr);
-      if (var_m_altDown.get()) {
-        var_m_altDown->Rename("m_altDown");
-        context->AddVar(var_m_altDown,context);
+      if (var_m_altDown_ptr.get()) {
+        BasicVariable::ptr var_m_altDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_altDown_ptr);
+        if (var_m_altDown.get()) {
+          var_m_altDown->Rename("m_altDown");
+          context->AddVar(var_m_altDown,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member m_metaDown
       boost::shared_ptr<bool > var_m_metaDown_ptr(&GetObj()->m_metaDown, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_metaDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_metaDown_ptr);
-      if (var_m_metaDown.get()) {
-        var_m_metaDown->Rename("m_metaDown");
-        context->AddVar(var_m_metaDown,context);
+      if (var_m_metaDown_ptr.get()) {
+        BasicVariable::ptr var_m_metaDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_metaDown_ptr);
+        if (var_m_metaDown.get()) {
+          var_m_metaDown->Rename("m_metaDown");
+          context->AddVar(var_m_metaDown,context);
+        }
       }
-      */
       
       // Adding public member m_wheelRotation
       boost::shared_ptr<int > var_m_wheelRotation_ptr(&GetObj()->m_wheelRotation, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_wheelRotation = AMILabType<int >::CreateVarFromSmtPtr(var_m_wheelRotation_ptr);
-      if (var_m_wheelRotation.get()) {
-        var_m_wheelRotation->Rename("m_wheelRotation");
-        context->AddVar(var_m_wheelRotation,context);
+      if (var_m_wheelRotation_ptr.get()) {
+        BasicVariable::ptr var_m_wheelRotation = AMILabType<int >::CreateVarFromSmtPtr(var_m_wheelRotation_ptr);
+        if (var_m_wheelRotation.get()) {
+          var_m_wheelRotation->Rename("m_wheelRotation");
+          context->AddVar(var_m_wheelRotation,context);
+        }
       }
       
       // Adding public member m_wheelDelta
       boost::shared_ptr<int > var_m_wheelDelta_ptr(&GetObj()->m_wheelDelta, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_wheelDelta = AMILabType<int >::CreateVarFromSmtPtr(var_m_wheelDelta_ptr);
-      if (var_m_wheelDelta.get()) {
-        var_m_wheelDelta->Rename("m_wheelDelta");
-        context->AddVar(var_m_wheelDelta,context);
+      if (var_m_wheelDelta_ptr.get()) {
+        BasicVariable::ptr var_m_wheelDelta = AMILabType<int >::CreateVarFromSmtPtr(var_m_wheelDelta_ptr);
+        if (var_m_wheelDelta.get()) {
+          var_m_wheelDelta->Rename("m_wheelDelta");
+          context->AddVar(var_m_wheelDelta,context);
+        }
       }
       
       // Adding public member m_linesPerAction
       boost::shared_ptr<int > var_m_linesPerAction_ptr(&GetObj()->m_linesPerAction, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_linesPerAction = AMILabType<int >::CreateVarFromSmtPtr(var_m_linesPerAction_ptr);
-      if (var_m_linesPerAction.get()) {
-        var_m_linesPerAction->Rename("m_linesPerAction");
-        context->AddVar(var_m_linesPerAction,context);
+      if (var_m_linesPerAction_ptr.get()) {
+        BasicVariable::ptr var_m_linesPerAction = AMILabType<int >::CreateVarFromSmtPtr(var_m_linesPerAction_ptr);
+        if (var_m_linesPerAction.get()) {
+          var_m_linesPerAction->Rename("m_linesPerAction");
+          context->AddVar(var_m_linesPerAction,context);
+        }
       }
 
+
+  // Adding Bases
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxMouseEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxMouseEvent");
+    WrapClass_wxMouseEvent::AddVar_wxMouseEvent_1(amiobject->GetContext());
+  WrapClass_wxMouseEvent::AddVar_wxMouseEvent(amiobject->GetContext());
+  WrapClass_wxMouseEvent::AddVar_wxMouseEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -337,7 +373,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_IsButton::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -347,8 +383,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsButton();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -358,7 +393,7 @@ void WrapClass_wxMouseEvent::
     wrap_ButtonDown::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'but' (def:wxMOUSE_BTN_ANY)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -373,8 +408,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (!get_val_param<int >(but,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ButtonDown(but);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -384,7 +418,7 @@ void WrapClass_wxMouseEvent::
     wrap_ButtonDClick::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'but' (def:wxMOUSE_BTN_ANY)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -399,8 +433,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (!get_val_param<int >(but,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ButtonDClick(but);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -410,7 +443,7 @@ void WrapClass_wxMouseEvent::
     wrap_ButtonUp::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'but' (def:wxMOUSE_BTN_ANY)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -425,8 +458,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (!get_val_param<int >(but,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ButtonUp(but);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -436,7 +468,7 @@ void WrapClass_wxMouseEvent::
     wrap_Button::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'but'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -451,8 +483,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (!get_val_param<int >(but,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Button(but);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -462,7 +493,7 @@ void WrapClass_wxMouseEvent::
     wrap_ButtonIsDown::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'but'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -477,8 +508,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (!get_val_param<int >(but,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ButtonIsDown(but);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -506,7 +536,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_ControlDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -516,8 +546,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ControlDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -526,7 +555,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_MetaDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -536,8 +565,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->MetaDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -546,7 +574,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_AltDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -556,8 +584,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->AltDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -566,7 +593,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_ShiftDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -576,8 +603,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ShiftDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -586,7 +612,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_CmdDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -596,8 +622,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->CmdDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -606,7 +631,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_LeftDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -616,8 +641,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LeftDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -626,7 +650,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_MiddleDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -636,8 +660,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->MiddleDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -646,7 +669,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_RightDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -656,8 +679,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->RightDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -666,7 +688,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_LeftUp::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -676,8 +698,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LeftUp();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -686,7 +707,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_MiddleUp::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -696,8 +717,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->MiddleUp();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -706,7 +726,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_RightUp::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -716,8 +736,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->RightUp();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -726,7 +745,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_LeftDClick::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -736,8 +755,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LeftDClick();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -746,7 +764,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_MiddleDClick::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -756,8 +774,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->MiddleDClick();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -766,7 +783,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_RightDClick::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -776,8 +793,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->RightDClick();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -786,7 +802,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_LeftIsDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -796,8 +812,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LeftIsDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -806,7 +821,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_MiddleIsDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -816,8 +831,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->MiddleIsDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -826,7 +840,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_RightIsDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -836,8 +850,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->RightIsDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -846,7 +859,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_Dragging::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -856,8 +869,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Dragging();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -866,7 +878,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_Moving::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -876,8 +888,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Moving();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -886,7 +897,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_Entering::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -896,8 +907,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Entering();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -906,7 +916,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_Leaving::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -916,8 +926,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Leaving();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1152,7 +1161,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
 void WrapClass_wxMouseEvent::
     wrap_IsPageScroll::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1162,8 +1171,7 @@ BasicVariable::ptr WrapClass_wxMouseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsPageScroll();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

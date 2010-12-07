@@ -60,10 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxIntegerHash::CreateVar( wxIntegerHash* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxIntegerHash::AddMethods(WrapClass<wxIntegerHash>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -90,7 +87,31 @@ void WrapClass_wxIntegerHash::AddMethods(WrapClass<wxIntegerHash>::ptr this_ptr 
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxIntegerHash::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxIntegerHash");
+    WrapClass_wxIntegerHash::AddVar_wxIntegerHash_1(amiobject->GetContext());
+  WrapClass_wxIntegerHash::AddVar_wxIntegerHash(amiobject->GetContext());
+  WrapClass_wxIntegerHash::AddVar_wxIntegerHash_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

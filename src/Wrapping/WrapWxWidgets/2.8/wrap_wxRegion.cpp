@@ -65,13 +65,7 @@ Variable<AMIObject>::ptr WrapClass_wxRegion::CreateVar( wxRegion* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxRegion::AddMethods(WrapClass<wxRegion>::ptr this_ptr )
 {
-  
-      // Add members from wxRegionBase
-      WrapClass_wxRegionBase::ptr parent_wxRegionBase(        boost::dynamic_pointer_cast<WrapClass_wxRegionBase >(this_ptr));
-      parent_wxRegionBase->AddMethods(parent_wxRegionBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -89,7 +83,51 @@ void WrapClass_wxRegion::AddMethods(WrapClass<wxRegion>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxRegionBase
+  boost::shared_ptr<wxRegionBase > parent_wxRegionBase(  boost::dynamic_pointer_cast<wxRegionBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxRegionBase = AMILabType<wxRegionBase >::CreateVarFromSmtPtr(parent_wxRegionBase);
+  context->AddVar("wxRegionBase",var_wxRegionBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxRegionBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxRegionBase);
+  context->AddDefault(obj_wxRegionBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxRegion::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxRegion");
+    WrapClass_wxRegion::AddVar_wxRegion_1(amiobject->GetContext());
+  WrapClass_wxRegion::AddVar_wxRegion(amiobject->GetContext());
+  WrapClass_wxRegion::AddVar_wxRegion_2(amiobject->GetContext());
+  WrapClass_wxRegion::AddVar_wxRegion_3(amiobject->GetContext());
+  WrapClass_wxRegion::AddVar_wxRegion_4(amiobject->GetContext());
+  WrapClass_wxRegion::AddVar_wxRegion_5(amiobject->GetContext());
+  WrapClass_wxRegion::AddVar_wxRegion_6(amiobject->GetContext());
+  WrapClass_wxRegion::AddVar_wxRegion_7(amiobject->GetContext());
+  WrapClass_wxRegion::AddVar_wxRegion_8(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxRegion::AddVar_wxRegion_9(amiobject->GetContext());
+  */
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -438,7 +476,7 @@ BasicVariable::ptr WrapClass_wxRegion::
 void WrapClass_wxRegion::
     wrap_IsEmpty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -448,8 +486,7 @@ BasicVariable::ptr WrapClass_wxRegion::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEmpty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /* The following types are missing: _GdkRegion
 

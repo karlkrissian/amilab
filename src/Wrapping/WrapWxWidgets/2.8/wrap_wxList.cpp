@@ -62,18 +62,12 @@ Variable<AMIObject>::ptr WrapClass_wxList::CreateVar( wxList* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxList::AddMethods(WrapClass<wxList>::ptr this_ptr )
 {
-  
-      // Add members from wxObjectList
-      WrapClass_wxObjectList::ptr parent_wxObjectList(        boost::dynamic_pointer_cast<WrapClass_wxObjectList >(this_ptr));
-      parent_wxObjectList->AddMethods(parent_wxObjectList);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
       // Adding standard methods 
-/* The following types are missing: _9495
+/* The following types are missing: _9904
       AddVar_Sort( this_ptr);
 */
       AddVar_Member( this_ptr);
@@ -85,7 +79,42 @@ void WrapClass_wxList::AddMethods(WrapClass<wxList>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObjectList
+  boost::shared_ptr<wxObjectList > parent_wxObjectList(  boost::dynamic_pointer_cast<wxObjectList >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObjectList = AMILabType<wxObjectList >::CreateVarFromSmtPtr(parent_wxObjectList);
+  context->AddVar("wxObjectList",var_wxObjectList);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObjectList = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObjectList);
+  context->AddDefault(obj_wxObjectList->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxList::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxList");
+    WrapClass_wxList::AddVar_wxList_1(amiobject->GetContext());
+  WrapClass_wxList::AddVar_wxList(amiobject->GetContext());
+  WrapClass_wxList::AddVar_wxList_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -179,7 +208,7 @@ BasicVariable::ptr WrapClass_wxList::
 {
     return AMILabType<wxList >::CreateVar( new wxList(*(this->_objectptr->GetObj())));
 }
-/* The following types are missing: _9495
+/* The following types are missing: _9904
 
 //---------------------------------------------------
 //  Wrapping of void wxList::Sort(wxSortCompareFunction compfunc)
@@ -187,7 +216,7 @@ BasicVariable::ptr WrapClass_wxList::
 void WrapClass_wxList::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9495, "parameter named 'compfunc'")
+  ADDPARAMCOMMENT_TYPE( _9904, "parameter named 'compfunc'")
 }
 
 //---------------------------------------------------
@@ -198,8 +227,8 @@ BasicVariable::ptr WrapClass_wxList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _9495 compfunc;
-  if (!get_val_param<_9495 >(compfunc,_p,_n,true,false)) ClassHelpAndReturn;
+  _9904 compfunc;
+  if (!get_val_param<_9904 >(compfunc,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(compfunc);
   return BasicVariable::ptr();

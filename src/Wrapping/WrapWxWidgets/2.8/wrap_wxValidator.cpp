@@ -70,13 +70,7 @@ Variable<AMIObject>::ptr WrapClass_wxValidator::CreateVar( wxValidator* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxValidator::AddMethods(WrapClass<wxValidator>::ptr this_ptr )
 {
-  
-      // Add members from wxEvtHandler
-      WrapClass_wxEvtHandler::ptr parent_wxEvtHandler(        boost::dynamic_pointer_cast<WrapClass_wxEvtHandler >(this_ptr));
-      parent_wxEvtHandler->AddMethods(parent_wxEvtHandler);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Clone( this_ptr);
@@ -91,7 +85,42 @@ void WrapClass_wxValidator::AddMethods(WrapClass<wxValidator>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvtHandler
+  boost::shared_ptr<wxEvtHandler > parent_wxEvtHandler(  boost::dynamic_pointer_cast<wxEvtHandler >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvtHandler = AMILabType<wxEvtHandler >::CreateVarFromSmtPtr(parent_wxEvtHandler);
+  context->AddVar("wxEvtHandler",var_wxEvtHandler);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvtHandler = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvtHandler);
+  context->AddDefault(obj_wxEvtHandler->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxValidator::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxValidator");
+    WrapClass_wxValidator::AddVar_wxValidator(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxValidator::AddVar_IsSilent(amiobject->GetContext());
+  WrapClass_wxValidator::AddVar_SetBellOnError(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -123,7 +152,7 @@ BasicVariable::ptr WrapClass_wxValidator::
 void WrapClass_wxValidator::
     wrap_static_IsSilent::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -133,8 +162,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   wxValidator::IsSilent();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -143,7 +171,7 @@ BasicVariable::ptr WrapClass_wxValidator::
 void WrapClass_wxValidator::
     wrap_static_SetBellOnError::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'doIt' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'doIt' (def:true)")
 }
 
 //---------------------------------------------------
@@ -154,9 +182,8 @@ BasicVariable::ptr WrapClass_wxValidator::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int doIt_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(doIt_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool doIt = (bool) (doIt_int>0.5);
+  bool doIt = true;
+  if (!get_val_param<bool >(doIt,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxValidator::SetBellOnError(doIt);
   return BasicVariable::ptr();
@@ -189,7 +216,7 @@ void WrapClass_wxValidator::
     wrap_Copy::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxValidator, "parameter named 'val'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -205,8 +232,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   wxValidator const & val = *val_smtptr;
 
   bool res =   this->_objectptr->GetObj()->Copy(val);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -216,7 +242,7 @@ void WrapClass_wxValidator::
     wrap_Validate::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -232,8 +258,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   wxWindow* param0 = param0_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Validate(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -242,7 +267,7 @@ BasicVariable::ptr WrapClass_wxValidator::
 void WrapClass_wxValidator::
     wrap_TransferToWindow::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -252,8 +277,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->TransferToWindow();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -262,7 +286,7 @@ BasicVariable::ptr WrapClass_wxValidator::
 void WrapClass_wxValidator::
     wrap_TransferFromWindow::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -272,8 +296,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->TransferFromWindow();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

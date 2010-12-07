@@ -64,10 +64,7 @@ Variable<AMIObject>::ptr WrapClass_wxMBConv::CreateVar( wxMBConv* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxMBConv::AddMethods(WrapClass<wxMBConv>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_ToWChar( this_ptr);
@@ -92,7 +89,28 @@ void WrapClass_wxMBConv::AddMethods(WrapClass<wxMBConv>::ptr this_ptr )
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxMBConv::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxMBConv");
+  
+  // Static methods 
+  WrapClass_wxMBConv::AddVar_GetMaxMBNulLen(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

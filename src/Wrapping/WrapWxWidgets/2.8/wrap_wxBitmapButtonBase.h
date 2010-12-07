@@ -19,11 +19,12 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
 #include "wrap_wxButton.h"
+
 
 
 AMI_DECLARE_TYPE(wxBitmapButtonBase);
@@ -94,15 +95,17 @@ class WrapClass_wxBitmapButtonBase : public WrapClass<wxBitmapButtonBase>
     ADD_CLASS_METHOD(SetMargins,"void wxBitmapButtonBase::SetMargins(int x, int y)  (http://docs.wxwidgets.org/stable/wx_wxbitmapbuttonbase.html#setmargins)")
     ADD_CLASS_METHOD(GetMarginX,"int wxBitmapButtonBase::GetMarginX()  (http://docs.wxwidgets.org/stable/wx_wxbitmapbuttonbase.html#getmarginx)")
     ADD_CLASS_METHOD(GetMarginY,"int wxBitmapButtonBase::GetMarginY()  (http://docs.wxwidgets.org/stable/wx_wxbitmapbuttonbase.html#getmarginy)")
-    ADD_CLASS_METHOD(SetLabel_1,"void wxBitmapButtonBase::SetLabel(wxBitmap const & bitmap)  (http://docs.wxwidgets.org/stable/wx_wxbitmapbuttonbase.html#setlabel)")
-    ADD_CLASS_METHOD(SetLabel,"wxBitmapButtonBase::SetLabel()  (http://docs.wxwidgets.org/stable/wx_wxbitmapbuttonbase.html#setlabel)")
-    ADD_CLASS_METHOD(SetLabel_2,"void wxBitmapButtonBase::SetLabel(wxString const & label)  (http://docs.wxwidgets.org/stable/wx_wxbitmapbuttonbase.html#setlabel)")
 
 
 
 
 
     void AddMethods(WrapClass<wxBitmapButtonBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

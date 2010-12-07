@@ -19,7 +19,6 @@
 // get all the required includes
 // #include "..."
 #include "wrap_wxBitmap.h"
-#include "wrap_wxString.h"
 
 
 #include "wrap_wxBitmapButtonBase.h"
@@ -67,13 +66,7 @@ Variable<AMIObject>::ptr WrapClass_wxBitmapButtonBase::CreateVar( wxBitmapButton
 //----------------------------------------------------------------------
 void WrapClass_wxBitmapButtonBase::AddMethods(WrapClass<wxBitmapButtonBase>::ptr this_ptr )
 {
-  
-      // Add members from wxButton
-      WrapClass_wxButton::ptr parent_wxButton(        boost::dynamic_pointer_cast<WrapClass_wxButton >(this_ptr));
-      parent_wxButton->AddMethods(parent_wxButton);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_SetBitmapLabel( this_ptr);
@@ -99,14 +92,44 @@ void WrapClass_wxBitmapButtonBase::AddMethods(WrapClass<wxBitmapButtonBase>::ptr
       AddVar_SetMargins( this_ptr);
       AddVar_GetMarginX( this_ptr);
       AddVar_GetMarginY( this_ptr);
-      AddVar_SetLabel_1( this_ptr);
-      AddVar_SetLabel( this_ptr);
-      AddVar_SetLabel_2( this_ptr);
 
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxButton
+  boost::shared_ptr<wxButton > parent_wxButton(  boost::dynamic_pointer_cast<wxButton >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxButton = AMILabType<wxButton >::CreateVarFromSmtPtr(parent_wxButton);
+  context->AddVar("wxButton",var_wxButton);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxButton = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxButton);
+  context->AddDefault(obj_wxButton->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxBitmapButtonBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxBitmapButtonBase");
+    WrapClass_wxBitmapButtonBase::AddVar_wxBitmapButtonBase(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -150,7 +173,7 @@ BasicVariable::ptr WrapClass_wxBitmapButtonBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   this->_objectptr->GetObj()->SetBitmapLabel(bitmap);
@@ -175,7 +198,7 @@ BasicVariable::ptr WrapClass_wxBitmapButtonBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > sel_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(sel_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(sel_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & sel = *sel_smtptr;
 
   this->_objectptr->GetObj()->SetBitmapSelected(sel);
@@ -200,7 +223,7 @@ BasicVariable::ptr WrapClass_wxBitmapButtonBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > focus_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(focus_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(focus_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & focus = *focus_smtptr;
 
   this->_objectptr->GetObj()->SetBitmapFocus(focus);
@@ -225,7 +248,7 @@ BasicVariable::ptr WrapClass_wxBitmapButtonBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > disabled_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(disabled_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(disabled_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & disabled = *disabled_smtptr;
 
   this->_objectptr->GetObj()->SetBitmapDisabled(disabled);
@@ -250,7 +273,7 @@ BasicVariable::ptr WrapClass_wxBitmapButtonBase::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > hover_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(hover_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(hover_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & hover = *hover_smtptr;
 
   this->_objectptr->GetObj()->SetBitmapHover(hover);
@@ -571,10 +594,10 @@ BasicVariable::ptr WrapClass_wxBitmapButtonBase::
   int _n=0;
 
   int x;
-  if (!get_val_param<int >(x,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(x,_p,_n,true,false)) ClassHelpAndReturn;
 
   int y;
-  if (!get_val_param<int >(y,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetMargins(x, y);
   return BasicVariable::ptr();
@@ -616,76 +639,5 @@ BasicVariable::ptr WrapClass_wxBitmapButtonBase::
 
   int res =   this->_objectptr->GetObj()->GetMarginY();
   return AMILabType<int >::CreateVar(res);
-}
-
-//---------------------------------------------------
-//  Wrapping of void wxBitmapButtonBase::SetLabel(wxBitmap const & bitmap)
-//---------------------------------------------------
-void WrapClass_wxBitmapButtonBase::
-    wrap_SetLabel_1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bitmap'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxBitmapButtonBase::
-    wrap_SetLabel_1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
-  int _n=0;
-
-  boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
-  wxBitmap const & bitmap = *bitmap_smtptr;
-
-  this->_objectptr->GetObj()->SetLabel(bitmap);
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of multipled defined method:... wxBitmapButtonBase::SetLabel(...)
-//---------------------------------------------------
-void WrapClass_wxBitmapButtonBase::
-    wrap_SetLabel::SetParametersComments()
-{}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxBitmapButtonBase::
-    wrap_SetLabel::CallMember( ParamList* _p)
-{
-  BasicVariable::ptr res;
-  WrapClass_wxBitmapButtonBase::wrap_SetLabel_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_wxBitmapButtonBase::wrap_SetLabel_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  ClassHelpAndReturn;
-}
-
-//---------------------------------------------------
-//  Wrapping of void wxBitmapButtonBase::SetLabel(wxString const & label)
-//---------------------------------------------------
-void WrapClass_wxBitmapButtonBase::
-    wrap_SetLabel_2::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'label'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxBitmapButtonBase::
-    wrap_SetLabel_2::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
-  int _n=0;
-
-  boost::shared_ptr<wxString > label_smtptr;
-  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n)) ClassReturnEmptyVar;
-  wxString const & label = *label_smtptr;
-
-  this->_objectptr->GetObj()->SetLabel(label);
-  return BasicVariable::ptr();
 }
 

@@ -65,13 +65,7 @@ Variable<AMIObject>::ptr WrapClass_wxStaticBoxBase::CreateVar( wxStaticBoxBase* 
 //----------------------------------------------------------------------
 void WrapClass_wxStaticBoxBase::AddMethods(WrapClass<wxStaticBoxBase>::ptr this_ptr )
 {
-  
-      // Add members from wxControl
-      WrapClass_wxControl::ptr parent_wxControl(        boost::dynamic_pointer_cast<WrapClass_wxControl >(this_ptr));
-      parent_wxControl->AddMethods(parent_wxControl);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_AcceptsFocus( this_ptr);
@@ -81,7 +75,40 @@ void WrapClass_wxStaticBoxBase::AddMethods(WrapClass<wxStaticBoxBase>::ptr this_
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxControl
+  boost::shared_ptr<wxControl > parent_wxControl(  boost::dynamic_pointer_cast<wxControl >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxControl = AMILabType<wxControl >::CreateVarFromSmtPtr(parent_wxControl);
+  context->AddVar("wxControl",var_wxControl);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxControl = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxControl);
+  context->AddDefault(obj_wxControl->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxStaticBoxBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxStaticBoxBase");
+    WrapClass_wxStaticBoxBase::AddVar_wxStaticBoxBase(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -113,7 +140,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxBase::
 void WrapClass_wxStaticBoxBase::
     wrap_AcceptsFocus::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -123,8 +150,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->AcceptsFocus();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -133,7 +159,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxBase::
 void WrapClass_wxStaticBoxBase::
     wrap_HasTransparentBackground::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -143,8 +169,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasTransparentBackground();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

@@ -74,13 +74,7 @@ Variable<AMIObject>::ptr WrapClass_wxEvtHandler::CreateVar( wxEvtHandler* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxEvtHandler::AddMethods(WrapClass<wxEvtHandler>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_GetNextHandler( this_ptr);
@@ -117,7 +111,41 @@ void WrapClass_wxEvtHandler::AddMethods(WrapClass<wxEvtHandler>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxEvtHandler::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxEvtHandler");
+    WrapClass_wxEvtHandler::AddVar_wxEvtHandler(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxEvtHandler::AddVar_ProcessEventIfMatches(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -152,7 +180,7 @@ void WrapClass_wxEvtHandler::
   ADDPARAMCOMMENT_TYPE( wxEventTableEntryBase, "parameter named 'tableEntry'")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'handler'")
   ADDPARAMCOMMENT_TYPE( wxEvent, "parameter named 'event'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -176,8 +204,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxEvent & event = *event_smtptr;
 
   bool res =   wxEvtHandler::ProcessEventIfMatches(tableEntry, handler, event);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -276,7 +303,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
 void WrapClass_wxEvtHandler::
     wrap_SetEvtHandlerEnabled::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enabled'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enabled'")
 }
 
 //---------------------------------------------------
@@ -287,9 +314,8 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int enabled_int;
-  if (!get_val_param<int >(enabled_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool enabled = (bool) (enabled_int>0.5);
+  bool enabled;
+  if (!get_val_param<bool >(enabled,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetEvtHandlerEnabled(enabled);
   return BasicVariable::ptr();
@@ -301,7 +327,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
 void WrapClass_wxEvtHandler::
     wrap_GetEvtHandlerEnabled::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -311,8 +337,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetEvtHandlerEnabled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -322,7 +347,7 @@ void WrapClass_wxEvtHandler::
     wrap_ProcessEvent::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxEvent, "parameter named 'event'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -338,8 +363,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxEvent & event = *event_smtptr;
 
   bool res =   this->_objectptr->GetObj()->ProcessEvent(event);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -392,7 +416,7 @@ void WrapClass_wxEvtHandler::
     wrap_ProcessThreadEvent::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxEvent, "parameter named 'event'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -408,8 +432,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxEvent & event = *event_smtptr;
 
   bool res =   this->_objectptr->GetObj()->ProcessThreadEvent(event);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -574,7 +597,7 @@ void WrapClass_wxEvtHandler::
   ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'func' (def:0l)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'userData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'eventSink' (def:0u)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -606,8 +629,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxEvtHandler* eventSink = eventSink_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Disconnect(winid, lastId, eventType, func, userData, eventSink);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -645,7 +667,7 @@ void WrapClass_wxEvtHandler::
   ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'func' (def:0l)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'userData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'eventSink' (def:0u)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -674,8 +696,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxEvtHandler* eventSink = eventSink_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Disconnect(winid, eventType, func, userData, eventSink);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -688,7 +709,7 @@ void WrapClass_wxEvtHandler::
   ADDPARAMCOMMENT_TYPE( wxObjectEventFunction, "parameter named 'func'")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'userData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'eventSink' (def:0u)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -714,8 +735,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxEvtHandler* eventSink = eventSink_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Disconnect(eventType, func, userData, eventSink);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -836,7 +856,7 @@ void WrapClass_wxEvtHandler::
 {
   ADDPARAMCOMMENT_TYPE( wxEventTable, "parameter named 'table'")
   ADDPARAMCOMMENT_TYPE( wxEvent, "parameter named 'event'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -856,8 +876,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxEvent & event = *event_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SearchEventTable(table, event);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -867,7 +886,7 @@ void WrapClass_wxEvtHandler::
     wrap_SearchDynamicEventTable::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxEvent, "parameter named 'event'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -883,8 +902,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxEvent & event = *event_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SearchDynamicEventTable(event);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

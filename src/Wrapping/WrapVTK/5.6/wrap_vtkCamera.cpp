@@ -73,13 +73,7 @@ Variable<AMIObject>::ptr WrapClass_vtkCamera::CreateVar( vtkCamera* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
 {
-  
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -169,12 +163,10 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
       AddVar_GetFocalDisk( this_ptr);
       AddVar_GetViewTransformMatrix( this_ptr);
       AddVar_GetViewTransformObject( this_ptr);
-      AddVar_GetPerspectiveTransformMatrix( this_ptr);
       AddVar_GetProjectionTransformMatrix( this_ptr);
 /* The following types are missing: vtkPerspectiveTransform
       AddVar_GetProjectionTransformObject( this_ptr);
 */
-      AddVar_GetCompositePerspectiveTransformMatrix( this_ptr);
       AddVar_GetCompositeProjectionTransformMatrix( this_ptr);
       AddVar_SetUserViewTransform( this_ptr);
       AddVar_GetUserViewTransform( this_ptr);
@@ -186,9 +178,6 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
       AddVar_GetFrustumPlanes( this_ptr);
       AddVar_GetOrientation( this_ptr);
       AddVar_GetOrientationWXYZ( this_ptr);
-      AddVar_SetViewPlaneNormal_1( this_ptr);
-      AddVar_SetViewPlaneNormal( this_ptr);
-      AddVar_SetViewPlaneNormal_2( this_ptr);
       AddVar_ComputeViewPlaneNormal( this_ptr);
       AddVar_GetCameraLightTransformMatrix( this_ptr);
       AddVar_UpdateViewport( this_ptr);
@@ -200,6 +189,20 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -218,7 +221,7 @@ void WrapClass_vtkCamera::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkCamera::AddVar_New(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -2344,40 +2347,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
 }
 
 //---------------------------------------------------
-//  Wrapping of vtkMatrix4x4 * vtkCamera::GetPerspectiveTransformMatrix(double aspect, double nearz, double farz)
-//---------------------------------------------------
-void WrapClass_vtkCamera::
-    wrap_GetPerspectiveTransformMatrix::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'aspect'")
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'nearz'")
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'farz'")
-  return_comments="returning a variable of type vtkMatrix4x4";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkCamera::
-    wrap_GetPerspectiveTransformMatrix::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>3) ClassHelpAndReturn;
-  int _n=0;
-
-  double aspect;
-  if (!get_val_param<double >(aspect,_p,_n,true,false)) ClassHelpAndReturn;
-
-  double nearz;
-  if (!get_val_param<double >(nearz,_p,_n,true,false)) ClassHelpAndReturn;
-
-  double farz;
-  if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
-
-  vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetPerspectiveTransformMatrix(aspect, nearz, farz);
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
-  return res_var;
-}
-
-//---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkCamera::GetProjectionTransformMatrix(double aspect, double nearz, double farz)
 //---------------------------------------------------
 void WrapClass_vtkCamera::
@@ -2445,40 +2414,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
   return AMILabType<vtkPerspectiveTransform >::CreateVar(res,true);
 }
 */
-
-//---------------------------------------------------
-//  Wrapping of vtkMatrix4x4 * vtkCamera::GetCompositePerspectiveTransformMatrix(double aspect, double nearz, double farz)
-//---------------------------------------------------
-void WrapClass_vtkCamera::
-    wrap_GetCompositePerspectiveTransformMatrix::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'aspect'")
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'nearz'")
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'farz'")
-  return_comments="returning a variable of type vtkMatrix4x4";
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkCamera::
-    wrap_GetCompositePerspectiveTransformMatrix::CallMember( ParamList* _p)
-{
-  if (!_p) ClassHelpAndReturn;
-  if (_p->GetNumParam()>3) ClassHelpAndReturn;
-  int _n=0;
-
-  double aspect;
-  if (!get_val_param<double >(aspect,_p,_n,true,false)) ClassHelpAndReturn;
-
-  double nearz;
-  if (!get_val_param<double >(nearz,_p,_n,true,false)) ClassHelpAndReturn;
-
-  double farz;
-  if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
-
-  vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetCompositePerspectiveTransformMatrix(aspect, nearz, farz);
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
-  return res_var;
-}
 
 //---------------------------------------------------
 //  Wrapping of vtkMatrix4x4 * vtkCamera::GetCompositeProjectionTransformMatrix(double aspect, double nearz, double farz)
@@ -2732,84 +2667,6 @@ BasicVariable::ptr WrapClass_vtkCamera::
 
   double * res =   this->_objectptr->GetObj()->GetOrientationWXYZ();
   return AMILabType<double >::CreateVar(res,true);
-}
-
-//---------------------------------------------------
-//  Wrapping of void vtkCamera::SetViewPlaneNormal(double x, double y, double z)
-//---------------------------------------------------
-void WrapClass_vtkCamera::
-    wrap_SetViewPlaneNormal_1::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'x'")
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'y'")
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'z'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkCamera::
-    wrap_SetViewPlaneNormal_1::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>3) ClassReturnEmptyVar;
-  int _n=0;
-
-  double x;
-  if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
-
-  double y;
-  if (!get_val_param<double >(y,_p,_n,true,true)) ClassReturnEmptyVar;
-
-  double z;
-  if (!get_val_param<double >(z,_p,_n,true,true)) ClassReturnEmptyVar;
-
-  this->_objectptr->GetObj()->SetViewPlaneNormal(x, y, z);
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of multipled defined method:... vtkCamera::SetViewPlaneNormal(...)
-//---------------------------------------------------
-void WrapClass_vtkCamera::
-    wrap_SetViewPlaneNormal::SetParametersComments()
-{}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkCamera::
-    wrap_SetViewPlaneNormal::CallMember( ParamList* _p)
-{
-  BasicVariable::ptr res;
-  WrapClass_vtkCamera::wrap_SetViewPlaneNormal_1 m1(this->_objectptr);
-  res = m1.CallMember(_p);
-  if (!m1.Get_arg_failure()) return res;
-  WrapClass_vtkCamera::wrap_SetViewPlaneNormal_2 m2(this->_objectptr);
-  res = m2.CallMember(_p);
-  if (!m2.Get_arg_failure()) return res;
-  ClassHelpAndReturn;
-}
-
-//---------------------------------------------------
-//  Wrapping of void vtkCamera::SetViewPlaneNormal(double const * a)
-//---------------------------------------------------
-void WrapClass_vtkCamera::
-    wrap_SetViewPlaneNormal_2::SetParametersComments()
-{
-  ADDPARAMCOMMENT_TYPE( double, "parameter named 'a'")
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkCamera::
-    wrap_SetViewPlaneNormal_2::CallMember( ParamList* _p)
-{
-  if (!_p) ClassReturnEmptyVar;
-  if (_p->GetNumParam()>1) ClassReturnEmptyVar;
-  int _n=0;
-
-  boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* a = a_smtptr.get();
-
-  this->_objectptr->GetObj()->SetViewPlaneNormal(a);
-  return BasicVariable::ptr();
 }
 
 //---------------------------------------------------

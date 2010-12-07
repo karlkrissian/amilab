@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -63,7 +63,6 @@ class WrapClass_wxColourBase : public WrapClass<wxColourBase>
 
     // Static methods
     
-    ADD_CLASS_STATICMETHOD(CreateByName,"wxColour wxColourBase::CreateByName(wxString const & name) (http://docs.wxwidgets.org/stable/wx_wxcolourbase.html#createbyname).");
 
 
 
@@ -78,7 +77,6 @@ class WrapClass_wxColourBase : public WrapClass<wxColourBase>
     ADD_CLASS_METHOD(Ok,"bool wxColourBase::Ok()  (http://docs.wxwidgets.org/stable/wx_wxcolourbase.html#ok)")
     ADD_CLASS_METHOD(Alpha,"unsigned char wxColourBase::Alpha()  (http://docs.wxwidgets.org/stable/wx_wxcolourbase.html#alpha)")
     ADD_CLASS_METHOD(GetAsString,"wxString wxColourBase::GetAsString(long int flags = 3)  (http://docs.wxwidgets.org/stable/wx_wxcolourbase.html#getasstring)")
-    ADD_CLASS_METHOD(InitFromName,"void wxColourBase::InitFromName(wxString const & col)  (http://docs.wxwidgets.org/stable/wx_wxcolourbase.html#initfromname)")
 
     // Operators:
     ADD_CLASS_METHOD(__assign__,            "wxColourBase & wxColourBase::operator =(wxColourBase const & param0) (http://docs.wxwidgets.org/stable/wx_wxcolourbase.html#__assign__)")
@@ -87,6 +85,11 @@ class WrapClass_wxColourBase : public WrapClass<wxColourBase>
 
 
     void AddMethods(WrapClass<wxColourBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

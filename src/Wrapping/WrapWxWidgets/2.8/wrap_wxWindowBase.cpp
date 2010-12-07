@@ -92,13 +92,7 @@ Variable<AMIObject>::ptr WrapClass_wxWindowBase::CreateVar( wxWindowBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 {
-  
-      // Add members from wxEvtHandler
-      WrapClass_wxEvtHandler::ptr parent_wxEvtHandler(        boost::dynamic_pointer_cast<WrapClass_wxEvtHandler >(this_ptr));
-      parent_wxEvtHandler->AddMethods(parent_wxEvtHandler);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_CreateBase( this_ptr);
@@ -108,20 +102,12 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
       AddVar_IsBeingDeleted( this_ptr);
       AddVar_SetName( this_ptr);
       AddVar_GetName( this_ptr);
-/* The following types are missing: wxWindowVariant
       AddVar_SetWindowVariant( this_ptr);
-*/
-/* The following types are missing: wxWindowVariant
       AddVar_GetWindowVariant( this_ptr);
-*/
       AddVar_SetId( this_ptr);
       AddVar_GetId( this_ptr);
-/* The following types are missing: wxLayoutDirection
       AddVar_GetLayoutDirection( this_ptr);
-*/
-/* The following types are missing: wxLayoutDirection
       AddVar_SetLayoutDirection( this_ptr);
-*/
       AddVar_AdjustForLayoutDirection( this_ptr);
       AddVar_SetSize_1( this_ptr);
       AddVar_SetSize( this_ptr);
@@ -285,12 +271,8 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
       AddVar_SetForegroundColour( this_ptr);
       AddVar_SetOwnForegroundColour( this_ptr);
       AddVar_GetForegroundColour( this_ptr);
-/* The following types are missing: wxBackgroundStyle
       AddVar_SetBackgroundStyle( this_ptr);
-*/
-/* The following types are missing: wxBackgroundStyle
       AddVar_GetBackgroundStyle( this_ptr);
-*/
       AddVar_HasTransparentBackground( this_ptr);
       AddVar_SetOwnFont( this_ptr);
       AddVar_GetFont( this_ptr);
@@ -308,20 +290,12 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
       AddVar_ClientToScreen_2( this_ptr);
       AddVar_ScreenToClient( this_ptr);
       AddVar_ScreenToClient_2( this_ptr);
-/* The following types are missing: wxHitTest
       AddVar_HitTest_1( this_ptr);
-*/
       AddVar_HitTest( this_ptr);
-/* The following types are missing: wxHitTest
       AddVar_HitTest_2( this_ptr);
-*/
-/* The following types are missing: wxBorder
       AddVar_GetBorder_1( this_ptr);
-*/
       AddVar_GetBorder( this_ptr);
-/* The following types are missing: wxBorder
       AddVar_GetBorder_2( this_ptr);
-*/
       AddVar_UpdateWindowUI( this_ptr);
       AddVar_DoUpdateWindowUI( this_ptr);
       AddVar_PopupMenu_1( this_ptr);
@@ -398,7 +372,48 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvtHandler
+  boost::shared_ptr<wxEvtHandler > parent_wxEvtHandler(  boost::dynamic_pointer_cast<wxEvtHandler >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvtHandler = AMILabType<wxEvtHandler >::CreateVarFromSmtPtr(parent_wxEvtHandler);
+  context->AddVar("wxEvtHandler",var_wxEvtHandler);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvtHandler = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvtHandler);
+  context->AddDefault(obj_wxEvtHandler->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxWindowBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxWindowBase");
+  
+  // Static methods 
+  WrapClass_wxWindowBase::AddVar_NewControlId(amiobject->GetContext());
+  WrapClass_wxWindowBase::AddVar_NextControlId(amiobject->GetContext());
+  WrapClass_wxWindowBase::AddVar_PrevControlId(amiobject->GetContext());
+  WrapClass_wxWindowBase::AddVar_FindFocus(amiobject->GetContext());
+  WrapClass_wxWindowBase::AddVar_DoFindFocus(amiobject->GetContext());
+  WrapClass_wxWindowBase::AddVar_FindWindowById(amiobject->GetContext());
+  WrapClass_wxWindowBase::AddVar_FindWindowByName(amiobject->GetContext());
+  WrapClass_wxWindowBase::AddVar_FindWindowByLabel(amiobject->GetContext());
+  WrapClass_wxWindowBase::AddVar_GetCapture(amiobject->GetContext());
+  WrapClass_wxWindowBase::AddVar_GetClassDefaultAttributes(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -629,7 +644,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
   return res_var;
 }
-/* The following types are missing: wxWindowVariant
 
 //---------------------------------------------------
 //  Wrapping of wxVisualAttributes wxWindowBase::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
@@ -637,7 +651,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_static_GetClassDefaultAttributes::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxWindowVariant, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
   return_comments="returning a variable of type wxVisualAttributes";
 }
 
@@ -649,13 +663,13 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL;
-  if (!get_val_param<wxWindowVariant >(variant,_p,_n,false,false)) ClassHelpAndReturn;
+  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
+  if (!get_val_param<int >(variant_int,_p,_n,false,false)) ClassHelpAndReturn;
+  wxWindowVariant variant = (wxWindowVariant) variant_int;
 
   wxVisualAttributes res =   wxWindowBase::GetClassDefaultAttributes(variant);
   return AMILabType<wxVisualAttributes >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::CreateBase(wxWindowBase * parent, wxWindowID winid, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxPanelNameStr)
@@ -670,7 +684,7 @@ void WrapClass_wxWindowBase::
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:0)")
   ADDPARAMCOMMENT_TYPE( wxValidator, "parameter named 'validator' (def:wxDefaultValidator)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxPanelNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -713,8 +727,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxPanelNameStr) );
 
   bool res =   this->_objectptr->GetObj()->CreateBase(parent, winid, pos, size, style, validator, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -723,8 +736,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_Close::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'force' (def:false)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'force' (def:false)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -735,13 +748,11 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int force_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(force_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool force = (bool) (force_int>0.5);
+  bool force = false;
+  if (!get_val_param<bool >(force,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Close(force);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -750,7 +761,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_Destroy::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -760,8 +771,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Destroy();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -770,7 +780,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_DestroyChildren::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -780,8 +790,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->DestroyChildren();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -790,7 +799,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_IsBeingDeleted::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -800,8 +809,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsBeingDeleted();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -847,7 +855,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxString res =   this->_objectptr->GetObj()->GetName();
   return AMILabType<wxString >::CreateVar(res);
 }
-/* The following types are missing: wxWindowVariant
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetWindowVariant(wxWindowVariant variant)
@@ -855,7 +862,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_SetWindowVariant::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxWindowVariant, "parameter named 'variant'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant'")
 }
 
 //---------------------------------------------------
@@ -866,14 +873,13 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxWindowVariant variant;
-  if (!get_val_param<wxWindowVariant >(variant,_p,_n,true,false)) ClassHelpAndReturn;
+  int variant_int;
+  if (!get_val_param<int >(variant_int,_p,_n,true,false)) ClassHelpAndReturn;
+  wxWindowVariant variant = (wxWindowVariant) variant_int;
 
   this->_objectptr->GetObj()->SetWindowVariant(variant);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxWindowVariant
 
 //---------------------------------------------------
 //  Wrapping of wxWindowVariant wxWindowBase::GetWindowVariant()
@@ -881,7 +887,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_GetWindowVariant::SetParametersComments()
 {
-  return_comments="returning a variable of type wxWindowVariant";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -891,9 +897,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindowVariant res =   this->_objectptr->GetObj()->GetWindowVariant();
-  return AMILabType<wxWindowVariant >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetId(wxWindowID winid)
@@ -937,7 +943,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxWindowID res =   this->_objectptr->GetObj()->GetId();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: wxLayoutDirection
 
 //---------------------------------------------------
 //  Wrapping of wxLayoutDirection wxWindowBase::GetLayoutDirection()
@@ -945,7 +950,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_GetLayoutDirection::SetParametersComments()
 {
-  return_comments="returning a variable of type wxLayoutDirection";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -955,10 +960,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxLayoutDirection res =   this->_objectptr->GetObj()->GetLayoutDirection();
-  return AMILabType<wxLayoutDirection >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: wxLayoutDirection
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::SetLayoutDirection(wxLayoutDirection param0)
@@ -966,7 +970,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_SetLayoutDirection::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxLayoutDirection, "parameter named 'param0'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'param0'")
 }
 
 //---------------------------------------------------
@@ -977,13 +981,13 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxLayoutDirection param0;
-  if (!get_val_param<wxLayoutDirection >(param0,_p,_n,true,false)) ClassHelpAndReturn;
+  int param0_int;
+  if (!get_val_param<int >(param0_int,_p,_n,true,false)) ClassHelpAndReturn;
+  wxLayoutDirection param0 = (wxLayoutDirection) param0_int;
 
   this->_objectptr->GetObj()->SetLayoutDirection(param0);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxCoord wxWindowBase::AdjustForLayoutDirection(wxCoord x, wxCoord width, wxCoord widthTotal)
@@ -2752,8 +2756,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_Show::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2764,13 +2768,11 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int show_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(show_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool show = (bool) (show_int>0.5);
+  bool show = true;
+  if (!get_val_param<bool >(show,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Show(show);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2779,7 +2781,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_Hide::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2789,8 +2791,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Hide();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2799,8 +2800,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_Enable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2811,13 +2812,11 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int enable_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable = true;
+  if (!get_val_param<bool >(enable,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Enable(enable);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2826,7 +2825,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_Disable::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2836,8 +2835,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Disable();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2846,7 +2844,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_IsShown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2856,8 +2854,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsShown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2866,7 +2863,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_IsEnabled::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2876,8 +2873,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEnabled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2886,7 +2882,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_IsShownOnScreen::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2896,8 +2892,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsShownOnScreen();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2997,7 +2992,7 @@ void WrapClass_wxWindowBase::
     wrap_HasFlag::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'flag'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3012,8 +3007,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(flag,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasFlag(flag);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3022,7 +3016,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_IsRetained::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3032,8 +3026,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsRetained();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3043,7 +3036,7 @@ void WrapClass_wxWindowBase::
     wrap_ToggleWindowStyle::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'flag'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3058,8 +3051,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(flag,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ToggleWindowStyle(flag);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3113,7 +3105,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_MakeModal::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'modal' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'modal' (def:true)")
 }
 
 //---------------------------------------------------
@@ -3124,9 +3116,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int modal_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(modal_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool modal = (bool) (modal_int>0.5);
+  bool modal = true;
+  if (!get_val_param<bool >(modal,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->MakeModal(modal);
   return BasicVariable::ptr();
@@ -3138,7 +3129,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_SetThemeEnabled::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enableTheme'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enableTheme'")
 }
 
 //---------------------------------------------------
@@ -3149,9 +3140,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int enableTheme_int;
-  if (!get_val_param<int >(enableTheme_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool enableTheme = (bool) (enableTheme_int>0.5);
+  bool enableTheme;
+  if (!get_val_param<bool >(enableTheme,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetThemeEnabled(enableTheme);
   return BasicVariable::ptr();
@@ -3163,7 +3153,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_GetThemeEnabled::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3173,8 +3163,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetThemeEnabled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3201,7 +3190,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_AcceptsFocus::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3211,8 +3200,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->AcceptsFocus();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3221,7 +3209,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_AcceptsFocusFromKeyboard::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3231,8 +3219,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->AcceptsFocusFromKeyboard();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3449,7 +3436,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_IsTopLevel::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3459,8 +3446,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsTopLevel();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3495,7 +3481,7 @@ void WrapClass_wxWindowBase::
     wrap_Reparent::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindowBase, "parameter named 'newParent'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3511,8 +3497,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxWindowBase* newParent = newParent_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Reparent(newParent);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3716,7 +3701,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_PopEventHandler::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'deleteHandler' (def:false)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'deleteHandler' (def:false)")
   return_comments="returning a variable of type wxEvtHandler";
 }
 
@@ -3728,9 +3713,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int deleteHandler_int = ((false==true)?1:0);;
-  if (!get_val_param<int >(deleteHandler_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool deleteHandler = (bool) (deleteHandler_int>0.5);
+  bool deleteHandler = false;
+  if (!get_val_param<bool >(deleteHandler,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxEvtHandler * res =   this->_objectptr->GetObj()->PopEventHandler(deleteHandler);
   BasicVariable::ptr res_var = WrapClass_wxEvtHandler::CreateVar(res);
@@ -3744,7 +3728,7 @@ void WrapClass_wxWindowBase::
     wrap_RemoveEventHandler::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxEvtHandler, "parameter named 'handler'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3760,8 +3744,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxEvtHandler* handler = handler_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->RemoveEventHandler(handler);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3815,7 +3798,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_Validate::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3825,8 +3808,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Validate();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3835,7 +3817,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_TransferDataToWindow::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3845,8 +3827,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->TransferDataToWindow();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -3855,7 +3836,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_TransferDataFromWindow::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3865,8 +3846,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->TransferDataFromWindow();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4120,7 +4100,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_HasCapture::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4130,8 +4110,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasCapture();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4141,7 +4120,7 @@ void WrapClass_wxWindowBase::
     wrap_RefreshRect::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'eraseBackground' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'eraseBackground' (def:true)")
 }
 
 //---------------------------------------------------
@@ -4156,9 +4135,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxRect const & rect = *rect_smtptr;
 
-  int eraseBackground_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(eraseBackground_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool eraseBackground = (bool) (eraseBackground_int>0.5);
+  bool eraseBackground = true;
+  if (!get_val_param<bool >(eraseBackground,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->RefreshRect(rect, eraseBackground);
   return BasicVariable::ptr();
@@ -4242,7 +4220,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_IsFrozen::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4252,8 +4230,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsFrozen();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4287,7 +4264,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_IsDoubleBuffered::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4297,8 +4274,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsDoubleBuffered();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4387,7 +4363,7 @@ void WrapClass_wxWindowBase::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4405,8 +4381,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->DoIsExposed(x, y);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4440,7 +4415,7 @@ void WrapClass_wxWindowBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4464,8 +4439,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->DoIsExposed(x, y, w, h);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4476,7 +4450,7 @@ void WrapClass_wxWindowBase::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4494,8 +4468,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->IsExposed(x, y);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4535,7 +4508,7 @@ void WrapClass_wxWindowBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'w'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'h'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4559,8 +4532,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(h,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->IsExposed(x, y, w, h);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4570,7 +4542,7 @@ void WrapClass_wxWindowBase::
     wrap_IsExposed_3::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4586,8 +4558,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint const & pt = *pt_smtptr;
 
   bool res =   this->_objectptr->GetObj()->IsExposed(pt);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4597,7 +4568,7 @@ void WrapClass_wxWindowBase::
     wrap_IsExposed_4::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxRect, "parameter named 'rect'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4613,8 +4584,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxRect const & rect = *rect_smtptr;
 
   bool res =   this->_objectptr->GetObj()->IsExposed(rect);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4643,7 +4613,7 @@ void WrapClass_wxWindowBase::
     wrap_SetBackgroundColour::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxColour, "parameter named 'colour'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4659,8 +4629,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxColour const & colour = *colour_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetBackgroundColour(colour);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4713,7 +4682,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_InheritsBackgroundColour::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4723,8 +4692,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->InheritsBackgroundColour();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4733,7 +4701,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_UseBgCol::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4743,8 +4711,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->UseBgCol();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4754,7 +4721,7 @@ void WrapClass_wxWindowBase::
     wrap_SetForegroundColour::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxColour, "parameter named 'colour'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4770,8 +4737,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxColour const & colour = *colour_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetForegroundColour(colour);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4817,7 +4783,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxColour res =   this->_objectptr->GetObj()->GetForegroundColour();
   return AMILabType<wxColour >::CreateVar(res);
 }
-/* The following types are missing: wxBackgroundStyle
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::SetBackgroundStyle(wxBackgroundStyle style)
@@ -4825,8 +4790,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_SetBackgroundStyle::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxBackgroundStyle, "parameter named 'style'")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'style'")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4837,15 +4802,13 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxBackgroundStyle style;
-  if (!get_val_param<wxBackgroundStyle >(style,_p,_n,true,false)) ClassHelpAndReturn;
+  int style_int;
+  if (!get_val_param<int >(style_int,_p,_n,true,false)) ClassHelpAndReturn;
+  wxBackgroundStyle style = (wxBackgroundStyle) style_int;
 
   bool res =   this->_objectptr->GetObj()->SetBackgroundStyle(style);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
-/* The following types are missing: wxBackgroundStyle
 
 //---------------------------------------------------
 //  Wrapping of wxBackgroundStyle wxWindowBase::GetBackgroundStyle()
@@ -4853,7 +4816,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_GetBackgroundStyle::SetParametersComments()
 {
-  return_comments="returning a variable of type wxBackgroundStyle";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -4863,9 +4826,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxBackgroundStyle res =   this->_objectptr->GetObj()->GetBackgroundStyle();
-  return AMILabType<wxBackgroundStyle >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxWindowBase::HasTransparentBackground()
@@ -4873,7 +4836,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_HasTransparentBackground::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4883,8 +4846,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasTransparentBackground();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -4938,7 +4900,7 @@ void WrapClass_wxWindowBase::
     wrap_SetCursor::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxCursor, "parameter named 'cursor'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -4954,8 +4916,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxCursor const & cursor = *cursor_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetCursor(cursor);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5178,7 +5139,6 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint res =   this->_objectptr->GetObj()->ScreenToClient(pt);
   return AMILabType<wxPoint >::CreateVar(res);
 }
-/* The following types are missing: wxHitTest
 
 //---------------------------------------------------
 //  Wrapping of wxHitTest wxWindowBase::HitTest(wxCoord x, wxCoord y)
@@ -5188,7 +5148,7 @@ void WrapClass_wxWindowBase::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type wxHitTest";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -5206,9 +5166,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxHitTest res =   this->_objectptr->GetObj()->HitTest(x, y);
-  return AMILabType<wxHitTest >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxWindowBase::HitTest(...)
@@ -5222,9 +5182,14 @@ BasicVariable::ptr WrapClass_wxWindowBase::
     wrap_HitTest::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxWindowBase::wrap_HitTest_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxWindowBase::wrap_HitTest_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxHitTest
 
 //---------------------------------------------------
 //  Wrapping of wxHitTest wxWindowBase::HitTest(wxPoint const & pt)
@@ -5233,7 +5198,7 @@ void WrapClass_wxWindowBase::
     wrap_HitTest_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pt'")
-  return_comments="returning a variable of type wxHitTest";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -5249,10 +5214,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint const & pt = *pt_smtptr;
 
   wxHitTest res =   this->_objectptr->GetObj()->HitTest(pt);
-  return AMILabType<wxHitTest >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
-/* The following types are missing: wxBorder
 
 //---------------------------------------------------
 //  Wrapping of wxBorder wxWindowBase::GetBorder(long int flags)
@@ -5261,7 +5225,7 @@ void WrapClass_wxWindowBase::
     wrap_GetBorder_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'flags'")
-  return_comments="returning a variable of type wxBorder";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -5277,9 +5241,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   long int flags = flags_long;
 
   wxBorder res =   this->_objectptr->GetObj()->GetBorder(flags);
-  return AMILabType<wxBorder >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxWindowBase::GetBorder(...)
@@ -5293,9 +5257,14 @@ BasicVariable::ptr WrapClass_wxWindowBase::
     wrap_GetBorder::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxWindowBase::wrap_GetBorder_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxWindowBase::wrap_GetBorder_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxBorder
 
 //---------------------------------------------------
 //  Wrapping of wxBorder wxWindowBase::GetBorder()
@@ -5303,7 +5272,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_GetBorder_2::SetParametersComments()
 {
-  return_comments="returning a variable of type wxBorder";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -5313,9 +5282,9 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   wxBorder res =   this->_objectptr->GetObj()->GetBorder();
-  return AMILabType<wxBorder >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowBase::UpdateWindowUI(long int flags = wxUPDATE_UI_NONE)
@@ -5375,7 +5344,7 @@ void WrapClass_wxWindowBase::
 {
   ADDPARAMCOMMENT_TYPE( wxMenu, "parameter named 'menu'")
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'pos' (def:wxDefaultPosition)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5396,8 +5365,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   bool res =   this->_objectptr->GetObj()->PopupMenu(menu, pos);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5430,7 +5398,7 @@ void WrapClass_wxWindowBase::
   ADDPARAMCOMMENT_TYPE( wxMenu, "parameter named 'menu'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'x'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'y'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5452,8 +5420,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->PopupMenu(menu, x, y);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5462,7 +5429,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_HasMultiplePages::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5472,8 +5439,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasMultiplePages();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5483,7 +5449,7 @@ void WrapClass_wxWindowBase::
     wrap_HasScrollbar::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'orient'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5498,8 +5464,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(orient,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasScrollbar(orient);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5509,7 +5474,7 @@ void WrapClass_wxWindowBase::
     wrap_ScrollLines::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5524,8 +5489,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ScrollLines(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5535,7 +5499,7 @@ void WrapClass_wxWindowBase::
     wrap_ScrollPages::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5550,8 +5514,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ScrollPages(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5560,7 +5523,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_LineUp::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5570,8 +5533,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LineUp();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5580,7 +5542,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_LineDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5590,8 +5552,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LineDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5600,7 +5561,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_PageUp::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5610,8 +5571,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->PageUp();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5620,7 +5580,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_PageDown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -5630,8 +5590,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->PageDown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -5839,7 +5798,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_DragAcceptFiles::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'accept'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'accept'")
 }
 
 //---------------------------------------------------
@@ -5850,9 +5809,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int accept_int;
-  if (!get_val_param<int >(accept_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool accept = (bool) (accept_int>0.5);
+  bool accept;
+  if (!get_val_param<bool >(accept,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->DragAcceptFiles(accept);
   return BasicVariable::ptr();
@@ -6040,7 +5998,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_SetConstraintSizes::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'recurse' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'recurse' (def:true)")
 }
 
 //---------------------------------------------------
@@ -6051,9 +6009,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int recurse_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(recurse_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool recurse = (bool) (recurse_int>0.5);
+  bool recurse = true;
+  if (!get_val_param<bool >(recurse,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetConstraintSizes(recurse);
   return BasicVariable::ptr();
@@ -6066,7 +6023,7 @@ void WrapClass_wxWindowBase::
     wrap_LayoutPhase1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'noChanges'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -6082,8 +6039,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int* noChanges = noChanges_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->LayoutPhase1(noChanges);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -6093,7 +6049,7 @@ void WrapClass_wxWindowBase::
     wrap_LayoutPhase2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'noChanges'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -6109,8 +6065,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   int* noChanges = noChanges_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->LayoutPhase2(noChanges);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -6120,7 +6075,7 @@ void WrapClass_wxWindowBase::
     wrap_DoPhase::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'phase'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -6135,8 +6090,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<int >(phase,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->DoPhase(phase);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -6299,7 +6253,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_SetAutoLayout::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'autoLayout'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'autoLayout'")
 }
 
 //---------------------------------------------------
@@ -6310,9 +6264,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int autoLayout_int;
-  if (!get_val_param<int >(autoLayout_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool autoLayout = (bool) (autoLayout_int>0.5);
+  bool autoLayout;
+  if (!get_val_param<bool >(autoLayout,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetAutoLayout(autoLayout);
   return BasicVariable::ptr();
@@ -6324,7 +6277,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_GetAutoLayout::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -6334,8 +6287,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetAutoLayout();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -6344,7 +6296,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_Layout::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -6354,8 +6306,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Layout();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -6365,7 +6316,7 @@ void WrapClass_wxWindowBase::
     wrap_SetSizer::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'deleteOld' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'deleteOld' (def:true)")
 }
 
 //---------------------------------------------------
@@ -6380,9 +6331,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizer* sizer = sizer_smtptr.get();
 
-  int deleteOld_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(deleteOld_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool deleteOld = (bool) (deleteOld_int>0.5);
+  bool deleteOld = true;
+  if (!get_val_param<bool >(deleteOld,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetSizer(sizer, deleteOld);
   return BasicVariable::ptr();
@@ -6395,7 +6345,7 @@ void WrapClass_wxWindowBase::
     wrap_SetSizerAndFit::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxSizer, "parameter named 'sizer'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'deleteOld' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'deleteOld' (def:true)")
 }
 
 //---------------------------------------------------
@@ -6410,9 +6360,8 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxSizer* sizer = sizer_smtptr.get();
 
-  int deleteOld_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(deleteOld_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool deleteOld = (bool) (deleteOld_int>0.5);
+  bool deleteOld = true;
+  if (!get_val_param<bool >(deleteOld,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetSizerAndFit(sizer, deleteOld);
   return BasicVariable::ptr();
@@ -6490,7 +6439,7 @@ void WrapClass_wxWindowBase::
     wrap_SetTransparent::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -6505,8 +6454,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<unsigned char >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->SetTransparent(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -6515,7 +6463,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_CanSetTransparent::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -6525,8 +6473,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->CanSetTransparent();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -6741,7 +6688,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_HasCustomPalette::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -6751,8 +6698,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasCustomPalette();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -6799,7 +6745,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
 void WrapClass_wxWindowBase::
     wrap_ShouldInheritColours::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -6809,8 +6755,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ShouldInheritColours();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

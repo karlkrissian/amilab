@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -56,10 +56,8 @@ class WrapClass_wxMenuItemList : public WrapClass<wxMenuItemList>
     }
 
     
-    /* The following types are missing: wxKeyType
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxMenuItemList_1,"Constructor wxMenuItemList::wxMenuItemList(wxKeyType keyType = wxKEY_NONE) (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#wxmenuitemlist).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxMenuItemList,"Constructor wxMenuItemList::wxMenuItemList() (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#wxmenuitemlist).");
     /// Wrapping of the constructor
@@ -90,58 +88,34 @@ class WrapClass_wxMenuItemList : public WrapClass<wxMenuItemList>
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
     // Adding standard methods
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(GetFirst,"wxwxMenuItemListNode * wxMenuItemList::GetFirst()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#getfirst)")
-*/
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(GetLast,"wxwxMenuItemListNode * wxMenuItemList::GetLast()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#getlast)")
-*/
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(Item,"wxwxMenuItemListNode * wxMenuItemList::Item(size_t index)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#item)")
-*/
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(Append_1,"wxwxMenuItemListNode * wxMenuItemList::Append(wxMenuItem * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#append)")
-*/
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(Insert_1,"wxwxMenuItemListNode * wxMenuItemList::Insert(wxMenuItem * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#insert)")
-*/
     ADD_CLASS_METHOD(Insert,"wxMenuItemList::Insert()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#insert)")
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(Insert_2,"wxwxMenuItemListNode * wxMenuItemList::Insert(size_t pos, wxMenuItem * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#insert)")
-*/
-/* The following types are missing: wxwxMenuItemListNode, wxwxMenuItemListNode
     ADD_CLASS_METHOD(Insert_3,"wxwxMenuItemListNode * wxMenuItemList::Insert(wxwxMenuItemListNode * prev, wxMenuItem * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#insert)")
-*/
     ADD_CLASS_METHOD(Append,"wxMenuItemList::Append()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#append)")
-/* The following types are missing: wxwxMenuItemListNode, void
+/* The following types are missing: void
     ADD_CLASS_METHOD(Append_2,"wxwxMenuItemListNode * wxMenuItemList::Append(long int key, void * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#append)")
 */
-/* The following types are missing: wxwxMenuItemListNode, void
+/* The following types are missing: void
     ADD_CLASS_METHOD(Append_3,"wxwxMenuItemListNode * wxMenuItemList::Append(wxChar const * key, void * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#append)")
 */
-/* The following types are missing: wxwxMenuItemListNode, wxwxMenuItemListNode
     ADD_CLASS_METHOD(DetachNode,"wxwxMenuItemListNode * wxMenuItemList::DetachNode(wxwxMenuItemListNode * node)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#detachnode)")
-*/
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(DeleteNode,"bool wxMenuItemList::DeleteNode(wxwxMenuItemListNode * node)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#deletenode)")
-*/
     ADD_CLASS_METHOD(DeleteObject,"bool wxMenuItemList::DeleteObject(wxMenuItem * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#deleteobject)")
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(Erase,"void wxMenuItemList::Erase(wxwxMenuItemListNode * it)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#erase)")
-*/
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(Find_1,"wxwxMenuItemListNode * wxMenuItemList::Find(wxMenuItem const * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#find)")
-*/
     ADD_CLASS_METHOD(Find,"wxMenuItemList::Find()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#find)")
-/* The following types are missing: wxwxMenuItemListNode
     ADD_CLASS_METHOD(Find_2,"wxwxMenuItemListNode * wxMenuItemList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#find)")
-*/
     ADD_CLASS_METHOD(IndexOf,"int wxMenuItemList::IndexOf(wxMenuItem * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#indexof)")
-/* The following types are missing: _9495
+/* The following types are missing: _9904
     ADD_CLASS_METHOD(Sort_1,"void wxMenuItemList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxMenuItemList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#sort)")
-/* The following types are missing: _7934
+/* The following types are missing: _8388
     ADD_CLASS_METHOD(Sort_2,"void wxMenuItemList::Sort(wxSortFuncFor_wxMenuItemList func)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#sort)")
 */
 /* The following types are missing: iterator
@@ -230,6 +204,11 @@ class WrapClass_wxMenuItemList : public WrapClass<wxMenuItemList>
 
 
     void AddMethods(WrapClass<wxMenuItemList>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

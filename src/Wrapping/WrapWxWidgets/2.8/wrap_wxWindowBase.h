@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -72,9 +72,7 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
     ADD_CLASS_STATICMETHOD(FindWindowByName,"wxWindow * wxWindowBase::FindWindowByName(wxString const & name, wxWindow const * parent = 0l) (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#findwindowbyname).");
     ADD_CLASS_STATICMETHOD(FindWindowByLabel,"wxWindow * wxWindowBase::FindWindowByLabel(wxString const & label, wxWindow const * parent = 0l) (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#findwindowbylabel).");
     ADD_CLASS_STATICMETHOD(GetCapture,"wxWindow * wxWindowBase::GetCapture() (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getcapture).");
-    /* The following types are missing: wxWindowVariant
     ADD_CLASS_STATICMETHOD(GetClassDefaultAttributes,"wxVisualAttributes wxWindowBase::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL) (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getclassdefaultattributes).");
-    */
 
 
 
@@ -88,20 +86,12 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
     ADD_CLASS_METHOD(IsBeingDeleted,"bool wxWindowBase::IsBeingDeleted()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#isbeingdeleted)")
     ADD_CLASS_METHOD(SetName,"void wxWindowBase::SetName(wxString const & name)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setname)")
     ADD_CLASS_METHOD(GetName,"wxString wxWindowBase::GetName()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getname)")
-/* The following types are missing: wxWindowVariant
     ADD_CLASS_METHOD(SetWindowVariant,"void wxWindowBase::SetWindowVariant(wxWindowVariant variant)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setwindowvariant)")
-*/
-/* The following types are missing: wxWindowVariant
     ADD_CLASS_METHOD(GetWindowVariant,"wxWindowVariant wxWindowBase::GetWindowVariant()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getwindowvariant)")
-*/
     ADD_CLASS_METHOD(SetId,"void wxWindowBase::SetId(wxWindowID winid)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setid)")
     ADD_CLASS_METHOD(GetId,"wxWindowID wxWindowBase::GetId()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getid)")
-/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(GetLayoutDirection,"wxLayoutDirection wxWindowBase::GetLayoutDirection()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getlayoutdirection)")
-*/
-/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(SetLayoutDirection,"void wxWindowBase::SetLayoutDirection(wxLayoutDirection param0)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setlayoutdirection)")
-*/
     ADD_CLASS_METHOD(AdjustForLayoutDirection,"wxCoord wxWindowBase::AdjustForLayoutDirection(wxCoord x, wxCoord width, wxCoord widthTotal)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#adjustforlayoutdirection)")
     ADD_CLASS_METHOD(SetSize_1,"void wxWindowBase::SetSize(int x, int y, int width, int height, int sizeFlags = 3)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setsize)")
     ADD_CLASS_METHOD(SetSize,"wxWindowBase::SetSize()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setsize)")
@@ -265,12 +255,8 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
     ADD_CLASS_METHOD(SetForegroundColour,"bool wxWindowBase::SetForegroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setforegroundcolour)")
     ADD_CLASS_METHOD(SetOwnForegroundColour,"void wxWindowBase::SetOwnForegroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setownforegroundcolour)")
     ADD_CLASS_METHOD(GetForegroundColour,"wxColour wxWindowBase::GetForegroundColour()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getforegroundcolour)")
-/* The following types are missing: wxBackgroundStyle
     ADD_CLASS_METHOD(SetBackgroundStyle,"bool wxWindowBase::SetBackgroundStyle(wxBackgroundStyle style)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setbackgroundstyle)")
-*/
-/* The following types are missing: wxBackgroundStyle
     ADD_CLASS_METHOD(GetBackgroundStyle,"wxBackgroundStyle wxWindowBase::GetBackgroundStyle()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getbackgroundstyle)")
-*/
     ADD_CLASS_METHOD(HasTransparentBackground,"bool wxWindowBase::HasTransparentBackground()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#hastransparentbackground)")
     ADD_CLASS_METHOD(SetOwnFont,"void wxWindowBase::SetOwnFont(wxFont const & font)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#setownfont)")
     ADD_CLASS_METHOD(GetFont,"wxFont wxWindowBase::GetFont()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getfont)")
@@ -288,20 +274,12 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
     ADD_CLASS_METHOD(ClientToScreen_2,"wxPoint wxWindowBase::ClientToScreen(wxPoint const & pt)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#clienttoscreen)")
     ADD_CLASS_METHOD(ScreenToClient,"wxWindowBase::ScreenToClient()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#screentoclient)")
     ADD_CLASS_METHOD(ScreenToClient_2,"wxPoint wxWindowBase::ScreenToClient(wxPoint const & pt)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#screentoclient)")
-/* The following types are missing: wxHitTest
     ADD_CLASS_METHOD(HitTest_1,"wxHitTest wxWindowBase::HitTest(wxCoord x, wxCoord y)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#hittest)")
-*/
     ADD_CLASS_METHOD(HitTest,"wxWindowBase::HitTest()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#hittest)")
-/* The following types are missing: wxHitTest
     ADD_CLASS_METHOD(HitTest_2,"wxHitTest wxWindowBase::HitTest(wxPoint const & pt)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#hittest)")
-*/
-/* The following types are missing: wxBorder
     ADD_CLASS_METHOD(GetBorder_1,"wxBorder wxWindowBase::GetBorder(long int flags)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getborder)")
-*/
     ADD_CLASS_METHOD(GetBorder,"wxWindowBase::GetBorder()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getborder)")
-/* The following types are missing: wxBorder
     ADD_CLASS_METHOD(GetBorder_2,"wxBorder wxWindowBase::GetBorder()  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#getborder)")
-*/
     ADD_CLASS_METHOD(UpdateWindowUI,"void wxWindowBase::UpdateWindowUI(long int flags = wxUPDATE_UI_NONE)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#updatewindowui)")
     ADD_CLASS_METHOD(DoUpdateWindowUI,"void wxWindowBase::DoUpdateWindowUI(wxUpdateUIEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#doupdatewindowui)")
     ADD_CLASS_METHOD(PopupMenu_1,"bool wxWindowBase::PopupMenu(wxMenu * menu, wxPoint const & pos = wxDefaultPosition)  (http://docs.wxwidgets.org/stable/wx_wxwindowbase.html#popupmenu)")
@@ -380,6 +358,11 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
 
 
     void AddMethods(WrapClass<wxWindowBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

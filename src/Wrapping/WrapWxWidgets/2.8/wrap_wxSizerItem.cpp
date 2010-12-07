@@ -73,13 +73,7 @@ Variable<AMIObject>::ptr WrapClass_wxSizerItem::CreateVar( wxSizerItem* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxSizerItem::AddMethods(WrapClass<wxSizerItem>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_DeleteWindows( this_ptr);
@@ -126,7 +120,47 @@ void WrapClass_wxSizerItem::AddMethods(WrapClass<wxSizerItem>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxSizerItem::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxSizerItem");
+    WrapClass_wxSizerItem::AddVar_wxSizerItem_1(amiobject->GetContext());
+  WrapClass_wxSizerItem::AddVar_wxSizerItem(amiobject->GetContext());
+  WrapClass_wxSizerItem::AddVar_wxSizerItem_2(amiobject->GetContext());
+  WrapClass_wxSizerItem::AddVar_wxSizerItem_3(amiobject->GetContext());
+  WrapClass_wxSizerItem::AddVar_wxSizerItem_4(amiobject->GetContext());
+  WrapClass_wxSizerItem::AddVar_wxSizerItem_5(amiobject->GetContext());
+  WrapClass_wxSizerItem::AddVar_wxSizerItem_6(amiobject->GetContext());
+  WrapClass_wxSizerItem::AddVar_wxSizerItem_7(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -805,7 +839,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
 void WrapClass_wxSizerItem::
     wrap_IsWindow::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -815,8 +849,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsWindow();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -825,7 +858,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
 void WrapClass_wxSizerItem::
     wrap_IsSizer::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -835,8 +868,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsSizer();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -845,7 +877,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
 void WrapClass_wxSizerItem::
     wrap_IsSpacer::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -855,8 +887,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsSpacer();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1053,7 +1084,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
 void WrapClass_wxSizerItem::
     wrap_IsShown::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1063,8 +1094,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsShown();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1073,7 +1103,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
 void WrapClass_wxSizerItem::
     wrap_Show::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'show'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'show'")
 }
 
 //---------------------------------------------------
@@ -1084,9 +1114,8 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int show_int;
-  if (!get_val_param<int >(show_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool show = (bool) (show_int>0.5);
+  bool show;
+  if (!get_val_param<bool >(show,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Show(show);
   return BasicVariable::ptr();

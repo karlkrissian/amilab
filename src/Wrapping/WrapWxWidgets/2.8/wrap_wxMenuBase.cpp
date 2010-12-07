@@ -22,6 +22,8 @@
 #include "wrap_wxMenuItem.h"
 #include "wrap_wxMenu.h"
 #include "boost/numeric/conversion/cast.hpp"
+#include "wrap_wxMenuItemList.h"
+#include "wrap_wxEvtHandler.h"
 #include "wrap_wxWindow.h"
 #include "wrap_wxMenuBar.h"
 #include "wrap_wxMenuBarBase.h"
@@ -72,19 +74,10 @@ Variable<AMIObject>::ptr WrapClass_wxMenuBase::CreateVar( wxMenuBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxMenuBase::AddMethods(WrapClass<wxMenuBase>::ptr this_ptr )
 {
-  /*
-      // Add members from wxEvtHandler
-      WrapClass_wxEvtHandler::ptr parent_wxEvtHandler(        boost::dynamic_pointer_cast<WrapClass_wxEvtHandler >(this_ptr));
-      parent_wxEvtHandler->AddMethods(parent_wxEvtHandler);
-      */
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
-/* The following types are missing: wxItemKind
       AddVar_Append_1( this_ptr);
-*/
       AddVar_AppendSeparator( this_ptr);
       AddVar_AppendCheckItem( this_ptr);
       AddVar_AppendRadioItem( this_ptr);
@@ -94,18 +87,14 @@ void WrapClass_wxMenuBase::AddMethods(WrapClass<wxMenuBase>::ptr this_ptr )
       AddVar_Break( this_ptr);
       AddVar_Insert_1( this_ptr);
       AddVar_Insert( this_ptr);
-/* The following types are missing: wxItemKind
       AddVar_Insert_2( this_ptr);
-*/
       AddVar_InsertSeparator( this_ptr);
       AddVar_InsertCheckItem( this_ptr);
       AddVar_InsertRadioItem( this_ptr);
       AddVar_Insert_3( this_ptr);
       AddVar_Prepend_1( this_ptr);
       AddVar_Prepend( this_ptr);
-/* The following types are missing: wxItemKind
       AddVar_Prepend_2( this_ptr);
-*/
       AddVar_PrependSeparator( this_ptr);
       AddVar_PrependCheckItem( this_ptr);
       AddVar_PrependRadioItem( this_ptr);
@@ -120,13 +109,9 @@ void WrapClass_wxMenuBase::AddMethods(WrapClass<wxMenuBase>::ptr this_ptr )
       AddVar_Destroy( this_ptr);
       AddVar_Destroy_2( this_ptr);
       AddVar_GetMenuItemCount( this_ptr);
-/* The following types are missing: wxMenuItemList
       AddVar_GetMenuItems_1( this_ptr);
-*/
       AddVar_GetMenuItems( this_ptr);
-/* The following types are missing: wxMenuItemList
       AddVar_GetMenuItems_2( this_ptr);
-*/
       AddVar_FindItem_1( this_ptr);
       AddVar_FindItem( this_ptr);
 /* The following types are missing: wxMenu * *
@@ -143,18 +128,12 @@ void WrapClass_wxMenuBase::AddMethods(WrapClass<wxMenuBase>::ptr this_ptr )
       AddVar_GetHelpString( this_ptr);
       AddVar_SetTitle( this_ptr);
       AddVar_GetTitle( this_ptr);
-/* The following types are missing: wxEvtHandler
       AddVar_SetEventHandler( this_ptr);
-*/
-/* The following types are missing: wxEvtHandler
       AddVar_GetEventHandler( this_ptr);
-*/
       AddVar_SetInvokingWindow( this_ptr);
       AddVar_GetInvokingWindow( this_ptr);
       AddVar_GetStyle( this_ptr);
-/* The following types are missing: wxEvtHandler
       AddVar_UpdateUI( this_ptr);
-*/
       AddVar_GetMenuBar( this_ptr);
       AddVar_Attach( this_ptr);
       AddVar_Detach( this_ptr);
@@ -172,7 +151,43 @@ void WrapClass_wxMenuBase::AddMethods(WrapClass<wxMenuBase>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvtHandler
+  boost::shared_ptr<wxEvtHandler > parent_wxEvtHandler(  boost::dynamic_pointer_cast<wxEvtHandler >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvtHandler = AMILabType<wxEvtHandler >::CreateVarFromSmtPtr(parent_wxEvtHandler);
+  context->AddVar("wxEvtHandler",var_wxEvtHandler);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvtHandler = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvtHandler);
+  context->AddDefault(obj_wxEvtHandler->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxMenuBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxMenuBase");
+    WrapClass_wxMenuBase::AddVar_wxMenuBase_1(amiobject->GetContext());
+  WrapClass_wxMenuBase::AddVar_wxMenuBase(amiobject->GetContext());
+  WrapClass_wxMenuBase::AddVar_wxMenuBase_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxMenuBase::AddVar_LockAccels(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -263,7 +278,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
 void WrapClass_wxMenuBase::
     wrap_static_LockAccels::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'locked'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'locked'")
 }
 
 //---------------------------------------------------
@@ -274,14 +289,12 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int locked_int;
-  if (!get_val_param<int >(locked_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool locked = (bool) (locked_int>0.5);
+  bool locked;
+  if (!get_val_param<bool >(locked,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxMenuBase::LockAccels(locked);
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItem * wxMenuBase::Append(int itemid, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)
@@ -292,7 +305,7 @@ void WrapClass_wxMenuBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help' (def:wxEmptyString)")
-  ADDPARAMCOMMENT_TYPE( wxItemKind, "parameter named 'kind' (def:wxITEM_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'kind' (def:wxITEM_NORMAL)")
   return_comments="returning a variable of type wxMenuItem";
 }
 
@@ -317,14 +330,14 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   // Setting default value if no value is returned
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
-  wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
+  int kind_int = (int) wxITEM_NORMAL;;
+  if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxItemKind kind = (wxItemKind) kind_int;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Append(itemid, text, help, kind);
   BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
   return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItem * wxMenuBase::AppendSeparator()
@@ -470,6 +483,9 @@ BasicVariable::ptr WrapClass_wxMenuBase::
     wrap_Append::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxMenuBase::wrap_Append_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxMenuBase::wrap_Append_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -574,6 +590,9 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   WrapClass_wxMenuBase::wrap_Insert_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxMenuBase::wrap_Insert_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxMenuBase::wrap_Insert_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
@@ -582,7 +601,6 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!m4.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItem * wxMenuBase::Insert(size_t pos, int itemid, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)
@@ -594,7 +612,7 @@ void WrapClass_wxMenuBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help' (def:wxEmptyString)")
-  ADDPARAMCOMMENT_TYPE( wxItemKind, "parameter named 'kind' (def:wxITEM_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'kind' (def:wxITEM_NORMAL)")
   return_comments="returning a variable of type wxMenuItem";
 }
 
@@ -623,14 +641,14 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   // Setting default value if no value is returned
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
-  wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
+  int kind_int = (int) wxITEM_NORMAL;;
+  if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxItemKind kind = (wxItemKind) kind_int;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Insert(pos, itemid, text, help, kind);
   BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
   return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItem * wxMenuBase::InsertSeparator(size_t pos)
@@ -832,6 +850,9 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   WrapClass_wxMenuBase::wrap_Prepend_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxMenuBase::wrap_Prepend_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   WrapClass_wxMenuBase::wrap_Prepend_3 m3(this->_objectptr);
   res = m3.CallMember(_p);
   if (!m3.Get_arg_failure()) return res;
@@ -840,7 +861,6 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!m4.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItem * wxMenuBase::Prepend(int itemid, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)
@@ -851,7 +871,7 @@ void WrapClass_wxMenuBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help' (def:wxEmptyString)")
-  ADDPARAMCOMMENT_TYPE( wxItemKind, "parameter named 'kind' (def:wxITEM_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'kind' (def:wxITEM_NORMAL)")
   return_comments="returning a variable of type wxMenuItem";
 }
 
@@ -876,14 +896,14 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   // Setting default value if no value is returned
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
-  wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
+  int kind_int = (int) wxITEM_NORMAL;;
+  if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxItemKind kind = (wxItemKind) kind_int;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Prepend(itemid, text, help, kind);
   BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
   return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItem * wxMenuBase::PrependSeparator()
@@ -1102,7 +1122,7 @@ void WrapClass_wxMenuBase::
     wrap_Delete_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1117,8 +1137,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Delete(itemid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1149,7 +1168,7 @@ void WrapClass_wxMenuBase::
     wrap_Delete_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxMenuItem, "parameter named 'item'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1165,8 +1184,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxMenuItem* item = item_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Delete(item);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1176,7 +1194,7 @@ void WrapClass_wxMenuBase::
     wrap_Destroy_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1191,8 +1209,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Destroy(itemid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1223,7 +1240,7 @@ void WrapClass_wxMenuBase::
     wrap_Destroy_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxMenuItem, "parameter named 'item'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1239,8 +1256,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxMenuItem* item = item_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Destroy(item);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1262,7 +1278,6 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   long res_long = boost::numeric_cast<long >(res);
   return AMILabType<long >::CreateVar(res_long);
 }
-/* The following types are missing: wxMenuItemList
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItemList const & wxMenuBase::GetMenuItems()
@@ -1282,7 +1297,6 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxMenuItemList const & res =   this->_objectptr->GetObj()->GetMenuItems();
   return AMILabType<wxMenuItemList >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... wxMenuBase::GetMenuItems(...)
@@ -1296,9 +1310,14 @@ BasicVariable::ptr WrapClass_wxMenuBase::
     wrap_GetMenuItems::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxMenuBase::wrap_GetMenuItems_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_wxMenuBase::wrap_GetMenuItems_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: wxMenuItemList
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItemList & wxMenuBase::GetMenuItems()
@@ -1318,7 +1337,6 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxMenuItemList & res =   this->_objectptr->GetObj()->GetMenuItems();
   return AMILabType<wxMenuItemList >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int wxMenuBase::FindItem(wxString const & item)
@@ -1431,7 +1449,7 @@ void WrapClass_wxMenuBase::
     wrap_Enable::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable'")
 }
 
 //---------------------------------------------------
@@ -1445,9 +1463,8 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   int itemid;
   if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int enable_int;
-  if (!get_val_param<int >(enable_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable;
+  if (!get_val_param<bool >(enable,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Enable(itemid, enable);
   return BasicVariable::ptr();
@@ -1460,7 +1477,7 @@ void WrapClass_wxMenuBase::
     wrap_IsEnabled::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1475,8 +1492,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEnabled(itemid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1486,7 +1502,7 @@ void WrapClass_wxMenuBase::
     wrap_Check::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'check'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'check'")
 }
 
 //---------------------------------------------------
@@ -1500,9 +1516,8 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   int itemid;
   if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
-  int check_int;
-  if (!get_val_param<int >(check_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool check = (bool) (check_int>0.5);
+  bool check;
+  if (!get_val_param<bool >(check,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Check(itemid, check);
   return BasicVariable::ptr();
@@ -1515,7 +1530,7 @@ void WrapClass_wxMenuBase::
     wrap_IsChecked::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1530,8 +1545,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!get_val_param<int >(itemid,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsChecked(itemid);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1685,7 +1699,6 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const res =   this->_objectptr->GetObj()->GetTitle();
   return AMILabType<wxString >::CreateVar(res);
 }
-/* The following types are missing: wxEvtHandler
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuBase::SetEventHandler(wxEvtHandler * handler)
@@ -1711,8 +1724,6 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   this->_objectptr->GetObj()->SetEventHandler(handler);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxEvtHandler
 
 //---------------------------------------------------
 //  Wrapping of wxEvtHandler * wxMenuBase::GetEventHandler()
@@ -1730,9 +1741,9 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvtHandler * res =   this->_objectptr->GetObj()->GetEventHandler();
-  return AMILabType<wxEvtHandler >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxEvtHandler::CreateVar(res);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuBase::SetInvokingWindow(wxWindow * win)
@@ -1798,7 +1809,6 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   long res_long = res;
   return AMILabType<long >::CreateVar(res_long);
 }
-/* The following types are missing: wxEvtHandler
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuBase::UpdateUI(wxEvtHandler * source = 0u)
@@ -1824,7 +1834,6 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   this->_objectptr->GetObj()->UpdateUI(source);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxMenuBar * wxMenuBase::GetMenuBar()
@@ -1895,7 +1904,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
 void WrapClass_wxMenuBase::
     wrap_IsAttached::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1905,8 +1914,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsAttached();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1994,7 +2002,7 @@ void WrapClass_wxMenuBase::
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'checked' (def:-0x00000000000000001)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -2012,8 +2020,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!get_val_param<int >(checked,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->SendEvent(itemid, checked);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -2025,7 +2032,7 @@ void WrapClass_wxMenuBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'isCheckable'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'isCheckable'")
 }
 
 //---------------------------------------------------
@@ -2047,9 +2054,8 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & help = *help_smtptr;
 
-  int isCheckable_int;
-  if (!get_val_param<int >(isCheckable_int,_p,_n,true,true)) ClassReturnEmptyVar;
-  bool isCheckable = (bool) (isCheckable_int>0.5);
+  bool isCheckable;
+  if (!get_val_param<bool >(isCheckable,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Append(itemid, text, help, isCheckable);
   return BasicVariable::ptr();
@@ -2107,7 +2113,7 @@ void WrapClass_wxMenuBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'isCheckable'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'isCheckable'")
 }
 
 //---------------------------------------------------
@@ -2133,9 +2139,8 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & help = *help_smtptr;
 
-  int isCheckable_int;
-  if (!get_val_param<int >(isCheckable_int,_p,_n,true,true)) ClassReturnEmptyVar;
-  bool isCheckable = (bool) (isCheckable_int>0.5);
+  bool isCheckable;
+  if (!get_val_param<bool >(isCheckable,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Insert(pos, itemid, text, help, isCheckable);
   return BasicVariable::ptr();
@@ -2150,7 +2155,7 @@ void WrapClass_wxMenuBase::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'itemid'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'text'")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'isCheckable'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'isCheckable'")
 }
 
 //---------------------------------------------------
@@ -2172,9 +2177,8 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!get_val_smtptr_param<wxString >(help_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & help = *help_smtptr;
 
-  int isCheckable_int;
-  if (!get_val_param<int >(isCheckable_int,_p,_n,true,true)) ClassReturnEmptyVar;
-  bool isCheckable = (bool) (isCheckable_int>0.5);
+  bool isCheckable;
+  if (!get_val_param<bool >(isCheckable,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Prepend(itemid, text, help, isCheckable);
   return BasicVariable::ptr();

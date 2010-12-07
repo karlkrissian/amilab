@@ -61,13 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxActivateEvent::CreateVar( wxActivateEvent* 
 //----------------------------------------------------------------------
 void WrapClass_wxActivateEvent::AddMethods(WrapClass<wxActivateEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -79,7 +73,42 @@ void WrapClass_wxActivateEvent::AddMethods(WrapClass<wxActivateEvent>::ptr this_
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxActivateEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxActivateEvent");
+    WrapClass_wxActivateEvent::AddVar_wxActivateEvent_1(amiobject->GetContext());
+  WrapClass_wxActivateEvent::AddVar_wxActivateEvent(amiobject->GetContext());
+  WrapClass_wxActivateEvent::AddVar_wxActivateEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -93,7 +122,7 @@ void WrapClass_wxActivateEvent::
     wrap_wxActivateEvent_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'type' (def:wxEVT_NULL)")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'active' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'active' (def:true)")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'Id' (def:0)")
 }
 
@@ -108,9 +137,8 @@ BasicVariable::ptr WrapClass_wxActivateEvent::
   int type = wxEVT_NULL;
   if (!get_val_param<int >(type,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  int active_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(active_int,_p,_n,false,true)) ClassReturnEmptyVar;
-  bool active = (bool) (active_int>0.5);
+  bool active = true;
+  if (!get_val_param<bool >(active,_p,_n,false,true)) ClassReturnEmptyVar;
 
   int Id = 0;
   if (!get_val_param<int >(Id,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -189,7 +217,7 @@ BasicVariable::ptr WrapClass_wxActivateEvent::
 void WrapClass_wxActivateEvent::
     wrap_GetActive::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -199,8 +227,7 @@ BasicVariable::ptr WrapClass_wxActivateEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetActive();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

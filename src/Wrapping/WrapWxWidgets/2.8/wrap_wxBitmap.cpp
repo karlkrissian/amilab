@@ -66,13 +66,7 @@ Variable<AMIObject>::ptr WrapClass_wxBitmap::CreateVar( wxBitmap* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxBitmap::AddMethods(WrapClass<wxBitmap>::ptr this_ptr )
 {
-  
-      // Add members from wxBitmapBase
-      WrapClass_wxBitmapBase::ptr parent_wxBitmapBase(        boost::dynamic_pointer_cast<WrapClass_wxBitmapBase >(this_ptr));
-      parent_wxBitmapBase->AddMethods(parent_wxBitmapBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -88,12 +82,8 @@ void WrapClass_wxBitmap::AddMethods(WrapClass<wxBitmap>::ptr this_ptr )
       AddVar_GetMask( this_ptr);
       AddVar_SetMask( this_ptr);
       AddVar_GetSubBitmap( this_ptr);
-/* The following types are missing: wxBitmapType
       AddVar_SaveFile( this_ptr);
-*/
-/* The following types are missing: wxBitmapType
       AddVar_LoadFile( this_ptr);
-*/
       AddVar_GetPalette( this_ptr);
       AddVar_SetPalette( this_ptr);
       AddVar_GetColourMap( this_ptr);
@@ -131,7 +121,50 @@ void WrapClass_wxBitmap::AddMethods(WrapClass<wxBitmap>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxBitmapBase
+  boost::shared_ptr<wxBitmapBase > parent_wxBitmapBase(  boost::dynamic_pointer_cast<wxBitmapBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxBitmapBase = AMILabType<wxBitmapBase >::CreateVarFromSmtPtr(parent_wxBitmapBase);
+  context->AddVar("wxBitmapBase",var_wxBitmapBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxBitmapBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxBitmapBase);
+  context->AddDefault(obj_wxBitmapBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxBitmap::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxBitmap");
+    WrapClass_wxBitmap::AddVar_wxBitmap_1(amiobject->GetContext());
+  WrapClass_wxBitmap::AddVar_wxBitmap(amiobject->GetContext());
+  WrapClass_wxBitmap::AddVar_wxBitmap_2(amiobject->GetContext());
+  WrapClass_wxBitmap::AddVar_wxBitmap_3(amiobject->GetContext());
+  WrapClass_wxBitmap::AddVar_wxBitmap_4(amiobject->GetContext());
+  /* Types are missing
+  WrapClass_wxBitmap::AddVar_wxBitmap_5(amiobject->GetContext());
+  */
+  WrapClass_wxBitmap::AddVar_wxBitmap_6(amiobject->GetContext());
+  WrapClass_wxBitmap::AddVar_wxBitmap_7(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxBitmap::AddVar_InitStandardHandlers(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -188,6 +221,9 @@ BasicVariable::ptr WrapClass_wxBitmap::
   WrapClass_wxBitmap::wrap_wxBitmap_4 m4;
   res = m4.CallMember(_p);
   if (!m4.Get_arg_failure()) return res;
+  WrapClass_wxBitmap::wrap_wxBitmap_6 m6;
+  res = m6.CallMember(_p);
+  if (!m6.Get_arg_failure()) return res;
   WrapClass_wxBitmap::wrap_wxBitmap_7 m7;
   res = m7.CallMember(_p);
   if (!m7.Get_arg_failure()) return res;
@@ -311,7 +347,6 @@ BasicVariable::ptr WrapClass_wxBitmap::
   return res;
 }
 */
-/* The following types are missing: wxBitmapType
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxBitmap::wxBitmap(wxString const & filename, wxBitmapType type = wxBITMAP_TYPE_XPM)
@@ -320,7 +355,7 @@ void WrapClass_wxBitmap::
     wrap_wxBitmap_6::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'filename'")
-  ADDPARAMCOMMENT_TYPE( wxBitmapType, "parameter named 'type' (def:wxBITMAP_TYPE_XPM)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'type' (def:wxBITMAP_TYPE_XPM)")
 }
 
 //---------------------------------------------------
@@ -335,14 +370,14 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (!get_val_smtptr_param<wxString >(filename_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & filename = *filename_smtptr;
 
-  wxBitmapType type = wxBITMAP_TYPE_XPM;
-  if (!get_val_param<wxBitmapType >(type,_p,_n,false,true)) ClassReturnEmptyVar;
+  int type_int = (int) wxBITMAP_TYPE_XPM;;
+  if (!get_val_param<int >(type_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxBitmapType type = (wxBitmapType) type_int;
 
   wxBitmap* _newobj = new wxBitmap(filename, type);
   BasicVariable::ptr res = WrapClass_wxBitmap::CreateVar(_newobj);
   return res;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxBitmap::wxBitmap(wxImage const & image, int depth = -0x00000000000000001)
@@ -414,7 +449,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
 void WrapClass_wxBitmap::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -424,8 +459,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -434,7 +468,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
 void WrapClass_wxBitmap::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -444,8 +478,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -457,7 +490,7 @@ void WrapClass_wxBitmap::
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'width'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'height'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'depth' (def:-0x00000000000000001)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -478,8 +511,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (!get_val_param<int >(depth,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Create(width, height, depth);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -565,7 +597,7 @@ void WrapClass_wxBitmap::
     wrap_CopyFromIcon::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxIcon, "parameter named 'icon'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -581,8 +613,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   wxIcon const & icon = *icon_smtptr;
 
   bool res =   this->_objectptr->GetObj()->CopyFromIcon(icon);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -655,7 +686,6 @@ BasicVariable::ptr WrapClass_wxBitmap::
   wxBitmap res =   this->_objectptr->GetObj()->GetSubBitmap(rect);
   return AMILabType<wxBitmap >::CreateVar(res);
 }
-/* The following types are missing: wxBitmapType
 
 //---------------------------------------------------
 //  Wrapping of bool wxBitmap::SaveFile(wxString const & name, wxBitmapType type, wxPalette const * palette = 0u)
@@ -664,9 +694,9 @@ void WrapClass_wxBitmap::
     wrap_SaveFile::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
-  ADDPARAMCOMMENT_TYPE( wxBitmapType, "parameter named 'type'")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'type'")
   ADDPARAMCOMMENT_TYPE( wxPalette, "parameter named 'palette' (def:0u)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -681,19 +711,17 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
-  wxBitmapType type;
-  if (!get_val_param<wxBitmapType >(type,_p,_n,true,false)) ClassHelpAndReturn;
+  int type_int;
+  if (!get_val_param<int >(type_int,_p,_n,true,false)) ClassHelpAndReturn;
+  wxBitmapType type = (wxBitmapType) type_int;
 
   boost::shared_ptr<wxPalette > palette_smtptr;
   if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxPalette* palette = palette_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->SaveFile(name, type, palette);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
-/* The following types are missing: wxBitmapType
 
 //---------------------------------------------------
 //  Wrapping of bool wxBitmap::LoadFile(wxString const & name, wxBitmapType type = wxBITMAP_TYPE_XPM)
@@ -702,8 +730,8 @@ void WrapClass_wxBitmap::
     wrap_LoadFile::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name'")
-  ADDPARAMCOMMENT_TYPE( wxBitmapType, "parameter named 'type' (def:wxBITMAP_TYPE_XPM)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'type' (def:wxBITMAP_TYPE_XPM)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -718,14 +746,13 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
-  wxBitmapType type = wxBITMAP_TYPE_XPM;
-  if (!get_val_param<wxBitmapType >(type,_p,_n,false,false)) ClassHelpAndReturn;
+  int type_int = (int) wxBITMAP_TYPE_XPM;;
+  if (!get_val_param<int >(type_int,_p,_n,false,false)) ClassHelpAndReturn;
+  wxBitmapType type = (wxBitmapType) type_int;
 
   bool res =   this->_objectptr->GetObj()->LoadFile(name, type);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxPalette * wxBitmap::GetPalette()
@@ -949,7 +976,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
 void WrapClass_wxBitmap::
     wrap_HasPixmap::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -959,8 +986,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasPixmap();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -969,7 +995,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
 void WrapClass_wxBitmap::
     wrap_HasPixbuf::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -979,8 +1005,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasPixbuf();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /* The following types are missing: _GdkPixbuf
 
@@ -1113,7 +1138,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
 void WrapClass_wxBitmap::
     wrap_HasAlpha::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1123,8 +1148,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->HasAlpha();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -56,10 +56,8 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
     }
 
     
-    /* The following types are missing: wxKeyType
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList_1,"Constructor wxSizerItemList::wxSizerItemList(wxKeyType keyType = wxKEY_NONE) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList,"Constructor wxSizerItemList::wxSizerItemList() (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
     /// Wrapping of the constructor
@@ -113,11 +111,11 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
     ADD_CLASS_METHOD(Find,"wxSizerItemList::Find()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxwxSizerItemListNode * wxSizerItemList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxSizerItemList::IndexOf(wxSizerItem * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#indexof)")
-/* The following types are missing: _9495
+/* The following types are missing: _9904
     ADD_CLASS_METHOD(Sort_1,"void wxSizerItemList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxSizerItemList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
-/* The following types are missing: _8775
+/* The following types are missing: _9172
     ADD_CLASS_METHOD(Sort_2,"void wxSizerItemList::Sort(wxSortFuncFor_wxSizerItemList func)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
 */
 /* The following types are missing: iterator
@@ -206,6 +204,11 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
 
 
     void AddMethods(WrapClass<wxSizerItemList>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

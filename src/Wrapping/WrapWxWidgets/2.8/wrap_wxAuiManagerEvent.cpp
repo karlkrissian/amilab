@@ -64,13 +64,7 @@ Variable<AMIObject>::ptr WrapClass_wxAuiManagerEvent::CreateVar( wxAuiManagerEve
 //----------------------------------------------------------------------
 void WrapClass_wxAuiManagerEvent::AddMethods(WrapClass<wxAuiManagerEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -99,57 +93,97 @@ void WrapClass_wxAuiManagerEvent::AddMethods(WrapClass<wxAuiManagerEvent>::ptr t
       
       // Adding public member manager
       boost::shared_ptr<wxAuiManager > var_manager_ptr(GetObj()->manager, smartpointer_nodeleter<wxAuiManager >());
-      BasicVariable::ptr var_manager = AMILabType<wxAuiManager >::CreateVarFromSmtPtr(var_manager_ptr);
-      if (var_manager.get()) {
-        var_manager->Rename("manager");
-        context->AddVar(var_manager,context);
+      if (var_manager_ptr.get()) {
+        BasicVariable::ptr var_manager = AMILabType<wxAuiManager >::CreateVarFromSmtPtr(var_manager_ptr);
+        if (var_manager.get()) {
+          var_manager->Rename("manager");
+          context->AddVar(var_manager,context);
+        }
       }
       
       // Adding public member pane
       boost::shared_ptr<wxAuiPaneInfo > var_pane_ptr(GetObj()->pane, smartpointer_nodeleter<wxAuiPaneInfo >());
-      BasicVariable::ptr var_pane = AMILabType<wxAuiPaneInfo >::CreateVarFromSmtPtr(var_pane_ptr);
-      if (var_pane.get()) {
-        var_pane->Rename("pane");
-        context->AddVar(var_pane,context);
+      if (var_pane_ptr.get()) {
+        BasicVariable::ptr var_pane = AMILabType<wxAuiPaneInfo >::CreateVarFromSmtPtr(var_pane_ptr);
+        if (var_pane.get()) {
+          var_pane->Rename("pane");
+          context->AddVar(var_pane,context);
+        }
       }
       
       // Adding public member button
       boost::shared_ptr<int > var_button_ptr(&GetObj()->button, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_button = AMILabType<int >::CreateVarFromSmtPtr(var_button_ptr);
-      if (var_button.get()) {
-        var_button->Rename("button");
-        context->AddVar(var_button,context);
+      if (var_button_ptr.get()) {
+        BasicVariable::ptr var_button = AMILabType<int >::CreateVarFromSmtPtr(var_button_ptr);
+        if (var_button.get()) {
+          var_button->Rename("button");
+          context->AddVar(var_button,context);
+        }
       }
       
-      /* type not available
       // Adding public member veto_flag
       boost::shared_ptr<bool > var_veto_flag_ptr(&GetObj()->veto_flag, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_veto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_veto_flag_ptr);
-      if (var_veto_flag.get()) {
-        var_veto_flag->Rename("veto_flag");
-        context->AddVar(var_veto_flag,context);
+      if (var_veto_flag_ptr.get()) {
+        BasicVariable::ptr var_veto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_veto_flag_ptr);
+        if (var_veto_flag.get()) {
+          var_veto_flag->Rename("veto_flag");
+          context->AddVar(var_veto_flag,context);
+        }
       }
-      */
       
-      /* type not available
       // Adding public member canveto_flag
       boost::shared_ptr<bool > var_canveto_flag_ptr(&GetObj()->canveto_flag, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_canveto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_canveto_flag_ptr);
-      if (var_canveto_flag.get()) {
-        var_canveto_flag->Rename("canveto_flag");
-        context->AddVar(var_canveto_flag,context);
+      if (var_canveto_flag_ptr.get()) {
+        BasicVariable::ptr var_canveto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_canveto_flag_ptr);
+        if (var_canveto_flag.get()) {
+          var_canveto_flag->Rename("canveto_flag");
+          context->AddVar(var_canveto_flag,context);
+        }
       }
-      */
       
       // Adding public member dc
       boost::shared_ptr<wxDC > var_dc_ptr(GetObj()->dc, smartpointer_nodeleter<wxDC >());
-      BasicVariable::ptr var_dc = AMILabType<wxDC >::CreateVarFromSmtPtr(var_dc_ptr);
-      if (var_dc.get()) {
-        var_dc->Rename("dc");
-        context->AddVar(var_dc,context);
+      if (var_dc_ptr.get()) {
+        BasicVariable::ptr var_dc = AMILabType<wxDC >::CreateVarFromSmtPtr(var_dc_ptr);
+        if (var_dc.get()) {
+          var_dc->Rename("dc");
+          context->AddVar(var_dc,context);
+        }
       }
 
+
+  // Adding Bases
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAuiManagerEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAuiManagerEvent");
+    WrapClass_wxAuiManagerEvent::AddVar_wxAuiManagerEvent_1(amiobject->GetContext());
+  WrapClass_wxAuiManagerEvent::AddVar_wxAuiManagerEvent(amiobject->GetContext());
+  WrapClass_wxAuiManagerEvent::AddVar_wxAuiManagerEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -448,7 +482,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
 void WrapClass_wxAuiManagerEvent::
     wrap_Veto::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'veto' (def:true)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'veto' (def:true)")
 }
 
 //---------------------------------------------------
@@ -459,9 +493,8 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int veto_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(veto_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool veto = (bool) (veto_int>0.5);
+  bool veto = true;
+  if (!get_val_param<bool >(veto,_p,_n,false,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Veto(veto);
   return BasicVariable::ptr();
@@ -473,7 +506,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
 void WrapClass_wxAuiManagerEvent::
     wrap_GetVeto::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -483,8 +516,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetVeto();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -493,7 +525,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
 void WrapClass_wxAuiManagerEvent::
     wrap_SetCanVeto::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'can_veto'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'can_veto'")
 }
 
 //---------------------------------------------------
@@ -504,9 +536,8 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int can_veto_int;
-  if (!get_val_param<int >(can_veto_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool can_veto = (bool) (can_veto_int>0.5);
+  bool can_veto;
+  if (!get_val_param<bool >(can_veto,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetCanVeto(can_veto);
   return BasicVariable::ptr();
@@ -518,7 +549,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
 void WrapClass_wxAuiManagerEvent::
     wrap_CanVeto::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -528,8 +559,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->CanVeto();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

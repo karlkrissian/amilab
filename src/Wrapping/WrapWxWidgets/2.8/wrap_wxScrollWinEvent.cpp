@@ -61,13 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxScrollWinEvent::CreateVar( wxScrollWinEvent
 //----------------------------------------------------------------------
 void WrapClass_wxScrollWinEvent::AddMethods(WrapClass<wxScrollWinEvent>::ptr this_ptr )
 {
-  
-      // Add members from wxEvent
-      WrapClass_wxEvent::ptr parent_wxEvent(        boost::dynamic_pointer_cast<WrapClass_wxEvent >(this_ptr));
-      parent_wxEvent->AddMethods(parent_wxEvent);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -81,28 +75,43 @@ void WrapClass_wxScrollWinEvent::AddMethods(WrapClass<wxScrollWinEvent>::ptr thi
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member m_commandInt
-//       boost::shared_ptr<int > var_m_commandInt_ptr(&GetObj()->m_commandInt, smartpointer_nodeleter<int >());
-//       BasicVariable::ptr var_m_commandInt = AMILabType<int >::CreateVarFromSmtPtr(var_m_commandInt_ptr);
-//       if (var_m_commandInt.get()) {
-//         var_m_commandInt->Rename("m_commandInt");
-//         context->AddVar(var_m_commandInt,context);
-//       }
-      
-      // Adding public member m_extraLong
-//       boost::shared_ptr<long int > var_m_extraLong_ptr(&GetObj()->m_extraLong, smartpointer_nodeleter<long int >());
-//       BasicVariable::ptr var_m_extraLong = AMILabType<long int >::CreateVarFromSmtPtr(var_m_extraLong_ptr);
-//       if (var_m_extraLong.get()) {
-//         var_m_extraLong->Rename("m_extraLong");
-//         context->AddVar(var_m_extraLong,context);
-//       }
+  
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvent
+  boost::shared_ptr<wxEvent > parent_wxEvent(  boost::dynamic_pointer_cast<wxEvent >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvent = AMILabType<wxEvent >::CreateVarFromSmtPtr(parent_wxEvent);
+  context->AddVar("wxEvent",var_wxEvent);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvent = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvent);
+  context->AddDefault(obj_wxEvent->Pointer()->GetContext());
 
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxScrollWinEvent::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxScrollWinEvent");
+    WrapClass_wxScrollWinEvent::AddVar_wxScrollWinEvent_1(amiobject->GetContext());
+  WrapClass_wxScrollWinEvent::AddVar_wxScrollWinEvent(amiobject->GetContext());
+  WrapClass_wxScrollWinEvent::AddVar_wxScrollWinEvent_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS

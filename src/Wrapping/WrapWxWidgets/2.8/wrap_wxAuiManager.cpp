@@ -77,13 +77,7 @@ Variable<AMIObject>::ptr WrapClass_wxAuiManager::CreateVar( wxAuiManager* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxAuiManager::AddMethods(WrapClass<wxAuiManager>::ptr this_ptr )
 {
-  
-      // Add members from wxEvtHandler
-      WrapClass_wxEvtHandler::ptr parent_wxEvtHandler(        boost::dynamic_pointer_cast<WrapClass_wxEvtHandler >(this_ptr));
-      parent_wxEvtHandler->AddMethods(parent_wxEvtHandler);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_UnInit( this_ptr);
@@ -127,7 +121,41 @@ void WrapClass_wxAuiManager::AddMethods(WrapClass<wxAuiManager>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvtHandler
+  boost::shared_ptr<wxEvtHandler > parent_wxEvtHandler(  boost::dynamic_pointer_cast<wxEvtHandler >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvtHandler = AMILabType<wxEvtHandler >::CreateVarFromSmtPtr(parent_wxEvtHandler);
+  context->AddVar("wxEvtHandler",var_wxEvtHandler);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvtHandler = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvtHandler);
+  context->AddDefault(obj_wxEvtHandler->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAuiManager::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAuiManager");
+    WrapClass_wxAuiManager::AddVar_wxAuiManager(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxAuiManager::AddVar_GetManager(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -415,7 +443,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   wxString const & name = *name_smtptr;
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->GetPane(name);
-  return AMILabType<wxAuiPaneInfo >::CreateVar(&res);
+  return AMILabType<wxAuiPaneInfo >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -445,7 +473,7 @@ void WrapClass_wxAuiManager::
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
   ADDPARAMCOMMENT_TYPE( wxAuiPaneInfo, "parameter named 'pane_info'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -465,8 +493,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   wxAuiPaneInfo const & pane_info = *pane_info_smtptr;
 
   bool res =   this->_objectptr->GetObj()->AddPane(window, pane_info);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -502,7 +529,7 @@ void WrapClass_wxAuiManager::
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
   ADDPARAMCOMMENT_TYPE( wxAuiPaneInfo, "parameter named 'pane_info'")
   ADDPARAMCOMMENT_TYPE( wxPoint, "parameter named 'drop_pos'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -526,8 +553,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   wxPoint const & drop_pos = *drop_pos_smtptr;
 
   bool res =   this->_objectptr->GetObj()->AddPane(window, pane_info, drop_pos);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -539,7 +565,7 @@ void WrapClass_wxAuiManager::
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'direction' (def:wxLEFT)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'caption' (def:wxEmptyString)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -563,8 +589,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   wxString const & caption = ( caption_smtptr.get() ? (*caption_smtptr) : wxString(wxEmptyString) );
 
   bool res =   this->_objectptr->GetObj()->AddPane(window, direction, caption);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -576,7 +601,7 @@ void WrapClass_wxAuiManager::
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
   ADDPARAMCOMMENT_TYPE( wxAuiPaneInfo, "parameter named 'insert_location'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'insert_level' (def:wxAUI_INSERT_PANE)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -599,8 +624,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!get_val_param<int >(insert_level,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->InsertPane(window, insert_location, insert_level);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -610,7 +634,7 @@ void WrapClass_wxAuiManager::
     wrap_DetachPane::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxWindow, "parameter named 'window'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -626,8 +650,7 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   wxWindow* window = window_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->DetachPane(window);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -729,8 +752,8 @@ void WrapClass_wxAuiManager::
     wrap_LoadPerspective::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'perspective'")
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'update' (def:true)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'update' (def:true)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -745,13 +768,11 @@ BasicVariable::ptr WrapClass_wxAuiManager::
   if (!get_val_smtptr_param<wxString >(perspective_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & perspective = *perspective_smtptr;
 
-  int update_int = ((true==true)?1:0);;
-  if (!get_val_param<int >(update_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool update = (bool) (update_int>0.5);
+  bool update = true;
+  if (!get_val_param<bool >(update,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->LoadPerspective(perspective, update);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

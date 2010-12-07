@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -57,7 +57,7 @@ class WrapClass_wxHelpEvent : public WrapClass<wxHelpEvent>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxHelpEvent_1,"Constructor wxHelpEvent::wxHelpEvent(wxEventType type = wxEVT_NULL, wxWindowID winid = 0, wxPoint const & pt = wxDefaultPosition, wxHelpEvent::Origin origin = Origin_Unknown) (http://docs.wxwidgets.org/stable/wx_wxhelpevent.html#wxhelpevent).");
+    ADD_CLASS_CONSTRUCTOR(wxHelpEvent_1,"Constructor wxHelpEvent::wxHelpEvent(wxEventType type = wxEVT_NULL, wxWindowID winid = 0, wxPoint const & pt = wxDefaultPosition, wxHelpEvent::Origin origin = wxHelpEvent::Origin_Unknown) (http://docs.wxwidgets.org/stable/wx_wxhelpevent.html#wxhelpevent).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxHelpEvent,"Constructor wxHelpEvent::wxHelpEvent() (http://docs.wxwidgets.org/stable/wx_wxhelpevent.html#wxhelpevent).");
     /// Wrapping of the constructor
@@ -94,6 +94,11 @@ class WrapClass_wxHelpEvent : public WrapClass<wxHelpEvent>
 
 
     void AddMethods(WrapClass<wxHelpEvent>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

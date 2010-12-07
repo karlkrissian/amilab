@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -56,10 +56,8 @@ class WrapClass_wxMenuItem : public WrapClass<wxMenuItem>
     }
 
     
-    /* The following types are missing: wxItemKind
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxMenuItem_1,"Constructor wxMenuItem::wxMenuItem(wxMenu * parentMenu = 0u, int id = wxID_SEPARATOR, wxString const & text = wxEmptyString, wxString const & help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL, wxMenu * subMenu = 0u) (http://docs.wxwidgets.org/stable/wx_wxmenuitem.html#wxmenuitem).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxMenuItem,"Constructor wxMenuItem::wxMenuItem() (http://docs.wxwidgets.org/stable/wx_wxmenuitem.html#wxmenuitem).");
     /// Wrapping of the constructor
@@ -107,6 +105,11 @@ class WrapClass_wxMenuItem : public WrapClass<wxMenuItem>
 
 
     void AddMethods(WrapClass<wxMenuItem>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

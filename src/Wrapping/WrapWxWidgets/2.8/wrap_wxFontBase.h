@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -63,29 +63,17 @@ class WrapClass_wxFontBase : public WrapClass<wxFontBase>
 
     // Static methods
     
-    /* The following types are missing: wxFontEncoding
     ADD_CLASS_STATICMETHOD(New_1,"wxFont * wxFontBase::New(int pointSize, int family, int style, int weight, bool underlined = false, wxString const & face = wxEmptyString, wxFontEncoding encoding = wxFONTENCODING_DEFAULT) (http://docs.wxwidgets.org/stable/wx_wxfontbase.html#new).");
-    */
     ADD_CLASS_STATICMETHOD(New,"wxFontBase::New() (http://docs.wxwidgets.org/stable/wx_wxfontbase.html#new).");
-    /* The following types are missing: wxFontFamily, wxFontEncoding
     ADD_CLASS_STATICMETHOD(New_2,"wxFont * wxFontBase::New(int pointSize, wxFontFamily family, int flags = wxFONTFLAG_DEFAULT, wxString const & face = wxEmptyString, wxFontEncoding encoding = wxFONTENCODING_DEFAULT) (http://docs.wxwidgets.org/stable/wx_wxfontbase.html#new).");
-    */
-    /* The following types are missing: wxFontEncoding
     ADD_CLASS_STATICMETHOD(New_3,"wxFont * wxFontBase::New(wxSize const & pixelSize, int family, int style, int weight, bool underlined = false, wxString const & face = wxEmptyString, wxFontEncoding encoding = wxFONTENCODING_DEFAULT) (http://docs.wxwidgets.org/stable/wx_wxfontbase.html#new).");
-    */
-    /* The following types are missing: wxFontFamily, wxFontEncoding
     ADD_CLASS_STATICMETHOD(New_4,"wxFont * wxFontBase::New(wxSize const & pixelSize, wxFontFamily family, int flags = wxFONTFLAG_DEFAULT, wxString const & face = wxEmptyString, wxFontEncoding encoding = wxFONTENCODING_DEFAULT) (http://docs.wxwidgets.org/stable/wx_wxfontbase.html#new).");
-    */
     /* The following types are missing: wxNativeFontInfo
     ADD_CLASS_STATICMETHOD(New_5,"wxFont * wxFontBase::New(wxNativeFontInfo const & nativeFontDesc) (http://docs.wxwidgets.org/stable/wx_wxfontbase.html#new).");
     */
     ADD_CLASS_STATICMETHOD(New_6,"wxFont * wxFontBase::New(wxString const & strNativeFontDesc) (http://docs.wxwidgets.org/stable/wx_wxfontbase.html#new).");
-    /* The following types are missing: wxFontEncoding
     ADD_CLASS_STATICMETHOD(GetDefaultEncoding,"wxFontEncoding wxFontBase::GetDefaultEncoding() (http://docs.wxwidgets.org/stable/wx_wxfontbase.html#getdefaultencoding).");
-    */
-    /* The following types are missing: wxFontEncoding
     ADD_CLASS_STATICMETHOD(SetDefaultEncoding,"void wxFontBase::SetDefaultEncoding(wxFontEncoding encoding) (http://docs.wxwidgets.org/stable/wx_wxfontbase.html#setdefaultencoding).");
-    */
 
 
 
@@ -122,6 +110,11 @@ class WrapClass_wxFontBase : public WrapClass<wxFontBase>
 
 
     void AddMethods(WrapClass<wxFontBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

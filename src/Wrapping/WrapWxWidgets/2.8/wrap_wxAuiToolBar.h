@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/aui/aui.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -74,12 +74,8 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
     // Adding standard methods
     ADD_CLASS_METHOD(SetWindowStyleFlag,"void wxAuiToolBar::SetWindowStyleFlag(long int style)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setwindowstyleflag)")
     ADD_CLASS_METHOD(GetWindowStyleFlag,"long int wxAuiToolBar::GetWindowStyleFlag()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getwindowstyleflag)")
-/* The following types are missing: wxAuiToolBarArt
     ADD_CLASS_METHOD(SetArtProvider,"void wxAuiToolBar::SetArtProvider(wxAuiToolBarArt * art)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setartprovider)")
-*/
-/* The following types are missing: wxAuiToolBarArt
     ADD_CLASS_METHOD(GetArtProvider,"wxAuiToolBarArt * wxAuiToolBar::GetArtProvider()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getartprovider)")
-*/
     ADD_CLASS_METHOD(SetFont,"bool wxAuiToolBar::SetFont(wxFont const & font)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setfont)")
     ADD_CLASS_METHOD(AddTool_1,"void wxAuiToolBar::AddTool(int tool_id, wxString const & label, wxBitmap const & bitmap, wxString const & short_help_string = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addtool)")
     ADD_CLASS_METHOD(AddTool,"wxAuiToolBar::AddTool()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addtool)")
@@ -92,15 +88,9 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
     ADD_CLASS_METHOD(AddStretchSpacer,"void wxAuiToolBar::AddStretchSpacer(int proportion = 1)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#addstretchspacer)")
     ADD_CLASS_METHOD(Realize,"bool wxAuiToolBar::Realize()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#realize)")
     ADD_CLASS_METHOD(FindControl,"wxControl * wxAuiToolBar::FindControl(int window_id)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findcontrol)")
-/* The following types are missing: wxAuiToolBarItem
     ADD_CLASS_METHOD(FindToolByPosition,"wxAuiToolBarItem * wxAuiToolBar::FindToolByPosition(wxCoord x, wxCoord y)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findtoolbyposition)")
-*/
-/* The following types are missing: wxAuiToolBarItem
     ADD_CLASS_METHOD(FindToolByIndex,"wxAuiToolBarItem * wxAuiToolBar::FindToolByIndex(int idx)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findtoolbyindex)")
-*/
-/* The following types are missing: wxAuiToolBarItem
     ADD_CLASS_METHOD(FindTool,"wxAuiToolBarItem * wxAuiToolBar::FindTool(int tool_id)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#findtool)")
-*/
     ADD_CLASS_METHOD(ClearTools,"void wxAuiToolBar::ClearTools()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#cleartools)")
     ADD_CLASS_METHOD(Clear,"void wxAuiToolBar::Clear()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#clear)")
     ADD_CLASS_METHOD(DeleteTool,"bool wxAuiToolBar::DeleteTool(int tool_id)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#deletetool)")
@@ -148,9 +138,7 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
     ADD_CLASS_METHOD(SetToolShortHelp,"void wxAuiToolBar::SetToolShortHelp(int tool_id, wxString const & help_string)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoolshorthelp)")
     ADD_CLASS_METHOD(GetToolLongHelp,"wxString wxAuiToolBar::GetToolLongHelp(int tool_id)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#gettoollonghelp)")
     ADD_CLASS_METHOD(SetToolLongHelp,"void wxAuiToolBar::SetToolLongHelp(int tool_id, wxString const & help_string)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#settoollonghelp)")
-/* The following types are missing: wxAuiToolBarItemArray, wxAuiToolBarItemArray
     ADD_CLASS_METHOD(SetCustomOverflowItems,"void wxAuiToolBar::SetCustomOverflowItems(wxAuiToolBarItemArray const & prepend, wxAuiToolBarItemArray const & append)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#setcustomoverflowitems)")
-*/
     ADD_CLASS_METHOD(GetClassInfo,"wxClassInfo * wxAuiToolBar::GetClassInfo()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbar.html#getclassinfo)")
 
 
@@ -158,6 +146,11 @@ class WrapClass_wxAuiToolBar : public WrapClass<wxAuiToolBar>
 
 
     void AddMethods(WrapClass<wxAuiToolBar>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

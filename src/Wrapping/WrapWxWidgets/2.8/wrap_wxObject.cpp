@@ -61,10 +61,7 @@ Variable<AMIObject>::ptr WrapClass_wxObject::CreateVar( wxObject* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxObject::AddMethods(WrapClass<wxObject>::ptr this_ptr )
 {
-  
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -84,7 +81,31 @@ void WrapClass_wxObject::AddMethods(WrapClass<wxObject>::ptr this_ptr )
 
 
   
+
+  // Adding Bases
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxObject::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxObject");
+    WrapClass_wxObject::AddVar_wxObject_1(amiobject->GetContext());
+  WrapClass_wxObject::AddVar_wxObject(amiobject->GetContext());
+  WrapClass_wxObject::AddVar_wxObject_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -200,7 +221,7 @@ void WrapClass_wxObject::
     wrap_IsKindOf::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxClassInfo, "parameter named 'info'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -216,8 +237,7 @@ BasicVariable::ptr WrapClass_wxObject::
   wxClassInfo* info = info_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->IsKindOf(info);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -333,7 +353,7 @@ void WrapClass_wxObject::
     wrap_IsSameAs::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'o'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -349,8 +369,7 @@ BasicVariable::ptr WrapClass_wxObject::
   wxObject const & o = *o_smtptr;
 
   bool res =   this->_objectptr->GetObj()->IsSameAs(o);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

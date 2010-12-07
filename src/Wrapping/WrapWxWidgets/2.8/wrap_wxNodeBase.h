@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -77,9 +77,6 @@ class WrapClass_wxNodeBase : public WrapClass<wxNodeBase>
     ADD_CLASS_METHOD(GetKeyInteger,"long int wxNodeBase::GetKeyInteger()  (http://docs.wxwidgets.org/stable/wx_wxnodebase.html#getkeyinteger)")
     ADD_CLASS_METHOD(SetKeyString,"void wxNodeBase::SetKeyString(wxChar * s)  (http://docs.wxwidgets.org/stable/wx_wxnodebase.html#setkeystring)")
     ADD_CLASS_METHOD(SetKeyInteger,"void wxNodeBase::SetKeyInteger(long int i)  (http://docs.wxwidgets.org/stable/wx_wxnodebase.html#setkeyinteger)")
-    ADD_CLASS_METHOD(Next,"wxNode * wxNodeBase::Next()  (http://docs.wxwidgets.org/stable/wx_wxnodebase.html#next)")
-    ADD_CLASS_METHOD(Previous,"wxNode * wxNodeBase::Previous()  (http://docs.wxwidgets.org/stable/wx_wxnodebase.html#previous)")
-    ADD_CLASS_METHOD(Data,"wxObject * wxNodeBase::Data()  (http://docs.wxwidgets.org/stable/wx_wxnodebase.html#data)")
     ADD_CLASS_METHOD(GetDataPtr,"void * * wxNodeBase::GetDataPtr()  (http://docs.wxwidgets.org/stable/wx_wxnodebase.html#getdataptr)")
 
 
@@ -87,6 +84,11 @@ class WrapClass_wxNodeBase : public WrapClass<wxNodeBase>
 
 
     void AddMethods(WrapClass<wxNodeBase>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

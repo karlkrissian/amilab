@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -70,10 +70,10 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
 
     // Static methods
     
-    /* The following types are missing: wxLayoutDirection, _GtkWidget
+    /* The following types are missing: _GtkWidget
     ADD_CLASS_STATICMETHOD(GTKGetLayout,"wxLayoutDirection wxWindow::GTKGetLayout(GtkWidget * widget) (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtkgetlayout).");
     */
-    /* The following types are missing: _GtkWidget, wxLayoutDirection
+    /* The following types are missing: _GtkWidget
     ADD_CLASS_STATICMETHOD(GTKSetLayout,"void wxWindow::GTKSetLayout(GtkWidget * widget, wxLayoutDirection dir) (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gtksetlayout).");
     */
 
@@ -103,9 +103,7 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
     ADD_CLASS_METHOD(SetForegroundColour,"bool wxWindow::SetForegroundColour(wxColour const & colour)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setforegroundcolour)")
     ADD_CLASS_METHOD(SetCursor,"bool wxWindow::SetCursor(wxCursor const & cursor)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setcursor)")
     ADD_CLASS_METHOD(SetFont,"bool wxWindow::SetFont(wxFont const & font)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setfont)")
-/* The following types are missing: wxBackgroundStyle
     ADD_CLASS_METHOD(SetBackgroundStyle,"bool wxWindow::SetBackgroundStyle(wxBackgroundStyle style)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setbackgroundstyle)")
-*/
     ADD_CLASS_METHOD(GetCharHeight,"int wxWindow::GetCharHeight()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#getcharheight)")
     ADD_CLASS_METHOD(GetCharWidth,"int wxWindow::GetCharWidth()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#getcharwidth)")
     ADD_CLASS_METHOD(GetTextExtent,"void wxWindow::GetTextExtent(wxString const & string, int * x, int * y, int * descent = 0u, int * externalLeading = 0u, wxFont const * theFont = 0u)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#gettextextent)")
@@ -122,12 +120,8 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
 */
     ADD_CLASS_METHOD(AddChild,"void wxWindow::AddChild(wxWindowBase * child)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#addchild)")
     ADD_CLASS_METHOD(RemoveChild,"void wxWindow::RemoveChild(wxWindowBase * child)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#removechild)")
-/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(SetLayoutDirection,"void wxWindow::SetLayoutDirection(wxLayoutDirection dir)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#setlayoutdirection)")
-*/
-/* The following types are missing: wxLayoutDirection
     ADD_CLASS_METHOD(GetLayoutDirection,"wxLayoutDirection wxWindow::GetLayoutDirection()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#getlayoutdirection)")
-*/
     ADD_CLASS_METHOD(AdjustForLayoutDirection,"wxCoord wxWindow::AdjustForLayoutDirection(wxCoord x, wxCoord width, wxCoord widthTotal)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#adjustforlayoutdirection)")
     ADD_CLASS_METHOD(DoIsExposed_1,"bool wxWindow::DoIsExposed(int x, int y)  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#doisexposed)")
     ADD_CLASS_METHOD(DoIsExposed,"wxWindow::DoIsExposed()  (http://docs.wxwidgets.org/stable/wx_wxwindow.html#doisexposed)")
@@ -184,6 +178,11 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
 
 
     void AddMethods(WrapClass<wxWindow>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

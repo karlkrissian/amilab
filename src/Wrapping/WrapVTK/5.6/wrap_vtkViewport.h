@@ -180,11 +180,6 @@ class WrapClass_vtkViewport : public WrapClass<vtkViewport>
     ADD_CLASS_METHOD(GetPickY2,"double vtkViewport::GetPickY2()  (http://docs.wxwidgets.org/stable/wx_vtkviewport.html#getpicky2)")
     ADD_CLASS_METHOD(GetIsPicking,"int vtkViewport::GetIsPicking()  (http://docs.wxwidgets.org/stable/wx_vtkviewport.html#getispicking)")
     ADD_CLASS_METHOD(GetPickResultProps,"vtkPropCollection * vtkViewport::GetPickResultProps()  (http://docs.wxwidgets.org/stable/wx_vtkviewport.html#getpickresultprops)")
-    ADD_CLASS_METHOD(RemoveProp,"void vtkViewport::RemoveProp(vtkProp * param0)  (http://docs.wxwidgets.org/stable/wx_vtkviewport.html#removeprop)")
-    ADD_CLASS_METHOD(AddProp,"void vtkViewport::AddProp(vtkProp * param0)  (http://docs.wxwidgets.org/stable/wx_vtkviewport.html#addprop)")
-    ADD_CLASS_METHOD(GetProps,"vtkPropCollection * vtkViewport::GetProps()  (http://docs.wxwidgets.org/stable/wx_vtkviewport.html#getprops)")
-    ADD_CLASS_METHOD(HasProp,"int vtkViewport::HasProp(vtkProp * param0)  (http://docs.wxwidgets.org/stable/wx_vtkviewport.html#hasprop)")
-    ADD_CLASS_METHOD(RemoveAllProps,"void vtkViewport::RemoveAllProps()  (http://docs.wxwidgets.org/stable/wx_vtkviewport.html#removeallprops)")
 
 
 

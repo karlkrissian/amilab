@@ -63,13 +63,7 @@ Variable<AMIObject>::ptr WrapClass_wxAcceleratorTable::CreateVar( wxAcceleratorT
 //----------------------------------------------------------------------
 void WrapClass_wxAcceleratorTable::AddMethods(WrapClass<wxAcceleratorTable>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -89,7 +83,43 @@ void WrapClass_wxAcceleratorTable::AddMethods(WrapClass<wxAcceleratorTable>::ptr
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAcceleratorTable::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAcceleratorTable");
+    WrapClass_wxAcceleratorTable::AddVar_wxAcceleratorTable_1(amiobject->GetContext());
+  WrapClass_wxAcceleratorTable::AddVar_wxAcceleratorTable(amiobject->GetContext());
+  WrapClass_wxAcceleratorTable::AddVar_wxAcceleratorTable_2(amiobject->GetContext());
+  WrapClass_wxAcceleratorTable::AddVar_wxAcceleratorTable_3(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -217,7 +247,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorTable::
 void WrapClass_wxAcceleratorTable::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -227,8 +257,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorTable::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -237,7 +266,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorTable::
 void WrapClass_wxAcceleratorTable::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -247,8 +276,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorTable::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wx/wx.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -78,9 +78,7 @@ class WrapClass_wxOutputStream : public WrapClass<wxOutputStream>
 */
     ADD_CLASS_METHOD(Write,"wxOutputStream::Write()  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#write)")
     ADD_CLASS_METHOD(Write_2,"wxOutputStream & wxOutputStream::Write(wxInputStream & stream_in)  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#write)")
-/* The following types are missing: wxSeekMode
     ADD_CLASS_METHOD(SeekO,"wxFileOffset wxOutputStream::SeekO(wxFileOffset pos, wxSeekMode mode = wxFromStart)  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#seeko)")
-*/
     ADD_CLASS_METHOD(TellO,"wxFileOffset wxOutputStream::TellO()  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#tello)")
     ADD_CLASS_METHOD(LastWrite,"size_t wxOutputStream::LastWrite()  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#lastwrite)")
     ADD_CLASS_METHOD(Sync,"void wxOutputStream::Sync()  (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#sync)")
@@ -89,7 +87,7 @@ class WrapClass_wxOutputStream : public WrapClass<wxOutputStream>
     // Operators:
     // ADD_CLASS_METHOD(operator not available,"wxOutputStream & wxOutputStream::<<(wxInputStream & out) (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxOutputStream::<<() (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#<<)")
-/* The following types are missing: _6209
+/* The following types are missing: _6397
     // ADD_CLASS_METHOD(operator not available,"wxOutputStream & wxOutputStream::<<(__wxOutputManip func) (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#<<)")
 */
 
@@ -97,6 +95,11 @@ class WrapClass_wxOutputStream : public WrapClass<wxOutputStream>
 
 
     void AddMethods(WrapClass<wxOutputStream>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

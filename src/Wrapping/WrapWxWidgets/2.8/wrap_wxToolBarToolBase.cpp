@@ -71,13 +71,7 @@ Variable<AMIObject>::ptr WrapClass_wxToolBarToolBase::CreateVar( wxToolBarToolBa
 //----------------------------------------------------------------------
 void WrapClass_wxToolBarToolBase::AddMethods(WrapClass<wxToolBarToolBase>::ptr this_ptr )
 {
-  
-      // Add members from wxObject
-      WrapClass_wxObject::ptr parent_wxObject(        boost::dynamic_pointer_cast<WrapClass_wxObject >(this_ptr));
-      parent_wxObject->AddMethods(parent_wxObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_GetId( this_ptr);
@@ -87,9 +81,7 @@ void WrapClass_wxToolBarToolBase::AddMethods(WrapClass<wxToolBarToolBase>::ptr t
       AddVar_IsControl( this_ptr);
       AddVar_IsSeparator( this_ptr);
       AddVar_GetStyle( this_ptr);
-/* The following types are missing: wxItemKind
       AddVar_GetKind( this_ptr);
-*/
       AddVar_IsEnabled( this_ptr);
       AddVar_IsToggled( this_ptr);
       AddVar_CanBeToggled( this_ptr);
@@ -118,13 +110,47 @@ void WrapClass_wxToolBarToolBase::AddMethods(WrapClass<wxToolBarToolBase>::ptr t
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxObject
+  boost::shared_ptr<wxObject > parent_wxObject(  boost::dynamic_pointer_cast<wxObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxObject = AMILabType<wxObject >::CreateVarFromSmtPtr(parent_wxObject);
+  context->AddVar("wxObject",var_wxObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxObject);
+  context->AddDefault(obj_wxObject->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxToolBarToolBase::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxToolBarToolBase");
+    WrapClass_wxToolBarToolBase::AddVar_wxToolBarToolBase_1(amiobject->GetContext());
+  WrapClass_wxToolBarToolBase::AddVar_wxToolBarToolBase(amiobject->GetContext());
+  WrapClass_wxToolBarToolBase::AddVar_wxToolBarToolBase_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxToolBarToolBase::wxToolBarToolBase(wxToolBarBase * tbar = 0u, int toolid = wxID_SEPARATOR, wxString const & label = wxEmptyString, wxBitmap const & bmpNormal = wxNullBitmap, wxBitmap const & bmpDisabled = wxNullBitmap, wxItemKind kind = wxITEM_NORMAL, wxObject * clientData = 0u, wxString const & shortHelpString = wxEmptyString, wxString const & longHelpString = wxEmptyString)
@@ -137,7 +163,7 @@ void WrapClass_wxToolBarToolBase::
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'label' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bmpNormal' (def:wxNullBitmap)")
   ADDPARAMCOMMENT_TYPE( wxBitmap, "parameter named 'bmpDisabled' (def:wxNullBitmap)")
-  ADDPARAMCOMMENT_TYPE( wxItemKind, "parameter named 'kind' (def:wxITEM_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'kind' (def:wxITEM_NORMAL)")
   ADDPARAMCOMMENT_TYPE( wxObject, "parameter named 'clientData' (def:0u)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'shortHelpString' (def:wxEmptyString)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'longHelpString' (def:wxEmptyString)")
@@ -173,8 +199,9 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   // Setting default value if no value is returned
   wxBitmap const & bmpDisabled = ( bmpDisabled_smtptr.get() ? (*bmpDisabled_smtptr) : wxNullBitmap );
 
-  wxItemKind kind = wxITEM_NORMAL;
-  if (!get_val_param<wxItemKind >(kind,_p,_n,false,true)) ClassReturnEmptyVar;
+  int kind_int = (int) wxITEM_NORMAL;;
+  if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
+  wxItemKind kind = (wxItemKind) kind_int;
 
   boost::shared_ptr<wxObject > clientData_smtptr;
   if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -194,7 +221,6 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   BasicVariable::ptr res = WrapClass_wxToolBarToolBase::CreateVar(_newobj);
   return res;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... Constructor wxToolBarToolBase::wxToolBarToolBase(...)
@@ -208,6 +234,9 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
     wrap_wxToolBarToolBase::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_wxToolBarToolBase::wrap_wxToolBarToolBase_1 m1;
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
   WrapClass_wxToolBarToolBase::wrap_wxToolBarToolBase_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
@@ -310,7 +339,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_IsButton::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -320,8 +349,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsButton();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -330,7 +358,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_IsControl::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -340,8 +368,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsControl();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -350,7 +377,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_IsSeparator::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -360,8 +387,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsSeparator();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -382,7 +408,6 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   int res =   this->_objectptr->GetObj()->GetStyle();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: wxItemKind
 
 //---------------------------------------------------
 //  Wrapping of wxItemKind wxToolBarToolBase::GetKind()
@@ -390,7 +415,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_GetKind::SetParametersComments()
 {
-  return_comments="returning a variable of type wxItemKind";
+  return_comments="returning a variable of type int";
 }
 
 //---------------------------------------------------
@@ -400,9 +425,9 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxItemKind res =   this->_objectptr->GetObj()->GetKind();
-  return AMILabType<wxItemKind >::CreateVar(res);
+  int res_int = (int) res;
+  return AMILabType<int >::CreateVar(res_int);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxToolBarToolBase::IsEnabled()
@@ -410,7 +435,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_IsEnabled::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -420,8 +445,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsEnabled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -430,7 +454,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_IsToggled::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -440,8 +464,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsToggled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -450,7 +473,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_CanBeToggled::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -460,8 +483,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->CanBeToggled();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -604,8 +626,8 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_Enable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable'")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable'")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -616,13 +638,11 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int enable_int;
-  if (!get_val_param<int >(enable_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable;
+  if (!get_val_param<bool >(enable,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Enable(enable);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -631,8 +651,8 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_Toggle_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'toggle'")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'toggle'")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -643,13 +663,11 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  int toggle_int;
-  if (!get_val_param<int >(toggle_int,_p,_n,true,true)) ClassReturnEmptyVar;
-  bool toggle = (bool) (toggle_int>0.5);
+  bool toggle;
+  if (!get_val_param<bool >(toggle,_p,_n,true,true)) ClassReturnEmptyVar;
 
   bool res =   this->_objectptr->GetObj()->Toggle(toggle);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -658,8 +676,8 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
 void WrapClass_wxToolBarToolBase::
     wrap_SetToggle::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'toggle'")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'toggle'")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -670,13 +688,11 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int toggle_int;
-  if (!get_val_param<int >(toggle_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool toggle = (bool) (toggle_int>0.5);
+  bool toggle;
+  if (!get_val_param<bool >(toggle,_p,_n,true,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->SetToggle(toggle);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -686,7 +702,7 @@ void WrapClass_wxToolBarToolBase::
     wrap_SetShortHelp::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -702,8 +718,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   wxString const & help = *help_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetShortHelp(help);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -713,7 +728,7 @@ void WrapClass_wxToolBarToolBase::
     wrap_SetLongHelp::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'help'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -729,8 +744,7 @@ BasicVariable::ptr WrapClass_wxToolBarToolBase::
   wxString const & help = *help_smtptr;
 
   bool res =   this->_objectptr->GetObj()->SetLongHelp(help);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

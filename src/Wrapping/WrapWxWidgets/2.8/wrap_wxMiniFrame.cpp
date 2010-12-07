@@ -71,13 +71,7 @@ Variable<AMIObject>::ptr WrapClass_wxMiniFrame::CreateVar( wxMiniFrame* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxMiniFrame::AddMethods(WrapClass<wxMiniFrame>::ptr this_ptr )
 {
-  
-      // Add members from wxFrame
-      WrapClass_wxFrame::ptr parent_wxFrame(        boost::dynamic_pointer_cast<WrapClass_wxFrame >(this_ptr));
-      parent_wxFrame->AddMethods(parent_wxFrame);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_GetClassInfo( this_ptr);
@@ -91,57 +85,99 @@ void WrapClass_wxMiniFrame::AddMethods(WrapClass<wxMiniFrame>::ptr this_ptr )
       if (!tmpobj.get()) return;
       Variables::ptr context(tmpobj->GetContext());
       
-      /* type not available
       // Adding public member m_isDragging
       boost::shared_ptr<bool > var_m_isDragging_ptr(&GetObj()->m_isDragging, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_isDragging = AMILabType<bool >::CreateVarFromSmtPtr(var_m_isDragging_ptr);
-      if (var_m_isDragging.get()) {
-        var_m_isDragging->Rename("m_isDragging");
-        context->AddVar(var_m_isDragging,context);
+      if (var_m_isDragging_ptr.get()) {
+        BasicVariable::ptr var_m_isDragging = AMILabType<bool >::CreateVarFromSmtPtr(var_m_isDragging_ptr);
+        if (var_m_isDragging.get()) {
+          var_m_isDragging->Rename("m_isDragging");
+          context->AddVar(var_m_isDragging,context);
+        }
       }
-      */
       
       // Adding public member m_oldX
       boost::shared_ptr<int > var_m_oldX_ptr(&GetObj()->m_oldX, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_oldX = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldX_ptr);
-      if (var_m_oldX.get()) {
-        var_m_oldX->Rename("m_oldX");
-        context->AddVar(var_m_oldX,context);
+      if (var_m_oldX_ptr.get()) {
+        BasicVariable::ptr var_m_oldX = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldX_ptr);
+        if (var_m_oldX.get()) {
+          var_m_oldX->Rename("m_oldX");
+          context->AddVar(var_m_oldX,context);
+        }
       }
       
       // Adding public member m_oldY
       boost::shared_ptr<int > var_m_oldY_ptr(&GetObj()->m_oldY, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_oldY = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldY_ptr);
-      if (var_m_oldY.get()) {
-        var_m_oldY->Rename("m_oldY");
-        context->AddVar(var_m_oldY,context);
+      if (var_m_oldY_ptr.get()) {
+        BasicVariable::ptr var_m_oldY = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldY_ptr);
+        if (var_m_oldY.get()) {
+          var_m_oldY->Rename("m_oldY");
+          context->AddVar(var_m_oldY,context);
+        }
       }
       
       // Adding public member m_diffX
       boost::shared_ptr<int > var_m_diffX_ptr(&GetObj()->m_diffX, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_diffX = AMILabType<int >::CreateVarFromSmtPtr(var_m_diffX_ptr);
-      if (var_m_diffX.get()) {
-        var_m_diffX->Rename("m_diffX");
-        context->AddVar(var_m_diffX,context);
+      if (var_m_diffX_ptr.get()) {
+        BasicVariable::ptr var_m_diffX = AMILabType<int >::CreateVarFromSmtPtr(var_m_diffX_ptr);
+        if (var_m_diffX.get()) {
+          var_m_diffX->Rename("m_diffX");
+          context->AddVar(var_m_diffX,context);
+        }
       }
       
       // Adding public member m_diffY
       boost::shared_ptr<int > var_m_diffY_ptr(&GetObj()->m_diffY, smartpointer_nodeleter<int >());
-      BasicVariable::ptr var_m_diffY = AMILabType<int >::CreateVarFromSmtPtr(var_m_diffY_ptr);
-      if (var_m_diffY.get()) {
-        var_m_diffY->Rename("m_diffY");
-        context->AddVar(var_m_diffY,context);
+      if (var_m_diffY_ptr.get()) {
+        BasicVariable::ptr var_m_diffY = AMILabType<int >::CreateVarFromSmtPtr(var_m_diffY_ptr);
+        if (var_m_diffY.get()) {
+          var_m_diffY->Rename("m_diffY");
+          context->AddVar(var_m_diffY,context);
+        }
       }
       
       // Adding public member m_closeButton
       boost::shared_ptr<wxBitmap > var_m_closeButton_ptr(&GetObj()->m_closeButton, smartpointer_nodeleter<wxBitmap >());
-      BasicVariable::ptr var_m_closeButton = AMILabType<wxBitmap >::CreateVarFromSmtPtr(var_m_closeButton_ptr);
-      if (var_m_closeButton.get()) {
-        var_m_closeButton->Rename("m_closeButton");
-        context->AddVar(var_m_closeButton,context);
+      if (var_m_closeButton_ptr.get()) {
+        BasicVariable::ptr var_m_closeButton = AMILabType<wxBitmap >::CreateVarFromSmtPtr(var_m_closeButton_ptr);
+        if (var_m_closeButton.get()) {
+          var_m_closeButton->Rename("m_closeButton");
+          context->AddVar(var_m_closeButton,context);
+        }
       }
 
+
+  // Adding Bases
+
+  // Add base parent wxFrame
+  boost::shared_ptr<wxFrame > parent_wxFrame(  boost::dynamic_pointer_cast<wxFrame >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxFrame = AMILabType<wxFrame >::CreateVarFromSmtPtr(parent_wxFrame);
+  context->AddVar("wxFrame",var_wxFrame);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxFrame = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxFrame);
+  context->AddDefault(obj_wxFrame->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxMiniFrame::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxMiniFrame");
+    WrapClass_wxMiniFrame::AddVar_wxMiniFrame_1(amiobject->GetContext());
+  WrapClass_wxMiniFrame::AddVar_wxMiniFrame(amiobject->GetContext());
+  WrapClass_wxMiniFrame::AddVar_wxMiniFrame_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -279,7 +315,7 @@ void WrapClass_wxMiniFrame::
   ADDPARAMCOMMENT_TYPE( wxSize, "parameter named 'size' (def:wxDefaultSize)")
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:536870976)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxFrameNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -321,8 +357,7 @@ BasicVariable::ptr WrapClass_wxMiniFrame::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxFrameNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, title, pos, size, style, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

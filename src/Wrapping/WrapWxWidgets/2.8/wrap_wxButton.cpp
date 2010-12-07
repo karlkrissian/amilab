@@ -72,13 +72,7 @@ Variable<AMIObject>::ptr WrapClass_wxButton::CreateVar( wxButton* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxButton::AddMethods(WrapClass<wxButton>::ptr this_ptr )
 {
-  
-      // Add members from wxButtonBase
-      WrapClass_wxButtonBase::ptr parent_wxButtonBase(        boost::dynamic_pointer_cast<WrapClass_wxButtonBase >(this_ptr));
-      parent_wxButtonBase->AddMethods(parent_wxButtonBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -92,7 +86,43 @@ void WrapClass_wxButton::AddMethods(WrapClass<wxButton>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxButtonBase
+  boost::shared_ptr<wxButtonBase > parent_wxButtonBase(  boost::dynamic_pointer_cast<wxButtonBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxButtonBase = AMILabType<wxButtonBase >::CreateVarFromSmtPtr(parent_wxButtonBase);
+  context->AddVar("wxButtonBase",var_wxButtonBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxButtonBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxButtonBase);
+  context->AddDefault(obj_wxButtonBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxButton::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxButton");
+    WrapClass_wxButton::AddVar_wxButton_1(amiobject->GetContext());
+  WrapClass_wxButton::AddVar_wxButton(amiobject->GetContext());
+  WrapClass_wxButton::AddVar_wxButton_2(amiobject->GetContext());
+
+
+  // Static methods 
+  WrapClass_wxButton::AddVar_GetClassDefaultAttributes(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -203,7 +233,6 @@ BasicVariable::ptr WrapClass_wxButton::
   BasicVariable::ptr res = WrapClass_wxButton::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: wxWindowVariant
 
 //---------------------------------------------------
 //  Wrapping of wxVisualAttributes wxButton::GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
@@ -211,7 +240,7 @@ BasicVariable::ptr WrapClass_wxButton::
 void WrapClass_wxButton::
     wrap_static_GetClassDefaultAttributes::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxWindowVariant, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
+  ADDPARAMCOMMENT_TYPE( int, "parameter named 'variant' (def:wxWINDOW_VARIANT_NORMAL)")
   return_comments="returning a variable of type wxVisualAttributes";
 }
 
@@ -223,13 +252,13 @@ BasicVariable::ptr WrapClass_wxButton::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL;
-  if (!get_val_param<wxWindowVariant >(variant,_p,_n,false,false)) ClassHelpAndReturn;
+  int variant_int = (int) wxWINDOW_VARIANT_NORMAL;;
+  if (!get_val_param<int >(variant_int,_p,_n,false,false)) ClassHelpAndReturn;
+  wxWindowVariant variant = (wxWindowVariant) variant_int;
 
   wxVisualAttributes res =   wxButton::GetClassDefaultAttributes(variant);
   return AMILabType<wxVisualAttributes >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxButton::Create(wxWindow * parent, wxWindowID id, wxString const & label = wxEmptyString, wxPoint const & pos = wxDefaultPosition, wxSize const & size = wxDefaultSize, long int style = 0, wxValidator const & validator = wxDefaultValidator, wxString const & name = wxButtonNameStr)
@@ -245,7 +274,7 @@ void WrapClass_wxButton::
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:0)")
   ADDPARAMCOMMENT_TYPE( wxValidator, "parameter named 'validator' (def:wxDefaultValidator)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxButtonNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -293,8 +322,7 @@ BasicVariable::ptr WrapClass_wxButton::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxButtonNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, label, pos, size, style, validator, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -346,8 +374,8 @@ BasicVariable::ptr WrapClass_wxButton::
 void WrapClass_wxButton::
     wrap_Enable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable' (def:1)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable' (def:1)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -358,13 +386,11 @@ BasicVariable::ptr WrapClass_wxButton::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int enable_int = ((1==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n,false,false)) ClassHelpAndReturn;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable = 1;
+  if (!get_val_param<bool >(enable,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Enable(enable);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -373,7 +399,7 @@ BasicVariable::ptr WrapClass_wxButton::
 void WrapClass_wxButton::
     wrap_ShouldInheritColours::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -383,8 +409,7 @@ BasicVariable::ptr WrapClass_wxButton::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->ShouldInheritColours();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

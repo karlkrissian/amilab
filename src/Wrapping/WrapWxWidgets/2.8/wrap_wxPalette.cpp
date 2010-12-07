@@ -60,13 +60,7 @@ Variable<AMIObject>::ptr WrapClass_wxPalette::CreateVar( wxPalette* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxPalette::AddMethods(WrapClass<wxPalette>::ptr this_ptr )
 {
-  
-      // Add members from wxPaletteBase
-      WrapClass_wxPaletteBase::ptr parent_wxPaletteBase(        boost::dynamic_pointer_cast<WrapClass_wxPaletteBase >(this_ptr));
-      parent_wxPaletteBase->AddMethods(parent_wxPaletteBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -85,7 +79,43 @@ void WrapClass_wxPalette::AddMethods(WrapClass<wxPalette>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxPaletteBase
+  boost::shared_ptr<wxPaletteBase > parent_wxPaletteBase(  boost::dynamic_pointer_cast<wxPaletteBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxPaletteBase = AMILabType<wxPaletteBase >::CreateVarFromSmtPtr(parent_wxPaletteBase);
+  context->AddVar("wxPaletteBase",var_wxPaletteBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxPaletteBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxPaletteBase);
+  context->AddDefault(obj_wxPaletteBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxPalette::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxPalette");
+    WrapClass_wxPalette::AddVar_wxPalette_1(amiobject->GetContext());
+  WrapClass_wxPalette::AddVar_wxPalette(amiobject->GetContext());
+  WrapClass_wxPalette::AddVar_wxPalette_2(amiobject->GetContext());
+  WrapClass_wxPalette::AddVar_wxPalette_3(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -223,7 +253,7 @@ BasicVariable::ptr WrapClass_wxPalette::
 void WrapClass_wxPalette::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -233,8 +263,7 @@ BasicVariable::ptr WrapClass_wxPalette::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -243,7 +272,7 @@ BasicVariable::ptr WrapClass_wxPalette::
 void WrapClass_wxPalette::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -253,8 +282,7 @@ BasicVariable::ptr WrapClass_wxPalette::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -267,7 +295,7 @@ void WrapClass_wxPalette::
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'red'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'green'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'blue'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -294,8 +322,7 @@ BasicVariable::ptr WrapClass_wxPalette::
   unsigned char* blue = blue_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Create(n, red, green, blue);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -341,7 +368,7 @@ void WrapClass_wxPalette::
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'red'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'green'")
   ADDPARAMCOMMENT_TYPE( unsigned char, "parameter named 'blue'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -368,8 +395,7 @@ BasicVariable::ptr WrapClass_wxPalette::
   unsigned char* blue = blue_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->GetRGB(pixel, red, green, blue);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

@@ -71,13 +71,7 @@ Variable<AMIObject>::ptr WrapClass_vtkAbstractTransform::CreateVar( vtkAbstractT
 //----------------------------------------------------------------------
 void WrapClass_vtkAbstractTransform::AddMethods(WrapClass<vtkAbstractTransform>::ptr this_ptr )
 {
-  
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_IsA( this_ptr);
@@ -117,11 +111,24 @@ void WrapClass_vtkAbstractTransform::AddMethods(WrapClass<vtkAbstractTransform>:
       AddVar_CircuitCheck( this_ptr);
       AddVar_GetMTime( this_ptr);
       AddVar_UnRegister( this_ptr);
-      AddVar_Identity( this_ptr);
 
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -139,7 +146,7 @@ void WrapClass_vtkAbstractTransform::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkAbstractTransform::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -1194,24 +1201,6 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   vtkObjectBase* O = O_smtptr.get();
 
   this->_objectptr->GetObj()->UnRegister(O);
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  Wrapping of void vtkAbstractTransform::Identity()
-//---------------------------------------------------
-void WrapClass_vtkAbstractTransform::
-    wrap_Identity::SetParametersComments()
-{
-}
-
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_vtkAbstractTransform::
-    wrap_Identity::CallMember( ParamList* _p)
-{
-  if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
-
-  this->_objectptr->GetObj()->Identity();
   return BasicVariable::ptr();
 }
 

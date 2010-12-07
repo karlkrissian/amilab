@@ -72,13 +72,7 @@ Variable<AMIObject>::ptr WrapClass_wxBitmapButton::CreateVar( wxBitmapButton* sp
 //----------------------------------------------------------------------
 void WrapClass_wxBitmapButton::AddMethods(WrapClass<wxBitmapButton>::ptr this_ptr )
 {
-  
-      // Add members from wxBitmapButtonBase
-      WrapClass_wxBitmapButtonBase::ptr parent_wxBitmapButtonBase(        boost::dynamic_pointer_cast<WrapClass_wxBitmapButtonBase >(this_ptr));
-      parent_wxBitmapButtonBase->AddMethods(parent_wxBitmapButtonBase);
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding standard methods 
       AddVar_Create( this_ptr);
@@ -100,27 +94,63 @@ void WrapClass_wxBitmapButton::AddMethods(WrapClass<wxBitmapButton>::ptr this_pt
       if (!tmpobj.get()) return;
       Variables::ptr context(tmpobj->GetContext());
       
-      /* type not available
+      /* Can't get address of a bit field
       // Adding public member m_hasFocus
       boost::shared_ptr<bool > var_m_hasFocus_ptr(&GetObj()->m_hasFocus, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_hasFocus = AMILabType<bool >::CreateVarFromSmtPtr(var_m_hasFocus_ptr);
-      if (var_m_hasFocus.get()) {
-        var_m_hasFocus->Rename("m_hasFocus");
-        context->AddVar(var_m_hasFocus,context);
+      if (var_m_hasFocus_ptr.get()) {
+        BasicVariable::ptr var_m_hasFocus = AMILabType<bool >::CreateVarFromSmtPtr(var_m_hasFocus_ptr);
+        if (var_m_hasFocus.get()) {
+          var_m_hasFocus->Rename("m_hasFocus");
+          context->AddVar(var_m_hasFocus,context);
+        }
       }
       */
       
-      /* type not available
+      /* Can't get address of a bit field
       // Adding public member m_isSelected
       boost::shared_ptr<bool > var_m_isSelected_ptr(&GetObj()->m_isSelected, smartpointer_nodeleter<bool >());
-      BasicVariable::ptr var_m_isSelected = AMILabType<bool >::CreateVarFromSmtPtr(var_m_isSelected_ptr);
-      if (var_m_isSelected.get()) {
-        var_m_isSelected->Rename("m_isSelected");
-        context->AddVar(var_m_isSelected,context);
+      if (var_m_isSelected_ptr.get()) {
+        BasicVariable::ptr var_m_isSelected = AMILabType<bool >::CreateVarFromSmtPtr(var_m_isSelected_ptr);
+        if (var_m_isSelected.get()) {
+          var_m_isSelected->Rename("m_isSelected");
+          context->AddVar(var_m_isSelected,context);
+        }
       }
       */
 
+
+  // Adding Bases
+
+  // Add base parent wxBitmapButtonBase
+  boost::shared_ptr<wxBitmapButtonBase > parent_wxBitmapButtonBase(  boost::dynamic_pointer_cast<wxBitmapButtonBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxBitmapButtonBase = AMILabType<wxBitmapButtonBase >::CreateVarFromSmtPtr(parent_wxBitmapButtonBase);
+  context->AddVar("wxBitmapButtonBase",var_wxBitmapButtonBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxBitmapButtonBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxBitmapButtonBase);
+  context->AddDefault(obj_wxBitmapButtonBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxBitmapButton::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxBitmapButton");
+    WrapClass_wxBitmapButton::AddVar_wxBitmapButton_1(amiobject->GetContext());
+  WrapClass_wxBitmapButton::AddVar_wxBitmapButton(amiobject->GetContext());
+  WrapClass_wxBitmapButton::AddVar_wxBitmapButton_2(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -192,39 +222,39 @@ BasicVariable::ptr WrapClass_wxBitmapButton::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxWindow* parent = parent_smtptr.get();
 
   int id;
-  if (!get_val_param<int >(id,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxDefaultSize );
 
   long style_long = 4;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_param<long >(style_long,_p,_n,false,true)) ClassReturnEmptyVar;
   long int style = style_long;
 
   boost::shared_ptr<wxValidator > validator_smtptr;
-  if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : (wxDefaultValidator) );
+  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : wxDefaultValidator );
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxButtonNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxButtonNameStr) );
 
   wxBitmapButton* _newobj = new wxBitmapButton(parent, id, bitmap, pos, size, style, validator, name);
   BasicVariable::ptr res = WrapClass_wxBitmapButton::CreateVar(_newobj);
@@ -245,7 +275,7 @@ void WrapClass_wxBitmapButton::
   ADDPARAMCOMMENT_TYPE( long, "parameter named 'style' (def:4)")
   ADDPARAMCOMMENT_TYPE( wxValidator, "parameter named 'validator' (def:wxDefaultValidator)")
   ADDPARAMCOMMENT_TYPE( wxString, "parameter named 'name' (def:wxButtonNameStr)")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -257,43 +287,42 @@ BasicVariable::ptr WrapClass_wxBitmapButton::
   int _n=0;
 
   boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxWindow* parent = parent_smtptr.get();
 
   int id;
-  if (!get_val_param<int >(id,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   boost::shared_ptr<wxPoint > pos_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : (wxDefaultPosition) );
+  wxPoint const & pos = ( pos_smtptr.get() ? (*pos_smtptr) : wxDefaultPosition );
 
   boost::shared_ptr<wxSize > size_smtptr;
-  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxSize >(size_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : (wxDefaultSize) );
+  wxSize const & size = ( size_smtptr.get() ? (*size_smtptr) : wxDefaultSize );
 
   long style_long = 4;;
-  if (!get_val_param<long >(style_long,_p,_n)) ClassHelpAndReturn;
+  if (!get_val_param<long >(style_long,_p,_n,false,false)) ClassHelpAndReturn;
   long int style = style_long;
 
   boost::shared_ptr<wxValidator > validator_smtptr;
-  if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxValidator >(validator_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : (wxDefaultValidator) );
+  wxValidator const & validator = ( validator_smtptr.get() ? (*validator_smtptr) : wxDefaultValidator );
 
   boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false)) ClassHelpAndReturn;
+  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
   // Setting default value if no value is returned
-  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : (wxButtonNameStr) );
+  wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxButtonNameStr) );
 
   bool res =   this->_objectptr->GetObj()->Create(parent, id, bitmap, pos, size, style, validator, name);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -314,7 +343,7 @@ BasicVariable::ptr WrapClass_wxBitmapButton::
   int _n=0;
 
   boost::shared_ptr<wxString > label_smtptr;
-  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & label = *label_smtptr;
 
   this->_objectptr->GetObj()->SetLabel(label);
@@ -360,7 +389,7 @@ BasicVariable::ptr WrapClass_wxBitmapButton::
   int _n=0;
 
   boost::shared_ptr<wxBitmap > bitmap_smtptr;
-  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxBitmap >(bitmap_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxBitmap const & bitmap = *bitmap_smtptr;
 
   this->_objectptr->GetObj()->SetLabel(bitmap);
@@ -391,8 +420,8 @@ BasicVariable::ptr WrapClass_wxBitmapButton::
 void WrapClass_wxBitmapButton::
     wrap_Enable::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'enable' (def:1)")
-  return_comments="returning a variable of type int";
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'enable' (def:1)")
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -403,13 +432,11 @@ BasicVariable::ptr WrapClass_wxBitmapButton::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int enable_int = ((1==true)?1:0);;
-  if (!get_val_param<int >(enable_int,_p,_n)) ClassHelpAndReturn;
-  bool enable = (bool) (enable_int>0.5);
+  bool enable = 1;
+  if (!get_val_param<bool >(enable,_p,_n,false,false)) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Enable(enable);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

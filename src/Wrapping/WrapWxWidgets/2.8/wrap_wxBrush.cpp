@@ -62,14 +62,7 @@ Variable<AMIObject>::ptr WrapClass_wxBrush::CreateVar( wxBrush* sp)
 //----------------------------------------------------------------------
 void WrapClass_wxBrush::AddMethods(WrapClass<wxBrush>::ptr this_ptr )
 {
-  /*
-      // Add members from wxBrushBase
-      WrapClass_wxBrushBase::ptr parent_wxBrushBase(        boost::dynamic_pointer_cast<WrapClass_wxBrushBase >(this_ptr));
-      parent_wxBrushBase->AddMethods(parent_wxBrushBase);
-      */
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
       // Adding copy method 
       AddVar___copy__( this_ptr);
@@ -94,7 +87,44 @@ void WrapClass_wxBrush::AddMethods(WrapClass<wxBrush>::ptr this_ptr )
 
 
   
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxBrushBase
+  boost::shared_ptr<wxBrushBase > parent_wxBrushBase(  boost::dynamic_pointer_cast<wxBrushBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxBrushBase = AMILabType<wxBrushBase >::CreateVarFromSmtPtr(parent_wxBrushBase);
+  context->AddVar("wxBrushBase",var_wxBrushBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxBrushBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxBrushBase);
+  context->AddDefault(obj_wxBrushBase->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxBrush::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxBrush");
+    WrapClass_wxBrush::AddVar_wxBrush_1(amiobject->GetContext());
+  WrapClass_wxBrush::AddVar_wxBrush(amiobject->GetContext());
+  WrapClass_wxBrush::AddVar_wxBrush_2(amiobject->GetContext());
+  WrapClass_wxBrush::AddVar_wxBrush_3(amiobject->GetContext());
+  WrapClass_wxBrush::AddVar_wxBrush_4(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -251,7 +281,7 @@ BasicVariable::ptr WrapClass_wxBrush::
 void WrapClass_wxBrush::
     wrap_Ok::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -261,8 +291,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Ok();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -271,7 +300,7 @@ BasicVariable::ptr WrapClass_wxBrush::
 void WrapClass_wxBrush::
     wrap_IsOk::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -281,8 +310,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsOk();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -523,7 +551,7 @@ void WrapClass_wxBrush::
     wrap___equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxBrush, "parameter named 'brush'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -539,8 +567,7 @@ BasicVariable::ptr WrapClass_wxBrush::
   wxBrush const & brush = *brush_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (brush);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -550,7 +577,7 @@ void WrapClass_wxBrush::
     wrap___not_equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( wxBrush, "parameter named 'brush'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -566,7 +593,6 @@ BasicVariable::ptr WrapClass_wxBrush::
   wxBrush const & brush = *brush_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (brush);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
