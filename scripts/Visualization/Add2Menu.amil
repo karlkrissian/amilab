@@ -18,7 +18,7 @@ proc AddSegMenu() {
   for subdir in  "RGBScale","VolRen","ImageHistogram" \
   {
     curfile=GetScriptsDir+"/Visualization/"+subdir+"/Add2Menu.amil"
-    if FileExists(curfile) {
+    if wx.wxFileName(curfile).FileExists() {
       func curfile
     } else {
       InfoDialog curfile+" does not exists"

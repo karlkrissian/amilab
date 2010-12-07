@@ -97,7 +97,7 @@ if (!exists(LevelSetsClass)) {
       proc ::SaveParameters() {
 
         paramfile_name = ::result_filename+"_param.txt"
-        if (FileExists(paramfile_name)) {
+        if (wx.wxFileName(paramfile_name).FileExists()) {
           InfoDialog "file %1% already exists, please rename it." % paramfile_name
         } else {
           paramfile = File(paramfile_name,"w")

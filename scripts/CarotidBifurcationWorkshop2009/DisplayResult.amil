@@ -47,7 +47,7 @@ DR_surf_draw += DR_pt2_sphere
 DR_surf_draw += DR_pt3_sphere
 
 # draw the junction
-if (FileExists(DR_result_dir+"/junction.txt")) {
+if (wx.wxFileName(DR_result_dir+"/junction.txt").FileExists()) {
   func DR_result_dir+"/junction.txt"
   DR_junc_sphere = vtkSphere(DR_ptsize,8,8,CE_Jx,CE_Jy,CE_Jz)
   DR_surf_draw += DR_junc_sphere
@@ -62,18 +62,18 @@ if (FileExists(DR_result_dir+"/junction.txt")) {
 DR_pathCEs = Surface(DR_result_dir+"/pathCEs.vtk")
 DR_pathCIs = Surface(DR_result_dir+"/pathCIs.vtk")
 
-if (FileExists(DR_result_dir+"/pathCIs_cut.vtk")) {
+if (wx.wxFileName(DR_result_dir+"/pathCIs_cut.vtk").FileExists()) {
   DR_pathCIs_cut = Surface(DR_result_dir+"/pathCIs_cut.vtk")
 }
-if (FileExists(DR_result_dir+"/pathCEs_cut.vtk")) {
+if (wx.wxFileName(DR_result_dir+"/pathCEs_cut.vtk").FileExists()) {
   DR_pathCEs_cut = Surface(DR_result_dir+"/pathCEs_cut.vtk")
 }
 
-if (FileExists(DR_result_dir+"/pathCI_remaining_smoothed.vtk")) {
+if (wx.wxFileName(DR_result_dir+"/pathCI_remaining_smoothed.vtk").FileExists()) {
   DR_pathCI_rems = Surface(DR_result_dir+"/pathCI_remaining_smoothed.vtk")
 }
 
-if (FileExists(DR_result_dir+"/pathCC_remaining_smoothed.vtk")) {
+if (wx.wxFileName(DR_result_dir+"/pathCC_remaining_smoothed.vtk").FileExists()) {
   DR_pathCC_rems = Surface(DR_result_dir+"/pathCC_remaining_smoothed.vtk")
 }
 
@@ -114,7 +114,7 @@ DR_lsres_surf.SetOpacity(0.6)
 
 
 # check for ground truth
-if (FileExists(DR_gt_dir+"/iso"+DR_datanum_str+".vtp")) {
+if (wx.wxFileName(DR_gt_dir+"/iso"+DR_datanum_str+".vtp").FileExists()) {
   DR_gt = Surface(DR_gt_dir+"/iso"+DR_datanum_str+".vtp")
   DR_surf_draw += DR_gt
   DR_gt.SetOpacity(0.4)

@@ -18,7 +18,7 @@ del cl_dir
 proc AddCenterlinesMenu() {
   for dir in  "ShortestPath", "MultiLines", "itkShortestPath", "itkVesselness" \
   {
-    if FileExists(GetScriptsDir+"/Centerlines/"+dir+"/Add2Menu.amil") {
+    if wx.wxFileName(GetScriptsDir+"/Centerlines/"+dir+"/Add2Menu.amil").FileExists() {
       func "/Centerlines/"+dir+"/Add2Menu.amil"
     } else {
       InfoDialog GetScriptsDir+"/Centerlines/"+dir+"/Add2Menu.amil does not exists"

@@ -12,7 +12,7 @@ proc AddSegMenu() {
 
   for dir in  "ROC" \
   {
-    if FileExists(GetScriptsDir+"/QualityMeasures/"+dir+"/Add2Menu.amil") {
+    if wx.wxFileName(GetScriptsDir+"/QualityMeasures/"+dir+"/Add2Menu.amil").FileExists() {
       func "/QualityMeasures/"+dir+"/Add2Menu.amil"
     } else {
       InfoDialog GetScriptsDir+"/QualityMeasures/"+dir+"/Add2Menu.amil does not exists"

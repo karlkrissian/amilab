@@ -9,7 +9,7 @@ ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&Level Set","Segmentation/Le
 proc AddSegMenu() {
   for dir in  "itkWaterShed", "itkLevelSet", "itkFastMarching", "MultipleLevelSets" \
   {
-    if FileExists(GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil") {
+    if wx.wxFileName(GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil").FileExists() {
       func "/Segmentation/"+dir+"/Add2Menu.amil"
     } else {
       InfoDialog GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil does not exists"
