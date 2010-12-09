@@ -31,7 +31,9 @@
 
 #include "wrap_wxEvtHandler.h"
 
+// needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -200,9 +202,15 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (!get_val_smtptr_param<wxEventTableEntryBase >(tableEntry_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxEventTableEntryBase const & tableEntry = *tableEntry_smtptr;
 
-  boost::shared_ptr<wxEvtHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxEvtHandler* handler = handler_smtptr.get();
+  wxEvtHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   boost::shared_ptr<wxEvent > event_smtptr;
   if (!get_val_smtptr_param<wxEvent >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -269,9 +277,15 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxEvtHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxEvtHandler* handler = handler_smtptr.get();
+  wxEvtHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetNextHandler(handler);
   return BasicVariable::ptr();
@@ -294,9 +308,15 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxEvtHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxEvtHandler* handler = handler_smtptr.get();
+  wxEvtHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPreviousHandler(handler);
   return BasicVariable::ptr();
@@ -474,9 +494,8 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxObjectEventFunction func;
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  wxObject* userData=0u;
-  if ((_n<_p->GetNumParam())&&(_p->GetParam(_n).get()==nullvar.get()))
-  {
+  wxObject* userData = 0u;
+  if (CheckNullVar(_p,_n))  {
     userData=(wxObject*)NULL;
     _n++;
   } else {
@@ -485,9 +504,15 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
     userData = userData_smtptr.get();
   }
 
-  boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
-  wxEvtHandler* eventSink = eventSink_smtptr.get();
+  wxEvtHandler* eventSink = 0u;
+  if (CheckNullVar(_p,_n))  {
+    eventSink=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    eventSink = eventSink_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Connect(winid, lastId, eventType, func, userData, eventSink);
   return BasicVariable::ptr();
@@ -547,9 +572,8 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxObjectEventFunction func;
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  wxObject* userData=0u;
-  if ((_n<_p->GetNumParam())&&(_p->GetParam(_n).get()==nullvar.get()))
-  {
+  wxObject* userData = 0u;
+  if (CheckNullVar(_p,_n))  {
     userData=(wxObject*)NULL;
     _n++;
   } else {
@@ -558,9 +582,15 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
     userData = userData_smtptr.get();
   }
 
-  boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
-  wxEvtHandler* eventSink = eventSink_smtptr.get();
+  wxEvtHandler* eventSink = 0u;
+  if (CheckNullVar(_p,_n))  {
+    eventSink=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    eventSink = eventSink_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Connect(winid, eventType, func, userData, eventSink);
   return BasicVariable::ptr();
@@ -592,28 +622,25 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxObjectEventFunction func;
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  wxObject* userData=0u;
-  bool found=false;
-std::cout << "_p->GetParam(_n).get() " << _p->GetParam(_n).get() << std::endl;
-std::cout << "nullvar.get() " << nullvar.get() << std::endl;
-  if (_n<_p->GetNumParam())
-  {
-    boost::shared_ptr<Variable<int> > var = boost::dynamic_pointer_cast<Variable<int> >(_p->GetParam(_n));
-    if (var->Pointer().get() == nullvar->Pointer().get()) {
-      found=true;
-      userData=(wxObject*)NULL;
-      _n++;
-    }
-  }
-  if (!found) {
+  wxObject* userData = 0u;
+  if (CheckNullVar(_p,_n))  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
     boost::shared_ptr<wxObject > userData_smtptr;
     if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
     userData = userData_smtptr.get();
   }
 
-  boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
-  wxEvtHandler* eventSink = eventSink_smtptr.get();
+  wxEvtHandler* eventSink = 0u;
+  if (CheckNullVar(_p,_n))  {
+    eventSink=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    eventSink = eventSink_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Connect(eventType, func, userData, eventSink);
   return BasicVariable::ptr();
@@ -654,13 +681,25 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxObjectEventFunction func = 0l;
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData = 0u;
+  if (CheckNullVar(_p,_n))  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    userData = userData_smtptr.get();
+  }
 
-  boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
-  wxEvtHandler* eventSink = eventSink_smtptr.get();
+  wxEvtHandler* eventSink = 0u;
+  if (CheckNullVar(_p,_n))  {
+    eventSink=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    eventSink = eventSink_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Disconnect(winid, lastId, eventType, func, userData, eventSink);
   return AMILabType<bool >::CreateVar(res);
@@ -721,13 +760,25 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxObjectEventFunction func = 0l;
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData = 0u;
+  if (CheckNullVar(_p,_n))  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    userData = userData_smtptr.get();
+  }
 
-  boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
-  wxEvtHandler* eventSink = eventSink_smtptr.get();
+  wxEvtHandler* eventSink = 0u;
+  if (CheckNullVar(_p,_n))  {
+    eventSink=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    eventSink = eventSink_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Disconnect(winid, eventType, func, userData, eventSink);
   return AMILabType<bool >::CreateVar(res);
@@ -760,13 +811,25 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxObjectEventFunction func;
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData = 0u;
+  if (CheckNullVar(_p,_n))  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    userData = userData_smtptr.get();
+  }
 
-  boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
-  wxEvtHandler* eventSink = eventSink_smtptr.get();
+  wxEvtHandler* eventSink = 0u;
+  if (CheckNullVar(_p,_n))  {
+    eventSink=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    eventSink = eventSink_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Disconnect(eventType, func, userData, eventSink);
   return AMILabType<bool >::CreateVar(res);
@@ -809,9 +872,15 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxClientData > data_smtptr;
-  if (!get_val_smtptr_param<wxClientData >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxClientData* data = data_smtptr.get();
+  wxClientData* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(wxClientData*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxClientData > data_smtptr;
+    if (!get_val_smtptr_param<wxClientData >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetClientObject(data);
   return BasicVariable::ptr();
@@ -855,9 +924,15 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<void > data_smtptr;
-  if (!get_val_smtptr_param<void >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  void* data = data_smtptr.get();
+  void* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > data_smtptr;
+    if (!get_val_smtptr_param<void >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetClientData(data);
   return BasicVariable::ptr();
