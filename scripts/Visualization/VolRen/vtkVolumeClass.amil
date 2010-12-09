@@ -347,14 +347,15 @@ if (!exists(vtkVolumeClass)) {
       thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
       if(thefilename.FileExists()) {
         msg = "The %1% file exists." %thefilename.GetFullName().c_str()
-        InfoDialog msg
       } else {
         if (!exists(::linearcurve1)) {
-          InfoDialog "It is not possible to save the curve because it has not been defined."
+          msg = "It is not possible to save the curve because it has not been defined."
         } else {
           ::CurveIO.SaveCurve( thefilename.GetFullName().c_str(), &::linearcurve1 )
+          msg = "The curve has been saved correctly in the file: %1%" %thefilename.GetFullName().c_str()
         }
       }
+      InfoDialog msg
     }
 
     #----------------------------
@@ -363,10 +364,11 @@ if (!exists(vtkVolumeClass)) {
       thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
       if(thefilename.FileExists()) {
         ::linearcurve1 = ::CurveIO.LoadCurve( thefilename.GetFullName().c_str() )
+        msg = "The curve has been loaded correctly from the file: %1%" %thefilename.GetFullName().c_str()
       } else {
-        msg = "The %1% file does not exist." %thefilename.GetFullName().c_str()
-        InfoDialog msg        
+        msg = "The %1% file does not exist." %thefilename.GetFullName().c_str()       
       }
+      InfoDialog msg
     }
 
     #----------------------------
