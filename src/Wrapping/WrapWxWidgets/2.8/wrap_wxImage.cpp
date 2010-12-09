@@ -96,7 +96,7 @@ void WrapClass_wxImage::AddMethods(WrapClass<wxImage>::ptr this_ptr )
       AddVar_BlurVertical( this_ptr);
       AddVar_ShrinkBy( this_ptr);
       AddVar_Rescale( this_ptr);
-      AddVar_Resize( this_ptr);
+      AddVar_Resize( this_ptr,"_Resize");
       AddVar_Rotate( this_ptr);
       AddVar_Rotate90( this_ptr);
       AddVar_Mirror( this_ptr);

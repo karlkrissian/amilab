@@ -31,6 +31,8 @@
 
 #include "wrap_wxEvtHandler.h"
 
+extern Variable<int>::ptr nullvar;
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -76,41 +78,44 @@ void WrapClass_wxEvtHandler::AddMethods(WrapClass<wxEvtHandler>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_GetNextHandler( this_ptr);
-      AddVar_GetPreviousHandler( this_ptr);
-      AddVar_SetNextHandler( this_ptr);
-      AddVar_SetPreviousHandler( this_ptr);
-      AddVar_SetEvtHandlerEnabled( this_ptr);
-      AddVar_GetEvtHandlerEnabled( this_ptr);
-      AddVar_ProcessEvent( this_ptr);
-      AddVar_AddPendingEvent( this_ptr);
-      AddVar_ProcessPendingEvents( this_ptr);
-      AddVar_ProcessThreadEvent( this_ptr);
-      AddVar_Connect_1( this_ptr);
-      AddVar_Connect( this_ptr);
-      AddVar_Connect_2( this_ptr);
-      AddVar_Connect_3( this_ptr);
-      AddVar_Disconnect_1( this_ptr);
-      AddVar_Disconnect( this_ptr);
-      AddVar_Disconnect_2( this_ptr);
-      AddVar_Disconnect_3( this_ptr);
-      AddVar_GetDynamicEventTable( this_ptr);
-      AddVar_SetClientObject( this_ptr);
-      AddVar_GetClientObject( this_ptr);
+  // Adding standard methods 
+  AddVar_GetNextHandler( this_ptr);
+  AddVar_GetPreviousHandler( this_ptr);
+  AddVar_SetNextHandler( this_ptr);
+  AddVar_SetPreviousHandler( this_ptr);
+  AddVar_SetEvtHandlerEnabled( this_ptr);
+  AddVar_GetEvtHandlerEnabled( this_ptr);
+  AddVar_ProcessEvent( this_ptr);
+  AddVar_AddPendingEvent( this_ptr);
+  AddVar_ProcessPendingEvents( this_ptr);
+  AddVar_ProcessThreadEvent( this_ptr);
+  AddVar_Connect_1( this_ptr);
+  AddVar_Connect( this_ptr);
+  AddVar_Connect_2( this_ptr);
+  AddVar_Connect_3( this_ptr);
+  AddVar_Disconnect_1( this_ptr);
+  AddVar_Disconnect( this_ptr);
+  AddVar_Disconnect_2( this_ptr);
+  AddVar_Disconnect_3( this_ptr);
+  AddVar_GetDynamicEventTable( this_ptr);
+  AddVar_SetClientObject( this_ptr);
+  AddVar_GetClientObject( this_ptr);
 /* The following types are missing: void
-      AddVar_SetClientData( this_ptr);
+  AddVar_SetClientData( this_ptr);
 */
-      AddVar_GetClientData( this_ptr);
-      AddVar_SearchEventTable( this_ptr);
-      AddVar_SearchDynamicEventTable( this_ptr);
-      AddVar_ClearEventLocker( this_ptr);
-      AddVar_ClearEventHashTable( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetClientData( this_ptr);
+  AddVar_SearchEventTable( this_ptr);
+  AddVar_SearchDynamicEventTable( this_ptr);
+  AddVar_ClearEventLocker( this_ptr);
+  AddVar_ClearEventHashTable( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -469,12 +474,19 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxObjectEventFunction func;
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData=0u;
+  if ((_n<_p->GetNumParam())&&(_p->GetParam(_n).get()==nullvar.get()))
+  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    userData = userData_smtptr.get();
+  }
 
   boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   wxEvtHandler* eventSink = eventSink_smtptr.get();
 
   this->_objectptr->GetObj()->Connect(winid, lastId, eventType, func, userData, eventSink);
@@ -535,12 +547,19 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxObjectEventFunction func;
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData=0u;
+  if ((_n<_p->GetNumParam())&&(_p->GetParam(_n).get()==nullvar.get()))
+  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    userData = userData_smtptr.get();
+  }
 
   boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   wxEvtHandler* eventSink = eventSink_smtptr.get();
 
   this->_objectptr->GetObj()->Connect(winid, eventType, func, userData, eventSink);
@@ -573,12 +592,27 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   wxObjectEventFunction func;
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData=0u;
+  bool found=false;
+std::cout << "_p->GetParam(_n).get() " << _p->GetParam(_n).get() << std::endl;
+std::cout << "nullvar.get() " << nullvar.get() << std::endl;
+  if (_n<_p->GetNumParam())
+  {
+    boost::shared_ptr<Variable<int> > var = boost::dynamic_pointer_cast<Variable<int> >(_p->GetParam(_n));
+    if (var->Pointer().get() == nullvar->Pointer().get()) {
+      found=true;
+      userData=(wxObject*)NULL;
+      _n++;
+    }
+  }
+  if (!found) {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    userData = userData_smtptr.get();
+  }
 
   boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   wxEvtHandler* eventSink = eventSink_smtptr.get();
 
   this->_objectptr->GetObj()->Connect(eventType, func, userData, eventSink);
@@ -621,11 +655,11 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   wxObject* userData = userData_smtptr.get();
 
   boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   wxEvtHandler* eventSink = eventSink_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Disconnect(winid, lastId, eventType, func, userData, eventSink);
@@ -688,11 +722,11 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,false,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   wxObject* userData = userData_smtptr.get();
 
   boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   wxEvtHandler* eventSink = eventSink_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Disconnect(winid, eventType, func, userData, eventSink);
@@ -727,11 +761,11 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (!get_val_param<wxObjectEventFunction >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   wxObject* userData = userData_smtptr.get();
 
   boost::shared_ptr<wxEvtHandler > eventSink_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+  if (!get_val_smtptr_param<wxEvtHandler >(eventSink_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
   wxEvtHandler* eventSink = eventSink_smtptr.get();
 
   bool res =   this->_objectptr->GetObj()->Disconnect(eventType, func, userData, eventSink);

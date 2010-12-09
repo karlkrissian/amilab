@@ -23,8 +23,8 @@
 
 // include what is needed for inheritence and for types ...
 
-//#include "wrap_wxScrolledWindow.h"
-//#include "wrap_wxHtmlWindowInterface.h"
+#include "wrap_wxScrolledWindow.h"
+#include "wrap_wxHtmlWindowInterface.h"
 //#include "wrap_wxHtmlWindowMouseHelper.h"
 
 
@@ -33,7 +33,7 @@ AMI_DECLARE_TYPE(wxHtmlWindow);
 
 // TODO: check for inheritence ...
 class WrapClass_wxHtmlWindow : public WrapClass<wxHtmlWindow>
-    //, public  WrapClass_wxScrolledWindow//, public  WrapClass_wxHtmlWindowInterface//, public  WrapClass_wxHtmlWindowMouseHelper
+    , public   WrapClass_wxScrolledWindow, public   WrapClass_wxHtmlWindowInterface//, public  WrapClass_wxHtmlWindowMouseHelper
 {
   DEFINE_CLASS(WrapClass_wxHtmlWindow);
 
@@ -48,7 +48,7 @@ class WrapClass_wxHtmlWindow : public WrapClass<wxHtmlWindow>
     /// Constructor
     WrapClass_wxHtmlWindow(boost::shared_ptr<wxHtmlWindow > si): 
     WrapClass<wxHtmlWindow>(si)
-    //, WrapClass_wxScrolledWindow(si)//, WrapClass_wxHtmlWindowInterface(si)//, WrapClass_wxHtmlWindowMouseHelper(si)
+    , WrapClass_wxScrolledWindow(si), WrapClass_wxHtmlWindowInterface(si)//, WrapClass_wxHtmlWindowMouseHelper(si)
     {}
 
     /// Destructor
@@ -72,9 +72,7 @@ class WrapClass_wxHtmlWindow : public WrapClass<wxHtmlWindow>
 
     // Static methods
     
-    /* The following types are missing: wxHtmlFilter
     ADD_CLASS_STATICMETHOD(AddFilter,"void wxHtmlWindow::AddFilter(wxHtmlFilter * filter) (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#addfilter).");
-    */
     /* The following types are missing: wxHtmlProcessor
     ADD_CLASS_STATICMETHOD(AddGlobalProcessor,"void wxHtmlWindow::AddGlobalProcessor(wxHtmlProcessor * processor) (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#addglobalprocessor).");
     */
@@ -101,30 +99,20 @@ class WrapClass_wxHtmlWindow : public WrapClass<wxHtmlWindow>
     ADD_CLASS_METHOD(SetStandardFonts,"void wxHtmlWindow::SetStandardFonts(int size = -0x00000000000000001, wxString const & normal_face = wxEmptyString, wxString const & fixed_face = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#setstandardfonts)")
     ADD_CLASS_METHOD(SetBorders,"void wxHtmlWindow::SetBorders(int b)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#setborders)")
     ADD_CLASS_METHOD(SetBackgroundImage,"void wxHtmlWindow::SetBackgroundImage(wxBitmap const & bmpBg)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#setbackgroundimage)")
-/* The following types are missing: wxConfigBase
     ADD_CLASS_METHOD(ReadCustomization,"void wxHtmlWindow::ReadCustomization(wxConfigBase * cfg, wxString path = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#readcustomization)")
-*/
-/* The following types are missing: wxConfigBase
     ADD_CLASS_METHOD(WriteCustomization,"void wxHtmlWindow::WriteCustomization(wxConfigBase * cfg, wxString path = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#writecustomization)")
-*/
     ADD_CLASS_METHOD(HistoryBack,"bool wxHtmlWindow::HistoryBack()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#historyback)")
     ADD_CLASS_METHOD(HistoryForward,"bool wxHtmlWindow::HistoryForward()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#historyforward)")
     ADD_CLASS_METHOD(HistoryCanBack,"bool wxHtmlWindow::HistoryCanBack()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#historycanback)")
     ADD_CLASS_METHOD(HistoryCanForward,"bool wxHtmlWindow::HistoryCanForward()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#historycanforward)")
     ADD_CLASS_METHOD(HistoryClear,"void wxHtmlWindow::HistoryClear()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#historyclear)")
-/* The following types are missing: wxHtmlContainerCell
     ADD_CLASS_METHOD(GetInternalRepresentation,"wxHtmlContainerCell * wxHtmlWindow::GetInternalRepresentation()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#getinternalrepresentation)")
-*/
-/* The following types are missing: wxHtmlWinParser
     ADD_CLASS_METHOD(GetParser,"wxHtmlWinParser * wxHtmlWindow::GetParser()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#getparser)")
-*/
 /* The following types are missing: wxHtmlProcessor
     ADD_CLASS_METHOD(AddProcessor,"void wxHtmlWindow::AddProcessor(wxHtmlProcessor * processor)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#addprocessor)")
 */
     ADD_CLASS_METHOD(OnSetTitle,"void wxHtmlWindow::OnSetTitle(wxString const & title)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#onsettitle)")
-/* The following types are missing: wxHtmlLinkInfo
     ADD_CLASS_METHOD(OnLinkClicked,"void wxHtmlWindow::OnLinkClicked(wxHtmlLinkInfo const & link)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#onlinkclicked)")
-*/
     ADD_CLASS_METHOD(OnOpeningURL,"wxHtmlOpeningStatus wxHtmlWindow::OnOpeningURL(wxHtmlURLType param0, wxString const & param1, wxString * param2)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#onopeningurl)")
     ADD_CLASS_METHOD(SelectWord,"void wxHtmlWindow::SelectWord(wxPoint const & pos)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#selectword)")
     ADD_CLASS_METHOD(SelectLine,"void wxHtmlWindow::SelectLine(wxPoint const & pos)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#selectline)")
@@ -133,13 +121,9 @@ class WrapClass_wxHtmlWindow : public WrapClass<wxHtmlWindow>
     ADD_CLASS_METHOD(ToText,"wxString wxHtmlWindow::ToText()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#totext)")
     ADD_CLASS_METHOD(OnInternalIdle,"void wxHtmlWindow::OnInternalIdle()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#oninternalidle)")
     ADD_CLASS_METHOD(SetHTMLWindowTitle,"void wxHtmlWindow::SetHTMLWindowTitle(wxString const & title)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#sethtmlwindowtitle)")
-/* The following types are missing: wxHtmlLinkInfo
     ADD_CLASS_METHOD(OnHTMLLinkClicked,"void wxHtmlWindow::OnHTMLLinkClicked(wxHtmlLinkInfo const & link)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#onhtmllinkclicked)")
-*/
     ADD_CLASS_METHOD(OnHTMLOpeningURL,"wxHtmlOpeningStatus wxHtmlWindow::OnHTMLOpeningURL(wxHtmlURLType type, wxString const & url, wxString * redirect)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#onhtmlopeningurl)")
-/* The following types are missing: wxHtmlCell
     ADD_CLASS_METHOD(HTMLCoordsToWindow,"wxPoint wxHtmlWindow::HTMLCoordsToWindow(wxHtmlCell * cell, wxPoint const & pos)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#htmlcoordstowindow)")
-*/
     ADD_CLASS_METHOD(GetHTMLWindow,"wxWindow * wxHtmlWindow::GetHTMLWindow()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#gethtmlwindow)")
     ADD_CLASS_METHOD(GetHTMLBackgroundColour,"wxColour wxHtmlWindow::GetHTMLBackgroundColour()  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#gethtmlbackgroundcolour)")
     ADD_CLASS_METHOD(SetHTMLBackgroundColour,"void wxHtmlWindow::SetHTMLBackgroundColour(wxColour const & clr)  (http://docs.wxwidgets.org/stable/wx_wxhtmlwindow.html#sethtmlbackgroundcolour)")

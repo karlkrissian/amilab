@@ -81,6 +81,7 @@
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
 
+Variable<int>::ptr nullvar(new Variable<int>(boost::shared_ptr<int>(new int(NULL))));
 
 void AddWrapImports()
 {
@@ -140,40 +141,6 @@ void AddWrapWxWidgets()
   // Add wx context to builtin
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
       amiobject,Vars.GetBuiltinContext());
-// 
-// 
-// #define ADDWXCLASS(classname) \
-//   WrapClass_##classname      ::AddVar_##classname( amiobject->GetContext());
-//   
-//   WrapClass_wxWindow::AddVar_wxWindow( amiobject->GetContext(), "wxWindow");
-// 
-//   WrapClass_wxSize      ::AddVar_wxSize( amiobject->GetContext());
-// 
-//   WrapClass_wxFileName   ::AddVar_wxFileName  ( amiobject->GetContext());
-//   WrapClass_wxString     ::AddVar_wxString    ( amiobject->GetContext());
-//   WrapClass_wxColour     ::AddVar_wxColour    ( amiobject->GetContext());
-//   WrapClass_wxBitmap     ::AddVar_wxBitmap    ( amiobject->GetContext());
-//   WrapClass_wxImage      ::AddVar_wxImage     ( amiobject->GetContext());
-//   WrapClass_wxHtmlWindow ::AddVar_wxHtmlWindow( amiobject->GetContext());
-//   WrapClass_wxAuiPaneInfo::AddVar_wxAuiPaneInfo(amiobject->GetContext());
-//   WrapClass_wxAuiToolBar ::AddVar_wxAuiToolBar( amiobject->GetContext());
-//   WrapClass_wxRect       ::AddVar_wxRect      ( amiobject->GetContext());
-//   WrapClass_wxPoint      ::AddVar_wxPoint     ( amiobject->GetContext());
-//   WrapClass_wxFrame      ::AddVar_wxFrame     ( amiobject->GetContext());
-//   WrapClass_wxToolBar    ::AddVar_wxToolBar   ( amiobject->GetContext());
-// 
-//   WrapClass_wxButton     ::AddVar_wxButton    ( amiobject->GetContext());
-//   WrapClass_wxBitmapButton ::AddVar_wxBitmapButton ( amiobject->GetContext());
-//   WrapClass_wxBoxSizer   ::AddVar_wxBoxSizer   ( amiobject->GetContext());
-//   WrapClass_wxSizerFlags ::AddVar_wxSizerFlags ( amiobject->GetContext());
-//   ADDWXCLASS( wxPanel )
-//   ADDWXCLASS( wxStaticBox )
-//   ADDWXCLASS( wxStaticBoxSizer )
-// 
-//   ADDWXCLASS( wxAmiEventHandler )
-
-//   // 3. add the variables to this instance
-//   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
 
 }
 
@@ -186,6 +153,9 @@ void AddWrapAmilab()
   Vars.GetBuiltinContext()->AddVar( "true",vartrue,Vars.GetBuiltinContext());
   Vars.GetBuiltinContext()->AddVar( "false",varfalse,Vars.GetBuiltinContext());
   
+  // NULL variable
+  Vars.GetBuiltinContext()->AddVar( "NULL",nullvar,Vars.GetBuiltinContext());
+
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("ami");

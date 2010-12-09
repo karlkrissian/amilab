@@ -18,7 +18,6 @@
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxString.h"
 #include "wrap_wxCommandEvent.h"
 #include "wrap_wxObjectEventFunction.h"
 
@@ -68,22 +67,52 @@ Variable<AMIObject>::ptr WrapClass_wxAmiEventHandler::CreateVar( wxAmiEventHandl
 //----------------------------------------------------------------------
 void WrapClass_wxAmiEventHandler::AddMethods(WrapClass<wxAmiEventHandler>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from wxEvtHandler
-      WrapClass_wxEvtHandler::ptr parent_wxEvtHandler(        boost::dynamic_pointer_cast<WrapClass_wxEvtHandler >(this_ptr));
-      parent_wxEvtHandler->AddMethods(parent_wxEvtHandler);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_OnTest( this_ptr);
-      AddVar_GetEventFunction( this_ptr);
+  // Adding standard methods 
+  AddVar_OnTest( this_ptr);
+  AddVar_GetEventFunction( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent wxEvtHandler
+  boost::shared_ptr<wxEvtHandler > parent_wxEvtHandler(  boost::dynamic_pointer_cast<wxEvtHandler >(this_ptr->GetObj()));
+  BasicVariable::ptr var_wxEvtHandler = AMILabType<wxEvtHandler >::CreateVarFromSmtPtr(parent_wxEvtHandler);
+  context->AddVar("wxEvtHandler",var_wxEvtHandler);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_wxEvtHandler = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxEvtHandler);
+  context->AddDefault(obj_wxEvtHandler->Pointer()->GetContext());
+
 };
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass_wxAmiEventHandler::AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("wxAmiEventHandler");
+    WrapClass_wxAmiEventHandler::AddVar_wxAmiEventHandler(amiobject->GetContext());
+
+
+  // Static methods 
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //----------------------------------------------------------------------
 // PUBLIC METHODS
@@ -91,12 +120,12 @@ void WrapClass_wxAmiEventHandler::AddMethods(WrapClass<wxAmiEventHandler>::ptr t
 
 
 //---------------------------------------------------
-//  Wrapping of Constructor wxAmiEventHandler::wxAmiEventHandler(wxString t)
+//  Wrapping of Constructor wxAmiEventHandler::wxAmiEventHandler(AMIFunction * f = 0l)
 //---------------------------------------------------
 void WrapClass_wxAmiEventHandler::
     wrap_wxAmiEventHandler::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( wxString, "parameter named 't'")
+  ADDPARAMCOMMENT_TYPE( AMIFunction, "parameter named 'f' (def:0l)")
 }
 
 //---------------------------------------------------
@@ -107,10 +136,11 @@ BasicVariable::ptr WrapClass_wxAmiEventHandler::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  wxString t;
-  if (!get_val_param<wxString >(t,_p,_n,true,false)) ClassHelpAndReturn;
+  boost::shared_ptr<AMIFunction > f_smtptr;
+  if (!get_val_smtptr_param<AMIFunction >(f_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+  AMIFunction* f = f_smtptr.get();
 
-  wxAmiEventHandler* _newobj = new wxAmiEventHandler(t);
+  wxAmiEventHandler* _newobj = new wxAmiEventHandler(f);
   BasicVariable::ptr res = WrapClass_wxAmiEventHandler::CreateVar(_newobj);
   return res;
 }
@@ -141,7 +171,7 @@ BasicVariable::ptr WrapClass_wxAmiEventHandler::
 }
 
 //---------------------------------------------------
-//  Wrapping of wxObjectEventFunction wxAmiEventHandler::GetEventFunction()
+//  Wrapping of wxObjectEventFunction * wxAmiEventHandler::GetEventFunction()
 //---------------------------------------------------
 void WrapClass_wxAmiEventHandler::
     wrap_GetEventFunction::SetParametersComments()
@@ -155,7 +185,8 @@ BasicVariable::ptr WrapClass_wxAmiEventHandler::
 {
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
-  wxObjectEventFunction res =   this->_objectptr->GetObj()->GetEventFunction();
-  return AMILabType<wxObjectEventFunction >::CreateVar(res);
+  wxObjectEventFunction * res =   this->_objectptr->GetObj()->GetEventFunction();
+  BasicVariable::ptr res_var = WrapClass_wxObjectEventFunction::CreateVar(res);
+  return res_var;
 }
 

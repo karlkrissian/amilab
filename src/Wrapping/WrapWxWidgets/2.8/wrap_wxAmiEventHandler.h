@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "wxAmiEventHandler.h"
+#include "wx_includes.h"
 
 // include what is needed for inheritence and for types ...
 
@@ -57,7 +57,7 @@ class WrapClass_wxAmiEventHandler : public WrapClass<wxAmiEventHandler>
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxAmiEventHandler,"Constructor wxAmiEventHandler::wxAmiEventHandler(wxString t) (http://docs.wxwidgets.org/stable/wx_wxamieventhandler.html#wxamieventhandler).");
+    ADD_CLASS_CONSTRUCTOR(wxAmiEventHandler,"Constructor wxAmiEventHandler::wxAmiEventHandler(AMIFunction * f = 0l) (http://docs.wxwidgets.org/stable/wx_wxamieventhandler.html#wxamieventhandler).");
 
 
 
@@ -73,13 +73,18 @@ class WrapClass_wxAmiEventHandler : public WrapClass<wxAmiEventHandler>
     
     // Adding standard methods
     ADD_CLASS_METHOD(OnTest,"void wxAmiEventHandler::OnTest(wxCommandEvent & event)  (http://docs.wxwidgets.org/stable/wx_wxamieventhandler.html#ontest)")
-    ADD_CLASS_METHOD(GetEventFunction,"wxObjectEventFunction wxAmiEventHandler::GetEventFunction()  (http://docs.wxwidgets.org/stable/wx_wxamieventhandler.html#geteventfunction)")
+    ADD_CLASS_METHOD(GetEventFunction,"wxObjectEventFunction * wxAmiEventHandler::GetEventFunction()  (http://docs.wxwidgets.org/stable/wx_wxamieventhandler.html#geteventfunction)")
 
 
 
 
 
     void AddMethods(WrapClass<wxAmiEventHandler>::ptr this_ptr );
+    
+    /*
+     * Adds the constructor and the static methods to the given context
+     */
+    static void AddStaticMethods( Variables::ptr& context);
 
 };
 

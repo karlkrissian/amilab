@@ -22,11 +22,17 @@
 #include "wrap_wxPoint.h"
 #include "wrap_wxSize.h"
 #include "wrap_wxString.h"
+#include "wrap_wxHtmlFilter.h"
 #include "wrap_wxCursor.h"
 #include "wrap_wxClassInfo.h"
 #include "wrap_wxFileName.h"
 #include "wrap_wxFrame.h"
 #include "wrap_wxBitmap.h"
+#include "wrap_wxConfigBase.h"
+#include "wrap_wxHtmlContainerCell.h"
+#include "wrap_wxHtmlWinParser.h"
+#include "wrap_wxHtmlLinkInfo.h"
+#include "wrap_wxHtmlCell.h"
 #include "wrap_wxColour.h"
 
 
@@ -94,30 +100,20 @@ void WrapClass_wxHtmlWindow::AddMethods(WrapClass<wxHtmlWindow>::ptr this_ptr )
   AddVar_SetStandardFonts( this_ptr);
   AddVar_SetBorders( this_ptr);
   AddVar_SetBackgroundImage( this_ptr);
-/* The following types are missing: wxConfigBase
   AddVar_ReadCustomization( this_ptr);
-*/
-/* The following types are missing: wxConfigBase
   AddVar_WriteCustomization( this_ptr);
-*/
   AddVar_HistoryBack( this_ptr);
   AddVar_HistoryForward( this_ptr);
   AddVar_HistoryCanBack( this_ptr);
   AddVar_HistoryCanForward( this_ptr);
   AddVar_HistoryClear( this_ptr);
-/* The following types are missing: wxHtmlContainerCell
   AddVar_GetInternalRepresentation( this_ptr);
-*/
-/* The following types are missing: wxHtmlWinParser
   AddVar_GetParser( this_ptr);
-*/
 /* The following types are missing: wxHtmlProcessor
   AddVar_AddProcessor( this_ptr);
 */
   AddVar_OnSetTitle( this_ptr);
-/* The following types are missing: wxHtmlLinkInfo
   AddVar_OnLinkClicked( this_ptr);
-*/
   AddVar_OnOpeningURL( this_ptr);
   AddVar_SelectWord( this_ptr);
   AddVar_SelectLine( this_ptr);
@@ -126,13 +122,9 @@ void WrapClass_wxHtmlWindow::AddMethods(WrapClass<wxHtmlWindow>::ptr this_ptr )
   AddVar_ToText( this_ptr);
   AddVar_OnInternalIdle( this_ptr);
   AddVar_SetHTMLWindowTitle( this_ptr);
-/* The following types are missing: wxHtmlLinkInfo
   AddVar_OnHTMLLinkClicked( this_ptr);
-*/
   AddVar_OnHTMLOpeningURL( this_ptr);
-/* The following types are missing: wxHtmlCell
   AddVar_HTMLCoordsToWindow( this_ptr);
-*/
   AddVar_GetHTMLWindow( this_ptr);
   AddVar_GetHTMLBackgroundColour( this_ptr);
   AddVar_SetHTMLBackgroundColour( this_ptr);
@@ -147,11 +139,12 @@ void WrapClass_wxHtmlWindow::AddMethods(WrapClass<wxHtmlWindow>::ptr this_ptr )
 
   
 
+
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-/*
+
   // Add base parent wxScrolledWindow
   boost::shared_ptr<wxScrolledWindow > parent_wxScrolledWindow(  boost::dynamic_pointer_cast<wxScrolledWindow >(this_ptr->GetObj()));
   BasicVariable::ptr var_wxScrolledWindow = AMILabType<wxScrolledWindow >::CreateVarFromSmtPtr(parent_wxScrolledWindow);
@@ -159,8 +152,7 @@ void WrapClass_wxHtmlWindow::AddMethods(WrapClass<wxHtmlWindow>::ptr this_ptr )
   // Set as a default context
   Variable<AMIObject>::ptr obj_wxScrolledWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxScrolledWindow);
   context->AddDefault(obj_wxScrolledWindow->Pointer()->GetContext());
-*/
-/*
+
   // Add base parent wxHtmlWindowInterface
   boost::shared_ptr<wxHtmlWindowInterface > parent_wxHtmlWindowInterface(  boost::dynamic_pointer_cast<wxHtmlWindowInterface >(this_ptr->GetObj()));
   BasicVariable::ptr var_wxHtmlWindowInterface = AMILabType<wxHtmlWindowInterface >::CreateVarFromSmtPtr(parent_wxHtmlWindowInterface);
@@ -168,7 +160,6 @@ void WrapClass_wxHtmlWindow::AddMethods(WrapClass<wxHtmlWindow>::ptr this_ptr )
   // Set as a default context
   Variable<AMIObject>::ptr obj_wxHtmlWindowInterface = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxHtmlWindowInterface);
   context->AddDefault(obj_wxHtmlWindowInterface->Pointer()->GetContext());
-*/
 /*
   // Add base parent wxHtmlWindowMouseHelper
   boost::shared_ptr<wxHtmlWindowMouseHelper > parent_wxHtmlWindowMouseHelper(  boost::dynamic_pointer_cast<wxHtmlWindowMouseHelper >(this_ptr->GetObj()));
@@ -196,9 +187,7 @@ void WrapClass_wxHtmlWindow::AddStaticMethods( Variables::ptr& context)
 
 
   // Static methods 
-  /* Types are missing
   WrapClass_wxHtmlWindow::AddVar_AddFilter(amiobject->GetContext());
-  */
   /* Types are missing
   WrapClass_wxHtmlWindow::AddVar_AddGlobalProcessor(amiobject->GetContext());
   */
@@ -306,7 +295,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   BasicVariable::ptr res = WrapClass_wxHtmlWindow::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: wxHtmlFilter
 
 //---------------------------------------------------
 //  Wrapping of void wxHtmlWindow::AddFilter(wxHtmlFilter * filter)
@@ -332,7 +320,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   wxHtmlWindow::AddFilter(filter);
   return BasicVariable::ptr();
 }
-*/
 /* The following types are missing: wxHtmlProcessor
 
 //---------------------------------------------------
@@ -814,7 +801,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   this->_objectptr->GetObj()->SetBackgroundImage(bmpBg);
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxConfigBase
 
 //---------------------------------------------------
 //  Wrapping of void wxHtmlWindow::ReadCustomization(wxConfigBase * cfg, wxString path = wxEmptyString)
@@ -844,8 +830,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   this->_objectptr->GetObj()->ReadCustomization(cfg, path);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: wxConfigBase
 
 //---------------------------------------------------
 //  Wrapping of void wxHtmlWindow::WriteCustomization(wxConfigBase * cfg, wxString path = wxEmptyString)
@@ -875,7 +859,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   this->_objectptr->GetObj()->WriteCustomization(cfg, path);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxHtmlWindow::HistoryBack()
@@ -970,7 +953,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   this->_objectptr->GetObj()->HistoryClear();
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxHtmlContainerCell
 
 //---------------------------------------------------
 //  Wrapping of wxHtmlContainerCell * wxHtmlWindow::GetInternalRepresentation()
@@ -988,10 +970,9 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlContainerCell * res =   this->_objectptr->GetObj()->GetInternalRepresentation();
-  return AMILabType<wxHtmlContainerCell >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxHtmlContainerCell::CreateVar(res);
+  return res_var;
 }
-*/
-/* The following types are missing: wxHtmlWinParser
 
 //---------------------------------------------------
 //  Wrapping of wxHtmlWinParser * wxHtmlWindow::GetParser()
@@ -1009,9 +990,9 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlWinParser * res =   this->_objectptr->GetObj()->GetParser();
-  return AMILabType<wxHtmlWinParser >::CreateVar(res,true);
+  BasicVariable::ptr res_var = WrapClass_wxHtmlWinParser::CreateVar(res);
+  return res_var;
 }
-*/
 /* The following types are missing: wxHtmlProcessor
 
 //---------------------------------------------------
@@ -1064,7 +1045,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   this->_objectptr->GetObj()->OnSetTitle(title);
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxHtmlLinkInfo
 
 //---------------------------------------------------
 //  Wrapping of void wxHtmlWindow::OnLinkClicked(wxHtmlLinkInfo const & link)
@@ -1090,7 +1070,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   this->_objectptr->GetObj()->OnLinkClicked(link);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxHtmlOpeningStatus wxHtmlWindow::OnOpeningURL(wxHtmlURLType param0, wxString const & param1, wxString * param2)
@@ -1277,7 +1256,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   this->_objectptr->GetObj()->SetHTMLWindowTitle(title);
   return BasicVariable::ptr();
 }
-/* The following types are missing: wxHtmlLinkInfo
 
 //---------------------------------------------------
 //  Wrapping of void wxHtmlWindow::OnHTMLLinkClicked(wxHtmlLinkInfo const & link)
@@ -1303,7 +1281,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   this->_objectptr->GetObj()->OnHTMLLinkClicked(link);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxHtmlOpeningStatus wxHtmlWindow::OnHTMLOpeningURL(wxHtmlURLType type, wxString const & url, wxString * redirect)
@@ -1341,7 +1318,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   int res_int = (int) res;
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: wxHtmlCell
 
 //---------------------------------------------------
 //  Wrapping of wxPoint wxHtmlWindow::HTMLCoordsToWindow(wxHtmlCell * cell, wxPoint const & pos)
@@ -1373,7 +1349,6 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   wxPoint res =   this->_objectptr->GetObj()->HTMLCoordsToWindow(cell, pos);
   return AMILabType<wxPoint >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxWindow * wxHtmlWindow::GetHTMLWindow()
