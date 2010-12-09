@@ -23,39 +23,46 @@ INCLUDE( ${VTK_USE_FILE} )
 INCLUDE( ${wxWidgets_USE_FILE})
 
 file(GLOB vtk_HDRS  "${AMI_VTK_VERSION}/*.h"  )
-file(GLOB vtk_SRCS   "${AMI_VTK_VERSION}/*.cpp")
+file(GLOB vtk_SRCS  "${AMI_VTK_VERSION}/*.cpp")
 
+MESSAGE("Wrapping VTK...")
 
-SET(output_src)
-FOREACH(loop_var ${vtk_SRCS})
-  SET(include_header "#include \"${loop_var}\"")
-  SET(output_src ${output_src} ${include_header})
-ENDFOREACH(loop_var)
+SET(source_path "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK")
+SET(new_source_code_list "")
+GenerateSourcesWrapping (new_source_code_list ${source_path} "${vtk_SRCS}")
 
-SET(vtk_source_list "")
-SET(output_dir_path "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/Generated/")
-LIST(LENGTH output_src output_src_length)
-SET(N 9)
+MESSAGE("VTK wrap files: ${new_source_code_list}\n")
 
-WHILE(output_src_length)
-
-  SET(include_list "")
-  FOREACH(counter RANGE ${N})
-
-    IF(output_src_length)
-      LIST(GET output_src -1 element_src)
-      SET(include_list "${include_list} ${element_src}\n")
-      LIST(REMOVE_AT output_src -1)
-      LIST(LENGTH output_src output_src_length)
-    ENDIF(output_src_length)
-
-  ENDFOREACH(counter)
-
-  SET(name_output "wrap_vtk${AMI_VTK_VERSION}_${output_src_length}.cpp")
-  FILE(WRITE "${output_dir_path}${name_output}" ${include_list})
-  SET(vtk_source_list ${vtk_source_list} "Generated/${name_output}")
-
-ENDWHILE(output_src_length)
+# SET(output_src)
+# FOREACH(loop_var ${vtk_SRCS})
+#   SET(include_header "#include \"${loop_var}\"")
+#   SET(output_src ${output_src} ${include_header})
+# ENDFOREACH(loop_var)
+# 
+# SET(vtk_source_list "")
+# SET(output_dir_path "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/Generated/")
+# LIST(LENGTH output_src output_src_length)
+# SET(N 9)
+# 
+# WHILE(output_src_length)
+# 
+#   SET(include_list "")
+#   FOREACH(counter RANGE ${N})
+# 
+#     IF(output_src_length)
+#       LIST(GET output_src -1 element_src)
+#       SET(include_list "${include_list} ${element_src}\n")
+#       LIST(REMOVE_AT output_src -1)
+#       LIST(LENGTH output_src output_src_length)
+#     ENDIF(output_src_length)
+# 
+#   ENDFOREACH(counter)
+# 
+#   SET(name_output "wrap_vtk${AMI_VTK_VERSION}_${output_src_length}.cpp")
+#   FILE(WRITE "${output_dir_path}${name_output}" ${include_list})
+#   SET(vtk_source_list ${vtk_source_list} "Generated/${name_output}")
+# 
+# ENDWHILE(output_src_length)
 
 
 SET(  WrapVTK_SRCS
@@ -71,8 +78,8 @@ SET(WrapVTK_HDRS
 SET(WrapVTK_SRCS
      ${WrapVTK_SRCS}
      ${WrapVTK_HDRS}
-     #${vtk_source_list}
-     ${vtk_SRCS}
+     ${new_source_code_list}
+     #${vtk_SRCS}
      ${vtk_HDRS}
 )
 
