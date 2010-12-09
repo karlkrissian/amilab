@@ -12,7 +12,11 @@ if (!exists(vtkVolumeClass)) {
 
     # load the ImageHistogram script
     func "Visualization/ImageHistogram/ImageHistogramClass.amil"
+    func "dwCurveIOClass.amil"
+
     ImageHistogramClass             ::imhisto1
+    # Input/Output operations to work with the curve on the histogram
+    dwCurveIOClass                  ::CurveIO
 
     #----------------------------
     proc ::Init( ) {
@@ -52,6 +56,9 @@ if (!exists(vtkVolumeClass)) {
       ::specular  = 0.3, "specular coefficient"
       ::specular_power = 15.0, "specular power"
       ::scalar_opacity_unitdistance = 0.8919, "scalar opacity unit distance"
+
+      ::curve_folder    =  "", "Histogram curve Path Folder"
+      ::curve_filename  =  "Curve.amil", "name of the input/output histogram curve"
 
     }
 
@@ -335,10 +342,31 @@ if (!exists(vtkVolumeClass)) {
     }
 
     #----------------------------
-    proc ::SaveCurve( OBJECT c ) \
+    proc ::SaveCurve(  ) \
     {
-      ctrlpts = curve.GetControlPoints()
-      pt = ctrlpts[n] 
+      thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
+      if(thefilename.FileExists()) {
+        msg = "The %1% file exists." %thefilename.GetFullName().c_str()
+        InfoDialog msg
+      } else {
+        if (!exists(::linearcurve1)) {
+          InfoDialog "It is not possible to save the curve because it has not been defined."
+        } else {
+          ::CurveIO.SaveCurve( thefilename.GetFullName().c_str(), &::linearcurve1 )
+        }
+      }
+    }
+
+    #----------------------------
+    proc ::LoadCurve(  ) \
+    {
+      thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
+      if(thefilename.FileExists()) {
+        ::linearcurve1 = ::CurveIO.LoadCurve( thefilename.GetFullName().c_str() )
+      } else {
+        msg = "The %1% file does not exist." %thefilename.GetFullName().c_str()
+        InfoDialog msg        
+      }
     }
 
     #----------------------------
@@ -746,6 +774,30 @@ printn "point number %1%" %n
           ::imhisto1.SetParentPanel(&::win)
           ::imhisto1.Gui()
           ::win.AddPage("Hist", &::imhisto1->win)
+          ::CurveLoad_page = ::win.AddPage("Load")
+            ::win.BeginHorizontal()
+              ::win.AddDirname(&::curve_folder, "Load Folder")
+            ::win.EndHorizontal()
+
+            ::win.BeginHorizontal()
+              ::win.AddString( &::curve_filename,"Input File Name")
+            ::win.EndHorizontal()
+
+            ::win.BeginHorizontal()
+              ::win.AddButton("Load",::LoadCurve)
+            ::win.EndHorizontal()
+          ::CurveSave_page = ::win.AddPage("Save")
+            ::win.BeginHorizontal()
+              ::win.AddDirname(&::curve_folder, "Save Folder")
+            ::win.EndHorizontal()
+
+            ::win.BeginHorizontal()
+              ::win.AddString( &::curve_filename,"Output File Name")
+            ::win.EndHorizontal()
+
+            ::win.BeginHorizontal()
+              ::win.AddButton("Save",::SaveCurve)
+            ::win.EndHorizontal()
         ::win.EndBook()
 
         ::blend_book = ::win.BeginBook()
@@ -821,7 +873,6 @@ printn "point number %1%" %n
             ::win.AddFloat(&::ImageSampleDistance,"Im Dist",0.2,2)
             ::win.AddButton("Apply",&::OnSampleDistance)
           ::win.EndBoxPanel()
-
           
       ::win.EndBook()
 

@@ -615,7 +615,7 @@ argc              return(token::T_argc);         /*{argc,T_argc}*/
 emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 
-[0-9]+"."[0-9]+   {
+([0-9]+"."[0-9]+((e|E)("+"|"-")?[0-9]+)?)|([0-9]+((e|E)("+"|"-")?[0-9]+))   {
 //
 //============================ Parse float ====================
 //
