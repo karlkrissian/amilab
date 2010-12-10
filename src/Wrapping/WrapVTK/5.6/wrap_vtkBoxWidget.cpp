@@ -29,6 +29,10 @@
 
 #include "wrap_vtkBoxWidget.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -36,8 +40,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkBoxWidget>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkBoxWidget::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -72,65 +76,76 @@ Variable<AMIObject>::ptr WrapClass_vtkBoxWidget::CreateVar( vtkBoxWidget* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkBoxWidget::AddMethods(WrapClass<vtkBoxWidget>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtk3DWidget
-      WrapClass_vtk3DWidget::ptr parent_vtk3DWidget(        boost::dynamic_pointer_cast<WrapClass_vtk3DWidget >(this_ptr));
-      parent_vtk3DWidget->AddMethods(parent_vtk3DWidget);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_SetEnabled( this_ptr);
-      AddVar_PlaceWidget_1( this_ptr);
-      AddVar_PlaceWidget( this_ptr);
-      AddVar_PlaceWidget_2( this_ptr);
-      AddVar_PlaceWidget_3( this_ptr);
-      AddVar_GetPlanes( this_ptr);
-      AddVar_SetInsideOut( this_ptr);
-      AddVar_GetInsideOut( this_ptr);
-      AddVar_InsideOutOn( this_ptr);
-      AddVar_InsideOutOff( this_ptr);
-      AddVar_GetTransform( this_ptr);
-      AddVar_SetTransform( this_ptr);
-      AddVar_GetPolyData( this_ptr);
-      AddVar_GetHandleProperty( this_ptr);
-      AddVar_GetSelectedHandleProperty( this_ptr);
-      AddVar_HandlesOn( this_ptr);
-      AddVar_HandlesOff( this_ptr);
-      AddVar_GetFaceProperty( this_ptr);
-      AddVar_GetSelectedFaceProperty( this_ptr);
-      AddVar_GetOutlineProperty( this_ptr);
-      AddVar_GetSelectedOutlineProperty( this_ptr);
-      AddVar_SetOutlineFaceWires( this_ptr);
-      AddVar_GetOutlineFaceWires( this_ptr);
-      AddVar_OutlineFaceWiresOn( this_ptr);
-      AddVar_OutlineFaceWiresOff( this_ptr);
-      AddVar_SetOutlineCursorWires( this_ptr);
-      AddVar_GetOutlineCursorWires( this_ptr);
-      AddVar_OutlineCursorWiresOn( this_ptr);
-      AddVar_OutlineCursorWiresOff( this_ptr);
-      AddVar_SetTranslationEnabled( this_ptr);
-      AddVar_GetTranslationEnabled( this_ptr);
-      AddVar_TranslationEnabledOn( this_ptr);
-      AddVar_TranslationEnabledOff( this_ptr);
-      AddVar_SetScalingEnabled( this_ptr);
-      AddVar_GetScalingEnabled( this_ptr);
-      AddVar_ScalingEnabledOn( this_ptr);
-      AddVar_ScalingEnabledOff( this_ptr);
-      AddVar_SetRotationEnabled( this_ptr);
-      AddVar_GetRotationEnabled( this_ptr);
-      AddVar_RotationEnabledOn( this_ptr);
-      AddVar_RotationEnabledOff( this_ptr);
+  AddVar_SetEnabled( this_ptr);
+  AddVar_PlaceWidget_1( this_ptr);
+  AddVar_PlaceWidget( this_ptr);
+  AddVar_PlaceWidget_2( this_ptr);
+  AddVar_PlaceWidget_3( this_ptr);
+  AddVar_GetPlanes( this_ptr);
+  AddVar_SetInsideOut( this_ptr);
+  AddVar_GetInsideOut( this_ptr);
+  AddVar_InsideOutOn( this_ptr);
+  AddVar_InsideOutOff( this_ptr);
+  AddVar_GetTransform( this_ptr);
+  AddVar_SetTransform( this_ptr);
+  AddVar_GetPolyData( this_ptr);
+  AddVar_GetHandleProperty( this_ptr);
+  AddVar_GetSelectedHandleProperty( this_ptr);
+  AddVar_HandlesOn( this_ptr);
+  AddVar_HandlesOff( this_ptr);
+  AddVar_GetFaceProperty( this_ptr);
+  AddVar_GetSelectedFaceProperty( this_ptr);
+  AddVar_GetOutlineProperty( this_ptr);
+  AddVar_GetSelectedOutlineProperty( this_ptr);
+  AddVar_SetOutlineFaceWires( this_ptr);
+  AddVar_GetOutlineFaceWires( this_ptr);
+  AddVar_OutlineFaceWiresOn( this_ptr);
+  AddVar_OutlineFaceWiresOff( this_ptr);
+  AddVar_SetOutlineCursorWires( this_ptr);
+  AddVar_GetOutlineCursorWires( this_ptr);
+  AddVar_OutlineCursorWiresOn( this_ptr);
+  AddVar_OutlineCursorWiresOff( this_ptr);
+  AddVar_SetTranslationEnabled( this_ptr);
+  AddVar_GetTranslationEnabled( this_ptr);
+  AddVar_TranslationEnabledOn( this_ptr);
+  AddVar_TranslationEnabledOff( this_ptr);
+  AddVar_SetScalingEnabled( this_ptr);
+  AddVar_GetScalingEnabled( this_ptr);
+  AddVar_ScalingEnabledOn( this_ptr);
+  AddVar_ScalingEnabledOff( this_ptr);
+  AddVar_SetRotationEnabled( this_ptr);
+  AddVar_GetRotationEnabled( this_ptr);
+  AddVar_RotationEnabledOn( this_ptr);
+  AddVar_RotationEnabledOff( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtk3DWidget
+  boost::shared_ptr<vtk3DWidget > parent_vtk3DWidget(  boost::dynamic_pointer_cast<vtk3DWidget >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtk3DWidget = AMILabType<vtk3DWidget >::CreateVarFromSmtPtr(parent_vtk3DWidget);
+  context->AddVar("vtk3DWidget",var_vtk3DWidget);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtk3DWidget = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtk3DWidget);
+  context->AddDefault(obj_vtk3DWidget->Pointer()->GetContext());
+
 };
 
 
@@ -149,7 +164,7 @@ void WrapClass_vtkBoxWidget::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkBoxWidget::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -222,9 +237,15 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkBoxWidget * res =   vtkBoxWidget::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkBoxWidget::CreateVar(res);
@@ -349,9 +370,15 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* bounds = bounds_smtptr.get();
+  double* bounds;
+  if (CheckNullVar(_p,_n))  {
+    bounds=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > bounds_smtptr;
+    if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    bounds = bounds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->PlaceWidget(bounds);
   return BasicVariable::ptr();
@@ -460,9 +487,15 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPlanes > planes_smtptr;
-  if (!get_val_smtptr_param<vtkPlanes >(planes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPlanes* planes = planes_smtptr.get();
+  vtkPlanes* planes;
+  if (CheckNullVar(_p,_n))  {
+    planes=(vtkPlanes*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPlanes > planes_smtptr;
+    if (!get_val_smtptr_param<vtkPlanes >(planes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    planes = planes_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPlanes(planes);
   return BasicVariable::ptr();
@@ -564,9 +597,15 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkTransform > t_smtptr;
-  if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkTransform* t = t_smtptr.get();
+  vtkTransform* t;
+  if (CheckNullVar(_p,_n))  {
+    t=(vtkTransform*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkTransform > t_smtptr;
+    if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    t = t_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTransform(t);
   return BasicVariable::ptr();
@@ -589,9 +628,15 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkTransform > t_smtptr;
-  if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkTransform* t = t_smtptr.get();
+  vtkTransform* t;
+  if (CheckNullVar(_p,_n))  {
+    t=(vtkTransform*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkTransform > t_smtptr;
+    if (!get_val_smtptr_param<vtkTransform >(t_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    t = t_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTransform(t);
   return BasicVariable::ptr();
@@ -614,9 +659,15 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPolyData > pd_smtptr;
-  if (!get_val_smtptr_param<vtkPolyData >(pd_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPolyData* pd = pd_smtptr.get();
+  vtkPolyData* pd;
+  if (CheckNullVar(_p,_n))  {
+    pd=(vtkPolyData*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPolyData > pd_smtptr;
+    if (!get_val_smtptr_param<vtkPolyData >(pd_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pd = pd_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPolyData(pd);
   return BasicVariable::ptr();

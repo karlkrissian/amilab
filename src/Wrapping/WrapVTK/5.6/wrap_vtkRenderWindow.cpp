@@ -28,6 +28,10 @@
 
 #include "wrap_vtkRenderWindow.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -71,138 +75,149 @@ Variable<AMIObject>::ptr WrapClass_vtkRenderWindow::CreateVar( vtkRenderWindow* 
 //----------------------------------------------------------------------
 void WrapClass_vtkRenderWindow::AddMethods(WrapClass<vtkRenderWindow>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkWindow
-      WrapClass_vtkWindow::ptr parent_vtkWindow(        boost::dynamic_pointer_cast<WrapClass_vtkWindow >(this_ptr));
-      parent_vtkWindow->AddMethods(parent_vtkWindow);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_AddRenderer( this_ptr);
-      AddVar_RemoveRenderer( this_ptr);
-      AddVar_HasRenderer( this_ptr);
-      AddVar_GetRenderers( this_ptr);
-      AddVar_Render( this_ptr);
-      AddVar_CopyResultFrame( this_ptr);
-      AddVar_MakeRenderWindowInteractor( this_ptr);
-      AddVar_SetCursorPosition( this_ptr);
-      AddVar_SetCurrentCursor( this_ptr);
-      AddVar_GetCurrentCursor( this_ptr);
-      AddVar_GetFullScreen( this_ptr);
-      AddVar_FullScreenOn( this_ptr);
-      AddVar_FullScreenOff( this_ptr);
-      AddVar_SetBorders( this_ptr);
-      AddVar_GetBorders( this_ptr);
-      AddVar_BordersOn( this_ptr);
-      AddVar_BordersOff( this_ptr);
-      AddVar_GetStereoCapableWindow( this_ptr);
-      AddVar_StereoCapableWindowOn( this_ptr);
-      AddVar_StereoCapableWindowOff( this_ptr);
-      AddVar_SetStereoCapableWindow( this_ptr);
-      AddVar_GetStereoRender( this_ptr);
-      AddVar_SetStereoRender( this_ptr);
-      AddVar_StereoRenderOn( this_ptr);
-      AddVar_StereoRenderOff( this_ptr);
-      AddVar_SetAlphaBitPlanes( this_ptr);
-      AddVar_GetAlphaBitPlanes( this_ptr);
-      AddVar_AlphaBitPlanesOn( this_ptr);
-      AddVar_AlphaBitPlanesOff( this_ptr);
-      AddVar_SetPointSmoothing( this_ptr);
-      AddVar_GetPointSmoothing( this_ptr);
-      AddVar_PointSmoothingOn( this_ptr);
-      AddVar_PointSmoothingOff( this_ptr);
-      AddVar_SetLineSmoothing( this_ptr);
-      AddVar_GetLineSmoothing( this_ptr);
-      AddVar_LineSmoothingOn( this_ptr);
-      AddVar_LineSmoothingOff( this_ptr);
-      AddVar_SetPolygonSmoothing( this_ptr);
-      AddVar_GetPolygonSmoothing( this_ptr);
-      AddVar_PolygonSmoothingOn( this_ptr);
-      AddVar_PolygonSmoothingOff( this_ptr);
-      AddVar_GetStereoType( this_ptr);
-      AddVar_SetStereoType( this_ptr);
-      AddVar_SetStereoTypeToCrystalEyes( this_ptr);
-      AddVar_SetStereoTypeToRedBlue( this_ptr);
-      AddVar_SetStereoTypeToInterlaced( this_ptr);
-      AddVar_SetStereoTypeToLeft( this_ptr);
-      AddVar_SetStereoTypeToRight( this_ptr);
-      AddVar_SetStereoTypeToDresden( this_ptr);
-      AddVar_SetStereoTypeToAnaglyph( this_ptr);
-      AddVar_SetStereoTypeToCheckerboard( this_ptr);
-      AddVar_GetStereoTypeAsString( this_ptr);
-      AddVar_StereoUpdate( this_ptr);
-      AddVar_StereoMidpoint( this_ptr);
-      AddVar_StereoRenderComplete( this_ptr);
-      AddVar_SetAnaglyphColorSaturation( this_ptr);
-      AddVar_GetAnaglyphColorSaturationMinValue( this_ptr);
-      AddVar_GetAnaglyphColorSaturationMaxValue( this_ptr);
-      AddVar_GetAnaglyphColorSaturation( this_ptr);
-      AddVar_SetAnaglyphColorMask_1( this_ptr);
-      AddVar_SetAnaglyphColorMask( this_ptr);
-      AddVar_SetAnaglyphColorMask_2( this_ptr);
-      AddVar_GetAnaglyphColorMask_1( this_ptr);
-      AddVar_GetAnaglyphColorMask( this_ptr);
-      AddVar_GetAnaglyphColorMask_2( this_ptr);
-      AddVar_SetSwapBuffers( this_ptr);
-      AddVar_GetSwapBuffers( this_ptr);
-      AddVar_SwapBuffersOn( this_ptr);
-      AddVar_SwapBuffersOff( this_ptr);
-      AddVar_GetZbufferDataAtPoint( this_ptr);
-      AddVar_GetAAFrames( this_ptr);
-      AddVar_SetAAFrames( this_ptr);
-      AddVar_GetFDFrames( this_ptr);
-      AddVar_SetFDFrames( this_ptr);
-      AddVar_GetSubFrames( this_ptr);
-      AddVar_SetSubFrames( this_ptr);
-      AddVar_GetNeverRendered( this_ptr);
-      AddVar_GetAbortRender( this_ptr);
-      AddVar_SetAbortRender( this_ptr);
-      AddVar_GetInAbortCheck( this_ptr);
-      AddVar_SetInAbortCheck( this_ptr);
-      AddVar_CheckAbortStatus( this_ptr);
-      AddVar_GetIsPicking( this_ptr);
-      AddVar_SetIsPicking( this_ptr);
-      AddVar_IsPickingOn( this_ptr);
-      AddVar_IsPickingOff( this_ptr);
-      AddVar_CheckInRenderStatus( this_ptr);
-      AddVar_ClearInRenderStatus( this_ptr);
-      AddVar_SetDesiredUpdateRate( this_ptr);
-      AddVar_GetDesiredUpdateRate( this_ptr);
-      AddVar_GetNumberOfLayers( this_ptr);
-      AddVar_SetNumberOfLayers( this_ptr);
-      AddVar_GetNumberOfLayersMinValue( this_ptr);
-      AddVar_GetNumberOfLayersMaxValue( this_ptr);
-      AddVar_GetInteractor( this_ptr);
-      AddVar_SetInteractor( this_ptr);
-      AddVar_UnRegister( this_ptr);
-      AddVar_SetForceMakeCurrent( this_ptr);
-      AddVar_ReportCapabilities( this_ptr);
-      AddVar_SupportsOpenGL( this_ptr);
-      AddVar_IsDirect( this_ptr);
+  AddVar_AddRenderer( this_ptr);
+  AddVar_RemoveRenderer( this_ptr);
+  AddVar_HasRenderer( this_ptr);
+  AddVar_GetRenderers( this_ptr);
+  AddVar_Render( this_ptr);
+  AddVar_CopyResultFrame( this_ptr);
+  AddVar_MakeRenderWindowInteractor( this_ptr);
+  AddVar_SetCursorPosition( this_ptr);
+  AddVar_SetCurrentCursor( this_ptr);
+  AddVar_GetCurrentCursor( this_ptr);
+  AddVar_GetFullScreen( this_ptr);
+  AddVar_FullScreenOn( this_ptr);
+  AddVar_FullScreenOff( this_ptr);
+  AddVar_SetBorders( this_ptr);
+  AddVar_GetBorders( this_ptr);
+  AddVar_BordersOn( this_ptr);
+  AddVar_BordersOff( this_ptr);
+  AddVar_GetStereoCapableWindow( this_ptr);
+  AddVar_StereoCapableWindowOn( this_ptr);
+  AddVar_StereoCapableWindowOff( this_ptr);
+  AddVar_SetStereoCapableWindow( this_ptr);
+  AddVar_GetStereoRender( this_ptr);
+  AddVar_SetStereoRender( this_ptr);
+  AddVar_StereoRenderOn( this_ptr);
+  AddVar_StereoRenderOff( this_ptr);
+  AddVar_SetAlphaBitPlanes( this_ptr);
+  AddVar_GetAlphaBitPlanes( this_ptr);
+  AddVar_AlphaBitPlanesOn( this_ptr);
+  AddVar_AlphaBitPlanesOff( this_ptr);
+  AddVar_SetPointSmoothing( this_ptr);
+  AddVar_GetPointSmoothing( this_ptr);
+  AddVar_PointSmoothingOn( this_ptr);
+  AddVar_PointSmoothingOff( this_ptr);
+  AddVar_SetLineSmoothing( this_ptr);
+  AddVar_GetLineSmoothing( this_ptr);
+  AddVar_LineSmoothingOn( this_ptr);
+  AddVar_LineSmoothingOff( this_ptr);
+  AddVar_SetPolygonSmoothing( this_ptr);
+  AddVar_GetPolygonSmoothing( this_ptr);
+  AddVar_PolygonSmoothingOn( this_ptr);
+  AddVar_PolygonSmoothingOff( this_ptr);
+  AddVar_GetStereoType( this_ptr);
+  AddVar_SetStereoType( this_ptr);
+  AddVar_SetStereoTypeToCrystalEyes( this_ptr);
+  AddVar_SetStereoTypeToRedBlue( this_ptr);
+  AddVar_SetStereoTypeToInterlaced( this_ptr);
+  AddVar_SetStereoTypeToLeft( this_ptr);
+  AddVar_SetStereoTypeToRight( this_ptr);
+  AddVar_SetStereoTypeToDresden( this_ptr);
+  AddVar_SetStereoTypeToAnaglyph( this_ptr);
+  AddVar_SetStereoTypeToCheckerboard( this_ptr);
+  AddVar_GetStereoTypeAsString( this_ptr);
+  AddVar_StereoUpdate( this_ptr);
+  AddVar_StereoMidpoint( this_ptr);
+  AddVar_StereoRenderComplete( this_ptr);
+  AddVar_SetAnaglyphColorSaturation( this_ptr);
+  AddVar_GetAnaglyphColorSaturationMinValue( this_ptr);
+  AddVar_GetAnaglyphColorSaturationMaxValue( this_ptr);
+  AddVar_GetAnaglyphColorSaturation( this_ptr);
+  AddVar_SetAnaglyphColorMask_1( this_ptr);
+  AddVar_SetAnaglyphColorMask( this_ptr);
+  AddVar_SetAnaglyphColorMask_2( this_ptr);
+  AddVar_GetAnaglyphColorMask_1( this_ptr);
+  AddVar_GetAnaglyphColorMask( this_ptr);
+  AddVar_GetAnaglyphColorMask_2( this_ptr);
+  AddVar_SetSwapBuffers( this_ptr);
+  AddVar_GetSwapBuffers( this_ptr);
+  AddVar_SwapBuffersOn( this_ptr);
+  AddVar_SwapBuffersOff( this_ptr);
+  AddVar_GetZbufferDataAtPoint( this_ptr);
+  AddVar_GetAAFrames( this_ptr);
+  AddVar_SetAAFrames( this_ptr);
+  AddVar_GetFDFrames( this_ptr);
+  AddVar_SetFDFrames( this_ptr);
+  AddVar_GetSubFrames( this_ptr);
+  AddVar_SetSubFrames( this_ptr);
+  AddVar_GetNeverRendered( this_ptr);
+  AddVar_GetAbortRender( this_ptr);
+  AddVar_SetAbortRender( this_ptr);
+  AddVar_GetInAbortCheck( this_ptr);
+  AddVar_SetInAbortCheck( this_ptr);
+  AddVar_CheckAbortStatus( this_ptr);
+  AddVar_GetIsPicking( this_ptr);
+  AddVar_SetIsPicking( this_ptr);
+  AddVar_IsPickingOn( this_ptr);
+  AddVar_IsPickingOff( this_ptr);
+  AddVar_CheckInRenderStatus( this_ptr);
+  AddVar_ClearInRenderStatus( this_ptr);
+  AddVar_SetDesiredUpdateRate( this_ptr);
+  AddVar_GetDesiredUpdateRate( this_ptr);
+  AddVar_GetNumberOfLayers( this_ptr);
+  AddVar_SetNumberOfLayers( this_ptr);
+  AddVar_GetNumberOfLayersMinValue( this_ptr);
+  AddVar_GetNumberOfLayersMaxValue( this_ptr);
+  AddVar_GetInteractor( this_ptr);
+  AddVar_SetInteractor( this_ptr);
+  AddVar_UnRegister( this_ptr);
+  AddVar_SetForceMakeCurrent( this_ptr);
+  AddVar_ReportCapabilities( this_ptr);
+  AddVar_SupportsOpenGL( this_ptr);
+  AddVar_IsDirect( this_ptr);
 /* The following types are missing: vtkPainterDeviceAdapter
-      AddVar_GetPainterDeviceAdapter( this_ptr);
+  AddVar_GetPainterDeviceAdapter( this_ptr);
 */
-      AddVar_SetMultiSamples( this_ptr);
-      AddVar_GetMultiSamples( this_ptr);
-      AddVar_SetStencilCapable( this_ptr);
-      AddVar_GetStencilCapable( this_ptr);
-      AddVar_StencilCapableOn( this_ptr);
-      AddVar_StencilCapableOff( this_ptr);
-      AddVar_SetReportGraphicErrors( this_ptr);
-      AddVar_GetReportGraphicErrors( this_ptr);
-      AddVar_ReportGraphicErrorsOn( this_ptr);
-      AddVar_ReportGraphicErrorsOff( this_ptr);
+  AddVar_SetMultiSamples( this_ptr);
+  AddVar_GetMultiSamples( this_ptr);
+  AddVar_SetStencilCapable( this_ptr);
+  AddVar_GetStencilCapable( this_ptr);
+  AddVar_StencilCapableOn( this_ptr);
+  AddVar_StencilCapableOff( this_ptr);
+  AddVar_SetReportGraphicErrors( this_ptr);
+  AddVar_GetReportGraphicErrors( this_ptr);
+  AddVar_ReportGraphicErrorsOn( this_ptr);
+  AddVar_ReportGraphicErrorsOff( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkWindow
+  boost::shared_ptr<vtkWindow > parent_vtkWindow(  boost::dynamic_pointer_cast<vtkWindow >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkWindow = AMILabType<vtkWindow >::CreateVarFromSmtPtr(parent_vtkWindow);
+  context->AddVar("vtkWindow",var_vtkWindow);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkWindow);
+  context->AddDefault(obj_vtkWindow->Pointer()->GetContext());
+
 };
 
 
@@ -222,7 +237,7 @@ void WrapClass_vtkRenderWindow::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkRenderWindow::AddVar_GetRenderLibrary(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -275,9 +290,15 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkRenderWindow * res =   vtkRenderWindow::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkRenderWindow::CreateVar(res);
@@ -418,9 +439,15 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param0 = param0_smtptr.get();
+  vtkRenderer* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param0_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddRenderer(param0);
   return BasicVariable::ptr();
@@ -443,9 +470,15 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param0 = param0_smtptr.get();
+  vtkRenderer* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param0_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveRenderer(param0);
   return BasicVariable::ptr();
@@ -469,9 +502,15 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param0 = param0_smtptr.get();
+  vtkRenderer* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param0_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->HasRenderer(param0);
   return AMILabType<int >::CreateVar(res);
@@ -1640,9 +1679,15 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* _arg = _arg_smtptr.get();
+  int* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > _arg_smtptr;
+    if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetAnaglyphColorMask(_arg);
   return BasicVariable::ptr();
@@ -1705,9 +1750,15 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > data_smtptr;
-  if (!get_val_smtptr_param<int >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* data = data_smtptr.get();
+  int* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > data_smtptr;
+    if (!get_val_smtptr_param<int >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetAnaglyphColorMask(data);
   return BasicVariable::ptr();
@@ -2351,9 +2402,15 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderWindowInteractor > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderWindowInteractor* param0 = param0_smtptr.get();
+  vtkRenderWindowInteractor* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkRenderWindowInteractor*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderWindowInteractor > param0_smtptr;
+    if (!get_val_smtptr_param<vtkRenderWindowInteractor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInteractor(param0);
   return BasicVariable::ptr();
@@ -2376,9 +2433,15 @@ BasicVariable::ptr WrapClass_vtkRenderWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->UnRegister(o);
   return BasicVariable::ptr();

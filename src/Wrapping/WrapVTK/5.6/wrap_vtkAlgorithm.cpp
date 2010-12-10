@@ -27,6 +27,10 @@
 
 #include "wrap_vtkAlgorithm.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -34,8 +38,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkAlgorithm>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkAlgorithm::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -70,137 +74,145 @@ Variable<AMIObject>::ptr WrapClass_vtkAlgorithm::CreateVar( vtkAlgorithm* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkAlgorithm::AddMethods(WrapClass<vtkAlgorithm>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_HasExecutive( this_ptr);
+  AddVar_HasExecutive( this_ptr);
 /* The following types are missing: vtkExecutive
-      AddVar_GetExecutive( this_ptr);
+  AddVar_GetExecutive( this_ptr);
 */
 /* The following types are missing: vtkExecutive
-      AddVar_SetExecutive( this_ptr);
+  AddVar_SetExecutive( this_ptr);
 */
 /* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
-      AddVar_ProcessRequest( this_ptr);
+  AddVar_ProcessRequest( this_ptr);
 */
 /* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
-      AddVar_ComputePipelineMTime( this_ptr);
+  AddVar_ComputePipelineMTime( this_ptr);
 */
 /* The following types are missing: vtkInformation
-      AddVar_ModifyRequest( this_ptr);
+  AddVar_ModifyRequest( this_ptr);
 */
 /* The following types are missing: vtkInformation
-      AddVar_GetInputPortInformation( this_ptr);
+  AddVar_GetInputPortInformation( this_ptr);
 */
 /* The following types are missing: vtkInformation
-      AddVar_GetOutputPortInformation( this_ptr);
+  AddVar_GetOutputPortInformation( this_ptr);
 */
 /* The following types are missing: vtkInformation
-      AddVar_GetInformation( this_ptr);
+  AddVar_GetInformation( this_ptr);
 */
 /* The following types are missing: vtkInformation
-      AddVar_SetInformation( this_ptr);
+  AddVar_SetInformation( this_ptr);
 */
-      AddVar_GetNumberOfInputPorts( this_ptr);
-      AddVar_GetNumberOfOutputPorts( this_ptr);
-      AddVar_Register( this_ptr);
-      AddVar_UnRegister( this_ptr);
-      AddVar_SetAbortExecute( this_ptr);
-      AddVar_GetAbortExecute( this_ptr);
-      AddVar_AbortExecuteOn( this_ptr);
-      AddVar_AbortExecuteOff( this_ptr);
-      AddVar_SetProgress( this_ptr);
-      AddVar_GetProgressMinValue( this_ptr);
-      AddVar_GetProgressMaxValue( this_ptr);
-      AddVar_GetProgress( this_ptr);
-      AddVar_UpdateProgress( this_ptr);
-      AddVar_SetProgressText( this_ptr);
-      AddVar_GetProgressText( this_ptr);
-      AddVar_GetErrorCode( this_ptr);
-      AddVar_SetInputArrayToProcess_1( this_ptr);
-      AddVar_SetInputArrayToProcess( this_ptr);
-      AddVar_SetInputArrayToProcess_2( this_ptr);
+  AddVar_GetNumberOfInputPorts( this_ptr);
+  AddVar_GetNumberOfOutputPorts( this_ptr);
+  AddVar_Register( this_ptr);
+  AddVar_UnRegister( this_ptr);
+  AddVar_SetAbortExecute( this_ptr);
+  AddVar_GetAbortExecute( this_ptr);
+  AddVar_AbortExecuteOn( this_ptr);
+  AddVar_AbortExecuteOff( this_ptr);
+  AddVar_SetProgress( this_ptr);
+  AddVar_GetProgressMinValue( this_ptr);
+  AddVar_GetProgressMaxValue( this_ptr);
+  AddVar_GetProgress( this_ptr);
+  AddVar_UpdateProgress( this_ptr);
+  AddVar_SetProgressText( this_ptr);
+  AddVar_GetProgressText( this_ptr);
+  AddVar_GetErrorCode( this_ptr);
+  AddVar_SetInputArrayToProcess_1( this_ptr);
+  AddVar_SetInputArrayToProcess( this_ptr);
+  AddVar_SetInputArrayToProcess_2( this_ptr);
 /* The following types are missing: vtkInformation
-      AddVar_SetInputArrayToProcess_3( this_ptr);
+  AddVar_SetInputArrayToProcess_3( this_ptr);
 */
-      AddVar_SetInputArrayToProcess_4( this_ptr);
+  AddVar_SetInputArrayToProcess_4( this_ptr);
 /* The following types are missing: vtkInformation
-      AddVar_GetInputArrayInformation( this_ptr);
+  AddVar_GetInputArrayInformation( this_ptr);
 */
-      AddVar_RemoveAllInputs( this_ptr);
-      AddVar_GetOutputDataObject( this_ptr);
-      AddVar_GetInputDataObject( this_ptr);
+  AddVar_RemoveAllInputs( this_ptr);
+  AddVar_GetOutputDataObject( this_ptr);
+  AddVar_GetInputDataObject( this_ptr);
 /* The following types are missing: vtkAlgorithmOutput
-      AddVar_SetInputConnection_1( this_ptr);
+  AddVar_SetInputConnection_1( this_ptr);
 */
-      AddVar_SetInputConnection( this_ptr);
+  AddVar_SetInputConnection( this_ptr);
 /* The following types are missing: vtkAlgorithmOutput
-      AddVar_SetInputConnection_2( this_ptr);
-*/
-/* The following types are missing: vtkAlgorithmOutput
-      AddVar_AddInputConnection_1( this_ptr);
-*/
-      AddVar_AddInputConnection( this_ptr);
-/* The following types are missing: vtkAlgorithmOutput
-      AddVar_AddInputConnection_2( this_ptr);
+  AddVar_SetInputConnection_2( this_ptr);
 */
 /* The following types are missing: vtkAlgorithmOutput
-      AddVar_RemoveInputConnection( this_ptr);
+  AddVar_AddInputConnection_1( this_ptr);
+*/
+  AddVar_AddInputConnection( this_ptr);
+/* The following types are missing: vtkAlgorithmOutput
+  AddVar_AddInputConnection_2( this_ptr);
 */
 /* The following types are missing: vtkAlgorithmOutput
-      AddVar_GetOutputPort_1( this_ptr);
+  AddVar_RemoveInputConnection( this_ptr);
 */
-      AddVar_GetOutputPort( this_ptr);
 /* The following types are missing: vtkAlgorithmOutput
-      AddVar_GetOutputPort_2( this_ptr);
+  AddVar_GetOutputPort_1( this_ptr);
 */
-      AddVar_GetNumberOfInputConnections( this_ptr);
-      AddVar_GetTotalNumberOfInputConnections( this_ptr);
+  AddVar_GetOutputPort( this_ptr);
 /* The following types are missing: vtkAlgorithmOutput
-      AddVar_GetInputConnection( this_ptr);
+  AddVar_GetOutputPort_2( this_ptr);
 */
-      AddVar_Update( this_ptr);
-      AddVar_UpdateInformation( this_ptr);
-      AddVar_UpdateWholeExtent( this_ptr);
-      AddVar_ConvertTotalInputToPortConnection( this_ptr);
-      AddVar_SetReleaseDataFlag( this_ptr);
-      AddVar_GetReleaseDataFlag( this_ptr);
-      AddVar_ReleaseDataFlagOn( this_ptr);
-      AddVar_ReleaseDataFlagOff( this_ptr);
-      AddVar_UpdateExtentIsEmpty_1( this_ptr);
-      AddVar_UpdateExtentIsEmpty( this_ptr);
+  AddVar_GetNumberOfInputConnections( this_ptr);
+  AddVar_GetTotalNumberOfInputConnections( this_ptr);
+/* The following types are missing: vtkAlgorithmOutput
+  AddVar_GetInputConnection( this_ptr);
+*/
+  AddVar_Update( this_ptr);
+  AddVar_UpdateInformation( this_ptr);
+  AddVar_UpdateWholeExtent( this_ptr);
+  AddVar_ConvertTotalInputToPortConnection( this_ptr);
+  AddVar_SetReleaseDataFlag( this_ptr);
+  AddVar_GetReleaseDataFlag( this_ptr);
+  AddVar_ReleaseDataFlagOn( this_ptr);
+  AddVar_ReleaseDataFlagOff( this_ptr);
+  AddVar_UpdateExtentIsEmpty_1( this_ptr);
+  AddVar_UpdateExtentIsEmpty( this_ptr);
 /* The following types are missing: vtkInformation
-      AddVar_UpdateExtentIsEmpty_2( this_ptr);
+  AddVar_UpdateExtentIsEmpty_2( this_ptr);
 */
-      AddVar_ComputePriority( this_ptr);
+  AddVar_ComputePriority( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member AbortExecute
-      boost::shared_ptr<int > var_AbortExecute_ptr(&GetObj()->AbortExecute, smartpointer_nodeleter<int >());
-      if (var_AbortExecute_ptr.get()) {
-        BasicVariable::ptr var_AbortExecute = AMILabType<int >::CreateVarFromSmtPtr(var_AbortExecute_ptr);
-        if (var_AbortExecute.get()) {
-          var_AbortExecute->Rename("AbortExecute");
-          context->AddVar(var_AbortExecute,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member AbortExecute
+  boost::shared_ptr<int > var_AbortExecute_ptr(&GetObj()->AbortExecute, smartpointer_nodeleter<int >());
+  if (var_AbortExecute_ptr.get()) {
+    BasicVariable::ptr var_AbortExecute = AMILabType<int >::CreateVarFromSmtPtr(var_AbortExecute_ptr);
+    if (var_AbortExecute.get()) {
+      var_AbortExecute->Rename("AbortExecute");
+      context->AddVar(var_AbortExecute,context);
+    }
+  }
+
+
+  
+
+
+  // Adding Bases
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
 
 };
 
@@ -262,7 +274,7 @@ void WrapClass_vtkAlgorithm::AddStaticMethods( Variables::ptr& context)
   */
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -335,9 +347,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkAlgorithm * res =   vtkAlgorithm::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkAlgorithm::CreateVar(res);
@@ -509,9 +527,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkExecutive > proto_smtptr;
-  if (!get_val_smtptr_param<vtkExecutive >(proto_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkExecutive* proto = proto_smtptr.get();
+  vtkExecutive* proto;
+  if (CheckNullVar(_p,_n))  {
+    proto=(vtkExecutive*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkExecutive > proto_smtptr;
+    if (!get_val_smtptr_param<vtkExecutive >(proto_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    proto = proto_smtptr.get();
+  }
 
   vtkAlgorithm::SetDefaultExecutivePrototype(proto);
   return BasicVariable::ptr();
@@ -779,9 +803,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkExecutive > executive_smtptr;
-  if (!get_val_smtptr_param<vtkExecutive >(executive_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkExecutive* executive = executive_smtptr.get();
+  vtkExecutive* executive;
+  if (CheckNullVar(_p,_n))  {
+    executive=(vtkExecutive*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkExecutive > executive_smtptr;
+    if (!get_val_smtptr_param<vtkExecutive >(executive_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    executive = executive_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetExecutive(executive);
   return BasicVariable::ptr();
@@ -809,17 +839,35 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkInformation > request_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkInformation* request = request_smtptr.get();
+  vtkInformation* request;
+  if (CheckNullVar(_p,_n))  {
+    request=(vtkInformation*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformation > request_smtptr;
+    if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    request = request_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkInformationVector > inInfo_smtptr;
-  if (!get_val_smtptr_param<vtkInformationVector >(inInfo_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkInformationVector* inInfo = inInfo_smtptr.get();
+  vtkInformationVector* inInfo;
+  if (CheckNullVar(_p,_n))  {
+    inInfo=(vtkInformationVector*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformationVector > inInfo_smtptr;
+    if (!get_val_smtptr_param<vtkInformationVector >(inInfo_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    inInfo = inInfo_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkInformationVector > outInfo_smtptr;
-  if (!get_val_smtptr_param<vtkInformationVector >(outInfo_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkInformationVector* outInfo = outInfo_smtptr.get();
+  vtkInformationVector* outInfo;
+  if (CheckNullVar(_p,_n))  {
+    outInfo=(vtkInformationVector*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformationVector > outInfo_smtptr;
+    if (!get_val_smtptr_param<vtkInformationVector >(outInfo_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    outInfo = outInfo_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->ProcessRequest(request, inInfo, outInfo);
   return AMILabType<int >::CreateVar(res);
@@ -849,17 +897,35 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>5) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkInformation > request_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkInformation* request = request_smtptr.get();
+  vtkInformation* request;
+  if (CheckNullVar(_p,_n))  {
+    request=(vtkInformation*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformation > request_smtptr;
+    if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    request = request_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkInformationVector > inInfoVec_smtptr;
-  if (!get_val_smtptr_param<vtkInformationVector >(inInfoVec_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkInformationVector* inInfoVec = inInfoVec_smtptr.get();
+  vtkInformationVector* inInfoVec;
+  if (CheckNullVar(_p,_n))  {
+    inInfoVec=(vtkInformationVector*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformationVector > inInfoVec_smtptr;
+    if (!get_val_smtptr_param<vtkInformationVector >(inInfoVec_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    inInfoVec = inInfoVec_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkInformationVector > outInfoVec_smtptr;
-  if (!get_val_smtptr_param<vtkInformationVector >(outInfoVec_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkInformationVector* outInfoVec = outInfoVec_smtptr.get();
+  vtkInformationVector* outInfoVec;
+  if (CheckNullVar(_p,_n))  {
+    outInfoVec=(vtkInformationVector*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformationVector > outInfoVec_smtptr;
+    if (!get_val_smtptr_param<vtkInformationVector >(outInfoVec_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    outInfoVec = outInfoVec_smtptr.get();
+  }
 
   int requestFromOutputPort;
   if (!get_val_param<int >(requestFromOutputPort,_p,_n,true,false)) ClassHelpAndReturn;
@@ -894,9 +960,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkInformation > request_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkInformation* request = request_smtptr.get();
+  vtkInformation* request;
+  if (CheckNullVar(_p,_n))  {
+    request=(vtkInformation*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformation > request_smtptr;
+    if (!get_val_smtptr_param<vtkInformation >(request_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    request = request_smtptr.get();
+  }
 
   int when;
   if (!get_val_param<int >(when,_p,_n,true,false)) ClassHelpAndReturn;
@@ -999,9 +1071,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkInformation > param0_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkInformation* param0 = param0_smtptr.get();
+  vtkInformation* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkInformation*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformation > param0_smtptr;
+    if (!get_val_smtptr_param<vtkInformation >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInformation(param0);
   return BasicVariable::ptr();
@@ -1063,9 +1141,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Register(o);
   return BasicVariable::ptr();
@@ -1088,9 +1172,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->UnRegister(o);
   return BasicVariable::ptr();
@@ -1472,9 +1562,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   int idx;
   if (!get_val_param<int >(idx,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkInformation* info = info_smtptr.get();
+  vtkInformation* info;
+  if (CheckNullVar(_p,_n))  {
+    info=(vtkInformation*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformation > info_smtptr;
+    if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    info = info_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInputArrayToProcess(idx, info);
   return BasicVariable::ptr();
@@ -1646,9 +1742,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   int port;
   if (!get_val_param<int >(port,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
-  if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAlgorithmOutput* input = input_smtptr.get();
+  vtkAlgorithmOutput* input;
+  if (CheckNullVar(_p,_n))  {
+    input=(vtkAlgorithmOutput*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
+    if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    input = input_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInputConnection(port, input);
   return BasicVariable::ptr();
@@ -1688,9 +1790,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
-  if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAlgorithmOutput* input = input_smtptr.get();
+  vtkAlgorithmOutput* input;
+  if (CheckNullVar(_p,_n))  {
+    input=(vtkAlgorithmOutput*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
+    if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    input = input_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInputConnection(input);
   return BasicVariable::ptr();
@@ -1719,9 +1827,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   int port;
   if (!get_val_param<int >(port,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
-  if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAlgorithmOutput* input = input_smtptr.get();
+  vtkAlgorithmOutput* input;
+  if (CheckNullVar(_p,_n))  {
+    input=(vtkAlgorithmOutput*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
+    if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    input = input_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddInputConnection(port, input);
   return BasicVariable::ptr();
@@ -1761,9 +1875,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
-  if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAlgorithmOutput* input = input_smtptr.get();
+  vtkAlgorithmOutput* input;
+  if (CheckNullVar(_p,_n))  {
+    input=(vtkAlgorithmOutput*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
+    if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    input = input_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddInputConnection(input);
   return BasicVariable::ptr();
@@ -1792,9 +1912,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   int port;
   if (!get_val_param<int >(port,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
-  if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkAlgorithmOutput* input = input_smtptr.get();
+  vtkAlgorithmOutput* input;
+  if (CheckNullVar(_p,_n))  {
+    input=(vtkAlgorithmOutput*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAlgorithmOutput > input_smtptr;
+    if (!get_val_smtptr_param<vtkAlgorithmOutput >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    input = input_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveInputConnection(port, input);
   return BasicVariable::ptr();
@@ -2124,9 +2250,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkDataObject > output_smtptr;
-  if (!get_val_smtptr_param<vtkDataObject >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkDataObject* output = output_smtptr.get();
+  vtkDataObject* output;
+  if (CheckNullVar(_p,_n))  {
+    output=(vtkDataObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataObject > output_smtptr;
+    if (!get_val_smtptr_param<vtkDataObject >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    output = output_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->UpdateExtentIsEmpty(output);
   return AMILabType<int >::CreateVar(res);
@@ -2170,9 +2302,15 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkInformation > pinfo_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(pinfo_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkInformation* pinfo = pinfo_smtptr.get();
+  vtkInformation* pinfo;
+  if (CheckNullVar(_p,_n))  {
+    pinfo=(vtkInformation*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformation > pinfo_smtptr;
+    if (!get_val_smtptr_param<vtkInformation >(pinfo_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pinfo = pinfo_smtptr.get();
+  }
 
   int extentType;
   if (!get_val_param<int >(extentType,_p,_n,true,true)) ClassReturnEmptyVar;

@@ -1859,6 +1859,7 @@ InrImage ::  InrImage( vtkImageData* vtkim)
     for(z=0;z<=_tz-1;z++) {
     for(y=0;y<=_ty-1;y++) {
     for(x=0;x<=_tx-1;x++) {
+//std::cout << boost::format("x,y= %1% %2% %3%/ %4% %5%")% x % y % z % _tx % _ty<< std::endl;
       for(n=0;n<=_vdim-1;n++) {
         val = vtkim->GetScalarComponentAsDouble(x,y,z,n);
 //        printf("val = %f \n",val);
@@ -1869,7 +1870,7 @@ InrImage ::  InrImage( vtkImageData* vtkim)
     } // endfor
     } // endfor
   } // end if
-
+//std::cout << "end" << std::endl;
     //  InitPositions();
 } // Constructor
 

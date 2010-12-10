@@ -24,6 +24,10 @@
 
 #include "wrap_vtkObjectBase.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -31,8 +35,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkObjectBase>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkObjectBase::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -67,39 +71,42 @@ Variable<AMIObject>::ptr WrapClass_vtkObjectBase::CreateVar( vtkObjectBase* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkObjectBase::AddMethods(WrapClass<vtkObjectBase>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_GetClassName( this_ptr);
-      AddVar_IsA( this_ptr);
-      AddVar_Delete( this_ptr);
-      AddVar_FastDelete( this_ptr);
+  // Adding standard methods 
+  AddVar_GetClassName( this_ptr);
+  AddVar_IsA( this_ptr);
+  AddVar_Delete( this_ptr);
+  AddVar_FastDelete( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_Print( this_ptr);
+  AddVar_Print( this_ptr);
 */
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintHeader( this_ptr);
+  AddVar_PrintHeader( this_ptr);
 */
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintTrailer( this_ptr);
+  AddVar_PrintTrailer( this_ptr);
 */
-      AddVar_Register( this_ptr);
-      AddVar_UnRegister( this_ptr);
-      AddVar_GetReferenceCount( this_ptr);
-      AddVar_SetReferenceCount( this_ptr);
+  AddVar_Register( this_ptr);
+  AddVar_UnRegister( this_ptr);
+  AddVar_GetReferenceCount( this_ptr);
+  AddVar_SetReferenceCount( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintRevisions( this_ptr);
+  AddVar_PrintRevisions( this_ptr);
 */
 
 
 
   
+
+  
+
+
+  // Adding Bases
+
 };
 
 
@@ -117,7 +124,7 @@ void WrapClass_vtkObjectBase::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkObjectBase::AddVar_New(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -391,9 +398,15 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Register(o);
   return BasicVariable::ptr();
@@ -416,9 +429,15 @@ BasicVariable::ptr WrapClass_vtkObjectBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->UnRegister(o);
   return BasicVariable::ptr();

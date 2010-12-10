@@ -23,6 +23,10 @@
 
 #include "wrap_vtkIndent.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -59,23 +63,26 @@ Variable<AMIObject>::ptr WrapClass_vtkIndent::CreateVar( vtkIndent* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkIndent::AddMethods(WrapClass<vtkIndent>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Delete( this_ptr);
+  AddVar_GetNextIndent( this_ptr);
 
-
-  // check that the method name is not a token
-  
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Delete( this_ptr);
-      AddVar_GetNextIndent( this_ptr);
-
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
+
+  // Adding Bases
+
 };
 
 
@@ -96,7 +103,7 @@ void WrapClass_vtkIndent::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkIndent::AddVar_New(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 

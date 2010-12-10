@@ -27,6 +27,10 @@
 
 #include "wrap_vtkViewport.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -72,120 +76,123 @@ void WrapClass_vtkViewport::AddMethods(WrapClass<vtkViewport>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_AddViewProp( this_ptr);
-      AddVar_GetViewProps( this_ptr);
-      AddVar_HasViewProp( this_ptr);
-      AddVar_RemoveViewProp( this_ptr);
-      AddVar_RemoveAllViewProps( this_ptr);
-      AddVar_AddActor2D( this_ptr);
-      AddVar_RemoveActor2D( this_ptr);
+  AddVar_AddViewProp( this_ptr);
+  AddVar_GetViewProps( this_ptr);
+  AddVar_HasViewProp( this_ptr);
+  AddVar_RemoveViewProp( this_ptr);
+  AddVar_RemoveAllViewProps( this_ptr);
+  AddVar_AddActor2D( this_ptr);
+  AddVar_RemoveActor2D( this_ptr);
 /* The following types are missing: vtkActor2DCollection
-      AddVar_GetActors2D( this_ptr);
+  AddVar_GetActors2D( this_ptr);
 */
-      AddVar_SetBackground_1( this_ptr);
-      AddVar_SetBackground( this_ptr);
-      AddVar_SetBackground_2( this_ptr);
-      AddVar_GetBackground_1( this_ptr);
-      AddVar_GetBackground( this_ptr);
-      AddVar_GetBackground_2( this_ptr);
-      AddVar_GetBackground_3( this_ptr);
-      AddVar_SetBackground2_1( this_ptr);
-      AddVar_SetBackground2( this_ptr);
-      AddVar_SetBackground2_2( this_ptr);
-      AddVar_GetBackground2_1( this_ptr);
-      AddVar_GetBackground2( this_ptr);
-      AddVar_GetBackground2_2( this_ptr);
-      AddVar_GetBackground2_3( this_ptr);
-      AddVar_SetGradientBackground( this_ptr);
-      AddVar_GetGradientBackground( this_ptr);
-      AddVar_GradientBackgroundOn( this_ptr);
-      AddVar_GradientBackgroundOff( this_ptr);
-      AddVar_SetAspect_1( this_ptr);
-      AddVar_SetAspect( this_ptr);
-      AddVar_SetAspect_2( this_ptr);
-      AddVar_GetAspect_1( this_ptr);
-      AddVar_GetAspect( this_ptr);
-      AddVar_GetAspect_2( this_ptr);
-      AddVar_ComputeAspect( this_ptr);
-      AddVar_SetPixelAspect_1( this_ptr);
-      AddVar_SetPixelAspect( this_ptr);
-      AddVar_SetPixelAspect_2( this_ptr);
-      AddVar_GetPixelAspect_1( this_ptr);
-      AddVar_GetPixelAspect( this_ptr);
-      AddVar_GetPixelAspect_2( this_ptr);
-      AddVar_SetViewport_1( this_ptr);
-      AddVar_SetViewport( this_ptr);
-      AddVar_SetViewport_2( this_ptr);
-      AddVar_GetViewport_1( this_ptr);
-      AddVar_GetViewport( this_ptr);
-      AddVar_GetViewport_2( this_ptr);
-      AddVar_SetDisplayPoint_1( this_ptr);
-      AddVar_SetDisplayPoint( this_ptr);
-      AddVar_SetDisplayPoint_2( this_ptr);
-      AddVar_GetDisplayPoint_1( this_ptr);
-      AddVar_GetDisplayPoint( this_ptr);
-      AddVar_GetDisplayPoint_2( this_ptr);
-      AddVar_SetViewPoint_1( this_ptr);
-      AddVar_SetViewPoint( this_ptr);
-      AddVar_SetViewPoint_2( this_ptr);
-      AddVar_GetViewPoint_1( this_ptr);
-      AddVar_GetViewPoint( this_ptr);
-      AddVar_GetViewPoint_2( this_ptr);
-      AddVar_SetWorldPoint_1( this_ptr);
-      AddVar_SetWorldPoint( this_ptr);
-      AddVar_SetWorldPoint_2( this_ptr);
-      AddVar_GetWorldPoint_1( this_ptr);
-      AddVar_GetWorldPoint( this_ptr);
-      AddVar_GetWorldPoint_2( this_ptr);
-      AddVar_GetCenter( this_ptr);
-      AddVar_IsInViewport( this_ptr);
-      AddVar_DisplayToView( this_ptr);
-      AddVar_ViewToDisplay( this_ptr);
-      AddVar_WorldToView_1( this_ptr);
-      AddVar_ViewToWorld_1( this_ptr);
-      AddVar_DisplayToWorld( this_ptr);
-      AddVar_WorldToDisplay( this_ptr);
-      AddVar_LocalDisplayToDisplay( this_ptr);
-      AddVar_DisplayToNormalizedDisplay( this_ptr);
-      AddVar_NormalizedDisplayToViewport( this_ptr);
-      AddVar_ViewportToNormalizedViewport( this_ptr);
-      AddVar_NormalizedViewportToView( this_ptr);
-      AddVar_ViewToWorld( this_ptr);
-      AddVar_ViewToWorld_2( this_ptr);
-      AddVar_DisplayToLocalDisplay( this_ptr);
-      AddVar_NormalizedDisplayToDisplay( this_ptr);
-      AddVar_ViewportToNormalizedDisplay( this_ptr);
-      AddVar_NormalizedViewportToViewport( this_ptr);
-      AddVar_ViewToNormalizedViewport( this_ptr);
-      AddVar_WorldToView( this_ptr);
-      AddVar_WorldToView_2( this_ptr);
-      AddVar_GetSize( this_ptr);
-      AddVar_GetOrigin( this_ptr);
-      AddVar_GetTiledSize( this_ptr);
-      AddVar_GetTiledSizeAndOrigin( this_ptr);
+  AddVar_SetBackground_1( this_ptr);
+  AddVar_SetBackground( this_ptr);
+  AddVar_SetBackground_2( this_ptr);
+  AddVar_GetBackground_1( this_ptr);
+  AddVar_GetBackground( this_ptr);
+  AddVar_GetBackground_2( this_ptr);
+  AddVar_GetBackground_3( this_ptr);
+  AddVar_SetBackground2_1( this_ptr);
+  AddVar_SetBackground2( this_ptr);
+  AddVar_SetBackground2_2( this_ptr);
+  AddVar_GetBackground2_1( this_ptr);
+  AddVar_GetBackground2( this_ptr);
+  AddVar_GetBackground2_2( this_ptr);
+  AddVar_GetBackground2_3( this_ptr);
+  AddVar_SetGradientBackground( this_ptr);
+  AddVar_GetGradientBackground( this_ptr);
+  AddVar_GradientBackgroundOn( this_ptr);
+  AddVar_GradientBackgroundOff( this_ptr);
+  AddVar_SetAspect_1( this_ptr);
+  AddVar_SetAspect( this_ptr);
+  AddVar_SetAspect_2( this_ptr);
+  AddVar_GetAspect_1( this_ptr);
+  AddVar_GetAspect( this_ptr);
+  AddVar_GetAspect_2( this_ptr);
+  AddVar_ComputeAspect( this_ptr);
+  AddVar_SetPixelAspect_1( this_ptr);
+  AddVar_SetPixelAspect( this_ptr);
+  AddVar_SetPixelAspect_2( this_ptr);
+  AddVar_GetPixelAspect_1( this_ptr);
+  AddVar_GetPixelAspect( this_ptr);
+  AddVar_GetPixelAspect_2( this_ptr);
+  AddVar_SetViewport_1( this_ptr);
+  AddVar_SetViewport( this_ptr);
+  AddVar_SetViewport_2( this_ptr);
+  AddVar_GetViewport_1( this_ptr);
+  AddVar_GetViewport( this_ptr);
+  AddVar_GetViewport_2( this_ptr);
+  AddVar_SetDisplayPoint_1( this_ptr);
+  AddVar_SetDisplayPoint( this_ptr);
+  AddVar_SetDisplayPoint_2( this_ptr);
+  AddVar_GetDisplayPoint_1( this_ptr);
+  AddVar_GetDisplayPoint( this_ptr);
+  AddVar_GetDisplayPoint_2( this_ptr);
+  AddVar_SetViewPoint_1( this_ptr);
+  AddVar_SetViewPoint( this_ptr);
+  AddVar_SetViewPoint_2( this_ptr);
+  AddVar_GetViewPoint_1( this_ptr);
+  AddVar_GetViewPoint( this_ptr);
+  AddVar_GetViewPoint_2( this_ptr);
+  AddVar_SetWorldPoint_1( this_ptr);
+  AddVar_SetWorldPoint( this_ptr);
+  AddVar_SetWorldPoint_2( this_ptr);
+  AddVar_GetWorldPoint_1( this_ptr);
+  AddVar_GetWorldPoint( this_ptr);
+  AddVar_GetWorldPoint_2( this_ptr);
+  AddVar_GetCenter( this_ptr);
+  AddVar_IsInViewport( this_ptr);
+  AddVar_DisplayToView( this_ptr);
+  AddVar_ViewToDisplay( this_ptr);
+  AddVar_WorldToView_1( this_ptr);
+  AddVar_ViewToWorld_1( this_ptr);
+  AddVar_DisplayToWorld( this_ptr);
+  AddVar_WorldToDisplay( this_ptr);
+  AddVar_LocalDisplayToDisplay( this_ptr);
+  AddVar_DisplayToNormalizedDisplay( this_ptr);
+  AddVar_NormalizedDisplayToViewport( this_ptr);
+  AddVar_ViewportToNormalizedViewport( this_ptr);
+  AddVar_NormalizedViewportToView( this_ptr);
+  AddVar_ViewToWorld( this_ptr);
+  AddVar_ViewToWorld_2( this_ptr);
+  AddVar_DisplayToLocalDisplay( this_ptr);
+  AddVar_NormalizedDisplayToDisplay( this_ptr);
+  AddVar_ViewportToNormalizedDisplay( this_ptr);
+  AddVar_NormalizedViewportToViewport( this_ptr);
+  AddVar_ViewToNormalizedViewport( this_ptr);
+  AddVar_WorldToView( this_ptr);
+  AddVar_WorldToView_2( this_ptr);
+  AddVar_GetSize( this_ptr);
+  AddVar_GetOrigin( this_ptr);
+  AddVar_GetTiledSize( this_ptr);
+  AddVar_GetTiledSizeAndOrigin( this_ptr);
 /* The following types are missing: vtkAssemblyPath
-      AddVar_PickPropFrom( this_ptr);
+  AddVar_PickPropFrom( this_ptr);
 */
-      AddVar_GetPickX( this_ptr);
-      AddVar_GetPickY( this_ptr);
-      AddVar_GetPickWidth( this_ptr);
-      AddVar_GetPickHeight( this_ptr);
-      AddVar_GetPickX1( this_ptr);
-      AddVar_GetPickY1( this_ptr);
-      AddVar_GetPickX2( this_ptr);
-      AddVar_GetPickY2( this_ptr);
-      AddVar_GetIsPicking( this_ptr);
-      AddVar_GetPickResultProps( this_ptr);
+  AddVar_GetPickX( this_ptr);
+  AddVar_GetPickY( this_ptr);
+  AddVar_GetPickWidth( this_ptr);
+  AddVar_GetPickHeight( this_ptr);
+  AddVar_GetPickX1( this_ptr);
+  AddVar_GetPickY1( this_ptr);
+  AddVar_GetPickX2( this_ptr);
+  AddVar_GetPickY2( this_ptr);
+  AddVar_GetIsPicking( this_ptr);
+  AddVar_GetPickResultProps( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -270,9 +277,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkViewport * res =   vtkViewport::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkViewport::CreateVar(res);
@@ -373,9 +386,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > param0_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* param0 = param0_smtptr.get();
+  vtkProp* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > param0_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddViewProp(param0);
   return BasicVariable::ptr();
@@ -419,9 +438,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > param0_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* param0 = param0_smtptr.get();
+  vtkProp* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > param0_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->HasViewProp(param0);
   return AMILabType<int >::CreateVar(res);
@@ -444,9 +469,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > param0_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* param0 = param0_smtptr.get();
+  vtkProp* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > param0_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveViewProp(param0);
   return BasicVariable::ptr();
@@ -487,9 +518,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > p_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* p = p_smtptr.get();
+  vtkProp* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > p_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddActor2D(p);
   return BasicVariable::ptr();
@@ -512,9 +549,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > p_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* p = p_smtptr.get();
+  vtkProp* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > p_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveActor2D(p);
   return BasicVariable::ptr();
@@ -611,9 +654,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetBackground(_arg);
   return BasicVariable::ptr();
@@ -714,9 +763,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetBackground(_arg);
   return BasicVariable::ptr();
@@ -792,9 +847,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetBackground2(_arg);
   return BasicVariable::ptr();
@@ -895,9 +956,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetBackground2(_arg);
   return BasicVariable::ptr();
@@ -1048,9 +1115,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetAspect(_arg);
   return BasicVariable::ptr();
@@ -1113,9 +1186,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetAspect(data);
   return BasicVariable::ptr();
@@ -1205,9 +1284,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPixelAspect(_arg);
   return BasicVariable::ptr();
@@ -1270,9 +1355,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPixelAspect(data);
   return BasicVariable::ptr();
@@ -1352,9 +1443,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetViewport(_arg);
   return BasicVariable::ptr();
@@ -1417,9 +1514,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetViewport(data);
   return BasicVariable::ptr();
@@ -1495,9 +1598,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetDisplayPoint(_arg);
   return BasicVariable::ptr();
@@ -1560,9 +1669,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetDisplayPoint(data);
   return BasicVariable::ptr();
@@ -1638,9 +1753,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetViewPoint(_arg);
   return BasicVariable::ptr();
@@ -1703,9 +1824,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetViewPoint(data);
   return BasicVariable::ptr();
@@ -1785,9 +1912,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetWorldPoint(_arg);
   return BasicVariable::ptr();
@@ -1850,9 +1983,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetWorldPoint(data);
   return BasicVariable::ptr();
@@ -2492,13 +2631,25 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > width_smtptr;
-  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* width = width_smtptr.get();
+  int* width;
+  if (CheckNullVar(_p,_n))  {
+    width=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > width_smtptr;
+    if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    width = width_smtptr.get();
+  }
 
-  boost::shared_ptr<int > height_smtptr;
-  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* height = height_smtptr.get();
+  int* height;
+  if (CheckNullVar(_p,_n))  {
+    height=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > height_smtptr;
+    if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    height = height_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTiledSize(width, height);
   return BasicVariable::ptr();
@@ -2524,21 +2675,45 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p->GetNumParam()>4) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > width_smtptr;
-  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* width = width_smtptr.get();
+  int* width;
+  if (CheckNullVar(_p,_n))  {
+    width=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > width_smtptr;
+    if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    width = width_smtptr.get();
+  }
 
-  boost::shared_ptr<int > height_smtptr;
-  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* height = height_smtptr.get();
+  int* height;
+  if (CheckNullVar(_p,_n))  {
+    height=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > height_smtptr;
+    if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    height = height_smtptr.get();
+  }
 
-  boost::shared_ptr<int > lowerLeftX_smtptr;
-  if (!get_val_smtptr_param<int >(lowerLeftX_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* lowerLeftX = lowerLeftX_smtptr.get();
+  int* lowerLeftX;
+  if (CheckNullVar(_p,_n))  {
+    lowerLeftX=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > lowerLeftX_smtptr;
+    if (!get_val_smtptr_param<int >(lowerLeftX_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    lowerLeftX = lowerLeftX_smtptr.get();
+  }
 
-  boost::shared_ptr<int > lowerLeftY_smtptr;
-  if (!get_val_smtptr_param<int >(lowerLeftY_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* lowerLeftY = lowerLeftY_smtptr.get();
+  int* lowerLeftY;
+  if (CheckNullVar(_p,_n))  {
+    lowerLeftY=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > lowerLeftY_smtptr;
+    if (!get_val_smtptr_param<int >(lowerLeftY_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    lowerLeftY = lowerLeftY_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTiledSizeAndOrigin(width, height, lowerLeftX, lowerLeftY);
   return BasicVariable::ptr();
@@ -2571,9 +2746,15 @@ BasicVariable::ptr WrapClass_vtkViewport::
   double selectionY;
   if (!get_val_param<double >(selectionY,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkPropCollection > param2_smtptr;
-  if (!get_val_smtptr_param<vtkPropCollection >(param2_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPropCollection* param2 = param2_smtptr.get();
+  vtkPropCollection* param2;
+  if (CheckNullVar(_p,_n))  {
+    param2=(vtkPropCollection*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPropCollection > param2_smtptr;
+    if (!get_val_smtptr_param<vtkPropCollection >(param2_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param2 = param2_smtptr.get();
+  }
 
   vtkAssemblyPath * res =   this->_objectptr->GetObj()->PickPropFrom(selectionX, selectionY, param2);
   return AMILabType<vtkAssemblyPath >::CreateVar(res,true);

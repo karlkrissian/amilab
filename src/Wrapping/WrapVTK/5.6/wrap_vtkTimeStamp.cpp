@@ -24,6 +24,10 @@
 
 #include "wrap_vtkTimeStamp.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -60,26 +64,29 @@ Variable<AMIObject>::ptr WrapClass_vtkTimeStamp::CreateVar( vtkTimeStamp* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkTimeStamp::AddMethods(WrapClass<vtkTimeStamp>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Delete( this_ptr);
+  AddVar_Modified( this_ptr);
+  AddVar_GetMTime( this_ptr);
 
-
-  // check that the method name is not a token
-  
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Delete( this_ptr);
-      AddVar_Modified( this_ptr);
-      AddVar_GetMTime( this_ptr);
-
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 
 
 
   
+
+  
+
+
+  // Adding Bases
+
 };
 
 
@@ -100,7 +107,7 @@ void WrapClass_vtkTimeStamp::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkTimeStamp::AddVar_New(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -302,7 +309,7 @@ void WrapClass_vtkTimeStamp::
     wrap_operator not available::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkTimeStamp, "parameter named 'ts'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -318,8 +325,7 @@ BasicVariable::ptr WrapClass_vtkTimeStamp::
   vtkTimeStamp & ts = *ts_smtptr;
 
   bool res =   this->_objectptr->GetObj()->>(ts);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -332,7 +338,7 @@ void WrapClass_vtkTimeStamp::
     wrap_operator not available::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkTimeStamp, "parameter named 'ts'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -348,8 +354,7 @@ BasicVariable::ptr WrapClass_vtkTimeStamp::
   vtkTimeStamp & ts = *ts_smtptr;
 
   bool res =   this->_objectptr->GetObj()-><(ts);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 

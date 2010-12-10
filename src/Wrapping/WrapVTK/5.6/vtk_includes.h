@@ -23,3 +23,4 @@
 #include <vtkProperty.h>
 #include <vtkTransform.h>
 #include <vtkPolyData.h>
+#include <vtkWindowToImageFilter.h>

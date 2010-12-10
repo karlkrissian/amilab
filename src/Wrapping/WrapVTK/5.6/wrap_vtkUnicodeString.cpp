@@ -24,6 +24,10 @@
 
 #include "wrap_vtkUnicodeString.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -60,65 +64,68 @@ Variable<AMIObject>::ptr WrapClass_vtkUnicodeString::CreateVar( vtkUnicodeString
 //----------------------------------------------------------------------
 void WrapClass_vtkUnicodeString::AddMethods(WrapClass<vtkUnicodeString>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-
-
-  // check that the method name is not a token
-  
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 /* The following types are missing: const_iterator
-      AddVar_begin( this_ptr);
+  AddVar_begin( this_ptr);
 */
 /* The following types are missing: const_iterator
-      AddVar_end( this_ptr);
+  AddVar_end( this_ptr);
 */
-      AddVar_at( this_ptr);
-      AddVar_utf8_str_1( this_ptr);
-      AddVar_utf8_str( this_ptr);
+  AddVar_at( this_ptr);
+  AddVar_utf8_str_1( this_ptr);
+  AddVar_utf8_str( this_ptr);
 /* The following types are missing: basic_string<char,std::char_traits<char>,std::allocator<char> >
-      AddVar_utf8_str_2( this_ptr);
+  AddVar_utf8_str_2( this_ptr);
 */
 /* The following types are missing: vector<short unsigned int,std::allocator<short unsigned int> >
-      AddVar_utf16_str_1( this_ptr);
+  AddVar_utf16_str_1( this_ptr);
 */
-      AddVar_utf16_str( this_ptr);
+  AddVar_utf16_str( this_ptr);
 /* The following types are missing: vector<short unsigned int,std::allocator<short unsigned int> >
-      AddVar_utf16_str_2( this_ptr);
+  AddVar_utf16_str_2( this_ptr);
 */
-      AddVar_byte_count( this_ptr);
-      AddVar_character_count( this_ptr);
-      AddVar_empty( this_ptr);
-      AddVar_push_back( this_ptr);
-      AddVar_append_1( this_ptr);
-      AddVar_append( this_ptr);
-      AddVar_append_2( this_ptr);
+  AddVar_byte_count( this_ptr);
+  AddVar_character_count( this_ptr);
+  AddVar_empty( this_ptr);
+  AddVar_push_back( this_ptr);
+  AddVar_append_1( this_ptr);
+  AddVar_append( this_ptr);
+  AddVar_append_2( this_ptr);
 /* The following types are missing: const_iterator, const_iterator
-      AddVar_append_3( this_ptr);
+  AddVar_append_3( this_ptr);
 */
-      AddVar_assign_1( this_ptr);
-      AddVar_assign( this_ptr);
-      AddVar_assign_2( this_ptr);
+  AddVar_assign_1( this_ptr);
+  AddVar_assign( this_ptr);
+  AddVar_assign_2( this_ptr);
 /* The following types are missing: const_iterator, const_iterator
-      AddVar_assign_3( this_ptr);
+  AddVar_assign_3( this_ptr);
 */
-      AddVar_clear( this_ptr);
-      AddVar_fold_case( this_ptr);
-      AddVar_compare( this_ptr);
-      AddVar_substr( this_ptr);
-      AddVar_swap( this_ptr);
+  AddVar_clear( this_ptr);
+  AddVar_fold_case( this_ptr);
+  AddVar_compare( this_ptr);
+  AddVar_substr( this_ptr);
+  AddVar_swap( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___at__( this_ptr);
-      AddVar___add_assign___1( this_ptr);
-      AddVar___add_assign__( this_ptr);
-      AddVar___add_assign___2( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___at__( this_ptr);
+  AddVar___add_assign___1( this_ptr);
+  AddVar___add_assign__( this_ptr);
+  AddVar___add_assign___2( this_ptr);
 
 
 
   
+
+  
+
+
+  // Adding Bases
+
 };
 
 
@@ -154,7 +161,7 @@ void WrapClass_vtkUnicodeString::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkUnicodeString::AddVar_from_utf16(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -301,7 +308,7 @@ void WrapClass_vtkUnicodeString::
     wrap_static_is_utf8_1::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( std::string, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -317,8 +324,7 @@ BasicVariable::ptr WrapClass_vtkUnicodeString::
   char const * param0 = param0_string->c_str();
 
   bool res =   vtkUnicodeString::is_utf8(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -347,7 +353,7 @@ void WrapClass_vtkUnicodeString::
     wrap_static_is_utf8_2::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( basic_string<char,std::char_traits<char>,std::allocator<char> >, "parameter named 'param0'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -363,8 +369,7 @@ BasicVariable::ptr WrapClass_vtkUnicodeString::
   string const & param0 = *param0_smtptr;
 
   bool res =   vtkUnicodeString::is_utf8(param0);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 
@@ -760,7 +765,7 @@ BasicVariable::ptr WrapClass_vtkUnicodeString::
 void WrapClass_vtkUnicodeString::
     wrap_empty::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -770,8 +775,7 @@ BasicVariable::ptr WrapClass_vtkUnicodeString::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->empty();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

@@ -29,6 +29,10 @@
 
 #include "wrap_vtkInteractorStyle.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -36,8 +40,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyle>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkInteractorStyle::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -72,111 +76,122 @@ Variable<AMIObject>::ptr WrapClass_vtkInteractorStyle::CreateVar( vtkInteractorS
 //----------------------------------------------------------------------
 void WrapClass_vtkInteractorStyle::AddMethods(WrapClass<vtkInteractorStyle>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkInteractorObserver
-      WrapClass_vtkInteractorObserver::ptr parent_vtkInteractorObserver(        boost::dynamic_pointer_cast<WrapClass_vtkInteractorObserver >(this_ptr));
-      parent_vtkInteractorObserver->AddMethods(parent_vtkInteractorObserver);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_SetInteractor( this_ptr);
-      AddVar_SetEnabled( this_ptr);
-      AddVar_SetAutoAdjustCameraClippingRange( this_ptr);
-      AddVar_GetAutoAdjustCameraClippingRangeMinValue( this_ptr);
-      AddVar_GetAutoAdjustCameraClippingRangeMaxValue( this_ptr);
-      AddVar_GetAutoAdjustCameraClippingRange( this_ptr);
-      AddVar_AutoAdjustCameraClippingRangeOn( this_ptr);
-      AddVar_AutoAdjustCameraClippingRangeOff( this_ptr);
-      AddVar_FindPokedRenderer( this_ptr);
-      AddVar_GetState( this_ptr);
-      AddVar_GetUseTimers( this_ptr);
-      AddVar_SetUseTimers( this_ptr);
-      AddVar_UseTimersOn( this_ptr);
-      AddVar_UseTimersOff( this_ptr);
-      AddVar_SetTimerDuration( this_ptr);
-      AddVar_GetTimerDurationMinValue( this_ptr);
-      AddVar_GetTimerDurationMaxValue( this_ptr);
-      AddVar_GetTimerDuration( this_ptr);
-      AddVar_SetHandleObservers( this_ptr);
-      AddVar_GetHandleObservers( this_ptr);
-      AddVar_HandleObserversOn( this_ptr);
-      AddVar_HandleObserversOff( this_ptr);
-      AddVar_OnMouseMove( this_ptr);
-      AddVar_OnLeftButtonDown( this_ptr);
-      AddVar_OnLeftButtonUp( this_ptr);
-      AddVar_OnMiddleButtonDown( this_ptr);
-      AddVar_OnMiddleButtonUp( this_ptr);
-      AddVar_OnRightButtonDown( this_ptr);
-      AddVar_OnRightButtonUp( this_ptr);
-      AddVar_OnMouseWheelForward( this_ptr);
-      AddVar_OnMouseWheelBackward( this_ptr);
-      AddVar_OnChar( this_ptr);
-      AddVar_OnKeyDown( this_ptr);
-      AddVar_OnKeyUp( this_ptr);
-      AddVar_OnKeyPress( this_ptr);
-      AddVar_OnKeyRelease( this_ptr);
-      AddVar_OnExpose( this_ptr);
-      AddVar_OnConfigure( this_ptr);
-      AddVar_OnEnter( this_ptr);
-      AddVar_OnLeave( this_ptr);
-      AddVar_OnTimer( this_ptr);
-      AddVar_Rotate( this_ptr);
-      AddVar_Spin( this_ptr);
-      AddVar_Pan( this_ptr);
-      AddVar_Dolly( this_ptr);
-      AddVar_Zoom( this_ptr);
-      AddVar_UniformScale( this_ptr);
-      AddVar_StartState( this_ptr);
-      AddVar_StopState( this_ptr);
-      AddVar_StartAnimate( this_ptr);
-      AddVar_StopAnimate( this_ptr);
-      AddVar_StartRotate( this_ptr);
-      AddVar_EndRotate( this_ptr);
-      AddVar_StartZoom( this_ptr);
-      AddVar_EndZoom( this_ptr);
-      AddVar_StartPan( this_ptr);
-      AddVar_EndPan( this_ptr);
-      AddVar_StartSpin( this_ptr);
-      AddVar_EndSpin( this_ptr);
-      AddVar_StartDolly( this_ptr);
-      AddVar_EndDolly( this_ptr);
-      AddVar_StartUniformScale( this_ptr);
-      AddVar_EndUniformScale( this_ptr);
-      AddVar_StartTimer( this_ptr);
-      AddVar_EndTimer( this_ptr);
-      AddVar_HighlightProp( this_ptr);
+  AddVar_SetInteractor( this_ptr);
+  AddVar_SetEnabled( this_ptr);
+  AddVar_SetAutoAdjustCameraClippingRange( this_ptr);
+  AddVar_GetAutoAdjustCameraClippingRangeMinValue( this_ptr);
+  AddVar_GetAutoAdjustCameraClippingRangeMaxValue( this_ptr);
+  AddVar_GetAutoAdjustCameraClippingRange( this_ptr);
+  AddVar_AutoAdjustCameraClippingRangeOn( this_ptr);
+  AddVar_AutoAdjustCameraClippingRangeOff( this_ptr);
+  AddVar_FindPokedRenderer( this_ptr);
+  AddVar_GetState( this_ptr);
+  AddVar_GetUseTimers( this_ptr);
+  AddVar_SetUseTimers( this_ptr);
+  AddVar_UseTimersOn( this_ptr);
+  AddVar_UseTimersOff( this_ptr);
+  AddVar_SetTimerDuration( this_ptr);
+  AddVar_GetTimerDurationMinValue( this_ptr);
+  AddVar_GetTimerDurationMaxValue( this_ptr);
+  AddVar_GetTimerDuration( this_ptr);
+  AddVar_SetHandleObservers( this_ptr);
+  AddVar_GetHandleObservers( this_ptr);
+  AddVar_HandleObserversOn( this_ptr);
+  AddVar_HandleObserversOff( this_ptr);
+  AddVar_OnMouseMove( this_ptr);
+  AddVar_OnLeftButtonDown( this_ptr);
+  AddVar_OnLeftButtonUp( this_ptr);
+  AddVar_OnMiddleButtonDown( this_ptr);
+  AddVar_OnMiddleButtonUp( this_ptr);
+  AddVar_OnRightButtonDown( this_ptr);
+  AddVar_OnRightButtonUp( this_ptr);
+  AddVar_OnMouseWheelForward( this_ptr);
+  AddVar_OnMouseWheelBackward( this_ptr);
+  AddVar_OnChar( this_ptr);
+  AddVar_OnKeyDown( this_ptr);
+  AddVar_OnKeyUp( this_ptr);
+  AddVar_OnKeyPress( this_ptr);
+  AddVar_OnKeyRelease( this_ptr);
+  AddVar_OnExpose( this_ptr);
+  AddVar_OnConfigure( this_ptr);
+  AddVar_OnEnter( this_ptr);
+  AddVar_OnLeave( this_ptr);
+  AddVar_OnTimer( this_ptr);
+  AddVar_Rotate( this_ptr);
+  AddVar_Spin( this_ptr);
+  AddVar_Pan( this_ptr);
+  AddVar_Dolly( this_ptr);
+  AddVar_Zoom( this_ptr);
+  AddVar_UniformScale( this_ptr);
+  AddVar_StartState( this_ptr);
+  AddVar_StopState( this_ptr);
+  AddVar_StartAnimate( this_ptr);
+  AddVar_StopAnimate( this_ptr);
+  AddVar_StartRotate( this_ptr);
+  AddVar_EndRotate( this_ptr);
+  AddVar_StartZoom( this_ptr);
+  AddVar_EndZoom( this_ptr);
+  AddVar_StartPan( this_ptr);
+  AddVar_EndPan( this_ptr);
+  AddVar_StartSpin( this_ptr);
+  AddVar_EndSpin( this_ptr);
+  AddVar_StartDolly( this_ptr);
+  AddVar_EndDolly( this_ptr);
+  AddVar_StartUniformScale( this_ptr);
+  AddVar_EndUniformScale( this_ptr);
+  AddVar_StartTimer( this_ptr);
+  AddVar_EndTimer( this_ptr);
+  AddVar_HighlightProp( this_ptr);
 /* The following types are missing: vtkActor2D
-      AddVar_HighlightActor2D( this_ptr);
+  AddVar_HighlightActor2D( this_ptr);
 */
-      AddVar_HighlightProp3D( this_ptr);
-      AddVar_SetPickColor_1( this_ptr);
-      AddVar_SetPickColor( this_ptr);
-      AddVar_SetPickColor_2( this_ptr);
-      AddVar_GetPickColor_1( this_ptr);
-      AddVar_GetPickColor( this_ptr);
-      AddVar_GetPickColor_2( this_ptr);
-      AddVar_SetMouseWheelMotionFactor( this_ptr);
-      AddVar_GetMouseWheelMotionFactor( this_ptr);
+  AddVar_HighlightProp3D( this_ptr);
+  AddVar_SetPickColor_1( this_ptr);
+  AddVar_SetPickColor( this_ptr);
+  AddVar_SetPickColor_2( this_ptr);
+  AddVar_GetPickColor_1( this_ptr);
+  AddVar_GetPickColor( this_ptr);
+  AddVar_GetPickColor_2( this_ptr);
+  AddVar_SetMouseWheelMotionFactor( this_ptr);
+  AddVar_GetMouseWheelMotionFactor( this_ptr);
 /* The following types are missing: vtkTDxInteractorStyle
-      AddVar_GetTDxStyle( this_ptr);
+  AddVar_GetTDxStyle( this_ptr);
 */
 /* The following types are missing: vtkTDxInteractorStyle
-      AddVar_SetTDxStyle( this_ptr);
+  AddVar_SetTDxStyle( this_ptr);
 */
 /* The following types are missing: void
-      AddVar_DelegateTDxEvent( this_ptr);
+  AddVar_DelegateTDxEvent( this_ptr);
 */
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkInteractorObserver
+  boost::shared_ptr<vtkInteractorObserver > parent_vtkInteractorObserver(  boost::dynamic_pointer_cast<vtkInteractorObserver >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkInteractorObserver = AMILabType<vtkInteractorObserver >::CreateVarFromSmtPtr(parent_vtkInteractorObserver);
+  context->AddVar("vtkInteractorObserver",var_vtkInteractorObserver);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkInteractorObserver = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkInteractorObserver);
+  context->AddDefault(obj_vtkInteractorObserver->Pointer()->GetContext());
+
 };
 
 
@@ -195,7 +210,7 @@ void WrapClass_vtkInteractorStyle::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkInteractorStyle::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -268,9 +283,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkInteractorStyle * res =   vtkInteractorStyle::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkInteractorStyle::CreateVar(res);
@@ -371,9 +392,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderWindowInteractor > interactor_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(interactor_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderWindowInteractor* interactor = interactor_smtptr.get();
+  vtkRenderWindowInteractor* interactor;
+  if (CheckNullVar(_p,_n))  {
+    interactor=(vtkRenderWindowInteractor*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderWindowInteractor > interactor_smtptr;
+    if (!get_val_smtptr_param<vtkRenderWindowInteractor >(interactor_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    interactor = interactor_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInteractor(interactor);
   return BasicVariable::ptr();
@@ -1607,9 +1634,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > prop_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(prop_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* prop = prop_smtptr.get();
+  vtkProp* prop;
+  if (CheckNullVar(_p,_n))  {
+    prop=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > prop_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(prop_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    prop = prop_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->HighlightProp(prop);
   return BasicVariable::ptr();
@@ -1633,9 +1666,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkActor2D > actor2D_smtptr;
-  if (!get_val_smtptr_param<vtkActor2D >(actor2D_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkActor2D* actor2D = actor2D_smtptr.get();
+  vtkActor2D* actor2D;
+  if (CheckNullVar(_p,_n))  {
+    actor2D=(vtkActor2D*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkActor2D > actor2D_smtptr;
+    if (!get_val_smtptr_param<vtkActor2D >(actor2D_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    actor2D = actor2D_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->HighlightActor2D(actor2D);
   return BasicVariable::ptr();
@@ -1659,9 +1698,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp3D > prop3D_smtptr;
-  if (!get_val_smtptr_param<vtkProp3D >(prop3D_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp3D* prop3D = prop3D_smtptr.get();
+  vtkProp3D* prop3D;
+  if (CheckNullVar(_p,_n))  {
+    prop3D=(vtkProp3D*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp3D > prop3D_smtptr;
+    if (!get_val_smtptr_param<vtkProp3D >(prop3D_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    prop3D = prop3D_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->HighlightProp3D(prop3D);
   return BasicVariable::ptr();
@@ -1737,9 +1782,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPickColor(_arg);
   return BasicVariable::ptr();
@@ -1802,9 +1853,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPickColor(data);
   return BasicVariable::ptr();
@@ -1892,9 +1949,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkTDxInteractorStyle > tdxStyle_smtptr;
-  if (!get_val_smtptr_param<vtkTDxInteractorStyle >(tdxStyle_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkTDxInteractorStyle* tdxStyle = tdxStyle_smtptr.get();
+  vtkTDxInteractorStyle* tdxStyle;
+  if (CheckNullVar(_p,_n))  {
+    tdxStyle=(vtkTDxInteractorStyle*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkTDxInteractorStyle > tdxStyle_smtptr;
+    if (!get_val_smtptr_param<vtkTDxInteractorStyle >(tdxStyle_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    tdxStyle = tdxStyle_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTDxStyle(tdxStyle);
   return BasicVariable::ptr();
@@ -1924,9 +1987,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (!get_val_param<long >(event_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
-  boost::shared_ptr<void > calldata_smtptr;
-  if (!get_val_smtptr_param<void >(calldata_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  void* calldata = calldata_smtptr.get();
+  void* calldata;
+  if (CheckNullVar(_p,_n))  {
+    calldata=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > calldata_smtptr;
+    if (!get_val_smtptr_param<void >(calldata_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    calldata = calldata_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DelegateTDxEvent(event, calldata);
   return BasicVariable::ptr();

@@ -32,6 +32,10 @@
 
 #include "wrap_vtkRenderer.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -75,183 +79,194 @@ Variable<AMIObject>::ptr WrapClass_vtkRenderer::CreateVar( vtkRenderer* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkRenderer::AddMethods(WrapClass<vtkRenderer>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkViewport
-      WrapClass_vtkViewport::ptr parent_vtkViewport(        boost::dynamic_pointer_cast<WrapClass_vtkViewport >(this_ptr));
-      parent_vtkViewport->AddMethods(parent_vtkViewport);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_AddActor( this_ptr);
-      AddVar_AddVolume( this_ptr);
-      AddVar_RemoveActor( this_ptr);
-      AddVar_RemoveVolume( this_ptr);
+  AddVar_AddActor( this_ptr);
+  AddVar_AddVolume( this_ptr);
+  AddVar_RemoveActor( this_ptr);
+  AddVar_RemoveVolume( this_ptr);
 /* The following types are missing: vtkLight
-      AddVar_AddLight( this_ptr);
+  AddVar_AddLight( this_ptr);
 */
 /* The following types are missing: vtkLight
-      AddVar_RemoveLight( this_ptr);
+  AddVar_RemoveLight( this_ptr);
 */
-      AddVar_RemoveAllLights( this_ptr);
+  AddVar_RemoveAllLights( this_ptr);
 /* The following types are missing: vtkLightCollection
-      AddVar_GetLights( this_ptr);
+  AddVar_GetLights( this_ptr);
 */
 /* The following types are missing: vtkLightCollection
-      AddVar_SetLightCollection( this_ptr);
+  AddVar_SetLightCollection( this_ptr);
 */
-      AddVar_CreateLight( this_ptr);
+  AddVar_CreateLight( this_ptr);
 /* The following types are missing: vtkLight
-      AddVar_MakeLight( this_ptr);
+  AddVar_MakeLight( this_ptr);
 */
-      AddVar_GetTwoSidedLighting( this_ptr);
-      AddVar_SetTwoSidedLighting( this_ptr);
-      AddVar_TwoSidedLightingOn( this_ptr);
-      AddVar_TwoSidedLightingOff( this_ptr);
-      AddVar_SetLightFollowCamera( this_ptr);
-      AddVar_GetLightFollowCamera( this_ptr);
-      AddVar_LightFollowCameraOn( this_ptr);
-      AddVar_LightFollowCameraOff( this_ptr);
-      AddVar_GetAutomaticLightCreation( this_ptr);
-      AddVar_SetAutomaticLightCreation( this_ptr);
-      AddVar_AutomaticLightCreationOn( this_ptr);
-      AddVar_AutomaticLightCreationOff( this_ptr);
-      AddVar_UpdateLightsGeometryToFollowCamera( this_ptr);
-      AddVar_GetVolumes( this_ptr);
-      AddVar_GetActors( this_ptr);
-      AddVar_SetActiveCamera( this_ptr);
-      AddVar_GetActiveCamera( this_ptr);
-      AddVar_MakeCamera( this_ptr);
-      AddVar_SetErase( this_ptr);
-      AddVar_GetErase( this_ptr);
-      AddVar_EraseOn( this_ptr);
-      AddVar_EraseOff( this_ptr);
-      AddVar_SetDraw( this_ptr);
-      AddVar_GetDraw( this_ptr);
-      AddVar_DrawOn( this_ptr);
-      AddVar_DrawOff( this_ptr);
+  AddVar_GetTwoSidedLighting( this_ptr);
+  AddVar_SetTwoSidedLighting( this_ptr);
+  AddVar_TwoSidedLightingOn( this_ptr);
+  AddVar_TwoSidedLightingOff( this_ptr);
+  AddVar_SetLightFollowCamera( this_ptr);
+  AddVar_GetLightFollowCamera( this_ptr);
+  AddVar_LightFollowCameraOn( this_ptr);
+  AddVar_LightFollowCameraOff( this_ptr);
+  AddVar_GetAutomaticLightCreation( this_ptr);
+  AddVar_SetAutomaticLightCreation( this_ptr);
+  AddVar_AutomaticLightCreationOn( this_ptr);
+  AddVar_AutomaticLightCreationOff( this_ptr);
+  AddVar_UpdateLightsGeometryToFollowCamera( this_ptr);
+  AddVar_GetVolumes( this_ptr);
+  AddVar_GetActors( this_ptr);
+  AddVar_SetActiveCamera( this_ptr);
+  AddVar_GetActiveCamera( this_ptr);
+  AddVar_MakeCamera( this_ptr);
+  AddVar_SetErase( this_ptr);
+  AddVar_GetErase( this_ptr);
+  AddVar_EraseOn( this_ptr);
+  AddVar_EraseOff( this_ptr);
+  AddVar_SetDraw( this_ptr);
+  AddVar_GetDraw( this_ptr);
+  AddVar_DrawOn( this_ptr);
+  AddVar_DrawOff( this_ptr);
 /* The following types are missing: vtkCuller
-      AddVar_AddCuller( this_ptr);
+  AddVar_AddCuller( this_ptr);
 */
 /* The following types are missing: vtkCuller
-      AddVar_RemoveCuller( this_ptr);
+  AddVar_RemoveCuller( this_ptr);
 */
 /* The following types are missing: vtkCullerCollection
-      AddVar_GetCullers( this_ptr);
+  AddVar_GetCullers( this_ptr);
 */
-      AddVar_SetAmbient_1( this_ptr);
-      AddVar_SetAmbient( this_ptr);
-      AddVar_SetAmbient_2( this_ptr);
-      AddVar_GetAmbient_1( this_ptr);
-      AddVar_GetAmbient( this_ptr);
-      AddVar_GetAmbient_2( this_ptr);
-      AddVar_SetAllocatedRenderTime( this_ptr);
-      AddVar_GetAllocatedRenderTime( this_ptr);
-      AddVar_GetTimeFactor( this_ptr);
-      AddVar_Render( this_ptr);
-      AddVar_DeviceRenderTranslucentPolygonalGeometry( this_ptr);
-      AddVar_Clear( this_ptr);
-      AddVar_VisibleActorCount( this_ptr);
-      AddVar_VisibleVolumeCount( this_ptr);
-      AddVar_ComputeVisiblePropBounds_1( this_ptr);
-      AddVar_ComputeVisiblePropBounds( this_ptr);
-      AddVar_ComputeVisiblePropBounds_2( this_ptr);
-      AddVar_ResetCameraClippingRange_1( this_ptr);
-      AddVar_ResetCameraClippingRange( this_ptr);
-      AddVar_ResetCameraClippingRange_2( this_ptr);
-      AddVar_ResetCameraClippingRange_3( this_ptr);
-      AddVar_SetNearClippingPlaneTolerance( this_ptr);
-      AddVar_GetNearClippingPlaneToleranceMinValue( this_ptr);
-      AddVar_GetNearClippingPlaneToleranceMaxValue( this_ptr);
-      AddVar_GetNearClippingPlaneTolerance( this_ptr);
-      AddVar_ResetCamera_1( this_ptr);
-      AddVar_ResetCamera( this_ptr);
-      AddVar_ResetCamera_2( this_ptr);
-      AddVar_ResetCamera_3( this_ptr);
-      AddVar_SetRenderWindow( this_ptr);
-      AddVar_GetRenderWindow( this_ptr);
-      AddVar_GetVTKWindow( this_ptr);
-      AddVar_SetBackingStore( this_ptr);
-      AddVar_GetBackingStore( this_ptr);
-      AddVar_BackingStoreOn( this_ptr);
-      AddVar_BackingStoreOff( this_ptr);
-      AddVar_SetInteractive( this_ptr);
-      AddVar_GetInteractive( this_ptr);
-      AddVar_InteractiveOn( this_ptr);
-      AddVar_InteractiveOff( this_ptr);
-      AddVar_SetLayer( this_ptr);
-      AddVar_GetLayer( this_ptr);
-      AddVar_SetPreserveDepthBuffer( this_ptr);
-      AddVar_GetPreserveDepthBuffer( this_ptr);
-      AddVar_PreserveDepthBufferOn( this_ptr);
-      AddVar_PreserveDepthBufferOff( this_ptr);
-      AddVar_Transparent( this_ptr);
-      AddVar_WorldToView_1( this_ptr);
-      AddVar_ViewToWorld_1( this_ptr);
-      AddVar_ViewToWorld( this_ptr);
-      AddVar_ViewToWorld_2( this_ptr);
-      AddVar_WorldToView( this_ptr);
-      AddVar_WorldToView_2( this_ptr);
-      AddVar_GetZ( this_ptr);
-      AddVar_GetMTime( this_ptr);
-      AddVar_GetLastRenderTimeInSeconds( this_ptr);
-      AddVar_GetNumberOfPropsRendered( this_ptr);
+  AddVar_SetAmbient_1( this_ptr);
+  AddVar_SetAmbient( this_ptr);
+  AddVar_SetAmbient_2( this_ptr);
+  AddVar_GetAmbient_1( this_ptr);
+  AddVar_GetAmbient( this_ptr);
+  AddVar_GetAmbient_2( this_ptr);
+  AddVar_SetAllocatedRenderTime( this_ptr);
+  AddVar_GetAllocatedRenderTime( this_ptr);
+  AddVar_GetTimeFactor( this_ptr);
+  AddVar_Render( this_ptr);
+  AddVar_DeviceRenderTranslucentPolygonalGeometry( this_ptr);
+  AddVar_Clear( this_ptr);
+  AddVar_VisibleActorCount( this_ptr);
+  AddVar_VisibleVolumeCount( this_ptr);
+  AddVar_ComputeVisiblePropBounds_1( this_ptr);
+  AddVar_ComputeVisiblePropBounds( this_ptr);
+  AddVar_ComputeVisiblePropBounds_2( this_ptr);
+  AddVar_ResetCameraClippingRange_1( this_ptr);
+  AddVar_ResetCameraClippingRange( this_ptr);
+  AddVar_ResetCameraClippingRange_2( this_ptr);
+  AddVar_ResetCameraClippingRange_3( this_ptr);
+  AddVar_SetNearClippingPlaneTolerance( this_ptr);
+  AddVar_GetNearClippingPlaneToleranceMinValue( this_ptr);
+  AddVar_GetNearClippingPlaneToleranceMaxValue( this_ptr);
+  AddVar_GetNearClippingPlaneTolerance( this_ptr);
+  AddVar_ResetCamera_1( this_ptr);
+  AddVar_ResetCamera( this_ptr);
+  AddVar_ResetCamera_2( this_ptr);
+  AddVar_ResetCamera_3( this_ptr);
+  AddVar_SetRenderWindow( this_ptr);
+  AddVar_GetRenderWindow( this_ptr);
+  AddVar_GetVTKWindow( this_ptr);
+  AddVar_SetBackingStore( this_ptr);
+  AddVar_GetBackingStore( this_ptr);
+  AddVar_BackingStoreOn( this_ptr);
+  AddVar_BackingStoreOff( this_ptr);
+  AddVar_SetInteractive( this_ptr);
+  AddVar_GetInteractive( this_ptr);
+  AddVar_InteractiveOn( this_ptr);
+  AddVar_InteractiveOff( this_ptr);
+  AddVar_SetLayer( this_ptr);
+  AddVar_GetLayer( this_ptr);
+  AddVar_SetPreserveDepthBuffer( this_ptr);
+  AddVar_GetPreserveDepthBuffer( this_ptr);
+  AddVar_PreserveDepthBufferOn( this_ptr);
+  AddVar_PreserveDepthBufferOff( this_ptr);
+  AddVar_Transparent( this_ptr);
+  AddVar_WorldToView_1( this_ptr);
+  AddVar_ViewToWorld_1( this_ptr);
+  AddVar_ViewToWorld( this_ptr);
+  AddVar_ViewToWorld_2( this_ptr);
+  AddVar_WorldToView( this_ptr);
+  AddVar_WorldToView_2( this_ptr);
+  AddVar_GetZ( this_ptr);
+  AddVar_GetMTime( this_ptr);
+  AddVar_GetLastRenderTimeInSeconds( this_ptr);
+  AddVar_GetNumberOfPropsRendered( this_ptr);
 /* The following types are missing: vtkAssemblyPath
-      AddVar_PickProp_1( this_ptr);
+  AddVar_PickProp_1( this_ptr);
 */
-      AddVar_PickProp( this_ptr);
+  AddVar_PickProp( this_ptr);
 /* The following types are missing: vtkAssemblyPath
-      AddVar_PickProp_2( this_ptr);
+  AddVar_PickProp_2( this_ptr);
 */
-      AddVar_StereoMidpoint( this_ptr);
-      AddVar_GetTiledAspectRatio( this_ptr);
-      AddVar_IsActiveCameraCreated( this_ptr);
-      AddVar_SetUseDepthPeeling( this_ptr);
-      AddVar_GetUseDepthPeeling( this_ptr);
-      AddVar_UseDepthPeelingOn( this_ptr);
-      AddVar_UseDepthPeelingOff( this_ptr);
-      AddVar_SetOcclusionRatio( this_ptr);
-      AddVar_GetOcclusionRatioMinValue( this_ptr);
-      AddVar_GetOcclusionRatioMaxValue( this_ptr);
-      AddVar_GetOcclusionRatio( this_ptr);
-      AddVar_SetMaximumNumberOfPeels( this_ptr);
-      AddVar_GetMaximumNumberOfPeels( this_ptr);
-      AddVar_GetLastRenderingUsedDepthPeeling( this_ptr);
+  AddVar_StereoMidpoint( this_ptr);
+  AddVar_GetTiledAspectRatio( this_ptr);
+  AddVar_IsActiveCameraCreated( this_ptr);
+  AddVar_SetUseDepthPeeling( this_ptr);
+  AddVar_GetUseDepthPeeling( this_ptr);
+  AddVar_UseDepthPeelingOn( this_ptr);
+  AddVar_UseDepthPeelingOff( this_ptr);
+  AddVar_SetOcclusionRatio( this_ptr);
+  AddVar_GetOcclusionRatioMinValue( this_ptr);
+  AddVar_GetOcclusionRatioMaxValue( this_ptr);
+  AddVar_GetOcclusionRatio( this_ptr);
+  AddVar_SetMaximumNumberOfPeels( this_ptr);
+  AddVar_GetMaximumNumberOfPeels( this_ptr);
+  AddVar_GetLastRenderingUsedDepthPeeling( this_ptr);
 /* The following types are missing: vtkRendererDelegate
-      AddVar_SetDelegate( this_ptr);
+  AddVar_SetDelegate( this_ptr);
 */
 /* The following types are missing: vtkRendererDelegate
-      AddVar_GetDelegate( this_ptr);
+  AddVar_GetDelegate( this_ptr);
 */
 /* The following types are missing: vtkRenderPass
-      AddVar_SetPass( this_ptr);
+  AddVar_SetPass( this_ptr);
 */
 /* The following types are missing: vtkRenderPass
-      AddVar_GetPass( this_ptr);
+  AddVar_GetPass( this_ptr);
 */
 /* The following types are missing: vtkHardwareSelector
-      AddVar_GetSelector( this_ptr);
+  AddVar_GetSelector( this_ptr);
 */
 /* The following types are missing: vtkTexture
-      AddVar_SetBackgroundTexture( this_ptr);
+  AddVar_SetBackgroundTexture( this_ptr);
 */
 /* The following types are missing: vtkTexture
-      AddVar_GetBackgroundTexture( this_ptr);
+  AddVar_GetBackgroundTexture( this_ptr);
 */
-      AddVar_SetTexturedBackground( this_ptr);
-      AddVar_GetTexturedBackground( this_ptr);
-      AddVar_TexturedBackgroundOn( this_ptr);
-      AddVar_TexturedBackgroundOff( this_ptr);
+  AddVar_SetTexturedBackground( this_ptr);
+  AddVar_GetTexturedBackground( this_ptr);
+  AddVar_TexturedBackgroundOn( this_ptr);
+  AddVar_TexturedBackgroundOff( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkViewport
+  boost::shared_ptr<vtkViewport > parent_vtkViewport(  boost::dynamic_pointer_cast<vtkViewport >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkViewport = AMILabType<vtkViewport >::CreateVarFromSmtPtr(parent_vtkViewport);
+  context->AddVar("vtkViewport",var_vtkViewport);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkViewport = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkViewport);
+  context->AddDefault(obj_vtkViewport->Pointer()->GetContext());
+
 };
 
 
@@ -270,7 +285,7 @@ void WrapClass_vtkRenderer::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkRenderer::AddVar_New(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -323,9 +338,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkRenderer * res =   vtkRenderer::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
@@ -446,9 +467,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > p_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* p = p_smtptr.get();
+  vtkProp* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > p_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddActor(p);
   return BasicVariable::ptr();
@@ -471,9 +498,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > p_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* p = p_smtptr.get();
+  vtkProp* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > p_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddVolume(p);
   return BasicVariable::ptr();
@@ -496,9 +529,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > p_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* p = p_smtptr.get();
+  vtkProp* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > p_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveActor(p);
   return BasicVariable::ptr();
@@ -521,9 +560,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp > p_smtptr;
-  if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp* p = p_smtptr.get();
+  vtkProp* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkProp*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp > p_smtptr;
+    if (!get_val_smtptr_param<vtkProp >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveVolume(p);
   return BasicVariable::ptr();
@@ -547,9 +592,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkLight > param0_smtptr;
-  if (!get_val_smtptr_param<vtkLight >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkLight* param0 = param0_smtptr.get();
+  vtkLight* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkLight*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkLight > param0_smtptr;
+    if (!get_val_smtptr_param<vtkLight >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddLight(param0);
   return BasicVariable::ptr();
@@ -574,9 +625,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkLight > param0_smtptr;
-  if (!get_val_smtptr_param<vtkLight >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkLight* param0 = param0_smtptr.get();
+  vtkLight* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkLight*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkLight > param0_smtptr;
+    if (!get_val_smtptr_param<vtkLight >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveLight(param0);
   return BasicVariable::ptr();
@@ -640,9 +697,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkLightCollection > lights_smtptr;
-  if (!get_val_smtptr_param<vtkLightCollection >(lights_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkLightCollection* lights = lights_smtptr.get();
+  vtkLightCollection* lights;
+  if (CheckNullVar(_p,_n))  {
+    lights=(vtkLightCollection*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkLightCollection > lights_smtptr;
+    if (!get_val_smtptr_param<vtkLightCollection >(lights_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    lights = lights_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetLightCollection(lights);
   return BasicVariable::ptr();
@@ -1001,9 +1064,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkCamera > param0_smtptr;
-  if (!get_val_smtptr_param<vtkCamera >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCamera* param0 = param0_smtptr.get();
+  vtkCamera* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkCamera*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCamera > param0_smtptr;
+    if (!get_val_smtptr_param<vtkCamera >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetActiveCamera(param0);
   return BasicVariable::ptr();
@@ -1225,9 +1294,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkCuller > param0_smtptr;
-  if (!get_val_smtptr_param<vtkCuller >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCuller* param0 = param0_smtptr.get();
+  vtkCuller* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkCuller*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCuller > param0_smtptr;
+    if (!get_val_smtptr_param<vtkCuller >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddCuller(param0);
   return BasicVariable::ptr();
@@ -1252,9 +1327,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkCuller > param0_smtptr;
-  if (!get_val_smtptr_param<vtkCuller >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCuller* param0 = param0_smtptr.get();
+  vtkCuller* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkCuller*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCuller > param0_smtptr;
+    if (!get_val_smtptr_param<vtkCuller >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveCuller(param0);
   return BasicVariable::ptr();
@@ -1352,9 +1433,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetAmbient(_arg);
   return BasicVariable::ptr();
@@ -1417,9 +1504,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetAmbient(data);
   return BasicVariable::ptr();
@@ -1596,9 +1689,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* bounds = bounds_smtptr.get();
+  double* bounds;
+  if (CheckNullVar(_p,_n))  {
+    bounds=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > bounds_smtptr;
+    if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    bounds = bounds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ComputeVisiblePropBounds(bounds);
   return BasicVariable::ptr();
@@ -1703,9 +1802,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* bounds = bounds_smtptr.get();
+  double* bounds;
+  if (CheckNullVar(_p,_n))  {
+    bounds=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > bounds_smtptr;
+    if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    bounds = bounds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ResetCameraClippingRange(bounds);
   return BasicVariable::ptr();
@@ -1895,9 +2000,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* bounds = bounds_smtptr.get();
+  double* bounds;
+  if (CheckNullVar(_p,_n))  {
+    bounds=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > bounds_smtptr;
+    if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    bounds = bounds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ResetCamera(bounds);
   return BasicVariable::ptr();
@@ -1964,9 +2075,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderWindow > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderWindow* param0 = param0_smtptr.get();
+  vtkRenderWindow* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkRenderWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderWindow > param0_smtptr;
+    if (!get_val_smtptr_param<vtkRenderWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetRenderWindow(param0);
   return BasicVariable::ptr();
@@ -2927,9 +3044,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRendererDelegate > d_smtptr;
-  if (!get_val_smtptr_param<vtkRendererDelegate >(d_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRendererDelegate* d = d_smtptr.get();
+  vtkRendererDelegate* d;
+  if (CheckNullVar(_p,_n))  {
+    d=(vtkRendererDelegate*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRendererDelegate > d_smtptr;
+    if (!get_val_smtptr_param<vtkRendererDelegate >(d_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    d = d_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetDelegate(d);
   return BasicVariable::ptr();
@@ -2975,9 +3098,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderPass > p_smtptr;
-  if (!get_val_smtptr_param<vtkRenderPass >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderPass* p = p_smtptr.get();
+  vtkRenderPass* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkRenderPass*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderPass > p_smtptr;
+    if (!get_val_smtptr_param<vtkRenderPass >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPass(p);
   return BasicVariable::ptr();
@@ -3044,9 +3173,15 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkTexture > param0_smtptr;
-  if (!get_val_smtptr_param<vtkTexture >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkTexture* param0 = param0_smtptr.get();
+  vtkTexture* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkTexture*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkTexture > param0_smtptr;
+    if (!get_val_smtptr_param<vtkTexture >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetBackgroundTexture(param0);
   return BasicVariable::ptr();
@@ -3080,7 +3215,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
 void WrapClass_vtkRenderer::
     wrap_SetTexturedBackground::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named '_arg'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named '_arg'")
 }
 
 //---------------------------------------------------
@@ -3091,9 +3226,8 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int _arg_int;
-  if (!get_val_param<int >(_arg_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool _arg = (bool) (_arg_int>0.5);
+  bool _arg;
+  if (!get_val_param<bool >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetTexturedBackground(_arg);
   return BasicVariable::ptr();
@@ -3105,7 +3239,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
 void WrapClass_vtkRenderer::
     wrap_GetTexturedBackground::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -3115,8 +3249,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetTexturedBackground();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------

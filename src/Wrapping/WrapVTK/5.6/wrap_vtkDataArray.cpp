@@ -27,6 +27,10 @@
 
 #include "wrap_vtkDataArray.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -70,87 +74,98 @@ Variable<AMIObject>::ptr WrapClass_vtkDataArray::CreateVar( vtkDataArray* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkDataArray::AddMethods(WrapClass<vtkDataArray>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkAbstractArray
-      WrapClass_vtkAbstractArray::ptr parent_vtkAbstractArray(        boost::dynamic_pointer_cast<WrapClass_vtkAbstractArray >(this_ptr));
-      parent_vtkAbstractArray->AddMethods(parent_vtkAbstractArray);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_IsNumeric( this_ptr);
-      AddVar_GetElementComponentSize( this_ptr);
+  AddVar_IsNumeric( this_ptr);
+  AddVar_GetElementComponentSize( this_ptr);
 /* The following types are missing: vtkIdList
-      AddVar_GetTuples_1( this_ptr);
+  AddVar_GetTuples_1( this_ptr);
 */
-      AddVar_GetTuples( this_ptr);
-      AddVar_GetTuples_2( this_ptr);
+  AddVar_GetTuples( this_ptr);
+  AddVar_GetTuples_2( this_ptr);
 /* The following types are missing: vtkIdList
-      AddVar_InterpolateTuple_1( this_ptr);
+  AddVar_InterpolateTuple_1( this_ptr);
 */
-      AddVar_InterpolateTuple( this_ptr);
-      AddVar_InterpolateTuple_2( this_ptr);
-      AddVar_GetTuple1( this_ptr);
-      AddVar_GetTuple2( this_ptr);
-      AddVar_GetTuple3( this_ptr);
-      AddVar_GetTuple4( this_ptr);
-      AddVar_GetTuple9( this_ptr);
-      AddVar_SetTuple1( this_ptr);
-      AddVar_SetTuple2( this_ptr);
-      AddVar_SetTuple3( this_ptr);
-      AddVar_SetTuple4( this_ptr);
-      AddVar_SetTuple9( this_ptr);
-      AddVar_InsertTuple1( this_ptr);
-      AddVar_InsertTuple2( this_ptr);
-      AddVar_InsertTuple3( this_ptr);
-      AddVar_InsertTuple4( this_ptr);
-      AddVar_InsertTuple9( this_ptr);
-      AddVar_InsertNextTuple1( this_ptr);
-      AddVar_InsertNextTuple2( this_ptr);
-      AddVar_InsertNextTuple3( this_ptr);
-      AddVar_InsertNextTuple4( this_ptr);
-      AddVar_InsertNextTuple9( this_ptr);
-      AddVar_GetComponent( this_ptr);
-      AddVar_SetComponent( this_ptr);
-      AddVar_InsertComponent( this_ptr);
+  AddVar_InterpolateTuple( this_ptr);
+  AddVar_InterpolateTuple_2( this_ptr);
+  AddVar_GetTuple1( this_ptr);
+  AddVar_GetTuple2( this_ptr);
+  AddVar_GetTuple3( this_ptr);
+  AddVar_GetTuple4( this_ptr);
+  AddVar_GetTuple9( this_ptr);
+  AddVar_SetTuple1( this_ptr);
+  AddVar_SetTuple2( this_ptr);
+  AddVar_SetTuple3( this_ptr);
+  AddVar_SetTuple4( this_ptr);
+  AddVar_SetTuple9( this_ptr);
+  AddVar_InsertTuple1( this_ptr);
+  AddVar_InsertTuple2( this_ptr);
+  AddVar_InsertTuple3( this_ptr);
+  AddVar_InsertTuple4( this_ptr);
+  AddVar_InsertTuple9( this_ptr);
+  AddVar_InsertNextTuple1( this_ptr);
+  AddVar_InsertNextTuple2( this_ptr);
+  AddVar_InsertNextTuple3( this_ptr);
+  AddVar_InsertNextTuple4( this_ptr);
+  AddVar_InsertNextTuple9( this_ptr);
+  AddVar_GetComponent( this_ptr);
+  AddVar_SetComponent( this_ptr);
+  AddVar_InsertComponent( this_ptr);
 /* The following types are missing: vtkDoubleArray
-      AddVar_GetData( this_ptr);
+  AddVar_GetData( this_ptr);
 */
-      AddVar_DeepCopy_1( this_ptr);
-      AddVar_DeepCopy( this_ptr);
-      AddVar_DeepCopy_2( this_ptr);
-      AddVar_FillComponent( this_ptr);
-      AddVar_CopyComponent( this_ptr);
-      AddVar_GetActualMemorySize( this_ptr);
-      AddVar_CreateDefaultLookupTable( this_ptr);
+  AddVar_DeepCopy_1( this_ptr);
+  AddVar_DeepCopy( this_ptr);
+  AddVar_DeepCopy_2( this_ptr);
+  AddVar_FillComponent( this_ptr);
+  AddVar_CopyComponent( this_ptr);
+  AddVar_GetActualMemorySize( this_ptr);
+  AddVar_CreateDefaultLookupTable( this_ptr);
 /* The following types are missing: vtkLookupTable
-      AddVar_SetLookupTable( this_ptr);
+  AddVar_SetLookupTable( this_ptr);
 */
 /* The following types are missing: vtkLookupTable
-      AddVar_GetLookupTable( this_ptr);
+  AddVar_GetLookupTable( this_ptr);
 */
-      AddVar_GetRange_1( this_ptr);
-      AddVar_GetRange( this_ptr);
-      AddVar_GetRange_2( this_ptr);
-      AddVar_GetRange_3( this_ptr);
-      AddVar_GetRange_4( this_ptr);
-      AddVar_GetDataTypeRange( this_ptr);
-      AddVar_GetDataTypeMin( this_ptr);
-      AddVar_GetDataTypeMax( this_ptr);
-      AddVar_GetMaxNorm( this_ptr);
+  AddVar_GetRange_1( this_ptr);
+  AddVar_GetRange( this_ptr);
+  AddVar_GetRange_2( this_ptr);
+  AddVar_GetRange_3( this_ptr);
+  AddVar_GetRange_4( this_ptr);
+  AddVar_GetDataTypeRange( this_ptr);
+  AddVar_GetDataTypeMin( this_ptr);
+  AddVar_GetDataTypeMax( this_ptr);
+  AddVar_GetMaxNorm( this_ptr);
 /* The following types are missing: vtkInformation
-      AddVar_CopyInformation( this_ptr);
+  AddVar_CopyInformation( this_ptr);
 */
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkAbstractArray
+  boost::shared_ptr<vtkAbstractArray > parent_vtkAbstractArray(  boost::dynamic_pointer_cast<vtkAbstractArray >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkAbstractArray = AMILabType<vtkAbstractArray >::CreateVarFromSmtPtr(parent_vtkAbstractArray);
+  context->AddVar("vtkAbstractArray",var_vtkAbstractArray);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkAbstractArray = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkAbstractArray);
+  context->AddDefault(obj_vtkAbstractArray->Pointer()->GetContext());
+
 };
 
 
@@ -181,7 +196,7 @@ void WrapClass_vtkDataArray::AddStaticMethods( Variables::ptr& context)
   */
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -234,9 +249,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkDataArray * res =   vtkDataArray::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkDataArray::CreateVar(res);
@@ -264,9 +285,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   int type;
   if (!get_val_param<int >(type,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<double > range_smtptr;
-  if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* range = range_smtptr.get();
+  double* range;
+  if (CheckNullVar(_p,_n))  {
+    range=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > range_smtptr;
+    if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    range = range_smtptr.get();
+  }
 
   vtkDataArray::GetDataTypeRange(type, range);
   return BasicVariable::ptr();
@@ -545,13 +572,25 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkIdList > ptIds_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(ptIds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkIdList* ptIds = ptIds_smtptr.get();
+  vtkIdList* ptIds;
+  if (CheckNullVar(_p,_n))  {
+    ptIds=(vtkIdList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkIdList > ptIds_smtptr;
+    if (!get_val_smtptr_param<vtkIdList >(ptIds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    ptIds = ptIds_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkAbstractArray > output_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractArray >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAbstractArray* output = output_smtptr.get();
+  vtkAbstractArray* output;
+  if (CheckNullVar(_p,_n))  {
+    output=(vtkAbstractArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractArray > output_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractArray >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    output = output_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTuples(ptIds, output);
   return BasicVariable::ptr();
@@ -603,9 +642,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (!get_val_param<long >(p2_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int p2 = boost::numeric_cast<long long int >(p2_long);
 
-  boost::shared_ptr<vtkAbstractArray > output_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractArray >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAbstractArray* output = output_smtptr.get();
+  vtkAbstractArray* output;
+  if (CheckNullVar(_p,_n))  {
+    output=(vtkAbstractArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractArray > output_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractArray >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    output = output_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTuples(p1, p2, output);
   return BasicVariable::ptr();
@@ -636,17 +681,35 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (!get_val_param<long >(i_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int i = boost::numeric_cast<long long int >(i_long);
 
-  boost::shared_ptr<vtkIdList > ptIndices_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(ptIndices_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkIdList* ptIndices = ptIndices_smtptr.get();
+  vtkIdList* ptIndices;
+  if (CheckNullVar(_p,_n))  {
+    ptIndices=(vtkIdList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkIdList > ptIndices_smtptr;
+    if (!get_val_smtptr_param<vtkIdList >(ptIndices_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    ptIndices = ptIndices_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkAbstractArray > source_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractArray >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAbstractArray* source = source_smtptr.get();
+  vtkAbstractArray* source;
+  if (CheckNullVar(_p,_n))  {
+    source=(vtkAbstractArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractArray > source_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractArray >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    source = source_smtptr.get();
+  }
 
-  boost::shared_ptr<double > weights_smtptr;
-  if (!get_val_smtptr_param<double >(weights_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* weights = weights_smtptr.get();
+  double* weights;
+  if (CheckNullVar(_p,_n))  {
+    weights=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > weights_smtptr;
+    if (!get_val_smtptr_param<double >(weights_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    weights = weights_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->InterpolateTuple(i, ptIndices, source, weights);
   return BasicVariable::ptr();
@@ -701,17 +764,29 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (!get_val_param<long >(id1_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int id1 = boost::numeric_cast<long long int >(id1_long);
 
-  boost::shared_ptr<vtkAbstractArray > source1_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractArray >(source1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAbstractArray* source1 = source1_smtptr.get();
+  vtkAbstractArray* source1;
+  if (CheckNullVar(_p,_n))  {
+    source1=(vtkAbstractArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractArray > source1_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractArray >(source1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    source1 = source1_smtptr.get();
+  }
 
   long id2_long;
   if (!get_val_param<long >(id2_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int id2 = boost::numeric_cast<long long int >(id2_long);
 
-  boost::shared_ptr<vtkAbstractArray > source2_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractArray >(source2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAbstractArray* source2 = source2_smtptr.get();
+  vtkAbstractArray* source2;
+  if (CheckNullVar(_p,_n))  {
+    source2=(vtkAbstractArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractArray > source2_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractArray >(source2_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    source2 = source2_smtptr.get();
+  }
 
   double t;
   if (!get_val_param<double >(t,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -1560,9 +1635,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   int compMax;
   if (!get_val_param<int >(compMax,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkDoubleArray > data_smtptr;
-  if (!get_val_smtptr_param<vtkDoubleArray >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDoubleArray* data = data_smtptr.get();
+  vtkDoubleArray* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(vtkDoubleArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDoubleArray > data_smtptr;
+    if (!get_val_smtptr_param<vtkDoubleArray >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetData(tupleMin, tupleMax, compMin, compMax, data);
   return BasicVariable::ptr();
@@ -1586,9 +1667,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkAbstractArray > aa_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractArray >(aa_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAbstractArray* aa = aa_smtptr.get();
+  vtkAbstractArray* aa;
+  if (CheckNullVar(_p,_n))  {
+    aa=(vtkAbstractArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractArray > aa_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractArray >(aa_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    aa = aa_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(aa);
   return BasicVariable::ptr();
@@ -1632,9 +1719,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkDataArray > da_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(da_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkDataArray* da = da_smtptr.get();
+  vtkDataArray* da;
+  if (CheckNullVar(_p,_n))  {
+    da=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > da_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(da_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    da = da_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(da);
   return BasicVariable::ptr();
@@ -1690,9 +1783,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   int j;
   if (!get_val_param<int >(j,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkDataArray > from_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(from_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataArray* from = from_smtptr.get();
+  vtkDataArray* from;
+  if (CheckNullVar(_p,_n))  {
+    from=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > from_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(from_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    from = from_smtptr.get();
+  }
 
   int fromComponent;
   if (!get_val_param<int >(fromComponent,_p,_n,true,false)) ClassHelpAndReturn;
@@ -1757,9 +1856,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkLookupTable > lut_smtptr;
-  if (!get_val_smtptr_param<vtkLookupTable >(lut_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkLookupTable* lut = lut_smtptr.get();
+  vtkLookupTable* lut;
+  if (CheckNullVar(_p,_n))  {
+    lut=(vtkLookupTable*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkLookupTable > lut_smtptr;
+    if (!get_val_smtptr_param<vtkLookupTable >(lut_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    lut = lut_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetLookupTable(lut);
   return BasicVariable::ptr();
@@ -1805,9 +1910,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > range_smtptr;
-  if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* range = range_smtptr.get();
+  double* range;
+  if (CheckNullVar(_p,_n))  {
+    range=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > range_smtptr;
+    if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    range = range_smtptr.get();
+  }
 
   int comp;
   if (!get_val_param<int >(comp,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -1904,9 +2015,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > range_smtptr;
-  if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* range = range_smtptr.get();
+  double* range;
+  if (CheckNullVar(_p,_n))  {
+    range=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > range_smtptr;
+    if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    range = range_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetRange(range);
   return BasicVariable::ptr();
@@ -1929,9 +2046,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > range_smtptr;
-  if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* range = range_smtptr.get();
+  double* range;
+  if (CheckNullVar(_p,_n))  {
+    range=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > range_smtptr;
+    if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    range = range_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetDataTypeRange(range);
   return BasicVariable::ptr();
@@ -2014,9 +2137,15 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkInformation > infoFrom_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(infoFrom_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkInformation* infoFrom = infoFrom_smtptr.get();
+  vtkInformation* infoFrom;
+  if (CheckNullVar(_p,_n))  {
+    infoFrom=(vtkInformation*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformation > infoFrom_smtptr;
+    if (!get_val_smtptr_param<vtkInformation >(infoFrom_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    infoFrom = infoFrom_smtptr.get();
+  }
 
   int deep = 1;
   if (!get_val_param<int >(deep,_p,_n,false,false)) ClassHelpAndReturn;

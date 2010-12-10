@@ -29,6 +29,10 @@
 
 #include "wrap_vtkVolumeProperty.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -36,8 +40,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkVolumeProperty>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkVolumeProperty::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -72,137 +76,148 @@ Variable<AMIObject>::ptr WrapClass_vtkVolumeProperty::CreateVar( vtkVolumeProper
 //----------------------------------------------------------------------
 void WrapClass_vtkVolumeProperty::AddMethods(WrapClass<vtkVolumeProperty>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_DeepCopy( this_ptr);
-      AddVar_GetMTime( this_ptr);
-      AddVar_SetIndependentComponents( this_ptr);
-      AddVar_GetIndependentComponentsMinValue( this_ptr);
-      AddVar_GetIndependentComponentsMaxValue( this_ptr);
-      AddVar_GetIndependentComponents( this_ptr);
-      AddVar_IndependentComponentsOn( this_ptr);
-      AddVar_IndependentComponentsOff( this_ptr);
-      AddVar_SetInterpolationType( this_ptr);
-      AddVar_GetInterpolationTypeMinValue( this_ptr);
-      AddVar_GetInterpolationTypeMaxValue( this_ptr);
-      AddVar_GetInterpolationType( this_ptr);
-      AddVar_SetInterpolationTypeToNearest( this_ptr);
-      AddVar_SetInterpolationTypeToLinear( this_ptr);
-      AddVar_GetInterpolationTypeAsString( this_ptr);
-      AddVar_SetComponentWeight( this_ptr);
-      AddVar_GetComponentWeight( this_ptr);
-      AddVar_SetColor_1( this_ptr);
-      AddVar_SetColor( this_ptr);
-      AddVar_SetColor_2( this_ptr);
-      AddVar_SetColor_3( this_ptr);
-      AddVar_SetColor_4( this_ptr);
-      AddVar_GetColorChannels_1( this_ptr);
-      AddVar_GetColorChannels( this_ptr);
-      AddVar_GetColorChannels_2( this_ptr);
-      AddVar_GetGrayTransferFunction_1( this_ptr);
-      AddVar_GetGrayTransferFunction( this_ptr);
-      AddVar_GetGrayTransferFunction_2( this_ptr);
-      AddVar_GetRGBTransferFunction_1( this_ptr);
-      AddVar_GetRGBTransferFunction( this_ptr);
-      AddVar_GetRGBTransferFunction_2( this_ptr);
-      AddVar_SetScalarOpacity_1( this_ptr);
-      AddVar_SetScalarOpacity( this_ptr);
-      AddVar_SetScalarOpacity_2( this_ptr);
-      AddVar_GetScalarOpacity_1( this_ptr);
-      AddVar_GetScalarOpacity( this_ptr);
-      AddVar_GetScalarOpacity_2( this_ptr);
-      AddVar_SetScalarOpacityUnitDistance_1( this_ptr);
-      AddVar_SetScalarOpacityUnitDistance( this_ptr);
-      AddVar_SetScalarOpacityUnitDistance_2( this_ptr);
-      AddVar_GetScalarOpacityUnitDistance_1( this_ptr);
-      AddVar_GetScalarOpacityUnitDistance( this_ptr);
-      AddVar_GetScalarOpacityUnitDistance_2( this_ptr);
-      AddVar_SetGradientOpacity_1( this_ptr);
-      AddVar_SetGradientOpacity( this_ptr);
-      AddVar_SetGradientOpacity_2( this_ptr);
-      AddVar_GetGradientOpacity_1( this_ptr);
-      AddVar_GetGradientOpacity( this_ptr);
-      AddVar_GetGradientOpacity_2( this_ptr);
-      AddVar_SetDisableGradientOpacity_1( this_ptr);
-      AddVar_SetDisableGradientOpacity( this_ptr);
-      AddVar_SetDisableGradientOpacity_2( this_ptr);
-      AddVar_DisableGradientOpacityOn_1( this_ptr);
-      AddVar_DisableGradientOpacityOn( this_ptr);
-      AddVar_DisableGradientOpacityOn_2( this_ptr);
-      AddVar_DisableGradientOpacityOff_1( this_ptr);
-      AddVar_DisableGradientOpacityOff( this_ptr);
-      AddVar_DisableGradientOpacityOff_2( this_ptr);
-      AddVar_GetDisableGradientOpacity_1( this_ptr);
-      AddVar_GetDisableGradientOpacity( this_ptr);
-      AddVar_GetDisableGradientOpacity_2( this_ptr);
-      AddVar_GetStoredGradientOpacity_1( this_ptr);
-      AddVar_GetStoredGradientOpacity( this_ptr);
-      AddVar_GetStoredGradientOpacity_2( this_ptr);
-      AddVar_SetShade_1( this_ptr);
-      AddVar_SetShade( this_ptr);
-      AddVar_SetShade_2( this_ptr);
-      AddVar_GetShade_1( this_ptr);
-      AddVar_GetShade( this_ptr);
-      AddVar_GetShade_2( this_ptr);
-      AddVar_ShadeOn_1( this_ptr);
-      AddVar_ShadeOn( this_ptr);
-      AddVar_ShadeOn_2( this_ptr);
-      AddVar_ShadeOff_1( this_ptr);
-      AddVar_ShadeOff( this_ptr);
-      AddVar_ShadeOff_2( this_ptr);
-      AddVar_SetAmbient_1( this_ptr);
-      AddVar_SetAmbient( this_ptr);
-      AddVar_SetAmbient_2( this_ptr);
-      AddVar_GetAmbient_1( this_ptr);
-      AddVar_GetAmbient( this_ptr);
-      AddVar_GetAmbient_2( this_ptr);
-      AddVar_SetDiffuse_1( this_ptr);
-      AddVar_SetDiffuse( this_ptr);
-      AddVar_SetDiffuse_2( this_ptr);
-      AddVar_GetDiffuse_1( this_ptr);
-      AddVar_GetDiffuse( this_ptr);
-      AddVar_GetDiffuse_2( this_ptr);
-      AddVar_SetSpecular_1( this_ptr);
-      AddVar_SetSpecular( this_ptr);
-      AddVar_SetSpecular_2( this_ptr);
-      AddVar_GetSpecular_1( this_ptr);
-      AddVar_GetSpecular( this_ptr);
-      AddVar_GetSpecular_2( this_ptr);
-      AddVar_SetSpecularPower_1( this_ptr);
-      AddVar_SetSpecularPower( this_ptr);
-      AddVar_SetSpecularPower_2( this_ptr);
-      AddVar_GetSpecularPower_1( this_ptr);
-      AddVar_GetSpecularPower( this_ptr);
-      AddVar_GetSpecularPower_2( this_ptr);
-      AddVar_UpdateMTimes( this_ptr);
-      AddVar_GetGradientOpacityMTime_1( this_ptr);
-      AddVar_GetGradientOpacityMTime( this_ptr);
-      AddVar_GetGradientOpacityMTime_2( this_ptr);
-      AddVar_GetScalarOpacityMTime_1( this_ptr);
-      AddVar_GetScalarOpacityMTime( this_ptr);
-      AddVar_GetScalarOpacityMTime_2( this_ptr);
-      AddVar_GetRGBTransferFunctionMTime_1( this_ptr);
-      AddVar_GetRGBTransferFunctionMTime( this_ptr);
-      AddVar_GetRGBTransferFunctionMTime_2( this_ptr);
-      AddVar_GetGrayTransferFunctionMTime_1( this_ptr);
-      AddVar_GetGrayTransferFunctionMTime( this_ptr);
-      AddVar_GetGrayTransferFunctionMTime_2( this_ptr);
+  AddVar_DeepCopy( this_ptr);
+  AddVar_GetMTime( this_ptr);
+  AddVar_SetIndependentComponents( this_ptr);
+  AddVar_GetIndependentComponentsMinValue( this_ptr);
+  AddVar_GetIndependentComponentsMaxValue( this_ptr);
+  AddVar_GetIndependentComponents( this_ptr);
+  AddVar_IndependentComponentsOn( this_ptr);
+  AddVar_IndependentComponentsOff( this_ptr);
+  AddVar_SetInterpolationType( this_ptr);
+  AddVar_GetInterpolationTypeMinValue( this_ptr);
+  AddVar_GetInterpolationTypeMaxValue( this_ptr);
+  AddVar_GetInterpolationType( this_ptr);
+  AddVar_SetInterpolationTypeToNearest( this_ptr);
+  AddVar_SetInterpolationTypeToLinear( this_ptr);
+  AddVar_GetInterpolationTypeAsString( this_ptr);
+  AddVar_SetComponentWeight( this_ptr);
+  AddVar_GetComponentWeight( this_ptr);
+  AddVar_SetColor_1( this_ptr);
+  AddVar_SetColor( this_ptr);
+  AddVar_SetColor_2( this_ptr);
+  AddVar_SetColor_3( this_ptr);
+  AddVar_SetColor_4( this_ptr);
+  AddVar_GetColorChannels_1( this_ptr);
+  AddVar_GetColorChannels( this_ptr);
+  AddVar_GetColorChannels_2( this_ptr);
+  AddVar_GetGrayTransferFunction_1( this_ptr);
+  AddVar_GetGrayTransferFunction( this_ptr);
+  AddVar_GetGrayTransferFunction_2( this_ptr);
+  AddVar_GetRGBTransferFunction_1( this_ptr);
+  AddVar_GetRGBTransferFunction( this_ptr);
+  AddVar_GetRGBTransferFunction_2( this_ptr);
+  AddVar_SetScalarOpacity_1( this_ptr);
+  AddVar_SetScalarOpacity( this_ptr);
+  AddVar_SetScalarOpacity_2( this_ptr);
+  AddVar_GetScalarOpacity_1( this_ptr);
+  AddVar_GetScalarOpacity( this_ptr);
+  AddVar_GetScalarOpacity_2( this_ptr);
+  AddVar_SetScalarOpacityUnitDistance_1( this_ptr);
+  AddVar_SetScalarOpacityUnitDistance( this_ptr);
+  AddVar_SetScalarOpacityUnitDistance_2( this_ptr);
+  AddVar_GetScalarOpacityUnitDistance_1( this_ptr);
+  AddVar_GetScalarOpacityUnitDistance( this_ptr);
+  AddVar_GetScalarOpacityUnitDistance_2( this_ptr);
+  AddVar_SetGradientOpacity_1( this_ptr);
+  AddVar_SetGradientOpacity( this_ptr);
+  AddVar_SetGradientOpacity_2( this_ptr);
+  AddVar_GetGradientOpacity_1( this_ptr);
+  AddVar_GetGradientOpacity( this_ptr);
+  AddVar_GetGradientOpacity_2( this_ptr);
+  AddVar_SetDisableGradientOpacity_1( this_ptr);
+  AddVar_SetDisableGradientOpacity( this_ptr);
+  AddVar_SetDisableGradientOpacity_2( this_ptr);
+  AddVar_DisableGradientOpacityOn_1( this_ptr);
+  AddVar_DisableGradientOpacityOn( this_ptr);
+  AddVar_DisableGradientOpacityOn_2( this_ptr);
+  AddVar_DisableGradientOpacityOff_1( this_ptr);
+  AddVar_DisableGradientOpacityOff( this_ptr);
+  AddVar_DisableGradientOpacityOff_2( this_ptr);
+  AddVar_GetDisableGradientOpacity_1( this_ptr);
+  AddVar_GetDisableGradientOpacity( this_ptr);
+  AddVar_GetDisableGradientOpacity_2( this_ptr);
+  AddVar_GetStoredGradientOpacity_1( this_ptr);
+  AddVar_GetStoredGradientOpacity( this_ptr);
+  AddVar_GetStoredGradientOpacity_2( this_ptr);
+  AddVar_SetShade_1( this_ptr);
+  AddVar_SetShade( this_ptr);
+  AddVar_SetShade_2( this_ptr);
+  AddVar_GetShade_1( this_ptr);
+  AddVar_GetShade( this_ptr);
+  AddVar_GetShade_2( this_ptr);
+  AddVar_ShadeOn_1( this_ptr);
+  AddVar_ShadeOn( this_ptr);
+  AddVar_ShadeOn_2( this_ptr);
+  AddVar_ShadeOff_1( this_ptr);
+  AddVar_ShadeOff( this_ptr);
+  AddVar_ShadeOff_2( this_ptr);
+  AddVar_SetAmbient_1( this_ptr);
+  AddVar_SetAmbient( this_ptr);
+  AddVar_SetAmbient_2( this_ptr);
+  AddVar_GetAmbient_1( this_ptr);
+  AddVar_GetAmbient( this_ptr);
+  AddVar_GetAmbient_2( this_ptr);
+  AddVar_SetDiffuse_1( this_ptr);
+  AddVar_SetDiffuse( this_ptr);
+  AddVar_SetDiffuse_2( this_ptr);
+  AddVar_GetDiffuse_1( this_ptr);
+  AddVar_GetDiffuse( this_ptr);
+  AddVar_GetDiffuse_2( this_ptr);
+  AddVar_SetSpecular_1( this_ptr);
+  AddVar_SetSpecular( this_ptr);
+  AddVar_SetSpecular_2( this_ptr);
+  AddVar_GetSpecular_1( this_ptr);
+  AddVar_GetSpecular( this_ptr);
+  AddVar_GetSpecular_2( this_ptr);
+  AddVar_SetSpecularPower_1( this_ptr);
+  AddVar_SetSpecularPower( this_ptr);
+  AddVar_SetSpecularPower_2( this_ptr);
+  AddVar_GetSpecularPower_1( this_ptr);
+  AddVar_GetSpecularPower( this_ptr);
+  AddVar_GetSpecularPower_2( this_ptr);
+  AddVar_UpdateMTimes( this_ptr);
+  AddVar_GetGradientOpacityMTime_1( this_ptr);
+  AddVar_GetGradientOpacityMTime( this_ptr);
+  AddVar_GetGradientOpacityMTime_2( this_ptr);
+  AddVar_GetScalarOpacityMTime_1( this_ptr);
+  AddVar_GetScalarOpacityMTime( this_ptr);
+  AddVar_GetScalarOpacityMTime_2( this_ptr);
+  AddVar_GetRGBTransferFunctionMTime_1( this_ptr);
+  AddVar_GetRGBTransferFunctionMTime( this_ptr);
+  AddVar_GetRGBTransferFunctionMTime_2( this_ptr);
+  AddVar_GetGrayTransferFunctionMTime_1( this_ptr);
+  AddVar_GetGrayTransferFunctionMTime( this_ptr);
+  AddVar_GetGrayTransferFunctionMTime_2( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -221,7 +236,7 @@ void WrapClass_vtkVolumeProperty::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkVolumeProperty::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -294,9 +309,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkVolumeProperty * res =   vtkVolumeProperty::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkVolumeProperty::CreateVar(res);
@@ -397,9 +418,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkVolumeProperty > p_smtptr;
-  if (!get_val_smtptr_param<vtkVolumeProperty >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkVolumeProperty* p = p_smtptr.get();
+  vtkVolumeProperty* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkVolumeProperty*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkVolumeProperty > p_smtptr;
+    if (!get_val_smtptr_param<vtkVolumeProperty >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(p);
   return BasicVariable::ptr();
@@ -753,9 +780,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int index;
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
-  if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPiecewiseFunction* function = function_smtptr.get();
+  vtkPiecewiseFunction* function;
+  if (CheckNullVar(_p,_n))  {
+    function=(vtkPiecewiseFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
+    if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    function = function_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetColor(index, function);
   return BasicVariable::ptr();
@@ -805,9 +838,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkPiecewiseFunction > f_smtptr;
-  if (!get_val_smtptr_param<vtkPiecewiseFunction >(f_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPiecewiseFunction* f = f_smtptr.get();
+  vtkPiecewiseFunction* f;
+  if (CheckNullVar(_p,_n))  {
+    f=(vtkPiecewiseFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPiecewiseFunction > f_smtptr;
+    if (!get_val_smtptr_param<vtkPiecewiseFunction >(f_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    f = f_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetColor(f);
   return BasicVariable::ptr();
@@ -834,9 +873,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int index;
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkColorTransferFunction > function_smtptr;
-  if (!get_val_smtptr_param<vtkColorTransferFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkColorTransferFunction* function = function_smtptr.get();
+  vtkColorTransferFunction* function;
+  if (CheckNullVar(_p,_n))  {
+    function=(vtkColorTransferFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkColorTransferFunction > function_smtptr;
+    if (!get_val_smtptr_param<vtkColorTransferFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    function = function_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetColor(index, function);
   return BasicVariable::ptr();
@@ -859,9 +904,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkColorTransferFunction > f_smtptr;
-  if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkColorTransferFunction* f = f_smtptr.get();
+  vtkColorTransferFunction* f;
+  if (CheckNullVar(_p,_n))  {
+    f=(vtkColorTransferFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkColorTransferFunction > f_smtptr;
+    if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    f = f_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetColor(f);
   return BasicVariable::ptr();
@@ -1087,9 +1138,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int index;
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
-  if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPiecewiseFunction* function = function_smtptr.get();
+  vtkPiecewiseFunction* function;
+  if (CheckNullVar(_p,_n))  {
+    function=(vtkPiecewiseFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
+    if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    function = function_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetScalarOpacity(index, function);
   return BasicVariable::ptr();
@@ -1133,9 +1190,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkPiecewiseFunction > f_smtptr;
-  if (!get_val_smtptr_param<vtkPiecewiseFunction >(f_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPiecewiseFunction* f = f_smtptr.get();
+  vtkPiecewiseFunction* f;
+  if (CheckNullVar(_p,_n))  {
+    f=(vtkPiecewiseFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPiecewiseFunction > f_smtptr;
+    if (!get_val_smtptr_param<vtkPiecewiseFunction >(f_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    f = f_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetScalarOpacity(f);
   return BasicVariable::ptr();
@@ -1367,9 +1430,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   int index;
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
-  if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPiecewiseFunction* function = function_smtptr.get();
+  vtkPiecewiseFunction* function;
+  if (CheckNullVar(_p,_n))  {
+    function=(vtkPiecewiseFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
+    if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    function = function_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetGradientOpacity(index, function);
   return BasicVariable::ptr();
@@ -1413,9 +1482,15 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
-  if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPiecewiseFunction* function = function_smtptr.get();
+  vtkPiecewiseFunction* function;
+  if (CheckNullVar(_p,_n))  {
+    function=(vtkPiecewiseFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPiecewiseFunction > function_smtptr;
+    if (!get_val_smtptr_param<vtkPiecewiseFunction >(function_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    function = function_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetGradientOpacity(function);
   return BasicVariable::ptr();

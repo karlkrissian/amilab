@@ -27,6 +27,10 @@
 
 #include "wrap_vtkScalarsToColors.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -70,44 +74,67 @@ Variable<AMIObject>::ptr WrapClass_vtkScalarsToColors::CreateVar( vtkScalarsToCo
 //----------------------------------------------------------------------
 void WrapClass_vtkScalarsToColors::AddMethods(WrapClass<vtkScalarsToColors>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_IsOpaque( this_ptr);
-      AddVar_Build( this_ptr);
-      AddVar_SetRange( this_ptr);
-      AddVar_GetColor( this_ptr);
-      AddVar_GetOpacity( this_ptr);
-      AddVar_GetLuminance( this_ptr);
-      AddVar_SetAlpha( this_ptr);
-      AddVar_GetAlpha( this_ptr);
-      AddVar_MapScalars( this_ptr);
-      AddVar_SetVectorMode( this_ptr);
-      AddVar_GetVectorMode( this_ptr);
-      AddVar_SetVectorModeToMagnitude( this_ptr);
-      AddVar_SetVectorModeToComponent( this_ptr);
-      AddVar_SetVectorComponent( this_ptr);
-      AddVar_GetVectorComponent( this_ptr);
-      AddVar_MapScalarsThroughTable_1( this_ptr);
-      AddVar_MapScalarsThroughTable( this_ptr);
-      AddVar_MapScalarsThroughTable_2( this_ptr);
-      AddVar_ConvertUnsignedCharToRGBA( this_ptr);
-      AddVar_UsingLogScale( this_ptr);
+  AddVar_IsOpaque( this_ptr);
+  AddVar_Build( this_ptr);
+  AddVar_SetRange( this_ptr);
+  AddVar_GetColor( this_ptr);
+  AddVar_GetOpacity( this_ptr);
+  AddVar_GetLuminance( this_ptr);
+  AddVar_SetAlpha( this_ptr);
+  AddVar_GetAlpha( this_ptr);
+  AddVar_MapScalars( this_ptr);
+  AddVar_SetVectorMode( this_ptr);
+  AddVar_GetVectorMode( this_ptr);
+  AddVar_SetVectorModeToMagnitude( this_ptr);
+  AddVar_SetVectorModeToComponent( this_ptr);
+  AddVar_SetVectorComponent( this_ptr);
+  AddVar_GetVectorComponent( this_ptr);
+  AddVar_MapScalarsThroughTable_1( this_ptr);
+  AddVar_MapScalarsThroughTable( this_ptr);
+  AddVar_MapScalarsThroughTable_2( this_ptr);
+  AddVar_ConvertUnsignedCharToRGBA( this_ptr);
+  AddVar_UsingLogScale( this_ptr);
 
+
+
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
 
 
   
+  AMIObject::ptr obj_VectorModes(new AMIObject);
+  obj_VectorModes->SetName("VectorModes");
+
+  BasicVariable::ptr var_MAGNITUDE = AMILabType<int >::CreateVar(0);
+  if (var_MAGNITUDE.get()) {
+    var_MAGNITUDE->Rename("MAGNITUDE");
+    obj_VectorModes->GetContext()->AddVar(var_MAGNITUDE,obj_VectorModes->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_VectorModes->GetName().c_str(),obj_VectorModes,context);
+
+
+  // Adding Bases
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -125,7 +152,7 @@ void WrapClass_vtkScalarsToColors::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkScalarsToColors::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -178,9 +205,15 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkScalarsToColors * res =   vtkScalarsToColors::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkScalarsToColors::CreateVar(res);
@@ -318,9 +351,15 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > rng_smtptr;
-  if (!get_val_smtptr_param<double >(rng_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* rng = rng_smtptr.get();
+  double* rng;
+  if (CheckNullVar(_p,_n))  {
+    rng=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > rng_smtptr;
+    if (!get_val_smtptr_param<double >(rng_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    rng = rng_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetRange(rng);
   return BasicVariable::ptr();
@@ -464,9 +503,15 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkDataArray > scalars_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataArray* scalars = scalars_smtptr.get();
+  vtkDataArray* scalars;
+  if (CheckNullVar(_p,_n))  {
+    scalars=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > scalars_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    scalars = scalars_smtptr.get();
+  }
 
   int colorMode;
   if (!get_val_param<int >(colorMode,_p,_n,true,false)) ClassHelpAndReturn;
@@ -620,13 +665,25 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkDataArray > scalars_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkDataArray* scalars = scalars_smtptr.get();
+  vtkDataArray* scalars;
+  if (CheckNullVar(_p,_n))  {
+    scalars=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > scalars_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    scalars = scalars_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > output_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* output = output_smtptr.get();
+  unsigned char* output;
+  if (CheckNullVar(_p,_n))  {
+    output=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > output_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    output = output_smtptr.get();
+  }
 
   int outputFormat;
   if (!get_val_param<int >(outputFormat,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -674,13 +731,25 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkDataArray > scalars_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkDataArray* scalars = scalars_smtptr.get();
+  vtkDataArray* scalars;
+  if (CheckNullVar(_p,_n))  {
+    scalars=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > scalars_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(scalars_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    scalars = scalars_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > output_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* output = output_smtptr.get();
+  unsigned char* output;
+  if (CheckNullVar(_p,_n))  {
+    output=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > output_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    output = output_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->MapScalarsThroughTable(scalars, output);
   return BasicVariable::ptr();
@@ -706,9 +775,15 @@ BasicVariable::ptr WrapClass_vtkScalarsToColors::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkUnsignedCharArray > colors_smtptr;
-  if (!get_val_smtptr_param<vtkUnsignedCharArray >(colors_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkUnsignedCharArray* colors = colors_smtptr.get();
+  vtkUnsignedCharArray* colors;
+  if (CheckNullVar(_p,_n))  {
+    colors=(vtkUnsignedCharArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkUnsignedCharArray > colors_smtptr;
+    if (!get_val_smtptr_param<vtkUnsignedCharArray >(colors_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    colors = colors_smtptr.get();
+  }
 
   int numComp;
   if (!get_val_param<int >(numComp,_p,_n,true,false)) ClassHelpAndReturn;

@@ -24,6 +24,10 @@
 
 #include "wrap_vtkStdString.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -60,25 +64,36 @@ Variable<AMIObject>::ptr WrapClass_vtkStdString::CreateVar( vtkStdString* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkStdString::AddMethods(WrapClass<vtkStdString>::ptr this_ptr )
 {
-  /*
-      // Add members from basic_string<char,std::char_traits<char>,std::allocator<char> >
-      WrapClass_basic_string_char_std::char_traits_char__std::allocator_char_ _::ptr parent_basic_string_char_std::char_traits_char__std::allocator_char_ _(        boost::dynamic_pointer_cast<WrapClass_basic_string_char_std::char_traits_char__std::allocator_char_ _ >(this_ptr));
-      parent_basic_string_char_std::char_traits_char__std::allocator_char_ _->AddMethods(parent_basic_string_char_std::char_traits_char__std::allocator_char_ _);
-      */
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+/*
+  // Add base parent basic_string<char,std::char_traits<char>,std::allocator<char> >
+  boost::shared_ptr<basic_string<char,std::char_traits<char>,std::allocator<char> > > parent_basic_string_char_std::char_traits_char__std::allocator_char_ _(  boost::dynamic_pointer_cast<basic_string<char,std::char_traits<char>,std::allocator<char> > >(this_ptr->GetObj()));
+  BasicVariable::ptr var_basic_string_char_std::char_traits_char__std::allocator_char_ _ = AMILabType<basic_string<char,std::char_traits<char>,std::allocator<char> > >::CreateVarFromSmtPtr(parent_basic_string_char_std::char_traits_char__std::allocator_char_ _);
+  context->AddVar("basic_string_char_std::char_traits_char__std::allocator_char_ _",var_basic_string_char_std::char_traits_char__std::allocator_char_ _);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_basic_string_char_std::char_traits_char__std::allocator_char_ _ = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_basic_string_char_std::char_traits_char__std::allocator_char_ _);
+  context->AddDefault(obj_basic_string_char_std::char_traits_char__std::allocator_char_ _->Pointer()->GetContext());
+*/
+
 };
 
 
@@ -103,7 +118,7 @@ void WrapClass_vtkStdString::AddStaticMethods( Variables::ptr& context)
   // Static methods 
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 

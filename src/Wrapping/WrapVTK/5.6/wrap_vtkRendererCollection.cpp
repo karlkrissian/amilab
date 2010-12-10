@@ -26,6 +26,10 @@
 
 #include "wrap_vtkRendererCollection.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -33,8 +37,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkRendererCollection>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkRendererCollection::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -69,31 +73,42 @@ Variable<AMIObject>::ptr WrapClass_vtkRendererCollection::CreateVar( vtkRenderer
 //----------------------------------------------------------------------
 void WrapClass_vtkRendererCollection::AddMethods(WrapClass<vtkRendererCollection>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkCollection
-      WrapClass_vtkCollection::ptr parent_vtkCollection(        boost::dynamic_pointer_cast<WrapClass_vtkCollection >(this_ptr));
-      parent_vtkCollection->AddMethods(parent_vtkCollection);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_AddItem( this_ptr);
-      AddVar_GetNextItem( this_ptr);
-      AddVar_Render( this_ptr);
-      AddVar_GetFirstRenderer( this_ptr);
+  AddVar_AddItem( this_ptr);
+  AddVar_GetNextItem( this_ptr);
+  AddVar_Render( this_ptr);
+  AddVar_GetFirstRenderer( this_ptr);
 /* The following types are missing: void
-      AddVar_GetNextRenderer( this_ptr);
+  AddVar_GetNextRenderer( this_ptr);
 */
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkCollection
+  boost::shared_ptr<vtkCollection > parent_vtkCollection(  boost::dynamic_pointer_cast<vtkCollection >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkCollection = AMILabType<vtkCollection >::CreateVarFromSmtPtr(parent_vtkCollection);
+  context->AddVar("vtkCollection",var_vtkCollection);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkCollection = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkCollection);
+  context->AddDefault(obj_vtkCollection->Pointer()->GetContext());
+
 };
 
 
@@ -112,7 +127,7 @@ void WrapClass_vtkRendererCollection::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkRendererCollection::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -185,9 +200,15 @@ BasicVariable::ptr WrapClass_vtkRendererCollection::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkRendererCollection * res =   vtkRendererCollection::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkRendererCollection::CreateVar(res);
@@ -288,9 +309,15 @@ BasicVariable::ptr WrapClass_vtkRendererCollection::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > a_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(a_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* a = a_smtptr.get();
+  vtkRenderer* a;
+  if (CheckNullVar(_p,_n))  {
+    a=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > a_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(a_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    a = a_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddItem(a);
   return BasicVariable::ptr();

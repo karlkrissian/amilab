@@ -25,6 +25,10 @@
 
 #include "wrap_vtkWindow.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -68,71 +72,82 @@ Variable<AMIObject>::ptr WrapClass_vtkWindow::CreateVar( vtkWindow* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkWindow::AddMethods(WrapClass<vtkWindow>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_GetPosition( this_ptr);
-      AddVar_SetPosition_1( this_ptr);
-      AddVar_SetPosition( this_ptr);
-      AddVar_SetPosition_2( this_ptr);
-      AddVar_GetSize( this_ptr);
-      AddVar_SetSize_1( this_ptr);
-      AddVar_SetSize( this_ptr);
-      AddVar_SetSize_2( this_ptr);
-      AddVar_GetActualSize( this_ptr);
-      AddVar_SetMapped( this_ptr);
-      AddVar_GetMapped( this_ptr);
-      AddVar_MappedOn( this_ptr);
-      AddVar_MappedOff( this_ptr);
-      AddVar_SetErase( this_ptr);
-      AddVar_GetErase( this_ptr);
-      AddVar_EraseOn( this_ptr);
-      AddVar_EraseOff( this_ptr);
-      AddVar_SetDoubleBuffer( this_ptr);
-      AddVar_GetDoubleBuffer( this_ptr);
-      AddVar_DoubleBufferOn( this_ptr);
-      AddVar_DoubleBufferOff( this_ptr);
-      AddVar_GetWindowName( this_ptr);
-      AddVar_SetWindowName( this_ptr);
-      AddVar_GetDPI( this_ptr);
-      AddVar_SetDPI( this_ptr);
-      AddVar_GetDPIMinValue( this_ptr);
-      AddVar_GetDPIMaxValue( this_ptr);
-      AddVar_SetOffScreenRendering( this_ptr);
-      AddVar_GetOffScreenRendering( this_ptr);
-      AddVar_OffScreenRenderingOn( this_ptr);
-      AddVar_OffScreenRenderingOff( this_ptr);
-      AddVar_MakeCurrent( this_ptr);
-      AddVar_SetTileScale_1( this_ptr);
-      AddVar_SetTileScale( this_ptr);
-      AddVar_SetTileScale_2( this_ptr);
-      AddVar_GetTileScale_1( this_ptr);
-      AddVar_GetTileScale( this_ptr);
-      AddVar_GetTileScale_2( this_ptr);
-      AddVar_GetTileScale_3( this_ptr);
-      AddVar_SetTileScale_3( this_ptr);
-      AddVar_SetTileViewport_1( this_ptr);
-      AddVar_SetTileViewport( this_ptr);
-      AddVar_SetTileViewport_2( this_ptr);
-      AddVar_GetTileViewport_1( this_ptr);
-      AddVar_GetTileViewport( this_ptr);
-      AddVar_GetTileViewport_2( this_ptr);
-      AddVar_GetTileViewport_3( this_ptr);
+  AddVar_GetPosition( this_ptr);
+  AddVar_SetPosition_1( this_ptr);
+  AddVar_SetPosition( this_ptr);
+  AddVar_SetPosition_2( this_ptr);
+  AddVar_GetSize( this_ptr);
+  AddVar_SetSize_1( this_ptr);
+  AddVar_SetSize( this_ptr);
+  AddVar_SetSize_2( this_ptr);
+  AddVar_GetActualSize( this_ptr);
+  AddVar_SetMapped( this_ptr);
+  AddVar_GetMapped( this_ptr);
+  AddVar_MappedOn( this_ptr);
+  AddVar_MappedOff( this_ptr);
+  AddVar_SetErase( this_ptr);
+  AddVar_GetErase( this_ptr);
+  AddVar_EraseOn( this_ptr);
+  AddVar_EraseOff( this_ptr);
+  AddVar_SetDoubleBuffer( this_ptr);
+  AddVar_GetDoubleBuffer( this_ptr);
+  AddVar_DoubleBufferOn( this_ptr);
+  AddVar_DoubleBufferOff( this_ptr);
+  AddVar_GetWindowName( this_ptr);
+  AddVar_SetWindowName( this_ptr);
+  AddVar_GetDPI( this_ptr);
+  AddVar_SetDPI( this_ptr);
+  AddVar_GetDPIMinValue( this_ptr);
+  AddVar_GetDPIMaxValue( this_ptr);
+  AddVar_SetOffScreenRendering( this_ptr);
+  AddVar_GetOffScreenRendering( this_ptr);
+  AddVar_OffScreenRenderingOn( this_ptr);
+  AddVar_OffScreenRenderingOff( this_ptr);
+  AddVar_MakeCurrent( this_ptr);
+  AddVar_SetTileScale_1( this_ptr);
+  AddVar_SetTileScale( this_ptr);
+  AddVar_SetTileScale_2( this_ptr);
+  AddVar_GetTileScale_1( this_ptr);
+  AddVar_GetTileScale( this_ptr);
+  AddVar_GetTileScale_2( this_ptr);
+  AddVar_GetTileScale_3( this_ptr);
+  AddVar_SetTileScale_3( this_ptr);
+  AddVar_SetTileViewport_1( this_ptr);
+  AddVar_SetTileViewport( this_ptr);
+  AddVar_SetTileViewport_2( this_ptr);
+  AddVar_GetTileViewport_1( this_ptr);
+  AddVar_GetTileViewport( this_ptr);
+  AddVar_GetTileViewport_2( this_ptr);
+  AddVar_GetTileViewport_3( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -150,7 +165,7 @@ void WrapClass_vtkWindow::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkWindow::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -203,9 +218,15 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkWindow * res =   vtkWindow::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkWindow::CreateVar(res);
@@ -374,9 +395,15 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > a_smtptr;
-  if (!get_val_smtptr_param<int >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* a = a_smtptr.get();
+  int* a;
+  if (CheckNullVar(_p,_n))  {
+    a=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > a_smtptr;
+    if (!get_val_smtptr_param<int >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    a = a_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPosition(a);
   return BasicVariable::ptr();
@@ -467,9 +494,15 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > a_smtptr;
-  if (!get_val_smtptr_param<int >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* a = a_smtptr.get();
+  int* a;
+  if (CheckNullVar(_p,_n))  {
+    a=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > a_smtptr;
+    if (!get_val_smtptr_param<int >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    a = a_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetSize(a);
   return BasicVariable::ptr();
@@ -1023,9 +1056,15 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* _arg = _arg_smtptr.get();
+  int* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > _arg_smtptr;
+    if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTileScale(_arg);
   return BasicVariable::ptr();
@@ -1121,9 +1160,15 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* _arg = _arg_smtptr.get();
+  int* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > _arg_smtptr;
+    if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTileScale(_arg);
   return BasicVariable::ptr();
@@ -1227,9 +1272,15 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTileViewport(_arg);
   return BasicVariable::ptr();
@@ -1335,9 +1386,15 @@ BasicVariable::ptr WrapClass_vtkWindow::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTileViewport(_arg);
   return BasicVariable::ptr();

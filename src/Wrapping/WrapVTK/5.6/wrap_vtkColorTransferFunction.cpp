@@ -25,6 +25,10 @@
 
 #include "wrap_vtkColorTransferFunction.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -32,8 +36,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkColorTransferFunction>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkColorTransferFunction::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -68,87 +72,98 @@ Variable<AMIObject>::ptr WrapClass_vtkColorTransferFunction::CreateVar( vtkColor
 //----------------------------------------------------------------------
 void WrapClass_vtkColorTransferFunction::AddMethods(WrapClass<vtkColorTransferFunction>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkScalarsToColors
-      WrapClass_vtkScalarsToColors::ptr parent_vtkScalarsToColors(        boost::dynamic_pointer_cast<WrapClass_vtkScalarsToColors >(this_ptr));
-      parent_vtkScalarsToColors->AddMethods(parent_vtkScalarsToColors);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
-      AddVar_DeepCopy( this_ptr);
-      AddVar_ShallowCopy( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
+  AddVar_DeepCopy( this_ptr);
+  AddVar_ShallowCopy( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_GetSize( this_ptr);
-      AddVar_AddRGBPoint_1( this_ptr);
-      AddVar_AddRGBPoint( this_ptr);
-      AddVar_AddRGBPoint_2( this_ptr);
-      AddVar_AddHSVPoint_1( this_ptr);
-      AddVar_AddHSVPoint( this_ptr);
-      AddVar_AddHSVPoint_2( this_ptr);
-      AddVar_RemovePoint( this_ptr);
-      AddVar_AddRGBSegment( this_ptr);
-      AddVar_AddHSVSegment( this_ptr);
-      AddVar_RemoveAllPoints( this_ptr);
-      AddVar_GetColor_1( this_ptr);
-      AddVar_GetColor( this_ptr);
-      AddVar_GetColor_2( this_ptr);
-      AddVar_GetRedValue( this_ptr);
-      AddVar_GetGreenValue( this_ptr);
-      AddVar_GetBlueValue( this_ptr);
-      AddVar_GetNodeValue( this_ptr);
-      AddVar_SetNodeValue( this_ptr);
-      AddVar_MapValue( this_ptr);
-      AddVar_GetRange_1( this_ptr);
-      AddVar_GetRange( this_ptr);
-      AddVar_GetRange_2( this_ptr);
-      AddVar_GetRange_3( this_ptr);
-      AddVar_AdjustRange( this_ptr);
-      AddVar_GetTable_1( this_ptr);
-      AddVar_GetTable( this_ptr);
-      AddVar_GetTable_2( this_ptr);
-      AddVar_GetTable_3( this_ptr);
-      AddVar_BuildFunctionFromTable( this_ptr);
-      AddVar_SetClamping( this_ptr);
-      AddVar_GetClampingMinValue( this_ptr);
-      AddVar_GetClampingMaxValue( this_ptr);
-      AddVar_GetClamping( this_ptr);
-      AddVar_ClampingOn( this_ptr);
-      AddVar_ClampingOff( this_ptr);
-      AddVar_SetColorSpace( this_ptr);
-      AddVar_GetColorSpaceMinValue( this_ptr);
-      AddVar_GetColorSpaceMaxValue( this_ptr);
-      AddVar_SetColorSpaceToRGB( this_ptr);
-      AddVar_SetColorSpaceToHSV( this_ptr);
-      AddVar_SetColorSpaceToLab( this_ptr);
-      AddVar_SetColorSpaceToDiverging( this_ptr);
-      AddVar_GetColorSpace( this_ptr);
-      AddVar_SetHSVWrap( this_ptr);
-      AddVar_GetHSVWrap( this_ptr);
-      AddVar_HSVWrapOn( this_ptr);
-      AddVar_HSVWrapOff( this_ptr);
-      AddVar_SetScale( this_ptr);
-      AddVar_SetScaleToLinear( this_ptr);
-      AddVar_SetScaleToLog10( this_ptr);
-      AddVar_GetScale( this_ptr);
-      AddVar_GetDataPointer( this_ptr);
-      AddVar_FillFromDataPointer( this_ptr);
+  AddVar_GetSize( this_ptr);
+  AddVar_AddRGBPoint_1( this_ptr);
+  AddVar_AddRGBPoint( this_ptr);
+  AddVar_AddRGBPoint_2( this_ptr);
+  AddVar_AddHSVPoint_1( this_ptr);
+  AddVar_AddHSVPoint( this_ptr);
+  AddVar_AddHSVPoint_2( this_ptr);
+  AddVar_RemovePoint( this_ptr);
+  AddVar_AddRGBSegment( this_ptr);
+  AddVar_AddHSVSegment( this_ptr);
+  AddVar_RemoveAllPoints( this_ptr);
+  AddVar_GetColor_1( this_ptr);
+  AddVar_GetColor( this_ptr);
+  AddVar_GetColor_2( this_ptr);
+  AddVar_GetRedValue( this_ptr);
+  AddVar_GetGreenValue( this_ptr);
+  AddVar_GetBlueValue( this_ptr);
+  AddVar_GetNodeValue( this_ptr);
+  AddVar_SetNodeValue( this_ptr);
+  AddVar_MapValue( this_ptr);
+  AddVar_GetRange_1( this_ptr);
+  AddVar_GetRange( this_ptr);
+  AddVar_GetRange_2( this_ptr);
+  AddVar_GetRange_3( this_ptr);
+  AddVar_AdjustRange( this_ptr);
+  AddVar_GetTable_1( this_ptr);
+  AddVar_GetTable( this_ptr);
+  AddVar_GetTable_2( this_ptr);
+  AddVar_GetTable_3( this_ptr);
+  AddVar_BuildFunctionFromTable( this_ptr);
+  AddVar_SetClamping( this_ptr);
+  AddVar_GetClampingMinValue( this_ptr);
+  AddVar_GetClampingMaxValue( this_ptr);
+  AddVar_GetClamping( this_ptr);
+  AddVar_ClampingOn( this_ptr);
+  AddVar_ClampingOff( this_ptr);
+  AddVar_SetColorSpace( this_ptr);
+  AddVar_GetColorSpaceMinValue( this_ptr);
+  AddVar_GetColorSpaceMaxValue( this_ptr);
+  AddVar_SetColorSpaceToRGB( this_ptr);
+  AddVar_SetColorSpaceToHSV( this_ptr);
+  AddVar_SetColorSpaceToLab( this_ptr);
+  AddVar_SetColorSpaceToDiverging( this_ptr);
+  AddVar_GetColorSpace( this_ptr);
+  AddVar_SetHSVWrap( this_ptr);
+  AddVar_GetHSVWrap( this_ptr);
+  AddVar_HSVWrapOn( this_ptr);
+  AddVar_HSVWrapOff( this_ptr);
+  AddVar_SetScale( this_ptr);
+  AddVar_SetScaleToLinear( this_ptr);
+  AddVar_SetScaleToLog10( this_ptr);
+  AddVar_GetScale( this_ptr);
+  AddVar_GetDataPointer( this_ptr);
+  AddVar_FillFromDataPointer( this_ptr);
 /* The following types are missing: void
-      AddVar_MapScalarsThroughTable2( this_ptr);
+  AddVar_MapScalarsThroughTable2( this_ptr);
 */
-      AddVar_SetAllowDuplicateScalars( this_ptr);
-      AddVar_GetAllowDuplicateScalars( this_ptr);
-      AddVar_AllowDuplicateScalarsOn( this_ptr);
-      AddVar_AllowDuplicateScalarsOff( this_ptr);
+  AddVar_SetAllowDuplicateScalars( this_ptr);
+  AddVar_GetAllowDuplicateScalars( this_ptr);
+  AddVar_AllowDuplicateScalarsOn( this_ptr);
+  AddVar_AllowDuplicateScalarsOff( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkScalarsToColors
+  boost::shared_ptr<vtkScalarsToColors > parent_vtkScalarsToColors(  boost::dynamic_pointer_cast<vtkScalarsToColors >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkScalarsToColors = AMILabType<vtkScalarsToColors >::CreateVarFromSmtPtr(parent_vtkScalarsToColors);
+  context->AddVar("vtkScalarsToColors",var_vtkScalarsToColors);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkScalarsToColors = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkScalarsToColors);
+  context->AddDefault(obj_vtkScalarsToColors->Pointer()->GetContext());
+
 };
 
 
@@ -167,7 +182,7 @@ void WrapClass_vtkColorTransferFunction::AddStaticMethods( Variables::ptr& conte
   WrapClass_vtkColorTransferFunction::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -240,9 +255,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkColorTransferFunction * res =   vtkColorTransferFunction::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkColorTransferFunction::CreateVar(res);
@@ -312,9 +333,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkColorTransferFunction > f_smtptr;
-  if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkColorTransferFunction* f = f_smtptr.get();
+  vtkColorTransferFunction* f;
+  if (CheckNullVar(_p,_n))  {
+    f=(vtkColorTransferFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkColorTransferFunction > f_smtptr;
+    if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    f = f_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(f);
   return BasicVariable::ptr();
@@ -337,9 +364,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkColorTransferFunction > f_smtptr;
-  if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkColorTransferFunction* f = f_smtptr.get();
+  vtkColorTransferFunction* f;
+  if (CheckNullVar(_p,_n))  {
+    f=(vtkColorTransferFunction*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkColorTransferFunction > f_smtptr;
+    if (!get_val_smtptr_param<vtkColorTransferFunction >(f_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    f = f_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ShallowCopy(f);
   return BasicVariable::ptr();
@@ -815,9 +848,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   double x;
   if (!get_val_param<double >(x,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<double > rgb_smtptr;
-  if (!get_val_smtptr_param<double >(rgb_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* rgb = rgb_smtptr.get();
+  double* rgb;
+  if (CheckNullVar(_p,_n))  {
+    rgb=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > rgb_smtptr;
+    if (!get_val_smtptr_param<double >(rgb_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    rgb = rgb_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetColor(x, rgb);
   return BasicVariable::ptr();
@@ -920,9 +959,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int index;
   if (!get_val_param<int >(index,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* val = val_smtptr.get();
+  double* val;
+  if (CheckNullVar(_p,_n))  {
+    val=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > val_smtptr;
+    if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    val = val_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->GetNodeValue(index, val);
   return AMILabType<int >::CreateVar(res);
@@ -950,9 +995,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int index;
   if (!get_val_param<int >(index,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* val = val_smtptr.get();
+  double* val;
+  if (CheckNullVar(_p,_n))  {
+    val=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > val_smtptr;
+    if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    val = val_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->SetNodeValue(index, val);
   return AMILabType<int >::CreateVar(res);
@@ -1073,9 +1124,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetRange(_arg);
   return BasicVariable::ptr();
@@ -1099,9 +1156,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > range_smtptr;
-  if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* range = range_smtptr.get();
+  double* range;
+  if (CheckNullVar(_p,_n))  {
+    range=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > range_smtptr;
+    if (!get_val_smtptr_param<double >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    range = range_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->AdjustRange(range);
   return AMILabType<int >::CreateVar(res);
@@ -1136,9 +1199,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<double > table_smtptr;
-  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* table = table_smtptr.get();
+  double* table;
+  if (CheckNullVar(_p,_n))  {
+    table=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > table_smtptr;
+    if (!get_val_smtptr_param<double >(table_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    table = table_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTable(x1, x2, n, table);
   return BasicVariable::ptr();
@@ -1197,9 +1266,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<float > table_smtptr;
-  if (!get_val_smtptr_param<float >(table_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* table = table_smtptr.get();
+  float* table;
+  if (CheckNullVar(_p,_n))  {
+    table=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > table_smtptr;
+    if (!get_val_smtptr_param<float >(table_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    table = table_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTable(x1, x2, n, table);
   return BasicVariable::ptr();
@@ -1267,9 +1342,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int size;
   if (!get_val_param<int >(size,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<double > table_smtptr;
-  if (!get_val_smtptr_param<double >(table_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* table = table_smtptr.get();
+  double* table;
+  if (CheckNullVar(_p,_n))  {
+    table=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > table_smtptr;
+    if (!get_val_smtptr_param<double >(table_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    table = table_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->BuildFunctionFromTable(x1, x2, size, table);
   return BasicVariable::ptr();
@@ -1743,9 +1824,15 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   int param0;
   if (!get_val_param<int >(param0,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<double > param1_smtptr;
-  if (!get_val_smtptr_param<double >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* param1 = param1_smtptr.get();
+  double* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > param1_smtptr;
+    if (!get_val_smtptr_param<double >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param1 = param1_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->FillFromDataPointer(param0, param1);
   return BasicVariable::ptr();
@@ -1774,13 +1861,25 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p->GetNumParam()>6) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<void > input_smtptr;
-  if (!get_val_smtptr_param<void >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  void* input = input_smtptr.get();
+  void* input;
+  if (CheckNullVar(_p,_n))  {
+    input=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > input_smtptr;
+    if (!get_val_smtptr_param<void >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    input = input_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > output_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* output = output_smtptr.get();
+  unsigned char* output;
+  if (CheckNullVar(_p,_n))  {
+    output=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > output_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(output_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    output = output_smtptr.get();
+  }
 
   int inputDataType;
   if (!get_val_param<int >(inputDataType,_p,_n,true,false)) ClassHelpAndReturn;

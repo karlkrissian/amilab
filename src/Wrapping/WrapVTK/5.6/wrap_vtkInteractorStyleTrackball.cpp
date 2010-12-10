@@ -25,6 +25,10 @@
 
 #include "wrap_vtkInteractorStyleTrackball.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -32,8 +36,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyleTrackball>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkInteractorStyleTrackball::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -68,24 +72,35 @@ Variable<AMIObject>::ptr WrapClass_vtkInteractorStyleTrackball::CreateVar( vtkIn
 //----------------------------------------------------------------------
 void WrapClass_vtkInteractorStyleTrackball::AddMethods(WrapClass<vtkInteractorStyleTrackball>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkInteractorStyleSwitch
-      WrapClass_vtkInteractorStyleSwitch::ptr parent_vtkInteractorStyleSwitch(        boost::dynamic_pointer_cast<WrapClass_vtkInteractorStyleSwitch >(this_ptr));
-      parent_vtkInteractorStyleSwitch->AddMethods(parent_vtkInteractorStyleSwitch);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkInteractorStyleSwitch
+  boost::shared_ptr<vtkInteractorStyleSwitch > parent_vtkInteractorStyleSwitch(  boost::dynamic_pointer_cast<vtkInteractorStyleSwitch >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkInteractorStyleSwitch = AMILabType<vtkInteractorStyleSwitch >::CreateVarFromSmtPtr(parent_vtkInteractorStyleSwitch);
+  context->AddVar("vtkInteractorStyleSwitch",var_vtkInteractorStyleSwitch);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkInteractorStyleSwitch = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkInteractorStyleSwitch);
+  context->AddDefault(obj_vtkInteractorStyleSwitch->Pointer()->GetContext());
+
 };
 
 
@@ -104,7 +119,7 @@ void WrapClass_vtkInteractorStyleTrackball::AddStaticMethods( Variables::ptr& co
   WrapClass_vtkInteractorStyleTrackball::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -177,9 +192,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkInteractorStyleTrackball * res =   vtkInteractorStyleTrackball::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleTrackball::CreateVar(res);

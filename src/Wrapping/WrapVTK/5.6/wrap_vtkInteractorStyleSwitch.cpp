@@ -28,6 +28,10 @@
 
 #include "wrap_vtkInteractorStyleSwitch.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -35,8 +39,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyleSwitch>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkInteractorStyleSwitch::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -71,34 +75,45 @@ Variable<AMIObject>::ptr WrapClass_vtkInteractorStyleSwitch::CreateVar( vtkInter
 //----------------------------------------------------------------------
 void WrapClass_vtkInteractorStyleSwitch::AddMethods(WrapClass<vtkInteractorStyleSwitch>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkInteractorStyle
-      WrapClass_vtkInteractorStyle::ptr parent_vtkInteractorStyle(        boost::dynamic_pointer_cast<WrapClass_vtkInteractorStyle >(this_ptr));
-      parent_vtkInteractorStyle->AddMethods(parent_vtkInteractorStyle);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_SetInteractor( this_ptr);
-      AddVar_SetAutoAdjustCameraClippingRange( this_ptr);
-      AddVar_GetCurrentStyle( this_ptr);
-      AddVar_SetCurrentStyleToJoystickActor( this_ptr);
-      AddVar_SetCurrentStyleToJoystickCamera( this_ptr);
-      AddVar_SetCurrentStyleToTrackballActor( this_ptr);
-      AddVar_SetCurrentStyleToTrackballCamera( this_ptr);
-      AddVar_OnChar( this_ptr);
-      AddVar_SetDefaultRenderer( this_ptr);
-      AddVar_SetCurrentRenderer( this_ptr);
+  AddVar_SetInteractor( this_ptr);
+  AddVar_SetAutoAdjustCameraClippingRange( this_ptr);
+  AddVar_GetCurrentStyle( this_ptr);
+  AddVar_SetCurrentStyleToJoystickActor( this_ptr);
+  AddVar_SetCurrentStyleToJoystickCamera( this_ptr);
+  AddVar_SetCurrentStyleToTrackballActor( this_ptr);
+  AddVar_SetCurrentStyleToTrackballCamera( this_ptr);
+  AddVar_OnChar( this_ptr);
+  AddVar_SetDefaultRenderer( this_ptr);
+  AddVar_SetCurrentRenderer( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkInteractorStyle
+  boost::shared_ptr<vtkInteractorStyle > parent_vtkInteractorStyle(  boost::dynamic_pointer_cast<vtkInteractorStyle >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkInteractorStyle = AMILabType<vtkInteractorStyle >::CreateVarFromSmtPtr(parent_vtkInteractorStyle);
+  context->AddVar("vtkInteractorStyle",var_vtkInteractorStyle);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkInteractorStyle = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkInteractorStyle);
+  context->AddDefault(obj_vtkInteractorStyle->Pointer()->GetContext());
+
 };
 
 
@@ -117,7 +132,7 @@ void WrapClass_vtkInteractorStyleSwitch::AddStaticMethods( Variables::ptr& conte
   WrapClass_vtkInteractorStyleSwitch::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -190,9 +205,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkInteractorStyleSwitch * res =   vtkInteractorStyleSwitch::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleSwitch::CreateVar(res);
@@ -293,9 +314,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderWindowInteractor > iren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(iren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderWindowInteractor* iren = iren_smtptr.get();
+  vtkRenderWindowInteractor* iren;
+  if (CheckNullVar(_p,_n))  {
+    iren=(vtkRenderWindowInteractor*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderWindowInteractor > iren_smtptr;
+    if (!get_val_smtptr_param<vtkRenderWindowInteractor >(iren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    iren = iren_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInteractor(iren);
   return BasicVariable::ptr();
@@ -452,9 +479,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param0 = param0_smtptr.get();
+  vtkRenderer* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param0_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetDefaultRenderer(param0);
   return BasicVariable::ptr();
@@ -477,9 +510,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param0 = param0_smtptr.get();
+  vtkRenderer* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param0_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetCurrentRenderer(param0);
   return BasicVariable::ptr();

@@ -27,6 +27,10 @@
 
 #include "wrap_vtkPlanes.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -34,8 +38,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkPlanes>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkPlanes::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -70,44 +74,55 @@ Variable<AMIObject>::ptr WrapClass_vtkPlanes::CreateVar( vtkPlanes* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkPlanes::AddMethods(WrapClass<vtkPlanes>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkImplicitFunction
-      WrapClass_vtkImplicitFunction::ptr parent_vtkImplicitFunction(        boost::dynamic_pointer_cast<WrapClass_vtkImplicitFunction >(this_ptr));
-      parent_vtkImplicitFunction->AddMethods(parent_vtkImplicitFunction);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_EvaluateFunction_1( this_ptr);
-      AddVar_EvaluateFunction( this_ptr);
-      AddVar_EvaluateFunction_2( this_ptr);
-      AddVar_EvaluateGradient( this_ptr);
-      AddVar_SetPoints( this_ptr);
-      AddVar_GetPoints( this_ptr);
-      AddVar_SetNormals( this_ptr);
-      AddVar_GetNormals( this_ptr);
-      AddVar_SetFrustumPlanes( this_ptr);
-      AddVar_SetBounds_1( this_ptr);
-      AddVar_SetBounds( this_ptr);
-      AddVar_SetBounds_2( this_ptr);
-      AddVar_GetNumberOfPlanes( this_ptr);
+  AddVar_EvaluateFunction_1( this_ptr);
+  AddVar_EvaluateFunction( this_ptr);
+  AddVar_EvaluateFunction_2( this_ptr);
+  AddVar_EvaluateGradient( this_ptr);
+  AddVar_SetPoints( this_ptr);
+  AddVar_GetPoints( this_ptr);
+  AddVar_SetNormals( this_ptr);
+  AddVar_GetNormals( this_ptr);
+  AddVar_SetFrustumPlanes( this_ptr);
+  AddVar_SetBounds_1( this_ptr);
+  AddVar_SetBounds( this_ptr);
+  AddVar_SetBounds_2( this_ptr);
+  AddVar_GetNumberOfPlanes( this_ptr);
 /* The following types are missing: vtkPlane
-      AddVar_GetPlane_1( this_ptr);
+  AddVar_GetPlane_1( this_ptr);
 */
-      AddVar_GetPlane( this_ptr);
+  AddVar_GetPlane( this_ptr);
 /* The following types are missing: vtkPlane
-      AddVar_GetPlane_2( this_ptr);
+  AddVar_GetPlane_2( this_ptr);
 */
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkImplicitFunction
+  boost::shared_ptr<vtkImplicitFunction > parent_vtkImplicitFunction(  boost::dynamic_pointer_cast<vtkImplicitFunction >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkImplicitFunction = AMILabType<vtkImplicitFunction >::CreateVarFromSmtPtr(parent_vtkImplicitFunction);
+  context->AddVar("vtkImplicitFunction",var_vtkImplicitFunction);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkImplicitFunction = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkImplicitFunction);
+  context->AddDefault(obj_vtkImplicitFunction->Pointer()->GetContext());
+
 };
 
 
@@ -126,7 +141,7 @@ void WrapClass_vtkPlanes::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkPlanes::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -199,9 +214,15 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkPlanes * res =   vtkPlanes::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkPlanes::CreateVar(res);
@@ -303,9 +324,15 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   double res =   this->_objectptr->GetObj()->EvaluateFunction(x);
   return AMILabType<double >::CreateVar(res);
@@ -383,13 +410,25 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<double > n_smtptr;
-  if (!get_val_smtptr_param<double >(n_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* n = n_smtptr.get();
+  double* n;
+  if (CheckNullVar(_p,_n))  {
+    n=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > n_smtptr;
+    if (!get_val_smtptr_param<double >(n_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    n = n_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->EvaluateGradient(x, n);
   return BasicVariable::ptr();
@@ -412,9 +451,15 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPoints > param0_smtptr;
-  if (!get_val_smtptr_param<vtkPoints >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPoints* param0 = param0_smtptr.get();
+  vtkPoints* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkPoints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPoints > param0_smtptr;
+    if (!get_val_smtptr_param<vtkPoints >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPoints(param0);
   return BasicVariable::ptr();
@@ -457,9 +502,15 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkDataArray > normals_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(normals_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataArray* normals = normals_smtptr.get();
+  vtkDataArray* normals;
+  if (CheckNullVar(_p,_n))  {
+    normals=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > normals_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(normals_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    normals = normals_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetNormals(normals);
   return BasicVariable::ptr();
@@ -502,9 +553,15 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > planes_smtptr;
-  if (!get_val_smtptr_param<double >(planes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* planes = planes_smtptr.get();
+  double* planes;
+  if (CheckNullVar(_p,_n))  {
+    planes=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > planes_smtptr;
+    if (!get_val_smtptr_param<double >(planes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    planes = planes_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetFrustumPlanes(planes);
   return BasicVariable::ptr();
@@ -527,9 +584,15 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* bounds = bounds_smtptr.get();
+  double* bounds;
+  if (CheckNullVar(_p,_n))  {
+    bounds=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > bounds_smtptr;
+    if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    bounds = bounds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetBounds(bounds);
   return BasicVariable::ptr();
@@ -683,9 +746,15 @@ BasicVariable::ptr WrapClass_vtkPlanes::
   int i;
   if (!get_val_param<int >(i,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkPlane > plane_smtptr;
-  if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPlane* plane = plane_smtptr.get();
+  vtkPlane* plane;
+  if (CheckNullVar(_p,_n))  {
+    plane=(vtkPlane*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPlane > plane_smtptr;
+    if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    plane = plane_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPlane(i, plane);
   return BasicVariable::ptr();

@@ -27,6 +27,10 @@
 
 #include "wrap_vtkPoints.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -34,8 +38,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkPoints>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkPoints::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -70,71 +74,82 @@ Variable<AMIObject>::ptr WrapClass_vtkPoints::CreateVar( vtkPoints* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkPoints::AddMethods(WrapClass<vtkPoints>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_Allocate( this_ptr);
-      AddVar_Initialize( this_ptr);
-      AddVar_SetData( this_ptr);
-      AddVar_GetData( this_ptr);
-      AddVar_GetDataType( this_ptr);
-      AddVar_SetDataType( this_ptr);
-      AddVar_SetDataTypeToBit( this_ptr);
-      AddVar_SetDataTypeToChar( this_ptr);
-      AddVar_SetDataTypeToUnsignedChar( this_ptr);
-      AddVar_SetDataTypeToShort( this_ptr);
-      AddVar_SetDataTypeToUnsignedShort( this_ptr);
-      AddVar_SetDataTypeToInt( this_ptr);
-      AddVar_SetDataTypeToUnsignedInt( this_ptr);
-      AddVar_SetDataTypeToLong( this_ptr);
-      AddVar_SetDataTypeToUnsignedLong( this_ptr);
-      AddVar_SetDataTypeToFloat( this_ptr);
-      AddVar_SetDataTypeToDouble( this_ptr);
-      AddVar_GetVoidPointer( this_ptr);
-      AddVar_Squeeze( this_ptr);
-      AddVar_Reset( this_ptr);
-      AddVar_DeepCopy( this_ptr);
-      AddVar_ShallowCopy( this_ptr);
-      AddVar_GetActualMemorySize( this_ptr);
-      AddVar_GetNumberOfPoints( this_ptr);
-      AddVar_GetPoint_1( this_ptr);
-      AddVar_GetPoint( this_ptr);
-      AddVar_GetPoint_2( this_ptr);
-      AddVar_SetPoint_1( this_ptr);
-      AddVar_SetPoint( this_ptr);
-      AddVar_SetPoint_2( this_ptr);
-      AddVar_SetPoint_3( this_ptr);
-      AddVar_InsertPoint_1( this_ptr);
-      AddVar_InsertPoint( this_ptr);
-      AddVar_InsertPoint_2( this_ptr);
-      AddVar_InsertPoint_3( this_ptr);
-      AddVar_InsertNextPoint_1( this_ptr);
-      AddVar_InsertNextPoint( this_ptr);
-      AddVar_InsertNextPoint_2( this_ptr);
-      AddVar_InsertNextPoint_3( this_ptr);
-      AddVar_SetNumberOfPoints( this_ptr);
+  AddVar_Allocate( this_ptr);
+  AddVar_Initialize( this_ptr);
+  AddVar_SetData( this_ptr);
+  AddVar_GetData( this_ptr);
+  AddVar_GetDataType( this_ptr);
+  AddVar_SetDataType( this_ptr);
+  AddVar_SetDataTypeToBit( this_ptr);
+  AddVar_SetDataTypeToChar( this_ptr);
+  AddVar_SetDataTypeToUnsignedChar( this_ptr);
+  AddVar_SetDataTypeToShort( this_ptr);
+  AddVar_SetDataTypeToUnsignedShort( this_ptr);
+  AddVar_SetDataTypeToInt( this_ptr);
+  AddVar_SetDataTypeToUnsignedInt( this_ptr);
+  AddVar_SetDataTypeToLong( this_ptr);
+  AddVar_SetDataTypeToUnsignedLong( this_ptr);
+  AddVar_SetDataTypeToFloat( this_ptr);
+  AddVar_SetDataTypeToDouble( this_ptr);
+  AddVar_GetVoidPointer( this_ptr);
+  AddVar_Squeeze( this_ptr);
+  AddVar_Reset( this_ptr);
+  AddVar_DeepCopy( this_ptr);
+  AddVar_ShallowCopy( this_ptr);
+  AddVar_GetActualMemorySize( this_ptr);
+  AddVar_GetNumberOfPoints( this_ptr);
+  AddVar_GetPoint_1( this_ptr);
+  AddVar_GetPoint( this_ptr);
+  AddVar_GetPoint_2( this_ptr);
+  AddVar_SetPoint_1( this_ptr);
+  AddVar_SetPoint( this_ptr);
+  AddVar_SetPoint_2( this_ptr);
+  AddVar_SetPoint_3( this_ptr);
+  AddVar_InsertPoint_1( this_ptr);
+  AddVar_InsertPoint( this_ptr);
+  AddVar_InsertPoint_2( this_ptr);
+  AddVar_InsertPoint_3( this_ptr);
+  AddVar_InsertNextPoint_1( this_ptr);
+  AddVar_InsertNextPoint( this_ptr);
+  AddVar_InsertNextPoint_2( this_ptr);
+  AddVar_InsertNextPoint_3( this_ptr);
+  AddVar_SetNumberOfPoints( this_ptr);
 /* The following types are missing: vtkIdList
-      AddVar_GetPoints( this_ptr);
+  AddVar_GetPoints( this_ptr);
 */
-      AddVar_ComputeBounds( this_ptr);
-      AddVar_GetBounds_1( this_ptr);
-      AddVar_GetBounds( this_ptr);
-      AddVar_GetBounds_2( this_ptr);
+  AddVar_ComputeBounds( this_ptr);
+  AddVar_GetBounds_1( this_ptr);
+  AddVar_GetBounds( this_ptr);
+  AddVar_GetBounds_2( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -155,7 +170,7 @@ void WrapClass_vtkPoints::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkPoints::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -275,9 +290,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkPoints * res =   vtkPoints::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkPoints::CreateVar(res);
@@ -427,9 +448,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkDataArray > param0_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataArray* param0 = param0_smtptr.get();
+  vtkDataArray* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > param0_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetData(param0);
   return BasicVariable::ptr();
@@ -773,9 +800,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPoints > ad_smtptr;
-  if (!get_val_smtptr_param<vtkPoints >(ad_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPoints* ad = ad_smtptr.get();
+  vtkPoints* ad;
+  if (CheckNullVar(_p,_n))  {
+    ad=(vtkPoints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPoints > ad_smtptr;
+    if (!get_val_smtptr_param<vtkPoints >(ad_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    ad = ad_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(ad);
   return BasicVariable::ptr();
@@ -798,9 +831,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPoints > ad_smtptr;
-  if (!get_val_smtptr_param<vtkPoints >(ad_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPoints* ad = ad_smtptr.get();
+  vtkPoints* ad;
+  if (CheckNullVar(_p,_n))  {
+    ad=(vtkPoints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPoints > ad_smtptr;
+    if (!get_val_smtptr_param<vtkPoints >(ad_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    ad = ad_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ShallowCopy(ad);
   return BasicVariable::ptr();
@@ -915,9 +954,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (!get_val_param<long >(id_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int id = boost::numeric_cast<long long int >(id_long);
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPoint(id, x);
   return BasicVariable::ptr();
@@ -945,9 +990,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (!get_val_param<long >(id_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int id = boost::numeric_cast<long long int >(id_long);
 
-  boost::shared_ptr<float > x_smtptr;
-  if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* x = x_smtptr.get();
+  float* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > x_smtptr;
+    if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPoint(id, x);
   return BasicVariable::ptr();
@@ -999,9 +1050,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (!get_val_param<long >(id_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int id = boost::numeric_cast<long long int >(id_long);
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPoint(id, x);
   return BasicVariable::ptr();
@@ -1066,9 +1123,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (!get_val_param<long >(id_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int id = boost::numeric_cast<long long int >(id_long);
 
-  boost::shared_ptr<float > x_smtptr;
-  if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* x = x_smtptr.get();
+  float* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > x_smtptr;
+    if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->InsertPoint(id, x);
   return BasicVariable::ptr();
@@ -1120,9 +1183,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (!get_val_param<long >(id_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int id = boost::numeric_cast<long long int >(id_long);
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->InsertPoint(id, x);
   return BasicVariable::ptr();
@@ -1183,9 +1252,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > x_smtptr;
-  if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* x = x_smtptr.get();
+  float* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > x_smtptr;
+    if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   vtkIdType res =   this->_objectptr->GetObj()->InsertNextPoint(x);
   long res_long = boost::numeric_cast<long >((unsigned int)res);
@@ -1234,9 +1309,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   vtkIdType res =   this->_objectptr->GetObj()->InsertNextPoint(x);
   long res_long = boost::numeric_cast<long >((unsigned int)res);
@@ -1321,13 +1402,25 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkIdList > ptId_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(ptId_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkIdList* ptId = ptId_smtptr.get();
+  vtkIdList* ptId;
+  if (CheckNullVar(_p,_n))  {
+    ptId=(vtkIdList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkIdList > ptId_smtptr;
+    if (!get_val_smtptr_param<vtkIdList >(ptId_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    ptId = ptId_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkPoints > fp_smtptr;
-  if (!get_val_smtptr_param<vtkPoints >(fp_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPoints* fp = fp_smtptr.get();
+  vtkPoints* fp;
+  if (CheckNullVar(_p,_n))  {
+    fp=(vtkPoints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPoints > fp_smtptr;
+    if (!get_val_smtptr_param<vtkPoints >(fp_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    fp = fp_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPoints(ptId, fp);
   return BasicVariable::ptr();
@@ -1409,9 +1502,15 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* bounds = bounds_smtptr.get();
+  double* bounds;
+  if (CheckNullVar(_p,_n))  {
+    bounds=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > bounds_smtptr;
+    if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    bounds = bounds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetBounds(bounds);
   return BasicVariable::ptr();

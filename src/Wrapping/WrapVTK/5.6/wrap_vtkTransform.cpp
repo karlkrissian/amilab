@@ -29,6 +29,10 @@
 
 #include "wrap_vtkTransform.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -36,8 +40,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkTransform>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkTransform::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -72,83 +76,94 @@ Variable<AMIObject>::ptr WrapClass_vtkTransform::CreateVar( vtkTransform* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkTransform::AddMethods(WrapClass<vtkTransform>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkLinearTransform
-      WrapClass_vtkLinearTransform::ptr parent_vtkLinearTransform(        boost::dynamic_pointer_cast<WrapClass_vtkLinearTransform >(this_ptr));
-      parent_vtkLinearTransform->AddMethods(parent_vtkLinearTransform);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_Identity( this_ptr);
-      AddVar_Inverse( this_ptr);
-      AddVar_Translate_1( this_ptr);
-      AddVar_Translate( this_ptr);
-      AddVar_Translate_2( this_ptr);
-      AddVar_Translate_3( this_ptr);
-      AddVar_RotateWXYZ_1( this_ptr);
-      AddVar_RotateWXYZ( this_ptr);
-      AddVar_RotateWXYZ_2( this_ptr);
-      AddVar_RotateWXYZ_3( this_ptr);
-      AddVar_RotateX( this_ptr);
-      AddVar_RotateY( this_ptr);
-      AddVar_RotateZ( this_ptr);
-      AddVar_Scale_1( this_ptr);
-      AddVar_Scale( this_ptr);
-      AddVar_Scale_2( this_ptr);
-      AddVar_Scale_3( this_ptr);
-      AddVar_SetMatrix_1( this_ptr);
-      AddVar_SetMatrix( this_ptr);
-      AddVar_SetMatrix_2( this_ptr);
-      AddVar_Concatenate_1( this_ptr);
-      AddVar_Concatenate( this_ptr);
-      AddVar_Concatenate_2( this_ptr);
-      AddVar_Concatenate_3( this_ptr);
-      AddVar_PreMultiply( this_ptr);
-      AddVar_PostMultiply( this_ptr);
-      AddVar_GetNumberOfConcatenatedTransforms( this_ptr);
-      AddVar_GetConcatenatedTransform( this_ptr);
-      AddVar_GetOrientation_1( this_ptr);
-      AddVar_GetOrientation( this_ptr);
-      AddVar_GetOrientation_2( this_ptr);
-      AddVar_GetOrientation_3( this_ptr);
-      AddVar_GetOrientationWXYZ_1( this_ptr);
-      AddVar_GetOrientationWXYZ( this_ptr);
-      AddVar_GetOrientationWXYZ_2( this_ptr);
-      AddVar_GetOrientationWXYZ_3( this_ptr);
-      AddVar_GetPosition_1( this_ptr);
-      AddVar_GetPosition( this_ptr);
-      AddVar_GetPosition_2( this_ptr);
-      AddVar_GetPosition_3( this_ptr);
-      AddVar_GetScale_1( this_ptr);
-      AddVar_GetScale( this_ptr);
-      AddVar_GetScale_2( this_ptr);
-      AddVar_GetScale_3( this_ptr);
-      AddVar_GetInverse_1( this_ptr);
-      AddVar_GetTranspose( this_ptr);
-      AddVar_SetInput( this_ptr);
-      AddVar_GetInput( this_ptr);
-      AddVar_GetInverseFlag( this_ptr);
-      AddVar_Push( this_ptr);
-      AddVar_Pop( this_ptr);
-      AddVar_CircuitCheck( this_ptr);
-      AddVar_GetInverse( this_ptr);
-      AddVar_GetInverse_2( this_ptr);
-      AddVar_MakeTransform( this_ptr);
-      AddVar_GetMTime( this_ptr);
-      AddVar_MultiplyPoint_1( this_ptr);
-      AddVar_MultiplyPoint( this_ptr);
-      AddVar_MultiplyPoint_2( this_ptr);
+  AddVar_Identity( this_ptr);
+  AddVar_Inverse( this_ptr);
+  AddVar_Translate_1( this_ptr);
+  AddVar_Translate( this_ptr);
+  AddVar_Translate_2( this_ptr);
+  AddVar_Translate_3( this_ptr);
+  AddVar_RotateWXYZ_1( this_ptr);
+  AddVar_RotateWXYZ( this_ptr);
+  AddVar_RotateWXYZ_2( this_ptr);
+  AddVar_RotateWXYZ_3( this_ptr);
+  AddVar_RotateX( this_ptr);
+  AddVar_RotateY( this_ptr);
+  AddVar_RotateZ( this_ptr);
+  AddVar_Scale_1( this_ptr);
+  AddVar_Scale( this_ptr);
+  AddVar_Scale_2( this_ptr);
+  AddVar_Scale_3( this_ptr);
+  AddVar_SetMatrix_1( this_ptr);
+  AddVar_SetMatrix( this_ptr);
+  AddVar_SetMatrix_2( this_ptr);
+  AddVar_Concatenate_1( this_ptr);
+  AddVar_Concatenate( this_ptr);
+  AddVar_Concatenate_2( this_ptr);
+  AddVar_Concatenate_3( this_ptr);
+  AddVar_PreMultiply( this_ptr);
+  AddVar_PostMultiply( this_ptr);
+  AddVar_GetNumberOfConcatenatedTransforms( this_ptr);
+  AddVar_GetConcatenatedTransform( this_ptr);
+  AddVar_GetOrientation_1( this_ptr);
+  AddVar_GetOrientation( this_ptr);
+  AddVar_GetOrientation_2( this_ptr);
+  AddVar_GetOrientation_3( this_ptr);
+  AddVar_GetOrientationWXYZ_1( this_ptr);
+  AddVar_GetOrientationWXYZ( this_ptr);
+  AddVar_GetOrientationWXYZ_2( this_ptr);
+  AddVar_GetOrientationWXYZ_3( this_ptr);
+  AddVar_GetPosition_1( this_ptr);
+  AddVar_GetPosition( this_ptr);
+  AddVar_GetPosition_2( this_ptr);
+  AddVar_GetPosition_3( this_ptr);
+  AddVar_GetScale_1( this_ptr);
+  AddVar_GetScale( this_ptr);
+  AddVar_GetScale_2( this_ptr);
+  AddVar_GetScale_3( this_ptr);
+  AddVar_GetInverse_1( this_ptr);
+  AddVar_GetTranspose( this_ptr);
+  AddVar_SetInput( this_ptr);
+  AddVar_GetInput( this_ptr);
+  AddVar_GetInverseFlag( this_ptr);
+  AddVar_Push( this_ptr);
+  AddVar_Pop( this_ptr);
+  AddVar_CircuitCheck( this_ptr);
+  AddVar_GetInverse( this_ptr);
+  AddVar_GetInverse_2( this_ptr);
+  AddVar_MakeTransform( this_ptr);
+  AddVar_GetMTime( this_ptr);
+  AddVar_MultiplyPoint_1( this_ptr);
+  AddVar_MultiplyPoint( this_ptr);
+  AddVar_MultiplyPoint_2( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkLinearTransform
+  boost::shared_ptr<vtkLinearTransform > parent_vtkLinearTransform(  boost::dynamic_pointer_cast<vtkLinearTransform >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkLinearTransform = AMILabType<vtkLinearTransform >::CreateVarFromSmtPtr(parent_vtkLinearTransform);
+  context->AddVar("vtkLinearTransform",var_vtkLinearTransform);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkLinearTransform = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkLinearTransform);
+  context->AddDefault(obj_vtkLinearTransform->Pointer()->GetContext());
+
 };
 
 
@@ -168,7 +183,7 @@ void WrapClass_vtkTransform::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkTransform::AddVar_GetOrientation(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -241,9 +256,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkTransform * res =   vtkTransform::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkTransform::CreateVar(res);
@@ -268,13 +289,25 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > orient_smtptr;
-  if (!get_val_smtptr_param<double >(orient_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* orient = orient_smtptr.get();
+  double* orient;
+  if (CheckNullVar(_p,_n))  {
+    orient=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > orient_smtptr;
+    if (!get_val_smtptr_param<double >(orient_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    orient = orient_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkMatrix4x4 > matrix_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkMatrix4x4* matrix = matrix_smtptr.get();
+  vtkMatrix4x4* matrix;
+  if (CheckNullVar(_p,_n))  {
+    matrix=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > matrix_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    matrix = matrix_smtptr.get();
+  }
 
   vtkTransform::GetOrientation(orient, matrix);
   return BasicVariable::ptr();
@@ -466,9 +499,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Translate(x);
   return BasicVariable::ptr();
@@ -491,9 +530,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > x_smtptr;
-  if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* x = x_smtptr.get();
+  float* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > x_smtptr;
+    if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Translate(x);
   return BasicVariable::ptr();
@@ -580,9 +625,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   double angle;
   if (!get_val_param<double >(angle,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<double > axis_smtptr;
-  if (!get_val_smtptr_param<double >(axis_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* axis = axis_smtptr.get();
+  double* axis;
+  if (CheckNullVar(_p,_n))  {
+    axis=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > axis_smtptr;
+    if (!get_val_smtptr_param<double >(axis_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    axis = axis_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RotateWXYZ(angle, axis);
   return BasicVariable::ptr();
@@ -609,9 +660,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   double angle;
   if (!get_val_param<double >(angle,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<float > axis_smtptr;
-  if (!get_val_smtptr_param<float >(axis_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* axis = axis_smtptr.get();
+  float* axis;
+  if (CheckNullVar(_p,_n))  {
+    axis=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > axis_smtptr;
+    if (!get_val_smtptr_param<float >(axis_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    axis = axis_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RotateWXYZ(angle, axis);
   return BasicVariable::ptr();
@@ -762,9 +819,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > s_smtptr;
-  if (!get_val_smtptr_param<double >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* s = s_smtptr.get();
+  double* s;
+  if (CheckNullVar(_p,_n))  {
+    s=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > s_smtptr;
+    if (!get_val_smtptr_param<double >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    s = s_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Scale(s);
   return BasicVariable::ptr();
@@ -787,9 +850,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > s_smtptr;
-  if (!get_val_smtptr_param<float >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* s = s_smtptr.get();
+  float* s;
+  if (CheckNullVar(_p,_n))  {
+    s=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > s_smtptr;
+    if (!get_val_smtptr_param<float >(s_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    s = s_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Scale(s);
   return BasicVariable::ptr();
@@ -812,9 +881,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > matrix_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* matrix = matrix_smtptr.get();
+  vtkMatrix4x4* matrix;
+  if (CheckNullVar(_p,_n))  {
+    matrix=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > matrix_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    matrix = matrix_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetMatrix(matrix);
   return BasicVariable::ptr();
@@ -858,9 +933,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > elements_smtptr;
-  if (!get_val_smtptr_param<double >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* elements = elements_smtptr.get();
+  double* elements;
+  if (CheckNullVar(_p,_n))  {
+    elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > elements_smtptr;
+    if (!get_val_smtptr_param<double >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    elements = elements_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetMatrix(elements);
   return BasicVariable::ptr();
@@ -883,9 +964,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > matrix_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* matrix = matrix_smtptr.get();
+  vtkMatrix4x4* matrix;
+  if (CheckNullVar(_p,_n))  {
+    matrix=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > matrix_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(matrix_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    matrix = matrix_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Concatenate(matrix);
   return BasicVariable::ptr();
@@ -932,9 +1019,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > elements_smtptr;
-  if (!get_val_smtptr_param<double >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* elements = elements_smtptr.get();
+  double* elements;
+  if (CheckNullVar(_p,_n))  {
+    elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > elements_smtptr;
+    if (!get_val_smtptr_param<double >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    elements = elements_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Concatenate(elements);
   return BasicVariable::ptr();
@@ -957,9 +1050,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkLinearTransform > transform_smtptr;
-  if (!get_val_smtptr_param<vtkLinearTransform >(transform_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkLinearTransform* transform = transform_smtptr.get();
+  vtkLinearTransform* transform;
+  if (CheckNullVar(_p,_n))  {
+    transform=(vtkLinearTransform*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkLinearTransform > transform_smtptr;
+    if (!get_val_smtptr_param<vtkLinearTransform >(transform_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    transform = transform_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Concatenate(transform);
   return BasicVariable::ptr();
@@ -1063,9 +1162,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > orient_smtptr;
-  if (!get_val_smtptr_param<double >(orient_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* orient = orient_smtptr.get();
+  double* orient;
+  if (CheckNullVar(_p,_n))  {
+    orient=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > orient_smtptr;
+    if (!get_val_smtptr_param<double >(orient_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    orient = orient_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetOrientation(orient);
   return BasicVariable::ptr();
@@ -1112,9 +1217,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > orient_smtptr;
-  if (!get_val_smtptr_param<float >(orient_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* orient = orient_smtptr.get();
+  float* orient;
+  if (CheckNullVar(_p,_n))  {
+    orient=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > orient_smtptr;
+    if (!get_val_smtptr_param<float >(orient_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    orient = orient_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetOrientation(orient);
   return BasicVariable::ptr();
@@ -1156,9 +1267,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > wxyz_smtptr;
-  if (!get_val_smtptr_param<double >(wxyz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* wxyz = wxyz_smtptr.get();
+  double* wxyz;
+  if (CheckNullVar(_p,_n))  {
+    wxyz=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > wxyz_smtptr;
+    if (!get_val_smtptr_param<double >(wxyz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    wxyz = wxyz_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetOrientationWXYZ(wxyz);
   return BasicVariable::ptr();
@@ -1205,9 +1322,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > wxyz_smtptr;
-  if (!get_val_smtptr_param<float >(wxyz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* wxyz = wxyz_smtptr.get();
+  float* wxyz;
+  if (CheckNullVar(_p,_n))  {
+    wxyz=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > wxyz_smtptr;
+    if (!get_val_smtptr_param<float >(wxyz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    wxyz = wxyz_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetOrientationWXYZ(wxyz);
   return BasicVariable::ptr();
@@ -1249,9 +1372,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > pos_smtptr;
-  if (!get_val_smtptr_param<double >(pos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* pos = pos_smtptr.get();
+  double* pos;
+  if (CheckNullVar(_p,_n))  {
+    pos=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > pos_smtptr;
+    if (!get_val_smtptr_param<double >(pos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pos = pos_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPosition(pos);
   return BasicVariable::ptr();
@@ -1298,9 +1427,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > pos_smtptr;
-  if (!get_val_smtptr_param<float >(pos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* pos = pos_smtptr.get();
+  float* pos;
+  if (CheckNullVar(_p,_n))  {
+    pos=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > pos_smtptr;
+    if (!get_val_smtptr_param<float >(pos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pos = pos_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPosition(pos);
   return BasicVariable::ptr();
@@ -1342,9 +1477,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > scale_smtptr;
-  if (!get_val_smtptr_param<double >(scale_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* scale = scale_smtptr.get();
+  double* scale;
+  if (CheckNullVar(_p,_n))  {
+    scale=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > scale_smtptr;
+    if (!get_val_smtptr_param<double >(scale_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    scale = scale_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetScale(scale);
   return BasicVariable::ptr();
@@ -1391,9 +1532,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > scale_smtptr;
-  if (!get_val_smtptr_param<float >(scale_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* scale = scale_smtptr.get();
+  float* scale;
+  if (CheckNullVar(_p,_n))  {
+    scale=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > scale_smtptr;
+    if (!get_val_smtptr_param<float >(scale_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    scale = scale_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetScale(scale);
   return BasicVariable::ptr();
@@ -1435,9 +1582,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > inverse_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(inverse_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* inverse = inverse_smtptr.get();
+  vtkMatrix4x4* inverse;
+  if (CheckNullVar(_p,_n))  {
+    inverse=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > inverse_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(inverse_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    inverse = inverse_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetInverse(inverse);
   return BasicVariable::ptr();
@@ -1460,9 +1613,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > transpose_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(transpose_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkMatrix4x4* transpose = transpose_smtptr.get();
+  vtkMatrix4x4* transpose;
+  if (CheckNullVar(_p,_n))  {
+    transpose=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > transpose_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(transpose_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    transpose = transpose_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTranspose(transpose);
   return BasicVariable::ptr();
@@ -1485,9 +1644,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkLinearTransform > input_smtptr;
-  if (!get_val_smtptr_param<vtkLinearTransform >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkLinearTransform* input = input_smtptr.get();
+  vtkLinearTransform* input;
+  if (CheckNullVar(_p,_n))  {
+    input=(vtkLinearTransform*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkLinearTransform > input_smtptr;
+    if (!get_val_smtptr_param<vtkLinearTransform >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    input = input_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInput(input);
   return BasicVariable::ptr();
@@ -1586,9 +1751,15 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkAbstractTransform > transform_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractTransform >(transform_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkAbstractTransform* transform = transform_smtptr.get();
+  vtkAbstractTransform* transform;
+  if (CheckNullVar(_p,_n))  {
+    transform=(vtkAbstractTransform*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractTransform > transform_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractTransform >(transform_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    transform = transform_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->CircuitCheck(transform);
   return AMILabType<int >::CreateVar(res);
@@ -1693,13 +1864,25 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > in_smtptr;
-  if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* in = in_smtptr.get();
+  float* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > in_smtptr;
+    if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<float > out_smtptr;
-  if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* out = out_smtptr.get();
+  float* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > out_smtptr;
+    if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->MultiplyPoint(in, out);
   return BasicVariable::ptr();
@@ -1744,13 +1927,25 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > in_smtptr;
-  if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* in = in_smtptr.get();
+  double* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > in_smtptr;
+    if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<double > out_smtptr;
-  if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* out = out_smtptr.get();
+  double* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > out_smtptr;
+    if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->MultiplyPoint(in, out);
   return BasicVariable::ptr();

@@ -25,6 +25,10 @@
 
 #include "wrap_vtkAbstractMapper3D.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -68,31 +72,42 @@ Variable<AMIObject>::ptr WrapClass_vtkAbstractMapper3D::CreateVar( vtkAbstractMa
 //----------------------------------------------------------------------
 void WrapClass_vtkAbstractMapper3D::AddMethods(WrapClass<vtkAbstractMapper3D>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkAbstractMapper
-      WrapClass_vtkAbstractMapper::ptr parent_vtkAbstractMapper(        boost::dynamic_pointer_cast<WrapClass_vtkAbstractMapper >(this_ptr));
-      parent_vtkAbstractMapper->AddMethods(parent_vtkAbstractMapper);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_GetBounds( this_ptr);
-      AddVar_GetCenter_1( this_ptr);
-      AddVar_GetCenter( this_ptr);
-      AddVar_GetCenter_2( this_ptr);
-      AddVar_GetLength( this_ptr);
-      AddVar_IsARayCastMapper( this_ptr);
-      AddVar_IsARenderIntoImageMapper( this_ptr);
+  AddVar_GetBounds( this_ptr);
+  AddVar_GetCenter_1( this_ptr);
+  AddVar_GetCenter( this_ptr);
+  AddVar_GetCenter_2( this_ptr);
+  AddVar_GetLength( this_ptr);
+  AddVar_IsARayCastMapper( this_ptr);
+  AddVar_IsARenderIntoImageMapper( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkAbstractMapper
+  boost::shared_ptr<vtkAbstractMapper > parent_vtkAbstractMapper(  boost::dynamic_pointer_cast<vtkAbstractMapper >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkAbstractMapper = AMILabType<vtkAbstractMapper >::CreateVarFromSmtPtr(parent_vtkAbstractMapper);
+  context->AddVar("vtkAbstractMapper",var_vtkAbstractMapper);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkAbstractMapper = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkAbstractMapper);
+  context->AddDefault(obj_vtkAbstractMapper->Pointer()->GetContext());
+
 };
 
 
@@ -110,7 +125,7 @@ void WrapClass_vtkAbstractMapper3D::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkAbstractMapper3D::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -163,9 +178,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper3D::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkAbstractMapper3D * res =   vtkAbstractMapper3D::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkAbstractMapper3D::CreateVar(res);
@@ -266,9 +287,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper3D::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* bounds = bounds_smtptr.get();
+  double* bounds;
+  if (CheckNullVar(_p,_n))  {
+    bounds=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > bounds_smtptr;
+    if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    bounds = bounds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetBounds(bounds);
   return BasicVariable::ptr();
@@ -331,9 +358,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper3D::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > center_smtptr;
-  if (!get_val_smtptr_param<double >(center_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* center = center_smtptr.get();
+  double* center;
+  if (CheckNullVar(_p,_n))  {
+    center=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > center_smtptr;
+    if (!get_val_smtptr_param<double >(center_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    center = center_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetCenter(center);
   return BasicVariable::ptr();

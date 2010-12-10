@@ -26,6 +26,10 @@
 
 #include "wrap_vtkMatrix4x4.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -33,8 +37,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkMatrix4x4>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkMatrix4x4::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -69,70 +73,78 @@ Variable<AMIObject>::ptr WrapClass_vtkMatrix4x4::CreateVar( vtkMatrix4x4* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkMatrix4x4::AddMethods(WrapClass<vtkMatrix4x4>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_DeepCopy_1( this_ptr);
-      AddVar_DeepCopy( this_ptr);
-      AddVar_DeepCopy_2( this_ptr);
-      AddVar_Zero( this_ptr);
-      AddVar_Identity( this_ptr);
-      AddVar_Invert_1( this_ptr);
-      AddVar_Transpose_1( this_ptr);
-      AddVar_MultiplyPoint_1( this_ptr);
-      AddVar_MultiplyPoint( this_ptr);
-      AddVar_MultiplyPoint_2( this_ptr);
-      AddVar_MultiplyPoint_3( this_ptr);
-      AddVar_MultiplyFloatPoint( this_ptr);
-      AddVar_MultiplyDoublePoint( this_ptr);
-      AddVar_Adjoint_1( this_ptr);
-      AddVar_Determinant_1( this_ptr);
-      AddVar_SetElement( this_ptr);
-      AddVar_GetElement( this_ptr);
-      AddVar_Adjoint( this_ptr);
-      AddVar_Adjoint_2( this_ptr);
-      AddVar_Determinant( this_ptr);
-      AddVar_Determinant_2( this_ptr);
-      AddVar_Determinant_3( this_ptr);
-      AddVar_Invert( this_ptr);
-      AddVar_Invert_2( this_ptr);
-      AddVar_Transpose( this_ptr);
-      AddVar_Transpose_2( this_ptr);
+  AddVar_DeepCopy_1( this_ptr);
+  AddVar_DeepCopy( this_ptr);
+  AddVar_DeepCopy_2( this_ptr);
+  AddVar_Zero( this_ptr);
+  AddVar_Identity( this_ptr);
+  AddVar_Invert_1( this_ptr);
+  AddVar_Transpose_1( this_ptr);
+  AddVar_MultiplyPoint_1( this_ptr);
+  AddVar_MultiplyPoint( this_ptr);
+  AddVar_MultiplyPoint_2( this_ptr);
+  AddVar_MultiplyPoint_3( this_ptr);
+  AddVar_MultiplyFloatPoint( this_ptr);
+  AddVar_MultiplyDoublePoint( this_ptr);
+  AddVar_Adjoint_1( this_ptr);
+  AddVar_Determinant_1( this_ptr);
+  AddVar_SetElement( this_ptr);
+  AddVar_GetElement( this_ptr);
+  AddVar_Adjoint( this_ptr);
+  AddVar_Adjoint_2( this_ptr);
+  AddVar_Determinant( this_ptr);
+  AddVar_Determinant_2( this_ptr);
+  AddVar_Determinant_3( this_ptr);
+  AddVar_Invert( this_ptr);
+  AddVar_Invert_2( this_ptr);
+  AddVar_Transpose( this_ptr);
+  AddVar_Transpose_2( this_ptr);
 
-      // Adding operators
-      AddVar___at___1( this_ptr);
-      AddVar___at__( this_ptr);
-      AddVar___at___2( this_ptr);
+  // Adding operators
+  AddVar___at___1( this_ptr);
+  AddVar___at__( this_ptr);
+  AddVar___at___2( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* type not available
-      // Adding public member Element
-      boost::shared_ptr< > var_Element_ptr(&GetObj()->Element, smartpointer_nodeleter< >());
-      if (var_Element_ptr.get()) {
-        BasicVariable::ptr var_Element = AMILabType< >::CreateVarFromSmtPtr(var_Element_ptr);
-        if (var_Element.get()) {
-          var_Element->Rename("Element");
-          context->AddVar(var_Element,context);
-        }
-      }
-      */
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* ArrayType not implemented
+  // Adding public member Element
+  boost::shared_ptr<double > var_Element_ptr(&GetObj()->Element, smartpointer_nodeleter<double >());
+  if (var_Element_ptr.get()) {
+    BasicVariable::ptr var_Element = AMILabType<double >::CreateVarFromSmtPtr(var_Element_ptr);
+    if (var_Element.get()) {
+      var_Element->Rename("Element");
+      context->AddVar(var_Element,context);
+    }
+  }
+  */
+
+
+  
+
+
+  // Adding Bases
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
 
 };
 
@@ -174,7 +186,7 @@ void WrapClass_vtkMatrix4x4::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkMatrix4x4::AddVar_PointMultiply_2(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -247,9 +259,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkMatrix4x4 * res =   vtkMatrix4x4::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
@@ -274,13 +292,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    Elements = Elements_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkMatrix4x4 > source_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* source = source_smtptr.get();
+  vtkMatrix4x4* source;
+  if (CheckNullVar(_p,_n))  {
+    source=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > source_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    source = source_smtptr.get();
+  }
 
   vtkMatrix4x4::DeepCopy(Elements, source);
   return BasicVariable::ptr();
@@ -325,13 +355,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    Elements = Elements_smtptr.get();
+  }
 
-  boost::shared_ptr<double > newElements_smtptr;
-  if (!get_val_smtptr_param<double >(newElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* newElements = newElements_smtptr.get();
+  double* newElements;
+  if (CheckNullVar(_p,_n))  {
+    newElements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > newElements_smtptr;
+    if (!get_val_smtptr_param<double >(newElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    newElements = newElements_smtptr.get();
+  }
 
   vtkMatrix4x4::DeepCopy(Elements, newElements);
   return BasicVariable::ptr();
@@ -354,9 +396,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    Elements = Elements_smtptr.get();
+  }
 
   vtkMatrix4x4::Zero(Elements);
   return BasicVariable::ptr();
@@ -379,9 +427,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    Elements = Elements_smtptr.get();
+  }
 
   vtkMatrix4x4::Identity(Elements);
   return BasicVariable::ptr();
@@ -405,13 +459,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > in_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* in = in_smtptr.get();
+  vtkMatrix4x4* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > in_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkMatrix4x4 > out_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* out = out_smtptr.get();
+  vtkMatrix4x4* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > out_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   vtkMatrix4x4::Invert(in, out);
   return BasicVariable::ptr();
@@ -456,13 +522,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > inElements_smtptr;
-  if (!get_val_smtptr_param<double >(inElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* inElements = inElements_smtptr.get();
+  double* inElements;
+  if (CheckNullVar(_p,_n))  {
+    inElements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > inElements_smtptr;
+    if (!get_val_smtptr_param<double >(inElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    inElements = inElements_smtptr.get();
+  }
 
-  boost::shared_ptr<double > outElements_smtptr;
-  if (!get_val_smtptr_param<double >(outElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* outElements = outElements_smtptr.get();
+  double* outElements;
+  if (CheckNullVar(_p,_n))  {
+    outElements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > outElements_smtptr;
+    if (!get_val_smtptr_param<double >(outElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    outElements = outElements_smtptr.get();
+  }
 
   vtkMatrix4x4::Invert(inElements, outElements);
   return BasicVariable::ptr();
@@ -486,13 +564,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > in_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* in = in_smtptr.get();
+  vtkMatrix4x4* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > in_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkMatrix4x4 > out_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* out = out_smtptr.get();
+  vtkMatrix4x4* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > out_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   vtkMatrix4x4::Transpose(in, out);
   return BasicVariable::ptr();
@@ -537,13 +627,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > inElements_smtptr;
-  if (!get_val_smtptr_param<double >(inElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* inElements = inElements_smtptr.get();
+  double* inElements;
+  if (CheckNullVar(_p,_n))  {
+    inElements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > inElements_smtptr;
+    if (!get_val_smtptr_param<double >(inElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    inElements = inElements_smtptr.get();
+  }
 
-  boost::shared_ptr<double > outElements_smtptr;
-  if (!get_val_smtptr_param<double >(outElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* outElements = outElements_smtptr.get();
+  double* outElements;
+  if (CheckNullVar(_p,_n))  {
+    outElements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > outElements_smtptr;
+    if (!get_val_smtptr_param<double >(outElements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    outElements = outElements_smtptr.get();
+  }
 
   vtkMatrix4x4::Transpose(inElements, outElements);
   return BasicVariable::ptr();
@@ -568,17 +670,35 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    Elements = Elements_smtptr.get();
+  }
 
-  boost::shared_ptr<float > in_smtptr;
-  if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* in = in_smtptr.get();
+  float* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > in_smtptr;
+    if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<float > out_smtptr;
-  if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* out = out_smtptr.get();
+  float* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > out_smtptr;
+    if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   vtkMatrix4x4::MultiplyPoint(Elements, in, out);
   return BasicVariable::ptr();
@@ -624,17 +744,35 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    Elements = Elements_smtptr.get();
+  }
 
-  boost::shared_ptr<double > in_smtptr;
-  if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* in = in_smtptr.get();
+  double* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > in_smtptr;
+    if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<double > out_smtptr;
-  if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* out = out_smtptr.get();
+  double* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > out_smtptr;
+    if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   vtkMatrix4x4::MultiplyPoint(Elements, in, out);
   return BasicVariable::ptr();
@@ -659,17 +797,35 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > a_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* a = a_smtptr.get();
+  vtkMatrix4x4* a;
+  if (CheckNullVar(_p,_n))  {
+    a=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > a_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    a = a_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkMatrix4x4 > b_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(b_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* b = b_smtptr.get();
+  vtkMatrix4x4* b;
+  if (CheckNullVar(_p,_n))  {
+    b=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > b_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(b_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    b = b_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkMatrix4x4 > c_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(c_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* c = c_smtptr.get();
+  vtkMatrix4x4* c;
+  if (CheckNullVar(_p,_n))  {
+    c=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > c_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(c_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    c = c_smtptr.get();
+  }
 
   vtkMatrix4x4::Multiply4x4(a, b, c);
   return BasicVariable::ptr();
@@ -715,17 +871,35 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* a = a_smtptr.get();
+  double* a;
+  if (CheckNullVar(_p,_n))  {
+    a=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > a_smtptr;
+    if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    a = a_smtptr.get();
+  }
 
-  boost::shared_ptr<double > b_smtptr;
-  if (!get_val_smtptr_param<double >(b_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* b = b_smtptr.get();
+  double* b;
+  if (CheckNullVar(_p,_n))  {
+    b=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > b_smtptr;
+    if (!get_val_smtptr_param<double >(b_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    b = b_smtptr.get();
+  }
 
-  boost::shared_ptr<double > c_smtptr;
-  if (!get_val_smtptr_param<double >(c_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* c = c_smtptr.get();
+  double* c;
+  if (CheckNullVar(_p,_n))  {
+    c=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > c_smtptr;
+    if (!get_val_smtptr_param<double >(c_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    c = c_smtptr.get();
+  }
 
   vtkMatrix4x4::Multiply4x4(a, b, c);
   return BasicVariable::ptr();
@@ -749,13 +923,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > inElements_smtptr;
-  if (!get_val_smtptr_param<double >(inElements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* inElements = inElements_smtptr.get();
+  double* inElements;
+  if (CheckNullVar(_p,_n))  {
+    inElements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > inElements_smtptr;
+    if (!get_val_smtptr_param<double >(inElements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    inElements = inElements_smtptr.get();
+  }
 
-  boost::shared_ptr<double > outElements_smtptr;
-  if (!get_val_smtptr_param<double >(outElements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* outElements = outElements_smtptr.get();
+  double* outElements;
+  if (CheckNullVar(_p,_n))  {
+    outElements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > outElements_smtptr;
+    if (!get_val_smtptr_param<double >(outElements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    outElements = outElements_smtptr.get();
+  }
 
   vtkMatrix4x4::Adjoint(inElements, outElements);
   return BasicVariable::ptr();
@@ -779,9 +965,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    Elements = Elements_smtptr.get();
+  }
 
   double res =   vtkMatrix4x4::Determinant(Elements);
   return AMILabType<double >::CreateVar(res);
@@ -806,17 +998,35 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    Elements = Elements_smtptr.get();
+  }
 
-  boost::shared_ptr<float > in_smtptr;
-  if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* in = in_smtptr.get();
+  float* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > in_smtptr;
+    if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<float > out_smtptr;
-  if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* out = out_smtptr.get();
+  float* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > out_smtptr;
+    if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   vtkMatrix4x4::PointMultiply(Elements, in, out);
   return BasicVariable::ptr();
@@ -862,17 +1072,35 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    Elements = Elements_smtptr.get();
+  }
 
-  boost::shared_ptr<double > in_smtptr;
-  if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* in = in_smtptr.get();
+  double* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > in_smtptr;
+    if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<double > out_smtptr;
-  if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* out = out_smtptr.get();
+  double* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > out_smtptr;
+    if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   vtkMatrix4x4::PointMultiply(Elements, in, out);
   return BasicVariable::ptr();
@@ -972,9 +1200,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > source_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* source = source_smtptr.get();
+  vtkMatrix4x4* source;
+  if (CheckNullVar(_p,_n))  {
+    source=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > source_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    source = source_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(source);
   return BasicVariable::ptr();
@@ -1018,9 +1252,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > Elements_smtptr;
-  if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* Elements = Elements_smtptr.get();
+  double* Elements;
+  if (CheckNullVar(_p,_n))  {
+    Elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > Elements_smtptr;
+    if (!get_val_smtptr_param<double >(Elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    Elements = Elements_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(Elements);
   return BasicVariable::ptr();
@@ -1116,13 +1356,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > in_smtptr;
-  if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* in = in_smtptr.get();
+  float* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > in_smtptr;
+    if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<float > out_smtptr;
-  if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* out = out_smtptr.get();
+  float* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > out_smtptr;
+    if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->MultiplyPoint(in, out);
   return BasicVariable::ptr();
@@ -1170,13 +1422,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > in_smtptr;
-  if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* in = in_smtptr.get();
+  double* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > in_smtptr;
+    if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<double > out_smtptr;
-  if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* out = out_smtptr.get();
+  double* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > out_smtptr;
+    if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->MultiplyPoint(in, out);
   return BasicVariable::ptr();
@@ -1200,9 +1464,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > in_smtptr;
-  if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* in = in_smtptr.get();
+  float* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > in_smtptr;
+    if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
   float * res =   this->_objectptr->GetObj()->MultiplyPoint(in);
   return AMILabType<float >::CreateVar(res,true);
@@ -1226,9 +1496,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<float > in_smtptr;
-  if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  float* in = in_smtptr.get();
+  float* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > in_smtptr;
+    if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    in = in_smtptr.get();
+  }
 
   float * res =   this->_objectptr->GetObj()->MultiplyFloatPoint(in);
   return AMILabType<float >::CreateVar(res,true);
@@ -1252,9 +1528,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > in_smtptr;
-  if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* in = in_smtptr.get();
+  double* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > in_smtptr;
+    if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    in = in_smtptr.get();
+  }
 
   double * res =   this->_objectptr->GetObj()->MultiplyDoublePoint(in);
   return AMILabType<double >::CreateVar(res,true);
@@ -1278,13 +1560,25 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > in_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* in = in_smtptr.get();
+  vtkMatrix4x4* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > in_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkMatrix4x4 > out_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* out = out_smtptr.get();
+  vtkMatrix4x4* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > out_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Adjoint(in, out);
   return BasicVariable::ptr();
@@ -1489,9 +1783,15 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkMatrix4x4 > in_smtptr;
-  if (!get_val_smtptr_param<vtkMatrix4x4 >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkMatrix4x4* in = in_smtptr.get();
+  vtkMatrix4x4* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(vtkMatrix4x4*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkMatrix4x4 > in_smtptr;
+    if (!get_val_smtptr_param<vtkMatrix4x4 >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
   double res =   this->_objectptr->GetObj()->Determinant(in);
   return AMILabType<double >::CreateVar(res);

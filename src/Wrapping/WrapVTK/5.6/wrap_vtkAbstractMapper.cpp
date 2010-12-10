@@ -30,6 +30,10 @@
 
 #include "wrap_vtkAbstractMapper.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -73,43 +77,54 @@ Variable<AMIObject>::ptr WrapClass_vtkAbstractMapper::CreateVar( vtkAbstractMapp
 //----------------------------------------------------------------------
 void WrapClass_vtkAbstractMapper::AddMethods(WrapClass<vtkAbstractMapper>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkAlgorithm
-      WrapClass_vtkAlgorithm::ptr parent_vtkAlgorithm(        boost::dynamic_pointer_cast<WrapClass_vtkAlgorithm >(this_ptr));
-      parent_vtkAlgorithm->AddMethods(parent_vtkAlgorithm);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_GetMTime( this_ptr);
-      AddVar_ReleaseGraphicsResources( this_ptr);
-      AddVar_GetTimeToDraw( this_ptr);
+  AddVar_GetMTime( this_ptr);
+  AddVar_ReleaseGraphicsResources( this_ptr);
+  AddVar_GetTimeToDraw( this_ptr);
 /* The following types are missing: vtkPlane
-      AddVar_AddClippingPlane( this_ptr);
+  AddVar_AddClippingPlane( this_ptr);
 */
 /* The following types are missing: vtkPlane
-      AddVar_RemoveClippingPlane( this_ptr);
+  AddVar_RemoveClippingPlane( this_ptr);
 */
-      AddVar_RemoveAllClippingPlanes( this_ptr);
+  AddVar_RemoveAllClippingPlanes( this_ptr);
 /* The following types are missing: vtkPlaneCollection
-      AddVar_SetClippingPlanes_1( this_ptr);
+  AddVar_SetClippingPlanes_1( this_ptr);
 */
 /* The following types are missing: vtkPlaneCollection
-      AddVar_GetClippingPlanes( this_ptr);
+  AddVar_GetClippingPlanes( this_ptr);
 */
-      AddVar_SetClippingPlanes( this_ptr);
-      AddVar_SetClippingPlanes_2( this_ptr);
-      AddVar_ShallowCopy( this_ptr);
+  AddVar_SetClippingPlanes( this_ptr);
+  AddVar_SetClippingPlanes_2( this_ptr);
+  AddVar_ShallowCopy( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkAlgorithm
+  boost::shared_ptr<vtkAlgorithm > parent_vtkAlgorithm(  boost::dynamic_pointer_cast<vtkAlgorithm >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkAlgorithm = AMILabType<vtkAlgorithm >::CreateVarFromSmtPtr(parent_vtkAlgorithm);
+  context->AddVar("vtkAlgorithm",var_vtkAlgorithm);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkAlgorithm = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkAlgorithm);
+  context->AddDefault(obj_vtkAlgorithm->Pointer()->GetContext());
+
 };
 
 
@@ -128,7 +143,7 @@ void WrapClass_vtkAbstractMapper::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkAbstractMapper::AddVar_GetScalars(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -181,9 +196,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkAbstractMapper * res =   vtkAbstractMapper::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkAbstractMapper::CreateVar(res);
@@ -213,9 +234,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p->GetNumParam()>6) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkDataSet > input_smtptr;
-  if (!get_val_smtptr_param<vtkDataSet >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataSet* input = input_smtptr.get();
+  vtkDataSet* input;
+  if (CheckNullVar(_p,_n))  {
+    input=(vtkDataSet*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataSet > input_smtptr;
+    if (!get_val_smtptr_param<vtkDataSet >(input_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    input = input_smtptr.get();
+  }
 
   int scalarMode;
   if (!get_val_param<int >(scalarMode,_p,_n,true,false)) ClassHelpAndReturn;
@@ -353,9 +380,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkWindow > param0_smtptr;
-  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkWindow* param0 = param0_smtptr.get();
+  vtkWindow* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkWindow > param0_smtptr;
+    if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ReleaseGraphicsResources(param0);
   return BasicVariable::ptr();
@@ -398,9 +431,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPlane > plane_smtptr;
-  if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPlane* plane = plane_smtptr.get();
+  vtkPlane* plane;
+  if (CheckNullVar(_p,_n))  {
+    plane=(vtkPlane*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPlane > plane_smtptr;
+    if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    plane = plane_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddClippingPlane(plane);
   return BasicVariable::ptr();
@@ -425,9 +464,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPlane > plane_smtptr;
-  if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPlane* plane = plane_smtptr.get();
+  vtkPlane* plane;
+  if (CheckNullVar(_p,_n))  {
+    plane=(vtkPlane*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPlane > plane_smtptr;
+    if (!get_val_smtptr_param<vtkPlane >(plane_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    plane = plane_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveClippingPlane(plane);
   return BasicVariable::ptr();
@@ -470,9 +515,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkPlaneCollection > param0_smtptr;
-  if (!get_val_smtptr_param<vtkPlaneCollection >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPlaneCollection* param0 = param0_smtptr.get();
+  vtkPlaneCollection* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkPlaneCollection*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPlaneCollection > param0_smtptr;
+    if (!get_val_smtptr_param<vtkPlaneCollection >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetClippingPlanes(param0);
   return BasicVariable::ptr();
@@ -535,9 +586,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkPlanes > planes_smtptr;
-  if (!get_val_smtptr_param<vtkPlanes >(planes_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPlanes* planes = planes_smtptr.get();
+  vtkPlanes* planes;
+  if (CheckNullVar(_p,_n))  {
+    planes=(vtkPlanes*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPlanes > planes_smtptr;
+    if (!get_val_smtptr_param<vtkPlanes >(planes_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    planes = planes_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetClippingPlanes(planes);
   return BasicVariable::ptr();
@@ -560,9 +617,15 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkAbstractMapper > m_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractMapper >(m_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkAbstractMapper* m = m_smtptr.get();
+  vtkAbstractMapper* m;
+  if (CheckNullVar(_p,_n))  {
+    m=(vtkAbstractMapper*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractMapper > m_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractMapper >(m_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    m = m_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ShallowCopy(m);
   return BasicVariable::ptr();

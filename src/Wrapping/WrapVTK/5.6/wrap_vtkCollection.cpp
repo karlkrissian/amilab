@@ -26,6 +26,10 @@
 
 #include "wrap_vtkCollection.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -33,8 +37,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkCollection>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkCollection::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -69,49 +73,60 @@ Variable<AMIObject>::ptr WrapClass_vtkCollection::CreateVar( vtkCollection* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkCollection::AddMethods(WrapClass<vtkCollection>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_AddItem( this_ptr);
-      AddVar_InsertItem( this_ptr);
-      AddVar_ReplaceItem( this_ptr);
-      AddVar_RemoveItem_1( this_ptr);
-      AddVar_RemoveItem( this_ptr);
-      AddVar_RemoveItem_2( this_ptr);
-      AddVar_RemoveAllItems( this_ptr);
-      AddVar_IsItemPresent( this_ptr);
-      AddVar_GetNumberOfItems( this_ptr);
-      AddVar_InitTraversal_1( this_ptr);
-      AddVar_InitTraversal( this_ptr);
+  AddVar_AddItem( this_ptr);
+  AddVar_InsertItem( this_ptr);
+  AddVar_ReplaceItem( this_ptr);
+  AddVar_RemoveItem_1( this_ptr);
+  AddVar_RemoveItem( this_ptr);
+  AddVar_RemoveItem_2( this_ptr);
+  AddVar_RemoveAllItems( this_ptr);
+  AddVar_IsItemPresent( this_ptr);
+  AddVar_GetNumberOfItems( this_ptr);
+  AddVar_InitTraversal_1( this_ptr);
+  AddVar_InitTraversal( this_ptr);
 /* The following types are missing: void
-      AddVar_InitTraversal_2( this_ptr);
+  AddVar_InitTraversal_2( this_ptr);
 */
-      AddVar_GetNextItemAsObject_1( this_ptr);
-      AddVar_GetItemAsObject( this_ptr);
-      AddVar_GetNextItemAsObject( this_ptr);
+  AddVar_GetNextItemAsObject_1( this_ptr);
+  AddVar_GetItemAsObject( this_ptr);
+  AddVar_GetNextItemAsObject( this_ptr);
 /* The following types are missing: void
-      AddVar_GetNextItemAsObject_2( this_ptr);
+  AddVar_GetNextItemAsObject_2( this_ptr);
 */
 /* The following types are missing: vtkCollectionIterator
-      AddVar_NewIterator( this_ptr);
+  AddVar_NewIterator( this_ptr);
 */
-      AddVar_Register( this_ptr);
-      AddVar_UnRegister( this_ptr);
+  AddVar_Register( this_ptr);
+  AddVar_UnRegister( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -130,7 +145,7 @@ void WrapClass_vtkCollection::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkCollection::AddVar_New(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -183,9 +198,15 @@ BasicVariable::ptr WrapClass_vtkCollection::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkCollection * res =   vtkCollection::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkCollection::CreateVar(res);
@@ -306,9 +327,15 @@ BasicVariable::ptr WrapClass_vtkCollection::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObject > param0_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObject* param0 = param0_smtptr.get();
+  vtkObject* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObject > param0_smtptr;
+    if (!get_val_smtptr_param<vtkObject >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddItem(param0);
   return BasicVariable::ptr();
@@ -335,9 +362,15 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int i;
   if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkObject > param1_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObject* param1 = param1_smtptr.get();
+  vtkObject* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObject > param1_smtptr;
+    if (!get_val_smtptr_param<vtkObject >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param1 = param1_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->InsertItem(i, param1);
   return BasicVariable::ptr();
@@ -364,9 +397,15 @@ BasicVariable::ptr WrapClass_vtkCollection::
   int i;
   if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkObject > param1_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObject* param1 = param1_smtptr.get();
+  vtkObject* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObject > param1_smtptr;
+    if (!get_val_smtptr_param<vtkObject >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param1 = param1_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ReplaceItem(i, param1);
   return BasicVariable::ptr();
@@ -434,9 +473,15 @@ BasicVariable::ptr WrapClass_vtkCollection::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkObject > param0_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkObject* param0 = param0_smtptr.get();
+  vtkObject* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObject > param0_smtptr;
+    if (!get_val_smtptr_param<vtkObject >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveItem(param0);
   return BasicVariable::ptr();
@@ -478,9 +523,15 @@ BasicVariable::ptr WrapClass_vtkCollection::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObject > a_smtptr;
-  if (!get_val_smtptr_param<vtkObject >(a_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObject* a = a_smtptr.get();
+  vtkObject* a;
+  if (CheckNullVar(_p,_n))  {
+    a=(vtkObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObject > a_smtptr;
+    if (!get_val_smtptr_param<vtkObject >(a_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    a = a_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->IsItemPresent(a);
   return AMILabType<int >::CreateVar(res);
@@ -699,9 +750,15 @@ BasicVariable::ptr WrapClass_vtkCollection::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Register(o);
   return BasicVariable::ptr();
@@ -724,9 +781,15 @@ BasicVariable::ptr WrapClass_vtkCollection::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->UnRegister(o);
   return BasicVariable::ptr();

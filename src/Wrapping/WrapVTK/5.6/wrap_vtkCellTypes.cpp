@@ -28,6 +28,10 @@
 
 #include "wrap_vtkCellTypes.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -35,8 +39,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkCellTypes>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkCellTypes::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -71,38 +75,49 @@ Variable<AMIObject>::ptr WrapClass_vtkCellTypes::CreateVar( vtkCellTypes* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkCellTypes::AddMethods(WrapClass<vtkCellTypes>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_Allocate( this_ptr);
-      AddVar_InsertCell( this_ptr);
-      AddVar_InsertNextCell( this_ptr);
-      AddVar_SetCellTypes( this_ptr);
-      AddVar_GetCellLocation( this_ptr);
-      AddVar_DeleteCell( this_ptr);
-      AddVar_GetNumberOfTypes( this_ptr);
-      AddVar_IsType( this_ptr);
-      AddVar_InsertNextType( this_ptr);
-      AddVar_GetCellType( this_ptr);
-      AddVar_Squeeze( this_ptr);
-      AddVar_Reset( this_ptr);
-      AddVar_GetActualMemorySize( this_ptr);
-      AddVar_DeepCopy( this_ptr);
+  AddVar_Allocate( this_ptr);
+  AddVar_InsertCell( this_ptr);
+  AddVar_InsertNextCell( this_ptr);
+  AddVar_SetCellTypes( this_ptr);
+  AddVar_GetCellLocation( this_ptr);
+  AddVar_DeleteCell( this_ptr);
+  AddVar_GetNumberOfTypes( this_ptr);
+  AddVar_IsType( this_ptr);
+  AddVar_InsertNextType( this_ptr);
+  AddVar_GetCellType( this_ptr);
+  AddVar_Squeeze( this_ptr);
+  AddVar_Reset( this_ptr);
+  AddVar_GetActualMemorySize( this_ptr);
+  AddVar_DeepCopy( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -123,7 +138,7 @@ void WrapClass_vtkCellTypes::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkCellTypes::AddVar_GetTypeIdFromClassName(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -196,9 +211,15 @@ BasicVariable::ptr WrapClass_vtkCellTypes::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkCellTypes * res =   vtkCellTypes::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkCellTypes::CreateVar(res);
@@ -446,13 +467,25 @@ BasicVariable::ptr WrapClass_vtkCellTypes::
   int ncells;
   if (!get_val_param<int >(ncells,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<vtkUnsignedCharArray > cellTypes_smtptr;
-  if (!get_val_smtptr_param<vtkUnsignedCharArray >(cellTypes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkUnsignedCharArray* cellTypes = cellTypes_smtptr.get();
+  vtkUnsignedCharArray* cellTypes;
+  if (CheckNullVar(_p,_n))  {
+    cellTypes=(vtkUnsignedCharArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkUnsignedCharArray > cellTypes_smtptr;
+    if (!get_val_smtptr_param<vtkUnsignedCharArray >(cellTypes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    cellTypes = cellTypes_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkIntArray > cellLocations_smtptr;
-  if (!get_val_smtptr_param<vtkIntArray >(cellLocations_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkIntArray* cellLocations = cellLocations_smtptr.get();
+  vtkIntArray* cellLocations;
+  if (CheckNullVar(_p,_n))  {
+    cellLocations=(vtkIntArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkIntArray > cellLocations_smtptr;
+    if (!get_val_smtptr_param<vtkIntArray >(cellLocations_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    cellLocations = cellLocations_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetCellTypes(ncells, cellTypes, cellLocations);
   return BasicVariable::ptr();
@@ -675,9 +708,15 @@ BasicVariable::ptr WrapClass_vtkCellTypes::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkCellTypes > src_smtptr;
-  if (!get_val_smtptr_param<vtkCellTypes >(src_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCellTypes* src = src_smtptr.get();
+  vtkCellTypes* src;
+  if (CheckNullVar(_p,_n))  {
+    src=(vtkCellTypes*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCellTypes > src_smtptr;
+    if (!get_val_smtptr_param<vtkCellTypes >(src_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    src = src_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(src);
   return BasicVariable::ptr();

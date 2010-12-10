@@ -28,6 +28,10 @@
 
 #include "wrap_vtkProperty.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -35,8 +39,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkProperty>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkProperty::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -71,179 +75,202 @@ Variable<AMIObject>::ptr WrapClass_vtkProperty::CreateVar( vtkProperty* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkProperty::AddMethods(WrapClass<vtkProperty>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_DeepCopy( this_ptr);
-      AddVar_Render( this_ptr);
-      AddVar_BackfaceRender( this_ptr);
-      AddVar_PostRender( this_ptr);
-      AddVar_GetLighting( this_ptr);
-      AddVar_SetLighting( this_ptr);
-      AddVar_LightingOn( this_ptr);
-      AddVar_LightingOff( this_ptr);
-      AddVar_SetInterpolation( this_ptr);
-      AddVar_GetInterpolationMinValue( this_ptr);
-      AddVar_GetInterpolationMaxValue( this_ptr);
-      AddVar_GetInterpolation( this_ptr);
-      AddVar_SetInterpolationToFlat( this_ptr);
-      AddVar_SetInterpolationToGouraud( this_ptr);
-      AddVar_SetInterpolationToPhong( this_ptr);
-      AddVar_GetInterpolationAsString( this_ptr);
-      AddVar_SetRepresentation( this_ptr);
-      AddVar_GetRepresentationMinValue( this_ptr);
-      AddVar_GetRepresentationMaxValue( this_ptr);
-      AddVar_GetRepresentation( this_ptr);
-      AddVar_SetRepresentationToPoints( this_ptr);
-      AddVar_SetRepresentationToWireframe( this_ptr);
-      AddVar_SetRepresentationToSurface( this_ptr);
-      AddVar_GetRepresentationAsString( this_ptr);
-      AddVar_SetColor_1( this_ptr);
-      AddVar_SetColor( this_ptr);
-      AddVar_SetColor_2( this_ptr);
-      AddVar_GetColor_1( this_ptr);
-      AddVar_GetColor( this_ptr);
-      AddVar_GetColor_2( this_ptr);
-      AddVar_GetColor_3( this_ptr);
-      AddVar_SetAmbient( this_ptr);
-      AddVar_GetAmbientMinValue( this_ptr);
-      AddVar_GetAmbientMaxValue( this_ptr);
-      AddVar_GetAmbient( this_ptr);
-      AddVar_SetDiffuse( this_ptr);
-      AddVar_GetDiffuseMinValue( this_ptr);
-      AddVar_GetDiffuseMaxValue( this_ptr);
-      AddVar_GetDiffuse( this_ptr);
-      AddVar_SetSpecular( this_ptr);
-      AddVar_GetSpecularMinValue( this_ptr);
-      AddVar_GetSpecularMaxValue( this_ptr);
-      AddVar_GetSpecular( this_ptr);
-      AddVar_SetSpecularPower( this_ptr);
-      AddVar_GetSpecularPowerMinValue( this_ptr);
-      AddVar_GetSpecularPowerMaxValue( this_ptr);
-      AddVar_GetSpecularPower( this_ptr);
-      AddVar_SetOpacity( this_ptr);
-      AddVar_GetOpacityMinValue( this_ptr);
-      AddVar_GetOpacityMaxValue( this_ptr);
-      AddVar_GetOpacity( this_ptr);
-      AddVar_SetAmbientColor_1( this_ptr);
-      AddVar_SetAmbientColor( this_ptr);
-      AddVar_SetAmbientColor_2( this_ptr);
-      AddVar_GetAmbientColor_1( this_ptr);
-      AddVar_GetAmbientColor( this_ptr);
-      AddVar_GetAmbientColor_2( this_ptr);
-      AddVar_GetAmbientColor_3( this_ptr);
-      AddVar_SetDiffuseColor_1( this_ptr);
-      AddVar_SetDiffuseColor( this_ptr);
-      AddVar_SetDiffuseColor_2( this_ptr);
-      AddVar_GetDiffuseColor_1( this_ptr);
-      AddVar_GetDiffuseColor( this_ptr);
-      AddVar_GetDiffuseColor_2( this_ptr);
-      AddVar_GetDiffuseColor_3( this_ptr);
-      AddVar_SetSpecularColor_1( this_ptr);
-      AddVar_SetSpecularColor( this_ptr);
-      AddVar_SetSpecularColor_2( this_ptr);
-      AddVar_GetSpecularColor_1( this_ptr);
-      AddVar_GetSpecularColor( this_ptr);
-      AddVar_GetSpecularColor_2( this_ptr);
-      AddVar_GetSpecularColor_3( this_ptr);
-      AddVar_GetEdgeVisibility( this_ptr);
-      AddVar_SetEdgeVisibility( this_ptr);
-      AddVar_EdgeVisibilityOn( this_ptr);
-      AddVar_EdgeVisibilityOff( this_ptr);
-      AddVar_SetEdgeColor_1( this_ptr);
-      AddVar_SetEdgeColor( this_ptr);
-      AddVar_SetEdgeColor_2( this_ptr);
-      AddVar_GetEdgeColor_1( this_ptr);
-      AddVar_GetEdgeColor( this_ptr);
-      AddVar_GetEdgeColor_2( this_ptr);
-      AddVar_GetEdgeColor_3( this_ptr);
-      AddVar_SetLineWidth( this_ptr);
-      AddVar_GetLineWidthMinValue( this_ptr);
-      AddVar_GetLineWidthMaxValue( this_ptr);
-      AddVar_GetLineWidth( this_ptr);
-      AddVar_SetLineStipplePattern( this_ptr);
-      AddVar_GetLineStipplePattern( this_ptr);
-      AddVar_SetLineStippleRepeatFactor( this_ptr);
-      AddVar_GetLineStippleRepeatFactorMinValue( this_ptr);
-      AddVar_GetLineStippleRepeatFactorMaxValue( this_ptr);
-      AddVar_GetLineStippleRepeatFactor( this_ptr);
-      AddVar_SetPointSize( this_ptr);
-      AddVar_GetPointSizeMinValue( this_ptr);
-      AddVar_GetPointSizeMaxValue( this_ptr);
-      AddVar_GetPointSize( this_ptr);
-      AddVar_GetBackfaceCulling( this_ptr);
-      AddVar_SetBackfaceCulling( this_ptr);
-      AddVar_BackfaceCullingOn( this_ptr);
-      AddVar_BackfaceCullingOff( this_ptr);
-      AddVar_GetFrontfaceCulling( this_ptr);
-      AddVar_SetFrontfaceCulling( this_ptr);
-      AddVar_FrontfaceCullingOn( this_ptr);
-      AddVar_FrontfaceCullingOff( this_ptr);
+  AddVar_DeepCopy( this_ptr);
+  AddVar_Render( this_ptr);
+  AddVar_BackfaceRender( this_ptr);
+  AddVar_PostRender( this_ptr);
+  AddVar_GetLighting( this_ptr);
+  AddVar_SetLighting( this_ptr);
+  AddVar_LightingOn( this_ptr);
+  AddVar_LightingOff( this_ptr);
+  AddVar_SetInterpolation( this_ptr);
+  AddVar_GetInterpolationMinValue( this_ptr);
+  AddVar_GetInterpolationMaxValue( this_ptr);
+  AddVar_GetInterpolation( this_ptr);
+  AddVar_SetInterpolationToFlat( this_ptr);
+  AddVar_SetInterpolationToGouraud( this_ptr);
+  AddVar_SetInterpolationToPhong( this_ptr);
+  AddVar_GetInterpolationAsString( this_ptr);
+  AddVar_SetRepresentation( this_ptr);
+  AddVar_GetRepresentationMinValue( this_ptr);
+  AddVar_GetRepresentationMaxValue( this_ptr);
+  AddVar_GetRepresentation( this_ptr);
+  AddVar_SetRepresentationToPoints( this_ptr);
+  AddVar_SetRepresentationToWireframe( this_ptr);
+  AddVar_SetRepresentationToSurface( this_ptr);
+  AddVar_GetRepresentationAsString( this_ptr);
+  AddVar_SetColor_1( this_ptr);
+  AddVar_SetColor( this_ptr);
+  AddVar_SetColor_2( this_ptr);
+  AddVar_GetColor_1( this_ptr);
+  AddVar_GetColor( this_ptr);
+  AddVar_GetColor_2( this_ptr);
+  AddVar_GetColor_3( this_ptr);
+  AddVar_SetAmbient( this_ptr);
+  AddVar_GetAmbientMinValue( this_ptr);
+  AddVar_GetAmbientMaxValue( this_ptr);
+  AddVar_GetAmbient( this_ptr);
+  AddVar_SetDiffuse( this_ptr);
+  AddVar_GetDiffuseMinValue( this_ptr);
+  AddVar_GetDiffuseMaxValue( this_ptr);
+  AddVar_GetDiffuse( this_ptr);
+  AddVar_SetSpecular( this_ptr);
+  AddVar_GetSpecularMinValue( this_ptr);
+  AddVar_GetSpecularMaxValue( this_ptr);
+  AddVar_GetSpecular( this_ptr);
+  AddVar_SetSpecularPower( this_ptr);
+  AddVar_GetSpecularPowerMinValue( this_ptr);
+  AddVar_GetSpecularPowerMaxValue( this_ptr);
+  AddVar_GetSpecularPower( this_ptr);
+  AddVar_SetOpacity( this_ptr);
+  AddVar_GetOpacityMinValue( this_ptr);
+  AddVar_GetOpacityMaxValue( this_ptr);
+  AddVar_GetOpacity( this_ptr);
+  AddVar_SetAmbientColor_1( this_ptr);
+  AddVar_SetAmbientColor( this_ptr);
+  AddVar_SetAmbientColor_2( this_ptr);
+  AddVar_GetAmbientColor_1( this_ptr);
+  AddVar_GetAmbientColor( this_ptr);
+  AddVar_GetAmbientColor_2( this_ptr);
+  AddVar_GetAmbientColor_3( this_ptr);
+  AddVar_SetDiffuseColor_1( this_ptr);
+  AddVar_SetDiffuseColor( this_ptr);
+  AddVar_SetDiffuseColor_2( this_ptr);
+  AddVar_GetDiffuseColor_1( this_ptr);
+  AddVar_GetDiffuseColor( this_ptr);
+  AddVar_GetDiffuseColor_2( this_ptr);
+  AddVar_GetDiffuseColor_3( this_ptr);
+  AddVar_SetSpecularColor_1( this_ptr);
+  AddVar_SetSpecularColor( this_ptr);
+  AddVar_SetSpecularColor_2( this_ptr);
+  AddVar_GetSpecularColor_1( this_ptr);
+  AddVar_GetSpecularColor( this_ptr);
+  AddVar_GetSpecularColor_2( this_ptr);
+  AddVar_GetSpecularColor_3( this_ptr);
+  AddVar_GetEdgeVisibility( this_ptr);
+  AddVar_SetEdgeVisibility( this_ptr);
+  AddVar_EdgeVisibilityOn( this_ptr);
+  AddVar_EdgeVisibilityOff( this_ptr);
+  AddVar_SetEdgeColor_1( this_ptr);
+  AddVar_SetEdgeColor( this_ptr);
+  AddVar_SetEdgeColor_2( this_ptr);
+  AddVar_GetEdgeColor_1( this_ptr);
+  AddVar_GetEdgeColor( this_ptr);
+  AddVar_GetEdgeColor_2( this_ptr);
+  AddVar_GetEdgeColor_3( this_ptr);
+  AddVar_SetLineWidth( this_ptr);
+  AddVar_GetLineWidthMinValue( this_ptr);
+  AddVar_GetLineWidthMaxValue( this_ptr);
+  AddVar_GetLineWidth( this_ptr);
+  AddVar_SetLineStipplePattern( this_ptr);
+  AddVar_GetLineStipplePattern( this_ptr);
+  AddVar_SetLineStippleRepeatFactor( this_ptr);
+  AddVar_GetLineStippleRepeatFactorMinValue( this_ptr);
+  AddVar_GetLineStippleRepeatFactorMaxValue( this_ptr);
+  AddVar_GetLineStippleRepeatFactor( this_ptr);
+  AddVar_SetPointSize( this_ptr);
+  AddVar_GetPointSizeMinValue( this_ptr);
+  AddVar_GetPointSizeMaxValue( this_ptr);
+  AddVar_GetPointSize( this_ptr);
+  AddVar_GetBackfaceCulling( this_ptr);
+  AddVar_SetBackfaceCulling( this_ptr);
+  AddVar_BackfaceCullingOn( this_ptr);
+  AddVar_BackfaceCullingOff( this_ptr);
+  AddVar_GetFrontfaceCulling( this_ptr);
+  AddVar_SetFrontfaceCulling( this_ptr);
+  AddVar_FrontfaceCullingOn( this_ptr);
+  AddVar_FrontfaceCullingOff( this_ptr);
 /* The following types are missing: vtkXMLMaterial
-      AddVar_GetMaterial( this_ptr);
+  AddVar_GetMaterial( this_ptr);
 */
-      AddVar_GetMaterialName( this_ptr);
-      AddVar_LoadMaterial_1( this_ptr);
-      AddVar_LoadMaterialFromString( this_ptr);
-      AddVar_LoadMaterial( this_ptr);
+  AddVar_GetMaterialName( this_ptr);
+  AddVar_LoadMaterial_1( this_ptr);
+  AddVar_LoadMaterialFromString( this_ptr);
+  AddVar_LoadMaterial( this_ptr);
 /* The following types are missing: vtkXMLMaterial
-      AddVar_LoadMaterial_2( this_ptr);
+  AddVar_LoadMaterial_2( this_ptr);
 */
-      AddVar_SetShading( this_ptr);
-      AddVar_GetShading( this_ptr);
-      AddVar_ShadingOn( this_ptr);
-      AddVar_ShadingOff( this_ptr);
+  AddVar_SetShading( this_ptr);
+  AddVar_GetShading( this_ptr);
+  AddVar_ShadingOn( this_ptr);
+  AddVar_ShadingOff( this_ptr);
 /* The following types are missing: vtkShaderProgram
-      AddVar_GetShaderProgram( this_ptr);
+  AddVar_GetShaderProgram( this_ptr);
 */
-      AddVar_AddShaderVariable_1( this_ptr);
-      AddVar_AddShaderVariable( this_ptr);
-      AddVar_AddShaderVariable_2( this_ptr);
-      AddVar_AddShaderVariable_3( this_ptr);
-      AddVar_AddShaderVariable_4( this_ptr);
-      AddVar_AddShaderVariable_5( this_ptr);
-      AddVar_AddShaderVariable_6( this_ptr);
-      AddVar_AddShaderVariable_7( this_ptr);
-      AddVar_AddShaderVariable_8( this_ptr);
-      AddVar_AddShaderVariable_9( this_ptr);
-      AddVar_AddShaderVariable_10( this_ptr);
-      AddVar_AddShaderVariable_11( this_ptr);
-      AddVar_AddShaderVariable_12( this_ptr);
+  AddVar_AddShaderVariable_1( this_ptr);
+  AddVar_AddShaderVariable( this_ptr);
+  AddVar_AddShaderVariable_2( this_ptr);
+  AddVar_AddShaderVariable_3( this_ptr);
+  AddVar_AddShaderVariable_4( this_ptr);
+  AddVar_AddShaderVariable_5( this_ptr);
+  AddVar_AddShaderVariable_6( this_ptr);
+  AddVar_AddShaderVariable_7( this_ptr);
+  AddVar_AddShaderVariable_8( this_ptr);
+  AddVar_AddShaderVariable_9( this_ptr);
+  AddVar_AddShaderVariable_10( this_ptr);
+  AddVar_AddShaderVariable_11( this_ptr);
+  AddVar_AddShaderVariable_12( this_ptr);
 /* The following types are missing: vtkTexture
-      AddVar_SetTexture_1( this_ptr);
+  AddVar_SetTexture_1( this_ptr);
 */
 /* The following types are missing: vtkTexture
-      AddVar_GetTexture_1( this_ptr);
+  AddVar_GetTexture_1( this_ptr);
 */
-      AddVar_SetTexture( this_ptr);
+  AddVar_SetTexture( this_ptr);
 /* The following types are missing: vtkTexture
-      AddVar_SetTexture_2( this_ptr);
+  AddVar_SetTexture_2( this_ptr);
 */
-      AddVar_GetTexture( this_ptr);
+  AddVar_GetTexture( this_ptr);
 /* The following types are missing: vtkTexture
-      AddVar_GetTexture_2( this_ptr);
+  AddVar_GetTexture_2( this_ptr);
 */
-      AddVar_RemoveTexture_1( this_ptr);
-      AddVar_RemoveTexture( this_ptr);
-      AddVar_RemoveTexture_2( this_ptr);
-      AddVar_RemoveAllTextures( this_ptr);
-      AddVar_GetNumberOfTextures( this_ptr);
-      AddVar_ReleaseGraphicsResources( this_ptr);
+  AddVar_RemoveTexture_1( this_ptr);
+  AddVar_RemoveTexture( this_ptr);
+  AddVar_RemoveTexture_2( this_ptr);
+  AddVar_RemoveAllTextures( this_ptr);
+  AddVar_GetNumberOfTextures( this_ptr);
+  AddVar_ReleaseGraphicsResources( this_ptr);
 
+
+
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
 
 
   
+  AMIObject::ptr obj_VTKTextureUnit(new AMIObject);
+  obj_VTKTextureUnit->SetName("VTKTextureUnit");
+
+  BasicVariable::ptr var_VTK_TEXTURE_UNIT_0 = AMILabType<int >::CreateVar(0);
+  if (var_VTK_TEXTURE_UNIT_0.get()) {
+    var_VTK_TEXTURE_UNIT_0->Rename("VTK_TEXTURE_UNIT_0");
+    obj_VTKTextureUnit->GetContext()->AddVar(var_VTK_TEXTURE_UNIT_0,obj_VTKTextureUnit->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_VTKTextureUnit->GetName().c_str(),obj_VTKTextureUnit,context);
+
+
+  // Adding Bases
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -262,7 +289,7 @@ void WrapClass_vtkProperty::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkProperty::AddVar_New(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -315,9 +342,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkProperty * res =   vtkProperty::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
@@ -438,9 +471,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProperty > p_smtptr;
-  if (!get_val_smtptr_param<vtkProperty >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProperty* p = p_smtptr.get();
+  vtkProperty* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkProperty*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProperty > p_smtptr;
+    if (!get_val_smtptr_param<vtkProperty >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(p);
   return BasicVariable::ptr();
@@ -464,13 +503,25 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkActor > param0_smtptr;
-  if (!get_val_smtptr_param<vtkActor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkActor* param0 = param0_smtptr.get();
+  vtkActor* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkActor*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkActor > param0_smtptr;
+    if (!get_val_smtptr_param<vtkActor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkRenderer > param1_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param1 = param1_smtptr.get();
+  vtkRenderer* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param1_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param1 = param1_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Render(param0, param1);
   return BasicVariable::ptr();
@@ -494,13 +545,25 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkActor > param0_smtptr;
-  if (!get_val_smtptr_param<vtkActor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkActor* param0 = param0_smtptr.get();
+  vtkActor* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkActor*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkActor > param0_smtptr;
+    if (!get_val_smtptr_param<vtkActor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkRenderer > param1_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param1 = param1_smtptr.get();
+  vtkRenderer* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param1_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param1 = param1_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->BackfaceRender(param0, param1);
   return BasicVariable::ptr();
@@ -524,13 +587,25 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkActor > param0_smtptr;
-  if (!get_val_smtptr_param<vtkActor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkActor* param0 = param0_smtptr.get();
+  vtkActor* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkActor*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkActor > param0_smtptr;
+    if (!get_val_smtptr_param<vtkActor >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkRenderer > param1_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param1 = param1_smtptr.get();
+  vtkRenderer* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param1_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param1 = param1_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->PostRender(param0, param1);
   return BasicVariable::ptr();
@@ -542,7 +617,7 @@ BasicVariable::ptr WrapClass_vtkProperty::
 void WrapClass_vtkProperty::
     wrap_GetLighting::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -552,8 +627,7 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->GetLighting();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -562,7 +636,7 @@ BasicVariable::ptr WrapClass_vtkProperty::
 void WrapClass_vtkProperty::
     wrap_SetLighting::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named '_arg'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named '_arg'")
 }
 
 //---------------------------------------------------
@@ -573,9 +647,8 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  int _arg_int;
-  if (!get_val_param<int >(_arg_int,_p,_n,true,false)) ClassHelpAndReturn;
-  bool _arg = (bool) (_arg_int>0.5);
+  bool _arg;
+  if (!get_val_param<bool >(_arg,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLighting(_arg);
   return BasicVariable::ptr();
@@ -997,9 +1070,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > a_smtptr;
-  if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* a = a_smtptr.get();
+  double* a;
+  if (CheckNullVar(_p,_n))  {
+    a=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > a_smtptr;
+    if (!get_val_smtptr_param<double >(a_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    a = a_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetColor(a);
   return BasicVariable::ptr();
@@ -1065,9 +1144,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > rgb_smtptr;
-  if (!get_val_smtptr_param<double >(rgb_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* rgb = rgb_smtptr.get();
+  double* rgb;
+  if (CheckNullVar(_p,_n))  {
+    rgb=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > rgb_smtptr;
+    if (!get_val_smtptr_param<double >(rgb_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    rgb = rgb_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetColor(rgb);
   return BasicVariable::ptr();
@@ -1583,9 +1668,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetAmbientColor(_arg);
   return BasicVariable::ptr();
@@ -1686,9 +1777,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetAmbientColor(_arg);
   return BasicVariable::ptr();
@@ -1764,9 +1861,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetDiffuseColor(_arg);
   return BasicVariable::ptr();
@@ -1867,9 +1970,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetDiffuseColor(_arg);
   return BasicVariable::ptr();
@@ -1945,9 +2054,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetSpecularColor(_arg);
   return BasicVariable::ptr();
@@ -2048,9 +2163,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetSpecularColor(_arg);
   return BasicVariable::ptr();
@@ -2205,9 +2326,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetEdgeColor(_arg);
   return BasicVariable::ptr();
@@ -2308,9 +2435,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetEdgeColor(_arg);
   return BasicVariable::ptr();
@@ -2887,9 +3020,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkXMLMaterial > param0_smtptr;
-  if (!get_val_smtptr_param<vtkXMLMaterial >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkXMLMaterial* param0 = param0_smtptr.get();
+  vtkXMLMaterial* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkXMLMaterial*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkXMLMaterial > param0_smtptr;
+    if (!get_val_smtptr_param<vtkXMLMaterial >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->LoadMaterial(param0);
   return BasicVariable::ptr();
@@ -3022,9 +3161,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   int numVars;
   if (!get_val_param<int >(numVars,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddShaderVariable(name, numVars, x);
   return BasicVariable::ptr();
@@ -3107,9 +3252,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   int numVars;
   if (!get_val_param<int >(numVars,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<float > x_smtptr;
-  if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* x = x_smtptr.get();
+  float* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > x_smtptr;
+    if (!get_val_smtptr_param<float >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddShaderVariable(name, numVars, x);
   return BasicVariable::ptr();
@@ -3141,9 +3292,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   int numVars;
   if (!get_val_param<int >(numVars,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddShaderVariable(name, numVars, x);
   return BasicVariable::ptr();
@@ -3469,9 +3626,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (!get_val_smtptr_param<std::string >(name_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * name = name_string->c_str();
 
-  boost::shared_ptr<vtkTexture > texture_smtptr;
-  if (!get_val_smtptr_param<vtkTexture >(texture_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkTexture* texture = texture_smtptr.get();
+  vtkTexture* texture;
+  if (CheckNullVar(_p,_n))  {
+    texture=(vtkTexture*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkTexture > texture_smtptr;
+    if (!get_val_smtptr_param<vtkTexture >(texture_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    texture = texture_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTexture(name, texture);
   return BasicVariable::ptr();
@@ -3543,9 +3706,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   int unit;
   if (!get_val_param<int >(unit,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkTexture > texture_smtptr;
-  if (!get_val_smtptr_param<vtkTexture >(texture_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkTexture* texture = texture_smtptr.get();
+  vtkTexture* texture;
+  if (CheckNullVar(_p,_n))  {
+    texture=(vtkTexture*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkTexture > texture_smtptr;
+    if (!get_val_smtptr_param<vtkTexture >(texture_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    texture = texture_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTexture(unit, texture);
   return BasicVariable::ptr();
@@ -3718,9 +3887,15 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkWindow > win_smtptr;
-  if (!get_val_smtptr_param<vtkWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkWindow* win = win_smtptr.get();
+  vtkWindow* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(vtkWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkWindow > win_smtptr;
+    if (!get_val_smtptr_param<vtkWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ReleaseGraphicsResources(win);
   return BasicVariable::ptr();

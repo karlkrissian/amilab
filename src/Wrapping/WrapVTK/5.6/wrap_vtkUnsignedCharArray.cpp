@@ -26,6 +26,10 @@
 
 #include "wrap_vtkUnsignedCharArray.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -33,8 +37,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkUnsignedCharArray>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkUnsignedCharArray::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -69,40 +73,51 @@ Variable<AMIObject>::ptr WrapClass_vtkUnsignedCharArray::CreateVar( vtkUnsignedC
 //----------------------------------------------------------------------
 void WrapClass_vtkUnsignedCharArray::AddMethods(WrapClass<vtkUnsignedCharArray>::ptr this_ptr )
 {
-  /*
-      // Add members from vtkDataArrayTemplate<unsigned char>
-      WrapClass_vtkDataArrayTemplate_unsigned char_::ptr parent_vtkDataArrayTemplate_unsigned char_(        boost::dynamic_pointer_cast<WrapClass_vtkDataArrayTemplate_unsigned char_ >(this_ptr));
-      parent_vtkDataArrayTemplate_unsigned char_->AddMethods(parent_vtkDataArrayTemplate_unsigned char_);
-      */
-
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_GetDataType( this_ptr);
-      AddVar_GetTupleValue( this_ptr);
-      AddVar_SetTupleValue( this_ptr);
-      AddVar_InsertTupleValue( this_ptr);
-      AddVar_InsertNextTupleValue( this_ptr);
-      AddVar_GetValue( this_ptr);
-      AddVar_SetValue( this_ptr);
-      AddVar_SetNumberOfValues( this_ptr);
-      AddVar_InsertValue( this_ptr);
-      AddVar_InsertNextValue( this_ptr);
-      AddVar_WritePointer( this_ptr);
-      AddVar_GetPointer( this_ptr);
-      AddVar_SetArray_1( this_ptr);
-      AddVar_SetArray( this_ptr);
-      AddVar_SetArray_2( this_ptr);
+  AddVar_GetDataType( this_ptr);
+  AddVar_GetTupleValue( this_ptr);
+  AddVar_SetTupleValue( this_ptr);
+  AddVar_InsertTupleValue( this_ptr);
+  AddVar_InsertNextTupleValue( this_ptr);
+  AddVar_GetValue( this_ptr);
+  AddVar_SetValue( this_ptr);
+  AddVar_SetNumberOfValues( this_ptr);
+  AddVar_InsertValue( this_ptr);
+  AddVar_InsertNextValue( this_ptr);
+  AddVar_WritePointer( this_ptr);
+  AddVar_GetPointer( this_ptr);
+  AddVar_SetArray_1( this_ptr);
+  AddVar_SetArray( this_ptr);
+  AddVar_SetArray_2( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+/*
+  // Add base parent vtkDataArrayTemplate<unsigned char>
+  boost::shared_ptr<vtkDataArrayTemplate<unsigned char> > parent_vtkDataArrayTemplate_unsigned char_(  boost::dynamic_pointer_cast<vtkDataArrayTemplate<unsigned char> >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkDataArrayTemplate_unsigned char_ = AMILabType<vtkDataArrayTemplate<unsigned char> >::CreateVarFromSmtPtr(parent_vtkDataArrayTemplate_unsigned char_);
+  context->AddVar("vtkDataArrayTemplate_unsigned char_",var_vtkDataArrayTemplate_unsigned char_);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkDataArrayTemplate_unsigned char_ = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkDataArrayTemplate_unsigned char_);
+  context->AddDefault(obj_vtkDataArrayTemplate_unsigned char_->Pointer()->GetContext());
+*/
+
 };
 
 
@@ -121,7 +136,7 @@ void WrapClass_vtkUnsignedCharArray::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkUnsignedCharArray::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -194,9 +209,15 @@ BasicVariable::ptr WrapClass_vtkUnsignedCharArray::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkUnsignedCharArray * res =   vtkUnsignedCharArray::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkUnsignedCharArray::CreateVar(res);
@@ -321,9 +342,15 @@ BasicVariable::ptr WrapClass_vtkUnsignedCharArray::
   if (!get_val_param<long >(i_long,_p,_n,true,false)) ClassHelpAndReturn;
   long long int i = boost::numeric_cast<long long int >(i_long);
 
-  boost::shared_ptr<unsigned char > tuple_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(tuple_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* tuple = tuple_smtptr.get();
+  unsigned char* tuple;
+  if (CheckNullVar(_p,_n))  {
+    tuple=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > tuple_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(tuple_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    tuple = tuple_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTupleValue(i, tuple);
   return BasicVariable::ptr();
@@ -351,9 +378,15 @@ BasicVariable::ptr WrapClass_vtkUnsignedCharArray::
   if (!get_val_param<long >(i_long,_p,_n,true,false)) ClassHelpAndReturn;
   long long int i = boost::numeric_cast<long long int >(i_long);
 
-  boost::shared_ptr<unsigned char > tuple_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(tuple_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* tuple = tuple_smtptr.get();
+  unsigned char* tuple;
+  if (CheckNullVar(_p,_n))  {
+    tuple=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > tuple_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(tuple_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    tuple = tuple_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTupleValue(i, tuple);
   return BasicVariable::ptr();
@@ -381,9 +414,15 @@ BasicVariable::ptr WrapClass_vtkUnsignedCharArray::
   if (!get_val_param<long >(i_long,_p,_n,true,false)) ClassHelpAndReturn;
   long long int i = boost::numeric_cast<long long int >(i_long);
 
-  boost::shared_ptr<unsigned char > tuple_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(tuple_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* tuple = tuple_smtptr.get();
+  unsigned char* tuple;
+  if (CheckNullVar(_p,_n))  {
+    tuple=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > tuple_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(tuple_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    tuple = tuple_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->InsertTupleValue(i, tuple);
   return BasicVariable::ptr();
@@ -407,9 +446,15 @@ BasicVariable::ptr WrapClass_vtkUnsignedCharArray::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<unsigned char > tuple_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(tuple_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* tuple = tuple_smtptr.get();
+  unsigned char* tuple;
+  if (CheckNullVar(_p,_n))  {
+    tuple=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > tuple_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(tuple_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    tuple = tuple_smtptr.get();
+  }
 
   vtkIdType res =   this->_objectptr->GetObj()->InsertNextTupleValue(tuple);
   long res_long = boost::numeric_cast<long >((unsigned int)res);
@@ -627,9 +672,15 @@ BasicVariable::ptr WrapClass_vtkUnsignedCharArray::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<unsigned char > array_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(array_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* array = array_smtptr.get();
+  unsigned char* array;
+  if (CheckNullVar(_p,_n))  {
+    array=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > array_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(array_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    array = array_smtptr.get();
+  }
 
   long size_long;
   if (!get_val_param<long >(size_long,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -683,9 +734,15 @@ BasicVariable::ptr WrapClass_vtkUnsignedCharArray::
   if (_p->GetNumParam()>4) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<unsigned char > array_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(array_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* array = array_smtptr.get();
+  unsigned char* array;
+  if (CheckNullVar(_p,_n))  {
+    array=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > array_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(array_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    array = array_smtptr.get();
+  }
 
   long size_long;
   if (!get_val_param<long >(size_long,_p,_n,true,true)) ClassReturnEmptyVar;

@@ -29,6 +29,10 @@
 
 #include "wrap_vtkPolyData.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -36,8 +40,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkPolyData>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkPolyData::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -72,125 +76,148 @@ Variable<AMIObject>::ptr WrapClass_vtkPolyData::CreateVar( vtkPolyData* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkPointSet
-      WrapClass_vtkPointSet::ptr parent_vtkPointSet(        boost::dynamic_pointer_cast<WrapClass_vtkPointSet >(this_ptr));
-      parent_vtkPointSet->AddMethods(parent_vtkPointSet);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_GetDataObjectType( this_ptr);
-      AddVar_CopyStructure( this_ptr);
-      AddVar_GetNumberOfCells( this_ptr);
+  AddVar_GetDataObjectType( this_ptr);
+  AddVar_CopyStructure( this_ptr);
+  AddVar_GetNumberOfCells( this_ptr);
 /* The following types are missing: vtkCell
-      AddVar_GetCell_1( this_ptr);
+  AddVar_GetCell_1( this_ptr);
 */
-      AddVar_GetCell( this_ptr);
+  AddVar_GetCell( this_ptr);
 /* The following types are missing: vtkGenericCell
-      AddVar_GetCell_2( this_ptr);
+  AddVar_GetCell_2( this_ptr);
 */
-      AddVar_GetCellType( this_ptr);
-      AddVar_GetCellBounds( this_ptr);
+  AddVar_GetCellType( this_ptr);
+  AddVar_GetCellBounds( this_ptr);
 /* The following types are missing: vtkIdList, vtkIdList
-      AddVar_GetCellNeighbors( this_ptr);
+  AddVar_GetCellNeighbors( this_ptr);
 */
 /* The following types are missing: vtkIdList, vtkPointLocator
-      AddVar_CopyCells( this_ptr);
+  AddVar_CopyCells( this_ptr);
 */
-      AddVar_ComputeBounds( this_ptr);
-      AddVar_Squeeze( this_ptr);
-      AddVar_GetMaxCellSize( this_ptr);
+  AddVar_ComputeBounds( this_ptr);
+  AddVar_Squeeze( this_ptr);
+  AddVar_GetMaxCellSize( this_ptr);
 /* The following types are missing: vtkCellArray
-      AddVar_SetVerts( this_ptr);
-*/
-/* The following types are missing: vtkCellArray
-      AddVar_GetVerts( this_ptr);
+  AddVar_SetVerts( this_ptr);
 */
 /* The following types are missing: vtkCellArray
-      AddVar_SetLines( this_ptr);
+  AddVar_GetVerts( this_ptr);
 */
 /* The following types are missing: vtkCellArray
-      AddVar_GetLines( this_ptr);
+  AddVar_SetLines( this_ptr);
 */
 /* The following types are missing: vtkCellArray
-      AddVar_SetPolys( this_ptr);
+  AddVar_GetLines( this_ptr);
 */
 /* The following types are missing: vtkCellArray
-      AddVar_GetPolys( this_ptr);
+  AddVar_SetPolys( this_ptr);
 */
 /* The following types are missing: vtkCellArray
-      AddVar_SetStrips( this_ptr);
+  AddVar_GetPolys( this_ptr);
 */
 /* The following types are missing: vtkCellArray
-      AddVar_GetStrips( this_ptr);
+  AddVar_SetStrips( this_ptr);
 */
-      AddVar_GetNumberOfVerts( this_ptr);
-      AddVar_GetNumberOfLines( this_ptr);
-      AddVar_GetNumberOfPolys( this_ptr);
-      AddVar_GetNumberOfStrips( this_ptr);
-      AddVar_Allocate_1( this_ptr);
-      AddVar_Allocate( this_ptr);
-      AddVar_Allocate_2( this_ptr);
-      AddVar_InsertNextCell_1( this_ptr);
-      AddVar_InsertNextCell( this_ptr);
+/* The following types are missing: vtkCellArray
+  AddVar_GetStrips( this_ptr);
+*/
+  AddVar_GetNumberOfVerts( this_ptr);
+  AddVar_GetNumberOfLines( this_ptr);
+  AddVar_GetNumberOfPolys( this_ptr);
+  AddVar_GetNumberOfStrips( this_ptr);
+  AddVar_Allocate_1( this_ptr);
+  AddVar_Allocate( this_ptr);
+  AddVar_Allocate_2( this_ptr);
+  AddVar_InsertNextCell_1( this_ptr);
+  AddVar_InsertNextCell( this_ptr);
 /* The following types are missing: vtkIdList
-      AddVar_InsertNextCell_2( this_ptr);
+  AddVar_InsertNextCell_2( this_ptr);
 */
-      AddVar_Reset( this_ptr);
-      AddVar_BuildCells( this_ptr);
-      AddVar_BuildLinks( this_ptr);
-      AddVar_DeleteCells( this_ptr);
-      AddVar_DeleteLinks( this_ptr);
+  AddVar_Reset( this_ptr);
+  AddVar_BuildCells( this_ptr);
+  AddVar_BuildLinks( this_ptr);
+  AddVar_DeleteCells( this_ptr);
+  AddVar_DeleteLinks( this_ptr);
 /* The following types are missing: vtkIdList
-      AddVar_GetCellEdgeNeighbors( this_ptr);
+  AddVar_GetCellEdgeNeighbors( this_ptr);
 */
-      AddVar_IsTriangle( this_ptr);
-      AddVar_IsEdge( this_ptr);
-      AddVar_IsPointUsedByCell( this_ptr);
-      AddVar_ReplaceCell( this_ptr);
-      AddVar_ReplaceCellPoint( this_ptr);
-      AddVar_ReverseCell( this_ptr);
-      AddVar_DeletePoint( this_ptr);
-      AddVar_DeleteCell( this_ptr);
-      AddVar_RemoveDeletedCells( this_ptr);
-      AddVar_InsertNextLinkedPoint_1( this_ptr);
-      AddVar_InsertNextLinkedPoint( this_ptr);
-      AddVar_InsertNextLinkedPoint_2( this_ptr);
-      AddVar_InsertNextLinkedCell( this_ptr);
-      AddVar_ReplaceLinkedCell( this_ptr);
-      AddVar_RemoveCellReference( this_ptr);
-      AddVar_AddCellReference( this_ptr);
-      AddVar_RemoveReferenceToCell( this_ptr);
-      AddVar_AddReferenceToCell( this_ptr);
-      AddVar_ResizeCellList( this_ptr);
-      AddVar_Initialize( this_ptr);
-      AddVar_GetUpdateExtent_1( this_ptr);
-      AddVar_GetUpdateExtent( this_ptr);
-      AddVar_GetUpdateExtent_2( this_ptr);
-      AddVar_GetUpdateExtent_3( this_ptr);
-      AddVar_GetUpdateExtent_4( this_ptr);
-      AddVar_GetPiece( this_ptr);
-      AddVar_GetNumberOfPieces( this_ptr);
-      AddVar_GetGhostLevel( this_ptr);
-      AddVar_GetActualMemorySize( this_ptr);
-      AddVar_ShallowCopy( this_ptr);
-      AddVar_DeepCopy( this_ptr);
-      AddVar_RemoveGhostCells( this_ptr);
-      AddVar_GetScalarFieldCriticalIndex_1( this_ptr);
-      AddVar_GetScalarFieldCriticalIndex( this_ptr);
-      AddVar_GetScalarFieldCriticalIndex_2( this_ptr);
-      AddVar_GetScalarFieldCriticalIndex_3( this_ptr);
+  AddVar_IsTriangle( this_ptr);
+  AddVar_IsEdge( this_ptr);
+  AddVar_IsPointUsedByCell( this_ptr);
+  AddVar_ReplaceCell( this_ptr);
+  AddVar_ReplaceCellPoint( this_ptr);
+  AddVar_ReverseCell( this_ptr);
+  AddVar_DeletePoint( this_ptr);
+  AddVar_DeleteCell( this_ptr);
+  AddVar_RemoveDeletedCells( this_ptr);
+  AddVar_InsertNextLinkedPoint_1( this_ptr);
+  AddVar_InsertNextLinkedPoint( this_ptr);
+  AddVar_InsertNextLinkedPoint_2( this_ptr);
+  AddVar_InsertNextLinkedCell( this_ptr);
+  AddVar_ReplaceLinkedCell( this_ptr);
+  AddVar_RemoveCellReference( this_ptr);
+  AddVar_AddCellReference( this_ptr);
+  AddVar_RemoveReferenceToCell( this_ptr);
+  AddVar_AddReferenceToCell( this_ptr);
+  AddVar_ResizeCellList( this_ptr);
+  AddVar_Initialize( this_ptr);
+  AddVar_GetUpdateExtent_1( this_ptr);
+  AddVar_GetUpdateExtent( this_ptr);
+  AddVar_GetUpdateExtent_2( this_ptr);
+  AddVar_GetUpdateExtent_3( this_ptr);
+  AddVar_GetUpdateExtent_4( this_ptr);
+  AddVar_GetPiece( this_ptr);
+  AddVar_GetNumberOfPieces( this_ptr);
+  AddVar_GetGhostLevel( this_ptr);
+  AddVar_GetActualMemorySize( this_ptr);
+  AddVar_ShallowCopy( this_ptr);
+  AddVar_DeepCopy( this_ptr);
+  AddVar_RemoveGhostCells( this_ptr);
+  AddVar_GetScalarFieldCriticalIndex_1( this_ptr);
+  AddVar_GetScalarFieldCriticalIndex( this_ptr);
+  AddVar_GetScalarFieldCriticalIndex_2( this_ptr);
+  AddVar_GetScalarFieldCriticalIndex_3( this_ptr);
 
+
+
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
 
 
   
+  AMIObject::ptr obj_enum_90(new AMIObject);
+  obj_enum_90->SetName("enum_90");
+
+  BasicVariable::ptr var_ERR_NO_SUCH_FIELD = AMILabType<int >::CreateVar(-4);
+  if (var_ERR_NO_SUCH_FIELD.get()) {
+    var_ERR_NO_SUCH_FIELD->Rename("ERR_NO_SUCH_FIELD");
+    obj_enum_90->GetContext()->AddVar(var_ERR_NO_SUCH_FIELD,obj_enum_90->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_enum_90->GetName().c_str(),obj_enum_90,context);
+
+
+  // Adding Bases
+
+  // Add base parent vtkPointSet
+  boost::shared_ptr<vtkPointSet > parent_vtkPointSet(  boost::dynamic_pointer_cast<vtkPointSet >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkPointSet = AMILabType<vtkPointSet >::CreateVarFromSmtPtr(parent_vtkPointSet);
+  context->AddVar("vtkPointSet",var_vtkPointSet);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkPointSet = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkPointSet);
+  context->AddDefault(obj_vtkPointSet->Pointer()->GetContext());
+
 };
 
 
@@ -216,7 +243,7 @@ void WrapClass_vtkPolyData::AddStaticMethods( Variables::ptr& context)
   */
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -289,9 +316,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkPolyData * res =   vtkPolyData::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkPolyData::CreateVar(res);
@@ -317,9 +350,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkInformation > info_smtptr;
-  if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkInformation* info = info_smtptr.get();
+  vtkInformation* info;
+  if (CheckNullVar(_p,_n))  {
+    info=(vtkInformation*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformation > info_smtptr;
+    if (!get_val_smtptr_param<vtkInformation >(info_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    info = info_smtptr.get();
+  }
 
   vtkPolyData * res =   vtkPolyData::GetData(info);
   BasicVariable::ptr res_var = WrapClass_vtkPolyData::CreateVar(res);
@@ -362,9 +401,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkInformationVector > v_smtptr;
-  if (!get_val_smtptr_param<vtkInformationVector >(v_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkInformationVector* v = v_smtptr.get();
+  vtkInformationVector* v;
+  if (CheckNullVar(_p,_n))  {
+    v=(vtkInformationVector*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkInformationVector > v_smtptr;
+    if (!get_val_smtptr_param<vtkInformationVector >(v_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    v = v_smtptr.get();
+  }
 
   int i = 0;
   if (!get_val_param<int >(i,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -488,9 +533,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkDataSet > ds_smtptr;
-  if (!get_val_smtptr_param<vtkDataSet >(ds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataSet* ds = ds_smtptr.get();
+  vtkDataSet* ds;
+  if (CheckNullVar(_p,_n))  {
+    ds=(vtkDataSet*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataSet > ds_smtptr;
+    if (!get_val_smtptr_param<vtkDataSet >(ds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    ds = ds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->CopyStructure(ds);
   return BasicVariable::ptr();
@@ -582,9 +633,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (!get_val_param<long >(cellId_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
-  boost::shared_ptr<vtkGenericCell > cell_smtptr;
-  if (!get_val_smtptr_param<vtkGenericCell >(cell_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkGenericCell* cell = cell_smtptr.get();
+  vtkGenericCell* cell;
+  if (CheckNullVar(_p,_n))  {
+    cell=(vtkGenericCell*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkGenericCell > cell_smtptr;
+    if (!get_val_smtptr_param<vtkGenericCell >(cell_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    cell = cell_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetCell(cellId, cell);
   return BasicVariable::ptr();
@@ -639,9 +696,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
   long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
-  boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* bounds = bounds_smtptr.get();
+  double* bounds;
+  if (CheckNullVar(_p,_n))  {
+    bounds=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > bounds_smtptr;
+    if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    bounds = bounds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetCellBounds(cellId, bounds);
   return BasicVariable::ptr();
@@ -671,13 +734,25 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (!get_val_param<long >(cellId_long,_p,_n,true,false)) ClassHelpAndReturn;
   long long int cellId = boost::numeric_cast<long long int >(cellId_long);
 
-  boost::shared_ptr<vtkIdList > ptIds_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(ptIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkIdList* ptIds = ptIds_smtptr.get();
+  vtkIdList* ptIds;
+  if (CheckNullVar(_p,_n))  {
+    ptIds=(vtkIdList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkIdList > ptIds_smtptr;
+    if (!get_val_smtptr_param<vtkIdList >(ptIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    ptIds = ptIds_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkIdList > cellIds_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(cellIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkIdList* cellIds = cellIds_smtptr.get();
+  vtkIdList* cellIds;
+  if (CheckNullVar(_p,_n))  {
+    cellIds=(vtkIdList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkIdList > cellIds_smtptr;
+    if (!get_val_smtptr_param<vtkIdList >(cellIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    cellIds = cellIds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetCellNeighbors(cellId, ptIds, cellIds);
   return BasicVariable::ptr();
@@ -704,17 +779,35 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPolyData > pd_smtptr;
-  if (!get_val_smtptr_param<vtkPolyData >(pd_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPolyData* pd = pd_smtptr.get();
+  vtkPolyData* pd;
+  if (CheckNullVar(_p,_n))  {
+    pd=(vtkPolyData*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPolyData > pd_smtptr;
+    if (!get_val_smtptr_param<vtkPolyData >(pd_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pd = pd_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkIdList > idList_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(idList_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkIdList* idList = idList_smtptr.get();
+  vtkIdList* idList;
+  if (CheckNullVar(_p,_n))  {
+    idList=(vtkIdList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkIdList > idList_smtptr;
+    if (!get_val_smtptr_param<vtkIdList >(idList_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    idList = idList_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkPointLocator > locator_smtptr;
-  if (!get_val_smtptr_param<vtkPointLocator >(locator_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPointLocator* locator = locator_smtptr.get();
+  vtkPointLocator* locator = 0l;
+  if (CheckNullVar(_p,_n))  {
+    locator=(vtkPointLocator*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPointLocator > locator_smtptr;
+    if (!get_val_smtptr_param<vtkPointLocator >(locator_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    locator = locator_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->CopyCells(pd, idList, locator);
   return BasicVariable::ptr();
@@ -794,9 +887,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkCellArray > v_smtptr;
-  if (!get_val_smtptr_param<vtkCellArray >(v_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCellArray* v = v_smtptr.get();
+  vtkCellArray* v;
+  if (CheckNullVar(_p,_n))  {
+    v=(vtkCellArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCellArray > v_smtptr;
+    if (!get_val_smtptr_param<vtkCellArray >(v_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    v = v_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetVerts(v);
   return BasicVariable::ptr();
@@ -842,9 +941,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkCellArray > l_smtptr;
-  if (!get_val_smtptr_param<vtkCellArray >(l_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCellArray* l = l_smtptr.get();
+  vtkCellArray* l;
+  if (CheckNullVar(_p,_n))  {
+    l=(vtkCellArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCellArray > l_smtptr;
+    if (!get_val_smtptr_param<vtkCellArray >(l_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    l = l_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetLines(l);
   return BasicVariable::ptr();
@@ -890,9 +995,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkCellArray > p_smtptr;
-  if (!get_val_smtptr_param<vtkCellArray >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCellArray* p = p_smtptr.get();
+  vtkCellArray* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(vtkCellArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCellArray > p_smtptr;
+    if (!get_val_smtptr_param<vtkCellArray >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPolys(p);
   return BasicVariable::ptr();
@@ -938,9 +1049,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkCellArray > s_smtptr;
-  if (!get_val_smtptr_param<vtkCellArray >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCellArray* s = s_smtptr.get();
+  vtkCellArray* s;
+  if (CheckNullVar(_p,_n))  {
+    s=(vtkCellArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCellArray > s_smtptr;
+    if (!get_val_smtptr_param<vtkCellArray >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    s = s_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetStrips(s);
   return BasicVariable::ptr();
@@ -1117,9 +1234,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkPolyData > inPolyData_smtptr;
-  if (!get_val_smtptr_param<vtkPolyData >(inPolyData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkPolyData* inPolyData = inPolyData_smtptr.get();
+  vtkPolyData* inPolyData;
+  if (CheckNullVar(_p,_n))  {
+    inPolyData=(vtkPolyData*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPolyData > inPolyData_smtptr;
+    if (!get_val_smtptr_param<vtkPolyData >(inPolyData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    inPolyData = inPolyData_smtptr.get();
+  }
 
   long numCells_long = boost::numeric_cast<long >((unsigned int)1000);;
   if (!get_val_param<long >(numCells_long,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1208,9 +1331,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   int type;
   if (!get_val_param<int >(type,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<vtkIdList > pts_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(pts_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkIdList* pts = pts_smtptr.get();
+  vtkIdList* pts;
+  if (CheckNullVar(_p,_n))  {
+    pts=(vtkIdList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkIdList > pts_smtptr;
+    if (!get_val_smtptr_param<vtkIdList >(pts_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pts = pts_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->InsertNextCell(type, pts);
   return AMILabType<int >::CreateVar(res);
@@ -1346,9 +1475,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (!get_val_param<long >(p2_long,_p,_n,true,false)) ClassHelpAndReturn;
   long long int p2 = boost::numeric_cast<long long int >(p2_long);
 
-  boost::shared_ptr<vtkIdList > cellIds_smtptr;
-  if (!get_val_smtptr_param<vtkIdList >(cellIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkIdList* cellIds = cellIds_smtptr.get();
+  vtkIdList* cellIds;
+  if (CheckNullVar(_p,_n))  {
+    cellIds=(vtkIdList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkIdList > cellIds_smtptr;
+    if (!get_val_smtptr_param<vtkIdList >(cellIds_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    cellIds = cellIds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetCellEdgeNeighbors(cellId, p1, p2, cellIds);
   return BasicVariable::ptr();
@@ -1678,9 +1813,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   int numLinks;
   if (!get_val_param<int >(numLinks,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -2064,9 +2205,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > extent_smtptr;
-  if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* extent = extent_smtptr.get();
+  int* extent;
+  if (CheckNullVar(_p,_n))  {
+    extent=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > extent_smtptr;
+    if (!get_val_smtptr_param<int >(extent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    extent = extent_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetUpdateExtent(extent);
   return BasicVariable::ptr();
@@ -2166,9 +2313,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkDataObject > src_smtptr;
-  if (!get_val_smtptr_param<vtkDataObject >(src_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataObject* src = src_smtptr.get();
+  vtkDataObject* src;
+  if (CheckNullVar(_p,_n))  {
+    src=(vtkDataObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataObject > src_smtptr;
+    if (!get_val_smtptr_param<vtkDataObject >(src_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    src = src_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ShallowCopy(src);
   return BasicVariable::ptr();
@@ -2191,9 +2344,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkDataObject > src_smtptr;
-  if (!get_val_smtptr_param<vtkDataObject >(src_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataObject* src = src_smtptr.get();
+  vtkDataObject* src;
+  if (CheckNullVar(_p,_n))  {
+    src=(vtkDataObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataObject > src_smtptr;
+    if (!get_val_smtptr_param<vtkDataObject >(src_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    src = src_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(src);
   return BasicVariable::ptr();
@@ -2246,9 +2405,15 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (!get_val_param<long >(pointId_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long long int pointId = boost::numeric_cast<long long int >(pointId_long);
 
-  boost::shared_ptr<vtkDataArray > scalarField_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(scalarField_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkDataArray* scalarField = scalarField_smtptr.get();
+  vtkDataArray* scalarField;
+  if (CheckNullVar(_p,_n))  {
+    scalarField=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > scalarField_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(scalarField_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    scalarField = scalarField_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->GetScalarFieldCriticalIndex(pointId, scalarField);
   return AMILabType<int >::CreateVar(res);

@@ -27,6 +27,10 @@
 
 #include "wrap_vtkObject.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -34,8 +38,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkObject>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkObject::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -70,57 +74,68 @@ Variable<AMIObject>::ptr WrapClass_vtkObject::CreateVar( vtkObject* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkObject::AddMethods(WrapClass<vtkObject>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObjectBase
-      WrapClass_vtkObjectBase::ptr parent_vtkObjectBase(        boost::dynamic_pointer_cast<WrapClass_vtkObjectBase >(this_ptr));
-      parent_vtkObjectBase->AddMethods(parent_vtkObjectBase);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
-      AddVar_DebugOn( this_ptr);
-      AddVar_DebugOff( this_ptr);
-      AddVar_GetDebug( this_ptr);
-      AddVar_SetDebug( this_ptr);
-      AddVar_Modified( this_ptr);
-      AddVar_GetMTime( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
+  AddVar_DebugOn( this_ptr);
+  AddVar_DebugOff( this_ptr);
+  AddVar_GetDebug( this_ptr);
+  AddVar_SetDebug( this_ptr);
+  AddVar_Modified( this_ptr);
+  AddVar_GetMTime( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_AddObserver_1( this_ptr);
-      AddVar_AddObserver( this_ptr);
-      AddVar_AddObserver_2( this_ptr);
-      AddVar_GetCommand( this_ptr);
-      AddVar_RemoveObserver_1( this_ptr);
-      AddVar_RemoveObservers_1( this_ptr);
-      AddVar_RemoveObservers( this_ptr);
-      AddVar_RemoveObservers_2( this_ptr);
-      AddVar_HasObserver_1( this_ptr);
-      AddVar_HasObserver( this_ptr);
-      AddVar_HasObserver_2( this_ptr);
-      AddVar_RemoveObserver( this_ptr);
-      AddVar_RemoveObserver_2( this_ptr);
-      AddVar_RemoveObservers_3( this_ptr);
-      AddVar_RemoveObservers_4( this_ptr);
-      AddVar_RemoveAllObservers( this_ptr);
-      AddVar_HasObserver_3( this_ptr);
-      AddVar_HasObserver_4( this_ptr);
+  AddVar_AddObserver_1( this_ptr);
+  AddVar_AddObserver( this_ptr);
+  AddVar_AddObserver_2( this_ptr);
+  AddVar_GetCommand( this_ptr);
+  AddVar_RemoveObserver_1( this_ptr);
+  AddVar_RemoveObservers_1( this_ptr);
+  AddVar_RemoveObservers( this_ptr);
+  AddVar_RemoveObservers_2( this_ptr);
+  AddVar_HasObserver_1( this_ptr);
+  AddVar_HasObserver( this_ptr);
+  AddVar_HasObserver_2( this_ptr);
+  AddVar_RemoveObserver( this_ptr);
+  AddVar_RemoveObserver_2( this_ptr);
+  AddVar_RemoveObservers_3( this_ptr);
+  AddVar_RemoveObservers_4( this_ptr);
+  AddVar_RemoveAllObservers( this_ptr);
+  AddVar_HasObserver_3( this_ptr);
+  AddVar_HasObserver_4( this_ptr);
 /* The following types are missing: void
-      AddVar_InvokeEvent_1( this_ptr);
+  AddVar_InvokeEvent_1( this_ptr);
 */
-      AddVar_InvokeEvent( this_ptr);
+  AddVar_InvokeEvent( this_ptr);
 /* The following types are missing: void
-      AddVar_InvokeEvent_2( this_ptr);
+  AddVar_InvokeEvent_2( this_ptr);
 */
-      AddVar_InvokeEvent_3( this_ptr);
-      AddVar_InvokeEvent_4( this_ptr);
+  AddVar_InvokeEvent_3( this_ptr);
+  AddVar_InvokeEvent_4( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObjectBase
+  boost::shared_ptr<vtkObjectBase > parent_vtkObjectBase(  boost::dynamic_pointer_cast<vtkObjectBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObjectBase = AMILabType<vtkObjectBase >::CreateVarFromSmtPtr(parent_vtkObjectBase);
+  context->AddVar("vtkObjectBase",var_vtkObjectBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObjectBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObjectBase);
+  context->AddDefault(obj_vtkObjectBase->Pointer()->GetContext());
+
 };
 
 
@@ -144,7 +159,7 @@ void WrapClass_vtkObject::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkObject::AddVar_GetGlobalWarningDisplay(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -197,9 +212,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkObject * res =   vtkObject::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkObject::CreateVar(res);
@@ -541,9 +562,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
-  boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkCommand* param1 = param1_smtptr.get();
+  vtkCommand* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkCommand*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCommand > param1_smtptr;
+    if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param1 = param1_smtptr.get();
+  }
 
   float priority = 0.0f;
   if (!get_val_param<float >(priority,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -598,9 +625,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
-  boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkCommand* param1 = param1_smtptr.get();
+  vtkCommand* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkCommand*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCommand > param1_smtptr;
+    if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param1 = param1_smtptr.get();
+  }
 
   float priority = 0.0f;
   if (!get_val_param<float >(priority,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -654,9 +687,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkCommand > param0_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkCommand* param0 = param0_smtptr.get();
+  vtkCommand* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkCommand*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCommand > param0_smtptr;
+    if (!get_val_smtptr_param<vtkCommand >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveObserver(param0);
   return BasicVariable::ptr();
@@ -684,9 +723,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
-  boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkCommand* param1 = param1_smtptr.get();
+  vtkCommand* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkCommand*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCommand > param1_smtptr;
+    if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param1 = param1_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveObservers(event, param1);
   return BasicVariable::ptr();
@@ -741,9 +786,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
-  boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkCommand* param1 = param1_smtptr.get();
+  vtkCommand* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkCommand*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCommand > param1_smtptr;
+    if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param1 = param1_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveObservers(event, param1);
   return BasicVariable::ptr();
@@ -772,9 +823,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
-  boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkCommand* param1 = param1_smtptr.get();
+  vtkCommand* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkCommand*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCommand > param1_smtptr;
+    if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param1 = param1_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->HasObserver(event, param1);
   return AMILabType<int >::CreateVar(res);
@@ -830,9 +887,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
-  boost::shared_ptr<vtkCommand > param1_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkCommand* param1 = param1_smtptr.get();
+  vtkCommand* param1;
+  if (CheckNullVar(_p,_n))  {
+    param1=(vtkCommand*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCommand > param1_smtptr;
+    if (!get_val_smtptr_param<vtkCommand >(param1_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param1 = param1_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->HasObserver(event, param1);
   return AMILabType<int >::CreateVar(res);
@@ -1028,9 +1091,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (!get_val_param<long >(event_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int event = boost::numeric_cast<long unsigned int >(event_long);
 
-  boost::shared_ptr<void > callData_smtptr;
-  if (!get_val_smtptr_param<void >(callData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* callData = callData_smtptr.get();
+  void* callData;
+  if (CheckNullVar(_p,_n))  {
+    callData=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > callData_smtptr;
+    if (!get_val_smtptr_param<void >(callData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    callData = callData_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->InvokeEvent(event, callData);
   return AMILabType<int >::CreateVar(res);
@@ -1082,9 +1151,15 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (!get_val_smtptr_param<std::string >(event_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * event = event_string->c_str();
 
-  boost::shared_ptr<void > callData_smtptr;
-  if (!get_val_smtptr_param<void >(callData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* callData = callData_smtptr.get();
+  void* callData;
+  if (CheckNullVar(_p,_n))  {
+    callData=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > callData_smtptr;
+    if (!get_val_smtptr_param<void >(callData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    callData = callData_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->InvokeEvent(event, callData);
   return AMILabType<int >::CreateVar(res);

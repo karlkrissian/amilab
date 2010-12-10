@@ -24,6 +24,10 @@
 
 #include "wrap_vtkCommand.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -67,30 +71,53 @@ Variable<AMIObject>::ptr WrapClass_vtkCommand::CreateVar( vtkCommand* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkCommand::AddMethods(WrapClass<vtkCommand>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObjectBase
-      WrapClass_vtkObjectBase::ptr parent_vtkObjectBase(        boost::dynamic_pointer_cast<WrapClass_vtkObjectBase >(this_ptr));
-      parent_vtkObjectBase->AddMethods(parent_vtkObjectBase);
+  // Adding standard methods 
+  AddVar_UnRegister_1( this_ptr);
+  AddVar_UnRegister( this_ptr);
+  AddVar_UnRegister_2( this_ptr);
+  AddVar_SetAbortFlag( this_ptr);
+  AddVar_GetAbortFlag( this_ptr);
+  AddVar_AbortFlagOn( this_ptr);
+  AddVar_AbortFlagOff( this_ptr);
+  AddVar_SetPassiveObserver( this_ptr);
+  AddVar_GetPassiveObserver( this_ptr);
+  AddVar_PassiveObserverOn( this_ptr);
+  AddVar_PassiveObserverOff( this_ptr);
 
 
-  // check that the method name is not a token
+
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+
   
-      // Adding standard methods 
-      AddVar_UnRegister_1( this_ptr);
-      AddVar_UnRegister( this_ptr);
-      AddVar_UnRegister_2( this_ptr);
-      AddVar_SetAbortFlag( this_ptr);
-      AddVar_GetAbortFlag( this_ptr);
-      AddVar_AbortFlagOn( this_ptr);
-      AddVar_AbortFlagOff( this_ptr);
-      AddVar_SetPassiveObserver( this_ptr);
-      AddVar_GetPassiveObserver( this_ptr);
-      AddVar_PassiveObserverOn( this_ptr);
-      AddVar_PassiveObserverOff( this_ptr);
+  AMIObject::ptr obj_EventIds(new AMIObject);
+  obj_EventIds->SetName("EventIds");
+
+  BasicVariable::ptr var_NoEvent = AMILabType<int >::CreateVar(0);
+  if (var_NoEvent.get()) {
+    var_NoEvent->Rename("NoEvent");
+    obj_EventIds->GetContext()->AddVar(var_NoEvent,obj_EventIds->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_EventIds->GetName().c_str(),obj_EventIds,context);
 
 
+  // Adding Bases
 
-  
+  // Add base parent vtkObjectBase
+  boost::shared_ptr<vtkObjectBase > parent_vtkObjectBase(  boost::dynamic_pointer_cast<vtkObjectBase >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObjectBase = AMILabType<vtkObjectBase >::CreateVarFromSmtPtr(parent_vtkObjectBase);
+  context->AddVar("vtkObjectBase",var_vtkObjectBase);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObjectBase = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObjectBase);
+  context->AddDefault(obj_vtkObjectBase->Pointer()->GetContext());
+
 };
 
 
@@ -108,7 +135,7 @@ void WrapClass_vtkCommand::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkCommand::AddVar_GetEventIdFromString(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -227,9 +254,15 @@ BasicVariable::ptr WrapClass_vtkCommand::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > param0_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkObjectBase* param0 = param0_smtptr.get();
+  vtkObjectBase* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > param0_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->UnRegister(param0);
   return BasicVariable::ptr();

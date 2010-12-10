@@ -27,6 +27,10 @@
 
 #include "wrap_vtkImplicitFunction.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -70,37 +74,48 @@ Variable<AMIObject>::ptr WrapClass_vtkImplicitFunction::CreateVar( vtkImplicitFu
 //----------------------------------------------------------------------
 void WrapClass_vtkImplicitFunction::AddMethods(WrapClass<vtkImplicitFunction>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_GetMTime( this_ptr);
-      AddVar_FunctionValue_1( this_ptr);
-      AddVar_FunctionValue( this_ptr);
-      AddVar_FunctionValue_2( this_ptr);
-      AddVar_FunctionGradient_1( this_ptr);
-      AddVar_FunctionGradient( this_ptr);
-      AddVar_FunctionGradient_2( this_ptr);
-      AddVar_FunctionGradient_3( this_ptr);
-      AddVar_SetTransform_1( this_ptr);
-      AddVar_SetTransform( this_ptr);
-      AddVar_SetTransform_2( this_ptr);
-      AddVar_GetTransform( this_ptr);
-      AddVar_EvaluateFunction( this_ptr);
+  AddVar_GetMTime( this_ptr);
+  AddVar_FunctionValue_1( this_ptr);
+  AddVar_FunctionValue( this_ptr);
+  AddVar_FunctionValue_2( this_ptr);
+  AddVar_FunctionGradient_1( this_ptr);
+  AddVar_FunctionGradient( this_ptr);
+  AddVar_FunctionGradient_2( this_ptr);
+  AddVar_FunctionGradient_3( this_ptr);
+  AddVar_SetTransform_1( this_ptr);
+  AddVar_SetTransform( this_ptr);
+  AddVar_SetTransform_2( this_ptr);
+  AddVar_GetTransform( this_ptr);
+  AddVar_EvaluateFunction( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -118,7 +133,7 @@ void WrapClass_vtkImplicitFunction::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkImplicitFunction::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -171,9 +186,15 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkImplicitFunction * res =   vtkImplicitFunction::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkImplicitFunction::CreateVar(res);
@@ -295,9 +316,15 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   double res =   this->_objectptr->GetObj()->FunctionValue(x);
   return AMILabType<double >::CreateVar(res);
@@ -375,13 +402,25 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<double > g_smtptr;
-  if (!get_val_smtptr_param<double >(g_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* g = g_smtptr.get();
+  double* g;
+  if (CheckNullVar(_p,_n))  {
+    g=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > g_smtptr;
+    if (!get_val_smtptr_param<double >(g_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    g = g_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->FunctionGradient(x, g);
   return BasicVariable::ptr();
@@ -429,9 +468,15 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
   double * res =   this->_objectptr->GetObj()->FunctionGradient(x);
   return AMILabType<double >::CreateVar(res,true);
@@ -487,9 +532,15 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkAbstractTransform > param0_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractTransform >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkAbstractTransform* param0 = param0_smtptr.get();
+  vtkAbstractTransform* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkAbstractTransform*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractTransform > param0_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractTransform >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTransform(param0);
   return BasicVariable::ptr();
@@ -533,9 +584,15 @@ BasicVariable::ptr WrapClass_vtkImplicitFunction::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > elements_smtptr;
-  if (!get_val_smtptr_param<double >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* elements = elements_smtptr.get();
+  double* elements;
+  if (CheckNullVar(_p,_n))  {
+    elements=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > elements_smtptr;
+    if (!get_val_smtptr_param<double >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    elements = elements_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTransform(elements);
   return BasicVariable::ptr();

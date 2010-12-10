@@ -28,6 +28,10 @@
 
 #include "wrap_vtkVariant.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -64,78 +68,81 @@ Variable<AMIObject>::ptr WrapClass_vtkVariant::CreateVar( vtkVariant* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtkVariant::AddMethods(WrapClass<vtkVariant>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-
-
-  // check that the method name is not a token
-  
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_IsValid( this_ptr);
-      AddVar_IsString( this_ptr);
-      AddVar_IsUnicodeString( this_ptr);
-      AddVar_IsNumeric( this_ptr);
-      AddVar_IsFloat( this_ptr);
-      AddVar_IsDouble( this_ptr);
-      AddVar_IsChar( this_ptr);
-      AddVar_IsUnsignedChar( this_ptr);
-      AddVar_IsSignedChar( this_ptr);
-      AddVar_IsShort( this_ptr);
-      AddVar_IsUnsignedShort( this_ptr);
-      AddVar_IsInt( this_ptr);
-      AddVar_IsUnsignedInt( this_ptr);
-      AddVar_IsLong( this_ptr);
-      AddVar_IsUnsignedLong( this_ptr);
-      AddVar_Is__Int64( this_ptr);
-      AddVar_IsUnsigned__Int64( this_ptr);
-      AddVar_IsLongLong( this_ptr);
-      AddVar_IsUnsignedLongLong( this_ptr);
-      AddVar_IsVTKObject( this_ptr);
-      AddVar_IsArray( this_ptr);
-      AddVar_GetType( this_ptr);
-      AddVar_GetTypeAsString( this_ptr);
-      AddVar_ToString( this_ptr);
-      AddVar_ToUnicodeString( this_ptr);
-      AddVar_ToFloat( this_ptr);
-      AddVar_ToDouble( this_ptr);
-      AddVar_ToChar( this_ptr);
-      AddVar_ToUnsignedChar( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_IsValid( this_ptr);
+  AddVar_IsString( this_ptr);
+  AddVar_IsUnicodeString( this_ptr);
+  AddVar_IsNumeric( this_ptr);
+  AddVar_IsFloat( this_ptr);
+  AddVar_IsDouble( this_ptr);
+  AddVar_IsChar( this_ptr);
+  AddVar_IsUnsignedChar( this_ptr);
+  AddVar_IsSignedChar( this_ptr);
+  AddVar_IsShort( this_ptr);
+  AddVar_IsUnsignedShort( this_ptr);
+  AddVar_IsInt( this_ptr);
+  AddVar_IsUnsignedInt( this_ptr);
+  AddVar_IsLong( this_ptr);
+  AddVar_IsUnsignedLong( this_ptr);
+  AddVar_Is__Int64( this_ptr);
+  AddVar_IsUnsigned__Int64( this_ptr);
+  AddVar_IsLongLong( this_ptr);
+  AddVar_IsUnsignedLongLong( this_ptr);
+  AddVar_IsVTKObject( this_ptr);
+  AddVar_IsArray( this_ptr);
+  AddVar_GetType( this_ptr);
+  AddVar_GetTypeAsString( this_ptr);
+  AddVar_ToString( this_ptr);
+  AddVar_ToUnicodeString( this_ptr);
+  AddVar_ToFloat( this_ptr);
+  AddVar_ToDouble( this_ptr);
+  AddVar_ToChar( this_ptr);
+  AddVar_ToUnsignedChar( this_ptr);
 /* The following types are missing: signed char
-      AddVar_ToSignedChar( this_ptr);
+  AddVar_ToSignedChar( this_ptr);
 */
 /* The following types are missing: short int
-      AddVar_ToShort( this_ptr);
+  AddVar_ToShort( this_ptr);
 */
-      AddVar_ToUnsignedShort( this_ptr);
-      AddVar_ToInt( this_ptr);
-      AddVar_ToUnsignedInt( this_ptr);
-      AddVar_ToLong( this_ptr);
-      AddVar_ToUnsignedLong( this_ptr);
-      AddVar_ToLongLong( this_ptr);
+  AddVar_ToUnsignedShort( this_ptr);
+  AddVar_ToInt( this_ptr);
+  AddVar_ToUnsignedInt( this_ptr);
+  AddVar_ToLong( this_ptr);
+  AddVar_ToUnsignedLong( this_ptr);
+  AddVar_ToLongLong( this_ptr);
 /* The following types are missing: long long unsigned int
-      AddVar_ToUnsignedLongLong( this_ptr);
+  AddVar_ToUnsignedLongLong( this_ptr);
 */
-      AddVar_ToTypeInt64( this_ptr);
+  AddVar_ToTypeInt64( this_ptr);
 /* The following types are missing: long long unsigned int
-      AddVar_ToTypeUInt64( this_ptr);
+  AddVar_ToTypeUInt64( this_ptr);
 */
-      AddVar_ToVTKObject( this_ptr);
-      AddVar_ToArray( this_ptr);
-      AddVar_IsEqual( this_ptr);
+  AddVar_ToVTKObject( this_ptr);
+  AddVar_ToArray( this_ptr);
+  AddVar_IsEqual( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___not_equal__( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___not_equal__( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 
 
 
   
+
+  
+
+
+  // Adding Bases
+
 };
 
 
@@ -179,7 +186,7 @@ void WrapClass_vtkVariant::AddStaticMethods( Variables::ptr& context)
   // Static methods 
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -305,7 +312,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_vtkVariant_3::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'value'")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'value'")
 }
 
 //---------------------------------------------------
@@ -316,9 +323,8 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  int value_int;
-  if (!get_val_param<int >(value_int,_p,_n,true,true)) ClassReturnEmptyVar;
-  bool value = (bool) (value_int>0.5);
+  bool value;
+  if (!get_val_param<bool >(value,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkVariant* _newobj = new vtkVariant(value);
   BasicVariable::ptr res = WrapClass_vtkVariant::CreateVar(_newobj);
@@ -757,9 +763,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > value_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(value_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkObjectBase* value = value_smtptr.get();
+  vtkObjectBase* value;
+  if (CheckNullVar(_p,_n))  {
+    value=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > value_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(value_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    value = value_smtptr.get();
+  }
 
   vtkVariant* _newobj = new vtkVariant(value);
   BasicVariable::ptr res = WrapClass_vtkVariant::CreateVar(_newobj);
@@ -788,7 +800,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsValid::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -798,8 +810,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsValid();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -808,7 +819,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsString::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -818,8 +829,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsString();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -828,7 +838,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsUnicodeString::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -838,8 +848,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsUnicodeString();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -848,7 +857,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsNumeric::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -858,8 +867,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsNumeric();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -868,7 +876,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsFloat::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -878,8 +886,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsFloat();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -888,7 +895,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsDouble::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -898,8 +905,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsDouble();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -908,7 +914,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsChar::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -918,8 +924,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsChar();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -928,7 +933,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsUnsignedChar::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -938,8 +943,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsUnsignedChar();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -948,7 +952,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsSignedChar::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -958,8 +962,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsSignedChar();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -968,7 +971,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsShort::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -978,8 +981,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsShort();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -988,7 +990,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsUnsignedShort::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -998,8 +1000,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsUnsignedShort();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1008,7 +1009,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsInt::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1018,8 +1019,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsInt();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1028,7 +1028,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsUnsignedInt::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1038,8 +1038,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsUnsignedInt();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1048,7 +1047,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsLong::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1058,8 +1057,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsLong();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1068,7 +1066,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsUnsignedLong::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1078,8 +1076,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsUnsignedLong();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1088,7 +1085,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_Is__Int64::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1098,8 +1095,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->Is__Int64();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1108,7 +1104,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsUnsigned__Int64::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1118,8 +1114,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsUnsigned__Int64();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1128,7 +1123,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsLongLong::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1138,8 +1133,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsLongLong();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1148,7 +1142,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsUnsignedLongLong::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1158,8 +1152,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsUnsignedLongLong();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1168,7 +1161,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsVTKObject::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1178,8 +1171,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsVTKObject();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1188,7 +1180,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_IsArray::SetParametersComments()
 {
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1198,8 +1190,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   bool res =   this->_objectptr->GetObj()->IsArray();
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1286,7 +1277,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToFloat::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type float";
 }
 
@@ -1298,10 +1289,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   float res =   this->_objectptr->GetObj()->ToFloat(valid);
   return AMILabType<float >::CreateVar(res);
@@ -1313,7 +1309,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToDouble::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type double";
 }
 
@@ -1325,10 +1321,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   double res =   this->_objectptr->GetObj()->ToDouble(valid);
   return AMILabType<double >::CreateVar(res);
@@ -1340,7 +1341,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToChar::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type std::string";
 }
 
@@ -1352,10 +1353,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   char res =   this->_objectptr->GetObj()->ToChar(valid);
   std::string res_string = std::string(1,res);
@@ -1368,7 +1374,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToUnsignedChar::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type unsigned char";
 }
 
@@ -1380,10 +1386,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   unsigned char res =   this->_objectptr->GetObj()->ToUnsignedChar(valid);
   return AMILabType<unsigned char >::CreateVar(res);
@@ -1396,7 +1407,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToSignedChar::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type signed char";
 }
 
@@ -1408,10 +1419,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   signed char res =   this->_objectptr->GetObj()->ToSignedChar(valid);
   return AMILabType<signed char >::CreateVar(res);
@@ -1425,7 +1441,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToShort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type short int";
 }
 
@@ -1437,10 +1453,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   short int res =   this->_objectptr->GetObj()->ToShort(valid);
   return AMILabType<short int >::CreateVar(res);
@@ -1453,7 +1474,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToUnsignedShort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type int";
 }
 
@@ -1465,10 +1486,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   short unsigned int res =   this->_objectptr->GetObj()->ToUnsignedShort(valid);
   int res_int = boost::numeric_cast<int >((unsigned int)res);
@@ -1481,7 +1507,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToInt::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type int";
 }
 
@@ -1493,10 +1519,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->ToInt(valid);
   return AMILabType<int >::CreateVar(res);
@@ -1508,7 +1539,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToUnsignedInt::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type long";
 }
 
@@ -1520,10 +1551,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   unsigned int res =   this->_objectptr->GetObj()->ToUnsignedInt(valid);
   long res_long = boost::numeric_cast<long >((unsigned int)res);
@@ -1536,7 +1572,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToLong::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type long";
 }
 
@@ -1548,10 +1584,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   long int res =   this->_objectptr->GetObj()->ToLong(valid);
   long res_long = res;
@@ -1564,7 +1605,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToUnsignedLong::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type long";
 }
 
@@ -1576,10 +1617,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   long unsigned int res =   this->_objectptr->GetObj()->ToUnsignedLong(valid);
   long res_long = boost::numeric_cast<long >(res);
@@ -1592,7 +1638,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToLongLong::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type long";
 }
 
@@ -1604,10 +1650,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   long long int res =   this->_objectptr->GetObj()->ToLongLong(valid);
   long res_long = boost::numeric_cast<long >((unsigned int)res);
@@ -1621,7 +1672,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToUnsignedLongLong::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type long long unsigned int";
 }
 
@@ -1633,10 +1684,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   long long unsigned int res =   this->_objectptr->GetObj()->ToUnsignedLongLong(valid);
   return AMILabType<long long unsigned int >::CreateVar(res);
@@ -1649,7 +1705,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToTypeInt64::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type long";
 }
 
@@ -1661,10 +1717,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   vtkTypeInt64 res =   this->_objectptr->GetObj()->ToTypeInt64(valid);
   long res_long = boost::numeric_cast<long >((unsigned int)res);
@@ -1678,7 +1739,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
 void WrapClass_vtkVariant::
     wrap_ToTypeUInt64::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( int, "parameter named 'valid' (def:0)")
+  ADDPARAMCOMMENT_TYPE( bool, "parameter named 'valid' (def:0)")
   return_comments="returning a variable of type long long unsigned int";
 }
 
@@ -1690,10 +1751,15 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > valid_int;
-  if (!get_val_smtptr_param<int >(valid_int,_p,_n,true,false,false)) ClassHelpAndReturn;
-  bool valid_val = (bool) (*valid_int>0.5);
-  bool* valid = &valid_val;
+  bool* valid = 0;
+  if (CheckNullVar(_p,_n))  {
+    valid=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > valid_smtptr;
+    if (!get_val_smtptr_param<bool >(valid_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    valid = valid_smtptr.get();
+  }
 
   vtkTypeUInt64 res =   this->_objectptr->GetObj()->ToTypeUInt64(valid);
   return AMILabType<long long unsigned int >::CreateVar(res);
@@ -1747,7 +1813,7 @@ void WrapClass_vtkVariant::
     wrap_IsEqual::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkVariant, "parameter named 'other'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1763,8 +1829,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   vtkVariant const & other = *other_smtptr;
 
   bool res =   this->_objectptr->GetObj()->IsEqual(other);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1800,7 +1865,7 @@ void WrapClass_vtkVariant::
     wrap___equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkVariant, "parameter named 'other'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1816,8 +1881,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   vtkVariant const & other = *other_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) == (other);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 
 //---------------------------------------------------
@@ -1827,7 +1891,7 @@ void WrapClass_vtkVariant::
     wrap___not_equal__::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkVariant, "parameter named 'other'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1843,8 +1907,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   vtkVariant const & other = *other_smtptr;
 
   bool res =   (*this->_objectptr->GetObj()) != (other);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 /*
  * operator not available 
@@ -1856,7 +1919,7 @@ void WrapClass_vtkVariant::
     wrap_operator not available::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkVariant, "parameter named 'other'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1872,8 +1935,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   vtkVariant const & other = *other_smtptr;
 
   bool res =   this->_objectptr->GetObj()-><(other);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -1886,7 +1948,7 @@ void WrapClass_vtkVariant::
     wrap_operator not available::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkVariant, "parameter named 'other'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1902,8 +1964,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   vtkVariant const & other = *other_smtptr;
 
   bool res =   this->_objectptr->GetObj()->>(other);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -1916,7 +1977,7 @@ void WrapClass_vtkVariant::
     wrap_operator not available::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkVariant, "parameter named 'other'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1932,8 +1993,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   vtkVariant const & other = *other_smtptr;
 
   bool res =   this->_objectptr->GetObj()-><=(other);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 /*
@@ -1946,7 +2006,7 @@ void WrapClass_vtkVariant::
     wrap_operator not available::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE( vtkVariant, "parameter named 'other'")
-  return_comments="returning a variable of type int";
+  return_comments="returning a variable of type bool";
 }
 
 //---------------------------------------------------
@@ -1962,8 +2022,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   vtkVariant const & other = *other_smtptr;
 
   bool res =   this->_objectptr->GetObj()->>=(other);
-  int res_int = ((res==true)?1:0);
-  return AMILabType<int >::CreateVar(res_int);
+  return AMILabType<bool >::CreateVar(res);
 }
 */
 

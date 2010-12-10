@@ -28,6 +28,10 @@
 
 #include "wrap_vtkVolumeMapper.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -71,58 +75,81 @@ Variable<AMIObject>::ptr WrapClass_vtkVolumeMapper::CreateVar( vtkVolumeMapper* 
 //----------------------------------------------------------------------
 void WrapClass_vtkVolumeMapper::AddMethods(WrapClass<vtkVolumeMapper>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkAbstractVolumeMapper
-      WrapClass_vtkAbstractVolumeMapper::ptr parent_vtkAbstractVolumeMapper(        boost::dynamic_pointer_cast<WrapClass_vtkAbstractVolumeMapper >(this_ptr));
-      parent_vtkAbstractVolumeMapper->AddMethods(parent_vtkAbstractVolumeMapper);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_SetInput_1( this_ptr);
-      AddVar_SetInput( this_ptr);
-      AddVar_SetInput_2( this_ptr);
-      AddVar_GetInput( this_ptr);
-      AddVar_SetBlendMode( this_ptr);
-      AddVar_SetBlendModeToComposite( this_ptr);
-      AddVar_SetBlendModeToMaximumIntensity( this_ptr);
-      AddVar_SetBlendModeToMinimumIntensity( this_ptr);
-      AddVar_GetBlendMode( this_ptr);
-      AddVar_SetCropping( this_ptr);
-      AddVar_GetCroppingMinValue( this_ptr);
-      AddVar_GetCroppingMaxValue( this_ptr);
-      AddVar_GetCropping( this_ptr);
-      AddVar_CroppingOn( this_ptr);
-      AddVar_CroppingOff( this_ptr);
-      AddVar_SetCroppingRegionPlanes_1( this_ptr);
-      AddVar_SetCroppingRegionPlanes( this_ptr);
-      AddVar_SetCroppingRegionPlanes_2( this_ptr);
-      AddVar_GetCroppingRegionPlanes_1( this_ptr);
-      AddVar_GetCroppingRegionPlanes( this_ptr);
-      AddVar_GetCroppingRegionPlanes_2( this_ptr);
-      AddVar_GetVoxelCroppingRegionPlanes_1( this_ptr);
-      AddVar_GetVoxelCroppingRegionPlanes( this_ptr);
-      AddVar_GetVoxelCroppingRegionPlanes_2( this_ptr);
-      AddVar_SetCroppingRegionFlags( this_ptr);
-      AddVar_GetCroppingRegionFlagsMinValue( this_ptr);
-      AddVar_GetCroppingRegionFlagsMaxValue( this_ptr);
-      AddVar_GetCroppingRegionFlags( this_ptr);
-      AddVar_SetCroppingRegionFlagsToSubVolume( this_ptr);
-      AddVar_SetCroppingRegionFlagsToFence( this_ptr);
-      AddVar_SetCroppingRegionFlagsToInvertedFence( this_ptr);
-      AddVar_SetCroppingRegionFlagsToCross( this_ptr);
-      AddVar_SetCroppingRegionFlagsToInvertedCross( this_ptr);
-      AddVar_ReleaseGraphicsResources( this_ptr);
+  AddVar_SetInput_1( this_ptr);
+  AddVar_SetInput( this_ptr);
+  AddVar_SetInput_2( this_ptr);
+  AddVar_GetInput( this_ptr);
+  AddVar_SetBlendMode( this_ptr);
+  AddVar_SetBlendModeToComposite( this_ptr);
+  AddVar_SetBlendModeToMaximumIntensity( this_ptr);
+  AddVar_SetBlendModeToMinimumIntensity( this_ptr);
+  AddVar_GetBlendMode( this_ptr);
+  AddVar_SetCropping( this_ptr);
+  AddVar_GetCroppingMinValue( this_ptr);
+  AddVar_GetCroppingMaxValue( this_ptr);
+  AddVar_GetCropping( this_ptr);
+  AddVar_CroppingOn( this_ptr);
+  AddVar_CroppingOff( this_ptr);
+  AddVar_SetCroppingRegionPlanes_1( this_ptr);
+  AddVar_SetCroppingRegionPlanes( this_ptr);
+  AddVar_SetCroppingRegionPlanes_2( this_ptr);
+  AddVar_GetCroppingRegionPlanes_1( this_ptr);
+  AddVar_GetCroppingRegionPlanes( this_ptr);
+  AddVar_GetCroppingRegionPlanes_2( this_ptr);
+  AddVar_GetVoxelCroppingRegionPlanes_1( this_ptr);
+  AddVar_GetVoxelCroppingRegionPlanes( this_ptr);
+  AddVar_GetVoxelCroppingRegionPlanes_2( this_ptr);
+  AddVar_SetCroppingRegionFlags( this_ptr);
+  AddVar_GetCroppingRegionFlagsMinValue( this_ptr);
+  AddVar_GetCroppingRegionFlagsMaxValue( this_ptr);
+  AddVar_GetCroppingRegionFlags( this_ptr);
+  AddVar_SetCroppingRegionFlagsToSubVolume( this_ptr);
+  AddVar_SetCroppingRegionFlagsToFence( this_ptr);
+  AddVar_SetCroppingRegionFlagsToInvertedFence( this_ptr);
+  AddVar_SetCroppingRegionFlagsToCross( this_ptr);
+  AddVar_SetCroppingRegionFlagsToInvertedCross( this_ptr);
+  AddVar_ReleaseGraphicsResources( this_ptr);
 
+
+
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
 
 
   
+  AMIObject::ptr obj_enum_86(new AMIObject);
+  obj_enum_86->SetName("enum_86");
+
+  BasicVariable::ptr var_COMPOSITE_BLEND = AMILabType<int >::CreateVar(0);
+  if (var_COMPOSITE_BLEND.get()) {
+    var_COMPOSITE_BLEND->Rename("COMPOSITE_BLEND");
+    obj_enum_86->GetContext()->AddVar(var_COMPOSITE_BLEND,obj_enum_86->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_enum_86->GetName().c_str(),obj_enum_86,context);
+
+
+  // Adding Bases
+
+  // Add base parent vtkAbstractVolumeMapper
+  boost::shared_ptr<vtkAbstractVolumeMapper > parent_vtkAbstractVolumeMapper(  boost::dynamic_pointer_cast<vtkAbstractVolumeMapper >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkAbstractVolumeMapper = AMILabType<vtkAbstractVolumeMapper >::CreateVarFromSmtPtr(parent_vtkAbstractVolumeMapper);
+  context->AddVar("vtkAbstractVolumeMapper",var_vtkAbstractVolumeMapper);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkAbstractVolumeMapper = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkAbstractVolumeMapper);
+  context->AddDefault(obj_vtkAbstractVolumeMapper->Pointer()->GetContext());
+
 };
 
 
@@ -140,7 +167,7 @@ void WrapClass_vtkVolumeMapper::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkVolumeMapper::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -193,9 +220,15 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkVolumeMapper * res =   vtkVolumeMapper::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkVolumeMapper::CreateVar(res);
@@ -296,9 +329,15 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkImageData > param0_smtptr;
-  if (!get_val_smtptr_param<vtkImageData >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkImageData* param0 = param0_smtptr.get();
+  vtkImageData* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkImageData*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkImageData > param0_smtptr;
+    if (!get_val_smtptr_param<vtkImageData >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInput(param0);
   return BasicVariable::ptr();
@@ -342,9 +381,15 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<vtkDataSet > param0_smtptr;
-  if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  vtkDataSet* param0 = param0_smtptr.get();
+  vtkDataSet* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkDataSet*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataSet > param0_smtptr;
+    if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInput(param0);
   return BasicVariable::ptr();
@@ -666,9 +711,15 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > _arg_smtptr;
-  if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* _arg = _arg_smtptr.get();
+  double* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > _arg_smtptr;
+    if (!get_val_smtptr_param<double >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetCroppingRegionPlanes(_arg);
   return BasicVariable::ptr();
@@ -731,9 +782,15 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetCroppingRegionPlanes(data);
   return BasicVariable::ptr();
@@ -796,9 +853,15 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > data_smtptr;
-  if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* data = data_smtptr.get();
+  double* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > data_smtptr;
+    if (!get_val_smtptr_param<double >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetVoxelCroppingRegionPlanes(data);
   return BasicVariable::ptr();
@@ -992,9 +1055,15 @@ BasicVariable::ptr WrapClass_vtkVolumeMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkWindow > param0_smtptr;
-  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkWindow* param0 = param0_smtptr.get();
+  vtkWindow* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkWindow > param0_smtptr;
+    if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ReleaseGraphicsResources(param0);
   return BasicVariable::ptr();

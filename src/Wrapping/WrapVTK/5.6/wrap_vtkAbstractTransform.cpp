@@ -28,6 +28,10 @@
 
 #include "wrap_vtkAbstractTransform.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -73,48 +77,51 @@ void WrapClass_vtkAbstractTransform::AddMethods(WrapClass<vtkAbstractTransform>:
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_TransformPoint_1( this_ptr);
-      AddVar_TransformPoint( this_ptr);
-      AddVar_TransformPoint_2( this_ptr);
-      AddVar_TransformPoint_3( this_ptr);
-      AddVar_TransformPoint_4( this_ptr);
-      AddVar_TransformFloatPoint_1( this_ptr);
-      AddVar_TransformFloatPoint( this_ptr);
-      AddVar_TransformFloatPoint_2( this_ptr);
-      AddVar_TransformDoublePoint_1( this_ptr);
-      AddVar_TransformDoublePoint( this_ptr);
-      AddVar_TransformDoublePoint_2( this_ptr);
-      AddVar_TransformNormalAtPoint_1( this_ptr);
-      AddVar_TransformNormalAtPoint( this_ptr);
-      AddVar_TransformNormalAtPoint_2( this_ptr);
-      AddVar_TransformNormalAtPoint_3( this_ptr);
-      AddVar_TransformDoubleNormalAtPoint( this_ptr);
-      AddVar_TransformFloatNormalAtPoint( this_ptr);
-      AddVar_TransformVectorAtPoint_1( this_ptr);
-      AddVar_TransformVectorAtPoint( this_ptr);
-      AddVar_TransformVectorAtPoint_2( this_ptr);
-      AddVar_TransformVectorAtPoint_3( this_ptr);
-      AddVar_TransformDoubleVectorAtPoint( this_ptr);
-      AddVar_TransformFloatVectorAtPoint( this_ptr);
-      AddVar_TransformPoints( this_ptr);
-      AddVar_TransformPointsNormalsVectors( this_ptr);
-      AddVar_GetInverse( this_ptr);
-      AddVar_SetInverse( this_ptr);
-      AddVar_DeepCopy( this_ptr);
-      AddVar_Update( this_ptr);
-      AddVar_CircuitCheck( this_ptr);
-      AddVar_GetMTime( this_ptr);
-      AddVar_UnRegister( this_ptr);
+  AddVar_TransformPoint_1( this_ptr);
+  AddVar_TransformPoint( this_ptr);
+  AddVar_TransformPoint_2( this_ptr);
+  AddVar_TransformPoint_3( this_ptr);
+  AddVar_TransformPoint_4( this_ptr);
+  AddVar_TransformFloatPoint_1( this_ptr);
+  AddVar_TransformFloatPoint( this_ptr);
+  AddVar_TransformFloatPoint_2( this_ptr);
+  AddVar_TransformDoublePoint_1( this_ptr);
+  AddVar_TransformDoublePoint( this_ptr);
+  AddVar_TransformDoublePoint_2( this_ptr);
+  AddVar_TransformNormalAtPoint_1( this_ptr);
+  AddVar_TransformNormalAtPoint( this_ptr);
+  AddVar_TransformNormalAtPoint_2( this_ptr);
+  AddVar_TransformNormalAtPoint_3( this_ptr);
+  AddVar_TransformDoubleNormalAtPoint( this_ptr);
+  AddVar_TransformFloatNormalAtPoint( this_ptr);
+  AddVar_TransformVectorAtPoint_1( this_ptr);
+  AddVar_TransformVectorAtPoint( this_ptr);
+  AddVar_TransformVectorAtPoint_2( this_ptr);
+  AddVar_TransformVectorAtPoint_3( this_ptr);
+  AddVar_TransformDoubleVectorAtPoint( this_ptr);
+  AddVar_TransformFloatVectorAtPoint( this_ptr);
+  AddVar_TransformPoints( this_ptr);
+  AddVar_TransformPointsNormalsVectors( this_ptr);
+  AddVar_GetInverse( this_ptr);
+  AddVar_SetInverse( this_ptr);
+  AddVar_DeepCopy( this_ptr);
+  AddVar_Update( this_ptr);
+  AddVar_CircuitCheck( this_ptr);
+  AddVar_GetMTime( this_ptr);
+  AddVar_UnRegister( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -199,9 +206,15 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkAbstractTransform * res =   vtkAbstractTransform::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkAbstractTransform::CreateVar(res);
@@ -303,13 +316,25 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > in_smtptr;
-  if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* in = in_smtptr.get();
+  float* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > in_smtptr;
+    if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<float > out_smtptr;
-  if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* out = out_smtptr.get();
+  float* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > out_smtptr;
+    if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->TransformPoint(in, out);
   return BasicVariable::ptr();
@@ -360,13 +385,25 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > in_smtptr;
-  if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* in = in_smtptr.get();
+  double* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > in_smtptr;
+    if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<double > out_smtptr;
-  if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* out = out_smtptr.get();
+  double* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > out_smtptr;
+    if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->TransformPoint(in, out);
   return BasicVariable::ptr();
@@ -423,9 +460,15 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > point_smtptr;
-  if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* point = point_smtptr.get();
+  double* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > point_smtptr;
+    if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    point = point_smtptr.get();
+  }
 
   double * res =   this->_objectptr->GetObj()->TransformPoint(point);
   return AMILabType<double >::CreateVar(res,true);
@@ -503,9 +546,15 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > point_smtptr;
-  if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* point = point_smtptr.get();
+  float* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > point_smtptr;
+    if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    point = point_smtptr.get();
+  }
 
   float * res =   this->_objectptr->GetObj()->TransformFloatPoint(point);
   return AMILabType<float >::CreateVar(res,true);
@@ -583,9 +632,15 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > point_smtptr;
-  if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* point = point_smtptr.get();
+  double* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > point_smtptr;
+    if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    point = point_smtptr.get();
+  }
 
   double * res =   this->_objectptr->GetObj()->TransformDoublePoint(point);
   return AMILabType<double >::CreateVar(res,true);
@@ -610,17 +665,35 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > point_smtptr;
-  if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* point = point_smtptr.get();
+  float* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > point_smtptr;
+    if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<float > in_smtptr;
-  if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* in = in_smtptr.get();
+  float* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > in_smtptr;
+    if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<float > out_smtptr;
-  if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* out = out_smtptr.get();
+  float* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > out_smtptr;
+    if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->TransformNormalAtPoint(point, in, out);
   return BasicVariable::ptr();
@@ -669,17 +742,35 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > point_smtptr;
-  if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* point = point_smtptr.get();
+  double* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > point_smtptr;
+    if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<double > in_smtptr;
-  if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* in = in_smtptr.get();
+  double* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > in_smtptr;
+    if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<double > out_smtptr;
-  if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* out = out_smtptr.get();
+  double* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > out_smtptr;
+    if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->TransformNormalAtPoint(point, in, out);
   return BasicVariable::ptr();
@@ -704,13 +795,25 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > point_smtptr;
-  if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* point = point_smtptr.get();
+  double* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > point_smtptr;
+    if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<double > normal_smtptr;
-  if (!get_val_smtptr_param<double >(normal_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* normal = normal_smtptr.get();
+  double* normal;
+  if (CheckNullVar(_p,_n))  {
+    normal=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > normal_smtptr;
+    if (!get_val_smtptr_param<double >(normal_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    normal = normal_smtptr.get();
+  }
 
   double * res =   this->_objectptr->GetObj()->TransformNormalAtPoint(point, normal);
   return AMILabType<double >::CreateVar(res,true);
@@ -735,13 +838,25 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > point_smtptr;
-  if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* point = point_smtptr.get();
+  double* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > point_smtptr;
+    if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<double > normal_smtptr;
-  if (!get_val_smtptr_param<double >(normal_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* normal = normal_smtptr.get();
+  double* normal;
+  if (CheckNullVar(_p,_n))  {
+    normal=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > normal_smtptr;
+    if (!get_val_smtptr_param<double >(normal_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    normal = normal_smtptr.get();
+  }
 
   double * res =   this->_objectptr->GetObj()->TransformDoubleNormalAtPoint(point, normal);
   return AMILabType<double >::CreateVar(res,true);
@@ -766,13 +881,25 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<float > point_smtptr;
-  if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  float* point = point_smtptr.get();
+  float* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > point_smtptr;
+    if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<float > normal_smtptr;
-  if (!get_val_smtptr_param<float >(normal_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  float* normal = normal_smtptr.get();
+  float* normal;
+  if (CheckNullVar(_p,_n))  {
+    normal=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > normal_smtptr;
+    if (!get_val_smtptr_param<float >(normal_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    normal = normal_smtptr.get();
+  }
 
   float * res =   this->_objectptr->GetObj()->TransformFloatNormalAtPoint(point, normal);
   return AMILabType<float >::CreateVar(res,true);
@@ -797,17 +924,35 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<float > point_smtptr;
-  if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* point = point_smtptr.get();
+  float* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > point_smtptr;
+    if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<float > in_smtptr;
-  if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* in = in_smtptr.get();
+  float* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > in_smtptr;
+    if (!get_val_smtptr_param<float >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<float > out_smtptr;
-  if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  float* out = out_smtptr.get();
+  float* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > out_smtptr;
+    if (!get_val_smtptr_param<float >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->TransformVectorAtPoint(point, in, out);
   return BasicVariable::ptr();
@@ -856,17 +1001,35 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > point_smtptr;
-  if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* point = point_smtptr.get();
+  double* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > point_smtptr;
+    if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<double > in_smtptr;
-  if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* in = in_smtptr.get();
+  double* in;
+  if (CheckNullVar(_p,_n))  {
+    in=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > in_smtptr;
+    if (!get_val_smtptr_param<double >(in_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    in = in_smtptr.get();
+  }
 
-  boost::shared_ptr<double > out_smtptr;
-  if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* out = out_smtptr.get();
+  double* out;
+  if (CheckNullVar(_p,_n))  {
+    out=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > out_smtptr;
+    if (!get_val_smtptr_param<double >(out_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    out = out_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->TransformVectorAtPoint(point, in, out);
   return BasicVariable::ptr();
@@ -891,13 +1054,25 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > point_smtptr;
-  if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* point = point_smtptr.get();
+  double* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > point_smtptr;
+    if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<double > vector_smtptr;
-  if (!get_val_smtptr_param<double >(vector_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* vector = vector_smtptr.get();
+  double* vector;
+  if (CheckNullVar(_p,_n))  {
+    vector=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > vector_smtptr;
+    if (!get_val_smtptr_param<double >(vector_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    vector = vector_smtptr.get();
+  }
 
   double * res =   this->_objectptr->GetObj()->TransformVectorAtPoint(point, vector);
   return AMILabType<double >::CreateVar(res,true);
@@ -922,13 +1097,25 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > point_smtptr;
-  if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* point = point_smtptr.get();
+  double* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > point_smtptr;
+    if (!get_val_smtptr_param<double >(point_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<double > vector_smtptr;
-  if (!get_val_smtptr_param<double >(vector_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* vector = vector_smtptr.get();
+  double* vector;
+  if (CheckNullVar(_p,_n))  {
+    vector=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > vector_smtptr;
+    if (!get_val_smtptr_param<double >(vector_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    vector = vector_smtptr.get();
+  }
 
   double * res =   this->_objectptr->GetObj()->TransformDoubleVectorAtPoint(point, vector);
   return AMILabType<double >::CreateVar(res,true);
@@ -953,13 +1140,25 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<float > point_smtptr;
-  if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  float* point = point_smtptr.get();
+  float* point;
+  if (CheckNullVar(_p,_n))  {
+    point=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > point_smtptr;
+    if (!get_val_smtptr_param<float >(point_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    point = point_smtptr.get();
+  }
 
-  boost::shared_ptr<float > vector_smtptr;
-  if (!get_val_smtptr_param<float >(vector_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  float* vector = vector_smtptr.get();
+  float* vector;
+  if (CheckNullVar(_p,_n))  {
+    vector=(float*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<float > vector_smtptr;
+    if (!get_val_smtptr_param<float >(vector_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    vector = vector_smtptr.get();
+  }
 
   float * res =   this->_objectptr->GetObj()->TransformFloatVectorAtPoint(point, vector);
   return AMILabType<float >::CreateVar(res,true);
@@ -983,13 +1182,25 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPoints > inPts_smtptr;
-  if (!get_val_smtptr_param<vtkPoints >(inPts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPoints* inPts = inPts_smtptr.get();
+  vtkPoints* inPts;
+  if (CheckNullVar(_p,_n))  {
+    inPts=(vtkPoints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPoints > inPts_smtptr;
+    if (!get_val_smtptr_param<vtkPoints >(inPts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    inPts = inPts_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkPoints > outPts_smtptr;
-  if (!get_val_smtptr_param<vtkPoints >(outPts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPoints* outPts = outPts_smtptr.get();
+  vtkPoints* outPts;
+  if (CheckNullVar(_p,_n))  {
+    outPts=(vtkPoints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPoints > outPts_smtptr;
+    if (!get_val_smtptr_param<vtkPoints >(outPts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    outPts = outPts_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->TransformPoints(inPts, outPts);
   return BasicVariable::ptr();
@@ -1017,29 +1228,65 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>6) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkPoints > inPts_smtptr;
-  if (!get_val_smtptr_param<vtkPoints >(inPts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPoints* inPts = inPts_smtptr.get();
+  vtkPoints* inPts;
+  if (CheckNullVar(_p,_n))  {
+    inPts=(vtkPoints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPoints > inPts_smtptr;
+    if (!get_val_smtptr_param<vtkPoints >(inPts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    inPts = inPts_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkPoints > outPts_smtptr;
-  if (!get_val_smtptr_param<vtkPoints >(outPts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkPoints* outPts = outPts_smtptr.get();
+  vtkPoints* outPts;
+  if (CheckNullVar(_p,_n))  {
+    outPts=(vtkPoints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkPoints > outPts_smtptr;
+    if (!get_val_smtptr_param<vtkPoints >(outPts_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    outPts = outPts_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkDataArray > inNms_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(inNms_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataArray* inNms = inNms_smtptr.get();
+  vtkDataArray* inNms;
+  if (CheckNullVar(_p,_n))  {
+    inNms=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > inNms_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(inNms_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    inNms = inNms_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkDataArray > outNms_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(outNms_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataArray* outNms = outNms_smtptr.get();
+  vtkDataArray* outNms;
+  if (CheckNullVar(_p,_n))  {
+    outNms=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > outNms_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(outNms_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    outNms = outNms_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkDataArray > inVrs_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(inVrs_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataArray* inVrs = inVrs_smtptr.get();
+  vtkDataArray* inVrs;
+  if (CheckNullVar(_p,_n))  {
+    inVrs=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > inVrs_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(inVrs_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    inVrs = inVrs_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkDataArray > outVrs_smtptr;
-  if (!get_val_smtptr_param<vtkDataArray >(outVrs_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataArray* outVrs = outVrs_smtptr.get();
+  vtkDataArray* outVrs;
+  if (CheckNullVar(_p,_n))  {
+    outVrs=(vtkDataArray*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataArray > outVrs_smtptr;
+    if (!get_val_smtptr_param<vtkDataArray >(outVrs_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    outVrs = outVrs_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->TransformPointsNormalsVectors(inPts, outPts, inNms, outNms, inVrs, outVrs);
   return BasicVariable::ptr();
@@ -1082,9 +1329,15 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkAbstractTransform > transform_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractTransform >(transform_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkAbstractTransform* transform = transform_smtptr.get();
+  vtkAbstractTransform* transform;
+  if (CheckNullVar(_p,_n))  {
+    transform=(vtkAbstractTransform*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractTransform > transform_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractTransform >(transform_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    transform = transform_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInverse(transform);
   return BasicVariable::ptr();
@@ -1107,9 +1360,15 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkAbstractTransform > param0_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractTransform >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkAbstractTransform* param0 = param0_smtptr.get();
+  vtkAbstractTransform* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkAbstractTransform*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractTransform > param0_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractTransform >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DeepCopy(param0);
   return BasicVariable::ptr();
@@ -1151,9 +1410,15 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkAbstractTransform > transform_smtptr;
-  if (!get_val_smtptr_param<vtkAbstractTransform >(transform_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkAbstractTransform* transform = transform_smtptr.get();
+  vtkAbstractTransform* transform;
+  if (CheckNullVar(_p,_n))  {
+    transform=(vtkAbstractTransform*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkAbstractTransform > transform_smtptr;
+    if (!get_val_smtptr_param<vtkAbstractTransform >(transform_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    transform = transform_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->CircuitCheck(transform);
   return AMILabType<int >::CreateVar(res);
@@ -1196,9 +1461,15 @@ BasicVariable::ptr WrapClass_vtkAbstractTransform::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > O_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(O_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* O = O_smtptr.get();
+  vtkObjectBase* O;
+  if (CheckNullVar(_p,_n))  {
+    O=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > O_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(O_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    O = O_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->UnRegister(O);
   return BasicVariable::ptr();

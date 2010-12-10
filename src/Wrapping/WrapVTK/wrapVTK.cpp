@@ -95,6 +95,8 @@ void AddWrapVTK() {
 
   ADDVAR_NAME( C_wrap_varfunction,   "ToVtkImageData", wrap_ToVtkImageData);
 
+  ADDVAR_NAME( C_wrap_varfunction,   "FromVtkImageData", wrap_FromVtkImageData);
+
 // #include "wrap_vtkInteractorStyleTrackballCamera.h"
 // #include "wrap_vtkInteractorStyleTrackball.h"
 // #include "wrap_vtkInteractorStyleImage.h"
@@ -400,6 +402,36 @@ BasicVariable::ptr wrap_ToVtkImageData(ParamList* p)
   return AMILabType<vtkImageData>::CreateVarFromSmtPtr(vtk_image);
 
 } // wrap_ToVtkImageData()
+
+
+//
+BasicVariable::ptr wrap_FromVtkImageData(ParamList* p)
+{
+
+  char functionname[] = "FromVtkImageData";
+  char description[]=" \n\
+                      ";
+  char parameters[] =" convert vtkImageData  variable to InrImage variable\n\
+                      Parameters:\n\
+                        vtkImageData variable\n\
+                      Return: Returns a variable of type InrImage\n\
+                      \n\
+                      ";
+
+  vtkImageData_ptr vtk_input;
+  InrImage::ptr image;
+  int   n=0;
+
+  if (!get_val_smtptr_param<vtkImageData>( vtk_input,      p, n)) HelpAndReturnVarPtr;
+
+  if (vtk_input.get()) {
+    image =  InrImage::ptr(new InrImage(vtk_input.get()));
+    return Variable<InrImage>::ptr( new Variable<InrImage>(image));
+  }
+  else
+    return BasicVariable::ptr();
+
+} // wrap_FromVtkImageData()
 
 
 //

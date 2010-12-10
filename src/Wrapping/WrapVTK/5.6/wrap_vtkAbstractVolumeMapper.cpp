@@ -28,6 +28,10 @@
 
 #include "wrap_vtkAbstractVolumeMapper.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -71,51 +75,62 @@ Variable<AMIObject>::ptr WrapClass_vtkAbstractVolumeMapper::CreateVar( vtkAbstra
 //----------------------------------------------------------------------
 void WrapClass_vtkAbstractVolumeMapper::AddMethods(WrapClass<vtkAbstractVolumeMapper>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkAbstractMapper3D
-      WrapClass_vtkAbstractMapper3D::ptr parent_vtkAbstractMapper3D(        boost::dynamic_pointer_cast<WrapClass_vtkAbstractMapper3D >(this_ptr));
-      parent_vtkAbstractMapper3D->AddMethods(parent_vtkAbstractMapper3D);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_SetInput( this_ptr);
-      AddVar_GetDataSetInput( this_ptr);
-      AddVar_GetDataObjectInput( this_ptr);
-      AddVar_GetBounds_1( this_ptr);
-      AddVar_GetBounds( this_ptr);
-      AddVar_GetBounds_2( this_ptr);
-      AddVar_SetScalarMode( this_ptr);
-      AddVar_GetScalarMode( this_ptr);
-      AddVar_SetScalarModeToDefault( this_ptr);
-      AddVar_SetScalarModeToUsePointData( this_ptr);
-      AddVar_SetScalarModeToUseCellData( this_ptr);
-      AddVar_SetScalarModeToUsePointFieldData( this_ptr);
-      AddVar_SetScalarModeToUseCellFieldData( this_ptr);
-      AddVar_SelectScalarArray_1( this_ptr);
-      AddVar_SelectScalarArray( this_ptr);
-      AddVar_SelectScalarArray_2( this_ptr);
-      AddVar_GetArrayName( this_ptr);
-      AddVar_GetArrayId( this_ptr);
-      AddVar_GetArrayAccessMode( this_ptr);
-      AddVar_GetScalarModeAsString( this_ptr);
-      AddVar_GetGradientMagnitudeScale_1( this_ptr);
-      AddVar_GetGradientMagnitudeBias_1( this_ptr);
-      AddVar_GetGradientMagnitudeScale( this_ptr);
-      AddVar_GetGradientMagnitudeScale_2( this_ptr);
-      AddVar_GetGradientMagnitudeBias( this_ptr);
-      AddVar_GetGradientMagnitudeBias_2( this_ptr);
-      AddVar_ReleaseGraphicsResources( this_ptr);
+  AddVar_SetInput( this_ptr);
+  AddVar_GetDataSetInput( this_ptr);
+  AddVar_GetDataObjectInput( this_ptr);
+  AddVar_GetBounds_1( this_ptr);
+  AddVar_GetBounds( this_ptr);
+  AddVar_GetBounds_2( this_ptr);
+  AddVar_SetScalarMode( this_ptr);
+  AddVar_GetScalarMode( this_ptr);
+  AddVar_SetScalarModeToDefault( this_ptr);
+  AddVar_SetScalarModeToUsePointData( this_ptr);
+  AddVar_SetScalarModeToUseCellData( this_ptr);
+  AddVar_SetScalarModeToUsePointFieldData( this_ptr);
+  AddVar_SetScalarModeToUseCellFieldData( this_ptr);
+  AddVar_SelectScalarArray_1( this_ptr);
+  AddVar_SelectScalarArray( this_ptr);
+  AddVar_SelectScalarArray_2( this_ptr);
+  AddVar_GetArrayName( this_ptr);
+  AddVar_GetArrayId( this_ptr);
+  AddVar_GetArrayAccessMode( this_ptr);
+  AddVar_GetScalarModeAsString( this_ptr);
+  AddVar_GetGradientMagnitudeScale_1( this_ptr);
+  AddVar_GetGradientMagnitudeBias_1( this_ptr);
+  AddVar_GetGradientMagnitudeScale( this_ptr);
+  AddVar_GetGradientMagnitudeScale_2( this_ptr);
+  AddVar_GetGradientMagnitudeBias( this_ptr);
+  AddVar_GetGradientMagnitudeBias_2( this_ptr);
+  AddVar_ReleaseGraphicsResources( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkAbstractMapper3D
+  boost::shared_ptr<vtkAbstractMapper3D > parent_vtkAbstractMapper3D(  boost::dynamic_pointer_cast<vtkAbstractMapper3D >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkAbstractMapper3D = AMILabType<vtkAbstractMapper3D >::CreateVarFromSmtPtr(parent_vtkAbstractMapper3D);
+  context->AddVar("vtkAbstractMapper3D",var_vtkAbstractMapper3D);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkAbstractMapper3D = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkAbstractMapper3D);
+  context->AddDefault(obj_vtkAbstractMapper3D->Pointer()->GetContext());
+
 };
 
 
@@ -133,7 +148,7 @@ void WrapClass_vtkAbstractVolumeMapper::AddStaticMethods( Variables::ptr& contex
   WrapClass_vtkAbstractVolumeMapper::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -186,9 +201,15 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkAbstractVolumeMapper * res =   vtkAbstractVolumeMapper::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkAbstractVolumeMapper::CreateVar(res);
@@ -289,9 +310,15 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkDataSet > param0_smtptr;
-  if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataSet* param0 = param0_smtptr.get();
+  vtkDataSet* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkDataSet*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataSet > param0_smtptr;
+    if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInput(param0);
   return BasicVariable::ptr();
@@ -394,9 +421,15 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<double > bounds_smtptr;
-  if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* bounds = bounds_smtptr.get();
+  double* bounds;
+  if (CheckNullVar(_p,_n))  {
+    bounds=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > bounds_smtptr;
+    if (!get_val_smtptr_param<double >(bounds_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    bounds = bounds_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetBounds(bounds);
   return BasicVariable::ptr();
@@ -830,9 +863,15 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkWindow > param0_smtptr;
-  if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkWindow* param0 = param0_smtptr.get();
+  vtkWindow* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkWindow > param0_smtptr;
+    if (!get_val_smtptr_param<vtkWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ReleaseGraphicsResources(param0);
   return BasicVariable::ptr();

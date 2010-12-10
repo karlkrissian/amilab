@@ -25,6 +25,10 @@
 
 #include "wrap_vtkInteractorStyleTrackballCamera.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -32,8 +36,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyleTrackballCamera>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkInteractorStyleTrackballCamera::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -68,39 +72,50 @@ Variable<AMIObject>::ptr WrapClass_vtkInteractorStyleTrackballCamera::CreateVar(
 //----------------------------------------------------------------------
 void WrapClass_vtkInteractorStyleTrackballCamera::AddMethods(WrapClass<vtkInteractorStyleTrackballCamera>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkInteractorStyle
-      WrapClass_vtkInteractorStyle::ptr parent_vtkInteractorStyle(        boost::dynamic_pointer_cast<WrapClass_vtkInteractorStyle >(this_ptr));
-      parent_vtkInteractorStyle->AddMethods(parent_vtkInteractorStyle);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_OnMouseMove( this_ptr);
-      AddVar_OnLeftButtonDown( this_ptr);
-      AddVar_OnLeftButtonUp( this_ptr);
-      AddVar_OnMiddleButtonDown( this_ptr);
-      AddVar_OnMiddleButtonUp( this_ptr);
-      AddVar_OnRightButtonDown( this_ptr);
-      AddVar_OnRightButtonUp( this_ptr);
-      AddVar_OnMouseWheelForward( this_ptr);
-      AddVar_OnMouseWheelBackward( this_ptr);
-      AddVar_Rotate( this_ptr);
-      AddVar_Spin( this_ptr);
-      AddVar_Pan( this_ptr);
-      AddVar_Dolly( this_ptr);
-      AddVar_SetMotionFactor( this_ptr);
-      AddVar_GetMotionFactor( this_ptr);
+  AddVar_OnMouseMove( this_ptr);
+  AddVar_OnLeftButtonDown( this_ptr);
+  AddVar_OnLeftButtonUp( this_ptr);
+  AddVar_OnMiddleButtonDown( this_ptr);
+  AddVar_OnMiddleButtonUp( this_ptr);
+  AddVar_OnRightButtonDown( this_ptr);
+  AddVar_OnRightButtonUp( this_ptr);
+  AddVar_OnMouseWheelForward( this_ptr);
+  AddVar_OnMouseWheelBackward( this_ptr);
+  AddVar_Rotate( this_ptr);
+  AddVar_Spin( this_ptr);
+  AddVar_Pan( this_ptr);
+  AddVar_Dolly( this_ptr);
+  AddVar_SetMotionFactor( this_ptr);
+  AddVar_GetMotionFactor( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkInteractorStyle
+  boost::shared_ptr<vtkInteractorStyle > parent_vtkInteractorStyle(  boost::dynamic_pointer_cast<vtkInteractorStyle >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkInteractorStyle = AMILabType<vtkInteractorStyle >::CreateVarFromSmtPtr(parent_vtkInteractorStyle);
+  context->AddVar("vtkInteractorStyle",var_vtkInteractorStyle);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkInteractorStyle = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkInteractorStyle);
+  context->AddDefault(obj_vtkInteractorStyle->Pointer()->GetContext());
+
 };
 
 
@@ -119,7 +134,7 @@ void WrapClass_vtkInteractorStyleTrackballCamera::AddStaticMethods( Variables::p
   WrapClass_vtkInteractorStyleTrackballCamera::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -192,9 +207,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkInteractorStyleTrackballCamera * res =   vtkInteractorStyleTrackballCamera::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleTrackballCamera::CreateVar(res);

@@ -25,6 +25,10 @@
 
 #include "wrap_vtkInteractorStyleImage.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -32,8 +36,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyleImage>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkInteractorStyleImage::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -68,44 +72,55 @@ Variable<AMIObject>::ptr WrapClass_vtkInteractorStyleImage::CreateVar( vtkIntera
 //----------------------------------------------------------------------
 void WrapClass_vtkInteractorStyleImage::AddMethods(WrapClass<vtkInteractorStyleImage>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkInteractorStyleTrackballCamera
-      WrapClass_vtkInteractorStyleTrackballCamera::ptr parent_vtkInteractorStyleTrackballCamera(        boost::dynamic_pointer_cast<WrapClass_vtkInteractorStyleTrackballCamera >(this_ptr));
-      parent_vtkInteractorStyleTrackballCamera->AddMethods(parent_vtkInteractorStyleTrackballCamera);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_GetWindowLevelStartPosition_1( this_ptr);
-      AddVar_GetWindowLevelStartPosition( this_ptr);
-      AddVar_GetWindowLevelStartPosition_2( this_ptr);
-      AddVar_GetWindowLevelStartPosition_3( this_ptr);
-      AddVar_GetWindowLevelCurrentPosition_1( this_ptr);
-      AddVar_GetWindowLevelCurrentPosition( this_ptr);
-      AddVar_GetWindowLevelCurrentPosition_2( this_ptr);
-      AddVar_GetWindowLevelCurrentPosition_3( this_ptr);
-      AddVar_OnMouseMove( this_ptr);
-      AddVar_OnLeftButtonDown( this_ptr);
-      AddVar_OnLeftButtonUp( this_ptr);
-      AddVar_OnRightButtonDown( this_ptr);
-      AddVar_OnRightButtonUp( this_ptr);
-      AddVar_OnChar( this_ptr);
-      AddVar_WindowLevel( this_ptr);
-      AddVar_Pick( this_ptr);
-      AddVar_StartWindowLevel( this_ptr);
-      AddVar_EndWindowLevel( this_ptr);
-      AddVar_StartPick( this_ptr);
-      AddVar_EndPick( this_ptr);
+  AddVar_GetWindowLevelStartPosition_1( this_ptr);
+  AddVar_GetWindowLevelStartPosition( this_ptr);
+  AddVar_GetWindowLevelStartPosition_2( this_ptr);
+  AddVar_GetWindowLevelStartPosition_3( this_ptr);
+  AddVar_GetWindowLevelCurrentPosition_1( this_ptr);
+  AddVar_GetWindowLevelCurrentPosition( this_ptr);
+  AddVar_GetWindowLevelCurrentPosition_2( this_ptr);
+  AddVar_GetWindowLevelCurrentPosition_3( this_ptr);
+  AddVar_OnMouseMove( this_ptr);
+  AddVar_OnLeftButtonDown( this_ptr);
+  AddVar_OnLeftButtonUp( this_ptr);
+  AddVar_OnRightButtonDown( this_ptr);
+  AddVar_OnRightButtonUp( this_ptr);
+  AddVar_OnChar( this_ptr);
+  AddVar_WindowLevel( this_ptr);
+  AddVar_Pick( this_ptr);
+  AddVar_StartWindowLevel( this_ptr);
+  AddVar_EndWindowLevel( this_ptr);
+  AddVar_StartPick( this_ptr);
+  AddVar_EndPick( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkInteractorStyleTrackballCamera
+  boost::shared_ptr<vtkInteractorStyleTrackballCamera > parent_vtkInteractorStyleTrackballCamera(  boost::dynamic_pointer_cast<vtkInteractorStyleTrackballCamera >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkInteractorStyleTrackballCamera = AMILabType<vtkInteractorStyleTrackballCamera >::CreateVarFromSmtPtr(parent_vtkInteractorStyleTrackballCamera);
+  context->AddVar("vtkInteractorStyleTrackballCamera",var_vtkInteractorStyleTrackballCamera);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkInteractorStyleTrackballCamera = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkInteractorStyleTrackballCamera);
+  context->AddDefault(obj_vtkInteractorStyleTrackballCamera->Pointer()->GetContext());
+
 };
 
 
@@ -124,7 +139,7 @@ void WrapClass_vtkInteractorStyleImage::AddStaticMethods( Variables::ptr& contex
   WrapClass_vtkInteractorStyleImage::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -197,9 +212,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleImage::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkInteractorStyleImage * res =   vtkInteractorStyleImage::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleImage::CreateVar(res);
@@ -373,9 +394,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleImage::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* _arg = _arg_smtptr.get();
+  int* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > _arg_smtptr;
+    if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetWindowLevelStartPosition(_arg);
   return BasicVariable::ptr();
@@ -471,9 +498,15 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleImage::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > _arg_smtptr;
-  if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* _arg = _arg_smtptr.get();
+  int* _arg;
+  if (CheckNullVar(_p,_n))  {
+    _arg=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > _arg_smtptr;
+    if (!get_val_smtptr_param<int >(_arg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    _arg = _arg_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetWindowLevelCurrentPosition(_arg);
   return BasicVariable::ptr();

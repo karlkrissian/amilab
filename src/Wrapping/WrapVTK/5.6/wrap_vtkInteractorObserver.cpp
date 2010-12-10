@@ -28,6 +28,10 @@
 
 #include "wrap_vtkInteractorObserver.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -71,49 +75,60 @@ Variable<AMIObject>::ptr WrapClass_vtkInteractorObserver::CreateVar( vtkInteract
 //----------------------------------------------------------------------
 void WrapClass_vtkInteractorObserver::AddMethods(WrapClass<vtkInteractorObserver>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_SetEnabled( this_ptr);
-      AddVar_GetEnabled( this_ptr);
-      AddVar_EnabledOn( this_ptr);
-      AddVar_EnabledOff( this_ptr);
-      AddVar_On( this_ptr);
-      AddVar_Off( this_ptr);
-      AddVar_SetInteractor( this_ptr);
-      AddVar_GetInteractor( this_ptr);
-      AddVar_SetPriority( this_ptr);
-      AddVar_GetPriorityMinValue( this_ptr);
-      AddVar_GetPriorityMaxValue( this_ptr);
-      AddVar_GetPriority( this_ptr);
-      AddVar_SetKeyPressActivation( this_ptr);
-      AddVar_GetKeyPressActivation( this_ptr);
-      AddVar_KeyPressActivationOn( this_ptr);
-      AddVar_KeyPressActivationOff( this_ptr);
-      AddVar_SetKeyPressActivationValue( this_ptr);
-      AddVar_GetKeyPressActivationValue( this_ptr);
-      AddVar_GetDefaultRenderer( this_ptr);
-      AddVar_SetDefaultRenderer( this_ptr);
-      AddVar_GetCurrentRenderer( this_ptr);
-      AddVar_SetCurrentRenderer( this_ptr);
-      AddVar_OnChar( this_ptr);
-      AddVar_GrabFocus( this_ptr);
-      AddVar_ReleaseFocus( this_ptr);
+  AddVar_SetEnabled( this_ptr);
+  AddVar_GetEnabled( this_ptr);
+  AddVar_EnabledOn( this_ptr);
+  AddVar_EnabledOff( this_ptr);
+  AddVar_On( this_ptr);
+  AddVar_Off( this_ptr);
+  AddVar_SetInteractor( this_ptr);
+  AddVar_GetInteractor( this_ptr);
+  AddVar_SetPriority( this_ptr);
+  AddVar_GetPriorityMinValue( this_ptr);
+  AddVar_GetPriorityMaxValue( this_ptr);
+  AddVar_GetPriority( this_ptr);
+  AddVar_SetKeyPressActivation( this_ptr);
+  AddVar_GetKeyPressActivation( this_ptr);
+  AddVar_KeyPressActivationOn( this_ptr);
+  AddVar_KeyPressActivationOff( this_ptr);
+  AddVar_SetKeyPressActivationValue( this_ptr);
+  AddVar_GetKeyPressActivationValue( this_ptr);
+  AddVar_GetDefaultRenderer( this_ptr);
+  AddVar_SetDefaultRenderer( this_ptr);
+  AddVar_GetCurrentRenderer( this_ptr);
+  AddVar_SetCurrentRenderer( this_ptr);
+  AddVar_OnChar( this_ptr);
+  AddVar_GrabFocus( this_ptr);
+  AddVar_ReleaseFocus( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
@@ -133,7 +148,7 @@ void WrapClass_vtkInteractorObserver::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtkInteractorObserver::AddVar_ComputeWorldToDisplay(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -186,9 +201,15 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkInteractorObserver * res =   vtkInteractorObserver::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtkInteractorObserver::CreateVar(res);
@@ -216,9 +237,15 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p->GetNumParam()>5) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* ren = ren_smtptr.get();
+  vtkRenderer* ren;
+  if (CheckNullVar(_p,_n))  {
+    ren=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > ren_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    ren = ren_smtptr.get();
+  }
 
   double x;
   if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
@@ -229,9 +256,15 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   double z;
   if (!get_val_param<double >(z,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<double > worldPt_smtptr;
-  if (!get_val_smtptr_param<double >(worldPt_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* worldPt = worldPt_smtptr.get();
+  double* worldPt;
+  if (CheckNullVar(_p,_n))  {
+    worldPt=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > worldPt_smtptr;
+    if (!get_val_smtptr_param<double >(worldPt_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    worldPt = worldPt_smtptr.get();
+  }
 
   vtkInteractorObserver::ComputeDisplayToWorld(ren, x, y, z, worldPt);
   return BasicVariable::ptr();
@@ -258,9 +291,15 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p->GetNumParam()>5) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* ren = ren_smtptr.get();
+  vtkRenderer* ren;
+  if (CheckNullVar(_p,_n))  {
+    ren=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > ren_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    ren = ren_smtptr.get();
+  }
 
   double x;
   if (!get_val_param<double >(x,_p,_n,true,false)) ClassHelpAndReturn;
@@ -271,9 +310,15 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   double z;
   if (!get_val_param<double >(z,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<double > displayPt_smtptr;
-  if (!get_val_smtptr_param<double >(displayPt_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* displayPt = displayPt_smtptr.get();
+  double* displayPt;
+  if (CheckNullVar(_p,_n))  {
+    displayPt=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > displayPt_smtptr;
+    if (!get_val_smtptr_param<double >(displayPt_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    displayPt = displayPt_smtptr.get();
+  }
 
   vtkInteractorObserver::ComputeWorldToDisplay(ren, x, y, z, displayPt);
   return BasicVariable::ptr();
@@ -488,9 +533,15 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderWindowInteractor > iren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindowInteractor >(iren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderWindowInteractor* iren = iren_smtptr.get();
+  vtkRenderWindowInteractor* iren;
+  if (CheckNullVar(_p,_n))  {
+    iren=(vtkRenderWindowInteractor*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderWindowInteractor > iren_smtptr;
+    if (!get_val_smtptr_param<vtkRenderWindowInteractor >(iren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    iren = iren_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInteractor(iren);
   return BasicVariable::ptr();
@@ -759,9 +810,15 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param0 = param0_smtptr.get();
+  vtkRenderer* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param0_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetDefaultRenderer(param0);
   return BasicVariable::ptr();
@@ -804,9 +861,15 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > param0_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* param0 = param0_smtptr.get();
+  vtkRenderer* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > param0_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetCurrentRenderer(param0);
   return BasicVariable::ptr();
@@ -848,13 +911,25 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkCommand > mouseEvents_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(mouseEvents_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCommand* mouseEvents = mouseEvents_smtptr.get();
+  vtkCommand* mouseEvents;
+  if (CheckNullVar(_p,_n))  {
+    mouseEvents=(vtkCommand*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCommand > mouseEvents_smtptr;
+    if (!get_val_smtptr_param<vtkCommand >(mouseEvents_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    mouseEvents = mouseEvents_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkCommand > keypressEvents_smtptr;
-  if (!get_val_smtptr_param<vtkCommand >(keypressEvents_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkCommand* keypressEvents = keypressEvents_smtptr.get();
+  vtkCommand* keypressEvents = 0l;
+  if (CheckNullVar(_p,_n))  {
+    keypressEvents=(vtkCommand*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkCommand > keypressEvents_smtptr;
+    if (!get_val_smtptr_param<vtkCommand >(keypressEvents_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    keypressEvents = keypressEvents_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GrabFocus(mouseEvents, keypressEvents);
   return BasicVariable::ptr();

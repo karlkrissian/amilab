@@ -27,6 +27,10 @@
 
 #include "wrap_vtk3DWidget.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -70,39 +74,50 @@ Variable<AMIObject>::ptr WrapClass_vtk3DWidget::CreateVar( vtk3DWidget* sp)
 //----------------------------------------------------------------------
 void WrapClass_vtk3DWidget::AddMethods(WrapClass<vtk3DWidget>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkInteractorObserver
-      WrapClass_vtkInteractorObserver::ptr parent_vtkInteractorObserver(        boost::dynamic_pointer_cast<WrapClass_vtkInteractorObserver >(this_ptr));
-      parent_vtkInteractorObserver->AddMethods(parent_vtkInteractorObserver);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_PlaceWidget_1( this_ptr);
-      AddVar_PlaceWidget( this_ptr);
-      AddVar_PlaceWidget_2( this_ptr);
-      AddVar_SetProp3D( this_ptr);
-      AddVar_GetProp3D( this_ptr);
-      AddVar_SetInput( this_ptr);
-      AddVar_GetInput( this_ptr);
-      AddVar_SetPlaceFactor( this_ptr);
-      AddVar_GetPlaceFactorMinValue( this_ptr);
-      AddVar_GetPlaceFactorMaxValue( this_ptr);
-      AddVar_GetPlaceFactor( this_ptr);
-      AddVar_SetHandleSize( this_ptr);
-      AddVar_GetHandleSizeMinValue( this_ptr);
-      AddVar_GetHandleSizeMaxValue( this_ptr);
-      AddVar_GetHandleSize( this_ptr);
+  AddVar_PlaceWidget_1( this_ptr);
+  AddVar_PlaceWidget( this_ptr);
+  AddVar_PlaceWidget_2( this_ptr);
+  AddVar_SetProp3D( this_ptr);
+  AddVar_GetProp3D( this_ptr);
+  AddVar_SetInput( this_ptr);
+  AddVar_GetInput( this_ptr);
+  AddVar_SetPlaceFactor( this_ptr);
+  AddVar_GetPlaceFactorMinValue( this_ptr);
+  AddVar_GetPlaceFactorMaxValue( this_ptr);
+  AddVar_GetPlaceFactor( this_ptr);
+  AddVar_SetHandleSize( this_ptr);
+  AddVar_GetHandleSizeMinValue( this_ptr);
+  AddVar_GetHandleSizeMaxValue( this_ptr);
+  AddVar_GetHandleSize( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkInteractorObserver
+  boost::shared_ptr<vtkInteractorObserver > parent_vtkInteractorObserver(  boost::dynamic_pointer_cast<vtkInteractorObserver >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkInteractorObserver = AMILabType<vtkInteractorObserver >::CreateVarFromSmtPtr(parent_vtkInteractorObserver);
+  context->AddVar("vtkInteractorObserver",var_vtkInteractorObserver);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkInteractorObserver = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkInteractorObserver);
+  context->AddDefault(obj_vtkInteractorObserver->Pointer()->GetContext());
+
 };
 
 
@@ -120,7 +135,7 @@ void WrapClass_vtk3DWidget::AddStaticMethods( Variables::ptr& context)
   WrapClass_vtk3DWidget::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -173,9 +188,15 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtk3DWidget * res =   vtk3DWidget::SafeDownCast(o);
   BasicVariable::ptr res_var = WrapClass_vtk3DWidget::CreateVar(res);
@@ -359,9 +380,15 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkProp3D > param0_smtptr;
-  if (!get_val_smtptr_param<vtkProp3D >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkProp3D* param0 = param0_smtptr.get();
+  vtkProp3D* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkProp3D*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkProp3D > param0_smtptr;
+    if (!get_val_smtptr_param<vtkProp3D >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetProp3D(param0);
   return BasicVariable::ptr();
@@ -404,9 +431,15 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkDataSet > param0_smtptr;
-  if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkDataSet* param0 = param0_smtptr.get();
+  vtkDataSet* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(vtkDataSet*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkDataSet > param0_smtptr;
+    if (!get_val_smtptr_param<vtkDataSet >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInput(param0);
   return BasicVariable::ptr();

@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "vtk_includes.h"
+#include "vtkMatrix4x4.h"
 
 // include what is needed for inheritence and for types ...
 

@@ -30,6 +30,7 @@ BasicVariable::ptr wrap_vtkGPURayCasting   (ParamList* p);
 BasicVariable::ptr wrap_wxVTKMedical3      (ParamList* p);
 BasicVariable::ptr wrap_wxVTKFrame         (ParamList* p);
 BasicVariable::ptr wrap_ToVtkImageData     (ParamList* p);
+BasicVariable::ptr wrap_FromVtkImageData   (ParamList* p);
 
 
 #endif // _WRAPVTK_H_
