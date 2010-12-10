@@ -2709,14 +2709,14 @@ void SubPixel2D::SubpixelDenoising(int niter)
           u = upos;
           v = vpos;
           partial = fabs(pary);
-          cout << "voy a mirar si es la más grande en la columna" << endl;
+//          cout << "voy a mirar si es la más grande en la columna" << endl;
           //The partial must be maximum in the column or row
           if (partial < threshold) continue;
           if (y>2) if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
           if (y>1) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
           if (y<input->DimY()-2) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
           if (y<input->DimY()-3) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-          cout << "miré si es la más grande en la columna" << endl;
+//          cout << "miré si es la más grande en la columna" << endl;
           m = (parx*pary >= 0) ? 1 : -1;
           p = (m+1) / 2;
           
@@ -2771,7 +2771,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
             if (fabs(par0)<fabs(par1) || par0*par1<0) break;
             par0 = par1;
           }
-          
+
           //If m is negative, swap 'l' and 'r' limits
           if (m<0) 
           { 
@@ -2867,30 +2867,46 @@ void SubPixel2D::SubpixelDenoising(int niter)
             InrImage* fprime = new InrImage(5,11,1,WT_DOUBLE,"fprime.inr.gz");
             //Cerca de los márgenes la subimagen es un poco particular
             minj = (y>4) ? -5 : -y;
-            maxj = (y<input->DimY()-5) ? 5 : input->DimY()-1-x;
+            maxj = (y<input->DimY()-5) ? 5 : input->DimY()-1-y;
             if (x==1)
             {
               mini = -1;
-              for(int j=minj; j<=maxj; j++)
-                //Me falta rellenar jarl
+              for(int j=minj; j<=maxj; j++) //Primera columna de la imagen
+              {
+                fprime->BufferPos(0,j+5,z);
+                fprime->FixeValeur(2*input_copy(0,y+j,z) 
+                                   - input_copy(1,y+j,z));
+              }
             }
             else 
               mini = -2;
             if (x==input->DimX()-2)
             {
               maxi = 1;
-              for (intj=minj; j<=maxj; j++)
-                //Rellenarrrrrrrr
+              for (int j=minj; j<=maxj; j++) //Última columna de la imagen
+              {
+                fprime->BufferPos(4,j+5,z);
+                fprime->FixeValeur(2*input_copy(input_copy.DimX()-1,y+j,z)
+                                   -input_copy(input_copy.DimX()-2,y+j,z));
+              }
             }
             else 
               maxi = 2;
             
             if (minj>-5)
               for (int i=mini; i<=maxi; i++)
-                //Rellenarrrrrrr
+              {
+                fprime->BufferPos(i+2,minj+4,z);
+                fprime->FixeValeur(2*input_copy(x+i,0,z)
+                                   -input_copy(x+i,1,z));
+              }
             if (maxj<5)
               for (int i=mini; i<=maxi; i++)
-                //Rellenarrrrrr
+              {
+                fprime->BufferPos(i+2,maxj+6,z);
+                fprime->FixeValeur(2*input_copy(x+i,input_copy.DimY()-1,z)
+                                   -input_copy(x+i,input_copy.DimY()-2,z));
+              }
 
             //El pseudocódigo dice:
             //Si contorno superior o contorno inferior:
@@ -2904,7 +2920,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
             {
               for(int indi = mini; indi<=maxi; indi++)
               {
-                fprime->BufferPos(fprimex+indi,fprimey+indj,z);
+                fprime->BufferPos(indi+2,indj+5,z);
                 fprime->FixeValeur(input_copy(x+indi,y+indj,z));
               }
             }
@@ -2915,34 +2931,29 @@ void SubPixel2D::SubpixelDenoising(int niter)
               int ll = (par0*pary>0)? l1+p-1 : l1+p;
               par1 = ffyu (x+2, y+r1+1-p,z);
               int rr = (par1*pary>0)? r1-p : r1+1-p;
-              fprimex = 0;
               for (int k=-5; k<=ll; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(0,k+5,z);
                 fprime->FixeValeur(B);
               }
-              fprimex = 1;
               for (int k=-5; k<=l1; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(1,k+5,z);
                 fprime->FixeValeur(B);
               }
-              fprimex = 2;
               for (int k=-5; k<=m1; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(2,k+5,z);
                 fprime->FixeValeur(B);
               }
-              fprimex = 3;
               for (int k=-5; k<=r1; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(3,k+5,z);
                 fprime->FixeValeur(B);
               }
-              fprimex = 4;
               for (int k=-5; k<=rr; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(4,k+5,z);
                 fprime->FixeValeur(B);
               }
               ll1=-3+m; mm1=-3; rr1=-3-m;
@@ -2954,34 +2965,29 @@ void SubPixel2D::SubpixelDenoising(int niter)
               int ll = (par0*pary>0)? l2+p : l2+p-1;
               par1 = ffyd (x+2, y+r2-p,z);
               int rr = (par1*pary>0)? r2+1-p : r2-p;					
-              fprimex = 0;
               for (int k=ll; k<=5; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(0,k+5,z);
                 fprime->FixeValeur(A);
               }
-              fprimex = 1;
               for (int k=l2; k<=5; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(1,k+5,z);
                 fprime->FixeValeur(A);
               }
-              fprimex = 2;
               for (int k=m2; k<=5; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(2,k+5,z);
                 fprime->FixeValeur(A);
               }
-              fprimex = 3;
               for (int k=r2; k<=5; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(3,k+5,z);
                 fprime->FixeValeur(A);
               }
-              fprimex = 4;
               for (int k=rr; k<=5; k++)
               {
-                fprime->BufferPos(fprimex,fprimey+k,z);
+                fprime->BufferPos(4,k+5,z);
                 fprime->FixeValeur(A);
               }
               ll2=3+m;  mm2=3;  rr2=3-m;
@@ -2990,8 +2996,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
             //esto sería llamar a Promedio3x3 pero sólo para esta imagencita chica
             //o hacerlo aquí directamente como Agustín:
             //actualizo la posición del centro de la imagen chica
-            fprimex = 2;
-            fprimey = 5;
+            int fprimex = 2;
+            int fprimey = 5;
             for(int indj = -4; indj<=4; indj++)
             {
               for(int indi= -1; indi<=1; indi++)
@@ -3070,11 +3076,11 @@ void SubPixel2D::SubpixelDenoising(int niter)
           //Add edge pixel to the vector
           borderPixelVector.push_back(pixel);
           
-          cout << "voy a llamar a updateimages en YMAX" << endl;
+//          cout << "voy a llamar a updateimages en YMAX" << endl;
           //Update the counters and intensities images
           UpdateImages(&input_copy, C.get(), I.get(), x, y, z, YMAX, gx, gy, des, 
                        cu, A, B, linear_case, m, ll1, ll2, mm1, mm2, rr1, rr2);
-          cout << "vuelvo de updateimages en YMAX" << endl;
+//          cout << "vuelvo de updateimages en YMAX" << endl;
         }
         else
         {
@@ -3082,14 +3088,14 @@ void SubPixel2D::SubpixelDenoising(int niter)
           u = vpos;
           v = upos;
           partial = fabs(parx);
-          cout << "voy a mirar si es la más grande en la fila" << endl;
+//          cout << "voy a mirar si es la más grande en la fila" << endl;
           //The partial must be maximum in the column or row
           if (partial < threshold) continue;
           if (x>2) if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
           if (x>1) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
           if (x<input->DimX()-2) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
           if (x<input->DimX()-3) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-          cout << "ya miré si es la más grande en la fila" << endl;
+//          cout << "ya miré si es la más grande en la fila" << endl;
           m = (parx*pary >= 0) ? 1 : -1;
           p = (m+1) / 2;
           
@@ -3143,7 +3149,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
             if (fabs(par0)<fabs(par1) || par0*par1<0) break;
             par0 = par1;
           }
-          
+
           //If m is negative, swap 'l' and 'r' limits
           if (m<0) 
           { 
@@ -3167,7 +3173,6 @@ void SubPixel2D::SubpixelDenoising(int niter)
           if (fabs(A-B) < threshold) continue;
           
           //**********************************************************************
-          
           //PARTE NUEVA PARA CONTORNOS MUY CERCANOS (2 Y 3 PXLS) CASO VENTANA HORIZONTAL
           
           //Initialize the image limits
@@ -3197,9 +3202,9 @@ void SubPixel2D::SubpixelDenoising(int niter)
               j2 = l2;
             }
           }
-          if (j1>-4 && y+j1-2>=0)
+          if (j1>-4 && x+j1-2>=0)
           {
-            par0 = (y+j1-2>0) ? ffx(x+j1-2,y+i1,z) : ffxr(0,y+i1,z);
+            par0 = (x+j1-2>0) ? ffx(x+j1-2,y+i1,z) : ffxr(0,y+i1,z);
             par0 = fabs(par0);
             if (par0 > partial/4 && par0>threshold)
             {
@@ -3210,9 +3215,9 @@ void SubPixel2D::SubpixelDenoising(int niter)
                 B = (input_copy(x+m1,y,z) + input_copy(x+r1,y+1,z))/2;
             }
           }
-          if (j2<4 && y+j2+2<=input->DimY()-1)
+          if (j2<4 && x+j2+2<=input->DimY()-1)
           {
-            par0 = (y+j2+2<input->DimY()-1) ? ffx(x+j2+2,y+i2,z) : ffxl(input->DimX()-1,y+i2,z);
+            par0 = (x+j2+2<input->DimX()-1) ? ffx(x+j2+2,y+i2,z) : ffxl(input->DimX()-1,y+i2,z);
             par0 = fabs(par0);
             if (par0>partial/4 && par0>threshold)
             {
@@ -3232,21 +3237,67 @@ void SubPixel2D::SubpixelDenoising(int niter)
           //que luego suavizaremos para calcular el contorno
           if (bor2d || bor2u)
           {
+            int mini, minj, maxi, maxj;
             //Mi nueva imagencita sintética 5x11
             InrImage* fprime = new InrImage(11,5,1,WT_DOUBLE,"fprime.inr.gz");
+            //Cerca de los márgenes la subimagen es un poco particular
+            minj = (x>4) ? -5 : -x;
+            maxj = (x<input->DimX()-5) ? 5 : input->DimX()-1-x;
+            if (y==1)
+            {
+              mini = -1;
+              for (int j=minj; j<=maxj; j++)
+              {
+                fprime->BufferPos(j+5,0,z);
+                fprime->FixeValeur(2*input_copy(x+j,0,z)
+                                   - input_copy(x+j,1,z));
+              }
+            }
+            else 
+              mini = -2;
+            if (y == input->DimY()-2)
+            {
+              maxi = 1;
+              for (int j=minj; j<=maxj; j++)
+              {
+                fprime->BufferPos(j+5,4,z);
+                fprime->FixeValeur(2*input_copy(x+j,input_copy.DimY()-1,z)
+                                   - input_copy(x+j,input_copy.DimY()-2,z));
+              }
+            }
+            else 
+              maxi = 2;
+            
+            if (minj>-5)
+              for (int i=mini; i<=maxi; i++)
+              {
+                //fprime->BufferPos(i+2,minj+4,z);
+                fprime->BufferPos(minj+4, i+2, z);
+                fprime->FixeValeur(2*input_copy(0,y+i,z)
+                                   - input_copy(1,y+i,z));
+              }
+            if (maxj<5)
+              for (int i=mini; i<=maxi; i++)
+              {
+                fprime->BufferPos(maxj+6, i+2, z);
+                fprime->FixeValeur(2*input_copy(input_copy.DimX()-1,y+i,z)
+                                   - input_copy(input_copy.DimX()-2,y+i,z));
+              }
+            
             //El pseudocódigo dice:
             //Si contorno superior o contorno inferior:
             //crear una imagen F' centrada en (i,j) copiando los píxeles de F
             //mi pixel i,j de la imagen grande es el 2,5 de la imagen 5x11
             //Center of the 5x11 image
-            int fprimex=5;
-            int fprimey=2;
-            for(int indj = -2; indj<=2; indj++)
+            //int fprimex=5;
+            //int fprimey=2;
+            //Creamos la subimagen
+            for(int indj = minj; indj<=maxj; indj++)
             {
-              for(int indi = -5; indi<=5; indi++)
+              for(int indi = mini; indi<=maxi; indi++)
               {
-                fprime->BufferPos(fprimex+indi,fprimey+indj,z);
-                fprime->FixeValeur(input_copy(x+indi,y+indj,z));
+                fprime->BufferPos(indj+5, indi+2, z);
+                fprime->FixeValeur(input_copy(x+indj,y+indi,z));
               }
             }
             //si contorno superior actualizar B en la zona superior de F'
@@ -3256,34 +3307,29 @@ void SubPixel2D::SubpixelDenoising(int niter)
               int ll = (par0*parx>0)? l1+p-1 : l1+p;
               par1 = ffxl (x+r1+1-p, y+2,z);
               int rr = (par1*parx>0)? r1-p : r1+1-p;
-              fprimey = 0;
               for (int k=-5; k<=ll; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,0,z);
                 fprime->FixeValeur(B);
               }
-              fprimey = 1;
               for (int k=-5; k<=l1; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,1,z);
                 fprime->FixeValeur(B);
               }
-              fprimey = 2;
               for (int k=-5; k<=m1; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,2,z);
                 fprime->FixeValeur(B);
               }
-              fprimey = 3;
               for (int k=-5; k<=r1; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,3,z);
                 fprime->FixeValeur(B);
               }
-              fprimey = 4;
               for (int k=-5; k<=rr; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,4,z);
                 fprime->FixeValeur(B);
               }
               ll1=-3+m; mm1=-3; rr1=-3-m;
@@ -3295,34 +3341,29 @@ void SubPixel2D::SubpixelDenoising(int niter)
               int ll = (par0*parx>0)? l2+p : l2+p-1;
               par1 = ffxr (x+r2-p, y+2,z);
               int rr = (par1*parx>0)? r2+1-p : r2-p;					
-              fprimey = 0;
               for (int k=ll; k<=5; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,0,z);
                 fprime->FixeValeur(A);
               }
-              fprimey = 1;
               for (int k=l2; k<=5; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,1,z);
                 fprime->FixeValeur(A);
               }
-              fprimey = 2;
               for (int k=m2; k<=5; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,2,z);
                 fprime->FixeValeur(A);
               }
-              fprimey = 3;
               for (int k=r2; k<=5; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,3,z);
                 fprime->FixeValeur(A);
               }
-              fprimey = 4;
               for (int k=rr; k<=5; k++)
               {
-                fprime->BufferPos(fprimex+k,fprimey,z);
+                fprime->BufferPos(5+k,4,z);
                 fprime->FixeValeur(A);
               }
               ll2=3+m;  mm2=3;  rr2=3-m;
@@ -3331,8 +3372,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
             //esto sería llamar a Promedio3x3 pero sólo para esta imagencita chica
             //o hacerlo aquí directamente como Agustín:
             //actualizo la posición del centro de la imagen chica
-            fprimex = 5;
-            fprimey = 2;
+            int fprimex = 5;
+            int fprimey = 2;
             for(int indj = -1; indj<=1; indj++)
             {
               for(int indi= -4; indi<=4; indi++)
@@ -3407,11 +3448,11 @@ void SubPixel2D::SubpixelDenoising(int niter)
           //Add edge pixel to the vector
           borderPixelVector.push_back(pixel);
           
-          cout << "voy a llamar a updateimages en XMAX" << endl;
+//          cout << "voy a llamar a updateimages en XMAX" << endl;
           //Update the counters and intensities images
           UpdateImages(&input_copy, C.get(), I.get(), x, y, z, XMAX, gx, gy, des, 
                        cu, A, B, linear_case, m, ll1, ll2, mm1, mm2, rr1, rr2);
-          cout << "vuelvo de llamar a updateimages en XMAX" << endl;
+//          cout << "vuelvo de llamar a updateimages en XMAX" << endl;
         }
       }
     }
