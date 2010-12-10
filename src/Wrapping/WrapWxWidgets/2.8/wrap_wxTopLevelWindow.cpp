@@ -27,6 +27,10 @@
 
 #include "wrap_wxTopLevelWindow.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -72,12 +76,15 @@ void WrapClass_wxTopLevelWindow::AddMethods(WrapClass<wxTopLevelWindow>::ptr thi
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -183,9 +190,15 @@ BasicVariable::ptr WrapClass_wxTopLevelWindow::
   if (_p->GetNumParam()>7) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    parent = parent_smtptr.get();
+  }
 
   int winid;
   if (!get_val_param<int >(winid,_p,_n,true,true)) ClassReturnEmptyVar;

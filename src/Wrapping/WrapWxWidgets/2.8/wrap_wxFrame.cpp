@@ -29,6 +29,10 @@
 
 #include "wrap_wxFrame.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -74,54 +78,57 @@ void WrapClass_wxFrame::AddMethods(WrapClass<wxFrame>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Create( this_ptr);
-      AddVar_CreateStatusBar( this_ptr);
-      AddVar_SetStatusBar( this_ptr);
-      AddVar_CreateToolBar( this_ptr);
-      AddVar_SetToolBar( this_ptr);
-      AddVar_GetClientAreaOrigin( this_ptr);
-      AddVar_GtkOnSize( this_ptr);
-      AddVar_OnInternalIdle( this_ptr);
-      AddVar_UpdateMenuBarSize( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_Create( this_ptr);
+  AddVar_CreateStatusBar( this_ptr);
+  AddVar_SetStatusBar( this_ptr);
+  AddVar_CreateToolBar( this_ptr);
+  AddVar_SetToolBar( this_ptr);
+  AddVar_GetClientAreaOrigin( this_ptr);
+  AddVar_GtkOnSize( this_ptr);
+  AddVar_OnInternalIdle( this_ptr);
+  AddVar_UpdateMenuBarSize( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member m_menuBarDetached
-      boost::shared_ptr<bool > var_m_menuBarDetached_ptr(&GetObj()->m_menuBarDetached, smartpointer_nodeleter<bool >());
-      if (var_m_menuBarDetached_ptr.get()) {
-        BasicVariable::ptr var_m_menuBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_menuBarDetached_ptr);
-        if (var_m_menuBarDetached.get()) {
-          var_m_menuBarDetached->Rename("m_menuBarDetached");
-          context->AddVar(var_m_menuBarDetached,context);
-        }
-      }
-      
-      // Adding public member m_menuBarHeight
-      boost::shared_ptr<int > var_m_menuBarHeight_ptr(&GetObj()->m_menuBarHeight, smartpointer_nodeleter<int >());
-      if (var_m_menuBarHeight_ptr.get()) {
-        BasicVariable::ptr var_m_menuBarHeight = AMILabType<int >::CreateVarFromSmtPtr(var_m_menuBarHeight_ptr);
-        if (var_m_menuBarHeight.get()) {
-          var_m_menuBarHeight->Rename("m_menuBarHeight");
-          context->AddVar(var_m_menuBarHeight,context);
-        }
-      }
-      
-      // Adding public member m_toolBarDetached
-      boost::shared_ptr<bool > var_m_toolBarDetached_ptr(&GetObj()->m_toolBarDetached, smartpointer_nodeleter<bool >());
-      if (var_m_toolBarDetached_ptr.get()) {
-        BasicVariable::ptr var_m_toolBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_toolBarDetached_ptr);
-        if (var_m_toolBarDetached.get()) {
-          var_m_toolBarDetached->Rename("m_toolBarDetached");
-          context->AddVar(var_m_toolBarDetached,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member m_menuBarDetached
+  boost::shared_ptr<bool > var_m_menuBarDetached_ptr(&GetObj()->m_menuBarDetached, smartpointer_nodeleter<bool >());
+  if (var_m_menuBarDetached_ptr.get()) {
+    BasicVariable::ptr var_m_menuBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_menuBarDetached_ptr);
+    if (var_m_menuBarDetached.get()) {
+      var_m_menuBarDetached->Rename("m_menuBarDetached");
+      context->AddVar(var_m_menuBarDetached,context);
+    }
+  }
+  
+  // Adding public member m_menuBarHeight
+  boost::shared_ptr<int > var_m_menuBarHeight_ptr(&GetObj()->m_menuBarHeight, smartpointer_nodeleter<int >());
+  if (var_m_menuBarHeight_ptr.get()) {
+    BasicVariable::ptr var_m_menuBarHeight = AMILabType<int >::CreateVarFromSmtPtr(var_m_menuBarHeight_ptr);
+    if (var_m_menuBarHeight.get()) {
+      var_m_menuBarHeight->Rename("m_menuBarHeight");
+      context->AddVar(var_m_menuBarHeight,context);
+    }
+  }
+  
+  // Adding public member m_toolBarDetached
+  boost::shared_ptr<bool > var_m_toolBarDetached_ptr(&GetObj()->m_toolBarDetached, smartpointer_nodeleter<bool >());
+  if (var_m_toolBarDetached_ptr.get()) {
+    BasicVariable::ptr var_m_toolBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_toolBarDetached_ptr);
+    if (var_m_toolBarDetached.get()) {
+      var_m_toolBarDetached->Rename("m_toolBarDetached");
+      context->AddVar(var_m_toolBarDetached,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -225,9 +232,15 @@ BasicVariable::ptr WrapClass_wxFrame::
   if (_p->GetNumParam()>7) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    parent = parent_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -284,9 +297,15 @@ BasicVariable::ptr WrapClass_wxFrame::
   if (_p->GetNumParam()>7) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;
@@ -376,9 +395,15 @@ BasicVariable::ptr WrapClass_wxFrame::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxStatusBar > statbar_smtptr;
-  if (!get_val_smtptr_param<wxStatusBar >(statbar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxStatusBar* statbar = statbar_smtptr.get();
+  wxStatusBar* statbar;
+  if (CheckNullVar(_p,_n))  {
+    statbar=(wxStatusBar*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxStatusBar > statbar_smtptr;
+    if (!get_val_smtptr_param<wxStatusBar >(statbar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    statbar = statbar_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetStatusBar(statbar);
   return BasicVariable::ptr();
@@ -438,9 +463,15 @@ BasicVariable::ptr WrapClass_wxFrame::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxToolBar > toolbar_smtptr;
-  if (!get_val_smtptr_param<wxToolBar >(toolbar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxToolBar* toolbar = toolbar_smtptr.get();
+  wxToolBar* toolbar;
+  if (CheckNullVar(_p,_n))  {
+    toolbar=(wxToolBar*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxToolBar > toolbar_smtptr;
+    if (!get_val_smtptr_param<wxToolBar >(toolbar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    toolbar = toolbar_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetToolBar(toolbar);
   return BasicVariable::ptr();
