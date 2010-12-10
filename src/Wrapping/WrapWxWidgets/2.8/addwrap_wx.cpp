@@ -5,12 +5,13 @@
  * Date: '10-12-2010'
  */
 
-// Currently 177 objects (classes,structures,typedefs,...) are wrapped 
+// Currently 178 objects (classes,structures,typedefs,...) are wrapped 
 #include "wrap_wxAcceleratorEntry.h"
 #include "wrap_wxAcceleratorTable.h"
 #include "wrap_wxActivateEvent.h"
 #include "wrap_wxAmiEventHandler.h"
 #include "wrap_wxArrayInt.h"
+#include "wrap_wxArtProvider.h"
 #include "wrap_wxAuiDockArt.h"
 #include "wrap_wxAuiFloatingFrame.h"
 #include "wrap_wxAuiManager.h"
@@ -200,6 +201,7 @@ void wrap_wx_classes( Variables::ptr& context)
   ADD_WX_CLASS( wxActivateEvent)
   ADD_WX_CLASS( wxAmiEventHandler)
   ADD_WX_CLASS( wxArrayInt)
+  ADD_WX_CLASS( wxArtProvider)
   ADD_WX_CLASS( wxAuiDockArt)
   ADD_WX_CLASS( wxAuiFloatingFrame)
   ADD_WX_CLASS( wxAuiManager)
@@ -396,6 +398,24 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxAuiPaneDockArtGradients->GetName().c_str(),obj_wxAuiPaneDockArtGradients,context);
   context->AddDefault(obj_wxAuiPaneDockArtGradients->GetContext());
 
+  // New enumeration wxRelationship
+  AMIObject::ptr obj_wxRelationship(new AMIObject);
+  obj_wxRelationship->SetName("wxRelationship");
+
+  ADD_WX_ENUMVAL(wxRelationship,wxRightOf,6);
+  ADD_WX_ENUMVAL(wxRelationship,wxPercentOf,2);
+  ADD_WX_ENUMVAL(wxRelationship,wxUnconstrained,0);
+  ADD_WX_ENUMVAL(wxRelationship,wxSameAs,7);
+  ADD_WX_ENUMVAL(wxRelationship,wxBelow,4);
+  ADD_WX_ENUMVAL(wxRelationship,wxLeftOf,5);
+  ADD_WX_ENUMVAL(wxRelationship,wxAbove,3);
+  ADD_WX_ENUMVAL(wxRelationship,wxAbsolute,8);
+  ADD_WX_ENUMVAL(wxRelationship,wxAsIs,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxRelationship->GetName().c_str(),obj_wxRelationship,context);
+  context->AddDefault(obj_wxRelationship->GetContext());
+
   // New enumeration enum_124
   AMIObject::ptr obj_enum_124(new AMIObject);
   obj_enum_124->SetName("enum_124");
@@ -421,27 +441,18 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_enum_124->GetName().c_str(),obj_enum_124,context);
   context->AddDefault(obj_enum_124->GetContext());
 
-  // New enumeration wxAuiButtonId
-  AMIObject::ptr obj_wxAuiButtonId(new AMIObject);
-  obj_wxAuiButtonId->SetName("wxAuiButtonId");
+  // New enumeration wxFontStyle
+  AMIObject::ptr obj_wxFontStyle(new AMIObject);
+  obj_wxFontStyle->SetName("wxFontStyle");
 
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_DOWN,110);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_CUSTOM3,203);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_CLOSE,101);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_WINDOWLIST,106);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_CUSTOM1,201);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_MAXIMIZE_RESTORE,102);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_CUSTOM2,202);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_OPTIONS,105);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_UP,109);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_PIN,104);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_LEFT,107);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_RIGHT,108);
-  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_MINIMIZE,103);
+  ADD_WX_ENUMVAL(wxFontStyle,wxFONTSTYLE_MAX,95);
+  ADD_WX_ENUMVAL(wxFontStyle,wxFONTSTYLE_SLANT,94);
+  ADD_WX_ENUMVAL(wxFontStyle,wxFONTSTYLE_ITALIC,93);
+  ADD_WX_ENUMVAL(wxFontStyle,wxFONTSTYLE_NORMAL,90);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiButtonId->GetName().c_str(),obj_wxAuiButtonId,context);
-  context->AddDefault(obj_wxAuiButtonId->GetContext());
+  context->AddVar<AMIObject>(obj_wxFontStyle->GetName().c_str(),obj_wxFontStyle,context);
+  context->AddDefault(obj_wxFontStyle->GetContext());
 
   // New enumeration wxMutexError
   AMIObject::ptr obj_wxMutexError(new AMIObject);
@@ -498,6 +509,134 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_Propagation_state->GetName().c_str(),obj_Propagation_state,context);
   context->AddDefault(obj_Propagation_state->GetContext());
 
+  // New enumeration wxStreamProtocolType
+  AMIObject::ptr obj_wxStreamProtocolType(new AMIObject);
+  obj_wxStreamProtocolType->SetName("wxStreamProtocolType");
+
+  ADD_WX_ENUMVAL(wxStreamProtocolType,wxSTREAM_MIMETYPE,1);
+  ADD_WX_ENUMVAL(wxStreamProtocolType,wxSTREAM_PROTOCOL,0);
+  ADD_WX_ENUMVAL(wxStreamProtocolType,wxSTREAM_ENCODING,2);
+  ADD_WX_ENUMVAL(wxStreamProtocolType,wxSTREAM_FILEEXT,3);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxStreamProtocolType->GetName().c_str(),obj_wxStreamProtocolType,context);
+  context->AddDefault(obj_wxStreamProtocolType->GetContext());
+
+  // New enumeration enum_7
+  AMIObject::ptr obj_enum_7(new AMIObject);
+  obj_enum_7->SetName("enum_7");
+
+  ADD_WX_ENUMVAL(enum_7,wxDefaultCoord,-1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_7->GetName().c_str(),obj_enum_7,context);
+  context->AddDefault(obj_enum_7->GetContext());
+
+  // New enumeration wxPrintBin
+  AMIObject::ptr obj_wxPrintBin(new AMIObject);
+  obj_wxPrintBin->SetName("wxPrintBin");
+
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_MIDDLE,3);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_LOWER,2);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_AUTO,7);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_FORMSOURCE,13);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_DEFAULT,0);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_LARGECAPACITY,11);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_MANUAL,4);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_SMALLFMT,9);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_ENVELOPE,5);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_ONLYONE,1);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_LARGEFMT,10);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_CASSETTE,12);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_ENVMANUAL,6);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_USER,14);
+  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_TRACTOR,8);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxPrintBin->GetName().c_str(),obj_wxPrintBin,context);
+  context->AddDefault(obj_wxPrintBin->GetContext());
+
+  // New enumeration wxHtmlScriptMode
+  AMIObject::ptr obj_wxHtmlScriptMode(new AMIObject);
+  obj_wxHtmlScriptMode->SetName("wxHtmlScriptMode");
+
+  ADD_WX_ENUMVAL(wxHtmlScriptMode,wxHTML_SCRIPT_NORMAL,0);
+  ADD_WX_ENUMVAL(wxHtmlScriptMode,wxHTML_SCRIPT_SUP,2);
+  ADD_WX_ENUMVAL(wxHtmlScriptMode,wxHTML_SCRIPT_SUB,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxHtmlScriptMode->GetName().c_str(),obj_wxHtmlScriptMode,context);
+  context->AddDefault(obj_wxHtmlScriptMode->GetContext());
+
+  // New enumeration wxKeyModifier
+  AMIObject::ptr obj_wxKeyModifier(new AMIObject);
+  obj_wxKeyModifier->SetName("wxKeyModifier");
+
+  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_SHIFT,4);
+  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_CMD,2);
+  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_ALL,65535);
+  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_META,8);
+  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_CONTROL,2);
+  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_ALT,1);
+  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_ALTGR,3);
+  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_WIN,8);
+  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_NONE,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxKeyModifier->GetName().c_str(),obj_wxKeyModifier,context);
+  context->AddDefault(obj_wxKeyModifier->GetContext());
+
+  // New enumeration wxHtmlURLType
+  AMIObject::ptr obj_wxHtmlURLType(new AMIObject);
+  obj_wxHtmlURLType->SetName("wxHtmlURLType");
+
+  ADD_WX_ENUMVAL(wxHtmlURLType,wxHTML_URL_PAGE,0);
+  ADD_WX_ENUMVAL(wxHtmlURLType,wxHTML_URL_IMAGE,1);
+  ADD_WX_ENUMVAL(wxHtmlURLType,wxHTML_URL_OTHER,2);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxHtmlURLType->GetName().c_str(),obj_wxHtmlURLType,context);
+  context->AddDefault(obj_wxHtmlURLType->GetContext());
+
+  // New enumeration wxStockCursor
+  AMIObject::ptr obj_wxStockCursor(new AMIObject);
+  obj_wxStockCursor->SetName("wxStockCursor");
+
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_NONE,0);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_MAX,29);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_RIGHT_ARROW,2);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_POINT_RIGHT,15);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_MAGNIFIER,9);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_BULLSEYE,3);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZING,22);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_IBEAM,7);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_PAINT_BRUSH,12);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZENESW,18);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_MIDDLE_BUTTON,10);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_WATCH,25);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZENWSE,20);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_WAIT,24);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_ARROWWAIT,28);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_BLANK,26);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_HAND,6);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZEWE,21);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_QUESTION_ARROW,16);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_CROSS,5);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_PENCIL,13);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_POINT_LEFT,14);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_RIGHT_BUTTON,17);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_NO_ENTRY,11);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_LEFT_BUTTON,8);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SPRAYCAN,23);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_DEFAULT,27);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_CHAR,4);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_ARROW,1);
+  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZENS,19);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxStockCursor->GetName().c_str(),obj_wxStockCursor,context);
+  context->AddDefault(obj_wxStockCursor->GetContext());
+
   // New enumeration wxTextAttrAlignment
   AMIObject::ptr obj_wxTextAttrAlignment(new AMIObject);
   obj_wxTextAttrAlignment->SetName("wxTextAttrAlignment");
@@ -513,6 +652,311 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxTextAttrAlignment->GetName().c_str(),obj_wxTextAttrAlignment,context);
   context->AddDefault(obj_wxTextAttrAlignment->GetContext());
 
+  // New enumeration enum_92
+  AMIObject::ptr obj_enum_92(new AMIObject);
+  obj_enum_92->SetName("enum_92");
+
+  ADD_WX_ENUMVAL(enum_92,wxLOG_Status,4);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_Max,10000);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_Warning,2);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_Message,3);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_Progress,8);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_Trace,7);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_Error,1);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_User,100);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_Info,5);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_FatalError,0);
+  ADD_WX_ENUMVAL(enum_92,wxLOG_Debug,6);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_92->GetName().c_str(),obj_enum_92,context);
+  context->AddDefault(obj_enum_92->GetContext());
+
+  // New enumeration wxBorder
+  AMIObject::ptr obj_wxBorder(new AMIObject);
+  obj_wxBorder->SetName("wxBorder");
+
+  ADD_WX_ENUMVAL(wxBorder,wxBORDER_SUNKEN,134217728);
+  ADD_WX_ENUMVAL(wxBorder,wxBORDER_MASK,522190848);
+  ADD_WX_ENUMVAL(wxBorder,wxBORDER_STATIC,16777216);
+  ADD_WX_ENUMVAL(wxBorder,wxBORDER_NONE,2097152);
+  ADD_WX_ENUMVAL(wxBorder,wxBORDER_DOUBLE,268435456);
+  ADD_WX_ENUMVAL(wxBorder,wxBORDER_RAISED,67108864);
+  ADD_WX_ENUMVAL(wxBorder,wxBORDER_SIMPLE,33554432);
+  ADD_WX_ENUMVAL(wxBorder,wxBORDER_THEME,268435456);
+  ADD_WX_ENUMVAL(wxBorder,wxBORDER_DEFAULT,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxBorder->GetName().c_str(),obj_wxBorder,context);
+  context->AddDefault(obj_wxBorder->GetContext());
+
+  // New enumeration enum_112
+  AMIObject::ptr obj_enum_112(new AMIObject);
+  obj_enum_112->SetName("enum_112");
+
+  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOSTATUSBAR,4);
+  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_ALL,31);
+  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOMENUBAR,1);
+  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOBORDER,8);
+  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOCAPTION,16);
+  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOTOOLBAR,2);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_112->GetName().c_str(),obj_enum_112,context);
+  context->AddDefault(obj_enum_112->GetContext());
+
+  // New enumeration wxSystemMetric
+  AMIObject::ptr obj_wxSystemMetric(new AMIObject);
+  obj_wxSystemMetric->SetName("wxSystemMetric");
+
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_EDGE_Y,11);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_EDGE_X,10);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_FRAMESIZE_Y,24);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_FRAMESIZE_X,23);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_DCLICK_X,6);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_DCLICK_Y,7);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_PENWINDOWS_PRESENT,35);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_ICONSPACING_Y,18);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_ICONSPACING_X,17);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SWAP_BUTTONS,37);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_WINDOWMIN_Y,20);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_WINDOWMIN_X,19);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_DRAG_X,8);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SMALLICON_Y,26);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SMALLICON_X,25);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_DRAG_Y,9);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_MOUSE_BUTTONS,1);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SHOW_SOUNDS,36);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_CAPTION_Y,32);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_BORDER_X,2);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_BORDER_Y,3);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_HSCROLL_ARROW_X,12);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_HSCROLL_ARROW_Y,13);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_HSCROLL_Y,27);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SCREEN_X,21);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SCREEN_Y,22);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_VSCROLL_ARROW_X,29);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_VSCROLL_ARROW_Y,30);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_ICON_Y,16);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_ICON_X,15);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_NETWORK_PRESENT,34);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_VTHUMB_Y,31);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_MENU_Y,33);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_CURSOR_X,4);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_CURSOR_Y,5);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_HTHUMB_X,14);
+  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_VSCROLL_X,28);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxSystemMetric->GetName().c_str(),obj_wxSystemMetric,context);
+  context->AddDefault(obj_wxSystemMetric->GetContext());
+
+  // New enumeration enum_133
+  AMIObject::ptr obj_enum_133(new AMIObject);
+  obj_enum_133->SetName("enum_133");
+
+  ADD_WX_ENUMVAL(enum_133,wxLIST_FIND_DOWN,1);
+  ADD_WX_ENUMVAL(enum_133,wxLIST_FIND_RIGHT,3);
+  ADD_WX_ENUMVAL(enum_133,wxLIST_FIND_UP,0);
+  ADD_WX_ENUMVAL(enum_133,wxLIST_FIND_LEFT,2);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_133->GetName().c_str(),obj_enum_133,context);
+  context->AddDefault(obj_enum_133->GetContext());
+
+  // New enumeration enum_117
+  AMIObject::ptr obj_enum_117(new AMIObject);
+  obj_enum_117->SetName("enum_117");
+
+  ADD_WX_ENUMVAL(enum_117,wxPNG_TYPE_GREY_RED,3);
+  ADD_WX_ENUMVAL(enum_117,wxPNG_TYPE_COLOUR,0);
+  ADD_WX_ENUMVAL(enum_117,wxPNG_TYPE_GREY,2);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_117->GetName().c_str(),obj_enum_117,context);
+  context->AddDefault(obj_enum_117->GetContext());
+
+  // New enumeration enum_113
+  AMIObject::ptr obj_enum_113(new AMIObject);
+  obj_enum_113->SetName("enum_113");
+
+  ADD_WX_ENUMVAL(enum_113,wxUSER_ATTENTION_ERROR,2);
+  ADD_WX_ENUMVAL(enum_113,wxUSER_ATTENTION_INFO,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_113->GetName().c_str(),obj_enum_113,context);
+  context->AddDefault(obj_enum_113->GetContext());
+
+  // New enumeration enum_115
+  AMIObject::ptr obj_enum_115(new AMIObject);
+  obj_enum_115->SetName("enum_115");
+
+  ADD_WX_ENUMVAL(enum_115,wxIMAGE_QUALITY_HIGH,1);
+  ADD_WX_ENUMVAL(enum_115,wxIMAGE_QUALITY_NORMAL,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_115->GetName().c_str(),obj_enum_115,context);
+  context->AddDefault(obj_enum_115->GetContext());
+
+  // New enumeration wxShutdownFlags
+  AMIObject::ptr obj_wxShutdownFlags(new AMIObject);
+  obj_wxShutdownFlags->SetName("wxShutdownFlags");
+
+  ADD_WX_ENUMVAL(wxShutdownFlags,wxSHUTDOWN_REBOOT,1);
+  ADD_WX_ENUMVAL(wxShutdownFlags,wxSHUTDOWN_POWEROFF,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxShutdownFlags->GetName().c_str(),obj_wxShutdownFlags,context);
+  context->AddDefault(obj_wxShutdownFlags->GetContext());
+
+  // New enumeration wxThreadError
+  AMIObject::ptr obj_wxThreadError(new AMIObject);
+  obj_wxThreadError->SetName("wxThreadError");
+
+  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_MISC_ERROR,5);
+  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_NO_ERROR,0);
+  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_RUNNING,2);
+  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_NO_RESOURCE,1);
+  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_KILLED,4);
+  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_NOT_RUNNING,3);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxThreadError->GetName().c_str(),obj_wxThreadError,context);
+  context->AddDefault(obj_wxThreadError->GetContext());
+
+  // New enumeration wxAuiManagerDock
+  AMIObject::ptr obj_wxAuiManagerDock(new AMIObject);
+  obj_wxAuiManagerDock->SetName("wxAuiManagerDock");
+
+  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_LEFT,4);
+  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_BOTTOM,3);
+  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_NONE,0);
+  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_RIGHT,2);
+  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_CENTRE,5);
+  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_TOP,1);
+  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_CENTER,5);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxAuiManagerDock->GetName().c_str(),obj_wxAuiManagerDock,context);
+  context->AddDefault(obj_wxAuiManagerDock->GetContext());
+
+  // New enumeration wxAuiPaneButtonState
+  AMIObject::ptr obj_wxAuiPaneButtonState(new AMIObject);
+  obj_wxAuiPaneButtonState->SetName("wxAuiPaneButtonState");
+
+  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_PRESSED,4);
+  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_HOVER,2);
+  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_HIDDEN,16);
+  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_NORMAL,0);
+  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_CHECKED,32);
+  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_DISABLED,8);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxAuiPaneButtonState->GetName().c_str(),obj_wxAuiPaneButtonState,context);
+  context->AddDefault(obj_wxAuiPaneButtonState->GetContext());
+
+  // New enumeration wxLayoutDirection
+  AMIObject::ptr obj_wxLayoutDirection(new AMIObject);
+  obj_wxLayoutDirection->SetName("wxLayoutDirection");
+
+  ADD_WX_ENUMVAL(wxLayoutDirection,wxLayout_LeftToRight,1);
+  ADD_WX_ENUMVAL(wxLayoutDirection,wxLayout_Default,0);
+  ADD_WX_ENUMVAL(wxLayoutDirection,wxLayout_RightToLeft,2);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxLayoutDirection->GetName().c_str(),obj_wxLayoutDirection,context);
+  context->AddDefault(obj_wxLayoutDirection->GetContext());
+
+  // New enumeration wxAuiPaneDockArtSetting
+  AMIObject::ptr obj_wxAuiPaneDockArtSetting(new AMIObject);
+  obj_wxAuiPaneDockArtSetting->SetName("wxAuiPaneDockArtSetting");
+
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_GRIPPER_SIZE,2);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_ACTIVE_CAPTION_COLOUR,7);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_PANE_BUTTON_SIZE,4);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_PANE_BORDER_SIZE,3);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR,10);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_CAPTION_FONT,15);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_SASH_SIZE,0);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_BORDER_COLOUR,13);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_ACTIVE_CAPTION_GRADIENT_COLOUR,8);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_GRIPPER_COLOUR,14);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_ACTIVE_CAPTION_TEXT_COLOUR,11);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_CAPTION_SIZE,1);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_SASH_COLOUR,6);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_GRADIENT_TYPE,16);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_BACKGROUND_COLOUR,5);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR,9);
+  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR,12);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxAuiPaneDockArtSetting->GetName().c_str(),obj_wxAuiPaneDockArtSetting,context);
+  context->AddDefault(obj_wxAuiPaneDockArtSetting->GetContext());
+
+  // New enumeration enum_132
+  AMIObject::ptr obj_enum_132(new AMIObject);
+  obj_enum_132->SetName("enum_132");
+
+  ADD_WX_ENUMVAL(enum_132,wxLIST_RECT_BOUNDS,0);
+  ADD_WX_ENUMVAL(enum_132,wxLIST_RECT_LABEL,2);
+  ADD_WX_ENUMVAL(enum_132,wxLIST_RECT_ICON,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_132->GetName().c_str(),obj_enum_132,context);
+  context->AddDefault(obj_enum_132->GetContext());
+
+  // New enumeration enum_136
+  AMIObject::ptr obj_enum_136(new AMIObject);
+  obj_enum_136->SetName("enum_136");
+
+  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_ONLABEL,4);
+  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_ONPAGE,8);
+  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_ONICON,2);
+  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_ONITEM,6);
+  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_NOWHERE,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_136->GetName().c_str(),obj_enum_136,context);
+  context->AddDefault(obj_enum_136->GetContext());
+
+  // New enumeration enum_138
+  AMIObject::ptr obj_enum_138(new AMIObject);
+  obj_enum_138->SetName("enum_138");
+
+  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_NOWHERE,1);
+  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_ONPAGE,8);
+  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_ONITEM,6);
+  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_ONICON,2);
+  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_ONLABEL,4);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_138->GetName().c_str(),obj_enum_138,context);
+  context->AddDefault(obj_enum_138->GetContext());
+
+  // New enumeration enum_130
+  AMIObject::ptr obj_enum_130(new AMIObject);
+  obj_enum_130->SetName("enum_130");
+
+  ADD_WX_ENUMVAL(enum_130,wxLIST_ALIGN_LEFT,1);
+  ADD_WX_ENUMVAL(enum_130,wxLIST_ALIGN_SNAP_TO_GRID,3);
+  ADD_WX_ENUMVAL(enum_130,wxLIST_ALIGN_TOP,2);
+  ADD_WX_ENUMVAL(enum_130,wxLIST_ALIGN_DEFAULT,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_130->GetName().c_str(),obj_enum_130,context);
+  context->AddDefault(obj_enum_130->GetContext());
+
+  // New enumeration enum_131
+  AMIObject::ptr obj_enum_131(new AMIObject);
+  obj_enum_131->SetName("enum_131");
+
+  ADD_WX_ENUMVAL(enum_131,wxLIST_AUTOSIZE_USEHEADER,-2);
+  ADD_WX_ENUMVAL(enum_131,wxLIST_AUTOSIZE,-1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_131->GetName().c_str(),obj_enum_131,context);
+  context->AddDefault(obj_enum_131->GetContext());
+
   // New enumeration wxCondError
   AMIObject::ptr obj_wxCondError(new AMIObject);
   obj_wxCondError->SetName("wxCondError");
@@ -526,67 +970,612 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxCondError->GetName().c_str(),obj_wxCondError,context);
   context->AddDefault(obj_wxCondError->GetContext());
 
-  // New enumeration wxAlignment
-  AMIObject::ptr obj_wxAlignment(new AMIObject);
-  obj_wxAlignment->SetName("wxAlignment");
+  // New enumeration wxPrintMode
+  AMIObject::ptr obj_wxPrintMode(new AMIObject);
+  obj_wxPrintMode->SetName("wxPrintMode");
 
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_LEFT,0);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_NOT,0);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_TOP,0);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_RIGHT,512);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTRE_VERTICAL,2048);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTER_HORIZONTAL,256);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_MASK,3840);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTRE_HORIZONTAL,256);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTRE,2304);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTER,2304);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_BOTTOM,1024);
-  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTER_VERTICAL,2048);
+  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_STREAM,4);
+  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_FILE,2);
+  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_NONE,0);
+  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_PREVIEW,1);
+  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_PRINTER,3);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAlignment->GetName().c_str(),obj_wxAlignment,context);
-  context->AddDefault(obj_wxAlignment->GetContext());
+  context->AddVar<AMIObject>(obj_wxPrintMode->GetName().c_str(),obj_wxPrintMode,context);
+  context->AddDefault(obj_wxPrintMode->GetContext());
 
-  // New enumeration wxStreamProtocolType
-  AMIObject::ptr obj_wxStreamProtocolType(new AMIObject);
-  obj_wxStreamProtocolType->SetName("wxStreamProtocolType");
+  // New enumeration wxPaperSize
+  AMIObject::ptr obj_wxPaperSize(new AMIObject);
+  obj_wxPaperSize->SetName("wxPaperSize");
 
-  ADD_WX_ENUMVAL(wxStreamProtocolType,wxSTREAM_MIMETYPE,1);
-  ADD_WX_ENUMVAL(wxStreamProtocolType,wxSTREAM_PROTOCOL,0);
-  ADD_WX_ENUMVAL(wxStreamProtocolType,wxSTREAM_ENCODING,2);
-  ADD_WX_ENUMVAL(wxStreamProtocolType,wxSTREAM_FILEEXT,3);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_FANFOLD_STD_GERMAN,40);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_TABLOID_EXTRA,50);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_ROTATED,73);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_DSHEET,5);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B5_JIS_ROTATED,78);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_TABLOID,8);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P16K_ROTATED,104);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JAPANESE_POSTCARD_ROTATED,79);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P32KBIG_ROTATED,106);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_CHOU3,71);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_CHOU4,72);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_10,103);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P32KBIG,93);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_NONE,0);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3_ROTATED,74);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_CHOU4_ROTATED,85);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_B4,33);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_B5,34);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_B6,35);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_9_ROTATED,115);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_7_ROTATED,113);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_FANFOLD_LGL_GERMAN,41);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_DBL_JAPANESE_POSTCARD,67);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_ITALY,36);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3_EXTRA,61);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_PLUS,57);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C65,32);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JAPANESE_POSTCARD,43);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_4_ROTATED,110);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P32K_ROTATED,105);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_11,24);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_10,23);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_12,25);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_14,26);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C3,29);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B5_EXTRA,63);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C6,31);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C5,28);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C4,30);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_EXTRA,48);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_KAKU2_ROTATED,82);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B_PLUS,56);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_DL,27);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4_PLUS,58);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LEGAL_EXTRA,49);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B4_JIS_ROTATED,77);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_1_ROTATED,107);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_YOU4_ROTATED,90);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_EXTRA_TRANSVERSE,54);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P32K,92);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_2,95);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_3,96);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_1,94);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_6,99);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_7,100);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_4,97);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_5,98);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER,1);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_9,102);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A_PLUS,55);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_11X17,20);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_KAKU3_ROTATED,83);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_NOTE,21);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_QUARTO,18);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_YOU4,89);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B6_JIS,86);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3_TRANSVERSE,65);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3_EXTRA_TRANSVERSE,66);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_KAKU2,69);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_KAKU3,70);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ESHEET,6);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A5_TRANSVERSE,59);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_FOLIO,17);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_3_ROTATED,109);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ISO_B4,42);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_FANFOLD_US,39);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P16K,91);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_CSHEET,4);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_CHOU3_ROTATED,84);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4_EXTRA,51);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_9X11,44);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A6_ROTATED,81);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_6_ROTATED,112);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_5_ROTATED,111);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_DBL_JAPANESE_POSTCARD_ROTATED,80);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_MONARCH,37);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B6_JIS_ROTATED,87);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_12X11,88);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_8,101);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4_TRANSVERSE,53);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_EXECUTIVE,11);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_2_ROTATED,108);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LEGAL,2);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_10X14,19);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_10X11,45);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_TRANSVERSE,52);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LEDGER,9);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTERSMALL,7);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A5_ROTATED,76);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4SMALL,13);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A5,14);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4,3);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A6,68);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3,12);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A2,64);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_15X11,46);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A5_EXTRA,62);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_INVITE,47);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_10_ROTATED,116);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4_ROTATED,75);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_9,22);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_PERSONAL,38);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B4,15);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B5,16);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B5_TRANSVERSE,60);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_STATEMENT,10);
+  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_8_ROTATED,114);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxStreamProtocolType->GetName().c_str(),obj_wxStreamProtocolType,context);
-  context->AddDefault(obj_wxStreamProtocolType->GetContext());
+  context->AddVar<AMIObject>(obj_wxPaperSize->GetName().c_str(),obj_wxPaperSize,context);
+  context->AddDefault(obj_wxPaperSize->GetContext());
 
-  // New enumeration wxStretch
-  AMIObject::ptr obj_wxStretch(new AMIObject);
-  obj_wxStretch->SetName("wxStretch");
+  // New enumeration enum_98
+  AMIObject::ptr obj_enum_98(new AMIObject);
+  obj_enum_98->SetName("enum_98");
 
-  ADD_WX_ENUMVAL(wxStretch,wxEXPAND,8192);
-  ADD_WX_ENUMVAL(wxStretch,wxSHRINK,4096);
-  ADD_WX_ENUMVAL(wxStretch,wxTILE,49152);
-  ADD_WX_ENUMVAL(wxStretch,wxGROW,8192);
-  ADD_WX_ENUMVAL(wxStretch,wxSHAPED,16384);
-  ADD_WX_ENUMVAL(wxStretch,wxRESERVE_SPACE_EVEN_IF_HIDDEN,2);
-  ADD_WX_ENUMVAL(wxStretch,wxFIXED_MINSIZE,32768);
-  ADD_WX_ENUMVAL(wxStretch,wxADJUST_MINSIZE,0);
-  ADD_WX_ENUMVAL(wxStretch,wxSTRETCH_NOT,0);
+  ADD_WX_ENUMVAL(enum_98,wxEXEC_NODISABLE,8);
+  ADD_WX_ENUMVAL(enum_98,wxEXEC_NOHIDE,2);
+  ADD_WX_ENUMVAL(enum_98,wxEXEC_SYNC,1);
+  ADD_WX_ENUMVAL(enum_98,wxEXEC_MAKE_GROUP_LEADER,4);
+  ADD_WX_ENUMVAL(enum_98,wxEXEC_ASYNC,0);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxStretch->GetName().c_str(),obj_wxStretch,context);
-  context->AddDefault(obj_wxStretch->GetContext());
+  context->AddVar<AMIObject>(obj_enum_98->GetName().c_str(),obj_enum_98,context);
+  context->AddDefault(obj_enum_98->GetContext());
 
-  // New enumeration enum_7
-  AMIObject::ptr obj_enum_7(new AMIObject);
-  obj_enum_7->SetName("enum_7");
+  // New enumeration wxPathNormalize
+  AMIObject::ptr obj_wxPathNormalize(new AMIObject);
+  obj_wxPathNormalize->SetName("wxPathNormalize");
 
-  ADD_WX_ENUMVAL(enum_7,wxDefaultCoord,-1);
+  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_LONG,32);
+  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_ALL,247);
+  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_SHORTCUT,64);
+  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_TILDE,4);
+  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_CASE,8);
+  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_ENV_VARS,1);
+  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_ABSOLUTE,16);
+  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_DOTS,2);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_7->GetName().c_str(),obj_enum_7,context);
-  context->AddDefault(obj_enum_7->GetContext());
+  context->AddVar<AMIObject>(obj_wxPathNormalize->GetName().c_str(),obj_wxPathNormalize,context);
+  context->AddDefault(obj_wxPathNormalize->GetContext());
+
+  // New enumeration wxItemKind
+  AMIObject::ptr obj_wxItemKind(new AMIObject);
+  obj_wxItemKind->SetName("wxItemKind");
+
+  ADD_WX_ENUMVAL(wxItemKind,wxITEM_RADIO,2);
+  ADD_WX_ENUMVAL(wxItemKind,wxITEM_CHECK,1);
+  ADD_WX_ENUMVAL(wxItemKind,wxITEM_NORMAL,0);
+  ADD_WX_ENUMVAL(wxItemKind,wxITEM_SEPARATOR,-1);
+  ADD_WX_ENUMVAL(wxItemKind,wxITEM_MAX,3);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxItemKind->GetName().c_str(),obj_wxItemKind,context);
+  context->AddDefault(obj_wxItemKind->GetContext());
+
+  // New enumeration enum_102
+  AMIObject::ptr obj_enum_102(new AMIObject);
+  obj_enum_102->SetName("enum_102");
+
+  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_LEFT,1);
+  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_MIDDLE,2);
+  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_NONE,0);
+  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_RIGHT,3);
+  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_ANY,-1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_102->GetName().c_str(),obj_enum_102,context);
+  context->AddDefault(obj_enum_102->GetContext());
+
+  // New enumeration enum_140
+  AMIObject::ptr obj_enum_140(new AMIObject);
+  obj_enum_140->SetName("enum_140");
+
+  ADD_WX_ENUMVAL(enum_140,wxPATH_MKDIR_FULL,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_140->GetName().c_str(),obj_enum_140,context);
+  context->AddDefault(obj_enum_140->GetContext());
+
+  // New enumeration wxNotificationOptions
+  AMIObject::ptr obj_wxNotificationOptions(new AMIObject);
+  obj_wxNotificationOptions->SetName("wxNotificationOptions");
+
+  ADD_WX_ENUMVAL(wxNotificationOptions,wxNOTIFY_ONCE,1);
+  ADD_WX_ENUMVAL(wxNotificationOptions,wxNOTIFY_NONE,0);
+  ADD_WX_ENUMVAL(wxNotificationOptions,wxNOTIFY_REPEAT,2);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxNotificationOptions->GetName().c_str(),obj_wxNotificationOptions,context);
+  context->AddDefault(obj_wxNotificationOptions->GetContext());
+
+  // New enumeration wxAuiToolBarArtSetting
+  AMIObject::ptr obj_wxAuiToolBarArtSetting(new AMIObject);
+  obj_wxAuiToolBarArtSetting->SetName("wxAuiToolBarArtSetting");
+
+  ADD_WX_ENUMVAL(wxAuiToolBarArtSetting,wxAUI_TBART_OVERFLOW_SIZE,2);
+  ADD_WX_ENUMVAL(wxAuiToolBarArtSetting,wxAUI_TBART_GRIPPER_SIZE,1);
+  ADD_WX_ENUMVAL(wxAuiToolBarArtSetting,wxAUI_TBART_SEPARATOR_SIZE,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxAuiToolBarArtSetting->GetName().c_str(),obj_wxAuiToolBarArtSetting,context);
+  context->AddDefault(obj_wxAuiToolBarArtSetting->GetContext());
+
+  // New enumeration wxAuiPaneInsertLevel
+  AMIObject::ptr obj_wxAuiPaneInsertLevel(new AMIObject);
+  obj_wxAuiPaneInsertLevel->SetName("wxAuiPaneInsertLevel");
+
+  ADD_WX_ENUMVAL(wxAuiPaneInsertLevel,wxAUI_INSERT_DOCK,2);
+  ADD_WX_ENUMVAL(wxAuiPaneInsertLevel,wxAUI_INSERT_PANE,0);
+  ADD_WX_ENUMVAL(wxAuiPaneInsertLevel,wxAUI_INSERT_ROW,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxAuiPaneInsertLevel->GetName().c_str(),obj_wxAuiPaneInsertLevel,context);
+  context->AddDefault(obj_wxAuiPaneInsertLevel->GetContext());
+
+  // New enumeration wxRegionContain
+  AMIObject::ptr obj_wxRegionContain(new AMIObject);
+  obj_wxRegionContain->SetName("wxRegionContain");
+
+  ADD_WX_ENUMVAL(wxRegionContain,wxOutRegion,0);
+  ADD_WX_ENUMVAL(wxRegionContain,wxInRegion,2);
+  ADD_WX_ENUMVAL(wxRegionContain,wxPartRegion,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxRegionContain->GetName().c_str(),obj_wxRegionContain,context);
+  context->AddDefault(obj_wxRegionContain->GetContext());
+
+  // New enumeration enum_139
+  AMIObject::ptr obj_enum_139(new AMIObject);
+  obj_enum_139->SetName("enum_139");
+
+  ADD_WX_ENUMVAL(enum_139,wxPATH_GET_SEPARATOR,2);
+  ADD_WX_ENUMVAL(enum_139,wxPATH_GET_VOLUME,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_139->GetName().c_str(),obj_enum_139,context);
+  context->AddDefault(obj_enum_139->GetContext());
+
+  // New enumeration wxFontFamily
+  AMIObject::ptr obj_wxFontFamily(new AMIObject);
+  obj_wxFontFamily->SetName("wxFontFamily");
+
+  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_DECORATIVE,71);
+  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_MODERN,75);
+  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_ROMAN,72);
+  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_SWISS,74);
+  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_SCRIPT,73);
+  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_DEFAULT,70);
+  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_MAX,77);
+  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_TELETYPE,76);
+  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_UNKNOWN,77);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxFontFamily->GetName().c_str(),obj_wxFontFamily,context);
+  context->AddDefault(obj_wxFontFamily->GetContext());
+
+  // New enumeration wxSeekMode
+  AMIObject::ptr obj_wxSeekMode(new AMIObject);
+  obj_wxSeekMode->SetName("wxSeekMode");
+
+  ADD_WX_ENUMVAL(wxSeekMode,wxFromStart,0);
+  ADD_WX_ENUMVAL(wxSeekMode,wxFromCurrent,1);
+  ADD_WX_ENUMVAL(wxSeekMode,wxFromEnd,2);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxSeekMode->GetName().c_str(),obj_wxSeekMode,context);
+  context->AddDefault(obj_wxSeekMode->GetContext());
+
+  // New enumeration wxBitmapType
+  AMIObject::ptr obj_wxBitmapType(new AMIObject);
+  obj_wxBitmapType->SetName("wxBitmapType");
+
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_GIF_RESOURCE,14);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_XBM_DATA,8);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_XPM_DATA,10);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_GIF,13);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ICO_RESOURCE,4);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PICT,23);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_TGA,29);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PNG_RESOURCE,16);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_CUR,5);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_MACCURSOR,30);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_XPM,9);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ICO,3);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_INVALID,0);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PICT_RESOURCE,24);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_CUR_RESOURCE,6);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_RESOURCE,2);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ANI,27);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_BMP,1);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ICON_RESOURCE,26);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_XBM,7);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ANY,50);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_JPEG_RESOURCE,18);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PCX,21);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_BMP_RESOURCE,2);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_TIF_RESOURCE,12);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PNG,15);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_IFF,28);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PNM,19);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PCX_RESOURCE,22);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_TIF,11);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_MACCURSOR_RESOURCE,31);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_JPEG,17);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PNM_RESOURCE,20);
+  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ICON,25);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxBitmapType->GetName().c_str(),obj_wxBitmapType,context);
+  context->AddDefault(obj_wxBitmapType->GetContext());
+
+  // New enumeration wxSystemFeature
+  AMIObject::ptr obj_wxSystemFeature(new AMIObject);
+  obj_wxSystemFeature->SetName("wxSystemFeature");
+
+  ADD_WX_ENUMVAL(wxSystemFeature,wxSYS_CAN_ICONIZE_FRAME,2);
+  ADD_WX_ENUMVAL(wxSystemFeature,wxSYS_CAN_DRAW_FRAME_DECORATIONS,1);
+  ADD_WX_ENUMVAL(wxSystemFeature,wxSYS_TABLET_PRESENT,3);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxSystemFeature->GetName().c_str(),obj_wxSystemFeature,context);
+  context->AddDefault(obj_wxSystemFeature->GetContext());
+
+  // New enumeration wxEdge
+  AMIObject::ptr obj_wxEdge(new AMIObject);
+  obj_wxEdge->SetName("wxEdge");
+
+  ADD_WX_ENUMVAL(wxEdge,wxHeight,5);
+  ADD_WX_ENUMVAL(wxEdge,wxCentre,6);
+  ADD_WX_ENUMVAL(wxEdge,wxCenter,6);
+  ADD_WX_ENUMVAL(wxEdge,wxTop,1);
+  ADD_WX_ENUMVAL(wxEdge,wxBottom,3);
+  ADD_WX_ENUMVAL(wxEdge,wxWidth,4);
+  ADD_WX_ENUMVAL(wxEdge,wxCentreX,7);
+  ADD_WX_ENUMVAL(wxEdge,wxRight,2);
+  ADD_WX_ENUMVAL(wxEdge,wxCentreY,8);
+  ADD_WX_ENUMVAL(wxEdge,wxLeft,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxEdge->GetName().c_str(),obj_wxEdge,context);
+  context->AddDefault(obj_wxEdge->GetContext());
+
+  // New enumeration wxKillError
+  AMIObject::ptr obj_wxKillError(new AMIObject);
+  obj_wxKillError->SetName("wxKillError");
+
+  ADD_WX_ENUMVAL(wxKillError,wxKILL_ACCESS_DENIED,2);
+  ADD_WX_ENUMVAL(wxKillError,wxKILL_BAD_SIGNAL,1);
+  ADD_WX_ENUMVAL(wxKillError,wxKILL_ERROR,4);
+  ADD_WX_ENUMVAL(wxKillError,wxKILL_NO_PROCESS,3);
+  ADD_WX_ENUMVAL(wxKillError,wxKILL_OK,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxKillError->GetName().c_str(),obj_wxKillError,context);
+  context->AddDefault(obj_wxKillError->GetContext());
+
+  // New enumeration enum_100
+  AMIObject::ptr obj_enum_100(new AMIObject);
+  obj_enum_100->SetName("enum_100");
+
+  ADD_WX_ENUMVAL(enum_100,wxStrip_Mnemonics,1);
+  ADD_WX_ENUMVAL(enum_100,wxStrip_Accel,2);
+  ADD_WX_ENUMVAL(enum_100,wxStrip_All,3);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_100->GetName().c_str(),obj_enum_100,context);
+  context->AddDefault(obj_enum_100->GetContext());
+
+  // New enumeration wxAuiButtonId
+  AMIObject::ptr obj_wxAuiButtonId(new AMIObject);
+  obj_wxAuiButtonId->SetName("wxAuiButtonId");
+
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_DOWN,110);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_CUSTOM3,203);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_CLOSE,101);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_WINDOWLIST,106);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_CUSTOM1,201);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_MAXIMIZE_RESTORE,102);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_CUSTOM2,202);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_OPTIONS,105);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_UP,109);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_PIN,104);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_LEFT,107);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_RIGHT,108);
+  ADD_WX_ENUMVAL(wxAuiButtonId,wxAUI_BUTTON_MINIMIZE,103);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxAuiButtonId->GetName().c_str(),obj_wxAuiButtonId,context);
+  context->AddDefault(obj_wxAuiButtonId->GetContext());
+
+  // New enumeration wxTextFileType
+  AMIObject::ptr obj_wxTextFileType(new AMIObject);
+  obj_wxTextFileType->SetName("wxTextFileType");
+
+  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_Mac,3);
+  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_Unix,1);
+  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_None,0);
+  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_Os2,4);
+  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_Dos,2);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxTextFileType->GetName().c_str(),obj_wxTextFileType,context);
+  context->AddDefault(obj_wxTextFileType->GetContext());
+
+  // New enumeration enum_8
+  AMIObject::ptr obj_enum_8(new AMIObject);
+  obj_enum_8->SetName("enum_8");
+
+  ADD_WX_ENUMVAL(enum_8,wxID_HOME,5122);
+  ADD_WX_ENUMVAL(enum_8,wxID_PAGE_SETUP,5012);
+  ADD_WX_ENUMVAL(enum_8,wxID_REMOVE,5119);
+  ADD_WX_ENUMVAL(enum_8,wxID_HELP_COMMANDS,5018);
+  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_LARGEICONS,5043);
+  ADD_WX_ENUMVAL(enum_8,wxID_CLOSE_FRAME,5201);
+  ADD_WX_ENUMVAL(enum_8,wxID_ZOOM_OUT,5138);
+  ADD_WX_ENUMVAL(enum_8,wxID_REPLACE_ALL,5040);
+  ADD_WX_ENUMVAL(enum_8,wxID_JUSTIFY_CENTER,5128);
+  ADD_WX_ENUMVAL(enum_8,wxID_HELP,5009);
+  ADD_WX_ENUMVAL(enum_8,wxID_APPLY,5102);
+  ADD_WX_ENUMVAL(enum_8,wxID_REVERT_TO_SAVED,5140);
+  ADD_WX_ENUMVAL(enum_8,wxID_EDIT,5030);
+  ADD_WX_ENUMVAL(enum_8,wxID_PASTE,5033);
+  ADD_WX_ENUMVAL(enum_8,wxID_CUT,5031);
+  ADD_WX_ENUMVAL(enum_8,wxID_REDO,5008);
+  ADD_WX_ENUMVAL(enum_8,wxID_LOWEST,4999);
+  ADD_WX_ENUMVAL(enum_8,wxID_ZOOM_IN,5137);
+  ADD_WX_ENUMVAL(enum_8,wxID_ZOOM_FIT,5136);
+  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_LIST,5045);
+  ADD_WX_ENUMVAL(enum_8,wxID_REVERT,5005);
+  ADD_WX_ENUMVAL(enum_8,wxID_JUSTIFY_FILL,5129);
+  ADD_WX_ENUMVAL(enum_8,wxID_STOP,5124);
+  ADD_WX_ENUMVAL(enum_8,wxID_ANY,-1);
+  ADD_WX_ENUMVAL(enum_8,wxID_PREVIEW,5013);
+  ADD_WX_ENUMVAL(enum_8,wxID_ADD,5118);
+  ADD_WX_ENUMVAL(enum_8,wxID_UNDO,5007);
+  ADD_WX_ENUMVAL(enum_8,wxID_NO,5104);
+  ADD_WX_ENUMVAL(enum_8,wxID_PRINT_SETUP,5011);
+  ADD_WX_ENUMVAL(enum_8,wxID_CONTEXT_HELP,5112);
+  ADD_WX_ENUMVAL(enum_8,wxID_JUSTIFY_RIGHT,5130);
+  ADD_WX_ENUMVAL(enum_8,wxID_BACKWARD,5107);
+  ADD_WX_ENUMVAL(enum_8,wxID_UNDERLINE,5132);
+  ADD_WX_ENUMVAL(enum_8,wxID_IGNORE,5117);
+  ADD_WX_ENUMVAL(enum_8,wxID_SEPARATOR,-2);
+  ADD_WX_ENUMVAL(enum_8,wxID_NOTOALL,5114);
+  ADD_WX_ENUMVAL(enum_8,wxID_SAVE,5003);
+  ADD_WX_ENUMVAL(enum_8,wxID_OK,5100);
+  ADD_WX_ENUMVAL(enum_8,wxID_SELECTALL,5037);
+  ADD_WX_ENUMVAL(enum_8,wxID_COPY,5032);
+  ADD_WX_ENUMVAL(enum_8,wxID_RESIZE_FRAME,5203);
+  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SORTSIZE,5048);
+  ADD_WX_ENUMVAL(enum_8,wxID_UNINDENT,5134);
+  ADD_WX_ENUMVAL(enum_8,wxID_DELETE,5038);
+  ADD_WX_ENUMVAL(enum_8,wxID_JUSTIFY_LEFT,5131);
+  ADD_WX_ENUMVAL(enum_8,wxID_INDEX,5125);
+  ADD_WX_ENUMVAL(enum_8,wxID_ABOUT,5014);
+  ADD_WX_ENUMVAL(enum_8,wxID_DOWN,5121);
+  ADD_WX_ENUMVAL(enum_8,wxID_PREFERENCES,5022);
+  ADD_WX_ENUMVAL(enum_8,wxID_UP,5120);
+  ADD_WX_ENUMVAL(enum_8,wxID_SYSTEM_MENU,5200);
+  ADD_WX_ENUMVAL(enum_8,wxID_MAXIMIZE_FRAME,5204);
+  ADD_WX_ENUMVAL(enum_8,wxID_REPLACE,5039);
+  ADD_WX_ENUMVAL(enum_8,wxID_FIND,5035);
+  ADD_WX_ENUMVAL(enum_8,wxID_ZOOM_100,5135);
+  ADD_WX_ENUMVAL(enum_8,wxID_CANCEL,5101);
+  ADD_WX_ENUMVAL(enum_8,wxID_YESTOALL,5113);
+  ADD_WX_ENUMVAL(enum_8,wxID_INDENT,5133);
+  ADD_WX_ENUMVAL(enum_8,wxID_CLOSE,5001);
+  ADD_WX_ENUMVAL(enum_8,wxID_MOVE_FRAME,5202);
+  ADD_WX_ENUMVAL(enum_8,wxID_ICONIZE_FRAME,5205);
+  ADD_WX_ENUMVAL(enum_8,wxID_HELP_PROCEDURES,5019);
+  ADD_WX_ENUMVAL(enum_8,wxID_ITALIC,5127);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILEDLGG,5900);
+  ADD_WX_ENUMVAL(enum_8,wxID_DEFAULT,5108);
+  ADD_WX_ENUMVAL(enum_8,wxID_NEW,5002);
+  ADD_WX_ENUMVAL(enum_8,wxID_CLOSE_ALL,5021);
+  ADD_WX_ENUMVAL(enum_8,wxID_MORE,5109);
+  ADD_WX_ENUMVAL(enum_8,wxID_RESET,5111);
+  ADD_WX_ENUMVAL(enum_8,wxID_STATIC,5105);
+  ADD_WX_ENUMVAL(enum_8,wxID_NONE,-3);
+  ADD_WX_ENUMVAL(enum_8,wxID_UNDELETE,5139);
+  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SORTTYPE,5049);
+  ADD_WX_ENUMVAL(enum_8,wxID_ABORT,5115);
+  ADD_WX_ENUMVAL(enum_8,wxID_REFRESH,5123);
+  ADD_WX_ENUMVAL(enum_8,wxID_YES,5103);
+  ADD_WX_ENUMVAL(enum_8,wxID_HELP_CONTENTS,5015);
+  ADD_WX_ENUMVAL(enum_8,wxID_OPEN,5000);
+  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SMALLICONS,5044);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE,5050);
+  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SORTDATE,5046);
+  ADD_WX_ENUMVAL(enum_8,wxID_SAVEAS,5004);
+  ADD_WX_ENUMVAL(enum_8,wxID_HIGHEST,5999);
+  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SORTNAME,5047);
+  ADD_WX_ENUMVAL(enum_8,wxID_HELP_SEARCH,5017);
+  ADD_WX_ENUMVAL(enum_8,wxID_FORWARD,5106);
+  ADD_WX_ENUMVAL(enum_8,wxID_CLEAR,5034);
+  ADD_WX_ENUMVAL(enum_8,wxID_EXIT,5006);
+  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_DETAILS,5042);
+  ADD_WX_ENUMVAL(enum_8,wxID_PRINT,5010);
+  ADD_WX_ENUMVAL(enum_8,wxID_RETRY,5116);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE1,5051);
+  ADD_WX_ENUMVAL(enum_8,wxID_DUPLICATE,5036);
+  ADD_WX_ENUMVAL(enum_8,wxID_HELP_CONTEXT,5020);
+  ADD_WX_ENUMVAL(enum_8,wxID_RESTORE_FRAME,5206);
+  ADD_WX_ENUMVAL(enum_8,wxID_BOLD,5126);
+  ADD_WX_ENUMVAL(enum_8,wxID_HELP_INDEX,5016);
+  ADD_WX_ENUMVAL(enum_8,wxID_PROPERTIES,5041);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE9,5059);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE8,5058);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE3,5053);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE2,5052);
+  ADD_WX_ENUMVAL(enum_8,wxID_SETUP,5110);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE7,5057);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE6,5056);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE5,5055);
+  ADD_WX_ENUMVAL(enum_8,wxID_FILE4,5054);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_8->GetName().c_str(),obj_enum_8,context);
+  context->AddDefault(obj_enum_8->GetContext());
+
+  // New enumeration enum_9
+  AMIObject::ptr obj_enum_9(new AMIObject);
+  obj_enum_9->SetName("enum_9");
+
+  ADD_WX_ENUMVAL(enum_9,wxITALIC,93);
+  ADD_WX_ENUMVAL(enum_9,wxCROSSDIAG_HATCH,112);
+  ADD_WX_ENUMVAL(enum_9,wxBOLD,92);
+  ADD_WX_ENUMVAL(enum_9,wxNORMAL,90);
+  ADD_WX_ENUMVAL(enum_9,wxJOIN_ROUND,122);
+  ADD_WX_ENUMVAL(enum_9,wxTELETYPE,76);
+  ADD_WX_ENUMVAL(enum_9,wxJOIN_BEVEL,120);
+  ADD_WX_ENUMVAL(enum_9,wxSOLID,100);
+  ADD_WX_ENUMVAL(enum_9,wxVERTICAL_HATCH,116);
+  ADD_WX_ENUMVAL(enum_9,wxFIRST_HATCH,111);
+  ADD_WX_ENUMVAL(enum_9,wxLAST_HATCH,116);
+  ADD_WX_ENUMVAL(enum_9,wxUSER_DASH,105);
+  ADD_WX_ENUMVAL(enum_9,wxSTIPPLE,110);
+  ADD_WX_ENUMVAL(enum_9,wxHORIZONTAL_HATCH,115);
+  ADD_WX_ENUMVAL(enum_9,wxCAP_PROJECTING,131);
+  ADD_WX_ENUMVAL(enum_9,wxSLANT,94);
+  ADD_WX_ENUMVAL(enum_9,wxCAP_BUTT,132);
+  ADD_WX_ENUMVAL(enum_9,wxLIGHT,91);
+  ADD_WX_ENUMVAL(enum_9,wxVARIABLE,80);
+  ADD_WX_ENUMVAL(enum_9,wxSWISS,74);
+  ADD_WX_ENUMVAL(enum_9,wxSHORT_DASH,103);
+  ADD_WX_ENUMVAL(enum_9,wxSTIPPLE_MASK_OPAQUE,107);
+  ADD_WX_ENUMVAL(enum_9,wxDOT_DASH,104);
+  ADD_WX_ENUMVAL(enum_9,wxFDIAGONAL_HATCH,113);
+  ADD_WX_ENUMVAL(enum_9,wxDECORATIVE,71);
+  ADD_WX_ENUMVAL(enum_9,wxCAP_ROUND,130);
+  ADD_WX_ENUMVAL(enum_9,wxTRANSPARENT,106);
+  ADD_WX_ENUMVAL(enum_9,wxMODERN,75);
+  ADD_WX_ENUMVAL(enum_9,wxJOIN_MITER,121);
+  ADD_WX_ENUMVAL(enum_9,wxSTIPPLE_MASK,108);
+  ADD_WX_ENUMVAL(enum_9,wxDEFAULT,70);
+  ADD_WX_ENUMVAL(enum_9,wxBDIAGONAL_HATCH,111);
+  ADD_WX_ENUMVAL(enum_9,wxDOT,101);
+  ADD_WX_ENUMVAL(enum_9,wxLONG_DASH,102);
+  ADD_WX_ENUMVAL(enum_9,wxFIXED,81);
+  ADD_WX_ENUMVAL(enum_9,wxSCRIPT,73);
+  ADD_WX_ENUMVAL(enum_9,wxCROSS_HATCH,114);
+  ADD_WX_ENUMVAL(enum_9,wxROMAN,72);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_9->GetName().c_str(),obj_enum_9,context);
+  context->AddDefault(obj_enum_9->GetContext());
+
+  // New enumeration enum_99
+  AMIObject::ptr obj_enum_99(new AMIObject);
+  obj_enum_99->SetName("enum_99");
+
+  ADD_WX_ENUMVAL(enum_99,wxBROWSER_NEW_WINDOW,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_99->GetName().c_str(),obj_enum_99,context);
+  context->AddDefault(obj_enum_99->GetContext());
 
   // New enumeration wxSemaError
   AMIObject::ptr obj_wxSemaError(new AMIObject);
@@ -845,197 +1834,76 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxLanguage->GetName().c_str(),obj_wxLanguage,context);
   context->AddDefault(obj_wxLanguage->GetContext());
 
-  // New enumeration wxMutexType
-  AMIObject::ptr obj_wxMutexType(new AMIObject);
-  obj_wxMutexType->SetName("wxMutexType");
+  // New enumeration wxAlignment
+  AMIObject::ptr obj_wxAlignment(new AMIObject);
+  obj_wxAlignment->SetName("wxAlignment");
 
-  ADD_WX_ENUMVAL(wxMutexType,wxMUTEX_RECURSIVE,1);
-  ADD_WX_ENUMVAL(wxMutexType,wxMUTEX_DEFAULT,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxMutexType->GetName().c_str(),obj_wxMutexType,context);
-  context->AddDefault(obj_wxMutexType->GetContext());
-
-  // New enumeration wxAuiNotebookOption
-  AMIObject::ptr obj_wxAuiNotebookOption(new AMIObject);
-  obj_wxAuiNotebookOption->SetName("wxAuiNotebookOption");
-
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TAB_SPLIT,16);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_MIDDLE_CLICK_CLOSE,8192);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_CLOSE_ON_ACTIVE_TAB,2048);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TAB_MOVE,32);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TAB_EXTERNAL_MOVE,64);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TAB_FIXED_WIDTH,128);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_DEFAULT_STYLE,10545);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_BOTTOM,8);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_CLOSE_BUTTON,1024);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TOP,1);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_SCROLL_BUTTONS,256);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_RIGHT,4);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_WINDOWLIST_BUTTON,512);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_LEFT,2);
-  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_CLOSE_ON_ALL_TABS,4096);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_LEFT,0);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_NOT,0);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_TOP,0);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_RIGHT,512);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTRE_VERTICAL,2048);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTER_HORIZONTAL,256);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_MASK,3840);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTRE_HORIZONTAL,256);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTRE,2304);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTER,2304);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_BOTTOM,1024);
+  ADD_WX_ENUMVAL(wxAlignment,wxALIGN_CENTER_VERTICAL,2048);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiNotebookOption->GetName().c_str(),obj_wxAuiNotebookOption,context);
-  context->AddDefault(obj_wxAuiNotebookOption->GetContext());
+  context->AddVar<AMIObject>(obj_wxAlignment->GetName().c_str(),obj_wxAlignment,context);
+  context->AddDefault(obj_wxAlignment->GetContext());
 
-  // New enumeration wxKeyModifier
-  AMIObject::ptr obj_wxKeyModifier(new AMIObject);
-  obj_wxKeyModifier->SetName("wxKeyModifier");
+  // New enumeration wxHitTest
+  AMIObject::ptr obj_wxHitTest(new AMIObject);
+  obj_wxHitTest->SetName("wxHitTest");
 
-  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_SHIFT,4);
-  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_CMD,2);
-  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_ALL,65535);
-  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_META,8);
-  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_CONTROL,2);
-  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_ALT,1);
-  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_ALTGR,3);
-  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_WIN,8);
-  ADD_WX_ENUMVAL(wxKeyModifier,wxMOD_NONE,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxKeyModifier->GetName().c_str(),obj_wxKeyModifier,context);
-  context->AddDefault(obj_wxKeyModifier->GetContext());
-
-  // New enumeration wxSystemMetric
-  AMIObject::ptr obj_wxSystemMetric(new AMIObject);
-  obj_wxSystemMetric->SetName("wxSystemMetric");
-
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_EDGE_Y,11);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_EDGE_X,10);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_FRAMESIZE_Y,24);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_FRAMESIZE_X,23);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_DCLICK_X,6);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_DCLICK_Y,7);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_PENWINDOWS_PRESENT,35);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_ICONSPACING_Y,18);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_ICONSPACING_X,17);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SWAP_BUTTONS,37);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_WINDOWMIN_Y,20);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_WINDOWMIN_X,19);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_DRAG_X,8);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SMALLICON_Y,26);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SMALLICON_X,25);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_DRAG_Y,9);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_MOUSE_BUTTONS,1);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SHOW_SOUNDS,36);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_CAPTION_Y,32);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_BORDER_X,2);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_BORDER_Y,3);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_HSCROLL_ARROW_X,12);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_HSCROLL_ARROW_Y,13);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_HSCROLL_Y,27);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SCREEN_X,21);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_SCREEN_Y,22);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_VSCROLL_ARROW_X,29);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_VSCROLL_ARROW_Y,30);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_ICON_Y,16);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_ICON_X,15);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_NETWORK_PRESENT,34);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_VTHUMB_Y,31);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_MENU_Y,33);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_CURSOR_X,4);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_CURSOR_Y,5);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_HTHUMB_X,14);
-  ADD_WX_ENUMVAL(wxSystemMetric,wxSYS_VSCROLL_X,28);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_THUMB,5);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_ARROW_PAGE_1,3);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_ARROW_PAGE_2,4);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_OUTSIDE,9);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_BAR_1,6);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_CORNER,13);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_BAR_2,7);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_FIRST,0);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_HORZ_SCROLLBAR,12);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_VERT_SCROLLBAR,11);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_LAST,8);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_MAX,14);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_NOWHERE,0);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_ARROW_LINE_2,2);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_ARROW_LINE_1,1);
+  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_INSIDE,10);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxSystemMetric->GetName().c_str(),obj_wxSystemMetric,context);
-  context->AddDefault(obj_wxSystemMetric->GetContext());
+  context->AddVar<AMIObject>(obj_wxHitTest->GetName().c_str(),obj_wxHitTest,context);
+  context->AddDefault(obj_wxHitTest->GetContext());
 
-  // New enumeration wxDuplexMode
-  AMIObject::ptr obj_wxDuplexMode(new AMIObject);
-  obj_wxDuplexMode->SetName("wxDuplexMode");
+  // New enumeration wxAuiToolBarToolTextOrientation
+  AMIObject::ptr obj_wxAuiToolBarToolTextOrientation(new AMIObject);
+  obj_wxAuiToolBarToolTextOrientation->SetName("wxAuiToolBarToolTextOrientation");
 
-  ADD_WX_ENUMVAL(wxDuplexMode,wxDUPLEX_SIMPLEX,0);
-  ADD_WX_ENUMVAL(wxDuplexMode,wxDUPLEX_HORIZONTAL,1);
-  ADD_WX_ENUMVAL(wxDuplexMode,wxDUPLEX_VERTICAL,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxDuplexMode->GetName().c_str(),obj_wxDuplexMode,context);
-  context->AddDefault(obj_wxDuplexMode->GetContext());
-
-  // New enumeration wxHtmlURLType
-  AMIObject::ptr obj_wxHtmlURLType(new AMIObject);
-  obj_wxHtmlURLType->SetName("wxHtmlURLType");
-
-  ADD_WX_ENUMVAL(wxHtmlURLType,wxHTML_URL_PAGE,0);
-  ADD_WX_ENUMVAL(wxHtmlURLType,wxHTML_URL_IMAGE,1);
-  ADD_WX_ENUMVAL(wxHtmlURLType,wxHTML_URL_OTHER,2);
+  ADD_WX_ENUMVAL(wxAuiToolBarToolTextOrientation,wxAUI_TBTOOL_TEXT_BOTTOM,3);
+  ADD_WX_ENUMVAL(wxAuiToolBarToolTextOrientation,wxAUI_TBTOOL_TEXT_TOP,2);
+  ADD_WX_ENUMVAL(wxAuiToolBarToolTextOrientation,wxAUI_TBTOOL_TEXT_LEFT,0);
+  ADD_WX_ENUMVAL(wxAuiToolBarToolTextOrientation,wxAUI_TBTOOL_TEXT_RIGHT,1);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxHtmlURLType->GetName().c_str(),obj_wxHtmlURLType,context);
-  context->AddDefault(obj_wxHtmlURLType->GetContext());
+  context->AddVar<AMIObject>(obj_wxAuiToolBarToolTextOrientation->GetName().c_str(),obj_wxAuiToolBarToolTextOrientation,context);
+  context->AddDefault(obj_wxAuiToolBarToolTextOrientation->GetContext());
 
-  // New enumeration wxStockCursor
-  AMIObject::ptr obj_wxStockCursor(new AMIObject);
-  obj_wxStockCursor->SetName("wxStockCursor");
+  // New enumeration wxClientDataType
+  AMIObject::ptr obj_wxClientDataType(new AMIObject);
+  obj_wxClientDataType->SetName("wxClientDataType");
 
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_NONE,0);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_MAX,29);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_RIGHT_ARROW,2);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_POINT_RIGHT,15);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_MAGNIFIER,9);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_BULLSEYE,3);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZING,22);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_IBEAM,7);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_PAINT_BRUSH,12);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZENESW,18);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_MIDDLE_BUTTON,10);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_WATCH,25);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZENWSE,20);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_WAIT,24);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_ARROWWAIT,28);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_BLANK,26);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_HAND,6);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZEWE,21);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_QUESTION_ARROW,16);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_CROSS,5);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_PENCIL,13);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_POINT_LEFT,14);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_RIGHT_BUTTON,17);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_NO_ENTRY,11);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_LEFT_BUTTON,8);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SPRAYCAN,23);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_DEFAULT,27);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_CHAR,4);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_ARROW,1);
-  ADD_WX_ENUMVAL(wxStockCursor,wxCURSOR_SIZENS,19);
+  ADD_WX_ENUMVAL(wxClientDataType,wxClientData_None,0);
+  ADD_WX_ENUMVAL(wxClientDataType,wxClientData_Void,2);
+  ADD_WX_ENUMVAL(wxClientDataType,wxClientData_Object,1);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxStockCursor->GetName().c_str(),obj_wxStockCursor,context);
-  context->AddDefault(obj_wxStockCursor->GetContext());
-
-  // New enumeration enum_92
-  AMIObject::ptr obj_enum_92(new AMIObject);
-  obj_enum_92->SetName("enum_92");
-
-  ADD_WX_ENUMVAL(enum_92,wxLOG_Status,4);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_Max,10000);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_Warning,2);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_Message,3);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_Progress,8);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_Trace,7);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_Error,1);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_User,100);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_Info,5);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_FatalError,0);
-  ADD_WX_ENUMVAL(enum_92,wxLOG_Debug,6);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_92->GetName().c_str(),obj_enum_92,context);
-  context->AddDefault(obj_enum_92->GetContext());
-
-  // New enumeration enum_99
-  AMIObject::ptr obj_enum_99(new AMIObject);
-  obj_enum_99->SetName("enum_99");
-
-  ADD_WX_ENUMVAL(enum_99,wxBROWSER_NEW_WINDOW,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_99->GetName().c_str(),obj_enum_99,context);
-  context->AddDefault(obj_enum_99->GetContext());
+  context->AddVar<AMIObject>(obj_wxClientDataType->GetName().c_str(),obj_wxClientDataType,context);
+  context->AddDefault(obj_wxClientDataType->GetContext());
 
   // New enumeration enum_11
   AMIObject::ptr obj_enum_11(new AMIObject);
@@ -1048,42 +1916,60 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_enum_11->GetName().c_str(),obj_enum_11,context);
   context->AddDefault(obj_enum_11->GetContext());
 
-  // New enumeration wxBorder
-  AMIObject::ptr obj_wxBorder(new AMIObject);
-  obj_wxBorder->SetName("wxBorder");
+  // New enumeration enum_114
+  AMIObject::ptr obj_enum_114(new AMIObject);
+  obj_enum_114->SetName("enum_114");
 
-  ADD_WX_ENUMVAL(wxBorder,wxBORDER_SUNKEN,134217728);
-  ADD_WX_ENUMVAL(wxBorder,wxBORDER_MASK,522190848);
-  ADD_WX_ENUMVAL(wxBorder,wxBORDER_STATIC,16777216);
-  ADD_WX_ENUMVAL(wxBorder,wxBORDER_NONE,2097152);
-  ADD_WX_ENUMVAL(wxBorder,wxBORDER_DOUBLE,268435456);
-  ADD_WX_ENUMVAL(wxBorder,wxBORDER_RAISED,67108864);
-  ADD_WX_ENUMVAL(wxBorder,wxBORDER_SIMPLE,33554432);
-  ADD_WX_ENUMVAL(wxBorder,wxBORDER_THEME,268435456);
-  ADD_WX_ENUMVAL(wxBorder,wxBORDER_DEFAULT,0);
+  ADD_WX_ENUMVAL(enum_114,wxIMAGE_RESOLUTION_INCHES,1);
+  ADD_WX_ENUMVAL(enum_114,wxIMAGE_RESOLUTION_CM,2);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxBorder->GetName().c_str(),obj_wxBorder,context);
-  context->AddDefault(obj_wxBorder->GetContext());
+  context->AddVar<AMIObject>(obj_enum_114->GetName().c_str(),obj_enum_114,context);
+  context->AddDefault(obj_enum_114->GetContext());
 
-  // New enumeration wxAuiManagerOption
-  AMIObject::ptr obj_wxAuiManagerOption(new AMIObject);
-  obj_wxAuiManagerOption->SetName("wxAuiManagerOption");
+  // New enumeration wxStretch
+  AMIObject::ptr obj_wxStretch(new AMIObject);
+  obj_wxStretch->SetName("wxStretch");
 
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_NO_VENETIAN_BLINDS_FADE,128);
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_DEFAULT,201);
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_VENETIAN_BLINDS_HINT,16);
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_TRANSPARENT_HINT,8);
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_ALLOW_FLOATING,1);
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_LIVE_RESIZE,256);
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_TRANSPARENT_DRAG,4);
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_ALLOW_ACTIVE_PANE,2);
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_HINT_FADE,64);
-  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_RECTANGLE_HINT,32);
+  ADD_WX_ENUMVAL(wxStretch,wxEXPAND,8192);
+  ADD_WX_ENUMVAL(wxStretch,wxSHRINK,4096);
+  ADD_WX_ENUMVAL(wxStretch,wxTILE,49152);
+  ADD_WX_ENUMVAL(wxStretch,wxGROW,8192);
+  ADD_WX_ENUMVAL(wxStretch,wxSHAPED,16384);
+  ADD_WX_ENUMVAL(wxStretch,wxRESERVE_SPACE_EVEN_IF_HIDDEN,2);
+  ADD_WX_ENUMVAL(wxStretch,wxFIXED_MINSIZE,32768);
+  ADD_WX_ENUMVAL(wxStretch,wxADJUST_MINSIZE,0);
+  ADD_WX_ENUMVAL(wxStretch,wxSTRETCH_NOT,0);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiManagerOption->GetName().c_str(),obj_wxAuiManagerOption,context);
-  context->AddDefault(obj_wxAuiManagerOption->GetContext());
+  context->AddVar<AMIObject>(obj_wxStretch->GetName().c_str(),obj_wxStretch,context);
+  context->AddDefault(obj_wxStretch->GetContext());
+
+  // New enumeration wxSignal
+  AMIObject::ptr obj_wxSignal(new AMIObject);
+  obj_wxSignal->SetName("wxSignal");
+
+  ADD_WX_ENUMVAL(wxSignal,wxSIGPIPE,13);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGABRT,6);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGALRM,14);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGIOT,6);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGBUS,10);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGINT,2);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGTRAP,5);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGKILL,9);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGEMT,7);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGNONE,0);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGQUIT,3);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGHUP,1);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGILL,4);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGFPE,8);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGSYS,12);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGSEGV,11);
+  ADD_WX_ENUMVAL(wxSignal,wxSIGTERM,15);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxSignal->GetName().c_str(),obj_wxSignal,context);
+  context->AddDefault(obj_wxSignal->GetContext());
 
   // New enumeration wxKeyType
   AMIObject::ptr obj_wxKeyType(new AMIObject);
@@ -1097,16 +1983,118 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxKeyType->GetName().c_str(),obj_wxKeyType,context);
   context->AddDefault(obj_wxKeyType->GetContext());
 
-  // New enumeration wxLocaleInitFlags
-  AMIObject::ptr obj_wxLocaleInitFlags(new AMIObject);
-  obj_wxLocaleInitFlags->SetName("wxLocaleInitFlags");
+  // New enumeration wxHtmlOpeningStatus
+  AMIObject::ptr obj_wxHtmlOpeningStatus(new AMIObject);
+  obj_wxHtmlOpeningStatus->SetName("wxHtmlOpeningStatus");
 
-  ADD_WX_ENUMVAL(wxLocaleInitFlags,wxLOCALE_LOAD_DEFAULT,1);
-  ADD_WX_ENUMVAL(wxLocaleInitFlags,wxLOCALE_CONV_ENCODING,2);
+  ADD_WX_ENUMVAL(wxHtmlOpeningStatus,wxHTML_OPEN,0);
+  ADD_WX_ENUMVAL(wxHtmlOpeningStatus,wxHTML_BLOCK,1);
+  ADD_WX_ENUMVAL(wxHtmlOpeningStatus,wxHTML_REDIRECT,2);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxLocaleInitFlags->GetName().c_str(),obj_wxLocaleInitFlags,context);
-  context->AddDefault(obj_wxLocaleInitFlags->GetContext());
+  context->AddVar<AMIObject>(obj_wxHtmlOpeningStatus->GetName().c_str(),obj_wxHtmlOpeningStatus,context);
+  context->AddDefault(obj_wxHtmlOpeningStatus->GetContext());
+
+  // New enumeration wxMutexType
+  AMIObject::ptr obj_wxMutexType(new AMIObject);
+  obj_wxMutexType->SetName("wxMutexType");
+
+  ADD_WX_ENUMVAL(wxMutexType,wxMUTEX_RECURSIVE,1);
+  ADD_WX_ENUMVAL(wxMutexType,wxMUTEX_DEFAULT,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxMutexType->GetName().c_str(),obj_wxMutexType,context);
+  context->AddDefault(obj_wxMutexType->GetContext());
+
+  // New enumeration wxOperatingSystemId
+  AMIObject::ptr obj_wxOperatingSystemId(new AMIObject);
+  obj_wxOperatingSystemId->SetName("wxOperatingSystemId");
+
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX,8128);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_MAC_OS,1);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNKNOWN,0);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS_MICRO,16);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_AIX,2048);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_OPENBSD,256);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_MAC_OSX_DARWIN,2);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_OS2,65536);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_SOLARIS,1024);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_LINUX,64);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS_NT,8);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_NETBSD,512);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS_CE,32);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_DOS,32768);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_HPUX,4096);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_MAC,3);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS,60);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS_9X,4);
+  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_FREEBSD,128);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxOperatingSystemId->GetName().c_str(),obj_wxOperatingSystemId,context);
+  context->AddDefault(obj_wxOperatingSystemId->GetContext());
+
+  // New enumeration enum_144
+  AMIObject::ptr obj_enum_144(new AMIObject);
+  obj_enum_144->SetName("enum_144");
+
+  ADD_WX_ENUMVAL(enum_144,wxHTML_FIND_EXACT,1);
+  ADD_WX_ENUMVAL(enum_144,wxHTML_FIND_NEAREST_AFTER,4);
+  ADD_WX_ENUMVAL(enum_144,wxHTML_FIND_NEAREST_BEFORE,2);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_144->GetName().c_str(),obj_enum_144,context);
+  context->AddDefault(obj_enum_144->GetContext());
+
+  // New enumeration enum_141
+  AMIObject::ptr obj_enum_141(new AMIObject);
+  obj_enum_141->SetName("enum_141");
+
+  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_GLOBAL_FILE,2);
+  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_RELATIVE_PATH,4);
+  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_LOCAL_FILE,1);
+  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_NO_ESCAPE_CHARACTERS,8);
+  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_SUBDIR,16);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_141->GetName().c_str(),obj_enum_141,context);
+  context->AddDefault(obj_enum_141->GetContext());
+
+  // New enumeration wxToolBarToolStyle
+  AMIObject::ptr obj_wxToolBarToolStyle(new AMIObject);
+  obj_wxToolBarToolStyle->SetName("wxToolBarToolStyle");
+
+  ADD_WX_ENUMVAL(wxToolBarToolStyle,wxTOOL_STYLE_SEPARATOR,2);
+  ADD_WX_ENUMVAL(wxToolBarToolStyle,wxTOOL_STYLE_CONTROL,3);
+  ADD_WX_ENUMVAL(wxToolBarToolStyle,wxTOOL_STYLE_BUTTON,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxToolBarToolStyle->GetName().c_str(),obj_wxToolBarToolStyle,context);
+  context->AddDefault(obj_wxToolBarToolStyle->GetContext());
+
+  // New enumeration wxFlexSizerGrowMode
+  AMIObject::ptr obj_wxFlexSizerGrowMode(new AMIObject);
+  obj_wxFlexSizerGrowMode->SetName("wxFlexSizerGrowMode");
+
+  ADD_WX_ENUMVAL(wxFlexSizerGrowMode,wxFLEX_GROWMODE_ALL,2);
+  ADD_WX_ENUMVAL(wxFlexSizerGrowMode,wxFLEX_GROWMODE_NONE,0);
+  ADD_WX_ENUMVAL(wxFlexSizerGrowMode,wxFLEX_GROWMODE_SPECIFIED,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxFlexSizerGrowMode->GetName().c_str(),obj_wxFlexSizerGrowMode,context);
+  context->AddDefault(obj_wxFlexSizerGrowMode->GetContext());
+
+  // New enumeration wxUpdateUI
+  AMIObject::ptr obj_wxUpdateUI(new AMIObject);
+  obj_wxUpdateUI->SetName("wxUpdateUI");
+
+  ADD_WX_ENUMVAL(wxUpdateUI,wxUPDATE_UI_NONE,0);
+  ADD_WX_ENUMVAL(wxUpdateUI,wxUPDATE_UI_FROMIDLE,2);
+  ADD_WX_ENUMVAL(wxUpdateUI,wxUPDATE_UI_RECURSE,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxUpdateUI->GetName().c_str(),obj_wxUpdateUI,context);
+  context->AddDefault(obj_wxUpdateUI->GetContext());
 
   // New enumeration wxKillFlags
   AMIObject::ptr obj_wxKillFlags(new AMIObject);
@@ -1225,18 +2213,64 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxFontEncoding->GetName().c_str(),obj_wxFontEncoding,context);
   context->AddDefault(obj_wxFontEncoding->GetContext());
 
-  // New enumeration enum_133
-  AMIObject::ptr obj_enum_133(new AMIObject);
-  obj_enum_133->SetName("enum_133");
+  // New enumeration wxAuiManagerOption
+  AMIObject::ptr obj_wxAuiManagerOption(new AMIObject);
+  obj_wxAuiManagerOption->SetName("wxAuiManagerOption");
 
-  ADD_WX_ENUMVAL(enum_133,wxLIST_FIND_DOWN,1);
-  ADD_WX_ENUMVAL(enum_133,wxLIST_FIND_RIGHT,3);
-  ADD_WX_ENUMVAL(enum_133,wxLIST_FIND_UP,0);
-  ADD_WX_ENUMVAL(enum_133,wxLIST_FIND_LEFT,2);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_NO_VENETIAN_BLINDS_FADE,128);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_DEFAULT,201);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_VENETIAN_BLINDS_HINT,16);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_TRANSPARENT_HINT,8);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_ALLOW_FLOATING,1);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_LIVE_RESIZE,256);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_TRANSPARENT_DRAG,4);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_ALLOW_ACTIVE_PANE,2);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_HINT_FADE,64);
+  ADD_WX_ENUMVAL(wxAuiManagerOption,wxAUI_MGR_RECTANGLE_HINT,32);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_133->GetName().c_str(),obj_enum_133,context);
-  context->AddDefault(obj_enum_133->GetContext());
+  context->AddVar<AMIObject>(obj_wxAuiManagerOption->GetName().c_str(),obj_wxAuiManagerOption,context);
+  context->AddDefault(obj_wxAuiManagerOption->GetContext());
+
+  // New enumeration wxAuiToolBarStyle
+  AMIObject::ptr obj_wxAuiToolBarStyle(new AMIObject);
+  obj_wxAuiToolBarStyle->SetName("wxAuiToolBarStyle");
+
+  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_NO_AUTORESIZE,4);
+  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_NO_TOOLTIPS,2);
+  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_GRIPPER,8);
+  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_OVERFLOW,16);
+  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_HORZ_LAYOUT,64);
+  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_VERTICAL,32);
+  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_TEXT,1);
+  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_DEFAULT_STYLE,0);
+  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_HORZ_TEXT,65);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxAuiToolBarStyle->GetName().c_str(),obj_wxAuiToolBarStyle,context);
+  context->AddDefault(obj_wxAuiToolBarStyle->GetContext());
+
+  // New enumeration wxIdleMode
+  AMIObject::ptr obj_wxIdleMode(new AMIObject);
+  obj_wxIdleMode->SetName("wxIdleMode");
+
+  ADD_WX_ENUMVAL(wxIdleMode,wxIDLE_PROCESS_SPECIFIED,1);
+  ADD_WX_ENUMVAL(wxIdleMode,wxIDLE_PROCESS_ALL,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxIdleMode->GetName().c_str(),obj_wxIdleMode,context);
+  context->AddDefault(obj_wxIdleMode->GetContext());
+
+  // New enumeration enum_145
+  AMIObject::ptr obj_enum_145(new AMIObject);
+  obj_enum_145->SetName("enum_145");
+
+  ADD_WX_ENUMVAL(enum_145,wxCONVERT_SUBSTITUTE,1);
+  ADD_WX_ENUMVAL(enum_145,wxCONVERT_STRICT,0);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_145->GetName().c_str(),obj_enum_145,context);
+  context->AddDefault(obj_enum_145->GetContext());
 
   // New enumeration enum_143
   AMIObject::ptr obj_enum_143(new AMIObject);
@@ -1249,171 +2283,86 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_enum_143->GetName().c_str(),obj_enum_143,context);
   context->AddDefault(obj_enum_143->GetContext());
 
-  // New enumeration enum_128
-  AMIObject::ptr obj_enum_128(new AMIObject);
-  obj_enum_128->SetName("enum_128");
+  // New enumeration wxCheckBoxState
+  AMIObject::ptr obj_wxCheckBoxState(new AMIObject);
+  obj_wxCheckBoxState->SetName("wxCheckBoxState");
 
-  ADD_WX_ENUMVAL(enum_128,wxFD_FILE_MUST_EXIST,16);
-  ADD_WX_ENUMVAL(enum_128,wxFD_MULTIPLE,32);
-  ADD_WX_ENUMVAL(enum_128,wxFD_OVERWRITE_PROMPT,4);
-  ADD_WX_ENUMVAL(enum_128,wxFD_PREVIEW,256);
-  ADD_WX_ENUMVAL(enum_128,wxFD_SAVE,2);
-  ADD_WX_ENUMVAL(enum_128,wxFD_OPEN,1);
-  ADD_WX_ENUMVAL(enum_128,wxFD_CHANGE_DIR,128);
+  ADD_WX_ENUMVAL(wxCheckBoxState,wxCHK_CHECKED,1);
+  ADD_WX_ENUMVAL(wxCheckBoxState,wxCHK_UNDETERMINED,2);
+  ADD_WX_ENUMVAL(wxCheckBoxState,wxCHK_UNCHECKED,0);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_128->GetName().c_str(),obj_enum_128,context);
-  context->AddDefault(obj_enum_128->GetContext());
+  context->AddVar<AMIObject>(obj_wxCheckBoxState->GetName().c_str(),obj_wxCheckBoxState,context);
+  context->AddDefault(obj_wxCheckBoxState->GetContext());
 
-  // New enumeration enum_129
-  AMIObject::ptr obj_enum_129(new AMIObject);
-  obj_enum_129->SetName("enum_129");
+  // New enumeration enum_111
+  AMIObject::ptr obj_enum_111(new AMIObject);
+  obj_enum_111->SetName("enum_111");
 
-  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_ABOVE,0);
-  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_BELOW,2);
-  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_ALL,1);
-  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_LEFT,3);
-  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_RIGHT,4);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_129->GetName().c_str(),obj_enum_129,context);
-  context->AddDefault(obj_enum_129->GetContext());
-
-  // New enumeration wxToolBarToolStyle
-  AMIObject::ptr obj_wxToolBarToolStyle(new AMIObject);
-  obj_wxToolBarToolStyle->SetName("wxToolBarToolStyle");
-
-  ADD_WX_ENUMVAL(wxToolBarToolStyle,wxTOOL_STYLE_SEPARATOR,2);
-  ADD_WX_ENUMVAL(wxToolBarToolStyle,wxTOOL_STYLE_CONTROL,3);
-  ADD_WX_ENUMVAL(wxToolBarToolStyle,wxTOOL_STYLE_BUTTON,1);
+  ADD_WX_ENUMVAL(enum_111,wxACCEL_ALT,1);
+  ADD_WX_ENUMVAL(enum_111,wxACCEL_SHIFT,4);
+  ADD_WX_ENUMVAL(enum_111,wxACCEL_CMD,2);
+  ADD_WX_ENUMVAL(enum_111,wxACCEL_NORMAL,0);
+  ADD_WX_ENUMVAL(enum_111,wxACCEL_CTRL,2);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxToolBarToolStyle->GetName().c_str(),obj_wxToolBarToolStyle,context);
-  context->AddDefault(obj_wxToolBarToolStyle->GetContext());
+  context->AddVar<AMIObject>(obj_enum_111->GetName().c_str(),obj_enum_111,context);
+  context->AddDefault(obj_enum_111->GetContext());
 
-  // New enumeration wxRegionOp
-  AMIObject::ptr obj_wxRegionOp(new AMIObject);
-  obj_wxRegionOp->SetName("wxRegionOp");
+  // New enumeration enum_110
+  AMIObject::ptr obj_enum_110(new AMIObject);
+  obj_enum_110->SetName("enum_110");
 
-  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_COPY,1);
-  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_AND,0);
-  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_OR,3);
-  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_XOR,4);
-  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_DIFF,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxRegionOp->GetName().c_str(),obj_wxRegionOp,context);
-  context->AddDefault(obj_wxRegionOp->GetContext());
-
-  // New enumeration wxShutdownFlags
-  AMIObject::ptr obj_wxShutdownFlags(new AMIObject);
-  obj_wxShutdownFlags->SetName("wxShutdownFlags");
-
-  ADD_WX_ENUMVAL(wxShutdownFlags,wxSHUTDOWN_REBOOT,1);
-  ADD_WX_ENUMVAL(wxShutdownFlags,wxSHUTDOWN_POWEROFF,0);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_ANTIALIASED,16);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_UNDERLINED,64);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_LIGHT,4);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_DEFAULT,0);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_SLANT,2);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_MASK,255);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_BOLD,8);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_ITALIC,1);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_STRIKETHROUGH,128);
+  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_NOT_ANTIALIASED,32);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxShutdownFlags->GetName().c_str(),obj_wxShutdownFlags,context);
-  context->AddDefault(obj_wxShutdownFlags->GetContext());
+  context->AddVar<AMIObject>(obj_enum_110->GetName().c_str(),obj_enum_110,context);
+  context->AddDefault(obj_enum_110->GetContext());
 
-  // New enumeration wxSystemFont
-  AMIObject::ptr obj_wxSystemFont(new AMIObject);
-  obj_wxSystemFont->SetName("wxSystemFont");
+  // New enumeration enum_104
+  AMIObject::ptr obj_enum_104(new AMIObject);
+  obj_enum_104->SetName("enum_104");
 
-  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_ANSI_FIXED_FONT,11);
-  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_DEVICE_DEFAULT_FONT,14);
-  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_SYSTEM_FONT,13);
-  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_DEFAULT_PALETTE,15);
-  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_ICONTITLE_FONT,17);
-  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_ANSI_VAR_FONT,12);
-  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_DEFAULT_GUI_FONT,17);
-  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_OEM_FIXED_FONT,10);
-  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_SYSTEM_FIXED_FONT,16);
+  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON4,8);
+  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON2,2);
+  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON1,1);
+  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON3,4);
+  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON_ANY,-1);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxSystemFont->GetName().c_str(),obj_wxSystemFont,context);
-  context->AddDefault(obj_wxSystemFont->GetContext());
+  context->AddVar<AMIObject>(obj_enum_104->GetName().c_str(),obj_enum_104,context);
+  context->AddDefault(obj_enum_104->GetContext());
 
-  // New enumeration wxThreadError
-  AMIObject::ptr obj_wxThreadError(new AMIObject);
-  obj_wxThreadError->SetName("wxThreadError");
+  // New enumeration enum_103
+  AMIObject::ptr obj_enum_103(new AMIObject);
+  obj_enum_103->SetName("enum_103");
 
-  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_MISC_ERROR,5);
-  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_NO_ERROR,0);
-  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_RUNNING,2);
-  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_NO_RESOURCE,1);
-  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_KILLED,4);
-  ADD_WX_ENUMVAL(wxThreadError,wxTHREAD_NOT_RUNNING,3);
+  ADD_WX_ENUMVAL(enum_103,wxJOYSTICK2,1);
+  ADD_WX_ENUMVAL(enum_103,wxJOYSTICK1,0);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxThreadError->GetName().c_str(),obj_wxThreadError,context);
-  context->AddDefault(obj_wxThreadError->GetContext());
+  context->AddVar<AMIObject>(obj_enum_103->GetName().c_str(),obj_enum_103,context);
+  context->AddDefault(obj_enum_103->GetContext());
 
-  // New enumeration wxAuiManagerDock
-  AMIObject::ptr obj_wxAuiManagerDock(new AMIObject);
-  obj_wxAuiManagerDock->SetName("wxAuiManagerDock");
+  // New enumeration enum_107
+  AMIObject::ptr obj_enum_107(new AMIObject);
+  obj_enum_107->SetName("enum_107");
 
-  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_LEFT,4);
-  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_BOTTOM,3);
-  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_NONE,0);
-  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_RIGHT,2);
-  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_CENTRE,5);
-  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_TOP,1);
-  ADD_WX_ENUMVAL(wxAuiManagerDock,wxAUI_DOCK_CENTER,5);
+  ADD_WX_ENUMVAL(enum_107,wxPRINT_POSTSCRIPT,2);
+  ADD_WX_ENUMVAL(enum_107,wxPRINT_WINDOWS,1);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiManagerDock->GetName().c_str(),obj_wxAuiManagerDock,context);
-  context->AddDefault(obj_wxAuiManagerDock->GetContext());
-
-  // New enumeration wxHtmlSelectionState
-  AMIObject::ptr obj_wxHtmlSelectionState(new AMIObject);
-  obj_wxHtmlSelectionState->SetName("wxHtmlSelectionState");
-
-  ADD_WX_ENUMVAL(wxHtmlSelectionState,wxHTML_SEL_OUT,0);
-  ADD_WX_ENUMVAL(wxHtmlSelectionState,wxHTML_SEL_CHANGING,2);
-  ADD_WX_ENUMVAL(wxHtmlSelectionState,wxHTML_SEL_IN,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxHtmlSelectionState->GetName().c_str(),obj_wxHtmlSelectionState,context);
-  context->AddDefault(obj_wxHtmlSelectionState->GetContext());
-
-  // New enumeration wxLayoutDirection
-  AMIObject::ptr obj_wxLayoutDirection(new AMIObject);
-  obj_wxLayoutDirection->SetName("wxLayoutDirection");
-
-  ADD_WX_ENUMVAL(wxLayoutDirection,wxLayout_LeftToRight,1);
-  ADD_WX_ENUMVAL(wxLayoutDirection,wxLayout_Default,0);
-  ADD_WX_ENUMVAL(wxLayoutDirection,wxLayout_RightToLeft,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxLayoutDirection->GetName().c_str(),obj_wxLayoutDirection,context);
-  context->AddDefault(obj_wxLayoutDirection->GetContext());
-
-  // New enumeration enum_141
-  AMIObject::ptr obj_enum_141(new AMIObject);
-  obj_enum_141->SetName("enum_141");
-
-  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_GLOBAL_FILE,2);
-  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_RELATIVE_PATH,4);
-  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_LOCAL_FILE,1);
-  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_NO_ESCAPE_CHARACTERS,8);
-  ADD_WX_ENUMVAL(enum_141,wxCONFIG_USE_SUBDIR,16);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_141->GetName().c_str(),obj_enum_141,context);
-  context->AddDefault(obj_enum_141->GetContext());
-
-  // New enumeration enum_144
-  AMIObject::ptr obj_enum_144(new AMIObject);
-  obj_enum_144->SetName("enum_144");
-
-  ADD_WX_ENUMVAL(enum_144,wxHTML_FIND_EXACT,1);
-  ADD_WX_ENUMVAL(enum_144,wxHTML_FIND_NEAREST_AFTER,4);
-  ADD_WX_ENUMVAL(enum_144,wxHTML_FIND_NEAREST_BEFORE,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_144->GetName().c_str(),obj_enum_144,context);
-  context->AddDefault(obj_enum_144->GetContext());
+  context->AddVar<AMIObject>(obj_enum_107->GetName().c_str(),obj_enum_107,context);
+  context->AddDefault(obj_enum_107->GetContext());
 
   // New enumeration enum_146
   AMIObject::ptr obj_enum_146(new AMIObject);
@@ -1429,255 +2378,28 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_enum_146->GetName().c_str(),obj_enum_146,context);
   context->AddDefault(obj_enum_146->GetContext());
 
-  // New enumeration enum_136
-  AMIObject::ptr obj_enum_136(new AMIObject);
-  obj_enum_136->SetName("enum_136");
+  // New enumeration wxDuplexMode
+  AMIObject::ptr obj_wxDuplexMode(new AMIObject);
+  obj_wxDuplexMode->SetName("wxDuplexMode");
 
-  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_ONLABEL,4);
-  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_ONPAGE,8);
-  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_ONICON,2);
-  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_ONITEM,6);
-  ADD_WX_ENUMVAL(enum_136,wxBK_HITTEST_NOWHERE,1);
+  ADD_WX_ENUMVAL(wxDuplexMode,wxDUPLEX_SIMPLEX,0);
+  ADD_WX_ENUMVAL(wxDuplexMode,wxDUPLEX_HORIZONTAL,1);
+  ADD_WX_ENUMVAL(wxDuplexMode,wxDUPLEX_VERTICAL,2);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_136->GetName().c_str(),obj_enum_136,context);
-  context->AddDefault(obj_enum_136->GetContext());
+  context->AddVar<AMIObject>(obj_wxDuplexMode->GetName().c_str(),obj_wxDuplexMode,context);
+  context->AddDefault(obj_wxDuplexMode->GetContext());
 
-  // New enumeration enum_138
-  AMIObject::ptr obj_enum_138(new AMIObject);
-  obj_enum_138->SetName("enum_138");
+  // New enumeration wxThreadKind
+  AMIObject::ptr obj_wxThreadKind(new AMIObject);
+  obj_wxThreadKind->SetName("wxThreadKind");
 
-  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_NOWHERE,1);
-  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_ONPAGE,8);
-  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_ONITEM,6);
-  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_ONICON,2);
-  ADD_WX_ENUMVAL(enum_138,wxNB_HITTEST_ONLABEL,4);
+  ADD_WX_ENUMVAL(wxThreadKind,wxTHREAD_JOINABLE,1);
+  ADD_WX_ENUMVAL(wxThreadKind,wxTHREAD_DETACHED,0);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_138->GetName().c_str(),obj_enum_138,context);
-  context->AddDefault(obj_enum_138->GetContext());
-
-  // New enumeration wxPrintMode
-  AMIObject::ptr obj_wxPrintMode(new AMIObject);
-  obj_wxPrintMode->SetName("wxPrintMode");
-
-  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_STREAM,4);
-  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_FILE,2);
-  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_NONE,0);
-  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_PREVIEW,1);
-  ADD_WX_ENUMVAL(wxPrintMode,wxPRINT_MODE_PRINTER,3);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxPrintMode->GetName().c_str(),obj_wxPrintMode,context);
-  context->AddDefault(obj_wxPrintMode->GetContext());
-
-  // New enumeration wxWindowVariant
-  AMIObject::ptr obj_wxWindowVariant(new AMIObject);
-  obj_wxWindowVariant->SetName("wxWindowVariant");
-
-  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_MAX,4);
-  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_LARGE,3);
-  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_MINI,2);
-  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_NORMAL,0);
-  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_SMALL,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxWindowVariant->GetName().c_str(),obj_wxWindowVariant,context);
-  context->AddDefault(obj_wxWindowVariant->GetContext());
-
-  // New enumeration wxPaperSize
-  AMIObject::ptr obj_wxPaperSize(new AMIObject);
-  obj_wxPaperSize->SetName("wxPaperSize");
-
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_FANFOLD_STD_GERMAN,40);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_TABLOID_EXTRA,50);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_ROTATED,73);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_DSHEET,5);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B5_JIS_ROTATED,78);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_TABLOID,8);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P16K_ROTATED,104);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JAPANESE_POSTCARD_ROTATED,79);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P32KBIG_ROTATED,106);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_CHOU3,71);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_CHOU4,72);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_10,103);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P32KBIG,93);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_NONE,0);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3_ROTATED,74);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_CHOU4_ROTATED,85);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_B4,33);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_B5,34);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_B6,35);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_9_ROTATED,115);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_7_ROTATED,113);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_FANFOLD_LGL_GERMAN,41);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_DBL_JAPANESE_POSTCARD,67);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_ITALY,36);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3_EXTRA,61);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_PLUS,57);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C65,32);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JAPANESE_POSTCARD,43);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_4_ROTATED,110);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P32K_ROTATED,105);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_11,24);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_10,23);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_12,25);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_14,26);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C3,29);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B5_EXTRA,63);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C6,31);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C5,28);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_C4,30);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_EXTRA,48);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_KAKU2_ROTATED,82);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B_PLUS,56);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_DL,27);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4_PLUS,58);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LEGAL_EXTRA,49);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B4_JIS_ROTATED,77);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_1_ROTATED,107);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_YOU4_ROTATED,90);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_EXTRA_TRANSVERSE,54);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P32K,92);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_2,95);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_3,96);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_1,94);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_6,99);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_7,100);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_4,97);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_5,98);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER,1);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_9,102);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A_PLUS,55);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_11X17,20);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_KAKU3_ROTATED,83);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_NOTE,21);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_QUARTO,18);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_YOU4,89);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B6_JIS,86);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3_TRANSVERSE,65);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3_EXTRA_TRANSVERSE,66);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_KAKU2,69);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_KAKU3,70);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ESHEET,6);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A5_TRANSVERSE,59);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_FOLIO,17);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_3_ROTATED,109);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ISO_B4,42);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_FANFOLD_US,39);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_P16K,91);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_CSHEET,4);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_JENV_CHOU3_ROTATED,84);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4_EXTRA,51);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_9X11,44);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A6_ROTATED,81);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_6_ROTATED,112);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_5_ROTATED,111);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_DBL_JAPANESE_POSTCARD_ROTATED,80);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_MONARCH,37);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B6_JIS_ROTATED,87);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_12X11,88);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_8,101);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4_TRANSVERSE,53);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_EXECUTIVE,11);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_2_ROTATED,108);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LEGAL,2);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_10X14,19);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_10X11,45);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTER_TRANSVERSE,52);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LEDGER,9);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_LETTERSMALL,7);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A5_ROTATED,76);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4SMALL,13);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A5,14);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4,3);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A6,68);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A3,12);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A2,64);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_15X11,46);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A5_EXTRA,62);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_INVITE,47);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_10_ROTATED,116);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_A4_ROTATED,75);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_9,22);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_ENV_PERSONAL,38);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B4,15);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B5,16);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_B5_TRANSVERSE,60);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_STATEMENT,10);
-  ADD_WX_ENUMVAL(wxPaperSize,wxPAPER_PENV_8_ROTATED,114);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxPaperSize->GetName().c_str(),obj_wxPaperSize,context);
-  context->AddDefault(obj_wxPaperSize->GetContext());
-
-  // New enumeration wxEndianness
-  AMIObject::ptr obj_wxEndianness(new AMIObject);
-  obj_wxEndianness->SetName("wxEndianness");
-
-  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_LITTLE,1);
-  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_PDP,2);
-  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_BIG,0);
-  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_INVALID,-1);
-  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_MAX,3);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxEndianness->GetName().c_str(),obj_wxEndianness,context);
-  context->AddDefault(obj_wxEndianness->GetContext());
-
-  // New enumeration wxPathNormalize
-  AMIObject::ptr obj_wxPathNormalize(new AMIObject);
-  obj_wxPathNormalize->SetName("wxPathNormalize");
-
-  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_LONG,32);
-  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_ALL,247);
-  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_SHORTCUT,64);
-  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_TILDE,4);
-  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_CASE,8);
-  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_ENV_VARS,1);
-  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_ABSOLUTE,16);
-  ADD_WX_ENUMVAL(wxPathNormalize,wxPATH_NORM_DOTS,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxPathNormalize->GetName().c_str(),obj_wxPathNormalize,context);
-  context->AddDefault(obj_wxPathNormalize->GetContext());
-
-  // New enumeration wxClientDataType
-  AMIObject::ptr obj_wxClientDataType(new AMIObject);
-  obj_wxClientDataType->SetName("wxClientDataType");
-
-  ADD_WX_ENUMVAL(wxClientDataType,wxClientData_None,0);
-  ADD_WX_ENUMVAL(wxClientDataType,wxClientData_Void,2);
-  ADD_WX_ENUMVAL(wxClientDataType,wxClientData_Object,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxClientDataType->GetName().c_str(),obj_wxClientDataType,context);
-  context->AddDefault(obj_wxClientDataType->GetContext());
-
-  // New enumeration enum_102
-  AMIObject::ptr obj_enum_102(new AMIObject);
-  obj_enum_102->SetName("enum_102");
-
-  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_LEFT,1);
-  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_MIDDLE,2);
-  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_NONE,0);
-  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_RIGHT,3);
-  ADD_WX_ENUMVAL(enum_102,wxMOUSE_BTN_ANY,-1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_102->GetName().c_str(),obj_enum_102,context);
-  context->AddDefault(obj_enum_102->GetContext());
-
-  // New enumeration enum_103
-  AMIObject::ptr obj_enum_103(new AMIObject);
-  obj_enum_103->SetName("enum_103");
-
-  ADD_WX_ENUMVAL(enum_103,wxJOYSTICK2,1);
-  ADD_WX_ENUMVAL(enum_103,wxJOYSTICK1,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_103->GetName().c_str(),obj_enum_103,context);
-  context->AddDefault(obj_enum_103->GetContext());
+  context->AddVar<AMIObject>(obj_wxThreadKind->GetName().c_str(),obj_wxThreadKind,context);
+  context->AddDefault(obj_wxThreadKind->GetContext());
 
   // New enumeration form_ops_t
   AMIObject::ptr obj_form_ops_t(new AMIObject);
@@ -1736,712 +2458,6 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_form_ops_t->GetName().c_str(),obj_form_ops_t,context);
   context->AddDefault(obj_form_ops_t->GetContext());
 
-  // New enumeration wxLocaleInfo
-  AMIObject::ptr obj_wxLocaleInfo(new AMIObject);
-  obj_wxLocaleInfo->SetName("wxLocaleInfo");
-
-  ADD_WX_ENUMVAL(wxLocaleInfo,wxLOCALE_THOUSANDS_SEP,0);
-  ADD_WX_ENUMVAL(wxLocaleInfo,wxLOCALE_DECIMAL_POINT,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxLocaleInfo->GetName().c_str(),obj_wxLocaleInfo,context);
-  context->AddDefault(obj_wxLocaleInfo->GetContext());
-
-  // New enumeration enum_104
-  AMIObject::ptr obj_enum_104(new AMIObject);
-  obj_enum_104->SetName("enum_104");
-
-  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON4,8);
-  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON2,2);
-  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON1,1);
-  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON3,4);
-  ADD_WX_ENUMVAL(enum_104,wxJOY_BUTTON_ANY,-1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_104->GetName().c_str(),obj_enum_104,context);
-  context->AddDefault(obj_enum_104->GetContext());
-
-  // New enumeration enum_107
-  AMIObject::ptr obj_enum_107(new AMIObject);
-  obj_enum_107->SetName("enum_107");
-
-  ADD_WX_ENUMVAL(enum_107,wxPRINT_POSTSCRIPT,2);
-  ADD_WX_ENUMVAL(enum_107,wxPRINT_WINDOWS,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_107->GetName().c_str(),obj_enum_107,context);
-  context->AddDefault(obj_enum_107->GetContext());
-
-  // New enumeration enum_139
-  AMIObject::ptr obj_enum_139(new AMIObject);
-  obj_enum_139->SetName("enum_139");
-
-  ADD_WX_ENUMVAL(enum_139,wxPATH_GET_SEPARATOR,2);
-  ADD_WX_ENUMVAL(enum_139,wxPATH_GET_VOLUME,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_139->GetName().c_str(),obj_enum_139,context);
-  context->AddDefault(obj_enum_139->GetContext());
-
-  // New enumeration wxSeekMode
-  AMIObject::ptr obj_wxSeekMode(new AMIObject);
-  obj_wxSeekMode->SetName("wxSeekMode");
-
-  ADD_WX_ENUMVAL(wxSeekMode,wxFromStart,0);
-  ADD_WX_ENUMVAL(wxSeekMode,wxFromCurrent,1);
-  ADD_WX_ENUMVAL(wxSeekMode,wxFromEnd,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxSeekMode->GetName().c_str(),obj_wxSeekMode,context);
-  context->AddDefault(obj_wxSeekMode->GetContext());
-
-  // New enumeration wxEdge
-  AMIObject::ptr obj_wxEdge(new AMIObject);
-  obj_wxEdge->SetName("wxEdge");
-
-  ADD_WX_ENUMVAL(wxEdge,wxHeight,5);
-  ADD_WX_ENUMVAL(wxEdge,wxCentre,6);
-  ADD_WX_ENUMVAL(wxEdge,wxCenter,6);
-  ADD_WX_ENUMVAL(wxEdge,wxTop,1);
-  ADD_WX_ENUMVAL(wxEdge,wxBottom,3);
-  ADD_WX_ENUMVAL(wxEdge,wxWidth,4);
-  ADD_WX_ENUMVAL(wxEdge,wxCentreX,7);
-  ADD_WX_ENUMVAL(wxEdge,wxRight,2);
-  ADD_WX_ENUMVAL(wxEdge,wxCentreY,8);
-  ADD_WX_ENUMVAL(wxEdge,wxLeft,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxEdge->GetName().c_str(),obj_wxEdge,context);
-  context->AddDefault(obj_wxEdge->GetContext());
-
-  // New enumeration enum_114
-  AMIObject::ptr obj_enum_114(new AMIObject);
-  obj_enum_114->SetName("enum_114");
-
-  ADD_WX_ENUMVAL(enum_114,wxIMAGE_RESOLUTION_INCHES,1);
-  ADD_WX_ENUMVAL(enum_114,wxIMAGE_RESOLUTION_CM,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_114->GetName().c_str(),obj_enum_114,context);
-  context->AddDefault(obj_enum_114->GetContext());
-
-  // New enumeration enum_100
-  AMIObject::ptr obj_enum_100(new AMIObject);
-  obj_enum_100->SetName("enum_100");
-
-  ADD_WX_ENUMVAL(enum_100,wxStrip_Mnemonics,1);
-  ADD_WX_ENUMVAL(enum_100,wxStrip_Accel,2);
-  ADD_WX_ENUMVAL(enum_100,wxStrip_All,3);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_100->GetName().c_str(),obj_enum_100,context);
-  context->AddDefault(obj_enum_100->GetContext());
-
-  // New enumeration wxRelationship
-  AMIObject::ptr obj_wxRelationship(new AMIObject);
-  obj_wxRelationship->SetName("wxRelationship");
-
-  ADD_WX_ENUMVAL(wxRelationship,wxRightOf,6);
-  ADD_WX_ENUMVAL(wxRelationship,wxPercentOf,2);
-  ADD_WX_ENUMVAL(wxRelationship,wxUnconstrained,0);
-  ADD_WX_ENUMVAL(wxRelationship,wxSameAs,7);
-  ADD_WX_ENUMVAL(wxRelationship,wxBelow,4);
-  ADD_WX_ENUMVAL(wxRelationship,wxLeftOf,5);
-  ADD_WX_ENUMVAL(wxRelationship,wxAbove,3);
-  ADD_WX_ENUMVAL(wxRelationship,wxAbsolute,8);
-  ADD_WX_ENUMVAL(wxRelationship,wxAsIs,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxRelationship->GetName().c_str(),obj_wxRelationship,context);
-  context->AddDefault(obj_wxRelationship->GetContext());
-
-  // New enumeration wxTextFileType
-  AMIObject::ptr obj_wxTextFileType(new AMIObject);
-  obj_wxTextFileType->SetName("wxTextFileType");
-
-  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_Mac,3);
-  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_Unix,1);
-  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_None,0);
-  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_Os2,4);
-  ADD_WX_ENUMVAL(wxTextFileType,wxTextFileType_Dos,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxTextFileType->GetName().c_str(),obj_wxTextFileType,context);
-  context->AddDefault(obj_wxTextFileType->GetContext());
-
-  // New enumeration wxPathFormat
-  AMIObject::ptr obj_wxPathFormat(new AMIObject);
-  obj_wxPathFormat->SetName("wxPathFormat");
-
-  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_UNIX,1);
-  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_DOS,3);
-  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_OS2,3);
-  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_MAC,2);
-  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_VMS,4);
-  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_WIN,3);
-  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_NATIVE,0);
-  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_BEOS,1);
-  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_MAX,5);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxPathFormat->GetName().c_str(),obj_wxPathFormat,context);
-  context->AddDefault(obj_wxPathFormat->GetContext());
-
-  // New enumeration enum_8
-  AMIObject::ptr obj_enum_8(new AMIObject);
-  obj_enum_8->SetName("enum_8");
-
-  ADD_WX_ENUMVAL(enum_8,wxID_HOME,5122);
-  ADD_WX_ENUMVAL(enum_8,wxID_PAGE_SETUP,5012);
-  ADD_WX_ENUMVAL(enum_8,wxID_REMOVE,5119);
-  ADD_WX_ENUMVAL(enum_8,wxID_HELP_COMMANDS,5018);
-  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_LARGEICONS,5043);
-  ADD_WX_ENUMVAL(enum_8,wxID_CLOSE_FRAME,5201);
-  ADD_WX_ENUMVAL(enum_8,wxID_ZOOM_OUT,5138);
-  ADD_WX_ENUMVAL(enum_8,wxID_REPLACE_ALL,5040);
-  ADD_WX_ENUMVAL(enum_8,wxID_JUSTIFY_CENTER,5128);
-  ADD_WX_ENUMVAL(enum_8,wxID_HELP,5009);
-  ADD_WX_ENUMVAL(enum_8,wxID_APPLY,5102);
-  ADD_WX_ENUMVAL(enum_8,wxID_REVERT_TO_SAVED,5140);
-  ADD_WX_ENUMVAL(enum_8,wxID_EDIT,5030);
-  ADD_WX_ENUMVAL(enum_8,wxID_PASTE,5033);
-  ADD_WX_ENUMVAL(enum_8,wxID_CUT,5031);
-  ADD_WX_ENUMVAL(enum_8,wxID_REDO,5008);
-  ADD_WX_ENUMVAL(enum_8,wxID_LOWEST,4999);
-  ADD_WX_ENUMVAL(enum_8,wxID_ZOOM_IN,5137);
-  ADD_WX_ENUMVAL(enum_8,wxID_ZOOM_FIT,5136);
-  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_LIST,5045);
-  ADD_WX_ENUMVAL(enum_8,wxID_REVERT,5005);
-  ADD_WX_ENUMVAL(enum_8,wxID_JUSTIFY_FILL,5129);
-  ADD_WX_ENUMVAL(enum_8,wxID_STOP,5124);
-  ADD_WX_ENUMVAL(enum_8,wxID_ANY,-1);
-  ADD_WX_ENUMVAL(enum_8,wxID_PREVIEW,5013);
-  ADD_WX_ENUMVAL(enum_8,wxID_ADD,5118);
-  ADD_WX_ENUMVAL(enum_8,wxID_UNDO,5007);
-  ADD_WX_ENUMVAL(enum_8,wxID_NO,5104);
-  ADD_WX_ENUMVAL(enum_8,wxID_PRINT_SETUP,5011);
-  ADD_WX_ENUMVAL(enum_8,wxID_CONTEXT_HELP,5112);
-  ADD_WX_ENUMVAL(enum_8,wxID_JUSTIFY_RIGHT,5130);
-  ADD_WX_ENUMVAL(enum_8,wxID_BACKWARD,5107);
-  ADD_WX_ENUMVAL(enum_8,wxID_UNDERLINE,5132);
-  ADD_WX_ENUMVAL(enum_8,wxID_IGNORE,5117);
-  ADD_WX_ENUMVAL(enum_8,wxID_SEPARATOR,-2);
-  ADD_WX_ENUMVAL(enum_8,wxID_NOTOALL,5114);
-  ADD_WX_ENUMVAL(enum_8,wxID_SAVE,5003);
-  ADD_WX_ENUMVAL(enum_8,wxID_OK,5100);
-  ADD_WX_ENUMVAL(enum_8,wxID_SELECTALL,5037);
-  ADD_WX_ENUMVAL(enum_8,wxID_COPY,5032);
-  ADD_WX_ENUMVAL(enum_8,wxID_RESIZE_FRAME,5203);
-  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SORTSIZE,5048);
-  ADD_WX_ENUMVAL(enum_8,wxID_UNINDENT,5134);
-  ADD_WX_ENUMVAL(enum_8,wxID_DELETE,5038);
-  ADD_WX_ENUMVAL(enum_8,wxID_JUSTIFY_LEFT,5131);
-  ADD_WX_ENUMVAL(enum_8,wxID_INDEX,5125);
-  ADD_WX_ENUMVAL(enum_8,wxID_ABOUT,5014);
-  ADD_WX_ENUMVAL(enum_8,wxID_DOWN,5121);
-  ADD_WX_ENUMVAL(enum_8,wxID_PREFERENCES,5022);
-  ADD_WX_ENUMVAL(enum_8,wxID_UP,5120);
-  ADD_WX_ENUMVAL(enum_8,wxID_SYSTEM_MENU,5200);
-  ADD_WX_ENUMVAL(enum_8,wxID_MAXIMIZE_FRAME,5204);
-  ADD_WX_ENUMVAL(enum_8,wxID_REPLACE,5039);
-  ADD_WX_ENUMVAL(enum_8,wxID_FIND,5035);
-  ADD_WX_ENUMVAL(enum_8,wxID_ZOOM_100,5135);
-  ADD_WX_ENUMVAL(enum_8,wxID_CANCEL,5101);
-  ADD_WX_ENUMVAL(enum_8,wxID_YESTOALL,5113);
-  ADD_WX_ENUMVAL(enum_8,wxID_INDENT,5133);
-  ADD_WX_ENUMVAL(enum_8,wxID_CLOSE,5001);
-  ADD_WX_ENUMVAL(enum_8,wxID_MOVE_FRAME,5202);
-  ADD_WX_ENUMVAL(enum_8,wxID_ICONIZE_FRAME,5205);
-  ADD_WX_ENUMVAL(enum_8,wxID_HELP_PROCEDURES,5019);
-  ADD_WX_ENUMVAL(enum_8,wxID_ITALIC,5127);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILEDLGG,5900);
-  ADD_WX_ENUMVAL(enum_8,wxID_DEFAULT,5108);
-  ADD_WX_ENUMVAL(enum_8,wxID_NEW,5002);
-  ADD_WX_ENUMVAL(enum_8,wxID_CLOSE_ALL,5021);
-  ADD_WX_ENUMVAL(enum_8,wxID_MORE,5109);
-  ADD_WX_ENUMVAL(enum_8,wxID_RESET,5111);
-  ADD_WX_ENUMVAL(enum_8,wxID_STATIC,5105);
-  ADD_WX_ENUMVAL(enum_8,wxID_NONE,-3);
-  ADD_WX_ENUMVAL(enum_8,wxID_UNDELETE,5139);
-  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SORTTYPE,5049);
-  ADD_WX_ENUMVAL(enum_8,wxID_ABORT,5115);
-  ADD_WX_ENUMVAL(enum_8,wxID_REFRESH,5123);
-  ADD_WX_ENUMVAL(enum_8,wxID_YES,5103);
-  ADD_WX_ENUMVAL(enum_8,wxID_HELP_CONTENTS,5015);
-  ADD_WX_ENUMVAL(enum_8,wxID_OPEN,5000);
-  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SMALLICONS,5044);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE,5050);
-  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SORTDATE,5046);
-  ADD_WX_ENUMVAL(enum_8,wxID_SAVEAS,5004);
-  ADD_WX_ENUMVAL(enum_8,wxID_HIGHEST,5999);
-  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_SORTNAME,5047);
-  ADD_WX_ENUMVAL(enum_8,wxID_HELP_SEARCH,5017);
-  ADD_WX_ENUMVAL(enum_8,wxID_FORWARD,5106);
-  ADD_WX_ENUMVAL(enum_8,wxID_CLEAR,5034);
-  ADD_WX_ENUMVAL(enum_8,wxID_EXIT,5006);
-  ADD_WX_ENUMVAL(enum_8,wxID_VIEW_DETAILS,5042);
-  ADD_WX_ENUMVAL(enum_8,wxID_PRINT,5010);
-  ADD_WX_ENUMVAL(enum_8,wxID_RETRY,5116);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE1,5051);
-  ADD_WX_ENUMVAL(enum_8,wxID_DUPLICATE,5036);
-  ADD_WX_ENUMVAL(enum_8,wxID_HELP_CONTEXT,5020);
-  ADD_WX_ENUMVAL(enum_8,wxID_RESTORE_FRAME,5206);
-  ADD_WX_ENUMVAL(enum_8,wxID_BOLD,5126);
-  ADD_WX_ENUMVAL(enum_8,wxID_HELP_INDEX,5016);
-  ADD_WX_ENUMVAL(enum_8,wxID_PROPERTIES,5041);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE9,5059);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE8,5058);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE3,5053);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE2,5052);
-  ADD_WX_ENUMVAL(enum_8,wxID_SETUP,5110);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE7,5057);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE6,5056);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE5,5055);
-  ADD_WX_ENUMVAL(enum_8,wxID_FILE4,5054);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_8->GetName().c_str(),obj_enum_8,context);
-  context->AddDefault(obj_enum_8->GetContext());
-
-  // New enumeration enum_9
-  AMIObject::ptr obj_enum_9(new AMIObject);
-  obj_enum_9->SetName("enum_9");
-
-  ADD_WX_ENUMVAL(enum_9,wxITALIC,93);
-  ADD_WX_ENUMVAL(enum_9,wxCROSSDIAG_HATCH,112);
-  ADD_WX_ENUMVAL(enum_9,wxBOLD,92);
-  ADD_WX_ENUMVAL(enum_9,wxNORMAL,90);
-  ADD_WX_ENUMVAL(enum_9,wxJOIN_ROUND,122);
-  ADD_WX_ENUMVAL(enum_9,wxTELETYPE,76);
-  ADD_WX_ENUMVAL(enum_9,wxJOIN_BEVEL,120);
-  ADD_WX_ENUMVAL(enum_9,wxSOLID,100);
-  ADD_WX_ENUMVAL(enum_9,wxVERTICAL_HATCH,116);
-  ADD_WX_ENUMVAL(enum_9,wxFIRST_HATCH,111);
-  ADD_WX_ENUMVAL(enum_9,wxLAST_HATCH,116);
-  ADD_WX_ENUMVAL(enum_9,wxUSER_DASH,105);
-  ADD_WX_ENUMVAL(enum_9,wxSTIPPLE,110);
-  ADD_WX_ENUMVAL(enum_9,wxHORIZONTAL_HATCH,115);
-  ADD_WX_ENUMVAL(enum_9,wxCAP_PROJECTING,131);
-  ADD_WX_ENUMVAL(enum_9,wxSLANT,94);
-  ADD_WX_ENUMVAL(enum_9,wxCAP_BUTT,132);
-  ADD_WX_ENUMVAL(enum_9,wxLIGHT,91);
-  ADD_WX_ENUMVAL(enum_9,wxVARIABLE,80);
-  ADD_WX_ENUMVAL(enum_9,wxSWISS,74);
-  ADD_WX_ENUMVAL(enum_9,wxSHORT_DASH,103);
-  ADD_WX_ENUMVAL(enum_9,wxSTIPPLE_MASK_OPAQUE,107);
-  ADD_WX_ENUMVAL(enum_9,wxDOT_DASH,104);
-  ADD_WX_ENUMVAL(enum_9,wxFDIAGONAL_HATCH,113);
-  ADD_WX_ENUMVAL(enum_9,wxDECORATIVE,71);
-  ADD_WX_ENUMVAL(enum_9,wxCAP_ROUND,130);
-  ADD_WX_ENUMVAL(enum_9,wxTRANSPARENT,106);
-  ADD_WX_ENUMVAL(enum_9,wxMODERN,75);
-  ADD_WX_ENUMVAL(enum_9,wxJOIN_MITER,121);
-  ADD_WX_ENUMVAL(enum_9,wxSTIPPLE_MASK,108);
-  ADD_WX_ENUMVAL(enum_9,wxDEFAULT,70);
-  ADD_WX_ENUMVAL(enum_9,wxBDIAGONAL_HATCH,111);
-  ADD_WX_ENUMVAL(enum_9,wxDOT,101);
-  ADD_WX_ENUMVAL(enum_9,wxLONG_DASH,102);
-  ADD_WX_ENUMVAL(enum_9,wxFIXED,81);
-  ADD_WX_ENUMVAL(enum_9,wxSCRIPT,73);
-  ADD_WX_ENUMVAL(enum_9,wxCROSS_HATCH,114);
-  ADD_WX_ENUMVAL(enum_9,wxROMAN,72);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_9->GetName().c_str(),obj_enum_9,context);
-  context->AddDefault(obj_enum_9->GetContext());
-
-  // New enumeration wxListColumnFormat
-  AMIObject::ptr obj_wxListColumnFormat(new AMIObject);
-  obj_wxListColumnFormat->SetName("wxListColumnFormat");
-
-  ADD_WX_ENUMVAL(wxListColumnFormat,wxLIST_FORMAT_RIGHT,1);
-  ADD_WX_ENUMVAL(wxListColumnFormat,wxLIST_FORMAT_CENTER,2);
-  ADD_WX_ENUMVAL(wxListColumnFormat,wxLIST_FORMAT_LEFT,0);
-  ADD_WX_ENUMVAL(wxListColumnFormat,wxLIST_FORMAT_CENTRE,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxListColumnFormat->GetName().c_str(),obj_wxListColumnFormat,context);
-  context->AddDefault(obj_wxListColumnFormat->GetContext());
-
-  // New enumeration wxFontStyle
-  AMIObject::ptr obj_wxFontStyle(new AMIObject);
-  obj_wxFontStyle->SetName("wxFontStyle");
-
-  ADD_WX_ENUMVAL(wxFontStyle,wxFONTSTYLE_MAX,95);
-  ADD_WX_ENUMVAL(wxFontStyle,wxFONTSTYLE_SLANT,94);
-  ADD_WX_ENUMVAL(wxFontStyle,wxFONTSTYLE_ITALIC,93);
-  ADD_WX_ENUMVAL(wxFontStyle,wxFONTSTYLE_NORMAL,90);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxFontStyle->GetName().c_str(),obj_wxFontStyle,context);
-  context->AddDefault(obj_wxFontStyle->GetContext());
-
-  // New enumeration wxRegionContain
-  AMIObject::ptr obj_wxRegionContain(new AMIObject);
-  obj_wxRegionContain->SetName("wxRegionContain");
-
-  ADD_WX_ENUMVAL(wxRegionContain,wxOutRegion,0);
-  ADD_WX_ENUMVAL(wxRegionContain,wxInRegion,2);
-  ADD_WX_ENUMVAL(wxRegionContain,wxPartRegion,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxRegionContain->GetName().c_str(),obj_wxRegionContain,context);
-  context->AddDefault(obj_wxRegionContain->GetContext());
-
-  // New enumeration wxItemKind
-  AMIObject::ptr obj_wxItemKind(new AMIObject);
-  obj_wxItemKind->SetName("wxItemKind");
-
-  ADD_WX_ENUMVAL(wxItemKind,wxITEM_RADIO,2);
-  ADD_WX_ENUMVAL(wxItemKind,wxITEM_CHECK,1);
-  ADD_WX_ENUMVAL(wxItemKind,wxITEM_NORMAL,0);
-  ADD_WX_ENUMVAL(wxItemKind,wxITEM_SEPARATOR,-1);
-  ADD_WX_ENUMVAL(wxItemKind,wxITEM_MAX,3);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxItemKind->GetName().c_str(),obj_wxItemKind,context);
-  context->AddDefault(obj_wxItemKind->GetContext());
-
-  // New enumeration wxPrintBin
-  AMIObject::ptr obj_wxPrintBin(new AMIObject);
-  obj_wxPrintBin->SetName("wxPrintBin");
-
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_MIDDLE,3);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_LOWER,2);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_AUTO,7);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_FORMSOURCE,13);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_DEFAULT,0);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_LARGECAPACITY,11);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_MANUAL,4);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_SMALLFMT,9);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_ENVELOPE,5);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_ONLYONE,1);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_LARGEFMT,10);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_CASSETTE,12);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_ENVMANUAL,6);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_USER,14);
-  ADD_WX_ENUMVAL(wxPrintBin,wxPRINTBIN_TRACTOR,8);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxPrintBin->GetName().c_str(),obj_wxPrintBin,context);
-  context->AddDefault(obj_wxPrintBin->GetContext());
-
-  // New enumeration wxHtmlScriptMode
-  AMIObject::ptr obj_wxHtmlScriptMode(new AMIObject);
-  obj_wxHtmlScriptMode->SetName("wxHtmlScriptMode");
-
-  ADD_WX_ENUMVAL(wxHtmlScriptMode,wxHTML_SCRIPT_NORMAL,0);
-  ADD_WX_ENUMVAL(wxHtmlScriptMode,wxHTML_SCRIPT_SUP,2);
-  ADD_WX_ENUMVAL(wxHtmlScriptMode,wxHTML_SCRIPT_SUB,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxHtmlScriptMode->GetName().c_str(),obj_wxHtmlScriptMode,context);
-  context->AddDefault(obj_wxHtmlScriptMode->GetContext());
-
-  // New enumeration wxHitTest
-  AMIObject::ptr obj_wxHitTest(new AMIObject);
-  obj_wxHitTest->SetName("wxHitTest");
-
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_THUMB,5);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_ARROW_PAGE_1,3);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_ARROW_PAGE_2,4);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_OUTSIDE,9);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_BAR_1,6);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_CORNER,13);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_BAR_2,7);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_FIRST,0);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_HORZ_SCROLLBAR,12);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_VERT_SCROLLBAR,11);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_LAST,8);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_MAX,14);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_NOWHERE,0);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_ARROW_LINE_2,2);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_SCROLLBAR_ARROW_LINE_1,1);
-  ADD_WX_ENUMVAL(wxHitTest,wxHT_WINDOW_INSIDE,10);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxHitTest->GetName().c_str(),obj_wxHitTest,context);
-  context->AddDefault(obj_wxHitTest->GetContext());
-
-  // New enumeration wxAuiToolBarToolTextOrientation
-  AMIObject::ptr obj_wxAuiToolBarToolTextOrientation(new AMIObject);
-  obj_wxAuiToolBarToolTextOrientation->SetName("wxAuiToolBarToolTextOrientation");
-
-  ADD_WX_ENUMVAL(wxAuiToolBarToolTextOrientation,wxAUI_TBTOOL_TEXT_BOTTOM,3);
-  ADD_WX_ENUMVAL(wxAuiToolBarToolTextOrientation,wxAUI_TBTOOL_TEXT_TOP,2);
-  ADD_WX_ENUMVAL(wxAuiToolBarToolTextOrientation,wxAUI_TBTOOL_TEXT_LEFT,0);
-  ADD_WX_ENUMVAL(wxAuiToolBarToolTextOrientation,wxAUI_TBTOOL_TEXT_RIGHT,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiToolBarToolTextOrientation->GetName().c_str(),obj_wxAuiToolBarToolTextOrientation,context);
-  context->AddDefault(obj_wxAuiToolBarToolTextOrientation->GetContext());
-
-  // New enumeration wxSignal
-  AMIObject::ptr obj_wxSignal(new AMIObject);
-  obj_wxSignal->SetName("wxSignal");
-
-  ADD_WX_ENUMVAL(wxSignal,wxSIGPIPE,13);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGABRT,6);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGALRM,14);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGIOT,6);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGBUS,10);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGINT,2);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGTRAP,5);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGKILL,9);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGEMT,7);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGNONE,0);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGQUIT,3);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGHUP,1);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGILL,4);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGFPE,8);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGSYS,12);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGSEGV,11);
-  ADD_WX_ENUMVAL(wxSignal,wxSIGTERM,15);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxSignal->GetName().c_str(),obj_wxSignal,context);
-  context->AddDefault(obj_wxSignal->GetContext());
-
-  // New enumeration wxCheckBoxState
-  AMIObject::ptr obj_wxCheckBoxState(new AMIObject);
-  obj_wxCheckBoxState->SetName("wxCheckBoxState");
-
-  ADD_WX_ENUMVAL(wxCheckBoxState,wxCHK_CHECKED,1);
-  ADD_WX_ENUMVAL(wxCheckBoxState,wxCHK_UNDETERMINED,2);
-  ADD_WX_ENUMVAL(wxCheckBoxState,wxCHK_UNCHECKED,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxCheckBoxState->GetName().c_str(),obj_wxCheckBoxState,context);
-  context->AddDefault(obj_wxCheckBoxState->GetContext());
-
-  // New enumeration wxHtmlOpeningStatus
-  AMIObject::ptr obj_wxHtmlOpeningStatus(new AMIObject);
-  obj_wxHtmlOpeningStatus->SetName("wxHtmlOpeningStatus");
-
-  ADD_WX_ENUMVAL(wxHtmlOpeningStatus,wxHTML_OPEN,0);
-  ADD_WX_ENUMVAL(wxHtmlOpeningStatus,wxHTML_BLOCK,1);
-  ADD_WX_ENUMVAL(wxHtmlOpeningStatus,wxHTML_REDIRECT,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxHtmlOpeningStatus->GetName().c_str(),obj_wxHtmlOpeningStatus,context);
-  context->AddDefault(obj_wxHtmlOpeningStatus->GetContext());
-
-  // New enumeration wxOperatingSystemId
-  AMIObject::ptr obj_wxOperatingSystemId(new AMIObject);
-  obj_wxOperatingSystemId->SetName("wxOperatingSystemId");
-
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX,8128);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_MAC_OS,1);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNKNOWN,0);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS_MICRO,16);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_AIX,2048);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_OPENBSD,256);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_MAC_OSX_DARWIN,2);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_OS2,65536);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_SOLARIS,1024);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_LINUX,64);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS_NT,8);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_NETBSD,512);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS_CE,32);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_DOS,32768);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_HPUX,4096);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_MAC,3);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS,60);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_WINDOWS_9X,4);
-  ADD_WX_ENUMVAL(wxOperatingSystemId,wxOS_UNIX_FREEBSD,128);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxOperatingSystemId->GetName().c_str(),obj_wxOperatingSystemId,context);
-  context->AddDefault(obj_wxOperatingSystemId->GetContext());
-
-  // New enumeration wxBitmapType
-  AMIObject::ptr obj_wxBitmapType(new AMIObject);
-  obj_wxBitmapType->SetName("wxBitmapType");
-
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_GIF_RESOURCE,14);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_XBM_DATA,8);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_XPM_DATA,10);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_GIF,13);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ICO_RESOURCE,4);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PICT,23);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_TGA,29);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PNG_RESOURCE,16);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_CUR,5);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_MACCURSOR,30);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_XPM,9);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ICO,3);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_INVALID,0);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PICT_RESOURCE,24);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_CUR_RESOURCE,6);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_RESOURCE,2);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ANI,27);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_BMP,1);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ICON_RESOURCE,26);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_XBM,7);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ANY,50);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_JPEG_RESOURCE,18);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PCX,21);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_BMP_RESOURCE,2);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_TIF_RESOURCE,12);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PNG,15);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_IFF,28);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PNM,19);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PCX_RESOURCE,22);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_TIF,11);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_MACCURSOR_RESOURCE,31);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_JPEG,17);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_PNM_RESOURCE,20);
-  ADD_WX_ENUMVAL(wxBitmapType,wxBITMAP_TYPE_ICON,25);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxBitmapType->GetName().c_str(),obj_wxBitmapType,context);
-  context->AddDefault(obj_wxBitmapType->GetContext());
-
-  // New enumeration wxFlexSizerGrowMode
-  AMIObject::ptr obj_wxFlexSizerGrowMode(new AMIObject);
-  obj_wxFlexSizerGrowMode->SetName("wxFlexSizerGrowMode");
-
-  ADD_WX_ENUMVAL(wxFlexSizerGrowMode,wxFLEX_GROWMODE_ALL,2);
-  ADD_WX_ENUMVAL(wxFlexSizerGrowMode,wxFLEX_GROWMODE_NONE,0);
-  ADD_WX_ENUMVAL(wxFlexSizerGrowMode,wxFLEX_GROWMODE_SPECIFIED,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxFlexSizerGrowMode->GetName().c_str(),obj_wxFlexSizerGrowMode,context);
-  context->AddDefault(obj_wxFlexSizerGrowMode->GetContext());
-
-  // New enumeration wxUpdateUI
-  AMIObject::ptr obj_wxUpdateUI(new AMIObject);
-  obj_wxUpdateUI->SetName("wxUpdateUI");
-
-  ADD_WX_ENUMVAL(wxUpdateUI,wxUPDATE_UI_NONE,0);
-  ADD_WX_ENUMVAL(wxUpdateUI,wxUPDATE_UI_FROMIDLE,2);
-  ADD_WX_ENUMVAL(wxUpdateUI,wxUPDATE_UI_RECURSE,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxUpdateUI->GetName().c_str(),obj_wxUpdateUI,context);
-  context->AddDefault(obj_wxUpdateUI->GetContext());
-
-  // New enumeration wxAuiToolBarStyle
-  AMIObject::ptr obj_wxAuiToolBarStyle(new AMIObject);
-  obj_wxAuiToolBarStyle->SetName("wxAuiToolBarStyle");
-
-  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_NO_AUTORESIZE,4);
-  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_NO_TOOLTIPS,2);
-  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_GRIPPER,8);
-  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_OVERFLOW,16);
-  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_HORZ_LAYOUT,64);
-  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_VERTICAL,32);
-  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_TEXT,1);
-  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_DEFAULT_STYLE,0);
-  ADD_WX_ENUMVAL(wxAuiToolBarStyle,wxAUI_TB_HORZ_TEXT,65);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiToolBarStyle->GetName().c_str(),obj_wxAuiToolBarStyle,context);
-  context->AddDefault(obj_wxAuiToolBarStyle->GetContext());
-
-  // New enumeration wxIdleMode
-  AMIObject::ptr obj_wxIdleMode(new AMIObject);
-  obj_wxIdleMode->SetName("wxIdleMode");
-
-  ADD_WX_ENUMVAL(wxIdleMode,wxIDLE_PROCESS_SPECIFIED,1);
-  ADD_WX_ENUMVAL(wxIdleMode,wxIDLE_PROCESS_ALL,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxIdleMode->GetName().c_str(),obj_wxIdleMode,context);
-  context->AddDefault(obj_wxIdleMode->GetContext());
-
-  // New enumeration enum_145
-  AMIObject::ptr obj_enum_145(new AMIObject);
-  obj_enum_145->SetName("enum_145");
-
-  ADD_WX_ENUMVAL(enum_145,wxCONVERT_SUBSTITUTE,1);
-  ADD_WX_ENUMVAL(enum_145,wxCONVERT_STRICT,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_145->GetName().c_str(),obj_enum_145,context);
-  context->AddDefault(obj_enum_145->GetContext());
-
-  // New enumeration enum_117
-  AMIObject::ptr obj_enum_117(new AMIObject);
-  obj_enum_117->SetName("enum_117");
-
-  ADD_WX_ENUMVAL(enum_117,wxPNG_TYPE_GREY_RED,3);
-  ADD_WX_ENUMVAL(enum_117,wxPNG_TYPE_COLOUR,0);
-  ADD_WX_ENUMVAL(enum_117,wxPNG_TYPE_GREY,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_117->GetName().c_str(),obj_enum_117,context);
-  context->AddDefault(obj_enum_117->GetContext());
-
-  // New enumeration enum_113
-  AMIObject::ptr obj_enum_113(new AMIObject);
-  obj_enum_113->SetName("enum_113");
-
-  ADD_WX_ENUMVAL(enum_113,wxUSER_ATTENTION_ERROR,2);
-  ADD_WX_ENUMVAL(enum_113,wxUSER_ATTENTION_INFO,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_113->GetName().c_str(),obj_enum_113,context);
-  context->AddDefault(obj_enum_113->GetContext());
-
-  // New enumeration enum_115
-  AMIObject::ptr obj_enum_115(new AMIObject);
-  obj_enum_115->SetName("enum_115");
-
-  ADD_WX_ENUMVAL(enum_115,wxIMAGE_QUALITY_HIGH,1);
-  ADD_WX_ENUMVAL(enum_115,wxIMAGE_QUALITY_NORMAL,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_115->GetName().c_str(),obj_enum_115,context);
-  context->AddDefault(obj_enum_115->GetContext());
-
-  // New enumeration enum_110
-  AMIObject::ptr obj_enum_110(new AMIObject);
-  obj_enum_110->SetName("enum_110");
-
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_ANTIALIASED,16);
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_UNDERLINED,64);
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_LIGHT,4);
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_DEFAULT,0);
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_SLANT,2);
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_MASK,255);
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_BOLD,8);
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_ITALIC,1);
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_STRIKETHROUGH,128);
-  ADD_WX_ENUMVAL(enum_110,wxFONTFLAG_NOT_ANTIALIASED,32);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_110->GetName().c_str(),obj_enum_110,context);
-  context->AddDefault(obj_enum_110->GetContext());
-
-  // New enumeration enum_111
-  AMIObject::ptr obj_enum_111(new AMIObject);
-  obj_enum_111->SetName("enum_111");
-
-  ADD_WX_ENUMVAL(enum_111,wxACCEL_ALT,1);
-  ADD_WX_ENUMVAL(enum_111,wxACCEL_SHIFT,4);
-  ADD_WX_ENUMVAL(enum_111,wxACCEL_CMD,2);
-  ADD_WX_ENUMVAL(enum_111,wxACCEL_NORMAL,0);
-  ADD_WX_ENUMVAL(enum_111,wxACCEL_CTRL,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_111->GetName().c_str(),obj_enum_111,context);
-  context->AddDefault(obj_enum_111->GetContext());
-
-  // New enumeration enum_98
-  AMIObject::ptr obj_enum_98(new AMIObject);
-  obj_enum_98->SetName("enum_98");
-
-  ADD_WX_ENUMVAL(enum_98,wxEXEC_NODISABLE,8);
-  ADD_WX_ENUMVAL(enum_98,wxEXEC_NOHIDE,2);
-  ADD_WX_ENUMVAL(enum_98,wxEXEC_SYNC,1);
-  ADD_WX_ENUMVAL(enum_98,wxEXEC_MAKE_GROUP_LEADER,4);
-  ADD_WX_ENUMVAL(enum_98,wxEXEC_ASYNC,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_98->GetName().c_str(),obj_enum_98,context);
-  context->AddDefault(obj_enum_98->GetContext());
-
   // New enumeration enum_12
   AMIObject::ptr obj_enum_12(new AMIObject);
   obj_enum_12->SetName("enum_12");
@@ -2485,56 +2501,47 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_enum_14->GetName().c_str(),obj_enum_14,context);
   context->AddDefault(obj_enum_14->GetContext());
 
-  // New enumeration wxThreadKind
-  AMIObject::ptr obj_wxThreadKind(new AMIObject);
-  obj_wxThreadKind->SetName("wxThreadKind");
+  // New enumeration wxHtmlSelectionState
+  AMIObject::ptr obj_wxHtmlSelectionState(new AMIObject);
+  obj_wxHtmlSelectionState->SetName("wxHtmlSelectionState");
 
-  ADD_WX_ENUMVAL(wxThreadKind,wxTHREAD_JOINABLE,1);
-  ADD_WX_ENUMVAL(wxThreadKind,wxTHREAD_DETACHED,0);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxThreadKind->GetName().c_str(),obj_wxThreadKind,context);
-  context->AddDefault(obj_wxThreadKind->GetContext());
-
-  // New enumeration wxAuiPaneButtonState
-  AMIObject::ptr obj_wxAuiPaneButtonState(new AMIObject);
-  obj_wxAuiPaneButtonState->SetName("wxAuiPaneButtonState");
-
-  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_PRESSED,4);
-  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_HOVER,2);
-  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_HIDDEN,16);
-  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_NORMAL,0);
-  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_CHECKED,32);
-  ADD_WX_ENUMVAL(wxAuiPaneButtonState,wxAUI_BUTTON_STATE_DISABLED,8);
+  ADD_WX_ENUMVAL(wxHtmlSelectionState,wxHTML_SEL_OUT,0);
+  ADD_WX_ENUMVAL(wxHtmlSelectionState,wxHTML_SEL_CHANGING,2);
+  ADD_WX_ENUMVAL(wxHtmlSelectionState,wxHTML_SEL_IN,1);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiPaneButtonState->GetName().c_str(),obj_wxAuiPaneButtonState,context);
-  context->AddDefault(obj_wxAuiPaneButtonState->GetContext());
+  context->AddVar<AMIObject>(obj_wxHtmlSelectionState->GetName().c_str(),obj_wxHtmlSelectionState,context);
+  context->AddDefault(obj_wxHtmlSelectionState->GetContext());
 
-  // New enumeration enum_132
-  AMIObject::ptr obj_enum_132(new AMIObject);
-  obj_enum_132->SetName("enum_132");
+  // New enumeration enum_128
+  AMIObject::ptr obj_enum_128(new AMIObject);
+  obj_enum_128->SetName("enum_128");
 
-  ADD_WX_ENUMVAL(enum_132,wxLIST_RECT_BOUNDS,0);
-  ADD_WX_ENUMVAL(enum_132,wxLIST_RECT_LABEL,2);
-  ADD_WX_ENUMVAL(enum_132,wxLIST_RECT_ICON,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_132->GetName().c_str(),obj_enum_132,context);
-  context->AddDefault(obj_enum_132->GetContext());
-
-  // New enumeration enum_130
-  AMIObject::ptr obj_enum_130(new AMIObject);
-  obj_enum_130->SetName("enum_130");
-
-  ADD_WX_ENUMVAL(enum_130,wxLIST_ALIGN_LEFT,1);
-  ADD_WX_ENUMVAL(enum_130,wxLIST_ALIGN_SNAP_TO_GRID,3);
-  ADD_WX_ENUMVAL(enum_130,wxLIST_ALIGN_TOP,2);
-  ADD_WX_ENUMVAL(enum_130,wxLIST_ALIGN_DEFAULT,0);
+  ADD_WX_ENUMVAL(enum_128,wxFD_FILE_MUST_EXIST,16);
+  ADD_WX_ENUMVAL(enum_128,wxFD_MULTIPLE,32);
+  ADD_WX_ENUMVAL(enum_128,wxFD_OVERWRITE_PROMPT,4);
+  ADD_WX_ENUMVAL(enum_128,wxFD_PREVIEW,256);
+  ADD_WX_ENUMVAL(enum_128,wxFD_SAVE,2);
+  ADD_WX_ENUMVAL(enum_128,wxFD_OPEN,1);
+  ADD_WX_ENUMVAL(enum_128,wxFD_CHANGE_DIR,128);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_130->GetName().c_str(),obj_enum_130,context);
-  context->AddDefault(obj_enum_130->GetContext());
+  context->AddVar<AMIObject>(obj_enum_128->GetName().c_str(),obj_enum_128,context);
+  context->AddDefault(obj_enum_128->GetContext());
+
+  // New enumeration enum_129
+  AMIObject::ptr obj_enum_129(new AMIObject);
+  obj_enum_129->SetName("enum_129");
+
+  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_ABOVE,0);
+  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_BELOW,2);
+  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_ALL,1);
+  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_LEFT,3);
+  ADD_WX_ENUMVAL(enum_129,wxLIST_NEXT_RIGHT,4);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_enum_129->GetName().c_str(),obj_enum_129,context);
+  context->AddDefault(obj_enum_129->GetContext());
 
   // New enumeration wxStreamError
   AMIObject::ptr obj_wxStreamError(new AMIObject);
@@ -2549,6 +2556,38 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxStreamError->GetName().c_str(),obj_wxStreamError,context);
   context->AddDefault(obj_wxStreamError->GetContext());
 
+  // New enumeration wxSystemFont
+  AMIObject::ptr obj_wxSystemFont(new AMIObject);
+  obj_wxSystemFont->SetName("wxSystemFont");
+
+  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_ANSI_FIXED_FONT,11);
+  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_DEVICE_DEFAULT_FONT,14);
+  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_SYSTEM_FONT,13);
+  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_DEFAULT_PALETTE,15);
+  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_ICONTITLE_FONT,17);
+  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_ANSI_VAR_FONT,12);
+  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_DEFAULT_GUI_FONT,17);
+  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_OEM_FIXED_FONT,10);
+  ADD_WX_ENUMVAL(wxSystemFont,wxSYS_SYSTEM_FIXED_FONT,16);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxSystemFont->GetName().c_str(),obj_wxSystemFont,context);
+  context->AddDefault(obj_wxSystemFont->GetContext());
+
+  // New enumeration wxWindowVariant
+  AMIObject::ptr obj_wxWindowVariant(new AMIObject);
+  obj_wxWindowVariant->SetName("wxWindowVariant");
+
+  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_MAX,4);
+  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_LARGE,3);
+  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_MINI,2);
+  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_NORMAL,0);
+  ADD_WX_ENUMVAL(wxWindowVariant,wxWINDOW_VARIANT_SMALL,1);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxWindowVariant->GetName().c_str(),obj_wxWindowVariant,context);
+  context->AddDefault(obj_wxWindowVariant->GetContext());
+
   // New enumeration wxOrientation
   AMIObject::ptr obj_wxOrientation(new AMIObject);
   obj_wxOrientation->SetName("wxOrientation");
@@ -2560,32 +2599,6 @@ void wrap_wx_classes( Variables::ptr& context)
   // Add enum to context, and add to default contexts
   context->AddVar<AMIObject>(obj_wxOrientation->GetName().c_str(),obj_wxOrientation,context);
   context->AddDefault(obj_wxOrientation->GetContext());
-
-  // New enumeration wxAuiPaneDockArtSetting
-  AMIObject::ptr obj_wxAuiPaneDockArtSetting(new AMIObject);
-  obj_wxAuiPaneDockArtSetting->SetName("wxAuiPaneDockArtSetting");
-
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_GRIPPER_SIZE,2);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_ACTIVE_CAPTION_COLOUR,7);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_PANE_BUTTON_SIZE,4);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_PANE_BORDER_SIZE,3);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR,10);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_CAPTION_FONT,15);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_SASH_SIZE,0);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_BORDER_COLOUR,13);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_ACTIVE_CAPTION_GRADIENT_COLOUR,8);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_GRIPPER_COLOUR,14);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_ACTIVE_CAPTION_TEXT_COLOUR,11);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_CAPTION_SIZE,1);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_SASH_COLOUR,6);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_GRADIENT_TYPE,16);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_BACKGROUND_COLOUR,5);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR,9);
-  ADD_WX_ENUMVAL(wxAuiPaneDockArtSetting,wxAUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR,12);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiPaneDockArtSetting->GetName().c_str(),obj_wxAuiPaneDockArtSetting,context);
-  context->AddDefault(obj_wxAuiPaneDockArtSetting->GetContext());
 
   // New enumeration wxGeometryCentre
   AMIObject::ptr obj_wxGeometryCentre(new AMIObject);
@@ -2621,16 +2634,6 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxPortId->GetName().c_str(),obj_wxPortId,context);
   context->AddDefault(obj_wxPortId->GetContext());
 
-  // New enumeration enum_140
-  AMIObject::ptr obj_enum_140(new AMIObject);
-  obj_enum_140->SetName("enum_140");
-
-  ADD_WX_ENUMVAL(enum_140,wxPATH_MKDIR_FULL,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_140->GetName().c_str(),obj_enum_140,context);
-  context->AddDefault(obj_enum_140->GetContext());
-
   // New enumeration wxTextCtrlHitTestResult
   AMIObject::ptr obj_wxTextCtrlHitTestResult(new AMIObject);
   obj_wxTextCtrlHitTestResult->SetName("wxTextCtrlHitTestResult");
@@ -2644,18 +2647,6 @@ void wrap_wx_classes( Variables::ptr& context)
   // Add enum to context, and add to default contexts
   context->AddVar<AMIObject>(obj_wxTextCtrlHitTestResult->GetName().c_str(),obj_wxTextCtrlHitTestResult,context);
   context->AddDefault(obj_wxTextCtrlHitTestResult->GetContext());
-
-  // New enumeration wxSystemFeature
-  AMIObject::ptr obj_wxSystemFeature(new AMIObject);
-  obj_wxSystemFeature->SetName("wxSystemFeature");
-
-  ADD_WX_ENUMVAL(wxSystemFeature,wxSYS_CAN_ICONIZE_FRAME,2);
-  ADD_WX_ENUMVAL(wxSystemFeature,wxSYS_CAN_DRAW_FRAME_DECORATIONS,1);
-  ADD_WX_ENUMVAL(wxSystemFeature,wxSYS_TABLET_PRESENT,3);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxSystemFeature->GetName().c_str(),obj_wxSystemFeature,context);
-  context->AddDefault(obj_wxSystemFeature->GetContext());
 
   // New enumeration enum_116
   AMIObject::ptr obj_enum_116(new AMIObject);
@@ -2702,31 +2693,54 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxFileKind->GetName().c_str(),obj_wxFileKind,context);
   context->AddDefault(obj_wxFileKind->GetContext());
 
-  // New enumeration enum_112
-  AMIObject::ptr obj_enum_112(new AMIObject);
-  obj_enum_112->SetName("enum_112");
+  // New enumeration wxLocaleInfo
+  AMIObject::ptr obj_wxLocaleInfo(new AMIObject);
+  obj_wxLocaleInfo->SetName("wxLocaleInfo");
 
-  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOSTATUSBAR,4);
-  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_ALL,31);
-  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOMENUBAR,1);
-  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOBORDER,8);
-  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOCAPTION,16);
-  ADD_WX_ENUMVAL(enum_112,wxFULLSCREEN_NOTOOLBAR,2);
+  ADD_WX_ENUMVAL(wxLocaleInfo,wxLOCALE_THOUSANDS_SEP,0);
+  ADD_WX_ENUMVAL(wxLocaleInfo,wxLOCALE_DECIMAL_POINT,1);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_112->GetName().c_str(),obj_enum_112,context);
-  context->AddDefault(obj_enum_112->GetContext());
+  context->AddVar<AMIObject>(obj_wxLocaleInfo->GetName().c_str(),obj_wxLocaleInfo,context);
+  context->AddDefault(obj_wxLocaleInfo->GetContext());
 
-  // New enumeration enum_131
-  AMIObject::ptr obj_enum_131(new AMIObject);
-  obj_enum_131->SetName("enum_131");
+  // New enumeration wxRegionOp
+  AMIObject::ptr obj_wxRegionOp(new AMIObject);
+  obj_wxRegionOp->SetName("wxRegionOp");
 
-  ADD_WX_ENUMVAL(enum_131,wxLIST_AUTOSIZE_USEHEADER,-2);
-  ADD_WX_ENUMVAL(enum_131,wxLIST_AUTOSIZE,-1);
+  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_COPY,1);
+  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_AND,0);
+  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_OR,3);
+  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_XOR,4);
+  ADD_WX_ENUMVAL(wxRegionOp,wxRGN_DIFF,2);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_enum_131->GetName().c_str(),obj_enum_131,context);
-  context->AddDefault(obj_enum_131->GetContext());
+  context->AddVar<AMIObject>(obj_wxRegionOp->GetName().c_str(),obj_wxRegionOp,context);
+  context->AddDefault(obj_wxRegionOp->GetContext());
+
+  // New enumeration wxAuiNotebookOption
+  AMIObject::ptr obj_wxAuiNotebookOption(new AMIObject);
+  obj_wxAuiNotebookOption->SetName("wxAuiNotebookOption");
+
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TAB_SPLIT,16);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_MIDDLE_CLICK_CLOSE,8192);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_CLOSE_ON_ACTIVE_TAB,2048);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TAB_MOVE,32);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TAB_EXTERNAL_MOVE,64);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TAB_FIXED_WIDTH,128);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_DEFAULT_STYLE,10545);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_BOTTOM,8);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_CLOSE_BUTTON,1024);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_TOP,1);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_SCROLL_BUTTONS,256);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_RIGHT,4);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_WINDOWLIST_BUTTON,512);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_LEFT,2);
+  ADD_WX_ENUMVAL(wxAuiNotebookOption,wxAUI_NB_CLOSE_ON_ALL_TABS,4096);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxAuiNotebookOption->GetName().c_str(),obj_wxAuiNotebookOption,context);
+  context->AddDefault(obj_wxAuiNotebookOption->GetContext());
 
   // New enumeration wxLocaleCategory
   AMIObject::ptr obj_wxLocaleCategory(new AMIObject);
@@ -2741,6 +2755,20 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxLocaleCategory->GetName().c_str(),obj_wxLocaleCategory,context);
   context->AddDefault(obj_wxLocaleCategory->GetContext());
 
+  // New enumeration wxEndianness
+  AMIObject::ptr obj_wxEndianness(new AMIObject);
+  obj_wxEndianness->SetName("wxEndianness");
+
+  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_LITTLE,1);
+  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_PDP,2);
+  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_BIG,0);
+  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_INVALID,-1);
+  ADD_WX_ENUMVAL(wxEndianness,wxENDIAN_MAX,3);
+
+  // Add enum to context, and add to default contexts
+  context->AddVar<AMIObject>(obj_wxEndianness->GetName().c_str(),obj_wxEndianness,context);
+  context->AddDefault(obj_wxEndianness->GetContext());
+
   // New enumeration wxUpdateUIMode
   AMIObject::ptr obj_wxUpdateUIMode(new AMIObject);
   obj_wxUpdateUIMode->SetName("wxUpdateUIMode");
@@ -2751,18 +2779,6 @@ void wrap_wx_classes( Variables::ptr& context)
   // Add enum to context, and add to default contexts
   context->AddVar<AMIObject>(obj_wxUpdateUIMode->GetName().c_str(),obj_wxUpdateUIMode,context);
   context->AddDefault(obj_wxUpdateUIMode->GetContext());
-
-  // New enumeration wxAuiPaneInsertLevel
-  AMIObject::ptr obj_wxAuiPaneInsertLevel(new AMIObject);
-  obj_wxAuiPaneInsertLevel->SetName("wxAuiPaneInsertLevel");
-
-  ADD_WX_ENUMVAL(wxAuiPaneInsertLevel,wxAUI_INSERT_DOCK,2);
-  ADD_WX_ENUMVAL(wxAuiPaneInsertLevel,wxAUI_INSERT_PANE,0);
-  ADD_WX_ENUMVAL(wxAuiPaneInsertLevel,wxAUI_INSERT_ROW,1);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiPaneInsertLevel->GetName().c_str(),obj_wxAuiPaneInsertLevel,context);
-  context->AddDefault(obj_wxAuiPaneInsertLevel->GetContext());
 
   // New enumeration wxArchitecture
   AMIObject::ptr obj_wxArchitecture(new AMIObject);
@@ -2777,19 +2793,18 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxArchitecture->GetName().c_str(),obj_wxArchitecture,context);
   context->AddDefault(obj_wxArchitecture->GetContext());
 
-  // New enumeration wxKillError
-  AMIObject::ptr obj_wxKillError(new AMIObject);
-  obj_wxKillError->SetName("wxKillError");
+  // New enumeration wxListColumnFormat
+  AMIObject::ptr obj_wxListColumnFormat(new AMIObject);
+  obj_wxListColumnFormat->SetName("wxListColumnFormat");
 
-  ADD_WX_ENUMVAL(wxKillError,wxKILL_ACCESS_DENIED,2);
-  ADD_WX_ENUMVAL(wxKillError,wxKILL_BAD_SIGNAL,1);
-  ADD_WX_ENUMVAL(wxKillError,wxKILL_ERROR,4);
-  ADD_WX_ENUMVAL(wxKillError,wxKILL_NO_PROCESS,3);
-  ADD_WX_ENUMVAL(wxKillError,wxKILL_OK,0);
+  ADD_WX_ENUMVAL(wxListColumnFormat,wxLIST_FORMAT_RIGHT,1);
+  ADD_WX_ENUMVAL(wxListColumnFormat,wxLIST_FORMAT_CENTER,2);
+  ADD_WX_ENUMVAL(wxListColumnFormat,wxLIST_FORMAT_LEFT,0);
+  ADD_WX_ENUMVAL(wxListColumnFormat,wxLIST_FORMAT_CENTRE,2);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxKillError->GetName().c_str(),obj_wxKillError,context);
-  context->AddDefault(obj_wxKillError->GetContext());
+  context->AddVar<AMIObject>(obj_wxListColumnFormat->GetName().c_str(),obj_wxListColumnFormat,context);
+  context->AddDefault(obj_wxListColumnFormat->GetContext());
 
   // New enumeration wxSystemColour
   AMIObject::ptr obj_wxSystemColour(new AMIObject);
@@ -2839,29 +2854,16 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxSystemColour->GetName().c_str(),obj_wxSystemColour,context);
   context->AddDefault(obj_wxSystemColour->GetContext());
 
-  // New enumeration wxNotificationOptions
-  AMIObject::ptr obj_wxNotificationOptions(new AMIObject);
-  obj_wxNotificationOptions->SetName("wxNotificationOptions");
+  // New enumeration wxLocaleInitFlags
+  AMIObject::ptr obj_wxLocaleInitFlags(new AMIObject);
+  obj_wxLocaleInitFlags->SetName("wxLocaleInitFlags");
 
-  ADD_WX_ENUMVAL(wxNotificationOptions,wxNOTIFY_ONCE,1);
-  ADD_WX_ENUMVAL(wxNotificationOptions,wxNOTIFY_NONE,0);
-  ADD_WX_ENUMVAL(wxNotificationOptions,wxNOTIFY_REPEAT,2);
-
-  // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxNotificationOptions->GetName().c_str(),obj_wxNotificationOptions,context);
-  context->AddDefault(obj_wxNotificationOptions->GetContext());
-
-  // New enumeration wxAuiToolBarArtSetting
-  AMIObject::ptr obj_wxAuiToolBarArtSetting(new AMIObject);
-  obj_wxAuiToolBarArtSetting->SetName("wxAuiToolBarArtSetting");
-
-  ADD_WX_ENUMVAL(wxAuiToolBarArtSetting,wxAUI_TBART_OVERFLOW_SIZE,2);
-  ADD_WX_ENUMVAL(wxAuiToolBarArtSetting,wxAUI_TBART_GRIPPER_SIZE,1);
-  ADD_WX_ENUMVAL(wxAuiToolBarArtSetting,wxAUI_TBART_SEPARATOR_SIZE,0);
+  ADD_WX_ENUMVAL(wxLocaleInitFlags,wxLOCALE_LOAD_DEFAULT,1);
+  ADD_WX_ENUMVAL(wxLocaleInitFlags,wxLOCALE_CONV_ENCODING,2);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxAuiToolBarArtSetting->GetName().c_str(),obj_wxAuiToolBarArtSetting,context);
-  context->AddDefault(obj_wxAuiToolBarArtSetting->GetContext());
+  context->AddVar<AMIObject>(obj_wxLocaleInitFlags->GetName().c_str(),obj_wxLocaleInitFlags,context);
+  context->AddDefault(obj_wxLocaleInitFlags->GetContext());
 
   // New enumeration wxDirection
   AMIObject::ptr obj_wxDirection(new AMIObject);
@@ -2883,23 +2885,23 @@ void wrap_wx_classes( Variables::ptr& context)
   context->AddVar<AMIObject>(obj_wxDirection->GetName().c_str(),obj_wxDirection,context);
   context->AddDefault(obj_wxDirection->GetContext());
 
-  // New enumeration wxFontFamily
-  AMIObject::ptr obj_wxFontFamily(new AMIObject);
-  obj_wxFontFamily->SetName("wxFontFamily");
+  // New enumeration wxPathFormat
+  AMIObject::ptr obj_wxPathFormat(new AMIObject);
+  obj_wxPathFormat->SetName("wxPathFormat");
 
-  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_DECORATIVE,71);
-  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_MODERN,75);
-  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_ROMAN,72);
-  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_SWISS,74);
-  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_SCRIPT,73);
-  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_DEFAULT,70);
-  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_MAX,77);
-  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_TELETYPE,76);
-  ADD_WX_ENUMVAL(wxFontFamily,wxFONTFAMILY_UNKNOWN,77);
+  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_UNIX,1);
+  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_DOS,3);
+  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_OS2,3);
+  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_MAC,2);
+  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_VMS,4);
+  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_WIN,3);
+  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_NATIVE,0);
+  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_BEOS,1);
+  ADD_WX_ENUMVAL(wxPathFormat,wxPATH_MAX,5);
 
   // Add enum to context, and add to default contexts
-  context->AddVar<AMIObject>(obj_wxFontFamily->GetName().c_str(),obj_wxFontFamily,context);
-  context->AddDefault(obj_wxFontFamily->GetContext());
+  context->AddVar<AMIObject>(obj_wxPathFormat->GetName().c_str(),obj_wxPathFormat,context);
+  context->AddDefault(obj_wxPathFormat->GetContext());
 
   // New enumeration wxBackgroundStyle
   AMIObject::ptr obj_wxBackgroundStyle(new AMIObject);

@@ -27,6 +27,10 @@
 
 #include "wrap_wxMenuItem.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -72,33 +76,36 @@ void WrapClass_wxMenuItem::AddMethods(WrapClass<wxMenuItem>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_SetText( this_ptr);
-      AddVar_Enable( this_ptr);
-      AddVar_Check( this_ptr);
-      AddVar_IsChecked( this_ptr);
-      AddVar_SetBitmap( this_ptr);
-      AddVar_GetBitmap( this_ptr);
-      AddVar_GetAccel( this_ptr);
+  // Adding standard methods 
+  AddVar_SetText( this_ptr);
+  AddVar_Enable( this_ptr);
+  AddVar_Check( this_ptr);
+  AddVar_IsChecked( this_ptr);
+  AddVar_SetBitmap( this_ptr);
+  AddVar_GetBitmap( this_ptr);
+  AddVar_GetAccel( this_ptr);
 /* The following types are missing: _GtkWidget
-      AddVar_SetMenuItem( this_ptr);
+  AddVar_SetMenuItem( this_ptr);
 */
 /* The following types are missing: _GtkWidget
-      AddVar_GetMenuItem( this_ptr);
+  AddVar_GetMenuItem( this_ptr);
 */
 /* The following types are missing: _GtkWidget
-      AddVar_GetLabelWidget( this_ptr);
+  AddVar_GetLabelWidget( this_ptr);
 */
 /* The following types are missing: _GtkWidget
-      AddVar_SetLabelWidget( this_ptr);
+  AddVar_SetLabelWidget( this_ptr);
 */
-      AddVar_GetHotKey( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
-      AddVar_GetItemLabel( this_ptr);
+  AddVar_GetHotKey( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
+  AddVar_GetItemLabel( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -164,9 +171,15 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   if (_p->GetNumParam()>6) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > parentMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* parentMenu = parentMenu_smtptr.get();
+  wxMenu* parentMenu = 0u;
+  if (CheckNullVar(_p,_n))  {
+    parentMenu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > parentMenu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    parentMenu = parentMenu_smtptr.get();
+  }
 
   int id = wxID_SEPARATOR;
   if (!get_val_param<int >(id,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -185,9 +198,15 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
   wxItemKind kind = (wxItemKind) kind_int;
 
-  boost::shared_ptr<wxMenu > subMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* subMenu = subMenu_smtptr.get();
+  wxMenu* subMenu = 0u;
+  if (CheckNullVar(_p,_n))  {
+    subMenu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > subMenu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    subMenu = subMenu_smtptr.get();
+  }
 
   wxMenuItem* _newobj = new wxMenuItem(parentMenu, id, text, help, kind, subMenu);
   BasicVariable::ptr res = WrapClass_wxMenuItem::CreateVar(_newobj);
@@ -237,9 +256,15 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   if (_p->GetNumParam()>6) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > parentMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* parentMenu = parentMenu_smtptr.get();
+  wxMenu* parentMenu;
+  if (CheckNullVar(_p,_n))  {
+    parentMenu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > parentMenu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    parentMenu = parentMenu_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -255,9 +280,15 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   bool isCheckable;
   if (!get_val_param<bool >(isCheckable,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxMenu > subMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* subMenu = subMenu_smtptr.get();
+  wxMenu* subMenu = 0u;
+  if (CheckNullVar(_p,_n))  {
+    subMenu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > subMenu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    subMenu = subMenu_smtptr.get();
+  }
 
   wxMenuItem* _newobj = new wxMenuItem(parentMenu, id, text, help, isCheckable, subMenu);
   BasicVariable::ptr res = WrapClass_wxMenuItem::CreateVar(_newobj);
@@ -287,9 +318,15 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   if (!get_val_smtptr_param<wxString >(str_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & str = *str_smtptr;
 
-  boost::shared_ptr<wxString > hotKey_smtptr;
-  if (!get_val_smtptr_param<wxString >(hotKey_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString* hotKey = hotKey_smtptr.get();
+  wxString* hotKey;
+  if (CheckNullVar(_p,_n))  {
+    hotKey=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > hotKey_smtptr;
+    if (!get_val_smtptr_param<wxString >(hotKey_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    hotKey = hotKey_smtptr.get();
+  }
 
   wxString res =   wxMenuItem::GTKProcessMenuItemLabel(str, hotKey);
   return AMILabType<wxString >::CreateVar(res);
@@ -469,9 +506,15 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkWidget > menuItem_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(menuItem_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkWidget* menuItem = menuItem_smtptr.get();
+  _GtkWidget* menuItem;
+  if (CheckNullVar(_p,_n))  {
+    menuItem=(_GtkWidget*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkWidget > menuItem_smtptr;
+    if (!get_val_smtptr_param<_GtkWidget >(menuItem_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    menuItem = menuItem_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetMenuItem(menuItem);
   return BasicVariable::ptr();
@@ -538,9 +581,15 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkWidget > labelWidget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(labelWidget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkWidget* labelWidget = labelWidget_smtptr.get();
+  _GtkWidget* labelWidget;
+  if (CheckNullVar(_p,_n))  {
+    labelWidget=(_GtkWidget*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkWidget > labelWidget_smtptr;
+    if (!get_val_smtptr_param<_GtkWidget >(labelWidget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    labelWidget = labelWidget_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetLabelWidget(labelWidget);
   return BasicVariable::ptr();

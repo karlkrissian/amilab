@@ -428,7 +428,7 @@ MainFrame::MainFrame( const wxString& title,
                         wxAUI_TB_OVERFLOW);
   #endif
   /// @endcond
-    tb1->SetToolBitmapSize(wxSize(48,48));
+    tb1->SetToolBitmapSize(wxSize(32,32));
 //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
 //    tb1->AddSeparator();
     ::wxInitAllImageHandlers();

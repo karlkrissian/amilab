@@ -25,6 +25,10 @@
 
 #include "wrap_wxMenu.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
 //----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
@@ -70,57 +74,60 @@ void WrapClass_wxMenu::AddMethods(WrapClass<wxMenu>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Attach( this_ptr);
-      AddVar_SetLayoutDirection( this_ptr);
-      AddVar_GetLayoutDirection( this_ptr);
+  // Adding standard methods 
+  AddVar_Attach( this_ptr);
+  AddVar_SetLayoutDirection( this_ptr);
+  AddVar_GetLayoutDirection( this_ptr);
 /* The following types are missing: _GtkWidget
-      AddVar_FindMenuIdByMenuItem( this_ptr);
+  AddVar_FindMenuIdByMenuItem( this_ptr);
 */
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Type not available
-      // Adding public member m_menu
-      boost::shared_ptr<_GtkWidget > var_m_menu_ptr(GetObj()->m_menu, smartpointer_nodeleter<_GtkWidget >());
-      if (var_m_menu_ptr.get()) {
-        BasicVariable::ptr var_m_menu = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_menu_ptr);
-        if (var_m_menu.get()) {
-          var_m_menu->Rename("m_menu");
-          context->AddVar(var_m_menu,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member m_owner
-      boost::shared_ptr<_GtkWidget > var_m_owner_ptr(GetObj()->m_owner, smartpointer_nodeleter<_GtkWidget >());
-      if (var_m_owner_ptr.get()) {
-        BasicVariable::ptr var_m_owner = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_owner_ptr);
-        if (var_m_owner.get()) {
-          var_m_owner->Rename("m_owner");
-          context->AddVar(var_m_owner,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member m_accel
-      boost::shared_ptr<_GtkAccelGroup > var_m_accel_ptr(GetObj()->m_accel, smartpointer_nodeleter<_GtkAccelGroup >());
-      if (var_m_accel_ptr.get()) {
-        BasicVariable::ptr var_m_accel = AMILabType<_GtkAccelGroup >::CreateVarFromSmtPtr(var_m_accel_ptr);
-        if (var_m_accel.get()) {
-          var_m_accel->Rename("m_accel");
-          context->AddVar(var_m_accel,context);
-        }
-      }
-      */
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Type not available
+  // Adding public member m_menu
+  boost::shared_ptr<_GtkWidget > var_m_menu_ptr(GetObj()->m_menu, smartpointer_nodeleter<_GtkWidget >());
+  if (var_m_menu_ptr.get()) {
+    BasicVariable::ptr var_m_menu = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_menu_ptr);
+    if (var_m_menu.get()) {
+      var_m_menu->Rename("m_menu");
+      context->AddVar(var_m_menu,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member m_owner
+  boost::shared_ptr<_GtkWidget > var_m_owner_ptr(GetObj()->m_owner, smartpointer_nodeleter<_GtkWidget >());
+  if (var_m_owner_ptr.get()) {
+    BasicVariable::ptr var_m_owner = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_owner_ptr);
+    if (var_m_owner.get()) {
+      var_m_owner->Rename("m_owner");
+      context->AddVar(var_m_owner,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member m_accel
+  boost::shared_ptr<_GtkAccelGroup > var_m_accel_ptr(GetObj()->m_accel, smartpointer_nodeleter<_GtkAccelGroup >());
+  if (var_m_accel_ptr.get()) {
+    BasicVariable::ptr var_m_accel = AMILabType<_GtkAccelGroup >::CreateVarFromSmtPtr(var_m_accel_ptr);
+    if (var_m_accel.get()) {
+      var_m_accel->Rename("m_accel");
+      context->AddVar(var_m_accel,context);
+    }
+  }
+  */
+
+
+  
 
 
   // Adding Bases
@@ -256,9 +263,15 @@ BasicVariable::ptr WrapClass_wxMenu::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxMenuBarBase > menubar_smtptr;
-  if (!get_val_smtptr_param<wxMenuBarBase >(menubar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenuBarBase* menubar = menubar_smtptr.get();
+  wxMenuBarBase* menubar;
+  if (CheckNullVar(_p,_n))  {
+    menubar=(wxMenuBarBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenuBarBase > menubar_smtptr;
+    if (!get_val_smtptr_param<wxMenuBarBase >(menubar_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    menubar = menubar_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Attach(menubar);
   return BasicVariable::ptr();
@@ -328,9 +341,15 @@ BasicVariable::ptr WrapClass_wxMenu::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkWidget > menuItem_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(menuItem_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkWidget* menuItem = menuItem_smtptr.get();
+  _GtkWidget* menuItem;
+  if (CheckNullVar(_p,_n))  {
+    menuItem=(_GtkWidget*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkWidget > menuItem_smtptr;
+    if (!get_val_smtptr_param<_GtkWidget >(menuItem_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    menuItem = menuItem_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->FindMenuIdByMenuItem(menuItem);
   return AMILabType<int >::CreateVar(res);

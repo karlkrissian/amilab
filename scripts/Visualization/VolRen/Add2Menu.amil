@@ -5,6 +5,27 @@
 #
 
 # Scripts menu
-ami.MainFrame.AddToMenu("&Scripts","&Visualization","&Volume Rendering","Visualization/VolRen/VolRenGui.amil")
+#ami.MainFrame.AddToMenu("&Scripts","&Visualization","&Volume Rendering","Visualization/VolRen/VolRenGui.amil")
 
 
+if (!exists(levelsets_menu)) {
+
+  func "Common/ScriptDisplayClass"
+
+  ScriptDisplayClass ::volren_display
+
+  ::volren_display.SetScript("Visualization/VolRen/VolRenGui.amil")
+  ::volren_display.SetScriptObjName("global::VolRen_obj")
+
+  ::volren_display.SetDisplayedName("&Volume Rendering")
+  ::volren_display.SetHelp("VTK-based Volume Rendering using GPU if available.")
+  ::volren_display.SetInMenus("Scripts","Visualization")
+
+  ::ami_import.System(); 
+  ::volren_display.SetIcon16( op_system.GetCurrentScriptDir()+"/volren_icon16.png")
+  ::volren_display.SetIcon32( op_system.GetCurrentScriptDir()+"/volren_icon32.png")
+
+  ::volren_display.Add2Menu()
+  ::volren_display.Add2Toolbar()
+
+}

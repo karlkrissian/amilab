@@ -88,7 +88,7 @@ if (!exists(vtkVolumeClass)) {
     #   property   : vtkVolumeProperty
     #
     proc ::CreateVTK( IMAGE input_image) {
-
+      #printn "CreateVTK 1"
       ::input = &input_image
 
       # 10/(1+clip) in c++ code
@@ -111,6 +111,7 @@ if (!exists(vtkVolumeClass)) {
         ::property.SetScalarOpacity( &::opacityFun )
         ::property.SetInterpolationTypeToLinear()
  
+        #printn "CreateVTK 2"
         ::vol       = vtk.vtkVolume.New()
         # don't put the boxwidget for the moment
         # convert input to vtkimage
@@ -130,6 +131,7 @@ if (!exists(vtkVolumeClass)) {
           }
           ::volmapper = vtk.vtkVolumeRayCastMapper.New()
 
+          #printn "CreateVTK 3"
 
           compositeFunction=vtk.vtkVolumeRayCastCompositeFunction.New()
           ::volmapper.SetVolumeRayCastFunction(&compositeFunction)

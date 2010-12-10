@@ -19,15 +19,19 @@
 // get all the required includes
 // #include "..."
 #include "wrap_wxWindow.h"
+#include "wrap_wxMenu.h"
 #include "wrap_wxString.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxMenu.h"
 #include "wrap_wxMenuItem.h"
 #include "wrap_wxFrame.h"
 #include "wrap_wxClassInfo.h"
 
 
 #include "wrap_wxMenuBar.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -74,65 +78,66 @@ void WrapClass_wxMenuBar::AddMethods(WrapClass<wxMenuBar>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Append( this_ptr);
-      AddVar_Insert( this_ptr);
-      AddVar_Replace( this_ptr);
-      AddVar_Remove( this_ptr);
-      AddVar_FindMenuItem( this_ptr);
-/* The following types are missing: wxMenu * *
-      AddVar_FindItem( this_ptr);
-*/
-      AddVar_EnableTop( this_ptr);
-      AddVar_SetLabelTop( this_ptr);
-      AddVar_GetLabelTop( this_ptr);
-      AddVar_SetLayoutDirection( this_ptr);
-      AddVar_GetLayoutDirection( this_ptr);
-      AddVar_Attach( this_ptr);
-      AddVar_SetInvokingWindow( this_ptr);
-      AddVar_UnsetInvokingWindow( this_ptr);
-      AddVar_GtkAppend( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
-      AddVar_GetMenuLabel( this_ptr);
+  // Adding standard methods 
+  AddVar_Append( this_ptr);
+  AddVar_Insert( this_ptr);
+  AddVar_Replace( this_ptr);
+  AddVar_Remove( this_ptr);
+  AddVar_FindMenuItem( this_ptr);
+  AddVar_FindItem( this_ptr);
+  AddVar_EnableTop( this_ptr);
+  AddVar_SetLabelTop( this_ptr);
+  AddVar_GetLabelTop( this_ptr);
+  AddVar_SetLayoutDirection( this_ptr);
+  AddVar_GetLayoutDirection( this_ptr);
+  AddVar_Attach( this_ptr);
+  AddVar_SetInvokingWindow( this_ptr);
+  AddVar_UnsetInvokingWindow( this_ptr);
+  AddVar_GtkAppend( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
+  AddVar_GetMenuLabel( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Type not available
-      // Adding public member m_menubar
-      boost::shared_ptr<_GtkWidget > var_m_menubar_ptr(GetObj()->m_menubar, smartpointer_nodeleter<_GtkWidget >());
-      if (var_m_menubar_ptr.get()) {
-        BasicVariable::ptr var_m_menubar = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_menubar_ptr);
-        if (var_m_menubar.get()) {
-          var_m_menubar->Rename("m_menubar");
-          context->AddVar(var_m_menubar,context);
-        }
-      }
-      */
-      
-      // Adding public member m_style
-      boost::shared_ptr<long int > var_m_style_ptr(&GetObj()->m_style, smartpointer_nodeleter<long int >());
-      if (var_m_style_ptr.get()) {
-        BasicVariable::ptr var_m_style = AMILabType<long int >::CreateVarFromSmtPtr(var_m_style_ptr);
-        if (var_m_style.get()) {
-          var_m_style->Rename("m_style");
-          context->AddVar(var_m_style,context);
-        }
-      }
-      
-      // Adding public member m_invokingWindow
-      boost::shared_ptr<wxWindow > var_m_invokingWindow_ptr(GetObj()->m_invokingWindow, smartpointer_nodeleter<wxWindow >());
-      if (var_m_invokingWindow_ptr.get()) {
-        BasicVariable::ptr var_m_invokingWindow = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_m_invokingWindow_ptr);
-        if (var_m_invokingWindow.get()) {
-          var_m_invokingWindow->Rename("m_invokingWindow");
-          context->AddVar(var_m_invokingWindow,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Type not available
+  // Adding public member m_menubar
+  boost::shared_ptr<_GtkWidget > var_m_menubar_ptr(GetObj()->m_menubar, smartpointer_nodeleter<_GtkWidget >());
+  if (var_m_menubar_ptr.get()) {
+    BasicVariable::ptr var_m_menubar = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_menubar_ptr);
+    if (var_m_menubar.get()) {
+      var_m_menubar->Rename("m_menubar");
+      context->AddVar(var_m_menubar,context);
+    }
+  }
+  */
+  
+  // Adding public member m_style
+  boost::shared_ptr<long int > var_m_style_ptr(&GetObj()->m_style, smartpointer_nodeleter<long int >());
+  if (var_m_style_ptr.get()) {
+    BasicVariable::ptr var_m_style = AMILabType<long int >::CreateVarFromSmtPtr(var_m_style_ptr);
+    if (var_m_style.get()) {
+      var_m_style->Rename("m_style");
+      context->AddVar(var_m_style,context);
+    }
+  }
+  
+  // Adding public member m_invokingWindow
+  boost::shared_ptr<wxWindow > var_m_invokingWindow_ptr(GetObj()->m_invokingWindow, smartpointer_nodeleter<wxWindow >());
+  if (var_m_invokingWindow_ptr.get()) {
+    BasicVariable::ptr var_m_invokingWindow = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_m_invokingWindow_ptr);
+    if (var_m_invokingWindow.get()) {
+      var_m_invokingWindow->Rename("m_invokingWindow");
+      context->AddVar(var_m_invokingWindow,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -159,9 +164,7 @@ void WrapClass_wxMenuBar::AddStaticMethods( Variables::ptr& context)
     WrapClass_wxMenuBar::AddVar_wxMenuBar_1(amiobject->GetContext());
   WrapClass_wxMenuBar::AddVar_wxMenuBar(amiobject->GetContext());
   WrapClass_wxMenuBar::AddVar_wxMenuBar_2(amiobject->GetContext());
-  /* Types are missing
   WrapClass_wxMenuBar::AddVar_wxMenuBar_3(amiobject->GetContext());
-  */
 
 
   // Static methods 
@@ -213,6 +216,9 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   WrapClass_wxMenuBar::wrap_wxMenuBar_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxMenuBar::wrap_wxMenuBar_3 m3;
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
 
@@ -241,7 +247,6 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   BasicVariable::ptr res = WrapClass_wxMenuBar::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: wxMenu * *
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxMenuBar::wxMenuBar(size_t n, wxMenu * * menus, wxString const * titles, long int style = 0)
@@ -267,13 +272,26 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
-  boost::shared_ptr<wxMenu > menus_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menus_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* menus = menus_smtptr.get();
+  wxMenu* local_menus = NULL;  wxMenu** menus;
+  if (CheckNullVar(_p,_n))  {
+    menus=(wxMenu**)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menus_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menus_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    local_menus = menus_smtptr.get();
+    menus = &local_menus;
+  }
 
-  boost::shared_ptr<wxString > titles_smtptr;
-  if (!get_val_smtptr_param<wxString >(titles_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* titles = titles_smtptr.get();
+  wxString* titles;
+  if (CheckNullVar(_p,_n))  {
+    titles=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > titles_smtptr;
+    if (!get_val_smtptr_param<wxString >(titles_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    titles = titles_smtptr.get();
+  }
 
   long style_long = 0;;
   if (!get_val_param<long >(style_long,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -283,7 +301,6 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   BasicVariable::ptr res = WrapClass_wxMenuBar::CreateVar(_newobj);
   return res;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxMenuBar::Append(wxMenu * menu, wxString const & title)
@@ -304,9 +321,15 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* menu;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    menu = menu_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > title_smtptr;
   if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -340,9 +363,15 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* menu;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    menu = menu_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > title_smtptr;
   if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -376,9 +405,15 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* menu;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    menu = menu_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > title_smtptr;
   if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -446,7 +481,6 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   int res =   this->_objectptr->GetObj()->FindMenuItem(menuString, itemString);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: wxMenu * *
 
 //---------------------------------------------------
 //  Wrapping of wxMenuItem * wxMenuBar::FindItem(int id, wxMenu * * menu = 0l)
@@ -470,15 +504,21 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   int id;
   if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* local_menu = NULL;  wxMenu** menu = 0l;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu**)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    local_menu = menu_smtptr.get();
+    menu = &local_menu;
+  }
 
   wxMenuItem * res =   this->_objectptr->GetObj()->FindItem(id, menu);
   BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
   return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuBar::EnableTop(size_t pos, bool flag)
@@ -627,9 +667,15 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxFrame > frame_smtptr;
-  if (!get_val_smtptr_param<wxFrame >(frame_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxFrame* frame = frame_smtptr.get();
+  wxFrame* frame;
+  if (CheckNullVar(_p,_n))  {
+    frame=(wxFrame*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFrame > frame_smtptr;
+    if (!get_val_smtptr_param<wxFrame >(frame_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    frame = frame_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Attach(frame);
   return BasicVariable::ptr();
@@ -652,9 +698,15 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* win = win_smtptr.get();
+  wxWindow* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > win_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetInvokingWindow(win);
   return BasicVariable::ptr();
@@ -677,9 +729,15 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* win = win_smtptr.get();
+  wxWindow* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > win_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->UnsetInvokingWindow(win);
   return BasicVariable::ptr();
@@ -705,9 +763,15 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* menu;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    menu = menu_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > title_smtptr;
   if (!get_val_smtptr_param<wxString >(title_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;

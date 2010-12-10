@@ -62,10 +62,8 @@ class WrapClass_wxMenuBar : public WrapClass<wxMenuBar>
     ADD_CLASS_CONSTRUCTOR(wxMenuBar,"Constructor wxMenuBar::wxMenuBar() (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#wxmenubar).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxMenuBar_2,"Constructor wxMenuBar::wxMenuBar(long int style) (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#wxmenubar).");
-    /* The following types are missing: wxMenu * *
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxMenuBar_3,"Constructor wxMenuBar::wxMenuBar(size_t n, wxMenu * * menus, wxString const * titles, long int style = 0) (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#wxmenubar).");
-    */
 
 
 
@@ -85,9 +83,7 @@ class WrapClass_wxMenuBar : public WrapClass<wxMenuBar>
     ADD_CLASS_METHOD(Replace,"wxMenu * wxMenuBar::Replace(size_t pos, wxMenu * menu, wxString const & title)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#replace)")
     ADD_CLASS_METHOD(Remove,"wxMenu * wxMenuBar::Remove(size_t pos)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#remove)")
     ADD_CLASS_METHOD(FindMenuItem,"int wxMenuBar::FindMenuItem(wxString const & menuString, wxString const & itemString)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#findmenuitem)")
-/* The following types are missing: wxMenu * *
     ADD_CLASS_METHOD(FindItem,"wxMenuItem * wxMenuBar::FindItem(int id, wxMenu * * menu = 0l)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#finditem)")
-*/
     ADD_CLASS_METHOD(EnableTop,"void wxMenuBar::EnableTop(size_t pos, bool flag)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#enabletop)")
     ADD_CLASS_METHOD(SetLabelTop,"void wxMenuBar::SetLabelTop(size_t pos, wxString const & label)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#setlabeltop)")
     ADD_CLASS_METHOD(GetLabelTop,"wxString wxMenuBar::GetLabelTop(size_t pos)  (http://docs.wxwidgets.org/stable/wx_wxmenubar.html#getlabeltop)")

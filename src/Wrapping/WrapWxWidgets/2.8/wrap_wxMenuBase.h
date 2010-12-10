@@ -114,9 +114,7 @@ class WrapClass_wxMenuBase : public WrapClass<wxMenuBase>
     ADD_CLASS_METHOD(GetMenuItems_2,"wxMenuItemList & wxMenuBase::GetMenuItems()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#getmenuitems)")
     ADD_CLASS_METHOD(FindItem_1,"int wxMenuBase::FindItem(wxString const & item)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#finditem)")
     ADD_CLASS_METHOD(FindItem,"wxMenuBase::FindItem()  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#finditem)")
-/* The following types are missing: wxMenu * *
     ADD_CLASS_METHOD(FindItem_2,"wxMenuItem * wxMenuBase::FindItem(int itemid, wxMenu * * menu = 0l)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#finditem)")
-*/
     ADD_CLASS_METHOD(FindItemByPosition,"wxMenuItem * wxMenuBase::FindItemByPosition(size_t position)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#finditembyposition)")
     ADD_CLASS_METHOD(Enable,"void wxMenuBase::Enable(int itemid, bool enable)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#enable)")
     ADD_CLASS_METHOD(IsEnabled,"bool wxMenuBase::IsEnabled(int itemid)  (http://docs.wxwidgets.org/stable/wx_wxmenubase.html#isenabled)")
