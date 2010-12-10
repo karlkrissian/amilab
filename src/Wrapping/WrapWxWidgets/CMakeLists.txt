@@ -50,17 +50,17 @@ MESSAGE("Wrapping wxWidgets...")
 # 
 # ENDWHILE(output_src_length)
 
-SET(source_path "${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets")
-SET(new_source_code_list "")
-GenerateSourcesWrapping (new_source_code_list ${source_path} "${wx_SRCS}")
+#SET(source_path "${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets")
+#SET(new_source_code_list "")
+#GenerateSourcesWrapping (new_source_code_list ${source_path} "${wx_SRCS}")
 
-MESSAGE("wxWidgets ${AMI_WXWIDGETS_VERSION} wrap files: ${new_source_code_list}\n")
+#MESSAGE("wxWidgets ${AMI_WXWIDGETS_VERSION} wrap files: ${new_source_code_list}\n")
 
 SET(  WrapWxWidgets_SRCS
   wrap_wxsamples.cpp
   wrap_wxfunctions.cpp
-  ${new_source_code_list}
-  #${wx_SRCS}
+  #${new_source_code_list}
+  ${wx_SRCS}
 )
 
 

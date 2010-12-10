@@ -100,7 +100,7 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
   SET(wrap_source_filename "${output_dir_path}/wrap_source_list.txt")
   SET(result FALSE)
   FileExists(${wrap_source_filename} result ${source_code_list} )
-  MESSAGE("result: ${result}")
+  MESSAGE("FileExists(${wrap_source_filename}): ${result}")
 
   #-------------------------------------------------------------------------------
   # 3. Check if it begins the process. Reads the content of the file
@@ -109,20 +109,22 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
   #-------------------------------------------------------------------------------
   IF(result) #There has been a previous generation of files wrap_x.cpp
     FILE(READ ${wrap_source_filename} wrap_source_list)
-    IF(wrap_source_list EQUAL source_code_list)
+    #message("wrap_source_list: ${wrap_source_list} \n source_code_list: ${source_code_list}")
+    IF(wrap_source_list STREQUAL source_code_list)
       SET(build_flag FALSE)
-    ELSE(wrap_source_list EQUAL source_code_list)
+    ELSE(wrap_source_list STREQUAL source_code_list)
       SET(build_flag TRUE)
-    ENDIF(wrap_source_list EQUAL source_code_list)
+    ENDIF(wrap_source_list STREQUAL source_code_list)
   ELSE(result)
     SET(build_flag TRUE)
   ENDIF(result)
-
+  MESSAGE("build_flag: ${build_flag}")
   #-----------------------------------------------------------------------------
   # 4. Checks if the process begins.
   #-----------------------------------------------------------------------------
   IF(build_flag)
 
+    MESSAGE("Begin process..")
     #---------------------------------------------------------------------------
     # 4.1. Preprocess the source file list.
     #---------------------------------------------------------------------------
@@ -172,9 +174,10 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
     #      original source code.
     #---------------------------------------------------------------------------
     SET(${new_code_list} ${new_source_list})
-    FILE(WRITE ${wrap_source_filename} ${new_source_list})
+    FILE(WRITE ${wrap_source_filename} ${source_code_list})
 
   ELSE(build_flag)
+    MESSAGE("NOT PROCESS")
     FILE(GLOB wx_SRCS_list  "${output_dir_path}/*.cpp")
     SET(${new_code_list} ${wx_SRCS_list})
   ENDIF(build_flag)
