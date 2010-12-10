@@ -1818,7 +1818,7 @@ InrImage ::  InrImage( vtkImageData* vtkim)
 
   _amimage = boost::shared_ptr<amimage>(new amimage());
   AMIFromWT(_vdim,_format,_amimage);
-  _amimage->SetDim(_tx,_ty,_tz);
+  _amimage->SetDim(_tx,_ty,_tz, _vdim);
   _amimage->allocate();
    
   //_amimage_allocated = true;

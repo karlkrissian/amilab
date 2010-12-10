@@ -323,6 +323,16 @@ printn "3*"
     }
 
     #----------------------------
+    proc ::GetSnapshot()  \
+    {    
+       capturefilter = vtk.vtkWindowToImageFilter.New()
+       capturefilter.SetInput( &::renwin)
+       capturefilter.Update()
+       resim = global::FromVtkImageData( &capturefilter.GetOutput())
+       ::capture <<= Flip(resim,1)
+    }
+
+    #----------------------------
     # Redefinition of Close to close the panel tab in main_book
     #
     proc ::Close() {
@@ -392,6 +402,10 @@ printn "3*"
             ::win.EndHorizontal()
             ::win.AddBoolean(&::UseGradientBackground,"Gradient")
             ::win.SetCallback(&::SetRendererBg)
+          ::win.EndBoxPanel()
+          
+          ::win.BeginBoxPanel("Snapshot")
+            ::win.AddButton("Get",&::GetSnapshot)
           ::win.EndBoxPanel()
 
           #::win.AddButton("Start",   ::Start)
