@@ -80,10 +80,10 @@ ENDMACRO(FileExists)
 #-------------------------------------------------------------------------------
 MACRO( GenerateSourcesWrapping new_code_list path code_list )
 #-------------------------------------------------------------------------------
-  SET(source_code_list "${code_list}")
-  SET(source_code_path "${path}")
+  SET(source_code_list ${${code_list}})
+  SET(source_code_path ${${path}})
 
-  #MESSAGE("source code: ${code_list}\n\npath: ${source_code_path}")
+  #MESSAGE("source code: ${source_code_list}\n\npath: ${source_code_path}")
 
   #-----------------------------------------------------------------------------
   # 1. Verify if there exists the output_dir_path directory. If the directory
@@ -99,8 +99,9 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
   #-----------------------------------------------------------------------------
   SET(wrap_source_filename "${output_dir_path}/wrap_source_list.txt")
   SET(result FALSE)
+  LIST(SORT source_code_list)
   FileExists(${wrap_source_filename} result ${source_code_list} )
-  MESSAGE("FileExists(${wrap_source_filename}): ${result}")
+  #MESSAGE("FileExists(${wrap_source_filename}): ${result}")
 
   #-------------------------------------------------------------------------------
   # 3. Check if it begins the process. Reads the content of the file
@@ -110,11 +111,13 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
   IF(result) #There has been a previous generation of files wrap_x.cpp
     FILE(READ ${wrap_source_filename} wrap_source_list)
     #message("wrap_source_list: ${wrap_source_list} \n source_code_list: ${source_code_list}")
-    IF(wrap_source_list STREQUAL source_code_list)
+    FILE(WRITE "${wrap_source_filename}.new" ${source_code_list})
+    FILE(READ "${wrap_source_filename}.new" wrap_source_list_new)
+    IF(wrap_source_list STREQUAL wrap_source_list_new)
       SET(build_flag FALSE)
-    ELSE(wrap_source_list STREQUAL source_code_list)
+    ELSE(wrap_source_list STREQUAL wrap_source_list_new)
       SET(build_flag TRUE)
-    ENDIF(wrap_source_list STREQUAL source_code_list)
+    ENDIF(wrap_source_list STREQUAL wrap_source_list_new)
   ELSE(result)
     SET(build_flag TRUE)
   ENDIF(result)
@@ -174,7 +177,20 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
     #      original source code.
     #---------------------------------------------------------------------------
     SET(${new_code_list} ${new_source_list})
-    FILE(WRITE ${wrap_source_filename} ${source_code_list})
+    FILE(RENAME "${wrap_source_filename}.new"  ${wrap_source_filename})
+
+    #MESSAGE("new_source_list = ${new_source_list}")
+    # remove other files
+    FILE(GLOB cpp_files "${output_dir_path}/wrap*cpp")
+    FOREACH( file ${cpp_files})
+      #MESSAGE("file ${file}")
+      LIST(FIND new_source_list ${file} file_found)
+      IF ( file_found EQUAL -1 ) 
+        FILE(REMOVE ${file})
+        #MESSAGE("Removing file ${file}")
+      ENDIF( file_found EQUAL -1 )
+    ENDFOREACH( file ${cpp_files})
+    
 
   ELSE(build_flag)
     MESSAGE("NOT PROCESS")
