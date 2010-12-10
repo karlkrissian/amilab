@@ -46,7 +46,7 @@ ENDMACRO(my_add_library)
 # Specifies the number of sources that will be packed in a file. By default, 10
 # files are packaged.
 #-------------------------------------------------------------------------------
-SET(NUMBER_SOURCES_TO_PACKAGE 9 CACHE STRING "Indicates the number of sources to package")
+SET(NUMBER_SOURCES_TO_PACKAGE 10 CACHE STRING "Indicates the number of sources to package")
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -82,7 +82,6 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
 #-------------------------------------------------------------------------------
   SET(source_code_list ${${code_list}})
   SET(source_code_path ${${path}})
-
   #MESSAGE("source code: ${source_code_list}\n\npath: ${source_code_path}")
 
   #-----------------------------------------------------------------------------
@@ -143,14 +142,16 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
     SET(counter_files 0)
     LIST(LENGTH output_src output_src_length)
     SET(new_source_list "")
-    MESSAGE("size: ${output_src_length}")
+    SET(iterations ${NUMBER_SOURCES_TO_PACKAGE})
+    MATH(EXPR iterations "${iterations}-1")
+    MESSAGE("size: ${output_src_length} - iterations: ${iterations}")
     WHILE(output_src_length)
 
       #-------------------------------------------------------------------------
-      # 4.2.1. Generate packages of NUMBER_SOURCES_TO_PACKAGE files.
+      # 4.2.1. Generate packages of iterations files.
       #-------------------------------------------------------------------------
       SET(include_list "")
-      FOREACH(counter RANGE ${NUMBER_SOURCES_TO_PACKAGE})
+      FOREACH(counter RANGE ${iterations})
 
         IF(output_src_length)
           LIST(GET output_src -1 element_src)
@@ -177,7 +178,9 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
     #      original source code.
     #---------------------------------------------------------------------------
     SET(${new_code_list} ${new_source_list})
-    FILE(RENAME "${wrap_source_filename}.new"  ${wrap_source_filename})
+    IF(result)#There has been a previous generation of files wrap_x.cpp
+      FILE(RENAME "${wrap_source_filename}.new"  ${wrap_source_filename})
+    ENDIF(result)
 
     #MESSAGE("new_source_list = ${new_source_list}")
     # remove other files

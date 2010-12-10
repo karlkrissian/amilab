@@ -25,11 +25,14 @@ INCLUDE( ${wxWidgets_USE_FILE})
 file(GLOB vtk_HDRS  "${AMI_VTK_VERSION}/*.h"  )
 file(GLOB vtk_SRCS  "${AMI_VTK_VERSION}/*.cpp")
 
-#MESSAGE("Wrapping VTK...")
+MESSAGE("Wrapping VTK...")
 
-SET(source_path "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK")
-GenerateSourcesWrapping (new_source_code_list source_path vtk_SRCS)
-
+IF(NUMBER_SOURCES_TO_PACKAGE EQUAL 1)
+  SET(new_vtk_source_code_list ${vtk_SRCS})
+ELSE(NUMBER_SOURCES_TO_PACKAGE EQUAL 1)
+  SET(source_path "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK")
+  GenerateSourcesWrapping (new_vtk_source_code_list source_path vtk_SRCS)
+ENDIF(NUMBER_SOURCES_TO_PACKAGE EQUAL 1) 
 
 SET(  WrapVTK_SRCS
   vtkwrap.cpp
@@ -44,7 +47,7 @@ SET(WrapVTK_HDRS
 SET(WrapVTK_SRCS
      ${WrapVTK_SRCS}
      ${WrapVTK_HDRS}
-     ${new_source_code_list}
+     ${new_vtk_source_code_list}
      #${vtk_SRCS}
      ${vtk_HDRS}
 )
