@@ -4,23 +4,27 @@
 
 if (!exists(levelsets_menu)) {
 
-  func "Common/ScriptDisplayClass"
+  proc AddScript() {
+    global
+    func "Common/ScriptDisplayClass"
 
-  ScriptDisplayClass ::levelsets_display
+    ScriptDisplayClass levelsets_display
 
-  ::levelsets_display.SetScript("Segmentation/LevelSets/LevelSetsGui.amil")
-  ::levelsets_display.SetScriptObjName("global::ls_obj")
+    levelsets_display.SetScript("Segmentation/LevelSets/LevelSetsGui.amil")
+    levelsets_display.SetScriptObjName("global::ls_obj")
 
-  ::levelsets_display.SetInMenus("Scripts","Segmentation")
-  ::levelsets_display.SetDisplayedName("&Level Set")
-  ::levelsets_display.SetHelp("Level-set active contour Segmentation script for 2D or 3D images.")
-  ::levelsets_display.SetInMenus("Scripts","Segmentation")
+    levelsets_display.SetInMenus("Scripts","Segmentation")
+    levelsets_display.SetDisplayedName("&Level Set")
+    levelsets_display.SetHelp("Level-set active contour Segmentation script for 2D or 3D images.")
+    levelsets_display.SetInMenus("Scripts","Segmentation")
 
-  ::ami_import.System(); 
-  ::levelsets_display.SetIcon16( op_system.GetCurrentScriptDir()+"/levelset_icon_16x16.png")
-  ::levelsets_display.SetIcon32( op_system.GetCurrentScriptDir()+"/levelset_icon.png")
+    ami_import.System(); 
+    levelsets_display.SetIcon16( op_system.GetCurrentScriptDir()+"/levelset_icon_16x16.png")
+    levelsets_display.SetIcon32( op_system.GetCurrentScriptDir()+"/levelset_icon.png")
 
-  ::levelsets_display.Add2Menu()
-  ::levelsets_display.Add2Toolbar()
-
+    levelsets_display.Add2Menu()
+    levelsets_display.Add2Toolbar()
+  }
+  AddScript()
+  del AddScript
 }

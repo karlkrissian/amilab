@@ -20,8 +20,8 @@ OK = 1 # The test was successful
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Create initial image
-func "SyntheticImages/create_torus_gui.amil"
-CTClass CT
+func "SyntheticImages/CreateTorus/CreateTorusGui.amil"
+CreateTorusClass CT
 
 DIMX=100
 DIMY=100

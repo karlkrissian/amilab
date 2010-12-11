@@ -8,5 +8,7 @@ category = "&3D Synthetic Images"
 dir      = "SyntheticImages/"
 
 ami.MainFrame.AddToMenu("&Scripts",category,"&Sphere",         dir+"create_sphere_gui")
-ami.MainFrame.AddToMenu("&Scripts",category,"&Torus",          dir+"create_torus_gui")
+#ami.MainFrame.AddToMenu("&Scripts",category,"&Torus",          dir+"create_torus_gui")
 ami.MainFrame.AddToMenu("&Scripts",category,"&Superquadric",   dir+"superquadric_gui")
+
+func "CreateTorus/Add2Menu.amil"

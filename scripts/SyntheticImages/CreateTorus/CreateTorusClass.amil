@@ -4,11 +4,11 @@
 
 func "Common/ScriptGui"
 
-if (!exists(CTClass)) {
+if (!exists(CreateTorusClass)) {
 
   ami_import->Filters()
   
-  Class CTClass : public ScriptGui {
+  Class CreateTorusClass : public ScriptGui {
 
     ::filters=&global::filters
 
@@ -30,7 +30,7 @@ if (!exists(CTClass)) {
       ::r = 4, "Small Radius of the torus"
       
       ::image_name = "global::torus", "Name of the resulting image variable"
-      ::Gui
+      #::Gui
     }
 
         
@@ -41,11 +41,8 @@ if (!exists(CTClass)) {
     # if the dimensions have changed close the potential window
     eval "exists_win = exists("+::image_name+"_draw);"
     if (exists_win) {
-printn "exists_win"
       if (exists(::dimx_prev)) {
-printn "exists ::dimx_prev"
         if (::dimx_prev!=::dimx) ||(::dimy_prev!=::dimy) ||(::dimz_prev!=::dimz) {
-printn "deleting windows"
           eval "del "+::image_name+"_draw;"
         }
       } else {
@@ -138,14 +135,4 @@ printn "deleting windows"
   
 } # End of if
 
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(ctobject)) {
-
-  CTClass ctobject
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
       

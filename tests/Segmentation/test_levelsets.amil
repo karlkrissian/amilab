@@ -3,7 +3,7 @@ func "ctest/ctest_config.amil"
 epsilon = 0.01
 
 # Create initial image
-func "SyntheticImages/create_torus_gui.amil"
+func "SyntheticImages/CreateTorus/CreateTorusGui.amil"
 #CTClass CT
 
 ctobject->dimx = 100
