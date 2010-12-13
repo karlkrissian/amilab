@@ -37,6 +37,7 @@ if (!exists(VolRenClass)) {
       ::background_color  = wx.wxColour(173,216,230)
       ::background_color2 = wx.wxColour(144,238,144)
       ::UseGradientBackground = UCHAR(1)
+      ::azimuth = INT(45), "Rotate camera angle along vertical axis (in degrees)"
       #::Gui()
     }
     
@@ -227,6 +228,7 @@ if (!exists(VolRenClass)) {
           ::SetRendererBg()
           ::renderer.AddVolume( &::vtkvol1.vol )
           ::renderer.ResetCamera()
+          ::BackupView()
           #::renwin_interact.Render()
         }
       }
@@ -333,6 +335,49 @@ if (!exists(VolRenClass)) {
     }
 
     #----------------------------
+    proc ::ChangeView()  \
+    {    
+      ::renderer.GetActiveCamera().Azimuth(::azimuth)
+      ::renwin.Render()
+      ::renwin_interact.Render()
+    }
+    Comments(::ChangeView,"Applies the user-given transformation to the camera.")
+
+    #----------------------------
+    proc ::ResetView()  \
+    {    
+      ::renderer.ResetCamera()
+      ::renwin.Render()
+      ::renwin_interact.Render()
+    }
+    Comments(::ChangeView,"Resets the camera.")
+
+    #----------------------------
+    proc ::BackupView()  \
+    {    
+      if (!exists(::cam_backup)) {
+        ::cam_backup = vtk.vtkCamera.New()
+      }
+      ::cam_backup.DeepCopy(&::renderer.GetActiveCamera())
+    }
+    Comments(::BackupView,"Backups the current camera.")
+
+    #----------------------------
+    proc ::RestoreView()  \
+    { 
+      if (exists(::cam_backup)) {
+        camcopy = vtk.vtkCamera.New()
+        camcopy.DeepCopy(&::cam_backup)
+        ::renderer.SetActiveCamera(&camcopy)
+        ::renwin.Render()
+        ::renwin_interact.Render()
+      } else {
+        InfoDialog "No camera backed up!"
+      }
+    }
+    Comments(::RestoreView,"Restores the last backed up camera.")
+
+    #----------------------------
     # Redefinition of Close to close the panel tab in main_book
     #
     proc ::Close() {
@@ -406,6 +451,18 @@ if (!exists(VolRenClass)) {
           
           ::win.BeginBoxPanel("Snapshot")
             ::win.AddButton("Get",&::GetSnapshot)
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Camera control")
+            ::win.AddInt(&::azimuth,"azimuth",-180,180)
+            ::win.BeginHorizontal()
+              ::win.AddButton("Apply",&::ChangeView)
+              ::win.AddButton("Reset",&::ResetView)
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+              ::win.AddButton("Backup", &::BackupView)
+              ::win.AddButton("Restore",&::RestoreView)
+            ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
           #::win.AddButton("Start",   ::Start)

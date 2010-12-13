@@ -1759,6 +1759,33 @@ command:
         Vars.AddVar<int>(ident,varint);
       }
       |
+      identifier ASSIGN_OP T_DOUBLE T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Creates a variable of type int
+      **/
+        IdentifierInfo::ptr ident($1);
+
+        boost::shared_ptr<double> var (new double((double)$5));
+        Vars.AddVar<double>(ident,var);
+      }
+      |
+      identifier ASSIGN_OP T_DOUBLE T_OP_PAR expr T_CL_PAR T_COMMA expr_string
+      {
+      /**
+        Description: 
+          Creates a variable of type int
+      **/
+        IdentifierInfo::ptr ident($1);
+        boost::shared_array<char> comments( $8);
+
+        boost::shared_ptr<double> vard (new double((double)$5));
+        BasicVariable::ptr var=Vars.AddVar<double>(ident,vard);
+        if (var.get())
+          var->SetComments(comments.get());
+      }
+      |
       identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR T_COMMA expr_string
       {
       /**

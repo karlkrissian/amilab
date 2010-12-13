@@ -41,6 +41,16 @@ if (!exists(TimerClass)) {
       ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
     }
 
+    #----------------------------
+    # Closes only the object instance
+    #
+    proc ::Close() {
+      ::Stop()
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+
     #------------------------------------
     proc ::Gui() \
     {

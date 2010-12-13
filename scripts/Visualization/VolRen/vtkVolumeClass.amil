@@ -97,7 +97,7 @@ if (!exists(vtkVolumeClass)) {
       # check that we have a volume
       if (input_image.tx<2)||(input_image.ty<2)||(input_image.tz<2) {
         InfoDialog "Input image is not a volume!"
-        return = 0
+        return = false
       } else {
 
         # Create our transfer function
@@ -158,7 +158,7 @@ if (!exists(vtkVolumeClass)) {
         ::vol.SetMapper( &::volmapper )
         ::initialized = 1
 
-        return = 1
+        return = true
       }
     }
 
