@@ -13,11 +13,13 @@
 #ifndef _wrap_wxNavigationKeyEvent_h_
 #define _wrap_wxNavigationKeyEvent_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxEvent.h"
 
 
-
-AMI_DECLARE_TYPE(wxNavigationKeyEvent);
+#ifndef wxNavigationKeyEvent_declared
+  #define wxNavigationKeyEvent_declared
+  AMI_DECLARE_TYPE(wxNavigationKeyEvent);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxNavigationKeyEvent : public WrapClass<wxNavigationKeyEvent>
@@ -96,12 +100,13 @@ class WrapClass_wxNavigationKeyEvent : public WrapClass<wxNavigationKeyEvent>
 
     void AddMethods(WrapClass<wxNavigationKeyEvent>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxNavigationKeyEvent_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxNavigationKeyEvent_h

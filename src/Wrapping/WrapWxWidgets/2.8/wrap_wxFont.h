@@ -13,11 +13,13 @@
 #ifndef _wrap_wxFont_h_
 #define _wrap_wxFont_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxFontBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxFont);
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxFont : public WrapClass<wxFont>
@@ -119,12 +123,13 @@ class WrapClass_wxFont : public WrapClass<wxFont>
 
     void AddMethods(WrapClass<wxFont>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxFont_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxFont_h

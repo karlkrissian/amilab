@@ -13,11 +13,13 @@
 #ifndef _wrap_wxDateTime_h_
 #define _wrap_wxDateTime_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxDateTime);
+#ifndef wxDateTime_declared
+  #define wxDateTime_declared
+  AMI_DECLARE_TYPE(wxDateTime);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxDateTime : public WrapClass<wxDateTime>
@@ -296,12 +300,13 @@ class WrapClass_wxDateTime : public WrapClass<wxDateTime>
 
     void AddMethods(WrapClass<wxDateTime>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxDateTime_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxDateTime_h

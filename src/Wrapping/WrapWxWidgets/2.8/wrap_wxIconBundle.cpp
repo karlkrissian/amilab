@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxIconBundle.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxString.h"
-#include "wrap_wxIcon.h"
-#include "wrap_wxIconBundle.h"
-#include "wrap_wxSize.h"
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxIcon_declared
+  #define wxIcon_declared
+  AMI_DECLARE_TYPE(wxIcon)
+#endif
+#ifndef wxIconBundle_declared
+  #define wxIconBundle_declared
+  AMI_DECLARE_TYPE(wxIconBundle)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
 
 
-#include "wrap_wxIconBundle.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,37 +83,40 @@ void WrapClass_wxIconBundle::AddMethods(WrapClass<wxIconBundle>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_AddIcon_1( this_ptr);
-      AddVar_AddIcon( this_ptr);
-      AddVar_AddIcon_2( this_ptr);
-      AddVar_GetIcon_1( this_ptr);
-      AddVar_GetIcon( this_ptr);
-      AddVar_GetIcon_2( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_AddIcon_1( this_ptr);
+  AddVar_AddIcon( this_ptr);
+  AddVar_AddIcon_2( this_ptr);
+  AddVar_GetIcon_1( this_ptr);
+  AddVar_GetIcon( this_ptr);
+  AddVar_GetIcon_2( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Type not available
-      // Adding public member m_icons
-      boost::shared_ptr<wxIconArray > var_m_icons_ptr(&GetObj()->m_icons, smartpointer_nodeleter<wxIconArray >());
-      if (var_m_icons_ptr.get()) {
-        BasicVariable::ptr var_m_icons = AMILabType<wxIconArray >::CreateVarFromSmtPtr(var_m_icons_ptr);
-        if (var_m_icons.get()) {
-          var_m_icons->Rename("m_icons");
-          context->AddVar(var_m_icons,context);
-        }
-      }
-      */
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Type not available
+  // Adding public member m_icons
+  boost::shared_ptr<wxIconArray > var_m_icons_ptr(&GetObj()->m_icons, smartpointer_nodeleter<wxIconArray >());
+  if (var_m_icons_ptr.get()) {
+    BasicVariable::ptr var_m_icons = AMILabType<wxIconArray >::CreateVarFromSmtPtr(var_m_icons_ptr);
+    if (var_m_icons.get()) {
+      var_m_icons->Rename("m_icons");
+      context->AddVar(var_m_icons,context);
+    }
+  }
+  */
+
+
+  
 
 
   // Adding Bases
@@ -105,7 +127,7 @@ void WrapClass_wxIconBundle::AddMethods(WrapClass<wxIconBundle>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxIconBundle::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxIconBundle_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

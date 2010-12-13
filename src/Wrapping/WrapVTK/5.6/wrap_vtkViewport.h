@@ -26,8 +26,10 @@
 #include "wrap_vtkObject.h"
 
 
-
-AMI_DECLARE_TYPE(vtkViewport);
+#ifndef vtkViewport_declared
+  #define vtkViewport_declared
+  AMI_DECLARE_TYPE(vtkViewport);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkViewport : public WrapClass<vtkViewport>
@@ -187,12 +189,13 @@ class WrapClass_vtkViewport : public WrapClass<vtkViewport>
 
     void AddMethods(WrapClass<vtkViewport>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkViewport_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkViewport_h

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxMenuItem_h_
 #define _wrap_wxMenuItem_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxMenuItemBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxMenuItem);
+#ifndef wxMenuItem_declared
+  #define wxMenuItem_declared
+  AMI_DECLARE_TYPE(wxMenuItem);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxMenuItem : public WrapClass<wxMenuItem>
@@ -106,12 +110,13 @@ class WrapClass_wxMenuItem : public WrapClass<wxMenuItem>
 
     void AddMethods(WrapClass<wxMenuItem>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxMenuItem_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxMenuItem_h

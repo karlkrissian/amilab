@@ -10,22 +10,41 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHtmlTag.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxClassInfo.h"
-#include "wrap_wxHtmlTag.h"
-#include "wrap_wxString.h"
-#include "wrap_wxColour.h"
 #include "stdlib.h"
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
+#ifndef wxHtmlTag_declared
+  #define wxHtmlTag_declared
+  AMI_DECLARE_TYPE(wxHtmlTag)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
 
 
-#include "wrap_wxHtmlTag.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -121,7 +140,7 @@ void WrapClass_wxHtmlTag::AddMethods(WrapClass<wxHtmlTag>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHtmlTag::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHtmlTag_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -155,7 +174,7 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 
@@ -175,7 +194,7 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlTag * res =   this->_objectptr->GetObj()->GetParent();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlTag::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlTag >::CreateVar(res,true);
   return res_var;
 }
 
@@ -195,7 +214,7 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlTag * res =   this->_objectptr->GetObj()->GetFirstSibling();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlTag::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlTag >::CreateVar(res,true);
   return res_var;
 }
 
@@ -215,7 +234,7 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlTag * res =   this->_objectptr->GetObj()->GetLastSibling();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlTag::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlTag >::CreateVar(res,true);
   return res_var;
 }
 
@@ -235,7 +254,7 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlTag * res =   this->_objectptr->GetObj()->GetChildren();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlTag::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlTag >::CreateVar(res,true);
   return res_var;
 }
 
@@ -255,7 +274,7 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlTag * res =   this->_objectptr->GetObj()->GetPreviousSibling();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlTag::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlTag >::CreateVar(res,true);
   return res_var;
 }
 
@@ -275,7 +294,7 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlTag * res =   this->_objectptr->GetObj()->GetNextSibling();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlTag::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlTag >::CreateVar(res,true);
   return res_var;
 }
 
@@ -295,7 +314,7 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlTag * res =   this->_objectptr->GetObj()->GetNextTag();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlTag::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlTag >::CreateVar(res,true);
   return res_var;
 }
 
@@ -397,9 +416,15 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (!get_val_smtptr_param<wxString >(par_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & par = *par_smtptr;
 
-  boost::shared_ptr<wxColour > clr_smtptr;
-  if (!get_val_smtptr_param<wxColour >(clr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxColour* clr = clr_smtptr.get();
+  wxColour* clr;
+  if (CheckNullVar(_p,_n))  {
+    clr=(wxColour*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxColour > clr_smtptr;
+    if (!get_val_smtptr_param<wxColour >(clr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    clr = clr_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->GetParamAsColour(par, clr);
   return AMILabType<bool >::CreateVar(res);
@@ -428,9 +453,15 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   if (!get_val_smtptr_param<wxString >(par_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & par = *par_smtptr;
 
-  boost::shared_ptr<int > clr_smtptr;
-  if (!get_val_smtptr_param<int >(clr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* clr = clr_smtptr.get();
+  int* clr;
+  if (CheckNullVar(_p,_n))  {
+    clr=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > clr_smtptr;
+    if (!get_val_smtptr_param<int >(clr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    clr = clr_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->GetParamAsInt(par, clr);
   return AMILabType<bool >::CreateVar(res);
@@ -466,9 +497,15 @@ BasicVariable::ptr WrapClass_wxHtmlTag::
   wchar_t format[format_string->size()+1];
 mbstowcs(format,format_string->c_str(),format_string->size()+1);
 
-  boost::shared_ptr<void > param_smtptr;
-  if (!get_val_smtptr_param<void >(param_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  void* param = param_smtptr.get();
+  void* param;
+  if (CheckNullVar(_p,_n))  {
+    param=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > param_smtptr;
+    if (!get_val_smtptr_param<void >(param_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param = param_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->ScanParam(par, format, param);
   return AMILabType<int >::CreateVar(res);

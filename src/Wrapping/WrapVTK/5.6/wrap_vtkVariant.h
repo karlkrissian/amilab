@@ -25,8 +25,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(vtkVariant);
+#ifndef vtkVariant_declared
+  #define vtkVariant_declared
+  AMI_DECLARE_TYPE(vtkVariant);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkVariant : public WrapClass<vtkVariant>
@@ -185,12 +187,13 @@ class WrapClass_vtkVariant : public WrapClass<vtkVariant>
 
     void AddMethods(WrapClass<vtkVariant>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkVariant_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkVariant_h

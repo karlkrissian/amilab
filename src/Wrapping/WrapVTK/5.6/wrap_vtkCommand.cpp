@@ -16,13 +16,17 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkCommand.h"
+
 // get all the required includes
 // #include "..."
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkObjectBase.h"
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
 
 
-#include "wrap_vtkCommand.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -124,7 +128,7 @@ void WrapClass_vtkCommand::AddMethods(WrapClass<vtkCommand>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkCommand::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkCommand_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

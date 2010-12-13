@@ -10,31 +10,77 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxWindow.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxRegion.h"
-#include "wrap_wxWindow.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxString.h"
-#include "wrap_wxWindowBase.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxCursor.h"
-#include "wrap_wxFont.h"
-#include "wrap_wxIdleEvent.h"
-#include "wrap_wxEvent.h"
 #include "stdlib.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxRegion_declared
+  #define wxRegion_declared
+  AMI_DECLARE_TYPE(wxRegion)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxCursor_declared
+  #define wxCursor_declared
+  AMI_DECLARE_TYPE(wxCursor)
+#endif
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont)
+#endif
+#ifndef wxIdleEvent_declared
+  #define wxIdleEvent_declared
+  AMI_DECLARE_TYPE(wxIdleEvent)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxWindow.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -81,462 +127,476 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Create( this_ptr);
-      AddVar_SetLabel( this_ptr);
-      AddVar_GetLabel( this_ptr);
-      AddVar_Destroy( this_ptr);
-      AddVar_Raise( this_ptr);
-      AddVar_Lower( this_ptr);
-      AddVar_Show( this_ptr);
-      AddVar_Enable( this_ptr);
-      AddVar_SetWindowStyleFlag( this_ptr);
-      AddVar_IsRetained( this_ptr);
-      AddVar_SetFocus( this_ptr);
-      AddVar_AcceptsFocus( this_ptr);
-      AddVar_Reparent( this_ptr);
-      AddVar_WarpPointer( this_ptr);
-      AddVar_Refresh( this_ptr);
-      AddVar_Update( this_ptr);
-      AddVar_ClearBackground( this_ptr);
-      AddVar_SetBackgroundColour( this_ptr);
-      AddVar_SetForegroundColour( this_ptr);
-      AddVar_SetCursor( this_ptr);
-      AddVar_SetFont( this_ptr);
-      AddVar_SetBackgroundStyle( this_ptr);
-      AddVar_GetCharHeight( this_ptr);
-      AddVar_GetCharWidth( this_ptr);
-      AddVar_GetTextExtent( this_ptr);
-      AddVar_SetScrollbar( this_ptr);
-      AddVar_SetScrollPos( this_ptr);
-      AddVar_GetScrollPos( this_ptr);
-      AddVar_GetScrollThumb( this_ptr);
-      AddVar_GetScrollRange( this_ptr);
-      AddVar_ScrollWindow( this_ptr);
-      AddVar_ScrollLines( this_ptr);
-      AddVar_ScrollPages( this_ptr);
+  // Adding standard methods 
+  AddVar_Create( this_ptr);
+  AddVar_SetLabel( this_ptr);
+  AddVar_GetLabel( this_ptr);
+  AddVar_Destroy( this_ptr);
+  AddVar_Raise( this_ptr);
+  AddVar_Lower( this_ptr);
+  AddVar_Show( this_ptr);
+  AddVar_Enable( this_ptr);
+  AddVar_SetWindowStyleFlag( this_ptr);
+  AddVar_IsRetained( this_ptr);
+  AddVar_SetFocus( this_ptr);
+  AddVar_AcceptsFocus( this_ptr);
+  AddVar_Reparent( this_ptr);
+  AddVar_WarpPointer( this_ptr);
+  AddVar_Refresh( this_ptr);
+  AddVar_Update( this_ptr);
+  AddVar_ClearBackground( this_ptr);
+  AddVar_SetBackgroundColour( this_ptr);
+  AddVar_SetForegroundColour( this_ptr);
+  AddVar_SetCursor( this_ptr);
+  AddVar_SetFont( this_ptr);
+  AddVar_SetBackgroundStyle( this_ptr);
+  AddVar_GetCharHeight( this_ptr);
+  AddVar_GetCharWidth( this_ptr);
+  AddVar_GetTextExtent( this_ptr);
+  AddVar_SetScrollbar( this_ptr);
+  AddVar_SetScrollPos( this_ptr);
+  AddVar_GetScrollPos( this_ptr);
+  AddVar_GetScrollThumb( this_ptr);
+  AddVar_GetScrollRange( this_ptr);
+  AddVar_ScrollWindow( this_ptr);
+  AddVar_ScrollLines( this_ptr);
+  AddVar_ScrollPages( this_ptr);
 /* The following types are missing: wxDropTarget
-      AddVar_SetDropTarget( this_ptr);
+  AddVar_SetDropTarget( this_ptr);
 */
-      AddVar_AddChild( this_ptr);
-      AddVar_RemoveChild( this_ptr);
-      AddVar_SetLayoutDirection( this_ptr);
-      AddVar_GetLayoutDirection( this_ptr);
-      AddVar_AdjustForLayoutDirection( this_ptr);
-      AddVar_DoIsExposed_1( this_ptr);
-      AddVar_DoIsExposed( this_ptr);
-      AddVar_DoIsExposed_2( this_ptr);
-      AddVar_SetDoubleBuffered( this_ptr);
-      AddVar_IsDoubleBuffered( this_ptr);
+  AddVar_AddChild( this_ptr);
+  AddVar_RemoveChild( this_ptr);
+  AddVar_SetLayoutDirection( this_ptr);
+  AddVar_GetLayoutDirection( this_ptr);
+  AddVar_AdjustForLayoutDirection( this_ptr);
+  AddVar_DoIsExposed_1( this_ptr);
+  AddVar_DoIsExposed( this_ptr);
+  AddVar_DoIsExposed_2( this_ptr);
+  AddVar_SetDoubleBuffered( this_ptr);
+  AddVar_IsDoubleBuffered( this_ptr);
 /* The following types are missing: _GtkWidget
-      AddVar_GetHandle( this_ptr);
+  AddVar_GetHandle( this_ptr);
 */
-      AddVar_OnInternalIdle( this_ptr);
-      AddVar_GtkUpdate( this_ptr);
-      AddVar_OnIdle( this_ptr);
-      AddVar_OnParentEnable( this_ptr);
-      AddVar_PreCreation( this_ptr);
-      AddVar_PostCreation( this_ptr);
-      AddVar_DoAddChild( this_ptr);
-      AddVar_GtkSendPaintEvents( this_ptr);
+  AddVar_OnInternalIdle( this_ptr);
+  AddVar_GtkUpdate( this_ptr);
+  AddVar_OnIdle( this_ptr);
+  AddVar_OnParentEnable( this_ptr);
+  AddVar_PreCreation( this_ptr);
+  AddVar_PostCreation( this_ptr);
+  AddVar_DoAddChild( this_ptr);
+  AddVar_GtkSendPaintEvents( this_ptr);
 /* The following types are missing: _GtkWidget
-      AddVar_GetConnectWidget( this_ptr);
+  AddVar_GetConnectWidget( this_ptr);
 */
 /* The following types are missing: _GtkWidget
-      AddVar_ConnectWidget( this_ptr);
+  AddVar_ConnectWidget( this_ptr);
 */
 /* The following types are missing: _GdkEventAny
-      AddVar_GTKCallbackCommonPrologue( this_ptr);
+  AddVar_GTKCallbackCommonPrologue( this_ptr);
 */
-      AddVar_GTKProcessEvent( this_ptr);
+  AddVar_GTKProcessEvent( this_ptr);
 /* The following types are missing: _PangoContext
-      AddVar_GtkGetPangoDefaultContext( this_ptr);
+  AddVar_GtkGetPangoDefaultContext( this_ptr);
 */
 /* The following types are missing: _GtkTooltips
-      AddVar_ApplyToolTip( this_ptr);
+  AddVar_ApplyToolTip( this_ptr);
 */
-      AddVar_GtkUpdateSize( this_ptr);
-      AddVar_GtkShowOnIdle( this_ptr);
-      AddVar_GtkShowFromOnIdle( this_ptr);
+  AddVar_GtkUpdateSize( this_ptr);
+  AddVar_GtkShowOnIdle( this_ptr);
+  AddVar_GtkShowFromOnIdle( this_ptr);
 /* The following types are missing: _GtkWidget
-      AddVar_FixUpMouseEvent( this_ptr);
+  AddVar_FixUpMouseEvent( this_ptr);
 */
-      AddVar_IsTransparentForMouse( this_ptr);
-      AddVar_IsRadioButton( this_ptr);
+  AddVar_IsTransparentForMouse( this_ptr);
+  AddVar_IsRadioButton( this_ptr);
 /* The following types are missing: _GtkRange
-      AddVar_GetScrollEventType( this_ptr);
+  AddVar_GetScrollEventType( this_ptr);
 */
-      AddVar_BlockScrollEvent( this_ptr);
-      AddVar_UnblockScrollEvent( this_ptr);
+  AddVar_BlockScrollEvent( this_ptr);
+  AddVar_UnblockScrollEvent( this_ptr);
 /* The following types are missing: _GtkRange
-      AddVar_ScrollDirFromRange( this_ptr);
+  AddVar_ScrollDirFromRange( this_ptr);
 */
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member m_x
-      boost::shared_ptr<int > var_m_x_ptr(&GetObj()->m_x, smartpointer_nodeleter<int >());
-      if (var_m_x_ptr.get()) {
-        BasicVariable::ptr var_m_x = AMILabType<int >::CreateVarFromSmtPtr(var_m_x_ptr);
-        if (var_m_x.get()) {
-          var_m_x->Rename("m_x");
-          context->AddVar(var_m_x,context);
-        }
-      }
-      
-      // Adding public member m_y
-      boost::shared_ptr<int > var_m_y_ptr(&GetObj()->m_y, smartpointer_nodeleter<int >());
-      if (var_m_y_ptr.get()) {
-        BasicVariable::ptr var_m_y = AMILabType<int >::CreateVarFromSmtPtr(var_m_y_ptr);
-        if (var_m_y.get()) {
-          var_m_y->Rename("m_y");
-          context->AddVar(var_m_y,context);
-        }
-      }
-      
-      // Adding public member m_width
-      boost::shared_ptr<int > var_m_width_ptr(&GetObj()->m_width, smartpointer_nodeleter<int >());
-      if (var_m_width_ptr.get()) {
-        BasicVariable::ptr var_m_width = AMILabType<int >::CreateVarFromSmtPtr(var_m_width_ptr);
-        if (var_m_width.get()) {
-          var_m_width->Rename("m_width");
-          context->AddVar(var_m_width,context);
-        }
-      }
-      
-      // Adding public member m_height
-      boost::shared_ptr<int > var_m_height_ptr(&GetObj()->m_height, smartpointer_nodeleter<int >());
-      if (var_m_height_ptr.get()) {
-        BasicVariable::ptr var_m_height = AMILabType<int >::CreateVarFromSmtPtr(var_m_height_ptr);
-        if (var_m_height.get()) {
-          var_m_height->Rename("m_height");
-          context->AddVar(var_m_height,context);
-        }
-      }
-      
-      // Adding public member m_oldClientWidth
-      boost::shared_ptr<int > var_m_oldClientWidth_ptr(&GetObj()->m_oldClientWidth, smartpointer_nodeleter<int >());
-      if (var_m_oldClientWidth_ptr.get()) {
-        BasicVariable::ptr var_m_oldClientWidth = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldClientWidth_ptr);
-        if (var_m_oldClientWidth.get()) {
-          var_m_oldClientWidth->Rename("m_oldClientWidth");
-          context->AddVar(var_m_oldClientWidth,context);
-        }
-      }
-      
-      // Adding public member m_oldClientHeight
-      boost::shared_ptr<int > var_m_oldClientHeight_ptr(&GetObj()->m_oldClientHeight, smartpointer_nodeleter<int >());
-      if (var_m_oldClientHeight_ptr.get()) {
-        BasicVariable::ptr var_m_oldClientHeight = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldClientHeight_ptr);
-        if (var_m_oldClientHeight.get()) {
-          var_m_oldClientHeight->Rename("m_oldClientHeight");
-          context->AddVar(var_m_oldClientHeight,context);
-        }
-      }
-      
-      /* Type not available
-      // Adding public member m_widget
-      boost::shared_ptr<_GtkWidget > var_m_widget_ptr(GetObj()->m_widget, smartpointer_nodeleter<_GtkWidget >());
-      if (var_m_widget_ptr.get()) {
-        BasicVariable::ptr var_m_widget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_widget_ptr);
-        if (var_m_widget.get()) {
-          var_m_widget->Rename("m_widget");
-          context->AddVar(var_m_widget,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member m_wxwindow
-      boost::shared_ptr<_GtkWidget > var_m_wxwindow_ptr(GetObj()->m_wxwindow, smartpointer_nodeleter<_GtkWidget >());
-      if (var_m_wxwindow_ptr.get()) {
-        BasicVariable::ptr var_m_wxwindow = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_wxwindow_ptr);
-        if (var_m_wxwindow.get()) {
-          var_m_wxwindow->Rename("m_wxwindow");
-          context->AddVar(var_m_wxwindow,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member m_focusWidget
-      boost::shared_ptr<_GtkWidget > var_m_focusWidget_ptr(GetObj()->m_focusWidget, smartpointer_nodeleter<_GtkWidget >());
-      if (var_m_focusWidget_ptr.get()) {
-        BasicVariable::ptr var_m_focusWidget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_focusWidget_ptr);
-        if (var_m_focusWidget.get()) {
-          var_m_focusWidget->Rename("m_focusWidget");
-          context->AddVar(var_m_focusWidget,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member m_imData
-      boost::shared_ptr<wxGtkIMData > var_m_imData_ptr(GetObj()->m_imData, smartpointer_nodeleter<wxGtkIMData >());
-      if (var_m_imData_ptr.get()) {
-        BasicVariable::ptr var_m_imData = AMILabType<wxGtkIMData >::CreateVarFromSmtPtr(var_m_imData_ptr);
-        if (var_m_imData.get()) {
-          var_m_imData->Rename("m_imData");
-          context->AddVar(var_m_imData,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member m_scrollBar
-      boost::shared_ptr<_GtkRange > var_m_scrollBar_ptr(&GetObj()->m_scrollBar, smartpointer_nodeleter<_GtkRange >());
-      if (var_m_scrollBar_ptr.get()) {
-        BasicVariable::ptr var_m_scrollBar = AMILabType<_GtkRange >::CreateVarFromSmtPtr(var_m_scrollBar_ptr);
-        if (var_m_scrollBar.get()) {
-          var_m_scrollBar->Rename("m_scrollBar");
-          context->AddVar(var_m_scrollBar,context);
-        }
-      }
-      */
-      
-      /* ArrayType not implemented
-      // Adding public member m_scrollPos
-      boost::shared_ptr<double > var_m_scrollPos_ptr(&GetObj()->m_scrollPos, smartpointer_nodeleter<double >());
-      if (var_m_scrollPos_ptr.get()) {
-        BasicVariable::ptr var_m_scrollPos = AMILabType<double >::CreateVarFromSmtPtr(var_m_scrollPos_ptr);
-        if (var_m_scrollPos.get()) {
-          var_m_scrollPos->Rename("m_scrollPos");
-          context->AddVar(var_m_scrollPos,context);
-        }
-      }
-      */
-      
-      /* ArrayType not implemented
-      // Adding public member m_blockValueChanged
-      boost::shared_ptr<bool > var_m_blockValueChanged_ptr(&GetObj()->m_blockValueChanged, smartpointer_nodeleter<bool >());
-      if (var_m_blockValueChanged_ptr.get()) {
-        BasicVariable::ptr var_m_blockValueChanged = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockValueChanged_ptr);
-        if (var_m_blockValueChanged.get()) {
-          var_m_blockValueChanged->Rename("m_blockValueChanged");
-          context->AddVar(var_m_blockValueChanged,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_needParent
-      boost::shared_ptr<bool > var_m_needParent_ptr(&GetObj()->m_needParent, smartpointer_nodeleter<bool >());
-      if (var_m_needParent_ptr.get()) {
-        BasicVariable::ptr var_m_needParent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needParent_ptr);
-        if (var_m_needParent.get()) {
-          var_m_needParent->Rename("m_needParent");
-          context->AddVar(var_m_needParent,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_noExpose
-      boost::shared_ptr<bool > var_m_noExpose_ptr(&GetObj()->m_noExpose, smartpointer_nodeleter<bool >());
-      if (var_m_noExpose_ptr.get()) {
-        BasicVariable::ptr var_m_noExpose = AMILabType<bool >::CreateVarFromSmtPtr(var_m_noExpose_ptr);
-        if (var_m_noExpose.get()) {
-          var_m_noExpose->Rename("m_noExpose");
-          context->AddVar(var_m_noExpose,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_nativeSizeEvent
-      boost::shared_ptr<bool > var_m_nativeSizeEvent_ptr(&GetObj()->m_nativeSizeEvent, smartpointer_nodeleter<bool >());
-      if (var_m_nativeSizeEvent_ptr.get()) {
-        BasicVariable::ptr var_m_nativeSizeEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_nativeSizeEvent_ptr);
-        if (var_m_nativeSizeEvent.get()) {
-          var_m_nativeSizeEvent->Rename("m_nativeSizeEvent");
-          context->AddVar(var_m_nativeSizeEvent,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_hasScrolling
-      boost::shared_ptr<bool > var_m_hasScrolling_ptr(&GetObj()->m_hasScrolling, smartpointer_nodeleter<bool >());
-      if (var_m_hasScrolling_ptr.get()) {
-        BasicVariable::ptr var_m_hasScrolling = AMILabType<bool >::CreateVarFromSmtPtr(var_m_hasScrolling_ptr);
-        if (var_m_hasScrolling.get()) {
-          var_m_hasScrolling->Rename("m_hasScrolling");
-          context->AddVar(var_m_hasScrolling,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_hasVMT
-      boost::shared_ptr<bool > var_m_hasVMT_ptr(&GetObj()->m_hasVMT, smartpointer_nodeleter<bool >());
-      if (var_m_hasVMT_ptr.get()) {
-        BasicVariable::ptr var_m_hasVMT = AMILabType<bool >::CreateVarFromSmtPtr(var_m_hasVMT_ptr);
-        if (var_m_hasVMT.get()) {
-          var_m_hasVMT->Rename("m_hasVMT");
-          context->AddVar(var_m_hasVMT,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_sizeSet
-      boost::shared_ptr<bool > var_m_sizeSet_ptr(&GetObj()->m_sizeSet, smartpointer_nodeleter<bool >());
-      if (var_m_sizeSet_ptr.get()) {
-        BasicVariable::ptr var_m_sizeSet = AMILabType<bool >::CreateVarFromSmtPtr(var_m_sizeSet_ptr);
-        if (var_m_sizeSet.get()) {
-          var_m_sizeSet->Rename("m_sizeSet");
-          context->AddVar(var_m_sizeSet,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_resizing
-      boost::shared_ptr<bool > var_m_resizing_ptr(&GetObj()->m_resizing, smartpointer_nodeleter<bool >());
-      if (var_m_resizing_ptr.get()) {
-        BasicVariable::ptr var_m_resizing = AMILabType<bool >::CreateVarFromSmtPtr(var_m_resizing_ptr);
-        if (var_m_resizing.get()) {
-          var_m_resizing->Rename("m_resizing");
-          context->AddVar(var_m_resizing,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_acceptsFocus
-      boost::shared_ptr<bool > var_m_acceptsFocus_ptr(&GetObj()->m_acceptsFocus, smartpointer_nodeleter<bool >());
-      if (var_m_acceptsFocus_ptr.get()) {
-        BasicVariable::ptr var_m_acceptsFocus = AMILabType<bool >::CreateVarFromSmtPtr(var_m_acceptsFocus_ptr);
-        if (var_m_acceptsFocus.get()) {
-          var_m_acceptsFocus->Rename("m_acceptsFocus");
-          context->AddVar(var_m_acceptsFocus,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_hasFocus
-      boost::shared_ptr<bool > var_m_hasFocus_ptr(&GetObj()->m_hasFocus, smartpointer_nodeleter<bool >());
-      if (var_m_hasFocus_ptr.get()) {
-        BasicVariable::ptr var_m_hasFocus = AMILabType<bool >::CreateVarFromSmtPtr(var_m_hasFocus_ptr);
-        if (var_m_hasFocus.get()) {
-          var_m_hasFocus->Rename("m_hasFocus");
-          context->AddVar(var_m_hasFocus,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_isScrolling
-      boost::shared_ptr<bool > var_m_isScrolling_ptr(&GetObj()->m_isScrolling, smartpointer_nodeleter<bool >());
-      if (var_m_isScrolling_ptr.get()) {
-        BasicVariable::ptr var_m_isScrolling = AMILabType<bool >::CreateVarFromSmtPtr(var_m_isScrolling_ptr);
-        if (var_m_isScrolling.get()) {
-          var_m_isScrolling->Rename("m_isScrolling");
-          context->AddVar(var_m_isScrolling,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_clipPaintRegion
-      boost::shared_ptr<bool > var_m_clipPaintRegion_ptr(&GetObj()->m_clipPaintRegion, smartpointer_nodeleter<bool >());
-      if (var_m_clipPaintRegion_ptr.get()) {
-        BasicVariable::ptr var_m_clipPaintRegion = AMILabType<bool >::CreateVarFromSmtPtr(var_m_clipPaintRegion_ptr);
-        if (var_m_clipPaintRegion.get()) {
-          var_m_clipPaintRegion->Rename("m_clipPaintRegion");
-          context->AddVar(var_m_clipPaintRegion,context);
-        }
-      }
-      */
-      
-      // Adding public member m_nativeUpdateRegion
-      boost::shared_ptr<wxRegion > var_m_nativeUpdateRegion_ptr(&GetObj()->m_nativeUpdateRegion, smartpointer_nodeleter<wxRegion >());
-      if (var_m_nativeUpdateRegion_ptr.get()) {
-        BasicVariable::ptr var_m_nativeUpdateRegion = AMILabType<wxRegion >::CreateVarFromSmtPtr(var_m_nativeUpdateRegion_ptr);
-        if (var_m_nativeUpdateRegion.get()) {
-          var_m_nativeUpdateRegion->Rename("m_nativeUpdateRegion");
-          context->AddVar(var_m_nativeUpdateRegion,context);
-        }
-      }
-      
-      /* Can't get address of a bit field
-      // Adding public member m_dirtyTabOrder
-      boost::shared_ptr<bool > var_m_dirtyTabOrder_ptr(&GetObj()->m_dirtyTabOrder, smartpointer_nodeleter<bool >());
-      if (var_m_dirtyTabOrder_ptr.get()) {
-        BasicVariable::ptr var_m_dirtyTabOrder = AMILabType<bool >::CreateVarFromSmtPtr(var_m_dirtyTabOrder_ptr);
-        if (var_m_dirtyTabOrder.get()) {
-          var_m_dirtyTabOrder->Rename("m_dirtyTabOrder");
-          context->AddVar(var_m_dirtyTabOrder,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_needsStyleChange
-      boost::shared_ptr<bool > var_m_needsStyleChange_ptr(&GetObj()->m_needsStyleChange, smartpointer_nodeleter<bool >());
-      if (var_m_needsStyleChange_ptr.get()) {
-        BasicVariable::ptr var_m_needsStyleChange = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needsStyleChange_ptr);
-        if (var_m_needsStyleChange.get()) {
-          var_m_needsStyleChange->Rename("m_needsStyleChange");
-          context->AddVar(var_m_needsStyleChange,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_mouseButtonDown
-      boost::shared_ptr<bool > var_m_mouseButtonDown_ptr(&GetObj()->m_mouseButtonDown, smartpointer_nodeleter<bool >());
-      if (var_m_mouseButtonDown_ptr.get()) {
-        BasicVariable::ptr var_m_mouseButtonDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_mouseButtonDown_ptr);
-        if (var_m_mouseButtonDown.get()) {
-          var_m_mouseButtonDown->Rename("m_mouseButtonDown");
-          context->AddVar(var_m_mouseButtonDown,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_blockScrollEvent
-      boost::shared_ptr<bool > var_m_blockScrollEvent_ptr(&GetObj()->m_blockScrollEvent, smartpointer_nodeleter<bool >());
-      if (var_m_blockScrollEvent_ptr.get()) {
-        BasicVariable::ptr var_m_blockScrollEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockScrollEvent_ptr);
-        if (var_m_blockScrollEvent.get()) {
-          var_m_blockScrollEvent->Rename("m_blockScrollEvent");
-          context->AddVar(var_m_blockScrollEvent,context);
-        }
-      }
-      */
-      
-      /* Can't get address of a bit field
-      // Adding public member m_showOnIdle
-      boost::shared_ptr<bool > var_m_showOnIdle_ptr(&GetObj()->m_showOnIdle, smartpointer_nodeleter<bool >());
-      if (var_m_showOnIdle_ptr.get()) {
-        BasicVariable::ptr var_m_showOnIdle = AMILabType<bool >::CreateVarFromSmtPtr(var_m_showOnIdle_ptr);
-        if (var_m_showOnIdle.get()) {
-          var_m_showOnIdle->Rename("m_showOnIdle");
-          context->AddVar(var_m_showOnIdle,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member m_insertCallback
-      boost::shared_ptr<_14407 > var_m_insertCallback_ptr(&GetObj()->m_insertCallback, smartpointer_nodeleter<_14407 >());
-      if (var_m_insertCallback_ptr.get()) {
-        BasicVariable::ptr var_m_insertCallback = AMILabType<_14407 >::CreateVarFromSmtPtr(var_m_insertCallback_ptr);
-        if (var_m_insertCallback.get()) {
-          var_m_insertCallback->Rename("m_insertCallback");
-          context->AddVar(var_m_insertCallback,context);
-        }
-      }
-      */
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member m_x
+  boost::shared_ptr<int > var_m_x_ptr(&GetObj()->m_x, smartpointer_nodeleter<int >());
+  if (var_m_x_ptr.get()) {
+    BasicVariable::ptr var_m_x = AMILabType<int >::CreateVarFromSmtPtr(var_m_x_ptr);
+    if (var_m_x.get()) {
+      var_m_x->Rename("m_x");
+      context->AddVar(var_m_x,context);
+    }
+  }
+  
+  // Adding public member m_y
+  boost::shared_ptr<int > var_m_y_ptr(&GetObj()->m_y, smartpointer_nodeleter<int >());
+  if (var_m_y_ptr.get()) {
+    BasicVariable::ptr var_m_y = AMILabType<int >::CreateVarFromSmtPtr(var_m_y_ptr);
+    if (var_m_y.get()) {
+      var_m_y->Rename("m_y");
+      context->AddVar(var_m_y,context);
+    }
+  }
+  
+  // Adding public member m_width
+  boost::shared_ptr<int > var_m_width_ptr(&GetObj()->m_width, smartpointer_nodeleter<int >());
+  if (var_m_width_ptr.get()) {
+    BasicVariable::ptr var_m_width = AMILabType<int >::CreateVarFromSmtPtr(var_m_width_ptr);
+    if (var_m_width.get()) {
+      var_m_width->Rename("m_width");
+      context->AddVar(var_m_width,context);
+    }
+  }
+  
+  // Adding public member m_height
+  boost::shared_ptr<int > var_m_height_ptr(&GetObj()->m_height, smartpointer_nodeleter<int >());
+  if (var_m_height_ptr.get()) {
+    BasicVariable::ptr var_m_height = AMILabType<int >::CreateVarFromSmtPtr(var_m_height_ptr);
+    if (var_m_height.get()) {
+      var_m_height->Rename("m_height");
+      context->AddVar(var_m_height,context);
+    }
+  }
+  
+  // Adding public member m_oldClientWidth
+  boost::shared_ptr<int > var_m_oldClientWidth_ptr(&GetObj()->m_oldClientWidth, smartpointer_nodeleter<int >());
+  if (var_m_oldClientWidth_ptr.get()) {
+    BasicVariable::ptr var_m_oldClientWidth = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldClientWidth_ptr);
+    if (var_m_oldClientWidth.get()) {
+      var_m_oldClientWidth->Rename("m_oldClientWidth");
+      context->AddVar(var_m_oldClientWidth,context);
+    }
+  }
+  
+  // Adding public member m_oldClientHeight
+  boost::shared_ptr<int > var_m_oldClientHeight_ptr(&GetObj()->m_oldClientHeight, smartpointer_nodeleter<int >());
+  if (var_m_oldClientHeight_ptr.get()) {
+    BasicVariable::ptr var_m_oldClientHeight = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldClientHeight_ptr);
+    if (var_m_oldClientHeight.get()) {
+      var_m_oldClientHeight->Rename("m_oldClientHeight");
+      context->AddVar(var_m_oldClientHeight,context);
+    }
+  }
+  
+  /* Type not available
+  // Adding public member m_widget
+  boost::shared_ptr<_GtkWidget > var_m_widget_ptr(GetObj()->m_widget, smartpointer_nodeleter<_GtkWidget >());
+  if (var_m_widget_ptr.get()) {
+    BasicVariable::ptr var_m_widget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_widget_ptr);
+    if (var_m_widget.get()) {
+      var_m_widget->Rename("m_widget");
+      context->AddVar(var_m_widget,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member m_wxwindow
+  boost::shared_ptr<_GtkWidget > var_m_wxwindow_ptr(GetObj()->m_wxwindow, smartpointer_nodeleter<_GtkWidget >());
+  if (var_m_wxwindow_ptr.get()) {
+    BasicVariable::ptr var_m_wxwindow = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_wxwindow_ptr);
+    if (var_m_wxwindow.get()) {
+      var_m_wxwindow->Rename("m_wxwindow");
+      context->AddVar(var_m_wxwindow,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member m_focusWidget
+  boost::shared_ptr<_GtkWidget > var_m_focusWidget_ptr(GetObj()->m_focusWidget, smartpointer_nodeleter<_GtkWidget >());
+  if (var_m_focusWidget_ptr.get()) {
+    BasicVariable::ptr var_m_focusWidget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_focusWidget_ptr);
+    if (var_m_focusWidget.get()) {
+      var_m_focusWidget->Rename("m_focusWidget");
+      context->AddVar(var_m_focusWidget,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member m_imData
+  boost::shared_ptr<wxGtkIMData > var_m_imData_ptr(GetObj()->m_imData, smartpointer_nodeleter<wxGtkIMData >());
+  if (var_m_imData_ptr.get()) {
+    BasicVariable::ptr var_m_imData = AMILabType<wxGtkIMData >::CreateVarFromSmtPtr(var_m_imData_ptr);
+    if (var_m_imData.get()) {
+      var_m_imData->Rename("m_imData");
+      context->AddVar(var_m_imData,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member m_scrollBar
+  boost::shared_ptr<_GtkRange > var_m_scrollBar_ptr(&GetObj()->m_scrollBar, smartpointer_nodeleter<_GtkRange >());
+  if (var_m_scrollBar_ptr.get()) {
+    BasicVariable::ptr var_m_scrollBar = AMILabType<_GtkRange >::CreateVarFromSmtPtr(var_m_scrollBar_ptr);
+    if (var_m_scrollBar.get()) {
+      var_m_scrollBar->Rename("m_scrollBar");
+      context->AddVar(var_m_scrollBar,context);
+    }
+  }
+  */
+  
+  /* ArrayType not implemented
+  // Adding public member m_scrollPos
+  boost::shared_ptr<double > var_m_scrollPos_ptr(&GetObj()->m_scrollPos, smartpointer_nodeleter<double >());
+  if (var_m_scrollPos_ptr.get()) {
+    BasicVariable::ptr var_m_scrollPos = AMILabType<double >::CreateVarFromSmtPtr(var_m_scrollPos_ptr);
+    if (var_m_scrollPos.get()) {
+      var_m_scrollPos->Rename("m_scrollPos");
+      context->AddVar(var_m_scrollPos,context);
+    }
+  }
+  */
+  
+  /* ArrayType not implemented
+  // Adding public member m_blockValueChanged
+  boost::shared_ptr<bool > var_m_blockValueChanged_ptr(&GetObj()->m_blockValueChanged, smartpointer_nodeleter<bool >());
+  if (var_m_blockValueChanged_ptr.get()) {
+    BasicVariable::ptr var_m_blockValueChanged = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockValueChanged_ptr);
+    if (var_m_blockValueChanged.get()) {
+      var_m_blockValueChanged->Rename("m_blockValueChanged");
+      context->AddVar(var_m_blockValueChanged,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_needParent
+  boost::shared_ptr<bool > var_m_needParent_ptr(&GetObj()->m_needParent, smartpointer_nodeleter<bool >());
+  if (var_m_needParent_ptr.get()) {
+    BasicVariable::ptr var_m_needParent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needParent_ptr);
+    if (var_m_needParent.get()) {
+      var_m_needParent->Rename("m_needParent");
+      context->AddVar(var_m_needParent,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_noExpose
+  boost::shared_ptr<bool > var_m_noExpose_ptr(&GetObj()->m_noExpose, smartpointer_nodeleter<bool >());
+  if (var_m_noExpose_ptr.get()) {
+    BasicVariable::ptr var_m_noExpose = AMILabType<bool >::CreateVarFromSmtPtr(var_m_noExpose_ptr);
+    if (var_m_noExpose.get()) {
+      var_m_noExpose->Rename("m_noExpose");
+      context->AddVar(var_m_noExpose,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_nativeSizeEvent
+  boost::shared_ptr<bool > var_m_nativeSizeEvent_ptr(&GetObj()->m_nativeSizeEvent, smartpointer_nodeleter<bool >());
+  if (var_m_nativeSizeEvent_ptr.get()) {
+    BasicVariable::ptr var_m_nativeSizeEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_nativeSizeEvent_ptr);
+    if (var_m_nativeSizeEvent.get()) {
+      var_m_nativeSizeEvent->Rename("m_nativeSizeEvent");
+      context->AddVar(var_m_nativeSizeEvent,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_hasScrolling
+  boost::shared_ptr<bool > var_m_hasScrolling_ptr(&GetObj()->m_hasScrolling, smartpointer_nodeleter<bool >());
+  if (var_m_hasScrolling_ptr.get()) {
+    BasicVariable::ptr var_m_hasScrolling = AMILabType<bool >::CreateVarFromSmtPtr(var_m_hasScrolling_ptr);
+    if (var_m_hasScrolling.get()) {
+      var_m_hasScrolling->Rename("m_hasScrolling");
+      context->AddVar(var_m_hasScrolling,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_hasVMT
+  boost::shared_ptr<bool > var_m_hasVMT_ptr(&GetObj()->m_hasVMT, smartpointer_nodeleter<bool >());
+  if (var_m_hasVMT_ptr.get()) {
+    BasicVariable::ptr var_m_hasVMT = AMILabType<bool >::CreateVarFromSmtPtr(var_m_hasVMT_ptr);
+    if (var_m_hasVMT.get()) {
+      var_m_hasVMT->Rename("m_hasVMT");
+      context->AddVar(var_m_hasVMT,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_sizeSet
+  boost::shared_ptr<bool > var_m_sizeSet_ptr(&GetObj()->m_sizeSet, smartpointer_nodeleter<bool >());
+  if (var_m_sizeSet_ptr.get()) {
+    BasicVariable::ptr var_m_sizeSet = AMILabType<bool >::CreateVarFromSmtPtr(var_m_sizeSet_ptr);
+    if (var_m_sizeSet.get()) {
+      var_m_sizeSet->Rename("m_sizeSet");
+      context->AddVar(var_m_sizeSet,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_resizing
+  boost::shared_ptr<bool > var_m_resizing_ptr(&GetObj()->m_resizing, smartpointer_nodeleter<bool >());
+  if (var_m_resizing_ptr.get()) {
+    BasicVariable::ptr var_m_resizing = AMILabType<bool >::CreateVarFromSmtPtr(var_m_resizing_ptr);
+    if (var_m_resizing.get()) {
+      var_m_resizing->Rename("m_resizing");
+      context->AddVar(var_m_resizing,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_acceptsFocus
+  boost::shared_ptr<bool > var_m_acceptsFocus_ptr(&GetObj()->m_acceptsFocus, smartpointer_nodeleter<bool >());
+  if (var_m_acceptsFocus_ptr.get()) {
+    BasicVariable::ptr var_m_acceptsFocus = AMILabType<bool >::CreateVarFromSmtPtr(var_m_acceptsFocus_ptr);
+    if (var_m_acceptsFocus.get()) {
+      var_m_acceptsFocus->Rename("m_acceptsFocus");
+      context->AddVar(var_m_acceptsFocus,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_hasFocus
+  boost::shared_ptr<bool > var_m_hasFocus_ptr(&GetObj()->m_hasFocus, smartpointer_nodeleter<bool >());
+  if (var_m_hasFocus_ptr.get()) {
+    BasicVariable::ptr var_m_hasFocus = AMILabType<bool >::CreateVarFromSmtPtr(var_m_hasFocus_ptr);
+    if (var_m_hasFocus.get()) {
+      var_m_hasFocus->Rename("m_hasFocus");
+      context->AddVar(var_m_hasFocus,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_isScrolling
+  boost::shared_ptr<bool > var_m_isScrolling_ptr(&GetObj()->m_isScrolling, smartpointer_nodeleter<bool >());
+  if (var_m_isScrolling_ptr.get()) {
+    BasicVariable::ptr var_m_isScrolling = AMILabType<bool >::CreateVarFromSmtPtr(var_m_isScrolling_ptr);
+    if (var_m_isScrolling.get()) {
+      var_m_isScrolling->Rename("m_isScrolling");
+      context->AddVar(var_m_isScrolling,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_clipPaintRegion
+  boost::shared_ptr<bool > var_m_clipPaintRegion_ptr(&GetObj()->m_clipPaintRegion, smartpointer_nodeleter<bool >());
+  if (var_m_clipPaintRegion_ptr.get()) {
+    BasicVariable::ptr var_m_clipPaintRegion = AMILabType<bool >::CreateVarFromSmtPtr(var_m_clipPaintRegion_ptr);
+    if (var_m_clipPaintRegion.get()) {
+      var_m_clipPaintRegion->Rename("m_clipPaintRegion");
+      context->AddVar(var_m_clipPaintRegion,context);
+    }
+  }
+  */
+  
+  // Adding public member m_nativeUpdateRegion
+  boost::shared_ptr<wxRegion > var_m_nativeUpdateRegion_ptr(&GetObj()->m_nativeUpdateRegion, smartpointer_nodeleter<wxRegion >());
+  if (var_m_nativeUpdateRegion_ptr.get()) {
+    BasicVariable::ptr var_m_nativeUpdateRegion = AMILabType<wxRegion >::CreateVarFromSmtPtr(var_m_nativeUpdateRegion_ptr);
+    if (var_m_nativeUpdateRegion.get()) {
+      var_m_nativeUpdateRegion->Rename("m_nativeUpdateRegion");
+      context->AddVar(var_m_nativeUpdateRegion,context);
+    }
+  }
+  
+  /* Can't get address of a bit field
+  // Adding public member m_dirtyTabOrder
+  boost::shared_ptr<bool > var_m_dirtyTabOrder_ptr(&GetObj()->m_dirtyTabOrder, smartpointer_nodeleter<bool >());
+  if (var_m_dirtyTabOrder_ptr.get()) {
+    BasicVariable::ptr var_m_dirtyTabOrder = AMILabType<bool >::CreateVarFromSmtPtr(var_m_dirtyTabOrder_ptr);
+    if (var_m_dirtyTabOrder.get()) {
+      var_m_dirtyTabOrder->Rename("m_dirtyTabOrder");
+      context->AddVar(var_m_dirtyTabOrder,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_needsStyleChange
+  boost::shared_ptr<bool > var_m_needsStyleChange_ptr(&GetObj()->m_needsStyleChange, smartpointer_nodeleter<bool >());
+  if (var_m_needsStyleChange_ptr.get()) {
+    BasicVariable::ptr var_m_needsStyleChange = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needsStyleChange_ptr);
+    if (var_m_needsStyleChange.get()) {
+      var_m_needsStyleChange->Rename("m_needsStyleChange");
+      context->AddVar(var_m_needsStyleChange,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_mouseButtonDown
+  boost::shared_ptr<bool > var_m_mouseButtonDown_ptr(&GetObj()->m_mouseButtonDown, smartpointer_nodeleter<bool >());
+  if (var_m_mouseButtonDown_ptr.get()) {
+    BasicVariable::ptr var_m_mouseButtonDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_mouseButtonDown_ptr);
+    if (var_m_mouseButtonDown.get()) {
+      var_m_mouseButtonDown->Rename("m_mouseButtonDown");
+      context->AddVar(var_m_mouseButtonDown,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_blockScrollEvent
+  boost::shared_ptr<bool > var_m_blockScrollEvent_ptr(&GetObj()->m_blockScrollEvent, smartpointer_nodeleter<bool >());
+  if (var_m_blockScrollEvent_ptr.get()) {
+    BasicVariable::ptr var_m_blockScrollEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockScrollEvent_ptr);
+    if (var_m_blockScrollEvent.get()) {
+      var_m_blockScrollEvent->Rename("m_blockScrollEvent");
+      context->AddVar(var_m_blockScrollEvent,context);
+    }
+  }
+  */
+  
+  /* Can't get address of a bit field
+  // Adding public member m_showOnIdle
+  boost::shared_ptr<bool > var_m_showOnIdle_ptr(&GetObj()->m_showOnIdle, smartpointer_nodeleter<bool >());
+  if (var_m_showOnIdle_ptr.get()) {
+    BasicVariable::ptr var_m_showOnIdle = AMILabType<bool >::CreateVarFromSmtPtr(var_m_showOnIdle_ptr);
+    if (var_m_showOnIdle.get()) {
+      var_m_showOnIdle->Rename("m_showOnIdle");
+      context->AddVar(var_m_showOnIdle,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member m_insertCallback
+  boost::shared_ptr<_7173 > var_m_insertCallback_ptr(&GetObj()->m_insertCallback, smartpointer_nodeleter<_7173 >());
+  if (var_m_insertCallback_ptr.get()) {
+    BasicVariable::ptr var_m_insertCallback = AMILabType<_7173 >::CreateVarFromSmtPtr(var_m_insertCallback_ptr);
+    if (var_m_insertCallback.get()) {
+      var_m_insertCallback->Rename("m_insertCallback");
+      context->AddVar(var_m_insertCallback,context);
+    }
+  }
+  */
+
+
+  
+  AMIObject::ptr obj_ScrollDir(new AMIObject);
+  obj_ScrollDir->SetName("ScrollDir");
+
+  BasicVariable::ptr var_ScrollDir_Horz = AMILabType<int >::CreateVar(0);
+  if (var_ScrollDir_Horz.get()) {
+    var_ScrollDir_Horz->Rename("ScrollDir_Horz");
+    obj_ScrollDir->GetContext()->AddVar(var_ScrollDir_Horz,obj_ScrollDir->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_ScrollDir->GetName().c_str(),obj_ScrollDir,context);
 
 
   // Adding Bases
@@ -555,7 +615,7 @@ void WrapClass_wxWindow::AddMethods(WrapClass<wxWindow>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxWindow::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxWindow_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -645,9 +705,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>6) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,true,true)) ClassReturnEmptyVar;
+    parent = parent_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -695,9 +761,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkWidget > widget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkWidget* widget = widget_smtptr.get();
+  _GtkWidget* widget;
+  if (CheckNullVar(_p,_n))  {
+    widget=(_GtkWidget*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkWidget > widget_smtptr;
+    if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    widget = widget_smtptr.get();
+  }
 
   wxLayoutDirection res =   wxWindow::GTKGetLayout(widget);
   int res_int = (int) res;
@@ -724,9 +796,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkWidget > widget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkWidget* widget = widget_smtptr.get();
+  _GtkWidget* widget;
+  if (CheckNullVar(_p,_n))  {
+    widget=(_GtkWidget*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkWidget > widget_smtptr;
+    if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    widget = widget_smtptr.get();
+  }
 
   int dir_int;
   if (!get_val_param<int >(dir_int,_p,_n,true,false)) ClassHelpAndReturn;
@@ -760,9 +838,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>6) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;
@@ -1038,9 +1122,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > newParent_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(newParent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* newParent = newParent_smtptr.get();
+  wxWindowBase* newParent;
+  if (CheckNullVar(_p,_n))  {
+    newParent=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > newParent_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(newParent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    newParent = newParent_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Reparent(newParent);
   return AMILabType<bool >::CreateVar(res);
@@ -1095,9 +1185,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   bool eraseBackground = true;
   if (!get_val_param<bool >(eraseBackground,_p,_n,false,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxRect* rect = rect_smtptr.get();
+  wxRect* rect = 0u;
+  if (CheckNullVar(_p,_n))  {
+    rect=(wxRect*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxRect > rect_smtptr;
+    if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    rect = rect_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Refresh(eraseBackground, rect);
   return BasicVariable::ptr();
@@ -1333,25 +1429,55 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & string = *string_smtptr;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    y = y_smtptr.get();
+  }
 
-  boost::shared_ptr<int > descent_smtptr;
-  if (!get_val_smtptr_param<int >(descent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* descent = descent_smtptr.get();
+  int* descent = 0u;
+  if (CheckNullVar(_p,_n))  {
+    descent=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > descent_smtptr;
+    if (!get_val_smtptr_param<int >(descent_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    descent = descent_smtptr.get();
+  }
 
-  boost::shared_ptr<int > externalLeading_smtptr;
-  if (!get_val_smtptr_param<int >(externalLeading_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* externalLeading = externalLeading_smtptr.get();
+  int* externalLeading = 0u;
+  if (CheckNullVar(_p,_n))  {
+    externalLeading=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > externalLeading_smtptr;
+    if (!get_val_smtptr_param<int >(externalLeading_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    externalLeading = externalLeading_smtptr.get();
+  }
 
-  boost::shared_ptr<wxFont > theFont_smtptr;
-  if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxFont* theFont = theFont_smtptr.get();
+  wxFont* theFont = 0u;
+  if (CheckNullVar(_p,_n))  {
+    theFont=(wxFont*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFont > theFont_smtptr;
+    if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    theFont = theFont_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTextExtent(string, x, y, descent, externalLeading, theFont);
   return BasicVariable::ptr();
@@ -1529,9 +1655,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   int dy;
   if (!get_val_param<int >(dy,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<wxRect > rect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxRect* rect = rect_smtptr.get();
+  wxRect* rect = 0u;
+  if (CheckNullVar(_p,_n))  {
+    rect=(wxRect*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxRect > rect_smtptr;
+    if (!get_val_smtptr_param<wxRect >(rect_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    rect = rect_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ScrollWindow(dx, dy, rect);
   return BasicVariable::ptr();
@@ -1605,9 +1737,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxDropTarget > dropTarget_smtptr;
-  if (!get_val_smtptr_param<wxDropTarget >(dropTarget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDropTarget* dropTarget = dropTarget_smtptr.get();
+  wxDropTarget* dropTarget;
+  if (CheckNullVar(_p,_n))  {
+    dropTarget=(wxDropTarget*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDropTarget > dropTarget_smtptr;
+    if (!get_val_smtptr_param<wxDropTarget >(dropTarget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    dropTarget = dropTarget_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetDropTarget(dropTarget);
   return BasicVariable::ptr();
@@ -1631,9 +1769,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* child = child_smtptr.get();
+  wxWindowBase* child;
+  if (CheckNullVar(_p,_n))  {
+    child=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > child_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    child = child_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddChild(child);
   return BasicVariable::ptr();
@@ -1656,9 +1800,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* child = child_smtptr.get();
+  wxWindowBase* child;
+  if (CheckNullVar(_p,_n))  {
+    child=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > child_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    child = child_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveChild(child);
   return BasicVariable::ptr();
@@ -1998,9 +2148,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -2049,9 +2205,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > child_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* child = child_smtptr.get();
+  wxWindow* child;
+  if (CheckNullVar(_p,_n))  {
+    child=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > child_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    child = child_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DoAddChild(child);
   return BasicVariable::ptr();
@@ -2114,9 +2276,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkWidget > widget_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkWidget* widget = widget_smtptr.get();
+  _GtkWidget* widget;
+  if (CheckNullVar(_p,_n))  {
+    widget=(_GtkWidget*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkWidget > widget_smtptr;
+    if (!get_val_smtptr_param<_GtkWidget >(widget_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    widget = widget_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ConnectWidget(widget);
   return BasicVariable::ptr();
@@ -2142,9 +2310,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GdkEventAny > event_smtptr;
-  if (!get_val_smtptr_param<_GdkEventAny >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GdkEventAny* event = event_smtptr.get();
+  _GdkEventAny* event;
+  if (CheckNullVar(_p,_n))  {
+    event=(_GdkEventAny*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GdkEventAny > event_smtptr;
+    if (!get_val_smtptr_param<_GdkEventAny >(event_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    event = event_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->GTKCallbackCommonPrologue(event);
   return AMILabType<int >::CreateVar(res);
@@ -2217,9 +2391,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkTooltips > tips_smtptr;
-  if (!get_val_smtptr_param<_GtkTooltips >(tips_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkTooltips* tips = tips_smtptr.get();
+  _GtkTooltips* tips;
+  if (CheckNullVar(_p,_n))  {
+    tips=(_GtkTooltips*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkTooltips > tips_smtptr;
+    if (!get_val_smtptr_param<_GtkTooltips >(tips_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    tips = tips_smtptr.get();
+  }
 
   boost::shared_ptr<std::string > tip_string;
   if (!get_val_smtptr_param<std::string >(tip_string,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -2306,9 +2486,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkWidget > param0_smtptr;
-  if (!get_val_smtptr_param<_GtkWidget >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkWidget* param0 = param0_smtptr.get();
+  _GtkWidget* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(_GtkWidget*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkWidget > param0_smtptr;
+    if (!get_val_smtptr_param<_GtkWidget >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   boost::shared_ptr<int > param1_smtptr;
   if (!get_val_smtptr_param<int >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -2380,9 +2566,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkRange > range_smtptr;
-  if (!get_val_smtptr_param<_GtkRange >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkRange* range = range_smtptr.get();
+  _GtkRange* range;
+  if (CheckNullVar(_p,_n))  {
+    range=(_GtkRange*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkRange > range_smtptr;
+    if (!get_val_smtptr_param<_GtkRange >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    range = range_smtptr.get();
+  }
 
   wxEventType res =   this->_objectptr->GetObj()->GetScrollEventType(range);
   return AMILabType<int >::CreateVar(res);
@@ -2444,9 +2636,15 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GtkRange > range_smtptr;
-  if (!get_val_smtptr_param<_GtkRange >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GtkRange* range = range_smtptr.get();
+  _GtkRange* range;
+  if (CheckNullVar(_p,_n))  {
+    range=(_GtkRange*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GtkRange > range_smtptr;
+    if (!get_val_smtptr_param<_GtkRange >(range_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    range = range_smtptr.get();
+  }
 
   wxWindow::ScrollDir res =   this->_objectptr->GetObj()->ScrollDirFromRange(range);
   int res_int = (int) res;
@@ -2470,7 +2668,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

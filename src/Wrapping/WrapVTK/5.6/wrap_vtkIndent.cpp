@@ -16,12 +16,16 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkIndent.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkIndent.h"
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
 
 
-#include "wrap_vtkIndent.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -89,7 +93,7 @@ void WrapClass_vtkIndent::AddMethods(WrapClass<vtkIndent>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkIndent::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkIndent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -200,7 +204,7 @@ BasicVariable::ptr WrapClass_vtkIndent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIndent * res =   vtkIndent::New();
-  BasicVariable::ptr res_var = WrapClass_vtkIndent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkIndent >::CreateVar(res,true);
   return res_var;
 }
 

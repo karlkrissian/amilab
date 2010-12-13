@@ -10,22 +10,44 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxUpdateUIEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxUpdateUIEvent.h"
-#include "wrap_wxWindowBase.h"
-#include "wrap_wxString.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxUpdateUIEvent_declared
+  #define wxUpdateUIEvent_declared
+  AMI_DECLARE_TYPE(wxUpdateUIEvent)
+#endif
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxUpdateUIEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -65,27 +87,30 @@ void WrapClass_wxUpdateUIEvent::AddMethods(WrapClass<wxUpdateUIEvent>::ptr this_
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetChecked( this_ptr);
-      AddVar_GetEnabled( this_ptr);
-      AddVar_GetShown( this_ptr);
-      AddVar_GetText( this_ptr);
-      AddVar_GetSetText( this_ptr);
-      AddVar_GetSetChecked( this_ptr);
-      AddVar_GetSetEnabled( this_ptr);
-      AddVar_GetSetShown( this_ptr);
-      AddVar_Check( this_ptr);
-      AddVar_Enable( this_ptr);
-      AddVar_Show( this_ptr);
-      AddVar_SetText( this_ptr);
-      AddVar_Clone( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetChecked( this_ptr);
+  AddVar_GetEnabled( this_ptr);
+  AddVar_GetShown( this_ptr);
+  AddVar_GetText( this_ptr);
+  AddVar_GetSetText( this_ptr);
+  AddVar_GetSetChecked( this_ptr);
+  AddVar_GetSetEnabled( this_ptr);
+  AddVar_GetSetShown( this_ptr);
+  AddVar_Check( this_ptr);
+  AddVar_Enable( this_ptr);
+  AddVar_Show( this_ptr);
+  AddVar_SetText( this_ptr);
+  AddVar_Clone( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -106,7 +131,7 @@ void WrapClass_wxUpdateUIEvent::AddMethods(WrapClass<wxUpdateUIEvent>::ptr this_
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxUpdateUIEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxUpdateUIEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -269,9 +294,15 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > win_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* win = win_smtptr.get();
+  wxWindowBase* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > win_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   bool res =   wxUpdateUIEvent::CanUpdate(win);
   return AMILabType<bool >::CreateVar(res);
@@ -621,7 +652,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -641,7 +672,7 @@ BasicVariable::ptr WrapClass_wxUpdateUIEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxDC_h_
 #define _wrap_wxDC_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxDCBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxDC);
+#ifndef wxDC_declared
+  #define wxDC_declared
+  AMI_DECLARE_TYPE(wxDC);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxDC : public WrapClass<wxDC>
@@ -94,12 +98,13 @@ class WrapClass_wxDC : public WrapClass<wxDC>
 
     void AddMethods(WrapClass<wxDC>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxDC_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxDC_h

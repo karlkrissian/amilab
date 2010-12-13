@@ -16,16 +16,32 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkLinearTransform.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkLinearTransform.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkPoints.h"
-#include "wrap_vtkDataArray.h"
+#ifndef vtkLinearTransform_declared
+  #define vtkLinearTransform_declared
+  AMI_DECLARE_TYPE(vtkLinearTransform)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkPoints_declared
+  #define vtkPoints_declared
+  AMI_DECLARE_TYPE(vtkPoints)
+#endif
+#ifndef vtkDataArray_declared
+  #define vtkDataArray_declared
+  AMI_DECLARE_TYPE(vtkDataArray)
+#endif
 
 
-#include "wrap_vtkLinearTransform.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -145,7 +161,7 @@ void WrapClass_vtkLinearTransform::AddMethods(WrapClass<vtkLinearTransform>::ptr
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkLinearTransform::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkLinearTransform_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -220,7 +236,7 @@ BasicVariable::ptr WrapClass_vtkLinearTransform::
   }
 
   vtkLinearTransform * res =   vtkLinearTransform::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkLinearTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkLinearTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -266,7 +282,7 @@ BasicVariable::ptr WrapClass_vtkLinearTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkLinearTransform * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkLinearTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkLinearTransform >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -1225,7 +1241,7 @@ BasicVariable::ptr WrapClass_vtkLinearTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkLinearTransform * res =   this->_objectptr->GetObj()->GetLinearInverse();
-  BasicVariable::ptr res_var = WrapClass_vtkLinearTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkLinearTransform >::CreateVar(res,true);
   return res_var;
 }
 

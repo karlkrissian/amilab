@@ -10,23 +10,48 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxStaticBoxSizer.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxStaticBox.h"
-#include "wrap_wxWindow.h"
-#include "wrap_wxString.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxSizer.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxStaticBox_declared
+  #define wxStaticBox_declared
+  AMI_DECLARE_TYPE(wxStaticBox)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxSizer_declared
+  #define wxSizer_declared
+  AMI_DECLARE_TYPE(wxSizer)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxStaticBoxSizer.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -73,20 +98,23 @@ void WrapClass_wxStaticBoxSizer::AddMethods(WrapClass<wxStaticBoxSizer>::ptr thi
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_RecalcSizes( this_ptr);
-      AddVar_CalcMin( this_ptr);
-      AddVar_GetStaticBox( this_ptr);
-      AddVar_ShowItems( this_ptr);
-      AddVar_Detach_1( this_ptr);
-      AddVar_Detach( this_ptr);
-      AddVar_Detach_2( this_ptr);
-      AddVar_Detach_3( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_RecalcSizes( this_ptr);
+  AddVar_CalcMin( this_ptr);
+  AddVar_GetStaticBox( this_ptr);
+  AddVar_ShowItems( this_ptr);
+  AddVar_Detach_1( this_ptr);
+  AddVar_Detach( this_ptr);
+  AddVar_Detach_2( this_ptr);
+  AddVar_Detach_3( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -107,7 +135,7 @@ void WrapClass_wxStaticBoxSizer::AddMethods(WrapClass<wxStaticBoxSizer>::ptr thi
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxStaticBoxSizer::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxStaticBoxSizer_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -147,9 +175,15 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxStaticBox > box_smtptr;
-  if (!get_val_smtptr_param<wxStaticBox >(box_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxStaticBox* box = box_smtptr.get();
+  wxStaticBox* box;
+  if (CheckNullVar(_p,_n))  {
+    box=(wxStaticBox*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxStaticBox > box_smtptr;
+    if (!get_val_smtptr_param<wxStaticBox >(box_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    box = box_smtptr.get();
+  }
 
   int orient;
   if (!get_val_param<int >(orient,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -202,9 +236,15 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   int orient;
   if (!get_val_param<int >(orient,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* win = win_smtptr.get();
+  wxWindow* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > win_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    win = win_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > label_smtptr;
   if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
@@ -269,7 +309,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxStaticBox * res =   this->_objectptr->GetObj()->GetStaticBox();
-  BasicVariable::ptr res_var = WrapClass_wxStaticBox::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxStaticBox >::CreateVar(res,true);
   return res_var;
 }
 
@@ -315,9 +355,15 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > window_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* window = window_smtptr.get();
+  wxWindow* window;
+  if (CheckNullVar(_p,_n))  {
+    window=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > window_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    window = window_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Detach(window);
   return AMILabType<bool >::CreateVar(res);
@@ -365,9 +411,15 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxSizer > sizer_smtptr;
-  if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxSizer* sizer = sizer_smtptr.get();
+  wxSizer* sizer;
+  if (CheckNullVar(_p,_n))  {
+    sizer=(wxSizer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxSizer > sizer_smtptr;
+    if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    sizer = sizer_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Detach(sizer);
   return AMILabType<bool >::CreateVar(res);
@@ -414,7 +466,7 @@ BasicVariable::ptr WrapClass_wxStaticBoxSizer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

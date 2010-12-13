@@ -10,24 +10,49 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxRegion.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxRegion.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxRect.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxRegion_declared
+  #define wxRegion_declared
+  AMI_DECLARE_TYPE(wxRegion)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxRegion.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -67,22 +92,25 @@ void WrapClass_wxRegion::AddMethods(WrapClass<wxRegion>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Clear( this_ptr);
-      AddVar_IsEmpty( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Clear( this_ptr);
+  AddVar_IsEmpty( this_ptr);
 /* The following types are missing: _GdkRegion
-      AddVar_GetRegion( this_ptr);
+  AddVar_GetRegion( this_ptr);
 */
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -103,7 +131,7 @@ void WrapClass_wxRegion::AddMethods(WrapClass<wxRegion>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxRegion::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxRegion_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -335,9 +363,15 @@ BasicVariable::ptr WrapClass_wxRegion::
   if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
-  boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxPoint* points = points_smtptr.get();
+  wxPoint* points;
+  if (CheckNullVar(_p,_n))  {
+    points=(wxPoint*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxPoint > points_smtptr;
+    if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    points = points_smtptr.get();
+  }
 
   int fillStyle = wxODDEVEN_RULE;
   if (!get_val_param<int >(fillStyle,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -426,9 +460,15 @@ BasicVariable::ptr WrapClass_wxRegion::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<_GdkRegion > region_smtptr;
-  if (!get_val_smtptr_param<_GdkRegion >(region_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  _GdkRegion* region = region_smtptr.get();
+  _GdkRegion* region;
+  if (CheckNullVar(_p,_n))  {
+    region=(_GdkRegion*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GdkRegion > region_smtptr;
+    if (!get_val_smtptr_param<_GdkRegion >(region_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    region = region_smtptr.get();
+  }
 
   wxRegion* _newobj = new wxRegion(region);
   BasicVariable::ptr res = WrapClass_wxRegion::CreateVar(_newobj);
@@ -526,7 +566,7 @@ BasicVariable::ptr WrapClass_wxRegion::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

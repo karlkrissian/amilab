@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxList.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxList.h"
-#include "wrap_wxObjectListNode.h"
-#include "wrap_wxObject.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxList_declared
+  #define wxList_declared
+  AMI_DECLARE_TYPE(wxList)
+#endif
+#ifndef wxObjectListNode_declared
+  #define wxObjectListNode_declared
+  AMI_DECLARE_TYPE(wxObjectListNode)
+#endif
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxList.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,21 +83,24 @@ void WrapClass_wxList::AddMethods(WrapClass<wxList>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-/* The following types are missing: _9904
-      AddVar_Sort( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+/* The following types are missing: _17586
+  AddVar_Sort( this_ptr);
 */
-      AddVar_Member( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_Member( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -99,7 +121,7 @@ void WrapClass_wxList::AddMethods(WrapClass<wxList>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxList::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxList_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -208,7 +230,7 @@ BasicVariable::ptr WrapClass_wxList::
 {
     return AMILabType<wxList >::CreateVar( new wxList(*(this->_objectptr->GetObj())));
 }
-/* The following types are missing: _9904
+/* The following types are missing: _17586
 
 //---------------------------------------------------
 //  Wrapping of void wxList::Sort(wxSortCompareFunction compfunc)
@@ -216,7 +238,7 @@ BasicVariable::ptr WrapClass_wxList::
 void WrapClass_wxList::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9904, "parameter named 'compfunc'")
+  ADDPARAMCOMMENT_TYPE( _17586, "parameter named 'compfunc'")
 }
 
 //---------------------------------------------------
@@ -227,8 +249,8 @@ BasicVariable::ptr WrapClass_wxList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _9904 compfunc;
-  if (!get_val_param<_9904 >(compfunc,_p,_n,true,false)) ClassHelpAndReturn;
+  _17586 compfunc;
+  if (!get_val_param<_17586 >(compfunc,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(compfunc);
   return BasicVariable::ptr();
@@ -253,12 +275,18 @@ BasicVariable::ptr WrapClass_wxList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxObject > object_smtptr;
-  if (!get_val_smtptr_param<wxObject >(object_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxObject* object = object_smtptr.get();
+  wxObject* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > object_smtptr;
+    if (!get_val_smtptr_param<wxObject >(object_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    object = object_smtptr.get();
+  }
 
   wxNode * res =   this->_objectptr->GetObj()->Member(object);
-  BasicVariable::ptr res_var = WrapClass_wxObjectListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObjectListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -278,7 +306,7 @@ BasicVariable::ptr WrapClass_wxList::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

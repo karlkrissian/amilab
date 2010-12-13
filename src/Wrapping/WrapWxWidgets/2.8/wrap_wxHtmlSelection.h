@@ -13,11 +13,13 @@
 #ifndef _wrap_wxHtmlSelection_h_
 #define _wrap_wxHtmlSelection_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxHtmlSelection);
+#ifndef wxHtmlSelection_declared
+  #define wxHtmlSelection_declared
+  AMI_DECLARE_TYPE(wxHtmlSelection);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxHtmlSelection : public WrapClass<wxHtmlSelection>
@@ -99,12 +103,13 @@ class WrapClass_wxHtmlSelection : public WrapClass<wxHtmlSelection>
 
     void AddMethods(WrapClass<wxHtmlSelection>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxHtmlSelection_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxHtmlSelection_h

@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHtmlTagsModule.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxHtmlTagsModule.h"
-#include "wrap_wxClassInfo.h"
-#include "wrap_wxHtmlWinParser.h"
+#ifndef wxHtmlTagsModule_declared
+  #define wxHtmlTagsModule_declared
+  AMI_DECLARE_TYPE(wxHtmlTagsModule)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
+#ifndef wxHtmlWinParser_declared
+  #define wxHtmlWinParser_declared
+  AMI_DECLARE_TYPE(wxHtmlWinParser)
+#endif
 
 
-#include "wrap_wxHtmlTagsModule.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -100,7 +116,7 @@ void WrapClass_wxHtmlTagsModule::AddMethods(WrapClass<wxHtmlTagsModule>::ptr thi
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHtmlTagsModule::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHtmlTagsModule_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -220,7 +236,7 @@ BasicVariable::ptr WrapClass_wxHtmlTagsModule::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 
@@ -278,9 +294,15 @@ BasicVariable::ptr WrapClass_wxHtmlTagsModule::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlWinParser > param0_smtptr;
-  if (!get_val_smtptr_param<wxHtmlWinParser >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlWinParser* param0 = param0_smtptr.get();
+  wxHtmlWinParser* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(wxHtmlWinParser*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlWinParser > param0_smtptr;
+    if (!get_val_smtptr_param<wxHtmlWinParser >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->FillHandlersTable(param0);
   return BasicVariable::ptr();

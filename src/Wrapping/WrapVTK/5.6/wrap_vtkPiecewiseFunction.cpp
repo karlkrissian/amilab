@@ -16,15 +16,28 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkPiecewiseFunction.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkPiecewiseFunction.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkDataObject.h"
+#ifndef vtkPiecewiseFunction_declared
+  #define vtkPiecewiseFunction_declared
+  AMI_DECLARE_TYPE(vtkPiecewiseFunction)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkDataObject_declared
+  #define vtkDataObject_declared
+  AMI_DECLARE_TYPE(vtkDataObject)
+#endif
 
 
-#include "wrap_vtkPiecewiseFunction.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -143,7 +156,7 @@ void WrapClass_vtkPiecewiseFunction::AddMethods(WrapClass<vtkPiecewiseFunction>:
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkPiecewiseFunction::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkPiecewiseFunction_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -187,7 +200,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPiecewiseFunction * res =   vtkPiecewiseFunction::New();
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -246,7 +259,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   }
 
   vtkPiecewiseFunction * res =   vtkPiecewiseFunction::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: vtkInformation
@@ -280,7 +293,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   }
 
   vtkPiecewiseFunction * res =   vtkPiecewiseFunction::GetData(info);
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 */
@@ -334,7 +347,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   if (!get_val_param<int >(i,_p,_n,false,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   vtkPiecewiseFunction::GetData(v, i);
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 */
@@ -381,7 +394,7 @@ BasicVariable::ptr WrapClass_vtkPiecewiseFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

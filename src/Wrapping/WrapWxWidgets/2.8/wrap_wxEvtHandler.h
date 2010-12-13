@@ -13,11 +13,13 @@
 #ifndef _wrap_wxEvtHandler_h_
 #define _wrap_wxEvtHandler_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxObject.h"
 
 
-
-AMI_DECLARE_TYPE(wxEvtHandler);
+#ifndef wxEvtHandler_declared
+  #define wxEvtHandler_declared
+  AMI_DECLARE_TYPE(wxEvtHandler);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxEvtHandler : public WrapClass<wxEvtHandler>
@@ -110,12 +114,13 @@ class WrapClass_wxEvtHandler : public WrapClass<wxEvtHandler>
 
     void AddMethods(WrapClass<wxEvtHandler>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxEvtHandler_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxEvtHandler_h

@@ -10,22 +10,44 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxCommandEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxCommandEvent.h"
-#include "wrap_wxClientData.h"
-#include "wrap_wxString.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxCommandEvent_declared
+  #define wxCommandEvent_declared
+  AMI_DECLARE_TYPE(wxCommandEvent)
+#endif
+#ifndef wxClientData_declared
+  #define wxClientData_declared
+  AMI_DECLARE_TYPE(wxClientData)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxCommandEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -65,30 +87,33 @@ void WrapClass_wxCommandEvent::AddMethods(WrapClass<wxCommandEvent>::ptr this_pt
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 /* The following types are missing: void
-      AddVar_SetClientData( this_ptr);
+  AddVar_SetClientData( this_ptr);
 */
-      AddVar_GetClientData( this_ptr);
-      AddVar_SetClientObject( this_ptr);
-      AddVar_GetClientObject( this_ptr);
-      AddVar_GetSelection( this_ptr);
-      AddVar_SetString( this_ptr);
-      AddVar_GetString( this_ptr);
-      AddVar_IsChecked( this_ptr);
-      AddVar_IsSelection( this_ptr);
-      AddVar_SetExtraLong( this_ptr);
-      AddVar_GetExtraLong( this_ptr);
-      AddVar_SetInt( this_ptr);
-      AddVar_GetInt( this_ptr);
-      AddVar_Clone( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetClientData( this_ptr);
+  AddVar_SetClientObject( this_ptr);
+  AddVar_GetClientObject( this_ptr);
+  AddVar_GetSelection( this_ptr);
+  AddVar_SetString( this_ptr);
+  AddVar_GetString( this_ptr);
+  AddVar_IsChecked( this_ptr);
+  AddVar_IsSelection( this_ptr);
+  AddVar_SetExtraLong( this_ptr);
+  AddVar_GetExtraLong( this_ptr);
+  AddVar_SetInt( this_ptr);
+  AddVar_GetInt( this_ptr);
+  AddVar_Clone( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -109,7 +134,7 @@ void WrapClass_wxCommandEvent::AddMethods(WrapClass<wxCommandEvent>::ptr this_pt
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxCommandEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxCommandEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -241,9 +266,15 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<void > clientData_smtptr;
-  if (!get_val_smtptr_param<void >(clientData_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  void* clientData = clientData_smtptr.get();
+  void* clientData;
+  if (CheckNullVar(_p,_n))  {
+    clientData=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > clientData_smtptr;
+    if (!get_val_smtptr_param<void >(clientData_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    clientData = clientData_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetClientData(clientData);
   return BasicVariable::ptr();
@@ -285,9 +316,15 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxClientData > clientObject_smtptr;
-  if (!get_val_smtptr_param<wxClientData >(clientObject_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxClientData* clientObject = clientObject_smtptr.get();
+  wxClientData* clientObject;
+  if (CheckNullVar(_p,_n))  {
+    clientObject=(wxClientData*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxClientData > clientObject_smtptr;
+    if (!get_val_smtptr_param<wxClientData >(clientObject_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    clientObject = clientObject_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetClientObject(clientObject);
   return BasicVariable::ptr();
@@ -309,7 +346,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClientData * res =   this->_objectptr->GetObj()->GetClientObject();
-  BasicVariable::ptr res_var = WrapClass_wxClientData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClientData >::CreateVar(res,true);
   return res_var;
 }
 
@@ -518,7 +555,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -538,7 +575,7 @@ BasicVariable::ptr WrapClass_wxCommandEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

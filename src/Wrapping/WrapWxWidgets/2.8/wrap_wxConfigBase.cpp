@@ -10,20 +10,33 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxConfigBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxConfigBase.h"
-#include "wrap_wxString.h"
 #include "stdlib.h"
+#ifndef wxConfigBase_declared
+  #define wxConfigBase_declared
+  AMI_DECLARE_TYPE(wxConfigBase)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
 
 
-#include "wrap_wxConfigBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -131,7 +144,7 @@ void WrapClass_wxConfigBase::AddMethods(WrapClass<wxConfigBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxConfigBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxConfigBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -171,12 +184,18 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxConfigBase > pConfig_smtptr;
-  if (!get_val_smtptr_param<wxConfigBase >(pConfig_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxConfigBase* pConfig = pConfig_smtptr.get();
+  wxConfigBase* pConfig;
+  if (CheckNullVar(_p,_n))  {
+    pConfig=(wxConfigBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxConfigBase > pConfig_smtptr;
+    if (!get_val_smtptr_param<wxConfigBase >(pConfig_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pConfig = pConfig_smtptr.get();
+  }
 
   wxConfigBase * res =   wxConfigBase::Set(pConfig);
-  BasicVariable::ptr res_var = WrapClass_wxConfigBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxConfigBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -202,7 +221,7 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (!get_val_param<bool >(createOnDemand,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxConfigBase * res =   wxConfigBase::Get(createOnDemand);
-  BasicVariable::ptr res_var = WrapClass_wxConfigBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxConfigBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -222,7 +241,7 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxConfigBase * res =   wxConfigBase::Create();
-  BasicVariable::ptr res_var = WrapClass_wxConfigBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxConfigBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -320,9 +339,15 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (!get_val_smtptr_param<wxString >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & key = *key_smtptr;
 
-  boost::shared_ptr<wxString > pStr_smtptr;
-  if (!get_val_smtptr_param<wxString >(pStr_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* pStr = pStr_smtptr.get();
+  wxString* pStr;
+  if (CheckNullVar(_p,_n))  {
+    pStr=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > pStr_smtptr;
+    if (!get_val_smtptr_param<wxString >(pStr_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pStr = pStr_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Read(key, pStr);
   return AMILabType<bool >::CreateVar(res);
@@ -403,9 +428,15 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (!get_val_smtptr_param<wxString >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & key = *key_smtptr;
 
-  boost::shared_ptr<wxString > pStr_smtptr;
-  if (!get_val_smtptr_param<wxString >(pStr_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* pStr = pStr_smtptr.get();
+  wxString* pStr;
+  if (CheckNullVar(_p,_n))  {
+    pStr=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > pStr_smtptr;
+    if (!get_val_smtptr_param<wxString >(pStr_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pStr = pStr_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > defVal_smtptr;
   if (!get_val_smtptr_param<wxString >(defVal_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -507,9 +538,15 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (!get_val_smtptr_param<wxString >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & key = *key_smtptr;
 
-  boost::shared_ptr<int > pi_smtptr;
-  if (!get_val_smtptr_param<int >(pi_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* pi = pi_smtptr.get();
+  int* pi;
+  if (CheckNullVar(_p,_n))  {
+    pi=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > pi_smtptr;
+    if (!get_val_smtptr_param<int >(pi_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pi = pi_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Read(key, pi);
   return AMILabType<bool >::CreateVar(res);
@@ -539,9 +576,15 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (!get_val_smtptr_param<wxString >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & key = *key_smtptr;
 
-  boost::shared_ptr<int > pi_smtptr;
-  if (!get_val_smtptr_param<int >(pi_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* pi = pi_smtptr.get();
+  int* pi;
+  if (CheckNullVar(_p,_n))  {
+    pi=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > pi_smtptr;
+    if (!get_val_smtptr_param<int >(pi_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pi = pi_smtptr.get();
+  }
 
   int defVal;
   if (!get_val_param<int >(defVal,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -573,9 +616,15 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (!get_val_smtptr_param<wxString >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & key = *key_smtptr;
 
-  boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* val = val_smtptr.get();
+  double* val;
+  if (CheckNullVar(_p,_n))  {
+    val=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > val_smtptr;
+    if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    val = val_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Read(key, val);
   return AMILabType<bool >::CreateVar(res);
@@ -605,9 +654,15 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (!get_val_smtptr_param<wxString >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & key = *key_smtptr;
 
-  boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  double* val = val_smtptr.get();
+  double* val;
+  if (CheckNullVar(_p,_n))  {
+    val=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > val_smtptr;
+    if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    val = val_smtptr.get();
+  }
 
   double defVal;
   if (!get_val_param<double >(defVal,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -639,9 +694,15 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (!get_val_smtptr_param<wxString >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & key = *key_smtptr;
 
-  boost::shared_ptr<bool > val_smtptr;
-  if (!get_val_smtptr_param<bool >(val_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  bool* val = val_smtptr.get();
+  bool* val;
+  if (CheckNullVar(_p,_n))  {
+    val=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > val_smtptr;
+    if (!get_val_smtptr_param<bool >(val_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    val = val_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Read(key, val);
   return AMILabType<bool >::CreateVar(res);
@@ -671,9 +732,15 @@ BasicVariable::ptr WrapClass_wxConfigBase::
   if (!get_val_smtptr_param<wxString >(key_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & key = *key_smtptr;
 
-  boost::shared_ptr<bool > val_smtptr;
-  if (!get_val_smtptr_param<bool >(val_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  bool* val = val_smtptr.get();
+  bool* val;
+  if (CheckNullVar(_p,_n))  {
+    val=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > val_smtptr;
+    if (!get_val_smtptr_param<bool >(val_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    val = val_smtptr.get();
+  }
 
   bool defVal;
   if (!get_val_param<bool >(defVal,_p,_n,true,true)) ClassReturnEmptyVar;

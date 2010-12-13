@@ -10,22 +10,41 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxImageHistogramBase_wxImplementation_HashTable.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxIntegerHash.h"
-#include "wrap_wxIntegerEqual.h"
-#include "wrap_wxImageHistogramBase_wxImplementation_KeyEx.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxImageHistogramBase_wxImplementation_HashTable.h"
+#ifndef wxIntegerHash_declared
+  #define wxIntegerHash_declared
+  AMI_DECLARE_TYPE(wxIntegerHash)
+#endif
+#ifndef wxIntegerEqual_declared
+  #define wxIntegerEqual_declared
+  AMI_DECLARE_TYPE(wxIntegerEqual)
+#endif
+#ifndef wxImageHistogramBase_wxImplementation_KeyEx_declared
+  #define wxImageHistogramBase_wxImplementation_KeyEx_declared
+  AMI_DECLARE_TYPE(wxImageHistogramBase_wxImplementation_KeyEx)
+#endif
+#ifndef wxImageHistogramBase_wxImplementation_HashTable_declared
+  #define wxImageHistogramBase_wxImplementation_HashTable_declared
+  AMI_DECLARE_TYPE(wxImageHistogramBase_wxImplementation_HashTable)
+#endif
 
 
-#include "wrap_wxImageHistogramBase_wxImplementation_HashTable.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -65,37 +84,40 @@ void WrapClass_wxImageHistogramBase_wxImplementation_HashTable::AddMethods(WrapC
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_hash_funct( this_ptr);
-      AddVar_key_eq( this_ptr);
-      AddVar_clear( this_ptr);
-      AddVar_size( this_ptr);
-      AddVar_max_size( this_ptr);
-      AddVar_empty( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_hash_funct( this_ptr);
+  AddVar_key_eq( this_ptr);
+  AddVar_clear( this_ptr);
+  AddVar_size( this_ptr);
+  AddVar_max_size( this_ptr);
+  AddVar_empty( this_ptr);
 /* The following types are missing: const_iterator
-      AddVar_end_1( this_ptr);
+  AddVar_end_1( this_ptr);
 */
-      AddVar_end( this_ptr);
+  AddVar_end( this_ptr);
 /* The following types are missing: iterator
-      AddVar_end_2( this_ptr);
+  AddVar_end_2( this_ptr);
 */
 /* The following types are missing: const_iterator
-      AddVar_begin_1( this_ptr);
+  AddVar_begin_1( this_ptr);
 */
-      AddVar_begin( this_ptr);
+  AddVar_begin( this_ptr);
 /* The following types are missing: iterator
-      AddVar_begin_2( this_ptr);
+  AddVar_begin_2( this_ptr);
 */
-      AddVar_erase( this_ptr);
+  AddVar_erase( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -105,7 +127,7 @@ void WrapClass_wxImageHistogramBase_wxImplementation_HashTable::AddMethods(WrapC
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxImageHistogramBase_wxImplementation_HashTable::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxImageHistogramBase_wxImplementation_HashTable_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

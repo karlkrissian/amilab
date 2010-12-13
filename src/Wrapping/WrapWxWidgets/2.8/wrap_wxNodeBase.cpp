@@ -10,22 +10,38 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxNodeBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxListBase.h"
-#include "wrap_wxNodeBase.h"
-#include "wrap_wxListKey.h"
 #include "stdlib.h"
 #include "wchar.h"
+#ifndef wxListBase_declared
+  #define wxListBase_declared
+  AMI_DECLARE_TYPE(wxListBase)
+#endif
+#ifndef wxNodeBase_declared
+  #define wxNodeBase_declared
+  AMI_DECLARE_TYPE(wxNodeBase)
+#endif
+#ifndef wxListKey_declared
+  #define wxListKey_declared
+  AMI_DECLARE_TYPE(wxListKey)
+#endif
 
 
-#include "wrap_wxNodeBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -72,16 +88,19 @@ void WrapClass_wxNodeBase::AddMethods(WrapClass<wxNodeBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_GetKeyString( this_ptr);
-      AddVar_GetKeyInteger( this_ptr);
-      AddVar_SetKeyString( this_ptr);
-      AddVar_SetKeyInteger( this_ptr);
-      AddVar_GetDataPtr( this_ptr);
+  // Adding standard methods 
+  AddVar_GetKeyString( this_ptr);
+  AddVar_GetKeyInteger( this_ptr);
+  AddVar_SetKeyString( this_ptr);
+  AddVar_SetKeyInteger( this_ptr);
+  AddVar_GetDataPtr( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -91,7 +110,7 @@ void WrapClass_wxNodeBase::AddMethods(WrapClass<wxNodeBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxNodeBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxNodeBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -131,21 +150,45 @@ BasicVariable::ptr WrapClass_wxNodeBase::
   if (_p->GetNumParam()>5) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxListBase > list_smtptr;
-  if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxListBase* list = list_smtptr.get();
+  wxListBase* list = 0u;
+  if (CheckNullVar(_p,_n))  {
+    list=(wxListBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxListBase > list_smtptr;
+    if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    list = list_smtptr.get();
+  }
 
-  boost::shared_ptr<wxNodeBase > previous_smtptr;
-  if (!get_val_smtptr_param<wxNodeBase >(previous_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
-  wxNodeBase* previous = previous_smtptr.get();
+  wxNodeBase* previous = 0u;
+  if (CheckNullVar(_p,_n))  {
+    previous=(wxNodeBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxNodeBase > previous_smtptr;
+    if (!get_val_smtptr_param<wxNodeBase >(previous_smtptr,_p,_n,false,true,false)) ClassHelpAndReturn;
+    previous = previous_smtptr.get();
+  }
 
-  boost::shared_ptr<wxNodeBase > next_smtptr;
-  if (!get_val_smtptr_param<wxNodeBase >(next_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
-  wxNodeBase* next = next_smtptr.get();
+  wxNodeBase* next = 0u;
+  if (CheckNullVar(_p,_n))  {
+    next=(wxNodeBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxNodeBase > next_smtptr;
+    if (!get_val_smtptr_param<wxNodeBase >(next_smtptr,_p,_n,false,true,false)) ClassHelpAndReturn;
+    next = next_smtptr.get();
+  }
 
-  boost::shared_ptr<void > data_smtptr;
-  if (!get_val_smtptr_param<void >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  void* data = data_smtptr.get();
+  void* data = 0l;
+  if (CheckNullVar(_p,_n))  {
+    data=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > data_smtptr;
+    if (!get_val_smtptr_param<void >(data_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   boost::shared_ptr<wxListKey > key_smtptr;
   if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;

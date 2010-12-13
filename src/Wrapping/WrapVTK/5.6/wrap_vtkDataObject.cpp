@@ -16,16 +16,29 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkDataObject.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkDataObject.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkAbstractArray.h"
+#ifndef vtkDataObject_declared
+  #define vtkDataObject_declared
+  AMI_DECLARE_TYPE(vtkDataObject)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkAbstractArray_declared
+  #define vtkAbstractArray_declared
+  AMI_DECLARE_TYPE(vtkAbstractArray)
+#endif
 
 
-#include "wrap_vtkDataObject.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -261,7 +274,7 @@ void WrapClass_vtkDataObject::AddMethods(WrapClass<vtkDataObject>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkDataObject::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkDataObject_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -410,7 +423,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkDataObject * res =   vtkDataObject::New();
-  BasicVariable::ptr res_var = WrapClass_vtkDataObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -469,7 +482,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   }
 
   vtkDataObject * res =   vtkDataObject::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkDataObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1433,7 +1446,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   }
 
   vtkDataObject * res =   vtkDataObject::GetData(info);
-  BasicVariable::ptr res_var = WrapClass_vtkDataObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataObject >::CreateVar(res,true);
   return res_var;
 }
 */
@@ -1487,7 +1500,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (!get_val_param<int >(i,_p,_n,false,true)) ClassReturnEmptyVar;
 
   vtkDataObject * res =   vtkDataObject::GetData(v, i);
-  BasicVariable::ptr res_var = WrapClass_vtkDataObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataObject >::CreateVar(res,true);
   return res_var;
 }
 */
@@ -1534,7 +1547,7 @@ BasicVariable::ptr WrapClass_vtkDataObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkDataObject * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkDataObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataObject >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

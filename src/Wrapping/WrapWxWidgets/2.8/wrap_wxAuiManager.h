@@ -13,11 +13,13 @@
 #ifndef _wrap_wxAuiManager_h_
 #define _wrap_wxAuiManager_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxEvtHandler.h"
 
 
-
-AMI_DECLARE_TYPE(wxAuiManager);
+#ifndef wxAuiManager_declared
+  #define wxAuiManager_declared
+  AMI_DECLARE_TYPE(wxAuiManager);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
@@ -117,12 +121,13 @@ class WrapClass_wxAuiManager : public WrapClass<wxAuiManager>
 
     void AddMethods(WrapClass<wxAuiManager>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxAuiManager_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxAuiManager_h

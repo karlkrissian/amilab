@@ -13,11 +13,13 @@
 #ifndef _wrap_wxAuiDockArt_h_
 #define _wrap_wxAuiDockArt_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxAuiDockArt);
+#ifndef wxAuiDockArt_declared
+  #define wxAuiDockArt_declared
+  AMI_DECLARE_TYPE(wxAuiDockArt);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiDockArt : public WrapClass<wxAuiDockArt>
@@ -79,12 +83,13 @@ class WrapClass_wxAuiDockArt : public WrapClass<wxAuiDockArt>
 
     void AddMethods(WrapClass<wxAuiDockArt>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxAuiDockArt_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxAuiDockArt_h

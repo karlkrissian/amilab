@@ -16,16 +16,32 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkWindowToImageFilter.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkWindowToImageFilter.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkWindow.h"
-#include "wrap_vtkImageData.h"
+#ifndef vtkWindowToImageFilter_declared
+  #define vtkWindowToImageFilter_declared
+  AMI_DECLARE_TYPE(vtkWindowToImageFilter)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkWindow_declared
+  #define vtkWindow_declared
+  AMI_DECLARE_TYPE(vtkWindow)
+#endif
+#ifndef vtkImageData_declared
+  #define vtkImageData_declared
+  AMI_DECLARE_TYPE(vtkImageData)
+#endif
 
 
-#include "wrap_vtkWindowToImageFilter.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -108,7 +124,7 @@ void WrapClass_vtkWindowToImageFilter::AddMethods(WrapClass<vtkWindowToImageFilt
   AddVar_SetInputBufferTypeToRGBA( this_ptr);
   AddVar_SetInputBufferTypeToZBuffer( this_ptr);
   AddVar_GetOutput( this_ptr);
-/* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
+/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
   AddVar_ProcessRequest( this_ptr);
 */
 
@@ -138,7 +154,7 @@ void WrapClass_vtkWindowToImageFilter::AddMethods(WrapClass<vtkWindowToImageFilt
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkWindowToImageFilter::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkWindowToImageFilter_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -175,7 +191,7 @@ BasicVariable::ptr WrapClass_vtkWindowToImageFilter::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkWindowToImageFilter * res =   vtkWindowToImageFilter::New();
-  BasicVariable::ptr res_var = WrapClass_vtkWindowToImageFilter::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkWindowToImageFilter >::CreateVar(res,true);
   return res_var;
 }
 
@@ -234,7 +250,7 @@ BasicVariable::ptr WrapClass_vtkWindowToImageFilter::
   }
 
   vtkWindowToImageFilter * res =   vtkWindowToImageFilter::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkWindowToImageFilter::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkWindowToImageFilter >::CreateVar(res,true);
   return res_var;
 }
 
@@ -280,7 +296,7 @@ BasicVariable::ptr WrapClass_vtkWindowToImageFilter::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkWindowToImageFilter * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkWindowToImageFilter::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkWindowToImageFilter >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -362,7 +378,7 @@ BasicVariable::ptr WrapClass_vtkWindowToImageFilter::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkWindow * res =   this->_objectptr->GetObj()->GetInput();
-  BasicVariable::ptr res_var = WrapClass_vtkWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -877,10 +893,10 @@ BasicVariable::ptr WrapClass_vtkWindowToImageFilter::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkImageData * res =   this->_objectptr->GetObj()->GetOutput();
-  BasicVariable::ptr res_var = WrapClass_vtkImageData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkImageData >::CreateVar(res,true);
   return res_var;
 }
-/* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
+/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
 
 //---------------------------------------------------
 //  Wrapping of int vtkWindowToImageFilter::ProcessRequest(vtkInformation * param0, vtkInformationVector * * param1, vtkInformationVector * param2)
@@ -912,14 +928,16 @@ BasicVariable::ptr WrapClass_vtkWindowToImageFilter::
     param0 = param0_smtptr.get();
   }
 
-  vtkInformationVector* param1;
+  vtkInformationVector* local_param1 = NULL;
+  vtkInformationVector** param1;
   if (CheckNullVar(_p,_n))  {
-    param1=(vtkInformationVector*)NULL;
+    param1=(vtkInformationVector**)NULL;
     _n++;
   } else {
     boost::shared_ptr<vtkInformationVector > param1_smtptr;
     if (!get_val_smtptr_param<vtkInformationVector >(param1_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-    param1 = param1_smtptr.get();
+    local_param1 = param1_smtptr.get();
+    param1 = &local_param1;
   }
 
   vtkInformationVector* param2;

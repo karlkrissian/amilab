@@ -13,11 +13,13 @@
 #ifndef _wrap_wxUpdateUIEvent_h_
 #define _wrap_wxUpdateUIEvent_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxCommandEvent.h"
 
 
-
-AMI_DECLARE_TYPE(wxUpdateUIEvent);
+#ifndef wxUpdateUIEvent_declared
+  #define wxUpdateUIEvent_declared
+  AMI_DECLARE_TYPE(wxUpdateUIEvent);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxUpdateUIEvent : public WrapClass<wxUpdateUIEvent>
@@ -105,12 +109,13 @@ class WrapClass_wxUpdateUIEvent : public WrapClass<wxUpdateUIEvent>
 
     void AddMethods(WrapClass<wxUpdateUIEvent>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxUpdateUIEvent_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxUpdateUIEvent_h

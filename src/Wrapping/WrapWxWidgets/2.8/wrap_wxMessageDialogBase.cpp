@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxMessageDialogBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxMessageDialogBase.h"
+#ifndef wxMessageDialogBase_declared
+  #define wxMessageDialogBase_declared
+  AMI_DECLARE_TYPE(wxMessageDialogBase)
+#endif
 
 
-#include "wrap_wxMessageDialogBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -83,7 +93,7 @@ void WrapClass_wxMessageDialogBase::AddMethods(WrapClass<wxMessageDialogBase>::p
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxMessageDialogBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxMessageDialogBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

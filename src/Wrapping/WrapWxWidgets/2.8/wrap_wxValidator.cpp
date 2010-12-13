@@ -10,22 +10,44 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxValidator.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxObject.h"
-#include "wrap_wxValidator.h"
-#include "wrap_wxWindow.h"
-#include "wrap_wxWindowBase.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxValidator_declared
+  #define wxValidator_declared
+  AMI_DECLARE_TYPE(wxValidator)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxValidator.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -72,19 +94,22 @@ void WrapClass_wxValidator::AddMethods(WrapClass<wxValidator>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Clone( this_ptr);
-      AddVar_Copy( this_ptr);
-      AddVar_Validate( this_ptr);
-      AddVar_TransferToWindow( this_ptr);
-      AddVar_TransferFromWindow( this_ptr);
-      AddVar_GetWindow( this_ptr);
-      AddVar_SetWindow( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_Clone( this_ptr);
+  AddVar_Copy( this_ptr);
+  AddVar_Validate( this_ptr);
+  AddVar_TransferToWindow( this_ptr);
+  AddVar_TransferFromWindow( this_ptr);
+  AddVar_GetWindow( this_ptr);
+  AddVar_SetWindow( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -105,7 +130,7 @@ void WrapClass_wxValidator::AddMethods(WrapClass<wxValidator>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxValidator::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxValidator_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -205,7 +230,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObject * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -253,9 +278,15 @@ BasicVariable::ptr WrapClass_wxValidator::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > param0_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* param0 = param0_smtptr.get();
+  wxWindow* param0;
+  if (CheckNullVar(_p,_n))  {
+    param0=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > param0_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(param0_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param0 = param0_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Validate(param0);
   return AMILabType<bool >::CreateVar(res);
@@ -315,7 +346,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetWindow();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -336,9 +367,15 @@ BasicVariable::ptr WrapClass_wxValidator::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > win_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* win = win_smtptr.get();
+  wxWindowBase* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > win_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetWindow(win);
   return BasicVariable::ptr();
@@ -360,7 +397,7 @@ BasicVariable::ptr WrapClass_wxValidator::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxObjectListNode.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxListBase.h"
-#include "wrap_wxObjectListNode.h"
-#include "wrap_wxObject.h"
-#include "wrap_wxListKey.h"
+#ifndef wxListBase_declared
+  #define wxListBase_declared
+  AMI_DECLARE_TYPE(wxListBase)
+#endif
+#ifndef wxObjectListNode_declared
+  #define wxObjectListNode_declared
+  AMI_DECLARE_TYPE(wxObjectListNode)
+#endif
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxListKey_declared
+  #define wxListKey_declared
+  AMI_DECLARE_TYPE(wxListKey)
+#endif
 
 
-#include "wrap_wxObjectListNode.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -71,15 +90,18 @@ void WrapClass_wxObjectListNode::AddMethods(WrapClass<wxObjectListNode>::ptr thi
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_GetNext( this_ptr);
-      AddVar_GetPrevious( this_ptr);
-      AddVar_GetData( this_ptr);
-      AddVar_SetData( this_ptr);
+  // Adding standard methods 
+  AddVar_GetNext( this_ptr);
+  AddVar_GetPrevious( this_ptr);
+  AddVar_GetData( this_ptr);
+  AddVar_SetData( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -100,7 +122,7 @@ void WrapClass_wxObjectListNode::AddMethods(WrapClass<wxObjectListNode>::ptr thi
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxObjectListNode::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxObjectListNode_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -141,21 +163,45 @@ BasicVariable::ptr WrapClass_wxObjectListNode::
   if (_p->GetNumParam()>5) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxListBase > list_smtptr;
-  if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxListBase* list = list_smtptr.get();
+  wxListBase* list = 0u;
+  if (CheckNullVar(_p,_n))  {
+    list=(wxListBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxListBase > list_smtptr;
+    if (!get_val_smtptr_param<wxListBase >(list_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    list = list_smtptr.get();
+  }
 
-  boost::shared_ptr<wxObjectListNode > previous_smtptr;
-  if (!get_val_smtptr_param<wxObjectListNode >(previous_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
-  wxObjectListNode* previous = previous_smtptr.get();
+  wxObjectListNode* previous = 0u;
+  if (CheckNullVar(_p,_n))  {
+    previous=(wxObjectListNode*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObjectListNode > previous_smtptr;
+    if (!get_val_smtptr_param<wxObjectListNode >(previous_smtptr,_p,_n,false,true,false)) ClassHelpAndReturn;
+    previous = previous_smtptr.get();
+  }
 
-  boost::shared_ptr<wxObjectListNode > next_smtptr;
-  if (!get_val_smtptr_param<wxObjectListNode >(next_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
-  wxObjectListNode* next = next_smtptr.get();
+  wxObjectListNode* next = 0u;
+  if (CheckNullVar(_p,_n))  {
+    next=(wxObjectListNode*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObjectListNode > next_smtptr;
+    if (!get_val_smtptr_param<wxObjectListNode >(next_smtptr,_p,_n,false,true,false)) ClassHelpAndReturn;
+    next = next_smtptr.get();
+  }
 
-  boost::shared_ptr<wxObject > data_smtptr;
-  if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxObject* data = data_smtptr.get();
+  wxObject* data = 0u;
+  if (CheckNullVar(_p,_n))  {
+    data=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > data_smtptr;
+    if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   boost::shared_ptr<wxListKey > key_smtptr;
   if (!get_val_smtptr_param<wxListKey >(key_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
@@ -183,7 +229,7 @@ BasicVariable::ptr WrapClass_wxObjectListNode::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObjectListNode * res =   this->_objectptr->GetObj()->GetNext();
-  BasicVariable::ptr res_var = WrapClass_wxObjectListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObjectListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -203,7 +249,7 @@ BasicVariable::ptr WrapClass_wxObjectListNode::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObjectListNode * res =   this->_objectptr->GetObj()->GetPrevious();
-  BasicVariable::ptr res_var = WrapClass_wxObjectListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObjectListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -223,7 +269,7 @@ BasicVariable::ptr WrapClass_wxObjectListNode::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObject * res =   this->_objectptr->GetObj()->GetData();
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -244,9 +290,15 @@ BasicVariable::ptr WrapClass_wxObjectListNode::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxObject > data_smtptr;
-  if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxObject* data = data_smtptr.get();
+  wxObject* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > data_smtptr;
+    if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetData(data);
   return BasicVariable::ptr();

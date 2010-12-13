@@ -26,8 +26,10 @@
 #include "wrap_vtkObject.h"
 
 
-
-AMI_DECLARE_TYPE(vtkInteractorObserver);
+#ifndef vtkInteractorObserver_declared
+  #define vtkInteractorObserver_declared
+  AMI_DECLARE_TYPE(vtkInteractorObserver);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkInteractorObserver : public WrapClass<vtkInteractorObserver>
@@ -111,12 +113,13 @@ class WrapClass_vtkInteractorObserver : public WrapClass<vtkInteractorObserver>
 
     void AddMethods(WrapClass<vtkInteractorObserver>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkInteractorObserver_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkInteractorObserver_h

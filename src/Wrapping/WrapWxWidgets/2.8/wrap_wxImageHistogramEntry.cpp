@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxImageHistogramEntry.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxImageHistogramEntry.h"
+#ifndef wxImageHistogramEntry_declared
+  #define wxImageHistogramEntry_declared
+  AMI_DECLARE_TYPE(wxImageHistogramEntry)
+#endif
 
 
-#include "wrap_wxImageHistogramEntry.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -61,43 +71,46 @@ void WrapClass_wxImageHistogramEntry::AddMethods(WrapClass<wxImageHistogramEntry
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Type not available
-      // Adding public member index
-      boost::shared_ptr<long unsigned int > var_index_ptr(&GetObj()->index, smartpointer_nodeleter<long unsigned int >());
-      if (var_index_ptr.get()) {
-        BasicVariable::ptr var_index = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_index_ptr);
-        if (var_index.get()) {
-          var_index->Rename("index");
-          context->AddVar(var_index,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member value
-      boost::shared_ptr<long unsigned int > var_value_ptr(&GetObj()->value, smartpointer_nodeleter<long unsigned int >());
-      if (var_value_ptr.get()) {
-        BasicVariable::ptr var_value = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_value_ptr);
-        if (var_value.get()) {
-          var_value->Rename("value");
-          context->AddVar(var_value,context);
-        }
-      }
-      */
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Type not available
+  // Adding public member index
+  boost::shared_ptr<long unsigned int > var_index_ptr(&GetObj()->index, smartpointer_nodeleter<long unsigned int >());
+  if (var_index_ptr.get()) {
+    BasicVariable::ptr var_index = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_index_ptr);
+    if (var_index.get()) {
+      var_index->Rename("index");
+      context->AddVar(var_index,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member value
+  boost::shared_ptr<long unsigned int > var_value_ptr(&GetObj()->value, smartpointer_nodeleter<long unsigned int >());
+  if (var_value_ptr.get()) {
+    BasicVariable::ptr var_value = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_value_ptr);
+    if (var_value.get()) {
+      var_value->Rename("value");
+      context->AddVar(var_value,context);
+    }
+  }
+  */
+
+
+  
 
 
   // Adding Bases
@@ -108,7 +121,7 @@ void WrapClass_wxImageHistogramEntry::AddMethods(WrapClass<wxImageHistogramEntry
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxImageHistogramEntry::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxImageHistogramEntry_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

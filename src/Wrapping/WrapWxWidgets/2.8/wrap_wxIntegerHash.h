@@ -13,11 +13,13 @@
 #ifndef _wrap_wxIntegerHash_h_
 #define _wrap_wxIntegerHash_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxIntegerHash);
+#ifndef wxIntegerHash_declared
+  #define wxIntegerHash_declared
+  AMI_DECLARE_TYPE(wxIntegerHash);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxIntegerHash : public WrapClass<wxIntegerHash>
@@ -101,12 +105,13 @@ class WrapClass_wxIntegerHash : public WrapClass<wxIntegerHash>
 
     void AddMethods(WrapClass<wxIntegerHash>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxIntegerHash_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxIntegerHash_h

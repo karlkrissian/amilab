@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxDrawObject.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxDCBase.h"
-#include "wrap_wxDrawObject.h"
+#ifndef wxDCBase_declared
+  #define wxDCBase_declared
+  AMI_DECLARE_TYPE(wxDCBase)
+#endif
+#ifndef wxDrawObject_declared
+  #define wxDrawObject_declared
+  AMI_DECLARE_TYPE(wxDrawObject)
+#endif
 
 
-#include "wrap_wxDrawObject.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,21 +75,24 @@ void WrapClass_wxDrawObject::AddMethods(WrapClass<wxDrawObject>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Draw( this_ptr);
-      AddVar_CalcBoundingBox( this_ptr);
-      AddVar_ResetBoundingBox( this_ptr);
-      AddVar_MinX( this_ptr);
-      AddVar_MaxX( this_ptr);
-      AddVar_MinY( this_ptr);
-      AddVar_MaxY( this_ptr);
+  // Adding standard methods 
+  AddVar_Draw( this_ptr);
+  AddVar_CalcBoundingBox( this_ptr);
+  AddVar_ResetBoundingBox( this_ptr);
+  AddVar_MinX( this_ptr);
+  AddVar_MaxX( this_ptr);
+  AddVar_MinY( this_ptr);
+  AddVar_MaxY( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -86,7 +102,7 @@ void WrapClass_wxDrawObject::AddMethods(WrapClass<wxDrawObject>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxDrawObject::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxDrawObject_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

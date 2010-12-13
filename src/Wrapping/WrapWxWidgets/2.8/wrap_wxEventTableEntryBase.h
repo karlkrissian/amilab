@@ -13,11 +13,13 @@
 #ifndef _wrap_wxEventTableEntryBase_h_
 #define _wrap_wxEventTableEntryBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxEventTableEntryBase);
+#ifndef wxEventTableEntryBase_declared
+  #define wxEventTableEntryBase_declared
+  AMI_DECLARE_TYPE(wxEventTableEntryBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxEventTableEntryBase : public WrapClass<wxEventTableEntryBase>
@@ -84,12 +88,13 @@ class WrapClass_wxEventTableEntryBase : public WrapClass<wxEventTableEntryBase>
 
     void AddMethods(WrapClass<wxEventTableEntryBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxEventTableEntryBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxEventTableEntryBase_h

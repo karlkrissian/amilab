@@ -13,11 +13,13 @@
 #ifndef _wrap_wxPanel_h_
 #define _wrap_wxPanel_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxWindow.h"
 
 
-
-AMI_DECLARE_TYPE(wxPanel);
+#ifndef wxPanel_declared
+  #define wxPanel_declared
+  AMI_DECLARE_TYPE(wxPanel);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxPanel : public WrapClass<wxPanel>
@@ -96,12 +100,13 @@ class WrapClass_wxPanel : public WrapClass<wxPanel>
 
     void AddMethods(WrapClass<wxPanel>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxPanel_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxPanel_h

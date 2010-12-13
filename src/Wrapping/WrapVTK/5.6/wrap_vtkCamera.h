@@ -26,8 +26,10 @@
 #include "wrap_vtkObject.h"
 
 
-
-AMI_DECLARE_TYPE(vtkCamera);
+#ifndef vtkCamera_declared
+  #define vtkCamera_declared
+  AMI_DECLARE_TYPE(vtkCamera);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkCamera : public WrapClass<vtkCamera>
@@ -189,12 +191,13 @@ class WrapClass_vtkCamera : public WrapClass<vtkCamera>
 
     void AddMethods(WrapClass<vtkCamera>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkCamera_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkCamera_h

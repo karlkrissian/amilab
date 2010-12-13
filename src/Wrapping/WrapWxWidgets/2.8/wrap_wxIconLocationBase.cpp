@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxIconLocationBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxIconLocationBase.h"
-#include "wrap_wxString.h"
+#ifndef wxIconLocationBase_declared
+  #define wxIconLocationBase_declared
+  AMI_DECLARE_TYPE(wxIconLocationBase)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
 
 
-#include "wrap_wxIconLocationBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,19 +75,22 @@ void WrapClass_wxIconLocationBase::AddMethods(WrapClass<wxIconLocationBase>::ptr
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_IsOk( this_ptr);
-      AddVar_SetFileName( this_ptr);
-      AddVar_GetFileName( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_IsOk( this_ptr);
+  AddVar_SetFileName( this_ptr);
+  AddVar_GetFileName( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -84,7 +100,7 @@ void WrapClass_wxIconLocationBase::AddMethods(WrapClass<wxIconLocationBase>::ptr
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxIconLocationBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxIconLocationBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxHtmlWindowInterface_h_
 #define _wrap_wxHtmlWindowInterface_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxHtmlWindowInterface);
+#ifndef wxHtmlWindowInterface_declared
+  #define wxHtmlWindowInterface_declared
+  AMI_DECLARE_TYPE(wxHtmlWindowInterface);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxHtmlWindowInterface : public WrapClass<wxHtmlWindowInterface>
@@ -77,12 +81,13 @@ class WrapClass_wxHtmlWindowInterface : public WrapClass<wxHtmlWindowInterface>
 
     void AddMethods(WrapClass<wxHtmlWindowInterface>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxHtmlWindowInterface_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxHtmlWindowInterface_h

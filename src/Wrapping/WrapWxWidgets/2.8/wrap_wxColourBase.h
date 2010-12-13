@@ -13,11 +13,13 @@
 #ifndef _wrap_wxColourBase_h_
 #define _wrap_wxColourBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxGDIObject.h"
 
 
-
-AMI_DECLARE_TYPE(wxColourBase);
+#ifndef wxColourBase_declared
+  #define wxColourBase_declared
+  AMI_DECLARE_TYPE(wxColourBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxColourBase : public WrapClass<wxColourBase>
@@ -86,12 +90,13 @@ class WrapClass_wxColourBase : public WrapClass<wxColourBase>
 
     void AddMethods(WrapClass<wxColourBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxColourBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxColourBase_h

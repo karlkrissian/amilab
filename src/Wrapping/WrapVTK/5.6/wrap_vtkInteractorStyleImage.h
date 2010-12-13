@@ -26,8 +26,10 @@
 #include "wrap_vtkInteractorStyleTrackballCamera.h"
 
 
-
-AMI_DECLARE_TYPE(vtkInteractorStyleImage);
+#ifndef vtkInteractorStyleImage_declared
+  #define vtkInteractorStyleImage_declared
+  AMI_DECLARE_TYPE(vtkInteractorStyleImage);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkInteractorStyleImage : public WrapClass<vtkInteractorStyleImage>
@@ -105,12 +107,13 @@ class WrapClass_vtkInteractorStyleImage : public WrapClass<vtkInteractorStyleIma
 
     void AddMethods(WrapClass<vtkInteractorStyleImage>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkInteractorStyleImage_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkInteractorStyleImage_h

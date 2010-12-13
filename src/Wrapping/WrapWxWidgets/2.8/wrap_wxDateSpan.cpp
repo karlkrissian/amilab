@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxDateSpan.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxDateSpan.h"
+#ifndef wxDateSpan_declared
+  #define wxDateSpan_declared
+  AMI_DECLARE_TYPE(wxDateSpan)
+#endif
 
 
-#include "wrap_wxDateSpan.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -113,7 +123,7 @@ void WrapClass_wxDateSpan::AddMethods(WrapClass<wxDateSpan>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxDateSpan::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxDateSpan_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

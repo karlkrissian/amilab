@@ -10,19 +10,29 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxThread.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxThread.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef wxThread_declared
+  #define wxThread_declared
+  AMI_DECLARE_TYPE(wxThread)
+#endif
 
 
-#include "wrap_wxThread.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -69,29 +79,32 @@ void WrapClass_wxThread::AddMethods(WrapClass<wxThread>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Create( this_ptr);
-      AddVar_Run( this_ptr);
-/* The following types are missing: void * *
-      AddVar_Delete( this_ptr);
+  // Adding standard methods 
+  AddVar_Create( this_ptr);
+  AddVar_Run( this_ptr);
+/* The following types are missing: void
+  AddVar_Delete( this_ptr);
 */
-      AddVar_Wait( this_ptr);
-      AddVar_Kill( this_ptr);
-      AddVar_Pause( this_ptr);
-      AddVar_Resume( this_ptr);
-      AddVar_SetPriority( this_ptr);
-      AddVar_GetPriority( this_ptr);
-      AddVar_IsAlive( this_ptr);
-      AddVar_IsRunning( this_ptr);
-      AddVar_IsPaused( this_ptr);
-      AddVar_IsDetached( this_ptr);
-      AddVar_GetId( this_ptr);
-      AddVar_OnExit( this_ptr);
-      AddVar_TestDestroy( this_ptr);
+  AddVar_Wait( this_ptr);
+  AddVar_Kill( this_ptr);
+  AddVar_Pause( this_ptr);
+  AddVar_Resume( this_ptr);
+  AddVar_SetPriority( this_ptr);
+  AddVar_GetPriority( this_ptr);
+  AddVar_IsAlive( this_ptr);
+  AddVar_IsRunning( this_ptr);
+  AddVar_IsPaused( this_ptr);
+  AddVar_IsDetached( this_ptr);
+  AddVar_GetId( this_ptr);
+  AddVar_OnExit( this_ptr);
+  AddVar_TestDestroy( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -101,7 +114,7 @@ void WrapClass_wxThread::AddMethods(WrapClass<wxThread>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxThread::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxThread_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -142,7 +155,7 @@ BasicVariable::ptr WrapClass_wxThread::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxThread * res =   wxThread::This();
-  BasicVariable::ptr res_var = WrapClass_wxThread::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxThread >::CreateVar(res,true);
   return res_var;
 }
 
@@ -319,7 +332,7 @@ BasicVariable::ptr WrapClass_wxThread::
   int res_int = (int) res;
   return AMILabType<int >::CreateVar(res_int);
 }
-/* The following types are missing: void * *
+/* The following types are missing: void
 
 //---------------------------------------------------
 //  Wrapping of wxThreadError wxThread::Delete(void * * rc = 0u)
@@ -339,9 +352,17 @@ BasicVariable::ptr WrapClass_wxThread::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<void > rc_smtptr;
-  if (!get_val_smtptr_param<void >(rc_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  void* rc = rc_smtptr.get();
+  void* local_rc = NULL;
+  void** rc = 0u;
+  if (CheckNullVar(_p,_n))  {
+    rc=(void**)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > rc_smtptr;
+    if (!get_val_smtptr_param<void >(rc_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    local_rc = rc_smtptr.get();
+    rc = &local_rc;
+  }
 
   wxThreadError res =   this->_objectptr->GetObj()->Delete(rc);
   int res_int = (int) res;

@@ -10,24 +10,45 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxMenuBar.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxMenu.h"
-#include "wrap_wxString.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxMenuItem.h"
-#include "wrap_wxFrame.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxMenu_declared
+  #define wxMenu_declared
+  AMI_DECLARE_TYPE(wxMenu)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxMenuItem_declared
+  #define wxMenuItem_declared
+  AMI_DECLARE_TYPE(wxMenuItem)
+#endif
+#ifndef wxFrame_declared
+  #define wxFrame_declared
+  AMI_DECLARE_TYPE(wxFrame)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxMenuBar.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -156,7 +177,7 @@ void WrapClass_wxMenuBar::AddMethods(WrapClass<wxMenuBar>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxMenuBar::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxMenuBar_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -272,7 +293,8 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
-  wxMenu* local_menus = NULL;  wxMenu** menus;
+  wxMenu* local_menus = NULL;
+  wxMenu** menus;
   if (CheckNullVar(_p,_n))  {
     menus=(wxMenu**)NULL;
     _n++;
@@ -420,7 +442,7 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   wxString const & title = *title_smtptr;
 
   wxMenu * res =   this->_objectptr->GetObj()->Replace(pos, menu, title);
-  BasicVariable::ptr res_var = WrapClass_wxMenu::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenu >::CreateVar(res,true);
   return res_var;
 }
 
@@ -447,7 +469,7 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   wxMenu * res =   this->_objectptr->GetObj()->Remove(pos);
-  BasicVariable::ptr res_var = WrapClass_wxMenu::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenu >::CreateVar(res,true);
   return res_var;
 }
 
@@ -504,7 +526,8 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   int id;
   if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;
 
-  wxMenu* local_menu = NULL;  wxMenu** menu = 0l;
+  wxMenu* local_menu = NULL;
+  wxMenu** menu = 0l;
   if (CheckNullVar(_p,_n))  {
     menu=(wxMenu**)NULL;
     _n++;
@@ -516,7 +539,7 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   }
 
   wxMenuItem * res =   this->_objectptr->GetObj()->FindItem(id, menu);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -800,7 +823,7 @@ BasicVariable::ptr WrapClass_wxMenuBar::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

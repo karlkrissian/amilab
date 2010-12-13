@@ -16,17 +16,33 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkCellTypes.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkCellTypes.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkUnsignedCharArray.h"
-#include "wrap_vtkIntArray.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkCellTypes_declared
+  #define vtkCellTypes_declared
+  AMI_DECLARE_TYPE(vtkCellTypes)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkUnsignedCharArray_declared
+  #define vtkUnsignedCharArray_declared
+  AMI_DECLARE_TYPE(vtkUnsignedCharArray)
+#endif
+#ifndef vtkIntArray_declared
+  #define vtkIntArray_declared
+  AMI_DECLARE_TYPE(vtkIntArray)
+#endif
 
 
-#include "wrap_vtkCellTypes.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -124,7 +140,7 @@ void WrapClass_vtkCellTypes::AddMethods(WrapClass<vtkCellTypes>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkCellTypes::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkCellTypes_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -163,7 +179,7 @@ BasicVariable::ptr WrapClass_vtkCellTypes::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkCellTypes * res =   vtkCellTypes::New();
-  BasicVariable::ptr res_var = WrapClass_vtkCellTypes::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkCellTypes >::CreateVar(res,true);
   return res_var;
 }
 
@@ -222,7 +238,7 @@ BasicVariable::ptr WrapClass_vtkCellTypes::
   }
 
   vtkCellTypes * res =   vtkCellTypes::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkCellTypes::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkCellTypes >::CreateVar(res,true);
   return res_var;
 }
 
@@ -320,7 +336,7 @@ BasicVariable::ptr WrapClass_vtkCellTypes::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkCellTypes * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkCellTypes::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkCellTypes >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

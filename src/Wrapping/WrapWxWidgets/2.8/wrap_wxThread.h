@@ -13,11 +13,13 @@
 #ifndef _wrap_wxThread_h_
 #define _wrap_wxThread_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxThread);
+#ifndef wxThread_declared
+  #define wxThread_declared
+  AMI_DECLARE_TYPE(wxThread);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxThread : public WrapClass<wxThread>
@@ -77,7 +81,7 @@ class WrapClass_wxThread : public WrapClass<wxThread>
     // Adding standard methods
     ADD_CLASS_METHOD(Create,"wxThreadError wxThread::Create(unsigned int stackSize = 0)  (http://docs.wxwidgets.org/stable/wx_wxthread.html#create)")
     ADD_CLASS_METHOD(Run,"wxThreadError wxThread::Run()  (http://docs.wxwidgets.org/stable/wx_wxthread.html#run)")
-/* The following types are missing: void * *
+/* The following types are missing: void
     ADD_CLASS_METHOD(Delete,"wxThreadError wxThread::Delete(void * * rc = 0u)  (http://docs.wxwidgets.org/stable/wx_wxthread.html#delete)")
 */
     ADD_CLASS_METHOD(Wait,"void * wxThread::Wait()  (http://docs.wxwidgets.org/stable/wx_wxthread.html#wait)")
@@ -100,12 +104,13 @@ class WrapClass_wxThread : public WrapClass<wxThread>
 
     void AddMethods(WrapClass<wxThread>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxThread_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxThread_h

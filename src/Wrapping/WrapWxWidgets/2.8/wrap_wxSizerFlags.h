@@ -13,11 +13,13 @@
 #ifndef _wrap_wxSizerFlags_h_
 #define _wrap_wxSizerFlags_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxSizerFlags);
+#ifndef wxSizerFlags_declared
+  #define wxSizerFlags_declared
+  AMI_DECLARE_TYPE(wxSizerFlags);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxSizerFlags : public WrapClass<wxSizerFlags>
@@ -109,12 +113,13 @@ class WrapClass_wxSizerFlags : public WrapClass<wxSizerFlags>
 
     void AddMethods(WrapClass<wxSizerFlags>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxSizerFlags_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxSizerFlags_h

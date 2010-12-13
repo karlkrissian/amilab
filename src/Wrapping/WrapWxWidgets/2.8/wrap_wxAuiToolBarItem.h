@@ -13,11 +13,13 @@
 #ifndef _wrap_wxAuiToolBarItem_h_
 #define _wrap_wxAuiToolBarItem_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxAuiToolBarItem);
+#ifndef wxAuiToolBarItem_declared
+  #define wxAuiToolBarItem_declared
+  AMI_DECLARE_TYPE(wxAuiToolBarItem);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiToolBarItem : public WrapClass<wxAuiToolBarItem>
@@ -123,12 +127,13 @@ class WrapClass_wxAuiToolBarItem : public WrapClass<wxAuiToolBarItem>
 
     void AddMethods(WrapClass<wxAuiToolBarItem>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxAuiToolBarItem_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxAuiToolBarItem_h

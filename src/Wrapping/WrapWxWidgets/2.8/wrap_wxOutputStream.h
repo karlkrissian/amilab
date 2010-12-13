@@ -13,11 +13,13 @@
 #ifndef _wrap_wxOutputStream_h_
 #define _wrap_wxOutputStream_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxStreamBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxOutputStream);
+#ifndef wxOutputStream_declared
+  #define wxOutputStream_declared
+  AMI_DECLARE_TYPE(wxOutputStream);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxOutputStream : public WrapClass<wxOutputStream>
@@ -87,7 +91,7 @@ class WrapClass_wxOutputStream : public WrapClass<wxOutputStream>
     // Operators:
     // ADD_CLASS_METHOD(operator not available,"wxOutputStream & wxOutputStream::<<(wxInputStream & out) (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#<<)")
     // ADD_CLASS_METHOD(operator not available,"wxOutputStream::<<() (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#<<)")
-/* The following types are missing: _6397
+/* The following types are missing: _6352
     // ADD_CLASS_METHOD(operator not available,"wxOutputStream & wxOutputStream::<<(__wxOutputManip func) (http://docs.wxwidgets.org/stable/wx_wxoutputstream.html#<<)")
 */
 
@@ -96,12 +100,13 @@ class WrapClass_wxOutputStream : public WrapClass<wxOutputStream>
 
     void AddMethods(WrapClass<wxOutputStream>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxOutputStream_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxOutputStream_h

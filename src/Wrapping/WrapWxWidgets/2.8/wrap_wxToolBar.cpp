@@ -10,25 +10,56 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxToolBar.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxString.h"
-#include "wrap_wxVisualAttributes.h"
-#include "wrap_wxToolBarToolBase.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxVisualAttributes_declared
+  #define wxVisualAttributes_declared
+  AMI_DECLARE_TYPE(wxVisualAttributes)
+#endif
+#ifndef wxToolBarToolBase_declared
+  #define wxToolBarToolBase_declared
+  AMI_DECLARE_TYPE(wxToolBarToolBase)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxToolBar.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -75,46 +106,49 @@ void WrapClass_wxToolBar::AddMethods(WrapClass<wxToolBar>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Create( this_ptr);
-      AddVar_SetMargins( this_ptr);
-      AddVar_SetToolSeparation( this_ptr);
-      AddVar_FindToolForPosition( this_ptr);
-      AddVar_SetToolShortHelp( this_ptr);
-      AddVar_SetWindowStyleFlag( this_ptr);
-      AddVar_SetToolNormalBitmap( this_ptr);
-      AddVar_SetToolDisabledBitmap( this_ptr);
-      AddVar_OnInternalIdle( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_Create( this_ptr);
+  AddVar_SetMargins( this_ptr);
+  AddVar_SetToolSeparation( this_ptr);
+  AddVar_FindToolForPosition( this_ptr);
+  AddVar_SetToolShortHelp( this_ptr);
+  AddVar_SetWindowStyleFlag( this_ptr);
+  AddVar_SetToolNormalBitmap( this_ptr);
+  AddVar_SetToolDisabledBitmap( this_ptr);
+  AddVar_OnInternalIdle( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Type not available
-      // Adding public member m_toolbar
-      boost::shared_ptr<_GtkToolbar > var_m_toolbar_ptr(GetObj()->m_toolbar, smartpointer_nodeleter<_GtkToolbar >());
-      if (var_m_toolbar_ptr.get()) {
-        BasicVariable::ptr var_m_toolbar = AMILabType<_GtkToolbar >::CreateVarFromSmtPtr(var_m_toolbar_ptr);
-        if (var_m_toolbar.get()) {
-          var_m_toolbar->Rename("m_toolbar");
-          context->AddVar(var_m_toolbar,context);
-        }
-      }
-      */
-      
-      // Adding public member m_blockEvent
-      boost::shared_ptr<bool > var_m_blockEvent_ptr(&GetObj()->m_blockEvent, smartpointer_nodeleter<bool >());
-      if (var_m_blockEvent_ptr.get()) {
-        BasicVariable::ptr var_m_blockEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockEvent_ptr);
-        if (var_m_blockEvent.get()) {
-          var_m_blockEvent->Rename("m_blockEvent");
-          context->AddVar(var_m_blockEvent,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Type not available
+  // Adding public member m_toolbar
+  boost::shared_ptr<_GtkToolbar > var_m_toolbar_ptr(GetObj()->m_toolbar, smartpointer_nodeleter<_GtkToolbar >());
+  if (var_m_toolbar_ptr.get()) {
+    BasicVariable::ptr var_m_toolbar = AMILabType<_GtkToolbar >::CreateVarFromSmtPtr(var_m_toolbar_ptr);
+    if (var_m_toolbar.get()) {
+      var_m_toolbar->Rename("m_toolbar");
+      context->AddVar(var_m_toolbar,context);
+    }
+  }
+  */
+  
+  // Adding public member m_blockEvent
+  boost::shared_ptr<bool > var_m_blockEvent_ptr(&GetObj()->m_blockEvent, smartpointer_nodeleter<bool >());
+  if (var_m_blockEvent_ptr.get()) {
+    BasicVariable::ptr var_m_blockEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockEvent_ptr);
+    if (var_m_blockEvent.get()) {
+      var_m_blockEvent->Rename("m_blockEvent");
+      context->AddVar(var_m_blockEvent,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -133,7 +167,7 @@ void WrapClass_wxToolBar::AddMethods(WrapClass<wxToolBar>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxToolBar::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxToolBar_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -218,9 +252,15 @@ BasicVariable::ptr WrapClass_wxToolBar::
   if (_p->GetNumParam()>6) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    parent = parent_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -298,9 +338,15 @@ BasicVariable::ptr WrapClass_wxToolBar::
   if (_p->GetNumParam()>6) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;
@@ -406,7 +452,7 @@ BasicVariable::ptr WrapClass_wxToolBar::
   if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->FindToolForPosition(x, y);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -556,7 +602,7 @@ BasicVariable::ptr WrapClass_wxToolBar::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

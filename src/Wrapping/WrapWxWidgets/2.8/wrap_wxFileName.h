@@ -13,11 +13,13 @@
 #ifndef _wrap_wxFileName_h_
 #define _wrap_wxFileName_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxFileName);
+#ifndef wxFileName_declared
+  #define wxFileName_declared
+  AMI_DECLARE_TYPE(wxFileName);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxFileName : public WrapClass<wxFileName>
@@ -114,12 +118,8 @@ class WrapClass_wxFileName : public WrapClass<wxFileName>
     ADD_CLASS_STATICMETHOD(SplitPath_3,"void wxFileName::SplitPath(wxString const & fullpath, wxString * path, wxString * name, wxString * ext, wxPathFormat format = wxPATH_NATIVE) (http://docs.wxwidgets.org/stable/wx_wxfilename.html#splitpath).");
     ADD_CLASS_STATICMETHOD(SplitVolume,"void wxFileName::SplitVolume(wxString const & fullpathWithVolume, wxString * volume, wxString * path, wxPathFormat format = wxPATH_NATIVE) (http://docs.wxwidgets.org/stable/wx_wxfilename.html#splitvolume).");
     ADD_CLASS_STATICMETHOD(StripExtension,"wxString wxFileName::StripExtension(wxString const & fullpath) (http://docs.wxwidgets.org/stable/wx_wxfilename.html#stripextension).");
-    /* The following types are missing: wxULongLongNative
     ADD_CLASS_STATICMETHOD(GetSize,"wxULongLong wxFileName::GetSize(wxString const & file) (http://docs.wxwidgets.org/stable/wx_wxfilename.html#getsize).");
-    */
-    /* The following types are missing: wxULongLongNative
     ADD_CLASS_STATICMETHOD(GetHumanReadableSize,"wxString wxFileName::GetHumanReadableSize(wxULongLong const & sz, wxString const & nullsize = wxGetTranslation(((const wchar_t*)'Not available'), 0u), int precision = 1) (http://docs.wxwidgets.org/stable/wx_wxfilename.html#gethumanreadablesize).");
-    */
 
 
 
@@ -145,16 +145,10 @@ class WrapClass_wxFileName : public WrapClass<wxFileName>
     ADD_CLASS_METHOD(IsFileWritable,"bool wxFileName::IsFileWritable()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#isfilewritable)")
     ADD_CLASS_METHOD(IsFileReadable,"bool wxFileName::IsFileReadable()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#isfilereadable)")
     ADD_CLASS_METHOD(IsFileExecutable,"bool wxFileName::IsFileExecutable()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#isfileexecutable)")
-/* The following types are missing: wxDateTime, wxDateTime, wxDateTime
     ADD_CLASS_METHOD(SetTimes,"bool wxFileName::SetTimes(wxDateTime const * dtAccess, wxDateTime const * dtMod, wxDateTime const * dtCreate)  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#settimes)")
-*/
     ADD_CLASS_METHOD(Touch,"bool wxFileName::Touch()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#touch)")
-/* The following types are missing: wxDateTime, wxDateTime, wxDateTime
     ADD_CLASS_METHOD(GetTimes,"bool wxFileName::GetTimes(wxDateTime * dtAccess, wxDateTime * dtMod, wxDateTime * dtCreate)  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#gettimes)")
-*/
-/* The following types are missing: wxDateTime
     ADD_CLASS_METHOD(GetModificationTime,"wxDateTime wxFileName::GetModificationTime()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#getmodificationtime)")
-*/
     ADD_CLASS_METHOD(AssignCwd,"void wxFileName::AssignCwd(wxString const & volume = wxEmptyString)  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#assigncwd)")
     ADD_CLASS_METHOD(SetCwd,"bool wxFileName::SetCwd()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#setcwd)")
     ADD_CLASS_METHOD(AssignHomeDir,"void wxFileName::AssignHomeDir()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#assignhomedir)")
@@ -202,9 +196,7 @@ class WrapClass_wxFileName : public WrapClass<wxFileName>
     ADD_CLASS_METHOD(GetShortPath,"wxString wxFileName::GetShortPath()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#getshortpath)")
     ADD_CLASS_METHOD(GetLongPath,"wxString wxFileName::GetLongPath()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#getlongpath)")
     ADD_CLASS_METHOD(IsDir,"bool wxFileName::IsDir()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#isdir)")
-/* The following types are missing: wxULongLongNative
     ADD_CLASS_METHOD(GetSize,"wxULongLong wxFileName::GetSize()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#getsize)")
-*/
     ADD_CLASS_METHOD(GetHumanReadableSize,"wxString wxFileName::GetHumanReadableSize(wxString const & nullsize = wxGetTranslation(((const wchar_t*)'Not available'), 0u), int precision = 1)  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#gethumanreadablesize)")
     ADD_CLASS_METHOD(GetPath,"wxFileName::GetPath()  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#getpath)")
     ADD_CLASS_METHOD(GetPath_2,"wxString wxFileName::GetPath(bool withSep, wxPathFormat format = wxPATH_NATIVE)  (http://docs.wxwidgets.org/stable/wx_wxfilename.html#getpath)")
@@ -226,12 +218,13 @@ class WrapClass_wxFileName : public WrapClass<wxFileName>
 
     void AddMethods(WrapClass<wxFileName>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxFileName_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxFileName_h

@@ -16,13 +16,17 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkTimeStamp.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkTimeStamp.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkTimeStamp_declared
+  #define vtkTimeStamp_declared
+  AMI_DECLARE_TYPE(vtkTimeStamp)
+#endif
 
 
-#include "wrap_vtkTimeStamp.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -93,7 +97,7 @@ void WrapClass_vtkTimeStamp::AddMethods(WrapClass<vtkTimeStamp>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkTimeStamp::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkTimeStamp_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -198,7 +202,7 @@ BasicVariable::ptr WrapClass_vtkTimeStamp::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkTimeStamp * res =   vtkTimeStamp::New();
-  BasicVariable::ptr res_var = WrapClass_vtkTimeStamp::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkTimeStamp >::CreateVar(res,true);
   return res_var;
 }
 

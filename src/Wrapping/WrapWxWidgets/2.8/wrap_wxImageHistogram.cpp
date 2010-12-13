@@ -10,19 +10,29 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxImageHistogram.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxImageHistogram.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef wxImageHistogram_declared
+  #define wxImageHistogram_declared
+  AMI_DECLARE_TYPE(wxImageHistogram)
+#endif
 
 
-#include "wrap_wxImageHistogram.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,17 +72,20 @@ void WrapClass_wxImageHistogram::AddMethods(WrapClass<wxImageHistogram>::ptr thi
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_FindFirstUnusedColour( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_FindFirstUnusedColour( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -93,7 +106,7 @@ void WrapClass_wxImageHistogram::AddMethods(WrapClass<wxImageHistogram>::ptr thi
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxImageHistogram::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxImageHistogram_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -255,17 +268,35 @@ BasicVariable::ptr WrapClass_wxImageHistogram::
   if (_p->GetNumParam()>6) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<unsigned char > r_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* r = r_smtptr.get();
+  unsigned char* r;
+  if (CheckNullVar(_p,_n))  {
+    r=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > r_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    r = r_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > g_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* g = g_smtptr.get();
+  unsigned char* g;
+  if (CheckNullVar(_p,_n))  {
+    g=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > g_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    g = g_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > b_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* b = b_smtptr.get();
+  unsigned char* b;
+  if (CheckNullVar(_p,_n))  {
+    b=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > b_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    b = b_smtptr.get();
+  }
 
   unsigned char startR = 1;
   if (!get_val_param<unsigned char >(startR,_p,_n,false,false)) ClassHelpAndReturn;

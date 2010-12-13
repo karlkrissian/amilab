@@ -26,8 +26,10 @@
 #include "wrap_vtkPropCollection.h"
 
 
-
-AMI_DECLARE_TYPE(vtkActorCollection);
+#ifndef vtkActorCollection_declared
+  #define vtkActorCollection_declared
+  AMI_DECLARE_TYPE(vtkActorCollection);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkActorCollection : public WrapClass<vtkActorCollection>
@@ -95,12 +97,13 @@ class WrapClass_vtkActorCollection : public WrapClass<vtkActorCollection>
 
     void AddMethods(WrapClass<vtkActorCollection>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkActorCollection_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkActorCollection_h

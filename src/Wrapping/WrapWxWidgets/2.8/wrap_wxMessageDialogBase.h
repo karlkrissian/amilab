@@ -13,11 +13,13 @@
 #ifndef _wrap_wxMessageDialogBase_h_
 #define _wrap_wxMessageDialogBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxMessageDialogBase);
+#ifndef wxMessageDialogBase_declared
+  #define wxMessageDialogBase_declared
+  AMI_DECLARE_TYPE(wxMessageDialogBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxMessageDialogBase : public WrapClass<wxMessageDialogBase>
@@ -86,12 +90,13 @@ class WrapClass_wxMessageDialogBase : public WrapClass<wxMessageDialogBase>
 
     void AddMethods(WrapClass<wxMessageDialogBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxMessageDialogBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxMessageDialogBase_h

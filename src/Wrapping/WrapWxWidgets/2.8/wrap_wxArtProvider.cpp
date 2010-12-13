@@ -10,23 +10,44 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxArtProvider.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxArtProvider.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxString.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxIcon.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxArtProvider_declared
+  #define wxArtProvider_declared
+  AMI_DECLARE_TYPE(wxArtProvider)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxIcon_declared
+  #define wxIcon_declared
+  AMI_DECLARE_TYPE(wxIcon)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxArtProvider.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -102,7 +123,7 @@ void WrapClass_wxArtProvider::AddMethods(WrapClass<wxArtProvider>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxArtProvider::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxArtProvider_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -427,7 +448,7 @@ BasicVariable::ptr WrapClass_wxArtProvider::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

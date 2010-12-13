@@ -10,25 +10,56 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxSizerItem.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxObject.h"
-#include "wrap_wxSizerFlags.h"
-#include "wrap_wxSizer.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxSizerFlags_declared
+  #define wxSizerFlags_declared
+  AMI_DECLARE_TYPE(wxSizerFlags)
+#endif
+#ifndef wxSizer_declared
+  #define wxSizer_declared
+  AMI_DECLARE_TYPE(wxSizer)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxSizerItem.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -75,51 +106,54 @@ void WrapClass_wxSizerItem::AddMethods(WrapClass<wxSizerItem>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_DeleteWindows( this_ptr);
-      AddVar_DetachSizer( this_ptr);
-      AddVar_GetSize( this_ptr);
-      AddVar_CalcMin( this_ptr);
-      AddVar_SetDimension( this_ptr);
-      AddVar_GetMinSize( this_ptr);
-      AddVar_GetMinSizeWithBorder( this_ptr);
-      AddVar_SetMinSize_1( this_ptr);
-      AddVar_SetMinSize( this_ptr);
-      AddVar_SetMinSize_2( this_ptr);
-      AddVar_SetInitSize( this_ptr);
-      AddVar_SetRatio_1( this_ptr);
-      AddVar_SetRatio( this_ptr);
-      AddVar_SetRatio_2( this_ptr);
-      AddVar_SetRatio_3( this_ptr);
-      AddVar_GetRatio( this_ptr);
-      AddVar_GetRect( this_ptr);
-      AddVar_IsWindow( this_ptr);
-      AddVar_IsSizer( this_ptr);
-      AddVar_IsSpacer( this_ptr);
-      AddVar_SetProportion( this_ptr);
-      AddVar_GetProportion( this_ptr);
-      AddVar_SetFlag( this_ptr);
-      AddVar_GetFlag( this_ptr);
-      AddVar_SetBorder( this_ptr);
-      AddVar_GetBorder( this_ptr);
-      AddVar_GetWindow( this_ptr);
-      AddVar_GetSizer( this_ptr);
-      AddVar_GetSpacer( this_ptr);
-      AddVar_IsShown( this_ptr);
-      AddVar_Show( this_ptr);
-      AddVar_SetUserData( this_ptr);
-      AddVar_GetUserData( this_ptr);
-      AddVar_GetPosition( this_ptr);
-      AddVar_SetWindow( this_ptr);
-      AddVar_SetSizer( this_ptr);
-      AddVar_SetSpacer_1( this_ptr);
-      AddVar_SetSpacer( this_ptr);
-      AddVar_SetSpacer_2( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_DeleteWindows( this_ptr);
+  AddVar_DetachSizer( this_ptr);
+  AddVar_GetSize( this_ptr);
+  AddVar_CalcMin( this_ptr);
+  AddVar_SetDimension( this_ptr);
+  AddVar_GetMinSize( this_ptr);
+  AddVar_GetMinSizeWithBorder( this_ptr);
+  AddVar_SetMinSize_1( this_ptr);
+  AddVar_SetMinSize( this_ptr);
+  AddVar_SetMinSize_2( this_ptr);
+  AddVar_SetInitSize( this_ptr);
+  AddVar_SetRatio_1( this_ptr);
+  AddVar_SetRatio( this_ptr);
+  AddVar_SetRatio_2( this_ptr);
+  AddVar_SetRatio_3( this_ptr);
+  AddVar_GetRatio( this_ptr);
+  AddVar_GetRect( this_ptr);
+  AddVar_IsWindow( this_ptr);
+  AddVar_IsSizer( this_ptr);
+  AddVar_IsSpacer( this_ptr);
+  AddVar_SetProportion( this_ptr);
+  AddVar_GetProportion( this_ptr);
+  AddVar_SetFlag( this_ptr);
+  AddVar_GetFlag( this_ptr);
+  AddVar_SetBorder( this_ptr);
+  AddVar_GetBorder( this_ptr);
+  AddVar_GetWindow( this_ptr);
+  AddVar_GetSizer( this_ptr);
+  AddVar_GetSpacer( this_ptr);
+  AddVar_IsShown( this_ptr);
+  AddVar_Show( this_ptr);
+  AddVar_SetUserData( this_ptr);
+  AddVar_GetUserData( this_ptr);
+  AddVar_GetPosition( this_ptr);
+  AddVar_SetWindow( this_ptr);
+  AddVar_SetSizer( this_ptr);
+  AddVar_SetSpacer_1( this_ptr);
+  AddVar_SetSpacer( this_ptr);
+  AddVar_SetSpacer_2( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -140,7 +174,7 @@ void WrapClass_wxSizerItem::AddMethods(WrapClass<wxSizerItem>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxSizerItem::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxSizerItem_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -188,9 +222,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p->GetNumParam()>5) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > window_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* window = window_smtptr.get();
+  wxWindow* window;
+  if (CheckNullVar(_p,_n))  {
+    window=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > window_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    window = window_smtptr.get();
+  }
 
   int proportion;
   if (!get_val_param<int >(proportion,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -201,9 +241,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   int border;
   if (!get_val_param<int >(border,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData;
+  if (CheckNullVar(_p,_n))  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    userData = userData_smtptr.get();
+  }
 
   wxSizerItem* _newobj = new wxSizerItem(window, proportion, flag, border, userData);
   BasicVariable::ptr res = WrapClass_wxSizerItem::CreateVar(_newobj);
@@ -264,9 +310,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > window_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* window = window_smtptr.get();
+  wxWindow* window;
+  if (CheckNullVar(_p,_n))  {
+    window=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > window_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    window = window_smtptr.get();
+  }
 
   boost::shared_ptr<wxSizerFlags > flags_smtptr;
   if (!get_val_smtptr_param<wxSizerFlags >(flags_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -298,9 +350,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p->GetNumParam()>5) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxSizer > sizer_smtptr;
-  if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxSizer* sizer = sizer_smtptr.get();
+  wxSizer* sizer;
+  if (CheckNullVar(_p,_n))  {
+    sizer=(wxSizer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxSizer > sizer_smtptr;
+    if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    sizer = sizer_smtptr.get();
+  }
 
   int proportion;
   if (!get_val_param<int >(proportion,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -311,9 +369,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   int border;
   if (!get_val_param<int >(border,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData;
+  if (CheckNullVar(_p,_n))  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    userData = userData_smtptr.get();
+  }
 
   wxSizerItem* _newobj = new wxSizerItem(sizer, proportion, flag, border, userData);
   BasicVariable::ptr res = WrapClass_wxSizerItem::CreateVar(_newobj);
@@ -338,9 +402,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxSizer > sizer_smtptr;
-  if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxSizer* sizer = sizer_smtptr.get();
+  wxSizer* sizer;
+  if (CheckNullVar(_p,_n))  {
+    sizer=(wxSizer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxSizer > sizer_smtptr;
+    if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    sizer = sizer_smtptr.get();
+  }
 
   boost::shared_ptr<wxSizerFlags > flags_smtptr;
   if (!get_val_smtptr_param<wxSizerFlags >(flags_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -388,9 +458,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   int border;
   if (!get_val_param<int >(border,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData;
+  if (CheckNullVar(_p,_n))  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    userData = userData_smtptr.get();
+  }
 
   wxSizerItem* _newobj = new wxSizerItem(width, height, proportion, flag, border, userData);
   BasicVariable::ptr res = WrapClass_wxSizerItem::CreateVar(_newobj);
@@ -1035,7 +1111,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetWindow();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1055,7 +1131,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxSizer * res =   this->_objectptr->GetObj()->GetSizer();
-  BasicVariable::ptr res_var = WrapClass_wxSizer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxSizer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1138,9 +1214,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxObject > userData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxObject* userData = userData_smtptr.get();
+  wxObject* userData;
+  if (CheckNullVar(_p,_n))  {
+    userData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > userData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(userData_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    userData = userData_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetUserData(userData);
   return BasicVariable::ptr();
@@ -1162,7 +1244,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObject * res =   this->_objectptr->GetObj()->GetUserData();
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1202,9 +1284,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > window_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* window = window_smtptr.get();
+  wxWindow* window;
+  if (CheckNullVar(_p,_n))  {
+    window=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > window_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(window_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    window = window_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetWindow(window);
   return BasicVariable::ptr();
@@ -1227,9 +1315,15 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxSizer > sizer_smtptr;
-  if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxSizer* sizer = sizer_smtptr.get();
+  wxSizer* sizer;
+  if (CheckNullVar(_p,_n))  {
+    sizer=(wxSizer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxSizer > sizer_smtptr;
+    if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    sizer = sizer_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetSizer(sizer);
   return BasicVariable::ptr();
@@ -1325,7 +1419,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

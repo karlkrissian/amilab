@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxFontBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxFont.h"
-#include "wrap_wxString.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxFontBase.h"
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxFontBase_declared
+  #define wxFontBase_declared
+  AMI_DECLARE_TYPE(wxFontBase)
+#endif
 
 
-#include "wrap_wxFontBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,36 +83,39 @@ void WrapClass_wxFontBase::AddMethods(WrapClass<wxFontBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Ok( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_GetPixelSize( this_ptr);
-      AddVar_IsUsingSizeInPixels( this_ptr);
-      AddVar_IsFixedWidth( this_ptr);
-      AddVar_GetNativeFontInfoDesc( this_ptr);
-      AddVar_GetNativeFontInfoUserDesc( this_ptr);
-      AddVar_SetPixelSize( this_ptr);
-      AddVar_SetFaceName( this_ptr);
+  // Adding standard methods 
+  AddVar_Ok( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_GetPixelSize( this_ptr);
+  AddVar_IsUsingSizeInPixels( this_ptr);
+  AddVar_IsFixedWidth( this_ptr);
+  AddVar_GetNativeFontInfoDesc( this_ptr);
+  AddVar_GetNativeFontInfoUserDesc( this_ptr);
+  AddVar_SetPixelSize( this_ptr);
+  AddVar_SetFaceName( this_ptr);
 /* The following types are missing: wxNativeFontInfo
-      AddVar_SetNativeFontInfo_1( this_ptr);
+  AddVar_SetNativeFontInfo_1( this_ptr);
 */
-      AddVar_SetNativeFontInfo( this_ptr);
-      AddVar_SetNativeFontInfo_2( this_ptr);
-      AddVar_SetNativeFontInfoUserDesc( this_ptr);
-      AddVar_GetFamilyString( this_ptr);
-      AddVar_GetStyleString( this_ptr);
-      AddVar_GetWeightString( this_ptr);
-      AddVar_SetNoAntiAliasing( this_ptr);
-      AddVar_GetNoAntiAliasing( this_ptr);
+  AddVar_SetNativeFontInfo( this_ptr);
+  AddVar_SetNativeFontInfo_2( this_ptr);
+  AddVar_SetNativeFontInfoUserDesc( this_ptr);
+  AddVar_GetFamilyString( this_ptr);
+  AddVar_GetStyleString( this_ptr);
+  AddVar_GetWeightString( this_ptr);
+  AddVar_SetNoAntiAliasing( this_ptr);
+  AddVar_GetNoAntiAliasing( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___not_equal__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___not_equal__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -114,7 +136,7 @@ void WrapClass_wxFontBase::AddMethods(WrapClass<wxFontBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxFontBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxFontBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -192,7 +214,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
   wxFontEncoding encoding = (wxFontEncoding) encoding_int;
 
   wxFont * res =   wxFontBase::New(pointSize, family, style, weight, underlined, face, encoding);
-  BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFont >::CreateVar(res,true);
   return res_var;
 }
 
@@ -268,7 +290,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
   wxFontEncoding encoding = (wxFontEncoding) encoding_int;
 
   wxFont * res =   wxFontBase::New(pointSize, family, flags, face, encoding);
-  BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFont >::CreateVar(res,true);
   return res_var;
 }
 
@@ -322,7 +344,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
   wxFontEncoding encoding = (wxFontEncoding) encoding_int;
 
   wxFont * res =   wxFontBase::New(pixelSize, family, style, weight, underlined, face, encoding);
-  BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFont >::CreateVar(res,true);
   return res_var;
 }
 
@@ -369,7 +391,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
   wxFontEncoding encoding = (wxFontEncoding) encoding_int;
 
   wxFont * res =   wxFontBase::New(pixelSize, family, flags, face, encoding);
-  BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFont >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: wxNativeFontInfo
@@ -397,7 +419,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
   wxNativeFontInfo const & nativeFontDesc = *nativeFontDesc_smtptr;
 
   wxFont * res =   wxFontBase::New(nativeFontDesc);
-  BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFont >::CreateVar(res,true);
   return res_var;
 }
 */
@@ -425,7 +447,7 @@ BasicVariable::ptr WrapClass_wxFontBase::
   wxString const & strNativeFontDesc = *strNativeFontDesc_smtptr;
 
   wxFont * res =   wxFontBase::New(strNativeFontDesc);
-  BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFont >::CreateVar(res,true);
   return res_var;
 }
 

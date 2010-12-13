@@ -10,21 +10,37 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxLongLongNative.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxLongLongNative.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxString.h"
-#include "wrap_wxULongLongNative.h"
+#ifndef wxLongLongNative_declared
+  #define wxLongLongNative_declared
+  AMI_DECLARE_TYPE(wxLongLongNative)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxULongLongNative_declared
+  #define wxULongLongNative_declared
+  AMI_DECLARE_TYPE(wxULongLongNative)
+#endif
 
 
-#include "wrap_wxLongLongNative.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -170,7 +186,7 @@ void WrapClass_wxLongLongNative::AddMethods(WrapClass<wxLongLongNative>::ptr thi
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxLongLongNative::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxLongLongNative_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

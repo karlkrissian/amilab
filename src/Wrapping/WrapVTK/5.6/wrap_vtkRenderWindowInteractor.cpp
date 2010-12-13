@@ -16,18 +16,37 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkRenderWindowInteractor.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkRenderWindowInteractor.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkRenderWindow.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkInteractorObserver.h"
-#include "wrap_vtkRenderer.h"
+#ifndef vtkRenderWindowInteractor_declared
+  #define vtkRenderWindowInteractor_declared
+  AMI_DECLARE_TYPE(vtkRenderWindowInteractor)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkRenderWindow_declared
+  #define vtkRenderWindow_declared
+  AMI_DECLARE_TYPE(vtkRenderWindow)
+#endif
+#ifndef vtkInteractorObserver_declared
+  #define vtkInteractorObserver_declared
+  AMI_DECLARE_TYPE(vtkInteractorObserver)
+#endif
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
 
 
-#include "wrap_vtkRenderWindowInteractor.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -257,7 +276,7 @@ void WrapClass_vtkRenderWindowInteractor::AddMethods(WrapClass<vtkRenderWindowIn
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkRenderWindowInteractor::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkRenderWindowInteractor_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -294,7 +313,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderWindowInteractor * res =   vtkRenderWindowInteractor::New();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderWindowInteractor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderWindowInteractor >::CreateVar(res,true);
   return res_var;
 }
 
@@ -353,7 +372,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   }
 
   vtkRenderWindowInteractor * res =   vtkRenderWindowInteractor::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkRenderWindowInteractor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderWindowInteractor >::CreateVar(res,true);
   return res_var;
 }
 
@@ -399,7 +418,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderWindowInteractor * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderWindowInteractor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderWindowInteractor >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -700,7 +719,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderWindow * res =   this->_objectptr->GetObj()->GetRenderWindow();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1318,7 +1337,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorObserver * res =   this->_objectptr->GetObj()->GetInteractorStyle();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorObserver::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorObserver >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3407,7 +3426,7 @@ BasicVariable::ptr WrapClass_vtkRenderWindowInteractor::
   if (!get_val_param<int >(param1,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkRenderer * res =   this->_objectptr->GetObj()->FindPokedRenderer(param0, param1);
-  BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderer >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: vtkObserverMediator

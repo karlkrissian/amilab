@@ -13,11 +13,13 @@
 #ifndef _wrap_wxChildFocusEvent_h_
 #define _wrap_wxChildFocusEvent_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxCommandEvent.h"
 
 
-
-AMI_DECLARE_TYPE(wxChildFocusEvent);
+#ifndef wxChildFocusEvent_declared
+  #define wxChildFocusEvent_declared
+  AMI_DECLARE_TYPE(wxChildFocusEvent);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxChildFocusEvent : public WrapClass<wxChildFocusEvent>
@@ -88,12 +92,13 @@ class WrapClass_wxChildFocusEvent : public WrapClass<wxChildFocusEvent>
 
     void AddMethods(WrapClass<wxChildFocusEvent>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxChildFocusEvent_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxChildFocusEvent_h

@@ -26,8 +26,10 @@
 #include "wrap_vtkDataObject.h"
 
 
-
-AMI_DECLARE_TYPE(vtkPiecewiseFunction);
+#ifndef vtkPiecewiseFunction_declared
+  #define vtkPiecewiseFunction_declared
+  AMI_DECLARE_TYPE(vtkPiecewiseFunction);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkPiecewiseFunction : public WrapClass<vtkPiecewiseFunction>
@@ -127,12 +129,13 @@ class WrapClass_vtkPiecewiseFunction : public WrapClass<vtkPiecewiseFunction>
 
     void AddMethods(WrapClass<vtkPiecewiseFunction>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkPiecewiseFunction_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkPiecewiseFunction_h

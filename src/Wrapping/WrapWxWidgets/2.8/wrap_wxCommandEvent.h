@@ -13,11 +13,13 @@
 #ifndef _wrap_wxCommandEvent_h_
 #define _wrap_wxCommandEvent_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxEvent.h"
 
 
-
-AMI_DECLARE_TYPE(wxCommandEvent);
+#ifndef wxCommandEvent_declared
+  #define wxCommandEvent_declared
+  AMI_DECLARE_TYPE(wxCommandEvent);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxCommandEvent : public WrapClass<wxCommandEvent>
@@ -102,12 +106,13 @@ class WrapClass_wxCommandEvent : public WrapClass<wxCommandEvent>
 
     void AddMethods(WrapClass<wxCommandEvent>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxCommandEvent_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxCommandEvent_h

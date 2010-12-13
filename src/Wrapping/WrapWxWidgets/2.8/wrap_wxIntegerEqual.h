@@ -13,11 +13,13 @@
 #ifndef _wrap_wxIntegerEqual_h_
 #define _wrap_wxIntegerEqual_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxIntegerEqual);
+#ifndef wxIntegerEqual_declared
+  #define wxIntegerEqual_declared
+  AMI_DECLARE_TYPE(wxIntegerEqual);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxIntegerEqual : public WrapClass<wxIntegerEqual>
@@ -99,12 +103,13 @@ class WrapClass_wxIntegerEqual : public WrapClass<wxIntegerEqual>
 
     void AddMethods(WrapClass<wxIntegerEqual>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxIntegerEqual_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxIntegerEqual_h

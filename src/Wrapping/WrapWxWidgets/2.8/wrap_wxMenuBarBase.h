@@ -13,11 +13,13 @@
 #ifndef _wrap_wxMenuBarBase_h_
 #define _wrap_wxMenuBarBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxWindow.h"
 
 
-
-AMI_DECLARE_TYPE(wxMenuBarBase);
+#ifndef wxMenuBarBase_declared
+  #define wxMenuBarBase_declared
+  AMI_DECLARE_TYPE(wxMenuBarBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxMenuBarBase : public WrapClass<wxMenuBarBase>
@@ -77,9 +81,7 @@ class WrapClass_wxMenuBarBase : public WrapClass<wxMenuBarBase>
     ADD_CLASS_METHOD(Remove,"wxMenu * wxMenuBarBase::Remove(size_t pos)  (http://docs.wxwidgets.org/stable/wx_wxmenubarbase.html#remove)")
     ADD_CLASS_METHOD(IsEnabledTop,"bool wxMenuBarBase::IsEnabledTop(size_t param0)  (http://docs.wxwidgets.org/stable/wx_wxmenubarbase.html#isenabledtop)")
     ADD_CLASS_METHOD(FindMenuItem,"int wxMenuBarBase::FindMenuItem(wxString const & menu, wxString const & item)  (http://docs.wxwidgets.org/stable/wx_wxmenubarbase.html#findmenuitem)")
-/* The following types are missing: wxMenu * *
     ADD_CLASS_METHOD(FindItem,"wxMenuItem * wxMenuBarBase::FindItem(int itemid, wxMenu * * menu = 0l)  (http://docs.wxwidgets.org/stable/wx_wxmenubarbase.html#finditem)")
-*/
     ADD_CLASS_METHOD(FindMenu,"int wxMenuBarBase::FindMenu(wxString const & title)  (http://docs.wxwidgets.org/stable/wx_wxmenubarbase.html#findmenu)")
     ADD_CLASS_METHOD(Enable_1,"void wxMenuBarBase::Enable(int itemid, bool enable)  (http://docs.wxwidgets.org/stable/wx_wxmenubarbase.html#enable)")
     ADD_CLASS_METHOD(Check,"void wxMenuBarBase::Check(int itemid, bool check)  (http://docs.wxwidgets.org/stable/wx_wxmenubarbase.html#check)")
@@ -112,12 +114,13 @@ class WrapClass_wxMenuBarBase : public WrapClass<wxMenuBarBase>
 
     void AddMethods(WrapClass<wxMenuBarBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxMenuBarBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxMenuBarBase_h

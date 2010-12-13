@@ -13,11 +13,13 @@
 #ifndef _wrap_wxStdDialogButtonSizer_h_
 #define _wrap_wxStdDialogButtonSizer_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxBoxSizer.h"
 
 
-
-AMI_DECLARE_TYPE(wxStdDialogButtonSizer);
+#ifndef wxStdDialogButtonSizer_declared
+  #define wxStdDialogButtonSizer_declared
+  AMI_DECLARE_TYPE(wxStdDialogButtonSizer);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxStdDialogButtonSizer : public WrapClass<wxStdDialogButtonSizer>
@@ -90,12 +94,13 @@ class WrapClass_wxStdDialogButtonSizer : public WrapClass<wxStdDialogButtonSizer
 
     void AddMethods(WrapClass<wxStdDialogButtonSizer>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxStdDialogButtonSizer_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxStdDialogButtonSizer_h

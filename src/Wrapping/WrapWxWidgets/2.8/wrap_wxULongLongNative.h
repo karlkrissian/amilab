@@ -13,11 +13,13 @@
 #ifndef _wrap_wxULongLongNative_h_
 #define _wrap_wxULongLongNative_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxULongLongNative);
+#ifndef wxULongLongNative_declared
+  #define wxULongLongNative_declared
+  AMI_DECLARE_TYPE(wxULongLongNative);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxULongLongNative : public WrapClass<wxULongLongNative>
@@ -180,12 +184,13 @@ class WrapClass_wxULongLongNative : public WrapClass<wxULongLongNative>
 
     void AddMethods(WrapClass<wxULongLongNative>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxULongLongNative_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxULongLongNative_h

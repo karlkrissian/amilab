@@ -13,11 +13,13 @@
 #ifndef _wrap_wxHtmlFilter_h_
 #define _wrap_wxHtmlFilter_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxObject.h"
 
 
-
-AMI_DECLARE_TYPE(wxHtmlFilter);
+#ifndef wxHtmlFilter_declared
+  #define wxHtmlFilter_declared
+  AMI_DECLARE_TYPE(wxHtmlFilter);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxHtmlFilter : public WrapClass<wxHtmlFilter>
@@ -79,12 +83,13 @@ class WrapClass_wxHtmlFilter : public WrapClass<wxHtmlFilter>
 
     void AddMethods(WrapClass<wxHtmlFilter>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxHtmlFilter_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxHtmlFilter_h

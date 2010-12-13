@@ -16,14 +16,24 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkPropCollection.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkPropCollection.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkProp.h"
+#ifndef vtkPropCollection_declared
+  #define vtkPropCollection_declared
+  AMI_DECLARE_TYPE(vtkPropCollection)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkProp_declared
+  #define vtkProp_declared
+  AMI_DECLARE_TYPE(vtkProp)
+#endif
 
 
-#include "wrap_vtkPropCollection.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -112,7 +122,7 @@ void WrapClass_vtkPropCollection::AddMethods(WrapClass<vtkPropCollection>::ptr t
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkPropCollection::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkPropCollection_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -149,7 +159,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPropCollection * res =   vtkPropCollection::New();
-  BasicVariable::ptr res_var = WrapClass_vtkPropCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPropCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -208,7 +218,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   }
 
   vtkPropCollection * res =   vtkPropCollection::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkPropCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPropCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -254,7 +264,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPropCollection * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkPropCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPropCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -305,7 +315,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkProp * res =   this->_objectptr->GetObj()->GetNextProp();
-  BasicVariable::ptr res_var = WrapClass_vtkProp::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProp >::CreateVar(res,true);
   return res_var;
 }
 
@@ -325,7 +335,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProp * res =   this->_objectptr->GetObj()->GetLastProp();
-  BasicVariable::ptr res_var = WrapClass_vtkProp::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProp >::CreateVar(res,true);
   return res_var;
 }
 
@@ -390,7 +400,7 @@ BasicVariable::ptr WrapClass_vtkPropCollection::
   vtkCollectionSimpleIterator & cookie = *cookie_smtptr;
 
   vtkProp * res =   this->_objectptr->GetObj()->GetNextProp(cookie);
-  BasicVariable::ptr res_var = WrapClass_vtkProp::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProp >::CreateVar(res,true);
   return res_var;
 }
 */

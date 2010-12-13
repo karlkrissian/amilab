@@ -26,8 +26,10 @@
 #include "wrap_vtkObject.h"
 
 
-
-AMI_DECLARE_TYPE(vtkVolumeProperty);
+#ifndef vtkVolumeProperty_declared
+  #define vtkVolumeProperty_declared
+  AMI_DECLARE_TYPE(vtkVolumeProperty);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkVolumeProperty : public WrapClass<vtkVolumeProperty>
@@ -198,12 +200,13 @@ class WrapClass_vtkVolumeProperty : public WrapClass<vtkVolumeProperty>
 
     void AddMethods(WrapClass<vtkVolumeProperty>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkVolumeProperty_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkVolumeProperty_h

@@ -10,30 +10,73 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHtmlContainerCell.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxHtmlContainerCell.h"
-#include "wrap_wxDC.h"
-#include "wrap_wxHtmlRenderingInfo.h"
-#include "wrap_wxArrayInt.h"
-#include "wrap_wxHtmlCell.h"
-#include "wrap_wxHtmlTag.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxHtmlLinkInfo.h"
-#include "wrap_wxHtmlWindowInterface.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxMouseEvent.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxClassInfo.h"
+#ifndef wxHtmlContainerCell_declared
+  #define wxHtmlContainerCell_declared
+  AMI_DECLARE_TYPE(wxHtmlContainerCell)
+#endif
+#ifndef wxDC_declared
+  #define wxDC_declared
+  AMI_DECLARE_TYPE(wxDC)
+#endif
+#ifndef wxHtmlRenderingInfo_declared
+  #define wxHtmlRenderingInfo_declared
+  AMI_DECLARE_TYPE(wxHtmlRenderingInfo)
+#endif
+#ifndef wxArrayInt_declared
+  #define wxArrayInt_declared
+  AMI_DECLARE_TYPE(wxArrayInt)
+#endif
+#ifndef wxHtmlCell_declared
+  #define wxHtmlCell_declared
+  AMI_DECLARE_TYPE(wxHtmlCell)
+#endif
+#ifndef wxHtmlTag_declared
+  #define wxHtmlTag_declared
+  AMI_DECLARE_TYPE(wxHtmlTag)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxHtmlLinkInfo_declared
+  #define wxHtmlLinkInfo_declared
+  AMI_DECLARE_TYPE(wxHtmlLinkInfo)
+#endif
+#ifndef wxHtmlWindowInterface_declared
+  #define wxHtmlWindowInterface_declared
+  AMI_DECLARE_TYPE(wxHtmlWindowInterface)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxMouseEvent_declared
+  #define wxMouseEvent_declared
+  AMI_DECLARE_TYPE(wxMouseEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxHtmlContainerCell.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -142,7 +185,7 @@ void WrapClass_wxHtmlContainerCell::AddMethods(WrapClass<wxHtmlContainerCell>::p
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHtmlContainerCell::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHtmlContainerCell_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -179,9 +222,15 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlContainerCell > parent_smtptr;
-  if (!get_val_smtptr_param<wxHtmlContainerCell >(parent_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
-  wxHtmlContainerCell* parent = parent_smtptr.get();
+  wxHtmlContainerCell* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxHtmlContainerCell*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlContainerCell > parent_smtptr;
+    if (!get_val_smtptr_param<wxHtmlContainerCell >(parent_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   wxHtmlContainerCell* _newobj = new wxHtmlContainerCell(parent);
   BasicVariable::ptr res = WrapClass_wxHtmlContainerCell::CreateVar(_newobj);
@@ -315,9 +364,15 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > pagebreak_smtptr;
-  if (!get_val_smtptr_param<int >(pagebreak_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* pagebreak = pagebreak_smtptr.get();
+  int* pagebreak;
+  if (CheckNullVar(_p,_n))  {
+    pagebreak=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > pagebreak_smtptr;
+    if (!get_val_smtptr_param<int >(pagebreak_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pagebreak = pagebreak_smtptr.get();
+  }
 
   boost::shared_ptr<wxArrayInt > known_pagebreaks_smtptr;
   if (!get_val_smtptr_param<wxArrayInt >(known_pagebreaks_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -344,9 +399,15 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlCell > cell_smtptr;
-  if (!get_val_smtptr_param<wxHtmlCell >(cell_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlCell* cell = cell_smtptr.get();
+  wxHtmlCell* cell;
+  if (CheckNullVar(_p,_n))  {
+    cell=(wxHtmlCell*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlCell > cell_smtptr;
+    if (!get_val_smtptr_param<wxHtmlCell >(cell_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    cell = cell_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->InsertCell(cell);
   return BasicVariable::ptr();
@@ -751,7 +812,7 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (!get_val_param<int >(y,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxHtmlLinkInfo * res =   this->_objectptr->GetObj()->GetLink(x, y);
-  BasicVariable::ptr res_var = WrapClass_wxHtmlLinkInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlLinkInfo >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: void
@@ -778,12 +839,18 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   int condition;
   if (!get_val_param<int >(condition,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<void > param_smtptr;
-  if (!get_val_smtptr_param<void >(param_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  void* param = param_smtptr.get();
+  void* param;
+  if (CheckNullVar(_p,_n))  {
+    param=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > param_smtptr;
+    if (!get_val_smtptr_param<void >(param_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    param = param_smtptr.get();
+  }
 
   wxHtmlCell const * res =   this->_objectptr->GetObj()->Find(condition, param);
-  BasicVariable::ptr res_var = WrapClass_wxHtmlCell::CreateVar(const_cast<wxHtmlCell *>(res));
+  BasicVariable::ptr res_var = AMILabType<wxHtmlCell >::CreateVar(const_cast<wxHtmlCell *>(res),true);
   return res_var;
 }
 */
@@ -808,9 +875,15 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlWindowInterface > window_smtptr;
-  if (!get_val_smtptr_param<wxHtmlWindowInterface >(window_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlWindowInterface* window = window_smtptr.get();
+  wxHtmlWindowInterface* window;
+  if (CheckNullVar(_p,_n))  {
+    window=(wxHtmlWindowInterface*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlWindowInterface > window_smtptr;
+    if (!get_val_smtptr_param<wxHtmlWindowInterface >(window_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    window = window_smtptr.get();
+  }
 
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -840,7 +913,7 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlCell * res =   this->_objectptr->GetObj()->GetFirstChild();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlCell::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlCell >::CreateVar(res,true);
   return res_var;
 }
 
@@ -860,7 +933,7 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlCell * res =   this->_objectptr->GetObj()->GetLastChild();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlCell::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlCell >::CreateVar(res,true);
   return res_var;
 }
 
@@ -914,7 +987,7 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   unsigned int flags = boost::numeric_cast<unsigned int >(flags_long);
 
   wxHtmlCell * res =   this->_objectptr->GetObj()->FindCellByPos(x, y, flags);
-  BasicVariable::ptr res_var = WrapClass_wxHtmlCell::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlCell >::CreateVar(res,true);
   return res_var;
 }
 
@@ -934,7 +1007,7 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlCell * res =   this->_objectptr->GetObj()->GetFirstTerminal();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlCell::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlCell >::CreateVar(res,true);
   return res_var;
 }
 
@@ -954,7 +1027,7 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlCell * res =   this->_objectptr->GetObj()->GetLastTerminal();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlCell::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlCell >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1021,7 +1094,7 @@ BasicVariable::ptr WrapClass_wxHtmlContainerCell::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

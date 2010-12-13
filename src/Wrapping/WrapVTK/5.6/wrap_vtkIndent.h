@@ -25,8 +25,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(vtkIndent);
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkIndent : public WrapClass<vtkIndent>
@@ -89,12 +91,13 @@ class WrapClass_vtkIndent : public WrapClass<vtkIndent>
 
     void AddMethods(WrapClass<vtkIndent>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkIndent_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkIndent_h

@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxMask.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxMask.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxMask_declared
+  #define wxMask_declared
+  AMI_DECLARE_TYPE(wxMask)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxMask.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,39 +83,42 @@ void WrapClass_wxMask::AddMethods(WrapClass<wxMask>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Create_1( this_ptr);
-      AddVar_Create( this_ptr);
-      AddVar_Create_2( this_ptr);
-      AddVar_Create_3( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Create_1( this_ptr);
+  AddVar_Create( this_ptr);
+  AddVar_Create_2( this_ptr);
+  AddVar_Create_3( this_ptr);
 /* The following types are missing: _GdkDrawable
-      AddVar_GetBitmap( this_ptr);
+  AddVar_GetBitmap( this_ptr);
 */
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Type not available
-      // Adding public member m_bitmap
-      boost::shared_ptr<_GdkDrawable > var_m_bitmap_ptr(GetObj()->m_bitmap, smartpointer_nodeleter<_GdkDrawable >());
-      if (var_m_bitmap_ptr.get()) {
-        BasicVariable::ptr var_m_bitmap = AMILabType<_GdkDrawable >::CreateVarFromSmtPtr(var_m_bitmap_ptr);
-        if (var_m_bitmap.get()) {
-          var_m_bitmap->Rename("m_bitmap");
-          context->AddVar(var_m_bitmap,context);
-        }
-      }
-      */
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Type not available
+  // Adding public member m_bitmap
+  boost::shared_ptr<_GdkDrawable > var_m_bitmap_ptr(GetObj()->m_bitmap, smartpointer_nodeleter<_GdkDrawable >());
+  if (var_m_bitmap_ptr.get()) {
+    BasicVariable::ptr var_m_bitmap = AMILabType<_GdkDrawable >::CreateVarFromSmtPtr(var_m_bitmap_ptr);
+    if (var_m_bitmap.get()) {
+      var_m_bitmap->Rename("m_bitmap");
+      context->AddVar(var_m_bitmap,context);
+    }
+  }
+  */
+
+
+  
 
 
   // Adding Bases
@@ -115,7 +137,7 @@ void WrapClass_wxMask::AddMethods(WrapClass<wxMask>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxMask::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxMask_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -466,7 +488,7 @@ BasicVariable::ptr WrapClass_wxMask::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

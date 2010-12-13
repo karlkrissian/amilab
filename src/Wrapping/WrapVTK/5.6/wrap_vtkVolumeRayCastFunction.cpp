@@ -16,17 +16,40 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkVolumeRayCastFunction.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkVolumeRayCastFunction.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkRenderer.h"
-#include "wrap_vtkVolume.h"
-#include "wrap_vtkVolumeRayCastStaticInfo.h"
+#ifndef vtkVolumeRayCastFunction_declared
+  #define vtkVolumeRayCastFunction_declared
+  AMI_DECLARE_TYPE(vtkVolumeRayCastFunction)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
+#ifndef vtkVolume_declared
+  #define vtkVolume_declared
+  AMI_DECLARE_TYPE(vtkVolume)
+#endif
+#ifndef vtkVolumeRayCastStaticInfo_declared
+  #define vtkVolumeRayCastStaticInfo_declared
+  AMI_DECLARE_TYPE(vtkVolumeRayCastStaticInfo)
+#endif
 
 
-#include "wrap_vtkVolumeRayCastFunction.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -71,32 +94,43 @@ Variable<AMIObject>::ptr WrapClass_vtkVolumeRayCastFunction::CreateVar( vtkVolum
 //----------------------------------------------------------------------
 void WrapClass_vtkVolumeRayCastFunction::AddMethods(WrapClass<vtkVolumeRayCastFunction>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkObject
-      WrapClass_vtkObject::ptr parent_vtkObject(        boost::dynamic_pointer_cast<WrapClass_vtkObject >(this_ptr));
-      parent_vtkObject->AddMethods(parent_vtkObject);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_FunctionInitialize( this_ptr);
+  AddVar_FunctionInitialize( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkObject
+  boost::shared_ptr<vtkObject > parent_vtkObject(  boost::dynamic_pointer_cast<vtkObject >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkObject = AMILabType<vtkObject >::CreateVarFromSmtPtr(parent_vtkObject);
+  context->AddVar("vtkObject",var_vtkObject);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkObject = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkObject);
+  context->AddDefault(obj_vtkObject->Pointer()->GetContext());
+
 };
 
 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkVolumeRayCastFunction::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkVolumeRayCastFunction_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -107,7 +141,7 @@ void WrapClass_vtkVolumeRayCastFunction::AddStaticMethods( Variables::ptr& conte
   WrapClass_vtkVolumeRayCastFunction::AddVar_SafeDownCast(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -160,12 +194,18 @@ BasicVariable::ptr WrapClass_vtkVolumeRayCastFunction::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkVolumeRayCastFunction * res =   vtkVolumeRayCastFunction::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkVolumeRayCastFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolumeRayCastFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -211,7 +251,7 @@ BasicVariable::ptr WrapClass_vtkVolumeRayCastFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkVolumeRayCastFunction * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkVolumeRayCastFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolumeRayCastFunction >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -265,17 +305,35 @@ BasicVariable::ptr WrapClass_vtkVolumeRayCastFunction::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderer > ren_smtptr;
-  if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderer* ren = ren_smtptr.get();
+  vtkRenderer* ren;
+  if (CheckNullVar(_p,_n))  {
+    ren=(vtkRenderer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderer > ren_smtptr;
+    if (!get_val_smtptr_param<vtkRenderer >(ren_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    ren = ren_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkVolume > vol_smtptr;
-  if (!get_val_smtptr_param<vtkVolume >(vol_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkVolume* vol = vol_smtptr.get();
+  vtkVolume* vol;
+  if (CheckNullVar(_p,_n))  {
+    vol=(vtkVolume*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkVolume > vol_smtptr;
+    if (!get_val_smtptr_param<vtkVolume >(vol_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    vol = vol_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkVolumeRayCastStaticInfo > staticInfo_smtptr;
-  if (!get_val_smtptr_param<vtkVolumeRayCastStaticInfo >(staticInfo_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkVolumeRayCastStaticInfo* staticInfo = staticInfo_smtptr.get();
+  vtkVolumeRayCastStaticInfo* staticInfo;
+  if (CheckNullVar(_p,_n))  {
+    staticInfo=(vtkVolumeRayCastStaticInfo*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkVolumeRayCastStaticInfo > staticInfo_smtptr;
+    if (!get_val_smtptr_param<vtkVolumeRayCastStaticInfo >(staticInfo_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    staticInfo = staticInfo_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->FunctionInitialize(ren, vol, staticInfo);
   return BasicVariable::ptr();

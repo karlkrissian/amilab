@@ -16,13 +16,17 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkUnicodeString.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkUnicodeString.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkUnicodeString_declared
+  #define vtkUnicodeString_declared
+  AMI_DECLARE_TYPE(vtkUnicodeString)
+#endif
 
 
-#include "wrap_vtkUnicodeString.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -132,7 +136,7 @@ void WrapClass_vtkUnicodeString::AddMethods(WrapClass<vtkUnicodeString>::ptr thi
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkUnicodeString::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkUnicodeString_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

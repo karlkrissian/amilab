@@ -13,11 +13,13 @@
 #ifndef _wrap_wxHtmlContainerCell_h_
 #define _wrap_wxHtmlContainerCell_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxHtmlCell.h"
 
 
-
-AMI_DECLARE_TYPE(wxHtmlContainerCell);
+#ifndef wxHtmlContainerCell_declared
+  #define wxHtmlContainerCell_declared
+  AMI_DECLARE_TYPE(wxHtmlContainerCell);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxHtmlContainerCell : public WrapClass<wxHtmlContainerCell>
@@ -113,12 +117,13 @@ class WrapClass_wxHtmlContainerCell : public WrapClass<wxHtmlContainerCell>
 
     void AddMethods(WrapClass<wxHtmlContainerCell>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxHtmlContainerCell_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxHtmlContainerCell_h

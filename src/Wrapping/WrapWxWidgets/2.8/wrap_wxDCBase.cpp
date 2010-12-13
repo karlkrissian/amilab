@@ -10,33 +10,88 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxDCBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxDrawObject.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxList.h"
-#include "wrap_wxIcon.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxString.h"
-#include "wrap_wxDC.h"
-#include "wrap_wxRegion.h"
-#include "wrap_wxFont.h"
-#include "wrap_wxArrayInt.h"
-#include "wrap_wxBrush.h"
-#include "wrap_wxPen.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxDrawObject_declared
+  #define wxDrawObject_declared
+  AMI_DECLARE_TYPE(wxDrawObject)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxList_declared
+  #define wxList_declared
+  AMI_DECLARE_TYPE(wxList)
+#endif
+#ifndef wxIcon_declared
+  #define wxIcon_declared
+  AMI_DECLARE_TYPE(wxIcon)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxDC_declared
+  #define wxDC_declared
+  AMI_DECLARE_TYPE(wxDC)
+#endif
+#ifndef wxRegion_declared
+  #define wxRegion_declared
+  AMI_DECLARE_TYPE(wxRegion)
+#endif
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont)
+#endif
+#ifndef wxArrayInt_declared
+  #define wxArrayInt_declared
+  AMI_DECLARE_TYPE(wxArrayInt)
+#endif
+#ifndef wxBrush_declared
+  #define wxBrush_declared
+  AMI_DECLARE_TYPE(wxBrush)
+#endif
+#ifndef wxPen_declared
+  #define wxPen_declared
+  AMI_DECLARE_TYPE(wxPen)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxDCBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -83,156 +138,159 @@ void WrapClass_wxDCBase::AddMethods(WrapClass<wxDCBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_DrawObject( this_ptr);
-      AddVar_FloodFill_1( this_ptr);
-      AddVar_FloodFill( this_ptr);
-      AddVar_FloodFill_2( this_ptr);
-      AddVar_GradientFillConcentric_1( this_ptr);
-      AddVar_GradientFillConcentric( this_ptr);
-      AddVar_GradientFillConcentric_2( this_ptr);
-      AddVar_GradientFillLinear( this_ptr);
-      AddVar_GetPixel_1( this_ptr);
-      AddVar_GetPixel( this_ptr);
-      AddVar_GetPixel_2( this_ptr);
-      AddVar_DrawLine_1( this_ptr);
-      AddVar_DrawLine( this_ptr);
-      AddVar_DrawLine_2( this_ptr);
-      AddVar_CrossHair_1( this_ptr);
-      AddVar_CrossHair( this_ptr);
-      AddVar_CrossHair_2( this_ptr);
-      AddVar_DrawArc_1( this_ptr);
-      AddVar_DrawArc( this_ptr);
-      AddVar_DrawArc_2( this_ptr);
-      AddVar_DrawCheckMark_1( this_ptr);
-      AddVar_DrawCheckMark( this_ptr);
-      AddVar_DrawCheckMark_2( this_ptr);
-      AddVar_DrawEllipticArc_1( this_ptr);
-      AddVar_DrawEllipticArc( this_ptr);
-      AddVar_DrawEllipticArc_2( this_ptr);
-      AddVar_DrawPoint_1( this_ptr);
-      AddVar_DrawPoint( this_ptr);
-      AddVar_DrawPoint_2( this_ptr);
-      AddVar_DrawLines_1( this_ptr);
-      AddVar_DrawLines( this_ptr);
-      AddVar_DrawLines_2( this_ptr);
-      AddVar_DrawPolygon_1( this_ptr);
-      AddVar_DrawPolygon( this_ptr);
-      AddVar_DrawPolygon_2( this_ptr);
-      AddVar_DrawPolyPolygon( this_ptr);
-      AddVar_DrawRectangle_1( this_ptr);
-      AddVar_DrawRectangle( this_ptr);
-      AddVar_DrawRectangle_2( this_ptr);
-      AddVar_DrawRectangle_3( this_ptr);
-      AddVar_DrawRoundedRectangle_1( this_ptr);
-      AddVar_DrawRoundedRectangle( this_ptr);
-      AddVar_DrawRoundedRectangle_2( this_ptr);
-      AddVar_DrawRoundedRectangle_3( this_ptr);
-      AddVar_DrawCircle_1( this_ptr);
-      AddVar_DrawCircle( this_ptr);
-      AddVar_DrawCircle_2( this_ptr);
-      AddVar_DrawEllipse_1( this_ptr);
-      AddVar_DrawEllipse( this_ptr);
-      AddVar_DrawEllipse_2( this_ptr);
-      AddVar_DrawEllipse_3( this_ptr);
-      AddVar_DrawIcon_1( this_ptr);
-      AddVar_DrawIcon( this_ptr);
-      AddVar_DrawIcon_2( this_ptr);
-      AddVar_DrawBitmap_1( this_ptr);
-      AddVar_DrawBitmap( this_ptr);
-      AddVar_DrawBitmap_2( this_ptr);
-      AddVar_DrawText_1( this_ptr);
-      AddVar_DrawText( this_ptr);
-      AddVar_DrawText_2( this_ptr);
-      AddVar_DrawRotatedText_1( this_ptr);
-      AddVar_DrawRotatedText( this_ptr);
-      AddVar_DrawRotatedText_2( this_ptr);
-      AddVar_DrawLabel_1( this_ptr);
-      AddVar_DrawLabel( this_ptr);
-      AddVar_DrawLabel_2( this_ptr);
-      AddVar_Blit_1( this_ptr);
-      AddVar_Blit( this_ptr);
-      AddVar_Blit_2( this_ptr);
-      AddVar_GetAsBitmap( this_ptr);
-      AddVar_DrawSpline_1( this_ptr);
-      AddVar_DrawSpline( this_ptr);
-      AddVar_DrawSpline_2( this_ptr);
-      AddVar_DrawSpline_3( this_ptr);
-      AddVar_StartDoc( this_ptr);
-      AddVar_EndDoc( this_ptr);
-      AddVar_StartPage( this_ptr);
-      AddVar_EndPage( this_ptr);
-      AddVar_SetClippingRegion_1( this_ptr);
-      AddVar_SetClippingRegion( this_ptr);
-      AddVar_SetClippingRegion_2( this_ptr);
-      AddVar_SetClippingRegion_3( this_ptr);
-      AddVar_SetClippingRegion_4( this_ptr);
-      AddVar_SetDeviceClippingRegion( this_ptr);
-      AddVar_DestroyClippingRegion( this_ptr);
-      AddVar_GetClippingBox_1( this_ptr);
-      AddVar_GetClippingBox( this_ptr);
-      AddVar_GetClippingBox_2( this_ptr);
-      AddVar_GetTextExtent_1( this_ptr);
-      AddVar_GetTextExtent( this_ptr);
-      AddVar_GetTextExtent_2( this_ptr);
-      AddVar_GetMultiLineTextExtent_1( this_ptr);
-      AddVar_GetMultiLineTextExtent( this_ptr);
-      AddVar_GetMultiLineTextExtent_2( this_ptr);
-      AddVar_GetPartialTextExtents( this_ptr);
-      AddVar_GetSize_1( this_ptr);
-      AddVar_GetSize( this_ptr);
-      AddVar_GetSize_2( this_ptr);
-      AddVar_GetSizeMM_1( this_ptr);
-      AddVar_GetSizeMM( this_ptr);
-      AddVar_GetSizeMM_2( this_ptr);
-      AddVar_DeviceToLogicalX( this_ptr);
-      AddVar_DeviceToLogicalY( this_ptr);
-      AddVar_DeviceToLogicalXRel( this_ptr);
-      AddVar_DeviceToLogicalYRel( this_ptr);
-      AddVar_LogicalToDeviceX( this_ptr);
-      AddVar_LogicalToDeviceY( this_ptr);
-      AddVar_LogicalToDeviceXRel( this_ptr);
-      AddVar_LogicalToDeviceYRel( this_ptr);
-      AddVar_Ok( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_GetBackgroundMode( this_ptr);
-      AddVar_GetBackground( this_ptr);
-      AddVar_GetBrush( this_ptr);
-      AddVar_GetFont( this_ptr);
-      AddVar_GetPen( this_ptr);
-      AddVar_GetTextForeground( this_ptr);
-      AddVar_GetTextBackground( this_ptr);
-      AddVar_SetTextForeground( this_ptr);
-      AddVar_SetTextBackground( this_ptr);
-      AddVar_GetMapMode( this_ptr);
-      AddVar_GetUserScale( this_ptr);
-      AddVar_GetLogicalScale( this_ptr);
-      AddVar_SetLogicalScale( this_ptr);
-      AddVar_GetLogicalOrigin_1( this_ptr);
-      AddVar_GetLogicalOrigin( this_ptr);
-      AddVar_GetLogicalOrigin_2( this_ptr);
-      AddVar_GetDeviceOrigin_1( this_ptr);
-      AddVar_GetDeviceOrigin( this_ptr);
-      AddVar_GetDeviceOrigin_2( this_ptr);
-      AddVar_ComputeScaleAndOrigin( this_ptr);
-      AddVar_GetLogicalFunction( this_ptr);
-      AddVar_CalcBoundingBox( this_ptr);
-      AddVar_ResetBoundingBox( this_ptr);
-      AddVar_MinX( this_ptr);
-      AddVar_MaxX( this_ptr);
-      AddVar_MinY( this_ptr);
-      AddVar_MaxY( this_ptr);
-      AddVar_GetTextExtent_3( this_ptr);
-      AddVar_GetLogicalOrigin_3( this_ptr);
-      AddVar_GetDeviceOrigin_3( this_ptr);
-      AddVar_GetClippingBox_3( this_ptr);
-      AddVar_GetLayoutDirection( this_ptr);
-      AddVar_SetLayoutDirection( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_DrawObject( this_ptr);
+  AddVar_FloodFill_1( this_ptr);
+  AddVar_FloodFill( this_ptr);
+  AddVar_FloodFill_2( this_ptr);
+  AddVar_GradientFillConcentric_1( this_ptr);
+  AddVar_GradientFillConcentric( this_ptr);
+  AddVar_GradientFillConcentric_2( this_ptr);
+  AddVar_GradientFillLinear( this_ptr);
+  AddVar_GetPixel_1( this_ptr);
+  AddVar_GetPixel( this_ptr);
+  AddVar_GetPixel_2( this_ptr);
+  AddVar_DrawLine_1( this_ptr);
+  AddVar_DrawLine( this_ptr);
+  AddVar_DrawLine_2( this_ptr);
+  AddVar_CrossHair_1( this_ptr);
+  AddVar_CrossHair( this_ptr);
+  AddVar_CrossHair_2( this_ptr);
+  AddVar_DrawArc_1( this_ptr);
+  AddVar_DrawArc( this_ptr);
+  AddVar_DrawArc_2( this_ptr);
+  AddVar_DrawCheckMark_1( this_ptr);
+  AddVar_DrawCheckMark( this_ptr);
+  AddVar_DrawCheckMark_2( this_ptr);
+  AddVar_DrawEllipticArc_1( this_ptr);
+  AddVar_DrawEllipticArc( this_ptr);
+  AddVar_DrawEllipticArc_2( this_ptr);
+  AddVar_DrawPoint_1( this_ptr);
+  AddVar_DrawPoint( this_ptr);
+  AddVar_DrawPoint_2( this_ptr);
+  AddVar_DrawLines_1( this_ptr);
+  AddVar_DrawLines( this_ptr);
+  AddVar_DrawLines_2( this_ptr);
+  AddVar_DrawPolygon_1( this_ptr);
+  AddVar_DrawPolygon( this_ptr);
+  AddVar_DrawPolygon_2( this_ptr);
+  AddVar_DrawPolyPolygon( this_ptr);
+  AddVar_DrawRectangle_1( this_ptr);
+  AddVar_DrawRectangle( this_ptr);
+  AddVar_DrawRectangle_2( this_ptr);
+  AddVar_DrawRectangle_3( this_ptr);
+  AddVar_DrawRoundedRectangle_1( this_ptr);
+  AddVar_DrawRoundedRectangle( this_ptr);
+  AddVar_DrawRoundedRectangle_2( this_ptr);
+  AddVar_DrawRoundedRectangle_3( this_ptr);
+  AddVar_DrawCircle_1( this_ptr);
+  AddVar_DrawCircle( this_ptr);
+  AddVar_DrawCircle_2( this_ptr);
+  AddVar_DrawEllipse_1( this_ptr);
+  AddVar_DrawEllipse( this_ptr);
+  AddVar_DrawEllipse_2( this_ptr);
+  AddVar_DrawEllipse_3( this_ptr);
+  AddVar_DrawIcon_1( this_ptr);
+  AddVar_DrawIcon( this_ptr);
+  AddVar_DrawIcon_2( this_ptr);
+  AddVar_DrawBitmap_1( this_ptr);
+  AddVar_DrawBitmap( this_ptr);
+  AddVar_DrawBitmap_2( this_ptr);
+  AddVar_DrawText_1( this_ptr);
+  AddVar_DrawText( this_ptr);
+  AddVar_DrawText_2( this_ptr);
+  AddVar_DrawRotatedText_1( this_ptr);
+  AddVar_DrawRotatedText( this_ptr);
+  AddVar_DrawRotatedText_2( this_ptr);
+  AddVar_DrawLabel_1( this_ptr);
+  AddVar_DrawLabel( this_ptr);
+  AddVar_DrawLabel_2( this_ptr);
+  AddVar_Blit_1( this_ptr);
+  AddVar_Blit( this_ptr);
+  AddVar_Blit_2( this_ptr);
+  AddVar_GetAsBitmap( this_ptr);
+  AddVar_DrawSpline_1( this_ptr);
+  AddVar_DrawSpline( this_ptr);
+  AddVar_DrawSpline_2( this_ptr);
+  AddVar_DrawSpline_3( this_ptr);
+  AddVar_StartDoc( this_ptr);
+  AddVar_EndDoc( this_ptr);
+  AddVar_StartPage( this_ptr);
+  AddVar_EndPage( this_ptr);
+  AddVar_SetClippingRegion_1( this_ptr);
+  AddVar_SetClippingRegion( this_ptr);
+  AddVar_SetClippingRegion_2( this_ptr);
+  AddVar_SetClippingRegion_3( this_ptr);
+  AddVar_SetClippingRegion_4( this_ptr);
+  AddVar_SetDeviceClippingRegion( this_ptr);
+  AddVar_DestroyClippingRegion( this_ptr);
+  AddVar_GetClippingBox_1( this_ptr);
+  AddVar_GetClippingBox( this_ptr);
+  AddVar_GetClippingBox_2( this_ptr);
+  AddVar_GetTextExtent_1( this_ptr);
+  AddVar_GetTextExtent( this_ptr);
+  AddVar_GetTextExtent_2( this_ptr);
+  AddVar_GetMultiLineTextExtent_1( this_ptr);
+  AddVar_GetMultiLineTextExtent( this_ptr);
+  AddVar_GetMultiLineTextExtent_2( this_ptr);
+  AddVar_GetPartialTextExtents( this_ptr);
+  AddVar_GetSize_1( this_ptr);
+  AddVar_GetSize( this_ptr);
+  AddVar_GetSize_2( this_ptr);
+  AddVar_GetSizeMM_1( this_ptr);
+  AddVar_GetSizeMM( this_ptr);
+  AddVar_GetSizeMM_2( this_ptr);
+  AddVar_DeviceToLogicalX( this_ptr);
+  AddVar_DeviceToLogicalY( this_ptr);
+  AddVar_DeviceToLogicalXRel( this_ptr);
+  AddVar_DeviceToLogicalYRel( this_ptr);
+  AddVar_LogicalToDeviceX( this_ptr);
+  AddVar_LogicalToDeviceY( this_ptr);
+  AddVar_LogicalToDeviceXRel( this_ptr);
+  AddVar_LogicalToDeviceYRel( this_ptr);
+  AddVar_Ok( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_GetBackgroundMode( this_ptr);
+  AddVar_GetBackground( this_ptr);
+  AddVar_GetBrush( this_ptr);
+  AddVar_GetFont( this_ptr);
+  AddVar_GetPen( this_ptr);
+  AddVar_GetTextForeground( this_ptr);
+  AddVar_GetTextBackground( this_ptr);
+  AddVar_SetTextForeground( this_ptr);
+  AddVar_SetTextBackground( this_ptr);
+  AddVar_GetMapMode( this_ptr);
+  AddVar_GetUserScale( this_ptr);
+  AddVar_GetLogicalScale( this_ptr);
+  AddVar_SetLogicalScale( this_ptr);
+  AddVar_GetLogicalOrigin_1( this_ptr);
+  AddVar_GetLogicalOrigin( this_ptr);
+  AddVar_GetLogicalOrigin_2( this_ptr);
+  AddVar_GetDeviceOrigin_1( this_ptr);
+  AddVar_GetDeviceOrigin( this_ptr);
+  AddVar_GetDeviceOrigin_2( this_ptr);
+  AddVar_ComputeScaleAndOrigin( this_ptr);
+  AddVar_GetLogicalFunction( this_ptr);
+  AddVar_CalcBoundingBox( this_ptr);
+  AddVar_ResetBoundingBox( this_ptr);
+  AddVar_MinX( this_ptr);
+  AddVar_MaxX( this_ptr);
+  AddVar_MinY( this_ptr);
+  AddVar_MaxY( this_ptr);
+  AddVar_GetTextExtent_3( this_ptr);
+  AddVar_GetLogicalOrigin_3( this_ptr);
+  AddVar_GetDeviceOrigin_3( this_ptr);
+  AddVar_GetClippingBox_3( this_ptr);
+  AddVar_GetLayoutDirection( this_ptr);
+  AddVar_SetLayoutDirection( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -253,7 +311,7 @@ void WrapClass_wxDCBase::AddMethods(WrapClass<wxDCBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxDCBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxDCBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -288,9 +346,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxDrawObject > drawobject_smtptr;
-  if (!get_val_smtptr_param<wxDrawObject >(drawobject_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDrawObject* drawobject = drawobject_smtptr.get();
+  wxDrawObject* drawobject;
+  if (CheckNullVar(_p,_n))  {
+    drawobject=(wxDrawObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDrawObject > drawobject_smtptr;
+    if (!get_val_smtptr_param<wxDrawObject >(drawobject_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    drawobject = drawobject_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DrawObject(drawobject);
   return BasicVariable::ptr();
@@ -552,9 +616,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int y;
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxColour > col_smtptr;
-  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxColour* col = col_smtptr.get();
+  wxColour* col;
+  if (CheckNullVar(_p,_n))  {
+    col=(wxColour*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxColour > col_smtptr;
+    if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    col = col_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->GetPixel(x, y, col);
   return AMILabType<bool >::CreateVar(res);
@@ -604,9 +674,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (!get_val_smtptr_param<wxPoint >(pt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxPoint const & pt = *pt_smtptr;
 
-  boost::shared_ptr<wxColour > col_smtptr;
-  if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxColour* col = col_smtptr.get();
+  wxColour* col;
+  if (CheckNullVar(_p,_n))  {
+    col=(wxColour*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxColour > col_smtptr;
+    if (!get_val_smtptr_param<wxColour >(col_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    col = col_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->GetPixel(pt, col);
   return AMILabType<bool >::CreateVar(res);
@@ -1155,9 +1231,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxPoint* points = points_smtptr.get();
+  wxPoint* points;
+  if (CheckNullVar(_p,_n))  {
+    points=(wxPoint*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxPoint > points_smtptr;
+    if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    points = points_smtptr.get();
+  }
 
   int xoffset = 0;
   if (!get_val_param<int >(xoffset,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1209,9 +1291,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxList > list_smtptr;
-  if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxList* list = list_smtptr.get();
+  wxList* list;
+  if (CheckNullVar(_p,_n))  {
+    list=(wxList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxList > list_smtptr;
+    if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    list = list_smtptr.get();
+  }
 
   int xoffset = 0;
   if (!get_val_param<int >(xoffset,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1247,9 +1335,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxPoint* points = points_smtptr.get();
+  wxPoint* points;
+  if (CheckNullVar(_p,_n))  {
+    points=(wxPoint*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxPoint > points_smtptr;
+    if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    points = points_smtptr.get();
+  }
 
   int xoffset = 0;
   if (!get_val_param<int >(xoffset,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1305,9 +1399,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>4) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxList > list_smtptr;
-  if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxList* list = list_smtptr.get();
+  wxList* list;
+  if (CheckNullVar(_p,_n))  {
+    list=(wxList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxList > list_smtptr;
+    if (!get_val_smtptr_param<wxList >(list_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    list = list_smtptr.get();
+  }
 
   int xoffset = 0;
   if (!get_val_param<int >(xoffset,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1347,13 +1447,25 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<int > count_smtptr;
-  if (!get_val_smtptr_param<int >(count_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* count = count_smtptr.get();
+  int* count;
+  if (CheckNullVar(_p,_n))  {
+    count=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > count_smtptr;
+    if (!get_val_smtptr_param<int >(count_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    count = count_smtptr.get();
+  }
 
-  boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxPoint* points = points_smtptr.get();
+  wxPoint* points;
+  if (CheckNullVar(_p,_n))  {
+    points=(wxPoint*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxPoint > points_smtptr;
+    if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    points = points_smtptr.get();
+  }
 
   int xoffset = 0;
   if (!get_val_param<int >(xoffset,_p,_n,false,false)) ClassHelpAndReturn;
@@ -2199,9 +2311,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int indexAccel = -0x00000000000000001;
   if (!get_val_param<int >(indexAccel,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxRect > rectBounding_smtptr;
-  if (!get_val_smtptr_param<wxRect >(rectBounding_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxRect* rectBounding = rectBounding_smtptr.get();
+  wxRect* rectBounding = 0l;
+  if (CheckNullVar(_p,_n))  {
+    rectBounding=(wxRect*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxRect > rectBounding_smtptr;
+    if (!get_val_smtptr_param<wxRect >(rectBounding_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    rectBounding = rectBounding_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DrawLabel(text, image, rect, alignment, indexAccel, rectBounding);
   return BasicVariable::ptr();
@@ -2306,9 +2424,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int height;
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxDC > source_smtptr;
-  if (!get_val_smtptr_param<wxDC >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxDC* source = source_smtptr.get();
+  wxDC* source;
+  if (CheckNullVar(_p,_n))  {
+    source=(wxDC*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDC > source_smtptr;
+    if (!get_val_smtptr_param<wxDC >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    source = source_smtptr.get();
+  }
 
   int xsrc;
   if (!get_val_param<int >(xsrc,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -2385,9 +2509,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (!get_val_smtptr_param<wxSize >(sz_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxSize const & sz = *sz_smtptr;
 
-  boost::shared_ptr<wxDC > source_smtptr;
-  if (!get_val_smtptr_param<wxDC >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxDC* source = source_smtptr.get();
+  wxDC* source;
+  if (CheckNullVar(_p,_n))  {
+    source=(wxDC*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDC > source_smtptr;
+    if (!get_val_smtptr_param<wxDC >(source_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    source = source_smtptr.get();
+  }
 
   boost::shared_ptr<wxPoint > srcPt_smtptr;
   if (!get_val_smtptr_param<wxPoint >(srcPt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
@@ -2426,9 +2556,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxRect > subrect_smtptr;
-  if (!get_val_smtptr_param<wxRect >(subrect_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxRect* subrect = subrect_smtptr.get();
+  wxRect* subrect = 0u;
+  if (CheckNullVar(_p,_n))  {
+    subrect=(wxRect*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxRect > subrect_smtptr;
+    if (!get_val_smtptr_param<wxRect >(subrect_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    subrect = subrect_smtptr.get();
+  }
 
   wxBitmap res =   this->_objectptr->GetObj()->GetAsBitmap(subrect);
   return AMILabType<wxBitmap >::CreateVar(res);
@@ -2523,9 +2659,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxPoint > points_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxPoint* points = points_smtptr.get();
+  wxPoint* points;
+  if (CheckNullVar(_p,_n))  {
+    points=(wxPoint*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxPoint > points_smtptr;
+    if (!get_val_smtptr_param<wxPoint >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    points = points_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DrawSpline(n, points);
   return BasicVariable::ptr();
@@ -2548,9 +2690,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxList > points_smtptr;
-  if (!get_val_smtptr_param<wxList >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxList* points = points_smtptr.get();
+  wxList* points;
+  if (CheckNullVar(_p,_n))  {
+    points=(wxList*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxList > points_smtptr;
+    if (!get_val_smtptr_param<wxList >(points_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    points = points_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DrawSpline(points);
   return BasicVariable::ptr();
@@ -2842,21 +2990,45 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>4) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    y = y_smtptr.get();
+  }
 
-  boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* w = w_smtptr.get();
+  int* w;
+  if (CheckNullVar(_p,_n))  {
+    w=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > w_smtptr;
+    if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    w = w_smtptr.get();
+  }
 
-  boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* h = h_smtptr.get();
+  int* h;
+  if (CheckNullVar(_p,_n))  {
+    h=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > h_smtptr;
+    if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    h = h_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetClippingBox(x, y, w, h);
   return BasicVariable::ptr();
@@ -2937,25 +3109,55 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & string = *string_smtptr;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    y = y_smtptr.get();
+  }
 
-  boost::shared_ptr<int > descent_smtptr;
-  if (!get_val_smtptr_param<int >(descent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* descent = descent_smtptr.get();
+  int* descent = 0l;
+  if (CheckNullVar(_p,_n))  {
+    descent=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > descent_smtptr;
+    if (!get_val_smtptr_param<int >(descent_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    descent = descent_smtptr.get();
+  }
 
-  boost::shared_ptr<int > externalLeading_smtptr;
-  if (!get_val_smtptr_param<int >(externalLeading_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* externalLeading = externalLeading_smtptr.get();
+  int* externalLeading = 0l;
+  if (CheckNullVar(_p,_n))  {
+    externalLeading=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > externalLeading_smtptr;
+    if (!get_val_smtptr_param<int >(externalLeading_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    externalLeading = externalLeading_smtptr.get();
+  }
 
-  boost::shared_ptr<wxFont > theFont_smtptr;
-  if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxFont* theFont = theFont_smtptr.get();
+  wxFont* theFont = 0l;
+  if (CheckNullVar(_p,_n))  {
+    theFont=(wxFont*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFont > theFont_smtptr;
+    if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    theFont = theFont_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTextExtent(string, x, y, descent, externalLeading, theFont);
   return BasicVariable::ptr();
@@ -3036,21 +3238,45 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (!get_val_smtptr_param<wxString >(string_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & string = *string_smtptr;
 
-  boost::shared_ptr<int > width_smtptr;
-  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* width = width_smtptr.get();
+  int* width;
+  if (CheckNullVar(_p,_n))  {
+    width=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > width_smtptr;
+    if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    width = width_smtptr.get();
+  }
 
-  boost::shared_ptr<int > height_smtptr;
-  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* height = height_smtptr.get();
+  int* height;
+  if (CheckNullVar(_p,_n))  {
+    height=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > height_smtptr;
+    if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    height = height_smtptr.get();
+  }
 
-  boost::shared_ptr<int > heightLine_smtptr;
-  if (!get_val_smtptr_param<int >(heightLine_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* heightLine = heightLine_smtptr.get();
+  int* heightLine = 0l;
+  if (CheckNullVar(_p,_n))  {
+    heightLine=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > heightLine_smtptr;
+    if (!get_val_smtptr_param<int >(heightLine_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    heightLine = heightLine_smtptr.get();
+  }
 
-  boost::shared_ptr<wxFont > font_smtptr;
-  if (!get_val_smtptr_param<wxFont >(font_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxFont* font = font_smtptr.get();
+  wxFont* font = 0l;
+  if (CheckNullVar(_p,_n))  {
+    font=(wxFont*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFont > font_smtptr;
+    if (!get_val_smtptr_param<wxFont >(font_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    font = font_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetMultiLineTextExtent(string, width, height, heightLine, font);
   return BasicVariable::ptr();
@@ -3152,13 +3378,25 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > width_smtptr;
-  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* width = width_smtptr.get();
+  int* width;
+  if (CheckNullVar(_p,_n))  {
+    width=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > width_smtptr;
+    if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    width = width_smtptr.get();
+  }
 
-  boost::shared_ptr<int > height_smtptr;
-  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* height = height_smtptr.get();
+  int* height;
+  if (CheckNullVar(_p,_n))  {
+    height=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > height_smtptr;
+    if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    height = height_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetSize(width, height);
   return BasicVariable::ptr();
@@ -3222,13 +3460,25 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > width_smtptr;
-  if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* width = width_smtptr.get();
+  int* width;
+  if (CheckNullVar(_p,_n))  {
+    width=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > width_smtptr;
+    if (!get_val_smtptr_param<int >(width_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    width = width_smtptr.get();
+  }
 
-  boost::shared_ptr<int > height_smtptr;
-  if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* height = height_smtptr.get();
+  int* height;
+  if (CheckNullVar(_p,_n))  {
+    height=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > height_smtptr;
+    if (!get_val_smtptr_param<int >(height_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    height = height_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetSizeMM(width, height);
   return BasicVariable::ptr();
@@ -3732,13 +3982,25 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<double > y_smtptr;
-  if (!get_val_smtptr_param<double >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* y = y_smtptr.get();
+  double* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > y_smtptr;
+    if (!get_val_smtptr_param<double >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetUserScale(x, y);
   return BasicVariable::ptr();
@@ -3762,13 +4024,25 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > x_smtptr;
-  if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* x = x_smtptr.get();
+  double* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > x_smtptr;
+    if (!get_val_smtptr_param<double >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<double > y_smtptr;
-  if (!get_val_smtptr_param<double >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* y = y_smtptr.get();
+  double* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > y_smtptr;
+    if (!get_val_smtptr_param<double >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetLogicalScale(x, y);
   return BasicVariable::ptr();
@@ -3820,13 +4094,25 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetLogicalOrigin(x, y);
   return BasicVariable::ptr();
@@ -3893,13 +4179,25 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetDeviceOrigin(x, y);
   return BasicVariable::ptr();
@@ -4153,9 +4451,15 @@ BasicVariable::ptr WrapClass_wxDCBase::
   long int externalLeading_val = *externalLeading_long;
   long int* externalLeading = &externalLeading_val;
 
-  boost::shared_ptr<wxFont > theFont_smtptr;
-  if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxFont* theFont = theFont_smtptr.get();
+  wxFont* theFont = 0l;
+  if (CheckNullVar(_p,_n))  {
+    theFont=(wxFont*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFont > theFont_smtptr;
+    if (!get_val_smtptr_param<wxFont >(theFont_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    theFont = theFont_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetTextExtent(string, x, y, descent, externalLeading, theFont);
   return BasicVariable::ptr();
@@ -4330,7 +4634,7 @@ BasicVariable::ptr WrapClass_wxDCBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

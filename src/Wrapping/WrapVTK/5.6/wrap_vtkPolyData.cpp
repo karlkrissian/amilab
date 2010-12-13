@@ -16,18 +16,37 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkPolyData.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkPolyData.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkDataSet.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkDataObject.h"
-#include "wrap_vtkDataArray.h"
+#ifndef vtkPolyData_declared
+  #define vtkPolyData_declared
+  AMI_DECLARE_TYPE(vtkPolyData)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkDataSet_declared
+  #define vtkDataSet_declared
+  AMI_DECLARE_TYPE(vtkDataSet)
+#endif
+#ifndef vtkDataObject_declared
+  #define vtkDataObject_declared
+  AMI_DECLARE_TYPE(vtkDataObject)
+#endif
+#ifndef vtkDataArray_declared
+  #define vtkDataArray_declared
+  AMI_DECLARE_TYPE(vtkDataArray)
+#endif
 
 
-#include "wrap_vtkPolyData.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -195,17 +214,17 @@ void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
 
 
   
-  AMIObject::ptr obj_enum_90(new AMIObject);
-  obj_enum_90->SetName("enum_90");
+  AMIObject::ptr obj_enum_94(new AMIObject);
+  obj_enum_94->SetName("enum_94");
 
   BasicVariable::ptr var_ERR_NO_SUCH_FIELD = AMILabType<int >::CreateVar(-4);
   if (var_ERR_NO_SUCH_FIELD.get()) {
     var_ERR_NO_SUCH_FIELD->Rename("ERR_NO_SUCH_FIELD");
-    obj_enum_90->GetContext()->AddVar(var_ERR_NO_SUCH_FIELD,obj_enum_90->GetContext());
+    obj_enum_94->GetContext()->AddVar(var_ERR_NO_SUCH_FIELD,obj_enum_94->GetContext());
   }
 
   // Add enum to context
-  context->AddVar<AMIObject>(obj_enum_90->GetName().c_str(),obj_enum_90,context);
+  context->AddVar<AMIObject>(obj_enum_94->GetName().c_str(),obj_enum_94,context);
 
 
   // Adding Bases
@@ -224,7 +243,7 @@ void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkPolyData::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkPolyData_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -268,7 +287,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPolyData * res =   vtkPolyData::New();
-  BasicVariable::ptr res_var = WrapClass_vtkPolyData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPolyData >::CreateVar(res,true);
   return res_var;
 }
 
@@ -327,7 +346,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   }
 
   vtkPolyData * res =   vtkPolyData::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkPolyData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPolyData >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: vtkInformation
@@ -361,7 +380,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   }
 
   vtkPolyData * res =   vtkPolyData::GetData(info);
-  BasicVariable::ptr res_var = WrapClass_vtkPolyData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPolyData >::CreateVar(res,true);
   return res_var;
 }
 */
@@ -415,7 +434,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (!get_val_param<int >(i,_p,_n,false,true)) ClassReturnEmptyVar;
 
   vtkPolyData * res =   vtkPolyData::GetData(v, i);
-  BasicVariable::ptr res_var = WrapClass_vtkPolyData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPolyData >::CreateVar(res,true);
   return res_var;
 }
 */
@@ -462,7 +481,7 @@ BasicVariable::ptr WrapClass_vtkPolyData::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPolyData * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkPolyData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPolyData >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

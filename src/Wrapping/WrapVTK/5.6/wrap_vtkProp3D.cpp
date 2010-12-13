@@ -16,18 +16,37 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkProp3D.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkProp3D.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkProp.h"
-#include "wrap_vtkLinearTransform.h"
-#include "wrap_vtkMatrix4x4.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkProp3D_declared
+  #define vtkProp3D_declared
+  AMI_DECLARE_TYPE(vtkProp3D)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkProp_declared
+  #define vtkProp_declared
+  AMI_DECLARE_TYPE(vtkProp)
+#endif
+#ifndef vtkLinearTransform_declared
+  #define vtkLinearTransform_declared
+  AMI_DECLARE_TYPE(vtkLinearTransform)
+#endif
+#ifndef vtkMatrix4x4_declared
+  #define vtkMatrix4x4_declared
+  AMI_DECLARE_TYPE(vtkMatrix4x4)
+#endif
 
 
-#include "wrap_vtkProp3D.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -168,7 +187,7 @@ void WrapClass_vtkProp3D::AddMethods(WrapClass<vtkProp3D>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkProp3D::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkProp3D_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -243,7 +262,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   }
 
   vtkProp3D * res =   vtkProp3D::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkProp3D::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProp3D >::CreateVar(res,true);
   return res_var;
 }
 
@@ -289,7 +308,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProp3D * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkProp3D::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProp3D >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -978,7 +997,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkLinearTransform * res =   this->_objectptr->GetObj()->GetUserTransform();
-  BasicVariable::ptr res_var = WrapClass_vtkLinearTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkLinearTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1029,7 +1048,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetUserMatrix();
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1734,7 +1753,7 @@ BasicVariable::ptr WrapClass_vtkProp3D::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetMatrix();
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 

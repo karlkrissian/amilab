@@ -26,8 +26,10 @@
 #include "wrap_vtkObject.h"
 
 
-
-AMI_DECLARE_TYPE(vtkCellTypes);
+#ifndef vtkCellTypes_declared
+  #define vtkCellTypes_declared
+  AMI_DECLARE_TYPE(vtkCellTypes);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkCellTypes : public WrapClass<vtkCellTypes>
@@ -101,12 +103,13 @@ class WrapClass_vtkCellTypes : public WrapClass<vtkCellTypes>
 
     void AddMethods(WrapClass<vtkCellTypes>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkCellTypes_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkCellTypes_h

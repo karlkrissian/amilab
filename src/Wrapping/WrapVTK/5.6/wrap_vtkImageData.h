@@ -26,8 +26,10 @@
 #include "wrap_vtkDataSet.h"
 
 
-
-AMI_DECLARE_TYPE(vtkImageData);
+#ifndef vtkImageData_declared
+  #define vtkImageData_declared
+  AMI_DECLARE_TYPE(vtkImageData);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkImageData : public WrapClass<vtkImageData>
@@ -221,12 +223,13 @@ class WrapClass_vtkImageData : public WrapClass<vtkImageData>
 
     void AddMethods(WrapClass<vtkImageData>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkImageData_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkImageData_h

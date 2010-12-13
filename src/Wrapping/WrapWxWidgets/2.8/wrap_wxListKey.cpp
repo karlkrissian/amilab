@@ -10,21 +10,34 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxListKey.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxListKey.h"
 #include "stdlib.h"
-#include "wrap_wxString.h"
 #include "wchar.h"
+#ifndef wxListKey_declared
+  #define wxListKey_declared
+  AMI_DECLARE_TYPE(wxListKey)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
 
 
-#include "wrap_wxListKey.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,22 +77,25 @@ void WrapClass_wxListKey::AddMethods(WrapClass<wxListKey>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetKeyType( this_ptr);
-      AddVar_GetString( this_ptr);
-      AddVar_GetNumber( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetKeyType( this_ptr);
+  AddVar_GetString( this_ptr);
+  AddVar_GetNumber( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 /* The following types are missing: wxListKeyValue
-      AddVar___equal__( this_ptr);
+  AddVar___equal__( this_ptr);
 */
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -89,7 +105,7 @@ void WrapClass_wxListKey::AddMethods(WrapClass<wxListKey>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxListKey::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxListKey_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxStdDialogButtonSizer.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxButton.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxButton_declared
+  #define wxButton_declared
+  AMI_DECLARE_TYPE(wxButton)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxStdDialogButtonSizer.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -108,7 +121,7 @@ void WrapClass_wxStdDialogButtonSizer::AddMethods(WrapClass<wxStdDialogButtonSiz
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxStdDialogButtonSizer::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxStdDialogButtonSizer_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -164,9 +177,15 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxButton > button_smtptr;
-  if (!get_val_smtptr_param<wxButton >(button_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxButton* button = button_smtptr.get();
+  wxButton* button;
+  if (CheckNullVar(_p,_n))  {
+    button=(wxButton*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxButton > button_smtptr;
+    if (!get_val_smtptr_param<wxButton >(button_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    button = button_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddButton(button);
   return BasicVariable::ptr();
@@ -189,9 +208,15 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxButton > button_smtptr;
-  if (!get_val_smtptr_param<wxButton >(button_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxButton* button = button_smtptr.get();
+  wxButton* button;
+  if (CheckNullVar(_p,_n))  {
+    button=(wxButton*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxButton > button_smtptr;
+    if (!get_val_smtptr_param<wxButton >(button_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    button = button_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetAffirmativeButton(button);
   return BasicVariable::ptr();
@@ -214,9 +239,15 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxButton > button_smtptr;
-  if (!get_val_smtptr_param<wxButton >(button_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxButton* button = button_smtptr.get();
+  wxButton* button;
+  if (CheckNullVar(_p,_n))  {
+    button=(wxButton*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxButton > button_smtptr;
+    if (!get_val_smtptr_param<wxButton >(button_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    button = button_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetNegativeButton(button);
   return BasicVariable::ptr();
@@ -239,9 +270,15 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxButton > button_smtptr;
-  if (!get_val_smtptr_param<wxButton >(button_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxButton* button = button_smtptr.get();
+  wxButton* button;
+  if (CheckNullVar(_p,_n))  {
+    button=(wxButton*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxButton > button_smtptr;
+    if (!get_val_smtptr_param<wxButton >(button_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    button = button_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetCancelButton(button);
   return BasicVariable::ptr();
@@ -281,7 +318,7 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxButton * res =   this->_objectptr->GetObj()->GetAffirmativeButton();
-  BasicVariable::ptr res_var = WrapClass_wxButton::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxButton >::CreateVar(res,true);
   return res_var;
 }
 
@@ -301,7 +338,7 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxButton * res =   this->_objectptr->GetObj()->GetApplyButton();
-  BasicVariable::ptr res_var = WrapClass_wxButton::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxButton >::CreateVar(res,true);
   return res_var;
 }
 
@@ -321,7 +358,7 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxButton * res =   this->_objectptr->GetObj()->GetNegativeButton();
-  BasicVariable::ptr res_var = WrapClass_wxButton::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxButton >::CreateVar(res,true);
   return res_var;
 }
 
@@ -341,7 +378,7 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxButton * res =   this->_objectptr->GetObj()->GetCancelButton();
-  BasicVariable::ptr res_var = WrapClass_wxButton::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxButton >::CreateVar(res,true);
   return res_var;
 }
 
@@ -361,7 +398,7 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxButton * res =   this->_objectptr->GetObj()->GetHelpButton();
-  BasicVariable::ptr res_var = WrapClass_wxButton::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxButton >::CreateVar(res,true);
   return res_var;
 }
 
@@ -381,7 +418,7 @@ BasicVariable::ptr WrapClass_wxStdDialogButtonSizer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

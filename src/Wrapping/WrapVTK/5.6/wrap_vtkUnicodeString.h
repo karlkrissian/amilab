@@ -25,8 +25,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(vtkUnicodeString);
+#ifndef vtkUnicodeString_declared
+  #define vtkUnicodeString_declared
+  AMI_DECLARE_TYPE(vtkUnicodeString);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkUnicodeString : public WrapClass<vtkUnicodeString>
@@ -148,12 +150,13 @@ class WrapClass_vtkUnicodeString : public WrapClass<vtkUnicodeString>
 
     void AddMethods(WrapClass<vtkUnicodeString>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkUnicodeString_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkUnicodeString_h

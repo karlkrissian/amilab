@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxMenuEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxMenu.h"
-#include "wrap_wxMenuEvent.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxMenu_declared
+  #define wxMenu_declared
+  AMI_DECLARE_TYPE(wxMenu)
+#endif
+#ifndef wxMenuEvent_declared
+  #define wxMenuEvent_declared
+  AMI_DECLARE_TYPE(wxMenuEvent)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxMenuEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,18 +83,21 @@ void WrapClass_wxMenuEvent::AddMethods(WrapClass<wxMenuEvent>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetMenuId( this_ptr);
-      AddVar_IsPopup( this_ptr);
-      AddVar_GetMenu( this_ptr);
-      AddVar_Clone( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetMenuId( this_ptr);
+  AddVar_IsPopup( this_ptr);
+  AddVar_GetMenu( this_ptr);
+  AddVar_Clone( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -96,7 +118,7 @@ void WrapClass_wxMenuEvent::AddMethods(WrapClass<wxMenuEvent>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxMenuEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxMenuEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -143,9 +165,15 @@ BasicVariable::ptr WrapClass_wxMenuEvent::
   int winid = 0;
   if (!get_val_param<int >(winid,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* menu = 0l;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    menu = menu_smtptr.get();
+  }
 
   wxMenuEvent* _newobj = new wxMenuEvent(type, winid, menu);
   BasicVariable::ptr res = WrapClass_wxMenuEvent::CreateVar(_newobj);
@@ -269,7 +297,7 @@ BasicVariable::ptr WrapClass_wxMenuEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMenu * res =   this->_objectptr->GetObj()->GetMenu();
-  BasicVariable::ptr res_var = WrapClass_wxMenu::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenu >::CreateVar(res,true);
   return res_var;
 }
 
@@ -289,7 +317,7 @@ BasicVariable::ptr WrapClass_wxMenuEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -309,7 +337,7 @@ BasicVariable::ptr WrapClass_wxMenuEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

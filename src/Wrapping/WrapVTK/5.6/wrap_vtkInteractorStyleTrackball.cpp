@@ -16,14 +16,24 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkInteractorStyleTrackball.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkInteractorStyleTrackball.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
+#ifndef vtkInteractorStyleTrackball_declared
+  #define vtkInteractorStyleTrackball_declared
+  AMI_DECLARE_TYPE(vtkInteractorStyleTrackball)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
 
 
-#include "wrap_vtkInteractorStyleTrackball.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -107,7 +117,7 @@ void WrapClass_vtkInteractorStyleTrackball::AddMethods(WrapClass<vtkInteractorSt
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkInteractorStyleTrackball::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkInteractorStyleTrackball_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -144,7 +154,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyleTrackball * res =   vtkInteractorStyleTrackball::New();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleTrackball::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleTrackball >::CreateVar(res,true);
   return res_var;
 }
 
@@ -203,7 +213,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
   }
 
   vtkInteractorStyleTrackball * res =   vtkInteractorStyleTrackball::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleTrackball::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleTrackball >::CreateVar(res,true);
   return res_var;
 }
 
@@ -249,7 +259,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackball::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyleTrackball * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleTrackball::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleTrackball >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

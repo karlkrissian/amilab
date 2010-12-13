@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxAcceleratorEntry.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxMenuItem.h"
-#include "wrap_wxAcceleratorEntry.h"
-#include "wrap_wxString.h"
+#ifndef wxMenuItem_declared
+  #define wxMenuItem_declared
+  AMI_DECLARE_TYPE(wxMenuItem)
+#endif
+#ifndef wxAcceleratorEntry_declared
+  #define wxAcceleratorEntry_declared
+  AMI_DECLARE_TYPE(wxAcceleratorEntry)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
 
 
-#include "wrap_wxAcceleratorEntry.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,27 +79,30 @@ void WrapClass_wxAcceleratorEntry::AddMethods(WrapClass<wxAcceleratorEntry>::ptr
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Set( this_ptr);
-      AddVar_SetMenuItem( this_ptr);
-      AddVar_GetFlags( this_ptr);
-      AddVar_GetKeyCode( this_ptr);
-      AddVar_GetCommand( this_ptr);
-      AddVar_GetMenuItem( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_ToString( this_ptr);
-      AddVar_FromString( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Set( this_ptr);
+  AddVar_SetMenuItem( this_ptr);
+  AddVar_GetFlags( this_ptr);
+  AddVar_GetKeyCode( this_ptr);
+  AddVar_GetCommand( this_ptr);
+  AddVar_GetMenuItem( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_ToString( this_ptr);
+  AddVar_FromString( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___not_equal__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___not_equal__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -93,7 +112,7 @@ void WrapClass_wxAcceleratorEntry::AddMethods(WrapClass<wxAcceleratorEntry>::ptr
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxAcceleratorEntry::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxAcceleratorEntry_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -145,9 +164,15 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int cmd = 0;
   if (!get_val_param<int >(cmd,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxMenuItem > item_smtptr;
-  if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenuItem* item = item_smtptr.get();
+  wxMenuItem* item = 0l;
+  if (CheckNullVar(_p,_n))  {
+    item=(wxMenuItem*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenuItem > item_smtptr;
+    if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    item = item_smtptr.get();
+  }
 
   wxAcceleratorEntry* _newobj = new wxAcceleratorEntry(flags, keyCode, cmd, item);
   BasicVariable::ptr res = WrapClass_wxAcceleratorEntry::CreateVar(_newobj);
@@ -224,7 +249,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   wxString const & str = *str_smtptr;
 
   wxAcceleratorEntry * res =   wxAcceleratorEntry::Create(str);
-  BasicVariable::ptr res_var = WrapClass_wxAcceleratorEntry::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxAcceleratorEntry >::CreateVar(res,true);
   return res_var;
 }
 
@@ -273,9 +298,15 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   int cmd;
   if (!get_val_param<int >(cmd,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<wxMenuItem > item_smtptr;
-  if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenuItem* item = item_smtptr.get();
+  wxMenuItem* item = 0l;
+  if (CheckNullVar(_p,_n))  {
+    item=(wxMenuItem*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenuItem > item_smtptr;
+    if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    item = item_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Set(flags, keyCode, cmd, item);
   return BasicVariable::ptr();
@@ -298,9 +329,15 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxMenuItem > item_smtptr;
-  if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenuItem* item = item_smtptr.get();
+  wxMenuItem* item;
+  if (CheckNullVar(_p,_n))  {
+    item=(wxMenuItem*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenuItem > item_smtptr;
+    if (!get_val_smtptr_param<wxMenuItem >(item_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    item = item_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetMenuItem(item);
   return BasicVariable::ptr();
@@ -379,7 +416,7 @@ BasicVariable::ptr WrapClass_wxAcceleratorEntry::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->GetMenuItem();
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 

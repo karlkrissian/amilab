@@ -26,8 +26,10 @@
 #include "wrap_vtkAbstractMapper.h"
 
 
-
-AMI_DECLARE_TYPE(vtkAbstractMapper3D);
+#ifndef vtkAbstractMapper3D_declared
+  #define vtkAbstractMapper3D_declared
+  AMI_DECLARE_TYPE(vtkAbstractMapper3D);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkAbstractMapper3D : public WrapClass<vtkAbstractMapper3D>
@@ -90,12 +92,13 @@ class WrapClass_vtkAbstractMapper3D : public WrapClass<vtkAbstractMapper3D>
 
     void AddMethods(WrapClass<vtkAbstractMapper3D>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkAbstractMapper3D_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkAbstractMapper3D_h

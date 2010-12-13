@@ -10,22 +10,38 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxColour.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxColour.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxString.h"
 #include "stdlib.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxColour.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -65,31 +81,34 @@ void WrapClass_wxColour::AddMethods(WrapClass<wxColour>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Ok( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_Red( this_ptr);
-      AddVar_Green( this_ptr);
-      AddVar_Blue( this_ptr);
-      AddVar_Alpha( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Ok( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_Red( this_ptr);
+  AddVar_Green( this_ptr);
+  AddVar_Blue( this_ptr);
+  AddVar_Alpha( this_ptr);
 /* The following types are missing: _GdkColormap
-      AddVar_CalcPixel( this_ptr);
+  AddVar_CalcPixel( this_ptr);
 */
 /* The following types are missing: _GdkColor
-      AddVar_GetColor( this_ptr);
+  AddVar_GetColor( this_ptr);
 */
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___not_equal__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___not_equal__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -110,7 +129,7 @@ void WrapClass_wxColour::AddMethods(WrapClass<wxColour>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxColour::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxColour_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -509,9 +528,15 @@ BasicVariable::ptr WrapClass_wxColour::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GdkColormap > cmap_smtptr;
-  if (!get_val_smtptr_param<_GdkColormap >(cmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GdkColormap* cmap = cmap_smtptr.get();
+  _GdkColormap* cmap;
+  if (CheckNullVar(_p,_n))  {
+    cmap=(_GdkColormap*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GdkColormap > cmap_smtptr;
+    if (!get_val_smtptr_param<_GdkColormap >(cmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    cmap = cmap_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->CalcPixel(cmap);
   return BasicVariable::ptr();
@@ -555,7 +580,7 @@ BasicVariable::ptr WrapClass_wxColour::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

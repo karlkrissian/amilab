@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHtmlLinkInfo.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxString.h"
-#include "wrap_wxHtmlLinkInfo.h"
-#include "wrap_wxMouseEvent.h"
-#include "wrap_wxHtmlCell.h"
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxHtmlLinkInfo_declared
+  #define wxHtmlLinkInfo_declared
+  AMI_DECLARE_TYPE(wxHtmlLinkInfo)
+#endif
+#ifndef wxMouseEvent_declared
+  #define wxMouseEvent_declared
+  AMI_DECLARE_TYPE(wxMouseEvent)
+#endif
+#ifndef wxHtmlCell_declared
+  #define wxHtmlCell_declared
+  AMI_DECLARE_TYPE(wxHtmlCell)
+#endif
 
 
-#include "wrap_wxHtmlLinkInfo.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -103,7 +122,7 @@ void WrapClass_wxHtmlLinkInfo::AddMethods(WrapClass<wxHtmlLinkInfo>::ptr this_pt
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHtmlLinkInfo::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHtmlLinkInfo_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -260,9 +279,15 @@ BasicVariable::ptr WrapClass_wxHtmlLinkInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxMouseEvent > e_smtptr;
-  if (!get_val_smtptr_param<wxMouseEvent >(e_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMouseEvent* e = e_smtptr.get();
+  wxMouseEvent* e;
+  if (CheckNullVar(_p,_n))  {
+    e=(wxMouseEvent*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMouseEvent > e_smtptr;
+    if (!get_val_smtptr_param<wxMouseEvent >(e_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    e = e_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetEvent(e);
   return BasicVariable::ptr();
@@ -285,9 +310,15 @@ BasicVariable::ptr WrapClass_wxHtmlLinkInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlCell > e_smtptr;
-  if (!get_val_smtptr_param<wxHtmlCell >(e_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlCell* e = e_smtptr.get();
+  wxHtmlCell* e;
+  if (CheckNullVar(_p,_n))  {
+    e=(wxHtmlCell*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlCell > e_smtptr;
+    if (!get_val_smtptr_param<wxHtmlCell >(e_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    e = e_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetHtmlCell(e);
   return BasicVariable::ptr();
@@ -347,7 +378,7 @@ BasicVariable::ptr WrapClass_wxHtmlLinkInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMouseEvent const * res =   this->_objectptr->GetObj()->GetEvent();
-  BasicVariable::ptr res_var = WrapClass_wxMouseEvent::CreateVar(const_cast<wxMouseEvent *>(res));
+  BasicVariable::ptr res_var = AMILabType<wxMouseEvent >::CreateVar(const_cast<wxMouseEvent *>(res),true);
   return res_var;
 }
 
@@ -367,7 +398,7 @@ BasicVariable::ptr WrapClass_wxHtmlLinkInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlCell const * res =   this->_objectptr->GetObj()->GetHtmlCell();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlCell::CreateVar(const_cast<wxHtmlCell *>(res));
+  BasicVariable::ptr res_var = AMILabType<wxHtmlCell >::CreateVar(const_cast<wxHtmlCell *>(res),true);
   return res_var;
 }
 

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxBitmapBase_h_
 #define _wrap_wxBitmapBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxGDIObject.h"
 
 
-
-AMI_DECLARE_TYPE(wxBitmapBase);
+#ifndef wxBitmapBase_declared
+  #define wxBitmapBase_declared
+  AMI_DECLARE_TYPE(wxBitmapBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxBitmapBase : public WrapClass<wxBitmapBase>
@@ -90,12 +94,13 @@ class WrapClass_wxBitmapBase : public WrapClass<wxBitmapBase>
 
     void AddMethods(WrapClass<wxBitmapBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxBitmapBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxBitmapBase_h

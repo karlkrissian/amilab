@@ -16,17 +16,36 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkInteractorStyleSwitch.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkInteractorStyleSwitch.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkRenderWindowInteractor.h"
-#include "wrap_vtkInteractorStyle.h"
-#include "wrap_vtkRenderer.h"
+#ifndef vtkInteractorStyleSwitch_declared
+  #define vtkInteractorStyleSwitch_declared
+  AMI_DECLARE_TYPE(vtkInteractorStyleSwitch)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkRenderWindowInteractor_declared
+  #define vtkRenderWindowInteractor_declared
+  AMI_DECLARE_TYPE(vtkRenderWindowInteractor)
+#endif
+#ifndef vtkInteractorStyle_declared
+  #define vtkInteractorStyle_declared
+  AMI_DECLARE_TYPE(vtkInteractorStyle)
+#endif
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
 
 
-#include "wrap_vtkInteractorStyleSwitch.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -120,7 +139,7 @@ void WrapClass_vtkInteractorStyleSwitch::AddMethods(WrapClass<vtkInteractorStyle
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkInteractorStyleSwitch::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkInteractorStyleSwitch_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -157,7 +176,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyleSwitch * res =   vtkInteractorStyleSwitch::New();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleSwitch::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleSwitch >::CreateVar(res,true);
   return res_var;
 }
 
@@ -216,7 +235,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   }
 
   vtkInteractorStyleSwitch * res =   vtkInteractorStyleSwitch::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleSwitch::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleSwitch >::CreateVar(res,true);
   return res_var;
 }
 
@@ -262,7 +281,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyleSwitch * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleSwitch::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleSwitch >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -368,7 +387,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleSwitch::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyle * res =   this->_objectptr->GetObj()->GetCurrentStyle();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyle::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyle >::CreateVar(res,true);
   return res_var;
 }
 

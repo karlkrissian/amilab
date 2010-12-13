@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxClientDataContainer.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxClientDataContainer.h"
-#include "wrap_wxClientData.h"
+#ifndef wxClientDataContainer_declared
+  #define wxClientDataContainer_declared
+  AMI_DECLARE_TYPE(wxClientDataContainer)
+#endif
+#ifndef wxClientData_declared
+  #define wxClientData_declared
+  AMI_DECLARE_TYPE(wxClientData)
+#endif
 
 
-#include "wrap_wxClientDataContainer.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,22 +75,25 @@ void WrapClass_wxClientDataContainer::AddMethods(WrapClass<wxClientDataContainer
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_SetClientObject( this_ptr);
-      AddVar_GetClientObject( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_SetClientObject( this_ptr);
+  AddVar_GetClientObject( this_ptr);
 /* The following types are missing: void
-      AddVar_SetClientData( this_ptr);
+  AddVar_SetClientData( this_ptr);
 */
-      AddVar_GetClientData( this_ptr);
+  AddVar_GetClientData( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -87,7 +103,7 @@ void WrapClass_wxClientDataContainer::AddMethods(WrapClass<wxClientDataContainer
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxClientDataContainer::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxClientDataContainer_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -208,9 +224,15 @@ BasicVariable::ptr WrapClass_wxClientDataContainer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxClientData > data_smtptr;
-  if (!get_val_smtptr_param<wxClientData >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxClientData* data = data_smtptr.get();
+  wxClientData* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(wxClientData*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxClientData > data_smtptr;
+    if (!get_val_smtptr_param<wxClientData >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetClientObject(data);
   return BasicVariable::ptr();
@@ -232,7 +254,7 @@ BasicVariable::ptr WrapClass_wxClientDataContainer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClientData * res =   this->_objectptr->GetObj()->GetClientObject();
-  BasicVariable::ptr res_var = WrapClass_wxClientData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClientData >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: void
@@ -254,9 +276,15 @@ BasicVariable::ptr WrapClass_wxClientDataContainer::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<void > data_smtptr;
-  if (!get_val_smtptr_param<void >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  void* data = data_smtptr.get();
+  void* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > data_smtptr;
+    if (!get_val_smtptr_param<void >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetClientData(data);
   return BasicVariable::ptr();

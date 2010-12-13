@@ -10,26 +10,56 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxEvtHandler.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxEventTableEntryBase.h"
-#include "wrap_wxEvtHandler.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxObjectEventFunction.h"
-#include "wrap_wxObject.h"
-#include "wrap_wxList.h"
-#include "wrap_wxClientData.h"
-#include "wrap_wxEventTable.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxEventTableEntryBase_declared
+  #define wxEventTableEntryBase_declared
+  AMI_DECLARE_TYPE(wxEventTableEntryBase)
+#endif
+#ifndef wxEvtHandler_declared
+  #define wxEvtHandler_declared
+  AMI_DECLARE_TYPE(wxEvtHandler)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxObjectEventFunction_declared
+  #define wxObjectEventFunction_declared
+  AMI_DECLARE_TYPE(wxObjectEventFunction)
+#endif
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxList_declared
+  #define wxList_declared
+  AMI_DECLARE_TYPE(wxList)
+#endif
+#ifndef wxClientData_declared
+  #define wxClientData_declared
+  AMI_DECLARE_TYPE(wxClientData)
+#endif
+#ifndef wxEventTable_declared
+  #define wxEventTable_declared
+  AMI_DECLARE_TYPE(wxEventTable)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxEvtHandler.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -138,7 +168,7 @@ void WrapClass_wxEvtHandler::AddMethods(WrapClass<wxEvtHandler>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxEvtHandler::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxEvtHandler_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -236,7 +266,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvtHandler * res =   this->_objectptr->GetObj()->GetNextHandler();
-  BasicVariable::ptr res_var = WrapClass_wxEvtHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvtHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -256,7 +286,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvtHandler * res =   this->_objectptr->GetObj()->GetPreviousHandler();
-  BasicVariable::ptr res_var = WrapClass_wxEvtHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvtHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -851,7 +881,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxList * res =   this->_objectptr->GetObj()->GetDynamicEventTable();
-  BasicVariable::ptr res_var = WrapClass_wxList::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxList >::CreateVar(res,true);
   return res_var;
 }
 
@@ -902,7 +932,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClientData * res =   this->_objectptr->GetObj()->GetClientObject();
-  BasicVariable::ptr res_var = WrapClass_wxClientData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClientData >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: void
@@ -1066,7 +1096,7 @@ BasicVariable::ptr WrapClass_wxEvtHandler::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

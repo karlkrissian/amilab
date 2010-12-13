@@ -10,19 +10,29 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxArrayInt.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxArrayInt.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef wxArrayInt_declared
+  #define wxArrayInt_declared
+  AMI_DECLARE_TYPE(wxArrayInt)
+#endif
 
 
-#include "wrap_wxArrayInt.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,68 +72,71 @@ void WrapClass_wxArrayInt::AddMethods(WrapClass<wxArrayInt>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Item( this_ptr);
-      AddVar_Last( this_ptr);
-      AddVar_Index( this_ptr);
-      AddVar_Add( this_ptr);
-      AddVar_Insert( this_ptr);
-      AddVar_RemoveAt( this_ptr);
-      AddVar_Remove( this_ptr);
-/* The following types are missing: _10283
-      AddVar_Sort( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Item( this_ptr);
+  AddVar_Last( this_ptr);
+  AddVar_Index( this_ptr);
+  AddVar_Add( this_ptr);
+  AddVar_Insert( this_ptr);
+  AddVar_RemoveAt( this_ptr);
+  AddVar_Remove( this_ptr);
+/* The following types are missing: _17784
+  AddVar_Sort( this_ptr);
 */
-      AddVar_assign_1( this_ptr);
-      AddVar_assign( this_ptr);
-      AddVar_assign_2( this_ptr);
-      AddVar_back_1( this_ptr);
-      AddVar_back( this_ptr);
-      AddVar_back_2( this_ptr);
-      AddVar_begin_1( this_ptr);
-      AddVar_begin( this_ptr);
-      AddVar_begin_2( this_ptr);
-      AddVar_capacity( this_ptr);
-      AddVar_end_1( this_ptr);
-      AddVar_end( this_ptr);
-      AddVar_end_2( this_ptr);
-      AddVar_erase_1( this_ptr);
-      AddVar_erase( this_ptr);
-      AddVar_erase_2( this_ptr);
-      AddVar_front_1( this_ptr);
-      AddVar_front( this_ptr);
-      AddVar_front_2( this_ptr);
-      AddVar_insert_1( this_ptr);
-      AddVar_insert( this_ptr);
-      AddVar_insert_2( this_ptr);
-      AddVar_insert_3( this_ptr);
-      AddVar_pop_back( this_ptr);
-      AddVar_push_back( this_ptr);
+  AddVar_assign_1( this_ptr);
+  AddVar_assign( this_ptr);
+  AddVar_assign_2( this_ptr);
+  AddVar_back_1( this_ptr);
+  AddVar_back( this_ptr);
+  AddVar_back_2( this_ptr);
+  AddVar_begin_1( this_ptr);
+  AddVar_begin( this_ptr);
+  AddVar_begin_2( this_ptr);
+  AddVar_capacity( this_ptr);
+  AddVar_end_1( this_ptr);
+  AddVar_end( this_ptr);
+  AddVar_end_2( this_ptr);
+  AddVar_erase_1( this_ptr);
+  AddVar_erase( this_ptr);
+  AddVar_erase_2( this_ptr);
+  AddVar_front_1( this_ptr);
+  AddVar_front( this_ptr);
+  AddVar_front_2( this_ptr);
+  AddVar_insert_1( this_ptr);
+  AddVar_insert( this_ptr);
+  AddVar_insert_2( this_ptr);
+  AddVar_insert_3( this_ptr);
+  AddVar_pop_back( this_ptr);
+  AddVar_push_back( this_ptr);
 /* The following types are missing: reverse_iterator
-      AddVar_rbegin_1( this_ptr);
+  AddVar_rbegin_1( this_ptr);
 */
-      AddVar_rbegin( this_ptr);
+  AddVar_rbegin( this_ptr);
 /* The following types are missing: const_reverse_iterator
-      AddVar_rbegin_2( this_ptr);
+  AddVar_rbegin_2( this_ptr);
 */
 /* The following types are missing: reverse_iterator
-      AddVar_rend_1( this_ptr);
+  AddVar_rend_1( this_ptr);
 */
-      AddVar_rend( this_ptr);
+  AddVar_rend( this_ptr);
 /* The following types are missing: const_reverse_iterator
-      AddVar_rend_2( this_ptr);
+  AddVar_rend_2( this_ptr);
 */
-      AddVar_reserve( this_ptr);
-      AddVar_resize( this_ptr);
+  AddVar_reserve( this_ptr);
+  AddVar_resize( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___at__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___at__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -144,7 +157,7 @@ void WrapClass_wxArrayInt::AddMethods(WrapClass<wxArrayInt>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxArrayInt::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxArrayInt_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -289,13 +302,25 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > first_smtptr;
-  if (!get_val_smtptr_param<int >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* first = first_smtptr.get();
+  int* first;
+  if (CheckNullVar(_p,_n))  {
+    first=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > first_smtptr;
+    if (!get_val_smtptr_param<int >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    first = first_smtptr.get();
+  }
 
-  boost::shared_ptr<int > last_smtptr;
-  if (!get_val_smtptr_param<int >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* last = last_smtptr.get();
+  int* last;
+  if (CheckNullVar(_p,_n))  {
+    last=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > last_smtptr;
+    if (!get_val_smtptr_param<int >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    last = last_smtptr.get();
+  }
 
   wxArrayInt* _newobj = new wxArrayInt(first, last);
   BasicVariable::ptr res = WrapClass_wxArrayInt::CreateVar(_newobj);
@@ -508,7 +533,7 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   this->_objectptr->GetObj()->Remove(lItem);
   return BasicVariable::ptr();
 }
-/* The following types are missing: _10283
+/* The following types are missing: _17784
 
 //---------------------------------------------------
 //  Wrapping of void wxArrayInt::Sort(CMPFUNC_wxArraywxArrayInt fCmp)
@@ -516,7 +541,7 @@ BasicVariable::ptr WrapClass_wxArrayInt::
 void WrapClass_wxArrayInt::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _10283, "parameter named 'fCmp'")
+  ADDPARAMCOMMENT_TYPE( _17784, "parameter named 'fCmp'")
 }
 
 //---------------------------------------------------
@@ -527,8 +552,8 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _10283 fCmp;
-  if (!get_val_param<_10283 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
+  _17784 fCmp;
+  if (!get_val_param<_17784 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(fCmp);
   return BasicVariable::ptr();
@@ -553,13 +578,25 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > first_smtptr;
-  if (!get_val_smtptr_param<int >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* first = first_smtptr.get();
+  int* first;
+  if (CheckNullVar(_p,_n))  {
+    first=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > first_smtptr;
+    if (!get_val_smtptr_param<int >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    first = first_smtptr.get();
+  }
 
-  boost::shared_ptr<int > last_smtptr;
-  if (!get_val_smtptr_param<int >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* last = last_smtptr.get();
+  int* last;
+  if (CheckNullVar(_p,_n))  {
+    last=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > last_smtptr;
+    if (!get_val_smtptr_param<int >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    last = last_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->assign(first, last);
   return BasicVariable::ptr();
@@ -832,13 +869,25 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > first_smtptr;
-  if (!get_val_smtptr_param<int >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* first = first_smtptr.get();
+  int* first;
+  if (CheckNullVar(_p,_n))  {
+    first=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > first_smtptr;
+    if (!get_val_smtptr_param<int >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    first = first_smtptr.get();
+  }
 
-  boost::shared_ptr<int > last_smtptr;
-  if (!get_val_smtptr_param<int >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* last = last_smtptr.get();
+  int* last;
+  if (CheckNullVar(_p,_n))  {
+    last=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > last_smtptr;
+    if (!get_val_smtptr_param<int >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    last = last_smtptr.get();
+  }
 
   _wxArraywxArrayInt * res =   this->_objectptr->GetObj()->erase(first, last);
   return AMILabType<int >::CreateVar(res,true);
@@ -883,9 +932,15 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > it_smtptr;
-  if (!get_val_smtptr_param<int >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* it = it_smtptr.get();
+  int* it;
+  if (CheckNullVar(_p,_n))  {
+    it=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > it_smtptr;
+    if (!get_val_smtptr_param<int >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    it = it_smtptr.get();
+  }
 
   _wxArraywxArrayInt * res =   this->_objectptr->GetObj()->erase(it);
   return AMILabType<int >::CreateVar(res,true);
@@ -969,9 +1024,15 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > it_smtptr;
-  if (!get_val_smtptr_param<int >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* it = it_smtptr.get();
+  int* it;
+  if (CheckNullVar(_p,_n))  {
+    it=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > it_smtptr;
+    if (!get_val_smtptr_param<int >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    it = it_smtptr.get();
+  }
 
   long n_long;
   if (!get_val_param<long >(n_long,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -1028,9 +1089,15 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > it_smtptr;
-  if (!get_val_smtptr_param<int >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* it = it_smtptr.get();
+  int* it;
+  if (CheckNullVar(_p,_n))  {
+    it=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > it_smtptr;
+    if (!get_val_smtptr_param<int >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    it = it_smtptr.get();
+  }
 
   boost::shared_ptr<int > v_smtptr;
   if (!get_val_smtptr_param<int >(v_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
@@ -1060,17 +1127,35 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > it_smtptr;
-  if (!get_val_smtptr_param<int >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* it = it_smtptr.get();
+  int* it;
+  if (CheckNullVar(_p,_n))  {
+    it=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > it_smtptr;
+    if (!get_val_smtptr_param<int >(it_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    it = it_smtptr.get();
+  }
 
-  boost::shared_ptr<int > first_smtptr;
-  if (!get_val_smtptr_param<int >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* first = first_smtptr.get();
+  int* first;
+  if (CheckNullVar(_p,_n))  {
+    first=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > first_smtptr;
+    if (!get_val_smtptr_param<int >(first_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    first = first_smtptr.get();
+  }
 
-  boost::shared_ptr<int > last_smtptr;
-  if (!get_val_smtptr_param<int >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* last = last_smtptr.get();
+  int* last;
+  if (CheckNullVar(_p,_n))  {
+    last=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > last_smtptr;
+    if (!get_val_smtptr_param<int >(last_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    last = last_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->insert(it, first, last);
   return BasicVariable::ptr();

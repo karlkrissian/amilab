@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHtmlFilter.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxClassInfo.h"
-#include "wrap_wxHtmlFilter.h"
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
+#ifndef wxHtmlFilter_declared
+  #define wxHtmlFilter_declared
+  AMI_DECLARE_TYPE(wxHtmlFilter)
+#endif
 
 
-#include "wrap_wxHtmlFilter.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -94,7 +107,7 @@ void WrapClass_wxHtmlFilter::AddMethods(WrapClass<wxHtmlFilter>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHtmlFilter::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHtmlFilter_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -128,7 +141,7 @@ BasicVariable::ptr WrapClass_wxHtmlFilter::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

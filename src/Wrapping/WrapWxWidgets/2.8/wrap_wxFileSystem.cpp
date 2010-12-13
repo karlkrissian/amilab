@@ -10,23 +10,45 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxFileSystem.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxFileSystemHandler.h"
-#include "wrap_wxString.h"
-#include "wrap_wxFileName.h"
-#include "wrap_wxFSFile.h"
 #include "stdlib.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxFileSystemHandler_declared
+  #define wxFileSystemHandler_declared
+  AMI_DECLARE_TYPE(wxFileSystemHandler)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxFileName_declared
+  #define wxFileName_declared
+  AMI_DECLARE_TYPE(wxFileName)
+#endif
+#ifndef wxFSFile_declared
+  #define wxFSFile_declared
+  AMI_DECLARE_TYPE(wxFSFile)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxFileSystem.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -108,7 +130,7 @@ void WrapClass_wxFileSystem::AddMethods(WrapClass<wxFileSystem>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxFileSystem::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxFileSystem_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -170,9 +192,15 @@ BasicVariable::ptr WrapClass_wxFileSystem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxFileSystemHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxFileSystemHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxFileSystemHandler* handler = handler_smtptr.get();
+  wxFileSystemHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxFileSystemHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFileSystemHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxFileSystemHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   wxFileSystem::AddHandler(handler);
   return BasicVariable::ptr();
@@ -196,12 +224,18 @@ BasicVariable::ptr WrapClass_wxFileSystem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxFileSystemHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxFileSystemHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxFileSystemHandler* handler = handler_smtptr.get();
+  wxFileSystemHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxFileSystemHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFileSystemHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxFileSystemHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   wxFileSystemHandler * res =   wxFileSystem::RemoveHandler(handler);
-  BasicVariable::ptr res_var = WrapClass_wxFileSystemHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFileSystemHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -376,7 +410,7 @@ BasicVariable::ptr WrapClass_wxFileSystem::
   if (!get_val_param<int >(flags,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxFSFile * res =   this->_objectptr->GetObj()->OpenFile(location, flags);
-  BasicVariable::ptr res_var = WrapClass_wxFSFile::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFSFile >::CreateVar(res,true);
   return res_var;
 }
 
@@ -449,9 +483,15 @@ BasicVariable::ptr WrapClass_wxFileSystem::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxString > pStr_smtptr;
-  if (!get_val_smtptr_param<wxString >(pStr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString* pStr = pStr_smtptr.get();
+  wxString* pStr;
+  if (CheckNullVar(_p,_n))  {
+    pStr=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > pStr_smtptr;
+    if (!get_val_smtptr_param<wxString >(pStr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pStr = pStr_smtptr.get();
+  }
 
   boost::shared_ptr<std::string > path_string;
   if (!get_val_smtptr_param<std::string >(path_string,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -483,7 +523,7 @@ BasicVariable::ptr WrapClass_wxFileSystem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

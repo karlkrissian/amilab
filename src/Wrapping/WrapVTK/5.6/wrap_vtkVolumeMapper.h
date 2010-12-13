@@ -26,8 +26,10 @@
 #include "wrap_vtkAbstractVolumeMapper.h"
 
 
-
-AMI_DECLARE_TYPE(vtkVolumeMapper);
+#ifndef vtkVolumeMapper_declared
+  #define vtkVolumeMapper_declared
+  AMI_DECLARE_TYPE(vtkVolumeMapper);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkVolumeMapper : public WrapClass<vtkVolumeMapper>
@@ -117,12 +119,13 @@ class WrapClass_vtkVolumeMapper : public WrapClass<vtkVolumeMapper>
 
     void AddMethods(WrapClass<vtkVolumeMapper>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkVolumeMapper_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkVolumeMapper_h

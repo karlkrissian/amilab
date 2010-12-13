@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxButtonBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxBitmap.h"
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
 
 
-#include "wrap_wxButtonBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -68,15 +78,18 @@ void WrapClass_wxButtonBase::AddMethods(WrapClass<wxButtonBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_SetImageLabel( this_ptr);
-      AddVar_SetImageMargins( this_ptr);
-      AddVar_SetDefault( this_ptr);
-      AddVar_ShouldInheritColours( this_ptr);
+  // Adding standard methods 
+  AddVar_SetImageLabel( this_ptr);
+  AddVar_SetImageMargins( this_ptr);
+  AddVar_SetDefault( this_ptr);
+  AddVar_ShouldInheritColours( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -97,7 +110,7 @@ void WrapClass_wxButtonBase::AddMethods(WrapClass<wxButtonBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxButtonBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxButtonBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

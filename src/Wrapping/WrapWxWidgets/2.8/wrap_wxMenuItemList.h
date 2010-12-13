@@ -13,11 +13,13 @@
 #ifndef _wrap_wxMenuItemList_h_
 #define _wrap_wxMenuItemList_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxListBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxMenuItemList);
+#ifndef wxMenuItemList_declared
+  #define wxMenuItemList_declared
+  AMI_DECLARE_TYPE(wxMenuItemList);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxMenuItemList : public WrapClass<wxMenuItemList>
@@ -62,10 +66,8 @@ class WrapClass_wxMenuItemList : public WrapClass<wxMenuItemList>
     ADD_CLASS_CONSTRUCTOR(wxMenuItemList,"Constructor wxMenuItemList::wxMenuItemList() (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#wxmenuitemlist).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxMenuItemList_2,"Constructor wxMenuItemList::wxMenuItemList(wxMenuItemList const & list) (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#wxmenuitemlist).");
-    /* The following types are missing: wxMenuItem * *
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxMenuItemList_3,"Constructor wxMenuItemList::wxMenuItemList(size_t count, wxMenuItem * * elements) (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#wxmenuitemlist).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxMenuItemList_4,"Constructor wxMenuItemList::wxMenuItemList(size_t n, wxMenuItem * const & v = 0u) (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#wxmenuitemlist).");
     /* The following types are missing: const_iterator, const_iterator
@@ -111,11 +113,11 @@ class WrapClass_wxMenuItemList : public WrapClass<wxMenuItemList>
     ADD_CLASS_METHOD(Find,"wxMenuItemList::Find()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxwxMenuItemListNode * wxMenuItemList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxMenuItemList::IndexOf(wxMenuItem * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#indexof)")
-/* The following types are missing: _9904
+/* The following types are missing: _17586
     ADD_CLASS_METHOD(Sort_1,"void wxMenuItemList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxMenuItemList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#sort)")
-/* The following types are missing: _8388
+/* The following types are missing: _5170
     ADD_CLASS_METHOD(Sort_2,"void wxMenuItemList::Sort(wxSortFuncFor_wxMenuItemList func)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#sort)")
 */
 /* The following types are missing: iterator
@@ -205,12 +207,13 @@ class WrapClass_wxMenuItemList : public WrapClass<wxMenuItemList>
 
     void AddMethods(WrapClass<wxMenuItemList>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxMenuItemList_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxMenuItemList_h

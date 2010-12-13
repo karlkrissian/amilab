@@ -13,11 +13,13 @@
 #ifndef _wrap_wxInitDialogEvent_h_
 #define _wrap_wxInitDialogEvent_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxEvent.h"
 
 
-
-AMI_DECLARE_TYPE(wxInitDialogEvent);
+#ifndef wxInitDialogEvent_declared
+  #define wxInitDialogEvent_declared
+  AMI_DECLARE_TYPE(wxInitDialogEvent);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxInitDialogEvent : public WrapClass<wxInitDialogEvent>
@@ -87,12 +91,13 @@ class WrapClass_wxInitDialogEvent : public WrapClass<wxInitDialogEvent>
 
     void AddMethods(WrapClass<wxInitDialogEvent>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxInitDialogEvent_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxInitDialogEvent_h

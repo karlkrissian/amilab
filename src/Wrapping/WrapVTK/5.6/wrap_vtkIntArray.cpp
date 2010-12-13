@@ -16,15 +16,25 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkIntArray.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkIntArray.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkIntArray_declared
+  #define vtkIntArray_declared
+  AMI_DECLARE_TYPE(vtkIntArray)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
 
 
-#include "wrap_vtkIntArray.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -124,7 +134,7 @@ void WrapClass_vtkIntArray::AddMethods(WrapClass<vtkIntArray>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkIntArray::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkIntArray_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -161,7 +171,7 @@ BasicVariable::ptr WrapClass_vtkIntArray::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIntArray * res =   vtkIntArray::New();
-  BasicVariable::ptr res_var = WrapClass_vtkIntArray::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkIntArray >::CreateVar(res,true);
   return res_var;
 }
 
@@ -220,7 +230,7 @@ BasicVariable::ptr WrapClass_vtkIntArray::
   }
 
   vtkIntArray * res =   vtkIntArray::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkIntArray::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkIntArray >::CreateVar(res,true);
   return res_var;
 }
 
@@ -266,7 +276,7 @@ BasicVariable::ptr WrapClass_vtkIntArray::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkIntArray * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkIntArray::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkIntArray >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxWritableCharBuffer_h_
 #define _wrap_wxWritableCharBuffer_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxCharBuffer.h"
 
 
-
-AMI_DECLARE_TYPE(wxWritableCharBuffer);
+#ifndef wxWritableCharBuffer_declared
+  #define wxWritableCharBuffer_declared
+  AMI_DECLARE_TYPE(wxWritableCharBuffer);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxWritableCharBuffer : public WrapClass<wxWritableCharBuffer>
@@ -89,12 +93,13 @@ class WrapClass_wxWritableCharBuffer : public WrapClass<wxWritableCharBuffer>
 
     void AddMethods(WrapClass<wxWritableCharBuffer>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxWritableCharBuffer_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxWritableCharBuffer_h

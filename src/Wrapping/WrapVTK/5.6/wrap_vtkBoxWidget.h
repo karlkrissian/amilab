@@ -26,8 +26,10 @@
 #include "wrap_vtk3DWidget.h"
 
 
-
-AMI_DECLARE_TYPE(vtkBoxWidget);
+#ifndef vtkBoxWidget_declared
+  #define vtkBoxWidget_declared
+  AMI_DECLARE_TYPE(vtkBoxWidget);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkBoxWidget : public WrapClass<vtkBoxWidget>
@@ -126,12 +128,13 @@ class WrapClass_vtkBoxWidget : public WrapClass<vtkBoxWidget>
 
     void AddMethods(WrapClass<vtkBoxWidget>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkBoxWidget_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkBoxWidget_h

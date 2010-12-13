@@ -16,17 +16,36 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkAbstractVolumeMapper.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkAbstractVolumeMapper.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkDataSet.h"
-#include "wrap_vtkDataObject.h"
-#include "wrap_vtkWindow.h"
+#ifndef vtkAbstractVolumeMapper_declared
+  #define vtkAbstractVolumeMapper_declared
+  AMI_DECLARE_TYPE(vtkAbstractVolumeMapper)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkDataSet_declared
+  #define vtkDataSet_declared
+  AMI_DECLARE_TYPE(vtkDataSet)
+#endif
+#ifndef vtkDataObject_declared
+  #define vtkDataObject_declared
+  AMI_DECLARE_TYPE(vtkDataObject)
+#endif
+#ifndef vtkWindow_declared
+  #define vtkWindow_declared
+  AMI_DECLARE_TYPE(vtkWindow)
+#endif
 
 
-#include "wrap_vtkAbstractVolumeMapper.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -137,7 +156,7 @@ void WrapClass_vtkAbstractVolumeMapper::AddMethods(WrapClass<vtkAbstractVolumeMa
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkAbstractVolumeMapper::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkAbstractVolumeMapper_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -212,7 +231,7 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
   }
 
   vtkAbstractVolumeMapper * res =   vtkAbstractVolumeMapper::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkAbstractVolumeMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAbstractVolumeMapper >::CreateVar(res,true);
   return res_var;
 }
 
@@ -258,7 +277,7 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAbstractVolumeMapper * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkAbstractVolumeMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAbstractVolumeMapper >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -340,7 +359,7 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkDataSet * res =   this->_objectptr->GetObj()->GetDataSetInput();
-  BasicVariable::ptr res_var = WrapClass_vtkDataSet::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataSet >::CreateVar(res,true);
   return res_var;
 }
 
@@ -360,7 +379,7 @@ BasicVariable::ptr WrapClass_vtkAbstractVolumeMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkDataObject * res =   this->_objectptr->GetObj()->GetDataObjectInput();
-  BasicVariable::ptr res_var = WrapClass_vtkDataObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataObject >::CreateVar(res,true);
   return res_var;
 }
 

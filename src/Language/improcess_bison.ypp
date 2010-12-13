@@ -1412,8 +1412,6 @@ command:
         IdentifierInfo::ptr ident($1);
         // check counter of the value, not of the variable ...
         if (var.get() && (var->HasPointer())  ) {
-          //cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< std::endl;
-          //cout << "use_count() == " <<  var.use_count() << std::endl;
           // only if both reference counters are equal to 1, we can avoid copy the variable
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
             //BasicVariable::ptr ref = var->NewReference();
@@ -1448,18 +1446,28 @@ command:
         boost::shared_array<char> comments( $5);
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         IdentifierInfo::ptr ident($1);
-        if (var->GetPtrCounter()==1) {
-          var->SetComments(comments.get());
-          Vars.AddVar(ident,var);
-        } else
-        {
-          if (var.get()) {
+        if (var.get() && (var->HasPointer())  ) {
+          // only if both reference counters are equal to 1, we can avoid copy the variable
+          if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
+            //BasicVariable::ptr ref = var->NewReference();
+            // need to run on reference to avoid renaming the own variable !!!
+            //Vars.AddVar(ident,ref);
+            var->SetComments(comments.get());
+            Vars.AddVar(ident,var);
+          } else
+          {
             BasicVariable::ptr copy = var->NewCopy();
-            copy->SetComments(comments.get());
-            Vars.AddVar(ident,copy);
-          } else {
-            driver.err_print("identifier = variable, no variable value");
+            if (copy.get()) {
+              copy->SetComments(comments.get());
+              Vars.AddVar(ident,copy);
+            } else {
+              driver.err_print("Copy failed for the variable in rule id = expr_var");
+              YYABORT;
+            }
           }
+        } else {
+          driver.err_print("identifier = expr_var, no variable value");
+          YYABORT;
         }
       }
       |

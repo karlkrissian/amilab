@@ -16,16 +16,32 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkActorCollection.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkActorCollection.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkActor.h"
-#include "wrap_vtkProperty.h"
+#ifndef vtkActorCollection_declared
+  #define vtkActorCollection_declared
+  AMI_DECLARE_TYPE(vtkActorCollection)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkActor_declared
+  #define vtkActor_declared
+  AMI_DECLARE_TYPE(vtkActor)
+#endif
+#ifndef vtkProperty_declared
+  #define vtkProperty_declared
+  AMI_DECLARE_TYPE(vtkProperty)
+#endif
 
 
-#include "wrap_vtkActorCollection.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -119,7 +135,7 @@ void WrapClass_vtkActorCollection::AddMethods(WrapClass<vtkActorCollection>::ptr
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkActorCollection::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkActorCollection_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -156,7 +172,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkActorCollection * res =   vtkActorCollection::New();
-  BasicVariable::ptr res_var = WrapClass_vtkActorCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActorCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -215,7 +231,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   }
 
   vtkActorCollection * res =   vtkActorCollection::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkActorCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActorCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -261,7 +277,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkActorCollection * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkActorCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActorCollection >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -343,7 +359,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkActor * res =   this->_objectptr->GetObj()->GetNextActor();
-  BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActor >::CreateVar(res,true);
   return res_var;
 }
 
@@ -363,7 +379,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkActor * res =   this->_objectptr->GetObj()->GetLastActor();
-  BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActor >::CreateVar(res,true);
   return res_var;
 }
 
@@ -383,7 +399,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkActor * res =   this->_objectptr->GetObj()->GetNextItem();
-  BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActor >::CreateVar(res,true);
   return res_var;
 }
 
@@ -403,7 +419,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkActor * res =   this->_objectptr->GetObj()->GetLastItem();
-  BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActor >::CreateVar(res,true);
   return res_var;
 }
 
@@ -480,7 +496,7 @@ BasicVariable::ptr WrapClass_vtkActorCollection::
   vtkCollectionSimpleIterator & cookie = *cookie_smtptr;
 
   vtkActor * res =   this->_objectptr->GetObj()->GetNextActor(cookie);
-  BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActor >::CreateVar(res,true);
   return res_var;
 }
 */

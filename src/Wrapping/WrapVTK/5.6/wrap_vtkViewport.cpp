@@ -16,16 +16,32 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkViewport.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkViewport.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkProp.h"
-#include "wrap_vtkPropCollection.h"
+#ifndef vtkViewport_declared
+  #define vtkViewport_declared
+  AMI_DECLARE_TYPE(vtkViewport)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkProp_declared
+  #define vtkProp_declared
+  AMI_DECLARE_TYPE(vtkProp)
+#endif
+#ifndef vtkPropCollection_declared
+  #define vtkPropCollection_declared
+  AMI_DECLARE_TYPE(vtkPropCollection)
+#endif
 
 
-#include "wrap_vtkViewport.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -213,7 +229,7 @@ void WrapClass_vtkViewport::AddMethods(WrapClass<vtkViewport>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkViewport::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkViewport_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -288,7 +304,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   }
 
   vtkViewport * res =   vtkViewport::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkViewport::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkViewport >::CreateVar(res,true);
   return res_var;
 }
 
@@ -334,7 +350,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkViewport * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkViewport::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkViewport >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -416,7 +432,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPropCollection * res =   this->_objectptr->GetObj()->GetViewProps();
-  BasicVariable::ptr res_var = WrapClass_vtkPropCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPropCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2948,7 +2964,7 @@ BasicVariable::ptr WrapClass_vtkViewport::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPropCollection * res =   this->_objectptr->GetObj()->GetPickResultProps();
-  BasicVariable::ptr res_var = WrapClass_vtkPropCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPropCollection >::CreateVar(res,true);
   return res_var;
 }
 

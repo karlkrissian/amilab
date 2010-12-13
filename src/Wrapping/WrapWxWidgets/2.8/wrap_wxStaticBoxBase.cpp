@@ -10,17 +10,24 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxStaticBoxBase.h"
 
 // get all the required includes
 // #include "..."
 
 
-#include "wrap_wxStaticBoxBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -67,14 +74,17 @@ void WrapClass_wxStaticBoxBase::AddMethods(WrapClass<wxStaticBoxBase>::ptr this_
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_AcceptsFocus( this_ptr);
-      AddVar_HasTransparentBackground( this_ptr);
-      AddVar_GetBordersForSizer( this_ptr);
+  // Adding standard methods 
+  AddVar_AcceptsFocus( this_ptr);
+  AddVar_HasTransparentBackground( this_ptr);
+  AddVar_GetBordersForSizer( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -95,7 +105,7 @@ void WrapClass_wxStaticBoxBase::AddMethods(WrapClass<wxStaticBoxBase>::ptr this_
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxStaticBoxBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxStaticBoxBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -190,13 +200,25 @@ BasicVariable::ptr WrapClass_wxStaticBoxBase::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > borderTop_smtptr;
-  if (!get_val_smtptr_param<int >(borderTop_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* borderTop = borderTop_smtptr.get();
+  int* borderTop;
+  if (CheckNullVar(_p,_n))  {
+    borderTop=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > borderTop_smtptr;
+    if (!get_val_smtptr_param<int >(borderTop_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    borderTop = borderTop_smtptr.get();
+  }
 
-  boost::shared_ptr<int > borderOther_smtptr;
-  if (!get_val_smtptr_param<int >(borderOther_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* borderOther = borderOther_smtptr.get();
+  int* borderOther;
+  if (CheckNullVar(_p,_n))  {
+    borderOther=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > borderOther_smtptr;
+    if (!get_val_smtptr_param<int >(borderOther_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    borderOther = borderOther_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetBordersForSizer(borderTop, borderOther);
   return BasicVariable::ptr();

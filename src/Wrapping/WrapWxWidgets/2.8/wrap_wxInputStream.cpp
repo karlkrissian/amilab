@@ -10,20 +10,33 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxInputStream.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxInputStream.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxOutputStream.h"
+#ifndef wxInputStream_declared
+  #define wxInputStream_declared
+  AMI_DECLARE_TYPE(wxInputStream)
+#endif
+#ifndef wxOutputStream_declared
+  #define wxOutputStream_declared
+  AMI_DECLARE_TYPE(wxOutputStream)
+#endif
 
 
-#include "wrap_wxInputStream.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -70,35 +83,38 @@ void WrapClass_wxInputStream::AddMethods(WrapClass<wxInputStream>::ptr this_ptr 
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Peek( this_ptr);
-      AddVar_GetC( this_ptr);
+  // Adding standard methods 
+  AddVar_Peek( this_ptr);
+  AddVar_GetC( this_ptr);
 /* The following types are missing: void
-      AddVar_Read_1( this_ptr);
+  AddVar_Read_1( this_ptr);
 */
-      AddVar_Read( this_ptr);
-      AddVar_Read_2( this_ptr);
-      AddVar_LastRead( this_ptr);
-      AddVar_CanRead( this_ptr);
-      AddVar_Eof( this_ptr);
+  AddVar_Read( this_ptr);
+  AddVar_Read_2( this_ptr);
+  AddVar_LastRead( this_ptr);
+  AddVar_CanRead( this_ptr);
+  AddVar_Eof( this_ptr);
 /* The following types are missing: void
-      AddVar_Ungetch_1( this_ptr);
+  AddVar_Ungetch_1( this_ptr);
 */
-      AddVar_Ungetch( this_ptr);
-      AddVar_Ungetch_2( this_ptr);
-      AddVar_SeekI( this_ptr);
-      AddVar_TellI( this_ptr);
+  AddVar_Ungetch( this_ptr);
+  AddVar_Ungetch_2( this_ptr);
+  AddVar_SeekI( this_ptr);
+  AddVar_TellI( this_ptr);
 
-      // Adding operators
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-/* The following types are missing: _13697
-      // AddVar_operator not available( this_ptr);
+  // Adding operators
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+/* The following types are missing: _6152
+  // AddVar_operator not available( this_ptr);
 */
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -119,7 +135,7 @@ void WrapClass_wxInputStream::AddMethods(WrapClass<wxInputStream>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxInputStream::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxInputStream_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -196,9 +212,15 @@ BasicVariable::ptr WrapClass_wxInputStream::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<void > buffer_smtptr;
-  if (!get_val_smtptr_param<void >(buffer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* buffer = buffer_smtptr.get();
+  void* buffer;
+  if (CheckNullVar(_p,_n))  {
+    buffer=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > buffer_smtptr;
+    if (!get_val_smtptr_param<void >(buffer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    buffer = buffer_smtptr.get();
+  }
 
   long size_long;
   if (!get_val_param<long >(size_long,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -331,9 +353,15 @@ BasicVariable::ptr WrapClass_wxInputStream::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<void > buffer_smtptr;
-  if (!get_val_smtptr_param<void >(buffer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* buffer = buffer_smtptr.get();
+  void* buffer;
+  if (CheckNullVar(_p,_n))  {
+    buffer=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > buffer_smtptr;
+    if (!get_val_smtptr_param<void >(buffer_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    buffer = buffer_smtptr.get();
+  }
 
   long size_long;
   if (!get_val_param<long >(size_long,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -489,7 +517,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
 }
 */
 /*
- * The following types are missing: _13697
+ * The following types are missing: _6152
  * operator not available 
 
 //---------------------------------------------------
@@ -498,7 +526,7 @@ BasicVariable::ptr WrapClass_wxInputStream::
 void WrapClass_wxInputStream::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _13697, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _6152, "parameter named 'func'")
   return_comments="returning a variable of type wxInputStream";
 }
 
@@ -510,8 +538,8 @@ BasicVariable::ptr WrapClass_wxInputStream::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _13697 func;
-  if (!get_val_param<_13697 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _6152 func;
+  if (!get_val_param<_6152 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxInputStream & res =   this->_objectptr->GetObj()->>>(func);
   return AMILabType<wxInputStream >::CreateVar(res);

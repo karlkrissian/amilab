@@ -10,25 +10,56 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHtmlParser.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxString.h"
-#include "wrap_wxClassInfo.h"
-#include "wrap_wxFileSystem.h"
-#include "wrap_wxFSFile.h"
-#include "wrap_wxObject.h"
-#include "wrap_wxHtmlTag.h"
-#include "wrap_wxHtmlTagHandler.h"
-#include "wrap_wxHtmlEntitiesParser.h"
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
+#ifndef wxFileSystem_declared
+  #define wxFileSystem_declared
+  AMI_DECLARE_TYPE(wxFileSystem)
+#endif
+#ifndef wxFSFile_declared
+  #define wxFSFile_declared
+  AMI_DECLARE_TYPE(wxFSFile)
+#endif
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxHtmlTag_declared
+  #define wxHtmlTag_declared
+  AMI_DECLARE_TYPE(wxHtmlTag)
+#endif
+#ifndef wxHtmlTagHandler_declared
+  #define wxHtmlTagHandler_declared
+  AMI_DECLARE_TYPE(wxHtmlTagHandler)
+#endif
+#ifndef wxHtmlEntitiesParser_declared
+  #define wxHtmlEntitiesParser_declared
+  AMI_DECLARE_TYPE(wxHtmlEntitiesParser)
+#endif
 
 
-#include "wrap_wxHtmlParser.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -124,7 +155,7 @@ void WrapClass_wxHtmlParser::AddMethods(WrapClass<wxHtmlParser>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHtmlParser::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHtmlParser_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -185,7 +216,7 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 
@@ -206,9 +237,15 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxFileSystem > fs_smtptr;
-  if (!get_val_smtptr_param<wxFileSystem >(fs_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxFileSystem* fs = fs_smtptr.get();
+  wxFileSystem* fs;
+  if (CheckNullVar(_p,_n))  {
+    fs=(wxFileSystem*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFileSystem > fs_smtptr;
+    if (!get_val_smtptr_param<wxFileSystem >(fs_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    fs = fs_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetFS(fs);
   return BasicVariable::ptr();
@@ -230,7 +267,7 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxFileSystem * res =   this->_objectptr->GetObj()->GetFS();
-  BasicVariable::ptr res_var = WrapClass_wxFileSystem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFileSystem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -262,7 +299,7 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   wxString const & url = *url_smtptr;
 
   wxFSFile * res =   this->_objectptr->GetObj()->OpenURL(type, url);
-  BasicVariable::ptr res_var = WrapClass_wxFSFile::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFSFile >::CreateVar(res,true);
   return res_var;
 }
 
@@ -289,7 +326,7 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   wxString const & source = *source_smtptr;
 
   wxObject * res =   this->_objectptr->GetObj()->Parse(source);
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -437,7 +474,7 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlTag * res =   this->_objectptr->GetObj()->GetCurrentTag();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlTag::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlTag >::CreateVar(res,true);
   return res_var;
 }
 
@@ -458,9 +495,15 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlTagHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxHtmlTagHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlTagHandler* handler = handler_smtptr.get();
+  wxHtmlTagHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxHtmlTagHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlTagHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxHtmlTagHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddTagHandler(handler);
   return BasicVariable::ptr();
@@ -484,9 +527,15 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlTagHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxHtmlTagHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlTagHandler* handler = handler_smtptr.get();
+  wxHtmlTagHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxHtmlTagHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlTagHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxHtmlTagHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > tags_smtptr;
   if (!get_val_smtptr_param<wxString >(tags_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -530,7 +579,7 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxString * res =   this->_objectptr->GetObj()->GetSource();
-  BasicVariable::ptr res_var = WrapClass_wxString::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxString >::CreateVar(res,true);
   return res_var;
 }
 
@@ -645,7 +694,7 @@ BasicVariable::ptr WrapClass_wxHtmlParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlEntitiesParser * res =   this->_objectptr->GetObj()->GetEntitiesParser();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlEntitiesParser::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlEntitiesParser >::CreateVar(res,true);
   return res_var;
 }
 

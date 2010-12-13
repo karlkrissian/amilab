@@ -13,11 +13,13 @@
 #ifndef _wrap_wxIcon_h_
 #define _wrap_wxIcon_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxBitmap.h"
 
 
-
-AMI_DECLARE_TYPE(wxIcon);
+#ifndef wxIcon_declared
+  #define wxIcon_declared
+  AMI_DECLARE_TYPE(wxIcon);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxIcon : public WrapClass<wxIcon>
@@ -62,14 +66,10 @@ class WrapClass_wxIcon : public WrapClass<wxIcon>
     ADD_CLASS_CONSTRUCTOR(wxIcon,"Constructor wxIcon::wxIcon() (http://docs.wxwidgets.org/stable/wx_wxicon.html#wxicon).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxIcon_2,"Constructor wxIcon::wxIcon() (http://docs.wxwidgets.org/stable/wx_wxicon.html#wxicon).");
-    /* The following types are missing: char const * *
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxIcon_3,"Constructor wxIcon::wxIcon(char const * * bits, int width = -0x00000000000000001, int height = -0x00000000000000001) (http://docs.wxwidgets.org/stable/wx_wxicon.html#wxicon).");
-    */
-    /* The following types are missing: char * *
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxIcon_4,"Constructor wxIcon::wxIcon(char * * bits, int width = -0x00000000000000001, int height = -0x00000000000000001) (http://docs.wxwidgets.org/stable/wx_wxicon.html#wxicon).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxIcon_5,"Constructor wxIcon::wxIcon(wxString const & filename, wxBitmapType type = wxBITMAP_TYPE_XPM, int param2 = -0x00000000000000001, int param3 = -0x00000000000000001) (http://docs.wxwidgets.org/stable/wx_wxicon.html#wxicon).");
     /// Wrapping of the constructor
@@ -101,12 +101,13 @@ class WrapClass_wxIcon : public WrapClass<wxIcon>
 
     void AddMethods(WrapClass<wxIcon>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxIcon_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxIcon_h

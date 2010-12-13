@@ -26,8 +26,10 @@
 #include "wrap_vtkObject.h"
 
 
-
-AMI_DECLARE_TYPE(vtkWindow);
+#ifndef vtkWindow_declared
+  #define vtkWindow_declared
+  AMI_DECLARE_TYPE(vtkWindow);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkWindow : public WrapClass<vtkWindow>
@@ -130,12 +132,13 @@ class WrapClass_vtkWindow : public WrapClass<vtkWindow>
 
     void AddMethods(WrapClass<vtkWindow>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkWindow_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkWindow_h

@@ -16,14 +16,24 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkInteractorStyleTrackballCamera.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkInteractorStyleTrackballCamera.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
+#ifndef vtkInteractorStyleTrackballCamera_declared
+  #define vtkInteractorStyleTrackballCamera_declared
+  AMI_DECLARE_TYPE(vtkInteractorStyleTrackballCamera)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
 
 
-#include "wrap_vtkInteractorStyleTrackballCamera.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -122,7 +132,7 @@ void WrapClass_vtkInteractorStyleTrackballCamera::AddMethods(WrapClass<vtkIntera
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkInteractorStyleTrackballCamera::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkInteractorStyleTrackballCamera_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -159,7 +169,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyleTrackballCamera * res =   vtkInteractorStyleTrackballCamera::New();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleTrackballCamera::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleTrackballCamera >::CreateVar(res,true);
   return res_var;
 }
 
@@ -218,7 +228,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
   }
 
   vtkInteractorStyleTrackballCamera * res =   vtkInteractorStyleTrackballCamera::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleTrackballCamera::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleTrackballCamera >::CreateVar(res,true);
   return res_var;
 }
 
@@ -264,7 +274,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleTrackballCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyleTrackballCamera * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleTrackballCamera::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleTrackballCamera >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

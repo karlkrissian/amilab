@@ -17,7 +17,8 @@ include_directories (
 file(GLOB wx_HDRS  "${AMI_WXWIDGETS_VERSION}/*.h"  )
 file(GLOB wx_SRCS  "${AMI_WXWIDGETS_VERSION}/*.cpp")
 
-MESSAGE("Wrapping wxWidgets...")
+MESSAGE("\nWrapping wxWidgets...\n")
+MESSAGE( "AMI_USE_PRECOMP_HEADERS = ${AMI_USE_PRECOMP_HEADERS} ")
 
 IF(NUMBER_SOURCES_TO_PACKAGE EQUAL 1)
   SET(new_wx_source_code_list ${wx_SRCS})
@@ -27,12 +28,20 @@ ELSE(NUMBER_SOURCES_TO_PACKAGE EQUAL 1)
 ENDIF(NUMBER_SOURCES_TO_PACKAGE EQUAL 1) 
 #MESSAGE("wxWidgets ${AMI_WXWIDGETS_VERSION} wrap files: ${new_source_code_list}\n")
 
-SET(  WrapWxWidgets_SRCS
-  wrap_wxsamples.cpp
-  wrap_wxfunctions.cpp
-  ${new_wx_source_code_list}
-  #${wx_SRCS}
-)
+IF (AMI_USE_PRECOMP_HEADERS)
+  SET(  WrapWxWidgets_SRCS
+    wrap_wxsamples.cpp
+    wrap_wxfunctions.cpp
+    #${wx_SRCS}
+    ${new_wx_source_code_list}
+  )
+ELSE(AMI_USE_PRECOMP_HEADERS)
+  SET(  WrapWxWidgets_SRCS
+    wrap_wxsamples.cpp
+    wrap_wxfunctions.cpp
+    ${new_wx_source_code_list}
+  )
+ENDIF(AMI_USE_PRECOMP_HEADERS)
 
 
 SET(WrapWxWidgets_HDRS
@@ -49,11 +58,11 @@ SET(WrapWxWidgets_SRCS
 
 #MESSAGE("WrapWxWidgets_SRCS = ${WrapWxWidgets_SRCS}")
 
-IF (AMI_USE_PRECOM_HEADERS)
+IF (AMI_USE_PRECOMP_HEADERS)
   IF(CMAKE_COMPILER_IS_GNUCXX)
-    ADD_PCH_RULE(${AMILAB_SOURCE_DIR}/Wrapping/include/WrapWxWidgets_header.h WrapWxWidgets_SRCS)
+    ADD_PCH_RULE(${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/wx_includes.h WrapWxWidgets_SRCS)
   ENDIF(CMAKE_COMPILER_IS_GNUCXX )
-ENDIF(AMI_USE_PRECOM_HEADERS)
+ENDIF(AMI_USE_PRECOMP_HEADERS)
 
 
 my_add_library ( WrapWxWidgets)

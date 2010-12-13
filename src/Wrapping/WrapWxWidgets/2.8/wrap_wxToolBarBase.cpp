@@ -10,24 +10,49 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxToolBarBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxToolBarToolBase.h"
-#include "wrap_wxString.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxObject.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxControl.h"
-#include "wrap_wxSize.h"
+#ifndef wxToolBarToolBase_declared
+  #define wxToolBarToolBase_declared
+  AMI_DECLARE_TYPE(wxToolBarToolBase)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxControl_declared
+  #define wxControl_declared
+  AMI_DECLARE_TYPE(wxControl)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
 
 
-#include "wrap_wxToolBarBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -74,70 +99,73 @@ void WrapClass_wxToolBarBase::AddMethods(WrapClass<wxToolBarBase>::ptr this_ptr 
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_AddTool_1( this_ptr);
-      AddVar_AddTool( this_ptr);
-      AddVar_AddTool_2( this_ptr);
-      AddVar_AddCheckTool( this_ptr);
-      AddVar_AddRadioTool( this_ptr);
-      AddVar_InsertTool_1( this_ptr);
-      AddVar_AddTool_3( this_ptr);
-      AddVar_InsertTool( this_ptr);
-      AddVar_InsertTool_2( this_ptr);
-      AddVar_AddControl( this_ptr);
-      AddVar_InsertControl( this_ptr);
-      AddVar_FindControl( this_ptr);
-      AddVar_AddSeparator( this_ptr);
-      AddVar_InsertSeparator( this_ptr);
-      AddVar_RemoveTool( this_ptr);
-      AddVar_DeleteToolByPos( this_ptr);
-      AddVar_DeleteTool( this_ptr);
-      AddVar_ClearTools( this_ptr);
-      AddVar_Realize( this_ptr);
-      AddVar_EnableTool( this_ptr);
-      AddVar_ToggleTool( this_ptr);
-      AddVar_SetToggle( this_ptr);
-      AddVar_GetToolClientData( this_ptr);
-      AddVar_SetToolClientData( this_ptr);
-      AddVar_GetToolPos( this_ptr);
-      AddVar_GetToolState( this_ptr);
-      AddVar_GetToolEnabled( this_ptr);
-      AddVar_SetToolShortHelp( this_ptr);
-      AddVar_GetToolShortHelp( this_ptr);
-      AddVar_SetToolLongHelp( this_ptr);
-      AddVar_GetToolLongHelp( this_ptr);
-      AddVar_SetMargins_1( this_ptr);
-      AddVar_SetMargins( this_ptr);
-      AddVar_SetMargins_2( this_ptr);
-      AddVar_SetToolPacking( this_ptr);
-      AddVar_SetToolSeparation( this_ptr);
-      AddVar_GetToolMargins( this_ptr);
-      AddVar_GetToolPacking( this_ptr);
-      AddVar_GetToolSeparation( this_ptr);
-      AddVar_SetRows( this_ptr);
-      AddVar_SetMaxRowsCols( this_ptr);
-      AddVar_GetMaxRows( this_ptr);
-      AddVar_GetMaxCols( this_ptr);
-      AddVar_SetToolBitmapSize( this_ptr);
-      AddVar_GetToolBitmapSize( this_ptr);
-      AddVar_GetToolSize( this_ptr);
-      AddVar_FindById( this_ptr);
-      AddVar_IsVertical( this_ptr);
-      AddVar_AddTool_4( this_ptr);
-      AddVar_AddTool_5( this_ptr);
-      AddVar_AddTool_6( this_ptr);
-      AddVar_InsertTool_3( this_ptr);
-      AddVar_OnLeftClick( this_ptr);
-      AddVar_OnRightClick( this_ptr);
-      AddVar_OnMouseEnter( this_ptr);
-      AddVar_GetMargins( this_ptr);
-      AddVar_GetToolsCount( this_ptr);
-      AddVar_UpdateWindowUI( this_ptr);
-      AddVar_AcceptsFocus( this_ptr);
+  // Adding standard methods 
+  AddVar_AddTool_1( this_ptr);
+  AddVar_AddTool( this_ptr);
+  AddVar_AddTool_2( this_ptr);
+  AddVar_AddCheckTool( this_ptr);
+  AddVar_AddRadioTool( this_ptr);
+  AddVar_InsertTool_1( this_ptr);
+  AddVar_AddTool_3( this_ptr);
+  AddVar_InsertTool( this_ptr);
+  AddVar_InsertTool_2( this_ptr);
+  AddVar_AddControl( this_ptr);
+  AddVar_InsertControl( this_ptr);
+  AddVar_FindControl( this_ptr);
+  AddVar_AddSeparator( this_ptr);
+  AddVar_InsertSeparator( this_ptr);
+  AddVar_RemoveTool( this_ptr);
+  AddVar_DeleteToolByPos( this_ptr);
+  AddVar_DeleteTool( this_ptr);
+  AddVar_ClearTools( this_ptr);
+  AddVar_Realize( this_ptr);
+  AddVar_EnableTool( this_ptr);
+  AddVar_ToggleTool( this_ptr);
+  AddVar_SetToggle( this_ptr);
+  AddVar_GetToolClientData( this_ptr);
+  AddVar_SetToolClientData( this_ptr);
+  AddVar_GetToolPos( this_ptr);
+  AddVar_GetToolState( this_ptr);
+  AddVar_GetToolEnabled( this_ptr);
+  AddVar_SetToolShortHelp( this_ptr);
+  AddVar_GetToolShortHelp( this_ptr);
+  AddVar_SetToolLongHelp( this_ptr);
+  AddVar_GetToolLongHelp( this_ptr);
+  AddVar_SetMargins_1( this_ptr);
+  AddVar_SetMargins( this_ptr);
+  AddVar_SetMargins_2( this_ptr);
+  AddVar_SetToolPacking( this_ptr);
+  AddVar_SetToolSeparation( this_ptr);
+  AddVar_GetToolMargins( this_ptr);
+  AddVar_GetToolPacking( this_ptr);
+  AddVar_GetToolSeparation( this_ptr);
+  AddVar_SetRows( this_ptr);
+  AddVar_SetMaxRowsCols( this_ptr);
+  AddVar_GetMaxRows( this_ptr);
+  AddVar_GetMaxCols( this_ptr);
+  AddVar_SetToolBitmapSize( this_ptr);
+  AddVar_GetToolBitmapSize( this_ptr);
+  AddVar_GetToolSize( this_ptr);
+  AddVar_FindById( this_ptr);
+  AddVar_IsVertical( this_ptr);
+  AddVar_AddTool_4( this_ptr);
+  AddVar_AddTool_5( this_ptr);
+  AddVar_AddTool_6( this_ptr);
+  AddVar_InsertTool_3( this_ptr);
+  AddVar_OnLeftClick( this_ptr);
+  AddVar_OnRightClick( this_ptr);
+  AddVar_OnMouseEnter( this_ptr);
+  AddVar_GetMargins( this_ptr);
+  AddVar_GetToolsCount( this_ptr);
+  AddVar_UpdateWindowUI( this_ptr);
+  AddVar_AcceptsFocus( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -158,7 +186,7 @@ void WrapClass_wxToolBarBase::AddMethods(WrapClass<wxToolBarBase>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxToolBarBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxToolBarBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -230,12 +258,18 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   // Setting default value if no value is returned
   wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
-  boost::shared_ptr<wxObject > data_smtptr;
-  if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* data = data_smtptr.get();
+  wxObject* data = 0l;
+  if (CheckNullVar(_p,_n))  {
+    data=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > data_smtptr;
+    if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(toolid, label, bitmap, bmpDisabled, kind, shortHelp, longHelp, data);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -315,7 +349,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   wxItemKind kind = (wxItemKind) kind_int;
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(toolid, label, bitmap, shortHelp, kind);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -369,12 +403,18 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   // Setting default value if no value is returned
   wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
-  boost::shared_ptr<wxObject > data_smtptr;
-  if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxObject* data = data_smtptr.get();
+  wxObject* data = 0l;
+  if (CheckNullVar(_p,_n))  {
+    data=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > data_smtptr;
+    if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddCheckTool(toolid, label, bitmap, bmpDisabled, shortHelp, longHelp, data);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -428,12 +468,18 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   // Setting default value if no value is returned
   wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
-  boost::shared_ptr<wxObject > data_smtptr;
-  if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxObject* data = data_smtptr.get();
+  wxObject* data = 0l;
+  if (CheckNullVar(_p,_n))  {
+    data=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > data_smtptr;
+    if (!get_val_smtptr_param<wxObject >(data_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddRadioTool(toolid, label, bitmap, bmpDisabled, shortHelp, longHelp, data);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -497,12 +543,18 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   // Setting default value if no value is returned
   wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
-  boost::shared_ptr<wxObject > clientData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* clientData = clientData_smtptr.get();
+  wxObject* clientData = 0l;
+  if (CheckNullVar(_p,_n))  {
+    clientData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > clientData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    clientData = clientData_smtptr.get();
+  }
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->InsertTool(pos, toolid, label, bitmap, bmpDisabled, kind, shortHelp, longHelp, clientData);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -524,12 +576,18 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxToolBarToolBase > tool_smtptr;
-  if (!get_val_smtptr_param<wxToolBarToolBase >(tool_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxToolBarToolBase* tool = tool_smtptr.get();
+  wxToolBarToolBase* tool;
+  if (CheckNullVar(_p,_n))  {
+    tool=(wxToolBarToolBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxToolBarToolBase > tool_smtptr;
+    if (!get_val_smtptr_param<wxToolBarToolBase >(tool_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    tool = tool_smtptr.get();
+  }
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(tool);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -580,12 +638,18 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_param<long >(pos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
-  boost::shared_ptr<wxToolBarToolBase > tool_smtptr;
-  if (!get_val_smtptr_param<wxToolBarToolBase >(tool_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxToolBarToolBase* tool = tool_smtptr.get();
+  wxToolBarToolBase* tool;
+  if (CheckNullVar(_p,_n))  {
+    tool=(wxToolBarToolBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxToolBarToolBase > tool_smtptr;
+    if (!get_val_smtptr_param<wxToolBarToolBase >(tool_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    tool = tool_smtptr.get();
+  }
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->InsertTool(pos, tool);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -607,12 +671,18 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxControl > control_smtptr;
-  if (!get_val_smtptr_param<wxControl >(control_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxControl* control = control_smtptr.get();
+  wxControl* control;
+  if (CheckNullVar(_p,_n))  {
+    control=(wxControl*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxControl > control_smtptr;
+    if (!get_val_smtptr_param<wxControl >(control_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    control = control_smtptr.get();
+  }
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddControl(control);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -639,12 +709,18 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_param<long >(pos_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
-  boost::shared_ptr<wxControl > control_smtptr;
-  if (!get_val_smtptr_param<wxControl >(control_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxControl* control = control_smtptr.get();
+  wxControl* control;
+  if (CheckNullVar(_p,_n))  {
+    control=(wxControl*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxControl > control_smtptr;
+    if (!get_val_smtptr_param<wxControl >(control_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    control = control_smtptr.get();
+  }
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->InsertControl(pos, control);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -670,7 +746,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxControl * res =   this->_objectptr->GetObj()->FindControl(toolid);
-  BasicVariable::ptr res_var = WrapClass_wxControl::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxControl >::CreateVar(res,true);
   return res_var;
 }
 
@@ -690,7 +766,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddSeparator();
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -717,7 +793,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->InsertSeparator(pos);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -743,7 +819,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->RemoveTool(toolid);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -941,7 +1017,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxObject * res =   this->_objectptr->GetObj()->GetToolClientData(toolid);
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -966,9 +1042,15 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   int toolid;
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<wxObject > clientData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxObject* clientData = clientData_smtptr.get();
+  wxObject* clientData;
+  if (CheckNullVar(_p,_n))  {
+    clientData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > clientData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    clientData = clientData_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetToolClientData(toolid, clientData);
   return BasicVariable::ptr();
@@ -1511,7 +1593,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   if (!get_val_param<int >(toolid,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->FindById(toolid);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1572,9 +1654,15 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   bool toggle = false;
   if (!get_val_param<bool >(toggle,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > clientData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* clientData = clientData_smtptr.get();
+  wxObject* clientData = 0l;
+  if (CheckNullVar(_p,_n))  {
+    clientData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > clientData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    clientData = clientData_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > shortHelpString_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelpString_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
@@ -1587,7 +1675,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   wxString const & longHelpString = ( longHelpString_smtptr.get() ? (*longHelpString_smtptr) : wxString(wxEmptyString) );
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(toolid, bitmap, bmpDisabled, toggle, clientData, shortHelpString, longHelpString);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1630,7 +1718,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   wxString const & longHelpString = ( longHelpString_smtptr.get() ? (*longHelpString_smtptr) : wxString(wxEmptyString) );
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(toolid, bitmap, shortHelpString, longHelpString);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1680,9 +1768,15 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   int yPos = wxDefaultCoord;
   if (!get_val_param<int >(yPos,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > clientData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* clientData = clientData_smtptr.get();
+  wxObject* clientData = 0l;
+  if (CheckNullVar(_p,_n))  {
+    clientData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > clientData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    clientData = clientData_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
@@ -1695,7 +1789,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->AddTool(toolid, bitmap, bmpDisabled, toggle, xPos, yPos, clientData, shortHelp, longHelp);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1743,9 +1837,15 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   bool toggle = false;
   if (!get_val_param<bool >(toggle,_p,_n,false,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxObject > clientData_smtptr;
-  if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxObject* clientData = clientData_smtptr.get();
+  wxObject* clientData = 0l;
+  if (CheckNullVar(_p,_n))  {
+    clientData=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > clientData_smtptr;
+    if (!get_val_smtptr_param<wxObject >(clientData_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    clientData = clientData_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > shortHelp_smtptr;
   if (!get_val_smtptr_param<wxString >(shortHelp_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
@@ -1758,7 +1858,7 @@ BasicVariable::ptr WrapClass_wxToolBarBase::
   wxString const & longHelp = ( longHelp_smtptr.get() ? (*longHelp_smtptr) : wxString(wxEmptyString) );
 
   wxToolBarToolBase * res =   this->_objectptr->GetObj()->InsertTool(pos, toolid, bitmap, bmpDisabled, toggle, clientData, shortHelp, longHelp);
-  BasicVariable::ptr res_var = WrapClass_wxToolBarToolBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBarToolBase >::CreateVar(res,true);
   return res_var;
 }
 

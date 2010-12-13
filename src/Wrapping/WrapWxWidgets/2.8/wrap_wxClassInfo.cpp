@@ -10,21 +10,34 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxClassInfo.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxClassInfo.h"
 #include "stdlib.h"
-#include "wrap_wxObject.h"
 #include "wchar.h"
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
 
 
-#include "wrap_wxClassInfo.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -71,95 +84,98 @@ void WrapClass_wxClassInfo::AddMethods(WrapClass<wxClassInfo>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_CreateObject( this_ptr);
-      AddVar_IsDynamic( this_ptr);
-      AddVar_GetClassName( this_ptr);
-      AddVar_GetBaseClassName1( this_ptr);
-      AddVar_GetBaseClassName2( this_ptr);
-      AddVar_GetBaseClass1( this_ptr);
-      AddVar_GetBaseClass2( this_ptr);
-      AddVar_GetSize( this_ptr);
-/* The following types are missing: _9424
-      AddVar_GetConstructor( this_ptr);
+  // Adding standard methods 
+  AddVar_CreateObject( this_ptr);
+  AddVar_IsDynamic( this_ptr);
+  AddVar_GetClassName( this_ptr);
+  AddVar_GetBaseClassName1( this_ptr);
+  AddVar_GetBaseClassName2( this_ptr);
+  AddVar_GetBaseClass1( this_ptr);
+  AddVar_GetBaseClass2( this_ptr);
+  AddVar_GetSize( this_ptr);
+/* The following types are missing: _5901
+  AddVar_GetConstructor( this_ptr);
 */
-      AddVar_GetNext( this_ptr);
-      AddVar_IsKindOf( this_ptr);
+  AddVar_GetNext( this_ptr);
+  AddVar_IsKindOf( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Type not available
-      // Adding public member m_className
-      boost::shared_ptr<wchar_t > var_m_className_ptr(GetObj()->m_className, smartpointer_nodeleter<wchar_t >());
-      if (var_m_className_ptr.get()) {
-        BasicVariable::ptr var_m_className = AMILabType<wchar_t >::CreateVarFromSmtPtr(var_m_className_ptr);
-        if (var_m_className.get()) {
-          var_m_className->Rename("m_className");
-          context->AddVar(var_m_className,context);
-        }
-      }
-      */
-      
-      // Adding public member m_objectSize
-      boost::shared_ptr<int > var_m_objectSize_ptr(&GetObj()->m_objectSize, smartpointer_nodeleter<int >());
-      if (var_m_objectSize_ptr.get()) {
-        BasicVariable::ptr var_m_objectSize = AMILabType<int >::CreateVarFromSmtPtr(var_m_objectSize_ptr);
-        if (var_m_objectSize.get()) {
-          var_m_objectSize->Rename("m_objectSize");
-          context->AddVar(var_m_objectSize,context);
-        }
-      }
-      
-      /* Type not available
-      // Adding public member m_objectConstructor
-      boost::shared_ptr<_9424 > var_m_objectConstructor_ptr(&GetObj()->m_objectConstructor, smartpointer_nodeleter<_9424 >());
-      if (var_m_objectConstructor_ptr.get()) {
-        BasicVariable::ptr var_m_objectConstructor = AMILabType<_9424 >::CreateVarFromSmtPtr(var_m_objectConstructor_ptr);
-        if (var_m_objectConstructor.get()) {
-          var_m_objectConstructor->Rename("m_objectConstructor");
-          context->AddVar(var_m_objectConstructor,context);
-        }
-      }
-      */
-      
-      /* Avoiding const pointers for the moment
-      // Adding public member m_baseInfo1
-      boost::shared_ptr<wxClassInfo > var_m_baseInfo1_ptr(GetObj()->m_baseInfo1, smartpointer_nodeleter<wxClassInfo >());
-      if (var_m_baseInfo1_ptr.get()) {
-        BasicVariable::ptr var_m_baseInfo1 = AMILabType<wxClassInfo >::CreateVarFromSmtPtr(var_m_baseInfo1_ptr);
-        if (var_m_baseInfo1.get()) {
-          var_m_baseInfo1->Rename("m_baseInfo1");
-          context->AddVar(var_m_baseInfo1,context);
-        }
-      }
-      */
-      
-      /* Avoiding const pointers for the moment
-      // Adding public member m_baseInfo2
-      boost::shared_ptr<wxClassInfo > var_m_baseInfo2_ptr(GetObj()->m_baseInfo2, smartpointer_nodeleter<wxClassInfo >());
-      if (var_m_baseInfo2_ptr.get()) {
-        BasicVariable::ptr var_m_baseInfo2 = AMILabType<wxClassInfo >::CreateVarFromSmtPtr(var_m_baseInfo2_ptr);
-        if (var_m_baseInfo2.get()) {
-          var_m_baseInfo2->Rename("m_baseInfo2");
-          context->AddVar(var_m_baseInfo2,context);
-        }
-      }
-      */
-      
-      // Adding public member m_next
-      boost::shared_ptr<wxClassInfo > var_m_next_ptr(GetObj()->m_next, smartpointer_nodeleter<wxClassInfo >());
-      if (var_m_next_ptr.get()) {
-        BasicVariable::ptr var_m_next = AMILabType<wxClassInfo >::CreateVarFromSmtPtr(var_m_next_ptr);
-        if (var_m_next.get()) {
-          var_m_next->Rename("m_next");
-          context->AddVar(var_m_next,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Type not available
+  // Adding public member m_className
+  boost::shared_ptr<wchar_t > var_m_className_ptr(GetObj()->m_className, smartpointer_nodeleter<wchar_t >());
+  if (var_m_className_ptr.get()) {
+    BasicVariable::ptr var_m_className = AMILabType<wchar_t >::CreateVarFromSmtPtr(var_m_className_ptr);
+    if (var_m_className.get()) {
+      var_m_className->Rename("m_className");
+      context->AddVar(var_m_className,context);
+    }
+  }
+  */
+  
+  // Adding public member m_objectSize
+  boost::shared_ptr<int > var_m_objectSize_ptr(&GetObj()->m_objectSize, smartpointer_nodeleter<int >());
+  if (var_m_objectSize_ptr.get()) {
+    BasicVariable::ptr var_m_objectSize = AMILabType<int >::CreateVarFromSmtPtr(var_m_objectSize_ptr);
+    if (var_m_objectSize.get()) {
+      var_m_objectSize->Rename("m_objectSize");
+      context->AddVar(var_m_objectSize,context);
+    }
+  }
+  
+  /* Type not available
+  // Adding public member m_objectConstructor
+  boost::shared_ptr<_5901 > var_m_objectConstructor_ptr(&GetObj()->m_objectConstructor, smartpointer_nodeleter<_5901 >());
+  if (var_m_objectConstructor_ptr.get()) {
+    BasicVariable::ptr var_m_objectConstructor = AMILabType<_5901 >::CreateVarFromSmtPtr(var_m_objectConstructor_ptr);
+    if (var_m_objectConstructor.get()) {
+      var_m_objectConstructor->Rename("m_objectConstructor");
+      context->AddVar(var_m_objectConstructor,context);
+    }
+  }
+  */
+  
+  /* Avoiding const pointers for the moment
+  // Adding public member m_baseInfo1
+  boost::shared_ptr<wxClassInfo > var_m_baseInfo1_ptr(GetObj()->m_baseInfo1, smartpointer_nodeleter<wxClassInfo >());
+  if (var_m_baseInfo1_ptr.get()) {
+    BasicVariable::ptr var_m_baseInfo1 = AMILabType<wxClassInfo >::CreateVarFromSmtPtr(var_m_baseInfo1_ptr);
+    if (var_m_baseInfo1.get()) {
+      var_m_baseInfo1->Rename("m_baseInfo1");
+      context->AddVar(var_m_baseInfo1,context);
+    }
+  }
+  */
+  
+  /* Avoiding const pointers for the moment
+  // Adding public member m_baseInfo2
+  boost::shared_ptr<wxClassInfo > var_m_baseInfo2_ptr(GetObj()->m_baseInfo2, smartpointer_nodeleter<wxClassInfo >());
+  if (var_m_baseInfo2_ptr.get()) {
+    BasicVariable::ptr var_m_baseInfo2 = AMILabType<wxClassInfo >::CreateVarFromSmtPtr(var_m_baseInfo2_ptr);
+    if (var_m_baseInfo2.get()) {
+      var_m_baseInfo2->Rename("m_baseInfo2");
+      context->AddVar(var_m_baseInfo2,context);
+    }
+  }
+  */
+  
+  // Adding public member m_next
+  boost::shared_ptr<wxClassInfo > var_m_next_ptr(GetObj()->m_next, smartpointer_nodeleter<wxClassInfo >());
+  if (var_m_next_ptr.get()) {
+    BasicVariable::ptr var_m_next = AMILabType<wxClassInfo >::CreateVarFromSmtPtr(var_m_next_ptr);
+    if (var_m_next.get()) {
+      var_m_next->Rename("m_next");
+      context->AddVar(var_m_next,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -170,7 +186,7 @@ void WrapClass_wxClassInfo::AddMethods(WrapClass<wxClassInfo>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxClassInfo::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxClassInfo_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -189,7 +205,7 @@ void WrapClass_wxClassInfo::AddStaticMethods( Variables::ptr& context)
 // PUBLIC METHODS
 //----------------------------------------------------------------------
 
-/* The following types are missing: _9424
+/* The following types are missing: _5901
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxClassInfo::wxClassInfo(wxChar const * className, wxClassInfo const * baseInfo1, wxClassInfo const * baseInfo2, int size, wxObjectConstructorFn ctor)
@@ -201,7 +217,7 @@ void WrapClass_wxClassInfo::
   ADDPARAMCOMMENT_TYPE( wxClassInfo, "parameter named 'baseInfo1'")
   ADDPARAMCOMMENT_TYPE( wxClassInfo, "parameter named 'baseInfo2'")
   ADDPARAMCOMMENT_TYPE( int, "parameter named 'size'")
-  ADDPARAMCOMMENT_TYPE( _9424, "parameter named 'ctor'")
+  ADDPARAMCOMMENT_TYPE( _5901, "parameter named 'ctor'")
 }
 
 //---------------------------------------------------
@@ -217,19 +233,31 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   wchar_t className[className_string->size()+1];
 mbstowcs(className,className_string->c_str(),className_string->size()+1);
 
-  boost::shared_ptr<wxClassInfo > baseInfo1_smtptr;
-  if (!get_val_smtptr_param<wxClassInfo >(baseInfo1_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
-  wxClassInfo* baseInfo1 = baseInfo1_smtptr.get();
+  wxClassInfo* baseInfo1;
+  if (CheckNullVar(_p,_n))  {
+    baseInfo1=(wxClassInfo*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxClassInfo > baseInfo1_smtptr;
+    if (!get_val_smtptr_param<wxClassInfo >(baseInfo1_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
+    baseInfo1 = baseInfo1_smtptr.get();
+  }
 
-  boost::shared_ptr<wxClassInfo > baseInfo2_smtptr;
-  if (!get_val_smtptr_param<wxClassInfo >(baseInfo2_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
-  wxClassInfo* baseInfo2 = baseInfo2_smtptr.get();
+  wxClassInfo* baseInfo2;
+  if (CheckNullVar(_p,_n))  {
+    baseInfo2=(wxClassInfo*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxClassInfo > baseInfo2_smtptr;
+    if (!get_val_smtptr_param<wxClassInfo >(baseInfo2_smtptr,_p,_n,true,true,false)) ClassHelpAndReturn;
+    baseInfo2 = baseInfo2_smtptr.get();
+  }
 
   int size;
   if (!get_val_param<int >(size,_p,_n,true,false)) ClassHelpAndReturn;
 
-  _9424 ctor;
-  if (!get_val_param<_9424 >(ctor,_p,_n,true,false)) ClassHelpAndReturn;
+  _5901 ctor;
+  if (!get_val_param<_5901 >(ctor,_p,_n,true,false)) ClassHelpAndReturn;
 
   wxClassInfo* _newobj = new wxClassInfo(className, baseInfo1, baseInfo2, size, ctor);
   BasicVariable::ptr res = WrapClass_wxClassInfo::CreateVar(_newobj);
@@ -253,7 +281,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo const * res =   wxClassInfo::GetFirst();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(const_cast<wxClassInfo *>(res));
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(const_cast<wxClassInfo *>(res),true);
   return res_var;
 }
 
@@ -281,7 +309,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
 mbstowcs(className,className_string->c_str(),className_string->size()+1);
 
   wxClassInfo * res =   wxClassInfo::FindClass(className);
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 
@@ -301,7 +329,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObject * res =   this->_objectptr->GetObj()->CreateObject();
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -421,7 +449,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo const * res =   this->_objectptr->GetObj()->GetBaseClass1();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(const_cast<wxClassInfo *>(res));
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(const_cast<wxClassInfo *>(res),true);
   return res_var;
 }
 
@@ -441,7 +469,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo const * res =   this->_objectptr->GetObj()->GetBaseClass2();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(const_cast<wxClassInfo *>(res));
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(const_cast<wxClassInfo *>(res),true);
   return res_var;
 }
 
@@ -463,7 +491,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   int res =   this->_objectptr->GetObj()->GetSize();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: _9424
+/* The following types are missing: _5901
 
 //---------------------------------------------------
 //  Wrapping of wxObjectConstructorFn wxClassInfo::GetConstructor()
@@ -471,7 +499,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
 void WrapClass_wxClassInfo::
     wrap_GetConstructor::SetParametersComments()
 {
-  return_comments="returning a variable of type _9424";
+  return_comments="returning a variable of type _5901";
 }
 
 //---------------------------------------------------
@@ -481,7 +509,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObjectConstructorFn res =   this->_objectptr->GetObj()->GetConstructor();
-  return AMILabType<_9424 >::CreateVar(res);
+  return AMILabType<_5901 >::CreateVar(res);
 }
 */
 
@@ -501,7 +529,7 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo const * res =   this->_objectptr->GetObj()->GetNext();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(const_cast<wxClassInfo *>(res));
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(const_cast<wxClassInfo *>(res),true);
   return res_var;
 }
 
@@ -523,9 +551,15 @@ BasicVariable::ptr WrapClass_wxClassInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxClassInfo > info_smtptr;
-  if (!get_val_smtptr_param<wxClassInfo >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxClassInfo* info = info_smtptr.get();
+  wxClassInfo* info;
+  if (CheckNullVar(_p,_n))  {
+    info=(wxClassInfo*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxClassInfo > info_smtptr;
+    if (!get_val_smtptr_param<wxClassInfo >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    info = info_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->IsKindOf(info);
   return AMILabType<bool >::CreateVar(res);

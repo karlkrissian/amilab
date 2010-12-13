@@ -16,19 +16,41 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkCamera.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkCamera.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkTransform.h"
-#include "wrap_vtkMatrix4x4.h"
-#include "wrap_vtkHomogeneousTransform.h"
-#include "wrap_vtkRenderer.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkCamera_declared
+  #define vtkCamera_declared
+  AMI_DECLARE_TYPE(vtkCamera)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkTransform_declared
+  #define vtkTransform_declared
+  AMI_DECLARE_TYPE(vtkTransform)
+#endif
+#ifndef vtkMatrix4x4_declared
+  #define vtkMatrix4x4_declared
+  AMI_DECLARE_TYPE(vtkMatrix4x4)
+#endif
+#ifndef vtkHomogeneousTransform_declared
+  #define vtkHomogeneousTransform_declared
+  AMI_DECLARE_TYPE(vtkHomogeneousTransform)
+#endif
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
 
 
-#include "wrap_vtkCamera.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -216,7 +238,7 @@ void WrapClass_vtkCamera::AddMethods(WrapClass<vtkCamera>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkCamera::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkCamera_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -292,7 +314,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   }
 
   vtkCamera * res =   vtkCamera::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkCamera::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkCamera >::CreateVar(res,true);
   return res_var;
 }
 
@@ -312,7 +334,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkCamera * res =   vtkCamera::New();
-  BasicVariable::ptr res_var = WrapClass_vtkCamera::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkCamera >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -389,7 +411,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkCamera * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkCamera::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkCamera >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2419,7 +2441,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetViewTransformMatrix();
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2439,7 +2461,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkTransform * res =   this->_objectptr->GetObj()->GetViewTransformObject();
-  BasicVariable::ptr res_var = WrapClass_vtkTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2473,7 +2495,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetProjectionTransformMatrix(aspect, nearz, farz);
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: vtkPerspectiveTransform
@@ -2542,7 +2564,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (!get_val_param<double >(farz,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetCompositeProjectionTransformMatrix(aspect, nearz, farz);
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2593,7 +2615,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkHomogeneousTransform * res =   this->_objectptr->GetObj()->GetUserViewTransform();
-  BasicVariable::ptr res_var = WrapClass_vtkHomogeneousTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkHomogeneousTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2644,7 +2666,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkHomogeneousTransform * res =   this->_objectptr->GetObj()->GetUserTransform();
-  BasicVariable::ptr res_var = WrapClass_vtkHomogeneousTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkHomogeneousTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2824,7 +2846,7 @@ BasicVariable::ptr WrapClass_vtkCamera::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetCameraLightTransformMatrix();
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 

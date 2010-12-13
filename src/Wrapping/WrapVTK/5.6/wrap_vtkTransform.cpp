@@ -16,18 +16,37 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkTransform.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkTransform.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkMatrix4x4.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkLinearTransform.h"
-#include "wrap_vtkAbstractTransform.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkTransform_declared
+  #define vtkTransform_declared
+  AMI_DECLARE_TYPE(vtkTransform)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkMatrix4x4_declared
+  #define vtkMatrix4x4_declared
+  AMI_DECLARE_TYPE(vtkMatrix4x4)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkLinearTransform_declared
+  #define vtkLinearTransform_declared
+  AMI_DECLARE_TYPE(vtkLinearTransform)
+#endif
+#ifndef vtkAbstractTransform_declared
+  #define vtkAbstractTransform_declared
+  AMI_DECLARE_TYPE(vtkAbstractTransform)
+#endif
 
 
-#include "wrap_vtkTransform.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -170,7 +189,7 @@ void WrapClass_vtkTransform::AddMethods(WrapClass<vtkTransform>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkTransform::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkTransform_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -208,7 +227,7 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkTransform * res =   vtkTransform::New();
-  BasicVariable::ptr res_var = WrapClass_vtkTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -267,7 +286,7 @@ BasicVariable::ptr WrapClass_vtkTransform::
   }
 
   vtkTransform * res =   vtkTransform::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -355,7 +374,7 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkTransform * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkTransform >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -1141,7 +1160,7 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (!get_val_param<int >(i,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkLinearTransform * res =   this->_objectptr->GetObj()->GetConcatenatedTransform(i);
-  BasicVariable::ptr res_var = WrapClass_vtkLinearTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkLinearTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1674,7 +1693,7 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkLinearTransform * res =   this->_objectptr->GetObj()->GetInput();
-  BasicVariable::ptr res_var = WrapClass_vtkLinearTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkLinearTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1802,7 +1821,7 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkAbstractTransform * res =   this->_objectptr->GetObj()->GetInverse();
-  BasicVariable::ptr res_var = WrapClass_vtkAbstractTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAbstractTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1822,7 +1841,7 @@ BasicVariable::ptr WrapClass_vtkTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAbstractTransform * res =   this->_objectptr->GetObj()->MakeTransform();
-  BasicVariable::ptr res_var = WrapClass_vtkAbstractTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAbstractTransform >::CreateVar(res,true);
   return res_var;
 }
 

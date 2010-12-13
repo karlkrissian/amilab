@@ -13,11 +13,13 @@
 #ifndef _wrap_wxValidator_h_
 #define _wrap_wxValidator_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxEvtHandler.h"
 
 
-
-AMI_DECLARE_TYPE(wxValidator);
+#ifndef wxValidator_declared
+  #define wxValidator_declared
+  AMI_DECLARE_TYPE(wxValidator);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxValidator : public WrapClass<wxValidator>
@@ -89,12 +93,13 @@ class WrapClass_wxValidator : public WrapClass<wxValidator>
 
     void AddMethods(WrapClass<wxValidator>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxValidator_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxValidator_h

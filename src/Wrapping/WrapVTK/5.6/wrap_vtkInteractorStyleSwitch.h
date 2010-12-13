@@ -26,8 +26,10 @@
 #include "wrap_vtkInteractorStyle.h"
 
 
-
-AMI_DECLARE_TYPE(vtkInteractorStyleSwitch);
+#ifndef vtkInteractorStyleSwitch_declared
+  #define vtkInteractorStyleSwitch_declared
+  AMI_DECLARE_TYPE(vtkInteractorStyleSwitch);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkInteractorStyleSwitch : public WrapClass<vtkInteractorStyleSwitch>
@@ -95,12 +97,13 @@ class WrapClass_vtkInteractorStyleSwitch : public WrapClass<vtkInteractorStyleSw
 
     void AddMethods(WrapClass<vtkInteractorStyleSwitch>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkInteractorStyleSwitch_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkInteractorStyleSwitch_h

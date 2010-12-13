@@ -16,18 +16,37 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkVolumeProperty.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkVolumeProperty.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkPiecewiseFunction.h"
-#include "wrap_vtkColorTransferFunction.h"
-#include "wrap_vtkTimeStamp.h"
+#ifndef vtkVolumeProperty_declared
+  #define vtkVolumeProperty_declared
+  AMI_DECLARE_TYPE(vtkVolumeProperty)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkPiecewiseFunction_declared
+  #define vtkPiecewiseFunction_declared
+  AMI_DECLARE_TYPE(vtkPiecewiseFunction)
+#endif
+#ifndef vtkColorTransferFunction_declared
+  #define vtkColorTransferFunction_declared
+  AMI_DECLARE_TYPE(vtkColorTransferFunction)
+#endif
+#ifndef vtkTimeStamp_declared
+  #define vtkTimeStamp_declared
+  AMI_DECLARE_TYPE(vtkTimeStamp)
+#endif
 
 
-#include "wrap_vtkVolumeProperty.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -224,7 +243,7 @@ void WrapClass_vtkVolumeProperty::AddMethods(WrapClass<vtkVolumeProperty>::ptr t
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkVolumeProperty::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkVolumeProperty_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -261,7 +280,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkVolumeProperty * res =   vtkVolumeProperty::New();
-  BasicVariable::ptr res_var = WrapClass_vtkVolumeProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolumeProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -320,7 +339,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   }
 
   vtkVolumeProperty * res =   vtkVolumeProperty::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkVolumeProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolumeProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -366,7 +385,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkVolumeProperty * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkVolumeProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolumeProperty >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -1005,7 +1024,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetGrayTransferFunction(index);
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1046,7 +1065,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetGrayTransferFunction();
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1072,7 +1091,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkColorTransferFunction * res =   this->_objectptr->GetObj()->GetRGBTransferFunction(index);
-  BasicVariable::ptr res_var = WrapClass_vtkColorTransferFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkColorTransferFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1113,7 +1132,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkColorTransferFunction * res =   this->_objectptr->GetObj()->GetRGBTransferFunction();
-  BasicVariable::ptr res_var = WrapClass_vtkColorTransferFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkColorTransferFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1226,7 +1245,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetScalarOpacity(index);
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1267,7 +1286,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetScalarOpacity();
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1518,7 +1537,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetGradientOpacity(index);
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1559,7 +1578,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetGradientOpacity();
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1849,7 +1868,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetStoredGradientOpacity(index);
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1890,7 +1909,7 @@ BasicVariable::ptr WrapClass_vtkVolumeProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkPiecewiseFunction * res =   this->_objectptr->GetObj()->GetStoredGradientOpacity();
-  BasicVariable::ptr res_var = WrapClass_vtkPiecewiseFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPiecewiseFunction >::CreateVar(res,true);
   return res_var;
 }
 

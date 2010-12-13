@@ -16,21 +16,49 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkActor.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkActor.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkPropCollection.h"
-#include "wrap_vtkViewport.h"
-#include "wrap_vtkRenderer.h"
-#include "wrap_vtkProp.h"
-#include "wrap_vtkWindow.h"
-#include "wrap_vtkProperty.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkActor_declared
+  #define vtkActor_declared
+  AMI_DECLARE_TYPE(vtkActor)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkPropCollection_declared
+  #define vtkPropCollection_declared
+  AMI_DECLARE_TYPE(vtkPropCollection)
+#endif
+#ifndef vtkViewport_declared
+  #define vtkViewport_declared
+  AMI_DECLARE_TYPE(vtkViewport)
+#endif
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
+#ifndef vtkProp_declared
+  #define vtkProp_declared
+  AMI_DECLARE_TYPE(vtkProp)
+#endif
+#ifndef vtkWindow_declared
+  #define vtkWindow_declared
+  AMI_DECLARE_TYPE(vtkWindow)
+#endif
+#ifndef vtkProperty_declared
+  #define vtkProperty_declared
+  AMI_DECLARE_TYPE(vtkProperty)
+#endif
 
 
-#include "wrap_vtkActor.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -147,7 +175,7 @@ void WrapClass_vtkActor::AddMethods(WrapClass<vtkActor>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkActor::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkActor_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -223,7 +251,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   }
 
   vtkActor * res =   vtkActor::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActor >::CreateVar(res,true);
   return res_var;
 }
 
@@ -243,7 +271,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkActor * res =   vtkActor::New();
-  BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActor >::CreateVar(res,true);
   return res_var;
 }
 
@@ -289,7 +317,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkActor * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkActor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActor >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -591,7 +619,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetProperty();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -611,7 +639,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->MakeProperty();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -662,7 +690,7 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetBackfaceProperty();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: vtkTexture

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxAuiFloatingFrame_h_
 #define _wrap_wxAuiFloatingFrame_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxMiniFrame.h"
 
 
-
-AMI_DECLARE_TYPE(wxAuiFloatingFrame);
+#ifndef wxAuiFloatingFrame_declared
+  #define wxAuiFloatingFrame_declared
+  AMI_DECLARE_TYPE(wxAuiFloatingFrame);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiFloatingFrame : public WrapClass<wxAuiFloatingFrame>
@@ -82,12 +86,13 @@ class WrapClass_wxAuiFloatingFrame : public WrapClass<wxAuiFloatingFrame>
 
     void AddMethods(WrapClass<wxAuiFloatingFrame>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxAuiFloatingFrame_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxAuiFloatingFrame_h

@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxVisualAttributes.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxFont.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxVisualAttributes.h"
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxVisualAttributes_declared
+  #define wxVisualAttributes_declared
+  AMI_DECLARE_TYPE(wxVisualAttributes)
+#endif
 
 
-#include "wrap_wxVisualAttributes.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,49 +79,52 @@ void WrapClass_wxVisualAttributes::AddMethods(WrapClass<wxVisualAttributes>::ptr
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member font
-      boost::shared_ptr<wxFont > var_font_ptr(&GetObj()->font, smartpointer_nodeleter<wxFont >());
-      if (var_font_ptr.get()) {
-        BasicVariable::ptr var_font = AMILabType<wxFont >::CreateVarFromSmtPtr(var_font_ptr);
-        if (var_font.get()) {
-          var_font->Rename("font");
-          context->AddVar(var_font,context);
-        }
-      }
-      
-      // Adding public member colFg
-      boost::shared_ptr<wxColour > var_colFg_ptr(&GetObj()->colFg, smartpointer_nodeleter<wxColour >());
-      if (var_colFg_ptr.get()) {
-        BasicVariable::ptr var_colFg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colFg_ptr);
-        if (var_colFg.get()) {
-          var_colFg->Rename("colFg");
-          context->AddVar(var_colFg,context);
-        }
-      }
-      
-      // Adding public member colBg
-      boost::shared_ptr<wxColour > var_colBg_ptr(&GetObj()->colBg, smartpointer_nodeleter<wxColour >());
-      if (var_colBg_ptr.get()) {
-        BasicVariable::ptr var_colBg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colBg_ptr);
-        if (var_colBg.get()) {
-          var_colBg->Rename("colBg");
-          context->AddVar(var_colBg,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member font
+  boost::shared_ptr<wxFont > var_font_ptr(&GetObj()->font, smartpointer_nodeleter<wxFont >());
+  if (var_font_ptr.get()) {
+    BasicVariable::ptr var_font = AMILabType<wxFont >::CreateVarFromSmtPtr(var_font_ptr);
+    if (var_font.get()) {
+      var_font->Rename("font");
+      context->AddVar(var_font,context);
+    }
+  }
+  
+  // Adding public member colFg
+  boost::shared_ptr<wxColour > var_colFg_ptr(&GetObj()->colFg, smartpointer_nodeleter<wxColour >());
+  if (var_colFg_ptr.get()) {
+    BasicVariable::ptr var_colFg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colFg_ptr);
+    if (var_colFg.get()) {
+      var_colFg->Rename("colFg");
+      context->AddVar(var_colFg,context);
+    }
+  }
+  
+  // Adding public member colBg
+  boost::shared_ptr<wxColour > var_colBg_ptr(&GetObj()->colBg, smartpointer_nodeleter<wxColour >());
+  if (var_colBg_ptr.get()) {
+    BasicVariable::ptr var_colBg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colBg_ptr);
+    if (var_colBg.get()) {
+      var_colBg->Rename("colBg");
+      context->AddVar(var_colBg,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -116,7 +135,7 @@ void WrapClass_wxVisualAttributes::AddMethods(WrapClass<wxVisualAttributes>::ptr
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxVisualAttributes::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxVisualAttributes_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

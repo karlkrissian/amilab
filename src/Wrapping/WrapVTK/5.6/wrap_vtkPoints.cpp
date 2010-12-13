@@ -16,16 +16,29 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkPoints.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkPoints.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkDataArray.h"
+#ifndef vtkPoints_declared
+  #define vtkPoints_declared
+  AMI_DECLARE_TYPE(vtkPoints)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkDataArray_declared
+  #define vtkDataArray_declared
+  AMI_DECLARE_TYPE(vtkDataArray)
+#endif
 
 
-#include "wrap_vtkPoints.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -156,7 +169,7 @@ void WrapClass_vtkPoints::AddMethods(WrapClass<vtkPoints>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkPoints::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkPoints_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -201,7 +214,7 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (!get_val_param<int >(dataType,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkPoints * res =   vtkPoints::New(dataType);
-  BasicVariable::ptr res_var = WrapClass_vtkPoints::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPoints >::CreateVar(res,true);
   return res_var;
 }
 
@@ -242,7 +255,7 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkPoints * res =   vtkPoints::New();
-  BasicVariable::ptr res_var = WrapClass_vtkPoints::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPoints >::CreateVar(res,true);
   return res_var;
 }
 
@@ -301,7 +314,7 @@ BasicVariable::ptr WrapClass_vtkPoints::
   }
 
   vtkPoints * res =   vtkPoints::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkPoints::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPoints >::CreateVar(res,true);
   return res_var;
 }
 
@@ -347,7 +360,7 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkPoints * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkPoints::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkPoints >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -478,7 +491,7 @@ BasicVariable::ptr WrapClass_vtkPoints::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkDataArray * res =   this->_objectptr->GetObj()->GetData();
-  BasicVariable::ptr res_var = WrapClass_vtkDataArray::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataArray >::CreateVar(res,true);
   return res_var;
 }
 

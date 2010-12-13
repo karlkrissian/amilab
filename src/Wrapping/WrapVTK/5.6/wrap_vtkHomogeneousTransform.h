@@ -26,8 +26,10 @@
 #include "wrap_vtkAbstractTransform.h"
 
 
-
-AMI_DECLARE_TYPE(vtkHomogeneousTransform);
+#ifndef vtkHomogeneousTransform_declared
+  #define vtkHomogeneousTransform_declared
+  AMI_DECLARE_TYPE(vtkHomogeneousTransform);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkHomogeneousTransform : public WrapClass<vtkHomogeneousTransform>
@@ -92,12 +94,13 @@ class WrapClass_vtkHomogeneousTransform : public WrapClass<vtkHomogeneousTransfo
 
     void AddMethods(WrapClass<vtkHomogeneousTransform>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkHomogeneousTransform_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkHomogeneousTransform_h

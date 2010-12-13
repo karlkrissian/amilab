@@ -16,15 +16,25 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkMatrix4x4.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkMatrix4x4.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkMatrix4x4_declared
+  #define vtkMatrix4x4_declared
+  AMI_DECLARE_TYPE(vtkMatrix4x4)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
 
 
-#include "wrap_vtkMatrix4x4.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -152,7 +162,7 @@ void WrapClass_vtkMatrix4x4::AddMethods(WrapClass<vtkMatrix4x4>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkMatrix4x4::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkMatrix4x4_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -211,7 +221,7 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   vtkMatrix4x4::New();
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 
@@ -270,7 +280,7 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   }
 
   vtkMatrix4x4 * res =   vtkMatrix4x4::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1148,7 +1158,7 @@ BasicVariable::ptr WrapClass_vtkMatrix4x4::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

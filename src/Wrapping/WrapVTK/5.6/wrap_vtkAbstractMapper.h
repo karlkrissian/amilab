@@ -26,8 +26,10 @@
 #include "wrap_vtkAlgorithm.h"
 
 
-
-AMI_DECLARE_TYPE(vtkAbstractMapper);
+#ifndef vtkAbstractMapper_declared
+  #define vtkAbstractMapper_declared
+  AMI_DECLARE_TYPE(vtkAbstractMapper);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkAbstractMapper : public WrapClass<vtkAbstractMapper>
@@ -104,12 +106,13 @@ class WrapClass_vtkAbstractMapper : public WrapClass<vtkAbstractMapper>
 
     void AddMethods(WrapClass<vtkAbstractMapper>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkAbstractMapper_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkAbstractMapper_h

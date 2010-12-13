@@ -10,21 +10,42 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxFileName.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxFileName.h"
-#include "wrap_wxString.h"
 #include "stdlib.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef wxFileName_declared
+  #define wxFileName_declared
+  AMI_DECLARE_TYPE(wxFileName)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxULongLongNative_declared
+  #define wxULongLongNative_declared
+  AMI_DECLARE_TYPE(wxULongLongNative)
+#endif
+#ifndef wxDateTime_declared
+  #define wxDateTime_declared
+  AMI_DECLARE_TYPE(wxDateTime)
+#endif
 
 
-#include "wrap_wxFileName.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,105 +85,100 @@ void WrapClass_wxFileName::AddMethods(WrapClass<wxFileName>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Assign_1( this_ptr);
-      AddVar_Assign( this_ptr);
-      AddVar_Assign_2( this_ptr);
-      AddVar_Assign_3( this_ptr);
-      AddVar_Assign_4( this_ptr);
-      AddVar_Assign_5( this_ptr);
-      AddVar_Assign_6( this_ptr);
-      AddVar_AssignDir( this_ptr);
-      AddVar_Clear( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_FileExists( this_ptr);
-      AddVar_DirExists( this_ptr);
-      AddVar_IsDirWritable( this_ptr);
-      AddVar_IsDirReadable( this_ptr);
-      AddVar_IsFileWritable( this_ptr);
-      AddVar_IsFileReadable( this_ptr);
-      AddVar_IsFileExecutable( this_ptr);
-/* The following types are missing: wxDateTime, wxDateTime, wxDateTime
-      AddVar_SetTimes( this_ptr);
-*/
-      AddVar_Touch( this_ptr);
-/* The following types are missing: wxDateTime, wxDateTime, wxDateTime
-      AddVar_GetTimes( this_ptr);
-*/
-/* The following types are missing: wxDateTime
-      AddVar_GetModificationTime( this_ptr);
-*/
-      AddVar_AssignCwd( this_ptr);
-      AddVar_SetCwd( this_ptr);
-      AddVar_AssignHomeDir( this_ptr);
-      AddVar_AssignTempFileName_1( this_ptr);
-      AddVar_AssignTempFileName( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Assign_1( this_ptr);
+  AddVar_Assign( this_ptr);
+  AddVar_Assign_2( this_ptr);
+  AddVar_Assign_3( this_ptr);
+  AddVar_Assign_4( this_ptr);
+  AddVar_Assign_5( this_ptr);
+  AddVar_Assign_6( this_ptr);
+  AddVar_AssignDir( this_ptr);
+  AddVar_Clear( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_FileExists( this_ptr);
+  AddVar_DirExists( this_ptr);
+  AddVar_IsDirWritable( this_ptr);
+  AddVar_IsDirReadable( this_ptr);
+  AddVar_IsFileWritable( this_ptr);
+  AddVar_IsFileReadable( this_ptr);
+  AddVar_IsFileExecutable( this_ptr);
+  AddVar_SetTimes( this_ptr);
+  AddVar_Touch( this_ptr);
+  AddVar_GetTimes( this_ptr);
+  AddVar_GetModificationTime( this_ptr);
+  AddVar_AssignCwd( this_ptr);
+  AddVar_SetCwd( this_ptr);
+  AddVar_AssignHomeDir( this_ptr);
+  AddVar_AssignTempFileName_1( this_ptr);
+  AddVar_AssignTempFileName( this_ptr);
 /* The following types are missing: wxFile
-      AddVar_AssignTempFileName_2( this_ptr);
+  AddVar_AssignTempFileName_2( this_ptr);
 */
 /* The following types are missing: wxFFile
-      AddVar_AssignTempFileName_3( this_ptr);
+  AddVar_AssignTempFileName_3( this_ptr);
 */
-      AddVar_Mkdir( this_ptr);
-      AddVar_Rmdir( this_ptr);
-      AddVar_Normalize( this_ptr);
-      AddVar_MakeRelativeTo( this_ptr);
-      AddVar_MakeAbsolute( this_ptr);
-      AddVar_SameAs( this_ptr);
-      AddVar_IsAbsolute( this_ptr);
-      AddVar_IsRelative( this_ptr);
-      AddVar_GetDirCount( this_ptr);
-      AddVar_AppendDir( this_ptr);
-      AddVar_PrependDir( this_ptr);
-      AddVar_InsertDir( this_ptr);
-      AddVar_RemoveDir( this_ptr);
-      AddVar_RemoveLastDir( this_ptr);
-      AddVar_SetExt( this_ptr);
-      AddVar_ClearExt( this_ptr);
-      AddVar_SetEmptyExt( this_ptr);
-      AddVar_GetExt( this_ptr);
-      AddVar_HasExt( this_ptr);
-      AddVar_SetName( this_ptr);
-      AddVar_GetName( this_ptr);
-      AddVar_HasName( this_ptr);
-      AddVar_SetVolume( this_ptr);
-      AddVar_GetVolume( this_ptr);
-      AddVar_HasVolume( this_ptr);
-      AddVar_SetFullName( this_ptr);
-      AddVar_GetFullName( this_ptr);
+  AddVar_Mkdir( this_ptr);
+  AddVar_Rmdir( this_ptr);
+  AddVar_Normalize( this_ptr);
+  AddVar_MakeRelativeTo( this_ptr);
+  AddVar_MakeAbsolute( this_ptr);
+  AddVar_SameAs( this_ptr);
+  AddVar_IsAbsolute( this_ptr);
+  AddVar_IsRelative( this_ptr);
+  AddVar_GetDirCount( this_ptr);
+  AddVar_AppendDir( this_ptr);
+  AddVar_PrependDir( this_ptr);
+  AddVar_InsertDir( this_ptr);
+  AddVar_RemoveDir( this_ptr);
+  AddVar_RemoveLastDir( this_ptr);
+  AddVar_SetExt( this_ptr);
+  AddVar_ClearExt( this_ptr);
+  AddVar_SetEmptyExt( this_ptr);
+  AddVar_GetExt( this_ptr);
+  AddVar_HasExt( this_ptr);
+  AddVar_SetName( this_ptr);
+  AddVar_GetName( this_ptr);
+  AddVar_HasName( this_ptr);
+  AddVar_SetVolume( this_ptr);
+  AddVar_GetVolume( this_ptr);
+  AddVar_HasVolume( this_ptr);
+  AddVar_SetFullName( this_ptr);
+  AddVar_GetFullName( this_ptr);
 /* The following types are missing: wxArrayString
-      AddVar_GetDirs( this_ptr);
+  AddVar_GetDirs( this_ptr);
 */
-      AddVar_GetPath_1( this_ptr);
-      AddVar_SetPath( this_ptr);
-      AddVar_GetFullPath( this_ptr);
-      AddVar_GetShortPath( this_ptr);
-      AddVar_GetLongPath( this_ptr);
-      AddVar_IsDir( this_ptr);
-/* The following types are missing: wxULongLongNative
-      AddVar_GetSize( this_ptr);
-*/
-      AddVar_GetHumanReadableSize( this_ptr);
-      AddVar_GetPath( this_ptr);
-      AddVar_GetPath_2( this_ptr);
-      AddVar_GetPathWithSep( this_ptr);
+  AddVar_GetPath_1( this_ptr);
+  AddVar_SetPath( this_ptr);
+  AddVar_GetFullPath( this_ptr);
+  AddVar_GetShortPath( this_ptr);
+  AddVar_GetLongPath( this_ptr);
+  AddVar_IsDir( this_ptr);
+  AddVar_GetSize( this_ptr);
+  AddVar_GetHumanReadableSize( this_ptr);
+  AddVar_GetPath( this_ptr);
+  AddVar_GetPath_2( this_ptr);
+  AddVar_GetPathWithSep( this_ptr);
 
-      // Adding operators
-      AddVar___assign___1( this_ptr);
-      AddVar___assign__( this_ptr);
-      AddVar___assign___2( this_ptr);
-      AddVar___equal___1( this_ptr);
-      AddVar___not_equal___1( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___equal___2( this_ptr);
-      AddVar___not_equal__( this_ptr);
-      AddVar___not_equal___2( this_ptr);
+  // Adding operators
+  AddVar___assign___1( this_ptr);
+  AddVar___assign__( this_ptr);
+  AddVar___assign___2( this_ptr);
+  AddVar___equal___1( this_ptr);
+  AddVar___not_equal___1( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___equal___2( this_ptr);
+  AddVar___not_equal__( this_ptr);
+  AddVar___not_equal___2( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -172,7 +188,7 @@ void WrapClass_wxFileName::AddMethods(WrapClass<wxFileName>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxFileName::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxFileName_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -224,12 +240,8 @@ void WrapClass_wxFileName::AddStaticMethods( Variables::ptr& context)
   WrapClass_wxFileName::AddVar_SplitPath_3(amiobject->GetContext());
   WrapClass_wxFileName::AddVar_SplitVolume(amiobject->GetContext());
   WrapClass_wxFileName::AddVar_StripExtension(amiobject->GetContext());
-  /* Types are missing
   WrapClass_wxFileName::AddVar_GetSize(amiobject->GetContext());
-  */
-  /* Types are missing
   WrapClass_wxFileName::AddVar_GetHumanReadableSize(amiobject->GetContext());
-  */
 
   //  add it to the given context
   context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
@@ -876,9 +888,15 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!get_val_smtptr_param<wxString >(prefix_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & prefix = *prefix_smtptr;
 
-  boost::shared_ptr<wxFile > fileTemp_smtptr;
-  if (!get_val_smtptr_param<wxFile >(fileTemp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxFile* fileTemp = fileTemp_smtptr.get();
+  wxFile* fileTemp;
+  if (CheckNullVar(_p,_n))  {
+    fileTemp=(wxFile*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFile > fileTemp_smtptr;
+    if (!get_val_smtptr_param<wxFile >(fileTemp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    fileTemp = fileTemp_smtptr.get();
+  }
 
   wxString res =   wxFileName::CreateTempFileName(prefix, fileTemp);
   return AMILabType<wxString >::CreateVar(res);
@@ -909,9 +927,15 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!get_val_smtptr_param<wxString >(prefix_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & prefix = *prefix_smtptr;
 
-  boost::shared_ptr<wxFFile > fileTemp_smtptr;
-  if (!get_val_smtptr_param<wxFFile >(fileTemp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxFFile* fileTemp = fileTemp_smtptr.get();
+  wxFFile* fileTemp;
+  if (CheckNullVar(_p,_n))  {
+    fileTemp=(wxFFile*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFFile > fileTemp_smtptr;
+    if (!get_val_smtptr_param<wxFFile >(fileTemp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    fileTemp = fileTemp_smtptr.get();
+  }
 
   wxString res =   wxFileName::CreateTempFileName(prefix, fileTemp);
   return AMILabType<wxString >::CreateVar(res);
@@ -1230,25 +1254,55 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!get_val_smtptr_param<wxString >(fullpath_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & fullpath = *fullpath_smtptr;
 
-  boost::shared_ptr<wxString > volume_smtptr;
-  if (!get_val_smtptr_param<wxString >(volume_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* volume = volume_smtptr.get();
+  wxString* volume;
+  if (CheckNullVar(_p,_n))  {
+    volume=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > volume_smtptr;
+    if (!get_val_smtptr_param<wxString >(volume_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    volume = volume_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > path_smtptr;
-  if (!get_val_smtptr_param<wxString >(path_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* path = path_smtptr.get();
+  wxString* path;
+  if (CheckNullVar(_p,_n))  {
+    path=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > path_smtptr;
+    if (!get_val_smtptr_param<wxString >(path_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    path = path_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* name = name_smtptr.get();
+  wxString* name;
+  if (CheckNullVar(_p,_n))  {
+    name=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > name_smtptr;
+    if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    name = name_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > ext_smtptr;
-  if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* ext = ext_smtptr.get();
+  wxString* ext;
+  if (CheckNullVar(_p,_n))  {
+    ext=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > ext_smtptr;
+    if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    ext = ext_smtptr.get();
+  }
 
-  boost::shared_ptr<bool > hasExt_smtptr;
-  if (!get_val_smtptr_param<bool >(hasExt_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  bool* hasExt = hasExt_smtptr.get();
+  bool* hasExt = 0l;
+  if (CheckNullVar(_p,_n))  {
+    hasExt=(bool*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<bool > hasExt_smtptr;
+    if (!get_val_smtptr_param<bool >(hasExt_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    hasExt = hasExt_smtptr.get();
+  }
 
   int format_int = (int) wxPATH_NATIVE;;
   if (!get_val_param<int >(format_int,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1308,21 +1362,45 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!get_val_smtptr_param<wxString >(fullpath_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & fullpath = *fullpath_smtptr;
 
-  boost::shared_ptr<wxString > volume_smtptr;
-  if (!get_val_smtptr_param<wxString >(volume_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* volume = volume_smtptr.get();
+  wxString* volume;
+  if (CheckNullVar(_p,_n))  {
+    volume=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > volume_smtptr;
+    if (!get_val_smtptr_param<wxString >(volume_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    volume = volume_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > path_smtptr;
-  if (!get_val_smtptr_param<wxString >(path_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* path = path_smtptr.get();
+  wxString* path;
+  if (CheckNullVar(_p,_n))  {
+    path=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > path_smtptr;
+    if (!get_val_smtptr_param<wxString >(path_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    path = path_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* name = name_smtptr.get();
+  wxString* name;
+  if (CheckNullVar(_p,_n))  {
+    name=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > name_smtptr;
+    if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    name = name_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > ext_smtptr;
-  if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* ext = ext_smtptr.get();
+  wxString* ext;
+  if (CheckNullVar(_p,_n))  {
+    ext=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > ext_smtptr;
+    if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    ext = ext_smtptr.get();
+  }
 
   int format_int;
   if (!get_val_param<int >(format_int,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -1357,17 +1435,35 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!get_val_smtptr_param<wxString >(fullpath_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & fullpath = *fullpath_smtptr;
 
-  boost::shared_ptr<wxString > path_smtptr;
-  if (!get_val_smtptr_param<wxString >(path_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* path = path_smtptr.get();
+  wxString* path;
+  if (CheckNullVar(_p,_n))  {
+    path=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > path_smtptr;
+    if (!get_val_smtptr_param<wxString >(path_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    path = path_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > name_smtptr;
-  if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* name = name_smtptr.get();
+  wxString* name;
+  if (CheckNullVar(_p,_n))  {
+    name=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > name_smtptr;
+    if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    name = name_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > ext_smtptr;
-  if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxString* ext = ext_smtptr.get();
+  wxString* ext;
+  if (CheckNullVar(_p,_n))  {
+    ext=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > ext_smtptr;
+    if (!get_val_smtptr_param<wxString >(ext_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    ext = ext_smtptr.get();
+  }
 
   int format_int = (int) wxPATH_NATIVE;;
   if (!get_val_param<int >(format_int,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1401,13 +1497,25 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!get_val_smtptr_param<wxString >(fullpathWithVolume_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & fullpathWithVolume = *fullpathWithVolume_smtptr;
 
-  boost::shared_ptr<wxString > volume_smtptr;
-  if (!get_val_smtptr_param<wxString >(volume_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString* volume = volume_smtptr.get();
+  wxString* volume;
+  if (CheckNullVar(_p,_n))  {
+    volume=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > volume_smtptr;
+    if (!get_val_smtptr_param<wxString >(volume_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    volume = volume_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > path_smtptr;
-  if (!get_val_smtptr_param<wxString >(path_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString* path = path_smtptr.get();
+  wxString* path;
+  if (CheckNullVar(_p,_n))  {
+    path=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > path_smtptr;
+    if (!get_val_smtptr_param<wxString >(path_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    path = path_smtptr.get();
+  }
 
   int format_int = (int) wxPATH_NATIVE;;
   if (!get_val_param<int >(format_int,_p,_n,false,false)) ClassHelpAndReturn;
@@ -1442,7 +1550,6 @@ BasicVariable::ptr WrapClass_wxFileName::
   wxString res =   wxFileName::StripExtension(fullpath);
   return AMILabType<wxString >::CreateVar(res);
 }
-/* The following types are missing: wxULongLongNative
 
 //---------------------------------------------------
 //  Wrapping of wxULongLong wxFileName::GetSize(wxString const & file)
@@ -1469,8 +1576,6 @@ BasicVariable::ptr WrapClass_wxFileName::
   wxULongLong res =   wxFileName::GetSize(file);
   return AMILabType<wxULongLongNative >::CreateVar(res);
 }
-*/
-/* The following types are missing: wxULongLongNative
 
 //---------------------------------------------------
 //  Wrapping of wxString wxFileName::GetHumanReadableSize(wxULongLong const & sz, wxString const & nullsize = wxGetTranslation(((const wchar_t*)'Not available'), 0u), int precision = 1)
@@ -1507,7 +1612,6 @@ BasicVariable::ptr WrapClass_wxFileName::
   wxString res =   wxFileName::GetHumanReadableSize(sz, nullsize, precision);
   return AMILabType<wxString >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of 'copy' method for wxFileName.
@@ -1981,7 +2085,6 @@ BasicVariable::ptr WrapClass_wxFileName::
   bool res =   this->_objectptr->GetObj()->IsFileExecutable();
   return AMILabType<bool >::CreateVar(res);
 }
-/* The following types are missing: wxDateTime, wxDateTime, wxDateTime
 
 //---------------------------------------------------
 //  Wrapping of bool wxFileName::SetTimes(wxDateTime const * dtAccess, wxDateTime const * dtMod, wxDateTime const * dtCreate)
@@ -2003,22 +2106,39 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxDateTime > dtAccess_smtptr;
-  if (!get_val_smtptr_param<wxDateTime >(dtAccess_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDateTime* dtAccess = dtAccess_smtptr.get();
+  wxDateTime* dtAccess;
+  if (CheckNullVar(_p,_n))  {
+    dtAccess=(wxDateTime*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDateTime > dtAccess_smtptr;
+    if (!get_val_smtptr_param<wxDateTime >(dtAccess_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    dtAccess = dtAccess_smtptr.get();
+  }
 
-  boost::shared_ptr<wxDateTime > dtMod_smtptr;
-  if (!get_val_smtptr_param<wxDateTime >(dtMod_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDateTime* dtMod = dtMod_smtptr.get();
+  wxDateTime* dtMod;
+  if (CheckNullVar(_p,_n))  {
+    dtMod=(wxDateTime*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDateTime > dtMod_smtptr;
+    if (!get_val_smtptr_param<wxDateTime >(dtMod_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    dtMod = dtMod_smtptr.get();
+  }
 
-  boost::shared_ptr<wxDateTime > dtCreate_smtptr;
-  if (!get_val_smtptr_param<wxDateTime >(dtCreate_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDateTime* dtCreate = dtCreate_smtptr.get();
+  wxDateTime* dtCreate;
+  if (CheckNullVar(_p,_n))  {
+    dtCreate=(wxDateTime*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDateTime > dtCreate_smtptr;
+    if (!get_val_smtptr_param<wxDateTime >(dtCreate_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    dtCreate = dtCreate_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->SetTimes(dtAccess, dtMod, dtCreate);
   return AMILabType<bool >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of bool wxFileName::Touch()
@@ -2038,7 +2158,6 @@ BasicVariable::ptr WrapClass_wxFileName::
   bool res =   this->_objectptr->GetObj()->Touch();
   return AMILabType<bool >::CreateVar(res);
 }
-/* The following types are missing: wxDateTime, wxDateTime, wxDateTime
 
 //---------------------------------------------------
 //  Wrapping of bool wxFileName::GetTimes(wxDateTime * dtAccess, wxDateTime * dtMod, wxDateTime * dtCreate)
@@ -2060,23 +2179,39 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxDateTime > dtAccess_smtptr;
-  if (!get_val_smtptr_param<wxDateTime >(dtAccess_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDateTime* dtAccess = dtAccess_smtptr.get();
+  wxDateTime* dtAccess;
+  if (CheckNullVar(_p,_n))  {
+    dtAccess=(wxDateTime*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDateTime > dtAccess_smtptr;
+    if (!get_val_smtptr_param<wxDateTime >(dtAccess_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    dtAccess = dtAccess_smtptr.get();
+  }
 
-  boost::shared_ptr<wxDateTime > dtMod_smtptr;
-  if (!get_val_smtptr_param<wxDateTime >(dtMod_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDateTime* dtMod = dtMod_smtptr.get();
+  wxDateTime* dtMod;
+  if (CheckNullVar(_p,_n))  {
+    dtMod=(wxDateTime*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDateTime > dtMod_smtptr;
+    if (!get_val_smtptr_param<wxDateTime >(dtMod_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    dtMod = dtMod_smtptr.get();
+  }
 
-  boost::shared_ptr<wxDateTime > dtCreate_smtptr;
-  if (!get_val_smtptr_param<wxDateTime >(dtCreate_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDateTime* dtCreate = dtCreate_smtptr.get();
+  wxDateTime* dtCreate;
+  if (CheckNullVar(_p,_n))  {
+    dtCreate=(wxDateTime*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDateTime > dtCreate_smtptr;
+    if (!get_val_smtptr_param<wxDateTime >(dtCreate_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    dtCreate = dtCreate_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->GetTimes(dtAccess, dtMod, dtCreate);
   return AMILabType<bool >::CreateVar(res);
 }
-*/
-/* The following types are missing: wxDateTime
 
 //---------------------------------------------------
 //  Wrapping of wxDateTime wxFileName::GetModificationTime()
@@ -2096,7 +2231,6 @@ BasicVariable::ptr WrapClass_wxFileName::
   wxDateTime res =   this->_objectptr->GetObj()->GetModificationTime();
   return AMILabType<wxDateTime >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void wxFileName::AssignCwd(wxString const & volume = wxEmptyString)
@@ -2227,9 +2361,15 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!get_val_smtptr_param<wxString >(prefix_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & prefix = *prefix_smtptr;
 
-  boost::shared_ptr<wxFile > fileTemp_smtptr;
-  if (!get_val_smtptr_param<wxFile >(fileTemp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxFile* fileTemp = fileTemp_smtptr.get();
+  wxFile* fileTemp;
+  if (CheckNullVar(_p,_n))  {
+    fileTemp=(wxFile*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFile > fileTemp_smtptr;
+    if (!get_val_smtptr_param<wxFile >(fileTemp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    fileTemp = fileTemp_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AssignTempFileName(prefix, fileTemp);
   return BasicVariable::ptr();
@@ -2259,9 +2399,15 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!get_val_smtptr_param<wxString >(prefix_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
   wxString const & prefix = *prefix_smtptr;
 
-  boost::shared_ptr<wxFFile > fileTemp_smtptr;
-  if (!get_val_smtptr_param<wxFFile >(fileTemp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxFFile* fileTemp = fileTemp_smtptr.get();
+  wxFFile* fileTemp;
+  if (CheckNullVar(_p,_n))  {
+    fileTemp=(wxFFile*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxFFile > fileTemp_smtptr;
+    if (!get_val_smtptr_param<wxFFile >(fileTemp_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    fileTemp = fileTemp_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AssignTempFileName(prefix, fileTemp);
   return BasicVariable::ptr();
@@ -3074,7 +3220,6 @@ BasicVariable::ptr WrapClass_wxFileName::
   bool res =   this->_objectptr->GetObj()->IsDir();
   return AMILabType<bool >::CreateVar(res);
 }
-/* The following types are missing: wxULongLongNative
 
 //---------------------------------------------------
 //  Wrapping of wxULongLong wxFileName::GetSize()
@@ -3094,7 +3239,6 @@ BasicVariable::ptr WrapClass_wxFileName::
   wxULongLong res =   this->_objectptr->GetObj()->GetSize();
   return AMILabType<wxULongLongNative >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of wxString wxFileName::GetHumanReadableSize(wxString const & nullsize = wxGetTranslation(((const wchar_t*)'Not available'), 0u), int precision = 1)

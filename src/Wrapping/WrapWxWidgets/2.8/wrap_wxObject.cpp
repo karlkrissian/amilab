@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxObject.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxObject.h"
-#include "wrap_wxClassInfo.h"
-#include "wrap_wxObjectRefData.h"
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
+#ifndef wxObjectRefData_declared
+  #define wxObjectRefData_declared
+  AMI_DECLARE_TYPE(wxObjectRefData)
+#endif
 
 
-#include "wrap_wxObject.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,24 +79,27 @@ void WrapClass_wxObject::AddMethods(WrapClass<wxObject>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetClassInfo( this_ptr);
-      AddVar_IsKindOf( this_ptr);
-      AddVar_GetRefData( this_ptr);
-      AddVar_SetRefData( this_ptr);
-      AddVar_Ref( this_ptr);
-      AddVar_UnRef( this_ptr);
-      AddVar_UnShare( this_ptr);
-      AddVar_IsSameAs( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetClassInfo( this_ptr);
+  AddVar_IsKindOf( this_ptr);
+  AddVar_GetRefData( this_ptr);
+  AddVar_SetRefData( this_ptr);
+  AddVar_Ref( this_ptr);
+  AddVar_UnRef( this_ptr);
+  AddVar_UnShare( this_ptr);
+  AddVar_IsSameAs( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -90,7 +109,7 @@ void WrapClass_wxObject::AddMethods(WrapClass<wxObject>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxObject::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxObject_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -210,7 +229,7 @@ BasicVariable::ptr WrapClass_wxObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 
@@ -232,9 +251,15 @@ BasicVariable::ptr WrapClass_wxObject::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxClassInfo > info_smtptr;
-  if (!get_val_smtptr_param<wxClassInfo >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxClassInfo* info = info_smtptr.get();
+  wxClassInfo* info;
+  if (CheckNullVar(_p,_n))  {
+    info=(wxClassInfo*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxClassInfo > info_smtptr;
+    if (!get_val_smtptr_param<wxClassInfo >(info_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    info = info_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->IsKindOf(info);
   return AMILabType<bool >::CreateVar(res);
@@ -256,7 +281,7 @@ BasicVariable::ptr WrapClass_wxObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObjectRefData * res =   this->_objectptr->GetObj()->GetRefData();
-  BasicVariable::ptr res_var = WrapClass_wxObjectRefData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObjectRefData >::CreateVar(res,true);
   return res_var;
 }
 
@@ -277,9 +302,15 @@ BasicVariable::ptr WrapClass_wxObject::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxObjectRefData > data_smtptr;
-  if (!get_val_smtptr_param<wxObjectRefData >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxObjectRefData* data = data_smtptr.get();
+  wxObjectRefData* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(wxObjectRefData*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObjectRefData > data_smtptr;
+    if (!get_val_smtptr_param<wxObjectRefData >(data_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    data = data_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetRefData(data);
   return BasicVariable::ptr();

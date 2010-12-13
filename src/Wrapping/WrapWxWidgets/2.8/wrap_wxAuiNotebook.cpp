@@ -10,27 +10,61 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxAuiNotebook.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxAuiTabArt.h"
-#include "wrap_wxString.h"
-#include "wrap_wxBitmap.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxAuiManager.h"
-#include "wrap_wxFont.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxAuiTabArt_declared
+  #define wxAuiTabArt_declared
+  AMI_DECLARE_TYPE(wxAuiTabArt)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxAuiManager_declared
+  #define wxAuiManager_declared
+  AMI_DECLARE_TYPE(wxAuiManager)
+#endif
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxAuiNotebook.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -77,41 +111,44 @@ void WrapClass_wxAuiNotebook::AddMethods(WrapClass<wxAuiNotebook>::ptr this_ptr 
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Create( this_ptr);
-      AddVar_SetWindowStyleFlag( this_ptr);
-      AddVar_SetArtProvider( this_ptr);
-      AddVar_GetArtProvider( this_ptr);
-      AddVar_SetUniformBitmapSize( this_ptr);
-      AddVar_SetTabCtrlHeight( this_ptr);
-      AddVar_AddPage( this_ptr);
-      AddVar_InsertPage( this_ptr);
-      AddVar_DeletePage( this_ptr);
-      AddVar_RemovePage( this_ptr);
-      AddVar_GetPageCount( this_ptr);
-      AddVar_GetPage( this_ptr);
-      AddVar_GetPageIndex( this_ptr);
-      AddVar_SetPageText( this_ptr);
-      AddVar_GetPageText( this_ptr);
-      AddVar_SetPageBitmap( this_ptr);
-      AddVar_GetPageBitmap( this_ptr);
-      AddVar_SetSelection( this_ptr);
-      AddVar_GetSelection( this_ptr);
-      AddVar_Split( this_ptr);
-      AddVar_GetAuiManager( this_ptr);
-      AddVar_SetNormalFont( this_ptr);
-      AddVar_SetSelectedFont( this_ptr);
-      AddVar_SetMeasuringFont( this_ptr);
-      AddVar_SetFont( this_ptr);
-      AddVar_GetTabCtrlHeight( this_ptr);
-      AddVar_GetHeightForPageHeight( this_ptr);
-      AddVar_AdvanceSelection( this_ptr);
-      AddVar_ShowWindowMenu( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_Create( this_ptr);
+  AddVar_SetWindowStyleFlag( this_ptr);
+  AddVar_SetArtProvider( this_ptr);
+  AddVar_GetArtProvider( this_ptr);
+  AddVar_SetUniformBitmapSize( this_ptr);
+  AddVar_SetTabCtrlHeight( this_ptr);
+  AddVar_AddPage( this_ptr);
+  AddVar_InsertPage( this_ptr);
+  AddVar_DeletePage( this_ptr);
+  AddVar_RemovePage( this_ptr);
+  AddVar_GetPageCount( this_ptr);
+  AddVar_GetPage( this_ptr);
+  AddVar_GetPageIndex( this_ptr);
+  AddVar_SetPageText( this_ptr);
+  AddVar_GetPageText( this_ptr);
+  AddVar_SetPageBitmap( this_ptr);
+  AddVar_GetPageBitmap( this_ptr);
+  AddVar_SetSelection( this_ptr);
+  AddVar_GetSelection( this_ptr);
+  AddVar_Split( this_ptr);
+  AddVar_GetAuiManager( this_ptr);
+  AddVar_SetNormalFont( this_ptr);
+  AddVar_SetSelectedFont( this_ptr);
+  AddVar_SetMeasuringFont( this_ptr);
+  AddVar_SetFont( this_ptr);
+  AddVar_GetTabCtrlHeight( this_ptr);
+  AddVar_GetHeightForPageHeight( this_ptr);
+  AddVar_AdvanceSelection( this_ptr);
+  AddVar_ShowWindowMenu( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -132,7 +169,7 @@ void WrapClass_wxAuiNotebook::AddMethods(WrapClass<wxAuiNotebook>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxAuiNotebook::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxAuiNotebook_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -215,9 +252,15 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (_p->GetNumParam()>5) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    parent = parent_smtptr.get();
+  }
 
   int id = wxID_ANY;
   if (!get_val_param<int >(id,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -263,9 +306,15 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (_p->GetNumParam()>5) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   int id = wxID_ANY;
   if (!get_val_param<int >(id,_p,_n,false,false)) ClassHelpAndReturn;
@@ -330,9 +379,15 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxAuiTabArt > art_smtptr;
-  if (!get_val_smtptr_param<wxAuiTabArt >(art_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxAuiTabArt* art = art_smtptr.get();
+  wxAuiTabArt* art;
+  if (CheckNullVar(_p,_n))  {
+    art=(wxAuiTabArt*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxAuiTabArt > art_smtptr;
+    if (!get_val_smtptr_param<wxAuiTabArt >(art_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    art = art_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetArtProvider(art);
   return BasicVariable::ptr();
@@ -354,7 +409,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxAuiTabArt * res =   this->_objectptr->GetObj()->GetArtProvider();
-  BasicVariable::ptr res_var = WrapClass_wxAuiTabArt::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxAuiTabArt >::CreateVar(res,true);
   return res_var;
 }
 
@@ -428,9 +483,15 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (_p->GetNumParam()>4) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > page_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(page_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* page = page_smtptr.get();
+  wxWindow* page;
+  if (CheckNullVar(_p,_n))  {
+    page=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > page_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(page_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    page = page_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > caption_smtptr;
   if (!get_val_smtptr_param<wxString >(caption_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -474,9 +535,15 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (!get_val_param<long >(page_idx_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int page_idx = boost::numeric_cast<long unsigned int >(page_idx_long);
 
-  boost::shared_ptr<wxWindow > page_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(page_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* page = page_smtptr.get();
+  wxWindow* page;
+  if (CheckNullVar(_p,_n))  {
+    page=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > page_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(page_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    page = page_smtptr.get();
+  }
 
   boost::shared_ptr<wxString > caption_smtptr;
   if (!get_val_smtptr_param<wxString >(caption_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -589,7 +656,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   long unsigned int page_idx = boost::numeric_cast<long unsigned int >(page_idx_long);
 
   wxWindow * res =   this->_objectptr->GetObj()->GetPage(page_idx);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -611,9 +678,15 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > page_wnd_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(page_wnd_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* page_wnd = page_wnd_smtptr.get();
+  wxWindow* page_wnd;
+  if (CheckNullVar(_p,_n))  {
+    page_wnd=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > page_wnd_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(page_wnd_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    page_wnd = page_wnd_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->GetPageIndex(page_wnd);
   return AMILabType<int >::CreateVar(res);
@@ -1031,7 +1104,7 @@ BasicVariable::ptr WrapClass_wxAuiNotebook::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

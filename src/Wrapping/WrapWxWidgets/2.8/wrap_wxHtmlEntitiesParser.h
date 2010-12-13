@@ -13,11 +13,13 @@
 #ifndef _wrap_wxHtmlEntitiesParser_h_
 #define _wrap_wxHtmlEntitiesParser_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxObject.h"
 
 
-
-AMI_DECLARE_TYPE(wxHtmlEntitiesParser);
+#ifndef wxHtmlEntitiesParser_declared
+  #define wxHtmlEntitiesParser_declared
+  AMI_DECLARE_TYPE(wxHtmlEntitiesParser);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxHtmlEntitiesParser : public WrapClass<wxHtmlEntitiesParser>
@@ -84,12 +88,13 @@ class WrapClass_wxHtmlEntitiesParser : public WrapClass<wxHtmlEntitiesParser>
 
     void AddMethods(WrapClass<wxHtmlEntitiesParser>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxHtmlEntitiesParser_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxHtmlEntitiesParser_h

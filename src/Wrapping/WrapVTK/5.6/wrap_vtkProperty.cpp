@@ -16,17 +16,36 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkProperty.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkProperty.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkActor.h"
-#include "wrap_vtkRenderer.h"
-#include "wrap_vtkWindow.h"
+#ifndef vtkProperty_declared
+  #define vtkProperty_declared
+  AMI_DECLARE_TYPE(vtkProperty)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkActor_declared
+  #define vtkActor_declared
+  AMI_DECLARE_TYPE(vtkActor)
+#endif
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
+#ifndef vtkWindow_declared
+  #define vtkWindow_declared
+  AMI_DECLARE_TYPE(vtkWindow)
+#endif
 
 
-#include "wrap_vtkProperty.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -277,7 +296,7 @@ void WrapClass_vtkProperty::AddMethods(WrapClass<vtkProperty>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkProperty::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkProperty_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -353,7 +372,7 @@ BasicVariable::ptr WrapClass_vtkProperty::
   }
 
   vtkProperty * res =   vtkProperty::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -373,7 +392,7 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   vtkProperty::New();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -419,7 +438,7 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

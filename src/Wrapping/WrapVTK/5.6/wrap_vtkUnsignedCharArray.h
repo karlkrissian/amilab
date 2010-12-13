@@ -26,8 +26,10 @@
 //#include "wrap_vtkDataArrayTemplate_unsigned char_.h"
 
 
-
-AMI_DECLARE_TYPE(vtkUnsignedCharArray);
+#ifndef vtkUnsignedCharArray_declared
+  #define vtkUnsignedCharArray_declared
+  AMI_DECLARE_TYPE(vtkUnsignedCharArray);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkUnsignedCharArray : public WrapClass<vtkUnsignedCharArray>
@@ -100,12 +102,13 @@ class WrapClass_vtkUnsignedCharArray : public WrapClass<vtkUnsignedCharArray>
 
     void AddMethods(WrapClass<vtkUnsignedCharArray>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkUnsignedCharArray_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkUnsignedCharArray_h

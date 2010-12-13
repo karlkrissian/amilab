@@ -16,17 +16,36 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkInteractorObserver.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkInteractorObserver.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkRenderer.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkRenderWindowInteractor.h"
-#include "wrap_vtkCommand.h"
+#ifndef vtkInteractorObserver_declared
+  #define vtkInteractorObserver_declared
+  AMI_DECLARE_TYPE(vtkInteractorObserver)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkRenderWindowInteractor_declared
+  #define vtkRenderWindowInteractor_declared
+  AMI_DECLARE_TYPE(vtkRenderWindowInteractor)
+#endif
+#ifndef vtkCommand_declared
+  #define vtkCommand_declared
+  AMI_DECLARE_TYPE(vtkCommand)
+#endif
 
 
-#include "wrap_vtkInteractorObserver.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -135,7 +154,7 @@ void WrapClass_vtkInteractorObserver::AddMethods(WrapClass<vtkInteractorObserver
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkInteractorObserver::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkInteractorObserver_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -212,7 +231,7 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   }
 
   vtkInteractorObserver * res =   vtkInteractorObserver::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorObserver::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorObserver >::CreateVar(res,true);
   return res_var;
 }
 
@@ -366,7 +385,7 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorObserver * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorObserver::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorObserver >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -563,7 +582,7 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderWindowInteractor * res =   this->_objectptr->GetObj()->GetInteractor();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderWindowInteractor::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderWindowInteractor >::CreateVar(res,true);
   return res_var;
 }
 
@@ -789,7 +808,7 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderer * res =   this->_objectptr->GetObj()->GetDefaultRenderer();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -840,7 +859,7 @@ BasicVariable::ptr WrapClass_vtkInteractorObserver::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderer * res =   this->_objectptr->GetObj()->GetCurrentRenderer();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderer >::CreateVar(res,true);
   return res_var;
 }
 

@@ -10,19 +10,29 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxBaseArrayInt.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxBaseArrayInt.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef wxBaseArrayInt_declared
+  #define wxBaseArrayInt_declared
+  AMI_DECLARE_TYPE(wxBaseArrayInt)
+#endif
 
 
-#include "wrap_wxBaseArrayInt.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,28 +72,31 @@ void WrapClass_wxBaseArrayInt::AddMethods(WrapClass<wxBaseArrayInt>::ptr this_pt
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Empty( this_ptr);
-      AddVar_Clear( this_ptr);
-      AddVar_Alloc( this_ptr);
-      AddVar_Shrink( this_ptr);
-      AddVar_GetCount( this_ptr);
-      AddVar_SetCount( this_ptr);
-      AddVar_IsEmpty( this_ptr);
-      AddVar_Count( this_ptr);
-      AddVar_clear( this_ptr);
-      AddVar_empty( this_ptr);
-      AddVar_max_size( this_ptr);
-      AddVar_size( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Empty( this_ptr);
+  AddVar_Clear( this_ptr);
+  AddVar_Alloc( this_ptr);
+  AddVar_Shrink( this_ptr);
+  AddVar_GetCount( this_ptr);
+  AddVar_SetCount( this_ptr);
+  AddVar_IsEmpty( this_ptr);
+  AddVar_Count( this_ptr);
+  AddVar_clear( this_ptr);
+  AddVar_empty( this_ptr);
+  AddVar_max_size( this_ptr);
+  AddVar_size( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -93,7 +106,7 @@ void WrapClass_wxBaseArrayInt::AddMethods(WrapClass<wxBaseArrayInt>::ptr this_pt
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxBaseArrayInt::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxBaseArrayInt_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

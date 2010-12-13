@@ -13,11 +13,13 @@
 #ifndef _wrap_wxIconBundle_h_
 #define _wrap_wxIconBundle_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxIconBundle);
+#ifndef wxIconBundle_declared
+  #define wxIconBundle_declared
+  AMI_DECLARE_TYPE(wxIconBundle);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxIconBundle : public WrapClass<wxIconBundle>
@@ -96,12 +100,13 @@ class WrapClass_wxIconBundle : public WrapClass<wxIconBundle>
 
     void AddMethods(WrapClass<wxIconBundle>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxIconBundle_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxIconBundle_h

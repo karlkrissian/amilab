@@ -10,27 +10,64 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxScrollHelper.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxScrollWinEvent.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxDC.h"
-#include "wrap_wxSizeEvent.h"
-#include "wrap_wxPaintEvent.h"
-#include "wrap_wxKeyEvent.h"
-#include "wrap_wxMouseEvent.h"
-#include "wrap_wxChildFocusEvent.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxScrollWinEvent_declared
+  #define wxScrollWinEvent_declared
+  AMI_DECLARE_TYPE(wxScrollWinEvent)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxDC_declared
+  #define wxDC_declared
+  AMI_DECLARE_TYPE(wxDC)
+#endif
+#ifndef wxSizeEvent_declared
+  #define wxSizeEvent_declared
+  AMI_DECLARE_TYPE(wxSizeEvent)
+#endif
+#ifndef wxPaintEvent_declared
+  #define wxPaintEvent_declared
+  AMI_DECLARE_TYPE(wxPaintEvent)
+#endif
+#ifndef wxKeyEvent_declared
+  #define wxKeyEvent_declared
+  AMI_DECLARE_TYPE(wxKeyEvent)
+#endif
+#ifndef wxMouseEvent_declared
+  #define wxMouseEvent_declared
+  AMI_DECLARE_TYPE(wxMouseEvent)
+#endif
+#ifndef wxChildFocusEvent_declared
+  #define wxChildFocusEvent_declared
+  AMI_DECLARE_TYPE(wxChildFocusEvent)
+#endif
 
 
-#include "wrap_wxScrollHelper.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -77,51 +114,54 @@ void WrapClass_wxScrollHelper::AddMethods(WrapClass<wxScrollHelper>::ptr this_pt
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_SetScrollbars( this_ptr);
-      AddVar_Scroll( this_ptr);
-      AddVar_GetScrollPageSize( this_ptr);
-      AddVar_SetScrollPageSize( this_ptr);
-      AddVar_GetScrollLines( this_ptr);
-      AddVar_SetScrollRate( this_ptr);
-      AddVar_GetScrollPixelsPerUnit( this_ptr);
-      AddVar_EnableScrolling( this_ptr);
-      AddVar_GetViewStart( this_ptr);
-      AddVar_SetScale( this_ptr);
-      AddVar_GetScaleX( this_ptr);
-      AddVar_GetScaleY( this_ptr);
-      AddVar_CalcScrolledPosition_1( this_ptr);
-      AddVar_CalcScrolledPosition( this_ptr);
-      AddVar_CalcScrolledPosition_2( this_ptr);
-      AddVar_CalcUnscrolledPosition_1( this_ptr);
-      AddVar_CalcUnscrolledPosition( this_ptr);
-      AddVar_CalcUnscrolledPosition_2( this_ptr);
-      AddVar_DoCalcScrolledPosition( this_ptr);
-      AddVar_DoCalcUnscrolledPosition( this_ptr);
-      AddVar_AdjustScrollbars( this_ptr);
-      AddVar_CalcScrollInc( this_ptr);
-      AddVar_SetTargetWindow( this_ptr);
-      AddVar_GetTargetWindow( this_ptr);
-      AddVar_SetTargetRect( this_ptr);
-      AddVar_GetTargetRect( this_ptr);
-      AddVar_OnDraw( this_ptr);
-      AddVar_DoPrepareDC( this_ptr);
-      AddVar_IsAutoScrolling( this_ptr);
-      AddVar_StopAutoScrolling( this_ptr);
-      AddVar_SendAutoScrollEvents( this_ptr);
-      AddVar_HandleOnScroll( this_ptr);
-      AddVar_HandleOnSize( this_ptr);
-      AddVar_HandleOnPaint( this_ptr);
-      AddVar_HandleOnChar( this_ptr);
-      AddVar_HandleOnMouseEnter( this_ptr);
-      AddVar_HandleOnMouseLeave( this_ptr);
-      AddVar_HandleOnMouseWheel( this_ptr);
-      AddVar_HandleOnChildFocus( this_ptr);
-      AddVar_OnScroll( this_ptr);
+  // Adding standard methods 
+  AddVar_SetScrollbars( this_ptr);
+  AddVar_Scroll( this_ptr);
+  AddVar_GetScrollPageSize( this_ptr);
+  AddVar_SetScrollPageSize( this_ptr);
+  AddVar_GetScrollLines( this_ptr);
+  AddVar_SetScrollRate( this_ptr);
+  AddVar_GetScrollPixelsPerUnit( this_ptr);
+  AddVar_EnableScrolling( this_ptr);
+  AddVar_GetViewStart( this_ptr);
+  AddVar_SetScale( this_ptr);
+  AddVar_GetScaleX( this_ptr);
+  AddVar_GetScaleY( this_ptr);
+  AddVar_CalcScrolledPosition_1( this_ptr);
+  AddVar_CalcScrolledPosition( this_ptr);
+  AddVar_CalcScrolledPosition_2( this_ptr);
+  AddVar_CalcUnscrolledPosition_1( this_ptr);
+  AddVar_CalcUnscrolledPosition( this_ptr);
+  AddVar_CalcUnscrolledPosition_2( this_ptr);
+  AddVar_DoCalcScrolledPosition( this_ptr);
+  AddVar_DoCalcUnscrolledPosition( this_ptr);
+  AddVar_AdjustScrollbars( this_ptr);
+  AddVar_CalcScrollInc( this_ptr);
+  AddVar_SetTargetWindow( this_ptr);
+  AddVar_GetTargetWindow( this_ptr);
+  AddVar_SetTargetRect( this_ptr);
+  AddVar_GetTargetRect( this_ptr);
+  AddVar_OnDraw( this_ptr);
+  AddVar_DoPrepareDC( this_ptr);
+  AddVar_IsAutoScrolling( this_ptr);
+  AddVar_StopAutoScrolling( this_ptr);
+  AddVar_SendAutoScrollEvents( this_ptr);
+  AddVar_HandleOnScroll( this_ptr);
+  AddVar_HandleOnSize( this_ptr);
+  AddVar_HandleOnPaint( this_ptr);
+  AddVar_HandleOnChar( this_ptr);
+  AddVar_HandleOnMouseEnter( this_ptr);
+  AddVar_HandleOnMouseLeave( this_ptr);
+  AddVar_HandleOnMouseWheel( this_ptr);
+  AddVar_HandleOnChildFocus( this_ptr);
+  AddVar_OnScroll( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -131,7 +171,7 @@ void WrapClass_wxScrollHelper::AddMethods(WrapClass<wxScrollHelper>::ptr this_pt
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxScrollHelper::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxScrollHelper_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -168,9 +208,15 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > winToScroll_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(winToScroll_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* winToScroll = winToScroll_smtptr.get();
+  wxWindow* winToScroll;
+  if (CheckNullVar(_p,_n))  {
+    winToScroll=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > winToScroll_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(winToScroll_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    winToScroll = winToScroll_smtptr.get();
+  }
 
   wxScrollHelper* _newobj = new wxScrollHelper(winToScroll);
   BasicVariable::ptr res = WrapClass_wxScrollHelper::CreateVar(_newobj);
@@ -377,13 +423,25 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > pixelsPerUnitX_smtptr;
-  if (!get_val_smtptr_param<int >(pixelsPerUnitX_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* pixelsPerUnitX = pixelsPerUnitX_smtptr.get();
+  int* pixelsPerUnitX;
+  if (CheckNullVar(_p,_n))  {
+    pixelsPerUnitX=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > pixelsPerUnitX_smtptr;
+    if (!get_val_smtptr_param<int >(pixelsPerUnitX_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pixelsPerUnitX = pixelsPerUnitX_smtptr.get();
+  }
 
-  boost::shared_ptr<int > pixelsPerUnitY_smtptr;
-  if (!get_val_smtptr_param<int >(pixelsPerUnitY_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* pixelsPerUnitY = pixelsPerUnitY_smtptr.get();
+  int* pixelsPerUnitY;
+  if (CheckNullVar(_p,_n))  {
+    pixelsPerUnitY=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > pixelsPerUnitY_smtptr;
+    if (!get_val_smtptr_param<int >(pixelsPerUnitY_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pixelsPerUnitY = pixelsPerUnitY_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetScrollPixelsPerUnit(pixelsPerUnitX, pixelsPerUnitY);
   return BasicVariable::ptr();
@@ -435,13 +493,25 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetViewStart(x, y);
   return BasicVariable::ptr();
@@ -539,13 +609,25 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   int y;
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<int > xx_smtptr;
-  if (!get_val_smtptr_param<int >(xx_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* xx = xx_smtptr.get();
+  int* xx;
+  if (CheckNullVar(_p,_n))  {
+    xx=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > xx_smtptr;
+    if (!get_val_smtptr_param<int >(xx_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    xx = xx_smtptr.get();
+  }
 
-  boost::shared_ptr<int > yy_smtptr;
-  if (!get_val_smtptr_param<int >(yy_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* yy = yy_smtptr.get();
+  int* yy;
+  if (CheckNullVar(_p,_n))  {
+    yy=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > yy_smtptr;
+    if (!get_val_smtptr_param<int >(yy_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    yy = yy_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->CalcScrolledPosition(x, y, xx, yy);
   return BasicVariable::ptr();
@@ -624,13 +706,25 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   int y;
   if (!get_val_param<int >(y,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<int > xx_smtptr;
-  if (!get_val_smtptr_param<int >(xx_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* xx = xx_smtptr.get();
+  int* xx;
+  if (CheckNullVar(_p,_n))  {
+    xx=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > xx_smtptr;
+    if (!get_val_smtptr_param<int >(xx_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    xx = xx_smtptr.get();
+  }
 
-  boost::shared_ptr<int > yy_smtptr;
-  if (!get_val_smtptr_param<int >(yy_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* yy = yy_smtptr.get();
+  int* yy;
+  if (CheckNullVar(_p,_n))  {
+    yy=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > yy_smtptr;
+    if (!get_val_smtptr_param<int >(yy_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    yy = yy_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->CalcUnscrolledPosition(x, y, xx, yy);
   return BasicVariable::ptr();
@@ -709,13 +803,25 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   int y;
   if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<int > xx_smtptr;
-  if (!get_val_smtptr_param<int >(xx_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* xx = xx_smtptr.get();
+  int* xx;
+  if (CheckNullVar(_p,_n))  {
+    xx=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > xx_smtptr;
+    if (!get_val_smtptr_param<int >(xx_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    xx = xx_smtptr.get();
+  }
 
-  boost::shared_ptr<int > yy_smtptr;
-  if (!get_val_smtptr_param<int >(yy_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* yy = yy_smtptr.get();
+  int* yy;
+  if (CheckNullVar(_p,_n))  {
+    yy=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > yy_smtptr;
+    if (!get_val_smtptr_param<int >(yy_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    yy = yy_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DoCalcScrolledPosition(x, y, xx, yy);
   return BasicVariable::ptr();
@@ -747,13 +853,25 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   int y;
   if (!get_val_param<int >(y,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<int > xx_smtptr;
-  if (!get_val_smtptr_param<int >(xx_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* xx = xx_smtptr.get();
+  int* xx;
+  if (CheckNullVar(_p,_n))  {
+    xx=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > xx_smtptr;
+    if (!get_val_smtptr_param<int >(xx_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    xx = xx_smtptr.get();
+  }
 
-  boost::shared_ptr<int > yy_smtptr;
-  if (!get_val_smtptr_param<int >(yy_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* yy = yy_smtptr.get();
+  int* yy;
+  if (CheckNullVar(_p,_n))  {
+    yy=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > yy_smtptr;
+    if (!get_val_smtptr_param<int >(yy_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    yy = yy_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->DoCalcUnscrolledPosition(x, y, xx, yy);
   return BasicVariable::ptr();
@@ -820,9 +938,15 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > target_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(target_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* target = target_smtptr.get();
+  wxWindow* target;
+  if (CheckNullVar(_p,_n))  {
+    target=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > target_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(target_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    target = target_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetTargetWindow(target);
   return BasicVariable::ptr();
@@ -844,7 +968,7 @@ BasicVariable::ptr WrapClass_wxScrollHelper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetTargetWindow();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 

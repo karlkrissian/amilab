@@ -10,22 +10,44 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxDC.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxPalette.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxString.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxPalette_declared
+  #define wxPalette_declared
+  AMI_DECLARE_TYPE(wxPalette)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxDC.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -72,72 +94,75 @@ void WrapClass_wxDC::AddMethods(WrapClass<wxDC>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_SetColourMap( this_ptr);
-      AddVar_GetPPI( this_ptr);
-      AddVar_StartDoc( this_ptr);
-      AddVar_EndDoc( this_ptr);
-      AddVar_StartPage( this_ptr);
-      AddVar_EndPage( this_ptr);
-      AddVar_SetMapMode( this_ptr);
-      AddVar_SetUserScale( this_ptr);
-      AddVar_SetLogicalScale( this_ptr);
-      AddVar_SetLogicalOrigin( this_ptr);
-      AddVar_SetDeviceOrigin( this_ptr);
-      AddVar_SetAxisOrientation( this_ptr);
-      AddVar_ComputeScaleAndOrigin( this_ptr);
+  // Adding standard methods 
+  AddVar_SetColourMap( this_ptr);
+  AddVar_GetPPI( this_ptr);
+  AddVar_StartDoc( this_ptr);
+  AddVar_EndDoc( this_ptr);
+  AddVar_StartPage( this_ptr);
+  AddVar_EndPage( this_ptr);
+  AddVar_SetMapMode( this_ptr);
+  AddVar_SetUserScale( this_ptr);
+  AddVar_SetLogicalScale( this_ptr);
+  AddVar_SetLogicalOrigin( this_ptr);
+  AddVar_SetDeviceOrigin( this_ptr);
+  AddVar_SetAxisOrientation( this_ptr);
+  AddVar_ComputeScaleAndOrigin( this_ptr);
 /* The following types are missing: _GdkDrawable
-      AddVar_GetGDKWindow( this_ptr);
+  AddVar_GetGDKWindow( this_ptr);
 */
-      AddVar_GetSelectedBitmap( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetSelectedBitmap( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member m_mm_to_pix_x
-      boost::shared_ptr<double > var_m_mm_to_pix_x_ptr(&GetObj()->m_mm_to_pix_x, smartpointer_nodeleter<double >());
-      if (var_m_mm_to_pix_x_ptr.get()) {
-        BasicVariable::ptr var_m_mm_to_pix_x = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_x_ptr);
-        if (var_m_mm_to_pix_x.get()) {
-          var_m_mm_to_pix_x->Rename("m_mm_to_pix_x");
-          context->AddVar(var_m_mm_to_pix_x,context);
-        }
-      }
-      
-      // Adding public member m_mm_to_pix_y
-      boost::shared_ptr<double > var_m_mm_to_pix_y_ptr(&GetObj()->m_mm_to_pix_y, smartpointer_nodeleter<double >());
-      if (var_m_mm_to_pix_y_ptr.get()) {
-        BasicVariable::ptr var_m_mm_to_pix_y = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_y_ptr);
-        if (var_m_mm_to_pix_y.get()) {
-          var_m_mm_to_pix_y->Rename("m_mm_to_pix_y");
-          context->AddVar(var_m_mm_to_pix_y,context);
-        }
-      }
-      
-      // Adding public member m_needComputeScaleX
-      boost::shared_ptr<bool > var_m_needComputeScaleX_ptr(&GetObj()->m_needComputeScaleX, smartpointer_nodeleter<bool >());
-      if (var_m_needComputeScaleX_ptr.get()) {
-        BasicVariable::ptr var_m_needComputeScaleX = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleX_ptr);
-        if (var_m_needComputeScaleX.get()) {
-          var_m_needComputeScaleX->Rename("m_needComputeScaleX");
-          context->AddVar(var_m_needComputeScaleX,context);
-        }
-      }
-      
-      // Adding public member m_needComputeScaleY
-      boost::shared_ptr<bool > var_m_needComputeScaleY_ptr(&GetObj()->m_needComputeScaleY, smartpointer_nodeleter<bool >());
-      if (var_m_needComputeScaleY_ptr.get()) {
-        BasicVariable::ptr var_m_needComputeScaleY = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleY_ptr);
-        if (var_m_needComputeScaleY.get()) {
-          var_m_needComputeScaleY->Rename("m_needComputeScaleY");
-          context->AddVar(var_m_needComputeScaleY,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member m_mm_to_pix_x
+  boost::shared_ptr<double > var_m_mm_to_pix_x_ptr(&GetObj()->m_mm_to_pix_x, smartpointer_nodeleter<double >());
+  if (var_m_mm_to_pix_x_ptr.get()) {
+    BasicVariable::ptr var_m_mm_to_pix_x = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_x_ptr);
+    if (var_m_mm_to_pix_x.get()) {
+      var_m_mm_to_pix_x->Rename("m_mm_to_pix_x");
+      context->AddVar(var_m_mm_to_pix_x,context);
+    }
+  }
+  
+  // Adding public member m_mm_to_pix_y
+  boost::shared_ptr<double > var_m_mm_to_pix_y_ptr(&GetObj()->m_mm_to_pix_y, smartpointer_nodeleter<double >());
+  if (var_m_mm_to_pix_y_ptr.get()) {
+    BasicVariable::ptr var_m_mm_to_pix_y = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_y_ptr);
+    if (var_m_mm_to_pix_y.get()) {
+      var_m_mm_to_pix_y->Rename("m_mm_to_pix_y");
+      context->AddVar(var_m_mm_to_pix_y,context);
+    }
+  }
+  
+  // Adding public member m_needComputeScaleX
+  boost::shared_ptr<bool > var_m_needComputeScaleX_ptr(&GetObj()->m_needComputeScaleX, smartpointer_nodeleter<bool >());
+  if (var_m_needComputeScaleX_ptr.get()) {
+    BasicVariable::ptr var_m_needComputeScaleX = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleX_ptr);
+    if (var_m_needComputeScaleX.get()) {
+      var_m_needComputeScaleX->Rename("m_needComputeScaleX");
+      context->AddVar(var_m_needComputeScaleX,context);
+    }
+  }
+  
+  // Adding public member m_needComputeScaleY
+  boost::shared_ptr<bool > var_m_needComputeScaleY_ptr(&GetObj()->m_needComputeScaleY, smartpointer_nodeleter<bool >());
+  if (var_m_needComputeScaleY_ptr.get()) {
+    BasicVariable::ptr var_m_needComputeScaleY = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleY_ptr);
+    if (var_m_needComputeScaleY.get()) {
+      var_m_needComputeScaleY->Rename("m_needComputeScaleY");
+      context->AddVar(var_m_needComputeScaleY,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -156,7 +181,7 @@ void WrapClass_wxDC::AddMethods(WrapClass<wxDC>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxDC::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxDC_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -536,7 +561,7 @@ BasicVariable::ptr WrapClass_wxDC::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

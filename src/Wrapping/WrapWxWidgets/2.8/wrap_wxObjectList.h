@@ -13,11 +13,13 @@
 #ifndef _wrap_wxObjectList_h_
 #define _wrap_wxObjectList_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxListBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxObjectList);
+#ifndef wxObjectList_declared
+  #define wxObjectList_declared
+  AMI_DECLARE_TYPE(wxObjectList);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxObjectList : public WrapClass<wxObjectList>
@@ -62,10 +66,8 @@ class WrapClass_wxObjectList : public WrapClass<wxObjectList>
     ADD_CLASS_CONSTRUCTOR(wxObjectList,"Constructor wxObjectList::wxObjectList() (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#wxobjectlist).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxObjectList_2,"Constructor wxObjectList::wxObjectList(wxObjectList const & list) (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#wxobjectlist).");
-    /* The following types are missing: wxObject * *
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxObjectList_3,"Constructor wxObjectList::wxObjectList(size_t count, wxObject * * elements) (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#wxobjectlist).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxObjectList_4,"Constructor wxObjectList::wxObjectList(size_t n, wxObject * const & v = 0u) (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#wxobjectlist).");
     /* The following types are missing: const_iterator, const_iterator
@@ -111,11 +113,11 @@ class WrapClass_wxObjectList : public WrapClass<wxObjectList>
     ADD_CLASS_METHOD(Find,"wxObjectList::Find()  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxObjectListNode * wxObjectList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxObjectList::IndexOf(wxObject * object)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#indexof)")
-/* The following types are missing: _9904
+/* The following types are missing: _17586
     ADD_CLASS_METHOD(Sort_1,"void wxObjectList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxObjectList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#sort)")
-/* The following types are missing: _8750
+/* The following types are missing: _17099
     ADD_CLASS_METHOD(Sort_2,"void wxObjectList::Sort(wxSortFuncFor_wxObjectList func)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#sort)")
 */
 /* The following types are missing: iterator
@@ -205,12 +207,13 @@ class WrapClass_wxObjectList : public WrapClass<wxObjectList>
 
     void AddMethods(WrapClass<wxObjectList>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxObjectList_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxObjectList_h

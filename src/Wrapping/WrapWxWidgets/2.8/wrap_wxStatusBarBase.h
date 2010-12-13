@@ -13,11 +13,13 @@
 #ifndef _wrap_wxStatusBarBase_h_
 #define _wrap_wxStatusBarBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxWindow.h"
 
 
-
-AMI_DECLARE_TYPE(wxStatusBarBase);
+#ifndef wxStatusBarBase_declared
+  #define wxStatusBarBase_declared
+  AMI_DECLARE_TYPE(wxStatusBarBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxStatusBarBase : public WrapClass<wxStatusBarBase>
@@ -83,12 +87,13 @@ class WrapClass_wxStatusBarBase : public WrapClass<wxStatusBarBase>
 
     void AddMethods(WrapClass<wxStatusBarBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxStatusBarBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxStatusBarBase_h

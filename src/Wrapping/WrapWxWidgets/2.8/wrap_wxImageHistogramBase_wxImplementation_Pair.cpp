@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxImageHistogramBase_wxImplementation_Pair.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxImageHistogramEntry.h"
-#include "wrap_wxImageHistogramBase_wxImplementation_Pair.h"
+#ifndef wxImageHistogramEntry_declared
+  #define wxImageHistogramEntry_declared
+  AMI_DECLARE_TYPE(wxImageHistogramEntry)
+#endif
+#ifndef wxImageHistogramBase_wxImplementation_Pair_declared
+  #define wxImageHistogramBase_wxImplementation_Pair_declared
+  AMI_DECLARE_TYPE(wxImageHistogramBase_wxImplementation_Pair)
+#endif
 
 
-#include "wrap_wxImageHistogramBase_wxImplementation_Pair.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,41 +75,44 @@ void WrapClass_wxImageHistogramBase_wxImplementation_Pair::AddMethods(WrapClass<
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Type not available
-      // Adding public member first
-      boost::shared_ptr<long unsigned int > var_first_ptr(&GetObj()->first, smartpointer_nodeleter<long unsigned int >());
-      if (var_first_ptr.get()) {
-        BasicVariable::ptr var_first = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_first_ptr);
-        if (var_first.get()) {
-          var_first->Rename("first");
-          context->AddVar(var_first,context);
-        }
-      }
-      */
-      
-      // Adding public member second
-      boost::shared_ptr<wxImageHistogramEntry > var_second_ptr(&GetObj()->second, smartpointer_nodeleter<wxImageHistogramEntry >());
-      if (var_second_ptr.get()) {
-        BasicVariable::ptr var_second = AMILabType<wxImageHistogramEntry >::CreateVarFromSmtPtr(var_second_ptr);
-        if (var_second.get()) {
-          var_second->Rename("second");
-          context->AddVar(var_second,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Type not available
+  // Adding public member first
+  boost::shared_ptr<long unsigned int > var_first_ptr(&GetObj()->first, smartpointer_nodeleter<long unsigned int >());
+  if (var_first_ptr.get()) {
+    BasicVariable::ptr var_first = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_first_ptr);
+    if (var_first.get()) {
+      var_first->Rename("first");
+      context->AddVar(var_first,context);
+    }
+  }
+  */
+  
+  // Adding public member second
+  boost::shared_ptr<wxImageHistogramEntry > var_second_ptr(&GetObj()->second, smartpointer_nodeleter<wxImageHistogramEntry >());
+  if (var_second_ptr.get()) {
+    BasicVariable::ptr var_second = AMILabType<wxImageHistogramEntry >::CreateVarFromSmtPtr(var_second_ptr);
+    if (var_second.get()) {
+      var_second->Rename("second");
+      context->AddVar(var_second,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -107,7 +123,7 @@ void WrapClass_wxImageHistogramBase_wxImplementation_Pair::AddMethods(WrapClass<
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxImageHistogramBase_wxImplementation_Pair::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxImageHistogramBase_wxImplementation_Pair_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

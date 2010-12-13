@@ -16,14 +16,24 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkColorTransferFunction.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkColorTransferFunction.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
+#ifndef vtkColorTransferFunction_declared
+  #define vtkColorTransferFunction_declared
+  AMI_DECLARE_TYPE(vtkColorTransferFunction)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
 
 
-#include "wrap_vtkColorTransferFunction.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -170,7 +180,7 @@ void WrapClass_vtkColorTransferFunction::AddMethods(WrapClass<vtkColorTransferFu
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkColorTransferFunction::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkColorTransferFunction_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -207,7 +217,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkColorTransferFunction * res =   vtkColorTransferFunction::New();
-  BasicVariable::ptr res_var = WrapClass_vtkColorTransferFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkColorTransferFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -266,7 +276,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   }
 
   vtkColorTransferFunction * res =   vtkColorTransferFunction::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkColorTransferFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkColorTransferFunction >::CreateVar(res,true);
   return res_var;
 }
 
@@ -312,7 +322,7 @@ BasicVariable::ptr WrapClass_vtkColorTransferFunction::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkColorTransferFunction * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkColorTransferFunction::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkColorTransferFunction >::CreateVar(res,true);
   return res_var;
 }
 

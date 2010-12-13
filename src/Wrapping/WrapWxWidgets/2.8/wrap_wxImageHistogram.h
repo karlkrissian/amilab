@@ -13,11 +13,13 @@
 #ifndef _wrap_wxImageHistogram_h_
 #define _wrap_wxImageHistogram_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxImageHistogramBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxImageHistogram);
+#ifndef wxImageHistogram_declared
+  #define wxImageHistogram_declared
+  AMI_DECLARE_TYPE(wxImageHistogram);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxImageHistogram : public WrapClass<wxImageHistogram>
@@ -89,12 +93,13 @@ class WrapClass_wxImageHistogram : public WrapClass<wxImageHistogram>
 
     void AddMethods(WrapClass<wxImageHistogram>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxImageHistogram_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxImageHistogram_h

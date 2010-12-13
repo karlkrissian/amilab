@@ -13,11 +13,13 @@
 #ifndef _wrap_wxDateSpan_h_
 #define _wrap_wxDateSpan_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxDateSpan);
+#ifndef wxDateSpan_declared
+  #define wxDateSpan_declared
+  AMI_DECLARE_TYPE(wxDateSpan);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxDateSpan : public WrapClass<wxDateSpan>
@@ -124,12 +128,13 @@ class WrapClass_wxDateSpan : public WrapClass<wxDateSpan>
 
     void AddMethods(WrapClass<wxDateSpan>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxDateSpan_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxDateSpan_h

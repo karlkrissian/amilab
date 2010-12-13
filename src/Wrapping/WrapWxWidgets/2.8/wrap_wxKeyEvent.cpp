@@ -10,23 +10,42 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxKeyEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxKeyEvent.h"
 #include "stdlib.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxPoint.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxKeyEvent_declared
+  #define wxKeyEvent_declared
+  AMI_DECLARE_TYPE(wxKeyEvent)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxKeyEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -66,154 +85,157 @@ void WrapClass_wxKeyEvent::AddMethods(WrapClass<wxKeyEvent>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetModifiers( this_ptr);
-      AddVar_ControlDown( this_ptr);
-      AddVar_ShiftDown( this_ptr);
-      AddVar_MetaDown( this_ptr);
-      AddVar_AltDown( this_ptr);
-      AddVar_CmdDown( this_ptr);
-      AddVar_HasModifiers( this_ptr);
-      AddVar_GetKeyCode( this_ptr);
-      AddVar_GetUnicodeKey( this_ptr);
-      AddVar_GetRawKeyCode( this_ptr);
-      AddVar_GetRawKeyFlags( this_ptr);
-      AddVar_GetPosition_1( this_ptr);
-      AddVar_GetPosition( this_ptr);
-      AddVar_GetPosition_2( this_ptr);
-      AddVar_GetPosition_3( this_ptr);
-      AddVar_GetX( this_ptr);
-      AddVar_GetY( this_ptr);
-      AddVar_Clone( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetModifiers( this_ptr);
+  AddVar_ControlDown( this_ptr);
+  AddVar_ShiftDown( this_ptr);
+  AddVar_MetaDown( this_ptr);
+  AddVar_AltDown( this_ptr);
+  AddVar_CmdDown( this_ptr);
+  AddVar_HasModifiers( this_ptr);
+  AddVar_GetKeyCode( this_ptr);
+  AddVar_GetUnicodeKey( this_ptr);
+  AddVar_GetRawKeyCode( this_ptr);
+  AddVar_GetRawKeyFlags( this_ptr);
+  AddVar_GetPosition_1( this_ptr);
+  AddVar_GetPosition( this_ptr);
+  AddVar_GetPosition_2( this_ptr);
+  AddVar_GetPosition_3( this_ptr);
+  AddVar_GetX( this_ptr);
+  AddVar_GetY( this_ptr);
+  AddVar_Clone( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member m_x
-      boost::shared_ptr<int > var_m_x_ptr(&GetObj()->m_x, smartpointer_nodeleter<int >());
-      if (var_m_x_ptr.get()) {
-        BasicVariable::ptr var_m_x = AMILabType<int >::CreateVarFromSmtPtr(var_m_x_ptr);
-        if (var_m_x.get()) {
-          var_m_x->Rename("m_x");
-          context->AddVar(var_m_x,context);
-        }
-      }
-      
-      // Adding public member m_y
-      boost::shared_ptr<int > var_m_y_ptr(&GetObj()->m_y, smartpointer_nodeleter<int >());
-      if (var_m_y_ptr.get()) {
-        BasicVariable::ptr var_m_y = AMILabType<int >::CreateVarFromSmtPtr(var_m_y_ptr);
-        if (var_m_y.get()) {
-          var_m_y->Rename("m_y");
-          context->AddVar(var_m_y,context);
-        }
-      }
-      
-      // Adding public member m_keyCode
-      boost::shared_ptr<long int > var_m_keyCode_ptr(&GetObj()->m_keyCode, smartpointer_nodeleter<long int >());
-      if (var_m_keyCode_ptr.get()) {
-        BasicVariable::ptr var_m_keyCode = AMILabType<long int >::CreateVarFromSmtPtr(var_m_keyCode_ptr);
-        if (var_m_keyCode.get()) {
-          var_m_keyCode->Rename("m_keyCode");
-          context->AddVar(var_m_keyCode,context);
-        }
-      }
-      
-      // Adding public member m_controlDown
-      boost::shared_ptr<bool > var_m_controlDown_ptr(&GetObj()->m_controlDown, smartpointer_nodeleter<bool >());
-      if (var_m_controlDown_ptr.get()) {
-        BasicVariable::ptr var_m_controlDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_controlDown_ptr);
-        if (var_m_controlDown.get()) {
-          var_m_controlDown->Rename("m_controlDown");
-          context->AddVar(var_m_controlDown,context);
-        }
-      }
-      
-      // Adding public member m_shiftDown
-      boost::shared_ptr<bool > var_m_shiftDown_ptr(&GetObj()->m_shiftDown, smartpointer_nodeleter<bool >());
-      if (var_m_shiftDown_ptr.get()) {
-        BasicVariable::ptr var_m_shiftDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_shiftDown_ptr);
-        if (var_m_shiftDown.get()) {
-          var_m_shiftDown->Rename("m_shiftDown");
-          context->AddVar(var_m_shiftDown,context);
-        }
-      }
-      
-      // Adding public member m_altDown
-      boost::shared_ptr<bool > var_m_altDown_ptr(&GetObj()->m_altDown, smartpointer_nodeleter<bool >());
-      if (var_m_altDown_ptr.get()) {
-        BasicVariable::ptr var_m_altDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_altDown_ptr);
-        if (var_m_altDown.get()) {
-          var_m_altDown->Rename("m_altDown");
-          context->AddVar(var_m_altDown,context);
-        }
-      }
-      
-      // Adding public member m_metaDown
-      boost::shared_ptr<bool > var_m_metaDown_ptr(&GetObj()->m_metaDown, smartpointer_nodeleter<bool >());
-      if (var_m_metaDown_ptr.get()) {
-        BasicVariable::ptr var_m_metaDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_metaDown_ptr);
-        if (var_m_metaDown.get()) {
-          var_m_metaDown->Rename("m_metaDown");
-          context->AddVar(var_m_metaDown,context);
-        }
-      }
-      
-      // Adding public member m_scanCode
-      boost::shared_ptr<bool > var_m_scanCode_ptr(&GetObj()->m_scanCode, smartpointer_nodeleter<bool >());
-      if (var_m_scanCode_ptr.get()) {
-        BasicVariable::ptr var_m_scanCode = AMILabType<bool >::CreateVarFromSmtPtr(var_m_scanCode_ptr);
-        if (var_m_scanCode.get()) {
-          var_m_scanCode->Rename("m_scanCode");
-          context->AddVar(var_m_scanCode,context);
-        }
-      }
-      
-      /* Type not available
-      // Adding public member m_uniChar
-      boost::shared_ptr<wchar_t > var_m_uniChar_ptr(&GetObj()->m_uniChar, smartpointer_nodeleter<wchar_t >());
-      if (var_m_uniChar_ptr.get()) {
-        BasicVariable::ptr var_m_uniChar = AMILabType<wchar_t >::CreateVarFromSmtPtr(var_m_uniChar_ptr);
-        if (var_m_uniChar.get()) {
-          var_m_uniChar->Rename("m_uniChar");
-          context->AddVar(var_m_uniChar,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member m_rawCode
-      boost::shared_ptr<unsigned int > var_m_rawCode_ptr(&GetObj()->m_rawCode, smartpointer_nodeleter<unsigned int >());
-      if (var_m_rawCode_ptr.get()) {
-        BasicVariable::ptr var_m_rawCode = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_m_rawCode_ptr);
-        if (var_m_rawCode.get()) {
-          var_m_rawCode->Rename("m_rawCode");
-          context->AddVar(var_m_rawCode,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member m_rawFlags
-      boost::shared_ptr<unsigned int > var_m_rawFlags_ptr(&GetObj()->m_rawFlags, smartpointer_nodeleter<unsigned int >());
-      if (var_m_rawFlags_ptr.get()) {
-        BasicVariable::ptr var_m_rawFlags = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_m_rawFlags_ptr);
-        if (var_m_rawFlags.get()) {
-          var_m_rawFlags->Rename("m_rawFlags");
-          context->AddVar(var_m_rawFlags,context);
-        }
-      }
-      */
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member m_x
+  boost::shared_ptr<int > var_m_x_ptr(&GetObj()->m_x, smartpointer_nodeleter<int >());
+  if (var_m_x_ptr.get()) {
+    BasicVariable::ptr var_m_x = AMILabType<int >::CreateVarFromSmtPtr(var_m_x_ptr);
+    if (var_m_x.get()) {
+      var_m_x->Rename("m_x");
+      context->AddVar(var_m_x,context);
+    }
+  }
+  
+  // Adding public member m_y
+  boost::shared_ptr<int > var_m_y_ptr(&GetObj()->m_y, smartpointer_nodeleter<int >());
+  if (var_m_y_ptr.get()) {
+    BasicVariable::ptr var_m_y = AMILabType<int >::CreateVarFromSmtPtr(var_m_y_ptr);
+    if (var_m_y.get()) {
+      var_m_y->Rename("m_y");
+      context->AddVar(var_m_y,context);
+    }
+  }
+  
+  // Adding public member m_keyCode
+  boost::shared_ptr<long int > var_m_keyCode_ptr(&GetObj()->m_keyCode, smartpointer_nodeleter<long int >());
+  if (var_m_keyCode_ptr.get()) {
+    BasicVariable::ptr var_m_keyCode = AMILabType<long int >::CreateVarFromSmtPtr(var_m_keyCode_ptr);
+    if (var_m_keyCode.get()) {
+      var_m_keyCode->Rename("m_keyCode");
+      context->AddVar(var_m_keyCode,context);
+    }
+  }
+  
+  // Adding public member m_controlDown
+  boost::shared_ptr<bool > var_m_controlDown_ptr(&GetObj()->m_controlDown, smartpointer_nodeleter<bool >());
+  if (var_m_controlDown_ptr.get()) {
+    BasicVariable::ptr var_m_controlDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_controlDown_ptr);
+    if (var_m_controlDown.get()) {
+      var_m_controlDown->Rename("m_controlDown");
+      context->AddVar(var_m_controlDown,context);
+    }
+  }
+  
+  // Adding public member m_shiftDown
+  boost::shared_ptr<bool > var_m_shiftDown_ptr(&GetObj()->m_shiftDown, smartpointer_nodeleter<bool >());
+  if (var_m_shiftDown_ptr.get()) {
+    BasicVariable::ptr var_m_shiftDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_shiftDown_ptr);
+    if (var_m_shiftDown.get()) {
+      var_m_shiftDown->Rename("m_shiftDown");
+      context->AddVar(var_m_shiftDown,context);
+    }
+  }
+  
+  // Adding public member m_altDown
+  boost::shared_ptr<bool > var_m_altDown_ptr(&GetObj()->m_altDown, smartpointer_nodeleter<bool >());
+  if (var_m_altDown_ptr.get()) {
+    BasicVariable::ptr var_m_altDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_altDown_ptr);
+    if (var_m_altDown.get()) {
+      var_m_altDown->Rename("m_altDown");
+      context->AddVar(var_m_altDown,context);
+    }
+  }
+  
+  // Adding public member m_metaDown
+  boost::shared_ptr<bool > var_m_metaDown_ptr(&GetObj()->m_metaDown, smartpointer_nodeleter<bool >());
+  if (var_m_metaDown_ptr.get()) {
+    BasicVariable::ptr var_m_metaDown = AMILabType<bool >::CreateVarFromSmtPtr(var_m_metaDown_ptr);
+    if (var_m_metaDown.get()) {
+      var_m_metaDown->Rename("m_metaDown");
+      context->AddVar(var_m_metaDown,context);
+    }
+  }
+  
+  // Adding public member m_scanCode
+  boost::shared_ptr<bool > var_m_scanCode_ptr(&GetObj()->m_scanCode, smartpointer_nodeleter<bool >());
+  if (var_m_scanCode_ptr.get()) {
+    BasicVariable::ptr var_m_scanCode = AMILabType<bool >::CreateVarFromSmtPtr(var_m_scanCode_ptr);
+    if (var_m_scanCode.get()) {
+      var_m_scanCode->Rename("m_scanCode");
+      context->AddVar(var_m_scanCode,context);
+    }
+  }
+  
+  /* Type not available
+  // Adding public member m_uniChar
+  boost::shared_ptr<wchar_t > var_m_uniChar_ptr(&GetObj()->m_uniChar, smartpointer_nodeleter<wchar_t >());
+  if (var_m_uniChar_ptr.get()) {
+    BasicVariable::ptr var_m_uniChar = AMILabType<wchar_t >::CreateVarFromSmtPtr(var_m_uniChar_ptr);
+    if (var_m_uniChar.get()) {
+      var_m_uniChar->Rename("m_uniChar");
+      context->AddVar(var_m_uniChar,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member m_rawCode
+  boost::shared_ptr<unsigned int > var_m_rawCode_ptr(&GetObj()->m_rawCode, smartpointer_nodeleter<unsigned int >());
+  if (var_m_rawCode_ptr.get()) {
+    BasicVariable::ptr var_m_rawCode = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_m_rawCode_ptr);
+    if (var_m_rawCode.get()) {
+      var_m_rawCode->Rename("m_rawCode");
+      context->AddVar(var_m_rawCode,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member m_rawFlags
+  boost::shared_ptr<unsigned int > var_m_rawFlags_ptr(&GetObj()->m_rawFlags, smartpointer_nodeleter<unsigned int >());
+  if (var_m_rawFlags_ptr.get()) {
+    BasicVariable::ptr var_m_rawFlags = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_m_rawFlags_ptr);
+    if (var_m_rawFlags.get()) {
+      var_m_rawFlags->Rename("m_rawFlags");
+      context->AddVar(var_m_rawFlags,context);
+    }
+  }
+  */
+
+
+  
 
 
   // Adding Bases
@@ -232,7 +254,7 @@ void WrapClass_wxKeyEvent::AddMethods(WrapClass<wxKeyEvent>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxKeyEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxKeyEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -578,13 +600,25 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > xpos_smtptr;
-  if (!get_val_smtptr_param<int >(xpos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* xpos = xpos_smtptr.get();
+  int* xpos;
+  if (CheckNullVar(_p,_n))  {
+    xpos=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > xpos_smtptr;
+    if (!get_val_smtptr_param<int >(xpos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    xpos = xpos_smtptr.get();
+  }
 
-  boost::shared_ptr<int > ypos_smtptr;
-  if (!get_val_smtptr_param<int >(ypos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* ypos = ypos_smtptr.get();
+  int* ypos;
+  if (CheckNullVar(_p,_n))  {
+    ypos=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > ypos_smtptr;
+    if (!get_val_smtptr_param<int >(ypos_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    ypos = ypos_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPosition(xpos, ypos);
   return BasicVariable::ptr();
@@ -719,7 +753,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -739,7 +773,7 @@ BasicVariable::ptr WrapClass_wxKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxAuiToolBarItemArray_h_
 #define _wrap_wxAuiToolBarItemArray_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxAuiToolBarItemArray);
+#ifndef wxAuiToolBarItemArray_declared
+  #define wxAuiToolBarItemArray_declared
+  AMI_DECLARE_TYPE(wxAuiToolBarItemArray);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiToolBarItemArray : public WrapClass<wxAuiToolBarItemArray>
@@ -100,7 +104,7 @@ class WrapClass_wxAuiToolBarItemArray : public WrapClass<wxAuiToolBarItemArray>
     ADD_CLASS_METHOD(Clear,"void wxAuiToolBarItemArray::Clear()  (http://docs.wxwidgets.org/stable/wx_wxauitoolbaritemarray.html#clear)")
     ADD_CLASS_METHOD(Detach,"_wxObjArraywxAuiToolBarItemArray * wxAuiToolBarItemArray::Detach(size_t uiIndex)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbaritemarray.html#detach)")
     ADD_CLASS_METHOD(RemoveAt,"void wxAuiToolBarItemArray::RemoveAt(size_t uiIndex, size_t nRemove = 1)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbaritemarray.html#removeat)")
-/* The following types are missing: _13436
+/* The following types are missing: _14393
     ADD_CLASS_METHOD(Sort,"void wxAuiToolBarItemArray::Sort(CMPFUNC_wxObjArraywxAuiToolBarItemArray fCmp)  (http://docs.wxwidgets.org/stable/wx_wxauitoolbaritemarray.html#sort)")
 */
 
@@ -113,12 +117,13 @@ class WrapClass_wxAuiToolBarItemArray : public WrapClass<wxAuiToolBarItemArray>
 
     void AddMethods(WrapClass<wxAuiToolBarItemArray>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxAuiToolBarItemArray_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxAuiToolBarItemArray_h

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxWindowListNode_h_
 #define _wrap_wxWindowListNode_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxNodeBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxWindowListNode);
+#ifndef wxWindowListNode_declared
+  #define wxWindowListNode_declared
+  AMI_DECLARE_TYPE(wxWindowListNode);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxWindowListNode : public WrapClass<wxWindowListNode>
@@ -83,12 +87,13 @@ class WrapClass_wxWindowListNode : public WrapClass<wxWindowListNode>
 
     void AddMethods(WrapClass<wxWindowListNode>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxWindowListNode_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxWindowListNode_h

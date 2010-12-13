@@ -16,16 +16,32 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtk3DWidget.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtk3DWidget.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkProp3D.h"
-#include "wrap_vtkDataSet.h"
+#ifndef vtk3DWidget_declared
+  #define vtk3DWidget_declared
+  AMI_DECLARE_TYPE(vtk3DWidget)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkProp3D_declared
+  #define vtkProp3D_declared
+  AMI_DECLARE_TYPE(vtkProp3D)
+#endif
+#ifndef vtkDataSet_declared
+  #define vtkDataSet_declared
+  AMI_DECLARE_TYPE(vtkDataSet)
+#endif
 
 
-#include "wrap_vtk3DWidget.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -124,7 +140,7 @@ void WrapClass_vtk3DWidget::AddMethods(WrapClass<vtk3DWidget>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtk3DWidget::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtk3DWidget_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -199,7 +215,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   }
 
   vtk3DWidget * res =   vtk3DWidget::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtk3DWidget::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtk3DWidget >::CreateVar(res,true);
   return res_var;
 }
 
@@ -245,7 +261,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtk3DWidget * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtk3DWidget::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtk3DWidget >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -410,7 +426,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProp3D * res =   this->_objectptr->GetObj()->GetProp3D();
-  BasicVariable::ptr res_var = WrapClass_vtkProp3D::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProp3D >::CreateVar(res,true);
   return res_var;
 }
 
@@ -461,7 +477,7 @@ BasicVariable::ptr WrapClass_vtk3DWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkDataSet * res =   this->_objectptr->GetObj()->GetInput();
-  BasicVariable::ptr res_var = WrapClass_vtkDataSet::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataSet >::CreateVar(res,true);
   return res_var;
 }
 

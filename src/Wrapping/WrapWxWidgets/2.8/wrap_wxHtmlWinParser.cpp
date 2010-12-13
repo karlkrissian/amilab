@@ -10,29 +10,72 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHtmlWinParser.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxHtmlWindowInterface.h"
-#include "wrap_wxHtmlTagsModule.h"
-#include "wrap_wxClassInfo.h"
-#include "wrap_wxString.h"
-#include "wrap_wxObject.h"
-#include "wrap_wxFSFile.h"
-#include "wrap_wxDC.h"
-#include "wrap_wxHtmlContainerCell.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxHtmlLinkInfo.h"
-#include "wrap_wxHtmlCell.h"
-#include "wrap_wxFont.h"
+#ifndef wxHtmlWindowInterface_declared
+  #define wxHtmlWindowInterface_declared
+  AMI_DECLARE_TYPE(wxHtmlWindowInterface)
+#endif
+#ifndef wxHtmlTagsModule_declared
+  #define wxHtmlTagsModule_declared
+  AMI_DECLARE_TYPE(wxHtmlTagsModule)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxFSFile_declared
+  #define wxFSFile_declared
+  AMI_DECLARE_TYPE(wxFSFile)
+#endif
+#ifndef wxDC_declared
+  #define wxDC_declared
+  AMI_DECLARE_TYPE(wxDC)
+#endif
+#ifndef wxHtmlContainerCell_declared
+  #define wxHtmlContainerCell_declared
+  AMI_DECLARE_TYPE(wxHtmlContainerCell)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxHtmlLinkInfo_declared
+  #define wxHtmlLinkInfo_declared
+  AMI_DECLARE_TYPE(wxHtmlLinkInfo)
+#endif
+#ifndef wxHtmlCell_declared
+  #define wxHtmlCell_declared
+  AMI_DECLARE_TYPE(wxHtmlCell)
+#endif
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont)
+#endif
 
 
-#include "wrap_wxHtmlWinParser.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -164,7 +207,7 @@ void WrapClass_wxHtmlWinParser::AddMethods(WrapClass<wxHtmlWinParser>::ptr this_
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHtmlWinParser::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHtmlWinParser_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -203,9 +246,15 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlWindowInterface > wndIface_smtptr;
-  if (!get_val_smtptr_param<wxHtmlWindowInterface >(wndIface_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlWindowInterface* wndIface = wndIface_smtptr.get();
+  wxHtmlWindowInterface* wndIface = 0l;
+  if (CheckNullVar(_p,_n))  {
+    wndIface=(wxHtmlWindowInterface*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlWindowInterface > wndIface_smtptr;
+    if (!get_val_smtptr_param<wxHtmlWindowInterface >(wndIface_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    wndIface = wndIface_smtptr.get();
+  }
 
   wxHtmlWinParser* _newobj = new wxHtmlWinParser(wndIface);
   BasicVariable::ptr res = WrapClass_wxHtmlWinParser::CreateVar(_newobj);
@@ -229,9 +278,15 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlTagsModule > module_smtptr;
-  if (!get_val_smtptr_param<wxHtmlTagsModule >(module_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlTagsModule* module = module_smtptr.get();
+  wxHtmlTagsModule* module;
+  if (CheckNullVar(_p,_n))  {
+    module=(wxHtmlTagsModule*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlTagsModule > module_smtptr;
+    if (!get_val_smtptr_param<wxHtmlTagsModule >(module_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    module = module_smtptr.get();
+  }
 
   wxHtmlWinParser::AddModule(module);
   return BasicVariable::ptr();
@@ -254,9 +309,15 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlTagsModule > module_smtptr;
-  if (!get_val_smtptr_param<wxHtmlTagsModule >(module_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlTagsModule* module = module_smtptr.get();
+  wxHtmlTagsModule* module;
+  if (CheckNullVar(_p,_n))  {
+    module=(wxHtmlTagsModule*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlTagsModule > module_smtptr;
+    if (!get_val_smtptr_param<wxHtmlTagsModule >(module_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    module = module_smtptr.get();
+  }
 
   wxHtmlWinParser::RemoveModule(module);
   return BasicVariable::ptr();
@@ -278,7 +339,7 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 
@@ -341,7 +402,7 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObject * res =   this->_objectptr->GetObj()->GetProduct();
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -373,7 +434,7 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   wxString const & url = *url_smtptr;
 
   wxFSFile * res =   this->_objectptr->GetObj()->OpenURL(type, url);
-  BasicVariable::ptr res_var = WrapClass_wxFSFile::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFSFile >::CreateVar(res,true);
   return res_var;
 }
 
@@ -395,9 +456,15 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxDC > dc_smtptr;
-  if (!get_val_smtptr_param<wxDC >(dc_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDC* dc = dc_smtptr.get();
+  wxDC* dc;
+  if (CheckNullVar(_p,_n))  {
+    dc=(wxDC*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDC > dc_smtptr;
+    if (!get_val_smtptr_param<wxDC >(dc_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    dc = dc_smtptr.get();
+  }
 
   double pixel_scale = 1.0e+0;
   if (!get_val_param<double >(pixel_scale,_p,_n,false,false)) ClassHelpAndReturn;
@@ -422,7 +489,7 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxDC * res =   this->_objectptr->GetObj()->GetDC();
-  BasicVariable::ptr res_var = WrapClass_wxDC::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxDC >::CreateVar(res,true);
   return res_var;
 }
 
@@ -499,7 +566,7 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlWindowInterface * res =   this->_objectptr->GetObj()->GetWindowInterface();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlWindowInterface::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlWindowInterface >::CreateVar(res,true);
   return res_var;
 }
 
@@ -530,9 +597,15 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (!get_val_smtptr_param<wxString >(fixed_face_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & fixed_face = *fixed_face_smtptr;
 
-  boost::shared_ptr<int > sizes_smtptr;
-  if (!get_val_smtptr_param<int >(sizes_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* sizes = sizes_smtptr.get();
+  int* sizes = 0l;
+  if (CheckNullVar(_p,_n))  {
+    sizes=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > sizes_smtptr;
+    if (!get_val_smtptr_param<int >(sizes_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    sizes = sizes_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetFonts(normal_face, fixed_face, sizes);
   return BasicVariable::ptr();
@@ -590,7 +663,7 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlContainerCell * res =   this->_objectptr->GetObj()->GetContainer();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlContainerCell::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlContainerCell >::CreateVar(res,true);
   return res_var;
 }
 
@@ -610,7 +683,7 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlContainerCell * res =   this->_objectptr->GetObj()->OpenContainer();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlContainerCell::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlContainerCell >::CreateVar(res,true);
   return res_var;
 }
 
@@ -632,12 +705,18 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlContainerCell > c_smtptr;
-  if (!get_val_smtptr_param<wxHtmlContainerCell >(c_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlContainerCell* c = c_smtptr.get();
+  wxHtmlContainerCell* c;
+  if (CheckNullVar(_p,_n))  {
+    c=(wxHtmlContainerCell*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlContainerCell > c_smtptr;
+    if (!get_val_smtptr_param<wxHtmlContainerCell >(c_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    c = c_smtptr.get();
+  }
 
   wxHtmlContainerCell * res =   this->_objectptr->GetObj()->SetContainer(c);
-  BasicVariable::ptr res_var = WrapClass_wxHtmlContainerCell::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlContainerCell >::CreateVar(res,true);
   return res_var;
 }
 
@@ -657,7 +736,7 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlContainerCell * res =   this->_objectptr->GetObj()->CloseContainer();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlContainerCell::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlContainerCell >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1202,9 +1281,15 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlCell > cell_smtptr;
-  if (!get_val_smtptr_param<wxHtmlCell >(cell_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlCell* cell = cell_smtptr.get();
+  wxHtmlCell* cell;
+  if (CheckNullVar(_p,_n))  {
+    cell=(wxHtmlCell*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlCell > cell_smtptr;
+    if (!get_val_smtptr_param<wxHtmlCell >(cell_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    cell = cell_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ApplyStateToCell(cell);
   return BasicVariable::ptr();
@@ -1226,7 +1311,7 @@ BasicVariable::ptr WrapClass_wxHtmlWinParser::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxFont * res =   this->_objectptr->GetObj()->CreateCurrentFont();
-  BasicVariable::ptr res_var = WrapClass_wxFont::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxFont >::CreateVar(res,true);
   return res_var;
 }
 

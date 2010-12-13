@@ -121,10 +121,8 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::UpdateVolPages() \
     {
-      ::win.EnablePanel(::vol1_page , 1)
-#exists(::input))
-      ::win.EnablePanel(::vol2_page , 1)
-#exists(::input2))
+      ::win.EnablePanel(::vol1_page , exists(::input))
+      ::win.EnablePanel(::vol2_page , exists(::input2))
     }
 
     #----------------------------

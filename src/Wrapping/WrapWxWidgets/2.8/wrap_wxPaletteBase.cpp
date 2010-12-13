@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxPaletteBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxPaletteBase.h"
+#ifndef wxPaletteBase_declared
+  #define wxPaletteBase_declared
+  AMI_DECLARE_TYPE(wxPaletteBase)
+#endif
 
 
-#include "wrap_wxPaletteBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -61,16 +71,19 @@ void WrapClass_wxPaletteBase::AddMethods(WrapClass<wxPaletteBase>::ptr this_ptr 
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Ok( this_ptr);
-      AddVar_GetColoursCount( this_ptr);
+  // Adding standard methods 
+  AddVar_Ok( this_ptr);
+  AddVar_GetColoursCount( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -91,7 +104,7 @@ void WrapClass_wxPaletteBase::AddMethods(WrapClass<wxPaletteBase>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxPaletteBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxPaletteBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

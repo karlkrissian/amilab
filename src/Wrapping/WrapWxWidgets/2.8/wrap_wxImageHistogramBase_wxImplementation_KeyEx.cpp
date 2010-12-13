@@ -10,20 +10,33 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxImageHistogramBase_wxImplementation_KeyEx.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxImageHistogramBase_wxImplementation_KeyEx.h"
-#include "wrap_wxImageHistogramBase_wxImplementation_Pair.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef wxImageHistogramBase_wxImplementation_KeyEx_declared
+  #define wxImageHistogramBase_wxImplementation_KeyEx_declared
+  AMI_DECLARE_TYPE(wxImageHistogramBase_wxImplementation_KeyEx)
+#endif
+#ifndef wxImageHistogramBase_wxImplementation_Pair_declared
+  #define wxImageHistogramBase_wxImplementation_Pair_declared
+  AMI_DECLARE_TYPE(wxImageHistogramBase_wxImplementation_Pair)
+#endif
 
 
-#include "wrap_wxImageHistogramBase_wxImplementation_KeyEx.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,17 +76,20 @@ void WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::AddMethods(WrapClass
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      // AddVar_operator not available( this_ptr);
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  // AddVar_operator not available( this_ptr);
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -83,7 +99,7 @@ void WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::AddMethods(WrapClass
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxImageHistogramBase_wxImplementation_KeyEx::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxImageHistogramBase_wxImplementation_KeyEx_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxObject.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxObject_declared
+  #define wxObject_declared
+  AMI_DECLARE_TYPE(wxObject)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -69,39 +82,42 @@ void WrapClass_wxEvent::AddMethods(WrapClass<wxEvent>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_SetEventType( this_ptr);
-      AddVar_GetEventType( this_ptr);
-      AddVar_GetEventObject( this_ptr);
-      AddVar_SetEventObject( this_ptr);
-      AddVar_GetTimestamp( this_ptr);
-      AddVar_SetTimestamp( this_ptr);
-      AddVar_GetId( this_ptr);
-      AddVar_SetId( this_ptr);
-      AddVar_Skip( this_ptr);
-      AddVar_GetSkipped( this_ptr);
-      AddVar_IsCommandEvent( this_ptr);
-      AddVar_ShouldPropagate( this_ptr);
-      AddVar_StopPropagation( this_ptr);
-      AddVar_ResumePropagation( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_SetEventType( this_ptr);
+  AddVar_GetEventType( this_ptr);
+  AddVar_GetEventObject( this_ptr);
+  AddVar_SetEventObject( this_ptr);
+  AddVar_GetTimestamp( this_ptr);
+  AddVar_SetTimestamp( this_ptr);
+  AddVar_GetId( this_ptr);
+  AddVar_SetId( this_ptr);
+  AddVar_Skip( this_ptr);
+  AddVar_GetSkipped( this_ptr);
+  AddVar_IsCommandEvent( this_ptr);
+  AddVar_ShouldPropagate( this_ptr);
+  AddVar_StopPropagation( this_ptr);
+  AddVar_ResumePropagation( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member m_callbackUserData
-      boost::shared_ptr<wxObject > var_m_callbackUserData_ptr(GetObj()->m_callbackUserData, smartpointer_nodeleter<wxObject >());
-      if (var_m_callbackUserData_ptr.get()) {
-        BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
-        if (var_m_callbackUserData.get()) {
-          var_m_callbackUserData->Rename("m_callbackUserData");
-          context->AddVar(var_m_callbackUserData,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member m_callbackUserData
+  boost::shared_ptr<wxObject > var_m_callbackUserData_ptr(GetObj()->m_callbackUserData, smartpointer_nodeleter<wxObject >());
+  if (var_m_callbackUserData_ptr.get()) {
+    BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
+    if (var_m_callbackUserData.get()) {
+      var_m_callbackUserData->Rename("m_callbackUserData");
+      context->AddVar(var_m_callbackUserData,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -120,7 +136,7 @@ void WrapClass_wxEvent::AddMethods(WrapClass<wxEvent>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -197,7 +213,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxObject * res =   this->_objectptr->GetObj()->GetEventObject();
-  BasicVariable::ptr res_var = WrapClass_wxObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -218,9 +234,15 @@ BasicVariable::ptr WrapClass_wxEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxObject > obj_smtptr;
-  if (!get_val_smtptr_param<wxObject >(obj_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxObject* obj = obj_smtptr.get();
+  wxObject* obj;
+  if (CheckNullVar(_p,_n))  {
+    obj=(wxObject*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxObject > obj_smtptr;
+    if (!get_val_smtptr_param<wxObject >(obj_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    obj = obj_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetEventObject(obj);
   return BasicVariable::ptr();
@@ -454,7 +476,7 @@ BasicVariable::ptr WrapClass_wxEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

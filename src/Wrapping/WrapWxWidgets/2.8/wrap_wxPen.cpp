@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxPen.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxPen.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxPen_declared
+  #define wxPen_declared
+  AMI_DECLARE_TYPE(wxPen)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxPen.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,43 +79,46 @@ void WrapClass_wxPen::AddMethods(WrapClass<wxPen>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Ok( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_SetColour_1( this_ptr);
-      AddVar_SetColour( this_ptr);
-      AddVar_SetColour_2( this_ptr);
-      AddVar_SetCap( this_ptr);
-      AddVar_SetJoin( this_ptr);
-      AddVar_SetStyle( this_ptr);
-      AddVar_SetWidth( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Ok( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_SetColour_1( this_ptr);
+  AddVar_SetColour( this_ptr);
+  AddVar_SetColour_2( this_ptr);
+  AddVar_SetCap( this_ptr);
+  AddVar_SetJoin( this_ptr);
+  AddVar_SetStyle( this_ptr);
+  AddVar_SetWidth( this_ptr);
 /* The following types are missing: signed char
-      AddVar_SetDashes( this_ptr);
+  AddVar_SetDashes( this_ptr);
 */
-      AddVar_GetColour( this_ptr);
-      AddVar_GetCap( this_ptr);
-      AddVar_GetJoin( this_ptr);
-      AddVar_GetStyle( this_ptr);
-      AddVar_GetWidth( this_ptr);
-/* The following types are missing: wxDash * *
-      AddVar_GetDashes( this_ptr);
-*/
-      AddVar_GetDashCount( this_ptr);
+  AddVar_GetColour( this_ptr);
+  AddVar_GetCap( this_ptr);
+  AddVar_GetJoin( this_ptr);
+  AddVar_GetStyle( this_ptr);
+  AddVar_GetWidth( this_ptr);
 /* The following types are missing: signed char
-      AddVar_GetDash( this_ptr);
+  AddVar_GetDashes( this_ptr);
 */
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetDashCount( this_ptr);
+/* The following types are missing: signed char
+  AddVar_GetDash( this_ptr);
+*/
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___not_equal__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___not_equal__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -120,7 +139,7 @@ void WrapClass_wxPen::AddMethods(WrapClass<wxPen>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxPen::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxPen_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -496,9 +515,15 @@ BasicVariable::ptr WrapClass_wxPen::
   int number_of_dashes;
   if (!get_val_param<int >(number_of_dashes,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<signed char > dash_smtptr;
-  if (!get_val_smtptr_param<signed char >(dash_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  signed char* dash = dash_smtptr.get();
+  signed char* dash;
+  if (CheckNullVar(_p,_n))  {
+    dash=(signed char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<signed char > dash_smtptr;
+    if (!get_val_smtptr_param<signed char >(dash_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    dash = dash_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetDashes(number_of_dashes, dash);
   return BasicVariable::ptr();
@@ -599,7 +624,7 @@ BasicVariable::ptr WrapClass_wxPen::
   int res =   this->_objectptr->GetObj()->GetWidth();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: wxDash * *
+/* The following types are missing: signed char
 
 //---------------------------------------------------
 //  Wrapping of int wxPen::GetDashes(wxDash * * ptr)
@@ -619,9 +644,17 @@ BasicVariable::ptr WrapClass_wxPen::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<signed char > ptr_smtptr;
-  if (!get_val_smtptr_param<signed char >(ptr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  signed char* ptr = ptr_smtptr.get();
+  signed char* local_ptr = NULL;
+  signed char** ptr;
+  if (CheckNullVar(_p,_n))  {
+    ptr=(signed char**)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<signed char > ptr_smtptr;
+    if (!get_val_smtptr_param<signed char >(ptr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    local_ptr = ptr_smtptr.get();
+    ptr = &local_ptr;
+  }
 
   int res =   this->_objectptr->GetObj()->GetDashes(ptr);
   return AMILabType<int >::CreateVar(res);
@@ -684,7 +717,7 @@ BasicVariable::ptr WrapClass_wxPen::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

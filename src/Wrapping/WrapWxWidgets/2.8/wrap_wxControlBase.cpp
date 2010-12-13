@@ -10,25 +10,56 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxControlBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxValidator.h"
-#include "wrap_wxString.h"
-#include "wrap_wxCommandEvent.h"
-#include "wrap_wxFont.h"
-#include "wrap_wxUpdateUIEvent.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxValidator_declared
+  #define wxValidator_declared
+  AMI_DECLARE_TYPE(wxValidator)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxCommandEvent_declared
+  #define wxCommandEvent_declared
+  AMI_DECLARE_TYPE(wxCommandEvent)
+#endif
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont)
+#endif
+#ifndef wxUpdateUIEvent_declared
+  #define wxUpdateUIEvent_declared
+  AMI_DECLARE_TYPE(wxUpdateUIEvent)
+#endif
 
 
-#include "wrap_wxControlBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -75,18 +106,21 @@ void WrapClass_wxControlBase::AddMethods(WrapClass<wxControlBase>::ptr this_ptr 
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Create( this_ptr);
-      AddVar_GetAlignment( this_ptr);
-      AddVar_ShouldInheritColours( this_ptr);
-      AddVar_Command( this_ptr);
-      AddVar_SetLabel( this_ptr);
-      AddVar_SetFont( this_ptr);
-      AddVar_DoUpdateWindowUI( this_ptr);
+  // Adding standard methods 
+  AddVar_Create( this_ptr);
+  AddVar_GetAlignment( this_ptr);
+  AddVar_ShouldInheritColours( this_ptr);
+  AddVar_Command( this_ptr);
+  AddVar_SetLabel( this_ptr);
+  AddVar_SetFont( this_ptr);
+  AddVar_DoUpdateWindowUI( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -107,7 +141,7 @@ void WrapClass_wxControlBase::AddMethods(WrapClass<wxControlBase>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxControlBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxControlBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -170,9 +204,15 @@ BasicVariable::ptr WrapClass_wxControlBase::
   if (_p->GetNumParam()>7) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;

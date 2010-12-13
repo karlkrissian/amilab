@@ -16,18 +16,37 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkInteractorStyle.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkInteractorStyle.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkRenderWindowInteractor.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkProp.h"
-#include "wrap_vtkProp3D.h"
+#ifndef vtkInteractorStyle_declared
+  #define vtkInteractorStyle_declared
+  AMI_DECLARE_TYPE(vtkInteractorStyle)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkRenderWindowInteractor_declared
+  #define vtkRenderWindowInteractor_declared
+  AMI_DECLARE_TYPE(vtkRenderWindowInteractor)
+#endif
+#ifndef vtkProp_declared
+  #define vtkProp_declared
+  AMI_DECLARE_TYPE(vtkProp)
+#endif
+#ifndef vtkProp3D_declared
+  #define vtkProp3D_declared
+  AMI_DECLARE_TYPE(vtkProp3D)
+#endif
 
 
-#include "wrap_vtkInteractorStyle.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -198,7 +217,7 @@ void WrapClass_vtkInteractorStyle::AddMethods(WrapClass<vtkInteractorStyle>::ptr
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkInteractorStyle::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkInteractorStyle_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -235,7 +254,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyle * res =   vtkInteractorStyle::New();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyle::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyle >::CreateVar(res,true);
   return res_var;
 }
 
@@ -294,7 +313,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   }
 
   vtkInteractorStyle * res =   vtkInteractorStyle::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyle::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyle >::CreateVar(res,true);
   return res_var;
 }
 
@@ -340,7 +359,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyle::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyle * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyle::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyle >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxArrayInt_h_
 #define _wrap_wxArrayInt_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxBaseArrayInt.h"
 
 
-
-AMI_DECLARE_TYPE(wxArrayInt);
+#ifndef wxArrayInt_declared
+  #define wxArrayInt_declared
+  AMI_DECLARE_TYPE(wxArrayInt);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxArrayInt : public WrapClass<wxArrayInt>
@@ -89,7 +93,7 @@ class WrapClass_wxArrayInt : public WrapClass<wxArrayInt>
     ADD_CLASS_METHOD(Insert,"void wxArrayInt::Insert(_wxArraywxArrayInt lItem, size_t uiIndex, size_t nInsert = 1)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#insert)")
     ADD_CLASS_METHOD(RemoveAt,"void wxArrayInt::RemoveAt(size_t uiIndex, size_t nRemove = 1)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#removeat)")
     ADD_CLASS_METHOD(Remove,"void wxArrayInt::Remove(_wxArraywxArrayInt lItem)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#remove)")
-/* The following types are missing: _10283
+/* The following types are missing: _17784
     ADD_CLASS_METHOD(Sort,"void wxArrayInt::Sort(CMPFUNC_wxArraywxArrayInt fCmp)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#sort)")
 */
     ADD_CLASS_METHOD(assign_1,"void wxArrayInt::assign(_wxArraywxArrayInt const * first, _wxArraywxArrayInt const * last)  (http://docs.wxwidgets.org/stable/wx_wxarrayint.html#assign)")
@@ -143,12 +147,13 @@ class WrapClass_wxArrayInt : public WrapClass<wxArrayInt>
 
     void AddMethods(WrapClass<wxArrayInt>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxArrayInt_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxArrayInt_h

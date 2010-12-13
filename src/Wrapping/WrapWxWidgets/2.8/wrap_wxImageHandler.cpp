@@ -10,23 +10,48 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxImageHandler.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxImage.h"
-#include "wrap_wxInputStream.h"
-#include "wrap_wxOutputStream.h"
-#include "wrap_wxString.h"
-#include "wrap_wxClassInfo.h"
-#include "wrap_wxImageHandler.h"
+#ifndef wxImage_declared
+  #define wxImage_declared
+  AMI_DECLARE_TYPE(wxImage)
+#endif
+#ifndef wxInputStream_declared
+  #define wxInputStream_declared
+  AMI_DECLARE_TYPE(wxInputStream)
+#endif
+#ifndef wxOutputStream_declared
+  #define wxOutputStream_declared
+  AMI_DECLARE_TYPE(wxOutputStream)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
+#ifndef wxImageHandler_declared
+  #define wxImageHandler_declared
+  AMI_DECLARE_TYPE(wxImageHandler)
+#endif
 
 
-#include "wrap_wxImageHandler.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -66,29 +91,32 @@ void WrapClass_wxImageHandler::AddMethods(WrapClass<wxImageHandler>::ptr this_pt
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_LoadFile( this_ptr);
-      AddVar_SaveFile( this_ptr);
-      AddVar_GetImageCount( this_ptr);
-      AddVar_CanRead_1( this_ptr);
-      AddVar_CanRead( this_ptr);
-      AddVar_CanRead_2( this_ptr);
-      AddVar_SetName( this_ptr);
-      AddVar_SetExtension( this_ptr);
-      AddVar_SetType( this_ptr);
-      AddVar_SetMimeType( this_ptr);
-      AddVar_GetName( this_ptr);
-      AddVar_GetExtension( this_ptr);
-      AddVar_GetType( this_ptr);
-      AddVar_GetMimeType( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_LoadFile( this_ptr);
+  AddVar_SaveFile( this_ptr);
+  AddVar_GetImageCount( this_ptr);
+  AddVar_CanRead_1( this_ptr);
+  AddVar_CanRead( this_ptr);
+  AddVar_CanRead_2( this_ptr);
+  AddVar_SetName( this_ptr);
+  AddVar_SetExtension( this_ptr);
+  AddVar_SetType( this_ptr);
+  AddVar_SetMimeType( this_ptr);
+  AddVar_GetName( this_ptr);
+  AddVar_GetExtension( this_ptr);
+  AddVar_GetType( this_ptr);
+  AddVar_GetMimeType( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -109,7 +137,7 @@ void WrapClass_wxImageHandler::AddMethods(WrapClass<wxImageHandler>::ptr this_pt
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxImageHandler::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxImageHandler_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -148,9 +176,15 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   if (_p->GetNumParam()>4) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxImage > image_smtptr;
-  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxImage* image = image_smtptr.get();
+  wxImage* image;
+  if (CheckNullVar(_p,_n))  {
+    image=(wxImage*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxImage > image_smtptr;
+    if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    image = image_smtptr.get();
+  }
 
   boost::shared_ptr<wxInputStream > stream_smtptr;
   if (!get_val_smtptr_param<wxInputStream >(stream_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -186,9 +220,15 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxImage > image_smtptr;
-  if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxImage* image = image_smtptr.get();
+  wxImage* image;
+  if (CheckNullVar(_p,_n))  {
+    image=(wxImage*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxImage > image_smtptr;
+    if (!get_val_smtptr_param<wxImage >(image_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    image = image_smtptr.get();
+  }
 
   boost::shared_ptr<wxOutputStream > stream_smtptr;
   if (!get_val_smtptr_param<wxOutputStream >(stream_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
@@ -493,7 +533,7 @@ BasicVariable::ptr WrapClass_wxImageHandler::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

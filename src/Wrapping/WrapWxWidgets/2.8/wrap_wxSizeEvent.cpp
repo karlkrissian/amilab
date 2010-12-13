@@ -10,22 +10,44 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxSizeEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxSize.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxSizeEvent.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxSizeEvent_declared
+  #define wxSizeEvent_declared
+  AMI_DECLARE_TYPE(wxSizeEvent)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxSizeEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -65,41 +87,44 @@ void WrapClass_wxSizeEvent::AddMethods(WrapClass<wxSizeEvent>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetSize( this_ptr);
-      AddVar_GetRect( this_ptr);
-      AddVar_SetRect( this_ptr);
-      AddVar_Clone( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetSize( this_ptr);
+  AddVar_GetRect( this_ptr);
+  AddVar_SetRect( this_ptr);
+  AddVar_Clone( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member m_size
-      boost::shared_ptr<wxSize > var_m_size_ptr(&GetObj()->m_size, smartpointer_nodeleter<wxSize >());
-      if (var_m_size_ptr.get()) {
-        BasicVariable::ptr var_m_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_m_size_ptr);
-        if (var_m_size.get()) {
-          var_m_size->Rename("m_size");
-          context->AddVar(var_m_size,context);
-        }
-      }
-      
-      // Adding public member m_rect
-      boost::shared_ptr<wxRect > var_m_rect_ptr(&GetObj()->m_rect, smartpointer_nodeleter<wxRect >());
-      if (var_m_rect_ptr.get()) {
-        BasicVariable::ptr var_m_rect = AMILabType<wxRect >::CreateVarFromSmtPtr(var_m_rect_ptr);
-        if (var_m_rect.get()) {
-          var_m_rect->Rename("m_rect");
-          context->AddVar(var_m_rect,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member m_size
+  boost::shared_ptr<wxSize > var_m_size_ptr(&GetObj()->m_size, smartpointer_nodeleter<wxSize >());
+  if (var_m_size_ptr.get()) {
+    BasicVariable::ptr var_m_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_m_size_ptr);
+    if (var_m_size.get()) {
+      var_m_size->Rename("m_size");
+      context->AddVar(var_m_size,context);
+    }
+  }
+  
+  // Adding public member m_rect
+  boost::shared_ptr<wxRect > var_m_rect_ptr(&GetObj()->m_rect, smartpointer_nodeleter<wxRect >());
+  if (var_m_rect_ptr.get()) {
+    BasicVariable::ptr var_m_rect = AMILabType<wxRect >::CreateVarFromSmtPtr(var_m_rect_ptr);
+    if (var_m_rect.get()) {
+      var_m_rect->Rename("m_rect");
+      context->AddVar(var_m_rect,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -118,7 +143,7 @@ void WrapClass_wxSizeEvent::AddMethods(WrapClass<wxSizeEvent>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxSizeEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxSizeEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -369,7 +394,7 @@ BasicVariable::ptr WrapClass_wxSizeEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -389,7 +414,7 @@ BasicVariable::ptr WrapClass_wxSizeEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

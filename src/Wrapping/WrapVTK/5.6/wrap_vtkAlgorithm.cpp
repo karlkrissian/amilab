@@ -16,16 +16,29 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkAlgorithm.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkAlgorithm.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkDataObject.h"
+#ifndef vtkAlgorithm_declared
+  #define vtkAlgorithm_declared
+  AMI_DECLARE_TYPE(vtkAlgorithm)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkDataObject_declared
+  #define vtkDataObject_declared
+  AMI_DECLARE_TYPE(vtkDataObject)
+#endif
 
 
-#include "wrap_vtkAlgorithm.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -89,10 +102,10 @@ void WrapClass_vtkAlgorithm::AddMethods(WrapClass<vtkAlgorithm>::ptr this_ptr )
 /* The following types are missing: vtkExecutive
   AddVar_SetExecutive( this_ptr);
 */
-/* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
+/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
   AddVar_ProcessRequest( this_ptr);
 */
-/* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
+/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
   AddVar_ComputePipelineMTime( this_ptr);
 */
 /* The following types are missing: vtkInformation
@@ -220,7 +233,7 @@ void WrapClass_vtkAlgorithm::AddMethods(WrapClass<vtkAlgorithm>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkAlgorithm::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkAlgorithm_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -299,7 +312,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAlgorithm * res =   vtkAlgorithm::New();
-  BasicVariable::ptr res_var = WrapClass_vtkAlgorithm::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAlgorithm >::CreateVar(res,true);
   return res_var;
 }
 
@@ -358,7 +371,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   }
 
   vtkAlgorithm * res =   vtkAlgorithm::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkAlgorithm::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAlgorithm >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: vtkInformationIntegerKey
@@ -710,7 +723,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAlgorithm * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkAlgorithm::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAlgorithm >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -817,7 +830,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   return BasicVariable::ptr();
 }
 */
-/* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
+/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
 
 //---------------------------------------------------
 //  Wrapping of int vtkAlgorithm::ProcessRequest(vtkInformation * request, vtkInformationVector * * inInfo, vtkInformationVector * outInfo)
@@ -849,14 +862,16 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
     request = request_smtptr.get();
   }
 
-  vtkInformationVector* inInfo;
+  vtkInformationVector* local_inInfo = NULL;
+  vtkInformationVector** inInfo;
   if (CheckNullVar(_p,_n))  {
-    inInfo=(vtkInformationVector*)NULL;
+    inInfo=(vtkInformationVector**)NULL;
     _n++;
   } else {
     boost::shared_ptr<vtkInformationVector > inInfo_smtptr;
     if (!get_val_smtptr_param<vtkInformationVector >(inInfo_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-    inInfo = inInfo_smtptr.get();
+    local_inInfo = inInfo_smtptr.get();
+    inInfo = &local_inInfo;
   }
 
   vtkInformationVector* outInfo;
@@ -873,7 +888,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   return AMILabType<int >::CreateVar(res);
 }
 */
-/* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
+/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
 
 //---------------------------------------------------
 //  Wrapping of int vtkAlgorithm::ComputePipelineMTime(vtkInformation * request, vtkInformationVector * * inInfoVec, vtkInformationVector * outInfoVec, int requestFromOutputPort, long unsigned int * mtime)
@@ -907,14 +922,16 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
     request = request_smtptr.get();
   }
 
-  vtkInformationVector* inInfoVec;
+  vtkInformationVector* local_inInfoVec = NULL;
+  vtkInformationVector** inInfoVec;
   if (CheckNullVar(_p,_n))  {
-    inInfoVec=(vtkInformationVector*)NULL;
+    inInfoVec=(vtkInformationVector**)NULL;
     _n++;
   } else {
     boost::shared_ptr<vtkInformationVector > inInfoVec_smtptr;
     if (!get_val_smtptr_param<vtkInformationVector >(inInfoVec_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-    inInfoVec = inInfoVec_smtptr.get();
+    local_inInfoVec = inInfoVec_smtptr.get();
+    inInfoVec = &local_inInfoVec;
   }
 
   vtkInformationVector* outInfoVec;
@@ -1686,7 +1703,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(port,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkDataObject * res =   this->_objectptr->GetObj()->GetOutputDataObject(port);
-  BasicVariable::ptr res_var = WrapClass_vtkDataObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1716,7 +1733,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(connection,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkDataObject * res =   this->_objectptr->GetObj()->GetInputDataObject(port, connection);
-  BasicVariable::ptr res_var = WrapClass_vtkDataObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataObject >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: vtkAlgorithmOutput

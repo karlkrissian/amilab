@@ -13,11 +13,13 @@
 #ifndef _wrap_wxMiniFrame_h_
 #define _wrap_wxMiniFrame_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxFrame.h"
 
 
-
-AMI_DECLARE_TYPE(wxMiniFrame);
+#ifndef wxMiniFrame_declared
+  #define wxMiniFrame_declared
+  AMI_DECLARE_TYPE(wxMiniFrame);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxMiniFrame : public WrapClass<wxMiniFrame>
@@ -86,12 +90,13 @@ class WrapClass_wxMiniFrame : public WrapClass<wxMiniFrame>
 
     void AddMethods(WrapClass<wxMiniFrame>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxMiniFrame_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxMiniFrame_h

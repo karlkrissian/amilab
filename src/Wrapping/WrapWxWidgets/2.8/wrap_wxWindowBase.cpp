@@ -10,44 +10,132 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxWindowBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxString.h"
-#include "wrap_wxVisualAttributes.h"
-#include "wrap_wxWindowBase.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxValidator.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxScrollHelper.h"
-#include "wrap_wxWindowList.h"
-#include "wrap_wxEvtHandler.h"
-#include "wrap_wxAcceleratorTable.h"
-#include "wrap_wxDC.h"
-#include "wrap_wxRegion.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxFont.h"
-#include "wrap_wxCursor.h"
-#include "wrap_wxUpdateUIEvent.h"
-#include "wrap_wxMenu.h"
-#include "wrap_wxLayoutConstraints.h"
-#include "wrap_wxSizer.h"
-#include "wrap_wxSysColourChangedEvent.h"
-#include "wrap_wxInitDialogEvent.h"
-#include "wrap_wxMouseEvent.h"
-#include "wrap_wxHelpEvent.h"
-#include "wrap_wxPalette.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxVisualAttributes_declared
+  #define wxVisualAttributes_declared
+  AMI_DECLARE_TYPE(wxVisualAttributes)
+#endif
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxValidator_declared
+  #define wxValidator_declared
+  AMI_DECLARE_TYPE(wxValidator)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxScrollHelper_declared
+  #define wxScrollHelper_declared
+  AMI_DECLARE_TYPE(wxScrollHelper)
+#endif
+#ifndef wxWindowList_declared
+  #define wxWindowList_declared
+  AMI_DECLARE_TYPE(wxWindowList)
+#endif
+#ifndef wxEvtHandler_declared
+  #define wxEvtHandler_declared
+  AMI_DECLARE_TYPE(wxEvtHandler)
+#endif
+#ifndef wxAcceleratorTable_declared
+  #define wxAcceleratorTable_declared
+  AMI_DECLARE_TYPE(wxAcceleratorTable)
+#endif
+#ifndef wxDC_declared
+  #define wxDC_declared
+  AMI_DECLARE_TYPE(wxDC)
+#endif
+#ifndef wxRegion_declared
+  #define wxRegion_declared
+  AMI_DECLARE_TYPE(wxRegion)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont)
+#endif
+#ifndef wxCursor_declared
+  #define wxCursor_declared
+  AMI_DECLARE_TYPE(wxCursor)
+#endif
+#ifndef wxUpdateUIEvent_declared
+  #define wxUpdateUIEvent_declared
+  AMI_DECLARE_TYPE(wxUpdateUIEvent)
+#endif
+#ifndef wxMenu_declared
+  #define wxMenu_declared
+  AMI_DECLARE_TYPE(wxMenu)
+#endif
+#ifndef wxLayoutConstraints_declared
+  #define wxLayoutConstraints_declared
+  AMI_DECLARE_TYPE(wxLayoutConstraints)
+#endif
+#ifndef wxSizer_declared
+  #define wxSizer_declared
+  AMI_DECLARE_TYPE(wxSizer)
+#endif
+#ifndef wxSysColourChangedEvent_declared
+  #define wxSysColourChangedEvent_declared
+  AMI_DECLARE_TYPE(wxSysColourChangedEvent)
+#endif
+#ifndef wxInitDialogEvent_declared
+  #define wxInitDialogEvent_declared
+  AMI_DECLARE_TYPE(wxInitDialogEvent)
+#endif
+#ifndef wxMouseEvent_declared
+  #define wxMouseEvent_declared
+  AMI_DECLARE_TYPE(wxMouseEvent)
+#endif
+#ifndef wxHelpEvent_declared
+  #define wxHelpEvent_declared
+  AMI_DECLARE_TYPE(wxHelpEvent)
+#endif
+#ifndef wxPalette_declared
+  #define wxPalette_declared
+  AMI_DECLARE_TYPE(wxPalette)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxWindowBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -94,284 +182,287 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_CreateBase( this_ptr);
-      AddVar_Close( this_ptr);
-      AddVar_Destroy( this_ptr);
-      AddVar_DestroyChildren( this_ptr);
-      AddVar_IsBeingDeleted( this_ptr);
-      AddVar_SetName( this_ptr);
-      AddVar_GetName( this_ptr);
-      AddVar_SetWindowVariant( this_ptr);
-      AddVar_GetWindowVariant( this_ptr);
-      AddVar_SetId( this_ptr);
-      AddVar_GetId( this_ptr);
-      AddVar_GetLayoutDirection( this_ptr);
-      AddVar_SetLayoutDirection( this_ptr);
-      AddVar_AdjustForLayoutDirection( this_ptr);
-      AddVar_SetSize_1( this_ptr);
-      AddVar_SetSize( this_ptr);
-      AddVar_SetSize_2( this_ptr);
-      AddVar_SetSize_3( this_ptr);
-      AddVar_SetSize_4( this_ptr);
-      AddVar_Move_1( this_ptr);
-      AddVar_Move( this_ptr);
-      AddVar_Move_2( this_ptr);
-      AddVar_SetPosition( this_ptr);
-      AddVar_SetClientSize_1( this_ptr);
-      AddVar_SetClientSize( this_ptr);
-      AddVar_SetClientSize_2( this_ptr);
-      AddVar_SetClientSize_3( this_ptr);
-      AddVar_GetPosition_1( this_ptr);
-      AddVar_GetPosition( this_ptr);
-      AddVar_GetPosition_2( this_ptr);
-      AddVar_GetScreenPosition_1( this_ptr);
-      AddVar_GetScreenPosition( this_ptr);
-      AddVar_GetScreenPosition_2( this_ptr);
-      AddVar_GetSize_1( this_ptr);
-      AddVar_GetSize( this_ptr);
-      AddVar_GetSize_2( this_ptr);
-      AddVar_GetClientSize_1( this_ptr);
-      AddVar_GetClientSize( this_ptr);
-      AddVar_GetClientSize_2( this_ptr);
-      AddVar_GetRect( this_ptr);
-      AddVar_GetScreenRect( this_ptr);
-      AddVar_GetClientAreaOrigin( this_ptr);
-      AddVar_GetClientRect( this_ptr);
-      AddVar_ClientToWindowSize( this_ptr);
-      AddVar_WindowToClientSize( this_ptr);
-      AddVar_GetBestSize_1( this_ptr);
-      AddVar_GetBestSize( this_ptr);
-      AddVar_GetBestSize_2( this_ptr);
-      AddVar_SetScrollHelper( this_ptr);
-      AddVar_GetScrollHelper( this_ptr);
-      AddVar_InvalidateBestSize( this_ptr);
-      AddVar_CacheBestSize( this_ptr);
-      AddVar_GetEffectiveMinSize( this_ptr);
-      AddVar_SetInitialSize( this_ptr);
-      AddVar_Centre( this_ptr);
-      AddVar_Center( this_ptr);
-      AddVar_CentreOnParent( this_ptr);
-      AddVar_CenterOnParent( this_ptr);
-      AddVar_Fit( this_ptr);
-      AddVar_FitInside( this_ptr);
-      AddVar_SetSizeHints_1( this_ptr);
-      AddVar_SetSizeHints( this_ptr);
-      AddVar_SetSizeHints_2( this_ptr);
-      AddVar_DoSetSizeHints( this_ptr);
-      AddVar_SetVirtualSizeHints_1( this_ptr);
-      AddVar_SetVirtualSizeHints( this_ptr);
-      AddVar_SetVirtualSizeHints_2( this_ptr);
-      AddVar_SetMinSize( this_ptr);
-      AddVar_SetMaxSize( this_ptr);
-      AddVar_GetMinSize( this_ptr);
-      AddVar_GetMaxSize( this_ptr);
-      AddVar_GetMinWidth( this_ptr);
-      AddVar_GetMinHeight( this_ptr);
-      AddVar_GetMaxWidth( this_ptr);
-      AddVar_GetMaxHeight( this_ptr);
-      AddVar_SetVirtualSize_1( this_ptr);
-      AddVar_SetVirtualSize( this_ptr);
-      AddVar_SetVirtualSize_2( this_ptr);
-      AddVar_GetVirtualSize_1( this_ptr);
-      AddVar_GetVirtualSize( this_ptr);
-      AddVar_GetVirtualSize_2( this_ptr);
-      AddVar_DoSetVirtualSize( this_ptr);
-      AddVar_DoGetVirtualSize( this_ptr);
-      AddVar_GetBestVirtualSize( this_ptr);
-      AddVar_GetWindowBorderSize( this_ptr);
-      AddVar_Show( this_ptr);
-      AddVar_Hide( this_ptr);
-      AddVar_Enable( this_ptr);
-      AddVar_Disable( this_ptr);
-      AddVar_IsShown( this_ptr);
-      AddVar_IsEnabled( this_ptr);
-      AddVar_IsShownOnScreen( this_ptr);
-      AddVar_SetWindowStyleFlag( this_ptr);
-      AddVar_GetWindowStyleFlag( this_ptr);
-      AddVar_SetWindowStyle( this_ptr);
-      AddVar_GetWindowStyle( this_ptr);
-      AddVar_HasFlag( this_ptr);
-      AddVar_IsRetained( this_ptr);
-      AddVar_ToggleWindowStyle( this_ptr);
-      AddVar_SetExtraStyle( this_ptr);
-      AddVar_GetExtraStyle( this_ptr);
-      AddVar_MakeModal( this_ptr);
-      AddVar_SetThemeEnabled( this_ptr);
-      AddVar_GetThemeEnabled( this_ptr);
-      AddVar_SetFocusFromKbd( this_ptr);
-      AddVar_AcceptsFocus( this_ptr);
-      AddVar_AcceptsFocusFromKeyboard( this_ptr);
-      AddVar_MoveBeforeInTabOrder( this_ptr);
-      AddVar_MoveAfterInTabOrder( this_ptr);
-      AddVar_GetChildren_1( this_ptr);
-      AddVar_GetChildren( this_ptr);
-      AddVar_GetChildren_2( this_ptr);
-      AddVar_GetWindowChildren( this_ptr);
-      AddVar_GetPrevSibling( this_ptr);
-      AddVar_GetNextSibling( this_ptr);
-      AddVar_GetParent( this_ptr);
-      AddVar_GetGrandParent( this_ptr);
-      AddVar_IsTopLevel( this_ptr);
-      AddVar_SetParent( this_ptr);
-      AddVar_Reparent( this_ptr);
-      AddVar_AddChild( this_ptr);
-      AddVar_RemoveChild( this_ptr);
-      AddVar_FindWindow_1( this_ptr);
-      AddVar_FindWindow( this_ptr);
-      AddVar_FindWindow_2( this_ptr);
-      AddVar_GetEventHandler( this_ptr);
-      AddVar_SetEventHandler( this_ptr);
-      AddVar_PushEventHandler( this_ptr);
-      AddVar_PopEventHandler( this_ptr);
-      AddVar_RemoveEventHandler( this_ptr);
-      AddVar_SetValidator( this_ptr);
-      AddVar_GetValidator( this_ptr);
-      AddVar_Validate( this_ptr);
-      AddVar_TransferDataToWindow( this_ptr);
-      AddVar_TransferDataFromWindow( this_ptr);
-      AddVar_InitDialog( this_ptr);
-      AddVar_SetAcceleratorTable( this_ptr);
-      AddVar_GetAcceleratorTable( this_ptr);
-      AddVar_ConvertPixelsToDialog_1( this_ptr);
-      AddVar_ConvertDialogToPixels_1( this_ptr);
-      AddVar_ConvertPixelsToDialog( this_ptr);
-      AddVar_ConvertPixelsToDialog_2( this_ptr);
-      AddVar_ConvertDialogToPixels( this_ptr);
-      AddVar_ConvertDialogToPixels_2( this_ptr);
-      AddVar_CaptureMouse( this_ptr);
-      AddVar_ReleaseMouse( this_ptr);
-      AddVar_HasCapture( this_ptr);
-      AddVar_RefreshRect( this_ptr);
-      AddVar_Update( this_ptr);
-      AddVar_ClearBackground( this_ptr);
-      AddVar_Freeze( this_ptr);
-      AddVar_Thaw( this_ptr);
-      AddVar_IsFrozen( this_ptr);
-      AddVar_PrepareDC( this_ptr);
-      AddVar_IsDoubleBuffered( this_ptr);
-      AddVar_GetUpdateRegion_1( this_ptr);
-      AddVar_GetUpdateRegion( this_ptr);
-      AddVar_GetUpdateRegion_2( this_ptr);
-      AddVar_GetUpdateClientRect( this_ptr);
-      AddVar_DoIsExposed_1( this_ptr);
-      AddVar_DoIsExposed( this_ptr);
-      AddVar_DoIsExposed_2( this_ptr);
-      AddVar_IsExposed_1( this_ptr);
-      AddVar_IsExposed( this_ptr);
-      AddVar_IsExposed_2( this_ptr);
-      AddVar_IsExposed_3( this_ptr);
-      AddVar_IsExposed_4( this_ptr);
-      AddVar_GetDefaultAttributes( this_ptr);
-      AddVar_SetBackgroundColour( this_ptr);
-      AddVar_SetOwnBackgroundColour( this_ptr);
-      AddVar_GetBackgroundColour( this_ptr);
-      AddVar_InheritsBackgroundColour( this_ptr);
-      AddVar_UseBgCol( this_ptr);
-      AddVar_SetForegroundColour( this_ptr);
-      AddVar_SetOwnForegroundColour( this_ptr);
-      AddVar_GetForegroundColour( this_ptr);
-      AddVar_SetBackgroundStyle( this_ptr);
-      AddVar_GetBackgroundStyle( this_ptr);
-      AddVar_HasTransparentBackground( this_ptr);
-      AddVar_SetOwnFont( this_ptr);
-      AddVar_GetFont( this_ptr);
-      AddVar_SetCursor( this_ptr);
-      AddVar_GetCursor( this_ptr);
+  // Adding standard methods 
+  AddVar_CreateBase( this_ptr);
+  AddVar_Close( this_ptr);
+  AddVar_Destroy( this_ptr);
+  AddVar_DestroyChildren( this_ptr);
+  AddVar_IsBeingDeleted( this_ptr);
+  AddVar_SetName( this_ptr);
+  AddVar_GetName( this_ptr);
+  AddVar_SetWindowVariant( this_ptr);
+  AddVar_GetWindowVariant( this_ptr);
+  AddVar_SetId( this_ptr);
+  AddVar_GetId( this_ptr);
+  AddVar_GetLayoutDirection( this_ptr);
+  AddVar_SetLayoutDirection( this_ptr);
+  AddVar_AdjustForLayoutDirection( this_ptr);
+  AddVar_SetSize_1( this_ptr);
+  AddVar_SetSize( this_ptr);
+  AddVar_SetSize_2( this_ptr);
+  AddVar_SetSize_3( this_ptr);
+  AddVar_SetSize_4( this_ptr);
+  AddVar_Move_1( this_ptr);
+  AddVar_Move( this_ptr);
+  AddVar_Move_2( this_ptr);
+  AddVar_SetPosition( this_ptr);
+  AddVar_SetClientSize_1( this_ptr);
+  AddVar_SetClientSize( this_ptr);
+  AddVar_SetClientSize_2( this_ptr);
+  AddVar_SetClientSize_3( this_ptr);
+  AddVar_GetPosition_1( this_ptr);
+  AddVar_GetPosition( this_ptr);
+  AddVar_GetPosition_2( this_ptr);
+  AddVar_GetScreenPosition_1( this_ptr);
+  AddVar_GetScreenPosition( this_ptr);
+  AddVar_GetScreenPosition_2( this_ptr);
+  AddVar_GetSize_1( this_ptr);
+  AddVar_GetSize( this_ptr);
+  AddVar_GetSize_2( this_ptr);
+  AddVar_GetClientSize_1( this_ptr);
+  AddVar_GetClientSize( this_ptr);
+  AddVar_GetClientSize_2( this_ptr);
+  AddVar_GetRect( this_ptr);
+  AddVar_GetScreenRect( this_ptr);
+  AddVar_GetClientAreaOrigin( this_ptr);
+  AddVar_GetClientRect( this_ptr);
+  AddVar_ClientToWindowSize( this_ptr);
+  AddVar_WindowToClientSize( this_ptr);
+  AddVar_GetBestSize_1( this_ptr);
+  AddVar_GetBestSize( this_ptr);
+  AddVar_GetBestSize_2( this_ptr);
+  AddVar_SetScrollHelper( this_ptr);
+  AddVar_GetScrollHelper( this_ptr);
+  AddVar_InvalidateBestSize( this_ptr);
+  AddVar_CacheBestSize( this_ptr);
+  AddVar_GetEffectiveMinSize( this_ptr);
+  AddVar_SetInitialSize( this_ptr);
+  AddVar_Centre( this_ptr);
+  AddVar_Center( this_ptr);
+  AddVar_CentreOnParent( this_ptr);
+  AddVar_CenterOnParent( this_ptr);
+  AddVar_Fit( this_ptr);
+  AddVar_FitInside( this_ptr);
+  AddVar_SetSizeHints_1( this_ptr);
+  AddVar_SetSizeHints( this_ptr);
+  AddVar_SetSizeHints_2( this_ptr);
+  AddVar_DoSetSizeHints( this_ptr);
+  AddVar_SetVirtualSizeHints_1( this_ptr);
+  AddVar_SetVirtualSizeHints( this_ptr);
+  AddVar_SetVirtualSizeHints_2( this_ptr);
+  AddVar_SetMinSize( this_ptr);
+  AddVar_SetMaxSize( this_ptr);
+  AddVar_GetMinSize( this_ptr);
+  AddVar_GetMaxSize( this_ptr);
+  AddVar_GetMinWidth( this_ptr);
+  AddVar_GetMinHeight( this_ptr);
+  AddVar_GetMaxWidth( this_ptr);
+  AddVar_GetMaxHeight( this_ptr);
+  AddVar_SetVirtualSize_1( this_ptr);
+  AddVar_SetVirtualSize( this_ptr);
+  AddVar_SetVirtualSize_2( this_ptr);
+  AddVar_GetVirtualSize_1( this_ptr);
+  AddVar_GetVirtualSize( this_ptr);
+  AddVar_GetVirtualSize_2( this_ptr);
+  AddVar_DoSetVirtualSize( this_ptr);
+  AddVar_DoGetVirtualSize( this_ptr);
+  AddVar_GetBestVirtualSize( this_ptr);
+  AddVar_GetWindowBorderSize( this_ptr);
+  AddVar_Show( this_ptr);
+  AddVar_Hide( this_ptr);
+  AddVar_Enable( this_ptr);
+  AddVar_Disable( this_ptr);
+  AddVar_IsShown( this_ptr);
+  AddVar_IsEnabled( this_ptr);
+  AddVar_IsShownOnScreen( this_ptr);
+  AddVar_SetWindowStyleFlag( this_ptr);
+  AddVar_GetWindowStyleFlag( this_ptr);
+  AddVar_SetWindowStyle( this_ptr);
+  AddVar_GetWindowStyle( this_ptr);
+  AddVar_HasFlag( this_ptr);
+  AddVar_IsRetained( this_ptr);
+  AddVar_ToggleWindowStyle( this_ptr);
+  AddVar_SetExtraStyle( this_ptr);
+  AddVar_GetExtraStyle( this_ptr);
+  AddVar_MakeModal( this_ptr);
+  AddVar_SetThemeEnabled( this_ptr);
+  AddVar_GetThemeEnabled( this_ptr);
+  AddVar_SetFocusFromKbd( this_ptr);
+  AddVar_AcceptsFocus( this_ptr);
+  AddVar_AcceptsFocusFromKeyboard( this_ptr);
+  AddVar_MoveBeforeInTabOrder( this_ptr);
+  AddVar_MoveAfterInTabOrder( this_ptr);
+  AddVar_GetChildren_1( this_ptr);
+  AddVar_GetChildren( this_ptr);
+  AddVar_GetChildren_2( this_ptr);
+  AddVar_GetWindowChildren( this_ptr);
+  AddVar_GetPrevSibling( this_ptr);
+  AddVar_GetNextSibling( this_ptr);
+  AddVar_GetParent( this_ptr);
+  AddVar_GetGrandParent( this_ptr);
+  AddVar_IsTopLevel( this_ptr);
+  AddVar_SetParent( this_ptr);
+  AddVar_Reparent( this_ptr);
+  AddVar_AddChild( this_ptr);
+  AddVar_RemoveChild( this_ptr);
+  AddVar_FindWindow_1( this_ptr);
+  AddVar_FindWindow( this_ptr);
+  AddVar_FindWindow_2( this_ptr);
+  AddVar_GetEventHandler( this_ptr);
+  AddVar_SetEventHandler( this_ptr);
+  AddVar_PushEventHandler( this_ptr);
+  AddVar_PopEventHandler( this_ptr);
+  AddVar_RemoveEventHandler( this_ptr);
+  AddVar_SetValidator( this_ptr);
+  AddVar_GetValidator( this_ptr);
+  AddVar_Validate( this_ptr);
+  AddVar_TransferDataToWindow( this_ptr);
+  AddVar_TransferDataFromWindow( this_ptr);
+  AddVar_InitDialog( this_ptr);
+  AddVar_SetAcceleratorTable( this_ptr);
+  AddVar_GetAcceleratorTable( this_ptr);
+  AddVar_ConvertPixelsToDialog_1( this_ptr);
+  AddVar_ConvertDialogToPixels_1( this_ptr);
+  AddVar_ConvertPixelsToDialog( this_ptr);
+  AddVar_ConvertPixelsToDialog_2( this_ptr);
+  AddVar_ConvertDialogToPixels( this_ptr);
+  AddVar_ConvertDialogToPixels_2( this_ptr);
+  AddVar_CaptureMouse( this_ptr);
+  AddVar_ReleaseMouse( this_ptr);
+  AddVar_HasCapture( this_ptr);
+  AddVar_RefreshRect( this_ptr);
+  AddVar_Update( this_ptr);
+  AddVar_ClearBackground( this_ptr);
+  AddVar_Freeze( this_ptr);
+  AddVar_Thaw( this_ptr);
+  AddVar_IsFrozen( this_ptr);
+  AddVar_PrepareDC( this_ptr);
+  AddVar_IsDoubleBuffered( this_ptr);
+  AddVar_GetUpdateRegion_1( this_ptr);
+  AddVar_GetUpdateRegion( this_ptr);
+  AddVar_GetUpdateRegion_2( this_ptr);
+  AddVar_GetUpdateClientRect( this_ptr);
+  AddVar_DoIsExposed_1( this_ptr);
+  AddVar_DoIsExposed( this_ptr);
+  AddVar_DoIsExposed_2( this_ptr);
+  AddVar_IsExposed_1( this_ptr);
+  AddVar_IsExposed( this_ptr);
+  AddVar_IsExposed_2( this_ptr);
+  AddVar_IsExposed_3( this_ptr);
+  AddVar_IsExposed_4( this_ptr);
+  AddVar_GetDefaultAttributes( this_ptr);
+  AddVar_SetBackgroundColour( this_ptr);
+  AddVar_SetOwnBackgroundColour( this_ptr);
+  AddVar_GetBackgroundColour( this_ptr);
+  AddVar_InheritsBackgroundColour( this_ptr);
+  AddVar_UseBgCol( this_ptr);
+  AddVar_SetForegroundColour( this_ptr);
+  AddVar_SetOwnForegroundColour( this_ptr);
+  AddVar_GetForegroundColour( this_ptr);
+  AddVar_SetBackgroundStyle( this_ptr);
+  AddVar_GetBackgroundStyle( this_ptr);
+  AddVar_HasTransparentBackground( this_ptr);
+  AddVar_SetOwnFont( this_ptr);
+  AddVar_GetFont( this_ptr);
+  AddVar_SetCursor( this_ptr);
+  AddVar_GetCursor( this_ptr);
 /* The following types are missing: wxCaret
-      AddVar_SetCaret( this_ptr);
+  AddVar_SetCaret( this_ptr);
 */
 /* The following types are missing: wxCaret
-      AddVar_GetCaret( this_ptr);
+  AddVar_GetCaret( this_ptr);
 */
-      AddVar_ClientToScreen_1( this_ptr);
-      AddVar_ScreenToClient_1( this_ptr);
-      AddVar_ClientToScreen( this_ptr);
-      AddVar_ClientToScreen_2( this_ptr);
-      AddVar_ScreenToClient( this_ptr);
-      AddVar_ScreenToClient_2( this_ptr);
-      AddVar_HitTest_1( this_ptr);
-      AddVar_HitTest( this_ptr);
-      AddVar_HitTest_2( this_ptr);
-      AddVar_GetBorder_1( this_ptr);
-      AddVar_GetBorder( this_ptr);
-      AddVar_GetBorder_2( this_ptr);
-      AddVar_UpdateWindowUI( this_ptr);
-      AddVar_DoUpdateWindowUI( this_ptr);
-      AddVar_PopupMenu_1( this_ptr);
-      AddVar_PopupMenu( this_ptr);
-      AddVar_PopupMenu_2( this_ptr);
-      AddVar_HasMultiplePages( this_ptr);
-      AddVar_HasScrollbar( this_ptr);
-      AddVar_ScrollLines( this_ptr);
-      AddVar_ScrollPages( this_ptr);
-      AddVar_LineUp( this_ptr);
-      AddVar_LineDown( this_ptr);
-      AddVar_PageUp( this_ptr);
-      AddVar_PageDown( this_ptr);
-      AddVar_SetHelpText( this_ptr);
-      AddVar_SetHelpTextForId( this_ptr);
-      AddVar_GetHelpText( this_ptr);
-      AddVar_SetToolTip_1( this_ptr);
-      AddVar_SetToolTip( this_ptr);
+  AddVar_ClientToScreen_1( this_ptr);
+  AddVar_ScreenToClient_1( this_ptr);
+  AddVar_ClientToScreen( this_ptr);
+  AddVar_ClientToScreen_2( this_ptr);
+  AddVar_ScreenToClient( this_ptr);
+  AddVar_ScreenToClient_2( this_ptr);
+  AddVar_HitTest_1( this_ptr);
+  AddVar_HitTest( this_ptr);
+  AddVar_HitTest_2( this_ptr);
+  AddVar_GetBorder_1( this_ptr);
+  AddVar_GetBorder( this_ptr);
+  AddVar_GetBorder_2( this_ptr);
+  AddVar_UpdateWindowUI( this_ptr);
+  AddVar_DoUpdateWindowUI( this_ptr);
+  AddVar_PopupMenu_1( this_ptr);
+  AddVar_PopupMenu( this_ptr);
+  AddVar_PopupMenu_2( this_ptr);
+  AddVar_HasMultiplePages( this_ptr);
+  AddVar_HasScrollbar( this_ptr);
+  AddVar_ScrollLines( this_ptr);
+  AddVar_ScrollPages( this_ptr);
+  AddVar_LineUp( this_ptr);
+  AddVar_LineDown( this_ptr);
+  AddVar_PageUp( this_ptr);
+  AddVar_PageDown( this_ptr);
+  AddVar_SetHelpText( this_ptr);
+  AddVar_SetHelpTextForId( this_ptr);
+  AddVar_GetHelpText( this_ptr);
+  AddVar_SetToolTip_1( this_ptr);
+  AddVar_SetToolTip( this_ptr);
 /* The following types are missing: wxToolTip
-      AddVar_SetToolTip_2( this_ptr);
+  AddVar_SetToolTip_2( this_ptr);
 */
-      AddVar_UnsetToolTip( this_ptr);
+  AddVar_UnsetToolTip( this_ptr);
 /* The following types are missing: wxToolTip
-      AddVar_GetToolTip( this_ptr);
+  AddVar_GetToolTip( this_ptr);
 */
 /* The following types are missing: wxDropTarget
-      AddVar_GetDropTarget( this_ptr);
+  AddVar_GetDropTarget( this_ptr);
 */
-      AddVar_DragAcceptFiles( this_ptr);
-      AddVar_SetConstraints( this_ptr);
-      AddVar_GetConstraints( this_ptr);
-      AddVar_UnsetConstraints( this_ptr);
-      AddVar_GetConstraintsInvolvedIn( this_ptr);
-      AddVar_AddConstraintReference( this_ptr);
-      AddVar_RemoveConstraintReference( this_ptr);
-      AddVar_DeleteRelatedConstraints( this_ptr);
-      AddVar_ResetConstraints( this_ptr);
-      AddVar_SetConstraintSizes( this_ptr);
-      AddVar_LayoutPhase1( this_ptr);
-      AddVar_LayoutPhase2( this_ptr);
-      AddVar_DoPhase( this_ptr);
-      AddVar_SetSizeConstraint( this_ptr);
-      AddVar_MoveConstraint( this_ptr);
-      AddVar_GetSizeConstraint( this_ptr);
-      AddVar_GetClientSizeConstraint( this_ptr);
-      AddVar_GetPositionConstraint( this_ptr);
-      AddVar_SetAutoLayout( this_ptr);
-      AddVar_GetAutoLayout( this_ptr);
-      AddVar_Layout( this_ptr);
-      AddVar_SetSizer( this_ptr);
-      AddVar_SetSizerAndFit( this_ptr);
-      AddVar_GetSizer( this_ptr);
-      AddVar_SetContainingSizer( this_ptr);
-      AddVar_GetContainingSizer( this_ptr);
-      AddVar_SetTransparent( this_ptr);
-      AddVar_CanSetTransparent( this_ptr);
-      AddVar_OnSysColourChanged( this_ptr);
-      AddVar_OnInitDialog( this_ptr);
-      AddVar_OnMiddleClick( this_ptr);
-      AddVar_OnHelp( this_ptr);
-      AddVar_OnInternalIdle( this_ptr);
+  AddVar_DragAcceptFiles( this_ptr);
+  AddVar_SetConstraints( this_ptr);
+  AddVar_GetConstraints( this_ptr);
+  AddVar_UnsetConstraints( this_ptr);
+  AddVar_GetConstraintsInvolvedIn( this_ptr);
+  AddVar_AddConstraintReference( this_ptr);
+  AddVar_RemoveConstraintReference( this_ptr);
+  AddVar_DeleteRelatedConstraints( this_ptr);
+  AddVar_ResetConstraints( this_ptr);
+  AddVar_SetConstraintSizes( this_ptr);
+  AddVar_LayoutPhase1( this_ptr);
+  AddVar_LayoutPhase2( this_ptr);
+  AddVar_DoPhase( this_ptr);
+  AddVar_SetSizeConstraint( this_ptr);
+  AddVar_MoveConstraint( this_ptr);
+  AddVar_GetSizeConstraint( this_ptr);
+  AddVar_GetClientSizeConstraint( this_ptr);
+  AddVar_GetPositionConstraint( this_ptr);
+  AddVar_SetAutoLayout( this_ptr);
+  AddVar_GetAutoLayout( this_ptr);
+  AddVar_Layout( this_ptr);
+  AddVar_SetSizer( this_ptr);
+  AddVar_SetSizerAndFit( this_ptr);
+  AddVar_GetSizer( this_ptr);
+  AddVar_SetContainingSizer( this_ptr);
+  AddVar_GetContainingSizer( this_ptr);
+  AddVar_SetTransparent( this_ptr);
+  AddVar_CanSetTransparent( this_ptr);
+  AddVar_OnSysColourChanged( this_ptr);
+  AddVar_OnInitDialog( this_ptr);
+  AddVar_OnMiddleClick( this_ptr);
+  AddVar_OnHelp( this_ptr);
+  AddVar_OnInternalIdle( this_ptr);
 /* The following types are missing: _GtkWidget
-      AddVar_AssociateHandle( this_ptr);
+  AddVar_AssociateHandle( this_ptr);
 */
-      AddVar_DissociateHandle( this_ptr);
-      AddVar_GetPalette( this_ptr);
-      AddVar_SetPalette( this_ptr);
-      AddVar_HasCustomPalette( this_ptr);
-      AddVar_GetAncestorWithCustomPalette( this_ptr);
-      AddVar_InheritAttributes( this_ptr);
-      AddVar_ShouldInheritColours( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_DissociateHandle( this_ptr);
+  AddVar_GetPalette( this_ptr);
+  AddVar_SetPalette( this_ptr);
+  AddVar_HasCustomPalette( this_ptr);
+  AddVar_GetAncestorWithCustomPalette( this_ptr);
+  AddVar_InheritAttributes( this_ptr);
+  AddVar_ShouldInheritColours( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -392,7 +483,7 @@ void WrapClass_wxWindowBase::AddMethods(WrapClass<wxWindowBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxWindowBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxWindowBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -505,7 +596,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   wxWindowBase::FindFocus();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -525,7 +616,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   wxWindowBase::DoFindFocus();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -552,12 +643,18 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<long >(winid_long,_p,_n,true,false)) ClassHelpAndReturn;
   long int winid = winid_long;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent = 0l;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   wxWindow * res =   wxWindowBase::FindWindowById(winid, parent);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -584,12 +681,18 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_smtptr_param<wxString >(name_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & name = *name_smtptr;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent = 0l;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   wxWindow * res =   wxWindowBase::FindWindowByName(name, parent);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -616,12 +719,18 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_smtptr_param<wxString >(label_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
   wxString const & label = *label_smtptr;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent = 0l;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   wxWindow * res =   wxWindowBase::FindWindowByLabel(label, parent);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -641,7 +750,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   wxWindowBase::GetCapture();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -695,9 +804,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>7) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* parent = parent_smtptr.get();
+  wxWindowBase* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   int winid;
   if (!get_val_param<int >(winid,_p,_n,true,false)) ClassHelpAndReturn;
@@ -1398,13 +1513,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPosition(x, y);
   return BasicVariable::ptr();
@@ -1468,13 +1595,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetScreenPosition(x, y);
   return BasicVariable::ptr();
@@ -1538,13 +1677,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* w = w_smtptr.get();
+  int* w;
+  if (CheckNullVar(_p,_n))  {
+    w=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > w_smtptr;
+    if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    w = w_smtptr.get();
+  }
 
-  boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* h = h_smtptr.get();
+  int* h;
+  if (CheckNullVar(_p,_n))  {
+    h=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > h_smtptr;
+    if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    h = h_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetSize(w, h);
   return BasicVariable::ptr();
@@ -1608,13 +1759,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* w = w_smtptr.get();
+  int* w;
+  if (CheckNullVar(_p,_n))  {
+    w=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > w_smtptr;
+    if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    w = w_smtptr.get();
+  }
 
-  boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* h = h_smtptr.get();
+  int* h;
+  if (CheckNullVar(_p,_n))  {
+    h=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > h_smtptr;
+    if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    h = h_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetClientSize(w, h);
   return BasicVariable::ptr();
@@ -1846,13 +2009,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* w = w_smtptr.get();
+  int* w;
+  if (CheckNullVar(_p,_n))  {
+    w=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > w_smtptr;
+    if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    w = w_smtptr.get();
+  }
 
-  boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* h = h_smtptr.get();
+  int* h;
+  if (CheckNullVar(_p,_n))  {
+    h=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > h_smtptr;
+    if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    h = h_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetBestSize(w, h);
   return BasicVariable::ptr();
@@ -1875,9 +2050,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxScrollHelper > sh_smtptr;
-  if (!get_val_smtptr_param<wxScrollHelper >(sh_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxScrollHelper* sh = sh_smtptr.get();
+  wxScrollHelper* sh;
+  if (CheckNullVar(_p,_n))  {
+    sh=(wxScrollHelper*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxScrollHelper > sh_smtptr;
+    if (!get_val_smtptr_param<wxScrollHelper >(sh_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    sh = sh_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetScrollHelper(sh);
   return BasicVariable::ptr();
@@ -1899,7 +2080,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxScrollHelper * res =   this->_objectptr->GetObj()->GetScrollHelper();
-  BasicVariable::ptr res_var = WrapClass_wxScrollHelper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxScrollHelper >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2653,13 +2834,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetVirtualSize(x, y);
   return BasicVariable::ptr();
@@ -3239,9 +3432,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* win = win_smtptr.get();
+  wxWindow* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > win_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->MoveBeforeInTabOrder(win);
   return BasicVariable::ptr();
@@ -3264,9 +3463,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* win = win_smtptr.get();
+  wxWindow* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > win_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->MoveAfterInTabOrder(win);
   return BasicVariable::ptr();
@@ -3366,7 +3571,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetPrevSibling();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3386,7 +3591,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetNextSibling();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3406,7 +3611,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetParent();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3426,7 +3631,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetGrandParent();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3466,9 +3671,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* parent = parent_smtptr.get();
+  wxWindowBase* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetParent(parent);
   return BasicVariable::ptr();
@@ -3492,9 +3703,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > newParent_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(newParent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* newParent = newParent_smtptr.get();
+  wxWindowBase* newParent;
+  if (CheckNullVar(_p,_n))  {
+    newParent=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > newParent_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(newParent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    newParent = newParent_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Reparent(newParent);
   return AMILabType<bool >::CreateVar(res);
@@ -3517,9 +3734,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* child = child_smtptr.get();
+  wxWindowBase* child;
+  if (CheckNullVar(_p,_n))  {
+    child=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > child_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    child = child_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddChild(child);
   return BasicVariable::ptr();
@@ -3542,9 +3765,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* child = child_smtptr.get();
+  wxWindowBase* child;
+  if (CheckNullVar(_p,_n))  {
+    child=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > child_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    child = child_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveChild(child);
   return BasicVariable::ptr();
@@ -3573,7 +3802,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   long int winid = winid_long;
 
   wxWindow * res =   this->_objectptr->GetObj()->FindWindow(winid);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3621,7 +3850,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   wxString const & name = *name_smtptr;
 
   wxWindow * res =   this->_objectptr->GetObj()->FindWindow(name);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3641,7 +3870,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvtHandler * res =   this->_objectptr->GetObj()->GetEventHandler();
-  BasicVariable::ptr res_var = WrapClass_wxEvtHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvtHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3662,9 +3891,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxEvtHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxEvtHandler* handler = handler_smtptr.get();
+  wxEvtHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetEventHandler(handler);
   return BasicVariable::ptr();
@@ -3687,9 +3922,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxEvtHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxEvtHandler* handler = handler_smtptr.get();
+  wxEvtHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->PushEventHandler(handler);
   return BasicVariable::ptr();
@@ -3717,7 +3958,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (!get_val_param<bool >(deleteHandler,_p,_n,false,false)) ClassHelpAndReturn;
 
   wxEvtHandler * res =   this->_objectptr->GetObj()->PopEventHandler(deleteHandler);
-  BasicVariable::ptr res_var = WrapClass_wxEvtHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvtHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3739,9 +3980,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxEvtHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxEvtHandler* handler = handler_smtptr.get();
+  wxEvtHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxEvtHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxEvtHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxEvtHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->RemoveEventHandler(handler);
   return AMILabType<bool >::CreateVar(res);
@@ -3788,7 +4035,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxValidator * res =   this->_objectptr->GetObj()->GetValidator();
-  BasicVariable::ptr res_var = WrapClass_wxValidator::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxValidator >::CreateVar(res,true);
   return res_var;
 }
 
@@ -3908,7 +4155,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxAcceleratorTable * res =   this->_objectptr->GetObj()->GetAcceleratorTable();
-  BasicVariable::ptr res_var = WrapClass_wxAcceleratorTable::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxAcceleratorTable >::CreateVar(res,true);
   return res_var;
 }
 
@@ -4956,9 +5203,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxCaret > caret_smtptr;
-  if (!get_val_smtptr_param<wxCaret >(caret_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxCaret* caret = caret_smtptr.get();
+  wxCaret* caret;
+  if (CheckNullVar(_p,_n))  {
+    caret=(wxCaret*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxCaret > caret_smtptr;
+    if (!get_val_smtptr_param<wxCaret >(caret_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    caret = caret_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetCaret(caret);
   return BasicVariable::ptr();
@@ -5004,13 +5257,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ClientToScreen(x, y);
   return BasicVariable::ptr();
@@ -5034,13 +5299,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->ScreenToClient(x, y);
   return BasicVariable::ptr();
@@ -5355,9 +5632,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* menu;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    menu = menu_smtptr.get();
+  }
 
   boost::shared_ptr<wxPoint > pos_smtptr;
   if (!get_val_smtptr_param<wxPoint >(pos_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
@@ -5409,9 +5692,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>3) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* menu;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    menu = menu_smtptr.get();
+  }
 
   int x;
   if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -5723,9 +6012,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxToolTip > tip_smtptr;
-  if (!get_val_smtptr_param<wxToolTip >(tip_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxToolTip* tip = tip_smtptr.get();
+  wxToolTip* tip;
+  if (CheckNullVar(_p,_n))  {
+    tip=(wxToolTip*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxToolTip > tip_smtptr;
+    if (!get_val_smtptr_param<wxToolTip >(tip_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    tip = tip_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetToolTip(tip);
   return BasicVariable::ptr();
@@ -5833,9 +6128,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxLayoutConstraints > constraints_smtptr;
-  if (!get_val_smtptr_param<wxLayoutConstraints >(constraints_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxLayoutConstraints* constraints = constraints_smtptr.get();
+  wxLayoutConstraints* constraints;
+  if (CheckNullVar(_p,_n))  {
+    constraints=(wxLayoutConstraints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxLayoutConstraints > constraints_smtptr;
+    if (!get_val_smtptr_param<wxLayoutConstraints >(constraints_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    constraints = constraints_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetConstraints(constraints);
   return BasicVariable::ptr();
@@ -5857,7 +6158,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxLayoutConstraints * res =   this->_objectptr->GetObj()->GetConstraints();
-  BasicVariable::ptr res_var = WrapClass_wxLayoutConstraints::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxLayoutConstraints >::CreateVar(res,true);
   return res_var;
 }
 
@@ -5878,9 +6179,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxLayoutConstraints > c_smtptr;
-  if (!get_val_smtptr_param<wxLayoutConstraints >(c_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxLayoutConstraints* c = c_smtptr.get();
+  wxLayoutConstraints* c;
+  if (CheckNullVar(_p,_n))  {
+    c=(wxLayoutConstraints*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxLayoutConstraints > c_smtptr;
+    if (!get_val_smtptr_param<wxLayoutConstraints >(c_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    c = c_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->UnsetConstraints(c);
   return BasicVariable::ptr();
@@ -5902,7 +6209,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindowList * res =   this->_objectptr->GetObj()->GetConstraintsInvolvedIn();
-  BasicVariable::ptr res_var = WrapClass_wxWindowList::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowList >::CreateVar(res,true);
   return res_var;
 }
 
@@ -5923,9 +6230,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > otherWin_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(otherWin_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* otherWin = otherWin_smtptr.get();
+  wxWindowBase* otherWin;
+  if (CheckNullVar(_p,_n))  {
+    otherWin=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > otherWin_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(otherWin_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    otherWin = otherWin_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->AddConstraintReference(otherWin);
   return BasicVariable::ptr();
@@ -5948,9 +6261,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > otherWin_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(otherWin_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* otherWin = otherWin_smtptr.get();
+  wxWindowBase* otherWin;
+  if (CheckNullVar(_p,_n))  {
+    otherWin=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > otherWin_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(otherWin_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    otherWin = otherWin_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveConstraintReference(otherWin);
   return BasicVariable::ptr();
@@ -6034,9 +6353,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > noChanges_smtptr;
-  if (!get_val_smtptr_param<int >(noChanges_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* noChanges = noChanges_smtptr.get();
+  int* noChanges;
+  if (CheckNullVar(_p,_n))  {
+    noChanges=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > noChanges_smtptr;
+    if (!get_val_smtptr_param<int >(noChanges_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    noChanges = noChanges_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->LayoutPhase1(noChanges);
   return AMILabType<bool >::CreateVar(res);
@@ -6060,9 +6385,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > noChanges_smtptr;
-  if (!get_val_smtptr_param<int >(noChanges_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* noChanges = noChanges_smtptr.get();
+  int* noChanges;
+  if (CheckNullVar(_p,_n))  {
+    noChanges=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > noChanges_smtptr;
+    if (!get_val_smtptr_param<int >(noChanges_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    noChanges = noChanges_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->LayoutPhase2(noChanges);
   return AMILabType<bool >::CreateVar(res);
@@ -6175,13 +6506,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* w = w_smtptr.get();
+  int* w;
+  if (CheckNullVar(_p,_n))  {
+    w=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > w_smtptr;
+    if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    w = w_smtptr.get();
+  }
 
-  boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* h = h_smtptr.get();
+  int* h;
+  if (CheckNullVar(_p,_n))  {
+    h=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > h_smtptr;
+    if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    h = h_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetSizeConstraint(w, h);
   return BasicVariable::ptr();
@@ -6205,13 +6548,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* w = w_smtptr.get();
+  int* w;
+  if (CheckNullVar(_p,_n))  {
+    w=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > w_smtptr;
+    if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    w = w_smtptr.get();
+  }
 
-  boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* h = h_smtptr.get();
+  int* h;
+  if (CheckNullVar(_p,_n))  {
+    h=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > h_smtptr;
+    if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    h = h_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetClientSizeConstraint(w, h);
   return BasicVariable::ptr();
@@ -6235,13 +6590,25 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    y = y_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetPositionConstraint(x, y);
   return BasicVariable::ptr();
@@ -6327,9 +6694,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxSizer > sizer_smtptr;
-  if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxSizer* sizer = sizer_smtptr.get();
+  wxSizer* sizer;
+  if (CheckNullVar(_p,_n))  {
+    sizer=(wxSizer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxSizer > sizer_smtptr;
+    if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    sizer = sizer_smtptr.get();
+  }
 
   bool deleteOld = true;
   if (!get_val_param<bool >(deleteOld,_p,_n,false,false)) ClassHelpAndReturn;
@@ -6356,9 +6729,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxSizer > sizer_smtptr;
-  if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxSizer* sizer = sizer_smtptr.get();
+  wxSizer* sizer;
+  if (CheckNullVar(_p,_n))  {
+    sizer=(wxSizer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxSizer > sizer_smtptr;
+    if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    sizer = sizer_smtptr.get();
+  }
 
   bool deleteOld = true;
   if (!get_val_param<bool >(deleteOld,_p,_n,false,false)) ClassHelpAndReturn;
@@ -6383,7 +6762,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxSizer * res =   this->_objectptr->GetObj()->GetSizer();
-  BasicVariable::ptr res_var = WrapClass_wxSizer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxSizer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -6404,9 +6783,15 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxSizer > sizer_smtptr;
-  if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxSizer* sizer = sizer_smtptr.get();
+  wxSizer* sizer;
+  if (CheckNullVar(_p,_n))  {
+    sizer=(wxSizer*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxSizer > sizer_smtptr;
+    if (!get_val_smtptr_param<wxSizer >(sizer_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    sizer = sizer_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetContainingSizer(sizer);
   return BasicVariable::ptr();
@@ -6428,7 +6813,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxSizer * res =   this->_objectptr->GetObj()->GetContainingSizer();
-  BasicVariable::ptr res_var = WrapClass_wxSizer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxSizer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -6717,7 +7102,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetAncestorWithCustomPalette();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -6774,7 +7159,7 @@ BasicVariable::ptr WrapClass_wxWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

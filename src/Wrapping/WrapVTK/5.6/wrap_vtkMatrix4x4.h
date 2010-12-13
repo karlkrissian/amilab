@@ -26,8 +26,10 @@
 #include "wrap_vtkObject.h"
 
 
-
-AMI_DECLARE_TYPE(vtkMatrix4x4);
+#ifndef vtkMatrix4x4_declared
+  #define vtkMatrix4x4_declared
+  AMI_DECLARE_TYPE(vtkMatrix4x4);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkMatrix4x4 : public WrapClass<vtkMatrix4x4>
@@ -137,12 +139,13 @@ class WrapClass_vtkMatrix4x4 : public WrapClass<vtkMatrix4x4>
 
     void AddMethods(WrapClass<vtkMatrix4x4>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkMatrix4x4_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkMatrix4x4_h

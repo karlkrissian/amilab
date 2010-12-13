@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxEventTable.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxEventTable.h"
+#ifndef wxEventTable_declared
+  #define wxEventTable_declared
+  AMI_DECLARE_TYPE(wxEventTable)
+#endif
 
 
-#include "wrap_wxEventTable.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -61,43 +71,46 @@ void WrapClass_wxEventTable::AddMethods(WrapClass<wxEventTable>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Avoiding const pointers for the moment
-      // Adding public member baseTable
-      boost::shared_ptr<wxEventTable > var_baseTable_ptr(GetObj()->baseTable, smartpointer_nodeleter<wxEventTable >());
-      if (var_baseTable_ptr.get()) {
-        BasicVariable::ptr var_baseTable = AMILabType<wxEventTable >::CreateVarFromSmtPtr(var_baseTable_ptr);
-        if (var_baseTable.get()) {
-          var_baseTable->Rename("baseTable");
-          context->AddVar(var_baseTable,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member entries
-      boost::shared_ptr<wxEventTableEntry > var_entries_ptr(GetObj()->entries, smartpointer_nodeleter<wxEventTableEntry >());
-      if (var_entries_ptr.get()) {
-        BasicVariable::ptr var_entries = AMILabType<wxEventTableEntry >::CreateVarFromSmtPtr(var_entries_ptr);
-        if (var_entries.get()) {
-          var_entries->Rename("entries");
-          context->AddVar(var_entries,context);
-        }
-      }
-      */
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Avoiding const pointers for the moment
+  // Adding public member baseTable
+  boost::shared_ptr<wxEventTable > var_baseTable_ptr(GetObj()->baseTable, smartpointer_nodeleter<wxEventTable >());
+  if (var_baseTable_ptr.get()) {
+    BasicVariable::ptr var_baseTable = AMILabType<wxEventTable >::CreateVarFromSmtPtr(var_baseTable_ptr);
+    if (var_baseTable.get()) {
+      var_baseTable->Rename("baseTable");
+      context->AddVar(var_baseTable,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member entries
+  boost::shared_ptr<wxEventTableEntry > var_entries_ptr(GetObj()->entries, smartpointer_nodeleter<wxEventTableEntry >());
+  if (var_entries_ptr.get()) {
+    BasicVariable::ptr var_entries = AMILabType<wxEventTableEntry >::CreateVarFromSmtPtr(var_entries_ptr);
+    if (var_entries.get()) {
+      var_entries->Rename("entries");
+      context->AddVar(var_entries,context);
+    }
+  }
+  */
+
+
+  
 
 
   // Adding Bases
@@ -108,7 +121,7 @@ void WrapClass_wxEventTable::AddMethods(WrapClass<wxEventTable>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxEventTable::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxEventTable_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

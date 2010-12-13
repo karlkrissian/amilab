@@ -10,26 +10,53 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxMenuBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxString.h"
-#include "wrap_wxMenuItem.h"
-#include "wrap_wxMenu.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxMenuItemList.h"
-#include "wrap_wxEvtHandler.h"
-#include "wrap_wxWindow.h"
-#include "wrap_wxMenuBar.h"
-#include "wrap_wxMenuBarBase.h"
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxMenuItem_declared
+  #define wxMenuItem_declared
+  AMI_DECLARE_TYPE(wxMenuItem)
+#endif
+#ifndef wxMenu_declared
+  #define wxMenu_declared
+  AMI_DECLARE_TYPE(wxMenu)
+#endif
+#ifndef wxMenuItemList_declared
+  #define wxMenuItemList_declared
+  AMI_DECLARE_TYPE(wxMenuItemList)
+#endif
+#ifndef wxEvtHandler_declared
+  #define wxEvtHandler_declared
+  AMI_DECLARE_TYPE(wxEvtHandler)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxMenuBar_declared
+  #define wxMenuBar_declared
+  AMI_DECLARE_TYPE(wxMenuBar)
+#endif
+#ifndef wxMenuBarBase_declared
+  #define wxMenuBarBase_declared
+  AMI_DECLARE_TYPE(wxMenuBarBase)
+#endif
 
 
-#include "wrap_wxMenuBase.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -176,7 +203,7 @@ void WrapClass_wxMenuBase::AddMethods(WrapClass<wxMenuBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxMenuBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxMenuBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -340,7 +367,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxItemKind kind = (wxItemKind) kind_int;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Append(itemid, text, help, kind);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -360,7 +387,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->AppendSeparator();
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -397,7 +424,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->AppendCheckItem(itemid, text, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -434,7 +461,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->AppendRadioItem(itemid, text, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -478,7 +505,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->AppendSubMenu(submenu, text, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -538,7 +565,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   }
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Append(item);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -594,7 +621,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   }
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Insert(pos, item);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -669,7 +696,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxItemKind kind = (wxItemKind) kind_int;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Insert(pos, itemid, text, help, kind);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -696,7 +723,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
   wxMenuItem * res =   this->_objectptr->GetObj()->InsertSeparator(pos);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -738,7 +765,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->InsertCheckItem(pos, itemid, text, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -780,7 +807,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->InsertRadioItem(pos, itemid, text, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -833,7 +860,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Insert(pos, itemid, text, submenu, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -866,7 +893,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   }
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Prepend(item);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -936,7 +963,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxItemKind kind = (wxItemKind) kind_int;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Prepend(itemid, text, help, kind);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -956,7 +983,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->PrependSeparator();
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -993,7 +1020,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->PrependCheckItem(itemid, text, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1030,7 +1057,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->PrependRadioItem(itemid, text, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1078,7 +1105,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Prepend(itemid, text, submenu, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1104,7 +1131,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Remove(itemid);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1158,7 +1185,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   }
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Remove(item);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1479,7 +1506,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   }
 
   wxMenuItem * res =   this->_objectptr->GetObj()->FindItem(itemid, menu);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1506,7 +1533,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   long unsigned int position = boost::numeric_cast<long unsigned int >(position_long);
 
   wxMenuItem * res =   this->_objectptr->GetObj()->FindItemByPosition(position);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1815,7 +1842,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvtHandler * res =   this->_objectptr->GetObj()->GetEventHandler();
-  BasicVariable::ptr res_var = WrapClass_wxEvtHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvtHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1866,7 +1893,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetInvokingWindow();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1937,7 +1964,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMenuBar * res =   this->_objectptr->GetObj()->GetMenuBar();
-  BasicVariable::ptr res_var = WrapClass_wxMenuBar::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuBar >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2056,7 +2083,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMenu * res =   this->_objectptr->GetObj()->GetParent();
-  BasicVariable::ptr res_var = WrapClass_wxMenu::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenu >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2088,7 +2115,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   long unsigned int* pos = &pos_val;
 
   wxMenuItem * res =   this->_objectptr->GetObj()->FindChildItem(itemid, pos);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2203,7 +2230,7 @@ BasicVariable::ptr WrapClass_wxMenuBase::
   wxString const & help = ( help_smtptr.get() ? (*help_smtptr) : wxString(wxEmptyString) );
 
   wxMenuItem * res =   this->_objectptr->GetObj()->Append(itemid, text, submenu, help);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 

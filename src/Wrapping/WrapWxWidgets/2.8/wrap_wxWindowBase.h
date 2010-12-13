@@ -13,11 +13,13 @@
 #ifndef _wrap_wxWindowBase_h_
 #define _wrap_wxWindowBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxEvtHandler.h"
 
 
-
-AMI_DECLARE_TYPE(wxWindowBase);
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
@@ -359,12 +363,13 @@ class WrapClass_wxWindowBase : public WrapClass<wxWindowBase>
 
     void AddMethods(WrapClass<wxWindowBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxWindowBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxWindowBase_h

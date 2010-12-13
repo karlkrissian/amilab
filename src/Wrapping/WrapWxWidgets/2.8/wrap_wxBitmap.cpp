@@ -10,25 +10,56 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxBitmap.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxBitmap.h"
-#include "wrap_wxString.h"
-#include "wrap_wxImage.h"
-#include "wrap_wxIcon.h"
-#include "wrap_wxMask.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxPalette.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxImage_declared
+  #define wxImage_declared
+  AMI_DECLARE_TYPE(wxImage)
+#endif
+#ifndef wxIcon_declared
+  #define wxIcon_declared
+  AMI_DECLARE_TYPE(wxIcon)
+#endif
+#ifndef wxMask_declared
+  #define wxMask_declared
+  AMI_DECLARE_TYPE(wxMask)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxPalette_declared
+  #define wxPalette_declared
+  AMI_DECLARE_TYPE(wxPalette)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxBitmap.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -68,59 +99,62 @@ void WrapClass_wxBitmap::AddMethods(WrapClass<wxBitmap>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Ok( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_Create( this_ptr);
-      AddVar_GetHeight( this_ptr);
-      AddVar_GetWidth( this_ptr);
-      AddVar_GetDepth( this_ptr);
-      AddVar_ConvertToImage( this_ptr);
-      AddVar_CopyFromIcon( this_ptr);
-      AddVar_GetMask( this_ptr);
-      AddVar_SetMask( this_ptr);
-      AddVar_GetSubBitmap( this_ptr);
-      AddVar_SaveFile( this_ptr);
-      AddVar_LoadFile( this_ptr);
-      AddVar_GetPalette( this_ptr);
-      AddVar_SetPalette( this_ptr);
-      AddVar_GetColourMap( this_ptr);
-      AddVar_SetHeight( this_ptr);
-      AddVar_SetWidth( this_ptr);
-      AddVar_SetDepth( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Ok( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_Create( this_ptr);
+  AddVar_GetHeight( this_ptr);
+  AddVar_GetWidth( this_ptr);
+  AddVar_GetDepth( this_ptr);
+  AddVar_ConvertToImage( this_ptr);
+  AddVar_CopyFromIcon( this_ptr);
+  AddVar_GetMask( this_ptr);
+  AddVar_SetMask( this_ptr);
+  AddVar_GetSubBitmap( this_ptr);
+  AddVar_SaveFile( this_ptr);
+  AddVar_LoadFile( this_ptr);
+  AddVar_GetPalette( this_ptr);
+  AddVar_SetPalette( this_ptr);
+  AddVar_GetColourMap( this_ptr);
+  AddVar_SetHeight( this_ptr);
+  AddVar_SetWidth( this_ptr);
+  AddVar_SetDepth( this_ptr);
 /* The following types are missing: _GdkDrawable
-      AddVar_SetPixmap( this_ptr);
+  AddVar_SetPixmap( this_ptr);
 */
 /* The following types are missing: _GdkPixbuf
-      AddVar_SetPixbuf( this_ptr);
+  AddVar_SetPixbuf( this_ptr);
 */
 /* The following types are missing: _GdkDrawable
-      AddVar_GetPixmap( this_ptr);
+  AddVar_GetPixmap( this_ptr);
 */
-      AddVar_HasPixmap( this_ptr);
-      AddVar_HasPixbuf( this_ptr);
+  AddVar_HasPixmap( this_ptr);
+  AddVar_HasPixbuf( this_ptr);
 /* The following types are missing: _GdkPixbuf
-      AddVar_GetPixbuf( this_ptr);
+  AddVar_GetPixbuf( this_ptr);
 */
-      AddVar_Rescale( this_ptr);
+  AddVar_Rescale( this_ptr);
 /* The following types are missing: wxPixelDataBase
-      AddVar_GetRawData( this_ptr);
+  AddVar_GetRawData( this_ptr);
 */
 /* The following types are missing: wxPixelDataBase
-      AddVar_UngetRawData( this_ptr);
+  AddVar_UngetRawData( this_ptr);
 */
-      AddVar_HasAlpha( this_ptr);
-      AddVar_UseAlpha( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_HasAlpha( this_ptr);
+  AddVar_UseAlpha( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -141,7 +175,7 @@ void WrapClass_wxBitmap::AddMethods(WrapClass<wxBitmap>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxBitmap::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxBitmap_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -632,7 +666,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMask * res =   this->_objectptr->GetObj()->GetMask();
-  BasicVariable::ptr res_var = WrapClass_wxMask::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMask >::CreateVar(res,true);
   return res_var;
 }
 
@@ -653,9 +687,15 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxMask > mask_smtptr;
-  if (!get_val_smtptr_param<wxMask >(mask_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMask* mask = mask_smtptr.get();
+  wxMask* mask;
+  if (CheckNullVar(_p,_n))  {
+    mask=(wxMask*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMask > mask_smtptr;
+    if (!get_val_smtptr_param<wxMask >(mask_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    mask = mask_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetMask(mask);
   return BasicVariable::ptr();
@@ -715,9 +755,15 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (!get_val_param<int >(type_int,_p,_n,true,false)) ClassHelpAndReturn;
   wxBitmapType type = (wxBitmapType) type_int;
 
-  boost::shared_ptr<wxPalette > palette_smtptr;
-  if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxPalette* palette = palette_smtptr.get();
+  wxPalette* palette = 0u;
+  if (CheckNullVar(_p,_n))  {
+    palette=(wxPalette*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxPalette > palette_smtptr;
+    if (!get_val_smtptr_param<wxPalette >(palette_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    palette = palette_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->SaveFile(name, type, palette);
   return AMILabType<bool >::CreateVar(res);
@@ -770,7 +816,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxPalette * res =   this->_objectptr->GetObj()->GetPalette();
-  BasicVariable::ptr res_var = WrapClass_wxPalette::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxPalette >::CreateVar(res,true);
   return res_var;
 }
 
@@ -815,7 +861,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxPalette * res =   this->_objectptr->GetObj()->GetColourMap();
-  BasicVariable::ptr res_var = WrapClass_wxPalette::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxPalette >::CreateVar(res,true);
   return res_var;
 }
 
@@ -909,9 +955,15 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GdkDrawable > pixmap_smtptr;
-  if (!get_val_smtptr_param<_GdkDrawable >(pixmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GdkDrawable* pixmap = pixmap_smtptr.get();
+  _GdkDrawable* pixmap;
+  if (CheckNullVar(_p,_n))  {
+    pixmap=(_GdkDrawable*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GdkDrawable > pixmap_smtptr;
+    if (!get_val_smtptr_param<_GdkDrawable >(pixmap_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pixmap = pixmap_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPixmap(pixmap);
   return BasicVariable::ptr();
@@ -937,9 +989,15 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<_GdkPixbuf > pixbuf_smtptr;
-  if (!get_val_smtptr_param<_GdkPixbuf >(pixbuf_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  _GdkPixbuf* pixbuf = pixbuf_smtptr.get();
+  _GdkPixbuf* pixbuf;
+  if (CheckNullVar(_p,_n))  {
+    pixbuf=(_GdkPixbuf*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<_GdkPixbuf > pixbuf_smtptr;
+    if (!get_val_smtptr_param<_GdkPixbuf >(pixbuf_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pixbuf = pixbuf_smtptr.get();
+  }
 
   int depth = 0;
   if (!get_val_param<int >(depth,_p,_n,false,false)) ClassHelpAndReturn;
@@ -1185,7 +1243,7 @@ BasicVariable::ptr WrapClass_wxBitmap::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

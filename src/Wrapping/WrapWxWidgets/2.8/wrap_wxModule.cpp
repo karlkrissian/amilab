@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxModule.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxModule.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxModule_declared
+  #define wxModule_declared
+  AMI_DECLARE_TYPE(wxModule)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxModule.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -96,7 +109,7 @@ void WrapClass_wxModule::AddMethods(WrapClass<wxModule>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxModule::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxModule_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -136,9 +149,15 @@ BasicVariable::ptr WrapClass_wxModule::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxModule > module_smtptr;
-  if (!get_val_smtptr_param<wxModule >(module_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxModule* module = module_smtptr.get();
+  wxModule* module;
+  if (CheckNullVar(_p,_n))  {
+    module=(wxModule*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxModule > module_smtptr;
+    if (!get_val_smtptr_param<wxModule >(module_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    module = module_smtptr.get();
+  }
 
   wxModule::RegisterModule(module);
   return BasicVariable::ptr();
@@ -216,9 +235,15 @@ BasicVariable::ptr WrapClass_wxModule::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxModule > module_smtptr;
-  if (!get_val_smtptr_param<wxModule >(module_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxModule* module = module_smtptr.get();
+  wxModule* module;
+  if (CheckNullVar(_p,_n))  {
+    module=(wxModule*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxModule > module_smtptr;
+    if (!get_val_smtptr_param<wxModule >(module_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    module = module_smtptr.get();
+  }
 
   wxModule::UnregisterModule(module);
   return BasicVariable::ptr();
@@ -277,7 +302,7 @@ BasicVariable::ptr WrapClass_wxModule::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

@@ -26,8 +26,10 @@
 //#include "wrap_basic_string_char_std::char_traits_char__std::allocator_char_ _.h"
 
 
-
-AMI_DECLARE_TYPE(vtkStdString);
+#ifndef vtkStdString_declared
+  #define vtkStdString_declared
+  AMI_DECLARE_TYPE(vtkStdString);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkStdString : public WrapClass<vtkStdString>
@@ -95,12 +97,13 @@ class WrapClass_vtkStdString : public WrapClass<vtkStdString>
 
     void AddMethods(WrapClass<vtkStdString>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkStdString_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkStdString_h

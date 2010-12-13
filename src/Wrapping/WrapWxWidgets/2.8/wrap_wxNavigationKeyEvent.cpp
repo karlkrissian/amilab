@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxNavigationKeyEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxNavigationKeyEvent.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxNavigationKeyEvent_declared
+  #define wxNavigationKeyEvent_declared
+  AMI_DECLARE_TYPE(wxNavigationKeyEvent)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxNavigationKeyEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,47 +83,61 @@ void WrapClass_wxNavigationKeyEvent::AddMethods(WrapClass<wxNavigationKeyEvent>:
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetDirection( this_ptr);
-      AddVar_SetDirection( this_ptr);
-      AddVar_IsWindowChange( this_ptr);
-      AddVar_SetWindowChange( this_ptr);
-      AddVar_IsFromTab( this_ptr);
-      AddVar_SetFromTab( this_ptr);
-      AddVar_GetCurrentFocus( this_ptr);
-      AddVar_SetCurrentFocus( this_ptr);
-      AddVar_SetFlags( this_ptr);
-      AddVar_Clone( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetDirection( this_ptr);
+  AddVar_SetDirection( this_ptr);
+  AddVar_IsWindowChange( this_ptr);
+  AddVar_SetWindowChange( this_ptr);
+  AddVar_IsFromTab( this_ptr);
+  AddVar_SetFromTab( this_ptr);
+  AddVar_GetCurrentFocus( this_ptr);
+  AddVar_SetCurrentFocus( this_ptr);
+  AddVar_SetFlags( this_ptr);
+  AddVar_Clone( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member m_flags
-      boost::shared_ptr<long int > var_m_flags_ptr(&GetObj()->m_flags, smartpointer_nodeleter<long int >());
-      if (var_m_flags_ptr.get()) {
-        BasicVariable::ptr var_m_flags = AMILabType<long int >::CreateVarFromSmtPtr(var_m_flags_ptr);
-        if (var_m_flags.get()) {
-          var_m_flags->Rename("m_flags");
-          context->AddVar(var_m_flags,context);
-        }
-      }
-      
-      // Adding public member m_focus
-      boost::shared_ptr<wxWindow > var_m_focus_ptr(GetObj()->m_focus, smartpointer_nodeleter<wxWindow >());
-      if (var_m_focus_ptr.get()) {
-        BasicVariable::ptr var_m_focus = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_m_focus_ptr);
-        if (var_m_focus.get()) {
-          var_m_focus->Rename("m_focus");
-          context->AddVar(var_m_focus,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member m_flags
+  boost::shared_ptr<long int > var_m_flags_ptr(&GetObj()->m_flags, smartpointer_nodeleter<long int >());
+  if (var_m_flags_ptr.get()) {
+    BasicVariable::ptr var_m_flags = AMILabType<long int >::CreateVarFromSmtPtr(var_m_flags_ptr);
+    if (var_m_flags.get()) {
+      var_m_flags->Rename("m_flags");
+      context->AddVar(var_m_flags,context);
+    }
+  }
+  
+  // Adding public member m_focus
+  boost::shared_ptr<wxWindow > var_m_focus_ptr(GetObj()->m_focus, smartpointer_nodeleter<wxWindow >());
+  if (var_m_focus_ptr.get()) {
+    BasicVariable::ptr var_m_focus = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_m_focus_ptr);
+    if (var_m_focus.get()) {
+      var_m_focus->Rename("m_focus");
+      context->AddVar(var_m_focus,context);
+    }
+  }
+
+
+  
+  AMIObject::ptr obj_enum_104(new AMIObject);
+  obj_enum_104->SetName("enum_104");
+
+  BasicVariable::ptr var_IsBackward = AMILabType<int >::CreateVar(0);
+  if (var_IsBackward.get()) {
+    var_IsBackward->Rename("IsBackward");
+    obj_enum_104->GetContext()->AddVar(var_IsBackward,obj_enum_104->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_enum_104->GetName().c_str(),obj_enum_104,context);
 
 
   // Adding Bases
@@ -123,7 +156,7 @@ void WrapClass_wxNavigationKeyEvent::AddMethods(WrapClass<wxNavigationKeyEvent>:
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxNavigationKeyEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxNavigationKeyEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -372,7 +405,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetCurrentFocus();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -393,9 +426,15 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* win = win_smtptr.get();
+  wxWindow* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > win_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetCurrentFocus(win);
   return BasicVariable::ptr();
@@ -442,7 +481,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -462,7 +501,7 @@ BasicVariable::ptr WrapClass_wxNavigationKeyEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

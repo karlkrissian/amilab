@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxMenuItemBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxMenuItem.h"
-#include "wrap_wxMenu.h"
-#include "wrap_wxString.h"
-#include "wrap_wxAcceleratorEntry.h"
+#ifndef wxMenuItem_declared
+  #define wxMenuItem_declared
+  AMI_DECLARE_TYPE(wxMenuItem)
+#endif
+#ifndef wxMenu_declared
+  #define wxMenu_declared
+  AMI_DECLARE_TYPE(wxMenu)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxAcceleratorEntry_declared
+  #define wxAcceleratorEntry_declared
+  AMI_DECLARE_TYPE(wxAcceleratorEntry)
+#endif
 
 
-#include "wrap_wxMenuItemBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -71,39 +90,42 @@ void WrapClass_wxMenuItemBase::AddMethods(WrapClass<wxMenuItemBase>::ptr this_pt
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_GetMenu( this_ptr);
-      AddVar_SetMenu( this_ptr);
-      AddVar_SetId( this_ptr);
-      AddVar_GetId( this_ptr);
-      AddVar_IsSeparator( this_ptr);
-      AddVar_SetText( this_ptr);
-      AddVar_GetLabel( this_ptr);
-      AddVar_GetText( this_ptr);
-      AddVar_GetKind( this_ptr);
-      AddVar_SetKind( this_ptr);
-      AddVar_SetCheckable( this_ptr);
-      AddVar_IsCheckable( this_ptr);
-      AddVar_IsSubMenu( this_ptr);
-      AddVar_SetSubMenu( this_ptr);
-      AddVar_GetSubMenu( this_ptr);
-      AddVar_Enable( this_ptr);
-      AddVar_IsEnabled( this_ptr);
-      AddVar_Check( this_ptr);
-      AddVar_IsChecked( this_ptr);
-      AddVar_Toggle( this_ptr);
-      AddVar_SetHelp( this_ptr);
-      AddVar_GetHelp( this_ptr);
-      AddVar_GetAccel( this_ptr);
-      AddVar_SetAccel( this_ptr);
-      AddVar_SetName( this_ptr);
-      AddVar_GetName( this_ptr);
-      AddVar_SetItemLabel( this_ptr);
-      AddVar_GetItemLabelText( this_ptr);
+  // Adding standard methods 
+  AddVar_GetMenu( this_ptr);
+  AddVar_SetMenu( this_ptr);
+  AddVar_SetId( this_ptr);
+  AddVar_GetId( this_ptr);
+  AddVar_IsSeparator( this_ptr);
+  AddVar_SetText( this_ptr);
+  AddVar_GetLabel( this_ptr);
+  AddVar_GetText( this_ptr);
+  AddVar_GetKind( this_ptr);
+  AddVar_SetKind( this_ptr);
+  AddVar_SetCheckable( this_ptr);
+  AddVar_IsCheckable( this_ptr);
+  AddVar_IsSubMenu( this_ptr);
+  AddVar_SetSubMenu( this_ptr);
+  AddVar_GetSubMenu( this_ptr);
+  AddVar_Enable( this_ptr);
+  AddVar_IsEnabled( this_ptr);
+  AddVar_Check( this_ptr);
+  AddVar_IsChecked( this_ptr);
+  AddVar_Toggle( this_ptr);
+  AddVar_SetHelp( this_ptr);
+  AddVar_GetHelp( this_ptr);
+  AddVar_GetAccel( this_ptr);
+  AddVar_SetAccel( this_ptr);
+  AddVar_SetName( this_ptr);
+  AddVar_GetName( this_ptr);
+  AddVar_SetItemLabel( this_ptr);
+  AddVar_GetItemLabelText( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -124,7 +146,7 @@ void WrapClass_wxMenuItemBase::AddMethods(WrapClass<wxMenuItemBase>::ptr this_pt
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxMenuItemBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxMenuItemBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -170,9 +192,15 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p->GetNumParam()>6) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > parentMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* parentMenu = parentMenu_smtptr.get();
+  wxMenu* parentMenu = 0u;
+  if (CheckNullVar(_p,_n))  {
+    parentMenu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > parentMenu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    parentMenu = parentMenu_smtptr.get();
+  }
 
   int itemid = wxID_SEPARATOR;
   if (!get_val_param<int >(itemid,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -191,12 +219,18 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (!get_val_param<int >(kind_int,_p,_n,false,true)) ClassReturnEmptyVar;
   wxItemKind kind = (wxItemKind) kind_int;
 
-  boost::shared_ptr<wxMenu > subMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* subMenu = subMenu_smtptr.get();
+  wxMenu* subMenu = 0u;
+  if (CheckNullVar(_p,_n))  {
+    subMenu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > subMenu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    subMenu = subMenu_smtptr.get();
+  }
 
   wxMenuItem * res =   wxMenuItemBase::New(parentMenu, itemid, text, help, kind, subMenu);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -270,9 +304,15 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p->GetNumParam()>6) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > parentMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* parentMenu = parentMenu_smtptr.get();
+  wxMenu* parentMenu;
+  if (CheckNullVar(_p,_n))  {
+    parentMenu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > parentMenu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(parentMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    parentMenu = parentMenu_smtptr.get();
+  }
 
   int itemid;
   if (!get_val_param<int >(itemid,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -288,12 +328,18 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   bool isCheckable;
   if (!get_val_param<bool >(isCheckable,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<wxMenu > subMenu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxMenu* subMenu = subMenu_smtptr.get();
+  wxMenu* subMenu = 0u;
+  if (CheckNullVar(_p,_n))  {
+    subMenu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > subMenu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(subMenu_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    subMenu = subMenu_smtptr.get();
+  }
 
   wxMenuItem * res =   wxMenuItemBase::New(parentMenu, itemid, text, help, isCheckable, subMenu);
-  BasicVariable::ptr res_var = WrapClass_wxMenuItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenuItem >::CreateVar(res,true);
   return res_var;
 }
 
@@ -339,7 +385,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMenu * res =   this->_objectptr->GetObj()->GetMenu();
-  BasicVariable::ptr res_var = WrapClass_wxMenu::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenu >::CreateVar(res,true);
   return res_var;
 }
 
@@ -360,9 +406,15 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* menu;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    menu = menu_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetMenu(menu);
   return BasicVariable::ptr();
@@ -617,9 +669,15 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxMenu > menu_smtptr;
-  if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxMenu* menu = menu_smtptr.get();
+  wxMenu* menu;
+  if (CheckNullVar(_p,_n))  {
+    menu=(wxMenu*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxMenu > menu_smtptr;
+    if (!get_val_smtptr_param<wxMenu >(menu_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    menu = menu_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetSubMenu(menu);
   return BasicVariable::ptr();
@@ -641,7 +699,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxMenu * res =   this->_objectptr->GetObj()->GetSubMenu();
-  BasicVariable::ptr res_var = WrapClass_wxMenu::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxMenu >::CreateVar(res,true);
   return res_var;
 }
 
@@ -809,7 +867,7 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxAcceleratorEntry * res =   this->_objectptr->GetObj()->GetAccel();
-  BasicVariable::ptr res_var = WrapClass_wxAcceleratorEntry::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxAcceleratorEntry >::CreateVar(res,true);
   return res_var;
 }
 
@@ -830,9 +888,15 @@ BasicVariable::ptr WrapClass_wxMenuItemBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxAcceleratorEntry > accel_smtptr;
-  if (!get_val_smtptr_param<wxAcceleratorEntry >(accel_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxAcceleratorEntry* accel = accel_smtptr.get();
+  wxAcceleratorEntry* accel;
+  if (CheckNullVar(_p,_n))  {
+    accel=(wxAcceleratorEntry*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxAcceleratorEntry > accel_smtptr;
+    if (!get_val_smtptr_param<wxAcceleratorEntry >(accel_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    accel = accel_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetAccel(accel);
   return BasicVariable::ptr();

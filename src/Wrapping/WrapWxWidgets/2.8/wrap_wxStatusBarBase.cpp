@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxStatusBarBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxString.h"
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
 
 
-#include "wrap_wxStatusBarBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -68,18 +78,21 @@ void WrapClass_wxStatusBarBase::AddMethods(WrapClass<wxStatusBarBase>::ptr this_
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_SetFieldsCount( this_ptr);
-      AddVar_GetFieldsCount( this_ptr);
-      AddVar_PushStatusText( this_ptr);
-      AddVar_PopStatusText( this_ptr);
-      AddVar_SetStatusWidths( this_ptr);
-      AddVar_SetStatusStyles( this_ptr);
-      AddVar_AcceptsFocus( this_ptr);
+  // Adding standard methods 
+  AddVar_SetFieldsCount( this_ptr);
+  AddVar_GetFieldsCount( this_ptr);
+  AddVar_PushStatusText( this_ptr);
+  AddVar_PopStatusText( this_ptr);
+  AddVar_SetStatusWidths( this_ptr);
+  AddVar_SetStatusStyles( this_ptr);
+  AddVar_AcceptsFocus( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -100,7 +113,7 @@ void WrapClass_wxStatusBarBase::AddMethods(WrapClass<wxStatusBarBase>::ptr this_
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxStatusBarBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxStatusBarBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -139,9 +152,15 @@ BasicVariable::ptr WrapClass_wxStatusBarBase::
   int number = 1;
   if (!get_val_param<int >(number,_p,_n,false,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<int > widths_smtptr;
-  if (!get_val_smtptr_param<int >(widths_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* widths = widths_smtptr.get();
+  int* widths = 0l;
+  if (CheckNullVar(_p,_n))  {
+    widths=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > widths_smtptr;
+    if (!get_val_smtptr_param<int >(widths_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    widths = widths_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetFieldsCount(number, widths);
   return BasicVariable::ptr();
@@ -240,9 +259,15 @@ BasicVariable::ptr WrapClass_wxStatusBarBase::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<int > widths_smtptr;
-  if (!get_val_smtptr_param<int >(widths_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* widths = widths_smtptr.get();
+  int* widths;
+  if (CheckNullVar(_p,_n))  {
+    widths=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > widths_smtptr;
+    if (!get_val_smtptr_param<int >(widths_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    widths = widths_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetStatusWidths(n, widths);
   return BasicVariable::ptr();
@@ -269,9 +294,15 @@ BasicVariable::ptr WrapClass_wxStatusBarBase::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<int > styles_smtptr;
-  if (!get_val_smtptr_param<int >(styles_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* styles = styles_smtptr.get();
+  int* styles;
+  if (CheckNullVar(_p,_n))  {
+    styles=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > styles_smtptr;
+    if (!get_val_smtptr_param<int >(styles_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    styles = styles_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetStatusStyles(n, styles);
   return BasicVariable::ptr();

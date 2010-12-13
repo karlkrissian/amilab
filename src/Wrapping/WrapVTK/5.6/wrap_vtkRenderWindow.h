@@ -26,8 +26,10 @@
 #include "wrap_vtkWindow.h"
 
 
-
-AMI_DECLARE_TYPE(vtkRenderWindow);
+#ifndef vtkRenderWindow_declared
+  #define vtkRenderWindow_declared
+  AMI_DECLARE_TYPE(vtkRenderWindow);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkRenderWindow : public WrapClass<vtkRenderWindow>
@@ -199,12 +201,13 @@ class WrapClass_vtkRenderWindow : public WrapClass<vtkRenderWindow>
 
     void AddMethods(WrapClass<vtkRenderWindow>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkRenderWindow_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkRenderWindow_h

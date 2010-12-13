@@ -10,30 +10,73 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxImage.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxImage.h"
-#include "wrap_wxString.h"
-#include "wrap_wxInputStream.h"
-#include "wrap_wxList.h"
-#include "wrap_wxImageHandler.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxOutputStream.h"
-#include "wrap_wxPalette.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxImageHistogram.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxImage_declared
+  #define wxImage_declared
+  AMI_DECLARE_TYPE(wxImage)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxInputStream_declared
+  #define wxInputStream_declared
+  AMI_DECLARE_TYPE(wxInputStream)
+#endif
+#ifndef wxList_declared
+  #define wxList_declared
+  AMI_DECLARE_TYPE(wxList)
+#endif
+#ifndef wxImageHandler_declared
+  #define wxImageHandler_declared
+  AMI_DECLARE_TYPE(wxImageHandler)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxOutputStream_declared
+  #define wxOutputStream_declared
+  AMI_DECLARE_TYPE(wxOutputStream)
+#endif
+#ifndef wxPalette_declared
+  #define wxPalette_declared
+  AMI_DECLARE_TYPE(wxPalette)
+#endif
+#ifndef wxImageHistogram_declared
+  #define wxImageHistogram_declared
+  AMI_DECLARE_TYPE(wxImageHistogram)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxImage.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -73,101 +116,104 @@ void WrapClass_wxImage::AddMethods(WrapClass<wxImage>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Create_1( this_ptr);
-      AddVar_Create( this_ptr);
-      AddVar_Create_2( this_ptr);
-      AddVar_Create_3( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Create_1( this_ptr);
+  AddVar_Create( this_ptr);
+  AddVar_Create_2( this_ptr);
+  AddVar_Create_3( this_ptr);
 /* The following types are missing: char const * const *
-      AddVar_Create_4( this_ptr);
+  AddVar_Create_4( this_ptr);
 */
-      AddVar_Destroy( this_ptr);
-      AddVar_Copy( this_ptr);
-      AddVar_GetSubImage( this_ptr);
-      AddVar_Size( this_ptr);
-      AddVar_Paste( this_ptr);
-      AddVar_Scale( this_ptr);
-      AddVar_ResampleBox( this_ptr);
-      AddVar_ResampleBicubic( this_ptr);
-      AddVar_Blur( this_ptr);
-      AddVar_BlurHorizontal( this_ptr);
-      AddVar_BlurVertical( this_ptr);
-      AddVar_ShrinkBy( this_ptr);
-      AddVar_Rescale( this_ptr);
-      AddVar_Resize( this_ptr,"_Resize");
-      AddVar_Rotate( this_ptr);
-      AddVar_Rotate90( this_ptr);
-      AddVar_Mirror( this_ptr);
-      AddVar_Replace( this_ptr);
-      AddVar_ConvertToGreyscale( this_ptr);
-      AddVar_ConvertToMono( this_ptr);
-      AddVar_SetRGB_1( this_ptr);
-      AddVar_SetRGB( this_ptr);
-      AddVar_SetRGB_2( this_ptr);
-      AddVar_GetRed( this_ptr);
-      AddVar_GetGreen( this_ptr);
-      AddVar_GetBlue( this_ptr);
-      AddVar_SetAlpha_1( this_ptr);
-      AddVar_GetAlpha_1( this_ptr);
-      AddVar_FindFirstUnusedColour( this_ptr);
-      AddVar_SetMaskFromImage( this_ptr);
-      AddVar_ConvertAlphaToMask( this_ptr);
-      AddVar_ConvertColourToAlpha( this_ptr);
-      AddVar_LoadFile_1( this_ptr);
-      AddVar_LoadFile( this_ptr);
-      AddVar_LoadFile_2( this_ptr);
-      AddVar_LoadFile_3( this_ptr);
-      AddVar_LoadFile_4( this_ptr);
-      AddVar_SaveFile_1( this_ptr);
-      AddVar_SaveFile( this_ptr);
-      AddVar_SaveFile_2( this_ptr);
-      AddVar_SaveFile_3( this_ptr);
-      AddVar_SaveFile_4( this_ptr);
-      AddVar_SaveFile_5( this_ptr);
-      AddVar_Ok( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_GetWidth( this_ptr);
-      AddVar_GetHeight( this_ptr);
-      AddVar_GetData( this_ptr);
-      AddVar_SetData_1( this_ptr);
-      AddVar_SetData( this_ptr);
-      AddVar_SetData_2( this_ptr);
-      AddVar_GetAlpha( this_ptr);
-      AddVar_GetAlpha_2( this_ptr);
-      AddVar_HasAlpha( this_ptr);
-      AddVar_SetAlpha( this_ptr);
-      AddVar_SetAlpha_2( this_ptr);
-      AddVar_InitAlpha( this_ptr);
-      AddVar_IsTransparent( this_ptr);
-      AddVar_SetMaskColour( this_ptr);
-      AddVar_GetOrFindMaskColour( this_ptr);
-      AddVar_GetMaskRed( this_ptr);
-      AddVar_GetMaskGreen( this_ptr);
-      AddVar_GetMaskBlue( this_ptr);
-      AddVar_SetMask( this_ptr);
-      AddVar_HasMask( this_ptr);
-      AddVar_HasPalette( this_ptr);
-      AddVar_GetPalette( this_ptr);
-      AddVar_SetPalette( this_ptr);
-      AddVar_SetOption_1( this_ptr);
-      AddVar_SetOption( this_ptr);
-      AddVar_SetOption_2( this_ptr);
-      AddVar_GetOption( this_ptr);
-      AddVar_GetOptionInt( this_ptr);
-      AddVar_HasOption( this_ptr);
-      AddVar_CountColours( this_ptr);
-      AddVar_ComputeHistogram( this_ptr);
-      AddVar_RotateHue( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_Destroy( this_ptr);
+  AddVar_Copy( this_ptr);
+  AddVar_GetSubImage( this_ptr);
+  AddVar_Size( this_ptr);
+  AddVar_Paste( this_ptr);
+  AddVar_Scale( this_ptr);
+  AddVar_ResampleBox( this_ptr);
+  AddVar_ResampleBicubic( this_ptr);
+  AddVar_Blur( this_ptr);
+  AddVar_BlurHorizontal( this_ptr);
+  AddVar_BlurVertical( this_ptr);
+  AddVar_ShrinkBy( this_ptr);
+  AddVar_Rescale( this_ptr);
+  AddVar_Resize( this_ptr);
+  AddVar_Rotate( this_ptr);
+  AddVar_Rotate90( this_ptr);
+  AddVar_Mirror( this_ptr);
+  AddVar_Replace( this_ptr);
+  AddVar_ConvertToGreyscale( this_ptr);
+  AddVar_ConvertToMono( this_ptr);
+  AddVar_SetRGB_1( this_ptr);
+  AddVar_SetRGB( this_ptr);
+  AddVar_SetRGB_2( this_ptr);
+  AddVar_GetRed( this_ptr);
+  AddVar_GetGreen( this_ptr);
+  AddVar_GetBlue( this_ptr);
+  AddVar_SetAlpha_1( this_ptr);
+  AddVar_GetAlpha_1( this_ptr);
+  AddVar_FindFirstUnusedColour( this_ptr);
+  AddVar_SetMaskFromImage( this_ptr);
+  AddVar_ConvertAlphaToMask( this_ptr);
+  AddVar_ConvertColourToAlpha( this_ptr);
+  AddVar_LoadFile_1( this_ptr);
+  AddVar_LoadFile( this_ptr);
+  AddVar_LoadFile_2( this_ptr);
+  AddVar_LoadFile_3( this_ptr);
+  AddVar_LoadFile_4( this_ptr);
+  AddVar_SaveFile_1( this_ptr);
+  AddVar_SaveFile( this_ptr);
+  AddVar_SaveFile_2( this_ptr);
+  AddVar_SaveFile_3( this_ptr);
+  AddVar_SaveFile_4( this_ptr);
+  AddVar_SaveFile_5( this_ptr);
+  AddVar_Ok( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_GetWidth( this_ptr);
+  AddVar_GetHeight( this_ptr);
+  AddVar_GetData( this_ptr);
+  AddVar_SetData_1( this_ptr);
+  AddVar_SetData( this_ptr);
+  AddVar_SetData_2( this_ptr);
+  AddVar_GetAlpha( this_ptr);
+  AddVar_GetAlpha_2( this_ptr);
+  AddVar_HasAlpha( this_ptr);
+  AddVar_SetAlpha( this_ptr);
+  AddVar_SetAlpha_2( this_ptr);
+  AddVar_InitAlpha( this_ptr);
+  AddVar_IsTransparent( this_ptr);
+  AddVar_SetMaskColour( this_ptr);
+  AddVar_GetOrFindMaskColour( this_ptr);
+  AddVar_GetMaskRed( this_ptr);
+  AddVar_GetMaskGreen( this_ptr);
+  AddVar_GetMaskBlue( this_ptr);
+  AddVar_SetMask( this_ptr);
+  AddVar_HasMask( this_ptr);
+  AddVar_HasPalette( this_ptr);
+  AddVar_GetPalette( this_ptr);
+  AddVar_SetPalette( this_ptr);
+  AddVar_SetOption_1( this_ptr);
+  AddVar_SetOption( this_ptr);
+  AddVar_SetOption_2( this_ptr);
+  AddVar_GetOption( this_ptr);
+  AddVar_GetOptionInt( this_ptr);
+  AddVar_HasOption( this_ptr);
+  AddVar_CountColours( this_ptr);
+  AddVar_ComputeHistogram( this_ptr);
+  AddVar_RotateHue( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -188,7 +234,7 @@ void WrapClass_wxImage::AddMethods(WrapClass<wxImage>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxImage::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxImage_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -390,9 +436,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int height;
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* data = data_smtptr.get();
+  unsigned char* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > data_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   bool static_data = false;
   if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -429,13 +481,25 @@ BasicVariable::ptr WrapClass_wxImage::
   int height;
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* data = data_smtptr.get();
+  unsigned char* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > data_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > alpha_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* alpha = alpha_smtptr.get();
+  unsigned char* alpha;
+  if (CheckNullVar(_p,_n))  {
+    alpha=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > alpha_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    alpha = alpha_smtptr.get();
+  }
 
   bool static_data = false;
   if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -805,9 +869,15 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxImageHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxImageHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxImageHandler* handler = handler_smtptr.get();
+  wxImageHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxImageHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxImageHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxImageHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   wxImage::AddHandler(handler);
   return BasicVariable::ptr();
@@ -830,9 +900,15 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxImageHandler > handler_smtptr;
-  if (!get_val_smtptr_param<wxImageHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxImageHandler* handler = handler_smtptr.get();
+  wxImageHandler* handler;
+  if (CheckNullVar(_p,_n))  {
+    handler=(wxImageHandler*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxImageHandler > handler_smtptr;
+    if (!get_val_smtptr_param<wxImageHandler >(handler_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    handler = handler_smtptr.get();
+  }
 
   wxImage::InsertHandler(handler);
   return BasicVariable::ptr();
@@ -887,7 +963,7 @@ BasicVariable::ptr WrapClass_wxImage::
   wxString const & name = *name_smtptr;
 
   wxImageHandler * res =   wxImage::FindHandler(name);
-  BasicVariable::ptr res_var = WrapClass_wxImageHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxImageHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -943,7 +1019,7 @@ BasicVariable::ptr WrapClass_wxImage::
   long int imageType = imageType_long;
 
   wxImageHandler * res =   wxImage::FindHandler(extension, imageType);
-  BasicVariable::ptr res_var = WrapClass_wxImageHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxImageHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -970,7 +1046,7 @@ BasicVariable::ptr WrapClass_wxImage::
   long int imageType = imageType_long;
 
   wxImageHandler * res =   wxImage::FindHandler(imageType);
-  BasicVariable::ptr res_var = WrapClass_wxImageHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxImageHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -997,7 +1073,7 @@ BasicVariable::ptr WrapClass_wxImage::
   wxString const & mimetype = *mimetype_smtptr;
 
   wxImageHandler * res =   wxImage::FindHandlerMime(mimetype);
-  BasicVariable::ptr res_var = WrapClass_wxImageHandler::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxImageHandler >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1212,9 +1288,15 @@ BasicVariable::ptr WrapClass_wxImage::
   int height;
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* data = data_smtptr.get();
+  unsigned char* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > data_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   bool static_data = false;
   if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1251,13 +1333,25 @@ BasicVariable::ptr WrapClass_wxImage::
   int height;
   if (!get_val_param<int >(height,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* data = data_smtptr.get();
+  unsigned char* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > data_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > alpha_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* alpha = alpha_smtptr.get();
+  unsigned char* alpha;
+  if (CheckNullVar(_p,_n))  {
+    alpha=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > alpha_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    alpha = alpha_smtptr.get();
+  }
 
   bool static_data = false;
   if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -1735,9 +1829,15 @@ BasicVariable::ptr WrapClass_wxImage::
   bool interpolating = true;
   if (!get_val_param<bool >(interpolating,_p,_n,false,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<wxPoint > offset_after_rotation_smtptr;
-  if (!get_val_smtptr_param<wxPoint >(offset_after_rotation_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxPoint* offset_after_rotation = offset_after_rotation_smtptr.get();
+  wxPoint* offset_after_rotation = 0u;
+  if (CheckNullVar(_p,_n))  {
+    offset_after_rotation=(wxPoint*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxPoint > offset_after_rotation_smtptr;
+    if (!get_val_smtptr_param<wxPoint >(offset_after_rotation_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    offset_after_rotation = offset_after_rotation_smtptr.get();
+  }
 
   wxImage res =   this->_objectptr->GetObj()->Rotate(angle, centre_of_rotation, interpolating, offset_after_rotation);
   return AMILabType<wxImage >::CreateVar(res);
@@ -2172,17 +2272,35 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>6) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<unsigned char > r_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* r = r_smtptr.get();
+  unsigned char* r;
+  if (CheckNullVar(_p,_n))  {
+    r=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > r_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    r = r_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > g_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* g = g_smtptr.get();
+  unsigned char* g;
+  if (CheckNullVar(_p,_n))  {
+    g=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > g_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    g = g_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > b_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* b = b_smtptr.get();
+  unsigned char* b;
+  if (CheckNullVar(_p,_n))  {
+    b=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > b_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    b = b_smtptr.get();
+  }
 
   unsigned char startR = 1;
   if (!get_val_param<unsigned char >(startR,_p,_n,false,false)) ClassHelpAndReturn;
@@ -2751,9 +2869,15 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* data = data_smtptr.get();
+  unsigned char* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > data_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   bool static_data = false;
   if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -2803,9 +2927,15 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>4) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<unsigned char > data_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* data = data_smtptr.get();
+  unsigned char* data;
+  if (CheckNullVar(_p,_n))  {
+    data=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > data_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(data_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    data = data_smtptr.get();
+  }
 
   int new_width;
   if (!get_val_param<int >(new_width,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -2918,9 +3048,15 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<unsigned char > alpha_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* alpha = alpha_smtptr.get();
+  unsigned char* alpha = 0l;
+  if (CheckNullVar(_p,_n))  {
+    alpha=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > alpha_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(alpha_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    alpha = alpha_smtptr.get();
+  }
 
   bool static_data = false;
   if (!get_val_param<bool >(static_data,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -3032,17 +3168,35 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p->GetNumParam()>3) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<unsigned char > r_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* r = r_smtptr.get();
+  unsigned char* r;
+  if (CheckNullVar(_p,_n))  {
+    r=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > r_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(r_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    r = r_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > g_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* g = g_smtptr.get();
+  unsigned char* g;
+  if (CheckNullVar(_p,_n))  {
+    g=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > g_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(g_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    g = g_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > b_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* b = b_smtptr.get();
+  unsigned char* b;
+  if (CheckNullVar(_p,_n))  {
+    b=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > b_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(b_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    b = b_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->GetOrFindMaskColour(r, g, b);
   return AMILabType<bool >::CreateVar(res);
@@ -3463,7 +3617,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

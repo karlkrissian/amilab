@@ -10,19 +10,29 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxListBase.h"
 
 // get all the required includes
 // #include "..."
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxListBase.h"
+#ifndef wxListBase_declared
+  #define wxListBase_declared
+  AMI_DECLARE_TYPE(wxListBase)
+#endif
 
 
-#include "wrap_wxListBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,21 +72,24 @@ void WrapClass_wxListBase::AddMethods(WrapClass<wxListBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_GetCount( this_ptr);
-      AddVar_IsEmpty( this_ptr);
-      AddVar_Clear( this_ptr);
-      AddVar_DeleteContents( this_ptr);
-      AddVar_GetDeleteContents( this_ptr);
-      AddVar_GetKeyType( this_ptr);
-      AddVar_SetKeyType( this_ptr);
+  // Adding standard methods 
+  AddVar_GetCount( this_ptr);
+  AddVar_IsEmpty( this_ptr);
+  AddVar_Clear( this_ptr);
+  AddVar_DeleteContents( this_ptr);
+  AddVar_GetDeleteContents( this_ptr);
+  AddVar_GetKeyType( this_ptr);
+  AddVar_SetKeyType( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -97,7 +110,7 @@ void WrapClass_wxListBase::AddMethods(WrapClass<wxListBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxListBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxListBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

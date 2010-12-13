@@ -16,16 +16,29 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkDataArray.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkDataArray.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkAbstractArray.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkDataArray_declared
+  #define vtkDataArray_declared
+  AMI_DECLARE_TYPE(vtkDataArray)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkAbstractArray_declared
+  #define vtkAbstractArray_declared
+  AMI_DECLARE_TYPE(vtkAbstractArray)
+#endif
 
 
-#include "wrap_vtkDataArray.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -172,7 +185,7 @@ void WrapClass_vtkDataArray::AddMethods(WrapClass<vtkDataArray>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkDataArray::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkDataArray_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -260,7 +273,7 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   }
 
   vtkDataArray * res =   vtkDataArray::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkDataArray::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataArray >::CreateVar(res,true);
   return res_var;
 }
 
@@ -371,7 +384,7 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (!get_val_param<int >(dataType,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkDataArray * res =   vtkDataArray::CreateDataArray(dataType);
-  BasicVariable::ptr res_var = WrapClass_vtkDataArray::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataArray >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: vtkInformationInformationVectorKey
@@ -480,7 +493,7 @@ BasicVariable::ptr WrapClass_vtkDataArray::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkDataArray * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkDataArray::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataArray >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

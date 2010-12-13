@@ -13,11 +13,13 @@
 #ifndef _wrap_wxToolBarToolBase_h_
 #define _wrap_wxToolBarToolBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxObject.h"
 
 
-
-AMI_DECLARE_TYPE(wxToolBarToolBase);
+#ifndef wxToolBarToolBase_declared
+  #define wxToolBarToolBase_declared
+  AMI_DECLARE_TYPE(wxToolBarToolBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxToolBarToolBase : public WrapClass<wxToolBarToolBase>
@@ -115,12 +119,13 @@ class WrapClass_wxToolBarToolBase : public WrapClass<wxToolBarToolBase>
 
     void AddMethods(WrapClass<wxToolBarToolBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxToolBarToolBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxToolBarToolBase_h

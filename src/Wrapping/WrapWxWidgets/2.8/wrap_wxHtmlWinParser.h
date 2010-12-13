@@ -13,11 +13,13 @@
 #ifndef _wrap_wxHtmlWinParser_h_
 #define _wrap_wxHtmlWinParser_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxHtmlParser.h"
 
 
-
-AMI_DECLARE_TYPE(wxHtmlWinParser);
+#ifndef wxHtmlWinParser_declared
+  #define wxHtmlWinParser_declared
+  AMI_DECLARE_TYPE(wxHtmlWinParser);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxHtmlWinParser : public WrapClass<wxHtmlWinParser>
@@ -126,12 +130,13 @@ class WrapClass_wxHtmlWinParser : public WrapClass<wxHtmlWinParser>
 
     void AddMethods(WrapClass<wxHtmlWinParser>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxHtmlWinParser_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxHtmlWinParser_h

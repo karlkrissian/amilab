@@ -10,27 +10,64 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxPanel.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxString.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxSizeEvent.h"
-#include "wrap_wxNavigationKeyEvent.h"
-#include "wrap_wxFocusEvent.h"
-#include "wrap_wxChildFocusEvent.h"
-#include "wrap_wxWindowBase.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxSizeEvent_declared
+  #define wxSizeEvent_declared
+  AMI_DECLARE_TYPE(wxSizeEvent)
+#endif
+#ifndef wxNavigationKeyEvent_declared
+  #define wxNavigationKeyEvent_declared
+  AMI_DECLARE_TYPE(wxNavigationKeyEvent)
+#endif
+#ifndef wxFocusEvent_declared
+  #define wxFocusEvent_declared
+  AMI_DECLARE_TYPE(wxFocusEvent)
+#endif
+#ifndef wxChildFocusEvent_declared
+  #define wxChildFocusEvent_declared
+  AMI_DECLARE_TYPE(wxChildFocusEvent)
+#endif
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxPanel.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -77,22 +114,25 @@ void WrapClass_wxPanel::AddMethods(WrapClass<wxPanel>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Create( this_ptr);
-      AddVar_OnSize( this_ptr);
-      AddVar_InitDialog( this_ptr);
-      AddVar_OnNavigationKey( this_ptr);
-      AddVar_OnFocus( this_ptr);
-      AddVar_OnChildFocus( this_ptr);
-      AddVar_SetFocus( this_ptr);
-      AddVar_SetFocusIgnoringChildren( this_ptr);
-      AddVar_RemoveChild( this_ptr);
-      AddVar_AcceptsFocus( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding standard methods 
+  AddVar_Create( this_ptr);
+  AddVar_OnSize( this_ptr);
+  AddVar_InitDialog( this_ptr);
+  AddVar_OnNavigationKey( this_ptr);
+  AddVar_OnFocus( this_ptr);
+  AddVar_OnChildFocus( this_ptr);
+  AddVar_SetFocus( this_ptr);
+  AddVar_SetFocusIgnoringChildren( this_ptr);
+  AddVar_RemoveChild( this_ptr);
+  AddVar_AcceptsFocus( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -113,7 +153,7 @@ void WrapClass_wxPanel::AddMethods(WrapClass<wxPanel>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxPanel::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxPanel_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -202,9 +242,15 @@ BasicVariable::ptr WrapClass_wxPanel::
   if (_p->GetNumParam()>7) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    parent = parent_smtptr.get();
+  }
 
   int x;
   if (!get_val_param<int >(x,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -254,9 +300,15 @@ BasicVariable::ptr WrapClass_wxPanel::
   if (_p->GetNumParam()>6) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    parent = parent_smtptr.get();
+  }
 
   int winid = wxID_ANY;
   if (!get_val_param<int >(winid,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -308,9 +360,15 @@ BasicVariable::ptr WrapClass_wxPanel::
   if (_p->GetNumParam()>6) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   int winid = wxID_ANY;
   if (!get_val_param<int >(winid,_p,_n,false,false)) ClassHelpAndReturn;
@@ -509,9 +567,15 @@ BasicVariable::ptr WrapClass_wxPanel::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* child = child_smtptr.get();
+  wxWindowBase* child;
+  if (CheckNullVar(_p,_n))  {
+    child=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > child_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    child = child_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveChild(child);
   return BasicVariable::ptr();
@@ -552,7 +616,7 @@ BasicVariable::ptr WrapClass_wxPanel::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

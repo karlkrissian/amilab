@@ -10,21 +10,31 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxWCharBuffer.h"
 
 // get all the required includes
 // #include "..."
 #include "stdlib.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxWCharBuffer.h"
 #include "wchar.h"
+#ifndef wxWCharBuffer_declared
+  #define wxWCharBuffer_declared
+  AMI_DECLARE_TYPE(wxWCharBuffer)
+#endif
 
 
-#include "wrap_wxWCharBuffer.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,25 +74,28 @@ void WrapClass_wxWCharBuffer::AddMethods(WrapClass<wxWCharBuffer>::ptr this_ptr 
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_release( this_ptr);
-      AddVar_reset( this_ptr);
-      AddVar_extend( this_ptr);
-      AddVar_data_1( this_ptr);
-      AddVar_data( this_ptr);
-      AddVar_data_2( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_release( this_ptr);
+  AddVar_reset( this_ptr);
+  AddVar_extend( this_ptr);
+  AddVar_data_1( this_ptr);
+  AddVar_data( this_ptr);
+  AddVar_data_2( this_ptr);
 
-      // Adding operators
-      AddVar___assign___1( this_ptr);
-      AddVar___assign__( this_ptr);
-      AddVar___assign___2( this_ptr);
-      AddVar___at__( this_ptr);
+  // Adding operators
+  AddVar___assign___1( this_ptr);
+  AddVar___assign__( this_ptr);
+  AddVar___assign___2( this_ptr);
+  AddVar___at__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -92,7 +105,7 @@ void WrapClass_wxWCharBuffer::AddMethods(WrapClass<wxWCharBuffer>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxWCharBuffer::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxWCharBuffer_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

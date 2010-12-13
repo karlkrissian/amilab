@@ -19,15 +19,17 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "vtk_includes.h"
+#include "vtkVolumeRayCastMapper.h"
 
 // include what is needed for inheritence and for types ...
 
 #include "wrap_vtkVolumeMapper.h"
 
 
-
-AMI_DECLARE_TYPE(vtkVolumeRayCastMapper);
+#ifndef vtkVolumeRayCastMapper_declared
+  #define vtkVolumeRayCastMapper_declared
+  AMI_DECLARE_TYPE(vtkVolumeRayCastMapper);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkVolumeRayCastMapper : public WrapClass<vtkVolumeRayCastMapper>
@@ -133,12 +135,13 @@ class WrapClass_vtkVolumeRayCastMapper : public WrapClass<vtkVolumeRayCastMapper
 
     void AddMethods(WrapClass<vtkVolumeRayCastMapper>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkVolumeRayCastMapper_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkVolumeRayCastMapper_h

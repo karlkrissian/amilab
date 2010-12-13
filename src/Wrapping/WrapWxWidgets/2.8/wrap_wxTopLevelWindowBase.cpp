@@ -10,27 +10,64 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxTopLevelWindowBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxIcon.h"
-#include "wrap_wxIconBundle.h"
-#include "wrap_wxRegion.h"
-#include "wrap_wxWindowBase.h"
-#include "wrap_wxWindow.h"
-#include "wrap_wxCloseEvent.h"
-#include "wrap_wxSizeEvent.h"
-#include "wrap_wxActivateEvent.h"
-#include "wrap_wxUpdateUIEvent.h"
-#include "wrap_wxSize.h"
+#ifndef wxIcon_declared
+  #define wxIcon_declared
+  AMI_DECLARE_TYPE(wxIcon)
+#endif
+#ifndef wxIconBundle_declared
+  #define wxIconBundle_declared
+  AMI_DECLARE_TYPE(wxIconBundle)
+#endif
+#ifndef wxRegion_declared
+  #define wxRegion_declared
+  AMI_DECLARE_TYPE(wxRegion)
+#endif
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxCloseEvent_declared
+  #define wxCloseEvent_declared
+  AMI_DECLARE_TYPE(wxCloseEvent)
+#endif
+#ifndef wxSizeEvent_declared
+  #define wxSizeEvent_declared
+  AMI_DECLARE_TYPE(wxSizeEvent)
+#endif
+#ifndef wxActivateEvent_declared
+  #define wxActivateEvent_declared
+  AMI_DECLARE_TYPE(wxActivateEvent)
+#endif
+#ifndef wxUpdateUIEvent_declared
+  #define wxUpdateUIEvent_declared
+  AMI_DECLARE_TYPE(wxUpdateUIEvent)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
 
 
-#include "wrap_wxTopLevelWindowBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -77,39 +114,42 @@ void WrapClass_wxTopLevelWindowBase::AddMethods(WrapClass<wxTopLevelWindowBase>:
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_IsAlwaysMaximized( this_ptr);
-      AddVar_GetIcon( this_ptr);
-      AddVar_GetIcons( this_ptr);
-      AddVar_SetIcon( this_ptr);
-      AddVar_SetIcons( this_ptr);
-      AddVar_EnableCloseButton( this_ptr);
-      AddVar_SetShape( this_ptr);
-      AddVar_RequestUserAttention( this_ptr);
-      AddVar_IsActive( this_ptr);
-      AddVar_ShouldPreventAppExit( this_ptr);
-      AddVar_CentreOnScreen( this_ptr);
-      AddVar_CenterOnScreen( this_ptr);
-      AddVar_RemoveChild( this_ptr);
-      AddVar_GetDefaultItem( this_ptr);
-      AddVar_SetDefaultItem( this_ptr);
-      AddVar_GetTmpDefaultItem( this_ptr);
-      AddVar_SetTmpDefaultItem( this_ptr);
-      AddVar_Destroy( this_ptr);
-      AddVar_IsTopLevel( this_ptr);
-      AddVar_IsVisible( this_ptr);
-      AddVar_OnCloseWindow( this_ptr);
-      AddVar_OnSize( this_ptr);
-      AddVar_GetRectForTopLevelChildren( this_ptr);
-      AddVar_OnActivate( this_ptr);
-      AddVar_DoUpdateWindowUI( this_ptr);
-      AddVar_SetMinSize( this_ptr);
-      AddVar_SetMaxSize( this_ptr);
-      AddVar_DoSetSizeHints( this_ptr);
+  // Adding standard methods 
+  AddVar_IsAlwaysMaximized( this_ptr);
+  AddVar_GetIcon( this_ptr);
+  AddVar_GetIcons( this_ptr);
+  AddVar_SetIcon( this_ptr);
+  AddVar_SetIcons( this_ptr);
+  AddVar_EnableCloseButton( this_ptr);
+  AddVar_SetShape( this_ptr);
+  AddVar_RequestUserAttention( this_ptr);
+  AddVar_IsActive( this_ptr);
+  AddVar_ShouldPreventAppExit( this_ptr);
+  AddVar_CentreOnScreen( this_ptr);
+  AddVar_CenterOnScreen( this_ptr);
+  AddVar_RemoveChild( this_ptr);
+  AddVar_GetDefaultItem( this_ptr);
+  AddVar_SetDefaultItem( this_ptr);
+  AddVar_GetTmpDefaultItem( this_ptr);
+  AddVar_SetTmpDefaultItem( this_ptr);
+  AddVar_Destroy( this_ptr);
+  AddVar_IsTopLevel( this_ptr);
+  AddVar_IsVisible( this_ptr);
+  AddVar_OnCloseWindow( this_ptr);
+  AddVar_OnSize( this_ptr);
+  AddVar_GetRectForTopLevelChildren( this_ptr);
+  AddVar_OnActivate( this_ptr);
+  AddVar_DoUpdateWindowUI( this_ptr);
+  AddVar_SetMinSize( this_ptr);
+  AddVar_SetMaxSize( this_ptr);
+  AddVar_DoSetSizeHints( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -130,7 +170,7 @@ void WrapClass_wxTopLevelWindowBase::AddMethods(WrapClass<wxTopLevelWindowBase>:
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxTopLevelWindowBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxTopLevelWindowBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -433,9 +473,15 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* child = child_smtptr.get();
+  wxWindowBase* child;
+  if (CheckNullVar(_p,_n))  {
+    child=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > child_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    child = child_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveChild(child);
   return BasicVariable::ptr();
@@ -457,7 +503,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetDefaultItem();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -479,12 +525,18 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* win = win_smtptr.get();
+  wxWindow* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > win_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   wxWindow * res =   this->_objectptr->GetObj()->SetDefaultItem(win);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -504,7 +556,7 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetTmpDefaultItem();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -526,12 +578,18 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > win_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* win = win_smtptr.get();
+  wxWindow* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > win_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
   wxWindow * res =   this->_objectptr->GetObj()->SetTmpDefaultItem(win);
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -662,21 +720,45 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowBase::
   if (_p->GetNumParam()>4) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<int > x_smtptr;
-  if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* x = x_smtptr.get();
+  int* x;
+  if (CheckNullVar(_p,_n))  {
+    x=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > x_smtptr;
+    if (!get_val_smtptr_param<int >(x_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    x = x_smtptr.get();
+  }
 
-  boost::shared_ptr<int > y_smtptr;
-  if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* y = y_smtptr.get();
+  int* y;
+  if (CheckNullVar(_p,_n))  {
+    y=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > y_smtptr;
+    if (!get_val_smtptr_param<int >(y_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    y = y_smtptr.get();
+  }
 
-  boost::shared_ptr<int > w_smtptr;
-  if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* w = w_smtptr.get();
+  int* w;
+  if (CheckNullVar(_p,_n))  {
+    w=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > w_smtptr;
+    if (!get_val_smtptr_param<int >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    w = w_smtptr.get();
+  }
 
-  boost::shared_ptr<int > h_smtptr;
-  if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* h = h_smtptr.get();
+  int* h;
+  if (CheckNullVar(_p,_n))  {
+    h=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > h_smtptr;
+    if (!get_val_smtptr_param<int >(h_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    h = h_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->GetRectForTopLevelChildren(x, y, w, h);
   return BasicVariable::ptr();

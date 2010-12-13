@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxRect.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxRect.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
 
 
-#include "wrap_wxRect.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,126 +79,129 @@ void WrapClass_wxRect::AddMethods(WrapClass<wxRect>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetX( this_ptr);
-      AddVar_SetX( this_ptr);
-      AddVar_GetY( this_ptr);
-      AddVar_SetY( this_ptr);
-      AddVar_GetWidth( this_ptr);
-      AddVar_SetWidth( this_ptr);
-      AddVar_GetHeight( this_ptr);
-      AddVar_SetHeight( this_ptr);
-      AddVar_GetPosition( this_ptr);
-      AddVar_SetPosition( this_ptr);
-      AddVar_GetSize( this_ptr);
-      AddVar_SetSize( this_ptr);
-      AddVar_IsEmpty( this_ptr);
-      AddVar_GetLeft( this_ptr);
-      AddVar_GetTop( this_ptr);
-      AddVar_GetBottom( this_ptr);
-      AddVar_GetRight( this_ptr);
-      AddVar_SetLeft( this_ptr);
-      AddVar_SetRight( this_ptr);
-      AddVar_SetTop( this_ptr);
-      AddVar_SetBottom( this_ptr);
-      AddVar_GetTopLeft( this_ptr);
-      AddVar_GetLeftTop( this_ptr);
-      AddVar_SetTopLeft( this_ptr);
-      AddVar_SetLeftTop( this_ptr);
-      AddVar_GetBottomRight( this_ptr);
-      AddVar_GetRightBottom( this_ptr);
-      AddVar_SetBottomRight( this_ptr);
-      AddVar_SetRightBottom( this_ptr);
-      AddVar_GetTopRight( this_ptr);
-      AddVar_GetRightTop( this_ptr);
-      AddVar_SetTopRight( this_ptr);
-      AddVar_SetRightTop( this_ptr);
-      AddVar_GetBottomLeft( this_ptr);
-      AddVar_GetLeftBottom( this_ptr);
-      AddVar_SetBottomLeft( this_ptr);
-      AddVar_SetLeftBottom( this_ptr);
-      AddVar_Inflate_1( this_ptr);
-      AddVar_Inflate( this_ptr);
-      AddVar_Inflate_2( this_ptr);
-      AddVar_Inflate_3( this_ptr);
-      AddVar_Inflate_4( this_ptr);
-      AddVar_Deflate_1( this_ptr);
-      AddVar_Deflate( this_ptr);
-      AddVar_Deflate_2( this_ptr);
-      AddVar_Deflate_3( this_ptr);
-      AddVar_Deflate_4( this_ptr);
-      AddVar_Offset_1( this_ptr);
-      AddVar_Offset( this_ptr);
-      AddVar_Offset_2( this_ptr);
-      AddVar_Intersect_1( this_ptr);
-      AddVar_Intersect( this_ptr);
-      AddVar_Intersect_2( this_ptr);
-      AddVar_Union_1( this_ptr);
-      AddVar_Union( this_ptr);
-      AddVar_Union_2( this_ptr);
-      AddVar_Contains_1( this_ptr);
-      AddVar_Contains( this_ptr);
-      AddVar_Contains_2( this_ptr);
-      AddVar_Contains_3( this_ptr);
-      AddVar_Intersects( this_ptr);
-      AddVar_CentreIn( this_ptr);
-      AddVar_CenterIn( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetX( this_ptr);
+  AddVar_SetX( this_ptr);
+  AddVar_GetY( this_ptr);
+  AddVar_SetY( this_ptr);
+  AddVar_GetWidth( this_ptr);
+  AddVar_SetWidth( this_ptr);
+  AddVar_GetHeight( this_ptr);
+  AddVar_SetHeight( this_ptr);
+  AddVar_GetPosition( this_ptr);
+  AddVar_SetPosition( this_ptr);
+  AddVar_GetSize( this_ptr);
+  AddVar_SetSize( this_ptr);
+  AddVar_IsEmpty( this_ptr);
+  AddVar_GetLeft( this_ptr);
+  AddVar_GetTop( this_ptr);
+  AddVar_GetBottom( this_ptr);
+  AddVar_GetRight( this_ptr);
+  AddVar_SetLeft( this_ptr);
+  AddVar_SetRight( this_ptr);
+  AddVar_SetTop( this_ptr);
+  AddVar_SetBottom( this_ptr);
+  AddVar_GetTopLeft( this_ptr);
+  AddVar_GetLeftTop( this_ptr);
+  AddVar_SetTopLeft( this_ptr);
+  AddVar_SetLeftTop( this_ptr);
+  AddVar_GetBottomRight( this_ptr);
+  AddVar_GetRightBottom( this_ptr);
+  AddVar_SetBottomRight( this_ptr);
+  AddVar_SetRightBottom( this_ptr);
+  AddVar_GetTopRight( this_ptr);
+  AddVar_GetRightTop( this_ptr);
+  AddVar_SetTopRight( this_ptr);
+  AddVar_SetRightTop( this_ptr);
+  AddVar_GetBottomLeft( this_ptr);
+  AddVar_GetLeftBottom( this_ptr);
+  AddVar_SetBottomLeft( this_ptr);
+  AddVar_SetLeftBottom( this_ptr);
+  AddVar_Inflate_1( this_ptr);
+  AddVar_Inflate( this_ptr);
+  AddVar_Inflate_2( this_ptr);
+  AddVar_Inflate_3( this_ptr);
+  AddVar_Inflate_4( this_ptr);
+  AddVar_Deflate_1( this_ptr);
+  AddVar_Deflate( this_ptr);
+  AddVar_Deflate_2( this_ptr);
+  AddVar_Deflate_3( this_ptr);
+  AddVar_Deflate_4( this_ptr);
+  AddVar_Offset_1( this_ptr);
+  AddVar_Offset( this_ptr);
+  AddVar_Offset_2( this_ptr);
+  AddVar_Intersect_1( this_ptr);
+  AddVar_Intersect( this_ptr);
+  AddVar_Intersect_2( this_ptr);
+  AddVar_Union_1( this_ptr);
+  AddVar_Union( this_ptr);
+  AddVar_Union_2( this_ptr);
+  AddVar_Contains_1( this_ptr);
+  AddVar_Contains( this_ptr);
+  AddVar_Contains_2( this_ptr);
+  AddVar_Contains_3( this_ptr);
+  AddVar_Intersects( this_ptr);
+  AddVar_CentreIn( this_ptr);
+  AddVar_CenterIn( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___not_equal__( this_ptr);
-      AddVar___add__( this_ptr);
-      AddVar___add_assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___not_equal__( this_ptr);
+  AddVar___add__( this_ptr);
+  AddVar___add_assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member x
-      boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
-      if (var_x_ptr.get()) {
-        BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
-        if (var_x.get()) {
-          var_x->Rename("x");
-          context->AddVar(var_x,context);
-        }
-      }
-      
-      // Adding public member y
-      boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
-      if (var_y_ptr.get()) {
-        BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
-        if (var_y.get()) {
-          var_y->Rename("y");
-          context->AddVar(var_y,context);
-        }
-      }
-      
-      // Adding public member width
-      boost::shared_ptr<int > var_width_ptr(&GetObj()->width, smartpointer_nodeleter<int >());
-      if (var_width_ptr.get()) {
-        BasicVariable::ptr var_width = AMILabType<int >::CreateVarFromSmtPtr(var_width_ptr);
-        if (var_width.get()) {
-          var_width->Rename("width");
-          context->AddVar(var_width,context);
-        }
-      }
-      
-      // Adding public member height
-      boost::shared_ptr<int > var_height_ptr(&GetObj()->height, smartpointer_nodeleter<int >());
-      if (var_height_ptr.get()) {
-        BasicVariable::ptr var_height = AMILabType<int >::CreateVarFromSmtPtr(var_height_ptr);
-        if (var_height.get()) {
-          var_height->Rename("height");
-          context->AddVar(var_height,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member x
+  boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
+  if (var_x_ptr.get()) {
+    BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
+    if (var_x.get()) {
+      var_x->Rename("x");
+      context->AddVar(var_x,context);
+    }
+  }
+  
+  // Adding public member y
+  boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
+  if (var_y_ptr.get()) {
+    BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
+    if (var_y.get()) {
+      var_y->Rename("y");
+      context->AddVar(var_y,context);
+    }
+  }
+  
+  // Adding public member width
+  boost::shared_ptr<int > var_width_ptr(&GetObj()->width, smartpointer_nodeleter<int >());
+  if (var_width_ptr.get()) {
+    BasicVariable::ptr var_width = AMILabType<int >::CreateVarFromSmtPtr(var_width_ptr);
+    if (var_width.get()) {
+      var_width->Rename("width");
+      context->AddVar(var_width,context);
+    }
+  }
+  
+  // Adding public member height
+  boost::shared_ptr<int > var_height_ptr(&GetObj()->height, smartpointer_nodeleter<int >());
+  if (var_height_ptr.get()) {
+    BasicVariable::ptr var_height = AMILabType<int >::CreateVarFromSmtPtr(var_height_ptr);
+    if (var_height.get()) {
+      var_height->Rename("height");
+      context->AddVar(var_height,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -193,7 +212,7 @@ void WrapClass_wxRect::AddMethods(WrapClass<wxRect>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxRect::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxRect_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

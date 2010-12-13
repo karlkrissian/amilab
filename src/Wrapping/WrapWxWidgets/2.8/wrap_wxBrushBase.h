@@ -13,11 +13,13 @@
 #ifndef _wrap_wxBrushBase_h_
 #define _wrap_wxBrushBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxGDIObject.h"
 
 
-
-AMI_DECLARE_TYPE(wxBrushBase);
+#ifndef wxBrushBase_declared
+  #define wxBrushBase_declared
+  AMI_DECLARE_TYPE(wxBrushBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxBrushBase : public WrapClass<wxBrushBase>
@@ -79,12 +83,13 @@ class WrapClass_wxBrushBase : public WrapClass<wxBrushBase>
 
     void AddMethods(WrapClass<wxBrushBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxBrushBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxBrushBase_h

@@ -26,8 +26,10 @@
 #include "wrap_vtkDataSet.h"
 
 
-
-AMI_DECLARE_TYPE(vtkPointSet);
+#ifndef vtkPointSet_declared
+  #define vtkPointSet_declared
+  AMI_DECLARE_TYPE(vtkPointSet);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkPointSet : public WrapClass<vtkPointSet>
@@ -114,12 +116,13 @@ class WrapClass_vtkPointSet : public WrapClass<vtkPointSet>
 
     void AddMethods(WrapClass<vtkPointSet>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkPointSet_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkPointSet_h

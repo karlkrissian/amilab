@@ -13,11 +13,13 @@
 #ifndef _wrap_wxList_h_
 #define _wrap_wxList_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxObjectList.h"
 
 
-
-AMI_DECLARE_TYPE(wxList);
+#ifndef wxList_declared
+  #define wxList_declared
+  AMI_DECLARE_TYPE(wxList);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxList : public WrapClass<wxList>
@@ -78,7 +82,7 @@ class WrapClass_wxList : public WrapClass<wxList>
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
     // Adding standard methods
-/* The following types are missing: _9904
+/* The following types are missing: _17586
     ADD_CLASS_METHOD(Sort,"void wxList::Sort(wxSortCompareFunction compfunc)  (http://docs.wxwidgets.org/stable/wx_wxlist.html#sort)")
 */
     ADD_CLASS_METHOD(Member,"wxNode * wxList::Member(wxObject * object)  (http://docs.wxwidgets.org/stable/wx_wxlist.html#member)")
@@ -92,12 +96,13 @@ class WrapClass_wxList : public WrapClass<wxList>
 
     void AddMethods(WrapClass<wxList>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxList_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxList_h

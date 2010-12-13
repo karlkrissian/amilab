@@ -13,11 +13,13 @@
 #ifndef _wrap_wxRegion_h_
 #define _wrap_wxRegion_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxRegionBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxRegion);
+#ifndef wxRegion_declared
+  #define wxRegion_declared
+  AMI_DECLARE_TYPE(wxRegion);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxRegion : public WrapClass<wxRegion>
@@ -109,12 +113,13 @@ class WrapClass_wxRegion : public WrapClass<wxRegion>
 
     void AddMethods(WrapClass<wxRegion>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxRegion_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxRegion_h

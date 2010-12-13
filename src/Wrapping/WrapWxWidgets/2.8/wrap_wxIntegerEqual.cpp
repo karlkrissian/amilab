@@ -10,19 +10,29 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxIntegerEqual.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxIntegerEqual.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef wxIntegerEqual_declared
+  #define wxIntegerEqual_declared
+  AMI_DECLARE_TYPE(wxIntegerEqual)
+#endif
 
 
-#include "wrap_wxIntegerEqual.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,29 +72,32 @@ void WrapClass_wxIntegerEqual::AddMethods(WrapClass<wxIntegerEqual>::ptr this_pt
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
+  // Adding operators
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 /* The following types are missing: short int, short int
-      // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 */
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 /* The following types are missing: long long unsigned int, long long unsigned int
-      // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 */
-      AddVar___assign__( this_ptr);
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -94,7 +107,7 @@ void WrapClass_wxIntegerEqual::AddMethods(WrapClass<wxIntegerEqual>::ptr this_pt
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxIntegerEqual::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxIntegerEqual_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

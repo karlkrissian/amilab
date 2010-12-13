@@ -10,22 +10,44 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHelpEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxPoint.h"
-#include "wrap_wxHelpEvent.h"
-#include "wrap_wxString.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxHelpEvent_declared
+  #define wxHelpEvent_declared
+  AMI_DECLARE_TYPE(wxHelpEvent)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxHelpEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -65,28 +87,43 @@ void WrapClass_wxHelpEvent::AddMethods(WrapClass<wxHelpEvent>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetPosition( this_ptr);
-      AddVar_SetPosition( this_ptr);
-      AddVar_GetLink( this_ptr);
-      AddVar_SetLink( this_ptr);
-      AddVar_GetTarget( this_ptr);
-      AddVar_SetTarget( this_ptr);
-      AddVar_Clone( this_ptr);
-      AddVar_GetOrigin( this_ptr);
-      AddVar_SetOrigin( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetPosition( this_ptr);
+  AddVar_SetPosition( this_ptr);
+  AddVar_GetLink( this_ptr);
+  AddVar_SetLink( this_ptr);
+  AddVar_GetTarget( this_ptr);
+  AddVar_SetTarget( this_ptr);
+  AddVar_Clone( this_ptr);
+  AddVar_GetOrigin( this_ptr);
+  AddVar_SetOrigin( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+  AMIObject::ptr obj_Origin(new AMIObject);
+  obj_Origin->SetName("Origin");
+
+  BasicVariable::ptr var_Origin_Unknown = AMILabType<int >::CreateVar(0);
+  if (var_Origin_Unknown.get()) {
+    var_Origin_Unknown->Rename("Origin_Unknown");
+    obj_Origin->GetContext()->AddVar(var_Origin_Unknown,obj_Origin->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_Origin->GetName().c_str(),obj_Origin,context);
+
+
+  // Adding Bases
 
   // Add base parent wxCommandEvent
   boost::shared_ptr<wxCommandEvent > parent_wxCommandEvent(  boost::dynamic_pointer_cast<wxCommandEvent >(this_ptr->GetObj()));
@@ -102,7 +139,7 @@ void WrapClass_wxHelpEvent::AddMethods(WrapClass<wxHelpEvent>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHelpEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHelpEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -375,7 +412,7 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -440,7 +477,7 @@ BasicVariable::ptr WrapClass_wxHelpEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

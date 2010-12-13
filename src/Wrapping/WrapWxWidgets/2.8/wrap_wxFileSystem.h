@@ -13,11 +13,13 @@
 #ifndef _wrap_wxFileSystem_h_
 #define _wrap_wxFileSystem_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxObject.h"
 
 
-
-AMI_DECLARE_TYPE(wxFileSystem);
+#ifndef wxFileSystem_declared
+  #define wxFileSystem_declared
+  AMI_DECLARE_TYPE(wxFileSystem);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxFileSystem : public WrapClass<wxFileSystem>
@@ -92,12 +96,13 @@ class WrapClass_wxFileSystem : public WrapClass<wxFileSystem>
 
     void AddMethods(WrapClass<wxFileSystem>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxFileSystem_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxFileSystem_h

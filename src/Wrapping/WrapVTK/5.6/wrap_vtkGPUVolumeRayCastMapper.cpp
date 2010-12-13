@@ -16,21 +16,49 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkGPUVolumeRayCastMapper.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkGPUVolumeRayCastMapper.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkRenderWindow.h"
-#include "wrap_vtkVolumeProperty.h"
-#include "wrap_vtkRenderer.h"
-#include "wrap_vtkVolume.h"
-#include "wrap_vtkImageData.h"
-#include "wrap_vtkWindow.h"
+#ifndef vtkGPUVolumeRayCastMapper_declared
+  #define vtkGPUVolumeRayCastMapper_declared
+  AMI_DECLARE_TYPE(vtkGPUVolumeRayCastMapper)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkRenderWindow_declared
+  #define vtkRenderWindow_declared
+  AMI_DECLARE_TYPE(vtkRenderWindow)
+#endif
+#ifndef vtkVolumeProperty_declared
+  #define vtkVolumeProperty_declared
+  AMI_DECLARE_TYPE(vtkVolumeProperty)
+#endif
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
+#ifndef vtkVolume_declared
+  #define vtkVolume_declared
+  AMI_DECLARE_TYPE(vtkVolume)
+#endif
+#ifndef vtkImageData_declared
+  #define vtkImageData_declared
+  AMI_DECLARE_TYPE(vtkImageData)
+#endif
+#ifndef vtkWindow_declared
+  #define vtkWindow_declared
+  AMI_DECLARE_TYPE(vtkWindow)
+#endif
 
 
-#include "wrap_vtkGPUVolumeRayCastMapper.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -157,7 +185,7 @@ void WrapClass_vtkGPUVolumeRayCastMapper::AddMethods(WrapClass<vtkGPUVolumeRayCa
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkGPUVolumeRayCastMapper::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkGPUVolumeRayCastMapper_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -194,7 +222,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkGPUVolumeRayCastMapper * res =   vtkGPUVolumeRayCastMapper::New();
-  BasicVariable::ptr res_var = WrapClass_vtkGPUVolumeRayCastMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkGPUVolumeRayCastMapper >::CreateVar(res,true);
   return res_var;
 }
 
@@ -253,7 +281,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   }
 
   vtkGPUVolumeRayCastMapper * res =   vtkGPUVolumeRayCastMapper::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkGPUVolumeRayCastMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkGPUVolumeRayCastMapper >::CreateVar(res,true);
   return res_var;
 }
 
@@ -299,7 +327,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkGPUVolumeRayCastMapper * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkGPUVolumeRayCastMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkGPUVolumeRayCastMapper >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -1161,7 +1189,7 @@ BasicVariable::ptr WrapClass_vtkGPUVolumeRayCastMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkImageData * res =   this->_objectptr->GetObj()->GetMaskInput();
-  BasicVariable::ptr res_var = WrapClass_vtkImageData::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkImageData >::CreateVar(res,true);
   return res_var;
 }
 

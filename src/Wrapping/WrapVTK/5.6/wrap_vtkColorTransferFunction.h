@@ -26,8 +26,10 @@
 #include "wrap_vtkScalarsToColors.h"
 
 
-
-AMI_DECLARE_TYPE(vtkColorTransferFunction);
+#ifndef vtkColorTransferFunction_declared
+  #define vtkColorTransferFunction_declared
+  AMI_DECLARE_TYPE(vtkColorTransferFunction);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkColorTransferFunction : public WrapClass<vtkColorTransferFunction>
@@ -148,12 +150,13 @@ class WrapClass_vtkColorTransferFunction : public WrapClass<vtkColorTransferFunc
 
     void AddMethods(WrapClass<vtkColorTransferFunction>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkColorTransferFunction_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkColorTransferFunction_h

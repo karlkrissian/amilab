@@ -10,24 +10,46 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxWindowList.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindowList.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxWindow.h"
-#include "wrap_wxWindowListNode.h"
-#include "wrap_wxWindowBase.h"
 #include "stdlib.h"
-#include "wrap_wxListKey.h"
+#ifndef wxWindowList_declared
+  #define wxWindowList_declared
+  AMI_DECLARE_TYPE(wxWindowList)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxWindowListNode_declared
+  #define wxWindowListNode_declared
+  AMI_DECLARE_TYPE(wxWindowListNode)
+#endif
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase)
+#endif
+#ifndef wxListKey_declared
+  #define wxListKey_declared
+  AMI_DECLARE_TYPE(wxListKey)
+#endif
 
 
-#include "wrap_wxWindowList.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -67,124 +89,127 @@ void WrapClass_wxWindowList::AddMethods(WrapClass<wxWindowList>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetFirst( this_ptr);
-      AddVar_GetLast( this_ptr);
-      AddVar_Item( this_ptr);
-      AddVar_Append_1( this_ptr);
-      AddVar_Insert_1( this_ptr);
-      AddVar_Insert( this_ptr);
-      AddVar_Insert_2( this_ptr);
-      AddVar_Insert_3( this_ptr);
-      AddVar_Append( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetFirst( this_ptr);
+  AddVar_GetLast( this_ptr);
+  AddVar_Item( this_ptr);
+  AddVar_Append_1( this_ptr);
+  AddVar_Insert_1( this_ptr);
+  AddVar_Insert( this_ptr);
+  AddVar_Insert_2( this_ptr);
+  AddVar_Insert_3( this_ptr);
+  AddVar_Append( this_ptr);
 /* The following types are missing: void
-      AddVar_Append_2( this_ptr);
+  AddVar_Append_2( this_ptr);
 */
 /* The following types are missing: void
-      AddVar_Append_3( this_ptr);
+  AddVar_Append_3( this_ptr);
 */
-      AddVar_DetachNode( this_ptr);
-      AddVar_DeleteNode( this_ptr);
-      AddVar_DeleteObject( this_ptr);
-      AddVar_Erase( this_ptr);
-      AddVar_Find_1( this_ptr);
-      AddVar_Find( this_ptr);
-      AddVar_Find_2( this_ptr);
-      AddVar_IndexOf( this_ptr);
-/* The following types are missing: _9904
-      AddVar_Sort_1( this_ptr);
+  AddVar_DetachNode( this_ptr);
+  AddVar_DeleteNode( this_ptr);
+  AddVar_DeleteObject( this_ptr);
+  AddVar_Erase( this_ptr);
+  AddVar_Find_1( this_ptr);
+  AddVar_Find( this_ptr);
+  AddVar_Find_2( this_ptr);
+  AddVar_IndexOf( this_ptr);
+/* The following types are missing: _17586
+  AddVar_Sort_1( this_ptr);
 */
-      AddVar_Sort( this_ptr);
-/* The following types are missing: _10742
-      AddVar_Sort_2( this_ptr);
+  AddVar_Sort( this_ptr);
+/* The following types are missing: _7122
+  AddVar_Sort_2( this_ptr);
 */
 /* The following types are missing: iterator
-      AddVar_begin_1( this_ptr);
+  AddVar_begin_1( this_ptr);
 */
-      AddVar_begin( this_ptr);
+  AddVar_begin( this_ptr);
 /* The following types are missing: const_iterator
-      AddVar_begin_2( this_ptr);
+  AddVar_begin_2( this_ptr);
 */
 /* The following types are missing: iterator
-      AddVar_end_1( this_ptr);
+  AddVar_end_1( this_ptr);
 */
-      AddVar_end( this_ptr);
+  AddVar_end( this_ptr);
 /* The following types are missing: const_iterator
-      AddVar_end_2( this_ptr);
+  AddVar_end_2( this_ptr);
 */
 /* The following types are missing: reverse_iterator
-      AddVar_rbegin_1( this_ptr);
+  AddVar_rbegin_1( this_ptr);
 */
-      AddVar_rbegin( this_ptr);
+  AddVar_rbegin( this_ptr);
 /* The following types are missing: const_reverse_iterator
-      AddVar_rbegin_2( this_ptr);
+  AddVar_rbegin_2( this_ptr);
 */
 /* The following types are missing: reverse_iterator
-      AddVar_rend_1( this_ptr);
+  AddVar_rend_1( this_ptr);
 */
-      AddVar_rend( this_ptr);
+  AddVar_rend( this_ptr);
 /* The following types are missing: const_reverse_iterator
-      AddVar_rend_2( this_ptr);
+  AddVar_rend_2( this_ptr);
 */
-      AddVar_resize( this_ptr);
-      AddVar_size( this_ptr);
-      AddVar_max_size( this_ptr);
-      AddVar_empty( this_ptr);
-      AddVar_front_1( this_ptr);
-      AddVar_front( this_ptr);
-      AddVar_front_2( this_ptr);
-      AddVar_back_1( this_ptr);
-      AddVar_back( this_ptr);
-      AddVar_back_2( this_ptr);
-      AddVar_push_front( this_ptr);
-      AddVar_pop_front( this_ptr);
-      AddVar_push_back( this_ptr);
-      AddVar_pop_back( this_ptr);
+  AddVar_resize( this_ptr);
+  AddVar_size( this_ptr);
+  AddVar_max_size( this_ptr);
+  AddVar_empty( this_ptr);
+  AddVar_front_1( this_ptr);
+  AddVar_front( this_ptr);
+  AddVar_front_2( this_ptr);
+  AddVar_back_1( this_ptr);
+  AddVar_back( this_ptr);
+  AddVar_back_2( this_ptr);
+  AddVar_push_front( this_ptr);
+  AddVar_pop_front( this_ptr);
+  AddVar_push_back( this_ptr);
+  AddVar_pop_back( this_ptr);
 /* The following types are missing: const_iterator, const_iterator
-      AddVar_assign_1( this_ptr);
+  AddVar_assign_1( this_ptr);
 */
-      AddVar_assign( this_ptr);
-      AddVar_assign_2( this_ptr);
+  AddVar_assign( this_ptr);
+  AddVar_assign_2( this_ptr);
 /* The following types are missing: iterator, iterator
-      AddVar_insert_1( this_ptr);
+  AddVar_insert_1( this_ptr);
 */
-      AddVar_insert( this_ptr);
+  AddVar_insert( this_ptr);
 /* The following types are missing: iterator
-      AddVar_insert_2( this_ptr);
+  AddVar_insert_2( this_ptr);
 */
 /* The following types are missing: iterator, const_iterator, const_iterator
-      AddVar_insert_3( this_ptr);
+  AddVar_insert_3( this_ptr);
 */
 /* The following types are missing: iterator, iterator
-      AddVar_erase_1( this_ptr);
+  AddVar_erase_1( this_ptr);
 */
-      AddVar_erase( this_ptr);
+  AddVar_erase( this_ptr);
 /* The following types are missing: iterator, iterator, iterator
-      AddVar_erase_2( this_ptr);
+  AddVar_erase_2( this_ptr);
 */
-      AddVar_clear( this_ptr);
+  AddVar_clear( this_ptr);
 /* The following types are missing: iterator, iterator, iterator
-      AddVar_splice_1( this_ptr);
+  AddVar_splice_1( this_ptr);
 */
-      AddVar_splice( this_ptr);
+  AddVar_splice( this_ptr);
 /* The following types are missing: iterator
-      AddVar_splice_2( this_ptr);
+  AddVar_splice_2( this_ptr);
 */
 /* The following types are missing: iterator, iterator
-      AddVar_splice_3( this_ptr);
+  AddVar_splice_3( this_ptr);
 */
-      AddVar_remove( this_ptr);
-      AddVar_reverse( this_ptr);
+  AddVar_remove( this_ptr);
+  AddVar_reverse( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___at__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___at__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -205,7 +230,7 @@ void WrapClass_wxWindowList::AddMethods(WrapClass<wxWindowList>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxWindowList::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxWindowList_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -213,9 +238,7 @@ void WrapClass_wxWindowList::AddStaticMethods( Variables::ptr& context)
     WrapClass_wxWindowList::AddVar_wxWindowList_1(amiobject->GetContext());
   WrapClass_wxWindowList::AddVar_wxWindowList(amiobject->GetContext());
   WrapClass_wxWindowList::AddVar_wxWindowList_2(amiobject->GetContext());
-  /* Types are missing
   WrapClass_wxWindowList::AddVar_wxWindowList_3(amiobject->GetContext());
-  */
   WrapClass_wxWindowList::AddVar_wxWindowList_4(amiobject->GetContext());
   /* Types are missing
   WrapClass_wxWindowList::AddVar_wxWindowList_5(amiobject->GetContext());
@@ -278,6 +301,9 @@ BasicVariable::ptr WrapClass_wxWindowList::
   WrapClass_wxWindowList::wrap_wxWindowList_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxWindowList::wrap_wxWindowList_3 m3;
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   WrapClass_wxWindowList::wrap_wxWindowList_4 m4;
   res = m4.CallMember(_p);
   if (!m4.Get_arg_failure()) return res;
@@ -309,7 +335,6 @@ BasicVariable::ptr WrapClass_wxWindowList::
   BasicVariable::ptr res = WrapClass_wxWindowList::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: wxWindow * *
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxWindowList::wxWindowList(size_t count, wxWindow * * elements)
@@ -333,15 +358,22 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (!get_val_param<long >(count_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int count = boost::numeric_cast<long unsigned int >(count_long);
 
-  boost::shared_ptr<wxWindow > elements_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* elements = elements_smtptr.get();
+  wxWindow* local_elements = NULL;
+  wxWindow** elements;
+  if (CheckNullVar(_p,_n))  {
+    elements=(wxWindow**)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > elements_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(elements_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    local_elements = elements_smtptr.get();
+    elements = &local_elements;
+  }
 
   wxWindowList* _newobj = new wxWindowList(count, elements);
   BasicVariable::ptr res = WrapClass_wxWindowList::CreateVar(_newobj);
   return res;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxWindowList::wxWindowList(size_t n, wxWindow * const & v = 0u)
@@ -440,7 +472,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->GetFirst();
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -460,7 +492,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->GetLast();
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -487,7 +519,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->Item(index);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -509,12 +541,18 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > object_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindowBase* object = object_smtptr.get();
+  wxWindowBase* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > object_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    object = object_smtptr.get();
+  }
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->Append(object);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -536,12 +574,18 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > object_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindowBase* object = object_smtptr.get();
+  wxWindowBase* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > object_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    object = object_smtptr.get();
+  }
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->Insert(object);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -592,12 +636,18 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (!get_val_param<long >(pos_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long unsigned int pos = boost::numeric_cast<long unsigned int >(pos_long);
 
-  boost::shared_ptr<wxWindowBase > object_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindowBase* object = object_smtptr.get();
+  wxWindowBase* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > object_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    object = object_smtptr.get();
+  }
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->Insert(pos, object);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -620,16 +670,28 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindowListNode > prev_smtptr;
-  if (!get_val_smtptr_param<wxWindowListNode >(prev_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindowListNode* prev = prev_smtptr.get();
+  wxWindowListNode* prev;
+  if (CheckNullVar(_p,_n))  {
+    prev=(wxWindowListNode*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowListNode > prev_smtptr;
+    if (!get_val_smtptr_param<wxWindowListNode >(prev_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    prev = prev_smtptr.get();
+  }
 
-  boost::shared_ptr<wxWindowBase > object_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindowBase* object = object_smtptr.get();
+  wxWindowBase* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > object_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    object = object_smtptr.get();
+  }
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->Insert(prev, object);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -675,12 +737,18 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (!get_val_param<long >(key_long,_p,_n,true,true)) ClassReturnEmptyVar;
   long int key = key_long;
 
-  boost::shared_ptr<void > object_smtptr;
-  if (!get_val_smtptr_param<void >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* object = object_smtptr.get();
+  void* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > object_smtptr;
+    if (!get_val_smtptr_param<void >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    object = object_smtptr.get();
+  }
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->Append(key, object);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 */
@@ -710,12 +778,18 @@ BasicVariable::ptr WrapClass_wxWindowList::
   wchar_t key[key_string->size()+1];
 mbstowcs(key,key_string->c_str(),key_string->size()+1);
 
-  boost::shared_ptr<void > object_smtptr;
-  if (!get_val_smtptr_param<void >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* object = object_smtptr.get();
+  void* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > object_smtptr;
+    if (!get_val_smtptr_param<void >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    object = object_smtptr.get();
+  }
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->Append(key, object);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 */
@@ -738,12 +812,18 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowListNode > node_smtptr;
-  if (!get_val_smtptr_param<wxWindowListNode >(node_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowListNode* node = node_smtptr.get();
+  wxWindowListNode* node;
+  if (CheckNullVar(_p,_n))  {
+    node=(wxWindowListNode*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowListNode > node_smtptr;
+    if (!get_val_smtptr_param<wxWindowListNode >(node_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    node = node_smtptr.get();
+  }
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->DetachNode(node);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -765,9 +845,15 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowListNode > node_smtptr;
-  if (!get_val_smtptr_param<wxWindowListNode >(node_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowListNode* node = node_smtptr.get();
+  wxWindowListNode* node;
+  if (CheckNullVar(_p,_n))  {
+    node=(wxWindowListNode*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowListNode > node_smtptr;
+    if (!get_val_smtptr_param<wxWindowListNode >(node_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    node = node_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->DeleteNode(node);
   return AMILabType<bool >::CreateVar(res);
@@ -791,9 +877,15 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > object_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* object = object_smtptr.get();
+  wxWindowBase* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > object_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    object = object_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->DeleteObject(object);
   return AMILabType<bool >::CreateVar(res);
@@ -816,9 +908,15 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowListNode > it_smtptr;
-  if (!get_val_smtptr_param<wxWindowListNode >(it_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowListNode* it = it_smtptr.get();
+  wxWindowListNode* it;
+  if (CheckNullVar(_p,_n))  {
+    it=(wxWindowListNode*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowListNode > it_smtptr;
+    if (!get_val_smtptr_param<wxWindowListNode >(it_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    it = it_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Erase(it);
   return BasicVariable::ptr();
@@ -842,12 +940,18 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > object_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindowBase* object = object_smtptr.get();
+  wxWindowBase* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > object_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    object = object_smtptr.get();
+  }
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->Find(object);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -895,7 +999,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
   wxListKey const & key = *key_smtptr;
 
   wxWindowListNode * res =   this->_objectptr->GetObj()->Find(key);
-  BasicVariable::ptr res_var = WrapClass_wxWindowListNode::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindowListNode >::CreateVar(res,true);
   return res_var;
 }
 
@@ -917,14 +1021,20 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > object_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* object = object_smtptr.get();
+  wxWindowBase* object;
+  if (CheckNullVar(_p,_n))  {
+    object=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > object_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(object_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    object = object_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->IndexOf(object);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: _9904
+/* The following types are missing: _17586
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowList::Sort(wxSortCompareFunction func)
@@ -932,7 +1042,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
 void WrapClass_wxWindowList::
     wrap_Sort_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9904, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _17586, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -943,8 +1053,8 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _9904 func;
-  if (!get_val_param<_9904 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _17586 func;
+  if (!get_val_param<_17586 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -965,7 +1075,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: _10742
+/* The following types are missing: _7122
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowList::Sort(wxSortFuncFor_wxWindowList func)
@@ -973,7 +1083,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
 void WrapClass_wxWindowList::
     wrap_Sort_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _10742, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _7122, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -984,8 +1094,8 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _10742 func;
-  if (!get_val_param<_10742 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _7122 func;
+  if (!get_val_param<_7122 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -1242,9 +1352,15 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (!get_val_param<long >(n_long,_p,_n,true,false)) ClassHelpAndReturn;
   long unsigned int n = boost::numeric_cast<long unsigned int >(n_long);
 
-  boost::shared_ptr<wxWindow > v_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(v_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* v = v_smtptr.get();
+  wxWindow* v = 0u;
+  if (CheckNullVar(_p,_n))  {
+    v=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > v_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(v_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    v = v_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->resize(n, v);
   return BasicVariable::ptr();
@@ -2030,7 +2146,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
   long unsigned int index = boost::numeric_cast<long unsigned int >(index_long);
 
   wxWindow * res =   (*this->_objectptr->GetObj()) [ (index)];
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 

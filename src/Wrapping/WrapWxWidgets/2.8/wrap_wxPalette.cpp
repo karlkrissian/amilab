@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxPalette.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxPalette.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxPalette_declared
+  #define wxPalette_declared
+  AMI_DECLARE_TYPE(wxPalette)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxPalette.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,23 +75,26 @@ void WrapClass_wxPalette::AddMethods(WrapClass<wxPalette>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Ok( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_Create( this_ptr);
-      AddVar_GetPixel( this_ptr);
-      AddVar_GetRGB( this_ptr);
-      AddVar_GetColoursCount( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Ok( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_Create( this_ptr);
+  AddVar_GetPixel( this_ptr);
+  AddVar_GetRGB( this_ptr);
+  AddVar_GetColoursCount( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -99,7 +115,7 @@ void WrapClass_wxPalette::AddMethods(WrapClass<wxPalette>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxPalette::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxPalette_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -214,17 +230,35 @@ BasicVariable::ptr WrapClass_wxPalette::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,true)) ClassReturnEmptyVar;
 
-  boost::shared_ptr<unsigned char > red_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* red = red_smtptr.get();
+  unsigned char* red;
+  if (CheckNullVar(_p,_n))  {
+    red=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > red_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    red = red_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > green_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* green = green_smtptr.get();
+  unsigned char* green;
+  if (CheckNullVar(_p,_n))  {
+    green=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > green_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    green = green_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > blue_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  unsigned char* blue = blue_smtptr.get();
+  unsigned char* blue;
+  if (CheckNullVar(_p,_n))  {
+    blue=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > blue_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    blue = blue_smtptr.get();
+  }
 
   wxPalette* _newobj = new wxPalette(n, red, green, blue);
   BasicVariable::ptr res = WrapClass_wxPalette::CreateVar(_newobj);
@@ -309,17 +343,35 @@ BasicVariable::ptr WrapClass_wxPalette::
   int n;
   if (!get_val_param<int >(n,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<unsigned char > red_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* red = red_smtptr.get();
+  unsigned char* red;
+  if (CheckNullVar(_p,_n))  {
+    red=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > red_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    red = red_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > green_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* green = green_smtptr.get();
+  unsigned char* green;
+  if (CheckNullVar(_p,_n))  {
+    green=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > green_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    green = green_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > blue_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* blue = blue_smtptr.get();
+  unsigned char* blue;
+  if (CheckNullVar(_p,_n))  {
+    blue=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > blue_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    blue = blue_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->Create(n, red, green, blue);
   return AMILabType<bool >::CreateVar(res);
@@ -382,17 +434,35 @@ BasicVariable::ptr WrapClass_wxPalette::
   int pixel;
   if (!get_val_param<int >(pixel,_p,_n,true,false)) ClassHelpAndReturn;
 
-  boost::shared_ptr<unsigned char > red_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* red = red_smtptr.get();
+  unsigned char* red;
+  if (CheckNullVar(_p,_n))  {
+    red=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > red_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(red_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    red = red_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > green_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* green = green_smtptr.get();
+  unsigned char* green;
+  if (CheckNullVar(_p,_n))  {
+    green=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > green_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(green_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    green = green_smtptr.get();
+  }
 
-  boost::shared_ptr<unsigned char > blue_smtptr;
-  if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  unsigned char* blue = blue_smtptr.get();
+  unsigned char* blue;
+  if (CheckNullVar(_p,_n))  {
+    blue=(unsigned char*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<unsigned char > blue_smtptr;
+    if (!get_val_smtptr_param<unsigned char >(blue_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    blue = blue_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->GetRGB(pixel, red, green, blue);
   return AMILabType<bool >::CreateVar(res);
@@ -433,7 +503,7 @@ BasicVariable::ptr WrapClass_wxPalette::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

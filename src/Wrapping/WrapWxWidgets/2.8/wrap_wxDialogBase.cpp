@@ -10,24 +10,52 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxDialogBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxSizer.h"
-#include "wrap_wxString.h"
-#include "wrap_wxStdDialogButtonSizer.h"
-#include "wrap_wxNavigationKeyEvent.h"
-#include "wrap_wxFocusEvent.h"
-#include "wrap_wxChildFocusEvent.h"
-#include "wrap_wxWindowBase.h"
+#ifndef wxSizer_declared
+  #define wxSizer_declared
+  AMI_DECLARE_TYPE(wxSizer)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxStdDialogButtonSizer_declared
+  #define wxStdDialogButtonSizer_declared
+  AMI_DECLARE_TYPE(wxStdDialogButtonSizer)
+#endif
+#ifndef wxNavigationKeyEvent_declared
+  #define wxNavigationKeyEvent_declared
+  AMI_DECLARE_TYPE(wxNavigationKeyEvent)
+#endif
+#ifndef wxFocusEvent_declared
+  #define wxFocusEvent_declared
+  AMI_DECLARE_TYPE(wxFocusEvent)
+#endif
+#ifndef wxChildFocusEvent_declared
+  #define wxChildFocusEvent_declared
+  AMI_DECLARE_TYPE(wxChildFocusEvent)
+#endif
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase)
+#endif
 
 
-#include "wrap_wxDialogBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -131,7 +159,7 @@ void WrapClass_wxDialogBase::AddMethods(WrapClass<wxDialogBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxDialogBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxDialogBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -301,7 +329,7 @@ BasicVariable::ptr WrapClass_wxDialogBase::
   wxString const & message = *message_smtptr;
 
   wxSizer * res =   this->_objectptr->GetObj()->CreateTextSizer(message);
-  BasicVariable::ptr res_var = WrapClass_wxSizer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxSizer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -328,7 +356,7 @@ BasicVariable::ptr WrapClass_wxDialogBase::
   long int flags = flags_long;
 
   wxSizer * res =   this->_objectptr->GetObj()->CreateButtonSizer(flags);
-  BasicVariable::ptr res_var = WrapClass_wxSizer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxSizer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -355,7 +383,7 @@ BasicVariable::ptr WrapClass_wxDialogBase::
   long int flags = flags_long;
 
   wxSizer * res =   this->_objectptr->GetObj()->CreateSeparatedButtonSizer(flags);
-  BasicVariable::ptr res_var = WrapClass_wxSizer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxSizer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -382,7 +410,7 @@ BasicVariable::ptr WrapClass_wxDialogBase::
   long int flags = flags_long;
 
   wxStdDialogButtonSizer * res =   this->_objectptr->GetObj()->CreateStdDialogButtonSizer(flags);
-  BasicVariable::ptr res_var = WrapClass_wxStdDialogButtonSizer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxStdDialogButtonSizer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -514,9 +542,15 @@ BasicVariable::ptr WrapClass_wxDialogBase::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > child_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* child = child_smtptr.get();
+  wxWindowBase* child;
+  if (CheckNullVar(_p,_n))  {
+    child=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > child_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(child_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    child = child_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->RemoveChild(child);
   return BasicVariable::ptr();

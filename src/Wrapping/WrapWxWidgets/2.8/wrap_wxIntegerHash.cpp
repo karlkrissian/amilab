@@ -10,19 +10,29 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxIntegerHash.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxIntegerHash.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef wxIntegerHash_declared
+  #define wxIntegerHash_declared
+  AMI_DECLARE_TYPE(wxIntegerHash)
+#endif
 
 
-#include "wrap_wxIntegerHash.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,31 +72,34 @@ void WrapClass_wxIntegerHash::AddMethods(WrapClass<wxIntegerHash>::ptr this_ptr 
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
+  // Adding operators
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 /* The following types are missing: short int
-      // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 */
-      // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 /* The following types are missing: long long unsigned int
-      // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 */
 /* The following types are missing: long long unsigned int, long long unsigned int
-      // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 */
-      AddVar___assign__( this_ptr);
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -96,7 +109,7 @@ void WrapClass_wxIntegerHash::AddMethods(WrapClass<wxIntegerHash>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxIntegerHash::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxIntegerHash_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxCursor.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxCursor.h"
-#include "wrap_wxImage.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxCursor_declared
+  #define wxCursor_declared
+  AMI_DECLARE_TYPE(wxCursor)
+#endif
+#ifndef wxImage_declared
+  #define wxImage_declared
+  AMI_DECLARE_TYPE(wxImage)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxCursor.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,22 +83,25 @@ void WrapClass_wxCursor::AddMethods(WrapClass<wxCursor>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Ok( this_ptr);
-      AddVar_IsOk( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Ok( this_ptr);
+  AddVar_IsOk( this_ptr);
 /* The following types are missing: _GdkCursor
-      AddVar_GetCursor( this_ptr);
+  AddVar_GetCursor( this_ptr);
 */
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -100,7 +122,7 @@ void WrapClass_wxCursor::AddMethods(WrapClass<wxCursor>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxCursor::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxCursor_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -295,13 +317,25 @@ BasicVariable::ptr WrapClass_wxCursor::
   if (!get_val_smtptr_param<std::string >(maskBits_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
   char const * maskBits = maskBits_string->c_str();
 
-  boost::shared_ptr<wxColour > fg_smtptr;
-  if (!get_val_smtptr_param<wxColour >(fg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxColour* fg = fg_smtptr.get();
+  wxColour* fg = 0l;
+  if (CheckNullVar(_p,_n))  {
+    fg=(wxColour*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxColour > fg_smtptr;
+    if (!get_val_smtptr_param<wxColour >(fg_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    fg = fg_smtptr.get();
+  }
 
-  boost::shared_ptr<wxColour > bg_smtptr;
-  if (!get_val_smtptr_param<wxColour >(bg_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxColour* bg = bg_smtptr.get();
+  wxColour* bg = 0l;
+  if (CheckNullVar(_p,_n))  {
+    bg=(wxColour*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxColour > bg_smtptr;
+    if (!get_val_smtptr_param<wxColour >(bg_smtptr,_p,_n,false,false,true)) ClassReturnEmptyVar;
+    bg = bg_smtptr.get();
+  }
 
   wxCursor* _newobj = new wxCursor(bits, width, height, hotSpotX, hotSpotY, maskBits, fg, bg);
   BasicVariable::ptr res = WrapClass_wxCursor::CreateVar(_newobj);
@@ -399,7 +433,7 @@ BasicVariable::ptr WrapClass_wxCursor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

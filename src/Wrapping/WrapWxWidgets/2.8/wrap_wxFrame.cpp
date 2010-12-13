@@ -10,24 +10,48 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxFrame.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWindow.h"
-#include "wrap_wxString.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxStatusBar.h"
-#include "wrap_wxToolBar.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxStatusBar_declared
+  #define wxStatusBar_declared
+  AMI_DECLARE_TYPE(wxStatusBar)
+#endif
+#ifndef wxToolBar_declared
+  #define wxToolBar_declared
+  AMI_DECLARE_TYPE(wxToolBar)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxFrame.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -147,7 +171,7 @@ void WrapClass_wxFrame::AddMethods(WrapClass<wxFrame>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxFrame::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxFrame_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -374,7 +398,7 @@ BasicVariable::ptr WrapClass_wxFrame::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxStatusLineNameStr) );
 
   wxStatusBar * res =   this->_objectptr->GetObj()->CreateStatusBar(number, style, id, name);
-  BasicVariable::ptr res_var = WrapClass_wxStatusBar::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxStatusBar >::CreateVar(res,true);
   return res_var;
 }
 
@@ -442,7 +466,7 @@ BasicVariable::ptr WrapClass_wxFrame::
   wxString const & name = ( name_smtptr.get() ? (*name_smtptr) : wxString(wxToolBarNameStr) );
 
   wxToolBar * res =   this->_objectptr->GetObj()->CreateToolBar(style, id, name);
-  BasicVariable::ptr res_var = WrapClass_wxToolBar::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxToolBar >::CreateVar(res,true);
   return res_var;
 }
 
@@ -566,7 +590,7 @@ BasicVariable::ptr WrapClass_wxFrame::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

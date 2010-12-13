@@ -10,20 +10,33 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxWritableWCharBuffer.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxWritableWCharBuffer.h"
-#include "wrap_wxWCharBuffer.h"
 #include "stdlib.h"
+#ifndef wxWritableWCharBuffer_declared
+  #define wxWritableWCharBuffer_declared
+  AMI_DECLARE_TYPE(wxWritableWCharBuffer)
+#endif
+#ifndef wxWCharBuffer_declared
+  #define wxWCharBuffer_declared
+  AMI_DECLARE_TYPE(wxWCharBuffer)
+#endif
 
 
-#include "wrap_wxWritableWCharBuffer.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,16 +76,19 @@ void WrapClass_wxWritableWCharBuffer::AddMethods(WrapClass<wxWritableWCharBuffer
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -93,7 +109,7 @@ void WrapClass_wxWritableWCharBuffer::AddMethods(WrapClass<wxWritableWCharBuffer
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxWritableWCharBuffer::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxWritableWCharBuffer_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

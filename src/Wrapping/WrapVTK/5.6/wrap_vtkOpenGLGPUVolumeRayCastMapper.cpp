@@ -16,17 +16,37 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkOpenGLGPUVolumeRayCastMapper.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkOpenGLGPUVolumeRayCastMapper.h"
-#include "wrap_vtkObjectBase.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkRenderWindow.h"
-#include "wrap_vtkVolumeProperty.h"
+#ifndef vtkOpenGLGPUVolumeRayCastMapper_declared
+  #define vtkOpenGLGPUVolumeRayCastMapper_declared
+  AMI_DECLARE_TYPE(vtkOpenGLGPUVolumeRayCastMapper)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkRenderWindow_declared
+  #define vtkRenderWindow_declared
+  AMI_DECLARE_TYPE(vtkRenderWindow)
+#endif
+#ifndef vtkVolumeProperty_declared
+  #define vtkVolumeProperty_declared
+  AMI_DECLARE_TYPE(vtkVolumeProperty)
+#endif
 
 
-#include "wrap_vtkOpenGLGPUVolumeRayCastMapper.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -35,8 +55,8 @@
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkOpenGLGPUVolumeRayCastMapper>::CreateVar( ParamList* p)
 {
-  WrapClass_vtkOpenGLGPUVolumeRayCastMapper::wrap_static_New construct;
-  return construct.CallMember(p);
+  // No constructor available !!
+  return BasicVariable::ptr();
 
 }
 
@@ -71,32 +91,43 @@ Variable<AMIObject>::ptr WrapClass_vtkOpenGLGPUVolumeRayCastMapper::CreateVar( v
 //----------------------------------------------------------------------
 void WrapClass_vtkOpenGLGPUVolumeRayCastMapper::AddMethods(WrapClass<vtkOpenGLGPUVolumeRayCastMapper>::ptr this_ptr )
 {
+  // todo: check that the method name is not a token ?
   
-      // Add members from vtkGPUVolumeRayCastMapper
-      WrapClass_vtkGPUVolumeRayCastMapper::ptr parent_vtkGPUVolumeRayCastMapper(        boost::dynamic_pointer_cast<WrapClass_vtkGPUVolumeRayCastMapper >(this_ptr));
-      parent_vtkGPUVolumeRayCastMapper->AddMethods(parent_vtkGPUVolumeRayCastMapper);
-
-
-  // check that the method name is not a token
-  
-      // Adding standard methods 
-      AddVar_IsA( this_ptr);
-      AddVar_NewInstance( this_ptr);
+  // Adding standard methods 
+  AddVar_IsA( this_ptr);
+  AddVar_NewInstance( this_ptr);
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
-      AddVar_PrintSelf( this_ptr);
+  AddVar_PrintSelf( this_ptr);
 */
-      AddVar_IsRenderSupported( this_ptr);
+  AddVar_IsRenderSupported( this_ptr);
 
 
 
   
+
+  
+
+
+  // Get the current context
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+
+  // Add base parent vtkGPUVolumeRayCastMapper
+  boost::shared_ptr<vtkGPUVolumeRayCastMapper > parent_vtkGPUVolumeRayCastMapper(  boost::dynamic_pointer_cast<vtkGPUVolumeRayCastMapper >(this_ptr->GetObj()));
+  BasicVariable::ptr var_vtkGPUVolumeRayCastMapper = AMILabType<vtkGPUVolumeRayCastMapper >::CreateVarFromSmtPtr(parent_vtkGPUVolumeRayCastMapper);
+  context->AddVar("vtkGPUVolumeRayCastMapper",var_vtkGPUVolumeRayCastMapper);
+  // Set as a default context
+  Variable<AMIObject>::ptr obj_vtkGPUVolumeRayCastMapper = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_vtkGPUVolumeRayCastMapper);
+  context->AddDefault(obj_vtkGPUVolumeRayCastMapper->Pointer()->GetContext());
+
 };
 
 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkOpenGLGPUVolumeRayCastMapper::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkOpenGLGPUVolumeRayCastMapper_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -110,7 +141,7 @@ void WrapClass_vtkOpenGLGPUVolumeRayCastMapper::AddStaticMethods( Variables::ptr
   WrapClass_vtkOpenGLGPUVolumeRayCastMapper::AddVar_PrintError(amiobject->GetContext());
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 
@@ -135,7 +166,7 @@ BasicVariable::ptr WrapClass_vtkOpenGLGPUVolumeRayCastMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkOpenGLGPUVolumeRayCastMapper * res =   vtkOpenGLGPUVolumeRayCastMapper::New();
-  BasicVariable::ptr res_var = WrapClass_vtkOpenGLGPUVolumeRayCastMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkOpenGLGPUVolumeRayCastMapper >::CreateVar(res,true);
   return res_var;
 }
 
@@ -183,12 +214,18 @@ BasicVariable::ptr WrapClass_vtkOpenGLGPUVolumeRayCastMapper::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkObjectBase > o_smtptr;
-  if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkObjectBase* o = o_smtptr.get();
+  vtkObjectBase* o;
+  if (CheckNullVar(_p,_n))  {
+    o=(vtkObjectBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkObjectBase > o_smtptr;
+    if (!get_val_smtptr_param<vtkObjectBase >(o_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    o = o_smtptr.get();
+  }
 
   vtkOpenGLGPUVolumeRayCastMapper * res =   vtkOpenGLGPUVolumeRayCastMapper::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkOpenGLGPUVolumeRayCastMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkOpenGLGPUVolumeRayCastMapper >::CreateVar(res,true);
   return res_var;
 }
 
@@ -286,7 +323,7 @@ BasicVariable::ptr WrapClass_vtkOpenGLGPUVolumeRayCastMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkOpenGLGPUVolumeRayCastMapper * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkOpenGLGPUVolumeRayCastMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkOpenGLGPUVolumeRayCastMapper >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -340,13 +377,25 @@ BasicVariable::ptr WrapClass_vtkOpenGLGPUVolumeRayCastMapper::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<vtkRenderWindow > window_smtptr;
-  if (!get_val_smtptr_param<vtkRenderWindow >(window_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkRenderWindow* window = window_smtptr.get();
+  vtkRenderWindow* window;
+  if (CheckNullVar(_p,_n))  {
+    window=(vtkRenderWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkRenderWindow > window_smtptr;
+    if (!get_val_smtptr_param<vtkRenderWindow >(window_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    window = window_smtptr.get();
+  }
 
-  boost::shared_ptr<vtkVolumeProperty > property_smtptr;
-  if (!get_val_smtptr_param<vtkVolumeProperty >(property_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  vtkVolumeProperty* property = property_smtptr.get();
+  vtkVolumeProperty* property;
+  if (CheckNullVar(_p,_n))  {
+    property=(vtkVolumeProperty*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<vtkVolumeProperty > property_smtptr;
+    if (!get_val_smtptr_param<vtkVolumeProperty >(property_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    property = property_smtptr.get();
+  }
 
   int res =   this->_objectptr->GetObj()->IsRenderSupported(window, property);
   return AMILabType<int >::CreateVar(res);

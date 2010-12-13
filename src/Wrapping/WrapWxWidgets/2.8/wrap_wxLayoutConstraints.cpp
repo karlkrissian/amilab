@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxLayoutConstraints.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxLayoutConstraints.h"
-#include "wrap_wxWindowBase.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxLayoutConstraints_declared
+  #define wxLayoutConstraints_declared
+  AMI_DECLARE_TYPE(wxLayoutConstraints)
+#endif
+#ifndef wxWindowBase_declared
+  #define wxWindowBase_declared
+  AMI_DECLARE_TYPE(wxWindowBase)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxLayoutConstraints.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,118 +79,121 @@ void WrapClass_wxLayoutConstraints::AddMethods(WrapClass<wxLayoutConstraints>::p
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_SatisfyConstraints( this_ptr);
-      AddVar_AreSatisfied( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_SatisfyConstraints( this_ptr);
+  AddVar_AreSatisfied( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      /* Type not available
-      // Adding public member left
-      boost::shared_ptr<wxIndividualLayoutConstraint > var_left_ptr(&GetObj()->left, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
-      if (var_left_ptr.get()) {
-        BasicVariable::ptr var_left = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_left_ptr);
-        if (var_left.get()) {
-          var_left->Rename("left");
-          context->AddVar(var_left,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member top
-      boost::shared_ptr<wxIndividualLayoutConstraint > var_top_ptr(&GetObj()->top, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
-      if (var_top_ptr.get()) {
-        BasicVariable::ptr var_top = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_top_ptr);
-        if (var_top.get()) {
-          var_top->Rename("top");
-          context->AddVar(var_top,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member right
-      boost::shared_ptr<wxIndividualLayoutConstraint > var_right_ptr(&GetObj()->right, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
-      if (var_right_ptr.get()) {
-        BasicVariable::ptr var_right = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_right_ptr);
-        if (var_right.get()) {
-          var_right->Rename("right");
-          context->AddVar(var_right,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member bottom
-      boost::shared_ptr<wxIndividualLayoutConstraint > var_bottom_ptr(&GetObj()->bottom, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
-      if (var_bottom_ptr.get()) {
-        BasicVariable::ptr var_bottom = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_bottom_ptr);
-        if (var_bottom.get()) {
-          var_bottom->Rename("bottom");
-          context->AddVar(var_bottom,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member width
-      boost::shared_ptr<wxIndividualLayoutConstraint > var_width_ptr(&GetObj()->width, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
-      if (var_width_ptr.get()) {
-        BasicVariable::ptr var_width = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_width_ptr);
-        if (var_width.get()) {
-          var_width->Rename("width");
-          context->AddVar(var_width,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member height
-      boost::shared_ptr<wxIndividualLayoutConstraint > var_height_ptr(&GetObj()->height, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
-      if (var_height_ptr.get()) {
-        BasicVariable::ptr var_height = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_height_ptr);
-        if (var_height.get()) {
-          var_height->Rename("height");
-          context->AddVar(var_height,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member centreX
-      boost::shared_ptr<wxIndividualLayoutConstraint > var_centreX_ptr(&GetObj()->centreX, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
-      if (var_centreX_ptr.get()) {
-        BasicVariable::ptr var_centreX = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_centreX_ptr);
-        if (var_centreX.get()) {
-          var_centreX->Rename("centreX");
-          context->AddVar(var_centreX,context);
-        }
-      }
-      */
-      
-      /* Type not available
-      // Adding public member centreY
-      boost::shared_ptr<wxIndividualLayoutConstraint > var_centreY_ptr(&GetObj()->centreY, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
-      if (var_centreY_ptr.get()) {
-        BasicVariable::ptr var_centreY = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_centreY_ptr);
-        if (var_centreY.get()) {
-          var_centreY->Rename("centreY");
-          context->AddVar(var_centreY,context);
-        }
-      }
-      */
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  /* Type not available
+  // Adding public member left
+  boost::shared_ptr<wxIndividualLayoutConstraint > var_left_ptr(&GetObj()->left, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
+  if (var_left_ptr.get()) {
+    BasicVariable::ptr var_left = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_left_ptr);
+    if (var_left.get()) {
+      var_left->Rename("left");
+      context->AddVar(var_left,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member top
+  boost::shared_ptr<wxIndividualLayoutConstraint > var_top_ptr(&GetObj()->top, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
+  if (var_top_ptr.get()) {
+    BasicVariable::ptr var_top = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_top_ptr);
+    if (var_top.get()) {
+      var_top->Rename("top");
+      context->AddVar(var_top,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member right
+  boost::shared_ptr<wxIndividualLayoutConstraint > var_right_ptr(&GetObj()->right, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
+  if (var_right_ptr.get()) {
+    BasicVariable::ptr var_right = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_right_ptr);
+    if (var_right.get()) {
+      var_right->Rename("right");
+      context->AddVar(var_right,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member bottom
+  boost::shared_ptr<wxIndividualLayoutConstraint > var_bottom_ptr(&GetObj()->bottom, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
+  if (var_bottom_ptr.get()) {
+    BasicVariable::ptr var_bottom = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_bottom_ptr);
+    if (var_bottom.get()) {
+      var_bottom->Rename("bottom");
+      context->AddVar(var_bottom,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member width
+  boost::shared_ptr<wxIndividualLayoutConstraint > var_width_ptr(&GetObj()->width, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
+  if (var_width_ptr.get()) {
+    BasicVariable::ptr var_width = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_width_ptr);
+    if (var_width.get()) {
+      var_width->Rename("width");
+      context->AddVar(var_width,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member height
+  boost::shared_ptr<wxIndividualLayoutConstraint > var_height_ptr(&GetObj()->height, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
+  if (var_height_ptr.get()) {
+    BasicVariable::ptr var_height = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_height_ptr);
+    if (var_height.get()) {
+      var_height->Rename("height");
+      context->AddVar(var_height,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member centreX
+  boost::shared_ptr<wxIndividualLayoutConstraint > var_centreX_ptr(&GetObj()->centreX, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
+  if (var_centreX_ptr.get()) {
+    BasicVariable::ptr var_centreX = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_centreX_ptr);
+    if (var_centreX.get()) {
+      var_centreX->Rename("centreX");
+      context->AddVar(var_centreX,context);
+    }
+  }
+  */
+  
+  /* Type not available
+  // Adding public member centreY
+  boost::shared_ptr<wxIndividualLayoutConstraint > var_centreY_ptr(&GetObj()->centreY, smartpointer_nodeleter<wxIndividualLayoutConstraint >());
+  if (var_centreY_ptr.get()) {
+    BasicVariable::ptr var_centreY = AMILabType<wxIndividualLayoutConstraint >::CreateVarFromSmtPtr(var_centreY_ptr);
+    if (var_centreY.get()) {
+      var_centreY->Rename("centreY");
+      context->AddVar(var_centreY,context);
+    }
+  }
+  */
+
+
+  
 
 
   // Adding Bases
@@ -193,7 +212,7 @@ void WrapClass_wxLayoutConstraints::AddMethods(WrapClass<wxLayoutConstraints>::p
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxLayoutConstraints::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxLayoutConstraints_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -316,13 +335,25 @@ BasicVariable::ptr WrapClass_wxLayoutConstraints::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindowBase > win_smtptr;
-  if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindowBase* win = win_smtptr.get();
+  wxWindowBase* win;
+  if (CheckNullVar(_p,_n))  {
+    win=(wxWindowBase*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindowBase > win_smtptr;
+    if (!get_val_smtptr_param<wxWindowBase >(win_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    win = win_smtptr.get();
+  }
 
-  boost::shared_ptr<int > noChanges_smtptr;
-  if (!get_val_smtptr_param<int >(noChanges_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  int* noChanges = noChanges_smtptr.get();
+  int* noChanges;
+  if (CheckNullVar(_p,_n))  {
+    noChanges=(int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<int > noChanges_smtptr;
+    if (!get_val_smtptr_param<int >(noChanges_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    noChanges = noChanges_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->SatisfyConstraints(win, noChanges);
   return AMILabType<bool >::CreateVar(res);
@@ -363,7 +394,7 @@ BasicVariable::ptr WrapClass_wxLayoutConstraints::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

@@ -26,8 +26,10 @@
 #include "wrap_vtkVolumeMapper.h"
 
 
-
-AMI_DECLARE_TYPE(vtkGPUVolumeRayCastMapper);
+#ifndef vtkGPUVolumeRayCastMapper_declared
+  #define vtkGPUVolumeRayCastMapper_declared
+  AMI_DECLARE_TYPE(vtkGPUVolumeRayCastMapper);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkGPUVolumeRayCastMapper : public WrapClass<vtkGPUVolumeRayCastMapper>
@@ -127,12 +129,13 @@ class WrapClass_vtkGPUVolumeRayCastMapper : public WrapClass<vtkGPUVolumeRayCast
 
     void AddMethods(WrapClass<vtkGPUVolumeRayCastMapper>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkGPUVolumeRayCastMapper_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkGPUVolumeRayCastMapper_h

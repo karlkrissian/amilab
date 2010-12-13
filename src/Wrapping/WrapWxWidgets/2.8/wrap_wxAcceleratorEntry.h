@@ -13,11 +13,13 @@
 #ifndef _wrap_wxAcceleratorEntry_h_
 #define _wrap_wxAcceleratorEntry_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxAcceleratorEntry);
+#ifndef wxAcceleratorEntry_declared
+  #define wxAcceleratorEntry_declared
+  AMI_DECLARE_TYPE(wxAcceleratorEntry);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxAcceleratorEntry : public WrapClass<wxAcceleratorEntry>
@@ -98,12 +102,13 @@ class WrapClass_wxAcceleratorEntry : public WrapClass<wxAcceleratorEntry>
 
     void AddMethods(WrapClass<wxAcceleratorEntry>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxAcceleratorEntry_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxAcceleratorEntry_h

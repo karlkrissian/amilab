@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxFont.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxFont.h"
-#include "wrap_wxString.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxFont_declared
+  #define wxFont_declared
+  AMI_DECLARE_TYPE(wxFont)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxFont.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,40 +79,43 @@ void WrapClass_wxFont::AddMethods(WrapClass<wxFont>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Create_1( this_ptr);
-      AddVar_Create( this_ptr);
-      AddVar_Create_2( this_ptr);
-      AddVar_GetPointSize( this_ptr);
-      AddVar_GetFamily( this_ptr);
-      AddVar_GetStyle( this_ptr);
-      AddVar_GetWeight( this_ptr);
-      AddVar_GetFaceName( this_ptr);
-      AddVar_GetUnderlined( this_ptr);
-      AddVar_GetEncoding( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Create_1( this_ptr);
+  AddVar_Create( this_ptr);
+  AddVar_Create_2( this_ptr);
+  AddVar_GetPointSize( this_ptr);
+  AddVar_GetFamily( this_ptr);
+  AddVar_GetStyle( this_ptr);
+  AddVar_GetWeight( this_ptr);
+  AddVar_GetFaceName( this_ptr);
+  AddVar_GetUnderlined( this_ptr);
+  AddVar_GetEncoding( this_ptr);
 /* The following types are missing: wxNativeFontInfo
-      AddVar_GetNativeFontInfo( this_ptr);
+  AddVar_GetNativeFontInfo( this_ptr);
 */
-      AddVar_IsFixedWidth( this_ptr);
-      AddVar_SetPointSize( this_ptr);
-      AddVar_SetFamily( this_ptr);
-      AddVar_SetStyle( this_ptr);
-      AddVar_SetWeight( this_ptr);
-      AddVar_SetFaceName( this_ptr);
-      AddVar_SetUnderlined( this_ptr);
-      AddVar_SetEncoding( this_ptr);
-      AddVar_SetNoAntiAliasing( this_ptr);
-      AddVar_GetNoAntiAliasing( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  AddVar_IsFixedWidth( this_ptr);
+  AddVar_SetPointSize( this_ptr);
+  AddVar_SetFamily( this_ptr);
+  AddVar_SetStyle( this_ptr);
+  AddVar_SetWeight( this_ptr);
+  AddVar_SetFaceName( this_ptr);
+  AddVar_SetUnderlined( this_ptr);
+  AddVar_SetEncoding( this_ptr);
+  AddVar_SetNoAntiAliasing( this_ptr);
+  AddVar_GetNoAntiAliasing( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -117,7 +136,7 @@ void WrapClass_wxFont::AddMethods(WrapClass<wxFont>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxFont::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxFont_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -841,7 +860,7 @@ BasicVariable::ptr WrapClass_wxFont::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

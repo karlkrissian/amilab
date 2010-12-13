@@ -10,22 +10,35 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxStringBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxStringBase.h"
 #include "boost/numeric/conversion/cast.hpp"
 #include "stdlib.h"
-#include "wrap_wxMBConv.h"
 #include "wchar.h"
+#ifndef wxStringBase_declared
+  #define wxStringBase_declared
+  AMI_DECLARE_TYPE(wxStringBase)
+#endif
+#ifndef wxMBConv_declared
+  #define wxMBConv_declared
+  AMI_DECLARE_TYPE(wxMBConv)
+#endif
 
 
-#include "wrap_wxStringBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -65,129 +78,132 @@ void WrapClass_wxStringBase::AddMethods(WrapClass<wxStringBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_length( this_ptr);
-      AddVar_size( this_ptr);
-      AddVar_max_size( this_ptr);
-      AddVar_resize( this_ptr);
-      AddVar_clear( this_ptr);
-      AddVar_empty( this_ptr);
-      AddVar_reserve( this_ptr);
-      AddVar_capacity( this_ptr);
-      AddVar_at_1( this_ptr);
-      AddVar_at( this_ptr);
-      AddVar_at_2( this_ptr);
-      AddVar_append_1( this_ptr);
-      AddVar_append( this_ptr);
-      AddVar_append_2( this_ptr);
-      AddVar_append_3( this_ptr);
-      AddVar_append_4( this_ptr);
-      AddVar_append_5( this_ptr);
-      AddVar_append_6( this_ptr);
-      AddVar_assign_1( this_ptr);
-      AddVar_assign( this_ptr);
-      AddVar_assign_2( this_ptr);
-      AddVar_assign_3( this_ptr);
-      AddVar_assign_4( this_ptr);
-      AddVar_assign_5( this_ptr);
-      AddVar_assign_6( this_ptr);
-      AddVar_begin_1( this_ptr);
-      AddVar_begin( this_ptr);
-      AddVar_begin_2( this_ptr);
-      AddVar_end_1( this_ptr);
-      AddVar_end( this_ptr);
-      AddVar_end_2( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_length( this_ptr);
+  AddVar_size( this_ptr);
+  AddVar_max_size( this_ptr);
+  AddVar_resize( this_ptr);
+  AddVar_clear( this_ptr);
+  AddVar_empty( this_ptr);
+  AddVar_reserve( this_ptr);
+  AddVar_capacity( this_ptr);
+  AddVar_at_1( this_ptr);
+  AddVar_at( this_ptr);
+  AddVar_at_2( this_ptr);
+  AddVar_append_1( this_ptr);
+  AddVar_append( this_ptr);
+  AddVar_append_2( this_ptr);
+  AddVar_append_3( this_ptr);
+  AddVar_append_4( this_ptr);
+  AddVar_append_5( this_ptr);
+  AddVar_append_6( this_ptr);
+  AddVar_assign_1( this_ptr);
+  AddVar_assign( this_ptr);
+  AddVar_assign_2( this_ptr);
+  AddVar_assign_3( this_ptr);
+  AddVar_assign_4( this_ptr);
+  AddVar_assign_5( this_ptr);
+  AddVar_assign_6( this_ptr);
+  AddVar_begin_1( this_ptr);
+  AddVar_begin( this_ptr);
+  AddVar_begin_2( this_ptr);
+  AddVar_end_1( this_ptr);
+  AddVar_end( this_ptr);
+  AddVar_end_2( this_ptr);
 /* The following types are missing: const_reverse_iterator
-      AddVar_rbegin_1( this_ptr);
+  AddVar_rbegin_1( this_ptr);
 */
-      AddVar_rbegin( this_ptr);
+  AddVar_rbegin( this_ptr);
 /* The following types are missing: reverse_iterator
-      AddVar_rbegin_2( this_ptr);
+  AddVar_rbegin_2( this_ptr);
 */
 /* The following types are missing: const_reverse_iterator
-      AddVar_rend_1( this_ptr);
+  AddVar_rend_1( this_ptr);
 */
-      AddVar_rend( this_ptr);
+  AddVar_rend( this_ptr);
 /* The following types are missing: reverse_iterator
-      AddVar_rend_2( this_ptr);
+  AddVar_rend_2( this_ptr);
 */
-      AddVar_insert_1( this_ptr);
-      AddVar_insert( this_ptr);
-      AddVar_insert_2( this_ptr);
-      AddVar_insert_3( this_ptr);
-      AddVar_insert_4( this_ptr);
-      AddVar_insert_5( this_ptr);
-      AddVar_insert_6( this_ptr);
-      AddVar_insert_7( this_ptr);
-      AddVar_erase_1( this_ptr);
-      AddVar_erase( this_ptr);
-      AddVar_erase_2( this_ptr);
-      AddVar_erase_3( this_ptr);
-      AddVar_c_str( this_ptr);
-      AddVar_data( this_ptr);
-      AddVar_replace_1( this_ptr);
-      AddVar_replace( this_ptr);
-      AddVar_replace_2( this_ptr);
-      AddVar_replace_3( this_ptr);
-      AddVar_replace_4( this_ptr);
-      AddVar_replace_5( this_ptr);
-      AddVar_replace_6( this_ptr);
-      AddVar_replace_7( this_ptr);
-      AddVar_replace_8( this_ptr);
-      AddVar_replace_9( this_ptr);
-      AddVar_replace_10( this_ptr);
-      AddVar_swap( this_ptr);
-      AddVar_find_1( this_ptr);
-      AddVar_find( this_ptr);
-      AddVar_find_2( this_ptr);
-      AddVar_find_3( this_ptr);
-      AddVar_rfind_1( this_ptr);
-      AddVar_rfind( this_ptr);
-      AddVar_rfind_2( this_ptr);
-      AddVar_rfind_3( this_ptr);
-      AddVar_find_first_of_1( this_ptr);
-      AddVar_find_first_of( this_ptr);
-      AddVar_find_first_of_2( this_ptr);
-      AddVar_find_first_of_3( this_ptr);
-      AddVar_find_first_of_4( this_ptr);
-      AddVar_find_last_of_1( this_ptr);
-      AddVar_find_last_of( this_ptr);
-      AddVar_find_last_of_2( this_ptr);
-      AddVar_find_last_of_3( this_ptr);
-      AddVar_find_last_of_4( this_ptr);
-      AddVar_find_first_not_of_1( this_ptr);
-      AddVar_find_first_not_of( this_ptr);
-      AddVar_find_first_not_of_2( this_ptr);
-      AddVar_find_first_not_of_3( this_ptr);
-      AddVar_find_first_not_of_4( this_ptr);
-      AddVar_find_last_not_of_1( this_ptr);
-      AddVar_find_last_not_of( this_ptr);
-      AddVar_find_last_not_of_2( this_ptr);
-      AddVar_find_last_not_of_3( this_ptr);
-      AddVar_find_last_not_of_4( this_ptr);
-      AddVar_compare_1( this_ptr);
-      AddVar_compare( this_ptr);
-      AddVar_compare_2( this_ptr);
-      AddVar_compare_3( this_ptr);
-      AddVar_compare_4( this_ptr);
-      AddVar_compare_5( this_ptr);
-      AddVar_substr( this_ptr);
+  AddVar_insert_1( this_ptr);
+  AddVar_insert( this_ptr);
+  AddVar_insert_2( this_ptr);
+  AddVar_insert_3( this_ptr);
+  AddVar_insert_4( this_ptr);
+  AddVar_insert_5( this_ptr);
+  AddVar_insert_6( this_ptr);
+  AddVar_insert_7( this_ptr);
+  AddVar_erase_1( this_ptr);
+  AddVar_erase( this_ptr);
+  AddVar_erase_2( this_ptr);
+  AddVar_erase_3( this_ptr);
+  AddVar_c_str( this_ptr);
+  AddVar_data( this_ptr);
+  AddVar_replace_1( this_ptr);
+  AddVar_replace( this_ptr);
+  AddVar_replace_2( this_ptr);
+  AddVar_replace_3( this_ptr);
+  AddVar_replace_4( this_ptr);
+  AddVar_replace_5( this_ptr);
+  AddVar_replace_6( this_ptr);
+  AddVar_replace_7( this_ptr);
+  AddVar_replace_8( this_ptr);
+  AddVar_replace_9( this_ptr);
+  AddVar_replace_10( this_ptr);
+  AddVar_swap( this_ptr);
+  AddVar_find_1( this_ptr);
+  AddVar_find( this_ptr);
+  AddVar_find_2( this_ptr);
+  AddVar_find_3( this_ptr);
+  AddVar_rfind_1( this_ptr);
+  AddVar_rfind( this_ptr);
+  AddVar_rfind_2( this_ptr);
+  AddVar_rfind_3( this_ptr);
+  AddVar_find_first_of_1( this_ptr);
+  AddVar_find_first_of( this_ptr);
+  AddVar_find_first_of_2( this_ptr);
+  AddVar_find_first_of_3( this_ptr);
+  AddVar_find_first_of_4( this_ptr);
+  AddVar_find_last_of_1( this_ptr);
+  AddVar_find_last_of( this_ptr);
+  AddVar_find_last_of_2( this_ptr);
+  AddVar_find_last_of_3( this_ptr);
+  AddVar_find_last_of_4( this_ptr);
+  AddVar_find_first_not_of_1( this_ptr);
+  AddVar_find_first_not_of( this_ptr);
+  AddVar_find_first_not_of_2( this_ptr);
+  AddVar_find_first_not_of_3( this_ptr);
+  AddVar_find_first_not_of_4( this_ptr);
+  AddVar_find_last_not_of_1( this_ptr);
+  AddVar_find_last_not_of( this_ptr);
+  AddVar_find_last_not_of_2( this_ptr);
+  AddVar_find_last_not_of_3( this_ptr);
+  AddVar_find_last_not_of_4( this_ptr);
+  AddVar_compare_1( this_ptr);
+  AddVar_compare( this_ptr);
+  AddVar_compare_2( this_ptr);
+  AddVar_compare_3( this_ptr);
+  AddVar_compare_4( this_ptr);
+  AddVar_compare_5( this_ptr);
+  AddVar_substr( this_ptr);
 
-      // Adding operators
-      AddVar___assign___1( this_ptr);
-      AddVar___assign__( this_ptr);
-      AddVar___assign___2( this_ptr);
-      AddVar___assign___3( this_ptr);
-      AddVar___add_assign___1( this_ptr);
-      AddVar___add_assign__( this_ptr);
-      AddVar___add_assign___2( this_ptr);
-      AddVar___add_assign___3( this_ptr);
+  // Adding operators
+  AddVar___assign___1( this_ptr);
+  AddVar___assign__( this_ptr);
+  AddVar___assign___2( this_ptr);
+  AddVar___assign___3( this_ptr);
+  AddVar___add_assign___1( this_ptr);
+  AddVar___add_assign__( this_ptr);
+  AddVar___add_assign___2( this_ptr);
+  AddVar___add_assign___3( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -197,7 +213,7 @@ void WrapClass_wxStringBase::AddMethods(WrapClass<wxStringBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxStringBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxStringBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -494,13 +510,25 @@ BasicVariable::ptr WrapClass_wxStringBase::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<void > pStart_smtptr;
-  if (!get_val_smtptr_param<void >(pStart_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* pStart = pStart_smtptr.get();
+  void* pStart;
+  if (CheckNullVar(_p,_n))  {
+    pStart=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > pStart_smtptr;
+    if (!get_val_smtptr_param<void >(pStart_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pStart = pStart_smtptr.get();
+  }
 
-  boost::shared_ptr<void > pEnd_smtptr;
-  if (!get_val_smtptr_param<void >(pEnd_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* pEnd = pEnd_smtptr.get();
+  void* pEnd;
+  if (CheckNullVar(_p,_n))  {
+    pEnd=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > pEnd_smtptr;
+    if (!get_val_smtptr_param<void >(pEnd_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pEnd = pEnd_smtptr.get();
+  }
 
   wxStringBase* _newobj = new wxStringBase(pStart, pEnd);
   BasicVariable::ptr res = WrapClass_wxStringBase::CreateVar(_newobj);

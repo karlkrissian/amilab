@@ -10,21 +10,34 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxColourBase.h"
 
 // get all the required includes
 // #include "..."
 #include "stdlib.h"
-#include "wrap_wxString.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxColourBase.h"
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxColourBase_declared
+  #define wxColourBase_declared
+  AMI_DECLARE_TYPE(wxColourBase)
+#endif
 
 
-#include "wrap_wxColourBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -64,22 +77,25 @@ void WrapClass_wxColourBase::AddMethods(WrapClass<wxColourBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Set_1( this_ptr);
-      AddVar_Set( this_ptr);
-      AddVar_Set_2( this_ptr);
-      AddVar_Set_3( this_ptr);
-      AddVar_Set_4( this_ptr);
-      AddVar_Ok( this_ptr);
-      AddVar_Alpha( this_ptr);
-      AddVar_GetAsString( this_ptr);
+  // Adding standard methods 
+  AddVar_Set_1( this_ptr);
+  AddVar_Set( this_ptr);
+  AddVar_Set_2( this_ptr);
+  AddVar_Set_3( this_ptr);
+  AddVar_Set_4( this_ptr);
+  AddVar_Ok( this_ptr);
+  AddVar_Alpha( this_ptr);
+  AddVar_GetAsString( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -100,7 +116,7 @@ void WrapClass_wxColourBase::AddMethods(WrapClass<wxColourBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxColourBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxColourBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

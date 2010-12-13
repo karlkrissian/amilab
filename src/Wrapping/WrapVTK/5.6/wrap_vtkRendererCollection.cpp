@@ -16,15 +16,28 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkRendererCollection.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkRendererCollection.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkRenderer.h"
+#ifndef vtkRendererCollection_declared
+  #define vtkRendererCollection_declared
+  AMI_DECLARE_TYPE(vtkRendererCollection)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
 
 
-#include "wrap_vtkRendererCollection.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -115,7 +128,7 @@ void WrapClass_vtkRendererCollection::AddMethods(WrapClass<vtkRendererCollection
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkRendererCollection::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkRendererCollection_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -152,7 +165,7 @@ BasicVariable::ptr WrapClass_vtkRendererCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRendererCollection * res =   vtkRendererCollection::New();
-  BasicVariable::ptr res_var = WrapClass_vtkRendererCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRendererCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -211,7 +224,7 @@ BasicVariable::ptr WrapClass_vtkRendererCollection::
   }
 
   vtkRendererCollection * res =   vtkRendererCollection::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkRendererCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRendererCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -257,7 +270,7 @@ BasicVariable::ptr WrapClass_vtkRendererCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRendererCollection * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkRendererCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRendererCollection >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -339,7 +352,7 @@ BasicVariable::ptr WrapClass_vtkRendererCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderer * res =   this->_objectptr->GetObj()->GetNextItem();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -377,7 +390,7 @@ BasicVariable::ptr WrapClass_vtkRendererCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderer * res =   this->_objectptr->GetObj()->GetFirstRenderer();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderer >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: void
@@ -405,7 +418,7 @@ BasicVariable::ptr WrapClass_vtkRendererCollection::
   vtkCollectionSimpleIterator & cookie = *cookie_smtptr;
 
   vtkRenderer * res =   this->_objectptr->GetObj()->GetNextRenderer(cookie);
-  BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderer >::CreateVar(res,true);
   return res_var;
 }
 */

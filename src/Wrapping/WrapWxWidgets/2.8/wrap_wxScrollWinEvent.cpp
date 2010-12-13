@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxScrollWinEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxScrollWinEvent.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxScrollWinEvent_declared
+  #define wxScrollWinEvent_declared
+  AMI_DECLARE_TYPE(wxScrollWinEvent)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxScrollWinEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,19 +79,22 @@ void WrapClass_wxScrollWinEvent::AddMethods(WrapClass<wxScrollWinEvent>::ptr thi
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetOrientation( this_ptr);
-      AddVar_GetPosition( this_ptr);
-      AddVar_SetOrientation( this_ptr);
-      AddVar_SetPosition( this_ptr);
-      AddVar_Clone( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetOrientation( this_ptr);
+  AddVar_GetPosition( this_ptr);
+  AddVar_SetOrientation( this_ptr);
+  AddVar_SetPosition( this_ptr);
+  AddVar_Clone( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -96,7 +115,7 @@ void WrapClass_wxScrollWinEvent::AddMethods(WrapClass<wxScrollWinEvent>::ptr thi
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxScrollWinEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxScrollWinEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -316,7 +335,7 @@ BasicVariable::ptr WrapClass_wxScrollWinEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -336,7 +355,7 @@ BasicVariable::ptr WrapClass_wxScrollWinEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

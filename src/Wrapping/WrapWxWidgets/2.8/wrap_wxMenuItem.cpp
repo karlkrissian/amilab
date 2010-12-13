@@ -10,22 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxMenuItem.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxMenu.h"
-#include "wrap_wxString.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxAcceleratorEntry.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxMenu_declared
+  #define wxMenu_declared
+  AMI_DECLARE_TYPE(wxMenu)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxAcceleratorEntry_declared
+  #define wxAcceleratorEntry_declared
+  AMI_DECLARE_TYPE(wxAcceleratorEntry)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxMenuItem.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -126,7 +144,7 @@ void WrapClass_wxMenuItem::AddMethods(WrapClass<wxMenuItem>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxMenuItem::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxMenuItem_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -484,7 +502,7 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxAcceleratorEntry * res =   this->_objectptr->GetObj()->GetAccel();
-  BasicVariable::ptr res_var = WrapClass_wxAcceleratorEntry::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxAcceleratorEntry >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: _GtkWidget
@@ -631,7 +649,7 @@ BasicVariable::ptr WrapClass_wxMenuItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

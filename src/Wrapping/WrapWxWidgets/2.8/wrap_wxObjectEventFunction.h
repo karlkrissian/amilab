@@ -24,8 +24,10 @@
 // include what is needed for inheritence and for types ...
 
 
-
-AMI_DECLARE_TYPE(wxObjectEventFunction);
+#ifndef wxObjectEventFunction_declared
+  #define wxObjectEventFunction_declared
+  AMI_DECLARE_TYPE(wxObjectEventFunction);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxObjectEventFunction : public WrapClass<wxObjectEventFunction>
@@ -68,12 +70,13 @@ class WrapClass_wxObjectEventFunction : public WrapClass<wxObjectEventFunction>
 
     void AddMethods(WrapClass<wxObjectEventFunction>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxObjectEventFunction_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxObjectEventFunction_h

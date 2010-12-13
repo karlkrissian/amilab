@@ -16,17 +16,36 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkHomogeneousTransform.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkHomogeneousTransform.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkPoints.h"
-#include "wrap_vtkDataArray.h"
-#include "wrap_vtkMatrix4x4.h"
+#ifndef vtkHomogeneousTransform_declared
+  #define vtkHomogeneousTransform_declared
+  AMI_DECLARE_TYPE(vtkHomogeneousTransform)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkPoints_declared
+  #define vtkPoints_declared
+  AMI_DECLARE_TYPE(vtkPoints)
+#endif
+#ifndef vtkDataArray_declared
+  #define vtkDataArray_declared
+  AMI_DECLARE_TYPE(vtkDataArray)
+#endif
+#ifndef vtkMatrix4x4_declared
+  #define vtkMatrix4x4_declared
+  AMI_DECLARE_TYPE(vtkMatrix4x4)
+#endif
 
 
-#include "wrap_vtkHomogeneousTransform.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -119,7 +138,7 @@ void WrapClass_vtkHomogeneousTransform::AddMethods(WrapClass<vtkHomogeneousTrans
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkHomogeneousTransform::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkHomogeneousTransform_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -194,7 +213,7 @@ BasicVariable::ptr WrapClass_vtkHomogeneousTransform::
   }
 
   vtkHomogeneousTransform * res =   vtkHomogeneousTransform::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkHomogeneousTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkHomogeneousTransform >::CreateVar(res,true);
   return res_var;
 }
 
@@ -240,7 +259,7 @@ BasicVariable::ptr WrapClass_vtkHomogeneousTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkHomogeneousTransform * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkHomogeneousTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkHomogeneousTransform >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -471,7 +490,7 @@ BasicVariable::ptr WrapClass_vtkHomogeneousTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkMatrix4x4 * res =   this->_objectptr->GetObj()->GetMatrix();
-  BasicVariable::ptr res_var = WrapClass_vtkMatrix4x4::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkMatrix4x4 >::CreateVar(res,true);
   return res_var;
 }
 
@@ -491,7 +510,7 @@ BasicVariable::ptr WrapClass_vtkHomogeneousTransform::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkHomogeneousTransform * res =   this->_objectptr->GetObj()->GetHomogeneousInverse();
-  BasicVariable::ptr res_var = WrapClass_vtkHomogeneousTransform::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkHomogeneousTransform >::CreateVar(res,true);
   return res_var;
 }
 

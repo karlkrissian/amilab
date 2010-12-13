@@ -26,8 +26,10 @@
 #include "wrap_vtkLinearTransform.h"
 
 
-
-AMI_DECLARE_TYPE(vtkTransform);
+#ifndef vtkTransform_declared
+  #define vtkTransform_declared
+  AMI_DECLARE_TYPE(vtkTransform);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkTransform : public WrapClass<vtkTransform>
@@ -145,12 +147,13 @@ class WrapClass_vtkTransform : public WrapClass<vtkTransform>
 
     void AddMethods(WrapClass<vtkTransform>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkTransform_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkTransform_h

@@ -8,7 +8,7 @@
 #ami.MainFrame.AddToMenu("&Scripts","&Visualization","&Volume Rendering","Visualization/VolRen/VolRenGui.amil")
 
 
-if (!exists(levelsets_menu)) {
+if (!exists(volren_display)) {
 
   proc AddScript() {
     global

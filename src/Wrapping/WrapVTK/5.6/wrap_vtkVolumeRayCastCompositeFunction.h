@@ -19,15 +19,17 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "vtk_includes.h"
+#include "vtkVolumeRayCastCompositeFunction.h"
 
 // include what is needed for inheritence and for types ...
 
 #include "wrap_vtkVolumeRayCastFunction.h"
 
 
-
-AMI_DECLARE_TYPE(vtkVolumeRayCastCompositeFunction);
+#ifndef vtkVolumeRayCastCompositeFunction_declared
+  #define vtkVolumeRayCastCompositeFunction_declared
+  AMI_DECLARE_TYPE(vtkVolumeRayCastCompositeFunction);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkVolumeRayCastCompositeFunction : public WrapClass<vtkVolumeRayCastCompositeFunction>
@@ -94,12 +96,13 @@ class WrapClass_vtkVolumeRayCastCompositeFunction : public WrapClass<vtkVolumeRa
 
     void AddMethods(WrapClass<vtkVolumeRayCastCompositeFunction>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkVolumeRayCastCompositeFunction_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkVolumeRayCastCompositeFunction_h

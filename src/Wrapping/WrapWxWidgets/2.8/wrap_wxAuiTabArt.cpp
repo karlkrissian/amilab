@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxAuiTabArt.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxAuiTabArt.h"
+#ifndef wxAuiTabArt_declared
+  #define wxAuiTabArt_declared
+  AMI_DECLARE_TYPE(wxAuiTabArt)
+#endif
 
 
-#include "wrap_wxAuiTabArt.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -61,14 +71,17 @@ void WrapClass_wxAuiTabArt::AddMethods(WrapClass<wxAuiTabArt>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
+  // Adding standard methods 
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -78,7 +91,7 @@ void WrapClass_wxAuiTabArt::AddMethods(WrapClass<wxAuiTabArt>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxAuiTabArt::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxAuiTabArt_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxPen_h_
 #define _wrap_wxPen_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxGDIObject.h"
 
 
-
-AMI_DECLARE_TYPE(wxPen);
+#ifndef wxPen_declared
+  #define wxPen_declared
+  AMI_DECLARE_TYPE(wxPen);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxPen : public WrapClass<wxPen>
@@ -97,7 +101,7 @@ class WrapClass_wxPen : public WrapClass<wxPen>
     ADD_CLASS_METHOD(GetJoin,"int wxPen::GetJoin()  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getjoin)")
     ADD_CLASS_METHOD(GetStyle,"int wxPen::GetStyle()  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getstyle)")
     ADD_CLASS_METHOD(GetWidth,"int wxPen::GetWidth()  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getwidth)")
-/* The following types are missing: wxDash * *
+/* The following types are missing: signed char
     ADD_CLASS_METHOD(GetDashes,"int wxPen::GetDashes(wxDash * * ptr)  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getdashes)")
 */
     ADD_CLASS_METHOD(GetDashCount,"int wxPen::GetDashCount()  (http://docs.wxwidgets.org/stable/wx_wxpen.html#getdashcount)")
@@ -116,12 +120,13 @@ class WrapClass_wxPen : public WrapClass<wxPen>
 
     void AddMethods(WrapClass<wxPen>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxPen_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxPen_h

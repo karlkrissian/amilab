@@ -16,11 +16,16 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_wxObjectEventFunction.h"
+
 // get all the required includes
 // #include "..."
 
 
-#include "wrap_wxObjectEventFunction.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -71,13 +76,15 @@ void WrapClass_wxObjectEventFunction::AddMethods(WrapClass<wxObjectEventFunction
   
 
   
+
+  
 };
 
 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxObjectEventFunction::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxObjectEventFunction_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -85,7 +92,7 @@ void WrapClass_wxObjectEventFunction::AddStaticMethods( Variables::ptr& context)
   
   
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   
 }
 

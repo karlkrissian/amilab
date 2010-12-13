@@ -10,22 +10,44 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxIcon.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxIcon.h"
-#include "wrap_wxString.h"
-#include "wrap_wxIconLocation.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxIcon_declared
+  #define wxIcon_declared
+  AMI_DECLARE_TYPE(wxIcon)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxIconLocation_declared
+  #define wxIconLocation_declared
+  AMI_DECLARE_TYPE(wxIconLocation)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxIcon.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -65,18 +87,21 @@ void WrapClass_wxIcon::AddMethods(WrapClass<wxIcon>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_CopyFromBitmap( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_CopyFromBitmap( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -97,7 +122,7 @@ void WrapClass_wxIcon::AddMethods(WrapClass<wxIcon>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxIcon::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxIcon_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -105,12 +130,8 @@ void WrapClass_wxIcon::AddStaticMethods( Variables::ptr& context)
     WrapClass_wxIcon::AddVar_wxIcon_1(amiobject->GetContext());
   WrapClass_wxIcon::AddVar_wxIcon(amiobject->GetContext());
   WrapClass_wxIcon::AddVar_wxIcon_2(amiobject->GetContext());
-  /* Types are missing
   WrapClass_wxIcon::AddVar_wxIcon_3(amiobject->GetContext());
-  */
-  /* Types are missing
   WrapClass_wxIcon::AddVar_wxIcon_4(amiobject->GetContext());
-  */
   WrapClass_wxIcon::AddVar_wxIcon_5(amiobject->GetContext());
   WrapClass_wxIcon::AddVar_wxIcon_6(amiobject->GetContext());
 
@@ -171,6 +192,12 @@ BasicVariable::ptr WrapClass_wxIcon::
   WrapClass_wxIcon::wrap_wxIcon_2 m2;
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
+  WrapClass_wxIcon::wrap_wxIcon_3 m3;
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
+  WrapClass_wxIcon::wrap_wxIcon_4 m4;
+  res = m4.CallMember(_p);
+  if (!m4.Get_arg_failure()) return res;
   WrapClass_wxIcon::wrap_wxIcon_5 m5;
   res = m5.CallMember(_p);
   if (!m5.Get_arg_failure()) return res;
@@ -198,7 +225,6 @@ BasicVariable::ptr WrapClass_wxIcon::
   BasicVariable::ptr res = WrapClass_wxIcon::CreateVar(_newobj);
   return res;
 }
-/* The following types are missing: char const * *
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxIcon::wxIcon(char const * * bits, int width = -0x00000000000000001, int height = -0x00000000000000001)
@@ -221,7 +247,9 @@ BasicVariable::ptr WrapClass_wxIcon::
 
   boost::shared_ptr<std::string > bits_string;
   if (!get_val_smtptr_param<std::string >(bits_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  char const * * bits = bits_string->c_str();
+  // this conversion is probably not correct but should compile
+char* bits_pointer = (char*)bits_string->c_str();
+char const * * bits = (char const * *) &bits_pointer;
 
   int width = -0x00000000000000001;
   if (!get_val_param<int >(width,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -233,8 +261,6 @@ BasicVariable::ptr WrapClass_wxIcon::
   BasicVariable::ptr res = WrapClass_wxIcon::CreateVar(_newobj);
   return res;
 }
-*/
-/* The following types are missing: char * *
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxIcon::wxIcon(char * * bits, int width = -0x00000000000000001, int height = -0x00000000000000001)
@@ -257,7 +283,9 @@ BasicVariable::ptr WrapClass_wxIcon::
 
   boost::shared_ptr<std::string > bits_string;
   if (!get_val_smtptr_param<std::string >(bits_string,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  char * * bits = bits_string->c_str();
+  // this conversion is probably not correct but should compile
+char* bits_pointer = (char*)bits_string->c_str();
+char * * bits = (char * *) &bits_pointer;
 
   int width = -0x00000000000000001;
   if (!get_val_param<int >(width,_p,_n,false,true)) ClassReturnEmptyVar;
@@ -269,7 +297,6 @@ BasicVariable::ptr WrapClass_wxIcon::
   BasicVariable::ptr res = WrapClass_wxIcon::CreateVar(_newobj);
   return res;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of Constructor wxIcon::wxIcon(wxString const & filename, wxBitmapType type = wxBITMAP_TYPE_XPM, int param2 = -0x00000000000000001, int param3 = -0x00000000000000001)
@@ -393,7 +420,7 @@ BasicVariable::ptr WrapClass_wxIcon::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

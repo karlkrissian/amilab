@@ -13,11 +13,13 @@
 #ifndef _wrap_wxScrolledWindow_h_
 #define _wrap_wxScrolledWindow_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -27,8 +29,10 @@
 #include "wrap_wxScrollHelperNative.h"
 
 
-
-AMI_DECLARE_TYPE(wxScrolledWindow);
+#ifndef wxScrolledWindow_declared
+  #define wxScrolledWindow_declared
+  AMI_DECLARE_TYPE(wxScrolledWindow);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxScrolledWindow : public WrapClass<wxScrolledWindow>
@@ -90,12 +94,13 @@ class WrapClass_wxScrolledWindow : public WrapClass<wxScrolledWindow>
 
     void AddMethods(WrapClass<wxScrolledWindow>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxScrolledWindow_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxScrolledWindow_h

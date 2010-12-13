@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxObjectRefData.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxObjectRefData.h"
+#ifndef wxObjectRefData_declared
+  #define wxObjectRefData_declared
+  AMI_DECLARE_TYPE(wxObjectRefData)
+#endif
 
 
-#include "wrap_wxObjectRefData.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -61,17 +71,20 @@ void WrapClass_wxObjectRefData::AddMethods(WrapClass<wxObjectRefData>::ptr this_
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_GetRefCount( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_GetRefCount( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -81,7 +94,7 @@ void WrapClass_wxObjectRefData::AddMethods(WrapClass<wxObjectRefData>::ptr this_
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxObjectRefData::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxObjectRefData_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

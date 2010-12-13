@@ -13,11 +13,13 @@
 #ifndef _wrap_wxAuiPaneInfo_h_
 #define _wrap_wxAuiPaneInfo_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxAuiPaneInfo);
+#ifndef wxAuiPaneInfo_declared
+  #define wxAuiPaneInfo_declared
+  AMI_DECLARE_TYPE(wxAuiPaneInfo);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
@@ -169,12 +173,13 @@ class WrapClass_wxAuiPaneInfo : public WrapClass<wxAuiPaneInfo>
 
     void AddMethods(WrapClass<wxAuiPaneInfo>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxAuiPaneInfo_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxAuiPaneInfo_h

@@ -13,11 +13,13 @@
 #ifndef _wrap_wxMouseEvent_h_
 #define _wrap_wxMouseEvent_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxEvent.h"
 
 
-
-AMI_DECLARE_TYPE(wxMouseEvent);
+#ifndef wxMouseEvent_declared
+  #define wxMouseEvent_declared
+  AMI_DECLARE_TYPE(wxMouseEvent);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxMouseEvent : public WrapClass<wxMouseEvent>
@@ -128,12 +132,13 @@ class WrapClass_wxMouseEvent : public WrapClass<wxMouseEvent>
 
     void AddMethods(WrapClass<wxMouseEvent>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxMouseEvent_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxMouseEvent_h

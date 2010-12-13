@@ -13,11 +13,13 @@
 #ifndef _wrap_wxObjectRefData_h_
 #define _wrap_wxObjectRefData_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxObjectRefData);
+#ifndef wxObjectRefData_declared
+  #define wxObjectRefData_declared
+  AMI_DECLARE_TYPE(wxObjectRefData);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxObjectRefData : public WrapClass<wxObjectRefData>
@@ -87,12 +91,13 @@ class WrapClass_wxObjectRefData : public WrapClass<wxObjectRefData>
 
     void AddMethods(WrapClass<wxObjectRefData>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxObjectRefData_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxObjectRefData_h

@@ -10,25 +10,56 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxTopLevelWindowGTK.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxRect.h"
-#include "wrap_wxWindow.h"
-#include "wrap_wxString.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxIcon.h"
-#include "wrap_wxIconBundle.h"
-#include "wrap_wxRegion.h"
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxIcon_declared
+  #define wxIcon_declared
+  AMI_DECLARE_TYPE(wxIcon)
+#endif
+#ifndef wxIconBundle_declared
+  #define wxIconBundle_declared
+  AMI_DECLARE_TYPE(wxIconBundle)
+#endif
+#ifndef wxRegion_declared
+  #define wxRegion_declared
+  AMI_DECLARE_TYPE(wxRegion)
+#endif
 
 
-#include "wrap_wxTopLevelWindowGTK.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -75,164 +106,167 @@ void WrapClass_wxTopLevelWindowGTK::AddMethods(WrapClass<wxTopLevelWindowGTK>::p
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Create( this_ptr);
-      AddVar_Maximize( this_ptr);
-      AddVar_IsMaximized( this_ptr);
-      AddVar_Iconize( this_ptr);
-      AddVar_IsIconized( this_ptr);
-      AddVar_SetIcon( this_ptr);
-      AddVar_SetIcons( this_ptr);
-      AddVar_Restore( this_ptr);
-      AddVar_EnableCloseButton( this_ptr);
-      AddVar_ShowFullScreen( this_ptr);
-      AddVar_IsFullScreen( this_ptr);
-      AddVar_SetShape( this_ptr);
-      AddVar_RequestUserAttention( this_ptr);
-      AddVar_SetWindowStyleFlag( this_ptr);
-      AddVar_Show( this_ptr);
-      AddVar_Raise( this_ptr);
-      AddVar_IsActive( this_ptr);
-      AddVar_SetTitle( this_ptr);
-      AddVar_GetTitle( this_ptr);
-      AddVar_SetTransparent( this_ptr);
-      AddVar_CanSetTransparent( this_ptr);
-      AddVar_AddGrab( this_ptr);
-      AddVar_RemoveGrab( this_ptr);
-      AddVar_IsGrabbed( this_ptr);
-      AddVar_GtkOnSize( this_ptr);
-      AddVar_OnInternalIdle( this_ptr);
-      AddVar_SetIconizeState( this_ptr);
-      AddVar_DoSetSizeHints( this_ptr);
+  // Adding standard methods 
+  AddVar_Create( this_ptr);
+  AddVar_Maximize( this_ptr);
+  AddVar_IsMaximized( this_ptr);
+  AddVar_Iconize( this_ptr);
+  AddVar_IsIconized( this_ptr);
+  AddVar_SetIcon( this_ptr);
+  AddVar_SetIcons( this_ptr);
+  AddVar_Restore( this_ptr);
+  AddVar_EnableCloseButton( this_ptr);
+  AddVar_ShowFullScreen( this_ptr);
+  AddVar_IsFullScreen( this_ptr);
+  AddVar_SetShape( this_ptr);
+  AddVar_RequestUserAttention( this_ptr);
+  AddVar_SetWindowStyleFlag( this_ptr);
+  AddVar_Show( this_ptr);
+  AddVar_Raise( this_ptr);
+  AddVar_IsActive( this_ptr);
+  AddVar_SetTitle( this_ptr);
+  AddVar_GetTitle( this_ptr);
+  AddVar_SetTransparent( this_ptr);
+  AddVar_CanSetTransparent( this_ptr);
+  AddVar_AddGrab( this_ptr);
+  AddVar_RemoveGrab( this_ptr);
+  AddVar_IsGrabbed( this_ptr);
+  AddVar_GtkOnSize( this_ptr);
+  AddVar_OnInternalIdle( this_ptr);
+  AddVar_SetIconizeState( this_ptr);
+  AddVar_DoSetSizeHints( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member m_miniEdge
-      boost::shared_ptr<int > var_m_miniEdge_ptr(&GetObj()->m_miniEdge, smartpointer_nodeleter<int >());
-      if (var_m_miniEdge_ptr.get()) {
-        BasicVariable::ptr var_m_miniEdge = AMILabType<int >::CreateVarFromSmtPtr(var_m_miniEdge_ptr);
-        if (var_m_miniEdge.get()) {
-          var_m_miniEdge->Rename("m_miniEdge");
-          context->AddVar(var_m_miniEdge,context);
-        }
-      }
-      
-      // Adding public member m_miniTitle
-      boost::shared_ptr<int > var_m_miniTitle_ptr(&GetObj()->m_miniTitle, smartpointer_nodeleter<int >());
-      if (var_m_miniTitle_ptr.get()) {
-        BasicVariable::ptr var_m_miniTitle = AMILabType<int >::CreateVarFromSmtPtr(var_m_miniTitle_ptr);
-        if (var_m_miniTitle.get()) {
-          var_m_miniTitle->Rename("m_miniTitle");
-          context->AddVar(var_m_miniTitle,context);
-        }
-      }
-      
-      /* Type not available
-      // Adding public member m_mainWidget
-      boost::shared_ptr<_GtkWidget > var_m_mainWidget_ptr(GetObj()->m_mainWidget, smartpointer_nodeleter<_GtkWidget >());
-      if (var_m_mainWidget_ptr.get()) {
-        BasicVariable::ptr var_m_mainWidget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_mainWidget_ptr);
-        if (var_m_mainWidget.get()) {
-          var_m_mainWidget->Rename("m_mainWidget");
-          context->AddVar(var_m_mainWidget,context);
-        }
-      }
-      */
-      
-      // Adding public member m_insertInClientArea
-      boost::shared_ptr<bool > var_m_insertInClientArea_ptr(&GetObj()->m_insertInClientArea, smartpointer_nodeleter<bool >());
-      if (var_m_insertInClientArea_ptr.get()) {
-        BasicVariable::ptr var_m_insertInClientArea = AMILabType<bool >::CreateVarFromSmtPtr(var_m_insertInClientArea_ptr);
-        if (var_m_insertInClientArea.get()) {
-          var_m_insertInClientArea->Rename("m_insertInClientArea");
-          context->AddVar(var_m_insertInClientArea,context);
-        }
-      }
-      
-      // Adding public member m_fsIsShowing
-      boost::shared_ptr<bool > var_m_fsIsShowing_ptr(&GetObj()->m_fsIsShowing, smartpointer_nodeleter<bool >());
-      if (var_m_fsIsShowing_ptr.get()) {
-        BasicVariable::ptr var_m_fsIsShowing = AMILabType<bool >::CreateVarFromSmtPtr(var_m_fsIsShowing_ptr);
-        if (var_m_fsIsShowing.get()) {
-          var_m_fsIsShowing->Rename("m_fsIsShowing");
-          context->AddVar(var_m_fsIsShowing,context);
-        }
-      }
-      
-      // Adding public member m_fsSaveGdkFunc
-      boost::shared_ptr<long int > var_m_fsSaveGdkFunc_ptr(&GetObj()->m_fsSaveGdkFunc, smartpointer_nodeleter<long int >());
-      if (var_m_fsSaveGdkFunc_ptr.get()) {
-        BasicVariable::ptr var_m_fsSaveGdkFunc = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveGdkFunc_ptr);
-        if (var_m_fsSaveGdkFunc.get()) {
-          var_m_fsSaveGdkFunc->Rename("m_fsSaveGdkFunc");
-          context->AddVar(var_m_fsSaveGdkFunc,context);
-        }
-      }
-      
-      // Adding public member m_fsSaveGdkDecor
-      boost::shared_ptr<long int > var_m_fsSaveGdkDecor_ptr(&GetObj()->m_fsSaveGdkDecor, smartpointer_nodeleter<long int >());
-      if (var_m_fsSaveGdkDecor_ptr.get()) {
-        BasicVariable::ptr var_m_fsSaveGdkDecor = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveGdkDecor_ptr);
-        if (var_m_fsSaveGdkDecor.get()) {
-          var_m_fsSaveGdkDecor->Rename("m_fsSaveGdkDecor");
-          context->AddVar(var_m_fsSaveGdkDecor,context);
-        }
-      }
-      
-      // Adding public member m_fsSaveFlag
-      boost::shared_ptr<long int > var_m_fsSaveFlag_ptr(&GetObj()->m_fsSaveFlag, smartpointer_nodeleter<long int >());
-      if (var_m_fsSaveFlag_ptr.get()) {
-        BasicVariable::ptr var_m_fsSaveFlag = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveFlag_ptr);
-        if (var_m_fsSaveFlag.get()) {
-          var_m_fsSaveFlag->Rename("m_fsSaveFlag");
-          context->AddVar(var_m_fsSaveFlag,context);
-        }
-      }
-      
-      // Adding public member m_fsSaveFrame
-      boost::shared_ptr<wxRect > var_m_fsSaveFrame_ptr(&GetObj()->m_fsSaveFrame, smartpointer_nodeleter<wxRect >());
-      if (var_m_fsSaveFrame_ptr.get()) {
-        BasicVariable::ptr var_m_fsSaveFrame = AMILabType<wxRect >::CreateVarFromSmtPtr(var_m_fsSaveFrame_ptr);
-        if (var_m_fsSaveFrame.get()) {
-          var_m_fsSaveFrame->Rename("m_fsSaveFrame");
-          context->AddVar(var_m_fsSaveFrame,context);
-        }
-      }
-      
-      // Adding public member m_gdkFunc
-      boost::shared_ptr<long int > var_m_gdkFunc_ptr(&GetObj()->m_gdkFunc, smartpointer_nodeleter<long int >());
-      if (var_m_gdkFunc_ptr.get()) {
-        BasicVariable::ptr var_m_gdkFunc = AMILabType<long int >::CreateVarFromSmtPtr(var_m_gdkFunc_ptr);
-        if (var_m_gdkFunc.get()) {
-          var_m_gdkFunc->Rename("m_gdkFunc");
-          context->AddVar(var_m_gdkFunc,context);
-        }
-      }
-      
-      // Adding public member m_gdkDecor
-      boost::shared_ptr<long int > var_m_gdkDecor_ptr(&GetObj()->m_gdkDecor, smartpointer_nodeleter<long int >());
-      if (var_m_gdkDecor_ptr.get()) {
-        BasicVariable::ptr var_m_gdkDecor = AMILabType<long int >::CreateVarFromSmtPtr(var_m_gdkDecor_ptr);
-        if (var_m_gdkDecor.get()) {
-          var_m_gdkDecor->Rename("m_gdkDecor");
-          context->AddVar(var_m_gdkDecor,context);
-        }
-      }
-      
-      // Adding public member m_urgency_hint
-      boost::shared_ptr<int > var_m_urgency_hint_ptr(&GetObj()->m_urgency_hint, smartpointer_nodeleter<int >());
-      if (var_m_urgency_hint_ptr.get()) {
-        BasicVariable::ptr var_m_urgency_hint = AMILabType<int >::CreateVarFromSmtPtr(var_m_urgency_hint_ptr);
-        if (var_m_urgency_hint.get()) {
-          var_m_urgency_hint->Rename("m_urgency_hint");
-          context->AddVar(var_m_urgency_hint,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member m_miniEdge
+  boost::shared_ptr<int > var_m_miniEdge_ptr(&GetObj()->m_miniEdge, smartpointer_nodeleter<int >());
+  if (var_m_miniEdge_ptr.get()) {
+    BasicVariable::ptr var_m_miniEdge = AMILabType<int >::CreateVarFromSmtPtr(var_m_miniEdge_ptr);
+    if (var_m_miniEdge.get()) {
+      var_m_miniEdge->Rename("m_miniEdge");
+      context->AddVar(var_m_miniEdge,context);
+    }
+  }
+  
+  // Adding public member m_miniTitle
+  boost::shared_ptr<int > var_m_miniTitle_ptr(&GetObj()->m_miniTitle, smartpointer_nodeleter<int >());
+  if (var_m_miniTitle_ptr.get()) {
+    BasicVariable::ptr var_m_miniTitle = AMILabType<int >::CreateVarFromSmtPtr(var_m_miniTitle_ptr);
+    if (var_m_miniTitle.get()) {
+      var_m_miniTitle->Rename("m_miniTitle");
+      context->AddVar(var_m_miniTitle,context);
+    }
+  }
+  
+  /* Type not available
+  // Adding public member m_mainWidget
+  boost::shared_ptr<_GtkWidget > var_m_mainWidget_ptr(GetObj()->m_mainWidget, smartpointer_nodeleter<_GtkWidget >());
+  if (var_m_mainWidget_ptr.get()) {
+    BasicVariable::ptr var_m_mainWidget = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_mainWidget_ptr);
+    if (var_m_mainWidget.get()) {
+      var_m_mainWidget->Rename("m_mainWidget");
+      context->AddVar(var_m_mainWidget,context);
+    }
+  }
+  */
+  
+  // Adding public member m_insertInClientArea
+  boost::shared_ptr<bool > var_m_insertInClientArea_ptr(&GetObj()->m_insertInClientArea, smartpointer_nodeleter<bool >());
+  if (var_m_insertInClientArea_ptr.get()) {
+    BasicVariable::ptr var_m_insertInClientArea = AMILabType<bool >::CreateVarFromSmtPtr(var_m_insertInClientArea_ptr);
+    if (var_m_insertInClientArea.get()) {
+      var_m_insertInClientArea->Rename("m_insertInClientArea");
+      context->AddVar(var_m_insertInClientArea,context);
+    }
+  }
+  
+  // Adding public member m_fsIsShowing
+  boost::shared_ptr<bool > var_m_fsIsShowing_ptr(&GetObj()->m_fsIsShowing, smartpointer_nodeleter<bool >());
+  if (var_m_fsIsShowing_ptr.get()) {
+    BasicVariable::ptr var_m_fsIsShowing = AMILabType<bool >::CreateVarFromSmtPtr(var_m_fsIsShowing_ptr);
+    if (var_m_fsIsShowing.get()) {
+      var_m_fsIsShowing->Rename("m_fsIsShowing");
+      context->AddVar(var_m_fsIsShowing,context);
+    }
+  }
+  
+  // Adding public member m_fsSaveGdkFunc
+  boost::shared_ptr<long int > var_m_fsSaveGdkFunc_ptr(&GetObj()->m_fsSaveGdkFunc, smartpointer_nodeleter<long int >());
+  if (var_m_fsSaveGdkFunc_ptr.get()) {
+    BasicVariable::ptr var_m_fsSaveGdkFunc = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveGdkFunc_ptr);
+    if (var_m_fsSaveGdkFunc.get()) {
+      var_m_fsSaveGdkFunc->Rename("m_fsSaveGdkFunc");
+      context->AddVar(var_m_fsSaveGdkFunc,context);
+    }
+  }
+  
+  // Adding public member m_fsSaveGdkDecor
+  boost::shared_ptr<long int > var_m_fsSaveGdkDecor_ptr(&GetObj()->m_fsSaveGdkDecor, smartpointer_nodeleter<long int >());
+  if (var_m_fsSaveGdkDecor_ptr.get()) {
+    BasicVariable::ptr var_m_fsSaveGdkDecor = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveGdkDecor_ptr);
+    if (var_m_fsSaveGdkDecor.get()) {
+      var_m_fsSaveGdkDecor->Rename("m_fsSaveGdkDecor");
+      context->AddVar(var_m_fsSaveGdkDecor,context);
+    }
+  }
+  
+  // Adding public member m_fsSaveFlag
+  boost::shared_ptr<long int > var_m_fsSaveFlag_ptr(&GetObj()->m_fsSaveFlag, smartpointer_nodeleter<long int >());
+  if (var_m_fsSaveFlag_ptr.get()) {
+    BasicVariable::ptr var_m_fsSaveFlag = AMILabType<long int >::CreateVarFromSmtPtr(var_m_fsSaveFlag_ptr);
+    if (var_m_fsSaveFlag.get()) {
+      var_m_fsSaveFlag->Rename("m_fsSaveFlag");
+      context->AddVar(var_m_fsSaveFlag,context);
+    }
+  }
+  
+  // Adding public member m_fsSaveFrame
+  boost::shared_ptr<wxRect > var_m_fsSaveFrame_ptr(&GetObj()->m_fsSaveFrame, smartpointer_nodeleter<wxRect >());
+  if (var_m_fsSaveFrame_ptr.get()) {
+    BasicVariable::ptr var_m_fsSaveFrame = AMILabType<wxRect >::CreateVarFromSmtPtr(var_m_fsSaveFrame_ptr);
+    if (var_m_fsSaveFrame.get()) {
+      var_m_fsSaveFrame->Rename("m_fsSaveFrame");
+      context->AddVar(var_m_fsSaveFrame,context);
+    }
+  }
+  
+  // Adding public member m_gdkFunc
+  boost::shared_ptr<long int > var_m_gdkFunc_ptr(&GetObj()->m_gdkFunc, smartpointer_nodeleter<long int >());
+  if (var_m_gdkFunc_ptr.get()) {
+    BasicVariable::ptr var_m_gdkFunc = AMILabType<long int >::CreateVarFromSmtPtr(var_m_gdkFunc_ptr);
+    if (var_m_gdkFunc.get()) {
+      var_m_gdkFunc->Rename("m_gdkFunc");
+      context->AddVar(var_m_gdkFunc,context);
+    }
+  }
+  
+  // Adding public member m_gdkDecor
+  boost::shared_ptr<long int > var_m_gdkDecor_ptr(&GetObj()->m_gdkDecor, smartpointer_nodeleter<long int >());
+  if (var_m_gdkDecor_ptr.get()) {
+    BasicVariable::ptr var_m_gdkDecor = AMILabType<long int >::CreateVarFromSmtPtr(var_m_gdkDecor_ptr);
+    if (var_m_gdkDecor.get()) {
+      var_m_gdkDecor->Rename("m_gdkDecor");
+      context->AddVar(var_m_gdkDecor,context);
+    }
+  }
+  
+  // Adding public member m_urgency_hint
+  boost::shared_ptr<int > var_m_urgency_hint_ptr(&GetObj()->m_urgency_hint, smartpointer_nodeleter<int >());
+  if (var_m_urgency_hint_ptr.get()) {
+    BasicVariable::ptr var_m_urgency_hint = AMILabType<int >::CreateVarFromSmtPtr(var_m_urgency_hint_ptr);
+    if (var_m_urgency_hint.get()) {
+      var_m_urgency_hint->Rename("m_urgency_hint");
+      context->AddVar(var_m_urgency_hint,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -251,7 +285,7 @@ void WrapClass_wxTopLevelWindowGTK::AddMethods(WrapClass<wxTopLevelWindowGTK>::p
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxTopLevelWindowGTK::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxTopLevelWindowGTK_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -336,9 +370,15 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p->GetNumParam()>7) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    parent = parent_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -395,9 +435,15 @@ BasicVariable::ptr WrapClass_wxTopLevelWindowGTK::
   if (_p->GetNumParam()>7) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > parent_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* parent = parent_smtptr.get();
+  wxWindow* parent;
+  if (CheckNullVar(_p,_n))  {
+    parent=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > parent_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(parent_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    parent = parent_smtptr.get();
+  }
 
   int id;
   if (!get_val_param<int >(id,_p,_n,true,false)) ClassHelpAndReturn;

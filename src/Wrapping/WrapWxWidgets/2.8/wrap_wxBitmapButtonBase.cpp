@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxBitmapButtonBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxBitmap.h"
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
 
 
-#include "wrap_wxBitmapButtonBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -68,34 +78,37 @@ void WrapClass_wxBitmapButtonBase::AddMethods(WrapClass<wxBitmapButtonBase>::ptr
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_SetBitmapLabel( this_ptr);
-      AddVar_SetBitmapSelected( this_ptr);
-      AddVar_SetBitmapFocus( this_ptr);
-      AddVar_SetBitmapDisabled( this_ptr);
-      AddVar_SetBitmapHover( this_ptr);
-      AddVar_GetBitmapLabel_1( this_ptr);
-      AddVar_GetBitmapSelected_1( this_ptr);
-      AddVar_GetBitmapFocus_1( this_ptr);
-      AddVar_GetBitmapDisabled_1( this_ptr);
-      AddVar_GetBitmapHover_1( this_ptr);
-      AddVar_GetBitmapLabel( this_ptr);
-      AddVar_GetBitmapLabel_2( this_ptr);
-      AddVar_GetBitmapSelected( this_ptr);
-      AddVar_GetBitmapSelected_2( this_ptr);
-      AddVar_GetBitmapFocus( this_ptr);
-      AddVar_GetBitmapFocus_2( this_ptr);
-      AddVar_GetBitmapDisabled( this_ptr);
-      AddVar_GetBitmapDisabled_2( this_ptr);
-      AddVar_GetBitmapHover( this_ptr);
-      AddVar_GetBitmapHover_2( this_ptr);
-      AddVar_SetMargins( this_ptr);
-      AddVar_GetMarginX( this_ptr);
-      AddVar_GetMarginY( this_ptr);
+  // Adding standard methods 
+  AddVar_SetBitmapLabel( this_ptr);
+  AddVar_SetBitmapSelected( this_ptr);
+  AddVar_SetBitmapFocus( this_ptr);
+  AddVar_SetBitmapDisabled( this_ptr);
+  AddVar_SetBitmapHover( this_ptr);
+  AddVar_GetBitmapLabel_1( this_ptr);
+  AddVar_GetBitmapSelected_1( this_ptr);
+  AddVar_GetBitmapFocus_1( this_ptr);
+  AddVar_GetBitmapDisabled_1( this_ptr);
+  AddVar_GetBitmapHover_1( this_ptr);
+  AddVar_GetBitmapLabel( this_ptr);
+  AddVar_GetBitmapLabel_2( this_ptr);
+  AddVar_GetBitmapSelected( this_ptr);
+  AddVar_GetBitmapSelected_2( this_ptr);
+  AddVar_GetBitmapFocus( this_ptr);
+  AddVar_GetBitmapFocus_2( this_ptr);
+  AddVar_GetBitmapDisabled( this_ptr);
+  AddVar_GetBitmapDisabled_2( this_ptr);
+  AddVar_GetBitmapHover( this_ptr);
+  AddVar_GetBitmapHover_2( this_ptr);
+  AddVar_SetMargins( this_ptr);
+  AddVar_GetMarginX( this_ptr);
+  AddVar_GetMarginY( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -116,7 +129,7 @@ void WrapClass_wxBitmapButtonBase::AddMethods(WrapClass<wxBitmapButtonBase>::ptr
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxBitmapButtonBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxBitmapButtonBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

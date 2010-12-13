@@ -13,11 +13,13 @@
 #ifndef _wrap_wxHtmlRenderingState_h_
 #define _wrap_wxHtmlRenderingState_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxHtmlRenderingState);
+#ifndef wxHtmlRenderingState_declared
+  #define wxHtmlRenderingState_declared
+  AMI_DECLARE_TYPE(wxHtmlRenderingState);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxHtmlRenderingState : public WrapClass<wxHtmlRenderingState>
@@ -92,12 +96,13 @@ class WrapClass_wxHtmlRenderingState : public WrapClass<wxHtmlRenderingState>
 
     void AddMethods(WrapClass<wxHtmlRenderingState>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxHtmlRenderingState_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxHtmlRenderingState_h

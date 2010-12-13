@@ -10,21 +10,37 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxTimeSpan.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxTimeSpan.h"
-#include "wrap_wxLongLongNative.h"
-#include "wrap_wxString.h"
 #include "stdlib.h"
+#ifndef wxTimeSpan_declared
+  #define wxTimeSpan_declared
+  AMI_DECLARE_TYPE(wxTimeSpan)
+#endif
+#ifndef wxLongLongNative_declared
+  #define wxLongLongNative_declared
+  AMI_DECLARE_TYPE(wxLongLongNative)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
 
 
-#include "wrap_wxTimeSpan.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -127,7 +143,7 @@ void WrapClass_wxTimeSpan::AddMethods(WrapClass<wxTimeSpan>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxTimeSpan::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxTimeSpan_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

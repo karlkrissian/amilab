@@ -16,21 +16,49 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkRenderer.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkRenderer.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkProp.h"
-#include "wrap_vtkVolumeCollection.h"
-#include "wrap_vtkActorCollection.h"
-#include "wrap_vtkCamera.h"
-#include "wrap_vtkRenderWindow.h"
-#include "wrap_vtkWindow.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef vtkRenderer_declared
+  #define vtkRenderer_declared
+  AMI_DECLARE_TYPE(vtkRenderer)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkProp_declared
+  #define vtkProp_declared
+  AMI_DECLARE_TYPE(vtkProp)
+#endif
+#ifndef vtkVolumeCollection_declared
+  #define vtkVolumeCollection_declared
+  AMI_DECLARE_TYPE(vtkVolumeCollection)
+#endif
+#ifndef vtkActorCollection_declared
+  #define vtkActorCollection_declared
+  AMI_DECLARE_TYPE(vtkActorCollection)
+#endif
+#ifndef vtkCamera_declared
+  #define vtkCamera_declared
+  AMI_DECLARE_TYPE(vtkCamera)
+#endif
+#ifndef vtkRenderWindow_declared
+  #define vtkRenderWindow_declared
+  AMI_DECLARE_TYPE(vtkRenderWindow)
+#endif
+#ifndef vtkWindow_declared
+  #define vtkWindow_declared
+  AMI_DECLARE_TYPE(vtkWindow)
+#endif
 
 
-#include "wrap_vtkRenderer.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -273,7 +301,7 @@ void WrapClass_vtkRenderer::AddMethods(WrapClass<vtkRenderer>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkRenderer::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkRenderer_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -349,7 +377,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   }
 
   vtkRenderer * res =   vtkRenderer::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -369,7 +397,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderer * res =   vtkRenderer::New();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderer >::CreateVar(res,true);
   return res_var;
 }
 
@@ -415,7 +443,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderer * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderer::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderer >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -1023,7 +1051,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkVolumeCollection * res =   this->_objectptr->GetObj()->GetVolumes();
-  BasicVariable::ptr res_var = WrapClass_vtkVolumeCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolumeCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1043,7 +1071,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkActorCollection * res =   this->_objectptr->GetObj()->GetActors();
-  BasicVariable::ptr res_var = WrapClass_vtkActorCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkActorCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1094,7 +1122,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkCamera * res =   this->_objectptr->GetObj()->GetActiveCamera();
-  BasicVariable::ptr res_var = WrapClass_vtkCamera::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkCamera >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1114,7 +1142,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkCamera * res =   this->_objectptr->GetObj()->MakeCamera();
-  BasicVariable::ptr res_var = WrapClass_vtkCamera::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkCamera >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2105,7 +2133,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkRenderWindow * res =   this->_objectptr->GetObj()->GetRenderWindow();
-  BasicVariable::ptr res_var = WrapClass_vtkRenderWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkRenderWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -2125,7 +2153,7 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkWindow * res =   this->_objectptr->GetObj()->GetVTKWindow();
-  BasicVariable::ptr res_var = WrapClass_vtkWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkWindow >::CreateVar(res,true);
   return res_var;
 }
 

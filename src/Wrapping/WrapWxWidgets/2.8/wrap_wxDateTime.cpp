@@ -10,25 +10,47 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxDateTime.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxDateTime.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxLongLongNative.h"
-#include "wrap_wxString.h"
-#include "wrap_wxTimeSpan.h"
-#include "wrap_wxDateSpan.h"
 #include "stdlib.h"
 #include "wchar.h"
+#ifndef wxDateTime_declared
+  #define wxDateTime_declared
+  AMI_DECLARE_TYPE(wxDateTime)
+#endif
+#ifndef wxLongLongNative_declared
+  #define wxLongLongNative_declared
+  AMI_DECLARE_TYPE(wxLongLongNative)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxTimeSpan_declared
+  #define wxTimeSpan_declared
+  AMI_DECLARE_TYPE(wxTimeSpan)
+#endif
+#ifndef wxDateSpan_declared
+  #define wxDateSpan_declared
+  AMI_DECLARE_TYPE(wxDateSpan)
+#endif
 
 
-#include "wrap_wxDateTime.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -356,7 +378,7 @@ void WrapClass_wxDateTime::AddMethods(WrapClass<wxDateTime>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxDateTime::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxDateTime_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -1100,13 +1122,25 @@ BasicVariable::ptr WrapClass_wxDateTime::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxString > am_smtptr;
-  if (!get_val_smtptr_param<wxString >(am_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString* am = am_smtptr.get();
+  wxString* am;
+  if (CheckNullVar(_p,_n))  {
+    am=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > am_smtptr;
+    if (!get_val_smtptr_param<wxString >(am_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    am = am_smtptr.get();
+  }
 
-  boost::shared_ptr<wxString > pm_smtptr;
-  if (!get_val_smtptr_param<wxString >(pm_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString* pm = pm_smtptr.get();
+  wxString* pm;
+  if (CheckNullVar(_p,_n))  {
+    pm=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > pm_smtptr;
+    if (!get_val_smtptr_param<wxString >(pm_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pm = pm_smtptr.get();
+  }
 
   wxDateTime::GetAmPmStrings(am, pm);
   return BasicVariable::ptr();
@@ -1369,9 +1403,15 @@ BasicVariable::ptr WrapClass_wxDateTime::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<tm > tmstruct_smtptr;
-  if (!get_val_smtptr_param<tm >(tmstruct_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  tm* tmstruct = tmstruct_smtptr.get();
+  tm* tmstruct;
+  if (CheckNullVar(_p,_n))  {
+    tmstruct=(tm*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<tm > tmstruct_smtptr;
+    if (!get_val_smtptr_param<tm >(tmstruct_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    tmstruct = tmstruct_smtptr.get();
+  }
 
   tm * res =   wxDateTime::GetTmNow(tmstruct);
   return AMILabType<tm >::CreateVar(res,true);

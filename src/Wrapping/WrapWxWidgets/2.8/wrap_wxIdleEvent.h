@@ -13,11 +13,13 @@
 #ifndef _wrap_wxIdleEvent_h_
 #define _wrap_wxIdleEvent_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxEvent.h"
 
 
-
-AMI_DECLARE_TYPE(wxIdleEvent);
+#ifndef wxIdleEvent_declared
+  #define wxIdleEvent_declared
+  AMI_DECLARE_TYPE(wxIdleEvent);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxIdleEvent : public WrapClass<wxIdleEvent>
@@ -92,12 +96,13 @@ class WrapClass_wxIdleEvent : public WrapClass<wxIdleEvent>
 
     void AddMethods(WrapClass<wxIdleEvent>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxIdleEvent_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxIdleEvent_h

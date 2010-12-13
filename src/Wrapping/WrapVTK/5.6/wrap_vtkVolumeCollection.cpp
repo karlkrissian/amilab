@@ -16,15 +16,28 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkVolumeCollection.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkVolumeCollection.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkVolume.h"
+#ifndef vtkVolumeCollection_declared
+  #define vtkVolumeCollection_declared
+  AMI_DECLARE_TYPE(vtkVolumeCollection)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkVolume_declared
+  #define vtkVolume_declared
+  AMI_DECLARE_TYPE(vtkVolume)
+#endif
 
 
-#include "wrap_vtkVolumeCollection.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -115,7 +128,7 @@ void WrapClass_vtkVolumeCollection::AddMethods(WrapClass<vtkVolumeCollection>::p
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkVolumeCollection::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkVolumeCollection_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -152,7 +165,7 @@ BasicVariable::ptr WrapClass_vtkVolumeCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkVolumeCollection * res =   vtkVolumeCollection::New();
-  BasicVariable::ptr res_var = WrapClass_vtkVolumeCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolumeCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -211,7 +224,7 @@ BasicVariable::ptr WrapClass_vtkVolumeCollection::
   }
 
   vtkVolumeCollection * res =   vtkVolumeCollection::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkVolumeCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolumeCollection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -257,7 +270,7 @@ BasicVariable::ptr WrapClass_vtkVolumeCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkVolumeCollection * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkVolumeCollection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolumeCollection >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -339,7 +352,7 @@ BasicVariable::ptr WrapClass_vtkVolumeCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkVolume * res =   this->_objectptr->GetObj()->GetNextVolume();
-  BasicVariable::ptr res_var = WrapClass_vtkVolume::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolume >::CreateVar(res,true);
   return res_var;
 }
 
@@ -359,7 +372,7 @@ BasicVariable::ptr WrapClass_vtkVolumeCollection::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkVolume * res =   this->_objectptr->GetObj()->GetNextItem();
-  BasicVariable::ptr res_var = WrapClass_vtkVolume::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolume >::CreateVar(res,true);
   return res_var;
 }
 
@@ -405,7 +418,7 @@ BasicVariable::ptr WrapClass_vtkVolumeCollection::
   vtkCollectionSimpleIterator & cookie = *cookie_smtptr;
 
   vtkVolume * res =   this->_objectptr->GetObj()->GetNextVolume(cookie);
-  BasicVariable::ptr res_var = WrapClass_vtkVolume::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkVolume >::CreateVar(res,true);
   return res_var;
 }
 */

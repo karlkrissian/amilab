@@ -25,8 +25,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(vtkTimeStamp);
+#ifndef vtkTimeStamp_declared
+  #define vtkTimeStamp_declared
+  AMI_DECLARE_TYPE(vtkTimeStamp);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkTimeStamp : public WrapClass<vtkTimeStamp>
@@ -92,12 +94,13 @@ class WrapClass_vtkTimeStamp : public WrapClass<vtkTimeStamp>
 
     void AddMethods(WrapClass<vtkTimeStamp>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkTimeStamp_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkTimeStamp_h

@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHtmlRenderingState.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxHtmlRenderingState.h"
-#include "wrap_wxColour.h"
+#ifndef wxHtmlRenderingState_declared
+  #define wxHtmlRenderingState_declared
+  AMI_DECLARE_TYPE(wxHtmlRenderingState)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
 
 
-#include "wrap_wxHtmlRenderingState.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -90,7 +103,7 @@ void WrapClass_wxHtmlRenderingState::AddMethods(WrapClass<wxHtmlRenderingState>:
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHtmlRenderingState::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHtmlRenderingState_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

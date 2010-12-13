@@ -21,6 +21,7 @@
 #
 # example : ADD_PCH_RULE(headers.h myprog_SRCS)
 MACRO (ADD_PCH_RULE  _header_filename _src_list)
+  MESSAGE("ADD_PCH_RULE ${_header_filename} ${_src_list}")
 	SET(_gch_filename "${_header_filename}.gch")
 	LIST(APPEND ${_src_list} ${_gch_filename})
   MESSAGE("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")

@@ -10,21 +10,40 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxHtmlRenderingInfo.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxHtmlRenderingInfo.h"
-#include "wrap_wxHtmlSelection.h"
-#include "wrap_wxHtmlRenderingStyle.h"
-#include "wrap_wxHtmlRenderingState.h"
+#ifndef wxHtmlRenderingInfo_declared
+  #define wxHtmlRenderingInfo_declared
+  AMI_DECLARE_TYPE(wxHtmlRenderingInfo)
+#endif
+#ifndef wxHtmlSelection_declared
+  #define wxHtmlSelection_declared
+  AMI_DECLARE_TYPE(wxHtmlSelection)
+#endif
+#ifndef wxHtmlRenderingStyle_declared
+  #define wxHtmlRenderingStyle_declared
+  AMI_DECLARE_TYPE(wxHtmlRenderingStyle)
+#endif
+#ifndef wxHtmlRenderingState_declared
+  #define wxHtmlRenderingState_declared
+  AMI_DECLARE_TYPE(wxHtmlRenderingState)
+#endif
 
 
-#include "wrap_wxHtmlRenderingInfo.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -91,7 +110,7 @@ void WrapClass_wxHtmlRenderingInfo::AddMethods(WrapClass<wxHtmlRenderingInfo>::p
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxHtmlRenderingInfo::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxHtmlRenderingInfo_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -212,9 +231,15 @@ BasicVariable::ptr WrapClass_wxHtmlRenderingInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlSelection > s_smtptr;
-  if (!get_val_smtptr_param<wxHtmlSelection >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlSelection* s = s_smtptr.get();
+  wxHtmlSelection* s;
+  if (CheckNullVar(_p,_n))  {
+    s=(wxHtmlSelection*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlSelection > s_smtptr;
+    if (!get_val_smtptr_param<wxHtmlSelection >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    s = s_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetSelection(s);
   return BasicVariable::ptr();
@@ -236,7 +261,7 @@ BasicVariable::ptr WrapClass_wxHtmlRenderingInfo::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxHtmlSelection * res =   this->_objectptr->GetObj()->GetSelection();
-  BasicVariable::ptr res_var = WrapClass_wxHtmlSelection::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxHtmlSelection >::CreateVar(res,true);
   return res_var;
 }
 
@@ -257,9 +282,15 @@ BasicVariable::ptr WrapClass_wxHtmlRenderingInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxHtmlRenderingStyle > style_smtptr;
-  if (!get_val_smtptr_param<wxHtmlRenderingStyle >(style_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxHtmlRenderingStyle* style = style_smtptr.get();
+  wxHtmlRenderingStyle* style;
+  if (CheckNullVar(_p,_n))  {
+    style=(wxHtmlRenderingStyle*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxHtmlRenderingStyle > style_smtptr;
+    if (!get_val_smtptr_param<wxHtmlRenderingStyle >(style_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    style = style_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetStyle(style);
   return BasicVariable::ptr();

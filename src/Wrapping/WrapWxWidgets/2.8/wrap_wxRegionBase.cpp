@@ -10,23 +10,48 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxRegionBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxRegion.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxRegionBase.h"
+#ifndef wxRegion_declared
+  #define wxRegion_declared
+  AMI_DECLARE_TYPE(wxRegion)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxColour_declared
+  #define wxColour_declared
+  AMI_DECLARE_TYPE(wxColour)
+#endif
+#ifndef wxRegionBase_declared
+  #define wxRegionBase_declared
+  AMI_DECLARE_TYPE(wxRegionBase)
+#endif
 
 
-#include "wrap_wxRegionBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -66,50 +91,53 @@ void WrapClass_wxRegionBase::AddMethods(WrapClass<wxRegionBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_Ok( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_Empty( this_ptr);
-      AddVar_IsEqual( this_ptr);
-      AddVar_GetBox_1( this_ptr);
-      AddVar_GetBox( this_ptr);
-      AddVar_GetBox_2( this_ptr);
-      AddVar_Contains_1( this_ptr);
-      AddVar_Contains( this_ptr);
-      AddVar_Contains_2( this_ptr);
-      AddVar_Contains_3( this_ptr);
-      AddVar_Contains_4( this_ptr);
-      AddVar_Offset_1( this_ptr);
-      AddVar_Offset( this_ptr);
-      AddVar_Offset_2( this_ptr);
-      AddVar_Union_1( this_ptr);
-      AddVar_Union( this_ptr);
-      AddVar_Union_2( this_ptr);
-      AddVar_Union_3( this_ptr);
-      AddVar_Union_4( this_ptr);
-      AddVar_Union_5( this_ptr);
-      AddVar_Intersect_1( this_ptr);
-      AddVar_Intersect( this_ptr);
-      AddVar_Intersect_2( this_ptr);
-      AddVar_Intersect_3( this_ptr);
-      AddVar_Subtract_1( this_ptr);
-      AddVar_Subtract( this_ptr);
-      AddVar_Subtract_2( this_ptr);
-      AddVar_Subtract_3( this_ptr);
-      AddVar_Xor_1( this_ptr);
-      AddVar_Xor( this_ptr);
-      AddVar_Xor_2( this_ptr);
-      AddVar_Xor_3( this_ptr);
-      AddVar_ConvertToBitmap( this_ptr);
+  // Adding standard methods 
+  AddVar_Ok( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_Empty( this_ptr);
+  AddVar_IsEqual( this_ptr);
+  AddVar_GetBox_1( this_ptr);
+  AddVar_GetBox( this_ptr);
+  AddVar_GetBox_2( this_ptr);
+  AddVar_Contains_1( this_ptr);
+  AddVar_Contains( this_ptr);
+  AddVar_Contains_2( this_ptr);
+  AddVar_Contains_3( this_ptr);
+  AddVar_Contains_4( this_ptr);
+  AddVar_Offset_1( this_ptr);
+  AddVar_Offset( this_ptr);
+  AddVar_Offset_2( this_ptr);
+  AddVar_Union_1( this_ptr);
+  AddVar_Union( this_ptr);
+  AddVar_Union_2( this_ptr);
+  AddVar_Union_3( this_ptr);
+  AddVar_Union_4( this_ptr);
+  AddVar_Union_5( this_ptr);
+  AddVar_Intersect_1( this_ptr);
+  AddVar_Intersect( this_ptr);
+  AddVar_Intersect_2( this_ptr);
+  AddVar_Intersect_3( this_ptr);
+  AddVar_Subtract_1( this_ptr);
+  AddVar_Subtract( this_ptr);
+  AddVar_Subtract_2( this_ptr);
+  AddVar_Subtract_3( this_ptr);
+  AddVar_Xor_1( this_ptr);
+  AddVar_Xor( this_ptr);
+  AddVar_Xor_2( this_ptr);
+  AddVar_Xor_3( this_ptr);
+  AddVar_ConvertToBitmap( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___not_equal__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___not_equal__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -130,7 +158,7 @@ void WrapClass_wxRegionBase::AddMethods(WrapClass<wxRegionBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxRegionBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxRegionBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

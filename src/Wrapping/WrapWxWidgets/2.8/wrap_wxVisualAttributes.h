@@ -13,11 +13,13 @@
 #ifndef _wrap_wxVisualAttributes_h_
 #define _wrap_wxVisualAttributes_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxVisualAttributes);
+#ifndef wxVisualAttributes_declared
+  #define wxVisualAttributes_declared
+  AMI_DECLARE_TYPE(wxVisualAttributes);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxVisualAttributes : public WrapClass<wxVisualAttributes>
@@ -86,12 +90,13 @@ class WrapClass_wxVisualAttributes : public WrapClass<wxVisualAttributes>
 
     void AddMethods(WrapClass<wxVisualAttributes>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxVisualAttributes_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxVisualAttributes_h

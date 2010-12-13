@@ -13,11 +13,13 @@
 #ifndef _wrap_wxHtmlTagsModule_h_
 #define _wrap_wxHtmlTagsModule_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxModule.h"
 
 
-
-AMI_DECLARE_TYPE(wxHtmlTagsModule);
+#ifndef wxHtmlTagsModule_declared
+  #define wxHtmlTagsModule_declared
+  AMI_DECLARE_TYPE(wxHtmlTagsModule);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxHtmlTagsModule : public WrapClass<wxHtmlTagsModule>
@@ -91,12 +95,13 @@ class WrapClass_wxHtmlTagsModule : public WrapClass<wxHtmlTagsModule>
 
     void AddMethods(WrapClass<wxHtmlTagsModule>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxHtmlTagsModule_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxHtmlTagsModule_h

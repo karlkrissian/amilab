@@ -10,23 +10,48 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxAuiManagerEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxAuiManager.h"
-#include "wrap_wxAuiPaneInfo.h"
-#include "wrap_wxDC.h"
-#include "wrap_wxAuiManagerEvent.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxAuiManager_declared
+  #define wxAuiManager_declared
+  AMI_DECLARE_TYPE(wxAuiManager)
+#endif
+#ifndef wxAuiPaneInfo_declared
+  #define wxAuiPaneInfo_declared
+  AMI_DECLARE_TYPE(wxAuiPaneInfo)
+#endif
+#ifndef wxDC_declared
+  #define wxDC_declared
+  AMI_DECLARE_TYPE(wxDC)
+#endif
+#ifndef wxAuiManagerEvent_declared
+  #define wxAuiManagerEvent_declared
+  AMI_DECLARE_TYPE(wxAuiManagerEvent)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxAuiManagerEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -66,90 +91,93 @@ void WrapClass_wxAuiManagerEvent::AddMethods(WrapClass<wxAuiManagerEvent>::ptr t
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Clone( this_ptr);
-      AddVar_SetManager( this_ptr);
-      AddVar_SetPane( this_ptr);
-      AddVar_SetButton( this_ptr);
-      AddVar_SetDC( this_ptr);
-      AddVar_GetManager( this_ptr);
-      AddVar_GetPane( this_ptr);
-      AddVar_GetButton( this_ptr);
-      AddVar_GetDC( this_ptr);
-      AddVar_Veto( this_ptr);
-      AddVar_GetVeto( this_ptr);
-      AddVar_SetCanVeto( this_ptr);
-      AddVar_CanVeto( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Clone( this_ptr);
+  AddVar_SetManager( this_ptr);
+  AddVar_SetPane( this_ptr);
+  AddVar_SetButton( this_ptr);
+  AddVar_SetDC( this_ptr);
+  AddVar_GetManager( this_ptr);
+  AddVar_GetPane( this_ptr);
+  AddVar_GetButton( this_ptr);
+  AddVar_GetDC( this_ptr);
+  AddVar_Veto( this_ptr);
+  AddVar_GetVeto( this_ptr);
+  AddVar_SetCanVeto( this_ptr);
+  AddVar_CanVeto( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member manager
-      boost::shared_ptr<wxAuiManager > var_manager_ptr(GetObj()->manager, smartpointer_nodeleter<wxAuiManager >());
-      if (var_manager_ptr.get()) {
-        BasicVariable::ptr var_manager = AMILabType<wxAuiManager >::CreateVarFromSmtPtr(var_manager_ptr);
-        if (var_manager.get()) {
-          var_manager->Rename("manager");
-          context->AddVar(var_manager,context);
-        }
-      }
-      
-      // Adding public member pane
-      boost::shared_ptr<wxAuiPaneInfo > var_pane_ptr(GetObj()->pane, smartpointer_nodeleter<wxAuiPaneInfo >());
-      if (var_pane_ptr.get()) {
-        BasicVariable::ptr var_pane = AMILabType<wxAuiPaneInfo >::CreateVarFromSmtPtr(var_pane_ptr);
-        if (var_pane.get()) {
-          var_pane->Rename("pane");
-          context->AddVar(var_pane,context);
-        }
-      }
-      
-      // Adding public member button
-      boost::shared_ptr<int > var_button_ptr(&GetObj()->button, smartpointer_nodeleter<int >());
-      if (var_button_ptr.get()) {
-        BasicVariable::ptr var_button = AMILabType<int >::CreateVarFromSmtPtr(var_button_ptr);
-        if (var_button.get()) {
-          var_button->Rename("button");
-          context->AddVar(var_button,context);
-        }
-      }
-      
-      // Adding public member veto_flag
-      boost::shared_ptr<bool > var_veto_flag_ptr(&GetObj()->veto_flag, smartpointer_nodeleter<bool >());
-      if (var_veto_flag_ptr.get()) {
-        BasicVariable::ptr var_veto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_veto_flag_ptr);
-        if (var_veto_flag.get()) {
-          var_veto_flag->Rename("veto_flag");
-          context->AddVar(var_veto_flag,context);
-        }
-      }
-      
-      // Adding public member canveto_flag
-      boost::shared_ptr<bool > var_canveto_flag_ptr(&GetObj()->canveto_flag, smartpointer_nodeleter<bool >());
-      if (var_canveto_flag_ptr.get()) {
-        BasicVariable::ptr var_canveto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_canveto_flag_ptr);
-        if (var_canveto_flag.get()) {
-          var_canveto_flag->Rename("canveto_flag");
-          context->AddVar(var_canveto_flag,context);
-        }
-      }
-      
-      // Adding public member dc
-      boost::shared_ptr<wxDC > var_dc_ptr(GetObj()->dc, smartpointer_nodeleter<wxDC >());
-      if (var_dc_ptr.get()) {
-        BasicVariable::ptr var_dc = AMILabType<wxDC >::CreateVarFromSmtPtr(var_dc_ptr);
-        if (var_dc.get()) {
-          var_dc->Rename("dc");
-          context->AddVar(var_dc,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member manager
+  boost::shared_ptr<wxAuiManager > var_manager_ptr(GetObj()->manager, smartpointer_nodeleter<wxAuiManager >());
+  if (var_manager_ptr.get()) {
+    BasicVariable::ptr var_manager = AMILabType<wxAuiManager >::CreateVarFromSmtPtr(var_manager_ptr);
+    if (var_manager.get()) {
+      var_manager->Rename("manager");
+      context->AddVar(var_manager,context);
+    }
+  }
+  
+  // Adding public member pane
+  boost::shared_ptr<wxAuiPaneInfo > var_pane_ptr(GetObj()->pane, smartpointer_nodeleter<wxAuiPaneInfo >());
+  if (var_pane_ptr.get()) {
+    BasicVariable::ptr var_pane = AMILabType<wxAuiPaneInfo >::CreateVarFromSmtPtr(var_pane_ptr);
+    if (var_pane.get()) {
+      var_pane->Rename("pane");
+      context->AddVar(var_pane,context);
+    }
+  }
+  
+  // Adding public member button
+  boost::shared_ptr<int > var_button_ptr(&GetObj()->button, smartpointer_nodeleter<int >());
+  if (var_button_ptr.get()) {
+    BasicVariable::ptr var_button = AMILabType<int >::CreateVarFromSmtPtr(var_button_ptr);
+    if (var_button.get()) {
+      var_button->Rename("button");
+      context->AddVar(var_button,context);
+    }
+  }
+  
+  // Adding public member veto_flag
+  boost::shared_ptr<bool > var_veto_flag_ptr(&GetObj()->veto_flag, smartpointer_nodeleter<bool >());
+  if (var_veto_flag_ptr.get()) {
+    BasicVariable::ptr var_veto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_veto_flag_ptr);
+    if (var_veto_flag.get()) {
+      var_veto_flag->Rename("veto_flag");
+      context->AddVar(var_veto_flag,context);
+    }
+  }
+  
+  // Adding public member canveto_flag
+  boost::shared_ptr<bool > var_canveto_flag_ptr(&GetObj()->canveto_flag, smartpointer_nodeleter<bool >());
+  if (var_canveto_flag_ptr.get()) {
+    BasicVariable::ptr var_canveto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_canveto_flag_ptr);
+    if (var_canveto_flag.get()) {
+      var_canveto_flag->Rename("canveto_flag");
+      context->AddVar(var_canveto_flag,context);
+    }
+  }
+  
+  // Adding public member dc
+  boost::shared_ptr<wxDC > var_dc_ptr(GetObj()->dc, smartpointer_nodeleter<wxDC >());
+  if (var_dc_ptr.get()) {
+    BasicVariable::ptr var_dc = AMILabType<wxDC >::CreateVarFromSmtPtr(var_dc_ptr);
+    if (var_dc.get()) {
+      var_dc->Rename("dc");
+      context->AddVar(var_dc,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -168,7 +196,7 @@ void WrapClass_wxAuiManagerEvent::AddMethods(WrapClass<wxAuiManagerEvent>::ptr t
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxAuiManagerEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxAuiManagerEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -294,7 +322,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -315,9 +343,15 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxAuiManager > mgr_smtptr;
-  if (!get_val_smtptr_param<wxAuiManager >(mgr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxAuiManager* mgr = mgr_smtptr.get();
+  wxAuiManager* mgr;
+  if (CheckNullVar(_p,_n))  {
+    mgr=(wxAuiManager*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxAuiManager > mgr_smtptr;
+    if (!get_val_smtptr_param<wxAuiManager >(mgr_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    mgr = mgr_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetManager(mgr);
   return BasicVariable::ptr();
@@ -340,9 +374,15 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxAuiPaneInfo > p_smtptr;
-  if (!get_val_smtptr_param<wxAuiPaneInfo >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxAuiPaneInfo* p = p_smtptr.get();
+  wxAuiPaneInfo* p;
+  if (CheckNullVar(_p,_n))  {
+    p=(wxAuiPaneInfo*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxAuiPaneInfo > p_smtptr;
+    if (!get_val_smtptr_param<wxAuiPaneInfo >(p_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    p = p_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetPane(p);
   return BasicVariable::ptr();
@@ -389,9 +429,15 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxDC > pdc_smtptr;
-  if (!get_val_smtptr_param<wxDC >(pdc_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxDC* pdc = pdc_smtptr.get();
+  wxDC* pdc;
+  if (CheckNullVar(_p,_n))  {
+    pdc=(wxDC*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxDC > pdc_smtptr;
+    if (!get_val_smtptr_param<wxDC >(pdc_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    pdc = pdc_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetDC(pdc);
   return BasicVariable::ptr();
@@ -413,7 +459,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxAuiManager * res =   this->_objectptr->GetObj()->GetManager();
-  BasicVariable::ptr res_var = WrapClass_wxAuiManager::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxAuiManager >::CreateVar(res,true);
   return res_var;
 }
 
@@ -433,7 +479,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxAuiPaneInfo * res =   this->_objectptr->GetObj()->GetPane();
-  BasicVariable::ptr res_var = WrapClass_wxAuiPaneInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxAuiPaneInfo >::CreateVar(res,true);
   return res_var;
 }
 
@@ -472,7 +518,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxDC * res =   this->_objectptr->GetObj()->GetDC();
-  BasicVariable::ptr res_var = WrapClass_wxDC::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxDC >::CreateVar(res,true);
   return res_var;
 }
 
@@ -578,7 +624,7 @@ BasicVariable::ptr WrapClass_wxAuiManagerEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

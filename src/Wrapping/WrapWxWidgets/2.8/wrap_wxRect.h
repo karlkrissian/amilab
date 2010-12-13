@@ -13,11 +13,13 @@
 #ifndef _wrap_wxRect_h_
 #define _wrap_wxRect_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxRect);
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxRect : public WrapClass<wxRect>
@@ -161,12 +165,13 @@ class WrapClass_wxRect : public WrapClass<wxRect>
 
     void AddMethods(WrapClass<wxRect>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxRect_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxRect_h

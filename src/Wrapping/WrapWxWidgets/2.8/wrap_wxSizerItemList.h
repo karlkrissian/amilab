@@ -13,11 +13,13 @@
 #ifndef _wrap_wxSizerItemList_h_
 #define _wrap_wxSizerItemList_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -26,8 +28,10 @@
 #include "wrap_wxListBase.h"
 
 
-
-AMI_DECLARE_TYPE(wxSizerItemList);
+#ifndef wxSizerItemList_declared
+  #define wxSizerItemList_declared
+  AMI_DECLARE_TYPE(wxSizerItemList);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
@@ -62,10 +66,8 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList,"Constructor wxSizerItemList::wxSizerItemList() (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList_2,"Constructor wxSizerItemList::wxSizerItemList(wxSizerItemList const & list) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
-    /* The following types are missing: wxSizerItem * *
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList_3,"Constructor wxSizerItemList::wxSizerItemList(size_t count, wxSizerItem * * elements) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
-    */
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(wxSizerItemList_4,"Constructor wxSizerItemList::wxSizerItemList(size_t n, wxSizerItem * const & v = 0u) (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#wxsizeritemlist).");
     /* The following types are missing: const_iterator, const_iterator
@@ -111,11 +113,11 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
     ADD_CLASS_METHOD(Find,"wxSizerItemList::Find()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxwxSizerItemListNode * wxSizerItemList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxSizerItemList::IndexOf(wxSizerItem * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#indexof)")
-/* The following types are missing: _9904
+/* The following types are missing: _17586
     ADD_CLASS_METHOD(Sort_1,"void wxSizerItemList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxSizerItemList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
-/* The following types are missing: _9172
+/* The following types are missing: _8653
     ADD_CLASS_METHOD(Sort_2,"void wxSizerItemList::Sort(wxSortFuncFor_wxSizerItemList func)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
 */
 /* The following types are missing: iterator
@@ -205,12 +207,13 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
 
     void AddMethods(WrapClass<wxSizerItemList>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxSizerItemList_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxSizerItemList_h

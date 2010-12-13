@@ -26,8 +26,10 @@
 #include "wrap_vtkAlgorithm.h"
 
 
-
-AMI_DECLARE_TYPE(vtkWindowToImageFilter);
+#ifndef vtkWindowToImageFilter_declared
+  #define vtkWindowToImageFilter_declared
+  AMI_DECLARE_TYPE(vtkWindowToImageFilter);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkWindowToImageFilter : public WrapClass<vtkWindowToImageFilter>
@@ -104,7 +106,7 @@ class WrapClass_vtkWindowToImageFilter : public WrapClass<vtkWindowToImageFilter
     ADD_CLASS_METHOD(SetInputBufferTypeToRGBA,"void vtkWindowToImageFilter::SetInputBufferTypeToRGBA()  (http://docs.wxwidgets.org/stable/wx_vtkwindowtoimagefilter.html#setinputbuffertypetorgba)")
     ADD_CLASS_METHOD(SetInputBufferTypeToZBuffer,"void vtkWindowToImageFilter::SetInputBufferTypeToZBuffer()  (http://docs.wxwidgets.org/stable/wx_vtkwindowtoimagefilter.html#setinputbuffertypetozbuffer)")
     ADD_CLASS_METHOD(GetOutput,"vtkImageData * vtkWindowToImageFilter::GetOutput()  (http://docs.wxwidgets.org/stable/wx_vtkwindowtoimagefilter.html#getoutput)")
-/* The following types are missing: vtkInformation, vtkInformationVector * *, vtkInformationVector
+/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
     ADD_CLASS_METHOD(ProcessRequest,"int vtkWindowToImageFilter::ProcessRequest(vtkInformation * param0, vtkInformationVector * * param1, vtkInformationVector * param2)  (http://docs.wxwidgets.org/stable/wx_vtkwindowtoimagefilter.html#processrequest)")
 */
 
@@ -114,12 +116,13 @@ class WrapClass_vtkWindowToImageFilter : public WrapClass<vtkWindowToImageFilter
 
     void AddMethods(WrapClass<vtkWindowToImageFilter>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkWindowToImageFilter_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkWindowToImageFilter_h

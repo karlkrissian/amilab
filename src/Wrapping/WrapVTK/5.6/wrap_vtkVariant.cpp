@@ -16,17 +16,33 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkVariant.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkVariant.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkStdString.h"
-#include "wrap_vtkUnicodeString.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkAbstractArray.h"
+#ifndef vtkVariant_declared
+  #define vtkVariant_declared
+  AMI_DECLARE_TYPE(vtkVariant)
+#endif
+#ifndef vtkStdString_declared
+  #define vtkStdString_declared
+  AMI_DECLARE_TYPE(vtkStdString)
+#endif
+#ifndef vtkUnicodeString_declared
+  #define vtkUnicodeString_declared
+  AMI_DECLARE_TYPE(vtkUnicodeString)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkAbstractArray_declared
+  #define vtkAbstractArray_declared
+  AMI_DECLARE_TYPE(vtkAbstractArray)
+#endif
 
 
-#include "wrap_vtkVariant.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -149,7 +165,7 @@ void WrapClass_vtkVariant::AddMethods(WrapClass<vtkVariant>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkVariant::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkVariant_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -1782,7 +1798,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkObjectBase * res =   this->_objectptr->GetObj()->ToVTKObject();
-  BasicVariable::ptr res_var = WrapClass_vtkObjectBase::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkObjectBase >::CreateVar(res,true);
   return res_var;
 }
 
@@ -1802,7 +1818,7 @@ BasicVariable::ptr WrapClass_vtkVariant::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAbstractArray * res =   this->_objectptr->GetObj()->ToArray();
-  BasicVariable::ptr res_var = WrapClass_vtkAbstractArray::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAbstractArray >::CreateVar(res,true);
   return res_var;
 }
 

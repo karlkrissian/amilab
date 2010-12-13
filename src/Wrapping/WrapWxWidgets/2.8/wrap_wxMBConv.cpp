@@ -10,23 +10,39 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxMBConv.h"
 
 // get all the required includes
 // #include "..."
 #include "boost/numeric/conversion/cast.hpp"
 #include "stdlib.h"
-#include "wrap_wxWCharBuffer.h"
-#include "wrap_wxCharBuffer.h"
 #include "wchar.h"
-#include "wrap_wxMBConv.h"
+#ifndef wxWCharBuffer_declared
+  #define wxWCharBuffer_declared
+  AMI_DECLARE_TYPE(wxWCharBuffer)
+#endif
+#ifndef wxCharBuffer_declared
+  #define wxCharBuffer_declared
+  AMI_DECLARE_TYPE(wxCharBuffer)
+#endif
+#ifndef wxMBConv_declared
+  #define wxMBConv_declared
+  AMI_DECLARE_TYPE(wxMBConv)
+#endif
 
 
-#include "wrap_wxMBConv.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -66,29 +82,32 @@ void WrapClass_wxMBConv::AddMethods(WrapClass<wxMBConv>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_ToWChar( this_ptr);
-      AddVar_FromWChar( this_ptr);
-      AddVar_cMB2WC_1( this_ptr);
-      AddVar_cWC2MB_1( this_ptr);
-      AddVar_cMB2WC( this_ptr);
-      AddVar_cMB2WC_2( this_ptr);
-      AddVar_cWC2MB( this_ptr);
-      AddVar_cWC2MB_2( this_ptr);
-      AddVar_cMB2WX( this_ptr);
-      AddVar_cWX2MB( this_ptr);
-      AddVar_cWC2WX( this_ptr);
-      AddVar_cWX2WC( this_ptr);
-      AddVar_GetMBNulLen( this_ptr);
-      AddVar_MB2WC( this_ptr);
-      AddVar_WC2MB( this_ptr);
+  // Adding standard methods 
+  AddVar_ToWChar( this_ptr);
+  AddVar_FromWChar( this_ptr);
+  AddVar_cMB2WC_1( this_ptr);
+  AddVar_cWC2MB_1( this_ptr);
+  AddVar_cMB2WC( this_ptr);
+  AddVar_cMB2WC_2( this_ptr);
+  AddVar_cWC2MB( this_ptr);
+  AddVar_cWC2MB_2( this_ptr);
+  AddVar_cMB2WX( this_ptr);
+  AddVar_cWX2MB( this_ptr);
+  AddVar_cWC2WX( this_ptr);
+  AddVar_cWX2WC( this_ptr);
+  AddVar_GetMBNulLen( this_ptr);
+  AddVar_MB2WC( this_ptr);
+  AddVar_WC2MB( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -98,7 +117,7 @@ void WrapClass_wxMBConv::AddMethods(WrapClass<wxMBConv>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxMBConv::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxMBConv_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

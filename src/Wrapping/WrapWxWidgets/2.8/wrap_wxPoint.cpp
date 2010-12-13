@@ -10,19 +10,32 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxPoint.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxPoint.h"
-#include "wrap_wxSize.h"
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
 
 
-#include "wrap_wxPoint.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -62,54 +75,57 @@ void WrapClass_wxPoint::AddMethods(WrapClass<wxPoint>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___not_equal__( this_ptr);
-      AddVar___add___1( this_ptr);
-      AddVar___substract___1( this_ptr);
-      AddVar___add_assign___1( this_ptr);
-      AddVar___sub_assign___1( this_ptr);
-      AddVar___add_assign__( this_ptr);
-      AddVar___add_assign___2( this_ptr);
-      AddVar___sub_assign__( this_ptr);
-      AddVar___sub_assign___2( this_ptr);
-      AddVar___add__( this_ptr);
-      AddVar___add___2( this_ptr);
-      AddVar___substract__( this_ptr);
-      AddVar___substract___2( this_ptr);
-      AddVar___substract___3( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___not_equal__( this_ptr);
+  AddVar___add___1( this_ptr);
+  AddVar___substract___1( this_ptr);
+  AddVar___add_assign___1( this_ptr);
+  AddVar___sub_assign___1( this_ptr);
+  AddVar___add_assign__( this_ptr);
+  AddVar___add_assign___2( this_ptr);
+  AddVar___sub_assign__( this_ptr);
+  AddVar___sub_assign___2( this_ptr);
+  AddVar___add__( this_ptr);
+  AddVar___add___2( this_ptr);
+  AddVar___substract__( this_ptr);
+  AddVar___substract___2( this_ptr);
+  AddVar___substract___3( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member x
-      boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
-      if (var_x_ptr.get()) {
-        BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
-        if (var_x.get()) {
-          var_x->Rename("x");
-          context->AddVar(var_x,context);
-        }
-      }
-      
-      // Adding public member y
-      boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
-      if (var_y_ptr.get()) {
-        BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
-        if (var_y.get()) {
-          var_y->Rename("y");
-          context->AddVar(var_y,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member x
+  boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
+  if (var_x_ptr.get()) {
+    BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
+    if (var_x.get()) {
+      var_x->Rename("x");
+      context->AddVar(var_x,context);
+    }
+  }
+  
+  // Adding public member y
+  boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
+  if (var_y_ptr.get()) {
+    BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
+    if (var_y.get()) {
+      var_y->Rename("y");
+      context->AddVar(var_y,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -120,7 +136,7 @@ void WrapClass_wxPoint::AddMethods(WrapClass<wxPoint>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxPoint::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxPoint_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

@@ -242,7 +242,6 @@ CONFIGURE_FILE(
 OPTION(AMI_USE_STATIC_LIBS     "Look for static libraries" ON)
 OPTION(AMI_USE_PRECOMP_HEADERS "Use precompiled headers when available" OFF)
 
-#MESSAGE( "CMAKE_SYSTEM = ${CMAKE_SYSTEM} ")
 
 set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "4.2")
 
@@ -482,6 +481,7 @@ set(  wxParams_INCLUDE_DIRS
 
 #MESSAGE(wxParams_INCLUDE_DIRS=${wxParams_INCLUDE_DIRS})
 MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
+
 
 include_directories (
   ${Boost_INCLUDE_DIR}

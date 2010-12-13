@@ -10,25 +10,53 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxAuiPaneInfo.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxString.h"
-#include "wrap_wxWindow.h"
-#include "wrap_wxFrame.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxRect.h"
-#include "wrap_wxAuiPaneInfo.h"
 #include "boost/numeric/conversion/cast.hpp"
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxFrame_declared
+  #define wxFrame_declared
+  AMI_DECLARE_TYPE(wxFrame)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxPoint_declared
+  #define wxPoint_declared
+  AMI_DECLARE_TYPE(wxPoint)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
+#endif
+#ifndef wxAuiPaneInfo_declared
+  #define wxAuiPaneInfo_declared
+  AMI_DECLARE_TYPE(wxAuiPaneInfo)
+#endif
 
 
-#include "wrap_wxAuiPaneInfo.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -68,276 +96,290 @@ void WrapClass_wxAuiPaneInfo::AddMethods(WrapClass<wxAuiPaneInfo>::ptr this_ptr 
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_SafeSet( this_ptr);
-      AddVar_IsOk( this_ptr);
-      AddVar_IsFixed( this_ptr);
-      AddVar_IsResizable( this_ptr);
-      AddVar_IsShown( this_ptr);
-      AddVar_IsFloating( this_ptr);
-      AddVar_IsDocked( this_ptr);
-      AddVar_IsToolbar( this_ptr);
-      AddVar_IsTopDockable( this_ptr);
-      AddVar_IsBottomDockable( this_ptr);
-      AddVar_IsLeftDockable( this_ptr);
-      AddVar_IsRightDockable( this_ptr);
-      AddVar_IsFloatable( this_ptr);
-      AddVar_IsMovable( this_ptr);
-      AddVar_IsDestroyOnClose( this_ptr);
-      AddVar_IsMaximized( this_ptr);
-      AddVar_HasCaption( this_ptr);
-      AddVar_HasGripper( this_ptr);
-      AddVar_HasBorder( this_ptr);
-      AddVar_HasCloseButton( this_ptr);
-      AddVar_HasMaximizeButton( this_ptr);
-      AddVar_HasMinimizeButton( this_ptr);
-      AddVar_HasPinButton( this_ptr);
-      AddVar_HasGripperTop( this_ptr);
-      AddVar_Window( this_ptr);
-      AddVar_Name( this_ptr);
-      AddVar_Caption( this_ptr);
-      AddVar_Left( this_ptr);
-      AddVar_Right( this_ptr);
-      AddVar_Top( this_ptr);
-      AddVar_Bottom( this_ptr);
-      AddVar_Center( this_ptr);
-      AddVar_Centre( this_ptr);
-      AddVar_Direction( this_ptr);
-      AddVar_Layer( this_ptr);
-      AddVar_Row( this_ptr);
-      AddVar_Position( this_ptr);
-      AddVar_BestSize_1( this_ptr);
-      AddVar_MinSize_1( this_ptr);
-      AddVar_MaxSize_1( this_ptr);
-      AddVar_BestSize( this_ptr);
-      AddVar_BestSize_2( this_ptr);
-      AddVar_MinSize( this_ptr);
-      AddVar_MinSize_2( this_ptr);
-      AddVar_MaxSize( this_ptr);
-      AddVar_MaxSize_2( this_ptr);
-      AddVar_FloatingPosition_1( this_ptr);
-      AddVar_FloatingPosition( this_ptr);
-      AddVar_FloatingPosition_2( this_ptr);
-      AddVar_FloatingSize_1( this_ptr);
-      AddVar_FloatingSize( this_ptr);
-      AddVar_FloatingSize_2( this_ptr);
-      AddVar_Fixed( this_ptr);
-      AddVar_Resizable( this_ptr);
-      AddVar_Dock( this_ptr);
-      AddVar_Float( this_ptr);
-      AddVar_Hide( this_ptr);
-      AddVar_Show( this_ptr);
-      AddVar_CaptionVisible( this_ptr);
-      AddVar_Maximize( this_ptr);
-      AddVar_Restore( this_ptr);
-      AddVar_PaneBorder( this_ptr);
-      AddVar_Gripper( this_ptr);
-      AddVar_GripperTop( this_ptr);
-      AddVar_CloseButton( this_ptr);
-      AddVar_MaximizeButton( this_ptr);
-      AddVar_MinimizeButton( this_ptr);
-      AddVar_PinButton( this_ptr);
-      AddVar_DestroyOnClose( this_ptr);
-      AddVar_TopDockable( this_ptr);
-      AddVar_BottomDockable( this_ptr);
-      AddVar_LeftDockable( this_ptr);
-      AddVar_RightDockable( this_ptr);
-      AddVar_Floatable( this_ptr);
-      AddVar_Movable( this_ptr);
-      AddVar_DockFixed( this_ptr);
-      AddVar_Dockable( this_ptr);
-      AddVar_DefaultPane( this_ptr);
-      AddVar_CentrePane( this_ptr);
-      AddVar_CenterPane( this_ptr);
-      AddVar_ToolbarPane( this_ptr);
-      AddVar_SetFlag( this_ptr);
-      AddVar_HasFlag( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_SafeSet( this_ptr);
+  AddVar_IsOk( this_ptr);
+  AddVar_IsFixed( this_ptr);
+  AddVar_IsResizable( this_ptr);
+  AddVar_IsShown( this_ptr);
+  AddVar_IsFloating( this_ptr);
+  AddVar_IsDocked( this_ptr);
+  AddVar_IsToolbar( this_ptr);
+  AddVar_IsTopDockable( this_ptr);
+  AddVar_IsBottomDockable( this_ptr);
+  AddVar_IsLeftDockable( this_ptr);
+  AddVar_IsRightDockable( this_ptr);
+  AddVar_IsFloatable( this_ptr);
+  AddVar_IsMovable( this_ptr);
+  AddVar_IsDestroyOnClose( this_ptr);
+  AddVar_IsMaximized( this_ptr);
+  AddVar_HasCaption( this_ptr);
+  AddVar_HasGripper( this_ptr);
+  AddVar_HasBorder( this_ptr);
+  AddVar_HasCloseButton( this_ptr);
+  AddVar_HasMaximizeButton( this_ptr);
+  AddVar_HasMinimizeButton( this_ptr);
+  AddVar_HasPinButton( this_ptr);
+  AddVar_HasGripperTop( this_ptr);
+  AddVar_Window( this_ptr);
+  AddVar_Name( this_ptr);
+  AddVar_Caption( this_ptr);
+  AddVar_Left( this_ptr);
+  AddVar_Right( this_ptr);
+  AddVar_Top( this_ptr);
+  AddVar_Bottom( this_ptr);
+  AddVar_Center( this_ptr);
+  AddVar_Centre( this_ptr);
+  AddVar_Direction( this_ptr);
+  AddVar_Layer( this_ptr);
+  AddVar_Row( this_ptr);
+  AddVar_Position( this_ptr);
+  AddVar_BestSize_1( this_ptr);
+  AddVar_MinSize_1( this_ptr);
+  AddVar_MaxSize_1( this_ptr);
+  AddVar_BestSize( this_ptr);
+  AddVar_BestSize_2( this_ptr);
+  AddVar_MinSize( this_ptr);
+  AddVar_MinSize_2( this_ptr);
+  AddVar_MaxSize( this_ptr);
+  AddVar_MaxSize_2( this_ptr);
+  AddVar_FloatingPosition_1( this_ptr);
+  AddVar_FloatingPosition( this_ptr);
+  AddVar_FloatingPosition_2( this_ptr);
+  AddVar_FloatingSize_1( this_ptr);
+  AddVar_FloatingSize( this_ptr);
+  AddVar_FloatingSize_2( this_ptr);
+  AddVar_Fixed( this_ptr);
+  AddVar_Resizable( this_ptr);
+  AddVar_Dock( this_ptr);
+  AddVar_Float( this_ptr);
+  AddVar_Hide( this_ptr);
+  AddVar_Show( this_ptr);
+  AddVar_CaptionVisible( this_ptr);
+  AddVar_Maximize( this_ptr);
+  AddVar_Restore( this_ptr);
+  AddVar_PaneBorder( this_ptr);
+  AddVar_Gripper( this_ptr);
+  AddVar_GripperTop( this_ptr);
+  AddVar_CloseButton( this_ptr);
+  AddVar_MaximizeButton( this_ptr);
+  AddVar_MinimizeButton( this_ptr);
+  AddVar_PinButton( this_ptr);
+  AddVar_DestroyOnClose( this_ptr);
+  AddVar_TopDockable( this_ptr);
+  AddVar_BottomDockable( this_ptr);
+  AddVar_LeftDockable( this_ptr);
+  AddVar_RightDockable( this_ptr);
+  AddVar_Floatable( this_ptr);
+  AddVar_Movable( this_ptr);
+  AddVar_DockFixed( this_ptr);
+  AddVar_Dockable( this_ptr);
+  AddVar_DefaultPane( this_ptr);
+  AddVar_CentrePane( this_ptr);
+  AddVar_CenterPane( this_ptr);
+  AddVar_ToolbarPane( this_ptr);
+  AddVar_SetFlag( this_ptr);
+  AddVar_HasFlag( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member name
-      boost::shared_ptr<wxString > var_name_ptr(&GetObj()->name, smartpointer_nodeleter<wxString >());
-      if (var_name_ptr.get()) {
-        BasicVariable::ptr var_name = AMILabType<wxString >::CreateVarFromSmtPtr(var_name_ptr);
-        if (var_name.get()) {
-          var_name->Rename("name");
-          context->AddVar(var_name,context);
-        }
-      }
-      
-      // Adding public member caption
-      boost::shared_ptr<wxString > var_caption_ptr(&GetObj()->caption, smartpointer_nodeleter<wxString >());
-      if (var_caption_ptr.get()) {
-        BasicVariable::ptr var_caption = AMILabType<wxString >::CreateVarFromSmtPtr(var_caption_ptr);
-        if (var_caption.get()) {
-          var_caption->Rename("caption");
-          context->AddVar(var_caption,context);
-        }
-      }
-      
-      // Adding public member window
-      boost::shared_ptr<wxWindow > var_window_ptr(GetObj()->window, smartpointer_nodeleter<wxWindow >());
-      if (var_window_ptr.get()) {
-        BasicVariable::ptr var_window = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_window_ptr);
-        if (var_window.get()) {
-          var_window->Rename("window");
-          context->AddVar(var_window,context);
-        }
-      }
-      
-      // Adding public member frame
-      boost::shared_ptr<wxFrame > var_frame_ptr(GetObj()->frame, smartpointer_nodeleter<wxFrame >());
-      if (var_frame_ptr.get()) {
-        BasicVariable::ptr var_frame = AMILabType<wxFrame >::CreateVarFromSmtPtr(var_frame_ptr);
-        if (var_frame.get()) {
-          var_frame->Rename("frame");
-          context->AddVar(var_frame,context);
-        }
-      }
-      
-      /* Type not available
-      // Adding public member state
-      boost::shared_ptr<unsigned int > var_state_ptr(&GetObj()->state, smartpointer_nodeleter<unsigned int >());
-      if (var_state_ptr.get()) {
-        BasicVariable::ptr var_state = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_state_ptr);
-        if (var_state.get()) {
-          var_state->Rename("state");
-          context->AddVar(var_state,context);
-        }
-      }
-      */
-      
-      // Adding public member dock_direction
-      boost::shared_ptr<int > var_dock_direction_ptr(&GetObj()->dock_direction, smartpointer_nodeleter<int >());
-      if (var_dock_direction_ptr.get()) {
-        BasicVariable::ptr var_dock_direction = AMILabType<int >::CreateVarFromSmtPtr(var_dock_direction_ptr);
-        if (var_dock_direction.get()) {
-          var_dock_direction->Rename("dock_direction");
-          context->AddVar(var_dock_direction,context);
-        }
-      }
-      
-      // Adding public member dock_layer
-      boost::shared_ptr<int > var_dock_layer_ptr(&GetObj()->dock_layer, smartpointer_nodeleter<int >());
-      if (var_dock_layer_ptr.get()) {
-        BasicVariable::ptr var_dock_layer = AMILabType<int >::CreateVarFromSmtPtr(var_dock_layer_ptr);
-        if (var_dock_layer.get()) {
-          var_dock_layer->Rename("dock_layer");
-          context->AddVar(var_dock_layer,context);
-        }
-      }
-      
-      // Adding public member dock_row
-      boost::shared_ptr<int > var_dock_row_ptr(&GetObj()->dock_row, smartpointer_nodeleter<int >());
-      if (var_dock_row_ptr.get()) {
-        BasicVariable::ptr var_dock_row = AMILabType<int >::CreateVarFromSmtPtr(var_dock_row_ptr);
-        if (var_dock_row.get()) {
-          var_dock_row->Rename("dock_row");
-          context->AddVar(var_dock_row,context);
-        }
-      }
-      
-      // Adding public member dock_pos
-      boost::shared_ptr<int > var_dock_pos_ptr(&GetObj()->dock_pos, smartpointer_nodeleter<int >());
-      if (var_dock_pos_ptr.get()) {
-        BasicVariable::ptr var_dock_pos = AMILabType<int >::CreateVarFromSmtPtr(var_dock_pos_ptr);
-        if (var_dock_pos.get()) {
-          var_dock_pos->Rename("dock_pos");
-          context->AddVar(var_dock_pos,context);
-        }
-      }
-      
-      // Adding public member best_size
-      boost::shared_ptr<wxSize > var_best_size_ptr(&GetObj()->best_size, smartpointer_nodeleter<wxSize >());
-      if (var_best_size_ptr.get()) {
-        BasicVariable::ptr var_best_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_best_size_ptr);
-        if (var_best_size.get()) {
-          var_best_size->Rename("best_size");
-          context->AddVar(var_best_size,context);
-        }
-      }
-      
-      // Adding public member min_size
-      boost::shared_ptr<wxSize > var_min_size_ptr(&GetObj()->min_size, smartpointer_nodeleter<wxSize >());
-      if (var_min_size_ptr.get()) {
-        BasicVariable::ptr var_min_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_min_size_ptr);
-        if (var_min_size.get()) {
-          var_min_size->Rename("min_size");
-          context->AddVar(var_min_size,context);
-        }
-      }
-      
-      // Adding public member max_size
-      boost::shared_ptr<wxSize > var_max_size_ptr(&GetObj()->max_size, smartpointer_nodeleter<wxSize >());
-      if (var_max_size_ptr.get()) {
-        BasicVariable::ptr var_max_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_max_size_ptr);
-        if (var_max_size.get()) {
-          var_max_size->Rename("max_size");
-          context->AddVar(var_max_size,context);
-        }
-      }
-      
-      // Adding public member floating_pos
-      boost::shared_ptr<wxPoint > var_floating_pos_ptr(&GetObj()->floating_pos, smartpointer_nodeleter<wxPoint >());
-      if (var_floating_pos_ptr.get()) {
-        BasicVariable::ptr var_floating_pos = AMILabType<wxPoint >::CreateVarFromSmtPtr(var_floating_pos_ptr);
-        if (var_floating_pos.get()) {
-          var_floating_pos->Rename("floating_pos");
-          context->AddVar(var_floating_pos,context);
-        }
-      }
-      
-      // Adding public member floating_size
-      boost::shared_ptr<wxSize > var_floating_size_ptr(&GetObj()->floating_size, smartpointer_nodeleter<wxSize >());
-      if (var_floating_size_ptr.get()) {
-        BasicVariable::ptr var_floating_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_floating_size_ptr);
-        if (var_floating_size.get()) {
-          var_floating_size->Rename("floating_size");
-          context->AddVar(var_floating_size,context);
-        }
-      }
-      
-      // Adding public member dock_proportion
-      boost::shared_ptr<int > var_dock_proportion_ptr(&GetObj()->dock_proportion, smartpointer_nodeleter<int >());
-      if (var_dock_proportion_ptr.get()) {
-        BasicVariable::ptr var_dock_proportion = AMILabType<int >::CreateVarFromSmtPtr(var_dock_proportion_ptr);
-        if (var_dock_proportion.get()) {
-          var_dock_proportion->Rename("dock_proportion");
-          context->AddVar(var_dock_proportion,context);
-        }
-      }
-      
-      /* Type not available
-      // Adding public member buttons
-      boost::shared_ptr<wxAuiPaneButtonArray > var_buttons_ptr(&GetObj()->buttons, smartpointer_nodeleter<wxAuiPaneButtonArray >());
-      if (var_buttons_ptr.get()) {
-        BasicVariable::ptr var_buttons = AMILabType<wxAuiPaneButtonArray >::CreateVarFromSmtPtr(var_buttons_ptr);
-        if (var_buttons.get()) {
-          var_buttons->Rename("buttons");
-          context->AddVar(var_buttons,context);
-        }
-      }
-      */
-      
-      // Adding public member rect
-      boost::shared_ptr<wxRect > var_rect_ptr(&GetObj()->rect, smartpointer_nodeleter<wxRect >());
-      if (var_rect_ptr.get()) {
-        BasicVariable::ptr var_rect = AMILabType<wxRect >::CreateVarFromSmtPtr(var_rect_ptr);
-        if (var_rect.get()) {
-          var_rect->Rename("rect");
-          context->AddVar(var_rect,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member name
+  boost::shared_ptr<wxString > var_name_ptr(&GetObj()->name, smartpointer_nodeleter<wxString >());
+  if (var_name_ptr.get()) {
+    BasicVariable::ptr var_name = AMILabType<wxString >::CreateVarFromSmtPtr(var_name_ptr);
+    if (var_name.get()) {
+      var_name->Rename("name");
+      context->AddVar(var_name,context);
+    }
+  }
+  
+  // Adding public member caption
+  boost::shared_ptr<wxString > var_caption_ptr(&GetObj()->caption, smartpointer_nodeleter<wxString >());
+  if (var_caption_ptr.get()) {
+    BasicVariable::ptr var_caption = AMILabType<wxString >::CreateVarFromSmtPtr(var_caption_ptr);
+    if (var_caption.get()) {
+      var_caption->Rename("caption");
+      context->AddVar(var_caption,context);
+    }
+  }
+  
+  // Adding public member window
+  boost::shared_ptr<wxWindow > var_window_ptr(GetObj()->window, smartpointer_nodeleter<wxWindow >());
+  if (var_window_ptr.get()) {
+    BasicVariable::ptr var_window = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_window_ptr);
+    if (var_window.get()) {
+      var_window->Rename("window");
+      context->AddVar(var_window,context);
+    }
+  }
+  
+  // Adding public member frame
+  boost::shared_ptr<wxFrame > var_frame_ptr(GetObj()->frame, smartpointer_nodeleter<wxFrame >());
+  if (var_frame_ptr.get()) {
+    BasicVariable::ptr var_frame = AMILabType<wxFrame >::CreateVarFromSmtPtr(var_frame_ptr);
+    if (var_frame.get()) {
+      var_frame->Rename("frame");
+      context->AddVar(var_frame,context);
+    }
+  }
+  
+  /* Type not available
+  // Adding public member state
+  boost::shared_ptr<unsigned int > var_state_ptr(&GetObj()->state, smartpointer_nodeleter<unsigned int >());
+  if (var_state_ptr.get()) {
+    BasicVariable::ptr var_state = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_state_ptr);
+    if (var_state.get()) {
+      var_state->Rename("state");
+      context->AddVar(var_state,context);
+    }
+  }
+  */
+  
+  // Adding public member dock_direction
+  boost::shared_ptr<int > var_dock_direction_ptr(&GetObj()->dock_direction, smartpointer_nodeleter<int >());
+  if (var_dock_direction_ptr.get()) {
+    BasicVariable::ptr var_dock_direction = AMILabType<int >::CreateVarFromSmtPtr(var_dock_direction_ptr);
+    if (var_dock_direction.get()) {
+      var_dock_direction->Rename("dock_direction");
+      context->AddVar(var_dock_direction,context);
+    }
+  }
+  
+  // Adding public member dock_layer
+  boost::shared_ptr<int > var_dock_layer_ptr(&GetObj()->dock_layer, smartpointer_nodeleter<int >());
+  if (var_dock_layer_ptr.get()) {
+    BasicVariable::ptr var_dock_layer = AMILabType<int >::CreateVarFromSmtPtr(var_dock_layer_ptr);
+    if (var_dock_layer.get()) {
+      var_dock_layer->Rename("dock_layer");
+      context->AddVar(var_dock_layer,context);
+    }
+  }
+  
+  // Adding public member dock_row
+  boost::shared_ptr<int > var_dock_row_ptr(&GetObj()->dock_row, smartpointer_nodeleter<int >());
+  if (var_dock_row_ptr.get()) {
+    BasicVariable::ptr var_dock_row = AMILabType<int >::CreateVarFromSmtPtr(var_dock_row_ptr);
+    if (var_dock_row.get()) {
+      var_dock_row->Rename("dock_row");
+      context->AddVar(var_dock_row,context);
+    }
+  }
+  
+  // Adding public member dock_pos
+  boost::shared_ptr<int > var_dock_pos_ptr(&GetObj()->dock_pos, smartpointer_nodeleter<int >());
+  if (var_dock_pos_ptr.get()) {
+    BasicVariable::ptr var_dock_pos = AMILabType<int >::CreateVarFromSmtPtr(var_dock_pos_ptr);
+    if (var_dock_pos.get()) {
+      var_dock_pos->Rename("dock_pos");
+      context->AddVar(var_dock_pos,context);
+    }
+  }
+  
+  // Adding public member best_size
+  boost::shared_ptr<wxSize > var_best_size_ptr(&GetObj()->best_size, smartpointer_nodeleter<wxSize >());
+  if (var_best_size_ptr.get()) {
+    BasicVariable::ptr var_best_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_best_size_ptr);
+    if (var_best_size.get()) {
+      var_best_size->Rename("best_size");
+      context->AddVar(var_best_size,context);
+    }
+  }
+  
+  // Adding public member min_size
+  boost::shared_ptr<wxSize > var_min_size_ptr(&GetObj()->min_size, smartpointer_nodeleter<wxSize >());
+  if (var_min_size_ptr.get()) {
+    BasicVariable::ptr var_min_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_min_size_ptr);
+    if (var_min_size.get()) {
+      var_min_size->Rename("min_size");
+      context->AddVar(var_min_size,context);
+    }
+  }
+  
+  // Adding public member max_size
+  boost::shared_ptr<wxSize > var_max_size_ptr(&GetObj()->max_size, smartpointer_nodeleter<wxSize >());
+  if (var_max_size_ptr.get()) {
+    BasicVariable::ptr var_max_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_max_size_ptr);
+    if (var_max_size.get()) {
+      var_max_size->Rename("max_size");
+      context->AddVar(var_max_size,context);
+    }
+  }
+  
+  // Adding public member floating_pos
+  boost::shared_ptr<wxPoint > var_floating_pos_ptr(&GetObj()->floating_pos, smartpointer_nodeleter<wxPoint >());
+  if (var_floating_pos_ptr.get()) {
+    BasicVariable::ptr var_floating_pos = AMILabType<wxPoint >::CreateVarFromSmtPtr(var_floating_pos_ptr);
+    if (var_floating_pos.get()) {
+      var_floating_pos->Rename("floating_pos");
+      context->AddVar(var_floating_pos,context);
+    }
+  }
+  
+  // Adding public member floating_size
+  boost::shared_ptr<wxSize > var_floating_size_ptr(&GetObj()->floating_size, smartpointer_nodeleter<wxSize >());
+  if (var_floating_size_ptr.get()) {
+    BasicVariable::ptr var_floating_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_floating_size_ptr);
+    if (var_floating_size.get()) {
+      var_floating_size->Rename("floating_size");
+      context->AddVar(var_floating_size,context);
+    }
+  }
+  
+  // Adding public member dock_proportion
+  boost::shared_ptr<int > var_dock_proportion_ptr(&GetObj()->dock_proportion, smartpointer_nodeleter<int >());
+  if (var_dock_proportion_ptr.get()) {
+    BasicVariable::ptr var_dock_proportion = AMILabType<int >::CreateVarFromSmtPtr(var_dock_proportion_ptr);
+    if (var_dock_proportion.get()) {
+      var_dock_proportion->Rename("dock_proportion");
+      context->AddVar(var_dock_proportion,context);
+    }
+  }
+  
+  /* Type not available
+  // Adding public member buttons
+  boost::shared_ptr<wxAuiPaneButtonArray > var_buttons_ptr(&GetObj()->buttons, smartpointer_nodeleter<wxAuiPaneButtonArray >());
+  if (var_buttons_ptr.get()) {
+    BasicVariable::ptr var_buttons = AMILabType<wxAuiPaneButtonArray >::CreateVarFromSmtPtr(var_buttons_ptr);
+    if (var_buttons.get()) {
+      var_buttons->Rename("buttons");
+      context->AddVar(var_buttons,context);
+    }
+  }
+  */
+  
+  // Adding public member rect
+  boost::shared_ptr<wxRect > var_rect_ptr(&GetObj()->rect, smartpointer_nodeleter<wxRect >());
+  if (var_rect_ptr.get()) {
+    BasicVariable::ptr var_rect = AMILabType<wxRect >::CreateVarFromSmtPtr(var_rect_ptr);
+    if (var_rect.get()) {
+      var_rect->Rename("rect");
+      context->AddVar(var_rect,context);
+    }
+  }
+
+
+  
+  AMIObject::ptr obj_wxAuiPaneState(new AMIObject);
+  obj_wxAuiPaneState->SetName("wxAuiPaneState");
+
+  BasicVariable::ptr var_optionFloating = AMILabType<int >::CreateVar(1);
+  if (var_optionFloating.get()) {
+    var_optionFloating->Rename("optionFloating");
+    obj_wxAuiPaneState->GetContext()->AddVar(var_optionFloating,obj_wxAuiPaneState->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_wxAuiPaneState->GetName().c_str(),obj_wxAuiPaneState,context);
 
 
   // Adding Bases
@@ -348,7 +390,7 @@ void WrapClass_wxAuiPaneInfo::AddMethods(WrapClass<wxAuiPaneInfo>::ptr this_ptr 
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxAuiPaneInfo::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxAuiPaneInfo_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -931,9 +973,15 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfo::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > w_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* w = w_smtptr.get();
+  wxWindow* w;
+  if (CheckNullVar(_p,_n))  {
+    w=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > w_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    w = w_smtptr.get();
+  }
 
   wxAuiPaneInfo & res =   this->_objectptr->GetObj()->Window(w);
   return AMILabType<wxAuiPaneInfo >::CreateVar(res);

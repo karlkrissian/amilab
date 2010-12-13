@@ -16,19 +16,41 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkAbstractMapper.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkAbstractMapper.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkDataArray.h"
-#include "wrap_vtkDataSet.h"
-#include "wrap_vtkIndent.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkWindow.h"
-#include "wrap_vtkPlanes.h"
+#ifndef vtkAbstractMapper_declared
+  #define vtkAbstractMapper_declared
+  AMI_DECLARE_TYPE(vtkAbstractMapper)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkDataArray_declared
+  #define vtkDataArray_declared
+  AMI_DECLARE_TYPE(vtkDataArray)
+#endif
+#ifndef vtkDataSet_declared
+  #define vtkDataSet_declared
+  AMI_DECLARE_TYPE(vtkDataSet)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkWindow_declared
+  #define vtkWindow_declared
+  AMI_DECLARE_TYPE(vtkWindow)
+#endif
+#ifndef vtkPlanes_declared
+  #define vtkPlanes_declared
+  AMI_DECLARE_TYPE(vtkPlanes)
+#endif
 
 
-#include "wrap_vtkAbstractMapper.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -131,7 +153,7 @@ void WrapClass_vtkAbstractMapper::AddMethods(WrapClass<vtkAbstractMapper>::ptr t
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkAbstractMapper::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkAbstractMapper_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -207,7 +229,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   }
 
   vtkAbstractMapper * res =   vtkAbstractMapper::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkAbstractMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAbstractMapper >::CreateVar(res,true);
   return res_var;
 }
 
@@ -262,7 +284,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   int & cellFlag = *cellFlag_smtptr;
 
   vtkDataArray * res =   vtkAbstractMapper::GetScalars(input, scalarMode, arrayAccessMode, arrayId, arrayName, cellFlag);
-  BasicVariable::ptr res_var = WrapClass_vtkDataArray::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkDataArray >::CreateVar(res,true);
   return res_var;
 }
 
@@ -308,7 +330,7 @@ BasicVariable::ptr WrapClass_vtkAbstractMapper::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkAbstractMapper * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkAbstractMapper::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkAbstractMapper >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >

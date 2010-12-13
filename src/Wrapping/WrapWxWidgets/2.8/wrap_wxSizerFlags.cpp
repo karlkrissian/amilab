@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxSizerFlags.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxSizerFlags.h"
+#ifndef wxSizerFlags_declared
+  #define wxSizerFlags_declared
+  AMI_DECLARE_TYPE(wxSizerFlags)
+#endif
 
 
-#include "wrap_wxSizerFlags.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -61,38 +71,41 @@ void WrapClass_wxSizerFlags::AddMethods(WrapClass<wxSizerFlags>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Proportion( this_ptr);
-      AddVar_Align( this_ptr);
-      AddVar_Expand( this_ptr);
-      AddVar_Centre( this_ptr);
-      AddVar_Center( this_ptr);
-      AddVar_Left( this_ptr);
-      AddVar_Right( this_ptr);
-      AddVar_Top( this_ptr);
-      AddVar_Bottom( this_ptr);
-      AddVar_Border_1( this_ptr);
-      AddVar_Border( this_ptr);
-      AddVar_Border_2( this_ptr);
-      AddVar_DoubleBorder( this_ptr);
-      AddVar_TripleBorder( this_ptr);
-      AddVar_HorzBorder( this_ptr);
-      AddVar_DoubleHorzBorder( this_ptr);
-      AddVar_Shaped( this_ptr);
-      AddVar_FixedMinSize( this_ptr);
-      AddVar_ReserveSpaceEvenIfHidden( this_ptr);
-      AddVar_GetProportion( this_ptr);
-      AddVar_GetFlags( this_ptr);
-      AddVar_GetBorderInPixels( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Proportion( this_ptr);
+  AddVar_Align( this_ptr);
+  AddVar_Expand( this_ptr);
+  AddVar_Centre( this_ptr);
+  AddVar_Center( this_ptr);
+  AddVar_Left( this_ptr);
+  AddVar_Right( this_ptr);
+  AddVar_Top( this_ptr);
+  AddVar_Bottom( this_ptr);
+  AddVar_Border_1( this_ptr);
+  AddVar_Border( this_ptr);
+  AddVar_Border_2( this_ptr);
+  AddVar_DoubleBorder( this_ptr);
+  AddVar_TripleBorder( this_ptr);
+  AddVar_HorzBorder( this_ptr);
+  AddVar_DoubleHorzBorder( this_ptr);
+  AddVar_Shaped( this_ptr);
+  AddVar_FixedMinSize( this_ptr);
+  AddVar_ReserveSpaceEvenIfHidden( this_ptr);
+  AddVar_GetProportion( this_ptr);
+  AddVar_GetFlags( this_ptr);
+  AddVar_GetBorderInPixels( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -102,7 +115,7 @@ void WrapClass_wxSizerFlags::AddMethods(WrapClass<wxSizerFlags>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxSizerFlags::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxSizerFlags_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

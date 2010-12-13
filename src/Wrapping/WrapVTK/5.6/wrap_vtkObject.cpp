@@ -16,16 +16,29 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkObject.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkObject.h"
-#include "wrap_vtkObjectBase.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkCommand.h"
+#ifndef vtkObject_declared
+  #define vtkObject_declared
+  AMI_DECLARE_TYPE(vtkObject)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkCommand_declared
+  #define vtkCommand_declared
+  AMI_DECLARE_TYPE(vtkCommand)
+#endif
 
 
-#include "wrap_vtkObject.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -142,7 +155,7 @@ void WrapClass_vtkObject::AddMethods(WrapClass<vtkObject>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkObject::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkObject_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -223,7 +236,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   }
 
   vtkObject * res =   vtkObject::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -243,7 +256,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkObject * res =   vtkObject::New();
-  BasicVariable::ptr res_var = WrapClass_vtkObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -386,7 +399,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkObject * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkObject::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkObject >::CreateVar(res,true);
   return res_var;
 }
 
@@ -666,7 +679,7 @@ BasicVariable::ptr WrapClass_vtkObject::
   long unsigned int tag = boost::numeric_cast<long unsigned int >(tag_long);
 
   vtkCommand * res =   this->_objectptr->GetObj()->GetCommand(tag);
-  BasicVariable::ptr res_var = WrapClass_vtkCommand::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkCommand >::CreateVar(res,true);
   return res_var;
 }
 

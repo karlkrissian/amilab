@@ -10,20 +10,33 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxAuiPaneInfoArray.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxAuiPaneInfoArray.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxAuiPaneInfo.h"
+#ifndef wxAuiPaneInfoArray_declared
+  #define wxAuiPaneInfoArray_declared
+  AMI_DECLARE_TYPE(wxAuiPaneInfoArray)
+#endif
+#ifndef wxAuiPaneInfo_declared
+  #define wxAuiPaneInfo_declared
+  AMI_DECLARE_TYPE(wxAuiPaneInfo)
+#endif
 
 
-#include "wrap_wxAuiPaneInfoArray.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,43 +76,46 @@ void WrapClass_wxAuiPaneInfoArray::AddMethods(WrapClass<wxAuiPaneInfoArray>::ptr
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Alloc( this_ptr);
-      AddVar_GetCount( this_ptr);
-      AddVar_size( this_ptr);
-      AddVar_IsEmpty( this_ptr);
-      AddVar_empty( this_ptr);
-      AddVar_Count( this_ptr);
-      AddVar_Shrink( this_ptr);
-      AddVar_Item( this_ptr);
-      AddVar_Last( this_ptr);
-      AddVar_Index( this_ptr);
-      AddVar_Add_1( this_ptr);
-      AddVar_Add( this_ptr);
-      AddVar_Add_2( this_ptr);
-      AddVar_push_back_1( this_ptr);
-      AddVar_push_back( this_ptr);
-      AddVar_push_back_2( this_ptr);
-      AddVar_Insert_1( this_ptr);
-      AddVar_Insert( this_ptr);
-      AddVar_Insert_2( this_ptr);
-      AddVar_Empty( this_ptr);
-      AddVar_Clear( this_ptr);
-      AddVar_Detach( this_ptr);
-      AddVar_RemoveAt( this_ptr);
-/* The following types are missing: _15468
-      AddVar_Sort( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Alloc( this_ptr);
+  AddVar_GetCount( this_ptr);
+  AddVar_size( this_ptr);
+  AddVar_IsEmpty( this_ptr);
+  AddVar_empty( this_ptr);
+  AddVar_Count( this_ptr);
+  AddVar_Shrink( this_ptr);
+  AddVar_Item( this_ptr);
+  AddVar_Last( this_ptr);
+  AddVar_Index( this_ptr);
+  AddVar_Add_1( this_ptr);
+  AddVar_Add( this_ptr);
+  AddVar_Add_2( this_ptr);
+  AddVar_push_back_1( this_ptr);
+  AddVar_push_back( this_ptr);
+  AddVar_push_back_2( this_ptr);
+  AddVar_Insert_1( this_ptr);
+  AddVar_Insert( this_ptr);
+  AddVar_Insert_2( this_ptr);
+  AddVar_Empty( this_ptr);
+  AddVar_Clear( this_ptr);
+  AddVar_Detach( this_ptr);
+  AddVar_RemoveAt( this_ptr);
+/* The following types are missing: _9053
+  AddVar_Sort( this_ptr);
 */
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___at__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___at__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -109,7 +125,7 @@ void WrapClass_wxAuiPaneInfoArray::AddMethods(WrapClass<wxAuiPaneInfoArray>::ptr
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxAuiPaneInfoArray::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxAuiPaneInfoArray_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -497,9 +513,15 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxAuiPaneInfo > pItem_smtptr;
-  if (!get_val_smtptr_param<wxAuiPaneInfo >(pItem_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxAuiPaneInfo* pItem = pItem_smtptr.get();
+  wxAuiPaneInfo* pItem;
+  if (CheckNullVar(_p,_n))  {
+    pItem=(wxAuiPaneInfo*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxAuiPaneInfo > pItem_smtptr;
+    if (!get_val_smtptr_param<wxAuiPaneInfo >(pItem_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pItem = pItem_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->Add(pItem);
   return BasicVariable::ptr();
@@ -522,9 +544,15 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxAuiPaneInfo > pItem_smtptr;
-  if (!get_val_smtptr_param<wxAuiPaneInfo >(pItem_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxAuiPaneInfo* pItem = pItem_smtptr.get();
+  wxAuiPaneInfo* pItem;
+  if (CheckNullVar(_p,_n))  {
+    pItem=(wxAuiPaneInfo*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxAuiPaneInfo > pItem_smtptr;
+    if (!get_val_smtptr_param<wxAuiPaneInfo >(pItem_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pItem = pItem_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->push_back(pItem);
   return BasicVariable::ptr();
@@ -650,9 +678,15 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<wxAuiPaneInfo > pItem_smtptr;
-  if (!get_val_smtptr_param<wxAuiPaneInfo >(pItem_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  wxAuiPaneInfo* pItem = pItem_smtptr.get();
+  wxAuiPaneInfo* pItem;
+  if (CheckNullVar(_p,_n))  {
+    pItem=(wxAuiPaneInfo*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxAuiPaneInfo > pItem_smtptr;
+    if (!get_val_smtptr_param<wxAuiPaneInfo >(pItem_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pItem = pItem_smtptr.get();
+  }
 
   long uiIndex_long;
   if (!get_val_param<long >(uiIndex_long,_p,_n,true,true)) ClassReturnEmptyVar;
@@ -721,7 +755,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   long unsigned int uiIndex = boost::numeric_cast<long unsigned int >(uiIndex_long);
 
   _wxObjArraywxAuiPaneInfoArray * res =   this->_objectptr->GetObj()->Detach(uiIndex);
-  BasicVariable::ptr res_var = WrapClass_wxAuiPaneInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxAuiPaneInfo >::CreateVar(res,true);
   return res_var;
 }
 
@@ -754,7 +788,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   this->_objectptr->GetObj()->RemoveAt(uiIndex, nRemove);
   return BasicVariable::ptr();
 }
-/* The following types are missing: _15468
+/* The following types are missing: _9053
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiPaneInfoArray::Sort(CMPFUNC_wxObjArraywxAuiPaneInfoArray fCmp)
@@ -762,7 +796,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
 void WrapClass_wxAuiPaneInfoArray::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _15468, "parameter named 'fCmp'")
+  ADDPARAMCOMMENT_TYPE( _9053, "parameter named 'fCmp'")
 }
 
 //---------------------------------------------------
@@ -773,8 +807,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _15468 fCmp;
-  if (!get_val_param<_15468 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
+  _9053 fCmp;
+  if (!get_val_param<_9053 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(fCmp);
   return BasicVariable::ptr();

@@ -16,18 +16,40 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkBoxWidget.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkBoxWidget.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
-#include "wrap_vtkPlanes.h"
-#include "wrap_vtkTransform.h"
-#include "wrap_vtkPolyData.h"
-#include "wrap_vtkProperty.h"
+#ifndef vtkBoxWidget_declared
+  #define vtkBoxWidget_declared
+  AMI_DECLARE_TYPE(vtkBoxWidget)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
+#ifndef vtkPlanes_declared
+  #define vtkPlanes_declared
+  AMI_DECLARE_TYPE(vtkPlanes)
+#endif
+#ifndef vtkTransform_declared
+  #define vtkTransform_declared
+  AMI_DECLARE_TYPE(vtkTransform)
+#endif
+#ifndef vtkPolyData_declared
+  #define vtkPolyData_declared
+  AMI_DECLARE_TYPE(vtkPolyData)
+#endif
+#ifndef vtkProperty_declared
+  #define vtkProperty_declared
+  AMI_DECLARE_TYPE(vtkProperty)
+#endif
 
 
-#include "wrap_vtkBoxWidget.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -152,7 +174,7 @@ void WrapClass_vtkBoxWidget::AddMethods(WrapClass<vtkBoxWidget>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkBoxWidget::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkBoxWidget_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -189,7 +211,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkBoxWidget * res =   vtkBoxWidget::New();
-  BasicVariable::ptr res_var = WrapClass_vtkBoxWidget::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkBoxWidget >::CreateVar(res,true);
   return res_var;
 }
 
@@ -248,7 +270,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   }
 
   vtkBoxWidget * res =   vtkBoxWidget::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkBoxWidget::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkBoxWidget >::CreateVar(res,true);
   return res_var;
 }
 
@@ -294,7 +316,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkBoxWidget * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkBoxWidget::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkBoxWidget >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
@@ -689,7 +711,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetHandleProperty();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -709,7 +731,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetSelectedHandleProperty();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -765,7 +787,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetFaceProperty();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -785,7 +807,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetSelectedFaceProperty();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -805,7 +827,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetOutlineProperty();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 
@@ -825,7 +847,7 @@ BasicVariable::ptr WrapClass_vtkBoxWidget::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkProperty * res =   this->_objectptr->GetObj()->GetSelectedOutlineProperty();
-  BasicVariable::ptr res_var = WrapClass_vtkProperty::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
 

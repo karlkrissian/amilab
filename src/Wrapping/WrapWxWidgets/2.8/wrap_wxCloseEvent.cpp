@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxCloseEvent.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxCloseEvent.h"
-#include "wrap_wxEvent.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxCloseEvent_declared
+  #define wxCloseEvent_declared
+  AMI_DECLARE_TYPE(wxCloseEvent)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxCloseEvent.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,21 +79,24 @@ void WrapClass_wxCloseEvent::AddMethods(WrapClass<wxCloseEvent>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_SetLoggingOff( this_ptr);
-      AddVar_GetLoggingOff( this_ptr);
-      AddVar_Veto( this_ptr);
-      AddVar_SetCanVeto( this_ptr);
-      AddVar_CanVeto( this_ptr);
-      AddVar_GetVeto( this_ptr);
-      AddVar_Clone( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_SetLoggingOff( this_ptr);
+  AddVar_GetLoggingOff( this_ptr);
+  AddVar_Veto( this_ptr);
+  AddVar_SetCanVeto( this_ptr);
+  AddVar_CanVeto( this_ptr);
+  AddVar_GetVeto( this_ptr);
+  AddVar_Clone( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -98,7 +117,7 @@ void WrapClass_wxCloseEvent::AddMethods(WrapClass<wxCloseEvent>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxCloseEvent::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxCloseEvent_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -357,7 +376,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxEvent * res =   this->_objectptr->GetObj()->Clone();
-  BasicVariable::ptr res_var = WrapClass_wxEvent::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxEvent >::CreateVar(res,true);
   return res_var;
 }
 
@@ -377,7 +396,7 @@ BasicVariable::ptr WrapClass_wxCloseEvent::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

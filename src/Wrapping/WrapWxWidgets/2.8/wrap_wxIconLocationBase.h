@@ -13,11 +13,13 @@
 #ifndef _wrap_wxIconLocationBase_h_
 #define _wrap_wxIconLocationBase_h_
 
+/*
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+*/
 
 #include "wx_includes.h"
 
@@ -25,8 +27,10 @@
 
 
 
-
-AMI_DECLARE_TYPE(wxIconLocationBase);
+#ifndef wxIconLocationBase_declared
+  #define wxIconLocationBase_declared
+  AMI_DECLARE_TYPE(wxIconLocationBase);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_wxIconLocationBase : public WrapClass<wxIconLocationBase>
@@ -89,12 +93,13 @@ class WrapClass_wxIconLocationBase : public WrapClass<wxIconLocationBase>
 
     void AddMethods(WrapClass<wxIconLocationBase>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClasswxIconLocationBase_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_wxIconLocationBase_h

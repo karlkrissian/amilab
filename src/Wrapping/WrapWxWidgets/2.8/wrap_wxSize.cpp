@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxSize.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxSize.h"
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
 
 
-#include "wrap_wxSize.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -61,69 +71,72 @@ void WrapClass_wxSize::AddMethods(WrapClass<wxSize>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_IncTo( this_ptr);
-      AddVar_DecTo( this_ptr);
-      AddVar_IncBy_1( this_ptr);
-      AddVar_IncBy( this_ptr);
-      AddVar_IncBy_2( this_ptr);
-      AddVar_IncBy_3( this_ptr);
-      AddVar_DecBy_1( this_ptr);
-      AddVar_DecBy( this_ptr);
-      AddVar_DecBy_2( this_ptr);
-      AddVar_DecBy_3( this_ptr);
-      AddVar_Scale( this_ptr);
-      AddVar_Set( this_ptr);
-      AddVar_SetWidth( this_ptr);
-      AddVar_SetHeight( this_ptr);
-      AddVar_GetWidth( this_ptr);
-      AddVar_GetHeight( this_ptr);
-      AddVar_IsFullySpecified( this_ptr);
-      AddVar_SetDefaults( this_ptr);
-      AddVar_GetX( this_ptr);
-      AddVar_GetY( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_IncTo( this_ptr);
+  AddVar_DecTo( this_ptr);
+  AddVar_IncBy_1( this_ptr);
+  AddVar_IncBy( this_ptr);
+  AddVar_IncBy_2( this_ptr);
+  AddVar_IncBy_3( this_ptr);
+  AddVar_DecBy_1( this_ptr);
+  AddVar_DecBy( this_ptr);
+  AddVar_DecBy_2( this_ptr);
+  AddVar_DecBy_3( this_ptr);
+  AddVar_Scale( this_ptr);
+  AddVar_Set( this_ptr);
+  AddVar_SetWidth( this_ptr);
+  AddVar_SetHeight( this_ptr);
+  AddVar_GetWidth( this_ptr);
+  AddVar_GetHeight( this_ptr);
+  AddVar_IsFullySpecified( this_ptr);
+  AddVar_SetDefaults( this_ptr);
+  AddVar_GetX( this_ptr);
+  AddVar_GetY( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
-      AddVar___equal__( this_ptr);
-      AddVar___not_equal__( this_ptr);
-      AddVar___add__( this_ptr);
-      AddVar___substract__( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      AddVar___add_assign__( this_ptr);
-      AddVar___sub_assign__( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
+  AddVar___equal__( this_ptr);
+  AddVar___not_equal__( this_ptr);
+  AddVar___add__( this_ptr);
+  AddVar___substract__( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  AddVar___add_assign__( this_ptr);
+  AddVar___sub_assign__( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 
 
 
-  // Add public fields
-      AMIObject::ptr tmpobj(amiobject.lock());
-      if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
-      
-      // Adding public member x
-      boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
-      if (var_x_ptr.get()) {
-        BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
-        if (var_x.get()) {
-          var_x->Rename("x");
-          context->AddVar(var_x,context);
-        }
-      }
-      
-      // Adding public member y
-      boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
-      if (var_y_ptr.get()) {
-        BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
-        if (var_y.get()) {
-          var_y->Rename("y");
-          context->AddVar(var_y,context);
-        }
-      }
+  // Add public fields and Enumerations
+  AMIObject::ptr tmpobj(amiobject.lock());
+  if (!tmpobj.get()) return;
+  Variables::ptr context(tmpobj->GetContext());
+  
+  // Adding public member x
+  boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
+  if (var_x_ptr.get()) {
+    BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
+    if (var_x.get()) {
+      var_x->Rename("x");
+      context->AddVar(var_x,context);
+    }
+  }
+  
+  // Adding public member y
+  boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
+  if (var_y_ptr.get()) {
+    BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
+    if (var_y.get()) {
+      var_y->Rename("y");
+      context->AddVar(var_y,context);
+    }
+  }
+
+
+  
 
 
   // Adding Bases
@@ -134,7 +147,7 @@ void WrapClass_wxSize::AddMethods(WrapClass<wxSize>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxSize::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxSize_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

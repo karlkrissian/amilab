@@ -26,8 +26,10 @@
 #include "wrap_vtkObject.h"
 
 
-
-AMI_DECLARE_TYPE(vtkImplicitFunction);
+#ifndef vtkImplicitFunction_declared
+  #define vtkImplicitFunction_declared
+  AMI_DECLARE_TYPE(vtkImplicitFunction);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkImplicitFunction : public WrapClass<vtkImplicitFunction>
@@ -96,12 +98,13 @@ class WrapClass_vtkImplicitFunction : public WrapClass<vtkImplicitFunction>
 
     void AddMethods(WrapClass<vtkImplicitFunction>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkImplicitFunction_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkImplicitFunction_h

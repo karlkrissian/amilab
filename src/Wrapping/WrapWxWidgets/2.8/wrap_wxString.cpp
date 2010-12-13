@@ -10,27 +10,55 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxString.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxStringBase.h"
-#include "wrap_wxString.h"
 #include "stdlib.h"
 #include "boost/numeric/conversion/cast.hpp"
-#include "wrap_wxMBConv.h"
-#include "wrap_wxWCharBuffer.h"
 #include "wchar.h"
-#include "wrap_wxWritableCharBuffer.h"
-#include "wrap_wxWritableWCharBuffer.h"
-#include "wrap_wxCharBuffer.h"
+#ifndef wxStringBase_declared
+  #define wxStringBase_declared
+  AMI_DECLARE_TYPE(wxStringBase)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxMBConv_declared
+  #define wxMBConv_declared
+  AMI_DECLARE_TYPE(wxMBConv)
+#endif
+#ifndef wxWCharBuffer_declared
+  #define wxWCharBuffer_declared
+  AMI_DECLARE_TYPE(wxWCharBuffer)
+#endif
+#ifndef wxWritableCharBuffer_declared
+  #define wxWritableCharBuffer_declared
+  AMI_DECLARE_TYPE(wxWritableCharBuffer)
+#endif
+#ifndef wxWritableWCharBuffer_declared
+  #define wxWritableWCharBuffer_declared
+  AMI_DECLARE_TYPE(wxWritableWCharBuffer)
+#endif
+#ifndef wxCharBuffer_declared
+  #define wxCharBuffer_declared
+  AMI_DECLARE_TYPE(wxCharBuffer)
+#endif
 
 
-#include "wrap_wxString.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -70,189 +98,215 @@ void WrapClass_wxString::AddMethods(WrapClass<wxString>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Len( this_ptr);
-      AddVar_IsEmpty( this_ptr);
-      AddVar_Truncate( this_ptr);
-      AddVar_Empty( this_ptr);
-      AddVar_Clear( this_ptr);
-      AddVar_IsAscii( this_ptr);
-      AddVar_IsNumber( this_ptr);
-      AddVar_IsWord( this_ptr);
-      AddVar_GetChar( this_ptr);
-      AddVar_GetWritableChar( this_ptr);
-      AddVar_SetChar( this_ptr);
-      AddVar_Last_1( this_ptr);
-      AddVar_Last( this_ptr);
-      AddVar_Last_2( this_ptr);
-      AddVar_wx_str( this_ptr);
-      AddVar_GetData( this_ptr);
-      AddVar_char_str( this_ptr);
-      AddVar_wchar_str( this_ptr);
-      AddVar_ToAscii( this_ptr);
-      AddVar_utf8_str( this_ptr);
-      AddVar_ToUTF8( this_ptr);
-      AddVar_To8BitData( this_ptr);
-      AddVar_mb_str( this_ptr);
-      AddVar_mbc_str( this_ptr);
-      AddVar_wc_str_1( this_ptr);
-      AddVar_wc_str( this_ptr);
-      AddVar_wc_str_2( this_ptr);
-      AddVar_fn_str( this_ptr);
-      AddVar_Append_1( this_ptr);
-      AddVar_Append( this_ptr);
-      AddVar_Append_2( this_ptr);
-      AddVar_Append_3( this_ptr);
-      AddVar_Append_4( this_ptr);
-      AddVar_Prepend( this_ptr);
-      AddVar_Cmp_1( this_ptr);
-      AddVar_Cmp( this_ptr);
-      AddVar_Cmp_2( this_ptr);
-      AddVar_CmpNoCase_1( this_ptr);
-      AddVar_CmpNoCase( this_ptr);
-      AddVar_CmpNoCase_2( this_ptr);
-      AddVar_IsSameAs_1( this_ptr);
-      AddVar_IsSameAs( this_ptr);
-      AddVar_IsSameAs_2( this_ptr);
-      AddVar_Mid( this_ptr);
-      AddVar_StartsWith( this_ptr);
-      AddVar_EndsWith( this_ptr);
-      AddVar_Left( this_ptr);
-      AddVar_Right( this_ptr);
-      AddVar_BeforeFirst( this_ptr);
-      AddVar_BeforeLast( this_ptr);
-      AddVar_AfterFirst( this_ptr);
-      AddVar_AfterLast( this_ptr);
-      AddVar_Before( this_ptr);
-      AddVar_After( this_ptr);
-      AddVar_MakeUpper( this_ptr);
-      AddVar_Upper( this_ptr);
-      AddVar_MakeLower( this_ptr);
-      AddVar_Lower( this_ptr);
-      AddVar_Trim( this_ptr);
-      AddVar_Pad( this_ptr);
-      AddVar_Find_1( this_ptr);
-      AddVar_Find( this_ptr);
-      AddVar_Find_2( this_ptr);
-      AddVar_Replace( this_ptr);
-      AddVar_Matches( this_ptr);
-      AddVar_ToLong( this_ptr);
-      AddVar_ToULong( this_ptr);
-      AddVar_ToLongLong( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Len( this_ptr);
+  AddVar_IsEmpty( this_ptr);
+  AddVar_Truncate( this_ptr);
+  AddVar_Empty( this_ptr);
+  AddVar_Clear( this_ptr);
+  AddVar_IsAscii( this_ptr);
+  AddVar_IsNumber( this_ptr);
+  AddVar_IsWord( this_ptr);
+  AddVar_GetChar( this_ptr);
+  AddVar_GetWritableChar( this_ptr);
+  AddVar_SetChar( this_ptr);
+  AddVar_Last_1( this_ptr);
+  AddVar_Last( this_ptr);
+  AddVar_Last_2( this_ptr);
+  AddVar_wx_str( this_ptr);
+  AddVar_GetData( this_ptr);
+  AddVar_char_str( this_ptr);
+  AddVar_wchar_str( this_ptr);
+  AddVar_ToAscii( this_ptr);
+  AddVar_utf8_str( this_ptr);
+  AddVar_ToUTF8( this_ptr);
+  AddVar_To8BitData( this_ptr);
+  AddVar_mb_str( this_ptr);
+  AddVar_mbc_str( this_ptr);
+  AddVar_wc_str_1( this_ptr);
+  AddVar_wc_str( this_ptr);
+  AddVar_wc_str_2( this_ptr);
+  AddVar_fn_str( this_ptr);
+  AddVar_Append_1( this_ptr);
+  AddVar_Append( this_ptr);
+  AddVar_Append_2( this_ptr);
+  AddVar_Append_3( this_ptr);
+  AddVar_Append_4( this_ptr);
+  AddVar_Prepend( this_ptr);
+  AddVar_Cmp_1( this_ptr);
+  AddVar_Cmp( this_ptr);
+  AddVar_Cmp_2( this_ptr);
+  AddVar_CmpNoCase_1( this_ptr);
+  AddVar_CmpNoCase( this_ptr);
+  AddVar_CmpNoCase_2( this_ptr);
+  AddVar_IsSameAs_1( this_ptr);
+  AddVar_IsSameAs( this_ptr);
+  AddVar_IsSameAs_2( this_ptr);
+  AddVar_Mid( this_ptr);
+  AddVar_StartsWith( this_ptr);
+  AddVar_EndsWith( this_ptr);
+  AddVar_Left( this_ptr);
+  AddVar_Right( this_ptr);
+  AddVar_BeforeFirst( this_ptr);
+  AddVar_BeforeLast( this_ptr);
+  AddVar_AfterFirst( this_ptr);
+  AddVar_AfterLast( this_ptr);
+  AddVar_Before( this_ptr);
+  AddVar_After( this_ptr);
+  AddVar_MakeUpper( this_ptr);
+  AddVar_Upper( this_ptr);
+  AddVar_MakeLower( this_ptr);
+  AddVar_Lower( this_ptr);
+  AddVar_Trim( this_ptr);
+  AddVar_Pad( this_ptr);
+  AddVar_Find_1( this_ptr);
+  AddVar_Find( this_ptr);
+  AddVar_Find_2( this_ptr);
+  AddVar_Replace( this_ptr);
+  AddVar_Matches( this_ptr);
+  AddVar_ToLong( this_ptr);
+  AddVar_ToULong( this_ptr);
+  AddVar_ToLongLong( this_ptr);
 /* The following types are missing: long long unsigned int
-      AddVar_ToULongLong( this_ptr);
+  AddVar_ToULongLong( this_ptr);
 */
-      AddVar_ToDouble( this_ptr);
-      AddVar_Printf( this_ptr);
-      AddVar_Alloc( this_ptr);
-      AddVar_Shrink( this_ptr);
-      AddVar_GetWriteBuf( this_ptr);
-      AddVar_UngetWriteBuf_1( this_ptr);
-      AddVar_UngetWriteBuf( this_ptr);
-      AddVar_UngetWriteBuf_2( this_ptr);
-      AddVar_SubString( this_ptr);
-      AddVar_sprintf( this_ptr);
-      AddVar_Length( this_ptr);
-      AddVar_Freq( this_ptr);
-      AddVar_LowerCase( this_ptr);
-      AddVar_UpperCase( this_ptr);
-      AddVar_Index_1( this_ptr);
-      AddVar_Index( this_ptr);
-      AddVar_Index_2( this_ptr);
-      AddVar_Remove_1( this_ptr);
-      AddVar_RemoveLast( this_ptr);
-      AddVar_Remove( this_ptr);
-      AddVar_Remove_2( this_ptr);
-      AddVar_First_1( this_ptr);
-      AddVar_First( this_ptr);
-      AddVar_First_2( this_ptr);
-      AddVar_First_3( this_ptr);
-      AddVar_Last_3( this_ptr);
-      AddVar_Contains( this_ptr);
-      AddVar_IsNull( this_ptr);
-      AddVar_append_1( this_ptr);
-      AddVar_append( this_ptr);
-      AddVar_append_2( this_ptr);
-      AddVar_append_3( this_ptr);
-      AddVar_append_4( this_ptr);
-      AddVar_append_5( this_ptr);
-      AddVar_append_6( this_ptr);
-      AddVar_assign_1( this_ptr);
-      AddVar_assign( this_ptr);
-      AddVar_assign_2( this_ptr);
-      AddVar_assign_3( this_ptr);
-      AddVar_assign_4( this_ptr);
-      AddVar_assign_5( this_ptr);
-      AddVar_assign_6( this_ptr);
-      AddVar_insert_1( this_ptr);
-      AddVar_insert( this_ptr);
-      AddVar_insert_2( this_ptr);
-      AddVar_insert_3( this_ptr);
-      AddVar_insert_4( this_ptr);
-      AddVar_insert_5( this_ptr);
-      AddVar_insert_6( this_ptr);
-      AddVar_insert_7( this_ptr);
-      AddVar_insert_8( this_ptr);
-      AddVar_erase_1( this_ptr);
-      AddVar_erase( this_ptr);
-      AddVar_erase_2( this_ptr);
-      AddVar_erase_3( this_ptr);
-      AddVar_replace_1( this_ptr);
-      AddVar_replace( this_ptr);
-      AddVar_replace_2( this_ptr);
-      AddVar_replace_3( this_ptr);
-      AddVar_replace_4( this_ptr);
-      AddVar_replace_5( this_ptr);
-      AddVar_replace_6( this_ptr);
-      AddVar_replace_7( this_ptr);
-      AddVar_replace_8( this_ptr);
-      AddVar_replace_9( this_ptr);
-      AddVar_replace_10( this_ptr);
+  AddVar_ToDouble( this_ptr);
+  AddVar_Printf( this_ptr);
+  AddVar_Alloc( this_ptr);
+  AddVar_Shrink( this_ptr);
+  AddVar_GetWriteBuf( this_ptr);
+  AddVar_UngetWriteBuf_1( this_ptr);
+  AddVar_UngetWriteBuf( this_ptr);
+  AddVar_UngetWriteBuf_2( this_ptr);
+  AddVar_SubString( this_ptr);
+  AddVar_sprintf( this_ptr);
+  AddVar_Length( this_ptr);
+  AddVar_Freq( this_ptr);
+  AddVar_LowerCase( this_ptr);
+  AddVar_UpperCase( this_ptr);
+  AddVar_Index_1( this_ptr);
+  AddVar_Index( this_ptr);
+  AddVar_Index_2( this_ptr);
+  AddVar_Remove_1( this_ptr);
+  AddVar_RemoveLast( this_ptr);
+  AddVar_Remove( this_ptr);
+  AddVar_Remove_2( this_ptr);
+  AddVar_First_1( this_ptr);
+  AddVar_First( this_ptr);
+  AddVar_First_2( this_ptr);
+  AddVar_First_3( this_ptr);
+  AddVar_Last_3( this_ptr);
+  AddVar_Contains( this_ptr);
+  AddVar_IsNull( this_ptr);
+  AddVar_append_1( this_ptr);
+  AddVar_append( this_ptr);
+  AddVar_append_2( this_ptr);
+  AddVar_append_3( this_ptr);
+  AddVar_append_4( this_ptr);
+  AddVar_append_5( this_ptr);
+  AddVar_append_6( this_ptr);
+  AddVar_assign_1( this_ptr);
+  AddVar_assign( this_ptr);
+  AddVar_assign_2( this_ptr);
+  AddVar_assign_3( this_ptr);
+  AddVar_assign_4( this_ptr);
+  AddVar_assign_5( this_ptr);
+  AddVar_assign_6( this_ptr);
+  AddVar_insert_1( this_ptr);
+  AddVar_insert( this_ptr);
+  AddVar_insert_2( this_ptr);
+  AddVar_insert_3( this_ptr);
+  AddVar_insert_4( this_ptr);
+  AddVar_insert_5( this_ptr);
+  AddVar_insert_6( this_ptr);
+  AddVar_insert_7( this_ptr);
+  AddVar_insert_8( this_ptr);
+  AddVar_erase_1( this_ptr);
+  AddVar_erase( this_ptr);
+  AddVar_erase_2( this_ptr);
+  AddVar_erase_3( this_ptr);
+  AddVar_replace_1( this_ptr);
+  AddVar_replace( this_ptr);
+  AddVar_replace_2( this_ptr);
+  AddVar_replace_3( this_ptr);
+  AddVar_replace_4( this_ptr);
+  AddVar_replace_5( this_ptr);
+  AddVar_replace_6( this_ptr);
+  AddVar_replace_7( this_ptr);
+  AddVar_replace_8( this_ptr);
+  AddVar_replace_9( this_ptr);
+  AddVar_replace_10( this_ptr);
 
-      // Adding operators
-      AddVar___assign___1( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      AddVar___at___1( this_ptr);
-      AddVar___at__( this_ptr);
-      AddVar___at___2( this_ptr);
-      AddVar___at___3( this_ptr);
-      AddVar___assign__( this_ptr);
-      AddVar___assign___2( this_ptr);
-      AddVar___assign___3( this_ptr);
-      AddVar___assign___4( this_ptr);
-      AddVar___assign___5( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      AddVar___add_assign___1( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
+  // Adding operators
+  AddVar___assign___1( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  AddVar___at___1( this_ptr);
+  AddVar___at__( this_ptr);
+  AddVar___at___2( this_ptr);
+  AddVar___at___3( this_ptr);
+  AddVar___assign__( this_ptr);
+  AddVar___assign___2( this_ptr);
+  AddVar___assign___3( this_ptr);
+  AddVar___assign___4( this_ptr);
+  AddVar___assign___5( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  AddVar___add_assign___1( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 /* The following types are missing: long long unsigned int
-      // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
 */
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      // AddVar_operator not available( this_ptr);
-      AddVar___add_assign__( this_ptr);
-      AddVar___add_assign___2( this_ptr);
-      AddVar___add_assign___3( this_ptr);
-      AddVar___add_assign___4( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  // AddVar_operator not available( this_ptr);
+  AddVar___add_assign__( this_ptr);
+  AddVar___add_assign___2( this_ptr);
+  AddVar___add_assign___3( this_ptr);
+  AddVar___add_assign___4( this_ptr);
 
 
 
-  
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+  AMIObject::ptr obj_caseCompare(new AMIObject);
+  obj_caseCompare->SetName("caseCompare");
+
+  BasicVariable::ptr var_exact = AMILabType<int >::CreateVar(0);
+  if (var_exact.get()) {
+    var_exact->Rename("exact");
+    obj_caseCompare->GetContext()->AddVar(var_exact,obj_caseCompare->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_caseCompare->GetName().c_str(),obj_caseCompare,context);
+  AMIObject::ptr obj_stripType(new AMIObject);
+  obj_stripType->SetName("stripType");
+
+  BasicVariable::ptr var_leading = AMILabType<int >::CreateVar(1);
+  if (var_leading.get()) {
+    var_leading->Rename("leading");
+    obj_stripType->GetContext()->AddVar(var_leading,obj_stripType->GetContext());
+  }
+
+  // Add enum to context
+  context->AddVar<AMIObject>(obj_stripType->GetName().c_str(),obj_stripType,context);
+
+
+  // Adding Bases
 
   // Add base parent wxStringBase
   boost::shared_ptr<wxStringBase > parent_wxStringBase(  boost::dynamic_pointer_cast<wxStringBase >(this_ptr->GetObj()));
@@ -268,7 +322,7 @@ void WrapClass_wxString::AddMethods(WrapClass<wxString>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxString::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxString_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -745,13 +799,25 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p->GetNumParam()>2) ClassReturnEmptyVar;
   int _n=0;
 
-  boost::shared_ptr<void > pStart_smtptr;
-  if (!get_val_smtptr_param<void >(pStart_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* pStart = pStart_smtptr.get();
+  void* pStart;
+  if (CheckNullVar(_p,_n))  {
+    pStart=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > pStart_smtptr;
+    if (!get_val_smtptr_param<void >(pStart_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pStart = pStart_smtptr.get();
+  }
 
-  boost::shared_ptr<void > pEnd_smtptr;
-  if (!get_val_smtptr_param<void >(pEnd_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
-  void* pEnd = pEnd_smtptr.get();
+  void* pEnd;
+  if (CheckNullVar(_p,_n))  {
+    pEnd=(void*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<void > pEnd_smtptr;
+    if (!get_val_smtptr_param<void >(pEnd_smtptr,_p,_n,true,false,true)) ClassReturnEmptyVar;
+    pEnd = pEnd_smtptr.get();
+  }
 
   wxString* _newobj = new wxString(pStart, pEnd);
   BasicVariable::ptr res = WrapClass_wxString::CreateVar(_newobj);
@@ -2151,9 +2217,15 @@ BasicVariable::ptr WrapClass_wxString::
   wchar_t prefix[prefix_string->size()+1];
 mbstowcs(prefix,prefix_string->c_str(),prefix_string->size()+1);
 
-  boost::shared_ptr<wxString > rest_smtptr;
-  if (!get_val_smtptr_param<wxString >(rest_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString* rest = rest_smtptr.get();
+  wxString* rest = 0l;
+  if (CheckNullVar(_p,_n))  {
+    rest=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > rest_smtptr;
+    if (!get_val_smtptr_param<wxString >(rest_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    rest = rest_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->StartsWith(prefix, rest);
   return AMILabType<bool >::CreateVar(res);
@@ -2183,9 +2255,15 @@ BasicVariable::ptr WrapClass_wxString::
   wchar_t suffix[suffix_string->size()+1];
 mbstowcs(suffix,suffix_string->c_str(),suffix_string->size()+1);
 
-  boost::shared_ptr<wxString > rest_smtptr;
-  if (!get_val_smtptr_param<wxString >(rest_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxString* rest = rest_smtptr.get();
+  wxString* rest = 0l;
+  if (CheckNullVar(_p,_n))  {
+    rest=(wxString*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxString > rest_smtptr;
+    if (!get_val_smtptr_param<wxString >(rest_smtptr,_p,_n,false,false,false)) ClassHelpAndReturn;
+    rest = rest_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->EndsWith(suffix, rest);
   return AMILabType<bool >::CreateVar(res);
@@ -2829,9 +2907,15 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p->GetNumParam()>2) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<long long unsigned int > val_smtptr;
-  if (!get_val_smtptr_param<long long unsigned int >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  long long unsigned int* val = val_smtptr.get();
+  long long unsigned int* val;
+  if (CheckNullVar(_p,_n))  {
+    val=(long long unsigned int*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<long long unsigned int > val_smtptr;
+    if (!get_val_smtptr_param<long long unsigned int >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    val = val_smtptr.get();
+  }
 
   int base = 10;
   if (!get_val_param<int >(base,_p,_n,false,false)) ClassHelpAndReturn;
@@ -2859,9 +2943,15 @@ BasicVariable::ptr WrapClass_wxString::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<double > val_smtptr;
-  if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  double* val = val_smtptr.get();
+  double* val;
+  if (CheckNullVar(_p,_n))  {
+    val=(double*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<double > val_smtptr;
+    if (!get_val_smtptr_param<double >(val_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    val = val_smtptr.get();
+  }
 
   bool res =   this->_objectptr->GetObj()->ToDouble(val);
   return AMILabType<bool >::CreateVar(res);

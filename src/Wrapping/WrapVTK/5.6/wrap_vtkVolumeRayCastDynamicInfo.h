@@ -19,14 +19,16 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "vtk_includes.h"
+#include "vtkVolumeRayCastFunction.h"
 
 // include what is needed for inheritence and for types ...
 
 
 
-
-AMI_DECLARE_TYPE(vtkVolumeRayCastDynamicInfo);
+#ifndef vtkVolumeRayCastDynamicInfo_declared
+  #define vtkVolumeRayCastDynamicInfo_declared
+  AMI_DECLARE_TYPE(vtkVolumeRayCastDynamicInfo);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkVolumeRayCastDynamicInfo : public WrapClass<vtkVolumeRayCastDynamicInfo>
@@ -56,11 +58,11 @@ class WrapClass_vtkVolumeRayCastDynamicInfo : public WrapClass<vtkVolumeRayCastD
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo_1,"Constructor vtkVolumeRayCastDynamicInfo::._88(vtkVolumeRayCastDynamicInfo const & param0) (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#._88).");
+    ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo_1,"Constructor vtkVolumeRayCastDynamicInfo::._87(vtkVolumeRayCastDynamicInfo const & param0) (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#._87).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo,"Constructor vtkVolumeRayCastDynamicInfo::vtkVolumeRayCastDynamicInfo() (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#vtkvolumeraycastdynamicinfo).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo_2,"Constructor vtkVolumeRayCastDynamicInfo::._88() (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#._88).");
+    ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo_2,"Constructor vtkVolumeRayCastDynamicInfo::._87() (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#._87).");
 
 
 
@@ -86,12 +88,13 @@ class WrapClass_vtkVolumeRayCastDynamicInfo : public WrapClass<vtkVolumeRayCastD
 
     void AddMethods(WrapClass<vtkVolumeRayCastDynamicInfo>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkVolumeRayCastDynamicInfo_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkVolumeRayCastDynamicInfo_h

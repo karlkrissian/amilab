@@ -6,7 +6,7 @@
 
 
 proc AddUtilsMenu() {
-  for dir in  "Calculator" , "RemoveSpots"\
+  for dir in  "Calculator" , "Timer" , "RemoveSpots"\
   {
     if wx.wxFileName(GetScriptsDir+"/Utils/"+dir+"/Add2Menu.amil").FileExists() {
       func "/Utils/"+dir+"/Add2Menu.amil"

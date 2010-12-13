@@ -19,15 +19,17 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "vtk_includes.h"
+#include "vtkOpenGLGPUVolumeRayCastMapper.h"
 
 // include what is needed for inheritence and for types ...
 
 #include "wrap_vtkGPUVolumeRayCastMapper.h"
 
 
-
-AMI_DECLARE_TYPE(vtkOpenGLGPUVolumeRayCastMapper);
+#ifndef vtkOpenGLGPUVolumeRayCastMapper_declared
+  #define vtkOpenGLGPUVolumeRayCastMapper_declared
+  AMI_DECLARE_TYPE(vtkOpenGLGPUVolumeRayCastMapper);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkOpenGLGPUVolumeRayCastMapper : public WrapClass<vtkOpenGLGPUVolumeRayCastMapper>
@@ -88,12 +90,13 @@ class WrapClass_vtkOpenGLGPUVolumeRayCastMapper : public WrapClass<vtkOpenGLGPUV
 
     void AddMethods(WrapClass<vtkOpenGLGPUVolumeRayCastMapper>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkOpenGLGPUVolumeRayCastMapper_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkOpenGLGPUVolumeRayCastMapper_h

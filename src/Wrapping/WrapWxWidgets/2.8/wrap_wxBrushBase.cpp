@@ -10,18 +10,28 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxBrushBase.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxBrushBase.h"
+#ifndef wxBrushBase_declared
+  #define wxBrushBase_declared
+  AMI_DECLARE_TYPE(wxBrushBase)
+#endif
 
 
-#include "wrap_wxBrushBase.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -61,15 +71,18 @@ void WrapClass_wxBrushBase::AddMethods(WrapClass<wxBrushBase>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding standard methods 
-      AddVar_IsHatch( this_ptr);
+  // Adding standard methods 
+  AddVar_IsHatch( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -90,7 +103,7 @@ void WrapClass_wxBrushBase::AddMethods(WrapClass<wxBrushBase>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxBrushBase::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxBrushBase_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);

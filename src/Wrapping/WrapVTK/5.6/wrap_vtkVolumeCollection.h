@@ -26,8 +26,10 @@
 #include "wrap_vtkPropCollection.h"
 
 
-
-AMI_DECLARE_TYPE(vtkVolumeCollection);
+#ifndef vtkVolumeCollection_declared
+  #define vtkVolumeCollection_declared
+  AMI_DECLARE_TYPE(vtkVolumeCollection);
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_vtkVolumeCollection : public WrapClass<vtkVolumeCollection>
@@ -92,12 +94,13 @@ class WrapClass_vtkVolumeCollection : public WrapClass<vtkVolumeCollection>
 
     void AddMethods(WrapClass<vtkVolumeCollection>::ptr this_ptr );
     
-    /*
-     * Adds the constructor and the static methods to the given context
-     */
-    static void AddStaticMethods( Variables::ptr& context);
 
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassvtkVolumeCollection_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_vtkVolumeCollection_h

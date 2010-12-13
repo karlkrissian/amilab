@@ -10,20 +10,36 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxBoxSizer.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxBoxSizer.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxClassInfo.h"
+#ifndef wxBoxSizer_declared
+  #define wxBoxSizer_declared
+  AMI_DECLARE_TYPE(wxBoxSizer)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
+#ifndef wxClassInfo_declared
+  #define wxClassInfo_declared
+  AMI_DECLARE_TYPE(wxClassInfo)
+#endif
 
 
-#include "wrap_wxBoxSizer.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -63,21 +79,24 @@ void WrapClass_wxBoxSizer::AddMethods(WrapClass<wxBoxSizer>::ptr this_ptr )
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_RecalcSizes( this_ptr);
-      AddVar_CalcMin( this_ptr);
-      AddVar_GetOrientation( this_ptr);
-      AddVar_SetOrientation( this_ptr);
-      AddVar_GetClassInfo( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_RecalcSizes( this_ptr);
+  AddVar_CalcMin( this_ptr);
+  AddVar_GetOrientation( this_ptr);
+  AddVar_SetOrientation( this_ptr);
+  AddVar_GetClassInfo( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Get the current context
   AMIObject::ptr tmpobj(amiobject.lock());
@@ -98,7 +117,7 @@ void WrapClass_wxBoxSizer::AddMethods(WrapClass<wxBoxSizer>::ptr this_ptr )
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxBoxSizer::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxBoxSizer_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -304,7 +323,7 @@ BasicVariable::ptr WrapClass_wxBoxSizer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxClassInfo * res =   this->_objectptr->GetObj()->GetClassInfo();
-  BasicVariable::ptr res_var = WrapClass_wxClassInfo::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxClassInfo >::CreateVar(res,true);
   return res_var;
 }
 

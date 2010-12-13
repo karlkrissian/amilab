@@ -10,23 +10,48 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_wxAuiToolBarItem.h"
 
 // get all the required includes
 // #include "..."
-#include "wrap_wxAuiToolBarItem.h"
-#include "wrap_wxWindow.h"
-#include "wrap_wxSizerItem.h"
-#include "wrap_wxString.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxSize.h"
+#ifndef wxAuiToolBarItem_declared
+  #define wxAuiToolBarItem_declared
+  AMI_DECLARE_TYPE(wxAuiToolBarItem)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
+#endif
+#ifndef wxSizerItem_declared
+  #define wxSizerItem_declared
+  AMI_DECLARE_TYPE(wxSizerItem)
+#endif
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
+#endif
+#ifndef wxBitmap_declared
+  #define wxBitmap_declared
+  AMI_DECLARE_TYPE(wxBitmap)
+#endif
+#ifndef wxSize_declared
+  #define wxSize_declared
+  AMI_DECLARE_TYPE(wxSize)
+#endif
 
 
-#include "wrap_wxAuiToolBarItem.h"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
 
 //----------------------------------------------------------------------
 //
@@ -66,53 +91,56 @@ void WrapClass_wxAuiToolBarItem::AddMethods(WrapClass<wxAuiToolBarItem>::ptr thi
 {
   // todo: check that the method name is not a token ?
   
-      // Adding copy method 
-      AddVar___copy__( this_ptr);
-      // Adding standard methods 
-      AddVar_Assign( this_ptr);
-      AddVar_SetWindow( this_ptr);
-      AddVar_GetWindow( this_ptr);
-      AddVar_SetId( this_ptr);
-      AddVar_GetId( this_ptr);
-      AddVar_SetKind( this_ptr);
-      AddVar_GetKind( this_ptr);
-      AddVar_SetState( this_ptr);
-      AddVar_GetState( this_ptr);
-      AddVar_SetSizerItem( this_ptr);
-      AddVar_GetSizerItem( this_ptr);
-      AddVar_SetLabel( this_ptr);
-      AddVar_GetLabel( this_ptr);
-      AddVar_SetBitmap( this_ptr);
-      AddVar_GetBitmap( this_ptr);
-      AddVar_SetDisabledBitmap( this_ptr);
-      AddVar_GetDisabledBitmap( this_ptr);
-      AddVar_SetHoverBitmap( this_ptr);
-      AddVar_GetHoverBitmap( this_ptr);
-      AddVar_SetShortHelp( this_ptr);
-      AddVar_GetShortHelp( this_ptr);
-      AddVar_SetLongHelp( this_ptr);
-      AddVar_GetLongHelp( this_ptr);
-      AddVar_SetMinSize( this_ptr);
-      AddVar_GetMinSize( this_ptr);
-      AddVar_SetSpacerPixels( this_ptr);
-      AddVar_GetSpacerPixels( this_ptr);
-      AddVar_SetProportion( this_ptr);
-      AddVar_GetProportion( this_ptr);
-      AddVar_SetActive( this_ptr);
-      AddVar_IsActive( this_ptr);
-      AddVar_SetHasDropDown( this_ptr);
-      AddVar_HasDropDown( this_ptr);
-      AddVar_SetSticky( this_ptr);
-      AddVar_IsSticky( this_ptr);
-      AddVar_SetUserData( this_ptr);
-      AddVar_GetUserData( this_ptr);
+  // Adding copy method 
+  AddVar___copy__( this_ptr);
+  // Adding standard methods 
+  AddVar_Assign( this_ptr);
+  AddVar_SetWindow( this_ptr);
+  AddVar_GetWindow( this_ptr);
+  AddVar_SetId( this_ptr);
+  AddVar_GetId( this_ptr);
+  AddVar_SetKind( this_ptr);
+  AddVar_GetKind( this_ptr);
+  AddVar_SetState( this_ptr);
+  AddVar_GetState( this_ptr);
+  AddVar_SetSizerItem( this_ptr);
+  AddVar_GetSizerItem( this_ptr);
+  AddVar_SetLabel( this_ptr);
+  AddVar_GetLabel( this_ptr);
+  AddVar_SetBitmap( this_ptr);
+  AddVar_GetBitmap( this_ptr);
+  AddVar_SetDisabledBitmap( this_ptr);
+  AddVar_GetDisabledBitmap( this_ptr);
+  AddVar_SetHoverBitmap( this_ptr);
+  AddVar_GetHoverBitmap( this_ptr);
+  AddVar_SetShortHelp( this_ptr);
+  AddVar_GetShortHelp( this_ptr);
+  AddVar_SetLongHelp( this_ptr);
+  AddVar_GetLongHelp( this_ptr);
+  AddVar_SetMinSize( this_ptr);
+  AddVar_GetMinSize( this_ptr);
+  AddVar_SetSpacerPixels( this_ptr);
+  AddVar_GetSpacerPixels( this_ptr);
+  AddVar_SetProportion( this_ptr);
+  AddVar_GetProportion( this_ptr);
+  AddVar_SetActive( this_ptr);
+  AddVar_IsActive( this_ptr);
+  AddVar_SetHasDropDown( this_ptr);
+  AddVar_HasDropDown( this_ptr);
+  AddVar_SetSticky( this_ptr);
+  AddVar_IsSticky( this_ptr);
+  AddVar_SetUserData( this_ptr);
+  AddVar_GetUserData( this_ptr);
 
-      // Adding operators
-      AddVar___assign__( this_ptr);
+  // Adding operators
+  AddVar___assign__( this_ptr);
 
 
 
   
+
+  
+
 
   // Adding Bases
 
@@ -122,7 +150,7 @@ void WrapClass_wxAuiToolBarItem::AddMethods(WrapClass<wxAuiToolBarItem>::ptr thi
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_wxAuiToolBarItem::AddStaticMethods( Variables::ptr& context)
+void WrapClasswxAuiToolBarItem_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -268,9 +296,15 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxWindow > w_smtptr;
-  if (!get_val_smtptr_param<wxWindow >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxWindow* w = w_smtptr.get();
+  wxWindow* w;
+  if (CheckNullVar(_p,_n))  {
+    w=(wxWindow*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxWindow > w_smtptr;
+    if (!get_val_smtptr_param<wxWindow >(w_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    w = w_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetWindow(w);
   return BasicVariable::ptr();
@@ -292,7 +326,7 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxWindow * res =   this->_objectptr->GetObj()->GetWindow();
-  BasicVariable::ptr res_var = WrapClass_wxWindow::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxWindow >::CreateVar(res,true);
   return res_var;
 }
 
@@ -442,9 +476,15 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  boost::shared_ptr<wxSizerItem > s_smtptr;
-  if (!get_val_smtptr_param<wxSizerItem >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
-  wxSizerItem* s = s_smtptr.get();
+  wxSizerItem* s;
+  if (CheckNullVar(_p,_n))  {
+    s=(wxSizerItem*)NULL;
+    _n++;
+  } else {
+    boost::shared_ptr<wxSizerItem > s_smtptr;
+    if (!get_val_smtptr_param<wxSizerItem >(s_smtptr,_p,_n,true,false,false)) ClassHelpAndReturn;
+    s = s_smtptr.get();
+  }
 
   this->_objectptr->GetObj()->SetSizerItem(s);
   return BasicVariable::ptr();
@@ -466,7 +506,7 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItem::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   wxSizerItem * res =   this->_objectptr->GetObj()->GetSizerItem();
-  BasicVariable::ptr res_var = WrapClass_wxSizerItem::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<wxSizerItem >::CreateVar(res,true);
   return res_var;
 }
 

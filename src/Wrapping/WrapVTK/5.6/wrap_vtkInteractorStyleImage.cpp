@@ -16,14 +16,24 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#include "wrap_vtkInteractorStyleImage.h"
+
 // get all the required includes
 // #include "..."
-#include "wrap_vtkInteractorStyleImage.h"
-#include "wrap_vtkObjectBase.h"
-#include "wrap_vtkIndent.h"
+#ifndef vtkInteractorStyleImage_declared
+  #define vtkInteractorStyleImage_declared
+  AMI_DECLARE_TYPE(vtkInteractorStyleImage)
+#endif
+#ifndef vtkObjectBase_declared
+  #define vtkObjectBase_declared
+  AMI_DECLARE_TYPE(vtkObjectBase)
+#endif
+#ifndef vtkIndent_declared
+  #define vtkIndent_declared
+  AMI_DECLARE_TYPE(vtkIndent)
+#endif
 
 
-#include "wrap_vtkInteractorStyleImage.h"
 
 // needed to allow NULL pointer parameter
 extern Variable<int>::ptr nullvar;
@@ -127,7 +137,7 @@ void WrapClass_vtkInteractorStyleImage::AddMethods(WrapClass<vtkInteractorStyleI
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass_vtkInteractorStyleImage::AddStaticMethods( Variables::ptr& context)
+void WrapClassvtkInteractorStyleImage_AddStaticMethods( Variables::ptr& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -164,7 +174,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleImage::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyleImage * res =   vtkInteractorStyleImage::New();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleImage::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleImage >::CreateVar(res,true);
   return res_var;
 }
 
@@ -223,7 +233,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleImage::
   }
 
   vtkInteractorStyleImage * res =   vtkInteractorStyleImage::SafeDownCast(o);
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleImage::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleImage >::CreateVar(res,true);
   return res_var;
 }
 
@@ -269,7 +279,7 @@ BasicVariable::ptr WrapClass_vtkInteractorStyleImage::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInteractorStyleImage * res =   this->_objectptr->GetObj()->NewInstance();
-  BasicVariable::ptr res_var = WrapClass_vtkInteractorStyleImage::CreateVar(res);
+  BasicVariable::ptr res_var = AMILabType<vtkInteractorStyleImage >::CreateVar(res,true);
   return res_var;
 }
 /* The following types are missing: basic_ostream<char,std::char_traits<char> >
