@@ -2679,7 +2679,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
   Lims[1][0] = Lims[2][0] = Lims[3][0] = -4;
   Lims[1][1] = Lims[2][1] = Lims[3][1] = 4;
   InrImage input_copy(WT_DOUBLE,"input_copy.inr.gz",input);
-  //input_copy = *input;
+  input_copy = *input;
   for(int index=0; index<niter; index++)
   {
     C->InitZero();
@@ -2688,7 +2688,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
     
     //1º Se promedia la imagen de entrada y se deja en G
     Promedio3x3(input, G.get(), A00, A01, A11);
-    input_copy = *input;
+    //input_copy = *input;
     //Para que funcionen las macros de parciales tengo que jincar G como input
     //setInput(G.get());
     //copyImage(input, G.get(), 0);
@@ -2794,7 +2794,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
           //If the intensity jump is less than the threshold, continue
           if (fabs(A-B) < threshold) continue;
           
-          
+//          cout << "comienza el cálculo de bordes cercanos en YMAX" << endl;
           //**********************************************************************
           
           //PARTE NUEVA DE LOS BORDES CERCANOS (CASOS GROSOR 2 Y 3 PXLS.)
@@ -3039,7 +3039,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
               SR += FF(x+1,y+k,z);
           }
           
-          
+//          cout << "termina el cálculo de bordes cercanos en YMAX" << endl;
           //Calculate the coefficients of the curve
           f = 2 * (A-B);
           a = (2*SM - (1+2*mm2)*A - (1-2*mm1)*B) / f;
@@ -3078,8 +3078,10 @@ void SubPixel2D::SubpixelDenoising(int niter)
           
 //          cout << "voy a llamar a updateimages en YMAX" << endl;
           //Update the counters and intensities images
-          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, YMAX, gx, gy, des, 
-                       cu, A, B, linear_case, m, ll1, ll2, mm1, mm2, rr1, rr2);
+//          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, YMAX, gx, gy, des, 
+//                       cu, A, B, linear_case, m, ll1, ll2, mm1, mm2, rr1, rr2);
+            UpdateImages(&input_copy, C.get(), I.get(), x, y, z, YMAX, gx, gy, des, 
+               cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
 //          cout << "vuelvo de updateimages en YMAX" << endl;
         }
         else
@@ -3171,7 +3173,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
           
           //If the intensity jump is less than the threshold, continue
           if (fabs(A-B) < threshold) continue;
-          
+//          cout << "comienza el cálculo de bordes cercanos en XMAX" << endl;
           //**********************************************************************
           //PARTE NUEVA PARA CONTORNOS MUY CERCANOS (2 Y 3 PXLS) CASO VENTANA HORIZONTAL
           
@@ -3413,7 +3415,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
             for (SR=0, k=r1; k<=r2; k++) 
               SR += FF(x+k,y+1,z);
           }
-          
+//          cout << "termina el cálculo de bordes cercanos en XMAX" << endl;
           //Calculate the coefficients of the curve
           f = 2 * (A-B);
           a = (2*SM - (1+2*mm2)*A - (1-2*mm1)*B) / f;
@@ -3450,8 +3452,10 @@ void SubPixel2D::SubpixelDenoising(int niter)
           
 //          cout << "voy a llamar a updateimages en XMAX" << endl;
           //Update the counters and intensities images
-          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, XMAX, gx, gy, des, 
-                       cu, A, B, linear_case, m, ll1, ll2, mm1, mm2, rr1, rr2);
+//          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, XMAX, gx, gy, des, 
+//                       cu, A, B, linear_case, m, ll1, ll2, mm1, mm2, rr1, rr2);
+            UpdateImages(&input_copy, C.get(), I.get(), x, y, z, XMAX, gx, gy, des, 
+               cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
 //          cout << "vuelvo de llamar a updateimages en XMAX" << endl;
         }
       }
