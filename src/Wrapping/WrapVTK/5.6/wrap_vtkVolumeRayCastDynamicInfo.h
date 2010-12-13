@@ -13,11 +13,13 @@
 #ifndef _wrap_vtkVolumeRayCastDynamicInfo_h_
 #define _wrap_vtkVolumeRayCastDynamicInfo_h_
 
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
-#include "Variable.hpp"
 #include "paramlist.h"
-#include "ami_object.h"
 
 #include "vtkVolumeRayCastFunction.h"
 
@@ -58,11 +60,11 @@ class WrapClass_vtkVolumeRayCastDynamicInfo : public WrapClass<vtkVolumeRayCastD
 
     
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo_1,"Constructor vtkVolumeRayCastDynamicInfo::._87(vtkVolumeRayCastDynamicInfo const & param0) (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#._87).");
+    ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo_1,"Constructor vtkVolumeRayCastDynamicInfo::._88(vtkVolumeRayCastDynamicInfo const & param0) (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#._88).");
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo,"Constructor vtkVolumeRayCastDynamicInfo::vtkVolumeRayCastDynamicInfo() (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#vtkvolumeraycastdynamicinfo).");
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo_2,"Constructor vtkVolumeRayCastDynamicInfo::._87() (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#._87).");
+    ADD_CLASS_CONSTRUCTOR(vtkVolumeRayCastDynamicInfo_2,"Constructor vtkVolumeRayCastDynamicInfo::._88() (http://docs.wxwidgets.org/stable/wx_vtkvolumeraycastdynamicinfo.html#._88).");
 
 
 

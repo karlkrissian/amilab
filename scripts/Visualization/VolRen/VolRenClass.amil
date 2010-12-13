@@ -162,28 +162,6 @@ if (!exists(VolRenClass)) {
       # etc ...
     }
 
-    #----------------------------
-    #proc ::Start() \
-    #{
-      #if (!exists(::input)) {
-        #::load_input()
-      #}
-      #::renwin_interact = vtk.vtkGPURayCasting(&::input, \
-        #::blend_type, ::opacitywindow, ::opacitylevel, ::clip)
-      #::renwin   = ::renwin_interact.GetRenderWindow()
-      #::renderer = ::renwin.GetRenderers().GetFirstRenderer()
-      #interact = vtk.vtkInteractorStyleTrackballCamera.New()
-      #::renwin_interact.SetInteractorStyle(&interact)
-      ##::renderer.Render()
-      #vols = ::renderer.GetVolumes()
-      #vols.InitTraversal()
-      #::vol      =  vols.GetNextVolume()
-      #::property = ::vol.GetProperty()
-      #mapper   = ::vol.GetMapper()
-      #::volmapper = vtk.vtkVolumeMapper_SafeDownCast(&mapper)
-      ##::renwin_interact.Render()
-
-    #}
 
     #----------------------------
     proc ::StartNew() \
@@ -290,29 +268,60 @@ if (!exists(VolRenClass)) {
     {
       mb = ami.MainFrame.GetMainBook()
 
-      panel = wx.wxPanel(&ami.MainFrame)
-      sbox = wx.wxStaticBox(&panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
-      wxVERTICAL=0x0008
-      sbox_sizer = wx.wxStaticBoxSizer(&sbox,wxVERTICAL)
-      panel.SetSizer(&sbox_sizer)
+      ::panel = wx.wxPanel(&ami.MainFrame)
+      sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
+      sbox_sizer = wx.wxStaticBoxSizer(&sbox,wx.wxVERTICAL)
+      ::panel.SetSizer(&sbox_sizer)
+      ::flex_sizer = wx.wxGridSizer(1)
+      sbox_sizer.Add( &::flex_sizer, 1, wx.wxALL | wx.wxEXPAND,2)
       # create widget here
 
-      ::renwin_interact = global::wxVTKRenderWindowInteractor(&panel,-1)
+      ::renwin_interact = global::wxVTKRenderWindowInteractor(&::panel,-1)
       #::renwin_interact = wxVTKFrame(&panel,-1)
 
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
       # Still drawing problem (missed exposed events???)
       ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
-      sbox_sizer.Add(&::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1) )
+      #::panel_sizer.Add(&::renwin_interact, &wx.wxSizerFlags().Expand().Proportion(1) )
+      ::flex_sizer.Add(&::renwin_interact, 1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
 
       
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
 
       # Add to main book
-      mb.AddPage( &panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
-      ::volren_pageindex = mb.GetPageIndex(&panel)
+      mb.AddPage( &::panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+      ::volren_pageindex = mb.GetPageIndex(&::panel)
       #mb.SetSelection(::volren_pageindex)
+    }
+
+    #----------------------------
+    proc ::SetGridLayout( NUM cols, NUM rows)  \
+    {
+      ::flex_sizer.SetCols(cols)
+      ::flex_sizer.SetRows(rows)
+    }
+
+    #----------------------------
+    proc ::SetGridSpacing( NUM hgap, NUM vgap)  \
+    {
+      ::flex_sizer.SetHGap(hgap)
+      ::flex_sizer.SetVGap(vgap)
+    }
+
+    #----------------------------
+    proc ::Attach( OBJECT obj)  \
+    {
+      obj.Reparent(&::panel)
+      ::flex_sizer.Add(&obj, wx.wxSizerFlags().Expand().Proportion(1) )
+      obj.Show()
+    }
+
+    #----------------------------
+    proc ::Detach( OBJECT obj)  \
+    {
+      ::flex_sizer.Detach(&obj)
+      return = &obj
     }
 
     #----------------------------

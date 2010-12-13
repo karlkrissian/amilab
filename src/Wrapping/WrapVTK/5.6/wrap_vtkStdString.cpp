@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkStdString.h"
 
@@ -79,15 +81,16 @@ void WrapClass_vtkStdString::AddMethods(WrapClass<vtkStdString>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 /*
   // Add base parent basic_string<char,std::char_traits<char>,std::allocator<char> >
   boost::shared_ptr<basic_string<char,std::char_traits<char>,std::allocator<char> > > parent_basic_string_char_std::char_traits_char__std::allocator_char_ _(  boost::dynamic_pointer_cast<basic_string<char,std::char_traits<char>,std::allocator<char> > >(this_ptr->GetObj()));

@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkInteractorStyleImage.h"
 
@@ -46,8 +48,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyleImage>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkInteractorStyleImage::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -113,15 +115,16 @@ void WrapClass_vtkInteractorStyleImage::AddMethods(WrapClass<vtkInteractorStyleI
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkInteractorStyleTrackballCamera
   boost::shared_ptr<vtkInteractorStyleTrackballCamera > parent_vtkInteractorStyleTrackballCamera(  boost::dynamic_pointer_cast<vtkInteractorStyleTrackballCamera >(this_ptr->GetObj()));

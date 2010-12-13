@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkPiecewiseFunction.h"
 
@@ -50,8 +52,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkPiecewiseFunction>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkPiecewiseFunction::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -132,15 +134,16 @@ void WrapClass_vtkPiecewiseFunction::AddMethods(WrapClass<vtkPiecewiseFunction>:
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkDataObject
   boost::shared_ptr<vtkDataObject > parent_vtkDataObject(  boost::dynamic_pointer_cast<vtkDataObject >(this_ptr->GetObj()));

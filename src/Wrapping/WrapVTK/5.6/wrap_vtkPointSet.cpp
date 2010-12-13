@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkPointSet.h"
 
@@ -130,15 +132,16 @@ void WrapClass_vtkPointSet::AddMethods(WrapClass<vtkPointSet>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkDataSet
   boost::shared_ptr<vtkDataSet > parent_vtkDataSet(  boost::dynamic_pointer_cast<vtkDataSet >(this_ptr->GetObj()));

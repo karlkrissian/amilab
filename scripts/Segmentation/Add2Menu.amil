@@ -19,3 +19,7 @@ proc AddSegMenu() {
 
 AddSegMenu()
 del AddSegMenu
+
+if exists(global::scripts_toolbar) {
+  global::scripts_toolbar.AddSeparator()
+}

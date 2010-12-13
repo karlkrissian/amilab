@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkMatrix4x4.h"
 
@@ -47,8 +49,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkMatrix4x4>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkMatrix4x4::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -129,18 +131,6 @@ void WrapClass_vtkMatrix4x4::AddMethods(WrapClass<vtkMatrix4x4>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  /* ArrayType not implemented
-  // Adding public member Element
-  boost::shared_ptr<double > var_Element_ptr(&GetObj()->Element, smartpointer_nodeleter<double >());
-  if (var_Element_ptr.get()) {
-    BasicVariable::ptr var_Element = AMILabType<double >::CreateVarFromSmtPtr(var_Element_ptr);
-    if (var_Element.get()) {
-      var_Element->Rename("Element");
-      context->AddVar(var_Element,context);
-    }
-  }
-  */
 
 
   

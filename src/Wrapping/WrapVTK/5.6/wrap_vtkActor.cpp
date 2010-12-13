@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkActor.h"
 
@@ -45,6 +47,10 @@
   #define vtkRenderer_declared
   AMI_DECLARE_TYPE(vtkRenderer)
 #endif
+#ifndef vtkMapper_declared
+  #define vtkMapper_declared
+  AMI_DECLARE_TYPE(vtkMapper)
+#endif
 #ifndef vtkProp_declared
   #define vtkProp_declared
   AMI_DECLARE_TYPE(vtkProp)
@@ -56,6 +62,10 @@
 #ifndef vtkProperty_declared
   #define vtkProperty_declared
   AMI_DECLARE_TYPE(vtkProperty)
+#endif
+#ifndef vtkTexture_declared
+  #define vtkTexture_declared
+  AMI_DECLARE_TYPE(vtkTexture)
 #endif
 
 
@@ -71,8 +81,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkActor>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkActor::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -119,9 +129,7 @@ void WrapClass_vtkActor::AddMethods(WrapClass<vtkActor>::ptr this_ptr )
   AddVar_RenderOpaqueGeometry( this_ptr);
   AddVar_RenderTranslucentPolygonalGeometry( this_ptr);
   AddVar_HasTranslucentPolygonalGeometry( this_ptr);
-/* The following types are missing: vtkMapper
   AddVar_Render( this_ptr);
-*/
   AddVar_ShallowCopy( this_ptr);
   AddVar_ReleaseGraphicsResources( this_ptr);
   AddVar_SetProperty( this_ptr);
@@ -129,18 +137,10 @@ void WrapClass_vtkActor::AddMethods(WrapClass<vtkActor>::ptr this_ptr )
   AddVar_MakeProperty( this_ptr);
   AddVar_SetBackfaceProperty( this_ptr);
   AddVar_GetBackfaceProperty( this_ptr);
-/* The following types are missing: vtkTexture
   AddVar_SetTexture( this_ptr);
-*/
-/* The following types are missing: vtkTexture
   AddVar_GetTexture( this_ptr);
-*/
-/* The following types are missing: vtkMapper
   AddVar_SetMapper( this_ptr);
-*/
-/* The following types are missing: vtkMapper
   AddVar_GetMapper( this_ptr);
-*/
   AddVar_GetBounds_1( this_ptr);
   AddVar_GetBounds( this_ptr);
   AddVar_GetBounds_2( this_ptr);
@@ -151,15 +151,16 @@ void WrapClass_vtkActor::AddMethods(WrapClass<vtkActor>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkProp3D
   boost::shared_ptr<vtkProp3D > parent_vtkProp3D(  boost::dynamic_pointer_cast<vtkProp3D >(this_ptr->GetObj()));
@@ -465,7 +466,6 @@ BasicVariable::ptr WrapClass_vtkActor::
   int res =   this->_objectptr->GetObj()->HasTranslucentPolygonalGeometry();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: vtkMapper
 
 //---------------------------------------------------
 //  Wrapping of void vtkActor::Render(vtkRenderer * param0, vtkMapper * param1)
@@ -508,7 +508,6 @@ BasicVariable::ptr WrapClass_vtkActor::
   this->_objectptr->GetObj()->Render(param0, param1);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkActor::ShallowCopy(vtkProp * prop)
@@ -693,7 +692,6 @@ BasicVariable::ptr WrapClass_vtkActor::
   BasicVariable::ptr res_var = AMILabType<vtkProperty >::CreateVar(res,true);
   return res_var;
 }
-/* The following types are missing: vtkTexture
 
 //---------------------------------------------------
 //  Wrapping of void vtkActor::SetTexture(vtkTexture * param0)
@@ -725,8 +723,6 @@ BasicVariable::ptr WrapClass_vtkActor::
   this->_objectptr->GetObj()->SetTexture(param0);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkTexture
 
 //---------------------------------------------------
 //  Wrapping of vtkTexture * vtkActor::GetTexture()
@@ -744,10 +740,9 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkTexture * res =   this->_objectptr->GetObj()->GetTexture();
-  return AMILabType<vtkTexture >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkTexture >::CreateVar(res,true);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkMapper
 
 //---------------------------------------------------
 //  Wrapping of void vtkActor::SetMapper(vtkMapper * param0)
@@ -779,8 +774,6 @@ BasicVariable::ptr WrapClass_vtkActor::
   this->_objectptr->GetObj()->SetMapper(param0);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkMapper
 
 //---------------------------------------------------
 //  Wrapping of vtkMapper * vtkActor::GetMapper()
@@ -798,9 +791,9 @@ BasicVariable::ptr WrapClass_vtkActor::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkMapper * res =   this->_objectptr->GetObj()->GetMapper();
-  return AMILabType<vtkMapper >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkMapper >::CreateVar(res,true);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkActor::GetBounds(double * bounds)

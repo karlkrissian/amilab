@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkInteractorStyle.h"
 
@@ -59,8 +61,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkInteractorStyle>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkInteractorStyle::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -193,15 +195,16 @@ void WrapClass_vtkInteractorStyle::AddMethods(WrapClass<vtkInteractorStyle>::ptr
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkInteractorObserver
   boost::shared_ptr<vtkInteractorObserver > parent_vtkInteractorObserver(  boost::dynamic_pointer_cast<vtkInteractorObserver >(this_ptr->GetObj()));

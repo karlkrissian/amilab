@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkRenderWindowInteractor.h"
 
@@ -59,8 +61,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkRenderWindowInteractor>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkRenderWindowInteractor::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -247,17 +249,17 @@ void WrapClass_vtkRenderWindowInteractor::AddMethods(WrapClass<vtkRenderWindowIn
 
 
   
-  AMIObject::ptr obj_enum_85(new AMIObject);
-  obj_enum_85->SetName("enum_85");
+  AMIObject::ptr obj_enum_86(new AMIObject);
+  obj_enum_86->SetName("enum_86");
 
   BasicVariable::ptr var_OneShotTimer = AMILabType<int >::CreateVar(1);
   if (var_OneShotTimer.get()) {
     var_OneShotTimer->Rename("OneShotTimer");
-    obj_enum_85->GetContext()->AddVar(var_OneShotTimer,obj_enum_85->GetContext());
+    obj_enum_86->GetContext()->AddVar(var_OneShotTimer,obj_enum_86->GetContext());
   }
 
   // Add enum to context
-  context->AddVar<AMIObject>(obj_enum_85->GetName().c_str(),obj_enum_85,context);
+  context->AddVar<AMIObject>(obj_enum_86->GetName().c_str(),obj_enum_86,context);
 
 
   // Adding Bases

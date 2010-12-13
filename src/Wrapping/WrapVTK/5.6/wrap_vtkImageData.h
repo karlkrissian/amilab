@@ -13,11 +13,13 @@
 #ifndef _wrap_vtkImageData_h_
 #define _wrap_vtkImageData_h_
 
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
-#include "Variable.hpp"
 #include "paramlist.h"
-#include "ami_object.h"
 
 #include "vtkImageData.h"
 

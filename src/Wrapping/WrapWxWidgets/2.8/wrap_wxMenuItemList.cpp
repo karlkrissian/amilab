@@ -111,11 +111,11 @@ void WrapClass_wxMenuItemList::AddMethods(WrapClass<wxMenuItemList>::ptr this_pt
   AddVar_Find( this_ptr);
   AddVar_Find_2( this_ptr);
   AddVar_IndexOf( this_ptr);
-/* The following types are missing: _17586
+/* The following types are missing: _17735
   AddVar_Sort_1( this_ptr);
 */
   AddVar_Sort( this_ptr);
-/* The following types are missing: _5170
+/* The following types are missing: _5336
   AddVar_Sort_2( this_ptr);
 */
 /* The following types are missing: iterator
@@ -202,15 +202,16 @@ void WrapClass_wxMenuItemList::AddMethods(WrapClass<wxMenuItemList>::ptr this_pt
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxListBase
   boost::shared_ptr<wxListBase > parent_wxListBase(  boost::dynamic_pointer_cast<wxListBase >(this_ptr->GetObj()));
@@ -1030,7 +1031,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   int res =   this->_objectptr->GetObj()->IndexOf(object);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: _17586
+/* The following types are missing: _17735
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuItemList::Sort(wxSortCompareFunction func)
@@ -1038,7 +1039,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
 void WrapClass_wxMenuItemList::
     wrap_Sort_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _17586, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _17735, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -1049,8 +1050,8 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _17586 func;
-  if (!get_val_param<_17586 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _17735 func;
+  if (!get_val_param<_17735 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -1071,7 +1072,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: _5170
+/* The following types are missing: _5336
 
 //---------------------------------------------------
 //  Wrapping of void wxMenuItemList::Sort(wxSortFuncFor_wxMenuItemList func)
@@ -1079,7 +1080,7 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
 void WrapClass_wxMenuItemList::
     wrap_Sort_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _5170, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _5336, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -1090,8 +1091,8 @@ BasicVariable::ptr WrapClass_wxMenuItemList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _5170 func;
-  if (!get_val_param<_5170 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _5336 func;
+  if (!get_val_param<_5336 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();

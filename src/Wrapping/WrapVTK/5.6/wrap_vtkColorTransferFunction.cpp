@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkColorTransferFunction.h"
 
@@ -46,8 +48,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkColorTransferFunction>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkColorTransferFunction::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -156,15 +158,16 @@ void WrapClass_vtkColorTransferFunction::AddMethods(WrapClass<vtkColorTransferFu
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkScalarsToColors
   boost::shared_ptr<vtkScalarsToColors > parent_vtkScalarsToColors(  boost::dynamic_pointer_cast<vtkScalarsToColors >(this_ptr->GetObj()));

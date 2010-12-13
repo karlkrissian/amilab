@@ -13,11 +13,13 @@
 #ifndef _wrap_vtkProperty_h_
 #define _wrap_vtkProperty_h_
 
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
-#include "Variable.hpp"
 #include "paramlist.h"
-#include "ami_object.h"
 
 #include "vtkProperty.h"
 
@@ -215,20 +217,12 @@ class WrapClass_vtkProperty : public WrapClass<vtkProperty>
     ADD_CLASS_METHOD(AddShaderVariable_10,"void vtkProperty::AddShaderVariable(char const * name, int v1, int v2, int v3)  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#addshadervariable)")
     ADD_CLASS_METHOD(AddShaderVariable_11,"void vtkProperty::AddShaderVariable(char const * name, float v1, float v2, float v3)  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#addshadervariable)")
     ADD_CLASS_METHOD(AddShaderVariable_12,"void vtkProperty::AddShaderVariable(char const * name, double v1, double v2, double v3)  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#addshadervariable)")
-/* The following types are missing: vtkTexture
     ADD_CLASS_METHOD(SetTexture_1,"void vtkProperty::SetTexture(char const * name, vtkTexture * texture)  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#settexture)")
-*/
-/* The following types are missing: vtkTexture
     ADD_CLASS_METHOD(GetTexture_1,"vtkTexture * vtkProperty::GetTexture(char const * name)  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#gettexture)")
-*/
     ADD_CLASS_METHOD(SetTexture,"vtkProperty::SetTexture()  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#settexture)")
-/* The following types are missing: vtkTexture
     ADD_CLASS_METHOD(SetTexture_2,"void vtkProperty::SetTexture(int unit, vtkTexture * texture)  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#settexture)")
-*/
     ADD_CLASS_METHOD(GetTexture,"vtkProperty::GetTexture()  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#gettexture)")
-/* The following types are missing: vtkTexture
     ADD_CLASS_METHOD(GetTexture_2,"vtkTexture * vtkProperty::GetTexture(int unit)  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#gettexture)")
-*/
     ADD_CLASS_METHOD(RemoveTexture_1,"void vtkProperty::RemoveTexture(int unit)  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#removetexture)")
     ADD_CLASS_METHOD(RemoveTexture,"vtkProperty::RemoveTexture()  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#removetexture)")
     ADD_CLASS_METHOD(RemoveTexture_2,"void vtkProperty::RemoveTexture(char const * name)  (http://docs.wxwidgets.org/stable/wx_vtkproperty.html#removetexture)")

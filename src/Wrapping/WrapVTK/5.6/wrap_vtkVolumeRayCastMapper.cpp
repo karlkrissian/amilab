@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkVolumeRayCastMapper.h"
 
@@ -62,8 +64,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkVolumeRayCastMapper>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkVolumeRayCastMapper::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -157,15 +159,16 @@ void WrapClass_vtkVolumeRayCastMapper::AddMethods(WrapClass<vtkVolumeRayCastMapp
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkVolumeMapper
   boost::shared_ptr<vtkVolumeMapper > parent_vtkVolumeMapper(  boost::dynamic_pointer_cast<vtkVolumeMapper >(this_ptr->GetObj()));

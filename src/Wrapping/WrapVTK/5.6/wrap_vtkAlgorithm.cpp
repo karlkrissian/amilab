@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkAlgorithm.h"
 
@@ -33,9 +35,17 @@
   #define vtkIndent_declared
   AMI_DECLARE_TYPE(vtkIndent)
 #endif
+#ifndef vtkInformation_declared
+  #define vtkInformation_declared
+  AMI_DECLARE_TYPE(vtkInformation)
+#endif
 #ifndef vtkDataObject_declared
   #define vtkDataObject_declared
   AMI_DECLARE_TYPE(vtkDataObject)
+#endif
+#ifndef vtkAlgorithmOutput_declared
+  #define vtkAlgorithmOutput_declared
+  AMI_DECLARE_TYPE(vtkAlgorithmOutput)
 #endif
 
 
@@ -51,8 +61,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkAlgorithm>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkAlgorithm::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -102,27 +112,17 @@ void WrapClass_vtkAlgorithm::AddMethods(WrapClass<vtkAlgorithm>::ptr this_ptr )
 /* The following types are missing: vtkExecutive
   AddVar_SetExecutive( this_ptr);
 */
-/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
+/* The following types are missing: vtkInformationVector, vtkInformationVector
   AddVar_ProcessRequest( this_ptr);
 */
-/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
+/* The following types are missing: vtkInformationVector, vtkInformationVector
   AddVar_ComputePipelineMTime( this_ptr);
 */
-/* The following types are missing: vtkInformation
   AddVar_ModifyRequest( this_ptr);
-*/
-/* The following types are missing: vtkInformation
   AddVar_GetInputPortInformation( this_ptr);
-*/
-/* The following types are missing: vtkInformation
   AddVar_GetOutputPortInformation( this_ptr);
-*/
-/* The following types are missing: vtkInformation
   AddVar_GetInformation( this_ptr);
-*/
-/* The following types are missing: vtkInformation
   AddVar_SetInformation( this_ptr);
-*/
   AddVar_GetNumberOfInputPorts( this_ptr);
   AddVar_GetNumberOfOutputPorts( this_ptr);
   AddVar_Register( this_ptr);
@@ -142,45 +142,25 @@ void WrapClass_vtkAlgorithm::AddMethods(WrapClass<vtkAlgorithm>::ptr this_ptr )
   AddVar_SetInputArrayToProcess_1( this_ptr);
   AddVar_SetInputArrayToProcess( this_ptr);
   AddVar_SetInputArrayToProcess_2( this_ptr);
-/* The following types are missing: vtkInformation
   AddVar_SetInputArrayToProcess_3( this_ptr);
-*/
   AddVar_SetInputArrayToProcess_4( this_ptr);
-/* The following types are missing: vtkInformation
   AddVar_GetInputArrayInformation( this_ptr);
-*/
   AddVar_RemoveAllInputs( this_ptr);
   AddVar_GetOutputDataObject( this_ptr);
   AddVar_GetInputDataObject( this_ptr);
-/* The following types are missing: vtkAlgorithmOutput
   AddVar_SetInputConnection_1( this_ptr);
-*/
   AddVar_SetInputConnection( this_ptr);
-/* The following types are missing: vtkAlgorithmOutput
   AddVar_SetInputConnection_2( this_ptr);
-*/
-/* The following types are missing: vtkAlgorithmOutput
   AddVar_AddInputConnection_1( this_ptr);
-*/
   AddVar_AddInputConnection( this_ptr);
-/* The following types are missing: vtkAlgorithmOutput
   AddVar_AddInputConnection_2( this_ptr);
-*/
-/* The following types are missing: vtkAlgorithmOutput
   AddVar_RemoveInputConnection( this_ptr);
-*/
-/* The following types are missing: vtkAlgorithmOutput
   AddVar_GetOutputPort_1( this_ptr);
-*/
   AddVar_GetOutputPort( this_ptr);
-/* The following types are missing: vtkAlgorithmOutput
   AddVar_GetOutputPort_2( this_ptr);
-*/
   AddVar_GetNumberOfInputConnections( this_ptr);
   AddVar_GetTotalNumberOfInputConnections( this_ptr);
-/* The following types are missing: vtkAlgorithmOutput
   AddVar_GetInputConnection( this_ptr);
-*/
   AddVar_Update( this_ptr);
   AddVar_UpdateInformation( this_ptr);
   AddVar_UpdateWholeExtent( this_ptr);
@@ -191,9 +171,7 @@ void WrapClass_vtkAlgorithm::AddMethods(WrapClass<vtkAlgorithm>::ptr this_ptr )
   AddVar_ReleaseDataFlagOff( this_ptr);
   AddVar_UpdateExtentIsEmpty_1( this_ptr);
   AddVar_UpdateExtentIsEmpty( this_ptr);
-/* The following types are missing: vtkInformation
   AddVar_UpdateExtentIsEmpty_2( this_ptr);
-*/
   AddVar_ComputePriority( this_ptr);
 
 
@@ -202,16 +180,6 @@ void WrapClass_vtkAlgorithm::AddMethods(WrapClass<vtkAlgorithm>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member AbortExecute
-  boost::shared_ptr<int > var_AbortExecute_ptr(&GetObj()->AbortExecute, smartpointer_nodeleter<int >());
-  if (var_AbortExecute_ptr.get()) {
-    BasicVariable::ptr var_AbortExecute = AMILabType<int >::CreateVarFromSmtPtr(var_AbortExecute_ptr);
-    if (var_AbortExecute.get()) {
-      var_AbortExecute->Rename("AbortExecute");
-      context->AddVar(var_AbortExecute,context);
-    }
-  }
 
 
   
@@ -830,7 +798,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   return BasicVariable::ptr();
 }
 */
-/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
+/* The following types are missing: vtkInformationVector, vtkInformationVector
 
 //---------------------------------------------------
 //  Wrapping of int vtkAlgorithm::ProcessRequest(vtkInformation * request, vtkInformationVector * * inInfo, vtkInformationVector * outInfo)
@@ -888,7 +856,7 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   return AMILabType<int >::CreateVar(res);
 }
 */
-/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
+/* The following types are missing: vtkInformationVector, vtkInformationVector
 
 //---------------------------------------------------
 //  Wrapping of int vtkAlgorithm::ComputePipelineMTime(vtkInformation * request, vtkInformationVector * * inInfoVec, vtkInformationVector * outInfoVec, int requestFromOutputPort, long unsigned int * mtime)
@@ -956,7 +924,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   return AMILabType<int >::CreateVar(res);
 }
 */
-/* The following types are missing: vtkInformation
 
 //---------------------------------------------------
 //  Wrapping of int vtkAlgorithm::ModifyRequest(vtkInformation * request, int when)
@@ -993,8 +960,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   int res =   this->_objectptr->GetObj()->ModifyRequest(request, when);
   return AMILabType<int >::CreateVar(res);
 }
-*/
-/* The following types are missing: vtkInformation
 
 //---------------------------------------------------
 //  Wrapping of vtkInformation * vtkAlgorithm::GetInputPortInformation(int port)
@@ -1018,10 +983,9 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(port,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetInputPortInformation(port);
-  return AMILabType<vtkInformation >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkInformation >::CreateVar(res,true);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkInformation
 
 //---------------------------------------------------
 //  Wrapping of vtkInformation * vtkAlgorithm::GetOutputPortInformation(int port)
@@ -1045,10 +1009,9 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(port,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetOutputPortInformation(port);
-  return AMILabType<vtkInformation >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkInformation >::CreateVar(res,true);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkInformation
 
 //---------------------------------------------------
 //  Wrapping of vtkInformation * vtkAlgorithm::GetInformation()
@@ -1066,10 +1029,9 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetInformation();
-  return AMILabType<vtkInformation >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkInformation >::CreateVar(res,true);
+  return res_var;
 }
-*/
-/* The following types are missing: vtkInformation
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::SetInformation(vtkInformation * param0)
@@ -1101,7 +1063,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   this->_objectptr->GetObj()->SetInformation(param0);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int vtkAlgorithm::GetNumberOfInputPorts()
@@ -1511,6 +1472,9 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   WrapClass_vtkAlgorithm::wrap_SetInputArrayToProcess_2 m2(this->_objectptr);
   res = m2.CallMember(_p);
   if (!m2.Get_arg_failure()) return res;
+  WrapClass_vtkAlgorithm::wrap_SetInputArrayToProcess_3 m3(this->_objectptr);
+  res = m3.CallMember(_p);
+  if (!m3.Get_arg_failure()) return res;
   WrapClass_vtkAlgorithm::wrap_SetInputArrayToProcess_4 m4(this->_objectptr);
   res = m4.CallMember(_p);
   if (!m4.Get_arg_failure()) return res;
@@ -1556,7 +1520,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   this->_objectptr->GetObj()->SetInputArrayToProcess(idx, port, connection, fieldAssociation, fieldAttributeType);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkInformation
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::SetInputArrayToProcess(int idx, vtkInformation * info)
@@ -1592,7 +1555,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   this->_objectptr->GetObj()->SetInputArrayToProcess(idx, info);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::SetInputArrayToProcess(int idx, int port, int connection, char const * fieldAssociation, char const * attributeTypeorName)
@@ -1635,7 +1597,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   this->_objectptr->GetObj()->SetInputArrayToProcess(idx, port, connection, fieldAssociation, attributeTypeorName);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkInformation
 
 //---------------------------------------------------
 //  Wrapping of vtkInformation * vtkAlgorithm::GetInputArrayInformation(int idx)
@@ -1659,9 +1620,9 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(idx,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkInformation * res =   this->_objectptr->GetObj()->GetInputArrayInformation(idx);
-  return AMILabType<vtkInformation >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkInformation >::CreateVar(res,true);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::RemoveAllInputs()
@@ -1736,7 +1697,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   BasicVariable::ptr res_var = AMILabType<vtkDataObject >::CreateVar(res,true);
   return res_var;
 }
-/* The following types are missing: vtkAlgorithmOutput
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::SetInputConnection(int port, vtkAlgorithmOutput * input)
@@ -1772,7 +1732,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   this->_objectptr->GetObj()->SetInputConnection(port, input);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkAlgorithm::SetInputConnection(...)
@@ -1786,9 +1745,14 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
     wrap_SetInputConnection::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkAlgorithm::wrap_SetInputConnection_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkAlgorithm::wrap_SetInputConnection_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: vtkAlgorithmOutput
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::SetInputConnection(vtkAlgorithmOutput * input)
@@ -1820,8 +1784,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   this->_objectptr->GetObj()->SetInputConnection(input);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkAlgorithmOutput
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::AddInputConnection(int port, vtkAlgorithmOutput * input)
@@ -1857,7 +1819,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   this->_objectptr->GetObj()->AddInputConnection(port, input);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkAlgorithm::AddInputConnection(...)
@@ -1871,9 +1832,14 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
     wrap_AddInputConnection::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkAlgorithm::wrap_AddInputConnection_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkAlgorithm::wrap_AddInputConnection_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: vtkAlgorithmOutput
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::AddInputConnection(vtkAlgorithmOutput * input)
@@ -1905,8 +1871,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   this->_objectptr->GetObj()->AddInputConnection(input);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkAlgorithmOutput
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::RemoveInputConnection(int port, vtkAlgorithmOutput * input)
@@ -1942,8 +1906,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   this->_objectptr->GetObj()->RemoveInputConnection(port, input);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkAlgorithmOutput
 
 //---------------------------------------------------
 //  Wrapping of vtkAlgorithmOutput * vtkAlgorithm::GetOutputPort(int index)
@@ -1967,9 +1929,9 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(index,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkAlgorithmOutput * res =   this->_objectptr->GetObj()->GetOutputPort(index);
-  return AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkAlgorithm::GetOutputPort(...)
@@ -1983,9 +1945,14 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
     wrap_GetOutputPort::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkAlgorithm::wrap_GetOutputPort_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkAlgorithm::wrap_GetOutputPort_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: vtkAlgorithmOutput
 
 //---------------------------------------------------
 //  Wrapping of vtkAlgorithmOutput * vtkAlgorithm::GetOutputPort()
@@ -2003,9 +1970,9 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (_p)  if (_p->GetNumParam()>0) ClassReturnEmptyVar;
 
   vtkAlgorithmOutput * res =   this->_objectptr->GetObj()->GetOutputPort();
-  return AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of int vtkAlgorithm::GetNumberOfInputConnections(int port)
@@ -2050,7 +2017,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   int res =   this->_objectptr->GetObj()->GetTotalNumberOfInputConnections();
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: vtkAlgorithmOutput
 
 //---------------------------------------------------
 //  Wrapping of vtkAlgorithmOutput * vtkAlgorithm::GetInputConnection(int port, int index)
@@ -2078,9 +2044,9 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   if (!get_val_param<int >(index,_p,_n,true,false)) ClassHelpAndReturn;
 
   vtkAlgorithmOutput * res =   this->_objectptr->GetObj()->GetInputConnection(port, index);
-  return AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkAlgorithmOutput >::CreateVar(res,true);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkAlgorithm::Update()
@@ -2296,9 +2262,11 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   WrapClass_vtkAlgorithm::wrap_UpdateExtentIsEmpty_1 m1(this->_objectptr);
   res = m1.CallMember(_p);
   if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkAlgorithm::wrap_UpdateExtentIsEmpty_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: vtkInformation
 
 //---------------------------------------------------
 //  Wrapping of int vtkAlgorithm::UpdateExtentIsEmpty(vtkInformation * pinfo, int extentType)
@@ -2335,7 +2303,6 @@ BasicVariable::ptr WrapClass_vtkAlgorithm::
   int res =   this->_objectptr->GetObj()->UpdateExtentIsEmpty(pinfo, extentType);
   return AMILabType<int >::CreateVar(res);
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of double vtkAlgorithm::ComputePriority()

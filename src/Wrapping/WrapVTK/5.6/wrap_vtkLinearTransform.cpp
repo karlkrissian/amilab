@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkLinearTransform.h"
 
@@ -137,15 +139,16 @@ void WrapClass_vtkLinearTransform::AddMethods(WrapClass<vtkLinearTransform>::ptr
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkHomogeneousTransform
   boost::shared_ptr<vtkHomogeneousTransform > parent_vtkHomogeneousTransform(  boost::dynamic_pointer_cast<vtkHomogeneousTransform >(this_ptr->GetObj()));

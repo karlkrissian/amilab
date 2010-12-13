@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkGPUVolumeRayCastMapper.h"
 
@@ -161,15 +163,16 @@ void WrapClass_vtkGPUVolumeRayCastMapper::AddMethods(WrapClass<vtkGPUVolumeRayCa
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkVolumeMapper
   boost::shared_ptr<vtkVolumeMapper > parent_vtkVolumeMapper(  boost::dynamic_pointer_cast<vtkVolumeMapper >(this_ptr->GetObj()));

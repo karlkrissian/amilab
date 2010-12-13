@@ -13,11 +13,13 @@
 #ifndef _wrap_vtkAlgorithm_h_
 #define _wrap_vtkAlgorithm_h_
 
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
-#include "Variable.hpp"
 #include "paramlist.h"
-#include "ami_object.h"
 
 #include "vtkAlgorithm.h"
 
@@ -129,27 +131,17 @@ class WrapClass_vtkAlgorithm : public WrapClass<vtkAlgorithm>
 /* The following types are missing: vtkExecutive
     ADD_CLASS_METHOD(SetExecutive,"void vtkAlgorithm::SetExecutive(vtkExecutive * executive)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setexecutive)")
 */
-/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
+/* The following types are missing: vtkInformationVector, vtkInformationVector
     ADD_CLASS_METHOD(ProcessRequest,"int vtkAlgorithm::ProcessRequest(vtkInformation * request, vtkInformationVector * * inInfo, vtkInformationVector * outInfo)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#processrequest)")
 */
-/* The following types are missing: vtkInformation, vtkInformationVector, vtkInformationVector
+/* The following types are missing: vtkInformationVector, vtkInformationVector
     ADD_CLASS_METHOD(ComputePipelineMTime,"int vtkAlgorithm::ComputePipelineMTime(vtkInformation * request, vtkInformationVector * * inInfoVec, vtkInformationVector * outInfoVec, int requestFromOutputPort, long unsigned int * mtime)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#computepipelinemtime)")
 */
-/* The following types are missing: vtkInformation
     ADD_CLASS_METHOD(ModifyRequest,"int vtkAlgorithm::ModifyRequest(vtkInformation * request, int when)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#modifyrequest)")
-*/
-/* The following types are missing: vtkInformation
     ADD_CLASS_METHOD(GetInputPortInformation,"vtkInformation * vtkAlgorithm::GetInputPortInformation(int port)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getinputportinformation)")
-*/
-/* The following types are missing: vtkInformation
     ADD_CLASS_METHOD(GetOutputPortInformation,"vtkInformation * vtkAlgorithm::GetOutputPortInformation(int port)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getoutputportinformation)")
-*/
-/* The following types are missing: vtkInformation
     ADD_CLASS_METHOD(GetInformation,"vtkInformation * vtkAlgorithm::GetInformation()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getinformation)")
-*/
-/* The following types are missing: vtkInformation
     ADD_CLASS_METHOD(SetInformation,"void vtkAlgorithm::SetInformation(vtkInformation * param0)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setinformation)")
-*/
     ADD_CLASS_METHOD(GetNumberOfInputPorts,"int vtkAlgorithm::GetNumberOfInputPorts()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getnumberofinputports)")
     ADD_CLASS_METHOD(GetNumberOfOutputPorts,"int vtkAlgorithm::GetNumberOfOutputPorts()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getnumberofoutputports)")
     ADD_CLASS_METHOD(Register,"void vtkAlgorithm::Register(vtkObjectBase * o)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#register)")
@@ -169,45 +161,25 @@ class WrapClass_vtkAlgorithm : public WrapClass<vtkAlgorithm>
     ADD_CLASS_METHOD(SetInputArrayToProcess_1,"void vtkAlgorithm::SetInputArrayToProcess(int idx, int port, int connection, int fieldAssociation, char const * name)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setinputarraytoprocess)")
     ADD_CLASS_METHOD(SetInputArrayToProcess,"vtkAlgorithm::SetInputArrayToProcess()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setinputarraytoprocess)")
     ADD_CLASS_METHOD(SetInputArrayToProcess_2,"void vtkAlgorithm::SetInputArrayToProcess(int idx, int port, int connection, int fieldAssociation, int fieldAttributeType)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setinputarraytoprocess)")
-/* The following types are missing: vtkInformation
     ADD_CLASS_METHOD(SetInputArrayToProcess_3,"void vtkAlgorithm::SetInputArrayToProcess(int idx, vtkInformation * info)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setinputarraytoprocess)")
-*/
     ADD_CLASS_METHOD(SetInputArrayToProcess_4,"void vtkAlgorithm::SetInputArrayToProcess(int idx, int port, int connection, char const * fieldAssociation, char const * attributeTypeorName)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setinputarraytoprocess)")
-/* The following types are missing: vtkInformation
     ADD_CLASS_METHOD(GetInputArrayInformation,"vtkInformation * vtkAlgorithm::GetInputArrayInformation(int idx)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getinputarrayinformation)")
-*/
     ADD_CLASS_METHOD(RemoveAllInputs,"void vtkAlgorithm::RemoveAllInputs()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#removeallinputs)")
     ADD_CLASS_METHOD(GetOutputDataObject,"vtkDataObject * vtkAlgorithm::GetOutputDataObject(int port)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getoutputdataobject)")
     ADD_CLASS_METHOD(GetInputDataObject,"vtkDataObject * vtkAlgorithm::GetInputDataObject(int port, int connection)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getinputdataobject)")
-/* The following types are missing: vtkAlgorithmOutput
     ADD_CLASS_METHOD(SetInputConnection_1,"void vtkAlgorithm::SetInputConnection(int port, vtkAlgorithmOutput * input)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setinputconnection)")
-*/
     ADD_CLASS_METHOD(SetInputConnection,"vtkAlgorithm::SetInputConnection()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setinputconnection)")
-/* The following types are missing: vtkAlgorithmOutput
     ADD_CLASS_METHOD(SetInputConnection_2,"void vtkAlgorithm::SetInputConnection(vtkAlgorithmOutput * input)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#setinputconnection)")
-*/
-/* The following types are missing: vtkAlgorithmOutput
     ADD_CLASS_METHOD(AddInputConnection_1,"void vtkAlgorithm::AddInputConnection(int port, vtkAlgorithmOutput * input)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#addinputconnection)")
-*/
     ADD_CLASS_METHOD(AddInputConnection,"vtkAlgorithm::AddInputConnection()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#addinputconnection)")
-/* The following types are missing: vtkAlgorithmOutput
     ADD_CLASS_METHOD(AddInputConnection_2,"void vtkAlgorithm::AddInputConnection(vtkAlgorithmOutput * input)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#addinputconnection)")
-*/
-/* The following types are missing: vtkAlgorithmOutput
     ADD_CLASS_METHOD(RemoveInputConnection,"void vtkAlgorithm::RemoveInputConnection(int port, vtkAlgorithmOutput * input)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#removeinputconnection)")
-*/
-/* The following types are missing: vtkAlgorithmOutput
     ADD_CLASS_METHOD(GetOutputPort_1,"vtkAlgorithmOutput * vtkAlgorithm::GetOutputPort(int index)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getoutputport)")
-*/
     ADD_CLASS_METHOD(GetOutputPort,"vtkAlgorithm::GetOutputPort()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getoutputport)")
-/* The following types are missing: vtkAlgorithmOutput
     ADD_CLASS_METHOD(GetOutputPort_2,"vtkAlgorithmOutput * vtkAlgorithm::GetOutputPort()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getoutputport)")
-*/
     ADD_CLASS_METHOD(GetNumberOfInputConnections,"int vtkAlgorithm::GetNumberOfInputConnections(int port)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getnumberofinputconnections)")
     ADD_CLASS_METHOD(GetTotalNumberOfInputConnections,"int vtkAlgorithm::GetTotalNumberOfInputConnections()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#gettotalnumberofinputconnections)")
-/* The following types are missing: vtkAlgorithmOutput
     ADD_CLASS_METHOD(GetInputConnection,"vtkAlgorithmOutput * vtkAlgorithm::GetInputConnection(int port, int index)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#getinputconnection)")
-*/
     ADD_CLASS_METHOD(Update,"void vtkAlgorithm::Update()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#update)")
     ADD_CLASS_METHOD(UpdateInformation,"void vtkAlgorithm::UpdateInformation()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#updateinformation)")
     ADD_CLASS_METHOD(UpdateWholeExtent,"void vtkAlgorithm::UpdateWholeExtent()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#updatewholeextent)")
@@ -218,9 +190,7 @@ class WrapClass_vtkAlgorithm : public WrapClass<vtkAlgorithm>
     ADD_CLASS_METHOD(ReleaseDataFlagOff,"void vtkAlgorithm::ReleaseDataFlagOff()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#releasedataflagoff)")
     ADD_CLASS_METHOD(UpdateExtentIsEmpty_1,"int vtkAlgorithm::UpdateExtentIsEmpty(vtkDataObject * output)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#updateextentisempty)")
     ADD_CLASS_METHOD(UpdateExtentIsEmpty,"vtkAlgorithm::UpdateExtentIsEmpty()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#updateextentisempty)")
-/* The following types are missing: vtkInformation
     ADD_CLASS_METHOD(UpdateExtentIsEmpty_2,"int vtkAlgorithm::UpdateExtentIsEmpty(vtkInformation * pinfo, int extentType)  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#updateextentisempty)")
-*/
     ADD_CLASS_METHOD(ComputePriority,"double vtkAlgorithm::ComputePriority()  (http://docs.wxwidgets.org/stable/wx_vtkalgorithm.html#computepriority)")
 
 

@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkPolyData.h"
 
@@ -59,8 +61,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkPolyData>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkPolyData::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -214,17 +216,17 @@ void WrapClass_vtkPolyData::AddMethods(WrapClass<vtkPolyData>::ptr this_ptr )
 
 
   
-  AMIObject::ptr obj_enum_94(new AMIObject);
-  obj_enum_94->SetName("enum_94");
+  AMIObject::ptr obj_enum_95(new AMIObject);
+  obj_enum_95->SetName("enum_95");
 
   BasicVariable::ptr var_ERR_NO_SUCH_FIELD = AMILabType<int >::CreateVar(-4);
   if (var_ERR_NO_SUCH_FIELD.get()) {
     var_ERR_NO_SUCH_FIELD->Rename("ERR_NO_SUCH_FIELD");
-    obj_enum_94->GetContext()->AddVar(var_ERR_NO_SUCH_FIELD,obj_enum_94->GetContext());
+    obj_enum_95->GetContext()->AddVar(var_ERR_NO_SUCH_FIELD,obj_enum_95->GetContext());
   }
 
   // Add enum to context
-  context->AddVar<AMIObject>(obj_enum_94->GetName().c_str(),obj_enum_94,context);
+  context->AddVar<AMIObject>(obj_enum_95->GetName().c_str(),obj_enum_95,context);
 
 
   // Adding Bases

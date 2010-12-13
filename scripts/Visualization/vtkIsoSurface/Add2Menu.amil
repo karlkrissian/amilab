@@ -1,0 +1,36 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+# Scripts menu
+#ami.MainFrame.AddToMenu("&Scripts","&Visualization","&Volume Rendering","Visualization/vtkIsoSurface/vtkIsoSurfaceGui.amil")
+
+
+if (!exists(vtkIsoSurface_display)) {
+
+  proc AddScript() {
+    global
+    func "Common/ScriptDisplayClass"
+
+    ScriptDisplayClass vtkIsoSurface_display
+
+    vtkIsoSurface_display.SetScript("Visualization/vtkIsoSurface/vtkIsoSurfaceGui.amil")
+    vtkIsoSurface_display.SetScriptObjName("global::vtkIsoSurface_obj")
+
+    vtkIsoSurface_display.SetDisplayedName("&VTK Isosurface")
+    vtkIsoSurface_display.SetHelp("VTK-based isosurface visualization.")
+    vtkIsoSurface_display.SetInMenus("Scripts","Visualization")
+
+    ami_import.System(); 
+    vtkIsoSurface_display.SetIcon16( op_system.GetCurrentScriptDir()+"/vtkIsoSurface_icon16.png")
+    vtkIsoSurface_display.SetIcon32( op_system.GetCurrentScriptDir()+"/vtkIsoSurface_icon32.png")
+
+    vtkIsoSurface_display.Add2Menu()
+    vtkIsoSurface_display.Add2Toolbar()
+  }
+  AddScript()
+  del AddScript
+
+}

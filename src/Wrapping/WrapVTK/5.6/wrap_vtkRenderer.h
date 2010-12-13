@@ -13,11 +13,13 @@
 #ifndef _wrap_vtkRenderer_h_
 #define _wrap_vtkRenderer_h_
 
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
-#include "Variable.hpp"
 #include "paramlist.h"
-#include "ami_object.h"
 
 #include "vtkRenderer.h"
 
@@ -228,12 +230,8 @@ class WrapClass_vtkRenderer : public WrapClass<vtkRenderer>
 /* The following types are missing: vtkHardwareSelector
     ADD_CLASS_METHOD(GetSelector,"vtkHardwareSelector * vtkRenderer::GetSelector()  (http://docs.wxwidgets.org/stable/wx_vtkrenderer.html#getselector)")
 */
-/* The following types are missing: vtkTexture
     ADD_CLASS_METHOD(SetBackgroundTexture,"void vtkRenderer::SetBackgroundTexture(vtkTexture * param0)  (http://docs.wxwidgets.org/stable/wx_vtkrenderer.html#setbackgroundtexture)")
-*/
-/* The following types are missing: vtkTexture
     ADD_CLASS_METHOD(GetBackgroundTexture,"vtkTexture * vtkRenderer::GetBackgroundTexture()  (http://docs.wxwidgets.org/stable/wx_vtkrenderer.html#getbackgroundtexture)")
-*/
     ADD_CLASS_METHOD(SetTexturedBackground,"void vtkRenderer::SetTexturedBackground(bool _arg)  (http://docs.wxwidgets.org/stable/wx_vtkrenderer.html#settexturedbackground)")
     ADD_CLASS_METHOD(GetTexturedBackground,"bool vtkRenderer::GetTexturedBackground()  (http://docs.wxwidgets.org/stable/wx_vtkrenderer.html#gettexturedbackground)")
     ADD_CLASS_METHOD(TexturedBackgroundOn,"void vtkRenderer::TexturedBackgroundOn()  (http://docs.wxwidgets.org/stable/wx_vtkrenderer.html#texturedbackgroundon)")

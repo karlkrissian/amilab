@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkProp3D.h"
 
@@ -163,15 +165,16 @@ void WrapClass_vtkProp3D::AddMethods(WrapClass<vtkProp3D>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkProp
   boost::shared_ptr<vtkProp > parent_vtkProp(  boost::dynamic_pointer_cast<vtkProp >(this_ptr->GetObj()));

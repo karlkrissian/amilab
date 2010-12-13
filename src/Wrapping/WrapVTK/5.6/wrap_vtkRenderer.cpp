@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkRenderer.h"
 
@@ -56,6 +58,10 @@
 #ifndef vtkWindow_declared
   #define vtkWindow_declared
   AMI_DECLARE_TYPE(vtkWindow)
+#endif
+#ifndef vtkTexture_declared
+  #define vtkTexture_declared
+  AMI_DECLARE_TYPE(vtkTexture)
 #endif
 
 
@@ -264,12 +270,8 @@ void WrapClass_vtkRenderer::AddMethods(WrapClass<vtkRenderer>::ptr this_ptr )
 /* The following types are missing: vtkHardwareSelector
   AddVar_GetSelector( this_ptr);
 */
-/* The following types are missing: vtkTexture
   AddVar_SetBackgroundTexture( this_ptr);
-*/
-/* The following types are missing: vtkTexture
   AddVar_GetBackgroundTexture( this_ptr);
-*/
   AddVar_SetTexturedBackground( this_ptr);
   AddVar_GetTexturedBackground( this_ptr);
   AddVar_TexturedBackgroundOn( this_ptr);
@@ -277,15 +279,16 @@ void WrapClass_vtkRenderer::AddMethods(WrapClass<vtkRenderer>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkViewport
   boost::shared_ptr<vtkViewport > parent_vtkViewport(  boost::dynamic_pointer_cast<vtkViewport >(this_ptr->GetObj()));
@@ -3182,7 +3185,6 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   return AMILabType<vtkHardwareSelector >::CreateVar(res,true);
 }
 */
-/* The following types are missing: vtkTexture
 
 //---------------------------------------------------
 //  Wrapping of void vtkRenderer::SetBackgroundTexture(vtkTexture * param0)
@@ -3214,8 +3216,6 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   this->_objectptr->GetObj()->SetBackgroundTexture(param0);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkTexture
 
 //---------------------------------------------------
 //  Wrapping of vtkTexture * vtkRenderer::GetBackgroundTexture()
@@ -3233,9 +3233,9 @@ BasicVariable::ptr WrapClass_vtkRenderer::
   if (_p)  if (_p->GetNumParam()>0) ClassHelpAndReturn;
 
   vtkTexture * res =   this->_objectptr->GetObj()->GetBackgroundTexture();
-  return AMILabType<vtkTexture >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkTexture >::CreateVar(res,true);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkRenderer::SetTexturedBackground(bool _arg)

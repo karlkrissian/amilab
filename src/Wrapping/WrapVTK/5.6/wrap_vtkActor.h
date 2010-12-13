@@ -13,11 +13,13 @@
 #ifndef _wrap_vtkActor_h_
 #define _wrap_vtkActor_h_
 
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
-#include "Variable.hpp"
 #include "paramlist.h"
-#include "ami_object.h"
 
 #include "vtkActor.h"
 
@@ -84,9 +86,7 @@ class WrapClass_vtkActor : public WrapClass<vtkActor>
     ADD_CLASS_METHOD(RenderOpaqueGeometry,"int vtkActor::RenderOpaqueGeometry(vtkViewport * viewport)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#renderopaquegeometry)")
     ADD_CLASS_METHOD(RenderTranslucentPolygonalGeometry,"int vtkActor::RenderTranslucentPolygonalGeometry(vtkViewport * viewport)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#rendertranslucentpolygonalgeometry)")
     ADD_CLASS_METHOD(HasTranslucentPolygonalGeometry,"int vtkActor::HasTranslucentPolygonalGeometry()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#hastranslucentpolygonalgeometry)")
-/* The following types are missing: vtkMapper
     ADD_CLASS_METHOD(Render,"void vtkActor::Render(vtkRenderer * param0, vtkMapper * param1)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#render)")
-*/
     ADD_CLASS_METHOD(ShallowCopy,"void vtkActor::ShallowCopy(vtkProp * prop)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#shallowcopy)")
     ADD_CLASS_METHOD(ReleaseGraphicsResources,"void vtkActor::ReleaseGraphicsResources(vtkWindow * param0)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#releasegraphicsresources)")
     ADD_CLASS_METHOD(SetProperty,"void vtkActor::SetProperty(vtkProperty * lut)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#setproperty)")
@@ -94,18 +94,10 @@ class WrapClass_vtkActor : public WrapClass<vtkActor>
     ADD_CLASS_METHOD(MakeProperty,"vtkProperty * vtkActor::MakeProperty()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#makeproperty)")
     ADD_CLASS_METHOD(SetBackfaceProperty,"void vtkActor::SetBackfaceProperty(vtkProperty * lut)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#setbackfaceproperty)")
     ADD_CLASS_METHOD(GetBackfaceProperty,"vtkProperty * vtkActor::GetBackfaceProperty()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getbackfaceproperty)")
-/* The following types are missing: vtkTexture
     ADD_CLASS_METHOD(SetTexture,"void vtkActor::SetTexture(vtkTexture * param0)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#settexture)")
-*/
-/* The following types are missing: vtkTexture
     ADD_CLASS_METHOD(GetTexture,"vtkTexture * vtkActor::GetTexture()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#gettexture)")
-*/
-/* The following types are missing: vtkMapper
     ADD_CLASS_METHOD(SetMapper,"void vtkActor::SetMapper(vtkMapper * param0)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#setmapper)")
-*/
-/* The following types are missing: vtkMapper
     ADD_CLASS_METHOD(GetMapper,"vtkMapper * vtkActor::GetMapper()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getmapper)")
-*/
     ADD_CLASS_METHOD(GetBounds_1,"void vtkActor::GetBounds(double * bounds)  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getbounds)")
     ADD_CLASS_METHOD(GetBounds,"vtkActor::GetBounds()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getbounds)")
     ADD_CLASS_METHOD(GetBounds_2,"double * vtkActor::GetBounds()  (http://docs.wxwidgets.org/stable/wx_vtkactor.html#getbounds)")

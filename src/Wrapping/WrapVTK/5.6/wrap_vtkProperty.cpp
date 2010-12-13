@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkProperty.h"
 
@@ -40,6 +42,10 @@
   #define vtkRenderer_declared
   AMI_DECLARE_TYPE(vtkRenderer)
 #endif
+#ifndef vtkTexture_declared
+  #define vtkTexture_declared
+  AMI_DECLARE_TYPE(vtkTexture)
+#endif
 #ifndef vtkWindow_declared
   #define vtkWindow_declared
   AMI_DECLARE_TYPE(vtkWindow)
@@ -58,8 +64,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkProperty>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkProperty::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -237,20 +243,12 @@ void WrapClass_vtkProperty::AddMethods(WrapClass<vtkProperty>::ptr this_ptr )
   AddVar_AddShaderVariable_10( this_ptr);
   AddVar_AddShaderVariable_11( this_ptr);
   AddVar_AddShaderVariable_12( this_ptr);
-/* The following types are missing: vtkTexture
   AddVar_SetTexture_1( this_ptr);
-*/
-/* The following types are missing: vtkTexture
   AddVar_GetTexture_1( this_ptr);
-*/
   AddVar_SetTexture( this_ptr);
-/* The following types are missing: vtkTexture
   AddVar_SetTexture_2( this_ptr);
-*/
   AddVar_GetTexture( this_ptr);
-/* The following types are missing: vtkTexture
   AddVar_GetTexture_2( this_ptr);
-*/
   AddVar_RemoveTexture_1( this_ptr);
   AddVar_RemoveTexture( this_ptr);
   AddVar_RemoveTexture_2( this_ptr);
@@ -3621,7 +3619,6 @@ BasicVariable::ptr WrapClass_vtkProperty::
   this->_objectptr->GetObj()->AddShaderVariable(name, v1, v2, v3);
   return BasicVariable::ptr();
 }
-/* The following types are missing: vtkTexture
 
 //---------------------------------------------------
 //  Wrapping of void vtkProperty::SetTexture(char const * name, vtkTexture * texture)
@@ -3658,8 +3655,6 @@ BasicVariable::ptr WrapClass_vtkProperty::
   this->_objectptr->GetObj()->SetTexture(name, texture);
   return BasicVariable::ptr();
 }
-*/
-/* The following types are missing: vtkTexture
 
 //---------------------------------------------------
 //  Wrapping of vtkTexture * vtkProperty::GetTexture(char const * name)
@@ -3684,9 +3679,9 @@ BasicVariable::ptr WrapClass_vtkProperty::
   char const * name = name_string->c_str();
 
   vtkTexture * res =   this->_objectptr->GetObj()->GetTexture(name);
-  return AMILabType<vtkTexture >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkTexture >::CreateVar(res,true);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkProperty::SetTexture(...)
@@ -3700,9 +3695,14 @@ BasicVariable::ptr WrapClass_vtkProperty::
     wrap_SetTexture::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkProperty::wrap_SetTexture_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkProperty::wrap_SetTexture_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: vtkTexture
 
 //---------------------------------------------------
 //  Wrapping of void vtkProperty::SetTexture(int unit, vtkTexture * texture)
@@ -3738,7 +3738,6 @@ BasicVariable::ptr WrapClass_vtkProperty::
   this->_objectptr->GetObj()->SetTexture(unit, texture);
   return BasicVariable::ptr();
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of multipled defined method:... vtkProperty::GetTexture(...)
@@ -3752,9 +3751,14 @@ BasicVariable::ptr WrapClass_vtkProperty::
     wrap_GetTexture::CallMember( ParamList* _p)
 {
   BasicVariable::ptr res;
+  WrapClass_vtkProperty::wrap_GetTexture_1 m1(this->_objectptr);
+  res = m1.CallMember(_p);
+  if (!m1.Get_arg_failure()) return res;
+  WrapClass_vtkProperty::wrap_GetTexture_2 m2(this->_objectptr);
+  res = m2.CallMember(_p);
+  if (!m2.Get_arg_failure()) return res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: vtkTexture
 
 //---------------------------------------------------
 //  Wrapping of vtkTexture * vtkProperty::GetTexture(int unit)
@@ -3778,9 +3782,9 @@ BasicVariable::ptr WrapClass_vtkProperty::
   if (!get_val_param<int >(unit,_p,_n,true,true)) ClassReturnEmptyVar;
 
   vtkTexture * res =   this->_objectptr->GetObj()->GetTexture(unit);
-  return AMILabType<vtkTexture >::CreateVar(res,true);
+  BasicVariable::ptr res_var = AMILabType<vtkTexture >::CreateVar(res,true);
+  return res_var;
 }
-*/
 
 //---------------------------------------------------
 //  Wrapping of void vtkProperty::RemoveTexture(int unit)

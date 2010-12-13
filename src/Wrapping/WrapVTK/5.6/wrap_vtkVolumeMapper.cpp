@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkVolumeMapper.h"
 
@@ -146,17 +148,17 @@ void WrapClass_vtkVolumeMapper::AddMethods(WrapClass<vtkVolumeMapper>::ptr this_
 
 
   
-  AMIObject::ptr obj_enum_86(new AMIObject);
-  obj_enum_86->SetName("enum_86");
+  AMIObject::ptr obj_enum_87(new AMIObject);
+  obj_enum_87->SetName("enum_87");
 
   BasicVariable::ptr var_COMPOSITE_BLEND = AMILabType<int >::CreateVar(0);
   if (var_COMPOSITE_BLEND.get()) {
     var_COMPOSITE_BLEND->Rename("COMPOSITE_BLEND");
-    obj_enum_86->GetContext()->AddVar(var_COMPOSITE_BLEND,obj_enum_86->GetContext());
+    obj_enum_87->GetContext()->AddVar(var_COMPOSITE_BLEND,obj_enum_87->GetContext());
   }
 
   // Add enum to context
-  context->AddVar<AMIObject>(obj_enum_86->GetName().c_str(),obj_enum_86,context);
+  context->AddVar<AMIObject>(obj_enum_87->GetName().c_str(),obj_enum_87,context);
 
 
   // Adding Bases

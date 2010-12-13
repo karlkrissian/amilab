@@ -101,42 +101,6 @@ void WrapClass_wxMenu::AddMethods(WrapClass<wxMenu>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  /* Type not available
-  // Adding public member m_menu
-  boost::shared_ptr<_GtkWidget > var_m_menu_ptr(GetObj()->m_menu, smartpointer_nodeleter<_GtkWidget >());
-  if (var_m_menu_ptr.get()) {
-    BasicVariable::ptr var_m_menu = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_menu_ptr);
-    if (var_m_menu.get()) {
-      var_m_menu->Rename("m_menu");
-      context->AddVar(var_m_menu,context);
-    }
-  }
-  */
-  
-  /* Type not available
-  // Adding public member m_owner
-  boost::shared_ptr<_GtkWidget > var_m_owner_ptr(GetObj()->m_owner, smartpointer_nodeleter<_GtkWidget >());
-  if (var_m_owner_ptr.get()) {
-    BasicVariable::ptr var_m_owner = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_owner_ptr);
-    if (var_m_owner.get()) {
-      var_m_owner->Rename("m_owner");
-      context->AddVar(var_m_owner,context);
-    }
-  }
-  */
-  
-  /* Type not available
-  // Adding public member m_accel
-  boost::shared_ptr<_GtkAccelGroup > var_m_accel_ptr(GetObj()->m_accel, smartpointer_nodeleter<_GtkAccelGroup >());
-  if (var_m_accel_ptr.get()) {
-    BasicVariable::ptr var_m_accel = AMILabType<_GtkAccelGroup >::CreateVarFromSmtPtr(var_m_accel_ptr);
-    if (var_m_accel.get()) {
-      var_m_accel->Rename("m_accel");
-      context->AddVar(var_m_accel,context);
-    }
-  }
-  */
 
 
   

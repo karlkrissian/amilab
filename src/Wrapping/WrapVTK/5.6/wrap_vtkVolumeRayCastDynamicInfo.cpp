@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkVolumeRayCastDynamicInfo.h"
 
@@ -78,101 +80,7 @@ void WrapClass_vtkVolumeRayCastDynamicInfo::AddMethods(WrapClass<vtkVolumeRayCas
 
 
 
-  // Add public fields and Enumerations
-  AMIObject::ptr tmpobj(amiobject.lock());
-  if (!tmpobj.get()) return;
-  Variables::ptr context(tmpobj->GetContext());
   
-  /* ArrayType not implemented
-  // Adding public member Color
-  boost::shared_ptr<float > var_Color_ptr(&GetObj()->Color, smartpointer_nodeleter<float >());
-  if (var_Color_ptr.get()) {
-    BasicVariable::ptr var_Color = AMILabType<float >::CreateVarFromSmtPtr(var_Color_ptr);
-    if (var_Color.get()) {
-      var_Color->Rename("Color");
-      context->AddVar(var_Color,context);
-    }
-  }
-  */
-  
-  // Adding public member ScalarValue
-  boost::shared_ptr<float > var_ScalarValue_ptr(&GetObj()->ScalarValue, smartpointer_nodeleter<float >());
-  if (var_ScalarValue_ptr.get()) {
-    BasicVariable::ptr var_ScalarValue = AMILabType<float >::CreateVarFromSmtPtr(var_ScalarValue_ptr);
-    if (var_ScalarValue.get()) {
-      var_ScalarValue->Rename("ScalarValue");
-      context->AddVar(var_ScalarValue,context);
-    }
-  }
-  
-  /* ArrayType not implemented
-  // Adding public member TransformedStart
-  boost::shared_ptr<float > var_TransformedStart_ptr(&GetObj()->TransformedStart, smartpointer_nodeleter<float >());
-  if (var_TransformedStart_ptr.get()) {
-    BasicVariable::ptr var_TransformedStart = AMILabType<float >::CreateVarFromSmtPtr(var_TransformedStart_ptr);
-    if (var_TransformedStart.get()) {
-      var_TransformedStart->Rename("TransformedStart");
-      context->AddVar(var_TransformedStart,context);
-    }
-  }
-  */
-  
-  /* ArrayType not implemented
-  // Adding public member TransformedEnd
-  boost::shared_ptr<float > var_TransformedEnd_ptr(&GetObj()->TransformedEnd, smartpointer_nodeleter<float >());
-  if (var_TransformedEnd_ptr.get()) {
-    BasicVariable::ptr var_TransformedEnd = AMILabType<float >::CreateVarFromSmtPtr(var_TransformedEnd_ptr);
-    if (var_TransformedEnd.get()) {
-      var_TransformedEnd->Rename("TransformedEnd");
-      context->AddVar(var_TransformedEnd,context);
-    }
-  }
-  */
-  
-  /* ArrayType not implemented
-  // Adding public member TransformedDirection
-  boost::shared_ptr<float > var_TransformedDirection_ptr(&GetObj()->TransformedDirection, smartpointer_nodeleter<float >());
-  if (var_TransformedDirection_ptr.get()) {
-    BasicVariable::ptr var_TransformedDirection = AMILabType<float >::CreateVarFromSmtPtr(var_TransformedDirection_ptr);
-    if (var_TransformedDirection.get()) {
-      var_TransformedDirection->Rename("TransformedDirection");
-      context->AddVar(var_TransformedDirection,context);
-    }
-  }
-  */
-  
-  /* ArrayType not implemented
-  // Adding public member TransformedIncrement
-  boost::shared_ptr<float > var_TransformedIncrement_ptr(&GetObj()->TransformedIncrement, smartpointer_nodeleter<float >());
-  if (var_TransformedIncrement_ptr.get()) {
-    BasicVariable::ptr var_TransformedIncrement = AMILabType<float >::CreateVarFromSmtPtr(var_TransformedIncrement_ptr);
-    if (var_TransformedIncrement.get()) {
-      var_TransformedIncrement->Rename("TransformedIncrement");
-      context->AddVar(var_TransformedIncrement,context);
-    }
-  }
-  */
-  
-  // Adding public member NumberOfStepsToTake
-  boost::shared_ptr<int > var_NumberOfStepsToTake_ptr(&GetObj()->NumberOfStepsToTake, smartpointer_nodeleter<int >());
-  if (var_NumberOfStepsToTake_ptr.get()) {
-    BasicVariable::ptr var_NumberOfStepsToTake = AMILabType<int >::CreateVarFromSmtPtr(var_NumberOfStepsToTake_ptr);
-    if (var_NumberOfStepsToTake.get()) {
-      var_NumberOfStepsToTake->Rename("NumberOfStepsToTake");
-      context->AddVar(var_NumberOfStepsToTake,context);
-    }
-  }
-  
-  // Adding public member NumberOfStepsTaken
-  boost::shared_ptr<int > var_NumberOfStepsTaken_ptr(&GetObj()->NumberOfStepsTaken, smartpointer_nodeleter<int >());
-  if (var_NumberOfStepsTaken_ptr.get()) {
-    BasicVariable::ptr var_NumberOfStepsTaken = AMILabType<int >::CreateVarFromSmtPtr(var_NumberOfStepsTaken_ptr);
-    if (var_NumberOfStepsTaken.get()) {
-      var_NumberOfStepsTaken->Rename("NumberOfStepsTaken");
-      context->AddVar(var_NumberOfStepsTaken,context);
-    }
-  }
-
 
   
 
@@ -208,7 +116,7 @@ void WrapClassvtkVolumeRayCastDynamicInfo_AddStaticMethods( Variables::ptr& cont
 
 
 //---------------------------------------------------
-//  Wrapping of Constructor vtkVolumeRayCastDynamicInfo::._87(vtkVolumeRayCastDynamicInfo const & param0)
+//  Wrapping of Constructor vtkVolumeRayCastDynamicInfo::._88(vtkVolumeRayCastDynamicInfo const & param0)
 //---------------------------------------------------
 void WrapClass_vtkVolumeRayCastDynamicInfo::
     wrap_vtkVolumeRayCastDynamicInfo_1::SetParametersComments()
@@ -255,7 +163,7 @@ BasicVariable::ptr WrapClass_vtkVolumeRayCastDynamicInfo::
 }
 
 //---------------------------------------------------
-//  Wrapping of Constructor vtkVolumeRayCastDynamicInfo::._87()
+//  Wrapping of Constructor vtkVolumeRayCastDynamicInfo::._88()
 //---------------------------------------------------
 void WrapClass_vtkVolumeRayCastDynamicInfo::
     wrap_vtkVolumeRayCastDynamicInfo_2::SetParametersComments()

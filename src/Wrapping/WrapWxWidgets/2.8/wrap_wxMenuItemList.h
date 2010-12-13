@@ -14,12 +14,12 @@
 #define _wrap_wxMenuItemList_h_
 
 /*
-#include "wrapfunction_class.h"
-#include "wrapfunctions.hpp"
 #include "Variable.hpp"
-#include "paramlist.h"
 #include "ami_object.h"
 */
+#include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
+#include "paramlist.h"
 
 #include "wx_includes.h"
 
@@ -113,11 +113,11 @@ class WrapClass_wxMenuItemList : public WrapClass<wxMenuItemList>
     ADD_CLASS_METHOD(Find,"wxMenuItemList::Find()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxwxMenuItemListNode * wxMenuItemList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxMenuItemList::IndexOf(wxMenuItem * object)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#indexof)")
-/* The following types are missing: _17586
+/* The following types are missing: _17735
     ADD_CLASS_METHOD(Sort_1,"void wxMenuItemList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxMenuItemList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#sort)")
-/* The following types are missing: _5170
+/* The following types are missing: _5336
     ADD_CLASS_METHOD(Sort_2,"void wxMenuItemList::Sort(wxSortFuncFor_wxMenuItemList func)  (http://docs.wxwidgets.org/stable/wx_wxmenuitemlist.html#sort)")
 */
 /* The following types are missing: iterator

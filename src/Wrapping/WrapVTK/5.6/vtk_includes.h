@@ -24,3 +24,8 @@
 #include <vtkTransform.h>
 #include <vtkPolyData.h>
 #include <vtkWindowToImageFilter.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkAlgorithm.h>
+#include <vtkAlgorithmOutput.h>
+#include <vtkInformation.h>

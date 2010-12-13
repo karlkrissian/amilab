@@ -13,11 +13,13 @@
 #ifndef _wrap_vtkPropCollection_h_
 #define _wrap_vtkPropCollection_h_
 
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
-#include "Variable.hpp"
 #include "paramlist.h"
-#include "ami_object.h"
 
 #include "vtkPropCollection.h"
 

@@ -13,11 +13,13 @@
 #ifndef _wrap_vtkCamera_h_
 #define _wrap_vtkCamera_h_
 
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
-#include "Variable.hpp"
 #include "paramlist.h"
-#include "ami_object.h"
 
 #include "vtkCamera.h"
 

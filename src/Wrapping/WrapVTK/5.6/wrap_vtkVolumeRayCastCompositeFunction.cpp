@@ -10,11 +10,13 @@
  *
  **/
 
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
 
 #include "wrap_vtkVolumeRayCastCompositeFunction.h"
 
@@ -58,8 +60,8 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<vtkVolumeRayCastCompositeFunction>::CreateVar( ParamList* p)
 {
-  // No constructor available !!
-  return BasicVariable::ptr();
+  WrapClass_vtkVolumeRayCastCompositeFunction::wrap_static_New construct;
+  return construct.CallMember(p);
 
 }
 
@@ -114,15 +116,16 @@ void WrapClass_vtkVolumeRayCastCompositeFunction::AddMethods(WrapClass<vtkVolume
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent vtkVolumeRayCastFunction
   boost::shared_ptr<vtkVolumeRayCastFunction > parent_vtkVolumeRayCastFunction(  boost::dynamic_pointer_cast<vtkVolumeRayCastFunction >(this_ptr->GetObj()));

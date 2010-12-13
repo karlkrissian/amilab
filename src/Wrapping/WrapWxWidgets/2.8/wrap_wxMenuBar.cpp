@@ -23,10 +23,6 @@
 // get all the required includes
 // #include "..."
 #include "boost/numeric/conversion/cast.hpp"
-#ifndef wxWindow_declared
-  #define wxWindow_declared
-  AMI_DECLARE_TYPE(wxWindow)
-#endif
 #ifndef wxMenu_declared
   #define wxMenu_declared
   AMI_DECLARE_TYPE(wxMenu)
@@ -42,6 +38,10 @@
 #ifndef wxFrame_declared
   #define wxFrame_declared
   AMI_DECLARE_TYPE(wxFrame)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
 #endif
 #ifndef wxClassInfo_declared
   #define wxClassInfo_declared
@@ -124,38 +124,6 @@ void WrapClass_wxMenuBar::AddMethods(WrapClass<wxMenuBar>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  /* Type not available
-  // Adding public member m_menubar
-  boost::shared_ptr<_GtkWidget > var_m_menubar_ptr(GetObj()->m_menubar, smartpointer_nodeleter<_GtkWidget >());
-  if (var_m_menubar_ptr.get()) {
-    BasicVariable::ptr var_m_menubar = AMILabType<_GtkWidget >::CreateVarFromSmtPtr(var_m_menubar_ptr);
-    if (var_m_menubar.get()) {
-      var_m_menubar->Rename("m_menubar");
-      context->AddVar(var_m_menubar,context);
-    }
-  }
-  */
-  
-  // Adding public member m_style
-  boost::shared_ptr<long int > var_m_style_ptr(&GetObj()->m_style, smartpointer_nodeleter<long int >());
-  if (var_m_style_ptr.get()) {
-    BasicVariable::ptr var_m_style = AMILabType<long int >::CreateVarFromSmtPtr(var_m_style_ptr);
-    if (var_m_style.get()) {
-      var_m_style->Rename("m_style");
-      context->AddVar(var_m_style,context);
-    }
-  }
-  
-  // Adding public member m_invokingWindow
-  boost::shared_ptr<wxWindow > var_m_invokingWindow_ptr(GetObj()->m_invokingWindow, smartpointer_nodeleter<wxWindow >());
-  if (var_m_invokingWindow_ptr.get()) {
-    BasicVariable::ptr var_m_invokingWindow = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_m_invokingWindow_ptr);
-    if (var_m_invokingWindow.get()) {
-      var_m_invokingWindow->Rename("m_invokingWindow");
-      context->AddVar(var_m_invokingWindow,context);
-    }
-  }
 
 
   

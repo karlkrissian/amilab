@@ -30,17 +30,17 @@ extern VarContexts  Vars;
 
 // standard VTK
 #include "vtkPolyData.h"
-#include "vtkPoints.h"
-#include "vtkCellArray.h"
-#include "vtkDecimate.h"
-#include "vtkTriangleFilter.h"
-#include "vtkImageMarchingCubes.h"
-#include "vtkSmoothPolyDataFilter.h"
-#include "vtkWindowedSincPolyDataFilter.h"
-#include "vtkPolyDataWriter.h"
-#include "vtkImageCityBlockDistance.h"
-#include "vtkImageMedian3D.h"
-#include "vtkDICOMImageReader.h"
+// #include "vtkPoints.h"
+// #include "vtkCellArray.h"
+// #include "vtkDecimate.h"
+// #include "vtkTriangleFilter.h"
+// #include "vtkImageMarchingCubes.h"
+// #include "vtkSmoothPolyDataFilter.h"
+// #include "vtkWindowedSincPolyDataFilter.h"
+// #include "vtkPolyDataWriter.h"
+// #include "vtkImageCityBlockDistance.h"
+// #include "vtkImageMedian3D.h"
+// #include "vtkDICOMImageReader.h"
 #include "vtkSphereSource.h"
 
 // files from myVTK library
@@ -59,6 +59,8 @@ extern VarContexts  Vars;
 #include "wrap_wxVTKRenderWindowInteractor.h"
 
 #include "wrap_vtkImageData.h"
+#include "wrap_vtkPolyData.h"
+#include "wrap_SurfacePoly.h"
 // #include "wrap_vtkRenderWindowInteractor.h"
 // #include "wrap_vtkRenderer.h"
 // #include "wrap_vtkVolume.h"
@@ -93,9 +95,11 @@ void AddWrapVTK() {
   ADDVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        wrap_wxVTKMedical3);
   ADDVAR_NAME( C_wrap_varfunction,   "wxVTKFrame",           wrap_wxVTKFrame);
 
-  ADDVAR_NAME( C_wrap_varfunction,   "ToVtkImageData", wrap_ToVtkImageData);
-
+  ADDVAR_NAME( C_wrap_varfunction,   "ToVtkImageData",   wrap_ToVtkImageData);
   ADDVAR_NAME( C_wrap_varfunction,   "FromVtkImageData", wrap_FromVtkImageData);
+
+  ADDVAR_NAME( C_wrap_varfunction,   "ToVtkPolyData",   wrap_ToVtkPolyData);
+  ADDVAR_NAME( C_wrap_varfunction,   "FromVtkPolyData", wrap_FromVtkPolyData);
 
 // #include "wrap_vtkInteractorStyleTrackballCamera.h"
 // #include "wrap_vtkInteractorStyleTrackball.h"
@@ -433,6 +437,65 @@ BasicVariable::ptr wrap_FromVtkImageData(ParamList* p)
     return BasicVariable::ptr();
 
 } // wrap_FromVtkImageData()
+
+
+//
+BasicVariable::ptr wrap_ToVtkPolyData(ParamList* p)
+{
+
+  char functionname[] = "ToVtkPolyData";
+  char description[]=" \n\
+                      ";
+  char parameters[] ="Converts a SurfacePoly variable to a vtkPolyData variable\n\
+                      Parameters:\n\
+                        SurfacePoly variable\n\
+                      Returns: Returns a variable of type vtkPolyData\n\
+                      \n\
+                      ";
+
+  SurfacePoly* input;
+  int   n=0;
+
+  boost::shared_ptr<vtkPolyData>                vtk_polydata;
+  //  printf("1 \n");
+
+  if (!get_val_ptr_param<SurfacePoly>(  input,      p, n)) HelpAndReturnVarPtr;
+  vtk_polydata = boost::shared_ptr<vtkPolyData>( (vtkPolyData*) (*input), vtk_deleter<vtkPolyData>());
+
+  return AMILabType<vtkPolyData>::CreateVarFromSmtPtr(vtk_polydata);
+
+} // wrap_ToVtkPolyData()
+
+
+//
+BasicVariable::ptr wrap_FromVtkPolyData(ParamList* p)
+{
+
+  char functionname[] = "FromVtkPolyData";
+  char description[]=" \n\
+                      ";
+  char parameters[] =" convert vtkPolyData  variable to SurfacePoly variable\n\
+                      Parameters:\n\
+                        vtkPolyData variable\n\
+                      Return: Returns a variable of type SurfacePoly\n\
+                      \n\
+                      ";
+
+  boost::shared_ptr<vtkPolyData> vtk_input;
+  SurfacePoly::ptr surf;
+  int   n=0;
+
+  if (!get_val_smtptr_param<vtkPolyData>( vtk_input,      p, n)) HelpAndReturnVarPtr;
+  //std::cout << "vtk_input.get() " << vtk_input.get() << std::endl;
+  if (vtk_input.get()) {
+    surf =  SurfacePoly::ptr(new SurfacePoly(vtk_input.get()));
+    
+    return AMILabType<SurfacePoly>::CreateVarFromSmtPtr( surf);
+  }
+  else
+    return BasicVariable::ptr();
+
+} // wrap_FromVtkPolyData()
 
 
 //
