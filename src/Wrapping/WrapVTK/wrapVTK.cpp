@@ -58,7 +58,7 @@ extern VarContexts  Vars;
 
 #include "wrap_wxVTKRenderWindowInteractor.h"
 
-// #include "wrap_vtkImageData.h"
+#include "wrap_vtkImageData.h"
 // #include "wrap_vtkRenderWindowInteractor.h"
 // #include "wrap_vtkRenderer.h"
 // #include "wrap_vtkVolume.h"
@@ -423,9 +423,10 @@ BasicVariable::ptr wrap_FromVtkImageData(ParamList* p)
   int   n=0;
 
   if (!get_val_smtptr_param<vtkImageData>( vtk_input,      p, n)) HelpAndReturnVarPtr;
-
+  //std::cout << "vtk_input.get() " << vtk_input.get() << std::endl;
   if (vtk_input.get()) {
     image =  InrImage::ptr(new InrImage(vtk_input.get()));
+    
     return Variable<InrImage>::ptr( new Variable<InrImage>(image));
   }
   else
