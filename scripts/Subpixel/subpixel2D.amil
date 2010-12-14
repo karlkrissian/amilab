@@ -304,8 +304,16 @@ if (!exists(Subpixel2DClass)){
     
     proc ::Run() {
     	::load_input()
-      if (exists(::input_draw)) { del ::input_draw; }
-    	::norm_input <<= norm(::input)
+      #if (exists(::input_draw)) { del ::input_draw; }
+      if ::input.vdim==1 {
+        ::input <<= (DOUBLE) ::input
+        ::norm_input = (::input<=1)*1 + (::input>1)*::input
+      } else {
+      	::norm_input <<= (DOUBLE) norm(::input)
+        ::norm_input.info
+      }
+      #::norm_input = (::norm_input<=0)*1 + (::norm_input>0)*::norm_input
+      #::norm_input <<= ::input
       if (exists(::res))  { del ::res; }
       if (exists(::sp2D)) { del ::sp2D; }
       #Build a SubPixel2D object
