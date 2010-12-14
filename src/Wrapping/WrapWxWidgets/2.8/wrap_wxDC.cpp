@@ -120,46 +120,6 @@ void WrapClass_wxDC::AddMethods(WrapClass<wxDC>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member m_mm_to_pix_x
-  boost::shared_ptr<double > var_m_mm_to_pix_x_ptr(&GetObj()->m_mm_to_pix_x, smartpointer_nodeleter<double >());
-  if (var_m_mm_to_pix_x_ptr.get()) {
-    BasicVariable::ptr var_m_mm_to_pix_x = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_x_ptr);
-    if (var_m_mm_to_pix_x.get()) {
-      var_m_mm_to_pix_x->Rename("m_mm_to_pix_x");
-      context->AddVar(var_m_mm_to_pix_x,context);
-    }
-  }
-  
-  // Adding public member m_mm_to_pix_y
-  boost::shared_ptr<double > var_m_mm_to_pix_y_ptr(&GetObj()->m_mm_to_pix_y, smartpointer_nodeleter<double >());
-  if (var_m_mm_to_pix_y_ptr.get()) {
-    BasicVariable::ptr var_m_mm_to_pix_y = AMILabType<double >::CreateVarFromSmtPtr(var_m_mm_to_pix_y_ptr);
-    if (var_m_mm_to_pix_y.get()) {
-      var_m_mm_to_pix_y->Rename("m_mm_to_pix_y");
-      context->AddVar(var_m_mm_to_pix_y,context);
-    }
-  }
-  
-  // Adding public member m_needComputeScaleX
-  boost::shared_ptr<bool > var_m_needComputeScaleX_ptr(&GetObj()->m_needComputeScaleX, smartpointer_nodeleter<bool >());
-  if (var_m_needComputeScaleX_ptr.get()) {
-    BasicVariable::ptr var_m_needComputeScaleX = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleX_ptr);
-    if (var_m_needComputeScaleX.get()) {
-      var_m_needComputeScaleX->Rename("m_needComputeScaleX");
-      context->AddVar(var_m_needComputeScaleX,context);
-    }
-  }
-  
-  // Adding public member m_needComputeScaleY
-  boost::shared_ptr<bool > var_m_needComputeScaleY_ptr(&GetObj()->m_needComputeScaleY, smartpointer_nodeleter<bool >());
-  if (var_m_needComputeScaleY_ptr.get()) {
-    BasicVariable::ptr var_m_needComputeScaleY = AMILabType<bool >::CreateVarFromSmtPtr(var_m_needComputeScaleY_ptr);
-    if (var_m_needComputeScaleY.get()) {
-      var_m_needComputeScaleY->Rename("m_needComputeScaleY");
-      context->AddVar(var_m_needComputeScaleY,context);
-    }
-  }
 
 
   

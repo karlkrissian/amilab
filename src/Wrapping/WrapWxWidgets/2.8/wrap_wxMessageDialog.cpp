@@ -97,15 +97,16 @@ void WrapClass_wxMessageDialog::AddMethods(WrapClass<wxMessageDialog>::ptr this_
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxDialog
   boost::shared_ptr<wxDialog > parent_wxDialog(  boost::dynamic_pointer_cast<wxDialog >(this_ptr->GetObj()));

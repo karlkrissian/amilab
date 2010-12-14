@@ -120,36 +120,6 @@ void WrapClass_wxFrame::AddMethods(WrapClass<wxFrame>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member m_menuBarDetached
-  boost::shared_ptr<bool > var_m_menuBarDetached_ptr(&GetObj()->m_menuBarDetached, smartpointer_nodeleter<bool >());
-  if (var_m_menuBarDetached_ptr.get()) {
-    BasicVariable::ptr var_m_menuBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_menuBarDetached_ptr);
-    if (var_m_menuBarDetached.get()) {
-      var_m_menuBarDetached->Rename("m_menuBarDetached");
-      context->AddVar(var_m_menuBarDetached,context);
-    }
-  }
-  
-  // Adding public member m_menuBarHeight
-  boost::shared_ptr<int > var_m_menuBarHeight_ptr(&GetObj()->m_menuBarHeight, smartpointer_nodeleter<int >());
-  if (var_m_menuBarHeight_ptr.get()) {
-    BasicVariable::ptr var_m_menuBarHeight = AMILabType<int >::CreateVarFromSmtPtr(var_m_menuBarHeight_ptr);
-    if (var_m_menuBarHeight.get()) {
-      var_m_menuBarHeight->Rename("m_menuBarHeight");
-      context->AddVar(var_m_menuBarHeight,context);
-    }
-  }
-  
-  // Adding public member m_toolBarDetached
-  boost::shared_ptr<bool > var_m_toolBarDetached_ptr(&GetObj()->m_toolBarDetached, smartpointer_nodeleter<bool >());
-  if (var_m_toolBarDetached_ptr.get()) {
-    BasicVariable::ptr var_m_toolBarDetached = AMILabType<bool >::CreateVarFromSmtPtr(var_m_toolBarDetached_ptr);
-    if (var_m_toolBarDetached.get()) {
-      var_m_toolBarDetached->Rename("m_toolBarDetached");
-      context->AddVar(var_m_toolBarDetached,context);
-    }
-  }
 
 
   

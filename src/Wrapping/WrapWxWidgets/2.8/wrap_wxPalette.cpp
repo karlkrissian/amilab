@@ -91,15 +91,16 @@ void WrapClass_wxPalette::AddMethods(WrapClass<wxPalette>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxPaletteBase
   boost::shared_ptr<wxPaletteBase > parent_wxPaletteBase(  boost::dynamic_pointer_cast<wxPaletteBase >(this_ptr->GetObj()));

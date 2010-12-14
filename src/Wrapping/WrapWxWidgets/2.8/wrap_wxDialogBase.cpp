@@ -130,17 +130,17 @@ void WrapClass_wxDialogBase::AddMethods(WrapClass<wxDialogBase>::ptr this_ptr )
 
 
   
-  AMIObject::ptr obj_enum_117(new AMIObject);
-  obj_enum_117->SetName("enum_117");
+  AMIObject::ptr obj_enum_157(new AMIObject);
+  obj_enum_157->SetName("enum_157");
 
   BasicVariable::ptr var_ButtonSizerFlags = AMILabType<int >::CreateVar(32926);
   if (var_ButtonSizerFlags.get()) {
     var_ButtonSizerFlags->Rename("ButtonSizerFlags");
-    obj_enum_117->GetContext()->AddVar(var_ButtonSizerFlags,obj_enum_117->GetContext());
+    obj_enum_157->GetContext()->AddVar(var_ButtonSizerFlags,obj_enum_157->GetContext());
   }
 
   // Add enum to context
-  context->AddVar<AMIObject>(obj_enum_117->GetName().c_str(),obj_enum_117,context);
+  context->AddVar<AMIObject>(obj_enum_157->GetName().c_str(),obj_enum_157,context);
 
 
   // Adding Bases

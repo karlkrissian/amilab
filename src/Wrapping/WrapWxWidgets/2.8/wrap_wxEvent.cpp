@@ -105,16 +105,6 @@ void WrapClass_wxEvent::AddMethods(WrapClass<wxEvent>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member m_callbackUserData
-  boost::shared_ptr<wxObject > var_m_callbackUserData_ptr(GetObj()->m_callbackUserData, smartpointer_nodeleter<wxObject >());
-  if (var_m_callbackUserData_ptr.get()) {
-    BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
-    if (var_m_callbackUserData.get()) {
-      var_m_callbackUserData->Rename("m_callbackUserData");
-      context->AddVar(var_m_callbackUserData,context);
-    }
-  }
 
 
   

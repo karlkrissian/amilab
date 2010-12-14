@@ -14,12 +14,12 @@
 #define _wrap_wxSizerItemList_h_
 
 /*
-#include "wrapfunction_class.h"
-#include "wrapfunctions.hpp"
 #include "Variable.hpp"
-#include "paramlist.h"
 #include "ami_object.h"
 */
+#include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
+#include "paramlist.h"
 
 #include "wx_includes.h"
 
@@ -113,11 +113,11 @@ class WrapClass_wxSizerItemList : public WrapClass<wxSizerItemList>
     ADD_CLASS_METHOD(Find,"wxSizerItemList::Find()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxwxSizerItemListNode * wxSizerItemList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxSizerItemList::IndexOf(wxSizerItem * object)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#indexof)")
-/* The following types are missing: _17586
+/* The following types are missing: _5346
     ADD_CLASS_METHOD(Sort_1,"void wxSizerItemList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxSizerItemList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
-/* The following types are missing: _8653
+/* The following types are missing: _8568
     ADD_CLASS_METHOD(Sort_2,"void wxSizerItemList::Sort(wxSortFuncFor_wxSizerItemList func)  (http://docs.wxwidgets.org/stable/wx_wxsizeritemlist.html#sort)")
 */
 /* The following types are missing: iterator

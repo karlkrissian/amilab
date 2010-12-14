@@ -22,13 +22,13 @@
 
 // get all the required includes
 // #include "..."
-#ifndef wxImageHistogramEntry_declared
-  #define wxImageHistogramEntry_declared
-  AMI_DECLARE_TYPE(wxImageHistogramEntry)
-#endif
 #ifndef wxImageHistogramBase_wxImplementation_Pair_declared
   #define wxImageHistogramBase_wxImplementation_Pair_declared
   AMI_DECLARE_TYPE(wxImageHistogramBase_wxImplementation_Pair)
+#endif
+#ifndef wxImageHistogramEntry_declared
+  #define wxImageHistogramEntry_declared
+  AMI_DECLARE_TYPE(wxImageHistogramEntry)
 #endif
 
 
@@ -84,33 +84,7 @@ void WrapClass_wxImageHistogramBase_wxImplementation_Pair::AddMethods(WrapClass<
 
 
 
-  // Add public fields and Enumerations
-  AMIObject::ptr tmpobj(amiobject.lock());
-  if (!tmpobj.get()) return;
-  Variables::ptr context(tmpobj->GetContext());
   
-  /* Type not available
-  // Adding public member first
-  boost::shared_ptr<long unsigned int > var_first_ptr(&GetObj()->first, smartpointer_nodeleter<long unsigned int >());
-  if (var_first_ptr.get()) {
-    BasicVariable::ptr var_first = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_first_ptr);
-    if (var_first.get()) {
-      var_first->Rename("first");
-      context->AddVar(var_first,context);
-    }
-  }
-  */
-  
-  // Adding public member second
-  boost::shared_ptr<wxImageHistogramEntry > var_second_ptr(&GetObj()->second, smartpointer_nodeleter<wxImageHistogramEntry >());
-  if (var_second_ptr.get()) {
-    BasicVariable::ptr var_second = AMILabType<wxImageHistogramEntry >::CreateVarFromSmtPtr(var_second_ptr);
-    if (var_second.get()) {
-      var_second->Rename("second");
-      context->AddVar(var_second,context);
-    }
-  }
-
 
   
 

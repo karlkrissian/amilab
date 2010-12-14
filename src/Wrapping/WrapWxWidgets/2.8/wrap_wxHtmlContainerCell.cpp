@@ -161,15 +161,16 @@ void WrapClass_wxHtmlContainerCell::AddMethods(WrapClass<wxHtmlContainerCell>::p
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxHtmlCell
   boost::shared_ptr<wxHtmlCell > parent_wxHtmlCell(  boost::dynamic_pointer_cast<wxHtmlCell >(this_ptr->GetObj()));

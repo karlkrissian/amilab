@@ -98,15 +98,16 @@ void WrapClass_wxObjectListNode::AddMethods(WrapClass<wxObjectListNode>::ptr thi
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxNodeBase
   boost::shared_ptr<wxNodeBase > parent_wxNodeBase(  boost::dynamic_pointer_cast<wxNodeBase >(this_ptr->GetObj()));

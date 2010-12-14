@@ -105,15 +105,16 @@ void WrapClass_wxBrush::AddMethods(WrapClass<wxBrush>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxBrushBase
   boost::shared_ptr<wxBrushBase > parent_wxBrushBase(  boost::dynamic_pointer_cast<wxBrushBase >(this_ptr->GetObj()));

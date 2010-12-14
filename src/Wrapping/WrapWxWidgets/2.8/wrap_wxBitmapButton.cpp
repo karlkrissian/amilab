@@ -121,30 +121,6 @@ void WrapClass_wxBitmapButton::AddMethods(WrapClass<wxBitmapButton>::ptr this_pt
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  /* Can't get address of a bit field
-  // Adding public member m_hasFocus
-  boost::shared_ptr<bool > var_m_hasFocus_ptr(&GetObj()->m_hasFocus, smartpointer_nodeleter<bool >());
-  if (var_m_hasFocus_ptr.get()) {
-    BasicVariable::ptr var_m_hasFocus = AMILabType<bool >::CreateVarFromSmtPtr(var_m_hasFocus_ptr);
-    if (var_m_hasFocus.get()) {
-      var_m_hasFocus->Rename("m_hasFocus");
-      context->AddVar(var_m_hasFocus,context);
-    }
-  }
-  */
-  
-  /* Can't get address of a bit field
-  // Adding public member m_isSelected
-  boost::shared_ptr<bool > var_m_isSelected_ptr(&GetObj()->m_isSelected, smartpointer_nodeleter<bool >());
-  if (var_m_isSelected_ptr.get()) {
-    BasicVariable::ptr var_m_isSelected = AMILabType<bool >::CreateVarFromSmtPtr(var_m_isSelected_ptr);
-    if (var_m_isSelected.get()) {
-      var_m_isSelected->Rename("m_isSelected");
-      context->AddVar(var_m_isSelected,context);
-    }
-  }
-  */
 
 
   

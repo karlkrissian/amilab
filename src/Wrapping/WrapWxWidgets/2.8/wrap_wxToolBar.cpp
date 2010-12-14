@@ -124,28 +124,6 @@ void WrapClass_wxToolBar::AddMethods(WrapClass<wxToolBar>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  /* Type not available
-  // Adding public member m_toolbar
-  boost::shared_ptr<_GtkToolbar > var_m_toolbar_ptr(GetObj()->m_toolbar, smartpointer_nodeleter<_GtkToolbar >());
-  if (var_m_toolbar_ptr.get()) {
-    BasicVariable::ptr var_m_toolbar = AMILabType<_GtkToolbar >::CreateVarFromSmtPtr(var_m_toolbar_ptr);
-    if (var_m_toolbar.get()) {
-      var_m_toolbar->Rename("m_toolbar");
-      context->AddVar(var_m_toolbar,context);
-    }
-  }
-  */
-  
-  // Adding public member m_blockEvent
-  boost::shared_ptr<bool > var_m_blockEvent_ptr(&GetObj()->m_blockEvent, smartpointer_nodeleter<bool >());
-  if (var_m_blockEvent_ptr.get()) {
-    BasicVariable::ptr var_m_blockEvent = AMILabType<bool >::CreateVarFromSmtPtr(var_m_blockEvent_ptr);
-    if (var_m_blockEvent.get()) {
-      var_m_blockEvent->Rename("m_blockEvent");
-      context->AddVar(var_m_blockEvent,context);
-    }
-  }
 
 
   

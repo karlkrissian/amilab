@@ -427,6 +427,8 @@ ENDIF(AMI_USE_FLEXBISON)
 
 OPTION(AMI_USE_FASTNLMEANS "Use Fast NLmeans implementation" OFF)
 
+OPTION(AMI_COMPILE_ABOUTPLUGIN "Compile plugin example" OFF)
+
 IF(AMI_USE_FASTNLMEANS)
   FIND_PACKAGE(NewNLMeans)
   MESSAGE("NewNLMeans_LIBRARY=${NewNLMeans_LIBRARY}")
@@ -504,8 +506,9 @@ add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (AMILab)
 
-#add_subdirectory (Plugins/AboutBox)
-
+IF(AMI_COMPILE_ABOUTPLUGIN)
+  add_subdirectory (Plugins/AboutBox)
+ENDIF(AMI_COMPILE_ABOUTPLUGIN)
 
 #add_subdirectory (libamiFluid)
 

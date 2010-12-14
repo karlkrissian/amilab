@@ -1,5 +1,5 @@
 //
-// C++ Interface: PluginBase
+// C++ Interface: wxPluginBase
 //
 // Description: Sets the basis for the definition of a Plugin.
 //
@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef PLUGINBASE_H
-#define PLUGINBASE_H
+#ifndef wxPluginBase_H
+#define wxPluginBase_H
 
 //--------------------------------------------------
 // Specified how export functions from DLL or 
@@ -52,12 +52,12 @@
     #include "wx/wx.h"
 #endif
 
-#include "PluginInterface.h"
+#include "wxPluginInterface.h"
 
 /**
  * @brief Class that sets the basis for the definition of a Plugin.
  **/
-class WX_AMILAB_EXPORT PluginBase: public PluginInterface
+class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
 {
   public:
     /**
@@ -219,7 +219,7 @@ class WX_AMILAB_EXPORT PluginBase: public PluginInterface
                   m_Author;       // The plugin Author
     wxWindow*     m_win;          // The plugin wxWindow.
 
-}; // PluginBase
+}; // wxPluginBase
 
 
 /** @name This is the API that each AMILAB shared lib must implement. */
@@ -231,7 +231,7 @@ extern "C"
     type which will be called to initialise it. That function must
     return the new object representing this module.
    */
-  typedef PluginBase* ( *CreatePlugin_function)();
+  typedef wxPluginBase* ( *CreatePlugin_function)();
 
 }
 //@}
@@ -247,9 +247,9 @@ public: \
     virtual bool Execute (void);
 
 #define PLUGIN_ENTRY_FUNCTION(name) \
-extern "C" PLUGIN_AMILAB_DLLEXPORT PluginBase* CreatePlugin() \
+extern "C" PLUGIN_AMILAB_DLLEXPORT wxPluginBase* CreatePlugin() \
 { \
   return new name(); \
 };
 
-#endif // PLUGINBASE_H
+#endif // wxPluginBase_H

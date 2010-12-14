@@ -102,7 +102,7 @@ void WrapClass_wxAuiToolBarItemArray::AddMethods(WrapClass<wxAuiToolBarItemArray
   AddVar_Clear( this_ptr);
   AddVar_Detach( this_ptr);
   AddVar_RemoveAt( this_ptr);
-/* The following types are missing: _14393
+/* The following types are missing: _14979
   AddVar_Sort( this_ptr);
 */
 
@@ -788,7 +788,7 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItemArray::
   this->_objectptr->GetObj()->RemoveAt(uiIndex, nRemove);
   return BasicVariable::ptr();
 }
-/* The following types are missing: _14393
+/* The following types are missing: _14979
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiToolBarItemArray::Sort(CMPFUNC_wxObjArraywxAuiToolBarItemArray fCmp)
@@ -796,7 +796,7 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItemArray::
 void WrapClass_wxAuiToolBarItemArray::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _14393, "parameter named 'fCmp'")
+  ADDPARAMCOMMENT_TYPE( _14979, "parameter named 'fCmp'")
 }
 
 //---------------------------------------------------
@@ -807,8 +807,8 @@ BasicVariable::ptr WrapClass_wxAuiToolBarItemArray::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _14393 fCmp;
-  if (!get_val_param<_14393 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
+  _14979 fCmp;
+  if (!get_val_param<_14979 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(fCmp);
   return BasicVariable::ptr();

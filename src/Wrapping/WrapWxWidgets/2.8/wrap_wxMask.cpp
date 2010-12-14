@@ -104,18 +104,6 @@ void WrapClass_wxMask::AddMethods(WrapClass<wxMask>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  /* Type not available
-  // Adding public member m_bitmap
-  boost::shared_ptr<_GdkDrawable > var_m_bitmap_ptr(GetObj()->m_bitmap, smartpointer_nodeleter<_GdkDrawable >());
-  if (var_m_bitmap_ptr.get()) {
-    BasicVariable::ptr var_m_bitmap = AMILabType<_GdkDrawable >::CreateVarFromSmtPtr(var_m_bitmap_ptr);
-    if (var_m_bitmap.get()) {
-      var_m_bitmap->Rename("m_bitmap");
-      context->AddVar(var_m_bitmap,context);
-    }
-  }
-  */
 
 
   

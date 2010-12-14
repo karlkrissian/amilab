@@ -22,13 +22,13 @@
 
 // get all the required includes
 // #include "..."
-#ifndef wxWindow_declared
-  #define wxWindow_declared
-  AMI_DECLARE_TYPE(wxWindow)
-#endif
 #ifndef wxNavigationKeyEvent_declared
   #define wxNavigationKeyEvent_declared
   AMI_DECLARE_TYPE(wxNavigationKeyEvent)
+#endif
+#ifndef wxWindow_declared
+  #define wxWindow_declared
+  AMI_DECLARE_TYPE(wxWindow)
 #endif
 #ifndef wxEvent_declared
   #define wxEvent_declared
@@ -104,40 +104,20 @@ void WrapClass_wxNavigationKeyEvent::AddMethods(WrapClass<wxNavigationKeyEvent>:
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member m_flags
-  boost::shared_ptr<long int > var_m_flags_ptr(&GetObj()->m_flags, smartpointer_nodeleter<long int >());
-  if (var_m_flags_ptr.get()) {
-    BasicVariable::ptr var_m_flags = AMILabType<long int >::CreateVarFromSmtPtr(var_m_flags_ptr);
-    if (var_m_flags.get()) {
-      var_m_flags->Rename("m_flags");
-      context->AddVar(var_m_flags,context);
-    }
-  }
-  
-  // Adding public member m_focus
-  boost::shared_ptr<wxWindow > var_m_focus_ptr(GetObj()->m_focus, smartpointer_nodeleter<wxWindow >());
-  if (var_m_focus_ptr.get()) {
-    BasicVariable::ptr var_m_focus = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_m_focus_ptr);
-    if (var_m_focus.get()) {
-      var_m_focus->Rename("m_focus");
-      context->AddVar(var_m_focus,context);
-    }
-  }
 
 
   
-  AMIObject::ptr obj_enum_104(new AMIObject);
-  obj_enum_104->SetName("enum_104");
+  AMIObject::ptr obj_enum_144(new AMIObject);
+  obj_enum_144->SetName("enum_144");
 
   BasicVariable::ptr var_IsBackward = AMILabType<int >::CreateVar(0);
   if (var_IsBackward.get()) {
     var_IsBackward->Rename("IsBackward");
-    obj_enum_104->GetContext()->AddVar(var_IsBackward,obj_enum_104->GetContext());
+    obj_enum_144->GetContext()->AddVar(var_IsBackward,obj_enum_144->GetContext());
   }
 
   // Add enum to context
-  context->AddVar<AMIObject>(obj_enum_104->GetName().c_str(),obj_enum_104,context);
+  context->AddVar<AMIObject>(obj_enum_144->GetName().c_str(),obj_enum_144,context);
 
 
   // Adding Bases

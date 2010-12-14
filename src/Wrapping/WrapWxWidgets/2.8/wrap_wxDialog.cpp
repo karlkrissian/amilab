@@ -109,16 +109,6 @@ void WrapClass_wxDialog::AddMethods(WrapClass<wxDialog>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member m_modalShowing
-  boost::shared_ptr<bool > var_m_modalShowing_ptr(&GetObj()->m_modalShowing, smartpointer_nodeleter<bool >());
-  if (var_m_modalShowing_ptr.get()) {
-    BasicVariable::ptr var_m_modalShowing = AMILabType<bool >::CreateVarFromSmtPtr(var_m_modalShowing_ptr);
-    if (var_m_modalShowing.get()) {
-      var_m_modalShowing->Rename("m_modalShowing");
-      context->AddVar(var_m_modalShowing,context);
-    }
-  }
 
 
   

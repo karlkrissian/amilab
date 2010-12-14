@@ -85,15 +85,16 @@ void WrapClass_wxWritableWCharBuffer::AddMethods(WrapClass<wxWritableWCharBuffer
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxWCharBuffer
   boost::shared_ptr<wxWCharBuffer > parent_wxWCharBuffer(  boost::dynamic_pointer_cast<wxWCharBuffer >(this_ptr->GetObj()));

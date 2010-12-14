@@ -107,15 +107,16 @@ void WrapClass_wxStaticBox::AddMethods(WrapClass<wxStaticBox>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxStaticBoxBase
   boost::shared_ptr<wxStaticBoxBase > parent_wxStaticBoxBase(  boost::dynamic_pointer_cast<wxStaticBoxBase >(this_ptr->GetObj()));

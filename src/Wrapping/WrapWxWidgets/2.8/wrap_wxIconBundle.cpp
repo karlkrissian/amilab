@@ -98,23 +98,7 @@ void WrapClass_wxIconBundle::AddMethods(WrapClass<wxIconBundle>::ptr this_ptr )
 
 
 
-  // Add public fields and Enumerations
-  AMIObject::ptr tmpobj(amiobject.lock());
-  if (!tmpobj.get()) return;
-  Variables::ptr context(tmpobj->GetContext());
   
-  /* Type not available
-  // Adding public member m_icons
-  boost::shared_ptr<wxIconArray > var_m_icons_ptr(&GetObj()->m_icons, smartpointer_nodeleter<wxIconArray >());
-  if (var_m_icons_ptr.get()) {
-    BasicVariable::ptr var_m_icons = AMILabType<wxIconArray >::CreateVarFromSmtPtr(var_m_icons_ptr);
-    if (var_m_icons.get()) {
-      var_m_icons->Rename("m_icons");
-      context->AddVar(var_m_icons,context);
-    }
-  }
-  */
-
 
   
 

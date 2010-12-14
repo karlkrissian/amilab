@@ -86,7 +86,7 @@ void WrapClass_wxList::AddMethods(WrapClass<wxList>::ptr this_ptr )
   // Adding copy method 
   AddVar___copy__( this_ptr);
   // Adding standard methods 
-/* The following types are missing: _17586
+/* The following types are missing: _5346
   AddVar_Sort( this_ptr);
 */
   AddVar_Member( this_ptr);
@@ -97,15 +97,16 @@ void WrapClass_wxList::AddMethods(WrapClass<wxList>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxObjectList
   boost::shared_ptr<wxObjectList > parent_wxObjectList(  boost::dynamic_pointer_cast<wxObjectList >(this_ptr->GetObj()));
@@ -230,7 +231,7 @@ BasicVariable::ptr WrapClass_wxList::
 {
     return AMILabType<wxList >::CreateVar( new wxList(*(this->_objectptr->GetObj())));
 }
-/* The following types are missing: _17586
+/* The following types are missing: _5346
 
 //---------------------------------------------------
 //  Wrapping of void wxList::Sort(wxSortCompareFunction compfunc)
@@ -238,7 +239,7 @@ BasicVariable::ptr WrapClass_wxList::
 void WrapClass_wxList::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _17586, "parameter named 'compfunc'")
+  ADDPARAMCOMMENT_TYPE( _5346, "parameter named 'compfunc'")
 }
 
 //---------------------------------------------------
@@ -249,8 +250,8 @@ BasicVariable::ptr WrapClass_wxList::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _17586 compfunc;
-  if (!get_val_param<_17586 >(compfunc,_p,_n,true,false)) ClassHelpAndReturn;
+  _5346 compfunc;
+  if (!get_val_param<_5346 >(compfunc,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(compfunc);
   return BasicVariable::ptr();

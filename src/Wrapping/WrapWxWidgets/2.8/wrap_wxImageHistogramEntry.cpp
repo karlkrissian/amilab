@@ -80,35 +80,7 @@ void WrapClass_wxImageHistogramEntry::AddMethods(WrapClass<wxImageHistogramEntry
 
 
 
-  // Add public fields and Enumerations
-  AMIObject::ptr tmpobj(amiobject.lock());
-  if (!tmpobj.get()) return;
-  Variables::ptr context(tmpobj->GetContext());
   
-  /* Type not available
-  // Adding public member index
-  boost::shared_ptr<long unsigned int > var_index_ptr(&GetObj()->index, smartpointer_nodeleter<long unsigned int >());
-  if (var_index_ptr.get()) {
-    BasicVariable::ptr var_index = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_index_ptr);
-    if (var_index.get()) {
-      var_index->Rename("index");
-      context->AddVar(var_index,context);
-    }
-  }
-  */
-  
-  /* Type not available
-  // Adding public member value
-  boost::shared_ptr<long unsigned int > var_value_ptr(&GetObj()->value, smartpointer_nodeleter<long unsigned int >());
-  if (var_value_ptr.get()) {
-    BasicVariable::ptr var_value = AMILabType<long unsigned int >::CreateVarFromSmtPtr(var_value_ptr);
-    if (var_value.get()) {
-      var_value->Rename("value");
-      context->AddVar(var_value,context);
-    }
-  }
-  */
-
 
   
 

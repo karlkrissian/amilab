@@ -112,15 +112,16 @@ void WrapClass_wxFont::AddMethods(WrapClass<wxFont>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxFontBase
   boost::shared_ptr<wxFontBase > parent_wxFontBase(  boost::dynamic_pointer_cast<wxFontBase >(this_ptr->GetObj()));

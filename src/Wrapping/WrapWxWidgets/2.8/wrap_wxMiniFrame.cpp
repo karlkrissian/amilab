@@ -22,10 +22,6 @@
 
 // get all the required includes
 // #include "..."
-#ifndef wxBitmap_declared
-  #define wxBitmap_declared
-  AMI_DECLARE_TYPE(wxBitmap)
-#endif
 #ifndef wxWindow_declared
   #define wxWindow_declared
   AMI_DECLARE_TYPE(wxWindow)
@@ -109,66 +105,6 @@ void WrapClass_wxMiniFrame::AddMethods(WrapClass<wxMiniFrame>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member m_isDragging
-  boost::shared_ptr<bool > var_m_isDragging_ptr(&GetObj()->m_isDragging, smartpointer_nodeleter<bool >());
-  if (var_m_isDragging_ptr.get()) {
-    BasicVariable::ptr var_m_isDragging = AMILabType<bool >::CreateVarFromSmtPtr(var_m_isDragging_ptr);
-    if (var_m_isDragging.get()) {
-      var_m_isDragging->Rename("m_isDragging");
-      context->AddVar(var_m_isDragging,context);
-    }
-  }
-  
-  // Adding public member m_oldX
-  boost::shared_ptr<int > var_m_oldX_ptr(&GetObj()->m_oldX, smartpointer_nodeleter<int >());
-  if (var_m_oldX_ptr.get()) {
-    BasicVariable::ptr var_m_oldX = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldX_ptr);
-    if (var_m_oldX.get()) {
-      var_m_oldX->Rename("m_oldX");
-      context->AddVar(var_m_oldX,context);
-    }
-  }
-  
-  // Adding public member m_oldY
-  boost::shared_ptr<int > var_m_oldY_ptr(&GetObj()->m_oldY, smartpointer_nodeleter<int >());
-  if (var_m_oldY_ptr.get()) {
-    BasicVariable::ptr var_m_oldY = AMILabType<int >::CreateVarFromSmtPtr(var_m_oldY_ptr);
-    if (var_m_oldY.get()) {
-      var_m_oldY->Rename("m_oldY");
-      context->AddVar(var_m_oldY,context);
-    }
-  }
-  
-  // Adding public member m_diffX
-  boost::shared_ptr<int > var_m_diffX_ptr(&GetObj()->m_diffX, smartpointer_nodeleter<int >());
-  if (var_m_diffX_ptr.get()) {
-    BasicVariable::ptr var_m_diffX = AMILabType<int >::CreateVarFromSmtPtr(var_m_diffX_ptr);
-    if (var_m_diffX.get()) {
-      var_m_diffX->Rename("m_diffX");
-      context->AddVar(var_m_diffX,context);
-    }
-  }
-  
-  // Adding public member m_diffY
-  boost::shared_ptr<int > var_m_diffY_ptr(&GetObj()->m_diffY, smartpointer_nodeleter<int >());
-  if (var_m_diffY_ptr.get()) {
-    BasicVariable::ptr var_m_diffY = AMILabType<int >::CreateVarFromSmtPtr(var_m_diffY_ptr);
-    if (var_m_diffY.get()) {
-      var_m_diffY->Rename("m_diffY");
-      context->AddVar(var_m_diffY,context);
-    }
-  }
-  
-  // Adding public member m_closeButton
-  boost::shared_ptr<wxBitmap > var_m_closeButton_ptr(&GetObj()->m_closeButton, smartpointer_nodeleter<wxBitmap >());
-  if (var_m_closeButton_ptr.get()) {
-    BasicVariable::ptr var_m_closeButton = AMILabType<wxBitmap >::CreateVarFromSmtPtr(var_m_closeButton_ptr);
-    if (var_m_closeButton.get()) {
-      var_m_closeButton->Rename("m_closeButton");
-      context->AddVar(var_m_closeButton,context);
-    }
-  }
 
 
   

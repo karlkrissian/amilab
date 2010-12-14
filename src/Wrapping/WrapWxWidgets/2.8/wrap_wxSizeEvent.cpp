@@ -26,13 +26,13 @@
   #define wxSize_declared
   AMI_DECLARE_TYPE(wxSize)
 #endif
-#ifndef wxRect_declared
-  #define wxRect_declared
-  AMI_DECLARE_TYPE(wxRect)
-#endif
 #ifndef wxSizeEvent_declared
   #define wxSizeEvent_declared
   AMI_DECLARE_TYPE(wxSizeEvent)
+#endif
+#ifndef wxRect_declared
+  #define wxRect_declared
+  AMI_DECLARE_TYPE(wxRect)
 #endif
 #ifndef wxEvent_declared
   #define wxEvent_declared
@@ -102,26 +102,6 @@ void WrapClass_wxSizeEvent::AddMethods(WrapClass<wxSizeEvent>::ptr this_ptr )
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member m_size
-  boost::shared_ptr<wxSize > var_m_size_ptr(&GetObj()->m_size, smartpointer_nodeleter<wxSize >());
-  if (var_m_size_ptr.get()) {
-    BasicVariable::ptr var_m_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_m_size_ptr);
-    if (var_m_size.get()) {
-      var_m_size->Rename("m_size");
-      context->AddVar(var_m_size,context);
-    }
-  }
-  
-  // Adding public member m_rect
-  boost::shared_ptr<wxRect > var_m_rect_ptr(&GetObj()->m_rect, smartpointer_nodeleter<wxRect >());
-  if (var_m_rect_ptr.get()) {
-    BasicVariable::ptr var_m_rect = AMILabType<wxRect >::CreateVarFromSmtPtr(var_m_rect_ptr);
-    if (var_m_rect.get()) {
-      var_m_rect->Rename("m_rect");
-      context->AddVar(var_m_rect,context);
-    }
-  }
 
 
   

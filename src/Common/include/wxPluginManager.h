@@ -1,5 +1,5 @@
 //
-// C++ Interface: PluginManager
+// C++ Interface: wxPluginManager
 //
 // Description: It manages the life-cycle of the plugins.
 //
@@ -9,10 +9,10 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef PLUGINMANAGER_H
-#define PLUGINMANAGER_H
+#ifndef wxPluginManager_H
+#define wxPluginManager_H
 
-#include "PluginBase.h"
+#include "wxPluginBase.h"
 
 #include <wx/dynlib.h>
 #include "DefineClass.hpp"
@@ -20,9 +20,9 @@
 /**
  * @brief Class that manages the life-cycle of the plugins.
  **/
-class PluginManager
+class wxPluginManager
 {
-  DEFINE_CLASS(PluginManager);
+  DEFINE_CLASS(wxPluginManager);
 public:
 
   /**
@@ -52,13 +52,16 @@ public:
    *
    * @return return the plugin handler
    **/
-  PluginBase* GetPluginHandle () { return m_plugin; };
+  wxPluginBase* Getplugin() { return m_plugin;}
+  
+  wxDynamicLibrary& Getdll() { return m_dll; }
+  
 
 private:
   wxDllType         m_Detach; // Library handle
   wxDynamicLibrary  m_dll;    // Library manager.
-  PluginBase*       m_plugin; // Plugin handle.
+  wxPluginBase*       m_plugin; // Plugin handle.
 
-}; // PluginManager
+}; // wxPluginManager
 
-#endif // PLUGINMANAGER_H
+#endif // wxPluginManager_H

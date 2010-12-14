@@ -93,15 +93,16 @@ void WrapClass_wxBoxSizer::AddMethods(WrapClass<wxBoxSizer>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxSizer
   boost::shared_ptr<wxSizer > parent_wxSizer(  boost::dynamic_pointer_cast<wxSizer >(this_ptr->GetObj()));

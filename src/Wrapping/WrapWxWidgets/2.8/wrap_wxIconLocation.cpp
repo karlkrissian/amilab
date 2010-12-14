@@ -84,15 +84,16 @@ void WrapClass_wxIconLocation::AddMethods(WrapClass<wxIconLocation>::ptr this_pt
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxIconLocationBase
   boost::shared_ptr<wxIconLocationBase > parent_wxIconLocationBase(  boost::dynamic_pointer_cast<wxIconLocationBase >(this_ptr->GetObj()));

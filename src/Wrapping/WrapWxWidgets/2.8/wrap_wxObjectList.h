@@ -14,12 +14,12 @@
 #define _wrap_wxObjectList_h_
 
 /*
-#include "wrapfunction_class.h"
-#include "wrapfunctions.hpp"
 #include "Variable.hpp"
-#include "paramlist.h"
 #include "ami_object.h"
 */
+#include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
+#include "paramlist.h"
 
 #include "wx_includes.h"
 
@@ -113,11 +113,11 @@ class WrapClass_wxObjectList : public WrapClass<wxObjectList>
     ADD_CLASS_METHOD(Find,"wxObjectList::Find()  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#find)")
     ADD_CLASS_METHOD(Find_2,"wxObjectListNode * wxObjectList::Find(wxListKey const & key)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#find)")
     ADD_CLASS_METHOD(IndexOf,"int wxObjectList::IndexOf(wxObject * object)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#indexof)")
-/* The following types are missing: _17586
+/* The following types are missing: _5346
     ADD_CLASS_METHOD(Sort_1,"void wxObjectList::Sort(wxSortCompareFunction func)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#sort)")
 */
     ADD_CLASS_METHOD(Sort,"wxObjectList::Sort()  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#sort)")
-/* The following types are missing: _17099
+/* The following types are missing: _17389
     ADD_CLASS_METHOD(Sort_2,"void wxObjectList::Sort(wxSortFuncFor_wxObjectList func)  (http://docs.wxwidgets.org/stable/wx_wxobjectlist.html#sort)")
 */
 /* The following types are missing: iterator

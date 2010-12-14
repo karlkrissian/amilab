@@ -117,15 +117,16 @@ void WrapClass_wxImageHistogramBase::AddMethods(WrapClass<wxImageHistogramBase>:
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxImageHistogramBase_wxImplementation_HashTable
   boost::shared_ptr<wxImageHistogramBase_wxImplementation_HashTable > parent_wxImageHistogramBase_wxImplementation_HashTable(  boost::dynamic_pointer_cast<wxImageHistogramBase_wxImplementation_HashTable >(this_ptr->GetObj()));

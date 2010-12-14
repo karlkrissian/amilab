@@ -97,15 +97,16 @@ void WrapClass_wxAuiFloatingFrame::AddMethods(WrapClass<wxAuiFloatingFrame>::ptr
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxMiniFrame
   boost::shared_ptr<wxMiniFrame > parent_wxMiniFrame(  boost::dynamic_pointer_cast<wxMiniFrame >(this_ptr->GetObj()));

@@ -1,5 +1,5 @@
 //
-// C++ Interface: PluginManager
+// C++ Interface: wxPluginManager
 //
 // Description: It manages the life-cycle of the plugins.
 //
@@ -9,11 +9,11 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "PluginManager.h"
+#include "wxPluginManager.h"
 
 //=======================================================
 
-bool PluginManager::Load (const wxString& LibName)
+bool wxPluginManager::Load (const wxString& LibName)
 {
   m_dll.Load(LibName);
   if(m_dll.IsLoaded())
@@ -33,7 +33,7 @@ bool PluginManager::Load (const wxString& LibName)
 
 //=======================================================
 
-void PluginManager::Detach (void)
+void wxPluginManager::Detach (void)
 {
   if(m_dll.IsLoaded())
     m_Detach = m_dll.Detach();
@@ -41,7 +41,7 @@ void PluginManager::Detach (void)
 
 //=======================================================
 
-void PluginManager::Unload (void)
+void wxPluginManager::Unload (void)
 {
   m_dll.Unload(m_Detach);
 } //Unload definition.

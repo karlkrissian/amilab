@@ -22,14 +22,6 @@
 
 // get all the required includes
 // #include "..."
-#ifndef wxFont_declared
-  #define wxFont_declared
-  AMI_DECLARE_TYPE(wxFont)
-#endif
-#ifndef wxColour_declared
-  #define wxColour_declared
-  AMI_DECLARE_TYPE(wxColour)
-#endif
 #ifndef wxVisualAttributes_declared
   #define wxVisualAttributes_declared
   AMI_DECLARE_TYPE(wxVisualAttributes)
@@ -88,41 +80,7 @@ void WrapClass_wxVisualAttributes::AddMethods(WrapClass<wxVisualAttributes>::ptr
 
 
 
-  // Add public fields and Enumerations
-  AMIObject::ptr tmpobj(amiobject.lock());
-  if (!tmpobj.get()) return;
-  Variables::ptr context(tmpobj->GetContext());
   
-  // Adding public member font
-  boost::shared_ptr<wxFont > var_font_ptr(&GetObj()->font, smartpointer_nodeleter<wxFont >());
-  if (var_font_ptr.get()) {
-    BasicVariable::ptr var_font = AMILabType<wxFont >::CreateVarFromSmtPtr(var_font_ptr);
-    if (var_font.get()) {
-      var_font->Rename("font");
-      context->AddVar(var_font,context);
-    }
-  }
-  
-  // Adding public member colFg
-  boost::shared_ptr<wxColour > var_colFg_ptr(&GetObj()->colFg, smartpointer_nodeleter<wxColour >());
-  if (var_colFg_ptr.get()) {
-    BasicVariable::ptr var_colFg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colFg_ptr);
-    if (var_colFg.get()) {
-      var_colFg->Rename("colFg");
-      context->AddVar(var_colFg,context);
-    }
-  }
-  
-  // Adding public member colBg
-  boost::shared_ptr<wxColour > var_colBg_ptr(&GetObj()->colBg, smartpointer_nodeleter<wxColour >());
-  if (var_colBg_ptr.get()) {
-    BasicVariable::ptr var_colBg = AMILabType<wxColour >::CreateVarFromSmtPtr(var_colBg_ptr);
-    if (var_colBg.get()) {
-      var_colBg->Rename("colBg");
-      context->AddVar(var_colBg,context);
-    }
-  }
-
 
   
 

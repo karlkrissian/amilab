@@ -97,15 +97,16 @@ void WrapClass_wxStdDialogButtonSizer::AddMethods(WrapClass<wxStdDialogButtonSiz
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxBoxSizer
   boost::shared_ptr<wxBoxSizer > parent_wxBoxSizer(  boost::dynamic_pointer_cast<wxBoxSizer >(this_ptr->GetObj()));

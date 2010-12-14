@@ -108,15 +108,16 @@ void WrapClass_wxScrolledWindow::AddMethods(WrapClass<wxScrolledWindow>::ptr thi
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxPanel
   boost::shared_ptr<wxPanel > parent_wxPanel(  boost::dynamic_pointer_cast<wxPanel >(this_ptr->GetObj()));

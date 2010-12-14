@@ -102,7 +102,7 @@ void WrapClass_wxAuiPaneInfoArray::AddMethods(WrapClass<wxAuiPaneInfoArray>::ptr
   AddVar_Clear( this_ptr);
   AddVar_Detach( this_ptr);
   AddVar_RemoveAt( this_ptr);
-/* The following types are missing: _9053
+/* The following types are missing: _8965
   AddVar_Sort( this_ptr);
 */
 
@@ -788,7 +788,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   this->_objectptr->GetObj()->RemoveAt(uiIndex, nRemove);
   return BasicVariable::ptr();
 }
-/* The following types are missing: _9053
+/* The following types are missing: _8965
 
 //---------------------------------------------------
 //  Wrapping of void wxAuiPaneInfoArray::Sort(CMPFUNC_wxObjArraywxAuiPaneInfoArray fCmp)
@@ -796,7 +796,7 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
 void WrapClass_wxAuiPaneInfoArray::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _9053, "parameter named 'fCmp'")
+  ADDPARAMCOMMENT_TYPE( _8965, "parameter named 'fCmp'")
 }
 
 //---------------------------------------------------
@@ -807,8 +807,8 @@ BasicVariable::ptr WrapClass_wxAuiPaneInfoArray::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _9053 fCmp;
-  if (!get_val_param<_9053 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
+  _8965 fCmp;
+  if (!get_val_param<_8965 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(fCmp);
   return BasicVariable::ptr();

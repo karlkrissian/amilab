@@ -14,12 +14,12 @@
 #define _wrap_wxInputStream_h_
 
 /*
-#include "wrapfunction_class.h"
-#include "wrapfunctions.hpp"
 #include "Variable.hpp"
-#include "paramlist.h"
 #include "ami_object.h"
 */
+#include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
+#include "paramlist.h"
 
 #include "wx_includes.h"
 
@@ -94,7 +94,7 @@ class WrapClass_wxInputStream : public WrapClass<wxInputStream>
     // Operators:
     // ADD_CLASS_METHOD(operator not available,"wxInputStream & wxInputStream::>>(wxOutputStream & out) (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#>>)")
     // ADD_CLASS_METHOD(operator not available,"wxInputStream::>>() (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#>>)")
-/* The following types are missing: _6152
+/* The following types are missing: _12119
     // ADD_CLASS_METHOD(operator not available,"wxInputStream & wxInputStream::>>(__wxInputManip func) (http://docs.wxwidgets.org/stable/wx_wxinputstream.html#>>)")
 */
 

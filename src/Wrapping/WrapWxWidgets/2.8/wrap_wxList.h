@@ -14,12 +14,12 @@
 #define _wrap_wxList_h_
 
 /*
-#include "wrapfunction_class.h"
-#include "wrapfunctions.hpp"
 #include "Variable.hpp"
-#include "paramlist.h"
 #include "ami_object.h"
 */
+#include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
+#include "paramlist.h"
 
 #include "wx_includes.h"
 
@@ -82,7 +82,7 @@ class WrapClass_wxList : public WrapClass<wxList>
     // Adding copy method
     ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");
     // Adding standard methods
-/* The following types are missing: _17586
+/* The following types are missing: _5346
     ADD_CLASS_METHOD(Sort,"void wxList::Sort(wxSortCompareFunction compfunc)  (http://docs.wxwidgets.org/stable/wx_wxlist.html#sort)")
 */
     ADD_CLASS_METHOD(Member,"wxNode * wxList::Member(wxObject * object)  (http://docs.wxwidgets.org/stable/wx_wxlist.html#member)")

@@ -99,15 +99,16 @@ void WrapClass_wxTopLevelWindow::AddMethods(WrapClass<wxTopLevelWindow>::ptr thi
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxTopLevelWindowGTK
   boost::shared_ptr<wxTopLevelWindowGTK > parent_wxTopLevelWindowGTK(  boost::dynamic_pointer_cast<wxTopLevelWindowGTK >(this_ptr->GetObj()));

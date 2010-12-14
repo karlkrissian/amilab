@@ -23,17 +23,17 @@
 // get all the required includes
 // #include "..."
 #include "boost/numeric/conversion/cast.hpp"
-#ifndef wxString_declared
-  #define wxString_declared
-  AMI_DECLARE_TYPE(wxString)
+#ifndef wxAuiPaneInfo_declared
+  #define wxAuiPaneInfo_declared
+  AMI_DECLARE_TYPE(wxAuiPaneInfo)
 #endif
 #ifndef wxWindow_declared
   #define wxWindow_declared
   AMI_DECLARE_TYPE(wxWindow)
 #endif
-#ifndef wxFrame_declared
-  #define wxFrame_declared
-  AMI_DECLARE_TYPE(wxFrame)
+#ifndef wxString_declared
+  #define wxString_declared
+  AMI_DECLARE_TYPE(wxString)
 #endif
 #ifndef wxSize_declared
   #define wxSize_declared
@@ -42,14 +42,6 @@
 #ifndef wxPoint_declared
   #define wxPoint_declared
   AMI_DECLARE_TYPE(wxPoint)
-#endif
-#ifndef wxRect_declared
-  #define wxRect_declared
-  AMI_DECLARE_TYPE(wxRect)
-#endif
-#ifndef wxAuiPaneInfo_declared
-  #define wxAuiPaneInfo_declared
-  AMI_DECLARE_TYPE(wxAuiPaneInfo)
 #endif
 
 
@@ -192,180 +184,6 @@ void WrapClass_wxAuiPaneInfo::AddMethods(WrapClass<wxAuiPaneInfo>::ptr this_ptr 
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member name
-  boost::shared_ptr<wxString > var_name_ptr(&GetObj()->name, smartpointer_nodeleter<wxString >());
-  if (var_name_ptr.get()) {
-    BasicVariable::ptr var_name = AMILabType<wxString >::CreateVarFromSmtPtr(var_name_ptr);
-    if (var_name.get()) {
-      var_name->Rename("name");
-      context->AddVar(var_name,context);
-    }
-  }
-  
-  // Adding public member caption
-  boost::shared_ptr<wxString > var_caption_ptr(&GetObj()->caption, smartpointer_nodeleter<wxString >());
-  if (var_caption_ptr.get()) {
-    BasicVariable::ptr var_caption = AMILabType<wxString >::CreateVarFromSmtPtr(var_caption_ptr);
-    if (var_caption.get()) {
-      var_caption->Rename("caption");
-      context->AddVar(var_caption,context);
-    }
-  }
-  
-  // Adding public member window
-  boost::shared_ptr<wxWindow > var_window_ptr(GetObj()->window, smartpointer_nodeleter<wxWindow >());
-  if (var_window_ptr.get()) {
-    BasicVariable::ptr var_window = AMILabType<wxWindow >::CreateVarFromSmtPtr(var_window_ptr);
-    if (var_window.get()) {
-      var_window->Rename("window");
-      context->AddVar(var_window,context);
-    }
-  }
-  
-  // Adding public member frame
-  boost::shared_ptr<wxFrame > var_frame_ptr(GetObj()->frame, smartpointer_nodeleter<wxFrame >());
-  if (var_frame_ptr.get()) {
-    BasicVariable::ptr var_frame = AMILabType<wxFrame >::CreateVarFromSmtPtr(var_frame_ptr);
-    if (var_frame.get()) {
-      var_frame->Rename("frame");
-      context->AddVar(var_frame,context);
-    }
-  }
-  
-  /* Type not available
-  // Adding public member state
-  boost::shared_ptr<unsigned int > var_state_ptr(&GetObj()->state, smartpointer_nodeleter<unsigned int >());
-  if (var_state_ptr.get()) {
-    BasicVariable::ptr var_state = AMILabType<unsigned int >::CreateVarFromSmtPtr(var_state_ptr);
-    if (var_state.get()) {
-      var_state->Rename("state");
-      context->AddVar(var_state,context);
-    }
-  }
-  */
-  
-  // Adding public member dock_direction
-  boost::shared_ptr<int > var_dock_direction_ptr(&GetObj()->dock_direction, smartpointer_nodeleter<int >());
-  if (var_dock_direction_ptr.get()) {
-    BasicVariable::ptr var_dock_direction = AMILabType<int >::CreateVarFromSmtPtr(var_dock_direction_ptr);
-    if (var_dock_direction.get()) {
-      var_dock_direction->Rename("dock_direction");
-      context->AddVar(var_dock_direction,context);
-    }
-  }
-  
-  // Adding public member dock_layer
-  boost::shared_ptr<int > var_dock_layer_ptr(&GetObj()->dock_layer, smartpointer_nodeleter<int >());
-  if (var_dock_layer_ptr.get()) {
-    BasicVariable::ptr var_dock_layer = AMILabType<int >::CreateVarFromSmtPtr(var_dock_layer_ptr);
-    if (var_dock_layer.get()) {
-      var_dock_layer->Rename("dock_layer");
-      context->AddVar(var_dock_layer,context);
-    }
-  }
-  
-  // Adding public member dock_row
-  boost::shared_ptr<int > var_dock_row_ptr(&GetObj()->dock_row, smartpointer_nodeleter<int >());
-  if (var_dock_row_ptr.get()) {
-    BasicVariable::ptr var_dock_row = AMILabType<int >::CreateVarFromSmtPtr(var_dock_row_ptr);
-    if (var_dock_row.get()) {
-      var_dock_row->Rename("dock_row");
-      context->AddVar(var_dock_row,context);
-    }
-  }
-  
-  // Adding public member dock_pos
-  boost::shared_ptr<int > var_dock_pos_ptr(&GetObj()->dock_pos, smartpointer_nodeleter<int >());
-  if (var_dock_pos_ptr.get()) {
-    BasicVariable::ptr var_dock_pos = AMILabType<int >::CreateVarFromSmtPtr(var_dock_pos_ptr);
-    if (var_dock_pos.get()) {
-      var_dock_pos->Rename("dock_pos");
-      context->AddVar(var_dock_pos,context);
-    }
-  }
-  
-  // Adding public member best_size
-  boost::shared_ptr<wxSize > var_best_size_ptr(&GetObj()->best_size, smartpointer_nodeleter<wxSize >());
-  if (var_best_size_ptr.get()) {
-    BasicVariable::ptr var_best_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_best_size_ptr);
-    if (var_best_size.get()) {
-      var_best_size->Rename("best_size");
-      context->AddVar(var_best_size,context);
-    }
-  }
-  
-  // Adding public member min_size
-  boost::shared_ptr<wxSize > var_min_size_ptr(&GetObj()->min_size, smartpointer_nodeleter<wxSize >());
-  if (var_min_size_ptr.get()) {
-    BasicVariable::ptr var_min_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_min_size_ptr);
-    if (var_min_size.get()) {
-      var_min_size->Rename("min_size");
-      context->AddVar(var_min_size,context);
-    }
-  }
-  
-  // Adding public member max_size
-  boost::shared_ptr<wxSize > var_max_size_ptr(&GetObj()->max_size, smartpointer_nodeleter<wxSize >());
-  if (var_max_size_ptr.get()) {
-    BasicVariable::ptr var_max_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_max_size_ptr);
-    if (var_max_size.get()) {
-      var_max_size->Rename("max_size");
-      context->AddVar(var_max_size,context);
-    }
-  }
-  
-  // Adding public member floating_pos
-  boost::shared_ptr<wxPoint > var_floating_pos_ptr(&GetObj()->floating_pos, smartpointer_nodeleter<wxPoint >());
-  if (var_floating_pos_ptr.get()) {
-    BasicVariable::ptr var_floating_pos = AMILabType<wxPoint >::CreateVarFromSmtPtr(var_floating_pos_ptr);
-    if (var_floating_pos.get()) {
-      var_floating_pos->Rename("floating_pos");
-      context->AddVar(var_floating_pos,context);
-    }
-  }
-  
-  // Adding public member floating_size
-  boost::shared_ptr<wxSize > var_floating_size_ptr(&GetObj()->floating_size, smartpointer_nodeleter<wxSize >());
-  if (var_floating_size_ptr.get()) {
-    BasicVariable::ptr var_floating_size = AMILabType<wxSize >::CreateVarFromSmtPtr(var_floating_size_ptr);
-    if (var_floating_size.get()) {
-      var_floating_size->Rename("floating_size");
-      context->AddVar(var_floating_size,context);
-    }
-  }
-  
-  // Adding public member dock_proportion
-  boost::shared_ptr<int > var_dock_proportion_ptr(&GetObj()->dock_proportion, smartpointer_nodeleter<int >());
-  if (var_dock_proportion_ptr.get()) {
-    BasicVariable::ptr var_dock_proportion = AMILabType<int >::CreateVarFromSmtPtr(var_dock_proportion_ptr);
-    if (var_dock_proportion.get()) {
-      var_dock_proportion->Rename("dock_proportion");
-      context->AddVar(var_dock_proportion,context);
-    }
-  }
-  
-  /* Type not available
-  // Adding public member buttons
-  boost::shared_ptr<wxAuiPaneButtonArray > var_buttons_ptr(&GetObj()->buttons, smartpointer_nodeleter<wxAuiPaneButtonArray >());
-  if (var_buttons_ptr.get()) {
-    BasicVariable::ptr var_buttons = AMILabType<wxAuiPaneButtonArray >::CreateVarFromSmtPtr(var_buttons_ptr);
-    if (var_buttons.get()) {
-      var_buttons->Rename("buttons");
-      context->AddVar(var_buttons,context);
-    }
-  }
-  */
-  
-  // Adding public member rect
-  boost::shared_ptr<wxRect > var_rect_ptr(&GetObj()->rect, smartpointer_nodeleter<wxRect >());
-  if (var_rect_ptr.get()) {
-    BasicVariable::ptr var_rect = AMILabType<wxRect >::CreateVarFromSmtPtr(var_rect_ptr);
-    if (var_rect.get()) {
-      var_rect->Rename("rect");
-      context->AddVar(var_rect,context);
-    }
-  }
 
 
   

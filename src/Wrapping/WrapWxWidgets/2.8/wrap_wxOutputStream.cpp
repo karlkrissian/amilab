@@ -99,21 +99,22 @@ void WrapClass_wxOutputStream::AddMethods(WrapClass<wxOutputStream>::ptr this_pt
   // Adding operators
   // AddVar_operator not available( this_ptr);
   // AddVar_operator not available( this_ptr);
-/* The following types are missing: _6352
+/* The following types are missing: _6623
   // AddVar_operator not available( this_ptr);
 */
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxStreamBase
   boost::shared_ptr<wxStreamBase > parent_wxStreamBase(  boost::dynamic_pointer_cast<wxStreamBase >(this_ptr->GetObj()));
@@ -433,7 +434,7 @@ BasicVariable::ptr WrapClass_wxOutputStream::
 }
 */
 /*
- * The following types are missing: _6352
+ * The following types are missing: _6623
  * operator not available 
 
 //---------------------------------------------------
@@ -442,7 +443,7 @@ BasicVariable::ptr WrapClass_wxOutputStream::
 void WrapClass_wxOutputStream::
     wrap_operator not available::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _6352, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _6623, "parameter named 'func'")
   return_comments="returning a variable of type wxOutputStream";
 }
 
@@ -454,8 +455,8 @@ BasicVariable::ptr WrapClass_wxOutputStream::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _6352 func;
-  if (!get_val_param<_6352 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _6623 func;
+  if (!get_val_param<_6623 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   wxOutputStream & res =   this->_objectptr->GetObj()-><<(func);
   return AMILabType<wxOutputStream >::CreateVar(res);

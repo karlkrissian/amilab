@@ -1,5 +1,5 @@
 //
-// C++ Interface: PluginInterface
+// C++ Interface: wxPluginInterface
 //
 // Description: Define the plugin interface.
 //
@@ -9,13 +9,13 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef PLUGININTERFACE_H
-#define PLUGININTERFACE_H
+#ifndef wxPluginInterface_H
+#define wxPluginInterface_H
 
 /**
  * @brief Class that contains the plugin interface.
  **/
-class PluginInterface
+class wxPluginInterface
 {
   public:
     /**
@@ -53,6 +53,6 @@ class PluginInterface
      **/
     virtual bool Execute (void) = 0;
 
-}; // PluginInterface
+}; // wxPluginInterface
 
-#endif // PLUGININTERFACE_H
+#endif // wxPluginInterface_H

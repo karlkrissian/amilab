@@ -98,15 +98,16 @@ void WrapClass_wxIcon::AddMethods(WrapClass<wxIcon>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxBitmap
   boost::shared_ptr<wxBitmap > parent_wxBitmap(  boost::dynamic_pointer_cast<wxBitmap >(this_ptr->GetObj()));

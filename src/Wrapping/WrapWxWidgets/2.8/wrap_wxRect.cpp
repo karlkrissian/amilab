@@ -155,51 +155,7 @@ void WrapClass_wxRect::AddMethods(WrapClass<wxRect>::ptr this_ptr )
 
 
 
-  // Add public fields and Enumerations
-  AMIObject::ptr tmpobj(amiobject.lock());
-  if (!tmpobj.get()) return;
-  Variables::ptr context(tmpobj->GetContext());
   
-  // Adding public member x
-  boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
-  if (var_x_ptr.get()) {
-    BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
-    if (var_x.get()) {
-      var_x->Rename("x");
-      context->AddVar(var_x,context);
-    }
-  }
-  
-  // Adding public member y
-  boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
-  if (var_y_ptr.get()) {
-    BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
-    if (var_y.get()) {
-      var_y->Rename("y");
-      context->AddVar(var_y,context);
-    }
-  }
-  
-  // Adding public member width
-  boost::shared_ptr<int > var_width_ptr(&GetObj()->width, smartpointer_nodeleter<int >());
-  if (var_width_ptr.get()) {
-    BasicVariable::ptr var_width = AMILabType<int >::CreateVarFromSmtPtr(var_width_ptr);
-    if (var_width.get()) {
-      var_width->Rename("width");
-      context->AddVar(var_width,context);
-    }
-  }
-  
-  // Adding public member height
-  boost::shared_ptr<int > var_height_ptr(&GetObj()->height, smartpointer_nodeleter<int >());
-  if (var_height_ptr.get()) {
-    BasicVariable::ptr var_height = AMILabType<int >::CreateVarFromSmtPtr(var_height_ptr);
-    if (var_height.get()) {
-      var_height->Rename("height");
-      context->AddVar(var_height,context);
-    }
-  }
-
 
   
 

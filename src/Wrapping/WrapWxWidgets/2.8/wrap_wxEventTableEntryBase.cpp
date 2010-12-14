@@ -85,51 +85,7 @@ void WrapClass_wxEventTableEntryBase::AddMethods(WrapClass<wxEventTableEntryBase
 
 
 
-  // Add public fields and Enumerations
-  AMIObject::ptr tmpobj(amiobject.lock());
-  if (!tmpobj.get()) return;
-  Variables::ptr context(tmpobj->GetContext());
   
-  // Adding public member m_id
-  boost::shared_ptr<int > var_m_id_ptr(&GetObj()->m_id, smartpointer_nodeleter<int >());
-  if (var_m_id_ptr.get()) {
-    BasicVariable::ptr var_m_id = AMILabType<int >::CreateVarFromSmtPtr(var_m_id_ptr);
-    if (var_m_id.get()) {
-      var_m_id->Rename("m_id");
-      context->AddVar(var_m_id,context);
-    }
-  }
-  
-  // Adding public member m_lastId
-  boost::shared_ptr<int > var_m_lastId_ptr(&GetObj()->m_lastId, smartpointer_nodeleter<int >());
-  if (var_m_lastId_ptr.get()) {
-    BasicVariable::ptr var_m_lastId = AMILabType<int >::CreateVarFromSmtPtr(var_m_lastId_ptr);
-    if (var_m_lastId.get()) {
-      var_m_lastId->Rename("m_lastId");
-      context->AddVar(var_m_lastId,context);
-    }
-  }
-  
-  // Adding public member m_fn
-  boost::shared_ptr<wxObjectEventFunction > var_m_fn_ptr(&GetObj()->m_fn, smartpointer_nodeleter<wxObjectEventFunction >());
-  if (var_m_fn_ptr.get()) {
-    BasicVariable::ptr var_m_fn = AMILabType<wxObjectEventFunction >::CreateVarFromSmtPtr(var_m_fn_ptr);
-    if (var_m_fn.get()) {
-      var_m_fn->Rename("m_fn");
-      context->AddVar(var_m_fn,context);
-    }
-  }
-  
-  // Adding public member m_callbackUserData
-  boost::shared_ptr<wxObject > var_m_callbackUserData_ptr(GetObj()->m_callbackUserData, smartpointer_nodeleter<wxObject >());
-  if (var_m_callbackUserData_ptr.get()) {
-    BasicVariable::ptr var_m_callbackUserData = AMILabType<wxObject >::CreateVarFromSmtPtr(var_m_callbackUserData_ptr);
-    if (var_m_callbackUserData.get()) {
-      var_m_callbackUserData->Rename("m_callbackUserData");
-      context->AddVar(var_m_callbackUserData,context);
-    }
-  }
-
 
   
 

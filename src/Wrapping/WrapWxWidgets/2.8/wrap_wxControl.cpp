@@ -112,15 +112,16 @@ void WrapClass_wxControl::AddMethods(WrapClass<wxControl>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxControlBase
   boost::shared_ptr<wxControlBase > parent_wxControlBase(  boost::dynamic_pointer_cast<wxControlBase >(this_ptr->GetObj()));

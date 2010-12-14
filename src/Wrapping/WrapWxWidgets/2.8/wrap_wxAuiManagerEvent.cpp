@@ -22,6 +22,14 @@
 
 // get all the required includes
 // #include "..."
+#ifndef wxAuiManagerEvent_declared
+  #define wxAuiManagerEvent_declared
+  AMI_DECLARE_TYPE(wxAuiManagerEvent)
+#endif
+#ifndef wxEvent_declared
+  #define wxEvent_declared
+  AMI_DECLARE_TYPE(wxEvent)
+#endif
 #ifndef wxAuiManager_declared
   #define wxAuiManager_declared
   AMI_DECLARE_TYPE(wxAuiManager)
@@ -33,14 +41,6 @@
 #ifndef wxDC_declared
   #define wxDC_declared
   AMI_DECLARE_TYPE(wxDC)
-#endif
-#ifndef wxAuiManagerEvent_declared
-  #define wxAuiManagerEvent_declared
-  AMI_DECLARE_TYPE(wxAuiManagerEvent)
-#endif
-#ifndef wxEvent_declared
-  #define wxEvent_declared
-  AMI_DECLARE_TYPE(wxEvent)
 #endif
 #ifndef wxClassInfo_declared
   #define wxClassInfo_declared
@@ -115,66 +115,6 @@ void WrapClass_wxAuiManagerEvent::AddMethods(WrapClass<wxAuiManagerEvent>::ptr t
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
-  
-  // Adding public member manager
-  boost::shared_ptr<wxAuiManager > var_manager_ptr(GetObj()->manager, smartpointer_nodeleter<wxAuiManager >());
-  if (var_manager_ptr.get()) {
-    BasicVariable::ptr var_manager = AMILabType<wxAuiManager >::CreateVarFromSmtPtr(var_manager_ptr);
-    if (var_manager.get()) {
-      var_manager->Rename("manager");
-      context->AddVar(var_manager,context);
-    }
-  }
-  
-  // Adding public member pane
-  boost::shared_ptr<wxAuiPaneInfo > var_pane_ptr(GetObj()->pane, smartpointer_nodeleter<wxAuiPaneInfo >());
-  if (var_pane_ptr.get()) {
-    BasicVariable::ptr var_pane = AMILabType<wxAuiPaneInfo >::CreateVarFromSmtPtr(var_pane_ptr);
-    if (var_pane.get()) {
-      var_pane->Rename("pane");
-      context->AddVar(var_pane,context);
-    }
-  }
-  
-  // Adding public member button
-  boost::shared_ptr<int > var_button_ptr(&GetObj()->button, smartpointer_nodeleter<int >());
-  if (var_button_ptr.get()) {
-    BasicVariable::ptr var_button = AMILabType<int >::CreateVarFromSmtPtr(var_button_ptr);
-    if (var_button.get()) {
-      var_button->Rename("button");
-      context->AddVar(var_button,context);
-    }
-  }
-  
-  // Adding public member veto_flag
-  boost::shared_ptr<bool > var_veto_flag_ptr(&GetObj()->veto_flag, smartpointer_nodeleter<bool >());
-  if (var_veto_flag_ptr.get()) {
-    BasicVariable::ptr var_veto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_veto_flag_ptr);
-    if (var_veto_flag.get()) {
-      var_veto_flag->Rename("veto_flag");
-      context->AddVar(var_veto_flag,context);
-    }
-  }
-  
-  // Adding public member canveto_flag
-  boost::shared_ptr<bool > var_canveto_flag_ptr(&GetObj()->canveto_flag, smartpointer_nodeleter<bool >());
-  if (var_canveto_flag_ptr.get()) {
-    BasicVariable::ptr var_canveto_flag = AMILabType<bool >::CreateVarFromSmtPtr(var_canveto_flag_ptr);
-    if (var_canveto_flag.get()) {
-      var_canveto_flag->Rename("canveto_flag");
-      context->AddVar(var_canveto_flag,context);
-    }
-  }
-  
-  // Adding public member dc
-  boost::shared_ptr<wxDC > var_dc_ptr(GetObj()->dc, smartpointer_nodeleter<wxDC >());
-  if (var_dc_ptr.get()) {
-    BasicVariable::ptr var_dc = AMILabType<wxDC >::CreateVarFromSmtPtr(var_dc_ptr);
-    if (var_dc.get()) {
-      var_dc->Rename("dc");
-      context->AddVar(var_dc,context);
-    }
-  }
 
 
   

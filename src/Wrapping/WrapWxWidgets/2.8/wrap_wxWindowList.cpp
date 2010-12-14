@@ -115,11 +115,11 @@ void WrapClass_wxWindowList::AddMethods(WrapClass<wxWindowList>::ptr this_ptr )
   AddVar_Find( this_ptr);
   AddVar_Find_2( this_ptr);
   AddVar_IndexOf( this_ptr);
-/* The following types are missing: _17586
+/* The following types are missing: _5346
   AddVar_Sort_1( this_ptr);
 */
   AddVar_Sort( this_ptr);
-/* The following types are missing: _7122
+/* The following types are missing: _7391
   AddVar_Sort_2( this_ptr);
 */
 /* The following types are missing: iterator
@@ -206,15 +206,16 @@ void WrapClass_wxWindowList::AddMethods(WrapClass<wxWindowList>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxListBase
   boost::shared_ptr<wxListBase > parent_wxListBase(  boost::dynamic_pointer_cast<wxListBase >(this_ptr->GetObj()));
@@ -1034,7 +1035,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
   int res =   this->_objectptr->GetObj()->IndexOf(object);
   return AMILabType<int >::CreateVar(res);
 }
-/* The following types are missing: _17586
+/* The following types are missing: _5346
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowList::Sort(wxSortCompareFunction func)
@@ -1042,7 +1043,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
 void WrapClass_wxWindowList::
     wrap_Sort_1::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _17586, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _5346, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -1053,8 +1054,8 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _17586 func;
-  if (!get_val_param<_17586 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _5346 func;
+  if (!get_val_param<_5346 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();
@@ -1075,7 +1076,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
   BasicVariable::ptr res;
   ClassHelpAndReturn;
 }
-/* The following types are missing: _7122
+/* The following types are missing: _7391
 
 //---------------------------------------------------
 //  Wrapping of void wxWindowList::Sort(wxSortFuncFor_wxWindowList func)
@@ -1083,7 +1084,7 @@ BasicVariable::ptr WrapClass_wxWindowList::
 void WrapClass_wxWindowList::
     wrap_Sort_2::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _7122, "parameter named 'func'")
+  ADDPARAMCOMMENT_TYPE( _7391, "parameter named 'func'")
 }
 
 //---------------------------------------------------
@@ -1094,8 +1095,8 @@ BasicVariable::ptr WrapClass_wxWindowList::
   if (_p->GetNumParam()>1) ClassReturnEmptyVar;
   int _n=0;
 
-  _7122 func;
-  if (!get_val_param<_7122 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
+  _7391 func;
+  if (!get_val_param<_7391 >(func,_p,_n,true,true)) ClassReturnEmptyVar;
 
   this->_objectptr->GetObj()->Sort(func);
   return BasicVariable::ptr();

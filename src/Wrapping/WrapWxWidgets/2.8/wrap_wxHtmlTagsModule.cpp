@@ -92,15 +92,16 @@ void WrapClass_wxHtmlTagsModule::AddMethods(WrapClass<wxHtmlTagsModule>::ptr thi
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxModule
   boost::shared_ptr<wxModule > parent_wxModule(  boost::dynamic_pointer_cast<wxModule >(this_ptr->GetObj()));

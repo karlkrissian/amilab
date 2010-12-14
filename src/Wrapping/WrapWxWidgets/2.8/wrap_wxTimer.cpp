@@ -90,15 +90,16 @@ void WrapClass_wxTimer::AddMethods(WrapClass<wxTimer>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxTimerBase
   boost::shared_ptr<wxTimerBase > parent_wxTimerBase(  boost::dynamic_pointer_cast<wxTimerBase >(this_ptr->GetObj()));

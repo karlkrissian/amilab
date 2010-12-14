@@ -14,12 +14,12 @@
 #define _wrap_wxAuiPaneInfoArray_h_
 
 /*
-#include "wrapfunction_class.h"
-#include "wrapfunctions.hpp"
 #include "Variable.hpp"
-#include "paramlist.h"
 #include "ami_object.h"
 */
+#include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
+#include "paramlist.h"
 
 #include "wx_includes.h"
 
@@ -104,7 +104,7 @@ class WrapClass_wxAuiPaneInfoArray : public WrapClass<wxAuiPaneInfoArray>
     ADD_CLASS_METHOD(Clear,"void wxAuiPaneInfoArray::Clear()  (http://docs.wxwidgets.org/stable/wx_wxauipaneinfoarray.html#clear)")
     ADD_CLASS_METHOD(Detach,"_wxObjArraywxAuiPaneInfoArray * wxAuiPaneInfoArray::Detach(size_t uiIndex)  (http://docs.wxwidgets.org/stable/wx_wxauipaneinfoarray.html#detach)")
     ADD_CLASS_METHOD(RemoveAt,"void wxAuiPaneInfoArray::RemoveAt(size_t uiIndex, size_t nRemove = 1)  (http://docs.wxwidgets.org/stable/wx_wxauipaneinfoarray.html#removeat)")
-/* The following types are missing: _9053
+/* The following types are missing: _8965
     ADD_CLASS_METHOD(Sort,"void wxAuiPaneInfoArray::Sort(CMPFUNC_wxObjArraywxAuiPaneInfoArray fCmp)  (http://docs.wxwidgets.org/stable/wx_wxauipaneinfoarray.html#sort)")
 */
 

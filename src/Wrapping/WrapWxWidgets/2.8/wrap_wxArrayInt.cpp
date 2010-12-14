@@ -82,7 +82,7 @@ void WrapClass_wxArrayInt::AddMethods(WrapClass<wxArrayInt>::ptr this_ptr )
   AddVar_Insert( this_ptr);
   AddVar_RemoveAt( this_ptr);
   AddVar_Remove( this_ptr);
-/* The following types are missing: _17784
+/* The following types are missing: _18243
   AddVar_Sort( this_ptr);
 */
   AddVar_assign_1( this_ptr);
@@ -133,15 +133,16 @@ void WrapClass_wxArrayInt::AddMethods(WrapClass<wxArrayInt>::ptr this_ptr )
 
 
 
-  
-
-  
-
-
-  // Get the current context
+  // Add public fields and Enumerations
   AMIObject::ptr tmpobj(amiobject.lock());
   if (!tmpobj.get()) return;
   Variables::ptr context(tmpobj->GetContext());
+
+
+  
+
+
+  // Adding Bases
 
   // Add base parent wxBaseArrayInt
   boost::shared_ptr<wxBaseArrayInt > parent_wxBaseArrayInt(  boost::dynamic_pointer_cast<wxBaseArrayInt >(this_ptr->GetObj()));
@@ -533,7 +534,7 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   this->_objectptr->GetObj()->Remove(lItem);
   return BasicVariable::ptr();
 }
-/* The following types are missing: _17784
+/* The following types are missing: _18243
 
 //---------------------------------------------------
 //  Wrapping of void wxArrayInt::Sort(CMPFUNC_wxArraywxArrayInt fCmp)
@@ -541,7 +542,7 @@ BasicVariable::ptr WrapClass_wxArrayInt::
 void WrapClass_wxArrayInt::
     wrap_Sort::SetParametersComments()
 {
-  ADDPARAMCOMMENT_TYPE( _17784, "parameter named 'fCmp'")
+  ADDPARAMCOMMENT_TYPE( _18243, "parameter named 'fCmp'")
 }
 
 //---------------------------------------------------
@@ -552,8 +553,8 @@ BasicVariable::ptr WrapClass_wxArrayInt::
   if (_p->GetNumParam()>1) ClassHelpAndReturn;
   int _n=0;
 
-  _17784 fCmp;
-  if (!get_val_param<_17784 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
+  _18243 fCmp;
+  if (!get_val_param<_18243 >(fCmp,_p,_n,true,false)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->Sort(fCmp);
   return BasicVariable::ptr();

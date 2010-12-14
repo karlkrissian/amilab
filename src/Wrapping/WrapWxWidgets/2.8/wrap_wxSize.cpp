@@ -110,31 +110,7 @@ void WrapClass_wxSize::AddMethods(WrapClass<wxSize>::ptr this_ptr )
 
 
 
-  // Add public fields and Enumerations
-  AMIObject::ptr tmpobj(amiobject.lock());
-  if (!tmpobj.get()) return;
-  Variables::ptr context(tmpobj->GetContext());
   
-  // Adding public member x
-  boost::shared_ptr<int > var_x_ptr(&GetObj()->x, smartpointer_nodeleter<int >());
-  if (var_x_ptr.get()) {
-    BasicVariable::ptr var_x = AMILabType<int >::CreateVarFromSmtPtr(var_x_ptr);
-    if (var_x.get()) {
-      var_x->Rename("x");
-      context->AddVar(var_x,context);
-    }
-  }
-  
-  // Adding public member y
-  boost::shared_ptr<int > var_y_ptr(&GetObj()->y, smartpointer_nodeleter<int >());
-  if (var_y_ptr.get()) {
-    BasicVariable::ptr var_y = AMILabType<int >::CreateVarFromSmtPtr(var_y_ptr);
-    if (var_y.get()) {
-      var_y->Rename("y");
-      context->AddVar(var_y,context);
-    }
-  }
-
 
   
 

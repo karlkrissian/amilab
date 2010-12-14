@@ -49,7 +49,7 @@ SET(Common_SRCS
   #      inrimage_all.cpp
 
   # from Plugin
-  PluginManager.cpp
+  wxPluginManager.cpp
 )
 
 SET(Common_HDRS
@@ -107,9 +107,9 @@ SET(Common_HDRS
   include/InrImageConstIterator.tpp
 
   # from Plugin
-  include/PluginInterface.h
-  include/PluginManager.h
-  include/PluginBase.h
+  include/wxPluginInterface.h
+  include/wxPluginManager.h
+  include/wxPluginBase.h
 )
 
 SET (Common_SRCS
