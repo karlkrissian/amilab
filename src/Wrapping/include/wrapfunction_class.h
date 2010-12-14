@@ -394,6 +394,7 @@ class WrapClassMember {
      * Display the function help in an information dialog.
      */
     void ShowHelp();
+    //void ParamError(int n);
     
     void Set_arg_failure(bool const & f) { arg_failure=f;}
     bool Get_arg_failure() { return arg_failure;}
