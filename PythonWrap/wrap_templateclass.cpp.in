@@ -1,0 +1,63 @@
+/**
+ * C++ Interface: wrap_${TEMPLATE}
+ *
+ * Description: wrapping ${TEMPLATE}
+ * File generated automatically using CableSwig xml output and a python script
+ *
+ * Author: Karl Krissian \<krissian@dis.ulpgc.es\>, (C) 2010
+ *
+ * Copyright: See COPYING file that comes with this distribution
+ *
+ **/
+
+
+//#include "VarContexts.hpp"
+#include "wrapfunctions.hpp"
+#include "ami_class.h"
+#include "ami_object.h"
+#include "ami_function.h"
+
+// get all the required includes
+// #include "..."
+${INCLUDES}
+
+#include "wrap_${TEMPLATENAME}.h"
+
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<${TEMPLATE} >::CreateVar( ParamList* p)
+{
+${IMPLEMENT_CREATEVAR}
+}
+
+${IMPLEMENT_TYPE}
+
+//
+// static member for creating a variable from a pointer to ${TEMPLATE}
+//
+Variable<AMIObject>::ptr WrapClass_${TEMPLATENAME}::CreateVar( ${TEMPLATE}* sp)
+{
+  boost::shared_ptr<${TEMPLATE} > di_ptr(
+    sp,
+    wxwindow_nodeleter<${TEMPLATE} >()); // deletion will be done by wxwidgets;
+  Variable<AMIObject>::ptr res = 
+    WrapClass<${TEMPLATE} >::CreateVar(
+      new WrapClass_${TEMPLATENAME}(di_ptr)
+    );
+  return res;
+}
+
+void WrapClass_${TEMPLATENAME}::AddMethods(WrapClass<${TEMPLATE} >::ptr this_ptr );
+{
+  ${METHODS_BASES}
+
+  // check that the method name is not a token
+  ${AddVar_method_all}
+
+  ${AddPublicFields}
+};
+
+
+${WRAP_PUBLIC_METHODS}

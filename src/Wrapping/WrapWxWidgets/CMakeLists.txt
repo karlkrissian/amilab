@@ -75,24 +75,45 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   MESSAGE( "wxWidgets: GCCXML output file is ${XML_OUTPUT} ")
   MESSAGE( "wxWidgets: GCCXML output = ${GCCXML_INFO}") 
   MESSAGE( "wxWidgets: GCCXML error  = ${GCCXML_error}") 
-  MESSAGE( "wxWidgets: GCCXML result = ${GCCXML_result}") 
-  IF (${GCCXML_result} EQUAL 0)
-    # Go for python wrapping
-    SET(AMI_WRAPPER "I:/AMILabCompilationWindows/swig_amilab2/PythonWrap/parse_xml/parse_xml2.py")
-    EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} 
-      ${AMI_WRAPPER}
-      OUTPUT_VARIABLE WRAPPER_INFO
-      ERROR_VARIABLE  WRAPPER_error
-      RESULT_VARIABLE WRAPPER_result
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-    MESSAGE( "wxWidgets: parse_xml2.py output = ${WRAPPER_INFO}") 
-    MESSAGE( "wxWidgets: parse_xml2.py error  = ${WRAPPER_error}") 
-    MESSAGE( "wxWidgets: parse_xml2.py result = ${WRAPPER_result}") 
-  ENDIF(${GCCXML_result} EQUAL 0)
+  MESSAGE( "wxWidgets: GCCXML result = ${GCCXML_result}")
+
+  # Read list of classes to wrap
+  FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt" classes_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+  MESSAGE("classes_list ${classes_list}")
+  #SET(classes_list ${classes_txt})
+
+  FOREACH( class ${classes_list}) 
+    MESSAGE("Processing class ${class}")
+    IF (${GCCXML_result} EQUAL 0)
+      # Go for python wrapping
+      SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
+      SET(WRAPWX_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated)
+      ADD_CUSTOM_COMMAND(OUTPUT ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${WRAPWX_OUTDIR}/wrap_${class}.h
+        COMMAND
+          ${PYTHON_EXECUTABLE} 
+            ${AMI_WRAPPER} ${XML_OUTPUT}
+            --libname wx
+            --filter "wx*"
+            --wrap_includes "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}"
+            --classes ${class}
+            --outputdir "${WRAPWX_OUTDIR}"
+            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+            -q
+          DEPENDS ${XML_OUTPUT} ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+        )
+    ENDIF(${GCCXML_result} EQUAL 0)
+  ENDFOREACH( class ${classes_list}) 
+#ELSE(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
+#  file(GLOB wx_HDRS  "${AMI_WXWIDGETS_VERSION}/*.h"  )
+#  file(GLOB wx_SRCS  "${AMI_WXWIDGETS_VERSION}/*.cpp")
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 
-file(GLOB wx_HDRS  "${AMI_WXWIDGETS_VERSION}/*.h"  )
-file(GLOB wx_SRCS  "${AMI_WXWIDGETS_VERSION}/*.cpp")
+  FOREACH( class ${classes_list}) 
+    SET( wx_HDRS ${WRAPWX_OUTDIR}/wrap_${class}.h ${wx_HDRS})
+    SET( wx_SRCS ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${wx_SRCS})
+  ENDFOREACH( class ${classes_list}) 
+
 
 MESSAGE("\nWrapping wxWidgets...\n")
 MESSAGE( "AMI_USE_PRECOMP_HEADERS = ${AMI_USE_PRECOMP_HEADERS} ")
