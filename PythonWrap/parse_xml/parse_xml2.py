@@ -163,8 +163,10 @@ if __name__ == '__main__':
   
 
     # add the user defined classes
-    config.available_classes.append(args.val.available_classes)
+    for cl in args.val.available_classes:
+      config.available_classes.append(cl)
     FindAvailableClasses()
+    #print config.available_classes
 
     if not(os.path.exists(args.val.outputdir)):
       os.mkdir(args.val.outputdir)
