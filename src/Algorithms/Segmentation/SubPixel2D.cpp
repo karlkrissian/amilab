@@ -2388,10 +2388,10 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
         for (int k = l1; k<-1+m; k++, s++)  
           B += (*input)(x-1,y+k,z);
         //M
-        for (int k = m1; k<-1+m; k++, s++)  
+        for (int k = m1; k<-1; k++, s++)  
           B += (*input)(x,y+k,z);
         //R
-        for (int k = r1; k<-1+m; k++, s++)  
+        for (int k = r1; k<-1-m; k++, s++)  
           B += (*input)(x+1,y+k,z);
         
         B /= s;
@@ -2679,13 +2679,13 @@ void SubPixel2D::SubpixelDenoising(int niter)
   Lims[1][0] = Lims[2][0] = Lims[3][0] = -4;
   Lims[1][1] = Lims[2][1] = Lims[3][1] = 4;
   InrImage input_copy(WT_DOUBLE,"input_copy.inr.gz",input);
-  input_copy = *input;
+  //input_copy = *input;
   for(int index=0; index<niter; index++)
   {
     C->InitZero();
     I->InitZero();
     G->InitZero();
-    
+    input_copy = *input;
     //1º Se promedia la imagen de entrada y se deja en G
     Promedio3x3(input, G.get(), A00, A01, A11);
     //input_copy = *input;
