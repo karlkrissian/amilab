@@ -14,6 +14,9 @@ arg_parser.add_argument('xmlfilename',                      \
 arg_parser.add_argument('--classes', nargs='*',  default=[],  \
   help='name of the class(es) to wrap' )
 
+arg_parser.add_argument('--available_classes', nargs='*',  default=[],  \
+  help='Lists available classes' )
+
 arg_parser.add_argument('--functions', nargs='*', default=[],  \
   help='name of the function(s) to wrap' )
 
@@ -45,6 +48,8 @@ arg_parser.add_argument('--filter', default=r'.*',          help='Recursively wr
 arg_parser.add_argument('--constructor', default='',        help='Specify the method (static) used for the constructor if it is not the standard one.')
 
 arg_parser.add_argument('--libname',                        help='name of the library to wrap (without spaces or special characters)')
+
+arg_parser.add_argument('--addwrap',  action='store_true',  help='Generates the addwrap_*.{h,cpp} files that include all the wrapped elements in a common context')
 
 arg_parser.add_argument('--update', action='store_true',   \
   help='re-generate all currently wrapped classes')

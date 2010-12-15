@@ -20,21 +20,21 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   IF   (wxWidgets_FOUND)
     IF   (wxWidgets_INCLUDE_DIRS)
       FOREACH( inc ${wxWidgets_INCLUDE_DIRS})
-        SET( WX_INCLUDES  "-I\"${inc}\" ${WX_INCLUDES}" )
+        SET( WX_INCLUDES  -I${inc}  ${WX_INCLUDES} )
       ENDFOREACH(inc ${wxWidgets_INCLUDE_DIRS})
     ENDIF(wxWidgets_INCLUDE_DIRS)
     MESSAGE("WX_INCLUDES=${WX_INCLUDES}")
 
     IF   (wxWidgets_DEFINITIONS)
       FOREACH( def ${wxWidgets_DEFINITIONS})
-        SET( WX_DEFS  "-D${def} ${WX_DEFS}" )
+        SET( WX_DEFS  -D${def}  ${WX_DEFS} )
       ENDFOREACH(def ${wxWidgets_DEFINITIONS})
       MESSAGE("wxWidgets_DEFINITIONS=${wxWidgets_DEFINITIONS}")
     ENDIF(wxWidgets_DEFINITIONS)
 
     IF   (wxWidgets_DEFINITIONS_DEBUG)
       FOREACH( def ${wxWidgets_DEFINITIONS_DEBUG})
-        SET( WX_DEFS  "-D${def} ${WX_DEFS}" )
+        SET( WX_DEFS  -D${def} ${WX_DEFS} )
       ENDFOREACH(def ${wxWidgets_DEFINITIONS_DEBUG})
       MESSAGE("wxWidgets_DEFINITIONS_DEBUG=${wxWidgets_DEFINITIONS_DEBUG}")
     ENDIF(wxWidgets_DEFINITIONS_DEBUG)
@@ -51,31 +51,22 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/wx_includes.h")
   SET( GCCXML_result 0)
   add_custom_command(OUTPUT ${XML_OUTPUT}
-    COMMAND
-      EXECUTE_PROCESS(COMMAND ${GCCXML}  
-        -fxml=${XML_OUTPUT} 
-        --gccxml-compiler cl
-        -I${AMILAB_SOURCE_DIR}/Wrapping/include
-        -I${AMILAB_SOURCE_DIR}/Common/include
-        -I${AMILAB_SOURCE_DIR}/Language
-        -I${CMAKE_BINARY_DIR}
-        -I${Boost_INCLUDE_DIR}
-        -II:/AMILabCompilationWindows/wxWidgets/wxWidgets-2.8.11/include
-        -II:/AMILabCompilationWindows/wxWidgets/wxWidgets-2.8.11/lib/vc_lib/mswu
-        ${WX_INCLUDES}
-        ${WX_DEFS}
-        ${XML_INPUT}
-        OUTPUT_VARIABLE GCCXML_INFO
-        ERROR_VARIABLE GCCXML_error
-        RESULT_VARIABLE GCCXML_result
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
     DEPENDS ${XML_INPUT}
   )
  
-  MESSAGE( "wxWidgets: GCCXML output file is ${XML_OUTPUT} ")
-  MESSAGE( "wxWidgets: GCCXML output = ${GCCXML_INFO}") 
-  MESSAGE( "wxWidgets: GCCXML error  = ${GCCXML_error}") 
-  MESSAGE( "wxWidgets: GCCXML result = ${GCCXML_result}")
+#         --gccxml-compiler cl
+#         -II:/AMILabCompilationWindows/wxWidgets/wxWidgets-2.8.11/include
+#         -II:/AMILabCompilationWindows/wxWidgets/wxWidgets-2.8.11/lib/vc_lib/mswu
+#         OUTPUT_VARIABLE GCCXML_INFO
+#         ERROR_VARIABLE GCCXML_error
+#         RESULT_VARIABLE GCCXML_result
+#         OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+#   MESSAGE( "wxWidgets: GCCXML output file is ${XML_OUTPUT} ")
+#   MESSAGE( "wxWidgets: GCCXML output = ${GCCXML_INFO}") 
+#   MESSAGE( "wxWidgets: GCCXML error  = ${GCCXML_error}") 
+#   MESSAGE( "wxWidgets: GCCXML result = ${GCCXML_result}")
 
   # Read list of classes to wrap
   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt" classes_txt)
@@ -95,8 +86,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
             ${AMI_WRAPPER} ${XML_OUTPUT}
             --libname wx
             --filter "wx*"
-            --wrap_includes "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}"
             --classes ${class}
+            --available_classes ${classes_list}
             --outputdir "${WRAPWX_OUTDIR}"
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             -q
@@ -104,6 +95,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
         )
     ENDIF(${GCCXML_result} EQUAL 0)
   ENDFOREACH( class ${classes_list}) 
+#            --wrap_includes "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}"
 #ELSE(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 #  file(GLOB wx_HDRS  "${AMI_WXWIDGETS_VERSION}/*.h"  )
 #  file(GLOB wx_SRCS  "${AMI_WXWIDGETS_VERSION}/*.cpp")

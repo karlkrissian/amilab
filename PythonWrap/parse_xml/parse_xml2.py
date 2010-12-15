@@ -162,7 +162,10 @@ def WrapMethodTypePointer(typedefname,include_file):
 if __name__ == '__main__':
   
 
+    # add the user defined classes
+    config.available_classes.append(args.val.available_classes)
     FindAvailableClasses()
+
     if not(os.path.exists(args.val.outputdir)):
       os.mkdir(args.val.outputdir)
 
@@ -267,7 +270,7 @@ if __name__ == '__main__':
     print "Wrapped classes: ", config.wrapped_classes
     
     # now create the library context
-    if args.val.libname!=None:
+    if args.val.libname!=None and args.val.addwrap:
       # header
       createcontextname = args.val.outputdir+"/addwrap_{0}.h".format(args.val.libname)
       f = open (createcontextname, "w")
