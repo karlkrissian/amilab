@@ -13,6 +13,7 @@ class ArgTypeBase:
     self._name=""
     self._id=0
     self._context=None
+    self._bases=None
 
   def SetType(self,t):
     self._type=t
@@ -23,12 +24,17 @@ class ArgTypeBase:
   def SetName(self,n):
     self._name=n
   
+  def SetBases(self,_b):
+    self._bases = _b
+
+  def GetBases(self):
+    return self._bases
+    
   def SetId(self,_id):
     self._id = _id
 
   def GetId(self):
     return self._id
-    
   def SetRefTypeId(self,t):
     self._reftypeid=t
 
@@ -59,6 +65,7 @@ class ClassInfo(ArgTypeBase):
     ArgTypeBase.__init__(self) 
     self.publicmembers=()
     self._type="Class"
+    self._bases=[]
     self.bases=()
 
 #------------------------------

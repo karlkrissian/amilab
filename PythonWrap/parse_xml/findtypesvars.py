@@ -73,6 +73,11 @@ class FindTypesAndVariables(handler.ContentHandler):
     const = attrs.get('const', None)
     if const != None:
       self.argtype.SetConst(const)
+
+    # store bases
+    bases = attrs.get('bases', None)
+    if bases != None:
+      self.argtype.SetBases(bases)
     
   def endElement(self, name):
     if (self.inenum==True) and (name =="Enumeration"):

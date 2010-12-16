@@ -200,7 +200,33 @@ if __name__ == '__main__':
 
     print "Number of classes matching the filter : {0}".format(ft.number_of_libclasses)
 
-    # Parse the input again
+    if args.val.ancestors != []:
+      ancestors = args.val.ancestors[:]
+      for b in args.val.ancestors:
+        print "b=",b
+        # find the id of the class
+        for f in config.types.keys():
+          if config.types[f].GetFullString() == b:
+            # recursively add the ancestors to the list
+            bases=config.types[f].GetBases()
+            f_anc=[]
+            if bases!=None:
+              f_anc = bases.split()
+            newlist=[]
+            while f_anc != []:
+              anc_id = f_anc.pop()
+              if config.types[anc_id].GetString() not in ancestors:
+                ancestors.append(config.types[anc_id].GetString())
+                newlist.append(config.types[anc_id].GetString())
+                bases=config.types[anc_id].GetBases()
+                if bases!=None:
+                  for newanc in bases.split():
+                    f_anc.append(newanc)
+            print "New ancestors of {0} are {1}".format(b,newlist)
+      print "All ancestors are   {0} ".format(ancestors)
+      sys.exit(0)
+
+    # Parse the input again, TODO: avoid 2 parses here ...
     inputfile.seek(0)
     parser.parse(inputfile)
 

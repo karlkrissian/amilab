@@ -32,6 +32,9 @@ arg_parser.add_argument('--outputdir', default='wrap/',             \
 arg_parser.add_argument('-r',       action='store_true',    \
   help='Recursively wrap needed classes')
 
+arg_parser.add_argument('--ancestors',  nargs='*',  default=[],     \
+  help='List all ancestors of the given classes')
+
 arg_parser.add_argument('--overwrite',action='store_true',  \
   help='Overwrite existing wrapped classes')
 
