@@ -10,6 +10,7 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
 )
 
 INCLUDE( ${VTK_USE_FILE} )
