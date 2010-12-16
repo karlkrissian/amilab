@@ -49,7 +49,7 @@ double imval(InrImage* input, int x,int y, int z){
   if (input->CoordOK(x,y,z)) 
     return (*input)(x,y,z);
   else 
-    cout << "out of image range (" << x << ", " << y << ", " << z << ")" << endl;
+//    cout << "out of image range (" << x << ", " << y << ", " << z << ")" << endl;
   return 0;
 }
 //Partials
