@@ -226,7 +226,9 @@ if __name__ == '__main__':
             while f_anc != []:
               anc_id = f_anc.pop()
               if anc_id in classes_dict.keys():
-                if classes_dict[anc_id] not in ancestors and  classes_dict[anc_id] not in config.classes_blacklist:
+                if  classes_dict[anc_id] not in ancestors and  \
+                    classes_dict[anc_id] not in config.classes_blacklist and\
+                    not parse_class.IsTemplate(classes_dict[anc_id]):
                   ancestors.append(classes_dict[anc_id])
                   newlist.append(classes_dict[anc_id])
                   bases=config.types[anc_id].GetBases()

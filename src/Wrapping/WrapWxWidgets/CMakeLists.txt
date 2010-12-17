@@ -48,6 +48,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   # TODO: run gccxml_vcconfig.bat to allow visual studio 9
   #
   SET(WRAPWX_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated)
+  CreateDirectory( ${WRAPWX_OUTDIR})
+
   SET(XML_OUTPUT "${WRAPWX_OUTDIR}/wx_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/wx_includes.h")
   SET( GCCXML_result 0)
@@ -57,19 +59,6 @@ MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/i
     DEPENDS ${XML_INPUT}
   )
  
-#         --gccxml-compiler cl
-#         -II:/AMILabCompilationWindows/wxWidgets/wxWidgets-2.8.11/include
-#         -II:/AMILabCompilationWindows/wxWidgets/wxWidgets-2.8.11/lib/vc_lib/mswu
-#         OUTPUT_VARIABLE GCCXML_INFO
-#         ERROR_VARIABLE GCCXML_error
-#         RESULT_VARIABLE GCCXML_result
-#         OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-#   MESSAGE( "wxWidgets: GCCXML output file is ${XML_OUTPUT} ")
-#   MESSAGE( "wxWidgets: GCCXML output = ${GCCXML_INFO}") 
-#   MESSAGE( "wxWidgets: GCCXML error  = ${GCCXML_error}") 
-#   MESSAGE( "wxWidgets: GCCXML result = ${GCCXML_result}")
-
   # Generate the classes list
 
   # Read list of classes to wrap
@@ -92,8 +81,6 @@ MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/i
   # Read list of method pointers to wrap
   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/methodpointers.txt" methodpointers_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
-
-
 
   FOREACH( class ${ancestors_list}) 
     #MESSAGE("Processing class ${class}")
@@ -139,10 +126,6 @@ MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/i
       )
   ENDIF(${GCCXML_result} EQUAL 0)
 
-#            --wrap_includes "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}"
-#ELSE(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
-#  file(GLOB wx_HDRS  "${AMI_WXWIDGETS_VERSION}/*.h"  )
-#  file(GLOB wx_SRCS  "${AMI_WXWIDGETS_VERSION}/*.cpp")
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 
 FOREACH( class ${ancestors_list} ${methodpointers_list} ) 

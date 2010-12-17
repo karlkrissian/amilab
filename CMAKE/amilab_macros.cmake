@@ -54,12 +54,12 @@ SET(NUMBER_SOURCES_TO_PACKAGE 10 CACHE STRING "Indicates the number of sources t
 #-------------------------------------------------------------------------------
 MACRO( CreateDirectory path)
 #-------------------------------------------------------------------------------
-  IF(EXISTS ${path})
-    MESSAGE("Directory ${path}: Exists")
-  ELSE(EXISTS ${path})
-    MESSAGE("Directory ${path}: Create")
+  IF( NOT EXISTS ${path})
+    #MESSAGE("Directory ${path}: Exists")
+  #ELSE(EXISTS ${path})
+    #MESSAGE("Directory ${path}: Create")
     FILE(MAKE_DIRECTORY ${path})
-  ENDIF(EXISTS ${path})
+  ENDIF( NOT EXISTS ${path})
 ENDMACRO(CreateDirectory)
 #-------------------------------------------------------------------------------
 

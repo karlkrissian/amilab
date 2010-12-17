@@ -1,7 +1,7 @@
 # Create a library called "Hello" which includes the source file "hello.cxx".
 # The extension is already found.  Any number of sources could be listed here.
 
-MESSAGE("***** Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
+# MESSAGE("***** Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
@@ -20,11 +20,130 @@ include_directories (
 )
 
 INCLUDE( ${VTK_USE_FILE} )
-
 INCLUDE( ${wxWidgets_USE_FILE})
 
-file(GLOB vtk_HDRS  "${AMI_VTK_VERSION}/*.h"  )
-file(GLOB vtk_SRCS  "${AMI_VTK_VERSION}/*.cpp")
+# if automatic wrapping, generate source files
+IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
+  # Generate XML file
+  MESSAGE("Generate XML file for VTK")
+  #
+  IF   (VTK_FOUND)
+    IF   (VTK_INCLUDE_DIRS)
+      FOREACH( inc ${VTK_INCLUDE_DIRS})
+        SET( VTK_INCLUDES  -I${inc}  ${VTK_INCLUDES} )
+      ENDFOREACH(inc ${VTK_INCLUDE_DIRS})
+    ENDIF(VTK_INCLUDE_DIRS)
+    #MESSAGE("VTK_INCLUDES=${VTK_INCLUDES}")
+
+#MESSAGE(" VTK_REQUIRED_CXX_FLAGS=${VTK_REQUIRED_CXX_FLAGS}")
+     IF   (VTK_REQUIRED_CXX_FLAGS)
+       FOREACH( def ${VTK_REQUIRED_CXX_FLAGS})
+         SET( VTK_DEFS  ${def}  ${WX_DEFS} )
+       ENDFOREACH(def ${VTK_REQUIRED_CXX_FLAGS})
+       MESSAGE("VTK_DEFS=${VTK_DEFS}")
+     ENDIF(VTK_REQUIRED_CXX_FLAGS)
+# 
+#     IF   (wxWidgets_DEFINITIONS_DEBUG)
+#       FOREACH( def ${wxWidgets_DEFINITIONS_DEBUG})
+#         SET( WX_DEFS  -D${def} ${WX_DEFS} )
+#       ENDFOREACH(def ${wxWidgets_DEFINITIONS_DEBUG})
+#       MESSAGE("wxWidgets_DEFINITIONS_DEBUG=${wxWidgets_DEFINITIONS_DEBUG}")
+#     ENDIF(wxWidgets_DEFINITIONS_DEBUG)
+# 
+#     IF   (wxWidgets_CXX_FLAGS)
+#       SET(WX_FLAGS "${CMAKE_CXX_FLAGS} ${wxWidgets_CXX_FLAGS}")
+#       MESSAGE("WX_FLAGS=${WX_FLAGS}")
+#     ENDIF(wxWidgets_CXX_FLAGS)
+  ENDIF ( VTK_FOUND)
+  #
+  # TODO: run gccxml_vcconfig.bat to allow visual studio 9
+  #
+  SET(WRAPVTK_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated)
+  CreateDirectory( ${WRAPVTK_OUTDIR})
+
+  SET(XML_OUTPUT "${WRAPVTK_OUTDIR}/vtk_includes.xml")
+  SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/vtk_includes.h")
+  SET( GCCXML_result 0)
+MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}")
+  add_custom_command(OUTPUT ${XML_OUTPUT}
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
+    DEPENDS ${XML_INPUT}
+  )
+ 
+  # Generate the classes list
+
+  # Read list of classes to wrap
+  FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt" classes_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+
+  SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated/ancestors.txt")
+  SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
+
+  #MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} -q")
+  EXECUTE_PROCESS(
+    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
+    OUTPUT_VARIABLE ancestors_result
+  )
+  MESSAGE(" ancestors_result = ${ancestors_result} ")
+
+  FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
+
+  # Read list of method pointers to wrap
+  #FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/methodpointers.txt" methodpointers_txt)
+  #STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
+
+  FOREACH( class ${ancestors_list}) 
+    MESSAGE("Processing class ${class}")
+    IF (${GCCXML_result} EQUAL 0)
+      # Go for python wrapping
+      ADD_CUSTOM_COMMAND(OUTPUT ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${WRAPVTK_OUTDIR}/wrap_${class}.h
+        COMMAND
+          ${PYTHON_EXECUTABLE} 
+            ${AMI_WRAPPER} ${XML_OUTPUT}
+            --libname vtk
+            --filter "vtk*"
+            --classes ${class}
+            --available_classes ${ancestors_list} 
+            --outputdir "${WRAPVTK_OUTDIR}"
+            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+            -q
+          DEPENDS ${XML_OUTPUT} ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+        )
+    ENDIF(${GCCXML_result} EQUAL 0)
+  ENDFOREACH( class ${ancestors_list}) 
+
+
+  MESSAGE("Processing addwrap ")
+
+  IF (${GCCXML_result} EQUAL 0)
+    # Go for python wrapping
+    ADD_CUSTOM_COMMAND(OUTPUT  ${WRAPVTK_OUTDIR}/addwrap_vtk.h  ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
+      COMMAND
+        ${PYTHON_EXECUTABLE} 
+          ${AMI_WRAPPER} ${XML_OUTPUT}
+          --libname vtk
+          --filter "vtk*"
+          --available_classes ${ancestors_list} 
+          --outputdir "${WRAPVTK_OUTDIR}"
+          --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+          --addwrap
+          -q
+        DEPENDS ${XML_OUTPUT} ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+      )
+  ENDIF(${GCCXML_result} EQUAL 0)
+
+ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
+
+FOREACH( class ${ancestors_list}  ) 
+  SET( vtk_HDRS ${WRAPVTK_OUTDIR}/wrap_${class}.h ${vtk_HDRS})
+  SET( vtk_SRCS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${vtk_SRCS})
+ENDFOREACH( class ${ancestors_list}  ) 
+SET( vtk_HDRS ${WRAPVTK_OUTDIR}/addwrap_vtk.h   ${vtk_HDRS})
+SET( vtk_SRCS ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp ${vtk_SRCS})
+
+# file(GLOB vtk_HDRS  "${AMI_VTK_VERSION}/*.h"  )
+# file(GLOB vtk_SRCS  "${AMI_VTK_VERSION}/*.cpp")
 
 MESSAGE("Wrapping VTK...")
 
