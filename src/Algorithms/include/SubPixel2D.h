@@ -181,14 +181,17 @@ public:
   
   /**
    *  This procedure applies the sub-pixel edge detection in 2D noisy images
-   *  using a dynamic window.
+   *  using a dynamic window and a close edge detection.
    */
   void DenoisingGus();
   
+  /**
+   *  This procedure applies the sub-pixel edge detection in 2D noisy images
+   *  using a dynamic window and a close edge detection. Use a iterative
+   *  scheme (restoration).
+   */
   void SubpixelDenoising(int niter);
   
-//  void UpdateImages(InrImage* C, InrImage* I, int x, int y, int z, 
-//                    unsigned char edgeCase, vector<borderPixel> borderPixelVector);
   
   /**
    *  This procedure optimize the second order edges.
@@ -221,16 +224,6 @@ public:
                   InrImage::ptr posy);
   
   /**
-   *  Average the input image.
-   *  @param result A pointer to an InrImage object for the result of the averaged.
-   *  @param a00    Coefficient of the mask.
-   *  @param a01    Coefficient of the mask.
-   *  @param a11    Coefficient of the mask.
-   */
-  void Promedio3x3(InrImage* input, InrImage* result, 
-                   double a00, double a01, double a11);
-  
-  /**
    *  Set the input image.
    *  @param inp_image A pointer to an InrImage object.
    */
@@ -241,6 +234,12 @@ public:
    *  @return A pointer to an InrImage object.
    */
   InrImage* getInput();
+  
+  /**
+   *  Get the denoised image.
+   *  @return A pointer to an InrImage object.
+   */
+  InrImage* getDenoised();
   
   /**
    *  Get the vector that contains the pixels members of the edge.

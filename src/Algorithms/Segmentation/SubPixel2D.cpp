@@ -145,23 +145,14 @@ SubPixel2D::SubPixel2D(InrImage* inp_image, float thres, int lc)
   input       = inp_image;
   threshold   = thres;
   linear_case = lc;
-  denoised    = NULL;
+  //denoised    = NULL;
+  denoised = new InrImage(WT_DOUBLE,"denoised.inr.gz",input);
 }
 
 //Destructor
-SubPixel2D::~SubPixel2D(){}
-
-void copyImage(InrImage* input, InrImage* output, int margin)
+SubPixel2D::~SubPixel2D()
 {
-  int z = 0;
-  for(int x=margin;x<input->DimX()-margin;x++)
-  {
-    for(int y=margin;y<input->DimY()-margin;y++)
-    {
-      input->BufferPos(x, y, z);
-      input->FixeValeur((*output)(x,y,z));
-    }
-  }
+  delete(denoised);
 }
 
 //Optimize parable
@@ -337,6 +328,12 @@ void SubPixel2D::setInput(InrImage* inp_image)
 InrImage* SubPixel2D::getInput()
 {
   return input;
+}
+
+//Get the denoised image
+InrImage* SubPixel2D::getDenoised()
+{
+  return denoised;
 }
 
 //Get the border pixel vector
@@ -530,9 +527,9 @@ void SubPixel2D::fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity,
   }
 }
 
-//Promedio3x3 method. It averages the input image for reduce the noise
-void SubPixel2D::Promedio3x3 (InrImage* input, InrImage* result, 
-                              double a00, double a01, double a11)
+//Average3x3 method. It averages the input image for reduce the noise
+void Average3x3 (InrImage* input, InrImage* result, double a00, double a01, 
+                 double a11)
 {
   double sum;
   float s = (float) a00 + 4*a01 + 4*a11;
@@ -636,6 +633,9 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()
   int z = 0;
   borderPixel pixel;
   
+  Average3x3(input, denoised, A00, A01, A11);
+  setInput(denoised);
+  
   //For all pixels
   for (int y = margin; y < input->DimY()-margin; y++) 
   {
@@ -726,6 +726,7 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()
 }
 
 //Advanced SubPixel2D method for noisy images. It use a dynamic window (variable limits)
+//also detects edges of 2px or more, using the original input image
 void SubPixel2D::DenoisingGus()
 { 
   int margen = 4;
@@ -759,11 +760,10 @@ void SubPixel2D::DenoisingGus()
   int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0};
   int vpos[] = { -1,-3, 0,-2, 2, 0, 3, 1};	 
   
-  //Vamos a empezar por copiar la imagen original y luego promediarla
+  //We start copying the input image and averege it
   InrImage input_copy(WT_DOUBLE,"input_copy.inr.gz",input);
-  denoised = new InrImage(WT_DOUBLE,"denoised.inr.gz",input);
-  Promedio3x3(input, denoised, A00, A01, A11);
   input_copy = *input;
+  Average3x3(input, denoised, A00, A01, A11);
   setInput(denoised);
   //For all pixels
   for (int y = margen; y < input->DimY()-margen; y++) 
@@ -865,12 +865,7 @@ void SubPixel2D::DenoisingGus()
         //If the intensity jump is less than the threshold, continue
         if (fabs(A-B) < threshold) continue;
         
-        
-        //**********************************************************************
-        
-        //PARTE NUEVA DE LOS BORDES CERCANOS (CASOS GROSOR 2 Y 3 PXLS.)
-        
-        //Ahora hay que mirar si hay un segundo borde muy cercano (caso 2 y 3 px)
+        //We search if there are other near edge (2 and 3 pixels case)
         //Initialize the image limits
         ll1 = l1; mm1 = m1; rr1 = r1;
         ll2 = l2; mm2 = m2; rr2 = r2;
@@ -925,23 +920,20 @@ void SubPixel2D::DenoisingGus()
           }
         }
         
-        //jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
+        //****jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
         if (fabs(A-B) < 10) continue;
-        //numbordes++; esto estaba en el código de Agustín
         
-        //Si hay un borde cercano crearemos una nueva subimagen a partir de la original
-        //que luego suavizaremos para calcular el contorno
+        //If there are a second near edge, we create a new subimage form the original
+        //and averaged it after for computing the edge
         if (bor2d || bor2u)
         {
-          //Mi nueva imagencita sintética 11x5
+          //My new synthetic image (11x5, because it's YMAX case)
           InrImage* fprime = new InrImage(5,11,1,WT_DOUBLE,"fprime.inr.gz");
-          //El pseudocódigo dice:
-          //Si contorno superior o contorno inferior:
-          //crear una imagen F' centrada en (i,j) copiando los píxeles de F
-          //mi pixel i,j de la imagen grande es el 5,2 de la imagen 11x5
-          //Center of the 11x5 image
+
+          //Center of the 11x5 image (5,2)
           int fprimex=2;
           int fprimey=5;
+          //We fill the synthetic image with the original values of the input
           for(int indj = -5; indj<=5; indj++)
           {
             for(int indi = -2; indi<=2; indi++)
@@ -950,7 +942,7 @@ void SubPixel2D::DenoisingGus()
               fprime->FixeValeur(input_copy(x+indi,y+indj,z));
             }
           }
-          //si contorno superior actualizar B en la zona superior de F'
+          //If top edge, update B on F' top 
           if (bor2u)
           {
             par0 = ffyu (x-2, y+l1+p,z);
@@ -989,7 +981,7 @@ void SubPixel2D::DenoisingGus()
             }
             ll1=-3+m; mm1=-3; rr1=-3-m;
           }
-          //si contorno inferior actualizar A en la zona inferior de F'
+          //If lower edge, update A in F' bottom
           if (bor2d)
           {
             par0 = ffyd (x-2, y+l2+p-1,z);
@@ -1028,10 +1020,8 @@ void SubPixel2D::DenoisingGus()
             }
             ll2=3+m;  mm2=3;  rr2=3-m;
           }
-          //suavizar F' para obtener G'
-          //esto sería llamar a Promedio3x3 pero sólo para esta imagencita chica
-          //o hacerlo aquí directamente como Agustín:
-          //actualizo la posición del centro de la imagen chica
+ 
+          //Average F' obtaining G'
           fprimex = 2;
           fprimey = 5;
           for(int indj = -4; indj<=4; indj++)
@@ -1051,8 +1041,8 @@ void SubPixel2D::DenoisingGus()
               fprime->FixeValeur(suma/9);
             }
           }
-          //Calcular parábola P según el Lema 6.1 a partir de la imagen G'
-          //esto es aplicar el método... creo (solo tengo que hacer las sumitas)
+          //With the averaged image, we compute the sums of the columns with the 
+          //subimage
           for (SL=0, k=ll1; k<=ll2; k++) 
             SL += (*fprime)(fprimex-1,fprimey+k,z);
           for (SM=0, k=mm1; k<=mm2; k++) 
@@ -1061,11 +1051,8 @@ void SubPixel2D::DenoisingGus()
             SR += (*fprime)(fprimex+1,fprimey+k,z);
           delete(fprime);
         }
-        else //En caso contrario se calculan las sumas como siempre
+        else //Else, we compute the sums of the columns with the big image
         {
-          //**********************************************************************
-          
-          
           //Calculate the sums of the columns
           for (SL=0, k=l1; k<=l2; k++) 
             SL += FF(x-1,y+k,z);
@@ -1195,10 +1182,7 @@ void SubPixel2D::DenoisingGus()
         //If the intensity jump is less than the threshold, continue
         if (fabs(A-B) < threshold) continue;
         
-        //**********************************************************************
-        
-        //PARTE NUEVA PARA CONTORNOS MUY CERCANOS (2 Y 3 PXLS) CASO VENTANA HORIZONTAL
-        
+        //We search if there are other near edge (2 and 3 pixels case)
         //Initialize the image limits
         ll1 = l1; mm1 = m1; rr1 = r1;
         ll2 = l2; mm2 = m2; rr2 = r2;
@@ -1253,23 +1237,19 @@ void SubPixel2D::DenoisingGus()
           }
         }
         
-        //jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
+        //***jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
         if (fabs(A-B) < 10) continue;
-        //numbordes++; esto estaba en el código de Agustín
         
-        //Si hay un borde cercano crearemos una nueva subimagen a partir de la original
-        //que luego suavizaremos para calcular el contorno
+        //If there are a second near edge, we create a new subimage form the original
+        //and averaged it after for computing the edge
         if (bor2d || bor2u)
         {
-          //Mi nueva imagencita sintética 5x11
+          //My new synthetic image (5x11, because it's XMAX case)
           InrImage* fprime = new InrImage(11,5,1,WT_DOUBLE,"fprime.inr.gz");
-          //El pseudocódigo dice:
-          //Si contorno superior o contorno inferior:
-          //crear una imagen F' centrada en (i,j) copiando los píxeles de F
-          //mi pixel i,j de la imagen grande es el 2,5 de la imagen 5x11
-          //Center of the 5x11 image
+          //Center of the 5x11 image (2,5)
           int fprimex=5;
           int fprimey=2;
+          //We fill the synthetic image with the original values of the input
           for(int indj = -2; indj<=2; indj++)
           {
             for(int indi = -5; indi<=5; indi++)
@@ -1278,7 +1258,7 @@ void SubPixel2D::DenoisingGus()
               fprime->FixeValeur(input_copy(x+indi,y+indj,z));
             }
           }
-          //si contorno superior actualizar B en la zona superior de F'
+          //If top edge, update B on F' top
           if (bor2u)
           {
             par0 = ffxl (x+l1+p, y-2,z);
@@ -1317,7 +1297,7 @@ void SubPixel2D::DenoisingGus()
             }
             ll1=-3+m; mm1=-3; rr1=-3-m;
           }
-          //si contorno inferior actualizar A en la zona inferior de F'
+          //If lower edge, update A in F' bottom
           if (bor2d)
           {
             par0 = ffxr (x+l2+p-1, y-2,z);
@@ -1356,10 +1336,8 @@ void SubPixel2D::DenoisingGus()
             }
             ll2=3+m;  mm2=3;  rr2=3-m;
           }
-          //suavizar F' para obtener G'
-          //esto sería llamar a Promedio3x3 pero sólo para esta imagencita chica
-          //o hacerlo aquí directamente como Agustín:
-          //actualizo la posición del centro de la imagen chica
+      
+          //Average F' obtaining G'
           fprimex = 5;
           fprimey = 2;
           for(int indj = -1; indj<=1; indj++)
@@ -1379,8 +1357,8 @@ void SubPixel2D::DenoisingGus()
               fprime->FixeValeur(suma/9);
             }
           }
-          //Calcular parábola P según el Lema 6.1 a partir de la imagen G'
-          //esto es aplicar el método... creo (solo tengo que hacer las sumitas)
+          //With the averaged image, we compute the sums of the rows with the 
+          //subimage
           for (SL=0, k=ll1; k<=ll2; k++) 
             SL += (*fprime)(fprimex+k,fprimey-1,z);
           for (SM=0, k=mm1; k<=mm2; k++) 
@@ -1389,10 +1367,8 @@ void SubPixel2D::DenoisingGus()
             SR += (*fprime)(fprimex+k,fprimey+1,z);
           delete(fprime);
         }
-        else //En caso contrario se calculan las sumas como siempre
-        {        
-          //**********************************************************************
-          
+        else //Else, we compute the sums of the rows with the big image
+        {                  
           //Calculate sums of the rows 
           for (SL=0, k=l1; k<=l2; k++) 
             SL += FF(x+k,y-1,z);
@@ -1432,8 +1408,6 @@ void SubPixel2D::DenoisingGus()
       } //End else
     } //End x for
   } //End y for
-    //delete(input_copy);
-  delete(denoised);
 }
 
 
@@ -1441,63 +1415,38 @@ void SubPixel2D::DenoisingGus()
 // RESTORATION
 //---------------------------------------------
 
-//Versión con la ventana fija de 9x3. Restauración básica de imágenes
-//Voy a tener dos funcioncitas. Una, la que es la de restaurar imagen, se va a
-//llamar SubpixelDenoising (como dijo Agustín) y una auxiliar que usa, como
-//en el pseudo-código de la tesis se llama ActualizarImágenes le voy a poner
-//UpdateImages.
-
-//Hacen falta un par de funciones para calcula el color que le toca a cada pixel
-//diferenciándose para el caso de una recta y de una curva.
-//Estas funciones miran si el pixel cae por encima o por debajo, devolviendo el
-//valor de intensidad adecuado en cada caso. Si por el pixel pasa la recta (o curva)
-//entonces se calcula la integral y se devuelve cuál es el valor de intensidad
-//que le toca al pixel en función del área. En el código de Agustín estas funciones
-//eran CalculaColorPixelRecto y CalculaColorPixelCurvo. Aquí las llamaré como
-//ComputeStraightPixelColor y ComputeCurvePixelColor.
-//También me hace falta otra función que estima una circunferencia a partir de
-//la parábola (BuscaCircunf -> SearchCircle) y que dice si converge o no
-//poniendo luego en función de eso el valor del peso en la imagencita chica
-//sintética
-
-
-//LO ESTABA HACIENDO MAL: Las funciones eran CalculaColorVentanita y
-//CalculaColorVentanita Curva
-
-
+/*With the gradient vector, the displacement inside the pixel and colors at
+ both sides of the edge, we compute the color of the pixel. A is down and B is
+ up.*/
 double ComputePixelColor (double gx, double gy, double d, double A, double B)
-/* dado el vector gradiente y el desplazamiento interior al pixel, y 
-los colores a cada lado del borde, calculamos el color que debería tener
-el pixel. Solo funciona para el caso gx,gy>0, gx<gy.
-Se supone que A es debajo de la curva y B encima */
 {
-  double m = fabs(gx/gy);	// la ecuación de la recta es y=d-mx;
+  double m = fabs(gx/gy);	// Line equation -> y=d-mx;
   double y1, y2, x1, x2;
   double area;
-  double resultado;
+  double result;
   
-  // calculamos los cortes con los bordes verticales del pixel
+  //We compute the cut with the pixel vertical limits
   y1 = d + 0.5 * m;
   y2 = d - 0.5 * m;
   
-  // la recta pasa por debajo del pixel 
+  //The line pass down of the pixel
   if (y2>0.5) area = 0.0;
 	else
     
-    // la recta corta el pixel abajo y a la derecha
+    //The line cuts the pixel right-down
     if (y1>0.5) {
       x1 = (d-0.5) / m;
       area =0.5 * (0.5-x1) * (0.5-y2);
     }
     else
       
-      // la recta corta de izquierda a derecha
+      //The line cuts the pixel from left to right
       if (y2>-0.5) {
         area = (0.5-y1) + 0.5 *(y1-y2);
       }
       else
         
-        // la recta corta a la izquierda y arriba
+        //The line cuts the pixel left-up
         if (y1>-0.5) {
           x2 = (d+0.5) / m;
           area = 0.5 * (y1+0.5) * (x2+0.5);
@@ -1505,45 +1454,35 @@ Se supone que A es debajo de la curva y B encima */
         }
         else
           
-          // la recta pasa por arriba
+          //The line pass up the pixel
           area = 1.0;
 	
-  // retornamos el porcentaje de A y B
+  //We return the A and B percentage
   //printf ("y1=%f, y2=%f x1=%f x2=%f area=%f\n", y1,y2,x1,x2,area);
-  resultado = area*A + (1-area)*B;
-  return ((double) resultado);
+  result = area*A + (1-area)*B;
+  return ((double) result);
 }
 
 
-//ComputeWindowColor
+/*With an edge <gx,gy> with des displacement and A and B colors, we generate
+ a 9x5 subimage with an ideal ramp for this values. If edgeCase is XMAX, the
+ subimage will be 5x9.*/
 void ComputeWindowColor (unsigned char edgeCase, double gx, double gy, double des,
                          double A, double B, double *win)
-
-//void CalculaColorVentanita (unsigned char caso, float gx, float gy, float des, 
-//					float A, float B, float *vent, int debug)
-/* Dado un borde <gx,gy> con desplazamiento des y colores A y B, generamos
-  una subimagen 9x5 sintética con una rampa ideal para esos valores.
-  Si la pendiente es mayor que 1, la subimagen será 5x9 (horizontal).
-  En realidad no es según la pendiente, sino segun el caso (YMAX o XMAX).
-  La subventanita viene grabada por columnas, de izquierda a derecha, y aunque
-  es rectangular, luego solo se utilizaran columnas de 7 tomadas en diagonal, y 
-  columnas de 1 solo pixel en las laterales (para el error que habia en los
-  45º del círculo. */
 {
   int i, j, n, s;
   float m;
   double absgx = fabs(gx);
   double absgy = fabs(gy);
-  //int pen;
   
-  // si la pendiente es mayor que 1, invertimos los ejes x e y. 
+  //If XMAX, we invert the axis
   if (edgeCase == XMAX) 
   { 
     SWAP_DOUBLE (gx, gy); 
     SWAP_DOUBLE (absgx, absgy);
   }
   
-  // ahora gx<gy en valor absoluto. Si gy<0, invertimos la situación
+  //gx<gy in absolute value. If gy<0, we invert the values
   if (gy<0) 
   {
     gx = -gx;
@@ -1551,48 +1490,29 @@ void ComputeWindowColor (unsigned char edgeCase, double gx, double gy, double de
     SWAP_DOUBLE (A, B); 
   }
   
-  //if (debug) printf ("en ventanita: radio=inf G=(%f,%f) des=%f\n",
-  //		gx,gy,des);
-  
-  // calculamos la ventanita
+  //Compute the window
   m = absgx / absgy; 
   for (i=-2; i<=2; i++) 
     for (j=Lims[i+2][0]; j<=Lims[i+2][1]; j++) 
     {
-      s = 9*i + j + 22;  //(i+2)*9+(j+4);
+      s = 9*i + j + 22; //(i+2)*9+(j+4);
       win[s] = ComputePixelColor (absgx, absgy, des-j-i*m, A, B);
     }
   
-  // si gx<0, intercambiamos las columnas laterales
+  //If gx<0, we swap the lateral columns
   if (gx<0) for (n=0; n<9; n++) 
   { 
     SWAP_DOUBLE (win[n+9], win[n+27]);
-    //SWAP_FLOAT (vent[n], vent[n+36]);
     win[5] = win[41];
     win[39] = win[3];
   }
   
-  //if (!debug) return;
   return;
-  // imprimimos resultados ventanita 
-  //if (caso == YMAX) {			// ventanita vertical
-  //	for (j=-4; j<=4; j++) {
-  //		for (i=-2; i<=2; i++) printf ("%f ", vent[(i+2)*9+(j+4)]);
-  //		printf ("\n");
-  //	 }
-  // } else {			// ventanita horizontal
-  //	for (i=-2; i<=2; i++) {
-  //		for (j=-4; j<=4; j++) printf ("%f ", vent[(i+2)*9+(j+4)]);
-  //		printf ("\n");
-  //	 }
-  // }
 }
 
 
-//En la función ComputeCurveWindowColor necesito la ComputeCurvePixelColor
-
-//Compute the pixel intensity value based on circle equation and inside and
-//outside intensities
+/*Compute the pixel intensity value based on circle equation and inside and
+  outside intensities*/
 double ComputeCurvePixelColor(double xc, double yc, double r, double D, double F)
 {
   //With the circunference (x-xc)2 + (y-yc)2 = r2, the intensity D in and the
@@ -1627,7 +1547,6 @@ double ComputeCurvePixelColor(double xc, double yc, double r, double D, double F
   if (x1 <= -0.5) 
     return (D); 
   
-  // miramos los casos (ver folio aparte)
   //All posible cases
   if (yc <= -0.5) 
   {
@@ -1669,41 +1588,18 @@ double ComputeCurvePixelColor(double xc, double yc, double r, double D, double F
         area = 2 * (P(0.5) - P(t) - yc*(0.5-t));
     }
   }
-  
-  //Return the color
-//  if (isnan(F + area*(D-F))) {
-//    cout << "intensidad nan en curvo" << endl;
-//    cout << "xc:" << xc << " yc:" << yc << " r:" << r << " D:" << D << " F:" << F << endl;
-//    cout << "area: " << area << endl;
-//  }
+
   return (F + area*(D-F));
 }
 
 
-//ComputeCurveWindowColor
+/*With an edge <gx,gy> with des displacement and A and B colors, we generate
+ a 9x5 synthetic subimage with an ideal parable for this values.
+ We compute the curve y=a+bx+cx2 (-v=a+bu+cu2).
+ If edgeCase is equal to XMAX, the subimage will be 5x9.*/
 void ComputeCurveWindowColor (unsigned char edgeCase, double gx, double gy,
                               double des, double cu, double A, double B,
                               double *win, int winsize)
-
-//void CalculaColorVentanitaCurva (unsigned char caso, float gx, float gy, 
-//					float des, float cu,
-//					float A, float B, float *vent, 
-//					int debug, int tamvent)
-/* Dado un borde <gx,gy> con desplazamiento des y colores A y B, generamos
-  una subimagen 9x5 sintética con una parábola ideal para esos valores.
-  Para ello calculamos la curva y=a+bx+cx2 (-v=a+bu+cu2).
-  Si la pendiente es mayor que 1, la subimagen será 5x9 (horizontal). 
-  Si solo1pixel=true, la subimagen generada es 1x1.
-  En realidad no es según la pendiente, sino segun el caso (YMAX o XMAX).
-  La subventanita viene grabada por columnas, de izquierda a derecha, y aunque
-  es rectangular, luego solo se utilizaran columnas de 7 tomadas en diagonal, y 
-  columnas de 1 solo pixel en las laterales (para el error que habia en los
-  45º del círculo). 
-  tamvent indica el tamaño de la ventana a generar
-   1: 1 solo pixel
-   3: 3x3 (al final esta no se esta usando, sino que se llama a la funcion
-   		CalculaVentanita3x3)
-   9: 9x5     */
 {
   double absgx = fabs(gx);
   double absgy = fabs(gy); 
@@ -1712,45 +1608,42 @@ void ComputeCurveWindowColor (unsigned char edgeCase, double gx, double gy,
   double D, F;
   
   
-  // si el radio es muy grande, consideramos un caso plano
+  //If the radius is large, we consider a line not a parable 
   if (fabs(cu) < 0.001) 
   {
     ComputeWindowColor (edgeCase, gx, gy, des, A, B, win);
     return;
   }
   
-  // si la pendiente es mayor que 1, invertimos los ejes x e y. 
+  //If XMAX, we invert x and y axis
   if (edgeCase == XMAX) 
   { 
     SWAP_DOUBLE (gx, gy); 
     SWAP_DOUBLE (absgx, absgy);
   }
   
-  // ahora gx<gy en valor absoluto. Si gy<0, invertimos colores y curvatura
+  //gx<gy in absolute value. If gy<0, we invert the colors and curvature
   if (gy<0) 
   { 
     SWAP_DOUBLE (A, B);
     cu = -cu;
   }
   
-  // calculamos el radio del círculo
+  //Compute the circle radius
   r = 1.0 / cu;
   
-  // si es muy chico ponemos otro
+  //If it is very small, we put other
   if (winsize!=3 && fabs(r)<RMINGAUSS) r = (r>0)? RMINGAUSS : -RMINGAUSS;
   
-  // en parametricas caminamos desde el circulo para hallar el centro
+  //We walk from  the circle for finding the center, in parametrics
   mod = sqrt (absgx*absgx+absgy*absgy);
   xc = r * absgx / mod;
   yc = -des - (absgy * r)/mod; 
   
-  //if (debug) printf ("en ventanita: radio=%f centro=(%f,%f) G=(%f,%f) des=%f\n",
-  //		r,xc,yc,gx,gy,des);
-  
-  // calculamos la pendiente de la ventanita
+  //We compute the window slope
   pen = (gx*gy>=0.0)? 1 : -1;
   
-  // calculamos los colores dentro y fuera
+  //We compute the colors inside and outside
   if (r>0) 
   { 
     D=A; 
@@ -1764,607 +1657,25 @@ void ComputeCurveWindowColor (unsigned char edgeCase, double gx, double gy,
   r = fabs(r);
   
   // calculamos la ventanita (sólo se está usando la 9x5)
-  switch (winsize) {
-//   	case 1: win[0] = ComputeCurvePixelColor (xc, yc, r, D, F);
-//      break;
-//      
-//    case 3: for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++) {
-//			s = 9*i + j + 22;  //(i+2)*9+(j+4);
-//			win[s] = ComputeCurvePixelColor (xc-i, yc+j, r, D, F);
-//    }
-//      break;
-      
-    case 9: for (int i=-2; i<=2; i++) for (int j=Lims[i+2][0]; j<=Lims[i+2][1]; j++) {
-			s = 9*i + j + 22;  //(i+2)*9+(j+4);
-			win[s] = ComputeCurvePixelColor (xc-i, yc+j, r, D, F);
+  for (int i=-2; i<=2; i++) 
+    for (int j=Lims[i+2][0]; j<=Lims[i+2][1]; j++) 
+    {
+      s = 9*i + j + 22;  //(i+2)*9+(j+4);
+      win[s] = ComputeCurvePixelColor (xc-i, yc+j, r, D, F);
     }
-      break;
-  } 	
+
   
-  // si la pendiente es negativa, intercambiamos las columnas laterales
+  //If the slope is negative, we exchanges de lateral columns
   if (pen<0) for (int n=0; n<9; n++) {
     SWAP_DOUBLE (win[n+9], win[n+27]); 
-    //SWAP_FLOAT (vent[n], vent[n+36]);
     win[5] = win[41];
     win[39] = win[3];
   }
   
-  //if (!debug) return;
   return;
-  // imprimimos resultados ventanita 
-  //switch (tamvent) {
-  //	case 1: printf ("color calculado para el pixel = %f\n", vent[0]);
-  //		break;
-  //	
-  //	case 9:
-  //	if (caso == YMAX) {		// ventanita vertical
-  //		for (j=-4; j<=4; j++) {
-  //			for (i=-2; i<=2; i++) printf ("%f ", vent[(i+2)*9+(j+4)]);
-  //			printf ("\n");
-  //		 }
-  //	  } else {			// ventanita horizontal
-  //	 	for (i=-2; i<=2; i++) {
-  //			for (j=-4; j<=4; j++) printf ("%f ", vent[(i+2)*9+(j+4)]);
-  //			printf ("\n");
-  //	  	 }
-  // 	 }
-  // }
 }
 
-
-//void UpdateImages(InrImage* C, InrImage* I, int x, int y, int z, 
-//                  unsigned char edgeCase, double a, double b, double c, double A,
-//                  double B)
-//Modificación de la función para usar las funciones de las ventanitas 
-/*void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int z, 
-                  unsigned char edgeCase, double gx, double gy, double des, 
-                  double cu, double A, double B, int linear_case, int m)
-{
-  //Synthetic window
-  double win[45];
-  double s;
-  
-  //Tratamiento de los márgenes
-  if (edgeCase == YMAX) 
-  {
-    if (y<4 || y>C->DimY()-5) 
-    {
-      //Borde por arriba, estimamos B
-      if (y<4) 
-      {
-        B = 0;
-        s = 0;
-        //L
-        //for (int k = -4; k<-1+m; k++, s++) 
-        for (int k = -(y-1); k<-1+m; k++, s++)  
-          B += (*input)(x-1,y+k,z);
-        //M
-        //for (int k = -4; k<-1+m; k++, s++) 
-        for (int k = -(y-1); k<-1+m; k++, s++)  
-          B += (*input)(x,y+k,z);
-        //R
-        //for (int k = -4; k<-1+m; k++, s++)
-        for (int k = -(y-1); k<-1+m; k++, s++)  
-          B += (*input)(x+1,y+k,z);
-        
-        B /= s;
-      }
-      //Borde por debajo, estimamos A
-      if (y>C->DimY()-5) 
-      {
-        A = 0;
-        s = 0;
-        //L
-        //for (int k = 2+m; k<=4; k++, s++) 
-        for (int k = 2+m; k<=input->DimY()-1-y; k++, s++)  
-          A += (*input)(x-1,y+k,z);
-        //M
-        //for (int k = 2; k<=4; k++, s++) 
-        for (int k = 2; k<=input->DimY()-1-y; k++, s++)  
-          A += (*input)(x,y+k,z);
-        //R
-        //for (int k = 2-m; k<=4; k++, s++) 
-        for (int k = 2-m; k<=input->DimY()-1-y; k++, s++)  
-          A += (*input)(x+1,y+k,z);
-       
-        A /= s;
-      }
-      //Generar la ventanita sintética, por ahora con ventana no flotante
-      //Limits
-      int lup   = -4;
-      int ldown =  4;
-      if (y<4)
-        lup = -(y-1);
-      if (y>C->DimY()-5)
-        ldown = input->DimY()-1-y;
-      //Left
-      for(int k = lup; k<=ldown; k++)
-      {
-        C->BufferPos(x-1,y+k,z);
-        C->FixeValeur((*C)(x-1,y+k,z)+1);
-        I->BufferPos(x-1,y+k,z);
-        if (k<-1+m) 
-          I->FixeValeur((*I)(x-1,y+k,z) + B);
-        else 
-        {
-          if (k>1+m)
-            I->FixeValeur((*I)(x-1,y+k,z) + A);
-          else 
-            I->FixeValeur((*I)(x-1,y+k,z) + (*input)(x-1,y+k,z));
-        }
-      }
-      //Midle
-      for(int k = lup; k<=ldown; k++)
-      {
-        C->BufferPos(x, y+k, z);
-        C->FixeValeur((*C)(x,y+k,z)+1);
-        I->BufferPos(x,y+k,z);
-        if (k<-1)
-          I->FixeValeur((*I)(x,y+k,z) + B);
-        else 
-        {
-          if (k>1)
-            I->FixeValeur((*I)(x,y+k,z) + A);
-          else
-            I->FixeValeur((*I)(x,y+k,z) + (*input)(x,y+k,z));
-        }
-      }
-      //Right
-      for(int k = lup; k<=ldown; k++)
-      {
-        C->BufferPos(x+1, y+k, z);
-        C->FixeValeur((*C)(x+1,y+k,z)+1);
-        I->BufferPos(x+1, y+k, z);
-        if (k<-1-m)
-          I->FixeValeur((*I)(x+1, y+k, z) + B);
-        else 
-        {
-          if (k>1-m)
-            I->FixeValeur((*I)(x+1, y+k, z) + A);
-          else
-            I->FixeValeur((*I)(x+1, y+k, z) + (*input)(x+1, y+k, z));
-        }
-      }
-      
-      return;
-    }
-  }
-  else 
-  {
-    if (x<4 || x>C->DimX()-5) 
-    {
-      //Margen de la izquierda, estimamos B
-      if (x<4) 
-      {
-        B = 0;
-        s = 0;
-        for (int k = -(x-1); k<=-1+m; k++, s++) 
-          B += (*input)(x+k,y-1,z);
-        for (int k = -(x-1); k<=-1; k++, s++) 
-          B += (*input)(x+k,y,z);
-        for (int k = -(x-1); k<=-1-m; k++, s++) 
-          B += (*input)(x+k,y+1,z);
-        B /= s;
-      }
-      //Margen de la derecha, estimamos A
-      if (x>C->DimX()-5) 
-      {
-        A = 0;
-        s = 0;
-        for (int k = 2+m; k<=input->DimX()-1-x; k++, s++)
-          A += (*input)(x+k,y-1,z);
-        for (int k = 2; k<=input->DimX()-1-x; k++, s++)
-          A += (*input)(x+k,y,z);
-        for (int k = 2-m; k<=input->DimX()-1-x; k++, s++)
-          A += (*input)(x+k,y+1,z);
-        A /= s;
-      }
-      //Generar la ventanita sintética, por ahora con ventana no flotante
-      int lleft  = -4;
-      int lright =  4;
-      if (x<4)
-        lleft = -(x-1);
-      if (x>C->DimX()-5)
-        lright = input->DimX()-1-x;
-      //Up
-      for(int k = lleft; k<=lright; k++)
-      {
-        C->BufferPos(x+k, y-1, z);
-        C->FixeValeur((*C)(x+k, y-1, z) + 1);
-        I->BufferPos(x+k, y-1, z);
-        if (k<-1+m)
-          I->FixeValeur((*I)(x+k, y-1, z) + B);
-        else 
-        {
-          if (k>1+m)
-            I->FixeValeur((*I)(x+k, y-1, z) + A);
-          else 
-            I->FixeValeur((*I)(x+k, y-1, z) + (*input)(x+k, y-1, z));
-        }
-      }
-      //Midle
-      for(int k = lleft; k<=lright; k++)
-      {
-        C->BufferPos(x+k, y, z);
-        C->FixeValeur((*C)(x+k, y, z) + 1);
-        I->BufferPos(x+k, y, z);
-        if (k<-1)
-          I->FixeValeur((*I)(x+k, y, z) + B);
-        else 
-        {
-          if (k>1)
-            I->FixeValeur((*I)(x+k, y, z) + A);
-          else 
-            I->FixeValeur((*I)(x+k, y, z) + (*input)(x+k, y, z));
-        }
-      }
-      //Down
-      for(int k = lleft; k<=lright; k++)
-      {
-        C->BufferPos(x+k,y+1,z);
-        C->FixeValeur((*C)(x+k,y+1,z) + 1);
-        I->BufferPos(x+k,y+1,z);
-        if (k<-1-m)
-          I->FixeValeur((*I)(x+k,y+1,z) + B);
-        else 
-        {
-          if (k>1-m)
-            I->FixeValeur((*I)(x+k,y+1,z) + A);
-          else 
-            I->FixeValeur((*I)(x+k,y+1,z) + (*input)(x+k,y+1,z));
-        }
-      }
-      
-      return;
-    }
-  }
-
-  if (A<B)
-  {
-    SWAP_DOUBLE(A,B);
-  }
-  
-  //Se calculan los valores de la ventanita sintética
-  if (linear_case)
-  {
-    ComputeWindowColor(edgeCase, gx, gy, des, A, B, win);
-  }
-  else 
-  {
-    //9 porque la ventana que se está usando es de 9x5 (a lo mejor cambio la función)
-    ComputeCurveWindowColor(edgeCase, gx, gy, des, -cu, A, B, win, 9);
-  }
-  
-  
-  if (edgeCase == YMAX)
-  {
-    //Left
-    for(int k = -4; k<=4; k++)
-    {
-      I->BufferPos(x-1, y+k, z);
-      C->BufferPos(x-1, y+k, z);
-      I->FixeValeur((*I)(x-1, y+k, z) + win[k+13]*10);
-      C->FixeValeur(((*C)(x-1, y+k, z)) + 10);
-    }
-    
-    //Midle
-    for(int k = -4; k<=4; k++)
-    {
-      I->BufferPos(x, y+k, z);
-      C->BufferPos(x, y+k, z);
-      I->FixeValeur((*I)(x, y+k, z) + win[k+22]*1000);
-      C->FixeValeur(((*C)(x, y+k, z)) + 1000);
-    }
-    
-    //Right
-    for(int k = -4; k<=4; k++)
-    {
-      I->BufferPos(x+1, y+k, z);
-      C->BufferPos(x+1, y+k, z);
-      I->FixeValeur((*I)(x+1, y+k, z) + win[k+31]*10);
-      C->FixeValeur(((*C)(x+1, y+k, z)) + 10);
-    }
-  }
-  else
-  {
-    //Left
-    for(int k = -4; k<=4; k++)
-    {
-      I->BufferPos(x+k, y-1, z);
-      C->BufferPos(x+k, y-1, z);
-      I->FixeValeur((*I)(x+k, y-1, z) + win[k+13]*10);
-      C->FixeValeur(((*C)(x+k, y-1, z)) + 10);
-    }
-    
-    //Midle
-    for(int k = -4; k<=4; k++)
-    {
-      I->BufferPos(x+k, y, z);
-      C->BufferPos(x+k, y, z);
-      I->FixeValeur((*I)(x+k, y, z) + win[k+22]*1000);
-      C->FixeValeur(((*C)(x+k, y, z)) + 1000);
-    }
-    
-    //Right
-    for(int k = -4; k<=4; k++)
-    {
-      I->BufferPos(x+k, y+1, z);
-      C->BufferPos(x+k, y+1, z);
-      I->FixeValeur((*I)(x+k, y+1, z) + win[k+31]*10);
-      C->FixeValeur(((*C)(x+k, y+1, z)) + 10);
-    }
-  }
-}*/
-
-
-//Versión con la ventana de tamaño fijo 9x3 (no funciona bien del todo tratando los límites)
-/*void SubPixel2D::SubpixelDenoising(int niter)
-{
-  int margin = 1;
-  //Crear imagen de contadores y de intensidades e inicializarlas a cero
-  InrImage::ptr C = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
-                                               input->DimZ(), WT_DOUBLE,
-                                               "counters.inr.gz"));
-  InrImage::ptr I = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
-                                               input->DimZ(), WT_DOUBLE,
-                                               "intensities.inr.gz"));
-  InrImage::ptr G = InrImage::ptr(new InrImage(input->DimX(), input->DimY(),
-                                               input->DimZ(), WT_DOUBLE,
-                                               "averaged.inr.gz"));
-
-  //For third dimension
-  int z = 0;
-  //Partial derivatives
-  float parx, pary, partial;
-  //Pointers to upos and vpos
-  int *u, *v;
-  int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Partials
-                 0, 1, 1, 0,-1,-1,              //A and B
-                 -1,-1,-1,-1,-1,-1,-1,          //Sums of the columns 
-                 0, 0, 0, 0, 0, 0, 0, 
-                 1, 1, 1, 1, 1, 1, 1 };
-  int vpos[] = { 1,-1,-1,-3, 0,-2, 2, 0, 3, 1,	//Partials
-                 4, 3, 4,-4,-3,-4,              //A and B
-                -2,-1, 0, 1, 2, 3, 4,           //Sums of the columns
-                -3,-2,-1, 0, 1, 2, 3,	
-                -4,-3,-2,-1, 0, 1, 2 };
-  borderPixel pixel;
-  double A, B, S1, S2, S3;
-  double a, b, c, d;
-  double gx_n, gy_n, des_n, cu_n, abscu;
-  double f = (1+24*A01+48*A11) / 12;
-  int m;
-  //Apaño por ahora a ver si va lo de las ventanitas
-  Lims[1][0] = Lims[2][0] = Lims[3][0] = -4;
-  Lims[1][1] = Lims[2][1] = Lims[3][1] = 4;
-  InrImage input_copy(WT_DOUBLE,"input_copy.inr.gz",input);
-  //input_copy = *input;
-  for(int index=0; index<niter; index++)
-  {
-    C->InitZero();
-    I->InitZero();
-    G->InitZero();
-    
-    //1º Se promedia la imagen de entrada y se deja en G
-    Promedio3x3(input, G.get(), A00, A01, A11);
-    input_copy = *input;
-    //Para que funcionen las macros de parciales tengo que jincar G como input
-    //setInput(G.get());
-    copyImage(input, G.get(), 0);
-    //*input = *(G.get());
-    //Para todos los pixels de G
-
-    borderPixelVector.clear();
-   
-    for(int y = margin; y < G->DimY()-margin; y++)
-    {
-      for(int x = margin; x < G->DimX()-margin; x++)
-      {
-        pary = ffy(x,y,z);
-        parx = ffx(x,y,z);
-        if (parx*parx + pary*pary < threshold*threshold) continue;
-        if (fabs(pary) >= fabs(parx))
-        { //cout << "entro en YMAX" << endl;
-          //Vertical window
-          u = upos;
-          v = vpos;
-          //The partial must be maximum in the column
-          partial = fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z));
-          if (partial < threshold) continue;
-          if (y>2) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
-          if (y>1) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
-          if (y<input->DimY()-2) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-          if (y<input->DimY()-3) if (fabs(FF(x+u[8],y+v[8],z) - FF(x+u[9],y+v[9],z)) > partial) continue;
-          
-          m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
-          
-          S1 = S2 = S3 = 0.0;
-          
-          //Tratamiento de los límites superior e inferior
-          if (y<4)
-          {
-//            cout << "ini y<4" << endl;
-            B = FF(x-m,0,z);
-            A = ((double) FF(x,y+4,z)+FF(x+m,y+4,z)+FF(x+m,y+3,z)) / 3.0;
-            for (int k=-3+m; k<=3+m; k++) S1 += (y+k>=0)? FF(x-1,y+k,z) : B;
-            for (int k=-3;   k<=3;   k++) S2 += (y+k>=0)? FF(x,y+k,z)   : B;
-            for (int k=-3-m; k<=3-m; k++) S3 += (y+k>=0)? FF(x+1,y+k,z) : B;
-//            cout << "fin y<4" << endl;
-          }
-          else if (y>input->DimY()-5)
-          {
-//            cout << "ini y>ny-5" << endl;
-            B = ((double) FF(x-m,y-3,z)+FF(x-m,y-4,z)+FF(x,y-4,z)) / 3.0;
-            A = FF(x+m,input->DimY()-1,z);
-            for (int k=-3+m; k<=3+m; k++) S1 += (y+k<input->DimY())? FF(x-1,y+k,z) : A;
-            for (int k=-3;   k<=3;   k++) S2 += (y+k<input->DimY())? FF(x,y+k,z)   : A;
-            for (int k=-3-m; k<=3-m; k++) S3 += (y+k<input->DimY())? FF(x+1,y+k,z) : A;
-//            cout << "fin y>ny-5" << endl;
-          }
-          else
-          {
-            //Interior de la imagen
-            B = ((double) FF(x-m,y-3,z) + FF(x-m,y-4,z) + FF(x,y-4,z)) / 3.0;
-            A = ((double) FF(x,y+4,z) + FF(x+m,y+4,z) + FF(x+m,y+3,z)) / 3.0;
-            for (int t=-3; t<=3; t++) 
-            {
-              S1 += FF(x+u[19+t],y+v[19+t],z);
-              S2 += FF(x+u[26+t],y+v[26+t],z);
-              S3 += FF(x+u[33+t],y+v[33+t],z);
-            }
-          }
-         
-          if (fabs(A-B)<threshold) continue;
-          
-          //Calculate the coefficients of the parable
-          a = (2*S2 - 7*(A+B)) / (2*(A-B));
-          b = 1.0 + (S3-S1) / (2*(A-B));
-          c = (linear_case) ? 0 : (S3+S1-2*S2) / (2*(A-B)); //In 1st order, c=0
-          a -= f * c;
-          
-          //Calculate curvature
-          cu_n  = sqrt (1+b*b);
-          cu_n *= cu_n * cu_n;
-          cu_n  = 2*c / cu_n;
-          abscu = fabs(cu_n);
-          
-          //Calculate gradient and displacement
-          d = (A-B) / sqrt(1+b*b);
-          
-          //gx_n  = (ffx(x,y,z)>0) ? b*d : -b*d;
-          //gy_n  = (ffy(x,y,z)>0) ? d   : -d;
-          //des_n = (ffy(x,y,z)>0) ? -a  : a;
-          //Nuevo cálculo basado en el código de Agustín
-          double fun = (A-B) / sqrt(1+b*b);
-          gx_n = b * fun;
-          gy_n = fun;
-          des_n = -a;
-          if (ffy(x,y,z)<0) cu_n = -cu_n;
-          
-          //Set the calculated values on the borderPixel object
-          pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu_n, x, y);
-          //Add edge pixel to the vector
-          borderPixelVector.push_back(pixel);
-          
-//          UpdateImages(input, C.get(), I.get(), x, y, z, YMAX, borderPixelVector,
-//                       linear_case, threshold);
-          //UpdateImages(C.get(), I.get(), x, y, z, YMAX, a, b, c, A, B);
-//          cout << "llamo updateimages" << endl;
-          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, YMAX, gx_n, gy_n, des_n, 
-                       cu_n, A, B, linear_case, m);
-//          cout << "vuelvo de updateimages" << endl;
-        }
-        else
-        {//cout << "entro en XMAX" << endl;
-          //Horizontal window
-          u = vpos;
-          v = upos;
-          //The partial must be maximum in the row
-          partial = fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z));
-          if (partial < threshold) continue;
-          if (x>2) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
-          if (x>1) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
-          if (x<input->DimX()-2) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-          if (x<input->DimX()-3) if (fabs(FF(x+u[8],y+v[8],z) - FF(x+u[9],y+v[9],z)) > partial) continue;
-
-          m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
-          
-          S1 = S2 = S3 = 0.0;
-          
-          //Tratamiento de los límites izquierdo y derecho
-          if (x<4)
-          {
-//            cout << "ini x<4. x = " << x << " y = " << y << endl;
-            B = FF(0,y-m,z);
-            A = ((double) FF(x+4,y,z)+FF(x+4,y+m,z)+FF(x+3,y+m,z)) / 3.0;
-            for (int k=-3+m; k<=3+m; k++) S1 += (x+k>=0)? FF(x+k,y-1,z) : B;
-            for (int k=-3;   k<=3;   k++) S2 += (x+k>=0)? FF(x+k,y,z)   : B;
-            for (int k=-3-m; k<=3-m; k++) S3 += (x+k>=0)? FF(x+k,y+1,z) : B;
-//            cout << "fin x<4" << endl;
-          }
-          else if (x>input->DimX()-5)
-          {
-//            cout << "ini x>nx-5. x = " << x << " y = " << y  << endl;
-            B = ((double) FF(x-3,y-m,z)+FF(x-4,y-m,z)+FF(x-4,y,z)) / 3.0;
-            A = FF(input->DimX()-1,y+m,z);
-            for (int k=-3+m; k<=3+m; k++) S1 += (x+k<input->DimX())? FF(x+k,y-1,z) : A;
-            for (int k=-3;   k<=3;   k++) S2 += (x+k<input->DimX())? FF(x+k,y,z)   : A;
-            for (int k=-3-m; k<=3-m; k++) S3 += (x+k<input->DimX())? FF(x+k,y+1,z) : A;
-//            cout << "fin x>nx-5" << endl;
-          }
-          else
-          {
-            B = ((double) FF(x-3,y-m,z) + FF(x-4,y-m,z) + FF(x-4,y,z)) / 3.0;
-            A = ((double) FF(x+4,y,z) + FF(x+4,y+m,z) + FF(x+3,y+m,z)) / 3.0;
-            for (int t=-3; t<=3; t++) 
-            {
-              S1 += FF(x+u[19+t],y+v[19+t],z);
-              S2 += FF(x+u[26+t],y+v[26+t],z);
-              S3 += FF(x+u[33+t],y+v[33+t],z);
-            }
-          }
-          
-          if (fabs(A-B)<threshold) continue;
-
-          //Calculate the coefficients of the parable
-          a = (2*S2 - 7*(A+B)) / (2*(A-B));
-          b = 1.0 + (S3-S1) / (2*(A-B));
-          c = (linear_case) ? 0 : (S3+S1-2*S2) / (2*(A-B)); //In 1st order, c=0
-          a -= f * c;
-
-          //Calculate curvature
-          cu_n  = sqrt (1+b*b);
-          cu_n *= cu_n * cu_n;
-          cu_n  = 2*c / cu_n;
-          abscu = fabs(cu_n);
-          
-          //Calculate gradient and displacement
-          d = (A-B) / sqrt(1+b*b);
-          
-          //gx_n  = (ffx(x,y,z)>0) ? d   : -d;
-          //gy_n  = (ffy(x,y,z)>0) ? b*d : -b*d; 
-          //des_n = (ffx(x,y,z)>0) ? -a  : a;
-          //Nuevo cálculo basado en el código de Agustín
-          double fun = (A-B) / sqrt(1+b*b);
-          gx_n = fun;
-          gy_n = b * fun;
-          des_n = -a;
-          if (ffx(x,y,z)<0) cu_n = -cu_n;
-                    
-          //Set the calculated values on the borderPixel object
-          pixel.setBorderPixelValues(A, B, XMAX, a, b, c, cu_n, x, y);
-          //Add edge pixel to the vector
-          borderPixelVector.push_back(pixel);
-          
-//          UpdateImages(input, C.get(), I.get(), x, y, z, XMAX, borderPixelVector,
-//                       linear_case, threshold);
-          //UpdateImages(C.get(), I.get(), x, y, z, XMAX, a, b, c, A, B);
-          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, XMAX, gx_n, gy_n, des_n, 
-                       cu_n, A, B, linear_case, m);
-        }
-      }
-    }
-    //*input = *(G.get());
-    //Con las imágenes resultantes, se rellena la nueva imagen de entrada
-    for (int y = 0; y < G->DimY(); y++)
-    {
-      for (int x = 0; x < G->DimX(); x++)
-      {
-        if ((*C)(x,y,z) > 0)
-        {
-          input->BufferPos(x,y,z);
-          input->FixeValeur(((*I)(x,y,z))/((*C)(x,y,z)));
-        }
-      }
-    }
-//    cout << "he copiado el resultado" << endl;
-  }
-}*/
-
-
-//***********VENTANA FLOTANTEEEEE!!!!!!!!!!!!!***********
-
-
+/*This function update the intensities and counters images.*/
 void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int z, 
                   unsigned char edgeCase, double gx, double gy, double des, 
                   double cu, double A, double B, int linear_case, int m,
@@ -2374,12 +1685,13 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
   double win[45];
   double s;
   
-  //Tratamiento de los márgenes
+  //Margins treatment
   if (edgeCase == YMAX) 
   {
+    //Top and bottom cases
     if (y<4 || y>C->DimY()-5) 
     {
-      //Borde por arriba, estimamos B
+      //Top edge, we estimate B
       if (y<4) 
       {
         B = 0;
@@ -2396,7 +1708,7 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
         
         B /= s;
       }
-      //Borde por debajo, estimamos A
+      //Bottom edge, we estimate A
       if (y>C->DimY()-5) 
       {
         A = 0;
@@ -2413,7 +1725,7 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
        
         A /= s;
       }
-      //Generar la ventanita sintética
+      //Generate the synthetic window
       //Left
       for(int k = l1; k<=l2; k++)
       {
@@ -2468,9 +1780,10 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
   }
   else 
   {
+    //Left and right cases
     if (x<4 || x>C->DimX()-5) 
     {
-      //Margen de la izquierda, estimamos B
+      //Left edge, we estimate B
       if (x<4) 
       {
         B = 0;
@@ -2483,7 +1796,7 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
           B += (*input)(x+k,y+1,z);
         B /= s;
       }
-      //Margen de la derecha, estimamos A
+      //Rightn edge, we estimate A
       if (x>C->DimX()-5) 
       {
         A = 0;
@@ -2496,7 +1809,7 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
           A += (*input)(x+k,y+1,z);
         A /= s;
       }
-      //Generar la ventanita sintética
+      //Generate the synthetic window
       //Up
       for(int k = l1; k<=l2; k++)
       {
@@ -2555,14 +1868,13 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
     SWAP_DOUBLE(A,B);
   }
   
-  //Se calculan los valores de la ventanita sintética
+  //Compute the synthetic window values
   if (linear_case)
   {
     ComputeWindowColor(edgeCase, gx, gy, des, A, B, win);
   }
   else 
   {
-    //9 porque la ventana que se está usando es de 9x5 (a lo mejor cambio la función)
     ComputeCurveWindowColor(edgeCase, gx, gy, des, -cu, A, B, win, 9);
   }
   
@@ -2628,12 +1940,11 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
 }
 
 
-//Versión con ventana flotante y bordes muy cercanos
+//Version with floating window and very close edges
 void SubPixel2D::SubpixelDenoising(int niter)
 {
   int margin = 1;
   double A, B;
-  //Crear imagen de contadores y de intensidades e inicializarlas a cero
   //Counters image
   InrImage::ptr C = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
                                                input->DimZ(), WT_DOUBLE,
@@ -2675,27 +1986,27 @@ void SubPixel2D::SubpixelDenoising(int niter)
   //borderPixel object for the pixels of the edge
   borderPixel pixel;
   
-  //Apaño por ahora a ver si va lo de las ventanitas
+  //Limits for computing synthetic images
   Lims[1][0] = Lims[2][0] = Lims[3][0] = -4;
   Lims[1][1] = Lims[2][1] = Lims[3][1] = 4;
   InrImage input_copy(WT_DOUBLE,"input_copy.inr.gz",input);
-  //input_copy = *input;
+  //Begins the iterative method
   for(int index=0; index<niter; index++)
   {
+    //Initialize to zero the counters, intensities and averaged image
     C->InitZero();
     I->InitZero();
     G->InitZero();
+    //Make a copy of the input image
     input_copy = *input;
-    //1º Se promedia la imagen de entrada y se deja en G
-    Promedio3x3(input, G.get(), A00, A01, A11);
-    //input_copy = *input;
-    //Para que funcionen las macros de parciales tengo que jincar G como input
-    //setInput(G.get());
-    //copyImage(input, G.get(), 0);
+    //1st we average the input image
+    Average3x3(input, G.get(), A00, A01, A11);
+    //And set it as the input image for compute the partial derivatives
     *input = *(G.get());
-
+    //If we are in a intermediate iteration, we must clear the border pixel vector
     borderPixelVector.clear();
-    //Para todos los pixels de G
+    
+    //For all pixels inside G
     for(int y = margin; y < G->DimY()-margin; y++)
     {
       for(int x = margin; x < G->DimX()-margin; x++)
@@ -2709,14 +2020,12 @@ void SubPixel2D::SubpixelDenoising(int niter)
           u = upos;
           v = vpos;
           partial = fabs(pary);
-//          cout << "voy a mirar si es la más grande en la columna" << endl;
           //The partial must be maximum in the column or row
           if (partial < threshold) continue;
           if (y>2) if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
           if (y>1) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
           if (y<input->DimY()-2) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
           if (y<input->DimY()-3) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-//          cout << "miré si es la más grande en la columna" << endl;
           m = (parx*pary >= 0) ? 1 : -1;
           p = (m+1) / 2;
           
@@ -2794,12 +2103,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
           //If the intensity jump is less than the threshold, continue
           if (fabs(A-B) < threshold) continue;
           
-//          cout << "comienza el cálculo de bordes cercanos en YMAX" << endl;
-          //**********************************************************************
-          
-          //PARTE NUEVA DE LOS BORDES CERCANOS (CASOS GROSOR 2 Y 3 PXLS.)
-          
-          //Ahora hay que mirar si hay un segundo borde muy cercano (caso 2 y 3 px)
+          //We search if there are other near edge (2 and 3 pixels case)
           //Initialize the image limits
           ll1 = l1; mm1 = m1; rr1 = r1;
           ll2 = l2; mm2 = m2; rr2 = r2;
@@ -2854,24 +2158,23 @@ void SubPixel2D::SubpixelDenoising(int niter)
             }
           }
           
-          //jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
+          //****jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
           if (fabs(A-B) < 10) continue;
-          //numbordes++; esto estaba en el código de Agustín
           
-          //Si hay un borde cercano crearemos una nueva subimagen a partir de la original
-          //que luego suavizaremos para calcular el contorno
+          //If there are a second near edge, we create a new subimage form the original
+          //and averaged it after for computing the edge
           if (bor2d || bor2u)
           {
             int mini, minj, maxi, maxj;
-            //Mi nueva imagencita sintética 11x5
+            //My new subimage (11x5, because it's YMAX case)
             InrImage* fprime = new InrImage(5,11,1,WT_DOUBLE,"fprime.inr.gz");
-            //Cerca de los márgenes la subimagen es un poco particular
+            //Near of the margins, the subimage is a little different
             minj = (y>4) ? -5 : -y;
             maxj = (y<input->DimY()-5) ? 5 : input->DimY()-1-y;
             if (x==1)
             {
               mini = -1;
-              for(int j=minj; j<=maxj; j++) //Primera columna de la imagen
+              for(int j=minj; j<=maxj; j++) //1st column of the image
               {
                 fprime->BufferPos(0,j+5,z);
                 fprime->FixeValeur(2*input_copy(0,y+j,z) 
@@ -2883,7 +2186,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
             if (x==input->DimX()-2)
             {
               maxi = 1;
-              for (int j=minj; j<=maxj; j++) //Última columna de la imagen
+              for (int j=minj; j<=maxj; j++) //Last column of the image
               {
                 fprime->BufferPos(4,j+5,z);
                 fprime->FixeValeur(2*input_copy(input_copy.DimX()-1,y+j,z)
@@ -2908,14 +2211,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
                                    -input_copy(x+i,input_copy.DimY()-2,z));
               }
 
-            //El pseudocódigo dice:
-            //Si contorno superior o contorno inferior:
-            //crear una imagen F' centrada en (i,j) copiando los píxeles de F
-            //mi pixel i,j de la imagen grande es el 5,2 de la imagen 11x5
-            //Center of the 11x5 image
-            //int fprimex=2;
-            //int fprimey=5;
-            //creamos la subimagen
+            //We fill the synthetic image with the original values of the input
             for(int indj = minj; indj<=maxj; indj++)
             {
               for(int indi = mini; indi<=maxi; indi++)
@@ -2924,7 +2220,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
                 fprime->FixeValeur(input_copy(x+indi,y+indj,z));
               }
             }
-            //si contorno superior actualizar B en la zona superior de F'
+            //If top edge, update B on F' top
             if (bor2u)
             {
               par0 = ffyu (x-2, y+l1+p,z);
@@ -2958,7 +2254,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
               }
               ll1=-3+m; mm1=-3; rr1=-3-m;
             }
-            //si contorno inferior actualizar A en la zona inferior de F'
+            //If lower edge, update A in F' bottom
             if (bor2d)
             {
               par0 = ffyd (x-2, y+l2+p-1,z);
@@ -2992,10 +2288,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
               }
               ll2=3+m;  mm2=3;  rr2=3-m;
             }
-            //suavizar F' para obtener G'
-            //esto sería llamar a Promedio3x3 pero sólo para esta imagencita chica
-            //o hacerlo aquí directamente como Agustín:
-            //actualizo la posición del centro de la imagen chica
+            //Average F' obtaining G'
+            //Central position of the subimage (2,5)
             int fprimex = 2;
             int fprimey = 5;
             for(int indj = -4; indj<=4; indj++)
@@ -3015,8 +2309,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
                 fprime->FixeValeur(suma/9);
               }
             }
-            //Calcular parábola P según el Lema 6.1 a partir de la imagen G'
-            //esto es aplicar el método... creo (solo tengo que hacer las sumitas)
+            //With the averaged image, we compute the sums of the columns with the 
+            //subimage
             for (SL=0, k=ll1; k<=ll2; k++) 
               SL += (*fprime)(fprimex-1,fprimey+k,z);
             for (SM=0, k=mm1; k<=mm2; k++) 
@@ -3025,11 +2319,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
               SR += (*fprime)(fprimex+1,fprimey+k,z);
             delete(fprime);
           }
-          else //En caso contrario se calculan las sumas como siempre
-          {
-            //**********************************************************************
-            
-            
+          else //Else, we compute the sums of the columns with the big image
+          {            
             //Calculate the sums of the columns
             for (SL=0, k=l1; k<=l2; k++) 
               SL += FF(x-1,y+k,z);
@@ -3039,7 +2330,6 @@ void SubPixel2D::SubpixelDenoising(int niter)
               SR += FF(x+1,y+k,z);
           }
           
-//          cout << "termina el cálculo de bordes cercanos en YMAX" << endl;
           //Calculate the coefficients of the curve
           f = 2 * (A-B);
           a = (2*SM - (1+2*mm2)*A - (1-2*mm1)*B) / f;
@@ -3064,25 +2354,15 @@ void SubPixel2D::SubpixelDenoising(int niter)
               cu = -cu;
           }
           
-          //Nuevo cálculo basado en el código de Agustín
-//          double fun = (A-B) / sqrt(1+b*b);
-//          gx_n = b * fun;
-//          gy_n = fun;
-//          des_n = -a;
-//          if (ffy(x,y,z)<0) cu_n = -cu_n;
           
           //Set the calculated values on the borderPixel object
           pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu, x, y);
           //Add edge pixel to the vector
           borderPixelVector.push_back(pixel);
           
-//          cout << "voy a llamar a updateimages en YMAX" << endl;
           //Update the counters and intensities images
-//          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, YMAX, gx, gy, des, 
-//                       cu, A, B, linear_case, m, ll1, ll2, mm1, mm2, rr1, rr2);
-            UpdateImages(&input_copy, C.get(), I.get(), x, y, z, YMAX, gx, gy, des, 
-               cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
-//          cout << "vuelvo de updateimages en YMAX" << endl;
+          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, YMAX, gx, gy, des, 
+                       cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
         }
         else
         {
@@ -3090,14 +2370,14 @@ void SubPixel2D::SubpixelDenoising(int niter)
           u = vpos;
           v = upos;
           partial = fabs(parx);
-//          cout << "voy a mirar si es la más grande en la fila" << endl;
+
           //The partial must be maximum in the column or row
           if (partial < threshold) continue;
           if (x>2) if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
           if (x>1) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
           if (x<input->DimX()-2) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
           if (x<input->DimX()-3) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-//          cout << "ya miré si es la más grande en la fila" << endl;
+
           m = (parx*pary >= 0) ? 1 : -1;
           p = (m+1) / 2;
           
@@ -3173,10 +2453,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
           
           //If the intensity jump is less than the threshold, continue
           if (fabs(A-B) < threshold) continue;
-//          cout << "comienza el cálculo de bordes cercanos en XMAX" << endl;
-          //**********************************************************************
-          //PARTE NUEVA PARA CONTORNOS MUY CERCANOS (2 Y 3 PXLS) CASO VENTANA HORIZONTAL
           
+          //We search if there are other near edge (2 and 3 pixels case)
           //Initialize the image limits
           ll1 = l1; mm1 = m1; rr1 = r1;
           ll2 = l2; mm2 = m2; rr2 = r2;
@@ -3231,18 +2509,17 @@ void SubPixel2D::SubpixelDenoising(int niter)
             }
           }
           
-          //jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
+          //****jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
           if (fabs(A-B) < 10) continue;
-          //numbordes++; esto estaba en el código de Agustín
           
-          //Si hay un borde cercano crearemos una nueva subimagen a partir de la original
-          //que luego suavizaremos para calcular el contorno
+          //If there are a second near edge, we create a new subimage form the original
+          //and averaged it after for computing the edge
           if (bor2d || bor2u)
           {
             int mini, minj, maxi, maxj;
-            //Mi nueva imagencita sintética 5x11
+            //My new subimage (5x11, because it's XMAX case)
             InrImage* fprime = new InrImage(11,5,1,WT_DOUBLE,"fprime.inr.gz");
-            //Cerca de los márgenes la subimagen es un poco particular
+            //Near of the margin the subimage is a little different
             minj = (x>4) ? -5 : -x;
             maxj = (x<input->DimX()-5) ? 5 : input->DimX()-1-x;
             if (y==1)
@@ -3273,7 +2550,6 @@ void SubPixel2D::SubpixelDenoising(int niter)
             if (minj>-5)
               for (int i=mini; i<=maxi; i++)
               {
-                //fprime->BufferPos(i+2,minj+4,z);
                 fprime->BufferPos(minj+4, i+2, z);
                 fprime->FixeValeur(2*input_copy(0,y+i,z)
                                    - input_copy(1,y+i,z));
@@ -3286,14 +2562,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
                                    - input_copy(input_copy.DimX()-2,y+i,z));
               }
             
-            //El pseudocódigo dice:
-            //Si contorno superior o contorno inferior:
-            //crear una imagen F' centrada en (i,j) copiando los píxeles de F
-            //mi pixel i,j de la imagen grande es el 2,5 de la imagen 5x11
-            //Center of the 5x11 image
-            //int fprimex=5;
-            //int fprimey=2;
-            //Creamos la subimagen
+            //We fill the synthetic image with the original values of the input
             for(int indj = minj; indj<=maxj; indj++)
             {
               for(int indi = mini; indi<=maxi; indi++)
@@ -3302,7 +2571,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
                 fprime->FixeValeur(input_copy(x+indj,y+indi,z));
               }
             }
-            //si contorno superior actualizar B en la zona superior de F'
+            //If top edge, update B on F' top
             if (bor2u)
             {
               par0 = ffxl (x+l1+p, y-2,z);
@@ -3336,7 +2605,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
               }
               ll1=-3+m; mm1=-3; rr1=-3-m;
             }
-            //si contorno inferior actualizar A en la zona inferior de F'
+            //If lower edge, update A in F' bottom
             if (bor2d)
             {
               par0 = ffxr (x+l2+p-1, y-2,z);
@@ -3370,10 +2639,9 @@ void SubPixel2D::SubpixelDenoising(int niter)
               }
               ll2=3+m;  mm2=3;  rr2=3-m;
             }
-            //suavizar F' para obtener G'
-            //esto sería llamar a Promedio3x3 pero sólo para esta imagencita chica
-            //o hacerlo aquí directamente como Agustín:
-            //actualizo la posición del centro de la imagen chica
+            
+            //Average F' obtaining G'
+            //Center position of the subimage (5,2)
             int fprimex = 5;
             int fprimey = 2;
             for(int indj = -1; indj<=1; indj++)
@@ -3393,8 +2661,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
                 fprime->FixeValeur(suma/9);
               }
             }
-            //Calcular parábola P según el Lema 6.1 a partir de la imagen G'
-            //esto es aplicar el método... creo (solo tengo que hacer las sumitas)
+            //With the averaged image, we compute the sums of the rows with the 
+            //subimage
             for (SL=0, k=ll1; k<=ll2; k++) 
               SL += (*fprime)(fprimex+k,fprimey-1,z);
             for (SM=0, k=mm1; k<=mm2; k++) 
@@ -3403,10 +2671,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
               SR += (*fprime)(fprimex+k,fprimey+1,z);
             delete(fprime);
           }
-          else //En caso contrario se calculan las sumas como siempre
-          {        
-            //**********************************************************************
-            
+          else //Else, we compute the sums of the rows with the big image
+          {                    
             //Calculate sums of the rows 
             for (SL=0, k=l1; k<=l2; k++) 
               SL += FF(x+k,y-1,z);
@@ -3415,7 +2681,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
             for (SR=0, k=r1; k<=r2; k++) 
               SR += FF(x+k,y+1,z);
           }
-//          cout << "termina el cálculo de bordes cercanos en XMAX" << endl;
+
           //Calculate the coefficients of the curve
           f = 2 * (A-B);
           a = (2*SM - (1+2*mm2)*A - (1-2*mm1)*B) / f;
@@ -3437,30 +2703,19 @@ void SubPixel2D::SubpixelDenoising(int niter)
             if (parx<0) 
               cu = -cu;
           }
-          
-          //Nuevo cálculo basado en el código de Agustín
-//          double fun = (A-B) / sqrt(1+b*b);
-//          gx_n = fun;
-//          gy_n = b * fun;
-//          des_n = -a;
-//          if (ffx(x,y,z)<0) cu_n = -cu_n;
                     
           //Set the calculated values on the borderPixel object
           pixel.setBorderPixelValues(A, B, XMAX, a, b, c, cu, x, y);
           //Add edge pixel to the vector
           borderPixelVector.push_back(pixel);
           
-//          cout << "voy a llamar a updateimages en XMAX" << endl;
-          //Update the counters and intensities images
-//          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, XMAX, gx, gy, des, 
-//                       cu, A, B, linear_case, m, ll1, ll2, mm1, mm2, rr1, rr2);
-            UpdateImages(&input_copy, C.get(), I.get(), x, y, z, XMAX, gx, gy, des, 
-               cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
-//          cout << "vuelvo de llamar a updateimages en XMAX" << endl;
+          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, XMAX, gx, gy, des, 
+                       cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
         }
       }
     }
     //Con las imágenes resultantes, se rellena la nueva imagen de entrada
+    //With the result, we fill the input image for the next iteration
     for (int y = 0; y < G->DimY(); y++)
     {
       for (int x = 0; x < G->DimX(); x++)
@@ -3468,6 +2723,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
         if ((*C)(x,y,z) > 0)
         {
           input->BufferPos(x,y,z);
+          //The value is the quotien of the intensity and the counter
           input->FixeValeur(((*I)(x,y,z))/((*C)(x,y,z)));
         }
       }

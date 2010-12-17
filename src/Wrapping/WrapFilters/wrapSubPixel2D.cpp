@@ -138,14 +138,6 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
 {
   SubPixel2D::ptr sp(this->_objectptr->GetObj());
   
-  InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE, 
-                                                    "promedio.ami.gz",
-                                                    sp->getInput()));
-  
-  sp->Promedio3x3(sp->getInput(), output.get(), (double)1/9, (double)1/9, (double)1/9);
-  
-  sp->setInput(output.get());
-  
   sp->SuperGradienteGaussianoCurvo();
   
   //Create the AMIObject with the result
@@ -175,6 +167,13 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
   //Fill InrImages
   sp->fillImages(AIntensity, BIntensity, border, a, b, c, curvature, 
                  posx, posy);
+  
+  //Copy the result of averaged in a smart pointer
+  InrImage* aux = sp->getDenoised();
+  InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE,
+                                                    "averaged.ami.gz",aux));
+  *(output.get()) = *aux;
+  
   //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("denoised", output,
                                             amiobject->GetContext());
@@ -216,21 +215,13 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_DenoisingGus
 {
   SubPixel2D::ptr sp(this->_objectptr->GetObj());
   
-  InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE, 
-                                                    "promedio.ami.gz",
-                                                    sp->getInput()));
-  
-  sp->Promedio3x3(sp->getInput(), output.get(), (double)1/9, (double)1/9, (double)1/9);
-  
-  //sp->setInput(output.get());
-  
   sp->DenoisingGus();
   
   //Create the AMIObject with the result
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("GaussianSub-pixel2D");
   int size = sp->getBorderPixelVector().size();
-  //InrImages for params
+  //InrImages for params  
   InrImage::ptr AIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
                                                         "aintensity.inr.gz"));
   InrImage::ptr BIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
@@ -253,6 +244,13 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_DenoisingGus
   //Fill InrImages
   sp->fillImages(AIntensity, BIntensity, border, a, b, c, curvature, 
                  posx, posy);
+  
+  //Copy the result of averaged in a smart pointer
+  InrImage* aux = sp->getDenoised();
+  InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE,
+                                                    "averaged.ami.gz",aux));
+  *(output.get()) = *aux;
+  
   //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("denoised", output,
                                             amiobject->GetContext());
@@ -297,18 +295,8 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SubpixelDenoising
   int niter;
   
   if (!get_val_param<int>(niter, p, n)) ClassHelpAndReturn;
-  
-  //sp->Promedio3x3(output.get(), (double)1/9, (double)1/9, (double)1/9);
-  
-  //sp->setInput(output.get());
-  
-  //sp->DenoisingGus();
-  
+
   sp->SubpixelDenoising(niter);
-  
-//  InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE, 
-//                                                    "output.ami.gz",
-//                                                    sp->getInput()));
   
   //Create the AMIObject with the result
   AMIObject::ptr amiobject(new AMIObject);
@@ -338,18 +326,14 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SubpixelDenoising
   sp->fillImages(AIntensity, BIntensity, border, a, b, c, curvature, 
                  posx, posy);
 
-  //Copy the result of restoration
+  //Copy the result of restoration in a smart pointer
   InrImage* aux = sp->getInput();
-  InrImage::ptr output = InrImage::ptr(new InrImage(aux->DimX(),aux->DimY(),
-                                                    aux->DimZ(),WT_DOUBLE,""));
-  for(int x=0;x<aux->DimX();x++)
-    for(int y=0;y<aux->DimY();y++)
-    {
-      output->BufferPos(x,y,0);
-      output->FixeValeur((*aux)(x,y,0));
-    }
+  InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE,
+                                                    "restored.ami.gz",aux));
+  *(output.get()) = *aux;
 
-    //Add to amiobject
+
+  //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("restored", output,
                                             amiobject->GetContext());
   amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
