@@ -251,12 +251,14 @@ if __name__ == '__main__':
     #parser.parse(inputfile)
 
     # Create the handler
-    ff = findfiles.FindFiles()
-    parser.setContentHandler(ff)
-    # Parse the input
-    inputfile.seek(0)
-    parser.parse(inputfile)
-    utils.WarningMessage( "Number of files found : {0}".format(ff.number_of_files))
+    #ff = findfiles.FindFiles()
+    #parser.setContentHandler(ff)
+    ## Parse the input
+    #inputfile.seek(0)
+    #parser.parse(inputfile)
+    
+    # now files are parsed in ft
+    utils.WarningMessage( "Number of files found : {0}".format(ft.number_of_files))
     
     #for id in config.types.keys():
     #  print id,"\t",config.types[id].GetFullString()
