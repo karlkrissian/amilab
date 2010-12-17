@@ -79,6 +79,11 @@ class FindTypesAndVariables(handler.ContentHandler):
     if bases != None:
       self.argtype.SetBases(bases)
     
+    # store abstract
+    abstract = attrs.get('abstract', None)
+    if abstract == "1":
+      self.argtype.SetAbstract(abstract)
+    
   def endElement(self, name):
     if (self.inenum==True) and (name =="Enumeration"):
       self.inenum=False

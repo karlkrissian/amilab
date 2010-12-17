@@ -5,6 +5,10 @@ variables  = dict()
 enumvalues = dict()
 files      = dict()
 
+classes_blacklist=[
+  'wxHtmlWindowMouseHelper', # pb: no public constructor, destructor: can't be used with boost smart pointers
+  ]
+
 # ignore specific members
 members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxString::Strip', 'wxString::CompareTo',\

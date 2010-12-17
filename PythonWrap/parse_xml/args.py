@@ -35,6 +35,9 @@ arg_parser.add_argument('-r',       action='store_true',    \
 arg_parser.add_argument('--ancestors',  nargs='*',  default=[],     \
   help='List all ancestors of the given classes')
 
+arg_parser.add_argument('--ancestors-file',   default="ancestors.txt",     \
+  help='File to write the list of ancestors.')
+
 arg_parser.add_argument('--overwrite',action='store_true',  \
   help='Overwrite existing wrapped classes')
 
@@ -69,6 +72,6 @@ val = arg_parser.parse_args()
 # works??
 #from args import *
 
-print "recursive:",val.r
-print "overwrite:",val.overwrite
-print "library name:",val.libname
+#print "recursive:",val.r
+#print "overwrite:",val.overwrite
+#print "library name:",val.libname

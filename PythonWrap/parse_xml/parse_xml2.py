@@ -198,15 +198,25 @@ if __name__ == '__main__':
     inputfile.seek(0)
     parser.parse(inputfile)
 
-    print "Number of classes matching the filter : {0}".format(ft.number_of_libclasses)
+    #print "Number of classes matching the filter : {0}".format(ft.number_of_libclasses)
 
     if args.val.ancestors != []:
+
+      # 1 create dictionnary of classes to speed-up ...
+      print "Creating classes dict"
+      classes_dict = dict()
+      for f in config.types.keys():
+        if config.types[f].GetType()=="Class":
+          classes_dict[f] = config.types[f].GetFullString()
+      
+      print "Creating ancestors"
+      # 2. create list of classes
       ancestors = args.val.ancestors[:]
       for b in args.val.ancestors:
-        print "b=",b
+        #print "b=",b
         # find the id of the class
-        for f in config.types.keys():
-          if config.types[f].GetFullString() == b:
+        for f in classes_dict.keys():
+          if classes_dict[f] == b:
             # recursively add the ancestors to the list
             bases=config.types[f].GetBases()
             f_anc=[]
@@ -215,15 +225,23 @@ if __name__ == '__main__':
             newlist=[]
             while f_anc != []:
               anc_id = f_anc.pop()
-              if config.types[anc_id].GetString() not in ancestors:
-                ancestors.append(config.types[anc_id].GetString())
-                newlist.append(config.types[anc_id].GetString())
-                bases=config.types[anc_id].GetBases()
-                if bases!=None:
-                  for newanc in bases.split():
-                    f_anc.append(newanc)
-            print "New ancestors of {0} are {1}".format(b,newlist)
-      print "All ancestors are   {0} ".format(ancestors)
+              if anc_id in classes_dict.keys():
+                if classes_dict[anc_id] not in ancestors and  classes_dict[anc_id] not in config.classes_blacklist:
+                  ancestors.append(classes_dict[anc_id])
+                  newlist.append(classes_dict[anc_id])
+                  bases=config.types[anc_id].GetBases()
+                  if bases!=None:
+                    for newanc in bases.split():
+                      f_anc.append(newanc)
+            #print "New ancestors of {0} are {1}".format(b,newlist)
+      #print "All ancestors are   {0} ".format(ancestors)
+      # write ancestors file
+      print args.val.ancestors_file
+      f = open (args.val.ancestors_file, "w")
+      # first sort
+      ancestors.sort()
+      for a in ancestors:
+        f.write(a+"\n")
       sys.exit(0)
 
     # Parse the input again, TODO: avoid 2 parses here ...
@@ -236,7 +254,7 @@ if __name__ == '__main__':
     # Parse the input
     inputfile.seek(0)
     parser.parse(inputfile)
-    print "Number of files found : {0}".format(ff.number_of_files)
+    utils.WarningMessage( "Number of files found : {0}".format(ff.number_of_files))
     
     #for id in config.types.keys():
     #  print id,"\t",config.types[id].GetFullString()
@@ -264,9 +282,9 @@ if __name__ == '__main__':
     n=0
     nmax=args.val.max
     while (len(config.needed_classes)>0) and (n<nmax):
-      print "\n\n needed classes:", config.needed_classes, "\n\n"
+      #print "\n\n needed classes:", config.needed_classes, "\n\n"
       cl = config.needed_classes.pop()
-      print "Class: {0} \t usedname: {1}".format(cl,parse_class.ClassUsedName(cl))
+      #print "Class: {0} \t usedname: {1}".format(cl,parse_class.ClassUsedName(cl))
       config.include_list = []
       config.declare_list = []
       wrap_class.WrapClass(cl,include_file,inputfile)
@@ -281,12 +299,12 @@ if __name__ == '__main__':
                 if c not in config.available_classes: number_of_newclasses = number_of_newclasses + 1
                 config.needed_classes.append(c)
         config.new_needed_classes=[]
-      print "*** "
-      print "*** Wrapped Class Number: ",n
-      print "*** "
+      #print "*** "
+      utils.WarningMessage( "*** Wrapped Class Number: {0}".format(n))
+      #print "*** "
       n = n+1
 
-    print "new classes:",number_of_newclasses      
+    utils.WarningMessage( "new classes: {0}".format(number_of_newclasses))
     if number_of_newclasses > 0:
       if not args.val.update:
         # Re-wrap the wrapped classes to be sure to include all the members
@@ -295,7 +313,7 @@ if __name__ == '__main__':
           config.declare_list = []
           wrap_class.WrapClass(cl,include_file,inputfile)
 
-    print "Wrapped classes: ", config.wrapped_classes
+    utils.WarningMessage( "Wrapped classes: {0}".format(config.wrapped_classes))
     
     # now create the library context
     if args.val.libname!=None and args.val.addwrap:

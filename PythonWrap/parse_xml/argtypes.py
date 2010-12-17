@@ -14,6 +14,7 @@ class ArgTypeBase:
     self._id=0
     self._context=None
     self._bases=None
+    self._abstract=None
 
   def SetType(self,t):
     self._type=t
@@ -29,6 +30,12 @@ class ArgTypeBase:
 
   def GetBases(self):
     return self._bases
+    
+  def SetAbstract(self,_b):
+    self._abstract = _b
+
+  def GetAbstract(self):
+    return self._abstract
     
   def SetId(self,_id):
     self._id = _id
@@ -204,6 +211,11 @@ class CvQualifiedTypeInfo(ArgTypeBase):
       typename=self._reftypeid
     return typename
 
+  def GetAbstract(self):
+    if self._reftypeid in config.types.keys():
+      return config.types[self._reftypeid].GetAbstract()
+    return None
+
   def GetMainTypeId(self):
     if self._reftypeid in config.types.keys():
       return config.types[self._reftypeid].GetMainTypeId()
@@ -232,6 +244,11 @@ class ReferenceTypeInfo(ArgTypeBase):
     else:
       typename=self._reftypeid
     return typename
+
+  def GetAbstract(self):
+    if self._reftypeid in config.types.keys():
+      return config.types[self._reftypeid].GetAbstract()
+    return None
 
   def GetMainTypeId(self):
     if self._reftypeid in config.types.keys():

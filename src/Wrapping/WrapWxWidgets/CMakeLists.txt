@@ -69,19 +69,33 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 #   MESSAGE( "wxWidgets: GCCXML error  = ${GCCXML_error}") 
 #   MESSAGE( "wxWidgets: GCCXML result = ${GCCXML_result}")
 
+  # Generate the classes list
+
   # Read list of classes to wrap
   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt" classes_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+
+  SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated/ancestors.txt")
+  SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
+
+  #MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} -q")
+  EXECUTE_PROCESS(
+    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
+    OUTPUT_VARIABLE ancestors_result
+  )
+  MESSAGE(" ancestors_result = ${ancestors_result} ")
+
+  FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
 
   # Read list of method pointers to wrap
   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/methodpointers.txt" methodpointers_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
 
 
-  SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
-  FOREACH( class ${classes_list}) 
-    MESSAGE("Processing class ${class}")
+  FOREACH( class ${ancestors_list}) 
+    #MESSAGE("Processing class ${class}")
     IF (${GCCXML_result} EQUAL 0)
       # Go for python wrapping
       ADD_CUSTOM_COMMAND(OUTPUT ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${WRAPWX_OUTDIR}/wrap_${class}.h
@@ -91,14 +105,14 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
             --libname wx
             --filter "wx*"
             --classes ${class}
-            --available_classes ${classes_list} ${methodpointers_list}
+            --available_classes ${ancestors_list} ${methodpointers_list}
             --outputdir "${WRAPWX_OUTDIR}"
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             -q
           DEPENDS ${XML_OUTPUT} ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
         )
     ENDIF(${GCCXML_result} EQUAL 0)
-  ENDFOREACH( class ${classes_list}) 
+  ENDFOREACH( class ${ancestors_list}) 
 
 
   MESSAGE("Processing method pointers ${methodpointers_list}")
@@ -115,7 +129,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
           --libname wx
           --filter "wx*"
           --methodpointers ${methodpointers_list}
-          --available_classes ${classes_list} ${methodpointers_list}
+          --available_classes ${ancestors_list} ${methodpointers_list}
           --outputdir "${WRAPWX_OUTDIR}"
           --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
           --addwrap
@@ -130,13 +144,14 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 #  file(GLOB wx_SRCS  "${AMI_WXWIDGETS_VERSION}/*.cpp")
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 
-FOREACH( class ${classes_list} ${methodpointers_list} ) 
+FOREACH( class ${ancestors_list} ${methodpointers_list} ) 
   SET( wx_HDRS ${WRAPWX_OUTDIR}/wrap_${class}.h ${wx_HDRS})
   SET( wx_SRCS ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${wx_SRCS})
-ENDFOREACH( class ${classes_list}) 
+ENDFOREACH( class ${ancestors_list} ${methodpointers_list} ) 
 SET( wx_HDRS ${WRAPWX_OUTDIR}/addwrap_wx.h   ${wx_HDRS})
 SET( wx_SRCS ${WRAPWX_OUTDIR}/addwrap_wx.cpp ${wx_SRCS})
 
+# MESSAGE("${wx_HDRS}")
 
 MESSAGE("\nWrapping wxWidgets...\n")
 MESSAGE( "AMI_USE_PRECOMP_HEADERS = ${AMI_USE_PRECOMP_HEADERS} ")
