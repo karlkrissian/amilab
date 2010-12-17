@@ -222,6 +222,17 @@ BasicVariable::ptr Variables::GetVar(const char* varname)
       return BasicVariable::ptr(*Iter);
     }
   }
+
+  // if variable not found, try with default contexts
+  std::list<Variables::ptr>::iterator Iter2;
+  for (Iter2  = _defaults.begin();
+       Iter2 != _defaults.end()  ; Iter2++ )
+  {
+    // TODO: deal with possible loops !!!
+    BasicVariable::ptr res = (*Iter2)->GetVar(varname);
+    if (res.get()) return res;
+  }
+
   return BasicVariable::ptr();
 }
 

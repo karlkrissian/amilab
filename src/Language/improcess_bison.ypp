@@ -488,7 +488,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_DiscMeanCurvature
 %token T_vtkMedian3D
 
-%token T_NULL
+//%token T_NULL
 
 %token T_RestartTime
 %token T_InitTime
@@ -1412,8 +1412,6 @@ command:
         IdentifierInfo::ptr ident($1);
         // check counter of the value, not of the variable ...
         if (var.get() && (var->HasPointer())  ) {
-          //cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< std::endl;
-          //cout << "use_count() == " <<  var.use_count() << std::endl;
           // only if both reference counters are equal to 1, we can avoid copy the variable
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
             //BasicVariable::ptr ref = var->NewReference();
@@ -1448,18 +1446,28 @@ command:
         boost::shared_array<char> comments( $5);
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         IdentifierInfo::ptr ident($1);
-        if (var->GetPtrCounter()==1) {
-          var->SetComments(comments.get());
-          Vars.AddVar(ident,var);
-        } else
-        {
-          if (var.get()) {
+        if (var.get() && (var->HasPointer())  ) {
+          // only if both reference counters are equal to 1, we can avoid copy the variable
+          if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
+            //BasicVariable::ptr ref = var->NewReference();
+            // need to run on reference to avoid renaming the own variable !!!
+            //Vars.AddVar(ident,ref);
+            var->SetComments(comments.get());
+            Vars.AddVar(ident,var);
+          } else
+          {
             BasicVariable::ptr copy = var->NewCopy();
-            copy->SetComments(comments.get());
-            Vars.AddVar(ident,copy);
-          } else {
-            driver.err_print("identifier = variable, no variable value");
+            if (copy.get()) {
+              copy->SetComments(comments.get());
+              Vars.AddVar(ident,copy);
+            } else {
+              driver.err_print("Copy failed for the variable in rule id = expr_var");
+              YYABORT;
+            }
           }
+        } else {
+          driver.err_print("identifier = expr_var, no variable value");
+          YYABORT;
         }
       }
       |
@@ -1749,6 +1757,33 @@ command:
 
         int_ptr varint (new int((int)$5));
         Vars.AddVar<int>(ident,varint);
+      }
+      |
+      identifier ASSIGN_OP T_DOUBLE T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Creates a variable of type int
+      **/
+        IdentifierInfo::ptr ident($1);
+
+        boost::shared_ptr<double> var (new double((double)$5));
+        Vars.AddVar<double>(ident,var);
+      }
+      |
+      identifier ASSIGN_OP T_DOUBLE T_OP_PAR expr T_CL_PAR T_COMMA expr_string
+      {
+      /**
+        Description: 
+          Creates a variable of type int
+      **/
+        IdentifierInfo::ptr ident($1);
+        boost::shared_array<char> comments( $8);
+
+        boost::shared_ptr<double> vard (new double((double)$5));
+        BasicVariable::ptr var=Vars.AddVar<double>(ident,vard);
+        if (var.get())
+          var->SetComments(comments.get());
       }
       |
       identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR T_COMMA expr_string
@@ -6119,18 +6154,20 @@ float_variable:
       float val=1;
       ADD_VARSTACK_FLOAT(val);
     }
+/*
     | T_FileExists T_OP_PAR expr_string T_CL_PAR
     {
-    /**
+    / **
     Parameters:
       string: input filename
     Description:
       Check for the existence of the given filename
-    **/
+    ** /
       boost::shared_array<char> name( $3);
       float val = wxFileExists(wxString(name.get(),wxConvUTF8));
       ADD_VARSTACK_FLOAT(val);
     }
+*/
     | basic_type T_POINT T_val
     {
       /**
@@ -9324,6 +9361,7 @@ postfix_var:
         } else
         if (var->Type()==type_c_image_function) 
         {
+          // Cast to AMIObject variable
           DYNAMIC_CAST_VARIABLE(C_wrap_imagefunction,var, func);
           InrImage::ptr  im((*func->Pointer())(param.get()));
           if (!im.get()) {
@@ -9332,6 +9370,32 @@ postfix_var:
           }
           Variable<InrImage>::ptr res(new Variable<InrImage>(im));
           driver.var_stack.AddVar(res);
+        } else 
+        if (var->Type()==type_ami_object)
+        {
+          // Check for a constructor inside the context
+          ///    Call a wrapped C++ class member.
+          DYNAMIC_CAST_VARIABLE(AMIObject,var, obj);
+ 
+          // look for the variable
+          BasicVariable::ptr constr;
+          if (obj.get())  {
+            Variables::ptr objcontext = obj->Pointer()->GetContext();
+            //objcontext->display();
+            constr = objcontext->GetVar(var->Name().c_str());
+          }
+    
+          if (constr.get()) {
+            // Call the constructor with the given parameters
+            DYNAMIC_CAST_VARIABLE(WrapClassMember,constr, constr_member);
+            BasicVariable::ptr res =  (constr_member->Pointer())->CallMember(param.get());
+            driver.var_stack.AddVar(res);
+          } else {
+            // error message here
+            driver.yyiperror("failed to process () operator \n");
+            driver.var_stack.AddVar(BasicVariable::ptr());
+          }
+         
         } else
         {
           // error message here
@@ -9643,7 +9707,8 @@ and_var:
   | and_var T_AND equality_var
   {
     GET_CHECK_VARSTACK(var2)
-    driver.err_print("binary operator & between variables not defined at the moment ...\n");
+    GET_CHECK_VARSTACK(var1)
+    driver.var_stack.AddVar((*var1)&var2);
   }
   ;
 
@@ -9656,7 +9721,8 @@ inclusive_or_var:
   | inclusive_or_var T_OR exclusive_or_var
   {
     GET_CHECK_VARSTACK(var2)
-    driver.err_print("binary operator | between variables not defined at the moment ...\n");
+    GET_CHECK_VARSTACK(var1)
+    driver.var_stack.AddVar((*var1)|var2);
   }
   ;
 

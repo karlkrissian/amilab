@@ -1,0 +1,163 @@
+
+
+
+if (!exists(ScriptDisplayClass)) \
+{
+  Class ScriptDisplayClass {
+    #func "Common/LoadIcons"
+    #LoadIcons ::icons
+
+    proc ::Init() \
+    {
+      ::menu_name     = "Generic"
+      ::menu_help     = "Generic Help"
+      ::icon_name     = ""
+      ::in_menu = ""
+      ::in_submenu = ""
+      ::icon_16 = ""
+      ::icon_32 = ""
+      ::script  = "", "Filename of the script to run"
+      ::script_obj = "", "Name of the instance created by the script"
+    }
+
+    proc ::SetDisplayedName(STRING m) {
+      ::menu_name     = m
+    }
+
+    proc ::SetHelp(STRING m) {
+      ::menu_help     = m
+    }
+
+    proc ::SetInMenus(STRING menu, STRING submenu) {
+      ::in_menu       = menu 
+      ::in_submenu    = submenu
+    }
+
+    proc ::SetIcon16(STRING m) {
+      ::icon_16 = m
+    }
+
+    proc ::SetIcon32(STRING m) {
+      ::icon_32 = m
+    }
+
+    proc ::SetScript(STRING m) {
+      ::script = m
+    }
+
+    proc ::SetScriptObjName(STRING m) {
+      ::script_obj = m
+    }
+  
+    proc ::CB_Menu() \
+    {
+      global
+      func ::script
+    }
+
+    # this method as to be overloaded ...
+    proc ::IsActive() \
+    {
+      eval "return=exists(%1%);"%::script_obj
+      printn "IsActive returns %1%" % return
+    }
+
+    proc ::CB_Toolbar() \
+    {
+      active = ::IsActive()
+      printn "IsActive returns %1%" % active
+      if (!active) {
+        global
+        func ::script
+      } else {
+        eval "%1%.CloseAll();"%::script_obj
+      }
+    }
+
+    proc ::LoadBitmap() \
+    {
+      # get bitmap
+      #::icons.LoadIconPNG(::icon_name)
+      ::wxim = wx.wxImage(::icon_16)
+      ::bm = wx.wxBitmap(&::wxim.Rescale(16,16))
+    }
+
+    proc ::Add2Menu() \
+    {
+
+      # get scripts menu
+      mb = ami.MainFrame.GetMenuBar()
+      menu_id = mb.FindMenu(::in_menu)
+      menu = mb.GetMenu(menu_id)
+
+      submenu_id = menu.FindItem(::in_submenu)
+      if (submenu_id==-1) {
+        newsubmenu = wx.wxMenu()
+        menu.AppendSubMenu( &newsubmenu, ::in_submenu);
+        submenu_id = menu.FindItem(::in_submenu)
+      }
+      submenu_menuitem = menu.FindItem(submenu_id,&NULL)
+      if (submenu_menuitem.IsSubMenu()) {
+        submenu = submenu_menuitem.GetSubMenu()
+      } else {
+        submenu = &menu
+      }
+      ::LoadBitmap()
+
+      # create wxMenuItem
+      new_mi_id = 10000*menu_id+100*submenu_id+submenu.GetMenuItemCount()
+      new_mi = wx.wxMenuItem(&submenu,new_mi_id,::menu_name,::menu_help)
+      #, wx.wxITEM_CHECK)
+      new_mi.SetHelp(::menu_help)
+      new_mi.SetBitmap(&::bm)
+
+      # append  
+      submenu.Append(&new_mi)
+
+      # create event
+      ::evh = wx.wxAmiEventHandler(&::CB_Menu)
+      ami.MainFrame.Connect(new_mi_id,wx.wxEVT_COMMAND_MENU_SELECTED,\
+        &::evh.GetEventFunction(),&NULL,&::evh)
+
+    }
+
+    proc ::Add2Toolbar() \
+    {
+      mgr = &ami.MainFrame.GetAuiManager()
+      paneinfo = wx.wxAuiPaneInfo().\
+                    Name("scripts_tb").Caption("Scripts Toolbar"). \
+                    ToolbarPane().Right().\
+                    LeftDockable(true).RightDockable(true)
+      if (!exists(global::scripts_toolbar)) {
+        global::scripts_toolbar = wx.wxAuiToolBar(&ami.MainFrame, wx.wxID_ANY, \
+                    wx.wxPoint(-1,-1), \
+                    wx.wxSize(-1,-1), \
+                    wx.wxAUI_TB_DEFAULT_STYLE |  wx.wxAUI_TB_OVERFLOW | wx.wxAUI_TB_VERTICAL )
+        tb=&global::scripts_toolbar
+        tb.SetToolBitmapSize(wx.wxSize(32,32))
+        mgr.AddPane(&tb, &paneinfo )
+      } else {
+        tb=&global::scripts_toolbar
+      }
+      ::tb_id = 20000+tb.GetToolCount()
+      wxim = wx.wxImage(::icon_32)
+      bm = wx.wxBitmap(&wxim.Rescale(32,32))
+      mgr.DetachPane(&tb)
+      tb.AddTool( ::tb_id, ::menu_name, &bm,::menu_help, wx.wxITEM_CHECK)
+      tb.Realize()
+      mgr.AddPane(&tb, &paneinfo)
+      mgr.Update()
+      # Add Callback
+      ::evh_tb = wx.wxAmiEventHandler(&::CB_Toolbar)
+      # wxEVT_COMMAND_TOOL_CLICKED event (a synonym for wxEVT_COMMAND_MENU_SELECTED)
+      tb.Connect( \
+                  ::tb_id,wx.wxEVT_COMMAND_MENU_SELECTED \
+                  ,&::evh_tb.GetEventFunction(),\
+                  &NULL,&::evh_tb)
+    }
+
+    ::Init()
+  } 
+  # end of ScriptDisplayClass
+}
+# end if

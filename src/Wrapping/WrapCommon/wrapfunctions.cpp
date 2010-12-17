@@ -34,6 +34,23 @@ int get_num_param(ParamList* p)
 }
 
 
+bool get_next_param( BasicVariable::ptr& var, 
+                    ParamList*p, int& num, bool required, bool quiet)
+{
+  if (!p) return false;
+  // if the parameter number is too high, skip it (use default value)
+  if (num>=p->GetNumParam()) return (!required);
+  var =  p->GetParam(num++);
+  if (!var.get()) {
+    if (!quiet)
+      FILE_ERROR(boost::format("Parameter %d is an empty variable") % num);
+    // there a parameter so, even if it is not required, return false here
+    return false;
+  }
+  return true;
+}
+
+
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
  */

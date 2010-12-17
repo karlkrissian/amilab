@@ -11,6 +11,7 @@
 //
 
 #include "DndChoiceTextDropTarget.h"
+#include <iostream>
 
 bool DndChoiceTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
 {

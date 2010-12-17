@@ -27,6 +27,11 @@ ELSE(SRCDIR_WC_TRUNK)
 ENDIF(SRCDIR_WC_TRUNK)
 
 #
+# SVN Configuration
+#
+SET(SVN_UPDATE_OPTIONS ${SVN_UPDATE_OPTIONS} "${PROJECT_SOURCE_DIR}/..")
+
+#
 # Valgrind Configuration
 #
 # MEMORYCHECK_COMMAND_OPTIONS: Indicates Valgrind command options.

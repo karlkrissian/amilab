@@ -1,0 +1,74 @@
+/**
+ * C++ Interface: wrap_${TEMPLATE}
+ *
+ * Description: wrapping ${TEMPLATE}
+ * File generated automatically
+ *
+ * Author: Karl Krissian \<krissian@dis.ulpgc.es\>, (C) 2010
+ *
+ * Copyright: See COPYING file that comes with this distribution
+ *
+ **/
+
+#ifndef _wrap_${TEMPLATENAME}_h_
+#define _wrap_${TEMPLATENAME}_h_
+
+#include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
+#include "Variable.hpp"
+#include "paramlist.h"
+#include "ami_object.h"
+
+#include "${INCLUDEFILE}"
+
+// include what is needed for inheritence and for types ...
+${INCLUDE_BASES}
+
+
+AMI_DECLARE_TYPE(${TEMPLATE});
+
+// TODO: check for inheritence ...
+class WrapClass_${TEMPLATENAME} : public WrapClass<${TEMPLATE} >
+    ${INHERIT_BASES}
+{
+  DEFINE_CLASS(WrapClass_${TEMPLATENAME});
+
+  protected:
+    typedef WrapClass<${TEMPLATE} >::ptr _parentclass_ptr;
+    typedef ${TEMPLATE} ObjectType;
+
+  public:
+    // resolve ambiguity
+    const boost::shared_ptr<${TEMPLATE} >& GetObj() const { return WrapClass<${TEMPLATE} >::GetObj(); }
+
+    /// Constructor
+    WrapClass_${TEMPLATENAME}(boost::shared_ptr<${TEMPLATE} > si): 
+    WrapClass<${TEMPLATE} >(si)
+    ${CONSTRUCTOR_BASES}
+    {}
+
+    /// Destructor
+    ~WrapClass_${TEMPLATENAME}()
+    {
+      std::cout << "~WrapClass_${TEMPLATE}()" << std::endl;
+      CLASS_MESSAGE("*** Destroying ***");
+    }
+
+    ${ADD_CLASS_CONSTRUCTORS}
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( ${TEMPLATE}*);
+
+    // Static methods
+    ${ADD_CLASS_STATIC_METHODS}
+
+    // here add each method
+    ${ADD_CLASS_METHOD_ALL}
+
+
+    void AddMethods(WrapClass<${TEMPLATE} >::ptr this_ptr );
+
+};
+
+
+#endif // _wrap_${TEMPLATENAME}_h

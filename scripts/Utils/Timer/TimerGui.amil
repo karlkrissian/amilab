@@ -1,0 +1,15 @@
+
+func "TimerClass"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(Timer_obj)) {
+
+  TimerClass Timer_obj
+  Timer_obj.Gui()
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

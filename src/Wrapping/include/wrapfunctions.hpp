@@ -309,6 +309,19 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
  */
 int get_num_param(ParamList* p);
 
+
+/**
+ * Get the next parameter as a BasicVariablet::ptr if available
+ * @param var new variable
+ * @param p parameters list
+ * @param num current parameter position
+ * @param required 
+ * @return true is succes, false if failure
+ */
+bool get_next_param( BasicVariable::ptr& var, 
+                    ParamList*p, int& num, bool required = false, bool quiet=false);
+
+
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
  * @param var 

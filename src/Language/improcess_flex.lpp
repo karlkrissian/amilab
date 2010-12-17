@@ -394,9 +394,8 @@ Flip              return(token::T_Flip);  /*{Flip,T_Flip}*/// flips image in one
 RestartTime       return(token::T_RestartTime); /*{RestartTime,T_RestartTime}*/
 InitTime          return(token::T_InitTime); /*{InitTime,T_InitTime}*/
 TimeSpent         return(token::T_TimeSpent); /*{TimeSpent,T_TimeSpent}*/
-EndTime           return(token::T_EndTime); /*{EndTime,T_EndTime}*/
+EndTime           return(token::T_EndTime); /*{EndTime,T_EndTime}*/ 
 
-NULL              return(token::T_NULL); /*{NULL,T_NULL}*/
 
 
 ProcessXEvents    return(token::T_ProcessXEvents); /*{ProcessXEvents,T_ProcessXEvents}*/
@@ -604,8 +603,9 @@ amiOFVar2D        return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/
 vtkDicomRead      return(token::T_vtkDicomRead); /*{vtkDicomRead,T_vtkDicomRead}*/
 vtkMINCRead       return(token::T_vtkMINCRead);  /*{vtkMINCRead,T_vtkMINCRead}*/
 
-exists            return(token::T_exists);       /*{exists,T_exists}*/
-FileExists        return(token::T_FileExists);  /*{FileExists,T_FileExists}*/
+exists            { return(token::T_exists);       //FileExists        return(token::T_FileExists);  
+// {FileExists,T_FileExists} 
+} /*{exists,T_exists}*/
 
 InfoDialog        return(token::T_InfoDialog); /*{InfoDialog,T_InfoDialog}*/
 
@@ -615,7 +615,7 @@ argc              return(token::T_argc);         /*{argc,T_argc}*/
 emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 
-[0-9]+"."[0-9]+   {
+([0-9]+"."[0-9]+((e|E)("+"|"-")?[0-9]+)?)|([0-9]+((e|E)("+"|"-")?[0-9]+))   {
 //
 //============================ Parse float ====================
 //

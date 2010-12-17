@@ -23,7 +23,7 @@ del filt_dir
 proc AddSegMenu() {
   for dir in  "NLmeans" \
   {
-    if FileExists(GetScriptsDir+"/Denoising/"+dir+"/Add2Menu.amil") {
+    if wx.wxFileName(GetScriptsDir+"/Denoising/"+dir+"/Add2Menu.amil").FileExists() {
       func "/Denoising/"+dir+"/Add2Menu.amil"
     } else {
       InfoDialog GetScriptsDir+"/Denoising/"+dir+"/Add2Menu.amil does not exists"

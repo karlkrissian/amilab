@@ -162,14 +162,17 @@ double     Func_min( InrImage* im, InrImage* mask)
   double val;
 
   InrImageIteratorBase::ptr im_it   (im  ->CreateConstIterator());
-
+  InrImageIteratorBase* im_it_ptr = im_it.get();
+  int vdim = im->GetVDim();
   if ( (mask==NULL) ) {
-    im_it->InitBuffer();
-    lmin = im_it->GetDoubleValue();
+    im_it_ptr->InitBuffer();
+    im_it_ptr->SetEnd(im->Size());
+    lmin = im_it_ptr->GetDoubleValue();
     do {
-      val = im_it->GetDoubleValue();
+      val = im_it_ptr->GetDoubleValue();
       if (val<lmin) lmin = val;
-    } while ((*im_it)++);
+      im_it_ptr->ValueInc(vdim);
+    } while (im_it_ptr->NotAtEnd());
   } else {
     InrImageIteratorBase::ptr mask_it (mask->CreateConstIterator());
     im_it->InitBuffer();

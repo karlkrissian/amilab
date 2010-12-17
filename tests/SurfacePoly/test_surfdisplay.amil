@@ -10,7 +10,7 @@ if (argc>=1) {
   saveres =  ($1=="-save");
 }
 
-func "SyntheticImages/create_torus_gui" // from menu
+func "SyntheticImages/CreateTorus/CreateTorusGui.amil"
 ctobject->Create()
 s = isosurf(torus,50.1)
 show s

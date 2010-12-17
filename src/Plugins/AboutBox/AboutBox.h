@@ -12,7 +12,7 @@
 #ifndef ABOUTBOX_H
 #define ABOUTBOX_H
 
-#include "PluginBase.h"
+#include "wxPluginBase.h"
 #include "AMILabConfig.h"
 #include <wx/aboutdlg.h>
 #include "amilab_logo_new_32x32_alpha.xpm"
@@ -20,7 +20,7 @@
 /**
  * @brief Class that contains a plugins that display the About dialog box.
  **/
-class WX_AMILAB_EXPORT AboutBox : public PluginBase
+class WX_AMILAB_EXPORT AboutBox : public wxPluginBase
 {
   PLUGIN_DEFINE();
 

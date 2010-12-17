@@ -9,6 +9,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/wxParams
@@ -148,3 +149,4 @@ ENDIF(AMI_USE_FLEXBISON)
 #ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/DefineClass.hpp Language_SRCS)
 
 my_add_library ( Language)
+add_dependencies ( Language WrapWxWidgets )

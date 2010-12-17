@@ -47,8 +47,8 @@ printn "Create an object of class ContinuousMorphology(morph = filters.Continuou
 morph = filters.ContinuousMorphology()
 
 # Create initial image
-func "SyntheticImages/create_torus_gui.amil"
-CTClass CT
+func "SyntheticImages/CreateTorus/CreateTorusGui.amil"
+CreateTorusClass CT
 
 DIMX=100
 DIMY=100

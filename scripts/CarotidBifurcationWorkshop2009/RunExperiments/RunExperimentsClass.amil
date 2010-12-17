@@ -142,7 +142,7 @@ if (!exists(RunExperimentsClass)){
         # read GT image
         GTname = ::current_gtdir + "/pv"+::datanumber_str+".mhd"
         printn "Reading itk image "+GTname
-        if (FileExists(GTname)) {
+        if (wx.wxFileName(GTname).FileExists()) {
           ::GT <<= ::itk->Read(GTname)
       
           # read the ROI information
@@ -253,7 +253,7 @@ if (!exists(RunExperimentsClass)){
     {
       vfilename  = ::current_resultsdir+"/vesselness_result.ami.gz"
     
-      if (FileExists(vfilename)) {
+      if (wx.wxFileName(vfilename).FileExists()) {
         # 1. Save Level Set resulting image
         ::ML->set_result(Image vfilename)
         // check dimensions
@@ -282,7 +282,7 @@ if (!exists(RunExperimentsClass)){
 
       vmfilename  = ::current_resultsdir+"/vesselness_maxima.ami.gz"
     
-      if (FileExists(vmfilename)) {
+      if (wx.wxFileName(vmfilename).FileExists()) {
         # 1. Save Level Set resulting image
         ::maxima <<= Image vmfilename
         // check dimensions
@@ -425,7 +425,7 @@ if (!exists(RunExperimentsClass)){
     #-----------------------------------------
     proc ::ReadPaths() \
     {
-      if (FileExists(::current_resultsdir+"/pathCIs.vtk")) {
+      if (wx.wxFileName(::current_resultsdir+"/pathCIs.vtk").FileExists()) {
         if (exists(::pathCIs)) { del ::pathCIs; }
         ::pathCIs = Surface(::current_resultsdir+"/pathCIs.vtk")
       } else {
@@ -434,7 +434,7 @@ if (!exists(RunExperimentsClass)){
         }
       }
     
-      if (FileExists(::current_resultsdir+"/pathCEs.vtk")) {
+      if (wx.wxFileName(::current_resultsdir+"/pathCEs.vtk").FileExists()) {
         if (exists(::pathCEs)) { del ::pathCEs; }
         ::pathCEs = Surface(::current_resultsdir+"/pathCEs.vtk")
       } else {
@@ -443,7 +443,7 @@ if (!exists(RunExperimentsClass)){
         }
       }
       
-      if (FileExists(::current_resultsdir+"/speed.ami.gz")) {
+      if (wx.wxFileName(::current_resultsdir+"/speed.ami.gz").FileExists()) {
         if (exists(::speed)) { del ::speed; }
         ::speed = Image ::current_resultsdir+"/speed.ami.gz"
       } else {

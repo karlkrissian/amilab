@@ -2,6 +2,7 @@
 # The extension is already found.  Any number of sources could be listed here.
 
 add_subdirectory (myVTK4)
+add_subdirectory (DerivAndOrient)
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (

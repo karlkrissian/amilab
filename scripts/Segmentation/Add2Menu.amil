@@ -4,12 +4,12 @@
 # Adding main Gui scripts to the menu
 #
 
-ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui.amil")
+
 
 proc AddSegMenu() {
-  for dir in  "itkWaterShed", "itkLevelSet", "itkFastMarching", "MultipleLevelSets" \
+  for dir in  "LevelSets","itkWaterShed", "itkLevelSet", "itkFastMarching", "MultipleLevelSets" \
   {
-    if FileExists(GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil") {
+    if wx.wxFileName(GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil").FileExists() {
       func "/Segmentation/"+dir+"/Add2Menu.amil"
     } else {
       InfoDialog GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil does not exists"
@@ -19,3 +19,7 @@ proc AddSegMenu() {
 
 AddSegMenu()
 del AddSegMenu
+
+if exists(global::scripts_toolbar) {
+  global::scripts_toolbar.AddSeparator()
+}

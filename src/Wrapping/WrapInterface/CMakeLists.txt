@@ -9,6 +9,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
@@ -57,3 +58,4 @@ IF(AMI_USE_PRECOM_HEADERS)
 ENDIF(AMI_USE_PRECOM_HEADERS)
 
 my_add_library ( WrapInterface)
+add_dependencies ( WrapInterface WrapWxWidgets )

@@ -12,11 +12,15 @@ if (!exists(vtkVolumeClass)) {
 
     # load the ImageHistogram script
     func "Visualization/ImageHistogram/ImageHistogramClass.amil"
+    func "dwCurveIOClass.amil"
+
     ImageHistogramClass             ::imhisto1
+    # Input/Output operations to work with the curve on the histogram
+    dwCurveIOClass                  ::CurveIO
 
     #----------------------------
     proc ::Init( ) {
-      ::blend_type = INT(1), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->CT_Muscles, 6->RGB_Composite, 7->Linear Curve 1"
+      ::blend_type = INT(7), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 3->CT_Skin, 4->CT_Bone, 5->CT_Muscles, 6->RGB_Composite, 7->Linear Curve 1"
       ::opacitywindow = 1000, "Opacity Window"
       ::opacitylevel  = 1000, "Opacity Level"
 
@@ -31,12 +35,31 @@ if (!exists(vtkVolumeClass)) {
       ::muscles3 =  420, "Muscles third control point"
 
       ::clip = UCHAR(0), "Enable/Disable clipping box"
+      ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
       ::initialized=0
 
       ::cm_active_blend_curves = 0, "Number of curves created for the current blend type in the Colormap  drawing area."
       ::dw_active_blend_curves = 0, "Number of curves created for the current blend type in the Histogram drawing area."
 
       ::opacity_attenuation = 1, "Attenuation factor for the opacity"
+
+      ::maxmemory = INT(0), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
+      ::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use."
+
+      ::SampleDistance = 1, "distance between samples used for rendering"
+      ::ImageSampleDistance = 1, "Sampling distance in the XY image dimensions. Default value of 1 meaning 1 ray cast per pixel. If set to 0.5, 4 rays will be cast per pixel. If set to 2.0, 1 ray will be cast for every 4 (2 by 2) pixels. This value will be adjusted to meet a desired frame rate when AutoAdjustSampleDistances is on. "
+      ::AutoAdjustSampleDistances = UCHAR(1), "Auto-adjust sample distances"
+
+      ::use_shade = UCHAR(1), "use shading"
+      ::ambient   = 0.15, "ambient coefficient"
+      ::diffuse   = 0.9, "diffuse coefficient"
+      ::specular  = 0.3, "specular coefficient"
+      ::specular_power = 15.0, "specular power"
+      ::scalar_opacity_unitdistance = 0.8919, "scalar opacity unit distance"
+
+      ::curve_folder    =  "", "Histogram curve Path Folder"
+      ::curve_filename  =  "Curve.amil", "name of the input/output histogram curve"
+
     }
 
     #----------------------------
@@ -47,6 +70,11 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::SetRenderer( OBJECT ren ) {
       ::renderer = &ren
+    }
+
+    #----------------------------
+    proc ::SetRenderWindow( OBJECT renwin ) {
+      ::renwin = &renwin
     }
 
     # Inputs:
@@ -60,7 +88,7 @@ if (!exists(vtkVolumeClass)) {
     #   property   : vtkVolumeProperty
     #
     proc ::CreateVTK( IMAGE input_image) {
-
+      #printn "CreateVTK 1"
       ::input = &input_image
 
       # 10/(1+clip) in c++ code
@@ -69,41 +97,75 @@ if (!exists(vtkVolumeClass)) {
       # check that we have a volume
       if (input_image.tx<2)||(input_image.ty<2)||(input_image.tz<2) {
         InfoDialog "Input image is not a volume!"
-        return = 0
+        return = false
       } else {
-        ::vol       = global::vtkVolume_New()
-        ::volmapper = global::vtkGPUVolumeRayCastMapper_New()
-        # don't put the boxwidget for the moment
-        # convert input to vtkimage
-        ::vtkinput  = global::ToVtkImageData(&input_image)
-        ::volmapper.SetInput(&::vtkinput)
-
-        #::volmapper.SetSampleDistance()
 
         # Create our transfer function
-        ::colorFun=global::vtkColorTransferFunction_New()
-        ::opacityFun=global::vtkPiecewiseFunction_New()
+        ::colorFun=vtk.vtkColorTransferFunction.New()
+        ::opacityFun=vtk.vtkPiecewiseFunction.New()
         
         # Create the property and attach the transfer functions
-        ::property = global::vtkVolumeProperty_New()
+        ::property = vtk.vtkVolumeProperty.New()
         ::property.SetIndependentComponents(1)
         ::property.SetColor( &::colorFun )
         ::property.SetScalarOpacity( &::opacityFun )
         ::property.SetInterpolationTypeToLinear()
  
+        #printn "CreateVTK 2"
+        ::vol       = vtk.vtkVolume.New()
+        # don't put the boxwidget for the moment
+        # convert input to vtkimage
+        ::vtkinput  = global::ToVtkImageData(&input_image)
+        ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
+
+        #::volmapper.SetSampleDistance()
+
+        # Check if the rendering is supported
+        supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
+        #supported = 0
+        if (!supported) {
+          InfoDialog "vtkGPUVolumeRayCastMapper rendering is not supported, trying vtkVolumeRayCastMapper ..."
+          if (exists(::volmapper)) {
+            ::volmapper->Delete()
+            del ::volmapper
+          }
+          ::volmapper = vtk.vtkVolumeRayCastMapper.New()
+
+          #printn "CreateVTK 3"
+
+          compositeFunction=vtk.vtkVolumeRayCastCompositeFunction.New()
+          ::volmapper.SetVolumeRayCastFunction(&compositeFunction)
+
+          # don't put the boxwidget for the moment
+          # convert input to vtkimage
+          ::vtkinput  = global::ToVtkImageData(&input_image)
+
+          #supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
+          #if (!supported) {
+          #  InfoDialog "This rendering is not supported neither ..."
+          #}
+
+        } else {
+          # update GPU information
+          ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
+          ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
+          ::win.Update(-1)
+        }
+        ::volmapper.SetInput(&::vtkinput)
+
         # connect up the volume to the property and the mapper
         ::vol.SetProperty( &::property )
         ::vol.SetMapper( &::volmapper )
         ::initialized = 1
 
-        return = 1
+        return = true
       }
     }
 
     #----------------------------
     proc ::InitBoxWidget() \
     {
-      ::box = global::vtkBoxWidget_New()
+      ::box = vtk.vtkBoxWidget.New()
       if (::clip) \
       {
         ::box.SetInteractor(&::renwininter)
@@ -117,6 +179,7 @@ if (!exists(vtkVolumeClass)) {
         #callback->SetMapper(mapper);
         #::box.AddObserver(vtkCommand::InteractionEvent, callback);
         #callback->Delete();
+        ::box.SetRotationEnabled(::clip_enable_rotation)
         ::box.EnabledOn()
         #::box.GetSelectedFaceProperty().SetOpacity(0.0)
       }
@@ -281,10 +344,33 @@ if (!exists(vtkVolumeClass)) {
     }
 
     #----------------------------
-    proc ::SaveCurve( OBJECT c ) \
+    proc ::SaveCurve(  ) \
     {
-      ctrlpts = curve.GetControlPoints()
-      pt = ctrlpts[n] 
+      thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
+      if(thefilename.FileExists()) {
+        msg = "The %1% file exists." %thefilename.GetFullName().c_str()
+      } else {
+        if (!exists(::linearcurve1)) {
+          msg = "It is not possible to save the curve because it has not been defined."
+        } else {
+          ::CurveIO.SaveCurve( thefilename.GetFullName().c_str(), &::linearcurve1 )
+          msg = "The curve has been saved correctly in the file: %1%" %thefilename.GetFullName().c_str()
+        }
+      }
+      InfoDialog msg
+    }
+
+    #----------------------------
+    proc ::LoadCurve(  ) \
+    {
+      thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
+      if(thefilename.FileExists()) {
+        ::linearcurve1 = ::CurveIO.LoadCurve( thefilename.GetFullName().c_str() )
+        msg = "The curve has been loaded correctly from the file: %1%" %thefilename.GetFullName().c_str()
+      } else {
+        msg = "The %1% file does not exist." %thefilename.GetFullName().c_str()       
+      }
+      InfoDialog msg
     }
 
     #----------------------------
@@ -296,35 +382,52 @@ if (!exists(vtkVolumeClass)) {
       if (exists(::imhisto1->h)) {
         hmax = max(::imhisto1.h[0])
 
+        # http://www.wikiradiography.com/page/Hounsfield++unit
+        #It is the definition for CT scanners that are calibrated with reference to water.
+        #Tissue CT number (HU)
+        #Bone  1000
+        #Liver   40 - 60
+        #White matter  ~20-30 HU
+        #Grey matter   ~37-45 HU
+        #Blood   40
+        #Muscle  10 - 40
+        #Kidney  30
+        #Cerebrospinal fluid   15
+        #Water   0
+        #Fat   -50 - -100
+        #Air   -1000
+
         # Create the curve
         curve = ami.dwControlledCurve()
 
         # black point
-        cp0 = ami.dwControlPoint(-950,0)
+        cp0 = ami.dwControlPoint(1080,0)
         cp0.SetYLocked(1)
         cp0.SetColour(wx.wxColour(0,0,0))
         curve.GetControlPoints().push_back(&cp0)
 
         # red point
-        cp1 = ami.dwControlPoint(-920,0.005*hmax)
+        cp1 = ami.dwControlPoint(1100,0.005*hmax)
         cp1.SetColour(wx.wxColour(255,0,0))
         curve.GetControlPoints().push_back(&cp1)
 
         # yellow point
-        cp2 = ami.dwControlPoint(-908,0.08*hmax)
+        cp2 = ami.dwControlPoint(1130,0.08*hmax)
         cp2.SetColour(wx.wxColour(255,255,0))
         curve.GetControlPoints().push_back(&cp2)
 
         # white point
-        cp3 = ami.dwControlPoint(-500,0.5*hmax)
+        cp3 = ami.dwControlPoint(1390,0.5*hmax)
         cp3.SetColour(wx.wxColour(255,255,255))
         curve.GetControlPoints().push_back(&cp3)
 
         curve.SetType(1) # solid
 
         if (!exists(::linearcurve1)) {
-          ::linearcurve1 = curve
-          ::imhisto1.dw.GetControlledCurves().push_back(&::linearcurve1)
+          ccurv = &::imhisto1.dw.GetControlledCurves()
+          size=ccurv.size()
+          ccurv.push_back(&curve)
+          ::linearcurve1 = &ccurv[size]
         } else {
           ::linearcurve1 = curve
         }
@@ -333,6 +436,17 @@ if (!exists(vtkVolumeClass)) {
         InfoDialog "No histogram available."
       }
         
+    }
+
+    #----------------------------
+    proc ::SetShadingProperties() \
+    {
+      ::property.SetShade(::use_shade)
+      ::property.SetAmbient(::ambient)
+      ::property.SetDiffuse(::diffuse)
+      ::property.SetSpecular(::specular)
+      ::property.SetSpecularPower(::specular_power)
+      ::property.SetScalarOpacityUnitDistance(::scalar_opacity_unitdistance)
     }
 
     #----------------------------
@@ -362,13 +476,8 @@ printn "point number %1%" %n
           ::opacityFun.AddPoint(  cp.GetX(), ::opacity_attenuation/hmax*cp.GetY() );
         }
         
-        ::volmapper.SetBlendModeToComposite();
-        ::property.ShadeOn();
-        ::property.SetAmbient(0.15);
-        ::property.SetDiffuse(0.9);
-        ::property.SetSpecular(0.3);
-        ::property.SetSpecularPower(15.0);
-        ::property.SetScalarOpacityUnitDistance(0.8919);
+        ::volmapper.SetBlendModeToComposite()
+        ::SetShadingProperties()
       } else {
         InfoDialog "No histogram available."
       }
@@ -381,11 +490,11 @@ printn "point number %1%" %n
         if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
         if exists(::property)   { ::property.Delete(); del ::property; }
 
-        ::colorFun=global::vtkColorTransferFunction_New()
-        ::opacityFun=global::vtkPiecewiseFunction_New()
+        ::colorFun=vtk.vtkColorTransferFunction.New()
+        ::opacityFun=vtk.vtkPiecewiseFunction.New()
 
         # Create the property and attach the transfer functions
-        ::property = global::vtkVolumeProperty_New()
+        ::property = vtk.vtkVolumeProperty.New()
         ::property.SetIndependentComponents(1)
         ::property.SetColor( &::colorFun )
         ::property.SetScalarOpacity( &::opacityFun )
@@ -580,6 +689,7 @@ printn "point number %1%" %n
     {
       if (exists(::box)) {
         ::box.SetEnabled(::clip)
+        ::box.SetRotationEnabled(::clip_enable_rotation)
       } else {
         ::InitBoxWidget()
       }
@@ -590,7 +700,7 @@ printn "point number %1%" %n
     {
       if (::clip) {
         # to do: vtkPlanes
-        planes = global::vtkPlanes_New()
+        planes = vtk.vtkPlanes.New()
         ::box.GetPlanes(&planes)
         ::volmapper.SetClippingPlanes(&planes)
         planes.Delete()
@@ -599,77 +709,175 @@ printn "point number %1%" %n
     }
 
     #----------------------------
+    proc ::OnTextureMemory() \
+    {
+      if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
+          (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") \
+      {
+        # update volmapper GPU settings
+        ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
+        ::volmapper.SetMaxMemoryFraction(::maxmemoryfraction)
+
+        # update GPU information
+        ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
+        ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
+        ::win.Update(-1)
+      } else {
+        InfoDialog "Wrong volume mapper ..."
+      }
+    }
+
+    #----------------------------
+    proc ::OnSampleDistance() \
+    {
+      ::volmapper.SetAutoAdjustSampleDistances(::AutoAdjustSampleDistances)
+      ::volmapper.SetSampleDistance(::SampleDistance)
+      ::volmapper.SetImageSampleDistance(::ImageSampleDistance)
+      ::renwininter.Render()
+    }
+
+    #----------------------------
     proc ::AddGui( OBJECT win ) \
     {
       printn "vtkVolumeClass::AddGui begin"
       ::win = &win
 
-      ::win.BeginHorizontal()
-        ::win.AddBoolean(&::clip, "Clip")
-        ::win.SetCallback( &::OnClip)
-        ::icons.LoadIconPNG2("Chart xy","Chart_xy")
-        ::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
-        ::win.AddButton("DrawTr",&::Draw_Functions)
-      ::win.EndHorizontal()
-      ::win.AddButton( "Apply Clip",&::ApplyClip)
-      ::win.AddFloat(&::opacity_attenuation,"Opacity factor",0,1)
-      ::win.SetCallback( &::OnWindow)
-
-
-      ::blend_type_id = ::win.AddEnum(&::blend_type,"Blend")
-        ::win.AddEnumChoice(::blend_type_id,"MIP")
-        ::win.AddEnumChoice(::blend_type_id,"Comp. Ramp")
-        ::win.AddEnumChoice(::blend_type_id,"Comp. Shade Ramp")
-        ::win.AddEnumChoice(::blend_type_id,"CT Skin")
-        ::win.AddEnumChoice(::blend_type_id,"CT Bone")
-        ::win.AddEnumChoice(::blend_type_id,"CT Muscles")
-        ::win.AddEnumChoice(::blend_type_id,"RGB Composite")
-        ::win.AddEnumChoice(::blend_type_id,"Linear Curve 1")
-      ::win.SetCallback( &::OnBlendType)
-
-      ##::win.BeginBook()
-          ## Adding histogram page
-        #::imhisto1.SetParentPanel(&::win)
-        #::imhisto1.Gui()
-        #::win.AddWidget(&::imhisto1->win,0)
-        ##::win.AddPage("Hist", &::imhisto1->win)
-      ##::win.EndBook()
-
-      #::win.SetPositionProp(0)
-
       ::win.BeginBook()
-          # Adding histogram page
-        ::imhisto1.SetParentPanel(&::win)
-        ::imhisto1.Gui()
-        ::win.AddPage("Hist", &::imhisto1->win)
-      ::win.EndBook()
 
-      ::blend_book = ::win.BeginBook()
-        ::ramp_page = ::win.AddPage("Ramp")
-          ::opacitywindow_id = ::win.AddFloat(&::opacitywindow,"Window",0,5000)
-          ::win.SetCallback( &::OnWindow)
-          ::opacitylevel_id = ::win.AddFloat(&::opacitylevel,"Level",0,5000)
-          ::win.SetCallback( &::OnLevel)
-        ::skin_page = ::win.AddPage("Skin")
-          ::win.AddFloat(&::skin1,"Ctrl_1",-3000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::win.AddFloat(&::skin2,"Ctrl_2",-3000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::AddBitmapButton16(&::win, &::icons._Refresh, "SkinReset")
-        ::bones_page = ::win.AddPage("Bones")
-          ::win.AddFloat(&::bones1,"Ctrl_1",-1000,2000)
-          ::win.SetCallback( &::OnBlendType)
-          ::win.AddFloat(&::bones2,"Ctrl_2",-1000,2000)
-          ::win.SetCallback( &::OnBlendType)
-          ::AddBitmapButton16(&::win, &::icons._Refresh, "BonesReset")
-        ::muscles_page = ::win.AddPage("Muscles")
-          ::win.AddFloat(&::muscles1,"Ctrl_1",-1000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::win.AddFloat(&::muscles2,"Ctrl_2",-1000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::win.AddFloat(&::muscles3,"Ctrl_3",-1000,1000)
-          ::win.SetCallback( &::OnBlendType)
-          ::AddBitmapButton16(&::win, &::icons._Refresh, "MusclesReset")
+        ::win.AddPage("Blend")
+        ::win.BeginHorizontal()
+          ::icons.LoadIconPNG2("Chart xy","Chart_xy")
+          ::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
+          ::win.AddButton("DrawTr",&::Draw_Functions)
+        ::win.EndHorizontal()
+
+
+        ::blend_type_id = ::win.AddEnum(&::blend_type,"Blend")
+          ::win.AddEnumChoice(::blend_type_id,"MIP")
+          ::win.AddEnumChoice(::blend_type_id,"Comp. Ramp")
+          ::win.AddEnumChoice(::blend_type_id,"Comp. Shade Ramp")
+          ::win.AddEnumChoice(::blend_type_id,"CT Skin")
+          ::win.AddEnumChoice(::blend_type_id,"CT Bone")
+          ::win.AddEnumChoice(::blend_type_id,"CT Muscles")
+          ::win.AddEnumChoice(::blend_type_id,"RGB Composite")
+          ::win.AddEnumChoice(::blend_type_id,"Linear Curve 1")
+        ::win.SetCallback( &::OnBlendType)
+
+        ##::win.BeginBook()
+            ## Adding histogram page
+          #::imhisto1.SetParentPanel(&::win)
+          #::imhisto1.Gui()
+          #::win.AddWidget(&::imhisto1->win,0)
+          ##::win.AddPage("Hist", &::imhisto1->win)
+        ##::win.EndBook()
+
+        #::win.SetPositionProp(0)
+
+        ::win.BeginBook()
+            # Adding histogram page
+          ::imhisto1.SetParentPanel(&::win)
+          ::imhisto1.Gui()
+          ::win.AddPage("Hist", &::imhisto1->win)
+          ::CurveLoad_page = ::win.AddPage("Load")
+            ::win.BeginHorizontal()
+              ::win.AddDirname(&::curve_folder, "Load Folder")
+            ::win.EndHorizontal()
+
+            ::win.BeginHorizontal()
+              ::win.AddString( &::curve_filename,"Input File Name")
+            ::win.EndHorizontal()
+
+            ::win.BeginHorizontal()
+              ::win.AddButton("Load",::LoadCurve)
+            ::win.EndHorizontal()
+          ::CurveSave_page = ::win.AddPage("Save")
+            ::win.BeginHorizontal()
+              ::win.AddDirname(&::curve_folder, "Save Folder")
+            ::win.EndHorizontal()
+
+            ::win.BeginHorizontal()
+              ::win.AddString( &::curve_filename,"Output File Name")
+            ::win.EndHorizontal()
+
+            ::win.BeginHorizontal()
+              ::win.AddButton("Save",::SaveCurve)
+            ::win.EndHorizontal()
+        ::win.EndBook()
+
+        ::blend_book = ::win.BeginBook()
+          ::ramp_page = ::win.AddPage("Ramp")
+            ::opacitywindow_id = ::win.AddFloat(&::opacitywindow,"Window",0,5000)
+            ::win.SetCallback( &::OnWindow)
+            ::opacitylevel_id = ::win.AddFloat(&::opacitylevel,"Level",0,5000)
+            ::win.SetCallback( &::OnLevel)
+          ::skin_page = ::win.AddPage("Skin")
+            ::win.AddFloat(&::skin1,"Ctrl_1",-3000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::win.AddFloat(&::skin2,"Ctrl_2",-3000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::AddBitmapButton16(&::win, &::icons._Refresh, "SkinReset")
+          ::bones_page = ::win.AddPage("Bones")
+            ::win.AddFloat(&::bones1,"Ctrl_1",-1000,2000)
+            ::win.SetCallback( &::OnBlendType)
+            ::win.AddFloat(&::bones2,"Ctrl_2",-1000,2000)
+            ::win.SetCallback( &::OnBlendType)
+            ::AddBitmapButton16(&::win, &::icons._Refresh, "BonesReset")
+          ::muscles_page = ::win.AddPage("Muscles")
+            ::win.AddFloat(&::muscles1,"Ctrl_1",-1000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::win.AddFloat(&::muscles2,"Ctrl_2",-1000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::win.AddFloat(&::muscles3,"Ctrl_3",-1000,1000)
+            ::win.SetCallback( &::OnBlendType)
+            ::AddBitmapButton16(&::win, &::icons._Refresh, "MusclesReset")
+        ::win.EndBook()
+
+        ::win.AddPage("Clip")
+          ::win.AddBoolean(&::clip, "Clip")
+          ::win.SetCallback( &::OnClip)
+          ::win.AddBoolean(&::clip_enable_rotation,"Rotation")
+          ::win.SetCallback( &::OnClip)
+          ::win.AddButton( "Apply Clip",&::ApplyClip)
+
+        ::win.AddPage("Shade")
+          ::win.BeginBoxPanel("Global opacity")
+            ::win.AddFloat(&::opacity_attenuation,"Opacity factor",0,1)
+            ::win.SetCallback( &::OnWindow)
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Shading properties")
+            ::win.AddBoolean(&::use_shade,"Use Shade")
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::ambient,"Ambient",0,1)
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::diffuse,"Diffuse",0,1)
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::specular,"Specular",0,1)
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::specular_power,"Spec_Power",0,50)
+            ::win.SetCallback( &::OnRender)
+            ::win.AddFloat(&::scalar_opacity_unitdistance,"Opa_dist",0.2,2)
+            ::win.SetCallback( &::OnRender)
+          ::win.EndBoxPanel()
+
+        ::GPU_page = ::win.AddPage("GPU")
+          ::win.BeginBoxPanel("3D texture memory")
+            ::win.AddInt(&::maxmemory,"max",50,1000)
+            ::win.SetCallback( &::OnTextureMemory)
+            ::win.AddFloat(&::maxmemoryfraction,"fraction",0.05,1)
+            ::win.SetCallback( &::OnTextureMemory)
+          ::win.EndBoxPanel()
+
+        ::GPU_page = ::win.AddPage("Rend")
+          ::win.BeginBoxPanel("Sample distances")
+            ::win.AddBoolean(&::AutoAdjustSampleDistances,"Auto")
+            #::win.SetCallback( &::OnSampleDistance)
+            ::win.AddFloat(&::SampleDistance,"Dist",0.2,2)
+            #::win.SetCallback( &::OnSampleDistance)
+            ::win.AddFloat(&::ImageSampleDistance,"Im Dist",0.2,2)
+            ::win.AddButton("Apply",&::OnSampleDistance)
+          ::win.EndBoxPanel()
+          
       ::win.EndBook()
 
       printn "vtkVolumeClass::AddGui end"

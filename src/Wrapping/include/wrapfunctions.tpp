@@ -101,25 +101,13 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
 template<class T>
 bool get_val_param(T& arg, ParamList*p, int& num, bool required, bool quiet)
 {
-  if (!p) return false;
-  // if the parameter number is too high, skip it (use default value)
-  if (num>=p->GetNumParam()) {
-    if (required)
-      return false;
-    else
-    {
-      if (!quiet) {
-        FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
-      }
-      return true;
-    }
-  }
-  BasicVariable::ptr varparam( p->GetParam(num++));
+  BasicVariable::ptr varparam;
+  bool res = get_next_param(varparam,p,num,required,quiet);
+  if (!varparam.get())  return res;
   boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(varparam);
   if (!val_ptr.get()) {
-    if (!quiet) {
+    if (!quiet) 
       FILE_ERROR(boost::format("Problem with %1% parameter.") % num);
-    }
     return false;
   } else {
     arg = *val_ptr;
@@ -169,51 +157,17 @@ template<class T>
 bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, 
                           bool required, bool noconstr, bool quiet)
 {
-  if (!p) return false;
-  // if the parameter number is too high, skip it (use default value)
-  if (num>=p->GetNumParam()) {
-    if (!required) {
-      if (!quiet) {
-        FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
-      }
-      return true;
-    } else {
-      if (!quiet) {
-        FILE_MESSAGE( boost::format("Missing required parameter number %1%") % num);
-      }
-      return false;
-    }
+  BasicVariable::ptr temp;
+  bool res = get_next_param(temp,p,num,required,quiet);
+  if (!temp.get()) return res;
+  boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(temp,noconstr);
+  if (!val_ptr.get()) {
+    if (!quiet)
+      FILE_ERROR(boost::format("Parameter %1% failed.") % num);
+    return false;
   }
-  BasicVariable::ptr temp = p->GetParam(num++);
-  if (temp.get()) {
-    boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(temp,noconstr);
-    if (!val_ptr.get()) {
-      if (!quiet) {
-        FILE_ERROR(boost::format("Parameter %1% failed.") % num);
-      }
-      return false;
-    }
-    /*
-    boost::shared_ptr<Variable<T> > temp1(
-      boost::dynamic_pointer_cast<Variable<T> >(temp));
-    if (!temp1.get()) {
-      FILE_ERROR(boost::format("Parameter %1% is dynamic cast failed.")%num);
-      return false;
-    }
-    */
-    arg= boost::shared_ptr<T>(val_ptr);
-    return true;
-  }
-  else
-  {
-    if (required) {
-      if (!quiet) {
-        FILE_ERROR(boost::format("Parameter %d not found ") % num);
-      }
-      return false;
-    } else
-      return true;
-  }
+  arg = val_ptr;
+  return true;
 }
 
 

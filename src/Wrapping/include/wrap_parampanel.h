@@ -69,6 +69,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
     ADD_CLASS_METHOD(AddEnum,          "Adds an integer variable as an enumeration to the parameter window.");
     ADD_CLASS_METHOD(AddEnumChoice,    "Adds a choice for an enumeration created in the parameter window.");
     ADD_CLASS_METHOD(AddLabel,         "Adds a label display.");
+    ADD_CLASS_METHOD(SetLabelValue,    "Changes a label display string.");
     ADD_CLASS_METHOD(AddFilename,      "Adds a filename selection.");
     ADD_CLASS_METHOD(AddDirname,       "Adds a directory selection.");
     ADD_CLASS_METHOD(AddString,        "Adds a string selection.");
@@ -123,6 +124,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
       AddVar_AddEnum(           this_ptr);
       AddVar_AddEnumChoice(     this_ptr);
       AddVar_AddLabel(          this_ptr);
+      AddVar_SetLabelValue(     this_ptr);
       AddVar_AddFilename(       this_ptr);
       AddVar_AddDirname(        this_ptr);
       AddVar_AddString(         this_ptr);

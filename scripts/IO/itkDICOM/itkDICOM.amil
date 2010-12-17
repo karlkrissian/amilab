@@ -6,7 +6,7 @@ func "Common/ScriptGui"
 
 if (!exists(DICOMClass)) {
   
-  ami_import->ITK()
+  ami_import.ITK()
   
   Class DICOMClass : public ScriptGui {
   

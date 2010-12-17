@@ -1,0 +1,12 @@
+
+func "Visualization/vtkIsoSurface/vtkIsoSurfaceClass"
+
+#----------------------------
+if (!exists(vtkIsoSurface_obj)) {
+  vtkIsoSurfaceClass vtkIsoSurface_obj
+  vtkIsoSurface_obj.Gui()
+  
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

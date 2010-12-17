@@ -242,7 +242,6 @@ CONFIGURE_FILE(
 OPTION(AMI_USE_STATIC_LIBS     "Look for static libraries" ON)
 OPTION(AMI_USE_PRECOMP_HEADERS "Use precompiled headers when available" OFF)
 
-#MESSAGE( "CMAKE_SYSTEM = ${CMAKE_SYSTEM} ")
 
 set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "4.2")
 
@@ -302,6 +301,15 @@ IF(AMI_CHECK_BRANCH)
   
 ENDIF(AMI_CHECK_BRANCH)
 
+OPTION(AMI_ENABLE_WRAPPING "Enable Automatic Wrapping: need gccxml, python, ..." OFF)
+
+IF(AMI_ENABLE_WRAPPING)
+  FIND_PACKAGE( GCCXML REQUIRED)
+  FIND_PACKAGE( PythonInterp REQUIRED)
+  OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" OFF)
+  OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       OFF)
+ENDIF(AMI_ENABLE_WRAPPING)
+
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
 
 IF(AMI_USE_VTK)
@@ -309,8 +317,13 @@ IF(AMI_USE_VTK)
 
   IF(VTK_FOUND)
     SET(AMI_VTK_VERSION "${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
-    MESSAGE("VTK version: ${AMI_VTK_VERSION}\n")
   ENDIF(VTK_FOUND)
+
+  # Separe Mac generated files
+  IF (APPLE)
+    SET(AMI_VTK_VERSION ${AMI_VTK_VERSION}/Mac)
+  ENDIF(APPLE)
+  MESSAGE("VTK version: ${AMI_VTK_VERSION}\n")
 
 ENDIF(AMI_USE_VTK)
 
@@ -358,6 +371,16 @@ IF(wxWidgets_FOUND)
   SET(WX_VERSION_PATH "WX_VERSION_PATH-NOTFOUND" CACHE FILEPATH "Cleared." FORCE)
   MARK_AS_ADVANCED(WX_VERSION_PATH)
 ENDIF(wxWidgets_FOUND)
+
+# Separe Mac generated files
+IF(APPLE)
+  STRING(REGEX MATCH "WXMAC" ISMAC ${wxWidgets_CXX_FLAGS})
+  MESSAGE("\"${ISMAC}\"")
+  IF ( NOT ( ISMAC STREQUAL "" ) )
+    SET(AMI_WXWIDGETS_VERSION ${AMI_WXWIDGETS_VERSION}/Mac)
+  ENDIF( NOT ( ISMAC STREQUAL "" ) )
+  MESSAGE("AMI_WXWIDGETS_VERSION ${AMI_WXWIDGETS_VERSION}")
+ENDIF(APPLE)
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
@@ -414,6 +437,8 @@ ENDIF(AMI_USE_FLEXBISON)
 
 OPTION(AMI_USE_FASTNLMEANS "Use Fast NLmeans implementation" OFF)
 
+OPTION(AMI_COMPILE_ABOUTPLUGIN "Compile plugin example" OFF)
+
 IF(AMI_USE_FASTNLMEANS)
   FIND_PACKAGE(NewNLMeans)
   MESSAGE("NewNLMeans_LIBRARY=${NewNLMeans_LIBRARY}")
@@ -469,6 +494,7 @@ set(  wxParams_INCLUDE_DIRS
 #MESSAGE(wxParams_INCLUDE_DIRS=${wxParams_INCLUDE_DIRS})
 MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
 
+
 include_directories (
   ${Boost_INCLUDE_DIR}
 #  ${OPENGL_INCLUDE_DIR}
@@ -490,8 +516,9 @@ add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (AMILab)
 
-#add_subdirectory (Plugins/AboutBox)
-
+IF(AMI_COMPILE_ABOUTPLUGIN)
+  add_subdirectory (Plugins/AboutBox)
+ENDIF(AMI_COMPILE_ABOUTPLUGIN)
 
 #add_subdirectory (libamiFluid)
 

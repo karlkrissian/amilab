@@ -31,10 +31,13 @@ if (!exists(VolRenClass)) {
       ::input_name  =  "", "name of the input image"
       ::input2_name =  "", "name of the second input image"
       ::vtkvol1.Init()
+      ::input_size  = "0 Mb",  "input volume size in Mb (2^20 bytes)"
+      ::input2_size = "0 Mb", "second input volume size in Mb (2^20 bytes)"
       ::vtkvol2.Init()
       ::background_color  = wx.wxColour(173,216,230)
       ::background_color2 = wx.wxColour(144,238,144)
       ::UseGradientBackground = UCHAR(1)
+      ::azimuth = INT(45), "Rotate camera angle along vertical axis (in degrees)"
       #::Gui()
     }
     
@@ -42,31 +45,85 @@ if (!exists(VolRenClass)) {
     proc ::load_input() {
       if (exists(::input)) { del ::input; }
       eval "::input = &"+::input_name+";"
-      if (::input_name=="Image") {
+      if (::input_name=="BrowseImage") {
         ::input_name = "::input"
-        ::UpdateVolPages()
-        ::win.Update(-1)
       }
+      ::UpdateImageInfo(&::input,&::input_size)
+      ::win.SetLabelValue(::input_size_id,::input_size)
+      ::UpdateVolPages()
+      ::win.Update(-1)
+    }
+
+    #----------------------------
+    proc ::UpdateImageInfo( IMAGE im, STRING res ) {
+      if (im.vdim>1) {
+        InfoDialog "Warning: input is a vector field ..."
+      }
+      size = im.tx*im.ty*im.tz*im.vdim
+      format_size = vector_int(11,0)
+      format_name = VarVector(11,"unknown")
+
+      format_size[0]=1 # uchar
+      format_name[0] = "uchar"
+
+      format_size[1]=2 # ushort
+      format_name[1] = "ushort"
+
+      format_size[2]=2 # short
+      format_name[2] = "short"
+
+      format_size[3]=4 # int
+      format_name[3] = "int"
+
+      format_size[4]=4 # uint
+      format_name[4] = "uint"
+
+      format_size[5]=8 # long
+      format_name[5] = "long"
+
+      format_size[6]=8 # ulong
+      format_name[6]="ulong"
+
+      format_size[7]=4 # float
+      format_name[7]="float"
+
+      format_size[8]=8 # double
+      format_name[8]="double"
+
+      format_size[9]=3 # RGB
+      format_name[9]="RGB"
+
+      format_size[10]=4 # RGBA
+      format_name[10]="RGBA"
+
+      pixel_format = im.GetFormat.val
+      if (pixel_format>10) {
+        InfoDialog "Input: Wrong pixel format (%1%) !" % format
+      }
+
+      res = "%1% Mb " % (INT) (size*format_size[pixel_format]/(1024*1024))
+      res = res+"(%1%)" % format_name[pixel_format]
+      
     }
   
     #----------------------------
     proc ::load_input2() {
       if (exists(::input2)) { del ::input2; }
       eval "::input2 = &"+::input2_name+";"
-      if (::input_name=="Image") {
-        ::input_name = "::input2"
-        ::UpdateVolPages()
-        ::win.Update(-1)
+      if (::input2_name=="BrowseImage") {
+        ::input2_name = "::input2"
       }
+      ::UpdateImageInfo(&::input2,&::input2_size)
+      ::win.SetLabelValue(::input2_size_id,::input2_size)
+      ::UpdateVolPages()
+      ::win.Update(-1)
     }
   
     #----------------------------
     proc ::UpdateVolPages() \
     {
-      ::win.EnablePanel(::vol1_page , 1)
-#exists(::input))
-      ::win.EnablePanel(::vol2_page , 1)
-#exists(::input2))
+      ::win.EnablePanel(::vol1_page , exists(::input))
+      ::win.EnablePanel(::vol2_page , exists(::input2))
     }
 
     #----------------------------
@@ -105,28 +162,6 @@ if (!exists(VolRenClass)) {
       # etc ...
     }
 
-    #----------------------------
-    #proc ::Start() \
-    #{
-      #if (!exists(::input)) {
-        #::load_input()
-      #}
-      #::renwin_interact = global::vtkGPURayCasting(&::input, \
-        #::blend_type, ::opacitywindow, ::opacitylevel, ::clip)
-      #::renwin   = ::renwin_interact.GetRenderWindow()
-      #::renderer = ::renwin.GetRenderers().GetFirstRenderer()
-      #interact = global::vtkInteractorStyleTrackballCamera_New()
-      #::renwin_interact.SetInteractorStyle(&interact)
-      ##::renderer.Render()
-      #vols = ::renderer.GetVolumes()
-      #vols.InitTraversal()
-      #::vol      =  vols.GetNextVolume()
-      #::property = ::vol.GetProperty()
-      #mapper   = ::vol.GetMapper()
-      #::volmapper = global::vtkVolumeMapper_SafeDownCast(&mapper)
-      ##::renwin_interact.Render()
-
-    #}
 
     #----------------------------
     proc ::StartNew() \
@@ -141,30 +176,37 @@ if (!exists(VolRenClass)) {
         if (!exists(::renwin_interact)) {
           ::renwin_interact = global::wxVTKFrame()
         }
+        #printn "1*"
         ::renwin   = ::renwin_interact.GetRenderWindow()
-        ::renderer = global::vtkRenderer_New()
+        ::renderer = vtk.vtkRenderer.New()
         ::renwin.AddRenderer(&::renderer)
-        interact = global::vtkInteractorStyleTrackballCamera_New()
+        interact = vtk.vtkInteractorStyleTrackballCamera.New()
         ::renwin_interact.SetInteractorStyle(&interact)
 
+        #printn "2*"
         if (::vtkvol1.initialized>0.5) {
           ::vtkvol1.ResetVTK()
         }
+        #printn "2.1*"
+        ::vtkvol1.SetInteractor(&::renwin_interact)
+        ::vtkvol1.SetRenderer(&::renderer)
+        ::vtkvol1.SetRenderWindow(&::renwin)
+        #printn "2.2*"
         volok = ::vtkvol1.CreateVTK( &::input)
 
+        #printn "3*"
         if (volok>0.5) {
           # interact with data
           #  renWin->Render()
           #  m_pVTKWindow->Start()
           ::renderer->ResetCameraClippingRange()
-          ::vtkvol1.SetInteractor(&::renwin_interact)
-          ::vtkvol1.SetRenderer(&::renderer)
           ::vtkvol1.ReCompute()
 
           # Add the volume to the scene
           ::SetRendererBg()
           ::renderer.AddVolume( &::vtkvol1.vol )
           ::renderer.ResetCamera()
+          ::BackupView()
           #::renwin_interact.Render()
         }
       }
@@ -202,10 +244,12 @@ if (!exists(VolRenClass)) {
         if (::vtkvol2.initialized>0.5) {
           ::vtkvol2.ResetVTK()
         }
+        ::vtkvol2.SetInteractor(&::renwin_interact)
+        ::vtkvol2.SetRenderer(&::renderer)
+        ::vtkvol2.SetRenderWindow(&::renwin)
         volok = ::vtkvol2.CreateVTK( &::input2)
 
         if (volok>0.5) {
-          ::vtkvol2.SetInteractor(&::renwin_interact)
           ::vtkvol2.ReCompute()
 
           # Add the volume to the scene
@@ -224,27 +268,60 @@ if (!exists(VolRenClass)) {
     {
       mb = ami.MainFrame.GetMainBook()
 
-      panel = wx.wxPanel(&ami.MainFrame)
-      sbox = wx.wxStaticBox(&panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
-      wxVERTICAL=0x0008
-      sbox_sizer = wx.wxStaticBoxSizer(&sbox,wxVERTICAL)
-      panel.SetSizer(&sbox_sizer)
+      ::panel = wx.wxPanel(&ami.MainFrame)
+      sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
+      sbox_sizer = wx.wxStaticBoxSizer(&sbox,wx.wxVERTICAL)
+      ::panel.SetSizer(&sbox_sizer)
+      ::flex_sizer = wx.wxGridSizer(1)
+      sbox_sizer.Add( &::flex_sizer, 1, wx.wxALL | wx.wxEXPAND,2)
       # create widget here
 
-      ::renwin_interact = global::wxVTKRenderWindowInteractor(&panel,-1)
+      ::renwin_interact = global::wxVTKRenderWindowInteractor(&::panel,-1)
+      #::renwin_interact = wxVTKFrame(&panel,-1)
+
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
       # Still drawing problem (missed exposed events???)
       ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
-      sbox_sizer.Add(&::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1) )
+      #::panel_sizer.Add(&::renwin_interact, &wx.wxSizerFlags().Expand().Proportion(1) )
+      ::flex_sizer.Add(&::renwin_interact, 1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
 
       
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
 
       # Add to main book
-      mb.AddPage( &panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
-      ::volren_pageindex = mb.GetPageIndex(&panel)
+      mb.AddPage( &::panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+      ::volren_pageindex = mb.GetPageIndex(&::panel)
       #mb.SetSelection(::volren_pageindex)
+    }
+
+    #----------------------------
+    proc ::SetGridLayout( NUM cols, NUM rows)  \
+    {
+      ::flex_sizer.SetCols(cols)
+      ::flex_sizer.SetRows(rows)
+    }
+
+    #----------------------------
+    proc ::SetGridSpacing( NUM hgap, NUM vgap)  \
+    {
+      ::flex_sizer.SetHGap(hgap)
+      ::flex_sizer.SetVGap(vgap)
+    }
+
+    #----------------------------
+    proc ::Attach( OBJECT obj)  \
+    {
+      obj.Reparent(&::panel)
+      ::flex_sizer.Add(&obj, wx.wxSizerFlags().Expand().Proportion(1) )
+      obj.Show()
+    }
+
+    #----------------------------
+    proc ::Detach( OBJECT obj)  \
+    {
+      ::flex_sizer.Detach(&obj)
+      return = &obj
     }
 
     #----------------------------
@@ -255,6 +332,59 @@ if (!exists(VolRenClass)) {
         mb.DeletePage(::volren_pageindex)
       }
     }
+
+    #----------------------------
+    proc ::GetSnapshot()  \
+    {    
+       capturefilter = vtk.vtkWindowToImageFilter.New()
+       capturefilter.SetInput( &::renwin)
+       capturefilter.Update()
+       resim = global::FromVtkImageData( &capturefilter.GetOutput())
+       ::capture <<= Flip(resim,1)
+    }
+
+    #----------------------------
+    proc ::ChangeView()  \
+    {    
+      ::renderer.GetActiveCamera().Azimuth(::azimuth)
+      ::renwin.Render()
+      ::renwin_interact.Render()
+    }
+    Comments(::ChangeView,"Applies the user-given transformation to the camera.")
+
+    #----------------------------
+    proc ::ResetView()  \
+    {    
+      ::renderer.ResetCamera()
+      ::renwin.Render()
+      ::renwin_interact.Render()
+    }
+    Comments(::ChangeView,"Resets the camera.")
+
+    #----------------------------
+    proc ::BackupView()  \
+    {    
+      if (!exists(::cam_backup)) {
+        ::cam_backup = vtk.vtkCamera.New()
+      }
+      ::cam_backup.DeepCopy(&::renderer.GetActiveCamera())
+    }
+    Comments(::BackupView,"Backups the current camera.")
+
+    #----------------------------
+    proc ::RestoreView()  \
+    { 
+      if (exists(::cam_backup)) {
+        camcopy = vtk.vtkCamera.New()
+        camcopy.DeepCopy(&::cam_backup)
+        ::renderer.SetActiveCamera(&camcopy)
+        ::renwin.Render()
+        ::renwin_interact.Render()
+      } else {
+        InfoDialog "No camera backed up!"
+      }
+    }
+    Comments(::RestoreView,"Restores the last backed up camera.")
 
     #----------------------------
     # Redefinition of Close to close the panel tab in main_book
@@ -294,6 +424,7 @@ if (!exists(VolRenClass)) {
               ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload")
               #::win.AddButton( "ImReload",&::ImReload)
             ::win.EndHorizontal()
+            ::input_size_id = ::win.AddLabel("Size:",::input_size)
           ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Second Volume")
@@ -302,6 +433,7 @@ if (!exists(VolRenClass)) {
               ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload2")
               #::win.AddButton( "ImReload",&::ImReload)
             ::win.EndHorizontal()
+            ::input2_size_id = ::win.AddLabel("Size:",::input2_size)
           ::win.EndBoxPanel()
 
 
@@ -325,6 +457,22 @@ if (!exists(VolRenClass)) {
             ::win.AddBoolean(&::UseGradientBackground,"Gradient")
             ::win.SetCallback(&::SetRendererBg)
           ::win.EndBoxPanel()
+          
+          ::win.BeginBoxPanel("Snapshot")
+            ::win.AddButton("Get",&::GetSnapshot)
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Camera control")
+            ::win.AddInt(&::azimuth,"azimuth",-180,180)
+            ::win.BeginHorizontal()
+              ::win.AddButton("Apply",&::ChangeView)
+              ::win.AddButton("Reset",&::ResetView)
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+              ::win.AddButton("Backup", &::BackupView)
+              ::win.AddButton("Restore",&::RestoreView)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           #::win.AddButton("Start",   ::Start)
           #::icons.LoadIconPNG("Play")
@@ -347,6 +495,7 @@ if (!exists(VolRenClass)) {
       }
       ::UpdateVolPages()
       ::win.Update(-1)
+      #    ::renwin_interact = global::wxVTKFrame()
       ::MainBook_AddVolRenTab()
    }
 

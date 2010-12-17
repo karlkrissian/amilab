@@ -15,10 +15,10 @@ proc AddSegMenu() {
   ami.MainFrame.AddToMenu("&Scripts",category,"Image &Grid",  dir+"ImageGrid")
   
   
-  for subdir in  "RGBScale","VolRen","ImageHistogram" \
+  for subdir in  "RGBScale","VolRen","ImageHistogram", "vtkIsoSurface" \
   {
     curfile=GetScriptsDir+"/Visualization/"+subdir+"/Add2Menu.amil"
-    if FileExists(curfile) {
+    if wx.wxFileName(curfile).FileExists() {
       func curfile
     } else {
       InfoDialog curfile+" does not exists"
@@ -28,3 +28,7 @@ proc AddSegMenu() {
 
 AddSegMenu()
 del AddSegMenu
+
+if exists(global::scripts_toolbar) {
+  global::scripts_toolbar.AddSeparator()
+}

@@ -18,13 +18,13 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
-#include "wrap_wxWindow.h"
+#include "wrap_wxFrame.h"
 
 #include "FenetreDessin.hpp"
 
 AMI_DECLARE_TYPE(FenetreDessin);
 
-class WrapClass_FenetreDessin : public WrapClass<FenetreDessin>, public WrapClass_wxWindow
+class WrapClass_FenetreDessin : public WrapClass<FenetreDessin>, public WrapClass_wxFrame
 {
   DEFINE_CLASS(WrapClass_FenetreDessin);
 
@@ -36,7 +36,7 @@ class WrapClass_FenetreDessin : public WrapClass<FenetreDessin>, public WrapClas
   public:
 
     /// Constructor
-    WrapClass_FenetreDessin(boost::shared_ptr<FenetreDessin> si):  WrapClass<FenetreDessin>(si), WrapClass_wxWindow(si)
+    WrapClass_FenetreDessin(boost::shared_ptr<FenetreDessin> si):  WrapClass<FenetreDessin>(si), WrapClass_wxFrame(si)
     {}
 
     /// Wrapping of the constructor
@@ -52,7 +52,7 @@ class WrapClass_FenetreDessin : public WrapClass<FenetreDessin>, public WrapClas
     void AddMethods(WrapClass<FenetreDessin>::ptr this_ptr )
     {
       // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
+      WrapClass_wxFrame::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxFrame>(this_ptr));
       parent_obj->AddMethods(parent_obj);
 
       AddVar_DrawingAreaDisplay(         this_ptr);
