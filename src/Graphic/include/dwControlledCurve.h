@@ -88,6 +88,7 @@ class dwControlledCurve {
       *_curve = *c._curve;
       *_controlpoints = *c._controlpoints;
       type = c.type;      
+      return *this;
     }
 
     boost::shared_ptr<vector_dwControlPoint>& GetControlPoints() {

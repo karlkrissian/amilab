@@ -11,11 +11,12 @@
 
 #include "wxPluginManager.h"
 
+
 //=======================================================
 
-bool wxPluginManager::Load (const wxString& LibName)
+bool wxPluginManager::Load (const std::string& LibName)
 {
-  m_dll.Load(LibName);
+  m_dll.Load(wxString(LibName.c_str(), wxConvUTF8));
   if(m_dll.IsLoaded())
   {
     //Create a valid function pointer using the function pointer type in PluginBase.h

@@ -58,10 +58,10 @@ class ArgInfo:
     if self.default!=None:
       if config.types[self.typeid].GetContext()!=None:
         contextid = config.types[self.typeid].GetContext()
-        if contextid in config.types.keys():
-          defaultval = "{0}::{1}".format(config.types[contextid].GetString(),self.default)
-        else:
-          defaultval = self.default
+        #if contextid in config.types.keys():
+          #defaultval = "{0}::{1}".format(config.types[contextid].GetString(),self.default)
+        #else:
+        defaultval = self.default
       else:
         defaultval = self.default
       res += typesubst.ConvertValFrom(self.typeid,defaultval,substvar)

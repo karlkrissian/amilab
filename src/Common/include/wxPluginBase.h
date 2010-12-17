@@ -12,25 +12,8 @@
 #ifndef wxPluginBase_H
 #define wxPluginBase_H
 
-//--------------------------------------------------
-// Specified how export functions from DLL or 
-// shared library.
-//--------------------------------------------------
-#ifdef WIN32
-#   define WX_AMILAB_EXPORT WXEXPORT
-#else
-#   define WX_AMILAB_EXPORT
-#endif
+#include "AMILabConfig.h"
 
-#ifdef WIN32
-#   if defined (_MSC_VER) || defined (__BORLANDC__)
-#      define PLUGIN_AMILAB_DLLEXPORT __declspec( dllexport )
-#   else
-#      error "don't know how export functions from DLL with this compiler"
-#   endif
-#else
-#   define PLUGIN_AMILAB_DLLEXPORT
-#endif
 
 //--------------------------------------------------
 // Definition of macros to determine the mode of use
@@ -49,23 +32,45 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+ #include "wx/wx.h"
+#else
+  #include "wx/string.h"
 #endif
 
 #include "wxPluginInterface.h"
 
+//--------------------------------------------------
+// Specified how export functions from DLL or 
+// shared library.
+//--------------------------------------------------
+#ifdef WIN32
+  #define WX_AMILAB_EXPORT WXEXPORT
+#else
+  #define WX_AMILAB_EXPORT
+#endif
+
+#ifdef WIN32
+  #if defined (_MSC_VER) || defined (__BORLANDC__)
+    #define PLUGIN_AMILAB_DLLEXPORT __declspec( dllexport )
+  //#else
+    //#      error "don't know how export functions from DLL with this compiler"
+  #endif
+#else
+  #define PLUGIN_AMILAB_DLLEXPORT
+#endif
+
 /**
  * @brief Class that sets the basis for the definition of a Plugin.
  **/
-class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
+class WXEXPORT wxPluginBase: public wxPluginInterface
 {
   public:
     /**
      * @brief Get the plugin name.
      *
-     * @return return a wxString with the plugin name
+     * @return return a std::string with the plugin name
      **/
-    virtual wxString GetName(void) const
+    virtual std::string GetName(void) const
     {
       return m_Name;
     }
@@ -73,9 +78,9 @@ class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
     /**
      * @brief Get the plugin description.
      *
-     * @return return a wxString with the plugin description
+     * @return return a std::string with the plugin description
      **/
-    virtual wxString GetDescription(void) const
+    virtual std::string GetDescription(void) const
     {
       return m_Description;
     }
@@ -83,9 +88,9 @@ class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
     /**
      * @brief Get the plugin version.
      *
-     * @return return a wxString with the plugin version
+     * @return return a std::string with the plugin version
      **/
-    virtual wxString GetVersion(void) const
+    virtual std::string GetVersion(void) const
     {
       return m_Version;
     }
@@ -93,9 +98,9 @@ class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
     /**
      * @brief Get the plugin author.
      *
-     * @return return a wxString with the plugin author
+     * @return return a std::string with the plugin author
      **/
-    virtual wxString GetAuthor(void) const
+    virtual std::string GetAuthor(void) const
     {
       return m_Author;
     }
@@ -103,9 +108,9 @@ class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
     /**
      * @brief Set the plugin name.
      *
-     * @param Name A wxString with the plugin name
+     * @param Name A std::string with the plugin name
      **/
-    virtual void SetName(const wxString &Name)
+    virtual void SetName(const std::string &Name)
     {
       m_Name = Name;
     }
@@ -113,9 +118,9 @@ class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
     /**
      * @brief Set the plugin description.
      *
-     * @param Description A wxString with the plugin description
+     * @param Description A std::string with the plugin description
      **/
-    virtual void SetDescription(const wxString &Description)
+    virtual void SetDescription(const std::string &Description)
     {
       m_Description = Description;
     }
@@ -123,9 +128,9 @@ class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
     /**
      * @brief Set the plugin version.
      *
-     * @param Version A wxString with the plugin version
+     * @param Version A std::string with the plugin version
      **/
-    virtual void SetVersion(const wxString &Version)
+    virtual void SetVersion(const std::string &Version)
     {
       m_Version = Version;
     }
@@ -133,9 +138,9 @@ class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
     /**
      * @brief Set the plugin author.
      *
-     * @param Author A wxString with the plugin author
+     * @param Author A std::string with the plugin author
      **/
-    virtual void SetAuthor(const wxString &Author)
+    virtual void SetAuthor(const std::string &Author)
     {
       m_Author = Author;
     }
@@ -143,7 +148,7 @@ class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
     /**
      * @brief  Get the wxWindow of the plugin.
      *
-     * @return return a wxString with the wxWindow of the plugin
+     * @return return a std::string with the wxWindow of the plugin
      **/
     virtual wxWindow* GetwxWindow(void) const
     {
@@ -213,7 +218,7 @@ class WX_AMILAB_EXPORT wxPluginBase: public wxPluginInterface
   
   private:
     unsigned char m_plugin_mode;  // Determines the mode in which the plugin is executed.
-    wxString      m_Name,         // The plugin name
+    std::string      m_Name,         // The plugin name
                   m_Description,  // The plugin description 
                   m_Version,      // The plugin version
                   m_Author;       // The plugin Author

@@ -203,9 +203,10 @@ def ConvertPtrFrom_wchar_t(typevar,substvar):
   res += indent+"{\n"
   res += indent+"  const wchar_t* val = {0};\n".format(typevar)
   res += indent+"  size_t size = wcslen(val);\n".format(typevar)
-  res += indent+"  char char_conv[size+1];\n"
+  res += indent+"  char* char_conv = new char[size+1];\n"
   res += indent+"  size_t conv_res = wcstombs(char_conv,val,size+1);\n"
   res += indent+"  if (conv_res>0) {0} = std::string(char_conv);\n".format(substvar)
+  res += indent+"  delete[] char_conv;\n".format(substvar)
   res += indent+"}"
   return res
 
@@ -224,7 +225,7 @@ def ConvertSmtPtrToPtr_wchar_t(typeid,substvar,typevar):
   #print "within ConvertSmtPtrToPtr_char()"
   config.AddInclude("stdlib.h")
   fulltypename=config.types[typeid].GetFullString()
-  res  = "wchar_t {0}[{1}->size()+1];\n".format(typevar,substvar)
+  res  = "wchar_t* {0} = new wchar_t[{1}->size()+1];\n".format(typevar,substvar)
   res += "mbstowcs({0},{1}->c_str(),{1}->size()+1);".format(typevar,substvar)
   #print "res = {0}".format(res)
   return res

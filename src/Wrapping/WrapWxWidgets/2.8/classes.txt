@@ -44,7 +44,6 @@ wxEvent
 wxEventTable
 wxEvtHandler
 wxFSFile
-wxFileConfig
 wxFileName
 wxFileSystem
 wxFileSystemHandler
@@ -119,7 +118,6 @@ wxPoint
 wxRect
 wxRegion
 wxScrollHelper
-wxScrollHelperNative
 wxScrollWinEvent
 wxScrolledWindow
 wxSize
