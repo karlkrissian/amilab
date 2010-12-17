@@ -8,7 +8,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Graphic/wxVTK/
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
 )
@@ -31,4 +31,4 @@ SET(WrapWxVTK_SRCS
 )
 
 my_add_library ( WrapWxVTK)
-add_dependencies ( WrapWxVTK WrapWxWidgets )
+add_dependencies ( WrapWxVTK WrapWxWidgets WrapVTK )

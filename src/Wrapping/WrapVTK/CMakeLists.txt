@@ -17,6 +17,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxVTK
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}
+  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated
 )
 
 INCLUDE( ${VTK_USE_FILE} )
@@ -64,10 +65,12 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   SET(XML_OUTPUT "${WRAPVTK_OUTDIR}/vtk_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/vtk_includes.h")
   SET( GCCXML_result 0)
-MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}")
-  add_custom_command(OUTPUT ${XML_OUTPUT}
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
-    DEPENDS ${XML_INPUT}
+#   add_custom_command(OUTPUT ${XML_OUTPUT}
+#     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
+#     DEPENDS ${XML_INPUT}
+#   )
+  execute_process(
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}   ${XML_INPUT}
   )
  
   # Generate the classes list
@@ -108,7 +111,7 @@ MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/i
             --outputdir "${WRAPVTK_OUTDIR}"
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             -q
-          DEPENDS ${XML_OUTPUT} ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+          DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
         )
     ENDIF(${GCCXML_result} EQUAL 0)
   ENDFOREACH( class ${ancestors_list}) 
@@ -129,7 +132,7 @@ MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/i
           --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
           --addwrap
           -q
-        DEPENDS ${XML_OUTPUT} ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+        DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
       )
   ENDIF(${GCCXML_result} EQUAL 0)
 

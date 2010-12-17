@@ -247,8 +247,8 @@ if __name__ == '__main__':
       sys.exit(0)
 
     # Parse the input again, TODO: avoid 2 parses here ...
-    inputfile.seek(0)
-    parser.parse(inputfile)
+    #inputfile.seek(0)
+    #parser.parse(inputfile)
 
     # Create the handler
     ff = findfiles.FindFiles()

@@ -53,10 +53,12 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   SET(XML_OUTPUT "${WRAPWX_OUTDIR}/wx_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/wx_includes.h")
   SET( GCCXML_result 0)
-MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}")
-  add_custom_command(OUTPUT ${XML_OUTPUT}
+#   add_custom_command(OUTPUT ${XML_OUTPUT}
+#     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
+#     DEPENDS ${XML_INPUT}
+#   )
+  execute_process(
     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
-    DEPENDS ${XML_INPUT}
   )
  
   # Generate the classes list
@@ -97,7 +99,7 @@ MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/i
             --outputdir "${WRAPWX_OUTDIR}"
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             -q
-          DEPENDS ${XML_OUTPUT} ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+          DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
         )
     ENDIF(${GCCXML_result} EQUAL 0)
   ENDFOREACH( class ${ancestors_list}) 
@@ -122,7 +124,7 @@ MESSAGE("COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/i
           --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
           --addwrap
           -q
-        DEPENDS ${XML_OUTPUT} ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+        DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
       )
   ENDIF(${GCCXML_result} EQUAL 0)
 
