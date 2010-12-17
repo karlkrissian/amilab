@@ -32,3 +32,4 @@ SET(WrapImports_SRCS
 )
 
 my_add_library ( WrapImports)
+add_dependencies ( WrapImports WrapWxWidgets )

@@ -58,3 +58,4 @@ IF(AMI_USE_PRECOM_HEADERS)
 ENDIF(AMI_USE_PRECOM_HEADERS)
 
 my_add_library ( WrapInterface)
+add_dependencies ( WrapInterface WrapWxWidgets )

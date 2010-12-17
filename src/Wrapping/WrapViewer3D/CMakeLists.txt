@@ -27,3 +27,4 @@ SET(WrapViewer3D_SRCS
 )
 
 my_add_library ( WrapViewer3D)
+add_dependencies ( WrapViewer3D WrapWxWidgets )

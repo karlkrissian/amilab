@@ -54,3 +54,4 @@ SET(WrapVTK_SRCS
 )
 
 my_add_library ( WrapVTK)
+add_dependencies ( WrapVTK WrapWxWidgets )

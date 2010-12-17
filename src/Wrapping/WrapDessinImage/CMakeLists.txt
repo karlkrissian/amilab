@@ -29,3 +29,4 @@ SET(WrapDessinImage_SRCS
 )
 
 my_add_library ( WrapDessinImage)
+add_dependencies ( WrapDessinImage WrapWxWidgets )
