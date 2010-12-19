@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "NLmeans.h"
 
 #include "AMILabConfig.h"
@@ -443,7 +447,7 @@ void create_weights_2d(double*& w, int f, float factor)
   double sum;
   double sigma = f*factor;
 //  printf("begin create_weights \n");
-  FILE_MESSAGE(boost::format("factor = %1%")%factor);
+  FILE_MESSAGE((boost::format("factor = %1%")%factor).str().c_str());
 
   w = new double [(2*f+1)*(2*f+1)];
   sum = 0;

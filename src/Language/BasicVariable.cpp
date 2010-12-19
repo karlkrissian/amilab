@@ -12,6 +12,10 @@
 
 #include "BasicVariable.h"
 #include "Variables.hpp"
+#include "ami_format.h"
+#include <iostream>
+
+
 
 BasicVariable::ptr BasicVariable::empty_variable;
 
@@ -64,7 +68,8 @@ const string BasicVariable::GetTypeName() const
 
 void BasicVariable::Rename(const char* newname)
 {  
-  CLASS_MESSAGE(boost::format("Renaming %1% to %2%")%_name % newname);
+  ami::format f("Renaming %1% to %2%");
+  CLASS_MESSAGE((f%_name.c_str() % newname).GetString());
   _name=newname;
   if (_vars.get())
     _vars->SetName(newname);

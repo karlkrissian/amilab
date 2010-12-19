@@ -16,6 +16,7 @@
 #include "wrapfunctions.hpp"
 #include "ImageToImageFilter.h"
 #include "ImageAddScalar.h"
+#include <iostream>
 
 void wrap_ImageAddScalar( ParamList* p)
 {

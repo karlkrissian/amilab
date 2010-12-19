@@ -10,12 +10,13 @@
 #include "DefineClass.hpp"
 
 #include <string>
-#include <iostream>
+//#include <iostream>
 #include "amilab_messages.h"
 #include "vartype.h"
 //#include "paramlist.h"
 #include "BasicVariable.h"
 #include <limits>
+#include "ami_format.h"
 
 //#include <vector>
 //#include <list>
@@ -32,7 +33,10 @@
 #define DYNAMIC_CAST_VARIABLE(newtype,initvar,resvar) \
     Variable<newtype>::ptr resvar( \
           boost::dynamic_pointer_cast<Variable<newtype> >(initvar)); \
-    if (!resvar.get()) std::cerr << "DYNAMIC_CAST_VARIABLE(" << #newtype << "," << #initvar << "," << # resvar << ") failed ..." << std::endl;
+    if (!resvar.get()) {\
+      ami::format f("DYNAMIC_CAST_VARIABLE( %1%,%2%,%3%) failed ...");\
+      PrintError( f % #newtype % #initvar % #resvar ); \
+    }
 
 
 /*! \def GET_WRAPPED_OBJECT
@@ -338,8 +342,6 @@ public:
 	//  typedef typename Variable<T> VariableType;
   typedef typename boost::shared_ptr<Variable<T> >    ptr;
   typedef typename boost::weak_ptr<Variable<T> >      wptr;
-  typedef typename std::vector<ptr>     ptr_vector;
-  typedef typename std::list<ptr>       ptr_list;
 
 
 private:
@@ -349,9 +351,9 @@ private:
 
   bool FreeMemory()
   {
-    if ((_pointer.use_count()>1)&&(GB_debug)) {
+/*    if ((_pointer.use_count()>1)&&(GB_debug)) {
       CLASS_ERROR( boost::format("variable %1% is referenced %2% times")  % _name % _pointer.use_count() );
-    }
+    }*/
     _pointer.reset();
     return true;
   }
@@ -386,9 +388,9 @@ public:
     */
   BasicVariable::ptr NewCopy() const
   {
+    ami::format f("No default copy of variable contents, need to be specialized for this type of variable ... for variable %1% ");
     // don't copy a file, keep a reference ...
-    CLASS_MESSAGE(boost::format("No default copy of variable contents, need to be specialized for this type of variable ... for variable %1% ")
-                        % Name());
+    CLASS_MESSAGE( (f % Name().c_str()).GetString());
     return NewReference();
 
 /*    std::string resname = _name+"_copy";
@@ -521,7 +523,7 @@ public:
   virtual BasicVariable::ptr TryCast(const std::string& type_string) const;
 
   //
-  void display() const;
+  void display(std::ostream& o) const;
 
   virtual double GetValueAsDouble() const;
   
@@ -543,8 +545,11 @@ public:
 
 #define VAR_UNARYOP(op) \
   BasicVariable::ptr operator op() \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
-    return this->NewReference(); }
+  { \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
+    return this->NewReference(); \
+  }
 
 /*
 #define VAR_OP_VAR(op) \
@@ -555,7 +560,9 @@ public:
 
 #define VAR_OP_BASICVAR(op) \
   BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+  {  \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
 /*
@@ -569,17 +576,23 @@ public:
 
 #define VAR_COMP_OP_BASICVAR(op) \
   BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+  { \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
 #define VAR_LOGIC_OP(op) \
   BasicVariable::ptr operator op() \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+  { \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
 #define VAR_LOGIC_OP_VAR(op) \
   BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+  { \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
   /** @name ArithmeticOperators
@@ -595,8 +608,9 @@ public:
   /// postfix ++ operator T++ 
   BasicVariable::ptr operator ++(int)
   {
-     std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
-     return this->NewReference(); 
+    ami::format f(" %1%::operator %2% not defined.");
+    PrintWarning( f % get_name() % __func__ ); 
+    return this->NewReference(); 
   }
 
   /// -T
@@ -606,8 +620,9 @@ public:
   /// postfix -- operator T-- 
   BasicVariable::ptr operator --(int)
   {
-     std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
-     return this->NewReference(); 
+    ami::format f(" %1%::operator %2% not defined.");
+    PrintWarning( f % get_name() % __func__ );
+    return this->NewReference(); 
   }
 
   /// a+b
@@ -671,8 +686,8 @@ public:
     */
     BasicVariable::ptr left_assign(const BasicVariable::ptr& b) 
     { 
-      std::cout << get_name() << " " 
-                << __func__ << " not defined." << std::endl; 
+      ami::format f(" %1%, %2% not defined.");
+      PrintWarning( f % get_name() % __func__ );
       return this->NewReference(); 
     }
 
@@ -680,21 +695,25 @@ public:
     /// Transpose
     BasicVariable::ptr Transpose()
     {
-       std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
+      ami::format f(" %1%::operator %2% not defined.");
+      PrintWarning( f % get_name() % __func__ ); 
       return this->NewReference();
     }
 
     /// Pointwise multiplication 
     BasicVariable::ptr PointWiseMult(const BasicVariable::ptr& b)
     {
-       std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
+      ami::format f(" %1%::operator %2% not defined.");
+      PrintWarning( f % get_name() % __func__ );
       return this->NewReference();
     }
   //@}
 
 #define VAR_FUNC(func) \
   BasicVariable::ptr m_##func() \
-  { std::cout << get_name() << " " << __func__ << " not defined." << std::endl; \
+  { \
+    ami::format f(" %1%, %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
   /** @name Mathematical functions
@@ -720,20 +739,23 @@ public:
 
   BasicVariable::ptr BasicCast(const int& type) 
   {
-    std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
+    ami::format f(" %1% %2% not defined.");
+    PrintWarning( f % get_name() % __func__ );
     return this->NewReference(); 
   }
 
   BasicVariable::ptr operator[](const BasicVariable::ptr& v)
   {
-    std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
+    ami::format f(" %1%::operator %2% not defined.");
+    PrintWarning( f % get_name() % __func__ );
     return BasicVariable::empty_variable; 
   }
 
 
   BasicVariable::ptr TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2) 
   {
-    std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
+    ami::format f(" %1%, %2% not defined.");
+    PrintWarning( f % get_name() % __func__ );
     return this->NewReference(); 
   }
 

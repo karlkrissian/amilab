@@ -30,6 +30,10 @@
 
 #include "AMILabConfig.h"
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #ifndef _WITHOUT_ITK_
 #include "itkOrientedImage.h"
 #include "itkImageSeriesReader.h"

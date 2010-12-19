@@ -10,6 +10,9 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
 
 #include "ami_itkRead.h"
 

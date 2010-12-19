@@ -1,4 +1,8 @@
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "amilab_messages.h"
 #include "DefineClass.hpp"
 #include "Variable.hpp"

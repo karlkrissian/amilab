@@ -13,6 +13,7 @@ import glob
 import re
 import os.path
 import datetime
+import time
 
 # configuration, containing the global variables
 import config
@@ -33,7 +34,6 @@ import findfiles
 import wx_lib
 
 import arginfo
-import parse_class
 import wrap_class
 import parse_function
 import wrap_function
@@ -161,12 +161,18 @@ def WrapMethodTypePointer(typedefname,include_file):
 #----------------------------------------------------------------------
 if __name__ == '__main__':
   
-
+    if (args.val.profile):
+      t0 = time.clock()
     # add the user defined classes
     for cl in args.val.available_classes:
       config.available_classes.append(cl)
     FindAvailableClasses()
     #print config.available_classes
+    
+    if (args.val.profile):
+      t1 = time.clock()
+      print t1 - t0, "seconds process time"
+
 
     if not(os.path.exists(args.val.outputdir)):
       os.mkdir(args.val.outputdir)
@@ -192,11 +198,17 @@ if __name__ == '__main__':
     inputfile = open(args.val.xmlfilename,'r')
     
     # Create the handler
-    ft = findtypesvars.FindTypesAndVariables()
+    # Get public members of available classes given in parameter
+    config.parsed_classes = args.val.classes[:]
+    print config.parsed_classes
+    
+    ft = findtypesvars.FindTypesAndVariables(config.parsed_classes)
     parser.setContentHandler(ft)
     # Parse the input
     inputfile.seek(0)
     parser.parse(inputfile)
+
+    #print "wxConfig is available ? ", wrap_class.AvailableType("wxConfigBase",config.classes["wxConfigBase"],[])
 
     #print "Number of classes matching the filter : {0}".format(ft.number_of_libclasses)
 
@@ -213,27 +225,35 @@ if __name__ == '__main__':
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
       for b in args.val.ancestors:
-        #print "b=",b
+        print "b=",b
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:
             # recursively add the ancestors to the list
-            bases=config.types[f].GetBases()
+            bases=config.types[f].bases
+            if b=="wxTopLevelWindow":
+              print bases
             f_anc=[]
             if bases!=None:
-              f_anc = bases.split()
+              f_anc = bases
             newlist=[]
             while f_anc != []:
-              anc_id = f_anc.pop()
+              anc_id = f_anc.pop()[0]
+              if b=="wxTopLevelWindow":
+                print anc_id
               if anc_id in classes_dict.keys():
+                if b=="wxTopLevelWindow":
+                  print classes_dict[anc_id]
                 if  classes_dict[anc_id] not in ancestors and  \
                     classes_dict[anc_id] not in config.classes_blacklist and\
-                    not parse_class.IsTemplate(classes_dict[anc_id]):
+                    not wrap_class.IsTemplate(classes_dict[anc_id]):
                   ancestors.append(classes_dict[anc_id])
                   newlist.append(classes_dict[anc_id])
-                  bases=config.types[anc_id].GetBases()
+                  bases=config.types[anc_id].bases
+                  if b=="wxTopLevelWindow":
+                    print bases
                   if bases!=None:
-                    for newanc in bases.split():
+                    for newanc in bases:
                       f_anc.append(newanc)
             #print "New ancestors of {0} are {1}".format(b,newlist)
       #print "All ancestors are   {0} ".format(ancestors)
@@ -246,6 +266,10 @@ if __name__ == '__main__':
         f.write(a+"\n")
       sys.exit(0)
 
+    if (args.val.profile):
+      t2 = time.clock()
+      print t2 - t1, "seconds process time"
+    
     # Parse the input again, TODO: avoid 2 parses here ...
     #inputfile.seek(0)
     #parser.parse(inputfile)
@@ -283,12 +307,16 @@ if __name__ == '__main__':
     
     number_of_newclasses = 0
     
+    if (args.val.profile):
+      t3 = time.clock()
+      print t3 - t2, "seconds process time"
+    
     n=0
     nmax=args.val.max
     while (len(config.needed_classes)>0) and (n<nmax):
       #print "\n\n needed classes:", config.needed_classes, "\n\n"
       cl = config.needed_classes.pop()
-      #print "Class: {0} \t usedname: {1}".format(cl,parse_class.ClassUsedName(cl))
+      #print "Class: {0} \t usedname: {1}".format(cl,wrap_class.ClassUsedName(cl))
       config.include_list = []
       config.declare_list = []
       wrap_class.WrapClass(cl,include_file,inputfile)
@@ -296,7 +324,7 @@ if __name__ == '__main__':
       if args.val.r:
         for c in config.new_needed_classes:
           # check if templates are discarded
-          if (not parse_class.IsTemplate(c)) or args.val.templates:
+          if (not wrap_class.IsTemplate(c)) or args.val.templates:
             if (c != cl) and (c not in config.incomplete_classes) and (c not in config.needed_classes):
               m = re.match(args.val.filter, c)
               if m != None:
@@ -318,6 +346,10 @@ if __name__ == '__main__':
           wrap_class.WrapClass(cl,include_file,inputfile)
 
     utils.WarningMessage( "Wrapped classes: {0}".format(config.wrapped_classes))
+    
+    if (args.val.profile):
+      t4 = time.clock()
+      print t4 - t3, "seconds process time"
     
     # now create the library context
     if args.val.libname!=None and args.val.addwrap:
@@ -455,3 +487,6 @@ if __name__ == '__main__':
       wrap_function.WrapFunction(func,include_file,inputfile)
       wrapped_functions.append(func)
         
+    if (args.val.profile):
+      t5 = time.clock()
+      print t5 - t4, "seconds process time"

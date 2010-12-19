@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "wrap_AddSubImage.h"
 #include "fonctions.h"
 #include "wrapfunctions.hpp"
@@ -44,13 +48,13 @@ void wrap_AddSubImage(ParamList* p)
   if (!get_val_param<float>(   posz,        p, n)) HelpAndReturn;
 
   if ((posx<0)||(posy<0)||(posz<0)) {
-    FILE_ERROR(boost::format("Wrong parameters: negative coordinate (%1%,%2%,%3%)") % posx % posy % posz );
+    FILE_ERROR((boost::format("Wrong parameters: negative coordinate (%1%,%2%,%3%)") % posx % posy % posz ).str().c_str());
     HelpAndReturn;
   }
   if ((posx>=input->DimX())||
       (posy>=input->DimY())||
       (posz>=input->DimZ())) {
-    FILE_ERROR(boost::format("Wrong parameters: out of range coordinate (%1%,%2%,%3%)")% posx % posy % posz);
+    FILE_ERROR((boost::format("Wrong parameters: out of range coordinate (%1%,%2%,%3%)")% posx % posy % posz).str().c_str());
     HelpAndReturn;
   }
 

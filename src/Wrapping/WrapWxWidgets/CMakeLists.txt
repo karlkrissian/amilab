@@ -84,25 +84,31 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/methodpointers.txt" methodpointers_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
 
-  FOREACH( class ${ancestors_list}) 
-    #MESSAGE("Processing class ${class}")
-    IF (${GCCXML_result} EQUAL 0)
-      # Go for python wrapping
-      ADD_CUSTOM_COMMAND(OUTPUT ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${WRAPWX_OUTDIR}/wrap_${class}.h
-        COMMAND
-          ${PYTHON_EXECUTABLE} 
-            ${AMI_WRAPPER} ${XML_OUTPUT}
-            --libname wx
-            --filter "wx*"
-            --classes ${class}
-            --available_classes ${ancestors_list} ${methodpointers_list}
-            --outputdir "${WRAPWX_OUTDIR}"
-            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-            -q
-          DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-        )
-    ENDIF(${GCCXML_result} EQUAL 0)
+  # Wrap all classes at once since it is now fast
+  FOREACH( class ${ancestors_list})
+    SET(OUTPUT_LIST 
+      ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${WRAPWX_OUTDIR}/wrap_${class}.h
+      ${OUTPUT_LIST}
+    )
   ENDFOREACH( class ${ancestors_list}) 
+
+  #MESSAGE("Processing class ${class}")
+  IF (${GCCXML_result} EQUAL 0)
+    # Go for python wrapping
+    ADD_CUSTOM_COMMAND(OUTPUT ${OUTPUT_LIST}
+      COMMAND
+        ${PYTHON_EXECUTABLE} 
+          ${AMI_WRAPPER} ${XML_OUTPUT}
+          --libname wx
+          --filter "wx*"
+          --classes ${ancestors_list}
+          --available_classes ${ancestors_list} ${methodpointers_list}
+          --outputdir "${WRAPWX_OUTDIR}"
+          --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+          -q
+        DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+      )
+  ENDIF(${GCCXML_result} EQUAL 0)
 
 
   MESSAGE("Processing method pointers ${methodpointers_list}")

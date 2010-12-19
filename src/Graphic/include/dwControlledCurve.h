@@ -35,7 +35,7 @@
 #endif
 
 #include "DefineClass.hpp"
-
+#include <vector>
 
 typedef enum {
  normal_curve = 0,

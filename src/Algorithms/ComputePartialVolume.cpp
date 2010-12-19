@@ -11,6 +11,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "ComputePartialVolume.h"
 #include <iostream>
 

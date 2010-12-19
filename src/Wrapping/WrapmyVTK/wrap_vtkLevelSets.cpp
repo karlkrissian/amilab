@@ -22,6 +22,7 @@
 #include "ami_function.h"
 #include "vtkCommand.h"
 #include "vtk_common.h"
+#include "inrimage.hpp"
 
 #define RETURN_VARINT(val,name)             \
   std::string varname = (boost::format("%1%_id")%name).str();\

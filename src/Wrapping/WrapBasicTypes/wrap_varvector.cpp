@@ -19,7 +19,7 @@
 #include "ami_object.h"
 #include "wrap_varvector.h"
 
-
+#include <iostream>
 //
 // static member for creating a variable from a ParamList
 //

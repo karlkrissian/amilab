@@ -5,6 +5,7 @@
 import config
 import utils
 import typesubst
+import wrap_class
 
 #------------------------------
 class ArgTypeBase:
@@ -13,8 +14,6 @@ class ArgTypeBase:
     self._name=""
     self._id=0
     self._context=None
-    self._bases=None
-    self._abstract=None
 
   def SetType(self,t):
     self._type=t
@@ -25,17 +24,8 @@ class ArgTypeBase:
   def SetName(self,n):
     self._name=n
   
-  def SetBases(self,_b):
-    self._bases = _b
-
-  def GetBases(self):
-    return self._bases
-    
-  def SetAbstract(self,_b):
-    self._abstract = _b
-
   def GetAbstract(self):
-    return self._abstract
+    return None
     
   def SetId(self,_id):
     self._id = _id
@@ -72,8 +62,17 @@ class ClassInfo(ArgTypeBase):
     ArgTypeBase.__init__(self) 
     self.publicmembers=()
     self._type="Class"
-    self._bases=[]
-    self.bases=()
+    # additional information for classes to wrap
+    self.bases=[]
+    self.abstract="0"
+    self.incomplete="0"
+    self.has_copyconstr=False
+    self.fileid=""
+    self.public_members=wrap_class.PublicMembers()
+  
+  def GetAbstract(self):
+    return self.abstract=="1"
+
 
 #------------------------------
 class ArgumentInfo:
@@ -116,6 +115,10 @@ class StructInfo(ArgTypeBase):
   def __init__(self):
     ArgTypeBase.__init__(self) 
     self._type="Struct"
+    self.bases=[]
+    self.incomplete="0"
+    self.fileid=""
+    self.public_members=wrap_class.PublicMembers()
 
 #------------------------------
 class EnumerationInfo(ArgTypeBase):

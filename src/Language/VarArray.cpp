@@ -63,7 +63,7 @@ BasicVariable::ptr VarArray::GetVar(int i) {
     return _vars[i];
   }    
   else {
-    CLASS_ERROR(boost::format("Wrong index %1%") % i);
+    CLASS_ERROR((boost::format("Wrong index %1%") % i).str().c_str());
     return BasicVariable::ptr();
   }
 }

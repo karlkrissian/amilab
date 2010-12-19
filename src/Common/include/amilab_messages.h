@@ -15,50 +15,48 @@
 
 #include "AMILabConfig.h"
 
+#include "ami_format.h"
+
+void PrintWarning(const char* mess);
+void PrintWarning(const ami::format& f);
+
+void PrintError(const char* mess);
+void PrintError(const ami::format& f);
+
 // Error message should always be displayed
 #define FILE_ERROR( m) { \
-    std::cerr << "Error \t"; \
-    std::cerr << "file: " << __FILE__    << std::endl; \
-    std::cerr << "      \t" << __func__ << std::endl; \
-    std::cerr << "      \t" << m        << std::endl; }
+  ami::format f("Error \t file: %1% \n     \t %2% \n     \t %3%");\
+  PrintError( f % __FILE__ % __func__ % m ); }
 
 #define FILE_MESSAGE( m)  \
   if ((GB_verbose) || (GB_debug)) { \
-    std::cerr << "Info \t" \
-              << "file: " << __FILE__    << " , " \
-              << "      \t" << __func__ << " : " \
-              << "      \t" << m        << std::endl; \
+    ami::format f("Error \t file: %1% \n     \t %2% \n     \t %3%");\
+    PrintError( f % __FILE__ % __func__ % m ); \
   }
 
 // Error message should always be displayed
 #define CLASS_ERROR( m) \
-    std::cerr << "Error \t" \
-              << this->get_name() << "::" \
-              << __func__  << "(), line " << __LINE__ << "\t"\
-              << m        << std::endl; 
+  {\
+    ami::format f("Error \t %1%::%2%(), line %3% \t %4%");\
+    PrintError( f % this->get_name() % __func__ % __LINE__ % m );\
+  }
 
 #define CLASS_MESSAGE(m) \
   if ((GB_verbose) || (GB_debug)) { \
-    std::cerr << "Info \t" \
-              << this->get_name() << "::" \
-              << __func__ << "()\t"  \
-              << m << std::endl; \
+    ami::format f("Info \t %1%::%2%(), line %3% \t %4%");\
+    PrintWarning( f % this->get_name() % __func__ % __LINE__ % m );\
   }
 
 #define VTK_CLASS_MESSAGE(m) \
   if ((GB_verbose) || (GB_debug)) { \
-    std::cerr << "Info \t" \
-              << this->GetClassName() << "::" \
-              << __func__ << "()\t"  \
-              << m << std::endl; \
+    ami::format f("Info \t %1%::%2%(), line %3% \t %4%");\
+    PrintWarning( f % this->GetClassName() % __func__ % __LINE__ % m );\
   }
 
 #define CLASS_MESSAGE_STATIC(_this,m) \
   if ((GB_verbose) || (GB_debug)) { \
-    std::cerr << "Info \t" \
-              << _this->get_name() << "::" \
-              << __func__ << "()\t"  \
-              << m << std::endl; \
+    ami::format f("Info \t %1%::%2%(), line %3% \t %4%");\
+    PrintWarning( f % _this->get_name() % __func__ % __LINE__ % m );\
   }
 
 extern unsigned char GB_debug;

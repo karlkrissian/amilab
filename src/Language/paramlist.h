@@ -27,7 +27,7 @@ extern unsigned char GB_debug;
 
 
 #include <string>
-#include <list>
+#include <vector>
 //using namespace std;
 
 

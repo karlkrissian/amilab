@@ -1,6 +1,7 @@
 
 # global dictionary of argument types
 types      = dict()
+classes    = dict()
 variables  = dict()
 enumvalues = dict()
 files      = dict()
@@ -54,6 +55,7 @@ class_types = ['Class','Struct']
 
 # amilab available_types
 available_classes=[]
+parsed_classes=[]
 wrapped_classes=[]
 incomplete_classes=[]
 new_needed_classes=[]

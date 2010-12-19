@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "wxDrawingWindow.h"
 
 #include "amilab_messages.h"
@@ -879,10 +883,10 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
   _mouse_x = (int)event.GetX();
   _mouse_y = (int)event.GetY();
 
-  CLASS_MESSAGE(boost::format("At position %1% %2%")%_mouse_x%_mouse_y);
+  CLASS_MESSAGE((boost::format("At position %1% %2%")%_mouse_x%_mouse_y).str().c_str());
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
-  CLASS_MESSAGE(boost::format("world coord %1% %2%")%x%y);
+  CLASS_MESSAGE((boost::format("world coord %1% %2%")%x%y).str().c_str());
 
   // check if we are at a control point
   //int closest = CheckCtrlPoint();

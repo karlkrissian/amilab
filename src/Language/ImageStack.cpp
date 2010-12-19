@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "ImageStack.h"
 
 #include "Variable.hpp"
@@ -48,7 +52,7 @@ bool ImageStack::AddFileImage( const char* name)
       }
     AddImagePointer(im_tmp);
   } else {
-    CLASS_ERROR(boost::format("Invalid image filename '%s'") % name);
+    CLASS_ERROR((boost::format("Invalid image filename '%s'") % name).str().c_str());
     //AddImagePointer(NULL);
     return false;
   }

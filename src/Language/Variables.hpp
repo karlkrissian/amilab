@@ -9,12 +9,13 @@
 #include "BasicVariable.h"
 #include "Variable.hpp"
 #include "DefineClass.hpp"
+#include "ami_format.h"
 
 class wxString;
 class wxArrayString;
 
 #include "Variable.hpp"
-
+#include <vector>
 #include <boost/shared_ptr.hpp>
 
 
@@ -100,7 +101,10 @@ class Variables{
         boost::shared_ptr<Variable<T> >& val,
         boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() )
 {
-  CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
+  {
+    ami::format f(" %1%, in %2% ");
+    CLASS_MESSAGE((f % name.c_str() % GetName().c_str()).GetString());
+  }
 
   std::string resname = this->CheckVarName(name.c_str());
   boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val->Pointer()));
@@ -126,7 +130,7 @@ class Variables{
         boost::shared_ptr<T >& val,
         boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() )
   {
-    CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
+/*    CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());*/
   
     std::string resname = this->CheckVarName(name.c_str());
     boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val));

@@ -162,7 +162,7 @@ BasicVariable::ptr wrap_VarListsize::CallMember( ParamList* p)
 {
   int size = this->_objectptr->list.size();
   // create integer variable to return
-  RETURN_VARINT(size,"list_size");
+  RETURN_VAR(int,size);
 }
 
 

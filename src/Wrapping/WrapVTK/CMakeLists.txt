@@ -96,25 +96,32 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   #FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/methodpointers.txt" methodpointers_txt)
   #STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
 
-  FOREACH( class ${ancestors_list}) 
-    MESSAGE("Processing class ${class}")
-    IF (${GCCXML_result} EQUAL 0)
-      # Go for python wrapping
-      ADD_CUSTOM_COMMAND(OUTPUT ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${WRAPVTK_OUTDIR}/wrap_${class}.h
-        COMMAND
-          ${PYTHON_EXECUTABLE} 
-            ${AMI_WRAPPER} ${XML_OUTPUT}
-            --libname vtk
-            --filter "vtk*"
-            --classes ${class}
-            --available_classes ${ancestors_list} 
-            --outputdir "${WRAPVTK_OUTDIR}"
-            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-            -q
-          DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
-        )
-    ENDIF(${GCCXML_result} EQUAL 0)
+  # Wrap all classes at once since it is now fast
+  FOREACH( class ${ancestors_list})
+    SET(OUTPUT_LIST 
+      ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${WRAPVTK_OUTDIR}/wrap_${class}.h
+      ${OUTPUT_LIST}
+    )
   ENDFOREACH( class ${ancestors_list}) 
+
+  MESSAGE("Processing classes ${ancestors_list}")
+  IF (${GCCXML_result} EQUAL 0)
+    # Go for python wrapping
+    ADD_CUSTOM_COMMAND(OUTPUT  ${OUTPUT_LIST}
+      COMMAND
+        ${PYTHON_EXECUTABLE} 
+          ${AMI_WRAPPER} ${XML_OUTPUT}
+          --libname vtk
+          --filter "vtk*"
+          --classes ${ancestors_list}
+          --constructor New
+          --available_classes ${ancestors_list} 
+          --outputdir "${WRAPVTK_OUTDIR}"
+          --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+          -q
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+      )
+  ENDIF(${GCCXML_result} EQUAL 0)
 
 
   MESSAGE("Processing addwrap ")

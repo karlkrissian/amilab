@@ -1,4 +1,9 @@
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
+
 #include "DefineClass.hpp"
 #include "Variable.hpp"
 
@@ -46,6 +51,11 @@ class VarArray;
 
 #include "VarArray.h"
 
+#include <ostream>
+void ToStream(std::ostream& o, const char* st)
+{
+ o << st;
+}
 
 #define VARTYPE_PROP(type,name,isnum) \
   template<> AMI_DLLEXPORT vartype GetVarType<type>()  { return name;     } \

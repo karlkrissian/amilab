@@ -18,6 +18,10 @@
 // use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
 #define NOMINMAX
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #ifndef WIN32
 #include <unistd.h>
 #endif
@@ -1065,7 +1069,7 @@ proc_decl:
 //      int context = Vars.GetContext(boost::static_pointer_cast<BasicVariable>(var));
 //      Vars.deleteVar(var);
 
-      FILE_MESSAGE(boost::format("Redefining procedure %1%") % var->Name()); 
+      FILE_MESSAGE((boost::format("Redefining procedure %1%") % var->Name()).str().c_str()); 
 
 //      AMIFunction::ptr amifunc( new AMIFunction);
       AMIFunction::ptr amifunc(func);
@@ -1074,8 +1078,8 @@ proc_decl:
       amifunc->SetFileName(driver.current_file);
       amifunc->SetParamList($5);
       amifunc->SetBody(     body);
-      FILE_MESSAGE(boost::format("%1%: body = %2%")
-                    % var->Name()  % body->GetBody());
+      FILE_MESSAGE((boost::format("%1%: body = %2%")
+                    % var->Name()  % body->GetBody()).str().c_str());
 
       // add the variable in the same context ...
 //      BasicVariable::ptr newvar =
@@ -1216,7 +1220,7 @@ command:
             // TODO: only do it from the command line ???
             //cout << "display var info" << std::endl;
             if (driver.InConsole())
-              var->display();
+              var->display(std::cout);
           }
 
         }
@@ -1248,7 +1252,7 @@ command:
                 // TODO: only do it from the command line ???
                 //cout << "display var info" << std::endl;
                 if (driver.InConsole())
-                  var->display();
+                  var->display(std::cout);
             }
           }
 
@@ -2041,7 +2045,7 @@ command:
 */
 
       titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
-      FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
+      FILE_MESSAGE((boost::format("SHOW var_image  title %s") % titre).str().c_str());
       //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
       var = context->GetVar(titre.c_str());
       if (var.get()) {
@@ -2065,7 +2069,7 @@ command:
         ParamList* p = new ParamList();
         p->AddParam(imagevar);
         BasicVariable::ptr newvar = WrapClass<DessinImage>::CreateVar(p);
-        FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
+        FILE_MESSAGE((boost::format("SHOW var_image creating title %s ") % titre).str().c_str());
         if (newvar.get()) {
           newvar->Rename(titre.c_str());
           context->AddVar(newvar, context);
@@ -2136,7 +2140,7 @@ command:
               ParamList* p = new ParamList();
               p->AddParam(Title);
               BasicVariable::ptr newvar = WrapClass<Viewer3D>::CreateVar(p);
-              FILE_MESSAGE(boost::format("SHOW var_ami_object creating title %s ") % titre);
+              FILE_MESSAGE((boost::format("SHOW var_ami_object creating title %s ") % titre).str().c_str());
 
               if (newvar.get()) {
                 newvar->Rename(titre.c_str());
@@ -11120,12 +11124,12 @@ InrImage* ReadImage( const char* name)
     }
     catch (InrImage::ErreurLecture)
     {
-      FILE_ERROR(boost::format("Unable to read image %s") % name);
+      FILE_ERROR((boost::format("Unable to read image %s") % name).str().c_str());
       //AddImagePointer(NULL);
       return NULL;
     }
   } else {
-    FILE_ERROR(boost::format("Invalid image filename '%s'") % name);
+    FILE_ERROR((boost::format("Invalid image filename '%s'") % name).str().c_str());
     //AddImagePointer(NULL);
   }
   return res;

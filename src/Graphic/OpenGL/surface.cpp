@@ -64,6 +64,10 @@
 
 #include "dijkstra.h"
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 
 #ifndef _WITHOUT_VTK_
 #include <vtkCellArray.h>
@@ -1310,7 +1314,7 @@ SurfacePoly :: operator vtkPolyData* (void) const
   Pour( i, 0, GetNumberOfLines()-1)
     pts.clear();
     n = _tab_lines[i].NbElts();
-    CLASS_MESSAGE(boost::format("line %d : %d points")% i % n )
+    CLASS_MESSAGE((boost::format("line %d : %d points")% i % n ).str().c_str())
     Si n>0 Alors
       Pour(j,0,_tab_lines[i].NbElts()-1)
         pts.push_back(_tab_lines[i][j]);
@@ -1657,8 +1661,8 @@ void SurfacePoly :: EndGLSurface()
   
         glBegin(GL_LINE_STRIP);
   
-          CLASS_MESSAGE(boost::format("line %d : %d elts")
-                        % i %  _line.NbElts() );
+          CLASS_MESSAGE((boost::format("line %d : %d elts")
+                        % i %  _line.NbElts() ).str().c_str());
           Pour(j,0,_line.NbElts()-1)
             pt = _tab_pts[_line[j]];
             pt.AddGLLine();

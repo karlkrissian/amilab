@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "paramlist.h"
 #include "wrapfunction_class.h"
 

@@ -1,6 +1,7 @@
 
 #include "ami_object.h"
 #include "wrapfunction_class.h"
+#include <iostream>
 
 /**
   * Destructor : empties the list of variables
