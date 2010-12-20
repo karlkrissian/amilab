@@ -13,6 +13,7 @@ import time
 
 # configuration, containing the global variables
 import config
+import filecmp
 
 # load command line arguments
 import args
@@ -412,7 +413,7 @@ class ParsePublicMembers:
   def endElement(self, name):  
     if (self.inmethod==1) and (name in self.available_methods):
       self.inmethod=0
-    if (self.inenum==True):
+    if (self.inenum==True) and (name=="Enumeration"):
       self.inenum=False
 
 #------------------------------
@@ -598,6 +599,21 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
   return res
   
 
+# filename is the new file that should end with '.new'
+# it is copied to the original file only if they differ
+def BackupFile(filename):
+  # Check implementation file for backup
+  if os.path.isfile(filename[:-4]):
+    if filecmp.cmp(filename,filename[:-4]):
+      # if same "mv xxx.cpp.new xxx.cpp.old", not changing the original file to avoid recompilation
+      shutil.move(filename,filename[:-4]+".old")
+    else:
+      print "FILES differ: {0}".format(filename[:-4])
+      # else "mv xxx.cpp xxx.cpp.old" and "mv xxx.cpp.new xxx.cpp"
+      shutil.move(filename[:-4],filename[:-4]+".old")
+      shutil.move(filename,filename[:-4])
+  else:
+      shutil.move(filename,filename[:-4])
 
 
 #------------------------------------------------------------------
@@ -712,10 +728,6 @@ def WrapClass(classname,include_file,inputfile):
 
   found = classname in config.classes.keys()
 
-  if (args.val.profile):
-    print "WrapClass({0}) FindClass() time {1}".format(classname,time.clock()-t0)
-    t0 = time.clock()
-  
   #
   if found:
     classid = config.classes[classname]
@@ -736,10 +748,6 @@ def WrapClass(classname,include_file,inputfile):
     
     fm = config.types[classid].public_members
 
-    if (args.val.profile):
-      print "WrapClass({0}) time FindPublicMembers {1}".format(classname,time.clock()-t0)
-      t0 = time.clock()
-    
     # Check for Copy Constructor
     pos=0
     for m in fm.Constructors:
@@ -773,7 +781,7 @@ def WrapClass(classname,include_file,inputfile):
       implement_type += "}\n"
           
     # Create Header File
-    header_filename=args.val.outputdir+"/wrap_{0}.h".format(ClassUsedName(classname))
+    header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(ClassUsedName(classname))
     if IsTemplate(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.h.in",header_filename)
     else:
@@ -1116,7 +1124,7 @@ def WrapClass(classname,include_file,inputfile):
           implement_createvar += "  return BasicVariable::ptr();\n"
 
     # Create Implementation File
-    impl_filename=args.val.outputdir+"/wrap_{0}.cpp".format(ClassUsedName(classname))
+    impl_filename=args.val.outputdir+"/wrap_{0}.cpp.new".format(ClassUsedName(classname))
     if IsTemplate(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.cpp.in",impl_filename)
     else:
@@ -1205,6 +1213,12 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${WRAP_PUBLIC_METHODS}",   impl)
       print line,
 
+  # Check header file for backup
+  BackupFile(header_filename)
+
+  # Check implementation file for backup
+  BackupFile(impl_filename)
+  
   if (args.val.profile):
-    print "WrapClass({0}) time {1}".format(classname,time.clock()-t0)
+    print "WrapClass({0})  {1}".format(classname,time.clock()-t0)
     t0 = time.clock()

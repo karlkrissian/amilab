@@ -415,7 +415,7 @@ if (!exists(VolRenClass)) {
       ::win.EndHorizontal()
 
       ::win.BeginBook()
-    
+        ::nb = ::win.GetBookCtrl()
         ::win.AddPage("IO")
           # set the input image drawing window
           ::win.BeginBoxPanel("Input")

@@ -104,10 +104,12 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
     )
   ENDFOREACH( class ${ancestors_list}) 
 
-  MESSAGE("Processing classes ${ancestors_list}")
+  MESSAGE("Processing classes ${ancestors_list} and addwrap")
   IF (${GCCXML_result} EQUAL 0)
     # Go for python wrapping
     ADD_CUSTOM_COMMAND(OUTPUT  ${OUTPUT_LIST}
+        ${WRAPVTK_OUTDIR}/addwrap_vtk.h
+        ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
       COMMAND
         ${PYTHON_EXECUTABLE} 
           ${AMI_WRAPPER} ${XML_OUTPUT}
@@ -118,28 +120,10 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
           --available_classes ${ancestors_list} 
           --outputdir "${WRAPVTK_OUTDIR}"
           --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+          --addwrap
+          --profile
           -q
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
-      )
-  ENDIF(${GCCXML_result} EQUAL 0)
-
-
-  MESSAGE("Processing addwrap ")
-
-  IF (${GCCXML_result} EQUAL 0)
-    # Go for python wrapping
-    ADD_CUSTOM_COMMAND(OUTPUT  ${WRAPVTK_OUTDIR}/addwrap_vtk.h  ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
-      COMMAND
-        ${PYTHON_EXECUTABLE} 
-          ${AMI_WRAPPER} ${XML_OUTPUT}
-          --libname vtk
-          --filter "vtk*"
-          --available_classes ${ancestors_list} 
-          --outputdir "${WRAPVTK_OUTDIR}"
-          --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-          --addwrap
-          -q
-        DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
       )
   ENDIF(${GCCXML_result} EQUAL 0)
 

@@ -24,6 +24,7 @@
 #include "MainFrame.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
+#include "wrap_wxNotebook.h"
 #include "wrap_wxSizerItem.h"
 
 #include "wrap_wxBitmap.h"
@@ -155,6 +156,25 @@ BasicVariable::ptr WrapClass_ParamPanel::
 
 }
 
+
+//---------------------------------------------------
+//  GetBookCtrl
+//---------------------------------------------------
+void WrapClass_ParamPanel::wrap_GetBookCtrl::SetParametersComments() 
+{
+  return_comments = "The control book.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_GetBookCtrl::CallMember( ParamList* p)
+{
+  wxNotebook* b = this->_objectptr->GetObj()->GetBookCtrl();
+
+  if (b==NULL)
+    return BasicVariable::ptr();
+  else
+    return AMILabType<wxNotebook>::CreateVar(b);
+
+}
 
 
 //---------------------------------------------------

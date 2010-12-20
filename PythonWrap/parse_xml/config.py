@@ -45,6 +45,7 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxWindow::FindItem',             # idem
   'wxPoint2DDouble::SetPolarCoordinates', # idem
   'wxPoint2DInt::SetPolarCoordinates', # idem
+  'wxGenericListCtrl::Update(long)', # linking problem, don't know why ...
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints', # idem

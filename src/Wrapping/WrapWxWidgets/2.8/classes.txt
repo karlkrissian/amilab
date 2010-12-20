@@ -81,6 +81,7 @@ wxImageHistogramBase_wxImplementation_HashTable
 wxImageHistogramBase_wxImplementation_KeyEx
 wxImageHistogramBase_wxImplementation_Pair
 wxImageHistogramEntry
+wxImageList
 wxInitDialogEvent
 wxInputStream
 wxIntegerEqual
@@ -88,6 +89,7 @@ wxIntegerHash
 wxKeyEvent
 wxLayoutConstraints
 wxList
+wxListCtrl
 wxListKey
 wxLongLongNative
 wxMBConv
@@ -102,6 +104,7 @@ wxMiniFrame
 wxModule
 wxMouseEvent
 wxNavigationKeyEvent
+wxNotebook
 wxObject
 wxObjectList
 wxObjectListNode

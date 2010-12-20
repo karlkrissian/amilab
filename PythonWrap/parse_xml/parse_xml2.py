@@ -81,7 +81,7 @@ def WrapMethodTypePointer(typedefname,include_file):
   #utils.WarningMessage( "{0} id= {1}".format(typedefname,dh.typedefid))
 
   # Create Header File
-  header_filename=args.val.outputdir+"/wrap_{0}.h".format(typedefname)
+  header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(typedefname)
   shutil.copyfile(args.val.templatefile_dir+"/wrap_class.h.in",header_filename)
   
   # should be named available typedefs or something like this?
@@ -132,7 +132,7 @@ def WrapMethodTypePointer(typedefname,include_file):
   implement_createvar += "  return BasicVariable::ptr();\n"
 
   # Create Implementation File
-  impl_filename=args.val.outputdir+"/wrap_{0}.cpp".format(typedefname)
+  impl_filename=args.val.outputdir+"/wrap_{0}.cpp.new".format(typedefname)
   shutil.copyfile(args.val.templatefile_dir+"wrap_class.cpp.in",impl_filename)
   
   # arguments
@@ -154,6 +154,8 @@ def WrapMethodTypePointer(typedefname,include_file):
     line = line.replace("${AddVar_static_methods}",  "")
     line = line.replace("${WRAP_PUBLIC_METHODS}",impl)
     print line,
+  wrap_class.BackupFile(header_filename)
+  wrap_class.BackupFile(impl_filename)
 
 
 #----------------------------------------------------------------------
@@ -354,7 +356,7 @@ if __name__ == '__main__':
     # now create the library context
     if args.val.libname!=None and args.val.addwrap:
       # header
-      createcontextname = args.val.outputdir+"/addwrap_{0}.h".format(args.val.libname)
+      createcontextname = args.val.outputdir+"/addwrap_{0}.h.new".format(args.val.libname)
       f = open (createcontextname, "w")
       # 1. write some doc
       f.write("/*\n")
@@ -372,9 +374,11 @@ if __name__ == '__main__':
       f.write("void wrap_{0}_classes( Variables::ptr& context);\n".format(args.val.libname))
       f.write("\n")
       f.write("#endif // _addwrap_{0}_h_\n".format(args.val.libname))
+      f.close()
+      wrap_class.BackupFile(createcontextname)
 
       # implementation
-      createcontextname = args.val.outputdir+"/addwrap_{0}.cpp".format(args.val.libname)
+      createcontextname = args.val.outputdir+"/addwrap_{0}.cpp.new".format(args.val.libname)
       f = open (createcontextname, "w")
       # 1. write some doc
       f.write("/*\n")
@@ -474,7 +478,10 @@ if __name__ == '__main__':
       f.write("}\n")
       
       f.write("\n")
-
+      f.close()
+      # intelligent copy only if modified
+      wrap_class.BackupFile(createcontextname)
+    
     # deal with functions
     needed_functions = args.val.functions
     wrapped_functions=[]
@@ -490,3 +497,7 @@ if __name__ == '__main__':
     if (args.val.profile):
       t5 = time.clock()
       print t5 - t4, "seconds process time"
+    
+    if (args.val.profile):
+      t5 = time.clock()
+      print "Total time is:",t5 - t0, "seconds process time"

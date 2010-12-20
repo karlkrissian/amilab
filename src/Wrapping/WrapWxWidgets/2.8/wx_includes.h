@@ -13,3 +13,4 @@
 #include "wxAmiEventHandler.h"
 #include <wx/dynlib.h>
 #include "wxPluginManager.h"
+#include <wx/imaglist.h>
