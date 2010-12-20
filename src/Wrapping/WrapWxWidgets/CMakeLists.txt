@@ -100,11 +100,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   IF (${GCCXML_result} EQUAL 0)
     # Go for python wrapping
     ADD_CUSTOM_COMMAND(
-      OUTPUT 
-        ${OUTPUT_LIST} 
-        ${methodpointers_files}
-        ${WRAPWX_OUTDIR}/addwrap_wx.h  
-        ${WRAPWX_OUTDIR}/addwrap_wx.cpp
+      OUTPUT ${OUTPUT_LIST} ${methodpointers_list} ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
       COMMAND
         ${PYTHON_EXECUTABLE} 
           ${AMI_WRAPPER} ${XML_OUTPUT}

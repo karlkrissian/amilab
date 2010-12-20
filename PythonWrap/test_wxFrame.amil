@@ -30,7 +30,7 @@ for bbname in "Back","Apply","Close","Copy" {
   newh=wxim1.GetHeight()-decsize
   wxim2 = wxim1
   wxim2.Rescale(neww,newh)
-  wxim2._Resize(wx.wxSize(wxim1.GetWidth(),wxim1.GetHeight()),wx.wxPoint(decsize/2,decsize/2))
+  wxim2.Resize(wx.wxSize(wxim1.GetWidth(),wxim1.GetHeight()),wx.wxPoint(decsize/2,decsize/2))
   eval "bb_%1%" % n + \
         "= wx.wxBitmapButton(&f2,wx.wxID_ANY,&wx.wxBitmap(&wxim2));"
   if exists(bb) { del bb; }

@@ -14,3 +14,4 @@
 #include <wx/dynlib.h>
 #include "wxPluginManager.h"
 #include <wx/imaglist.h>
+#include <wx/listctrl.h>

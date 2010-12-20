@@ -22,9 +22,13 @@ Class TestSizer \
     #::boxsizer.Add(&::flexsizer, 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER, 10);
     ::boxsizer.Add(&::flexsizer, &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
 
- 
+
     ::AddButton(1, & ::boxsizer , 0)
-    ::AddButton(2, & ::flexsizer, 1)
+
+    ::wxvtk = global::wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+    ::flexsizer.Add(&::wxvtk,&wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
+
+    #::AddButton(2, & ::flexsizer, 1)
     ::AddButton(3, & ::flexsizer, 1)
     ::AddButton(4, & ::flexsizer, 1)
 

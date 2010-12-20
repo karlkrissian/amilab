@@ -1,3 +1,4 @@
+# -*- coding: windows-1252 -*-
 from xml.sax import saxutils,handler
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces
@@ -1213,12 +1214,15 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${WRAP_PUBLIC_METHODS}",   impl)
       print line,
 
-  # Check header file for backup
-  BackupFile(header_filename)
+    # Check header file for backup
+    BackupFile(header_filename)
 
-  # Check implementation file for backup
-  BackupFile(impl_filename)
+    # Check implementation file for backup
+    BackupFile(impl_filename)
   
   if (args.val.profile):
-    print "WrapClass({0})  {1}".format(classname,time.clock()-t0)
+    if not found: 
+      print "Class not found: {0}".format(classname)
+    else:
+      print "WrapClass({0})  {1}".format(classname,time.clock()-t0)
     t0 = time.clock()

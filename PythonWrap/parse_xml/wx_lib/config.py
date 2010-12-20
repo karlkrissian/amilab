@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: windows-1252 -*-
 
 # include everything here: difficult to sort
 def get_include_file(classname, filename):
@@ -30,6 +30,10 @@ def get_include_file(classname, filename):
   if classname=="wxWritableCharBuffer":   s = "wx/string.h"
   if classname=="wxWCharBuffer":   s = "wx/string.h"
   if classname=="wxCharBuffer":   s = "wx/string.h"
+  if classname=="wxStatusBar": s = "wx/statusbr.h"
+  if classname=="wxImageList": s = "wx_includes.h"
+  if classname=="wxGDIImage": s = "wx/bitmap.h"
+  if classname=="wxGDIImageHandler": s = "wx/bitmap.h"
   print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)
   return s
  
