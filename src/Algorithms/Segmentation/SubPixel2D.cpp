@@ -140,13 +140,13 @@ void borderPixel::printBorderPixel(int linear_case)
 //SubPixel2D class methods
 //---------------------------------------------
 //Constructor
-SubPixel2D::SubPixel2D(InrImage* inp_image, float thres, int lc)
+SubPixel2D::SubPixel2D(InrImage* inp_image, float thres, float lowThres, int lc)
 {
-  input       = inp_image;
-  threshold   = thres;
-  linear_case = lc;
-  //denoised    = NULL;
-  denoised = new InrImage(WT_DOUBLE,"denoised.inr.gz",input);
+  input        = inp_image;
+  threshold     = thres;
+  low_threshold = lowThres;
+  linear_case   = lc;
+  denoised      = new InrImage(WT_DOUBLE,"denoised.inr.gz",input);
 }
 
 //Destructor
@@ -729,7 +729,7 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()
 //also detects edges of 2px or more, using the original input image
 void SubPixel2D::DenoisingGus()
 { 
-  int margen = 4;
+  int margen = 5;
   double A, B;
   //Partials
   float parx, pary;

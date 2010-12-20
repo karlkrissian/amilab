@@ -143,10 +143,11 @@ public:
    *  SubPixel2D constructor.
    *  @param inp_image The input image.
    *  @param thres     The threshold value.
+   *  @param lowThres  The low threshold for SubpixelDenoising
    *  @param lc        Linear case. Indicates if the border that will be processed
    *                   is a line (first order) or a parable (second order).
    */
-  SubPixel2D(InrImage* inp_image, float thres, int lc);
+  SubPixel2D(InrImage* inp_image, float thres, float lowThres, int lc);
   
   virtual ~ SubPixel2D();
   
@@ -256,6 +257,8 @@ private:
   vector<borderPixel> borderPixelVector;
   //Gradient threshold
   float threshold;
+  //Gradient low threshold (used on SubpixelDenoising)
+  float low_threshold;
   //Linear case (first or second order)
   int linear_case;
    

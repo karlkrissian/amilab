@@ -17,8 +17,12 @@ if (!exists(Subpixel2DClass)){
       ::input_name  = "",                "Input image"
       ::output_name = "subpixel2D_edge", "Output image name"
       ::threshold   = 25,                "Gradient threshold"
+      ::low_threshold = INT(10),         "Low gradient threshold"
       ::average     = UCHAR(0),          "Average the input image"
-      ::show_average= UCHAR(0),          "Show the averaged image"
+      ::show_averaged= UCHAR(0),          "Show the averaged image"
+      ::draw_on_averaged= UCHAR(0),       "Draw edge on averaged image"
+      ::show_restored = UCHAR(0),        "Show the restored image"
+      ::draw_on_restored = UCHAR(0),     "Draw edges on restored image"
       ::dynamic     = UCHAR(0),          "Use a dynamic window"
       ::subden      = UCHAR(0),          "Use subpixel denoising restoration"
       ::linear      = UCHAR(0),          "First or second order"
@@ -27,6 +31,7 @@ if (!exists(Subpixel2DClass)){
       ::change      = UCHAR(0),          "Change contour's default values"
       ::niter       = INT(10),            "Number of iterations for subpixel denoising"
       ::alg_type    = INT(0),            "Sub-pixel 2D algorithm type"
+      ::alg_enum    = INT(0),            "Enumeration of algorithms"
       #Edge parameters
       ::Ered        = INT(255),          "Red contour value"
       ::Egreen      = INT(0),            "Green contour value"
@@ -210,12 +215,21 @@ if (!exists(Subpixel2DClass)){
     
     proc ::drawBorder() {
       if(exists(::res) && exists(::sp2D)){
+        if (::draw_on_averaged) {
+          image_draw = &::averaged_draw
+        } else {
+          if (::draw_on_restored) {
+            image_draw = &::restored_draw
+          } else {
+            image_draw = &::input_draw
+          }
+        }
         #InitTime
         #Catch visualization region limits
-        xmin = ::input_draw.GetXmin()
-        xmax = ::input_draw.GetXmax()
-        ymin = ::input_draw.GetYmin()
-        ymax = ::input_draw.GetYmax()
+        xmin = image_draw.GetXmin()
+        xmax = image_draw.GetXmax()
+        ymin = image_draw.GetYmin()
+        ymax = image_draw.GetYmax()
         #Create four new images for displacements inside pixel
         dx1 = Image(DOUBLE,::res->xpos.tx,1,1)
         dy1 = Image(DOUBLE,::res->xpos.tx,1,1)
@@ -273,11 +287,11 @@ if (!exists(Subpixel2DClass)){
         
         if (::change==0) {
           if(::normals==0) {
-            ::sp2D->drawBorder(&::input_draw, inside, border_pts,\
+            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
                                std_color, std_thickness, std_style,\
                                ::normals)
           } else {
-            ::sp2D->drawBorder(&::input_draw, inside, border_pts,\
+            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
                                std_color, std_thickness, std_style,\
                                ::normals, norm_pts, std_color, std_thickness,\
                                std_style)
@@ -286,10 +300,10 @@ if (!exists(Subpixel2DClass)){
           bcolor = &wx.wxColour(::Ered, ::Egreen, ::Eblue, ::Ealpha)
           ncolor = &wx.wxColour(::Nred, ::Ngreen, ::Nblue, ::Nalpha)
           if(::normals==0) {
-            ::sp2D->drawBorder(&::input_draw, inside, border_pts,\
+            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
                                bcolor, ::Ethickness, ::Estyle, ::normals)
           } else {
-            ::sp2D->drawBorder(&::input_draw, inside, border_pts,\
+            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
                                bcolor, ::Ethickness, ::Estyle, ::normals,\
                                norm_pts, ncolor, ::Nthickness, ::Nstyle)
           }
@@ -304,7 +318,12 @@ if (!exists(Subpixel2DClass)){
     
     proc ::Run() {
     	::load_input()
-      if (exists(::input_draw)) { del ::input_draw; }
+      ::thresholds_crossed = 0
+      #Erase the draw objects
+      if (exists(::input_draw))    { del ::input_draw; }
+      if (exists(::averaged_draw)) { del ::averaged_draw; }
+      if (exists(::restored_draw)) { del ::restored_draw; }
+      #
       if (::input.vdim==1) {
         ::input <<= (DOUBLE) ::input
         ::norm_input <<= (::input<=1)*1 + (::input>1)*::input
@@ -312,35 +331,45 @@ if (!exists(Subpixel2DClass)){
       	::norm_input <<= (DOUBLE) norm(::input)
         ::norm_input.info
       }
+      #Erase the subpixel object and the result if it exists
       if (exists(::res))  { del ::res; }
       if (exists(::sp2D)) { del ::sp2D; }
       #Build a SubPixel2D object
-      ::sp2D = ::import->SubPixel2D(&::norm_input,::threshold,::linear)
-      if(::subden==1) {
-        ::res = ::sp2D->SubpixelDenoising(::niter);
-        ::s_method = "Subpixel denoising"
-      }
-      if(::average==0 && ::show_average==0 && ::dynamic==0) {
+      ::sp2D = ::import->SubPixel2D(&::norm_input,::threshold,::low_threshold,::linear)
+      
+      if (::alg_type == 0) {
         ::res = ::sp2D->SuperGradienteCurvo()
-        ::s_method = "Basic method"
       }
-      if(::average==1 && ::dynamic==0) {
-        ::res = ::sp2D->SuperGradienteGaussianoCurvo()
-        ::s_method = "Noisy images"
-      }
-      if(::dynamic==1) {
+      if (::alg_type == 1) {
         ::res = ::sp2D->DenoisingGus()
-        ::s_method = "Dynamic window"
+        ::s_method = "Averaged method"
       }
-			
-      ::win.Update(-1)
-      ::win.EnablePanel(::pxinf_panel, 1)
-      ::win.EnablePanel(::stat_panel, 1)
-      
-      ::Display
-      ::drawBorder
-      
-      ::input_draw.PaintCallback(&::drawBorder)
+      if (::alg_type == 2) {
+        ::CheckThreshold()
+        if (!::thresholds_crossed) {
+          ::res = ::sp2D->SubpixelDenoising(::niter)
+          ::s_method = "Subpixel denoising"
+        }
+      }
+			if (::alg_type != 2 || (::alg_type == 2 && ::thresholds_crossed==0)) {
+        ::win.Update(-1)
+        ::win.EnablePanel(::pxinf_panel, 1)
+        ::win.EnablePanel(::stat_panel, 1)
+        
+        ::Display
+        ::drawBorder
+        
+        if (::draw_on_averaged) {
+          ::averaged_draw.PaintCallback(&::drawBorder)
+        } else {
+          if (::draw_on_restored) {
+            ::restored_draw.PaintCallback(&::drawBorder)
+          } else {
+            ::input_draw.PaintCallback(&::drawBorder)
+          }
+        }
+      }
+     
     }
     Comments(::Run, "Detects edges with Subpixel2D method")
     
@@ -349,15 +378,28 @@ if (!exists(Subpixel2DClass)){
     proc ::Display() {
       global
       if (exists(::input)) {
-        if (::show_average == 1) {
+        if (::show_averaged || ::draw_on_averaged) {
           if (exists(::res)) {
-            ::denoised = ::res->denoised
-            show ::denoised
-            show ::input
-            ::denoised_draw.compare(&::input_draw)
+            ::averaged <<= ::res->denoised
+            show ::averaged
+            if(::show_averaged) {
+              show ::input
+              ::averaged_draw.compare(&::input_draw)
+            }
           }
         } else {
-          show ::input
+          if (::show_restored || ::draw_on_restored) {
+            if (exists(::res)) {
+              ::restored <<= ::res->restored
+              show ::restored
+              if (::show_restored) {
+                show ::input
+                ::restored_draw.compare(&::input_draw)
+              }
+            }
+          } else {
+            show ::input
+          }
         }
       } 
     }
@@ -397,34 +439,73 @@ if (!exists(Subpixel2DClass)){
     
     #-----------------------
     
-    proc ::CheckAverage() {
-      if (::average == 0 && ::dynamic == 1) {
-        ::average = 1
-        ::win.Update(-1)
+    #proc ::CheckAverage() {
+    #  if (::average == 0 && ::dynamic == 1) {
+    #    ::average = 1
+    #    ::win.Update(-1)
+    #  }
+    #  if (::average == 0 && ::show_averaged == 1) {
+    #    ::average = 1
+    #    ::win.Update(-1)
+    #  }
+    #}
+    
+    #-----------------------
+    
+    #proc ::CheckShowAndDynamic() {
+    #  if (::show_averaged == 1 || ::dynamic == 1) {
+    #    InfoDialog("For show the average image and/or apply the method with dynamic window, you must check average.")
+    #    ::average = 1
+    #    ::win.Update(-1)
+    #  }
+    #}
+    
+    #-----------------------
+    
+    #proc ::CheckSD() {
+    #  if(::subden == 1) {
+    #    ::win.EnablePanel(::niter_panel,1)
+    #  } else {
+    #    ::win.EnablePanel(::niter_panel,0)
+    #  }
+    #}
+    
+    #-----------------------
+    
+    proc ::UpdateBoxPanel() {
+      #Reset boolean variables
+      ::show_averaged    = 0
+      ::draw_on_averaged = 0
+      ::show_restored    = 0
+      ::draw_on_restored = 0
+      #Basic
+      if (::alg_type == 0) {
+        ::win.EnablePanel(::averaged_panel,0)
+        ::win.EnablePanel(::restoration_panel,0)
       }
-      if (::average == 0 && ::show_average == 1) {
-        ::average = 1
-        ::win.Update(-1)
+      #Averaged
+      if (::alg_type == 1) {
+        ::win.EnablePanel(::averaged_panel,1)
+        ::win.EnablePanel(::restoration_panel,0)
       }
+      #Restoration
+      if (::alg_type == 2) {
+        ::win.EnablePanel(::averaged_panel,0)
+        ::win.EnablePanel(::restoration_panel,1)
+      }
+      ::win.Update(-1)
     }
     
     #-----------------------
     
-    proc ::CheckShowAndDynamic() {
-      if (::show_average == 1 || ::dynamic == 1) {
-        InfoDialog("For show the average image and/or apply the method with dynamic window, you must check average.")
-        ::average = 1
+    proc ::CheckThreshold() {
+      if (::low_threshold >= ::threshold) {
+        ::low_threshold = 10
         ::win.Update(-1)
-      }
-    }
-    
-    #-----------------------
-    
-    proc ::CheckSD() {
-      if(::subden == 1) {
-        ::win.EnablePanel(::niter_panel,1)
+        ::thresholds_crossed = 1
+        InfoDialog "The value of the low threshold must be less than thershold."
       } else {
-        ::win.EnablePanel(::niter_panel,0)
+        ::thresholds_crossed = 0
       }
     }
     
@@ -436,7 +517,9 @@ if (!exists(Subpixel2DClass)){
       
       ::win.BeginBook()
         ::win.AddPage("Param.")
-          ::win.BeginBoxPanel("Sub-pixel2D parameters")
+        
+          #Global parameters panel
+          ::win.BeginBoxPanel("Global parameters")
             ::win.BeginHorizontal()
               ::win.AddImageChoice(&::input_name, "In.")
               ::AddBitmapButton(&::win, &::icons._New_image, 16, "load_input")
@@ -448,23 +531,42 @@ if (!exists(Subpixel2DClass)){
             ::win.AddBoolean(&::linear, "1st order")
             ::win.SetCallback(&::AutoRun)
           ::win.EndBoxPanel()
-          ::win.BeginBoxPanel("Sub-pixel2D detection options")
-            ::win.AddBoolean(&::average, "Average")
-            ::win.SetCallback(&::CheckShowAndDynamic)
-            ::win.AddBoolean(&::show_average, "Show average")
-            ::win.SetCallback(&::CheckAverage)
-            ::win.AddBoolean(&::dynamic, "Dynamic window")
-            ::win.SetCallback(&::CheckAverage)
-            ::win.AddBoolean(&::normals, "Draw normals")
-            ::win.AddBoolean(&::subden, "SubpixelDenoising")
-            ::win.SetCallback(&::CheckSD)
-            ::niter_panel = ::win.BeginBoxPanel("Num. iterations")
-              ::win.AddInt(&::niter, "Niter", 1, 100)
-            ::win.EndBoxPanel()
-            ::win.EnablePanel(::niter_panel, 0)
-            ::icons.LoadIconPNG("Play")
-            ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+          
+          #Method panel
+          ::win.BeginBoxPanel("Subpixel detection method")
+            ::alg_enum = ::win.AddEnum(&::alg_type, "Method")
+              ::win.AddEnumChoice(::alg_enum, "Basic detector")
+              ::win.AddEnumChoice(::alg_enum, "Averaged detector")
+              ::win.AddEnumChoice(::alg_enum, "Subpixel denoising")
+            ::win.SetCallback(&::UpdateBoxPanel)
           ::win.EndBoxPanel()
+          
+          #Visualization panel
+          ::win.BeginBoxPanel("Visualization")
+            #General
+            ::win.BeginBoxPanel("General")
+              ::win.AddBoolean(&::normals, "Draw normals")
+            ::win.EndBoxPanel()
+            #Averaged
+            ::averaged_panel = ::win.BeginBoxPanel("Averaged")
+              ::win.AddBoolean(&::show_averaged, "Compare with averaged")
+              ::win.AddBoolean(&::draw_on_averaged, "Draw on averaged")
+            ::win.EndBoxPanel()
+            ::win.EnablePanel(::averaged_panel,0)
+            #Restoration
+            ::restoration_panel = ::win.BeginBoxPanel("Restoration")
+              ::win.AddInt(&::low_threshold, "Low thres.", 1, 100)
+              #::win.SetCallback(&::CheckThreshold)
+              ::win.AddInt(&::niter, "Niter", 1, 100)
+              ::win.AddBoolean(&::show_restored, "Compare with restored")
+              ::win.AddBoolean(&::draw_on_restored, "Draw on restored")
+            ::win.EndBoxPanel()
+            ::win.EnablePanel(::restoration_panel,0)
+          ::win.EndBoxPanel()
+ 
+          ::icons.LoadIconPNG("Play")
+          ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+          #::win.EndBoxPanel()
           
         #New page for border pixel info.
         ::win.AddPage("Px.Info.")
