@@ -132,8 +132,8 @@ IF(wxWidgets_FOUND)
           COMMAND
             ${PYTHON_EXECUTABLE}
               ${AMI_WRAPPER} ${XML_OUTPUT}
-              --libname wxMediaCtrl #name of the library to wrap
-              #--filter "wx*" #Recursively wrap needed classes
+              --libname wx #name of the library to wrap
+              --filter "wx*" #Recursively wrap needed classes
               --classes ${ancestors_list} #name of the class(es) to wrap
 #               --methodpointers ${methodpointers_list}
               --available_classes ${ancestors_list} #${methodpointers_list}
