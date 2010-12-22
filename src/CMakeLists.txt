@@ -437,7 +437,9 @@ ENDIF(AMI_USE_FLEXBISON)
 
 OPTION(AMI_USE_FASTNLMEANS "Use Fast NLmeans implementation" OFF)
 
+OPTION(AMI_USE_PLUGINS "Use plugins implementations" OFF)
 OPTION(AMI_COMPILE_ABOUTPLUGIN "Compile plugin example" OFF)
+OPTION(AMI_COMPILE_WXMEDIACTRLPLUGIN "Compile wxMediaCtrl plugin" OFF)
 
 IF(AMI_USE_FASTNLMEANS)
   FIND_PACKAGE(NewNLMeans)
@@ -516,9 +518,16 @@ add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (AMILab)
 
-IF(AMI_COMPILE_ABOUTPLUGIN)
-  add_subdirectory (Plugins/AboutBox)
-ENDIF(AMI_COMPILE_ABOUTPLUGIN)
+#for compile the plugins.
+IF(AMI_USE_PLUGINS)
+  IF(AMI_COMPILE_ABOUTPLUGIN)
+    add_subdirectory (Plugins/AboutBox)
+  ENDIF(AMI_COMPILE_ABOUTPLUGIN)
+
+  IF(AMI_COMPILE_WXMEDIACTRLPLUGIN)
+    add_subdirectory (Plugins/wxMediaCtrl)
+  ENDIF(AMI_COMPILE_WXMEDIACTRLPLUGIN)
+ENDIF(AMI_USE_PLUGINS)
 
 #add_subdirectory (libamiFluid)
 
@@ -537,7 +546,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
-#  ${AMILAB_SOURCE_DIR}/Plugins/
+  ${AMILAB_SOURCE_DIR}/Plugins/
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}
