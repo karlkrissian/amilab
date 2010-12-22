@@ -920,8 +920,8 @@ void SubPixel2D::DenoisingGus()
           }
         }
         
-        //****jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
-        if (fabs(A-B) < 10) continue;
+        //We compare with the low threshold
+        //if (fabs(A-B) < low_threshold) continue;
         
         //If there are a second near edge, we create a new subimage form the original
         //and averaged it after for computing the edge
@@ -1237,8 +1237,8 @@ void SubPixel2D::DenoisingGus()
           }
         }
         
-        //***jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
-        if (fabs(A-B) < 10) continue;
+        //We compare with the low threshold
+        //if (fabs(A-B) < low_threshold) continue;
         
         //If there are a second near edge, we create a new subimage form the original
         //and averaged it after for computing the edge
@@ -1656,7 +1656,7 @@ void ComputeCurveWindowColor (unsigned char edgeCase, double gx, double gy,
   }
   r = fabs(r);
   
-  // calculamos la ventanita (sólo se está usando la 9x5)
+  // Compute the window
   for (int i=-2; i<=2; i++) 
     for (int j=Lims[i+2][0]; j<=Lims[i+2][1]; j++) 
     {
@@ -2158,8 +2158,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
             }
           }
           
-          //****jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
-          if (fabs(A-B) < 10) continue;
+          //We compare with the low threshold
+          if (fabs(A-B) < low_threshold) continue;
           
           //If there are a second near edge, we create a new subimage form the original
           //and averaged it after for computing the edge
@@ -2509,8 +2509,8 @@ void SubPixel2D::SubpixelDenoising(int niter)
             }
           }
           
-          //****jinqué el 10 porque si, en la interfaz de Agustín pregunta por este umbral chico!!!!
-          if (fabs(A-B) < 10) continue;
+          //We compare with the low threshold
+          if (fabs(A-B) < low_threshold) continue;
           
           //If there are a second near edge, we create a new subimage form the original
           //and averaged it after for computing the edge
