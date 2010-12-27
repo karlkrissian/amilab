@@ -88,14 +88,14 @@ double ImagePositions<T>::operator()( int x, int y, int z ) const
 //         --------
 {
   #ifdef AMI_BUILD_Debug
-    if (!_image->CoordOK(x,y,z))
+/*    if (!_image->CoordOK(x,y,z))
     {
      std::cout << "*" << std::endl;
       std::string message = (boost::format(" image %s ( %d %d %d )") 
             % (char*) _image->GetName() 
             % x %  y % z).str();
       throw std::range_error( message);
-    }
+    }*/
   #endif
   // how to speed for scalar images and avoid _vdim multiplication?
   return (double)(_positions[z][y][_vdim*x]);

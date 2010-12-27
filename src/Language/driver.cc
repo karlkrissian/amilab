@@ -98,7 +98,7 @@ bool Driver::parse_stream(std::istream& in,
   this->lexer = previous_lexer;
 
   in_console   = in_console_bak;
-  CLASS_MESSAGE(boost::format(" parsing result = %1%")%res);
+  CLASS_MESSAGE((boost::format(" parsing result = %1%")%res).str().c_str());
   return ( res==0);
 }
 
@@ -322,7 +322,7 @@ bool Driver::parse_script(  const char* filename)
   string  fullname;
   string tmp_string;
 
-  CLASS_MESSAGE( boost::format("Switching to %1% ") % filename );
+  CLASS_MESSAGE( (boost::format("Switching to %1% ") % filename).str().c_str());
 
   // Looking for the filename
   wxFileName current_filename(GetwxStr(current_file.c_str()));
@@ -355,7 +355,7 @@ bool Driver::parse_script(  const char* filename)
 
   if (!newname.IsFileReadable()) 
   {
-    CLASS_MESSAGE(boost::format(" current_filename.GetPath() = %1%") 
+    CLASS_MESSAGE((boost::format(" current_filename.GetPath() = %1%").str().c_str()) 
                 % current_filename.GetPath().mb_str());
     // try in the directory of the runnning script
     newname.Assign(

@@ -10,6 +10,7 @@
  *
  **/
 
+#include <iostream>
 #include "AMILabConfig.h"
 #include "wrap_dwControlledCurve.h"
 

@@ -1,6 +1,7 @@
 
 # global dictionary of argument types
 types      = dict()
+classes    = dict()
 variables  = dict()
 enumvalues = dict()
 files      = dict()
@@ -32,7 +33,7 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxColour::GetPixel', # problem with COLOREF on mac which is unsigned char[6]
   'wxColour::FromRGBColor', # pb with COLORREF
   'wxColour::m_pixel', # idem
-  'wxCursor::GetHCURSOR',           # linking pb on macos
+  'wxCursor::GetHCURSOR',           # linking pb on macros
   'wxDateTime::IsGregorianDate',    # idem
   'wxToolBar::OnMouse',             # idem
   'wxStatusBarGeneric::SetBorderX', # idem
@@ -44,6 +45,9 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxWindow::FindItem',             # idem
   'wxPoint2DDouble::SetPolarCoordinates', # idem
   'wxPoint2DInt::SetPolarCoordinates', # idem
+  'wxGenericListCtrl::Update(long)', # linking problem, don't know why ...
+  'wxBitmap::GetSelectedInto', # not included in windows in release mode
+  'wxBitmap::SetSelectedInto', # not included in windows in release mode
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints', # idem
@@ -54,6 +58,7 @@ class_types = ['Class','Struct']
 
 # amilab available_types
 available_classes=[]
+parsed_classes=[]
 wrapped_classes=[]
 incomplete_classes=[]
 new_needed_classes=[]

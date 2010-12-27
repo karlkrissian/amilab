@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "ImageCos.h"
 #include "imageextent.h"
 #include "amilab_messages.h"
@@ -100,7 +104,7 @@ void ImageCos::Process( int threadid)
     case WT_SIGNED_INT:     TemplateProcess<int>            (threadid); break;
     case WT_FLOAT:          TemplateProcess<float>          (threadid); break;
     case WT_DOUBLE:         TemplateProcess<double>         (threadid); break;
-    default: CLASS_ERROR(boost::format(" format %1% not available")%in->GetFormat());
+    default: CLASS_ERROR((boost::format(" format %1% not available")%in->GetFormat()).str().c_str());
   }
 
 }

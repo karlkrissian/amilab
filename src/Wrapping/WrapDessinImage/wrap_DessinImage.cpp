@@ -283,7 +283,7 @@ BasicVariable::ptr WrapClass_DessinImage::
     ParamList* p = new ParamList();
     p->AddParam(varim);
     BasicVariable::ptr newvar = wrap_DessinImage().CallMember(p);
-    FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % title);
+    FILE_MESSAGE((boost::format("SHOW var_image creating title %s ") % title).str().c_str());
     // TODO: change the way amilab deals with the parameters to avoid creating new variables from the start
     Variables::ptr context = varim->GetContext();
     if ( newvar.get() && context.get()) {

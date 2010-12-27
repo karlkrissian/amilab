@@ -1,4 +1,8 @@
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "amilab_messages.h"
 #include "DefineClass.hpp"
 #include "Variable.hpp"
@@ -169,11 +173,11 @@ BasicVariable::ptr Variable<bool>::TryCast(
     } else 
     {
       // make default conversion to bool??
-      CLASS_ERROR(boost::format("No convertion available for variable %1% from bool to %2%") % _name % type_string);
+      CLASS_ERROR((boost::format("No convertion available for variable %1% from bool to %2%") % _name % type_string).str().c_str());
     }
   } catch (std::bad_cast &e)
   {
-    CLASS_ERROR(boost::format("%1%, for variable %2% from bool to %3%") % e.what() % _name % type_string);
+    CLASS_ERROR((boost::format("%1%, for variable %2% from bool to %3%") % e.what() % _name % type_string).str().c_str());
     return BasicVariable::ptr();
   }
   return BasicVariable::ptr();
@@ -193,7 +197,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<bool>::BasicCast(const int&
     case WT_FLOAT:          { RETURN_VARPTR(float, (float) res); }
     case WT_DOUBLE:         { RETURN_VARPTR(double, res); } /// New (added: 24/05/2010)
     default:
-      std::cerr << boost::format("Conversion to type %1% not available")%((WORDTYPE)type) << std::endl;
+      CLASS_ERROR(( boost::format("Conversion to type %1% not available")%((WORDTYPE)type)).str().c_str());
   }
   RETURN_VARPTR(bool, res);
 }

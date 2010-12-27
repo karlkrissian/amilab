@@ -1,4 +1,8 @@
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "LocalStructure.h"
 
 #include <stdio.h>

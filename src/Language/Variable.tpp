@@ -3,9 +3,9 @@
 #include "Variable.hpp"
 
 #include <string>
-#include <ostream>
-#include <sstream>
-#include <limits>
+//#include <ostream>
+//#include <sstream>
+//#include <limits>
 
 
 
@@ -45,7 +45,7 @@ void Variable<T>::Delete()
 {
   if (!FreeMemory()) 
   {
-    CLASS_MESSAGE(boost::format("Could not completely delete variable %s") % _name);
+/*    CLASS_MESSAGE(boost::format("Could not completely delete variable %s") % _name);*/
   }
   _type = type_void;
 }
@@ -59,14 +59,17 @@ BasicVariable::ptr Variable<T>::TryCast(const std::string& type_string) const
   return BasicVariable::ptr();
 }
 
+void ToStream(std::ostream& o, const char* st);
 
 //---------------------------------------------------
 template<class T>
 std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
 //       -----------
 {
-  if (v.Type()==type_void) { o << "deleted"; return o;}
-  o << boost::format("%1%\t<%2%>") % v.Name() % v.GetTypeName();
+  if (v.Type()==type_void) { ToStream(o, "deleted"); return o;}
+  ami::format f("%1%\t<%2%>");
+  ToStream(o , (f % v.Name().c_str() % v.GetTypeName().c_str()).GetString());
+
 // TODO: take care of this functionality
 //  o << ;
 /*  switch(v.Type()) {
@@ -106,9 +109,9 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
 } // operator << Variable
 
 template <class T>
-void Variable<T>::display() const
+void Variable<T>::display(std::ostream& o) const
 {
-  std::cout << (*this);
+  o << (*this);
 }
 
 /*

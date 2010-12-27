@@ -15,6 +15,7 @@
 
 
 #include "message_dialog.h"
+#include "ami_format.h"
 
 class InrImage;
 //#include "inrimage.hpp"
@@ -164,9 +165,9 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 */
 #define HelpAndReturnVarPtr { \
   std::string mess; \
-  mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
-  mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
-  mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
+  mess = (ami::format("\n %s ( listofparameters )\n\n ")% functionname).GetString();\
+  mess = mess + (ami::format("Description:\n %s \n") % description).GetString(); \
+  mess = mess + (ami::format("Parameters:\n  %s \n") % parameters).GetString(); \
   MessageDialog(mess);\
   return BasicVariable::ptr(); }
 
@@ -175,9 +176,9 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 */
 #define HelpAndReturn { \
   std::string mess; \
-  mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
-  mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
-  mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
+  ami::format f("\n %s ( listofparameters )\n\n Description:\n %s \nParameters:\n  %s \n");\
+  mess = (f % functionname % description % parameters \
+          ).GetString();\
   MessageDialog(mess);\
   return; } \
 
@@ -189,10 +190,10 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 */
 #define HelpAndReturnNULL { \
   std::string mess; \
-  mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
-  mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
-  mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
-  MessageDialog(mess); \
+  ami::format f("\n %s ( listofparameters )\n\n Description:\n %s \nParameters:\n  %s \n");\
+  mess = (f % functionname % description % parameters \
+          ).GetString();\
+  MessageDialog(mess);\
   return NULL; } \
 
 

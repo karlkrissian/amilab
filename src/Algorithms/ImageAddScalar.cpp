@@ -9,6 +9,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
 
 #include "ImageAddScalar.h"
 #include "imageextent.h"
@@ -65,7 +68,7 @@ template <class T>
 void ImageAddScalar::TemplateProcess( int threadid)
 {
 
-  CLASS_MESSAGE(boost::format("mode = %1%") % _mode);
+  CLASS_MESSAGE((boost::format("mode = %1%") % _mode).str().c_str());
 
 //  int nt = params.GetNumberOfThreads();
   extenttype extent = extents[threadid];
@@ -126,7 +129,7 @@ void ImageAddScalar::Process( int threadid)
     case WT_SIGNED_INT:     TemplateProcess<int>            (threadid); break;
     case WT_FLOAT:          TemplateProcess<float>          (threadid); break;
     case WT_DOUBLE:         TemplateProcess<double>         (threadid); break;
-    default: CLASS_ERROR(boost::format(" format %1% not available")%in->GetFormat());
+    default: CLASS_ERROR((boost::format(" format %1% not available")%in->GetFormat()).str().c_str());
   }
 
 }

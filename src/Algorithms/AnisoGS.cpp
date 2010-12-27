@@ -1132,7 +1132,7 @@ void AnisoGS::ComputeImage_c(InrImage* im)
 
     } //
   else
-    CLASS_ERROR(boost::format("contours_mode %1% not supported")%contours_mode);
+    CLASS_ERROR((boost::format("contours_mode %1% not supported")%contours_mode).str().c_str());
 //  image_c->Sauve();
 
 }

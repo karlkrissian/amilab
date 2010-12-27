@@ -127,6 +127,8 @@ public:
 
 };
 
+#include <vector>
+
 typedef std::vector<dwControlPoint>    vector_dwControlPoint;
 
 

@@ -26,11 +26,16 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "Variables.hpp"
 #include "style.hpp"
 #include <wx/arrstr.h>
 //#include "driver.h"
 
+#include <iostream>
 #include "amilab_messages.h"
 
 //extern unsigned char       GB_debug;
@@ -68,7 +73,7 @@ unsigned char Variables::deleteVar(int i)
 //--------------------------------------------------
 Variables::~Variables()
 {
-  CLASS_MESSAGE(boost::format("Deleting context %1% ") % _context_name.c_str());
+  CLASS_MESSAGE((boost::format("Deleting context %1% ") % _context_name.c_str()).str().c_str());
   EmptyVariables();
 }
 
@@ -101,7 +106,7 @@ BasicVariable::ptr Variables::AddVar(
           BasicVariable::ptr& val, 
           boost::shared_ptr<Variables> context)
 {
-  CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
+  CLASS_MESSAGE((boost::format(" %1%, in %2% ") % name % GetName()).str().c_str());
 
   std::string resname = this->CheckVarName(name.c_str());
   BasicVariable::ptr newvar(val);
@@ -120,7 +125,7 @@ BasicVariable::ptr Variables::AddVar(
 BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr context )
 {
 
-  CLASS_MESSAGE(boost::format(" %s ") % var->Name());
+  CLASS_MESSAGE((boost::format(" %s ") % var->Name()).str().c_str());
 
   std::string resname = this->CheckVarName(var->Name().c_str());
   // TODO: fix the following code, maybe not so easy ...
@@ -259,7 +264,7 @@ unsigned char Variables::GetVar(const char* varname, int* i)
 //--------------------------------------------------
 bool Variables::deleteVar(const char* varname)
 {
-  CLASS_MESSAGE( boost::format("Variables::deleteVar(%s) for %s") % varname % GetName());
+  CLASS_MESSAGE( (boost::format("Variables::deleteVar(%s) for %s") % varname % GetName()).str().c_str());
 
   std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
@@ -269,12 +274,12 @@ bool Variables::deleteVar(const char* varname)
       //delete (*Iter); // not needed anymore
       //(*Iter)->Delete();
 
-      CLASS_MESSAGE( boost::format("removing variable from the list (use_count = %1%)") %  (*Iter).use_count());
+      CLASS_MESSAGE( (boost::format("removing variable from the list (use_count = %1%)") %  (*Iter).use_count()).str().c_str());
       Iter = _vars.erase(Iter);
       return true;
     }
   }
-  CLASS_ERROR( boost::format("deleteVar(%s) variable not found") % varname);
+  CLASS_ERROR( (boost::format("deleteVar(%s) variable not found") % varname).str().c_str());
   return false;
 
 } // Variables::deleteVar()
@@ -314,7 +319,7 @@ void Variables::display()
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
-    (*Iter)->display();
+    (*Iter)->display(std::cout);
     printf("\n");
   }
 } // Variables::display()
@@ -323,7 +328,7 @@ void Variables::display()
 //--------------------------------------------------
 void Variables::EmptyVariables()
 {
-  CLASS_MESSAGE(boost::format("  in %1% ") % GetName());
+  CLASS_MESSAGE((boost::format("  in %1% ") % GetName()).str().c_str());
   std::vector<BasicVariable::ptr>::iterator Iter;
 /* useless now ???
   Iter  = _vars.begin();

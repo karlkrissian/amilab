@@ -1,3 +1,4 @@
+# -*- coding: windows-1252 -*-
 from xml.sax import saxutils,handler
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces
@@ -9,9 +10,11 @@ import glob
 import re
 import os.path
 import datetime
+import time
 
 # configuration, containing the global variables
 import config
+import filecmp
 
 # load command line arguments
 import args
@@ -28,10 +31,29 @@ import findtypesvars
 import findfiles
 import wx_lib
 
-import parse_class
 import arginfo
 
 import parse_function
+
+
+#-------------------------------------------------------------
+def ClassUsedName(classname):
+  res = classname
+  res = res.replace('<','_')
+  res = res.replace('>','_')
+  res = res.replace(',','_')
+  return res
+
+def IsTemplate(classname):
+  return re.match(r"(.*)<(.*)>",classname)!=None
+
+def ClassConstructor(classname):
+  ctemp = re.match(r"(.*)<(.*)>",classname)
+  if ctemp==None:
+    return classname
+  else:
+    return ctemp.group(1)
+
 
 #------------------------------
 class EnumInfo:
@@ -64,7 +86,7 @@ def WxHelpLink(classname,method):
 def AvailableType(typename,typeid,missing_types,check_includes=False,return_type=False):
   if check_includes:
     if (typename in config.available_classes):
-      config.AddDeclare(parse_class.ClassUsedName(typename))
+      config.AddDeclare(ClassUsedName(typename))
       if args.val.overwrite and (typename not in config.wrapped_classes) \
           and (typename not in config.needed_classes) \
           and (typename not in config.new_needed_classes):
@@ -164,13 +186,8 @@ def CheckBlackList(mname,demangled):
   return False
 
 
-#------------------------------
-#------------------------------
-class FindPublicMembers(handler.ContentHandler):
-  def __init__(self, classid):
-    self.search_classid = classid
-    self.found=False
-    self.inmethod=0
+class PublicMembers:
+  def __init__(self):
     self.MethodNames=[]
     self.StaticMethodNames=[]
     self.ConstructorNames=[]
@@ -179,10 +196,18 @@ class FindPublicMembers(handler.ContentHandler):
     self.Constructors=[]
     self.StaticMethods=[]
     self.OperatorMethods=[]
-    self.available_methods=['Method','Constructor','Destructor','OperatorMethod']
     self.Fields=[]
-    self.inenum=False
     self.Enumerations=[]
+
+
+# Store Class information
+class ParsePublicMembers:
+  def __init__(self, class_list):
+    self.class_list = class_list
+    self.found=False
+    self.inmethod=0
+    self.available_methods=['Method','Constructor','Destructor','OperatorMethod']
+    self.inenum=False
 
   #---------------------------------------------
   def CheckMethodName(self,methodlist,methods,mname):
@@ -211,14 +236,14 @@ class FindPublicMembers(handler.ContentHandler):
   #---------------------------------------------
   def CheckOperatorMethodName(self,mname):
     methodindex=''
-    methodlist=self.OperatorMethodNames
+    methodlist=self.public_members.OperatorMethodNames
     num=methodlist.count(mname)
     if num==1:
       # rename initial method
       pos=0
-      for m in self.OperatorMethods:
+      for m in self.public_members.OperatorMethods:
         if m.name==mname and mname in config.available_operators.keys():
-          self.OperatorMethods[pos].usedname +="_1"
+          self.public_members.OperatorMethods[pos].usedname +="_1"
         pos = pos+1
       # add main method
       method = MethodInfo()
@@ -228,7 +253,7 @@ class FindPublicMembers(handler.ContentHandler):
       else:
         method.usedname="operator not available"
       method.duplicated=True
-      self.OperatorMethods.append(method)
+      self.public_members.OperatorMethods.append(method)
     methodlist.append(mname)
     if num>=1:
       methodindex="_{0}".format(num+1)
@@ -272,37 +297,10 @@ class FindPublicMembers(handler.ContentHandler):
         else:
           arg.default=None
         self.method.args.append(arg)
+        return True
       else:
         utils.WarningMessage( "Non-argument in method: {0}\n".format(name))
         
-    # deal with public variable members
-    if name=='Field':
-      context = attrs.get('context', None)
-      access  = attrs.get('access',  None)
-      fname   = attrs.get('name',    None)
-      ftype   = attrs.get('type',    None)
-      bits    = attrs.get('bits',    None)
-      if (context == self.search_classid) and (access=="public"):
-        if "{0}::{1}".format(config.types[self.search_classid].GetString(),fname) in config.members_blacklist:
-          print "Discarded field ",fname, " which is in the backlist"
-        else:
-          field = FieldInfo()
-          field.name  =fname
-          field.typeid=ftype
-          field.bits=bits
-          self.Fields.append(field)
-      
-    if name=='Enumeration':
-      ename   = attrs.get('name',    None)
-      context = attrs.get('context', None)
-      access  = attrs.get('access',  None)
-      if (context == self.search_classid) and (access=="public"):
-        self.enum = EnumInfo()
-        self.enum.name  =ename
-        self.Enumerations.append(self.enum)
-        self.inenum = True
-        print "found enumeration ", ename, " in ", config.types[self.search_classid].GetString()
-      
     if self.inenum:
       if name=="EnumValue":
         #print "*"
@@ -310,69 +308,127 @@ class FindPublicMembers(handler.ContentHandler):
         valinit=attrs.get('init',None)
         if (valname!=None) and (valinit!=None):
           self.enum.values[valname]=valinit
-
+      return False # allow further processing of the enumeration
+    
+    if (name!='Field') and (name!='Enumeration') \
+        and (name not in self.available_methods):
+      return False
+    
+    context = attrs.get('context', None)
+    # don't process global context
+    if context=='_1': return False
+    
+    access  = attrs.get('access',  None)
+    if context in config.types.keys():
+      contextname = config.types[context].GetString()
+    else:
+      #print "Name = {0}, context {1} not yet included in types".format(name,context)
+      return False
+    if (contextname not in self.class_list) or (access!="public"): return False
+    
+    # Context should be of class or struct type, and have a PublicMembers instance
+    self.public_members = config.types[context].public_members
+    # now we can modify all the lists elements in the object 'public_members'
+    
+    # deal with public variable members
+    if name=='Field':
+      fname   = attrs.get('name',    None)
+      ftype   = attrs.get('type',    None)
+      bits    = attrs.get('bits',    None)
+      if "{0}::{1}".format(config.types[context].GetString(),fname) in config.members_blacklist:
+        print "Discarded field ",fname, " which is in the backlist"
+      else:
+        field = FieldInfo()
+        field.name  =fname
+        field.typeid=ftype
+        field.bits=bits
+        self.public_members.Fields.append(field)
+      return True
+      
+    if name=='Enumeration':
+      ename   = attrs.get('name',    None)
+      access  = attrs.get('access',  None)
+      self.enum = EnumInfo()
+      self.enum.name  =ename
+      self.public_members.Enumerations.append(self.enum)
+      self.inenum = True
+      print "found enumeration ", ename, " in ", config.types[context].GetString()
+      return False # allow further processing of the enumeration
+      
     # If it's not a method element, ignore it
-    if not(name in self.available_methods): return
+    if not(name in self.available_methods): return False
 
     # skip pure virtual methods
     pure_virtual=attrs.get('pure_virtual',None)
-    if (pure_virtual=='1'): return
+    if (pure_virtual=='1'): return False
 
     # Look for the title and number attributes (see text)
-    context = attrs.get('context', None)
     access=attrs.get('access',None)
     demangled=attrs.get('demangled',None)
     static=attrs.get('static',"0")
     attributes=attrs.get('attributes',None)
     #print context
     #print classname
-    if (context == self.search_classid) and (access=="public"):
-      mname=attrs.get('name',None)
-      if CheckBlackList(mname,demangled): return
-      if attributes=="deprecated":
-        utils.WarningMessage("Skipping deprecated method {0}".format(mname))
-        #print "Skipping deprecated method {0}".format(mname)
-        return
-      self.method = MethodInfo()
-      self.method.name=mname
-      self.method.static=static
-      # adapt names in case of multiple member with the same function name
-      if name=='Constructor':
-        # problem: for structure, the constructor name is something like '._12': not a valid nor usefull name:
-        # replace it by the class or structure name ...
-        if mname != config.types[self.search_classid].GetString():
-          utils.WarningMessage(" replacing constructor name {0} --> {1}".format(mname,config.types[self.search_classid].GetString()))
-          mname = config.types[self.search_classid].GetString()
-        self.CheckMethodName(self.ConstructorNames,self.Constructors,mname)
-      if name=='Method':
-        if static=="1":
-          self.CheckMethodName(self.StaticMethodNames,self.StaticMethods,mname)
-        else:
-          self.CheckMethodName(self.MethodNames,self.Methods,mname)
-      if name=='OperatorMethod':
-        self.CheckOperatorMethodName(mname)
-      self.method.returntype=attrs.get('returns',None)
-      if name=='Method':
-        if static=="1":
-          self.StaticMethods.append(self.method)
-          utils.WarningMessage( "Added {0} to static methods".format(mname))
-        else:
-          self.Methods.append(self.method)
-      if name=='Constructor':
-        self.Constructors.append(self.method)
-      if name=='OperatorMethod':
-        self.OperatorMethods.append(self.method)
-      if name=='Destructor':
-        self.destructor = self.method
-        
-      utils.WarningMessage( "\t {0} # found {1} \t ".format(self.method.name,attrs.get('demangled',None)))
-      self.inmethod=1
+    mname=attrs.get('name',None)
+    if CheckBlackList(mname,demangled): return
+    if attributes=="deprecated":
+      utils.WarningMessage("Skipping deprecated method {0}".format(mname))
+      #print "Skipping deprecated method {0}".format(mname)
+      return False
+    self.method = MethodInfo()
+    self.method.name=mname
+    self.method.static=static
+    # adapt names in case of multiple member with the same function name
+    if name=='Constructor':
+      # problem: for structure, the constructor name is something like '._12': not a valid nor usefull name:
+      # replace it by the class or structure name ...
+      if mname != config.types[context].GetString():
+        utils.WarningMessage(" replacing constructor name {0} --> {1}".format(mname,config.types[context].GetString()))
+        mname = config.types[context].GetString()
+      self.CheckMethodName(self.public_members.ConstructorNames,self.public_members.Constructors,mname)
+    if name=='Method':
+      if static=="1":
+        self.CheckMethodName(self.public_members.StaticMethodNames,self.public_members.StaticMethods,mname)
+      else:
+        self.CheckMethodName(self.public_members.MethodNames,self.public_members.Methods,mname)
+    if name=='OperatorMethod':
+      self.CheckOperatorMethodName(mname)
+    self.method.returntype=attrs.get('returns',None)
+    if name=='Method':
+      if static=="1":
+        self.public_members.StaticMethods.append(self.method)
+        utils.WarningMessage( "Added {0} to static methods".format(mname))
+      else:
+        self.public_members.Methods.append(self.method)
+    if name=='Constructor':
+      self.public_members.Constructors.append(self.method)
+    if name=='OperatorMethod':
+      self.public_members.OperatorMethods.append(self.method)
+    if name=='Destructor':
+      self.public_members.destructor = self.method
+      
+    utils.WarningMessage( "\t {0} # found {1} \t ".format(self.method.name,attrs.get('demangled',None)))
+    self.inmethod=1
+    return True
           
   def endElement(self, name):  
     if (self.inmethod==1) and (name in self.available_methods):
       self.inmethod=0
-    if (self.inenum==True):
+    if (self.inenum==True) and (name=="Enumeration"):
       self.inenum=False
+
+#------------------------------
+#------------------------------
+class FindPublicMembers(handler.ContentHandler):
+  def __init__(self, class_list):
+    self.parse_public_members = ParsePublicMembers(class_list)
+
+  #---------------------------------------------
+  def startElement(self, name, attrs):
+    self.parse_public_members.startElement(name,attrs)
+          
+  def endElement(self, name):  
+    self.parse_public_members.endElement(name)
 
 #------------------------------
 def AddParameters(method):
@@ -390,7 +446,7 @@ def AddParameters(method):
 #------------------------------------------------------------------
 def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
 
-  wrapclass_name="WrapClass_{0}".format(parse_class.ClassUsedName(classname))
+  wrapclass_name="WrapClass_{0}".format(ClassUsedName(classname))
   wrapmethod_name = method.usedname
   if method.static=="1":
      wrapmethod_name = "static_"+wrapmethod_name
@@ -544,6 +600,21 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
   return res
   
 
+# filename is the new file that should end with '.new'
+# it is copied to the original file only if they differ
+def BackupFile(filename):
+  # Check implementation file for backup
+  if os.path.isfile(filename[:-4]):
+    if filecmp.cmp(filename,filename[:-4]):
+      # if same "mv xxx.cpp.new xxx.cpp.old", not changing the original file to avoid recompilation
+      shutil.move(filename,filename[:-4]+".old")
+    else:
+      print "FILES differ: {0}".format(filename[:-4])
+      # else "mv xxx.cpp xxx.cpp.old" and "mv xxx.cpp.new xxx.cpp"
+      shutil.move(filename[:-4],filename[:-4]+".old")
+      shutil.move(filename,filename[:-4])
+  else:
+      shutil.move(filename,filename[:-4])
 
 
 #------------------------------------------------------------------
@@ -554,7 +625,7 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, constr
   #if method.returntype==None:
   #  print 'void',
   #else:
-  wrapclass_name="WrapClass_{0}".format(parse_class.ClassUsedName(classname))
+  wrapclass_name="WrapClass_{0}".format(ClassUsedName(classname))
   wrapmethod_name = method.usedname
   if method.static=="1":
      wrapmethod_name = "static_"+wrapmethod_name
@@ -613,7 +684,7 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, constr
 #  ImplementCopyMethodWrap
 #------------------------------------------------------------------
 def ImplementCopyMethodWrap(classname, method):
-  wrapclass_name="WrapClass_{0}".format(parse_class.ClassUsedName(classname))
+  wrapclass_name="WrapClass_{0}".format(ClassUsedName(classname))
   res = "\n"
   res += "//---------------------------------------------------\n"
   res += "//  Wrapping of 'copy' method for {0}.\n".format(classname)
@@ -643,28 +714,40 @@ def ImplementCopyMethodWrap(classname, method):
 #  WrapClass
 #----------------------------------------------------------------------
 def WrapClass(classname,include_file,inputfile):
-  # Create the handler
-  dh = parse_class.FindClass(classname)
-
+  if (args.val.profile):
+    t0 = time.clock()
+    print "WrapClass({0})".format(classname)
+  
   parser = make_parser()
-  # Tell the parser to use our handler
-  parser.setContentHandler(dh)
-  # Parse the input
-  inputfile.seek(0)
-  parser.parse(inputfile)
+  # Create the handler
+  #dh = parse_class.FindClass(classname)
+  ## Tell the parser to use our handler
+  #parser.setContentHandler(dh)
+  ## Parse the input
+  #inputfile.seek(0)
+  #parser.parse(inputfile)
+
+  found = classname in config.classes.keys()
 
   #
-  if dh.found:
-    utils.WarningMessage( "{0} id= {1}".format(classname,dh.classid))
+  if found:
+    classid = config.classes[classname]
+    dh = config.types[classid]
+    utils.WarningMessage( "{0} id= {1}".format(classname,classid))
     # Create the handler
-    fm = FindPublicMembers(dh.classid)
+    #print "classname is ",classname
+    #print "args.val.classes is ",config.parsed_classes
+    if classname not in config.parsed_classes:
+      fpm = FindPublicMembers([classname])
+      # Tell the parser to use our handler
+      parser.setContentHandler(fpm)
+      # Parse the input
+      inputfile.seek(0)
+      parser.parse(inputfile)
+    #else:
+      #print "Is part of args.val.classes"
     
-    # Tell the parser to use our handler
-    parser.setContentHandler(fm)
-
-    # Parse the input
-    inputfile.seek(0)
-    parser.parse(inputfile)
+    fm = config.types[classid].public_members
 
     # Check for Copy Constructor
     pos=0
@@ -682,8 +765,8 @@ def WrapClass(classname,include_file,inputfile):
         implement_type += "AMI_DEFINE_WRAPPEDTYPE_ABSTRACT({0});\n".format(classname)
       else:
         implement_type += "AMI_DEFINE_WRAPPEDTYPE_HASCOPY({0});\n".format(classname)
-      if parse_class.IsTemplate(classname) and args.val.templates:
-        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(classname,parse_class.ClassUsedName(classname))
+      if IsTemplate(classname) and args.val.templates:
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(classname,ClassUsedName(classname))
       else:
         implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(classname)
     else:
@@ -699,8 +782,8 @@ def WrapClass(classname,include_file,inputfile):
       implement_type += "}\n"
           
     # Create Header File
-    header_filename=args.val.outputdir+"/wrap_{0}.h".format(parse_class.ClassUsedName(classname))
-    if parse_class.IsTemplate(classname):
+    header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(ClassUsedName(classname))
+    if IsTemplate(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.h.in",header_filename)
     else:
       shutil.copyfile(args.val.templatefile_dir+"/wrap_class.h.in",header_filename)
@@ -722,10 +805,13 @@ def WrapClass(classname,include_file,inputfile):
       #methods_bases += indent+'if (!tmpobj.get()) return;\n'
       #methods_bases += indent+'Variables::ptr context(tmpobj->GetContext());\n'
     #
+    #print "number of bases:",len(dh.bases)
+    #print dh.bases
     for (base,virtual) in dh.bases:
       basename=config.types[base].GetString()
+      #print basename
       virtualstring=''
-      baseusedname=parse_class.ClassUsedName(basename)
+      baseusedname=ClassUsedName(basename)
       wrapped_base='WrapClass_{0}'.format(baseusedname)
       if virtual=='1':
         virtualstring="virtual"
@@ -914,7 +1000,7 @@ def WrapClass(classname,include_file,inputfile):
       else:
         # check includes
         if (typename in config.available_classes):
-          config.AddDeclare(parse_class.ClassUsedName(typename))
+          config.AddDeclare(ClassUsedName(typename))
         if isconstpointer:
           add_public_fields += indent+"/* Avoiding const pointers for the moment\n"
         else:
@@ -976,7 +1062,7 @@ def WrapClass(classname,include_file,inputfile):
           if fm.Constructors[pos].missingtypes:
             add_constructor+=  indent+"/* Types are missing\n"
           add_constructor+=indent+'WrapClass_{0}::AddVar_{1}(amiobject->GetContext());\n'.format(\
-            parse_class.ClassUsedName(classname),m.usedname)
+            ClassUsedName(classname),m.usedname)
           if fm.Constructors[pos].missingtypes:
             add_constructor +=  indent+"*/\n"
           pos=pos+1
@@ -990,7 +1076,7 @@ def WrapClass(classname,include_file,inputfile):
       if fm.StaticMethods[pos].missingtypes:
         add_static_methods +=  indent+"/* Types are missing\n"
       add_static_methods+=indent+'WrapClass_{0}::AddVar_{1}(amiobject->GetContext());\n'.format(\
-          parse_class.ClassUsedName(classname),m.usedname)
+          ClassUsedName(classname),m.usedname)
       if fm.StaticMethods[pos].missingtypes:
         add_static_methods +=  indent+"*/\n"
       pos=pos+1
@@ -1008,7 +1094,7 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${INHERIT_BASES}",     inherit_bases)
       line = line.replace("${CONSTRUCTOR_BASES}", constructor_bases)
       line = line.replace("${TEMPLATE}",          classname)
-      line = line.replace("${TEMPLATENAME}",      parse_class.ClassUsedName(classname))
+      line = line.replace("${TEMPLATENAME}",      ClassUsedName(classname))
       line = line.replace("${INCLUDEFILE}",       local_include_file)
       line = line.replace("${ADD_CLASS_CONSTRUCTORS}",constructors_decl)
       line = line.replace("${ADD_CLASS_STATIC_METHODS}",staticmethods_decl)
@@ -1024,7 +1110,7 @@ def WrapClass(classname,include_file,inputfile):
     else:
       #if len(fm.Constructors)>0:
       if wrapped_constructors>0:
-        implement_createvar += "  WrapClass_{0}::wrap_{1} construct;\n".format(parse_class.ClassUsedName(classname),parse_class.ClassConstructor(classname))
+        implement_createvar += "  WrapClass_{0}::wrap_{1} construct;\n".format(ClassUsedName(classname),ClassConstructor(classname))
         implement_createvar += "  return construct.CallMember(p);\n"
       else:
         # check for possible other method
@@ -1032,15 +1118,15 @@ def WrapClass(classname,include_file,inputfile):
         #print fm.StaticMethods
         if args.val.constructor != '' and \
           (args.val.constructor in fm.StaticMethodNames):
-          implement_createvar += "  WrapClass_{0}::wrap_static_{1} construct;\n".format(parse_class.ClassUsedName(classname),args.val.constructor)
+          implement_createvar += "  WrapClass_{0}::wrap_static_{1} construct;\n".format(ClassUsedName(classname),args.val.constructor)
           implement_createvar += "  return construct.CallMember(p);\n"
         else:
           implement_createvar += "  // No constructor available !!\n"
           implement_createvar += "  return BasicVariable::ptr();\n"
 
     # Create Implementation File
-    impl_filename=args.val.outputdir+"/wrap_{0}.cpp".format(parse_class.ClassUsedName(classname))
-    if parse_class.IsTemplate(classname):
+    impl_filename=args.val.outputdir+"/wrap_{0}.cpp.new".format(ClassUsedName(classname))
+    if IsTemplate(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.cpp.in",impl_filename)
     else:
       shutil.copyfile(args.val.templatefile_dir+"/wrap_class.cpp.in",impl_filename)
@@ -1118,7 +1204,7 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${IMPLEMENT_TYPE}",        implement_type)
       line = line.replace("${IMPLEMENT_CREATEVAR}",   implement_createvar)
       line = line.replace("${TEMPLATE}",              classname)
-      line = line.replace("${TEMPLATENAME}",          parse_class.ClassUsedName(classname))
+      line = line.replace("${TEMPLATENAME}",          ClassUsedName(classname))
       line = line.replace("${METHODS_BASES}",         methods_bases)
       line = line.replace("${AddVar_method_all}",     add_var_all)
       line = line.replace("${AddPublicFields}",       add_public_fields)
@@ -1128,3 +1214,15 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${WRAP_PUBLIC_METHODS}",   impl)
       print line,
 
+    # Check header file for backup
+    BackupFile(header_filename)
+
+    # Check implementation file for backup
+    BackupFile(impl_filename)
+  
+  if (args.val.profile):
+    if not found: 
+      print "Class not found: {0}".format(classname)
+    else:
+      print "WrapClass({0})  {1}".format(classname,time.clock()-t0)
+    t0 = time.clock()

@@ -9,6 +9,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
 
 #include "paramlist.h"
 #include "VarContexts.hpp"
@@ -21,6 +24,7 @@
 #include "MainFrame.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
+#include "wrap_wxNotebook.h"
 #include "wrap_wxSizerItem.h"
 
 #include "wrap_wxBitmap.h"
@@ -152,6 +156,25 @@ BasicVariable::ptr WrapClass_ParamPanel::
 
 }
 
+
+//---------------------------------------------------
+//  GetBookCtrl
+//---------------------------------------------------
+void WrapClass_ParamPanel::wrap_GetBookCtrl::SetParametersComments() 
+{
+  return_comments = "The control book.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_GetBookCtrl::CallMember( ParamList* p)
+{
+  wxNotebook* b = this->_objectptr->GetObj()->GetBookCtrl();
+
+  if (b==NULL)
+    return BasicVariable::ptr();
+  else
+    return AMILabType<wxNotebook>::CreateVar(b);
+
+}
 
 
 //---------------------------------------------------
@@ -1030,7 +1053,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_SetDragCallback::CallMember( Param
   if ((paramid>=0)&&(paramid<nbp))
     this->_objectptr->GetObj()->SetDragCallback(paramid,activate);
   else
-    FILE_ERROR(boost::format("bad parameter number %1%") % paramid);
+    FILE_ERROR((boost::format("bad parameter number %1%") % paramid).str().c_str());
 
   return BasicVariable::ptr();
 }
@@ -1059,7 +1082,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_EnablePanel::CallMember( ParamList
   if ((id>=0)&&(id<nbp))
     this->_objectptr->GetObj()->EnablePanel(id,enable);
   else
-    FILE_ERROR(boost::format(" bad parameter number %1% ")%id);
+    FILE_ERROR((boost::format(" bad parameter number %1% ")%id).str().c_str());
 
   return BasicVariable::ptr();
 }
@@ -1154,7 +1177,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_Enable::CallMember( ParamList* p)
   if ((id>=0)&&(id<nb))
     this->_objectptr->GetObj()->Enable(id,enable);
   else
-    FILE_ERROR(boost::format(" %d  \t bad parameter number ")%id);
+    FILE_ERROR((boost::format(" %d  \t bad parameter number ")%id).str().c_str());
 
   return BasicVariable::ptr();
 }

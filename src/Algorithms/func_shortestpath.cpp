@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include <limits.h>
 #include <iostream>
 using namespace std;
@@ -739,11 +743,11 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
         vy /= nv;
         vz /= nv;
       } else {
-        FILE_ERROR( 
-          format(" local maximul found at %1% %2% %3% :") % vpx % vpy % vpz
-          << format(" I I{x,y,z}{p,m} = %1% %2% %3% %4% %5% %6% %7%")
+        FILE_ERROR((
+          boost::format(" local maximul found at %1% %2% %3% :") % vpx % vpy % vpz).str().c_str());
+        FILE_ERROR(( boost::format(" I I{x,y,z}{p,m} = %1% %2% %3% %4% %5% %6% %7%")
           % I % Ixp % Ixm % Iyp % Iym % Izp % Izm
-          );
+          ).str().c_str());
         // look for the minimal over the neighbors
         int xpos = round(vpx);
         int ypos = round(vpy);
@@ -770,10 +774,10 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
           vy = (ymin-vpy)*displ->VoxSizeY();
           vz = (zmin-vpz)*displ->VoxSizeZ();
           nv = sqrt(vx*vx+vy*vy+vz*vz);
-         FILE_ERROR(  format(" minimum found at  %1% %2% %3% :") % xmin % ymin % zmin
-          << format(" new vector %1% %2% %3% norm %4%")
+         FILE_ERROR((boost::format(" minimum found at  %1% %2% %3% :") % xmin % ymin % zmin).str().c_str());
+         FILE_ERROR((format(" new vector %1% %2% %3% norm %4%")
           % vx % vy % vz % nv
-          );
+          ).str().c_str());
         } else  {
           FILE_ERROR(" no minimum found among neighbors !");
         }
@@ -803,34 +807,34 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
     int ypos = round(vox_p[1]);
     int zpos = round(vox_p[2]);
     if ((xpos==74)&(ypos==78)&(zpos==72)) {
-      FILE_MESSAGE( format(" point %1% ") % num_points
-                    << format(" ( %0.2f, %0.2f %0.2f )") 
-                           % p[0] % p[1] % p[2]
-                    << format(" ( %0.2f, %0.2f %0.2f )") 
-                           % vox_p[0] % vox_p[1] % vox_p[2] 
-                    << format(" ( %0.2f, %0.2f %0.2f )") 
-                     % vx % vy % vz
-                    << format("  nv %0.3f") %  nv 
-            << format("  current val %0.4f %0.4f")
+      FILE_MESSAGE((boost::format(" point %1% ") % num_points).str().c_str());
+      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+                           % p[0] % p[1] % p[2]).str().c_str());
+      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+                           % vox_p[0] % vox_p[1] % vox_p[2] ).str().c_str());
+      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+                     % vx % vy % vz).str().c_str());
+      FILE_MESSAGE(( format("  nv %0.3f") %  nv ).str().c_str());
+      FILE_MESSAGE(( format("  current val %0.4f %0.4f")
               % displ->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
-              % closest_point_intensity
-            << format("  d= %0.3f mm") %  distance );
+              % closest_point_intensity).str().c_str());
+      FILE_MESSAGE(( format("  d= %0.3f mm") %  distance ).str().c_str());
     }
     if ((distance>=prev_dist+10)||(distance<2)) {
       prev_dist = distance;
       for(int i=0;i<2;i++) q[i] = p[i];
-      FILE_MESSAGE( format(" point %1% ") % num_points
-                    << format(" ( %0.2f, %0.2f %0.2f )") 
-                           % p[0] % p[1] % p[2]
-                    << format(" ( %0.2f, %0.2f %0.2f )") 
-                           % vox_p[0] % vox_p[1] % vox_p[2] 
-                    << format(" ( %0.2f, %0.2f %0.2f )") 
-                     % vx % vy % vz
-                    << format("  nv %0.3f") %  nv 
-            << format("  current val %0.4f %0.4f")
+      FILE_MESSAGE((format(" point %1% ") % num_points).str().c_str());
+      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+                           % p[0] % p[1] % p[2]).str().c_str());
+      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+                           % vox_p[0] % vox_p[1] % vox_p[2] ).str().c_str());
+      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+                     % vx % vy % vz).str().c_str());
+      FILE_MESSAGE(( format("  nv %0.3f") %  nv ).str().c_str());
+      FILE_MESSAGE(( format("  current val %0.4f %0.4f")
               % displ->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
-              % closest_point_intensity
-            << format("  d= %0.3f mm") %  distance );
+              % closest_point_intensity).str().c_str());
+      FILE_MESSAGE(( format("  d= %0.3f mm") %  distance ).str().c_str());
     }
 
     p[0] += vx*step_size;
@@ -890,8 +894,8 @@ SurfacePoly* Func_path_from_vectfield( InrImage::ptr displ,
                                       double delta)
 {
 
-  FILE_MESSAGE(format(" expected endpoint %0.2f %0.2f %0.2f ") 
-                      % end[0] % end[1] % end[2] );
+  FILE_MESSAGE((format(" expected endpoint %0.2f %0.2f %0.2f ") 
+                      % end[0] % end[1] % end[2] ).str().c_str());
 
   SurfacePoly* res = Func_path_from_vectfield(displ,start,step_size,max_length,delta);
 

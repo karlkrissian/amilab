@@ -57,6 +57,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
+  MESSAGE("\nOBTENER XML ORDEN: ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT} \n")
   execute_process(
     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
   )
@@ -84,49 +85,56 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/methodpointers.txt" methodpointers_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
 
-  FOREACH( class ${ancestors_list}) 
-    #MESSAGE("Processing class ${class}")
-    IF (${GCCXML_result} EQUAL 0)
-      # Go for python wrapping
-      ADD_CUSTOM_COMMAND(OUTPUT ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${WRAPWX_OUTDIR}/wrap_${class}.h
-        COMMAND
-          ${PYTHON_EXECUTABLE} 
-            ${AMI_WRAPPER} ${XML_OUTPUT}
-            --libname wx
-            --filter "wx*"
-            --classes ${class}
-            --available_classes ${ancestors_list} ${methodpointers_list}
-            --outputdir "${WRAPWX_OUTDIR}"
-            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-            -q
-          DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-        )
-    ENDIF(${GCCXML_result} EQUAL 0)
+  # Wrap all classes at once since it is now fast
+  FOREACH( class ${ancestors_list})
+    SET(OUTPUT_LIST 
+      ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${WRAPWX_OUTDIR}/wrap_${class}.h
+      ${OUTPUT_LIST}
+    )
   ENDFOREACH( class ${ancestors_list}) 
 
-
-  MESSAGE("Processing method pointers ${methodpointers_list}")
   FOREACH( MP ${methodpointers_list})
     SET( methodpointers_files ${methodpointers_files} ${WRAPWX_OUTDIR}/wrap_${MP}.h ${WRAPWX_OUTDIR}/wrap_${MP}.cpp )
   ENDFOREACH( MP ${methodpointers_list})
 
+  #MESSAGE("Processing class ${class}")
   IF (${GCCXML_result} EQUAL 0)
     # Go for python wrapping
-    ADD_CUSTOM_COMMAND(OUTPUT ${methodpointers_files}  ${WRAPWX_OUTDIR}/addwrap_wx.h  ${WRAPWX_OUTDIR}/addwrap_wx.cpp
+    ADD_CUSTOM_COMMAND(
+      OUTPUT ${OUTPUT_LIST} ${methodpointers_list} ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
       COMMAND
         ${PYTHON_EXECUTABLE} 
           ${AMI_WRAPPER} ${XML_OUTPUT}
           --libname wx
           --filter "wx*"
+          --classes ${ancestors_list}
           --methodpointers ${methodpointers_list}
           --available_classes ${ancestors_list} ${methodpointers_list}
           --outputdir "${WRAPWX_OUTDIR}"
-          --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
           --addwrap
+          --profile
+          --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
           -q
-        DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-      )
+      DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+    )
   ENDIF(${GCCXML_result} EQUAL 0)
+
+#   IF (${GCCXML_result} EQUAL 0)
+#     # Go for python wrapping
+#     ADD_CUSTOM_COMMAND(OUTPUT 
+#       COMMAND
+#         ${PYTHON_EXECUTABLE} 
+#           ${AMI_WRAPPER} ${XML_OUTPUT}
+#           --libname wx
+#           --filter "wx*"
+#           --available_classes ${ancestors_list} ${methodpointers_list}
+#           --outputdir "${WRAPWX_OUTDIR}"
+#           --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+#           -q
+#         DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+#       )
+#   ENDIF(${GCCXML_result} EQUAL 0)
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 

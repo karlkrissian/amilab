@@ -126,7 +126,8 @@ class wrap_Get##varname : public WrapClassMember { \
     wrap_Get##varname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
-      return_comments = (boost::format("Returns a variable of type %1%.") % AMILabType<type>::name_as_string().c_str()).str(); \
+      ami::format f("Returns a variable of type %1%."); \
+      return_comments = (f % AMILabType<type>::name_as_string().c_str()).GetString(); \
     } \
     BasicVariable::ptr CallMember(ParamList*) { \
       type val = this->_objectptr->GetObj()->Get##varname(); \

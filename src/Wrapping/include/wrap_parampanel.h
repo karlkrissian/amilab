@@ -24,6 +24,7 @@
 #include "ParamPanel.hpp"
 
 #include "wrap_wxWindow.h"
+#include "wrap_wxNotebook.h"
 
 AMI_DECLARE_TYPE(ParamPanel)
 
@@ -47,6 +48,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
 
     ADD_CLASS_CONSTRUCTOR( ParamPanel, "Wrapping of ParamPanel." );
 
+    ADD_CLASS_METHOD(GetBookCtrl,      "Returns the notebook.");
     ADD_CLASS_METHOD(BeginBook,        "Starts a notebook.");
     ADD_CLASS_METHOD(EndBook,          "Ends a notebook.");
     ADD_CLASS_METHOD(BeginHorizontal,  "Sets horizontal alignment for widgets.");
@@ -104,6 +106,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
       WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
       parent_obj->AddMethods(parent_obj);
 
+      AddVar_GetBookCtrl(       this_ptr);
       AddVar_BeginBook(         this_ptr);
       AddVar_EndBook(           this_ptr);
       AddVar_BeginHorizontal(   this_ptr);

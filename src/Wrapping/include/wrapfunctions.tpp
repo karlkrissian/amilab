@@ -15,6 +15,7 @@
 #include "amilab_messages.h"
 //#include "DessinImage.hpp"
 #include "Variable.hpp"
+#include "ami_format.h"
 
 #include <string>
 //using namespace std;
@@ -30,7 +31,8 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
   if (!p) return false;
   if (num>=p->GetNumParam()) {
     if (required) {
-      FILE_ERROR( boost::format("Wrong parameter number for parameter  %1%") % num);
+      ami::format f("Wrong parameter number for parameter  %1%");
+      FILE_ERROR( (f % num).GetString());
     }
     return false;
   }
@@ -38,13 +40,18 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
   var = boost::dynamic_pointer_cast<Variable<T> >(p->GetParam(num++));
   if (var.get()) {
     if (var->Type()!=GetVarType<T>()) {
-      FILE_ERROR(boost::format("Parameter %1% is of wrong type (%2% instead of %3%), you may be passing a value instead of a reference.")%num%var->Type()%GetVarType<T>());
+      ami::format f("Parameter %1% is of wrong type (%2% instead of %3%), you may be passing a value instead of a reference.");
+      FILE_ERROR( (f % num
+                     % var->GetTypeName().c_str()
+                     % GetVarType<T>()).GetString()
+                );
       return false;
     }
     // check that the variable is not just local
     int var_count = var->Pointer().use_count();
     if (var_count<=1) {
-      FILE_ERROR(boost::format("Parameter %1% is not passed as a reference ... (%2%)")%num%var->Name());
+      ami::format f("Parameter %1% is not passed as a reference ... (%2%)");
+      FILE_ERROR( (f%num%var->Name().c_str()).GetString());
       return false;
     }
 
@@ -52,8 +59,10 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
   }
   else
   {
-    if (required)
-      FILE_ERROR(boost::format("Parameter %d not found ") % num);
+    if (required) {
+      ami::format f("Parameter %d not found ");
+      FILE_ERROR( (f % num).GetString());
+    }
     return false;
   }
 
@@ -106,8 +115,10 @@ bool get_val_param(T& arg, ParamList*p, int& num, bool required, bool quiet)
   if (!varparam.get())  return res;
   boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(varparam);
   if (!val_ptr.get()) {
-    if (!quiet) 
-      FILE_ERROR(boost::format("Problem with %1% parameter.") % num);
+    if (!quiet) { 
+      ami::format f("Problem with %1% parameter.");
+      FILE_ERROR( (f % num).GetString());
+    }
     return false;
   } else {
     arg = *val_ptr;
@@ -125,10 +136,12 @@ bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required, bool nocon
   // if the parameter number is too high, skip it (use default value)
   if (num>=p->GetNumParam()) {
     if (!required) {
-      FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
+      ami::format f("Using default value for parameter %1%");
+      FILE_MESSAGE( (f % num).GetString());
       return true;
     } else {
-      FILE_MESSAGE( boost::format("Missing required parameter number %1%") % num);
+      ami::format f("Missing required parameter number %1%");
+      FILE_MESSAGE( (f % num).GetString());
       return false;
     }
   }
@@ -136,7 +149,8 @@ bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required, bool nocon
   if (temp.get()) {
     boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(temp,noconstr);
     if (!val_ptr.get()) {
-      FILE_ERROR(boost::format("Parameter %1% failed.") % num);
+      ami::format f("Parameter %1% failed.");
+      FILE_ERROR((f % num).GetString());
       return false;
     }
     arg= val_ptr.get();
@@ -144,7 +158,8 @@ bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required, bool nocon
   }
   else
   {
-    FILE_ERROR(boost::format("Parameter %d not found ") % num);
+    ami::format f("Parameter %d not found ");
+    FILE_ERROR( (f % num).GetString());
     return false;
   }
 }
@@ -162,8 +177,10 @@ bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num,
   if (!temp.get()) return res;
   boost::shared_ptr<T> val_ptr = AMILabType<T>::GetValue(temp,noconstr);
   if (!val_ptr.get()) {
-    if (!quiet)
-      FILE_ERROR(boost::format("Parameter %1% failed.") % num);
+    if (!quiet) {
+      ami::format f("Parameter %1% failed.");
+      FILE_ERROR( ( f % num).GetString());
+    }
     return false;
   }
   arg = val_ptr;

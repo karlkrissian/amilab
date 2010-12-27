@@ -28,7 +28,6 @@ import findtypesvars
 import findfiles
 import wx_lib
 
-import parse_class
 import arginfo
 
 import parse_function

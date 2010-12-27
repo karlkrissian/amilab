@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "paramlist.h"
 #include "wrapfunctions.hpp"
 #include "DefineClass.hpp"
@@ -20,8 +24,7 @@
 #include <string>
 using namespace std;
 
-
-
+#include "inrimage.hpp"
 
 /**
  * Function returns the number of parameters of the parameters list
@@ -43,7 +46,7 @@ bool get_next_param( BasicVariable::ptr& var,
   var =  p->GetParam(num++);
   if (!var.get()) {
     if (!quiet)
-      FILE_ERROR(boost::format("Parameter %d is an empty variable") % num);
+      FILE_ERROR((boost::format("Parameter %d is an empty variable") % num).str().c_str());
     // there a parameter so, even if it is not required, return false here
     return false;
   }
@@ -65,7 +68,7 @@ bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num, bool
       // check that the variable is not just local
       int var_count = var->GetPtrCounter();
       if (var_count==1) {
-        FILE_ERROR(boost::format("Parameter %1% is not passed as a reference ... (%2%)")%num%var->Name());
+        FILE_ERROR((boost::format("Parameter %1% is not passed as a reference ... (%2%)")%num%var->Name()).str().c_str());
         return false;
       }
     }
@@ -73,7 +76,7 @@ bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num, bool
   }
   else
   {
-    FILE_ERROR(boost::format("Parameter %d not found ") % num);
+    FILE_ERROR((boost::format("Parameter %d not found ") % num).str().c_str());
     return false;
   }
 }
@@ -110,7 +113,7 @@ bool get_vectimage_param(InrImage*& arg, ParamList*p, int& num)
   if (get_val_ptr_param<InrImage>(arg,p,num))
   {
     if (!arg->VectorialFormat()) {
-      FILE_ERROR(boost::format("Param %d must be a vectorial image.") %num);
+      FILE_ERROR((boost::format("Param %d must be a vectorial image.") %num).str().c_str());
       return false;
     }
     else return true;

@@ -21,6 +21,8 @@ SET(Common_SRCS
   ficparam.cpp  
   StringUtils.cpp
   message_dialog.cpp
+  ami_format.cpp
+  amilab_messages.cpp
 
   # coming from previous Math dir
   CurvaturasPrincipales.cpp
@@ -70,6 +72,7 @@ SET(Common_HDRS
 	include/Timing.hpp
 	include/Voisins27.hpp
   include/amilab_boost.h
+  include/ami_format.h
 
   # coming from previous Math dir
   include/complex.hpp

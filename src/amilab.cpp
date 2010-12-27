@@ -123,7 +123,7 @@ void CB_delete_variable( void* var)
 {
   BasicVariable* vartodelete = (BasicVariable*) var;
 
-  FILE_MESSAGE(boost::format("deleting %1%") % vartodelete->Name());
+  FILE_MESSAGE((boost::format("deleting %1%") % vartodelete->Name()).str().c_str());
   if (!Vars.deleteVar(vartodelete))
     FILE_ERROR("Could not delete variable "); 
 
@@ -144,9 +144,9 @@ void CB_delete_varlist( void* var)
       if (BasicVariable::ptr lockedvar = vartodelete.lock()) 
       {
         bool deleted=false;
-        FILE_MESSAGE(boost::format("Pointer counter = %1%") % lockedvar->GetPtrCounter());
+        FILE_MESSAGE((boost::format("Pointer counter = %1%") % lockedvar->GetPtrCounter()).str().c_str());
         std::string name = lockedvar->Name();
-        FILE_MESSAGE(boost::format("deleting %1%") % name);
+        FILE_MESSAGE((boost::format("deleting %1%") % name).str().c_str());
         Variables::ptr context = lockedvar->GetContext();
 
         // free lock first
@@ -155,7 +155,7 @@ void CB_delete_varlist( void* var)
           deleted = context->deleteVar(name.c_str());
         }
         if (!deleted)
-          FILE_ERROR(boost::format("Could not delete variable %1%") % name); 
+          FILE_ERROR((boost::format("Could not delete variable %1%") % name).str().c_str()); 
       }
     }
 

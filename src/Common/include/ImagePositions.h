@@ -29,10 +29,6 @@ public:
   typedef ImagePositions<T> ClassType; 
   typedef typename boost::shared_ptr<ImagePositions<T> >    ptr; 
   typedef typename boost::weak_ptr<ImagePositions<T> >      wptr; 
-  typedef typename std::vector<ptr>     ptr_vector; 
-  typedef std::vector<wptr>    wptr_vector; 
-  typedef std::list<ptr>       ptr_list; 
-  typedef std::list<wptr>      wptr_list;
 
 protected:
   // image format

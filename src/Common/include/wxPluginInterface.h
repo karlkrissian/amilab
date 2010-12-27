@@ -23,28 +23,28 @@ class wxPluginInterface
      *
      * @return return a wxString with the plugin name
      **/
-    virtual wxString GetName(void) const = 0;
+    virtual std::string GetName(void) const = 0;
 
     /**
      * @brief Get the plugin description.
      *
      * @return return a wxString with the plugin description
      **/
-    virtual wxString GetDescription(void) const = 0;
+    virtual std::string GetDescription(void) const = 0;
 
     /**
      * @brief Get the plugin version.
      *
      * @return return a wxString with the plugin version
      **/
-    virtual wxString GetVersion(void) const = 0;
+    virtual std::string GetVersion(void) const = 0;
 
     /**
      * @brief Get the plugin author.
      *
      * @return return a wxString with the plugin author
      **/
-    virtual wxString GetAuthor(void) const = 0;
+    virtual std::string GetAuthor(void) const = 0;
 
     /**
      * @brief Execute the plugin.

@@ -47,12 +47,12 @@ VAL1 = file.GetFullPath();
 
 printn "\t The full path with name and extension(file): - %1% -\n" % VAL1
 
-if (VAL1 != "")  {
+if (!VAL1.IsEmpty())  {
   OK=0;
   printn  "\nERROR: The constructor failed (MODE 0)."
 }
 
-VAL2 = file1._GetName()
+VAL2 = file1.GetName()
 
 printn "\t The name part of the filename (without extension)(file1): - %1% -\n" % VAL2
 
@@ -62,7 +62,7 @@ if (VAL2 != "karl")  {
 }
 
 VAL3 = file2.GetPath()
-VAL4 = file2._GetName()
+VAL4 = file2.GetName()
 
 printn "\t The path part of the filename (without the name or extension)(file2): - %1% -\n" % VAL3
 printn "\t The name part of the filename (without extension)(file2): - %1% -\n" % VAL4

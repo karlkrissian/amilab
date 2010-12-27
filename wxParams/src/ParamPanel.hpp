@@ -187,6 +187,10 @@ public:
       return NULL;
   }
 
+  wxBoxSizer* GetCurrentSizer(){
+    return _current_sizer.top();
+  }
+
   int BeginBook();
 
   void EndBook();

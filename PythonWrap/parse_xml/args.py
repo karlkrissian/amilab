@@ -44,6 +44,9 @@ arg_parser.add_argument('--overwrite',action='store_true',  \
 arg_parser.add_argument('--templates',action='store_true',  \
   help='Wrap template class instances')
 
+arg_parser.add_argument('--profile',action='store_true',  \
+  help='Displays the processing time.')
+
 arg_parser.add_argument('--templatefile_dir', default=".",  \
   help='Directory containing the template files (wrap_class.h.in, etc ...)')
 

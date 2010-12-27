@@ -15,6 +15,7 @@
 #include "IdentifierInfo.h"
 
 #include "DefineClass.hpp"
+#include "ami_format.h"
 
 #define NEWVAR_CONTEXT -1
 #define OBJECT_CONTEXT_NUMBER -10
@@ -149,9 +150,10 @@ public:
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
-          CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ")
-                          % val->GetTypeName() 
-                          % name);
+          ami::format f("adding object of type %1%, name %2% into object context ");
+          CLASS_MESSAGE(( f
+                          % val->GetTypeName().c_str()
+                          % name).GetString());
           return _object_context->AddVar<T>(name,val, _object_context);
       }
       else {
@@ -170,8 +172,8 @@ public:
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
-          CLASS_MESSAGE(boost::format("adding object name %1% into object context ")
-                          % name);
+          ami::format f("adding object name %1% into object context ");
+          CLASS_MESSAGE( (f % name.c_str()).GetString());
           boost::shared_ptr<Variable<T> > newvar ( 
             new Variable<T>(name,val));
           return _object_context->AddVar<T>(name,newvar, _object_context);
@@ -193,9 +195,9 @@ public:
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
-          CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ")
-                          % val->GetTypeName() 
-                          % name);
+          ami::format f("adding object of type %1%, name %2% into object context ");
+          CLASS_MESSAGE((f % val->GetTypeName().c_str() 
+                           % name).GetString());
           return _object_context->AddVar(name,val, _object_context);
       }
       else {

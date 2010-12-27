@@ -109,8 +109,8 @@ extern unsigned char GB_verbose;
 
 #ifdef AMI_USE_SSE
   #define NEW(mess,ptr,type,size) \
-      CLASS_MESSAGE( boost::format("%1%, allocation of %2% Mb using _mm_malloc") \
-          % mess % (1.0*size*sizeof(type)/1000000.0)); \
+      CLASS_MESSAGE( (boost::format("%1%, allocation of %2% Mb using _mm_malloc") \
+          % mess % (1.0*size*sizeof(type)/1000000.0)).str().c_str()); \
       ptr = (type*) _mm_malloc (sizeof(type)*size,16); \
       if (!ptr) \
         CLASS_ERROR("Error in _mm_malloc allocation !")
@@ -121,11 +121,11 @@ extern unsigned char GB_verbose;
     _mm_free(ptr); ptr = NULL; } 
 #else
   #define NEW(mess,ptr,type,size) \
-      CLASS_MESSAGE( boost::format("%1%, allocation of %2% Mb using new") \
-          % mess % (1.0*size*sizeof(type)/1000000.0)); \
+      CLASS_MESSAGE((boost::format("%1%, allocation of %2% Mb using new") \
+          % mess % (1.0*size*sizeof(type)/1000000.0)).str().c_str()); \
       ptr = new type[size]; \
       if (!ptr) \
-        CLASS_ERROR(boost::format("Error in allocation %1%!") % mess)
+        CLASS_ERROR((boost::format("Error in allocation %1%!") % mess).str().c_str())
   
   #define AMI_DELETE(ptr) \
     { \
@@ -1330,12 +1330,12 @@ unsigned char  amimage::write( const char* filename, bool include_header)
 
   if (!writeheader(filename,out,include_header))
   {
-    CLASS_ERROR(boost::format("failed to write header for %1%")% filename);
+    CLASS_ERROR((boost::format("failed to write header for %1%")% filename).str().c_str());
     return false;
   }
   if (!writedata(out))
   {
-    CLASS_ERROR(boost::format("failed to write data for %1%") % filename);
+    CLASS_ERROR((boost::format("failed to write data for %1%") % filename).str().c_str());
     return false;
   }
 

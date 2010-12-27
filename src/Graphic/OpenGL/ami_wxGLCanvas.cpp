@@ -407,7 +407,7 @@ GLObject::ptr ami_wxGLCanvas::GetGLObject(int i)
   }
 
   int n=0;
-  GLObject::ptr_list::iterator Iter;
+  std::list<GLObject::ptr>::iterator Iter;
 
   Iter  = _globject.begin();
   while (n<i) { Iter++; n++; }
@@ -421,7 +421,7 @@ GLObject::ptr ami_wxGLCanvas::GetGLObject(int i)
 int ami_wxGLCanvas::GetCurrentObjectNum()
 {
   int n=0;
-  GLObject::ptr_list::iterator Iter;
+  std::list<GLObject::ptr>::iterator Iter;
 
   Iter  = _globject.begin();
   while (((*Iter)!=_current_globject)&& Iter!=_globject.end())
@@ -447,7 +447,7 @@ int ami_wxGLCanvas::SetCurrentObject(int i)
   if (i>=(int)_globject.size()) return _globject.size()-1;
 
   int n=0;
-  GLObject::ptr_list::iterator Iter;
+  std::list<GLObject::ptr>::iterator Iter;
 
   Iter  = _globject.begin();
   while (n<i) { Iter++; n++; }
@@ -507,9 +507,9 @@ void ami_wxGLCanvas::OnSize( wxSizeEvent& event )
   GetClientSize ( &w, &h );
   _largeur = w;
   _hauteur = h;
-  CLASS_MESSAGE(boost::format(" %1% x %2% ")
+  CLASS_MESSAGE((boost::format(" %1% x %2% ")
                   % _largeur
-                  % _hauteur);
+                  % _hauteur).str().c_str());
   if (SetCurrentContext())
   {
     glViewport ( 0, 0, _largeur, _hauteur );
@@ -673,7 +673,7 @@ void ami_wxGLCanvas::AfficheBuffer()
 void ami_wxGLCanvas::UpdateObjectList( )
 //
 {
-  GLObject::ptr_list::iterator Iter;
+  std::list<GLObject::ptr>::iterator Iter;
 
   Iter  = _globject.begin();
   while ( Iter != _globject.end())
@@ -742,7 +742,7 @@ void ami_wxGLCanvas::RemoveSurface( SurfacePoly::ptr surf)
   // Search for the surface
   // use iterator
   int n=0;
-  GLObject::ptr_list::iterator Iter;
+  std::list<GLObject::ptr>::iterator Iter;
 
   Iter  = _globject.begin();
   while (((*Iter)!=surf)&& Iter!=_globject.end())
@@ -1442,12 +1442,12 @@ void ami_wxGLCanvas::DisplayObjects()
 
     // Better solution: order the objects by opacity ...
     // most opaque first
-    GLObject::ptr_list sorted_list(_globject);
+    std::list<GLObject::ptr> sorted_list(_globject);
     if (GB_debug)
       fprintf(stderr,
         "ami_wxGLCanvas::DisplayObjects() sorting elts \n");
     sorted_list.sort(compare_opacity);
-    GLObject::ptr_list::iterator Iter;
+    std::list<GLObject::ptr>::iterator Iter;
 
 
     if (_GLParam._GLmode != GL_MODE_FILL_LINE) {

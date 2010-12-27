@@ -31,6 +31,9 @@
 // #include <X11/StringDefs.h>
 
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
 
 #include "xmtext.hpp"
 //#include "myscan.h"
