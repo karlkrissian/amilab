@@ -1214,11 +1214,14 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${WRAP_PUBLIC_METHODS}",   impl)
       print line,
 
+  if found:
     # Check header file for backup
     BackupFile(header_filename)
 
     # Check implementation file for backup
     BackupFile(impl_filename)
+  else:
+    print "Class {0} not found".format(classname)
   
   if (args.val.profile):
     if not found: 

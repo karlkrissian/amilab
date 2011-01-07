@@ -275,8 +275,19 @@ if (!exists(AnisoNRADClass)) {
                         ::dt,numit,::neighborhood,::roi.GetExtent)
             ::res <<= sqrt(::res)
         } else {
+          if (::input.vdim ==1) {
             ::res <<= AnisoNRAD(::input,::scalar_mode,\
                         ::dt,numit,::neighborhood,::roi.GetExtent)
+          } else {
+            ::res <<= ::input
+            for n=0 to ::input.vdim-1 {
+              if exists(tmp) { del tmp; }
+              tmp = &::input[n]
+              res = AnisoNRAD(tmp,::scalar_mode,\
+                        ::dt,numit,::neighborhood,::roi.GetExtent)
+              ::res.SetComponent(n, res)
+            }
+          }
         }
       }
     }
@@ -293,8 +304,8 @@ if (!exists(AnisoNRADClass)) {
       }
       // draw limits of ROI
       if exists(::roi) {
-        roibox = ::roi*0+1
-        ::imbox  <<= ::input*0
+        roibox = ::roi[0]*0+1
+        ::imbox  <<= ::input[0]*0
         ::imbox.putimage(roibox)
         del roibox
         ::input_draw.SetIsoContour(0,&::imbox,0.5)

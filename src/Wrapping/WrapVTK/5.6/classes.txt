@@ -9,7 +9,9 @@ vtkActor
 vtkAlgorithm
 vtkAlgorithmOutput
 vtkBoxWidget
+vtkBMPReader
 vtkCamera
+vtkCameraInterpolator
 vtkCellTypes
 vtkCollection
 vtkColorTransferFunction
@@ -17,10 +19,14 @@ vtkCommand
 vtkDataArray
 vtkDataObject
 vtkDataSet
+vtkDirectory
 vtkGPUVolumeRayCastMapper
 vtkHomogeneousTransform
 vtkImageAlgorithm
 vtkImageData
+vtkImageReader2
+vtkImageReader2Factory
+vtkImageResample
 vtkImplicitFunction
 vtkIndent
 vtkInformation
@@ -31,6 +37,7 @@ vtkInteractorStyleImage
 vtkInteractorStyleSwitch
 vtkInteractorStyleTrackballCamera
 vtkInteractorStyleTrackball
+vtkJPEGReader
 vtkLinearTransform
 vtkMapper
 vtkMatrix4x4
@@ -39,6 +46,7 @@ vtkObject
 vtkOpenGLGPUVolumeRayCastMapper
 vtkPiecewiseFunction
 vtkPlanes
+vtkPlaneSource
 vtkPointSet
 vtkPoints
 vtkPolyDataAlgorithm
@@ -54,8 +62,10 @@ vtkRenderer
 vtkRenderWindow
 vtkRenderWindowInteractor
 vtkScalarsToColors
+vtkSphereSource
 vtkStdString
 vtkTexture
+vtkTexturedSphereSource
 vtkTimeStamp
 vtkTransform
 vtkUnicodeString
