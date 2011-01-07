@@ -166,5 +166,7 @@ SET(WrapVTK_SRCS
      ${vtk_HDRS}
 )
 
+MESSAGE("WrapVTK_SRCS =  ${WrapVTK_SRCS}")
+
 my_add_library ( WrapVTK)
 add_dependencies ( WrapVTK WrapWxWidgets )

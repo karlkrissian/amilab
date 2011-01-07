@@ -45,6 +45,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
     ::vtkreaderfactory = vtk.vtkImageReader2Factory.New()
     if (res==1) {
       nbfiles = ::vtkdir.GetNumberOfFiles()
+      total_imsize = 0
       for n=0 to nbfiles-1 {
         SetProgress(100.0*n/nbfiles)
         file = ::vtkdir.GetFile(n)
@@ -74,6 +75,9 @@ Class vtktest_TPlaneClass : public ScriptGui \
           imresample.SetAxisMagnificationFactor(0,1.0/f)
           imresample.SetAxisMagnificationFactor(1,1.0/f)
           imresample.SetInput(&::vtkreader.GetOutput())
+          imsize = ((FLOAT)::vtkreader.GetOutput().GetActualMemorySize())/1000
+          total_imsize += imsize
+          printn "input image size = %1% Mb" %  imsize
           #im <<= Image(filename)
           #im1 <<= Resize(im,256,256,1,0)
           #if (exists(vtkim1)) { del vtkim1; }
@@ -81,6 +85,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
         
           # Get Image dimensions
           imresample.Update()
+          imresample.RemoveAllInputs()
           newdim = vector_int(3,1)
           imresample.GetOutput().GetDimensions(&newdim[0])
           print "dimensions %1% x" % dim[0] + " %1%" % dim[1]
@@ -103,9 +108,10 @@ Class vtktest_TPlaneClass : public ScriptGui \
           planeMapper.Delete(); del planeMapper
           plane.Delete(); del plane
           atext.Delete(); del atext
-        }
-      }
+        } # end if
+      } # end for
       SetProgress(0)
+      printn "total image size = %1% Mb" % total_imsize
       SetStatusText("Placing the images")
       # position the planes
       size = ::PlaneActors.size()

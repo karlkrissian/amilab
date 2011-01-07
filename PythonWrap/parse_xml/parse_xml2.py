@@ -38,7 +38,7 @@ import wrap_class
 import parse_function
 import wrap_function
 
-
+import pickle
   
 def FindAvailableClasses():
   for dir in args.val.wrap_includes:
@@ -209,6 +209,9 @@ if __name__ == '__main__':
     # Parse the input
     inputfile.seek(0)
     parser.parse(inputfile)
+    
+    saveconf = open(args.val.outputdir+"/saveconfig.dat","w")
+    pickle.dump(config.types,saveconf,-1)
 
     #print "wxConfig is available ? ", wrap_class.AvailableType("wxConfigBase",config.classes["wxConfigBase"],[])
 
@@ -227,7 +230,7 @@ if __name__ == '__main__':
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
       for b in args.val.ancestors:
-        print "b=",b
+        #print "b=",b
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:
@@ -241,19 +244,19 @@ if __name__ == '__main__':
             newlist=[]
             while f_anc != []:
               anc_id = f_anc.pop()[0]
-              if b=="wxTopLevelWindow":
-                print anc_id
+              #if b=="wxTopLevelWindow":
+                #print anc_id
               if anc_id in classes_dict.keys():
-                if b=="wxTopLevelWindow":
-                  print classes_dict[anc_id]
+                #if b=="wxTopLevelWindow":
+                  #print classes_dict[anc_id]
                 if  classes_dict[anc_id] not in ancestors and  \
                     classes_dict[anc_id] not in config.classes_blacklist and\
                     not wrap_class.IsTemplate(classes_dict[anc_id]):
                   ancestors.append(classes_dict[anc_id])
                   newlist.append(classes_dict[anc_id])
                   bases=config.types[anc_id].bases
-                  if b=="wxTopLevelWindow":
-                    print bases
+                  #if b=="wxTopLevelWindow":
+                    #print bases
                   if bases!=None:
                     for newanc in bases:
                       f_anc.append(newanc)
