@@ -6,4 +6,5 @@
 #include "ami_object.h"
 
 #include <wx/wx.h>
+#include <wx/url.h>
 #include <wx/mediactrl.h>

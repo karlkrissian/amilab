@@ -19,10 +19,10 @@ PLUGIN_ENTRY_FUNCTION(wxMediaCtrlPlugin);
 
 wxMediaCtrlPlugin::wxMediaCtrlPlugin()
 {
-  SetName(wxT("wxMediaCtrl"));
-  SetDescription(wxT("A plugin that wrapper the wxMediaCtrl class of wxWidgets 2.8 version and adds it in AMILAB."));
-  SetAuthor(wxT("xXx"));
-  SetVersion(wxT("0.0.1"));
+  SetName("wxMediaCtrl");
+  SetDescription("A plugin that wrapper the wxMediaCtrl class of wxWidgets 2.8 version and adds it in AMILAB.");
+  SetAuthor("xXx");
+  SetVersion("0.0.1");
 }
 
 bool wxMediaCtrlPlugin::Execute(void)
@@ -32,7 +32,7 @@ bool wxMediaCtrlPlugin::Execute(void)
   amiobject->SetName("plugins");
 
   // Add classes to wx context
-  wrap_wxMediaCtrl_classes(amiobject->GetContext());
+  WrapClasswxMediaCtrl_AddStaticMethods(amiobject->GetContext());
 
   // Add wx context to builtin
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),

@@ -23,8 +23,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Plugins/wxMediaCtrl
   ${AMILAB_SOURCE_DIR}/Plugins/wxMediaCtrl/Generated
-#  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}
 )
+
+SET(WrapWxWidgetsDir ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated/)
 
 MESSAGE("BEGIN PLUG-IN: wxMediaCtrl")
 IF(wxWidgets_FOUND)
@@ -55,7 +56,7 @@ IF(wxWidgets_FOUND)
     MESSAGE("WX_FLAGS=${WX_FLAGS}")
   ENDIF(wxWidgets_CXX_FLAGS)
 
-  MESSAGE("BEGIN AUTOMATIC WRAPPING:")
+  MESSAGE("Try to generate file xml...")
 
   SET(WRAPWX_OUTDIR "${AMILAB_SOURCE_DIR}/Plugins/wxMediaCtrl/Generated")
   CreateDirectory( ${WRAPWX_OUTDIR})
@@ -126,36 +127,48 @@ IF(wxWidgets_FOUND)
 #       ENDFOREACH( MP ${methodpointers_list})
 
       IF(${GCCXML_result} EQUAL 0)
-        MESSAGE("\n${PYTHON_EXECUTABLE} ${AMI_WRAPPER} ${XML_OUTPUT} --libname wx --filter \"wx*\" --classes ${ancestors_list} --available_classes ${ancestors_list} --outputdir ${WRAPWX_OUTDIR} --addwrap --profile --templatefile_dir ${AMILAB_SOURCE_DIR}/../PythonWrap/ -q")
-        ADD_CUSTOM_COMMAND(
-          OUTPUT ${OUTPUT_LIST} ${methodpointers_list} ${WRAPWX_OUTDIR}/addwrap_wxMediaCtrl.h ${WRAPWX_OUTDIR}/addwrap_wxMediaCtrl.cpp
+        SET(MYCOMMAND_3 ${PYTHON_EXECUTABLE})                                                    #Command
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} ${AMI_WRAPPER})                                           #Wrapper
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} ${XML_OUTPUT})                                            #Input
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--libname" "wx")                                           #Name of the library to wrap
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--filter" "\"wx*\"")                                       #Recursively wrap needed classes
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--classes" ${ancestors_list})                            #Name of the class(es) to wrap
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--wrap_includes" ${WrapWxWidgetsDir})                    #Directories where are the available wrapped classes
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--outputdir" ${WRAPWX_OUTDIR})                           #Output directory
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--profile")                                              #Displays the processing time
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--templatefile_dir" ${AMILAB_SOURCE_DIR}/../PythonWrap/) #Directory containing the template files
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "-q")                                                     #Quiet mode
+
+        MESSAGE("COMMAND: ${MYCOMMAND_3}")
+        ADD_CUSTOM_COMMAND(     
+          OUTPUT
+            ${OUTPUT_LIST} ${methodpointers_list}
+            #${WRAPWX_OUTDIR}/addwrap_wxMediaCtrl.h ${WRAPWX_OUTDIR}/addwrap_wxMediaCtrl.cpp
+          #COMMENT "command :${MYCOMMAND_3}"
           COMMAND
-            ${PYTHON_EXECUTABLE}
-              ${AMI_WRAPPER} ${XML_OUTPUT}
-              --libname wx #name of the library to wrap
-              --filter "wx*" #Recursively wrap needed classes
-              --classes ${ancestors_list} #name of the class(es) to wrap
+            ${MYCOMMAND_3}
+#             ${PYTHON_EXECUTABLE}
+#               ${AMI_WRAPPER} ${XML_OUTPUT}
+#               --libname wx #name of the library to wrap
+#               --filter "wx*" #Recursively wrap needed classes
+#               --classes ${ancestors_list} #name of the class(es) to wrap
 #               --methodpointers ${methodpointers_list}
-              --available_classes ${ancestors_list} #${methodpointers_list}
-              --outputdir "${WRAPWX_OUTDIR}"
-              --addwrap
-              --profile
-              --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-              -q
+             # --available_classes ${ancestors_list} #${    methodpointers_list}
+#               --wrap_includes "${WrapWxWidgetsDir}"
+#               --outputdir "${WRAPWX_OUTDIR}"
+#               #--addwrap
+#               --profile
+#               --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+#               -q
           DEPENDS
             ${AMILAB_SOURCE_DIR}/Plugins/wxMediaCtrl/classes.txt
         )
       ENDIF(${GCCXML_result} EQUAL 0)
 
-      MESSAGE("END AUTOMATIC WRAPPING")
-      MESSAGE("BEGIN TARGET GENERATING:")
-
       FOREACH( class ${ancestors_list} ${methodpointers_list} )
         SET( wxMediaCtrl_HDRS ${WRAPWX_OUTDIR}/wrap_${class}.h ${wxMediaCtrl_HDRS})
         SET( wxMediaCtrl_SRCS ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${wxMediaCtrl_SRCS})
       ENDFOREACH( class ${ancestors_list} ${methodpointers_list} )
-      SET( wxMediaCtrl_HDRS ${WRAPWX_OUTDIR}/addwrap_wxMediaCtrl.h   ${wxMediaCtrl_HDRS})
-      SET( wxMediaCtrl_SRCS ${WRAPWX_OUTDIR}/addwrap_wxMediaCtrl.cpp ${wxMediaCtrl_SRCS})
 
       SET( wxMediaCtrl_HDRS
         wxMediaCtrlPlugin.h
@@ -173,11 +186,11 @@ IF(wxWidgets_FOUND)
       )
 
       MESSAGE("Source: ${wxMediaCtrlPlugin_SRCS}")
-
+      FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net media )
+      INCLUDE(${wxWidgets_USE_FILE})
       ADD_LIBRARY(wxMediaCtrlPlugin SHARED ${wxMediaCtrlPlugin_SRCS})
       TARGET_LINK_LIBRARIES(wxMediaCtrlPlugin ${wxWidgets_LIBRARIES})
       ADD_DEPENDENCIES( wxMediaCtrlPlugin WrapWxWidgets )
-      MESSAGE("END TARGET GENERATING")
 
     ENDIF(MYCOMMAND_2_RESULT)
   ENDIF(MYCOMMAND_RESULT)

@@ -15,8 +15,7 @@
 
 #include "wxPluginBase.h"
 #include "AMILabConfig.h"
-#include "addwrap_wxMediaCtrl.h"
-#include "amilab_logo_new_32x32_alpha.xpm"
+#include "wrap_wxMediaCtrl.h"
 
 /**
  * @brief Class that contains a plugins that wrapper the wxMediaCtrl class.
