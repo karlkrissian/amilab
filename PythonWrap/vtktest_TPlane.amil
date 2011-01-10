@@ -40,6 +40,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
   proc ::ScanDir() \
   {
     ::PlaneActors = VarVector()
+    ::ImResample = VarVector()
     ::vtkdir = vtk.vtkDirectory.New()
     res = ::vtkdir.Open(::inputdir_name)
     ::vtkreaderfactory = vtk.vtkImageReader2Factory.New()
@@ -54,6 +55,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
         #          ::inputdir_name+"/"+file)
         if (exists(::vtkreader)) { ::vtkreader.Delete(); del ::vtkreader; }
         ::vtkreader = vtk.vtkJPEGReader.New()
+        ::vtkreader.GetOutput().ReleaseDataFlagOn()
         filename=::inputdir_name+"/"+file
         ok = ::vtkreader.CanReadFile(filename)
         if (ok>0.5)\
@@ -64,14 +66,19 @@ Class vtktest_TPlaneClass : public ScriptGui \
           ::vtkreader.SetFileName(filename)
           ::vtkreader.Update()
           dim = vector_int(3,1)
+
           ::vtkreader.GetOutput().GetDimensions(&dim[0])
+
+          fx = round(((FLOAT)dim[0])/256+0.4999)
+          fy = round(((FLOAT)dim[1])/256+0.4999)
+          f = max(fx,fy)
+          printn " Downsample factor = %1%" % f
+
           # Rescale the image
           if (exists(imresample)) { imresample.Delete(); del imresample; }
           imresample = vtk.vtkImageResample.New()
-          fx = round(((FLOAT)dim[0])/256+0.4999)
-          fy = round(((FLOAT)dim[1])/256+0.4999)
-          #printn " fx, fy = %1%" % fx + ", %1%" % fy
-          f = max(fx,fy)
+          ::ImResample.push_back(&imresample)
+          imresample.GetOutput().ReleaseDataFlagOn()
           imresample.SetAxisMagnificationFactor(0,1.0/f)
           imresample.SetAxisMagnificationFactor(1,1.0/f)
           imresample.SetInput(&::vtkreader.GetOutput())
@@ -85,15 +92,16 @@ Class vtktest_TPlaneClass : public ScriptGui \
         
           # Get Image dimensions
           imresample.Update()
-          imresample.RemoveAllInputs()
+          #imresample.RemoveAllInputs()
           newdim = vector_int(3,1)
           imresample.GetOutput().GetDimensions(&newdim[0])
           print "dimensions %1% x" % dim[0] + " %1%" % dim[1]
           printn "--> %1% x" % newdim[0] + " %1%" % newdim[1]
           atext = vtk.vtkTexture.New()
           atext.SetInput(&imresample.GetOutput())
+          #atext.GetOutput().ReleaseDataFlagOn()
           #atext.SetInput(&vtkim1)
-          atext.InterpolateOn()
+          #atext.InterpolateOn()
           
           # Create a plane source and actor. The vtkPlanesSource generates
           # texture coordinates.
@@ -115,6 +123,8 @@ Class vtktest_TPlaneClass : public ScriptGui \
       SetStatusText("Placing the images")
       # position the planes
       size = ::PlaneActors.size()
+      ::win.IntegerConstraints(::selection_id,0,size-1,::selected_image)
+      ::win.Update(-1)
       n1 = round(sqrt((FLOAT)size))
       printn n1
       for n=0 to size-1 {
@@ -272,6 +282,8 @@ Class vtktest_TPlaneClass : public ScriptGui \
     diffsec = diff.GetMilliseconds().ToDouble()/1000
     current_scale = vector_double(3)
     current_pos   = vector_double(3)
+    fx = ::ImResample[::selected_image].GetAxisMagnificationFactor(0)
+    fy = ::ImResample[::selected_image].GetAxisMagnificationFactor(1)
     # initial phase
     if (diffsec<0.5) {
       for i=0 to 2  {
@@ -282,6 +294,10 @@ Class vtktest_TPlaneClass : public ScriptGui \
     }
     # 3 seconds pause
     if (diffsec>=0.5)&&(diffsec<=3.5) {
+      if (fx!=1)||(fy!=1) {
+        ::ImResample[::selected_image].SetAxisMagnificationFactor(0,1)
+        ::ImResample[::selected_image].SetAxisMagnificationFactor(1,1)
+      }
       ::cam_interp.InterpolateCamera(1,&::ren.GetActiveCamera())
       current_scale = ::finalscale
       current_pos   = ::finalpos
@@ -293,6 +309,10 @@ Class vtktest_TPlaneClass : public ScriptGui \
     }
     # final phase
     if (diffsec>3.5) {
+      if (fx!=::initfx)||(fy!=::initfy) {
+        ::ImResample[::selected_image].SetAxisMagnificationFactor(0,::initfx)
+        ::ImResample[::selected_image].SetAxisMagnificationFactor(1,::initfy)
+      }
       for i=0 to 2  {
         current_scale[i] = ::finalscale[i]+ (diffsec-3.5)/0.5*(::initscale[i]-::finalscale[i])
         current_pos[i] = ::finalpos[i]+ (diffsec-3.5)/0.5*(::initpos[i]-::finalpos[i])
@@ -340,6 +360,8 @@ Class vtktest_TPlaneClass : public ScriptGui \
       ::cam_interp.AddCamera(0,&::initcam)
       ::cam_interp.AddCamera(1,&::cam0)
 
+      ::initfx = ::ImResample[::selected_image].GetAxisMagnificationFactor(0)
+      ::initfy = ::ImResample[::selected_image].GetAxisMagnificationFactor(1)
     }
   }
 
@@ -347,6 +369,12 @@ Class vtktest_TPlaneClass : public ScriptGui \
     # Redefinition of Close to close the panel tab in main_book
     #
     proc ::Close() {
+      for n=0 to ::PlaneActors.size()-1 {
+        ::PlaneActors[n].Delete()
+      }
+      ::PlaneActors.clear()
+      ::ImResample.clear()
+
       ::frame.Close()
       ::win.HidePanel()
       delvars GetObjectName(::Close)
@@ -376,7 +404,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
           ::win.AddButton("Run",&::Run)
 
         ::win.AddPage("Effect")
-          ::win.AddInt(&::selected_image,"Selection",0,100)
+          ::selection_id = ::win.AddInt(&::selected_image,"Selection",0,100)
           ::win.AddButton("Rotate Selection",&::RotateSelection)
           ::win.AddButton("Show Selection",&::ShowSelection)
 
