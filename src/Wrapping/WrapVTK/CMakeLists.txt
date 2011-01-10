@@ -123,7 +123,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
           --addwrap
           --profile
           -q
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+#         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
       )
   ENDIF(${GCCXML_result} EQUAL 0)
 

@@ -87,11 +87,30 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 
   # Wrap all classes at once since it is now fast
   FOREACH( class ${ancestors_list})
+#     IF( NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.cpp)
+#       MESSAGE( "file ${WRAPWX_OUTDIR}/wrap_${class}.cpp does not exists")
+#     ENDIF(NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.cpp)
+#     IF( NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.h)
+#       MESSAGE( "file ${WRAPWX_OUTDIR}/wrap_${class}.h does not exists")
+#     ENDIF(NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.h)
     SET(OUTPUT_LIST 
       ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${WRAPWX_OUTDIR}/wrap_${class}.h
       ${OUTPUT_LIST}
     )
   ENDFOREACH( class ${ancestors_list}) 
+
+  FOREACH( method ${methodpointers_list})
+#     IF( NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp)
+#       MESSAGE( "file ${WRAPWX_OUTDIR}/wrap_${method}.cpp does not exists")
+#     ENDIF(NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp)
+#     IF( NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h)
+#       MESSAGE( "file ${WRAPWX_OUTDIR}/wrap_${method}.h does not exists")
+#     ENDIF(NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h)
+    SET(OUTPUT_LIST 
+      ${WRAPWX_OUTDIR}/wrap_${method}.cpp ${WRAPWX_OUTDIR}/wrap_${method}.h
+      ${OUTPUT_LIST}
+    )
+  ENDFOREACH( method ${methodpointers_list}) 
 
   FOREACH( MP ${methodpointers_list})
     SET( methodpointers_files ${methodpointers_files} ${WRAPWX_OUTDIR}/wrap_${MP}.h ${WRAPWX_OUTDIR}/wrap_${MP}.cpp )
@@ -101,7 +120,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   IF (${GCCXML_result} EQUAL 0)
     # Go for python wrapping
     ADD_CUSTOM_COMMAND(
-      OUTPUT ${OUTPUT_LIST} ${methodpointers_list} ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
+      OUTPUT ${OUTPUT_LIST}  ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
       COMMAND
         ${PYTHON_EXECUTABLE} 
           ${AMI_WRAPPER} ${XML_OUTPUT}
@@ -115,26 +134,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
           --profile
           --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
           -q
-      DEPENDS
-        ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+      #DEPENDS
+      #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
     )
   ENDIF(${GCCXML_result} EQUAL 0)
 
-#   IF (${GCCXML_result} EQUAL 0)
-#     # Go for python wrapping
-#     ADD_CUSTOM_COMMAND(OUTPUT 
-#       COMMAND
-#         ${PYTHON_EXECUTABLE} 
-#           ${AMI_WRAPPER} ${XML_OUTPUT}
-#           --libname wx
-#           --filter "wx*"
-#           --available_classes ${ancestors_list} ${methodpointers_list}
-#           --outputdir "${WRAPWX_OUTDIR}"
-#           --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-#           -q
-#         DEPENDS  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-#       )
-#   ENDIF(${GCCXML_result} EQUAL 0)
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 
