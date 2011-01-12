@@ -24,7 +24,9 @@
 #include "wrap_wxfunctions.h"
 
 #include <wx/utils.h>
+#include <wx/string.h>
 
+extern VarContexts  Vars;
 
 AMIObject::ptr AddWrap_wxfunctions()
 {
@@ -35,6 +37,8 @@ AMIObject::ptr AddWrap_wxfunctions()
   ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,
                           "LaunchDefaultBrowser",
                           wrap_LaunchDefaultBrowser);
+
+  ADDVAR_NAME( C_wrap_varfunction, "FromWxString", wrap_FromWxString);
 
   return amiobject;
 }
@@ -83,4 +87,32 @@ BasicVariable::ptr wrap_LaunchDefaultBrowser( ParamList* p)
   RETURN_VAR(int, res);
 }
 
+/**
+ * Convert wxString to AMILab string.
+ * @param p
+ */
+BasicVariable::ptr wrap_FromWxString( ParamList* p)
+{
+  char functionname[] = "FromWxString";
+  char description[]=" \n\
+                    Convert wxString to AMILab string\n\
+                    ";
+    char parameters[] =" \n\
+                       Parameters:\n\
+                       wxString variable\n\
+                       Return:\n\
+                       Returns a variable of type std::string\n\
+                       ";
+
+  int n=0;
+  boost::shared_ptr<wxString > input_smtptr;
+
+  if (!get_val_smtptr_param<wxString>( input_smtptr, p, n)) HelpAndReturnVarPtr;
+
+  if (input_smtptr.get()) {
+    return AMILabType< std::string >::CreateVar( new std::string( (*input_smtptr).ToAscii() ) );
+  }
+  else
+    return BasicVariable::ptr();
+}
 
