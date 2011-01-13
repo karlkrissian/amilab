@@ -127,12 +127,12 @@ void AddWrapImports()
   WrapClass_vtkLevelSets  ::AddVar_vtkLevelSets(amiobject->GetContext());
 
 
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",    wrap_System);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "ITK",       wrap_ITK);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "AMIFluid",  wrap_AMIFluid);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "Filters",   wrap_Filters);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "WxSamples",        wrap_wxsamples);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"WxFunctions",        wrap_wxfunctions);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",      wrap_System);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "ITK",         wrap_ITK);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "AMIFluid",    wrap_AMIFluid);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "Filters",     wrap_Filters);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "WxSamples",   wrap_wxsamples);
+  //ADDOBJECTVAR_NAME(C_wrap_varfunction,"WxFunctions", wrap_wxfunctions);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -150,6 +150,8 @@ void AddWrapWxWidgets()
 
   // Add classes to wx context
   wrap_wx_classes(amiobject->GetContext());
+
+  ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,"FromWxString", wrap_FromWxString);
 
   // Add wx context to builtin
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 

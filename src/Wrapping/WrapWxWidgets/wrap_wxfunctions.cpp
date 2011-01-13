@@ -38,6 +38,10 @@ AMIObject::ptr AddWrap_wxfunctions()
                           "LaunchDefaultBrowser",
                           wrap_LaunchDefaultBrowser);
 
+//   ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,
+//                           "FromWxString",
+//                           wrap_FromWxString);
+    
   ADDVAR_NAME( C_wrap_varfunction, "FromWxString", wrap_FromWxString);
 
   return amiobject;
@@ -108,7 +112,6 @@ BasicVariable::ptr wrap_FromWxString( ParamList* p)
   boost::shared_ptr<wxString > input_smtptr;
 
   if (!get_val_smtptr_param<wxString>( input_smtptr, p, n)) HelpAndReturnVarPtr;
-
   if (input_smtptr.get()) {
     return AMILabType< std::string >::CreateVar( new std::string( (*input_smtptr).ToAscii() ) );
   }
