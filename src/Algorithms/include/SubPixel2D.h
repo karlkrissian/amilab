@@ -147,7 +147,7 @@ public:
    *  @param lc        Linear case. Indicates if the border that will be processed
    *                   is a line (first order) or a parable (second order).
    */
-  SubPixel2D(InrImage* inp_image, float thres, float lowThres, int lc);
+  SubPixel2D(InrImage* inp_image, float thres, int lc);
   
   virtual ~ SubPixel2D();
   
@@ -256,9 +256,7 @@ private:
   //borderPixel vector
   vector<borderPixel> borderPixelVector;
   //Gradient threshold
-  float threshold;
-  //Gradient low threshold (used on SubpixelDenoising)
-  float low_threshold;
+  double threshold;
   //Linear case (first or second order)
   int linear_case;
    

@@ -140,13 +140,12 @@ void borderPixel::printBorderPixel(int linear_case)
 //SubPixel2D class methods
 //---------------------------------------------
 //Constructor
-SubPixel2D::SubPixel2D(InrImage* inp_image, float thres, float lowThres, int lc)
+SubPixel2D::SubPixel2D(InrImage* inp_image, float thres, int lc)
 {
   input        = inp_image;
-  threshold     = thres;
-  low_threshold = lowThres;
-  linear_case   = lc;
-  denoised      = new InrImage(WT_DOUBLE,"denoised.inr.gz",input);
+  threshold    = (double)thres;
+  linear_case  = lc;
+  denoised     = new InrImage(WT_DOUBLE,"denoised.inr.gz",input);
 }
 
 //Destructor
@@ -532,7 +531,7 @@ void Average3x3 (InrImage* input, InrImage* result, double a00, double a01,
                  double a11)
 {
   double sum;
-  float s = (float) a00 + 4*a01 + 4*a11;
+  double s = (double) a00 + 4*a01 + 4*a11;
   int x, y;
   int z = 0;
   
@@ -732,10 +731,10 @@ void SubPixel2D::DenoisingGus()
   int margen = 5;
   double A, B;
   //Partials
-  float parx, pary;
+  double parx, pary;
   double partial;
   int m, k, p;
-  float par0, par1;
+  double par0, par1;
   //Limits of the window
   int l1, l2, m1, m2, r1, r2;
   //Limits for read from the image
@@ -1030,7 +1029,7 @@ void SubPixel2D::DenoisingGus()
             {
               int posx = fprimex+indi;
               int posy = fprimey+indj;
-              int suma = 0;
+              double suma = 0;
               suma += (*fprime)(posx-1,posy-1,z) + (*fprime)(posx,posy-1,z) + 
                       (*fprime)(posx+1,posy-1,z);
               suma += (*fprime)(posx-1,posy,z) + (*fprime)(posx,posy,z) + 
@@ -1346,7 +1345,7 @@ void SubPixel2D::DenoisingGus()
             {
               int posx = fprimex+indi;
               int posy = fprimey+indj;
-              int suma = 0;
+              double suma = 0;
               suma += (*fprime)(posx-1,posy-1,z) + (*fprime)(posx,posy-1,z) + 
                       (*fprime)(posx+1,posy-1,z);
               suma += (*fprime)(posx-1,posy,z) + (*fprime)(posx,posy,z) + 
@@ -1432,20 +1431,20 @@ double ComputePixelColor (double gx, double gy, double d, double A, double B)
   //The line pass down of the pixel
   if (y2>0.5) area = 0.0;
 	else
-    
+  {
     //The line cuts the pixel right-down
     if (y1>0.5) {
       x1 = (d-0.5) / m;
       area =0.5 * (0.5-x1) * (0.5-y2);
     }
     else
-      
+    {
       //The line cuts the pixel from left to right
       if (y2>-0.5) {
         area = (0.5-y1) + 0.5 *(y1-y2);
       }
       else
-        
+      {
         //The line cuts the pixel left-up
         if (y1>-0.5) {
           x2 = (d+0.5) / m;
@@ -1453,10 +1452,14 @@ double ComputePixelColor (double gx, double gy, double d, double A, double B)
           area = 1 - area;
         }
         else
-          
+        {
           //The line pass up the pixel
           area = 1.0;
-	
+        }
+      }
+    }
+  }
+     
   //We return the A and B percentage
   //printf ("y1=%f, y2=%f x1=%f x2=%f area=%f\n", y1,y2,x1,x2,area);
   result = area*A + (1-area)*B;
@@ -1470,8 +1473,8 @@ double ComputePixelColor (double gx, double gy, double d, double A, double B)
 void ComputeWindowColor (unsigned char edgeCase, double gx, double gy, double des,
                          double A, double B, double *win)
 {
-  int i, j, n, s;
-  float m;
+  int s;
+  double m;
   double absgx = fabs(gx);
   double absgy = fabs(gy);
   
@@ -1492,15 +1495,15 @@ void ComputeWindowColor (unsigned char edgeCase, double gx, double gy, double de
   
   //Compute the window
   m = absgx / absgy; 
-  for (i=-2; i<=2; i++) 
-    for (j=Lims[i+2][0]; j<=Lims[i+2][1]; j++) 
+  for (int i=-2; i<=2; i++) 
+    for (int j=Lims[i+2][0]; j<=Lims[i+2][1]; j++) 
     {
       s = 9*i + j + 22; //(i+2)*9+(j+4);
       win[s] = ComputePixelColor (absgx, absgy, des-j-i*m, A, B);
     }
   
   //If gx<0, we swap the lateral columns
-  if (gx<0) for (n=0; n<9; n++) 
+  if (gx<0) for (int n=0; n<9; n++) 
   { 
     SWAP_DOUBLE (win[n+9], win[n+27]);
     win[5] = win[41];
@@ -1573,23 +1576,29 @@ double ComputeCurvePixelColor(double xc, double yc, double r, double D, double F
     if (x1 < 0.5) 
     {
       if (t >= -0.5)
+      {
         area = 2 * (P(x0) - P(t) - yc*(x0-t)) +
 				P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
+      }
       else 
+      {
         area = 2 * (P(x0) - P(-0.5) - yc*(x0+0.5)) +
 				P(x1) - P(x0) - 0.5*(x1+x0) + 0.5;
+      }
     } 
     else 
     {
       if (x0 <= 0.5)
+      {
         area = 2 * (P(x0) - P(t) - yc*(x0-t)) +
 				P(0.5) - P(x0) - 0.5*x0 + 0.25;
+      }
       else 
         area = 2 * (P(0.5) - P(t) - yc*(0.5-t));
     }
   }
 
-  return (F + area*(D-F));
+  return (double)(F + area*(D-F));
 }
 
 
@@ -1947,7 +1956,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
   double A, B;
   //Counters image
   InrImage::ptr C = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
-                                               input->DimZ(), WT_DOUBLE,
+                                               input->DimZ(), WT_UNSIGNED_SHORT,
                                                "counters.inr.gz"));
   //Intensities image
   InrImage::ptr I = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
@@ -1966,7 +1975,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
   int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0};
   int vpos[] = { -1,-3, 0,-2, 2, 0, 3, 1};
   int m, k, p;
-  float par0, par1;
+  double par0, par1;
   //Limits of the window
   int l1, l2, m1, m2, r1, r2;
   //Limits for read from the image
@@ -1996,7 +2005,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
     //Initialize to zero the counters, intensities and averaged image
     C->InitZero();
     I->InitZero();
-    G->InitZero();
+    //G->InitZero();
     //Make a copy of the input image
     input_copy = *input;
     //1st we average the input image
@@ -2159,7 +2168,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
           }
           
           //We compare with the low threshold
-          if (fabs(A-B) < low_threshold) continue;
+          //if (fabs(A-B) < low_threshold) continue;
           
           //If there are a second near edge, we create a new subimage form the original
           //and averaged it after for computing the edge
@@ -2298,7 +2307,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
               {
                 int posx = fprimex+indi;
                 int posy = fprimey+indj;
-                int suma = 0;
+                double suma = 0;
                 suma += (*fprime)(posx-1,posy-1,z) + (*fprime)(posx,posy-1,z) + 
                 (*fprime)(posx+1,posy-1,z);
                 suma += (*fprime)(posx-1,posy,z) + (*fprime)(posx,posy,z) + 
@@ -2510,7 +2519,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
           }
           
           //We compare with the low threshold
-          if (fabs(A-B) < low_threshold) continue;
+          //if (fabs(A-B) < low_threshold) continue;
           
           //If there are a second near edge, we create a new subimage form the original
           //and averaged it after for computing the edge
@@ -2650,7 +2659,7 @@ void SubPixel2D::SubpixelDenoising(int niter)
               {
                 int posx = fprimex+indi;
                 int posy = fprimey+indj;
-                int suma = 0;
+                double suma = 0;
                 suma += (*fprime)(posx-1,posy-1,z) + (*fprime)(posx,posy-1,z) + 
                 (*fprime)(posx+1,posy-1,z);
                 suma += (*fprime)(posx-1,posy,z) + (*fprime)(posx,posy,z) + 

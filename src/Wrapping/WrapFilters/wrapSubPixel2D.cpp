@@ -40,7 +40,6 @@ void WrapClass_SubPixel2D::wrap_SubPixel2D::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE(InrImage, "The input image.");
   ADDPARAMCOMMENT_TYPE(float, "The intensity threshold.");
-  ADDPARAMCOMMENT_TYPE(float, "The low intensity threshold.")
   ADDPARAMCOMMENT_TYPE(int, "First or second order method.");
   return_comments = "A wrapped SubPixel2D object.";
 }
@@ -49,17 +48,15 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SubPixel2D::CallMember(ParamList* 
 {
   InrImage* input;
   float threshold;
-  float lowThreshold;
   int linear_case;
   int n = 0;
   
   if (!get_val_ptr_param<InrImage>(input, p, n)) ClassHelpAndReturn;
   if (!get_val_param<float>(threshold, p, n))    ClassHelpAndReturn;
-  if (!get_val_param<float>(lowThreshold, p, n)) ClassHelpAndReturn;
   if (!get_val_param<int>(linear_case, p, n))    ClassHelpAndReturn;
   
   return AMILabType<SubPixel2D>::CreateVar(new SubPixel2D(input, threshold, 
-                                                          lowThreshold, linear_case));
+                                                          linear_case));
 }
 
 //---------------------------------------------------
