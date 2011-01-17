@@ -751,6 +751,7 @@ def WrapClass(classname,include_file,inputfile):
 
     # Check for Copy Constructor
     pos=0
+    dh.has_copyconstr = False
     for m in fm.Constructors:
       if len(m.args)==1:
         typename = config.types[m.args[0].typeid].GetFullString()
