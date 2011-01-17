@@ -10,6 +10,8 @@
 //
 //
 
+#include "wrap_wxString.h"
+
 #include "AMILabConfig.h"
 
 #ifdef AMI_USE_PRECOM_HEADERS
@@ -27,6 +29,7 @@
 #include <wx/string.h>
 
 extern VarContexts  Vars;
+
 
 AMIObject::ptr AddWrap_wxfunctions()
 {
