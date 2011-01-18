@@ -147,7 +147,8 @@ def ConvertPtrFrom_char(typevar,substvar):
 def ConvertValTo_char(substvar,typevar):
   typename="char"
   res =  "{0} {1} = ' ';\n".format(typename,typevar)
-  res += "if ({0}.size()>0) {1} = {0}[0];".format(substvar,typevar)
+  res += "  if ({0}.size()==1) {1} = {0}[0];".format(substvar,typevar)
+  res += "else ClassReturnEmptyVar;"
   return res
 
 def ConvertSmtPtrToPtr_char(typeid,substvar,typevar):
@@ -216,9 +217,10 @@ def ConvertValTo_wchar_t(substvar,typevar):
   config.AddInclude("stdlib.h")
   # convert from char
   res =  "{0} {1} = 0;\n".format(typename,typevar)
-  res += "{\n"
-  res +=  "  if ({0}.size()>0) mbstowcs(&{1}, &{0}[0],1);\n".format(substvar,typevar)
-  res += "}\n"
+  res += "  {\n" 
+  res += "    if({0}.size()==1) mbstowcs(&{1}, &{0}[0],1); \n".format(substvar,typevar)
+  res += "    else ClassReturnEmptyVar;\n"
+  res += "  }\n"
   return res
 
 def ConvertSmtPtrToPtr_wchar_t(typeid,substvar,typevar):

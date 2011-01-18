@@ -1,4 +1,7 @@
 
+
+import wrap_class
+
 # global dictionary of argument types
 types      = dict()
 classes    = dict()
@@ -83,6 +86,22 @@ available_operators={ \
 include_list = []
 declare_list = []
 
+#-------------------------------------------------------------
+def ClassUsedName(classname):
+  res = classname
+  res = res.replace('<','__LT__')
+  res = res.replace('>','__GT__')
+  res = res.replace(',','__COMMA__')
+  return res
+
+#-------------------------------------------------------------
+def ClassShortName(classname):
+  res = classname
+  res = res.replace('<','_')
+  res = res.replace('>','')
+  res = res.replace(',','_')
+  return res
+
 #------------------------------------------------------------------
 #  AddInclude
 #------------------------------------------------------------------
@@ -95,6 +114,7 @@ def AddInclude(f):
 #------------------------------------------------------------------
 def AddDeclare(f):
   if not(f in declare_list):
+    print "*********** adding {0} to declare_list".format(f)
     declare_list.append(f)
 
 #------------------------------------------------------------------
@@ -107,8 +127,8 @@ def CreateIncludes():
   
   for f in declare_list:
     # avoid inclusion, just declare the type ...
-    res += '#ifndef {0}_declared\n'.format(f)
-    res += '  #define {0}_declared\n'.format(f)
+    res += '#ifndef {0}_declared\n'.format(ClassUsedName(f))
+    res += '  #define {0}_declared\n'.format(ClassUsedName(f))
     res += '  AMI_DECLARE_TYPE({0})\n'.format(f)
-    res += '#endif\n'.format(f)
+    res += '#endif\n'
   return res
