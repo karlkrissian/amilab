@@ -308,6 +308,7 @@ IF(AMI_ENABLE_WRAPPING)
   FIND_PACKAGE( PythonInterp REQUIRED)
   OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" OFF)
   OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       OFF)
+  OPTION(AMI_WRAP_EXAMPLES  "Enable Automatic Wrapping OF EXAMPLES"  OFF)
 ENDIF(AMI_ENABLE_WRAPPING)
 
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
@@ -643,6 +644,8 @@ SET(amilab_ownlibs
   wxTreeListCtrl
   wxVTKSamples
   wxVTK
+# Test template class
+  WrapExamples
 )
 
 

@@ -31,6 +31,7 @@ wxCloseEvent
 wxColour
 wxCommandEvent
 wxControl
+wxCStrData
 wxCursor
 wxDC
 wxDateSpan
@@ -140,6 +141,7 @@ wxTimer
 wxToolBar
 wxTopLevelWindow
 wxULongLongNative
+wxUniChar
 wxUpdateUIEvent
 wxValidator
 wxVisualAttributes

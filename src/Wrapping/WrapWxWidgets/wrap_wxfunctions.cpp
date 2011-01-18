@@ -24,7 +24,7 @@
 #include "ami_object.h"
 
 #include "wrap_wxfunctions.h"
-
+#include<iostream>
 #include <wx/utils.h>
 #include <wx/string.h>
 
@@ -116,6 +116,7 @@ BasicVariable::ptr wrap_FromWxString( ParamList* p)
 
   if (!get_val_smtptr_param<wxString>( input_smtptr, p, n)) HelpAndReturnVarPtr;
   if (input_smtptr.get()) {
+    std::cout << "Data: " << (*input_smtptr).ToAscii()<< " - " << input_smtptr->ToAscii().data() << std::endl;
     return AMILabType< std::string >::CreateVar( new std::string( (*input_smtptr).ToAscii() ) );
   }
   else

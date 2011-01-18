@@ -78,6 +78,8 @@
 
 #include "wrap_stdvector.h"
 
+#include "wrap_TestTemplateClass__LT__int__GT__.h"
+
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
 
@@ -110,6 +112,7 @@ void AddWrapImports()
   AddWrapViewer3D();
   AddWrapGLTransfMatrix();
   AddWrapBasicTypes();
+  AddWrapTestTemplateClass();
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -263,3 +266,9 @@ void AddWrapBasicTypes()
 //  AddVar_VarList( Vars.GetBuiltinContext());
 }
 
+//--------------------------------------------
+void AddWrapTestTemplateClass()
+{
+  WrapClassTestTemplateClass__LT__int__GT___AddStaticMethods( Vars.GetBuiltinContext());
+
+}

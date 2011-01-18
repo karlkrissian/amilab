@@ -104,7 +104,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
     )
   ENDFOREACH( class ${ancestors_list}) 
 
-  MESSAGE("Processing classes ${ancestors_list} and addwrap")
+  #MESSAGE("Processing classes ${ancestors_list} and addwrap")
   IF (${GCCXML_result} EQUAL 0)
     # Go for python wrapping
     ADD_CUSTOM_COMMAND(OUTPUT  ${OUTPUT_LIST}
@@ -166,7 +166,7 @@ SET(WrapVTK_SRCS
      ${vtk_HDRS}
 )
 
-MESSAGE("WrapVTK_SRCS =  ${WrapVTK_SRCS}")
+#MESSAGE("WrapVTK_SRCS =  ${WrapVTK_SRCS}")
 
 my_add_library ( WrapVTK)
 add_dependencies ( WrapVTK WrapWxWidgets )

@@ -113,6 +113,7 @@ WS      [ \t]
 
 identifier [a-zA-Z_]([A-Za-z0-9_])*
 
+varid {identifier}(<{identifier}(,{identifier})*>)?
 
 %%
 
@@ -865,7 +866,7 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   // sauver les commentaires dans une variable du driver??
 }
 
-local::{identifier}   {
+local::{varid}   {
 //
 //============================ Parse variable ====================
 //
@@ -876,7 +877,7 @@ local::{identifier}   {
   return result;
 }
 
-global::{identifier}   {
+global::{varid}   {
 //
 //============================ Parse variable ====================
 //
@@ -886,7 +887,7 @@ global::{identifier}   {
   return result;
 }
 
-this::{identifier}   {
+this::{varid}   {
 //
 //============================ Parse variable ====================
 //
@@ -899,7 +900,7 @@ this::{identifier}   {
 }
 
 
-::{identifier}   {
+::{varid}   {
 //
 //============================ Parse variable ====================
 //
@@ -912,7 +913,7 @@ this::{identifier}   {
 }
 
 
-::{identifier}->{identifier}   {
+::{varid}->{varid}   {
 // TODO: can all the variable system to return only variable from lex !!!
 // this rule is a hack
 //
@@ -949,7 +950,7 @@ this::{identifier}   {
 }
 
 
-{identifier}->{identifier}   {
+{varid}->{varid}   {
 //
 //============================ Parse variable in a given context ====================
 //
@@ -986,7 +987,7 @@ this::{identifier}   {
 
 
 
-{identifier}   {
+{varid}   {
 //
 //============================ Parse variable ====================
 //
