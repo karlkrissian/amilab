@@ -78,7 +78,7 @@
 
 #include "wrap_stdvector.h"
 
-#include "wrap_TestTemplateClass__LT__int__GT__.h"
+//#include "wrap_TestTemplateClass__LT__int__GT__.h"
 
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
@@ -269,6 +269,6 @@ void AddWrapBasicTypes()
 //--------------------------------------------
 void AddWrapTestTemplateClass()
 {
-  WrapClassTestTemplateClass__LT__int__GT___AddStaticMethods( Vars.GetBuiltinContext());
+//  WrapClassTestTemplateClass__LT__int__GT___AddStaticMethods( Vars.GetBuiltinContext());
 
 }

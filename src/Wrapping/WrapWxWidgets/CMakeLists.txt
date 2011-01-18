@@ -86,39 +86,38 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/methodpointers.txt" methodpointers_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
 
-  # Wrap all classes at once since it is now fast
+  # Wrap all missing classes at once since it is now fast
+  
   FOREACH( class ${ancestors_list})
-#     IF( NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.cpp)
-#       MESSAGE( "file ${WRAPWX_OUTDIR}/wrap_${class}.cpp does not exists")
-#     ENDIF(NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.cpp)
-#     IF( NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.h)
-#       MESSAGE( "file ${WRAPWX_OUTDIR}/wrap_${class}.h does not exists")
-#     ENDIF(NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.h)
-    SET(OUTPUT_LIST 
-      ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${WRAPWX_OUTDIR}/wrap_${class}.h
-      ${OUTPUT_LIST}
-    )
+    IF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.cpp) OR
+        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.h))
+      SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${class}.cpp ${OUTPUT_LIST})
+      SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${class}.h ${OUTPUT_LIST})
+      SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
+    ENDIF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.cpp) OR
+        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${class}.h))
   ENDFOREACH( class ${ancestors_list}) 
 
   FOREACH( method ${methodpointers_list})
-#     IF( NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp)
-#       MESSAGE( "file ${WRAPWX_OUTDIR}/wrap_${method}.cpp does not exists")
-#     ENDIF(NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp)
-#     IF( NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h)
-#       MESSAGE( "file ${WRAPWX_OUTDIR}/wrap_${method}.h does not exists")
-#     ENDIF(NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h)
-    SET(OUTPUT_LIST 
-      ${WRAPWX_OUTDIR}/wrap_${method}.cpp ${WRAPWX_OUTDIR}/wrap_${method}.h
-      ${OUTPUT_LIST}
-    )
+    IF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp) OR
+        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h))
+      SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${method}.cpp ${OUTPUT_LIST})
+      SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${method}.h ${OUTPUT_LIST})
+      SET(MISSING_METHODS ${class} ${MISSING_METHODS})
+    ENDIF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp) OR
+        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h))
   ENDFOREACH( method ${methodpointers_list}) 
 
   FOREACH( MP ${methodpointers_list})
     SET( methodpointers_files ${methodpointers_files} ${WRAPWX_OUTDIR}/wrap_${MP}.h ${WRAPWX_OUTDIR}/wrap_${MP}.cpp )
   ENDFOREACH( MP ${methodpointers_list})
 
+  LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
+
   #MESSAGE("Processing class ${class}")
-  IF (${GCCXML_result} EQUAL 0)
+  IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
     # Go for python wrapping
     ADD_CUSTOM_COMMAND(
       OUTPUT ${OUTPUT_LIST}  ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
@@ -127,8 +126,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
           ${AMI_WRAPPER} ${XML_OUTPUT}
           --libname wx
           --filter "wx*"
-          --classes ${ancestors_list}
-          --methodpointers ${methodpointers_list}
+          --classes ${MISSING_CLASSES}
+          --methodpointers ${MISSING_METHODS}
           --available_classes ${ancestors_list} ${methodpointers_list}
           --outputdir "${WRAPWX_OUTDIR}"
           --addwrap
@@ -138,7 +137,9 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
       #DEPENDS
       #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
     )
-  ENDIF(${GCCXML_result} EQUAL 0)
+  ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
 
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
