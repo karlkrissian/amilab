@@ -376,7 +376,7 @@ class ParsePublicMembers:
       # problem: for structure, the constructor name is something like '._12': not a valid nor usefull name:
       # replace it by the class or structure name ...
       # only if not template ... so check for '<' character
-      if mname != config.types[context].GetString() and mname.find("<")!=-1:
+      if mname != config.types[context].GetString() and mname.find("<")==-1:
         utils.WarningMessage(" replacing constructor name {0} --> {1}".format(mname,config.types[context].GetString()))
         mname = config.types[context].GetString()
       self.CheckMethodName(self.public_members.ConstructorNames,self.public_members.Constructors,mname)
