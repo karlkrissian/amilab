@@ -644,10 +644,13 @@ SET(amilab_ownlibs
   wxTreeListCtrl
   wxVTKSamples
   wxVTK
-# Test template class
-  WrapExamples
 )
 
+
+# Test template class
+IF(AMI_WRAP_EXAMPLES)
+  SET(amilab_ownlibs WrapExamples ${amilab_ownlibs})
+ENDIF(AMI_WRAP_EXAMPLES)
 
 IF(AMI_USE_VTK)
   SET(amilab_ownlibs

@@ -412,6 +412,20 @@ if __name__ == '__main__':
         f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(cl))
       f.write("\n")
 
+      # Add an enumeration value
+      f.write("/* Adding an enumeration value */\n")
+      f.write("void AddEnumVal( AMIObject::ptr& obj, const char* name, int val)\n")
+      f.write("{\n")
+      f.write("  BasicVariable::ptr var = AMILabType<int >::CreateVar(val);\n")
+      f.write("  var->Rename(name);\n")
+      f.write("  obj->GetContext()->AddVar(var,obj->GetContext());\n")
+      f.write("}\n")
+      f.write("\n")
+
+      f.write("void wrap_enums( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("void wrap_vars( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("void wrap_macros( Variables::ptr& context);\n".format(args.val.libname))
+      
       # Wrap all classes in a context
       f.write("/*\n")
       f.write(" * Adding all the wrapped classes to the library context.\n")
@@ -426,18 +440,14 @@ if __name__ == '__main__':
         f.write("  WrapClass{0}_AddStaticMethods( context);\n".format(cl))
         
       f.write("\n")
+      f.write("  wrap_enums (context);\n")
+      f.write("  wrap_vars  (context);\n")
+      f.write("  wrap_macros(context);\n")
+      f.write("}\n")
       
       
-      f.write("\n")
-      f.write( "  #define ADD_{0}_ENUMVAL(enum,name,val) \\\n".format(args.val.libname.upper()))
-      f.write( "    {\\\n")
-      f.write( "    BasicVariable::ptr var = AMILabType<int >::CreateVar(val);\\\n")
-      f.write( "    if (var.get()) {\\\n")
-      f.write( '      var->Rename(#name);\\\n')
-      f.write( '       obj_##enum->GetContext()->AddVar(var,obj_##enum->GetContext());\\\n')
-      f.write( "    }}\n")
-      f.write("\n")
-            
+      f.write("void wrap_enums( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("{\n")
       # Add global enumerations
       for t in config.types.keys():
         if config.types[t].GetType()=="Enumeration":
@@ -457,30 +467,31 @@ if __name__ == '__main__':
             # add all the values
             f.write( "\n")
             for ev in enumkeys:
-              f.write( "  ADD_{0}_ENUMVAL({1},{2},{3});\n".format(\
-                args.val.libname.upper(),\
+              f.write( '  AddEnumVal(obj_{0},"{1}",{2});\n'.format(\
                 enum_usedname,ev,config.types[t]._values[ev]))
-              #BasicVariable::ptr var_{0} = AMILabType<int >::CreateVar({1});\n".format(ev,config.types[t]._values[ev]))
-              #f.write( "  if (var_{0}.get()) ".format(ev)+'{\n')
-              #f.write( '    var_{0}->Rename("{0}");\n'.format(ev))
-              #f.write( '  obj_{0}->GetContext()->AddVar(var_{1},obj_{0}->GetContext());\n'.format(enum_usedname,ev))
-              #f.write( "  }\n")
             f.write( "\n")
             f.write( "  // Add enum to context, and add to default contexts\n")
             f.write( "  context->AddVar<AMIObject>(obj_{0}->GetName().c_str(),obj_{0},context);\n".format(enum_usedname))
             f.write( "  context->AddDefault(obj_{0}->GetContext());\n".format(enum_usedname))
+      f.write("}\n")
+      f.write("\n")
             
-
-      f.write("  #undef ADD_{0}_ENUMVAL\n".format(args.val.libname.upper()))
-
+      f.write("void wrap_vars( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("{\n")
       # Add variables and macros
       if args.val.libname=="wx":
         wx_lib.create_variables.CreateVariables(f,config)
-        wx_lib.create_macros.CreateMacros(inputfile,f)
-
       f.write("}\n")
-      
       f.write("\n")
+
+      f.write("void wrap_macros( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("{\n")
+      # Add variables and macros
+      if args.val.libname=="wx":
+        wx_lib.create_macros.CreateMacros(inputfile,f)
+      f.write("}\n")
+      f.write("\n")
+      
       f.close()
       # intelligent copy only if modified
       wrap_class.BackupFile(createcontextname)
