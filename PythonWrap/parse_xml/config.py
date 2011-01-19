@@ -114,7 +114,7 @@ def AddInclude(f):
 #------------------------------------------------------------------
 def AddDeclare(f):
   if not(f in declare_list):
-    print "*********** adding {0} to declare_list".format(f)
+    #print "*********** adding {0} to declare_list".format(f)
     declare_list.append(f)
 
 #------------------------------------------------------------------
