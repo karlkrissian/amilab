@@ -51,6 +51,9 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxGenericListCtrl::Update(long)', # linking problem, don't know why ...
   'wxBitmap::GetSelectedInto', # not included in windows in release mode
   'wxBitmap::SetSelectedInto', # not included in windows in release mode
+  'wxListCtrl::ConvertToMSWStyle', # linking problem
+  'wxListCtrl::ChangeCurrent',     # idem
+  'wxListCtrl::ResetCurrent',      # idem
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints', # idem

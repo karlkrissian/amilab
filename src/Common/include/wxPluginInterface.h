@@ -12,6 +12,8 @@
 #ifndef wxPluginInterface_H
 #define wxPluginInterface_H
 
+#include <string>
+
 /**
  * @brief Class that contains the plugin interface.
  **/

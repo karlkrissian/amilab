@@ -68,6 +68,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   # Read list of classes to wrap
   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt" classes_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+  STRING(REGEX REPLACE "[\r\n]" " " classes_string ${classes_txt} )
 
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
@@ -76,8 +77,10 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   EXECUTE_PROCESS(
     COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
     OUTPUT_VARIABLE ancestors_result
+    ERROR_VARIABLE ancestors_error
   )
   MESSAGE(" ancestors_result = ${ancestors_result} ")
+  MESSAGE(" ancestors_error = ${ancestors_error} ")
 
   FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
@@ -103,7 +106,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
         (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h))
       SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${method}.cpp ${OUTPUT_LIST})
       SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${method}.h ${OUTPUT_LIST})
-      SET(MISSING_METHODS ${class} ${MISSING_METHODS})
+      SET(MISSING_METHODS ${method} ${MISSING_METHODS})
     ENDIF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp) OR
         (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h))
   ENDFOREACH( method ${methodpointers_list}) 
@@ -113,9 +116,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   ENDFOREACH( MP ${methodpointers_list})
 
   LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
+  LIST(LENGTH MISSING_METHODS NB_MISSING_METHODS)
 
   #MESSAGE("Processing class ${class}")
   IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
+      (${NB_MISSING_METHODS} GREATER 0) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
     # Go for python wrapping
@@ -138,8 +143,9 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
       #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
     )
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
+        (${NB_MISSING_METHODS} GREATER 0) OR
+        (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
+        (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
 
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)

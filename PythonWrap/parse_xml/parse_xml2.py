@@ -392,6 +392,9 @@ if __name__ == '__main__':
       f.write(" */\n")
       f.write("\n")
 
+      f.write('#include "Variables.hpp"\n')
+      f.write('#include "ami_object.h"\n')
+
       # 2. write all needed includes
       # -- list the library classes (based on the filter)
       lib_classes = []

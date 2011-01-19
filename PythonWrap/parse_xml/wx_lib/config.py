@@ -10,6 +10,7 @@ def get_include_file(classname, filename):
   s = incfile
   s = s.replace("/gtk","")
   s = s.replace("/gtk1","")
+  s = s.replace("/mac/carbon","")
   s = s.replace("/mac","")
   s = s.replace("/cocoa","")
   s = s.replace("/msw","")
@@ -23,6 +24,8 @@ def get_include_file(classname, filename):
   if s.find("paletteg.h")!=-1:  s = "wx/palette.h"
   # AD-HOC fixes, can be improved ...
   if classname.find("Aui")!=-1: s = "wx/aui/aui.h"
+  if classname=="wxDC":         s = "wx_includes.h"
+  if classname=="wxListCtrl":   s = "wx_includes.h"
   if classname=="wxBitmap":     s = "wx_includes.h"
   if classname=="wxRegionBase": s = "wx_includes.h"
   if classname=="wxFontBase":   s = "wx_includes.h"
