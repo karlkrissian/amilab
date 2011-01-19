@@ -414,7 +414,7 @@ if __name__ == '__main__':
 
       # Add an enumeration value
       f.write("/* Adding an enumeration value */\n")
-      f.write("void AddEnumVal( AMIObject::ptr& obj, const char* name, int val)\n")
+      f.write("static void AddEnumVal( AMIObject::ptr& obj, const char* name, int val)\n")
       f.write("{\n")
       f.write("  BasicVariable::ptr var = AMILabType<int >::CreateVar(val);\n")
       f.write("  var->Rename(name);\n")
@@ -422,9 +422,9 @@ if __name__ == '__main__':
       f.write("}\n")
       f.write("\n")
 
-      f.write("void wrap_enums( Variables::ptr& context);\n".format(args.val.libname))
-      f.write("void wrap_vars( Variables::ptr& context);\n".format(args.val.libname))
-      f.write("void wrap_macros( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("static void wrap_enums( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("static void wrap_vars( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("static void wrap_macros( Variables::ptr& context);\n".format(args.val.libname))
       
       # Wrap all classes in a context
       f.write("/*\n")
@@ -446,7 +446,7 @@ if __name__ == '__main__':
       f.write("}\n")
       
       
-      f.write("void wrap_enums( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("static void wrap_enums( Variables::ptr& context)\n".format(args.val.libname))
       f.write("{\n")
       # Add global enumerations
       for t in config.types.keys():
@@ -476,7 +476,7 @@ if __name__ == '__main__':
       f.write("}\n")
       f.write("\n")
             
-      f.write("void wrap_vars( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("static void wrap_vars( Variables::ptr& context)\n".format(args.val.libname))
       f.write("{\n")
       # Add variables and macros
       if args.val.libname=="wx":
@@ -484,7 +484,7 @@ if __name__ == '__main__':
       f.write("}\n")
       f.write("\n")
 
-      f.write("void wrap_macros( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("static void wrap_macros( Variables::ptr& context)\n".format(args.val.libname))
       f.write("{\n")
       # Add variables and macros
       if args.val.libname=="wx":
