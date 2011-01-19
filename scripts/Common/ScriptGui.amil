@@ -123,9 +123,8 @@ if (!exists(ScriptGui)) \
     #
     proc ::LaunchWiki() {
       import = &global::ami_import
-      wx1 = import->WxFunctions()
       if (exists(::wiki_help)) {
-        res = wx1->LaunchDefaultBrowser(::wiki_help)
+        res = wx.LaunchDefaultBrowser(::wiki_help)
       } else {
         InfoDialog "Sorry, there is no wiki page for this script :("
       }

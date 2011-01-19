@@ -98,24 +98,30 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
   # Wrap all classes at once since it is now fast
   FOREACH( class ${ancestors_list})
-    SET(OUTPUT_LIST 
-      ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${WRAPVTK_OUTDIR}/wrap_${class}.h
-      ${OUTPUT_LIST}
-    )
+    IF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp) OR
+        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.h))
+      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${OUTPUT_LIST})
+      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${class}.h ${OUTPUT_LIST})
+      SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
+    ENDIF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp) OR
+        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.h))
   ENDFOREACH( class ${ancestors_list}) 
 
+  LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
+
   #MESSAGE("Processing classes ${ancestors_list} and addwrap")
-  IF (${GCCXML_result} EQUAL 0)
+  IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.h) OR
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.cpp))
     # Go for python wrapping
-    ADD_CUSTOM_COMMAND(OUTPUT  ${OUTPUT_LIST}
-        ${WRAPVTK_OUTDIR}/addwrap_vtk.h
-        ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
+    ADD_CUSTOM_COMMAND(
+      OUTPUT  ${OUTPUT_LIST} ${WRAPVTK_OUTDIR}/addwrap_vtk.h ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
       COMMAND
         ${PYTHON_EXECUTABLE} 
           ${AMI_WRAPPER} ${XML_OUTPUT}
           --libname vtk
           --filter "vtk*"
-          --classes ${ancestors_list}
+          --classes ${MISSING_CLASSES}
           --constructor New
           --available_classes ${ancestors_list} 
           --outputdir "${WRAPVTK_OUTDIR}"
@@ -125,7 +131,9 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
           -q
 #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
       )
-  ENDIF(${GCCXML_result} EQUAL 0)
+  ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.h) OR
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.cpp))
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 

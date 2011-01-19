@@ -866,7 +866,7 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   // sauver les commentaires dans une variable du driver??
 }
 
-local::{varid}   {
+local::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -877,7 +877,7 @@ local::{varid}   {
   return result;
 }
 
-global::{varid}   {
+global::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -887,7 +887,7 @@ global::{varid}   {
   return result;
 }
 
-this::{varid}   {
+this::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -900,7 +900,7 @@ this::{varid}   {
 }
 
 
-::{varid}   {
+::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -913,7 +913,7 @@ this::{varid}   {
 }
 
 
-::{varid}->{varid}   {
+::{identifier}->{identifier}   {
 // TODO: can all the variable system to return only variable from lex !!!
 // this rule is a hack
 //
@@ -950,7 +950,7 @@ this::{varid}   {
 }
 
 
-{varid}->{varid}   {
+{identifier}->{identifier}   {
 //
 //============================ Parse variable in a given context ====================
 //
@@ -987,7 +987,7 @@ this::{varid}   {
 
 
 
-{varid}   {
+{identifier}   {
 //
 //============================ Parse variable ====================
 //

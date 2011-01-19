@@ -154,6 +154,10 @@ void AddWrapWxWidgets()
   // Add classes to wx context
   wrap_wx_classes(amiobject->GetContext());
 
+  ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,
+                          "LaunchDefaultBrowser",
+                          wrap_LaunchDefaultBrowser);
+
   ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,"FromWxString", wrap_FromWxString);
 
   // Add wx context to builtin
