@@ -21,7 +21,7 @@
 #include "wrapfunctions.hpp"
 #include "paramlist.h"
 
-#include "${INCLUDEFILE}"
+${INCLUDEFILES}
 
 // include what is needed for inheritence and for types ...
 ${INCLUDE_BASES}

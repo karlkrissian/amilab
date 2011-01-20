@@ -18,14 +18,16 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxString::Strip', 'wxString::CompareTo',\
   'wxAuiManager::SetFrame', 'wxAuiManager::GetFrame',\
   'wxWindowBase::GetBestFittingSize', 'wxWindowBase::SetBestFittingSize', 'wxWindowBase::GetAdjustedMinSize', 'wxWindowBase::GetToolTipText', \
-  'wxStringBase::copy',\
-  'wxString::FormatV', \
-  'wxString::PrintfV', \
+  'wxStringBase::copy',
+  'wxString::FormatV', 
+  'wxString::PrintfV', 
+  'wxString::mb_str', # default const reference to abstract class 
   'wxWindow::ScrollDirFromOrient','wxWindow::OrientFromScrollDir',\
   'wxSizerItem::SetOption','wxSizerItem::GetOption', \
   'wxSizer::Remove(wxWindow*)',\
   'wxBitmapButtonBase::SetLabel(const wxBitmap&)',\
   'wxWindowBase::Navigate', # missing IsForward (enum) deal with enums ...
+  'wxWindowBase::NavigateIn', # idem
   'wxWindowBase::GetHelpTextAtPoint', 
   'wxFont::Unshare', 
   'wxControlBase::GetLabelText', # problem with static and non-static methods

@@ -42,6 +42,9 @@ def get_include_file(classname, filename):
   if classname=="wxGDIImage": s = "wx/bitmap.h"
   if classname=="wxGDIImageHandler": s = "wx/bitmap.h"
   print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)
+  s = '#include "{0}"'.format(s)
+  if classname=="wxScopedCharTypeBuffer<char>":
+    s = '#include <wx/wx.h>\n'+s
   return s
  
 def get_var_filter():

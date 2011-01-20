@@ -274,6 +274,7 @@ class ParsePublicMembers:
         typeid=attrs.get('type',None)
         argname=attrs.get('name',None)
         default=attrs.get('default',None)
+        if default=="IsForward": print "****** default=IsForward"
         if argname==None:
           argname='param{0}'.format(len(self.method.args))
         if typeid in config.types.keys():
@@ -299,6 +300,7 @@ class ParsePublicMembers:
         #print "*"
         valname=attrs.get('name',None)
         valinit=attrs.get('init',None)
+        if valname=="IsForward": print "******* Processing IsForward..."
         if (valname!=None) and (valinit!=None):
           self.enum.values[valname]=valinit
       return False # allow further processing of the enumeration
@@ -376,7 +378,7 @@ class ParsePublicMembers:
       # problem: for structure, the constructor name is something like '._12': not a valid nor usefull name:
       # replace it by the class or structure name ...
       # only if not template ... so check for '<' character
-      if mname != config.types[context].GetString() and mname.find("<")==-1:
+      if mname != config.types[context].GetString() and config.types[context].GetString().find("<")==-1:
         utils.WarningMessage(" replacing constructor name {0} --> {1}".format(mname,config.types[context].GetString()))
         mname = config.types[context].GetString()
       self.CheckMethodName(self.public_members.ConstructorNames,self.public_members.Constructors,mname)
@@ -1090,7 +1092,7 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${CONSTRUCTOR_BASES}", constructor_bases)
       line = line.replace("${TEMPLATE}",          classname)
       line = line.replace("${TEMPLATENAME}",      config.ClassUsedName(classname))
-      line = line.replace("${INCLUDEFILE}",       local_include_file)
+      line = line.replace("${INCLUDEFILES}",      local_include_file)
       line = line.replace("${ADD_CLASS_CONSTRUCTORS}",constructors_decl)
       line = line.replace("${ADD_CLASS_STATIC_METHODS}",staticmethods_decl)
       line = line.replace("${ADD_CLASS_METHOD_ALL}",class_decl)

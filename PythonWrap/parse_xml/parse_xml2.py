@@ -102,12 +102,13 @@ def WrapMethodTypePointer(typedefname,include_file):
   # in place replace TEMPLATE by classname
   # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
   # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
+  includefiles = '#include "{0}"'.format(include_file)
   for line in fileinput.FileInput(header_filename,inplace=1):
     line = line.replace("${INCLUDE_BASES}",     "")
     line = line.replace("${INHERIT_BASES}",     "")
     line = line.replace("${CONSTRUCTOR_BASES}", "")
     line = line.replace("${TEMPLATE}",          typedefname)
-    line = line.replace("${INCLUDEFILE}",       include_file)
+    line = line.replace("${INCLUDEFILES}",      includefiles)
     line = line.replace("${ADD_CLASS_CONSTRUCTORS}","")
     line = line.replace("${ADD_CLASS_STATIC_METHODS}","")
     line = line.replace("${ADD_CLASS_METHOD_ALL}",class_decl)
@@ -412,7 +413,7 @@ if __name__ == '__main__':
       f.write("// Currently {0} objects (classes,structures,typedefs,...) are wrapped \n".format(len(lib_classes)))
       for cl in lib_classes:
         #f.write('#include "wrap_{0}.h"\n'.format(cl))
-        f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(cl))
+        f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(config.ClassUsedName(cl)))
       f.write("\n")
 
       # Add an enumeration value
@@ -440,7 +441,7 @@ if __name__ == '__main__':
 
       f.write("\n")
       for cl in lib_classes:
-        f.write("  WrapClass{0}_AddStaticMethods( context);\n".format(cl))
+        f.write("  WrapClass{0}_AddStaticMethods( context);\n".format(config.ClassUsedName(cl)))
         
       f.write("\n")
       f.write("  wrap_enums (context);\n")
