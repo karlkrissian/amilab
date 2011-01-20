@@ -51,6 +51,7 @@ wxFileSystemHandler
 wxFlexGridSizer
 wxFocusEvent
 wxFont
+wxFormatString
 wxFrame
 wxGDIObject
 wxGridSizer
@@ -120,6 +121,7 @@ wxPluginManager
 wxPoint
 wxRect
 wxRegion
+wxScopedCharTypeBuffer<char>
 wxScrollHelper
 wxScrollWinEvent
 wxScrolledWindow
