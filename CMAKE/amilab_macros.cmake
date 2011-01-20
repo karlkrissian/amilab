@@ -203,3 +203,14 @@ MACRO( GenerateSourcesWrapping new_code_list path code_list )
 
 ENDMACRO( GenerateSourcesWrapping)
 #-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+MACRO( ClassUsedName input_name output_name )
+#-------------------------------------------------------------------------------
+
+  STRING(REGEX REPLACE "<" "__LT__"     ${output_name} ${${input_name}} )
+  STRING(REGEX REPLACE ">" "__GT__"     ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "," "__COMMA__"  ${output_name} ${${output_name}} )
+
+ENDMACRO( ClassUsedName)
+#-------------------------------------------------------------------------------
