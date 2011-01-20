@@ -45,6 +45,8 @@ def get_include_file(classname, filename):
   s = '#include "{0}"'.format(s)
   if classname=="wxScopedCharTypeBuffer<char>":
     s = '#include <wx/wx.h>\n'+s
+  if classname=="wxFormatString":
+    s = '#include <wx/string.h>\n'+s
   return s
  
 def get_var_filter():

@@ -19,6 +19,7 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxAuiManager::SetFrame', 'wxAuiManager::GetFrame',\
   'wxWindowBase::GetBestFittingSize', 'wxWindowBase::SetBestFittingSize', 'wxWindowBase::GetAdjustedMinSize', 'wxWindowBase::GetToolTipText', \
   'wxStringBase::copy',
+  'wxFileName::GetHumanReadableSize', #invalid cast
   'wxString::FormatV', 
   'wxString::PrintfV', 
   'wxString::mb_str', # default const reference to abstract class 

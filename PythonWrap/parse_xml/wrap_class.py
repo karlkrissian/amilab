@@ -300,7 +300,7 @@ class ParsePublicMembers:
         #print "*"
         valname=attrs.get('name',None)
         valinit=attrs.get('init',None)
-        if valname=="IsForward": print "******* Processing IsForward..."
+        #if valname=="IsForward": print "******* Processing IsForward..."
         if (valname!=None) and (valinit!=None):
           self.enum.values[valname]=valinit
       return False # allow further processing of the enumeration
