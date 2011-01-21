@@ -10,6 +10,7 @@ def get_include_file(classname, filename):
   s = incfile
   s = s.replace("/gtk","")
   s = s.replace("/gtk1","")
+  s = s.replace("/mac/carbon","")
   s = s.replace("/mac","")
   s = s.replace("/cocoa","")
   s = s.replace("/msw","")
@@ -23,9 +24,15 @@ def get_include_file(classname, filename):
   if s.find("paletteg.h")!=-1:  s = "wx/palette.h"
   # AD-HOC fixes, can be improved ...
   if classname.find("Aui")!=-1: s = "wx/aui/aui.h"
+  if classname=="wxDC":         s = "wx_includes.h"
+  if classname=="wxListCtrl":   s = "wx_includes.h"
   if classname=="wxBitmap":     s = "wx_includes.h"
   if classname=="wxRegionBase": s = "wx_includes.h"
   if classname=="wxFontBase":   s = "wx_includes.h"
+  if classname=="wxBrush":      s = "wx_includes.h"
+  if classname=="wxGenericImageList": s = "wx_includes.h"
+  if classname=="wxMouseState": s = "wx_includes.h"
+  if classname=="wxPen":        s = "wx_includes.h"
   if classname=="wxWritableWCharBuffer":   s = "wx/string.h"
   if classname=="wxWritableCharBuffer":   s = "wx/string.h"
   if classname=="wxWCharBuffer":   s = "wx/string.h"
@@ -35,6 +42,11 @@ def get_include_file(classname, filename):
   if classname=="wxGDIImage": s = "wx/bitmap.h"
   if classname=="wxGDIImageHandler": s = "wx/bitmap.h"
   print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)
+  s = '#include "{0}"'.format(s)
+  if classname=="wxScopedCharTypeBuffer<char>":
+    s = '#include <wx/wx.h>\n'+s
+  if classname=="wxFormatString":
+    s = '#include <wx/string.h>\n'+s
   return s
  
 def get_var_filter():

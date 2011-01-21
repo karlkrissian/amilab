@@ -308,6 +308,7 @@ IF(AMI_ENABLE_WRAPPING)
   FIND_PACKAGE( PythonInterp REQUIRED)
   OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" OFF)
   OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       OFF)
+  OPTION(AMI_WRAP_EXAMPLES  "Enable Automatic Wrapping OF EXAMPLES"  OFF)
 ENDIF(AMI_ENABLE_WRAPPING)
 
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
@@ -320,10 +321,10 @@ IF(AMI_USE_VTK)
   ENDIF(VTK_FOUND)
 
   # Separe Mac generated files
-  IF (APPLE)
-    SET(AMI_VTK_VERSION ${AMI_VTK_VERSION}/Mac)
-  ENDIF(APPLE)
-  MESSAGE("VTK version: ${AMI_VTK_VERSION}\n")
+  #IF (APPLE)
+  #  SET(AMI_VTK_VERSION ${AMI_VTK_VERSION}/Mac)
+  #ENDIF(APPLE)
+  #MESSAGE("VTK version: ${AMI_VTK_VERSION}\n")
 
 ENDIF(AMI_USE_VTK)
 
@@ -373,14 +374,14 @@ IF(wxWidgets_FOUND)
 ENDIF(wxWidgets_FOUND)
 
 # Separe Mac generated files
-IF(APPLE)
-  STRING(REGEX MATCH "WXMAC" ISMAC ${wxWidgets_CXX_FLAGS})
-  MESSAGE("\"${ISMAC}\"")
-  IF ( NOT ( ISMAC STREQUAL "" ) )
-    SET(AMI_WXWIDGETS_VERSION ${AMI_WXWIDGETS_VERSION}/Mac)
-  ENDIF( NOT ( ISMAC STREQUAL "" ) )
-  MESSAGE("AMI_WXWIDGETS_VERSION ${AMI_WXWIDGETS_VERSION}")
-ENDIF(APPLE)
+#IF(APPLE)
+#  STRING(REGEX MATCH "WXMAC" ISMAC ${wxWidgets_CXX_FLAGS})
+#  MESSAGE("\"${ISMAC}\"")
+#  IF ( NOT ( ISMAC STREQUAL "" ) )
+#    SET(AMI_WXWIDGETS_VERSION ${AMI_WXWIDGETS_VERSION}/Mac)
+#  ENDIF( NOT ( ISMAC STREQUAL "" ) )
+#  MESSAGE("AMI_WXWIDGETS_VERSION ${AMI_WXWIDGETS_VERSION}")
+#ENDIF(APPLE)
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
@@ -645,6 +646,11 @@ SET(amilab_ownlibs
   wxVTK
 )
 
+
+# Test template class
+IF(AMI_WRAP_EXAMPLES)
+  SET(amilab_ownlibs WrapExamples ${amilab_ownlibs})
+ENDIF(AMI_WRAP_EXAMPLES)
 
 IF(AMI_USE_VTK)
   SET(amilab_ownlibs

@@ -65,4 +65,9 @@ void AddWrapGLTransfMatrix();
  */
 void AddWrapBasicTypes();
 
+/**
+ * Adding wrapped classes and methods for basic types (VarVector, VarList, etc ..).
+ */
+void AddWrapTestTemplateClass();
+
 #endif //  _wrap_MainFrame_h_

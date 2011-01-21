@@ -13,19 +13,23 @@
 #ifndef _wrap_${TEMPLATENAME}_h_
 #define _wrap_${TEMPLATENAME}_h_
 
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
 #include "wrapfunction_class.h"
 #include "wrapfunctions.hpp"
-#include "Variable.hpp"
 #include "paramlist.h"
-#include "ami_object.h"
 
-#include "${INCLUDEFILE}"
+${INCLUDEFILES}
 
 // include what is needed for inheritence and for types ...
 ${INCLUDE_BASES}
 
-
-AMI_DECLARE_TYPE(${TEMPLATE});
+#ifndef ${TEMPLATENAME}_declared
+  #define ${TEMPLATENAME}_declared
+  AMI_DECLARE_TYPE(${TEMPLATE});
+#endif
 
 // TODO: check for inheritence ...
 class WrapClass_${TEMPLATENAME} : public WrapClass<${TEMPLATE} >
@@ -70,5 +74,9 @@ class WrapClass_${TEMPLATENAME} : public WrapClass<${TEMPLATE} >
 
 };
 
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass${TEMPLATENAME}_AddStaticMethods( Variables::ptr& context);
 
 #endif // _wrap_${TEMPLATENAME}_h

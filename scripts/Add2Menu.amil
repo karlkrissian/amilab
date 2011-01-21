@@ -18,7 +18,7 @@ for dir in  "BasicFilters","Filtering","Denoising",\
   if local_f.FileExists() {
     func dir+"/Add2Menu.amil"
   } else {
-    InfoDialog local_f.GetFullPath()+" does not exists"
+    InfoDialog wx.FromWxString(local_f.GetFullPath())+" does not exists"
   }
   del local_f
 }

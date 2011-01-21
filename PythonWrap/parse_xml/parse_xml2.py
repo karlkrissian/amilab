@@ -38,7 +38,7 @@ import wrap_class
 import parse_function
 import wrap_function
 
-
+import pickle
   
 def FindAvailableClasses():
   for dir in args.val.wrap_includes:
@@ -102,12 +102,13 @@ def WrapMethodTypePointer(typedefname,include_file):
   # in place replace TEMPLATE by classname
   # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
   # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
+  includefiles = '#include "{0}"'.format(include_file)
   for line in fileinput.FileInput(header_filename,inplace=1):
     line = line.replace("${INCLUDE_BASES}",     "")
     line = line.replace("${INHERIT_BASES}",     "")
     line = line.replace("${CONSTRUCTOR_BASES}", "")
     line = line.replace("${TEMPLATE}",          typedefname)
-    line = line.replace("${INCLUDEFILE}",       include_file)
+    line = line.replace("${INCLUDEFILES}",      includefiles)
     line = line.replace("${ADD_CLASS_CONSTRUCTORS}","")
     line = line.replace("${ADD_CLASS_STATIC_METHODS}","")
     line = line.replace("${ADD_CLASS_METHOD_ALL}",class_decl)
@@ -169,7 +170,7 @@ if __name__ == '__main__':
     for cl in args.val.available_classes:
       config.available_classes.append(cl)
     FindAvailableClasses()
-    #print config.available_classes
+    #print "available classes:", config.available_classes
     
     if (args.val.profile):
       t1 = time.clock()
@@ -209,6 +210,9 @@ if __name__ == '__main__':
     # Parse the input
     inputfile.seek(0)
     parser.parse(inputfile)
+    
+    saveconf = open(args.val.outputdir+"/saveconfig.dat","w")
+    pickle.dump(config.types,saveconf,-1)
 
     #print "wxConfig is available ? ", wrap_class.AvailableType("wxConfigBase",config.classes["wxConfigBase"],[])
 
@@ -227,7 +231,7 @@ if __name__ == '__main__':
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
       for b in args.val.ancestors:
-        print "b=",b
+        #print "b=",b
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:
@@ -241,19 +245,19 @@ if __name__ == '__main__':
             newlist=[]
             while f_anc != []:
               anc_id = f_anc.pop()[0]
-              if b=="wxTopLevelWindow":
-                print anc_id
+              #if b=="wxTopLevelWindow":
+                #print anc_id
               if anc_id in classes_dict.keys():
-                if b=="wxTopLevelWindow":
-                  print classes_dict[anc_id]
+                #if b=="wxTopLevelWindow":
+                  #print classes_dict[anc_id]
                 if  classes_dict[anc_id] not in ancestors and  \
                     classes_dict[anc_id] not in config.classes_blacklist and\
                     not wrap_class.IsTemplate(classes_dict[anc_id]):
                   ancestors.append(classes_dict[anc_id])
                   newlist.append(classes_dict[anc_id])
                   bases=config.types[anc_id].bases
-                  if b=="wxTopLevelWindow":
-                    print bases
+                  #if b=="wxTopLevelWindow":
+                    #print bases
                   if bases!=None:
                     for newanc in bases:
                       f_anc.append(newanc)
@@ -389,6 +393,9 @@ if __name__ == '__main__':
       f.write(" */\n")
       f.write("\n")
 
+      f.write('#include "Variables.hpp"\n')
+      f.write('#include "ami_object.h"\n')
+
       # 2. write all needed includes
       # -- list the library classes (based on the filter)
       lib_classes = []
@@ -406,9 +413,23 @@ if __name__ == '__main__':
       f.write("// Currently {0} objects (classes,structures,typedefs,...) are wrapped \n".format(len(lib_classes)))
       for cl in lib_classes:
         #f.write('#include "wrap_{0}.h"\n'.format(cl))
-        f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(cl))
+        f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(config.ClassUsedName(cl)))
       f.write("\n")
 
+      # Add an enumeration value
+      f.write("/* Adding an enumeration value */\n")
+      f.write("static void AddEnumVal( AMIObject::ptr& obj, const char* name, int val)\n")
+      f.write("{\n")
+      f.write("  BasicVariable::ptr var = AMILabType<int >::CreateVar(val);\n")
+      f.write("  var->Rename(name);\n")
+      f.write("  obj->GetContext()->AddVar(var,obj->GetContext());\n")
+      f.write("}\n")
+      f.write("\n")
+
+      f.write("static void wrap_enums( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("static void wrap_vars( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("static void wrap_macros( Variables::ptr& context);\n".format(args.val.libname))
+      
       # Wrap all classes in a context
       f.write("/*\n")
       f.write(" * Adding all the wrapped classes to the library context.\n")
@@ -420,21 +441,17 @@ if __name__ == '__main__':
 
       f.write("\n")
       for cl in lib_classes:
-        f.write("  WrapClass{0}_AddStaticMethods( context);\n".format(cl))
+        f.write("  WrapClass{0}_AddStaticMethods( context);\n".format(config.ClassUsedName(cl)))
         
       f.write("\n")
+      f.write("  wrap_enums (context);\n")
+      f.write("  wrap_vars  (context);\n")
+      f.write("  wrap_macros(context);\n")
+      f.write("}\n")
       
       
-      f.write("\n")
-      f.write( "  #define ADD_{0}_ENUMVAL(enum,name,val) \\\n".format(args.val.libname.upper()))
-      f.write( "    {\\\n")
-      f.write( "    BasicVariable::ptr var = AMILabType<int >::CreateVar(val);\\\n")
-      f.write( "    if (var.get()) {\\\n")
-      f.write( '      var->Rename(#name);\\\n')
-      f.write( '       obj_##enum->GetContext()->AddVar(var,obj_##enum->GetContext());\\\n')
-      f.write( "    }}\n")
-      f.write("\n")
-            
+      f.write("static void wrap_enums( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("{\n")
       # Add global enumerations
       for t in config.types.keys():
         if config.types[t].GetType()=="Enumeration":
@@ -454,30 +471,31 @@ if __name__ == '__main__':
             # add all the values
             f.write( "\n")
             for ev in enumkeys:
-              f.write( "  ADD_{0}_ENUMVAL({1},{2},{3});\n".format(\
-                args.val.libname.upper(),\
+              f.write( '  AddEnumVal(obj_{0},"{1}",{2});\n'.format(\
                 enum_usedname,ev,config.types[t]._values[ev]))
-              #BasicVariable::ptr var_{0} = AMILabType<int >::CreateVar({1});\n".format(ev,config.types[t]._values[ev]))
-              #f.write( "  if (var_{0}.get()) ".format(ev)+'{\n')
-              #f.write( '    var_{0}->Rename("{0}");\n'.format(ev))
-              #f.write( '  obj_{0}->GetContext()->AddVar(var_{1},obj_{0}->GetContext());\n'.format(enum_usedname,ev))
-              #f.write( "  }\n")
             f.write( "\n")
             f.write( "  // Add enum to context, and add to default contexts\n")
             f.write( "  context->AddVar<AMIObject>(obj_{0}->GetName().c_str(),obj_{0},context);\n".format(enum_usedname))
             f.write( "  context->AddDefault(obj_{0}->GetContext());\n".format(enum_usedname))
+      f.write("}\n")
+      f.write("\n")
             
-
-      f.write("  #undef ADD_{0}_ENUMVAL\n".format(args.val.libname.upper()))
-
+      f.write("static void wrap_vars( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("{\n")
       # Add variables and macros
       if args.val.libname=="wx":
         wx_lib.create_variables.CreateVariables(f,config)
-        wx_lib.create_macros.CreateMacros(inputfile,f)
-
       f.write("}\n")
-      
       f.write("\n")
+
+      f.write("static void wrap_macros( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("{\n")
+      # Add variables and macros
+      if args.val.libname=="wx":
+        wx_lib.create_macros.CreateMacros(inputfile,f)
+      f.write("}\n")
+      f.write("\n")
+      
       f.close()
       # intelligent copy only if modified
       wrap_class.BackupFile(createcontextname)

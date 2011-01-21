@@ -36,13 +36,6 @@ import arginfo
 import parse_function
 
 
-#-------------------------------------------------------------
-def ClassUsedName(classname):
-  res = classname
-  res = res.replace('<','_')
-  res = res.replace('>','_')
-  res = res.replace(',','_')
-  return res
 
 def IsTemplate(classname):
   return re.match(r"(.*)<(.*)>",classname)!=None
@@ -86,7 +79,7 @@ def WxHelpLink(classname,method):
 def AvailableType(typename,typeid,missing_types,check_includes=False,return_type=False):
   if check_includes:
     if (typename in config.available_classes):
-      config.AddDeclare(ClassUsedName(typename))
+      config.AddDeclare(typename)
       if args.val.overwrite and (typename not in config.wrapped_classes) \
           and (typename not in config.needed_classes) \
           and (typename not in config.new_needed_classes):
@@ -216,22 +209,22 @@ class ParsePublicMembers:
       # rename initial method
       pos=0
       for m in methods:
-        if m.usedname==mname:
-          methods[pos].usedname=mname+"_1"
+        if m.usedname==config.ClassUsedName(mname):
+          methods[pos].usedname=config.ClassUsedName(mname)+"_1"
           staticval = methods[pos].static
         pos= pos+1
       # add main method
       method = MethodInfo()
       method.name=mname
       method.static = staticval
-      method.usedname=mname
+      method.usedname=config.ClassUsedName(mname)
       method.duplicated=True
       methods.append(method)
     methodlist.append(mname)
     if num>=1:
-      self.method.usedname=mname+"_{0}".format(num+1)
+      self.method.usedname=config.ClassUsedName(mname)+"_{0}".format(num+1)
     else:
-      self.method.usedname=mname
+      self.method.usedname=config.ClassUsedName(mname)
 
   #---------------------------------------------
   def CheckOperatorMethodName(self,mname):
@@ -281,6 +274,7 @@ class ParsePublicMembers:
         typeid=attrs.get('type',None)
         argname=attrs.get('name',None)
         default=attrs.get('default',None)
+        if default=="IsForward": print "****** default=IsForward"
         if argname==None:
           argname='param{0}'.format(len(self.method.args))
         if typeid in config.types.keys():
@@ -306,6 +300,7 @@ class ParsePublicMembers:
         #print "*"
         valname=attrs.get('name',None)
         valinit=attrs.get('init',None)
+        #if valname=="IsForward": print "******* Processing IsForward..."
         if (valname!=None) and (valinit!=None):
           self.enum.values[valname]=valinit
       return False # allow further processing of the enumeration
@@ -382,7 +377,8 @@ class ParsePublicMembers:
     if name=='Constructor':
       # problem: for structure, the constructor name is something like '._12': not a valid nor usefull name:
       # replace it by the class or structure name ...
-      if mname != config.types[context].GetString():
+      # only if not template ... so check for '<' character
+      if mname != config.types[context].GetString() and config.types[context].GetString().find("<")==-1:
         utils.WarningMessage(" replacing constructor name {0} --> {1}".format(mname,config.types[context].GetString()))
         mname = config.types[context].GetString()
       self.CheckMethodName(self.public_members.ConstructorNames,self.public_members.Constructors,mname)
@@ -446,7 +442,7 @@ def AddParameters(method):
 #------------------------------------------------------------------
 def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
 
-  wrapclass_name="WrapClass_{0}".format(ClassUsedName(classname))
+  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
   wrapmethod_name = method.usedname
   if method.static=="1":
      wrapmethod_name = "static_"+wrapmethod_name
@@ -625,7 +621,7 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, constr
   #if method.returntype==None:
   #  print 'void',
   #else:
-  wrapclass_name="WrapClass_{0}".format(ClassUsedName(classname))
+  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
   wrapmethod_name = method.usedname
   if method.static=="1":
      wrapmethod_name = "static_"+wrapmethod_name
@@ -684,7 +680,7 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, constr
 #  ImplementCopyMethodWrap
 #------------------------------------------------------------------
 def ImplementCopyMethodWrap(classname, method):
-  wrapclass_name="WrapClass_{0}".format(ClassUsedName(classname))
+  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
   res = "\n"
   res += "//---------------------------------------------------\n"
   res += "//  Wrapping of 'copy' method for {0}.\n".format(classname)
@@ -751,6 +747,7 @@ def WrapClass(classname,include_file,inputfile):
 
     # Check for Copy Constructor
     pos=0
+    dh.has_copyconstr = False
     for m in fm.Constructors:
       if len(m.args)==1:
         typename = config.types[m.args[0].typeid].GetFullString()
@@ -766,7 +763,7 @@ def WrapClass(classname,include_file,inputfile):
       else:
         implement_type += "AMI_DEFINE_WRAPPEDTYPE_HASCOPY({0});\n".format(classname)
       if IsTemplate(classname) and args.val.templates:
-        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(classname,ClassUsedName(classname))
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(classname,config.ClassUsedName(classname))
       else:
         implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(classname)
     else:
@@ -782,7 +779,7 @@ def WrapClass(classname,include_file,inputfile):
       implement_type += "}\n"
           
     # Create Header File
-    header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(ClassUsedName(classname))
+    header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(config.ClassUsedName(classname))
     if IsTemplate(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.h.in",header_filename)
     else:
@@ -811,7 +808,7 @@ def WrapClass(classname,include_file,inputfile):
       basename=config.types[base].GetString()
       #print basename
       virtualstring=''
-      baseusedname=ClassUsedName(basename)
+      baseusedname=config.ClassUsedName(basename)
       wrapped_base='WrapClass_{0}'.format(baseusedname)
       if virtual=='1':
         virtualstring="virtual"
@@ -1000,7 +997,7 @@ def WrapClass(classname,include_file,inputfile):
       else:
         # check includes
         if (typename in config.available_classes):
-          config.AddDeclare(ClassUsedName(typename))
+          config.AddDeclare(typename)
         if isconstpointer:
           add_public_fields += indent+"/* Avoiding const pointers for the moment\n"
         else:
@@ -1062,7 +1059,7 @@ def WrapClass(classname,include_file,inputfile):
           if fm.Constructors[pos].missingtypes:
             add_constructor+=  indent+"/* Types are missing\n"
           add_constructor+=indent+'WrapClass_{0}::AddVar_{1}(amiobject->GetContext());\n'.format(\
-            ClassUsedName(classname),m.usedname)
+            config.ClassUsedName(classname),m.usedname)
           if fm.Constructors[pos].missingtypes:
             add_constructor +=  indent+"*/\n"
           pos=pos+1
@@ -1076,7 +1073,7 @@ def WrapClass(classname,include_file,inputfile):
       if fm.StaticMethods[pos].missingtypes:
         add_static_methods +=  indent+"/* Types are missing\n"
       add_static_methods+=indent+'WrapClass_{0}::AddVar_{1}(amiobject->GetContext());\n'.format(\
-          ClassUsedName(classname),m.usedname)
+          config.ClassUsedName(classname),m.usedname)
       if fm.StaticMethods[pos].missingtypes:
         add_static_methods +=  indent+"*/\n"
       pos=pos+1
@@ -1094,8 +1091,8 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${INHERIT_BASES}",     inherit_bases)
       line = line.replace("${CONSTRUCTOR_BASES}", constructor_bases)
       line = line.replace("${TEMPLATE}",          classname)
-      line = line.replace("${TEMPLATENAME}",      ClassUsedName(classname))
-      line = line.replace("${INCLUDEFILE}",       local_include_file)
+      line = line.replace("${TEMPLATENAME}",      config.ClassUsedName(classname))
+      line = line.replace("${INCLUDEFILES}",      local_include_file)
       line = line.replace("${ADD_CLASS_CONSTRUCTORS}",constructors_decl)
       line = line.replace("${ADD_CLASS_STATIC_METHODS}",staticmethods_decl)
       line = line.replace("${ADD_CLASS_METHOD_ALL}",class_decl)
@@ -1110,7 +1107,7 @@ def WrapClass(classname,include_file,inputfile):
     else:
       #if len(fm.Constructors)>0:
       if wrapped_constructors>0:
-        implement_createvar += "  WrapClass_{0}::wrap_{1} construct;\n".format(ClassUsedName(classname),ClassConstructor(classname))
+        implement_createvar += "  WrapClass_{0}::wrap_{1} construct;\n".format(config.ClassUsedName(classname),ClassConstructor(classname))
         implement_createvar += "  return construct.CallMember(p);\n"
       else:
         # check for possible other method
@@ -1118,14 +1115,14 @@ def WrapClass(classname,include_file,inputfile):
         #print fm.StaticMethods
         if args.val.constructor != '' and \
           (args.val.constructor in fm.StaticMethodNames):
-          implement_createvar += "  WrapClass_{0}::wrap_static_{1} construct;\n".format(ClassUsedName(classname),args.val.constructor)
+          implement_createvar += "  WrapClass_{0}::wrap_static_{1} construct;\n".format(config.ClassUsedName(classname),args.val.constructor)
           implement_createvar += "  return construct.CallMember(p);\n"
         else:
           implement_createvar += "  // No constructor available !!\n"
           implement_createvar += "  return BasicVariable::ptr();\n"
 
     # Create Implementation File
-    impl_filename=args.val.outputdir+"/wrap_{0}.cpp.new".format(ClassUsedName(classname))
+    impl_filename=args.val.outputdir+"/wrap_{0}.cpp.new".format(config.ClassUsedName(classname))
     if IsTemplate(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.cpp.in",impl_filename)
     else:
@@ -1204,7 +1201,8 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${IMPLEMENT_TYPE}",        implement_type)
       line = line.replace("${IMPLEMENT_CREATEVAR}",   implement_createvar)
       line = line.replace("${TEMPLATE}",              classname)
-      line = line.replace("${TEMPLATENAME}",          ClassUsedName(classname))
+      line = line.replace("${TEMPLATENAME}",          config.ClassUsedName(classname))
+      line = line.replace("${TEMPLATESHORTNAME}",     config.ClassShortName(classname))      
       line = line.replace("${METHODS_BASES}",         methods_bases)
       line = line.replace("${AddVar_method_all}",     add_var_all)
       line = line.replace("${AddPublicFields}",       add_public_fields)
@@ -1214,11 +1212,14 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${WRAP_PUBLIC_METHODS}",   impl)
       print line,
 
+  if found:
     # Check header file for backup
     BackupFile(header_filename)
 
     # Check implementation file for backup
     BackupFile(impl_filename)
+  else:
+    print "Class {0} not found".format(classname)
   
   if (args.val.profile):
     if not found: 

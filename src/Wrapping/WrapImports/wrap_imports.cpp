@@ -78,6 +78,8 @@
 
 #include "wrap_stdvector.h"
 
+//#include "wrap_TestTemplateClass__LT__int__GT__.h"
+
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
 
@@ -110,6 +112,7 @@ void AddWrapImports()
   AddWrapViewer3D();
   AddWrapGLTransfMatrix();
   AddWrapBasicTypes();
+  AddWrapTestTemplateClass();
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -127,12 +130,12 @@ void AddWrapImports()
   WrapClass_vtkLevelSets  ::AddVar_vtkLevelSets(amiobject->GetContext());
 
 
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",    wrap_System);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "ITK",       wrap_ITK);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "AMIFluid",  wrap_AMIFluid);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "Filters",   wrap_Filters);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "WxSamples",        wrap_wxsamples);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"WxFunctions",        wrap_wxfunctions);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",      wrap_System);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "ITK",         wrap_ITK);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "AMIFluid",    wrap_AMIFluid);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "Filters",     wrap_Filters);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "WxSamples",   wrap_wxsamples);
+  //ADDOBJECTVAR_NAME(C_wrap_varfunction,"WxFunctions", wrap_wxfunctions);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -150,6 +153,12 @@ void AddWrapWxWidgets()
 
   // Add classes to wx context
   wrap_wx_classes(amiobject->GetContext());
+
+  ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,
+                          "LaunchDefaultBrowser",
+                          wrap_LaunchDefaultBrowser);
+
+  ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,"FromWxString", wrap_FromWxString);
 
   // Add wx context to builtin
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
@@ -261,3 +270,9 @@ void AddWrapBasicTypes()
 //  AddVar_VarList( Vars.GetBuiltinContext());
 }
 
+//--------------------------------------------
+void AddWrapTestTemplateClass()
+{
+//  WrapClassTestTemplateClass__LT__int__GT___AddStaticMethods( Vars.GetBuiltinContext());
+
+}

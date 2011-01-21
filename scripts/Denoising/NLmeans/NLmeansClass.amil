@@ -147,12 +147,16 @@ if (!exists(NLmeansClass)) {
     
     #----------------------------
     proc ::Filter() {
-printn "*** Filter() ****"
+      printn "*** Filter() ****"
       InitTime
       if (exists(::roi)) {
-        ::res0 = ::res[::roi]
+        printn "** 1 **"
+        ::roi.info
+        ::res.info
+        ::res0 = ::res[::roi.GetExtent]
+        printn "** 2 **"
   
-        if (::res0.GetFormat.val != RGB.val) {
+        if (::res0.vdim == 1) {
           InitTime
           ::res_roi = ::filters->NLmeans((FLOAT)::res0,\
                                 ::t,::f,::h,\
@@ -164,31 +168,24 @@ printn "*** Filter() ****"
           EndTime
           printn "processing time: "+TimeSpent
         } else {
+          printn "** 3 **"
           ::res_roi = ::res0
           ::res_roi.info
-          ::res_roi.SetComponent( 0, ::filters->NLmeans( (FLOAT)::res0[0],\
-                                    ::t,::f,::h,\
-                                    ::noisetype,\
-                                    ::threads,\
-                                    ::filter_type,\
-                                    ::presmooth_SD,\
-                                    ::pattern_weight_param))
-          ::res_roi.SetComponent( 1, ::filters->NLmeans( (FLOAT)::res0[1],\
-                                    ::t,::f,::h,\
-                                    ::noisetype,::threads,\
-                                    ::filter_type,\
-                                ::presmooth_SD,\
-                                ::pattern_weight_param))
-          ::res_roi.SetComponent( 2, ::filters->NLmeans( (FLOAT)::res0[2],\
-                                    ::t,::f,::h,\
-                                    ::noisetype,::threads,\
-                                    ::filter_type,\
-                                ::presmooth_SD,\
-                                ::pattern_weight_param))
+          for n=0 to ::res0.vdim-1 {
+            printn "** n=%1%" % n
+            ::res_roi.SetComponent( n, ::filters->NLmeans( (FLOAT)::res0[n],\
+                                      ::t,::f,::h,\
+                                      ::noisetype,\
+                                      ::threads,\
+                                      ::filter_type,\
+                                      ::presmooth_SD,\
+                                      ::pattern_weight_param))
+          }
         }
   
         ::res0.info
         ::res_roi.info
+        printn "** 4 **"
         diff = sqrt(mean((::res0-::res_roi)*\
                         (::res0-::res_roi)))
         print sprint("Diff = %f \n",diff)
@@ -196,17 +193,17 @@ printn "*** Filter() ****"
       } else {
         ::res0 = ::res
   
-        if (::res0.GetFormat.val != RGB.val) {
+        if (::res0.vdim == 1) {
 
-printn "running ::filters->NLmeans() with"
-printn "t = %1%" % ::t
-printn "f = %1%" % ::f
-printn "h = %1%" % ::h
-printn "noisetype = %1%" % ::noisetype
-printn "threads = %1%" % ::threads
-printn "filter_type = %1%" % ::filter_type
-printn "presmooth_SD = %1%" % ::presmooth_SD
-printn "pattern_weight_param = %1%" % ::pattern_weight_param
+          printn "running ::filters->NLmeans() with"
+          printn "t = %1%" % ::t
+          printn "f = %1%" % ::f
+          printn "h = %1%" % ::h
+          printn "noisetype = %1%" % ::noisetype
+          printn "threads = %1%" % ::threads
+          printn "filter_type = %1%" % ::filter_type
+          printn "presmooth_SD = %1%" % ::presmooth_SD
+          printn "pattern_weight_param = %1%" % ::pattern_weight_param
 
           ::res = ::filters->NLmeans(::res0,\
                           ::t,::f,::h,\
@@ -215,18 +212,12 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
                           ::presmooth_SD,\
                           ::pattern_weight_param)
         } else {
-          ::res.SetComponent( 0, ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
-                                ::filter_type,\
-                                ::presmooth_SD,\
-                                ::pattern_weight_param))
-          ::res.SetComponent( 1, ::filters->NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\
-                                ::filter_type,\
-                                ::presmooth_SD,\
-                                ::pattern_weight_param))
-          ::res.SetComponent( 2, ::filters->NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\
-                                ::filter_type,\
-                                ::presmooth_SD,\
-                                ::pattern_weight_param))
+          for n=0 to ::res0.vdim-1 {
+            ::res.SetComponent( 0, ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
+                                  ::filter_type,\
+                                  ::presmooth_SD,\
+                                  ::pattern_weight_param))
+          }
         }
   
         diff = sqrt(mean((::res0-::res)*(::res0-::res)))
@@ -249,7 +240,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       printn "ComputeMatchField()"
     
       # Precomputes matching field
-      if (::res.GetFormat.val != RGB.val) {
+      if (::res.vdim == 1) {
         num_features = 1
         if (::usegrad) { num_features++; }
         ::matchfield <<= Image( FLOAT,\
@@ -264,16 +255,12 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         #::matchfield[1] = secdergrad((FLOAT)::res,::sigma) 
         #normgrad((FLOAT)::res,::sigma)
       } else {
-        ::matchfield <<=  Image(FLOAT,6,::res)
-        tmp <<= (FLOAT)::res[0]
-        ::matchfield.SetComponent( 0, filter(  tmp,::sigma,0,0,0))
-        ::matchfield.SetComponent( 1, normgrad(tmp,::sigma))
-        tmp <<= (FLOAT)::res[1]
-        ::matchfield.SetComponent( 2, filter(  tmp,::sigma,0,0,0))
-        ::matchfield.SetComponent( 3, normgrad(tmp,::sigma))
-        tmp <<= (FLOAT)::res[2]
-        ::matchfield.SetComponent( 4, filter(  tmp,::sigma,0,0,0))
-        ::matchfield.SetComponent( 5, normgrad(tmp,::sigma))
+        ::matchfield <<=  Image(FLOAT,2*::res.vdim,::res)
+        for n = 0 to ::res.vdim-1 {
+          tmp <<= (FLOAT)::res[n]
+          ::matchfield.SetComponent( 2*n, filter(  tmp,::sigma,0,0,0))
+          ::matchfield.SetComponent( 2*n+1, normgrad(tmp,::sigma))
+        }
       }
     
     }
@@ -285,21 +272,21 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     
         #InitTime
         if (exists(::roi)) {
-          ::res0 = ::res[::roi]
-          ::mf0  = ::matchfield[::roi]
+          ::res0 = ::res[::roi.GetExtent]
+          ::mf0  = ::matchfield[::roi.GetExtent]
           ::matchfield.info
           ::mf0.info
           ::roi.info
-          if (::res0.vdim != 3) {
+          if (::res0.vdim == 1) {
             InitTime
             ::res_roi = ::filters->NLmeans_fast((FLOAT)::res0,::mf0,::t,::h,::noisetype,::threads)
             EndTime
             printn "processing time: "+TimeSpent
           } else {
             ::res_roi = ::res0
-            ::res_roi.SetComponent( 0, ::filters->NLmeans_fast((FLOAT) ::res0[0],::mf0,::t,::h,::noisetype,::threads))
-            ::res_roi.SetComponent( 1, ::filters->NLmeans_fast((FLOAT) ::res0[1],::mf0,::t,::h,::noisetype,::threads))
-            ::res_roi.SetComponent( 2, ::filters->NLmeans_fast((FLOAT) ::res0[2],::mf0,::t,::h,::noisetype,::threads))
+            for n=0 to ::res0.vdim-1 {
+              ::res_roi.SetComponent( n, ::filters->NLmeans_fast((FLOAT) ::res0[n],::mf0,::t,::h,::noisetype,::threads))
+            }
           }
           ::res0.info
           ::res_roi.info
@@ -310,7 +297,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         } else {
           ::res0 <<= (FLOAT) ::res
           printn "starting !"
-          if (::res0.vdim != 3) {
+          if (::res0.vdim == 1) {
             printn  sprint(" t=%f ",::t)+\
                     sprint(" h=%f ",::h)+\
                     sprint(" noisetype=%f ",::noisetype)+\
@@ -330,9 +317,9 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
                                     ::threads)
           } else {
             ::res = ::res0
-            ::res.SetComponent( 0, ::filters->NLmeans_fast((FLOAT)::res0[0],::matchfield,::t,::h,::noisetype,::threads))
-            ::res.SetComponent( 1, ::filters->NLmeans_fast((FLOAT)::res0[1],::matchfield,::t,::h,::noisetype,::threads))
-            ::res.SetComponent( 2, ::filters->NLmeans_fast((FLOAT)::res0[2],::matchfield,::t,::h,::noisetype,::threads))
+            for n=0 to ::res0.vdim-1 {
+              ::res.SetComponent( n, ::filters->NLmeans_fast((FLOAT)::res0[n],::matchfield,::t,::h,::noisetype,::threads))
+            }
           }
     
           _diff = sqrt(mean((::res0-::res)*(::res0-::res)))
@@ -400,7 +387,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       if (!exists(::input)) { ::LoadInput(); }
       ::stop = 0
       if (!exists(::res)) {
-        ::res =  (FLOAT) ::input
+        ::res <<=  ::input
       }
       for local::k=1 to ::iterations {
         if (!::stop) {
@@ -426,7 +413,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     #----------------------------
     proc ::ReRun() \
     {
-      ::res <<= (FLOAT) ::input
+      ::res <<=  ::input
       show ::res
       ::Run()
     }
@@ -442,8 +429,8 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       }
       # draw limits of ROI
       if exists(::roi) {
-        roibox = (FLOAT)::roi*0+1
-        ::imbox  = (FLOAT)::input*0
+        roibox = (FLOAT)::roi[0]*0+1
+        ::imbox  = (FLOAT)::input[0]*0
         ::imbox.putimage(roibox)
         ::input_draw.SetIsoContour(0,&::imbox,0.5)
         ::input_draw.DrawIsoContour(0,1)
@@ -468,6 +455,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         ::input_draw.compare(&::res_draw)
         # draw limits of ROI
       }
+      printn "::Display end"
     }
     
     #----------------------------
@@ -497,7 +485,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     {
       ::LoadInput()
       if (exists(::res_draw)) { del ::res_draw; }
-      ::res <<= (FLOAT) ::input
+      ::res <<=  ::input
       show ::res
     }
     Comments( ::Restart, "Reloads the input, sets the result equal to it and displays it.")

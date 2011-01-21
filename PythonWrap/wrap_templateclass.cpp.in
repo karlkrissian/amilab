@@ -10,19 +10,26 @@
  *
  **/
 
-
+/*
 //#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+*/
+
+#include "wrap_${TEMPLATENAME}.h"
 
 // get all the required includes
 // #include "..."
 ${INCLUDES}
 
-#include "wrap_${TEMPLATENAME}.h"
 
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a ParamList
 //
@@ -34,6 +41,7 @@ ${IMPLEMENT_CREATEVAR}
 
 ${IMPLEMENT_TYPE}
 
+//----------------------------------------------------------------------
 //
 // static member for creating a variable from a pointer to ${TEMPLATE}
 //
@@ -49,15 +57,37 @@ Variable<AMIObject>::ptr WrapClass_${TEMPLATENAME}::CreateVar( ${TEMPLATE}* sp)
   return res;
 }
 
-void WrapClass_${TEMPLATENAME}::AddMethods(WrapClass<${TEMPLATE} >::ptr this_ptr );
+//----------------------------------------------------------------------
+void WrapClass_${TEMPLATENAME}::AddMethods(WrapClass<${TEMPLATE} >::ptr this_ptr )
 {
-  ${METHODS_BASES}
-
-  // check that the method name is not a token
+  // todo: check that the method name is not a token ?
   ${AddVar_method_all}
 
   ${AddPublicFields}
+
+  ${AddPublicEnums}
+
+  ${METHODS_BASES}
 };
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass${TEMPLATENAME}_AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("${TEMPLATESHORTNAME}");
+  ${AddVar_constructor}
+  ${AddVar_static_methods}
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
 
 ${WRAP_PUBLIC_METHODS}

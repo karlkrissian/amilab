@@ -27,5 +27,10 @@ BasicVariable::ptr  wrap_wxfunctions( ParamList* p);
  */
 BasicVariable::ptr wrap_LaunchDefaultBrowser( ParamList* p);
 
+/**
+ * Convert wxString to AMILab string.
+ * @param p
+ */
+BasicVariable::ptr wrap_FromWxString( ParamList* p);
 
 #endif // _wrap_wxfunctions_h_

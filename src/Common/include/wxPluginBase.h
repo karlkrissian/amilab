@@ -37,6 +37,7 @@
   #include "wx/string.h"
 #endif
 
+#include <string>
 #include "wxPluginInterface.h"
 
 //--------------------------------------------------

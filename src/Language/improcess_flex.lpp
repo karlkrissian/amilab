@@ -113,6 +113,7 @@ WS      [ \t]
 
 identifier [a-zA-Z_]([A-Za-z0-9_])*
 
+varid {identifier}(<{identifier}(,{identifier})*>)?
 
 %%
 

@@ -69,10 +69,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
+  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}   ${XML_INPUT}")
   execute_process(
     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}   ${XML_INPUT}
   )
- 
+   
   # Generate the classes list
 
   # Read list of classes to wrap
@@ -82,12 +83,14 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
-  #MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} -q")
+  MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
   EXECUTE_PROCESS(
     COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
     OUTPUT_VARIABLE ancestors_result
+    ERROR_VARIABLE ancestors_error
   )
   MESSAGE(" ancestors_result = ${ancestors_result} ")
+  MESSAGE(" ancestors_error = ${ancestors_error} ")
 
   FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
@@ -98,24 +101,30 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
   # Wrap all classes at once since it is now fast
   FOREACH( class ${ancestors_list})
-    SET(OUTPUT_LIST 
-      ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${WRAPVTK_OUTDIR}/wrap_${class}.h
-      ${OUTPUT_LIST}
-    )
+    IF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp) OR
+        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.h))
+      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${OUTPUT_LIST})
+      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${class}.h ${OUTPUT_LIST})
+      SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
+    ENDIF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp) OR
+        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.h))
   ENDFOREACH( class ${ancestors_list}) 
 
-  MESSAGE("Processing classes ${ancestors_list} and addwrap")
-  IF (${GCCXML_result} EQUAL 0)
+  LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
+
+  #MESSAGE("Processing classes ${ancestors_list} and addwrap")
+  IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.h) OR
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.cpp))
     # Go for python wrapping
-    ADD_CUSTOM_COMMAND(OUTPUT  ${OUTPUT_LIST}
-        ${WRAPVTK_OUTDIR}/addwrap_vtk.h
-        ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
+    ADD_CUSTOM_COMMAND(
+      OUTPUT  ${OUTPUT_LIST} ${WRAPVTK_OUTDIR}/addwrap_vtk.h ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
       COMMAND
         ${PYTHON_EXECUTABLE} 
           ${AMI_WRAPPER} ${XML_OUTPUT}
           --libname vtk
           --filter "vtk*"
-          --classes ${ancestors_list}
+          --classes ${MISSING_CLASSES}
           --constructor New
           --available_classes ${ancestors_list} 
           --outputdir "${WRAPVTK_OUTDIR}"
@@ -123,9 +132,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
           --addwrap
           --profile
           -q
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+#         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
       )
-  ENDIF(${GCCXML_result} EQUAL 0)
+  ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.h) OR
+      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.cpp))
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
@@ -165,6 +176,8 @@ SET(WrapVTK_SRCS
      #${vtk_SRCS}
      ${vtk_HDRS}
 )
+
+#MESSAGE("WrapVTK_SRCS =  ${WrapVTK_SRCS}")
 
 my_add_library ( WrapVTK)
 add_dependencies ( WrapVTK WrapWxWidgets )

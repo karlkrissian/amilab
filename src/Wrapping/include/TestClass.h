@@ -13,7 +13,7 @@ class TemplateClass
     T value;
 };
 
-typedef TemplateClass<int > templateclass_int_def;
+//TemplateClass<int> _Template_int;
 
 // Test normal class
 class TestClass

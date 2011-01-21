@@ -1,4 +1,7 @@
 
+
+import wrap_class
+
 # global dictionary of argument types
 types      = dict()
 classes    = dict()
@@ -15,14 +18,17 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxString::Strip', 'wxString::CompareTo',\
   'wxAuiManager::SetFrame', 'wxAuiManager::GetFrame',\
   'wxWindowBase::GetBestFittingSize', 'wxWindowBase::SetBestFittingSize', 'wxWindowBase::GetAdjustedMinSize', 'wxWindowBase::GetToolTipText', \
-  'wxStringBase::copy',\
-  'wxString::FormatV', \
-  'wxString::PrintfV', \
+  'wxStringBase::copy',
+  'wxFileName::GetHumanReadableSize', #invalid cast
+  'wxString::FormatV', 
+  'wxString::PrintfV', 
+  'wxString::mb_str', # default const reference to abstract class 
   'wxWindow::ScrollDirFromOrient','wxWindow::OrientFromScrollDir',\
   'wxSizerItem::SetOption','wxSizerItem::GetOption', \
   'wxSizer::Remove(wxWindow*)',\
   'wxBitmapButtonBase::SetLabel(const wxBitmap&)',\
   'wxWindowBase::Navigate', # missing IsForward (enum) deal with enums ...
+  'wxWindowBase::NavigateIn', # idem
   'wxWindowBase::GetHelpTextAtPoint', 
   'wxFont::Unshare', 
   'wxControlBase::GetLabelText', # problem with static and non-static methods
@@ -48,6 +54,9 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxGenericListCtrl::Update(long)', # linking problem, don't know why ...
   'wxBitmap::GetSelectedInto', # not included in windows in release mode
   'wxBitmap::SetSelectedInto', # not included in windows in release mode
+  'wxListCtrl::ConvertToMSWStyle', # linking problem
+  'wxListCtrl::ChangeCurrent',     # idem
+  'wxListCtrl::ResetCurrent',      # idem
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints', # idem
@@ -83,6 +92,22 @@ available_operators={ \
 include_list = []
 declare_list = []
 
+#-------------------------------------------------------------
+def ClassUsedName(classname):
+  res = classname
+  res = res.replace('<','__LT__')
+  res = res.replace('>','__GT__')
+  res = res.replace(',','__COMMA__')
+  return res
+
+#-------------------------------------------------------------
+def ClassShortName(classname):
+  res = classname
+  res = res.replace('<','_')
+  res = res.replace('>','')
+  res = res.replace(',','_')
+  return res
+
 #------------------------------------------------------------------
 #  AddInclude
 #------------------------------------------------------------------
@@ -95,6 +120,7 @@ def AddInclude(f):
 #------------------------------------------------------------------
 def AddDeclare(f):
   if not(f in declare_list):
+    #print "*********** adding {0} to declare_list".format(f)
     declare_list.append(f)
 
 #------------------------------------------------------------------
@@ -107,8 +133,8 @@ def CreateIncludes():
   
   for f in declare_list:
     # avoid inclusion, just declare the type ...
-    res += '#ifndef {0}_declared\n'.format(f)
-    res += '  #define {0}_declared\n'.format(f)
+    res += '#ifndef {0}_declared\n'.format(ClassUsedName(f))
+    res += '  #define {0}_declared\n'.format(ClassUsedName(f))
     res += '  AMI_DECLARE_TYPE({0})\n'.format(f)
-    res += '#endif\n'.format(f)
+    res += '#endif\n'
   return res

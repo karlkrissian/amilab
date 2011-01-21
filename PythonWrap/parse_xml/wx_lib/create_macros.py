@@ -35,7 +35,10 @@ class FindFile(handler.ContentHandler):
 
 def CreateHeaderFileMacros(inputfile,outputfile,headerfilename):
   # Create the handler
-  dh = FindFile(headerfilename+".h")
+  if (headerfilename=="version"):
+    dh = FindFile("string.h")
+  else:
+    dh = FindFile(headerfilename+".h")
 
   parser = make_parser()
   # Tell the parser to use our handler
@@ -45,6 +48,8 @@ def CreateHeaderFileMacros(inputfile,outputfile,headerfilename):
   parser.parse(inputfile)
   res = ""
   if dh.name != "":
+    if headerfilename=="version":
+      dh.name=dh.name.replace("string","version")
     print "file is: ", dh.name
     headerfile = open(dh.name, 'r')
     found_macros=[]
@@ -64,11 +69,14 @@ def CreateHeaderFileMacros(inputfile,outputfile,headerfilename):
         res += "    ADD_{0}_MACRO({1});\n".format(args.val.libname.upper(), m)
         res += "  #endif\n"
       res += "\n"
+    else:
+      res += "  // No macro found in file {0}.h\n".format(headerfilename)
   return res
 
 
 def CreateMacros(inputfile,outputfile):
   wrapped_macros=""
+  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"version")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"toplevel")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"valtext")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"types")

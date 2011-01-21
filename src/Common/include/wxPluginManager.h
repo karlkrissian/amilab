@@ -31,7 +31,7 @@ public:
    * @param LibName the library name
    * @return return true if load library with the given name
    **/
-  bool Load (const std::string& LibName);
+  bool Load (const char * LibName);
 
   /**
    * @brief Detaches this object from its library handle.
