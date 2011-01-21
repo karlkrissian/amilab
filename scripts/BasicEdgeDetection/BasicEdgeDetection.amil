@@ -85,7 +85,7 @@ if (!exists(BasicEdgeDetectionClass)) {
       show ::input
       if (exists(::res)) {
         show ::res
-        ::input_draw.compare(::res_draw)
+        ::input_draw.compare(&::res_draw)
       }
     }
     
