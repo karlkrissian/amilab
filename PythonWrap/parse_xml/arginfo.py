@@ -27,7 +27,7 @@ import findtypesvars
 import findfiles
 import wx_lib
 
-import parse_class
+#import parse_class
 
 #-----------------------------------------
 # ArgInfo: dealing with method arguments
