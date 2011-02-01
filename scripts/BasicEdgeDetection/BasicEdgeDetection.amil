@@ -52,7 +52,12 @@ if (!exists(BasicEdgeDetectionClass)) {
     proc ::Run() {
       ::load_input()
       #Normalize the input image
-      ::temp = norm(::input)
+      if (::input.vdim==1) {
+        ::temp <<= (::input<=1)*1 + (::input>1)*::input
+      } else {
+      	::temp <<= norm(::input)
+      }
+      #::temp = norm(::input)
       #Apply the filter
       if (::filter_type==0) {
         ::res <<= ::filters->Roberts(&::temp)
