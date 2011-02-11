@@ -850,6 +850,7 @@ loop_inst :
     instr_block end_instr
     {
       int  previous_lineno=driver.yyiplineno;
+      int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
       AmiInstructionBlock::ptr block($7);
       IdentifierInfo::ptr ident($2);
 
@@ -863,12 +864,14 @@ loop_inst :
         }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
+      driver.yyiplineno_lastparser=previous_lineno_lastparser;
     }
     |
     FOR identifier ASSIGN_OP expr TO expr STEP expr
     instr_block end_instr
     {
       int  previous_lineno=driver.yyiplineno;
+      int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
       AmiInstructionBlock::ptr block($9);
       IdentifierInfo::ptr ident($2);
 
@@ -883,6 +886,7 @@ loop_inst :
       }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
+      driver.yyiplineno_lastparser=previous_lineno_lastparser;
     }
     |
     FOR identifier T_IN exprstringlist
@@ -896,6 +900,7 @@ loop_inst :
       std::list<std::string>* sl = $4;
 
       int  previous_lineno=driver.yyiplineno;
+      int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
       AmiInstructionBlock::ptr block($5);
       IdentifierInfo::ptr ident($2);
 
@@ -925,6 +930,7 @@ loop_inst :
        std::cout << "**********" << std::endl;
       }
       driver.yyiplineno=previous_lineno;
+      driver.yyiplineno_lastparser=previous_lineno_lastparser;
 
       // forced to delete the pointer to the list here
       delete $4;
@@ -941,6 +947,7 @@ loop_inst :
         break
      **/
         int  previous_lineno=driver.yyiplineno;
+        int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
         AmiInstructionBlock::ptr block($2);
         int res;
     
@@ -952,6 +959,7 @@ loop_inst :
   
         } while (res);
         driver.yyiplineno = previous_lineno;
+        driver.yyiplineno_lastparser=previous_lineno_lastparser;
       }
       |
       T_WHILE variable instr_block
@@ -961,6 +969,7 @@ loop_inst :
           Repeats the block while the variable value is higher than 0.5
       **/
         int  previous_lineno=driver.yyiplineno;
+        int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
         AmiInstructionBlock::ptr block($3);
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
   
@@ -979,6 +988,7 @@ loop_inst :
           res = var->GetValueAsDouble();
         } 
         driver.yyiplineno = previous_lineno;
+        driver.yyiplineno_lastparser = previous_lineno_lastparser;
       }
       ;
 
@@ -991,23 +1001,25 @@ cond_inst :
 
       // Pb with line numbers
       previous_lineno=driver.yyiplineno;
+      int  previous_lineno_lastparser = driver.yyiplineno_lastparser;
 
         if ($2>0.5)
         {
           //driver.yyiplineno=previous_lineno;
           if (!driver.parse_block(block)) YYABORT;
           driver.yyiplineno = previous_lineno;
+          driver.yyiplineno_lastparser = previous_lineno_lastparser;
         }
     }
     | IF expr  instr_block ELSE instr_block  end_instr
     {
-       int  previous_lineno = driver.yyiplineno;
 
       AmiInstructionBlock::ptr block_if(  $3);
       AmiInstructionBlock::ptr block_else($5);
 
       // Pb with line numbers
-      previous_lineno=driver.yyiplineno;
+      int  previous_lineno = driver.yyiplineno;
+      int  previous_lineno_lastparser = driver.yyiplineno_lastparser;
 
       bool res;
       if ($2>0.5)
@@ -1016,6 +1028,7 @@ cond_inst :
         res = driver.parse_block(block_else);
       if (!res) YYABORT;
       driver.yyiplineno = previous_lineno;
+      driver.yyiplineno_lastparser = previous_lineno_lastparser;
 
     };
 

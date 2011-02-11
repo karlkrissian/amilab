@@ -369,11 +369,15 @@ Class vtktest_TPlaneClass : public ScriptGui \
     # Redefinition of Close to close the panel tab in main_book
     #
     proc ::Close() {
-      for n=0 to ::PlaneActors.size()-1 {
-        ::PlaneActors[n].Delete()
+      if (exists(::PlaneActors)) {
+        for n=0 to ::PlaneActors.size()-1 {
+          ::PlaneActors[n].Delete()
+        }
+        ::PlaneActors.clear()
       }
-      ::PlaneActors.clear()
-      ::ImResample.clear()
+      if (exists(::ImResample)) {
+        ::ImResample.clear()
+      }
 
       ::frame.Close()
       ::win.HidePanel()

@@ -1,6 +1,5 @@
 
 func "CreateTorusClass.amil"
-
 if (!exists(torus_obj)) {
   CreateTorusClass torus_obj
   torus_obj.Gui()
