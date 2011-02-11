@@ -7,16 +7,18 @@
 
 #echo "PATH = ${PATH}"
 
-${INSTALLCMD} ${VTKDEV_PRECOMP}
+${INSTALLCMD} ${BOOSTDEV_PRECOMP}
 
 # get number of threads
 numthreads=`awk '/model name/  {ORS=""; count++;  }  END {  print  count "\n" }' /proc/cpuinfo`
 
-wget http://www.vtk.org/files/release/5.6/vtk-5.6.1.tar.gz
-tar zxf vtk-5.6.1.tar.gz
-cd VTK
+
+git clone http://git.gitorious.org/boost/cmake.git
+cd cmake
+git co cmake-1.41.0
+
 mkdir build_release
 cd build_release
-cmake  -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j ${numthreads} install
 cd ../..

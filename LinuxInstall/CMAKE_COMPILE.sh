@@ -17,9 +17,10 @@ fi
 if [ \! -f $FILE ];
 then
   wget ${SITE}${FILE}
-  tar zxf $FILE
-  cp cmake-2.8.2-Linux-i386/bin/cmake /usr/local/bin/
-  cp cmake-2.8.2-Linux-i386/bin/cpack /usr/local/bin/
+  tar zxf $FILE -C /usr/local/ --strip-components 1
+  #tar zxf $FILE
+  #cp cmake-2.8.2-Linux-i386/bin/cmake /usr/local/bin/
+  #cp cmake-2.8.2-Linux-i386/bin/cpack /usr/local/bin/
   # for the rest of the script, we need to use /usr/local/bin for cmake ??
   # or is it automatic ?
 fi

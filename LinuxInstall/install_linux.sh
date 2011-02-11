@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#echo "PATH = ${PATH}"
+export PATH=${PATH}:/usr/local/bin
+#echo "PATH = ${PATH}"
+
 # check for proper number of command line arguments
 ERROR_PAR=65
 
@@ -35,7 +39,7 @@ function install_packages {
   eval "packages=\$$1_PACKAGES"
   echo "  packages are $packages   "
 
-  if [ $packages == "TOCOMPILE" ]
+  if [ "$packages" == "TOCOMPILE" ]
   then
     echo "Compiling $1 from source"
     eval "source $1_COMPILE.sh"
@@ -45,7 +49,7 @@ function install_packages {
       exit $?
     fi
   else
-    if [ $packages != "" ]
+    if [ "$packages" != "" ]
     then
       ${INSTALLCMD} $packages
       if [ $? != 0 ]
@@ -120,6 +124,7 @@ mkdir build; mkdir build/release; cd build/release
 eval "cmake ${AMILAB_CMAKE_FLAGS} ../.."
 
 if [ $? != 0 ]
+then
   echo "--- cmake command failed ---"
   exit $?
 fi
