@@ -1,0 +1,83 @@
+PLUGINS EN AMILAB.
+PLANTILLA PARA DESARROLLAR PLUGINS
+
+=======================================
+
+Contenido:
+
+1. Estructura del proyecto.
+2. Compilar el proyecto.
+3. Usar el plugin en AMILab.
+
+
+1. Estructura del proyecto.
+
+El proyecto posee la siguiente estructura de directorios y ficheros:
+
+ MyPlugin
+ |
+ |-- CMAKE (Directorio con código auxiliar escrito en CMake)
+ |     |
+ |     |-- config.cmake (Fichero CMake para localizar los archivos de desarrollo
+ |     |                 de AMILab [Headers])
+ |     --- wrapping.cmake (Fichero CMake para el wrapping automático)
+ |
+ --- src (Directorio que contiene el código fuente del plugin) 
+       |
+       |-- CMakeLists.txt (Fichero CMake con la configuración del proyecto)
+       |
+       |-- Plugin.h y Plugin.cpp (Contiene lo necesario para generar un plugin
+       |                          compatible con AMILab)
+       --- ExamplePlugin.h y ExamplePlugin.cpp (Contiene la funcionalidad a
+                                                encapsular dentro de un plugin)
+
+2. Compilar el proyecto.
+
+Los pasos a seguir son los siguientes:
+
+1. Crear una carpeta en el directorio del proyecto: mkdir build
+
+2. Nos situamos dentro de la carpeta creada: cd build
+
+3. Invocamos a CMake a tráves del gui de consola: ccmake ..
+
+4. Pulsamos la tecla "c" para generar el fichero inicial de cache.
+
+5. Comprobamos que la configuración que nos muestra en pantalla sea la correcta
+   y, en caso de que no sea así, nos situamos en la opción que queremos cambiar
+   y pulsamos la tecla "ENTER" para cambiar el valor.
+
+6. Cuando terminamos de configurar, pulsamos la tecla "g" para salvar y salir.
+
+7. A continuación, compilamos el plugin para obtener la biblioteca dinámica que
+   contendrá el plugin: make
+
+
+3. Usar el plugin en AMILab.
+
+Ejecutamos AMILab y, en la consola, realizamos los siguientes pasos:
+
+1. Creamos una instancia de la clase wxPluginManager para gestionar el plugin:
+
+[AMILab] plugin=wx.wxPluginManager()
+
+2. Cargamos el plugin indicando la ruta donde se encuentra la biblioteca:
+
+[AMILab] plugin.Load("/home/proyectos/trunk-amilab/Plugins/Examples/MyPlugin/build/libExamplePlugin.so")
+
+3. Obtenemos el plugin que se ha cargado en el paso anterior:
+
+[AMILab] myplugin=plugin.Getplugin()
+
+4. Ejecutamos el plugin:
+
+[AMILab] myplugin.Execute()
+
+5. Creamos una instancia de la clase encapsulada dentro del plugin:
+
+[AMILab] obj=plugins.ExamplePlugin()
+
+6. Por último, ejecutamos un método de la clase encapsulada dentro del plugin:
+
+[AMILab] printn obj.Factorial(5)
+

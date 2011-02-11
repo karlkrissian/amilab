@@ -1,7 +1,8 @@
 if (!exists(config)) \
 {
   Class config{
-    basedir    = "/home/karl/projects/data/CarotidChallengeMiccai09/"
+#    basedir    = "/home/karl/projects/data/CarotidChallengeMiccai09/"
+    basedir    = "/home/roncali/proyectos/amilab/CarotidChallenge/"
 
     ::data_dir              = basedir+"data/"
     ::groundtruth_dir       = basedir+"groundtruth/"

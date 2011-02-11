@@ -96,7 +96,16 @@ if (!exists(RunExperimentsClass)){
       ::current_datadir    = ::CONFIG->data_dir       +"/challenge"+ ::datanumber_str
       ::current_resultsdir = ::CONFIG->results_dir    +"/challenge"+ ::datanumber_str
       ::current_gtdir      = ::CONFIG->groundtruth_dir+"/challenge"+ ::datanumber_str
-   
+
+      MyDir=wx.wxFileName()
+      MyDir.AssignDir(::current_resultsdir)
+      if(MyDir.DirExists()) {
+        printn "%1% directory exists" % ::current_resultsdir
+      } else {
+        MyDir.Mkdir()
+        printn "Created the directory: %1%" % ::current_resultsdir
+      }
+
       if (::datacenter==0) {
         ::cropmarginZtop = 5
         ::cropmarginZbot = 20
@@ -239,7 +248,7 @@ if (!exists(RunExperimentsClass)){
       ::ML->MultiLines_new
       //::win.Update(-1)
     }
-    
+
     #-----------------------------------------
     proc ::SaveVesselness() \
     {
@@ -316,7 +325,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Creating paths ...")
       # load the shortest path script
-      morph = filters.ContinuousMorphology()
+      morph = ::filters.ContinuousMorphology()
       
       ::CIS->CheckInitialPoints(&::ReadPoints,::CroppedInput->input_cropped,::sphereradii)
       if (!::nointeraction) {
@@ -379,7 +388,8 @@ if (!exists(RunExperimentsClass)){
         SetStatusText(" Path from point 1 to point 2 ...")
         # path 1
         ::SP->SetEndPointWorld(::ReadPoints->p2x,::ReadPoints->p2y,::ReadPoints->p2z)
-        ::SP->Run
+print ::SP->input.tz
+        ::SP->Run()
         # path from Common to Internal Carotid Arteries
         if (exists(::pathCI)) { del ::pathCI; }
         ::pathCI = ::SP->path
@@ -409,12 +419,12 @@ if (!exists(RunExperimentsClass)){
     {
       # save the result to a file here ...
       if (exists(::pathCI)) {
-        ::pathCI.save ::current_resultsdir+"/pathCI.vtk"
-        ::pathCIs.save ::current_resultsdir+"/pathCIs.vtk"
+        ::pathCI._save(::current_resultsdir+"/pathCI.vtk")
+        ::pathCIs._save(::current_resultsdir+"/pathCIs.vtk")
       }
       if (exists(::pathCE)) {
-        ::pathCE.save ::current_resultsdir+"/pathCE.vtk"
-        ::pathCEs.save ::current_resultsdir+"/pathCEs.vtk"
+        ::pathCE._save(::current_resultsdir+"/pathCE.vtk")
+        ::pathCEs._save(::current_resultsdir+"/pathCEs.vtk")
       }      
       if (exists(::speed)) {
         ::speed.save ::current_resultsdir+"/speed.ami.gz"
@@ -977,7 +987,7 @@ if (!exists(RunExperimentsClass)){
         //::win.Update(-1)
         ::LS->ReRun()
         ::pathCE_contours <<= ::LS->inls
-      
+
         # 1. Save Level Set resulting image
         ::LS->inls.save ::current_resultsdir+"/levelset_CC_CE.ami.gz"
         ::LS->SaveParams( ::current_resultsdir+"/levelset_CC_CE.amil" )
@@ -1084,7 +1094,7 @@ if (!exists(RunExperimentsClass)){
         //::win.Update(-1)
         ::LS->ReRun
         ::pathCI_contours <<= ::LS->inls
-      
+
         # 1. Save Level Set resulting image
         ::LS->inls.save ::current_resultsdir+"/levelset_CC_CI.ami.gz"
         ::LS->SaveParams( ::current_resultsdir+"/levelset_CC_CI.amil" )
