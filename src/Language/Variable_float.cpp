@@ -410,14 +410,11 @@ template<> AMI_DLLEXPORT
 BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
 {
 
-  if (IsNumeric()) {
-    if (GetValueAsDouble()>0.5) {
-      return v1->NewReference();
-    } else {
-      return v2->NewReference();
-    }
-  } else
-    CLASS_ERROR("operation not defined");
+  if (Value()>0.5) {
+    return v1->NewReference();
+  } else {
+    return v2->NewReference();
+  }
   return NewReference();
 }
 
@@ -425,7 +422,7 @@ BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v
 template<> AMI_DLLEXPORT 
 BasicVariable::ptr Variable<float>::operator =(const BasicVariable::ptr& b)
 {
-  if (IsNumeric()) {
+  if (b->IsNumeric()) {
     RefValue() = b->GetValueAsDouble();
   } else
     CLASS_ERROR("operation not defined");

@@ -203,6 +203,18 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<bool>::BasicCast(const int&
 }
 
 //---------------------------------------------------
+template<> AMI_DLLEXPORT
+BasicVariable::ptr Variable<bool>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
+{
+  if (Value()) {
+    return v1->NewReference();
+  } else {
+    return v2->NewReference();
+  }
+  return NewReference();
+}
+
+//---------------------------------------------------
 
 /// Other operators
 /// a=b

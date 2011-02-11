@@ -388,7 +388,6 @@ if (!exists(RunExperimentsClass)){
         SetStatusText(" Path from point 1 to point 2 ...")
         # path 1
         ::SP->SetEndPointWorld(::ReadPoints->p2x,::ReadPoints->p2y,::ReadPoints->p2z)
-print ::SP->input.tz
         ::SP->Run()
         # path from Common to Internal Carotid Arteries
         if (exists(::pathCI)) { del ::pathCI; }
@@ -830,16 +829,16 @@ print ::SP->input.tz
       # save the paths here if they have been inverted
       ::SavePaths()
       if (exists(::pathCEs_cut)) {
-        ::pathCEs_cut.save ::current_resultsdir+"/pathCEs_cut.vtk"
+        ::pathCEs_cut._save( ::current_resultsdir+"/pathCEs_cut.vtk")
       }
       if (exists(::pathCIs_cut)) {
-        ::pathCIs_cut.save ::current_resultsdir+"/pathCIs_cut.vtk"
+        ::pathCIs_cut._save (::current_resultsdir+"/pathCIs_cut.vtk")
       }
       if (exists(::pathCC_rems)) {
-        ::pathCC_rems.save ::current_resultsdir+"/pathCC_remaining_smoothed.vtk"
+        ::pathCC_rems._save (::current_resultsdir+"/pathCC_remaining_smoothed.vtk")
       }
       if (exists(::pathCI_rems)) {
-        ::pathCI_rems.save ::current_resultsdir+"/pathCI_remaining_smoothed.vtk"
+        ::pathCI_rems._save (::current_resultsdir+"/pathCI_remaining_smoothed.vtk")
       }
     }
     
@@ -1185,7 +1184,8 @@ print ::SP->input.tz
         ::ReadPoints->p2x=floor(::ReadPoints->p1x+(pvim_big.tx-1)*pvim_big.vx/::CroppedInput->input_cropped.vx+0.5)
         ::ReadPoints->p2y=floor(::ReadPoints->p1y+(pvim_big.ty-1)*pvim_big.vy/::CroppedInput->input_cropped.vy+0.5)
         ::ReadPoints->p2z=floor(::ReadPoints->p1z+(pvim_big.tz-1)*pvim_big.vz/::CroppedInput->input_cropped.vz+0.5)
-      
+
+        ::RP=::ReadPoints
         roi_file._print("%0.0f " % ::RP->p1x)
         roi_file._print("%0.0f " % ::RP->p1y)
         roi_file._print("%0.0f\n" % ::RP->p1z)

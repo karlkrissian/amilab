@@ -38,6 +38,9 @@ BasicVariable::ptr Variable<bool>::TryCast(const std::string&) const;
 
 template<> BasicVariable::ptr Variable<bool>::BasicCast(const int& type);
 
+/// (cond?a:b)
+template<> BasicVariable::ptr Variable<bool>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2);
+
 /// Other operators
 /// a=b
 /**

@@ -446,15 +446,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<int>::BasicCast(const int& 
 template<>
 BasicVariable::ptr Variable<int>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
 {
-
-  if (IsNumeric()) {
-    if (GetValueAsDouble()>0.5) {
-      return v1->NewReference();
-    } else {
-      return v2->NewReference();
-    }
-  } else
-    CLASS_ERROR("operation not defined");
+  if (Value()>0.5) {
+    return v1->NewReference();
+  } else {
+    return v2->NewReference();
+  }
   return NewReference();
 }
 
