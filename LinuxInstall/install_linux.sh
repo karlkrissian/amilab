@@ -101,6 +101,9 @@ install_packages BISONFLEX
 # ITK packages
 install_packages ITKDEV
 
+# GCCXML package
+install_packages GCCXML
+
 svn co  https://amilab.svn.sourceforge.net/svnroot/amilab/tags/${releasetag} amilab_stable
 cd amilab_stable
 maindir=`pwd`

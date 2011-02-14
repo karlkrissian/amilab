@@ -28,5 +28,8 @@ BISONFLEX_PACKAGES="bison flex"
 
 ITKDEV_PACKAGES="TOCOMPILE"
 
+GCCXML_PRECOMP="cvs"
+GCCXML_PACKAGES="TOCOMPILE"
+
 # AMILab cmake configuration flags
 AMILAB_CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=Release  -DAMI_USE_STATIC_LIBS=OFF -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wx-config -DBOOST_ROOT=/usr/local/include/boost-1.41.0 -DBOOST_LIBRARY_DIR=/usr/local/lib/boost-1.41.0"
