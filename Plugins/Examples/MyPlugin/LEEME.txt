@@ -41,7 +41,8 @@ Los pasos a seguir son los siguientes:
 
 3. Invocamos a CMake a tráves del gui de consola: ccmake ..
 
-4. Pulsamos la tecla "c" para generar el fichero inicial de cache.
+4. Pulsamos la tecla "c" para generar el fichero inicial de cache. La primera
+   vez nos avisara de un error que deberemos ignorar.
 
 5. Comprobamos que la configuración que nos muestra en pantalla sea la correcta
    y, en caso de que no sea así, nos situamos en la opción que queremos cambiar

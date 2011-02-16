@@ -83,7 +83,27 @@ if (!exists(RunExperimentsClass)){
 
       ::html_filename = curdir+"/Doc/carotidseg_challenge/index.html"
     }
-    
+
+    #------------------------------------------
+    proc ::SetDataCenter( NUM DataCenter) \
+    {
+      ::datacenter = DataCenter
+      printn "SetDataCenter->::datacenter==%1%" % ::datacenter
+    }
+
+    #------------------------------------------
+    proc ::SetDataNumber( NUM DataNumber) \
+    {
+      ::datanumber = DataNumber
+      printn "SetDataNumber->::datanumber==%1%" % ::datanumber
+    }
+
+    #------------------------------------------
+    proc ::SetDataType( NUM DataType) \
+    {
+      ::datatype = DataType
+      printn "SetDataType->::datatype==%1%" % ::datatype
+    }
         
     #------------------------------------------
     proc ::ReadData() \
@@ -379,7 +399,7 @@ if (!exists(RunExperimentsClass)){
       ::SP->set_input(::CroppedInput->input_cropped)
       ::SP->set_speed(::speed)
       #::SP->load_speed()
-      //::win.Update(-1)
+      #::win.Update(-1)
     
       ::SP->SetStartPointWorld(::ReadPoints->p1x,::ReadPoints->p1y,::ReadPoints->p1z)
     
@@ -518,7 +538,7 @@ if (!exists(RunExperimentsClass)){
         ::covered_distz_C = 0
         ::covered_distz_I = 0
         ::covered_distz_E = 0
-      
+
         # both lines start at the same point ...
         minC_z = ::ReadPoints->p1z
         ::covered_distz_C = ::Jz-minC_z;
@@ -587,7 +607,7 @@ if (!exists(RunExperimentsClass)){
         ::speed2 <<= ::speed[:,:,minz:maxz]
 
         # close and reload ShortestPath
-        if (exists(::SP->Close())) { ::SP->Close(); }
+        #if (exists(::SP->Close())) { ::SP->Close(); }
 
         # set the parameters and run
         ::input2 <<= ::CroppedInput->input_cropped[::speed2.GetExtent]
@@ -607,7 +627,7 @@ if (!exists(RunExperimentsClass)){
         ::SP->set_input(::input2)
         ::SP->set_speed(::speed2)
         ::SP->set_endmask(::endmask)
-        //::win.Update(-1)
+        # ::win.Update(-1)
     
         ::SP->SetStartPointWorld(::ReadPoints->p1x,::ReadPoints->p1y,::ReadPoints->p1z)
         ::SP->Run()
@@ -735,7 +755,7 @@ if (!exists(RunExperimentsClass)){
           ::speed2 = (discard<0.5)*::speed2
 
         # close and reload ShortestPath
-        if (exists(::SP->Close())) { ::SP->Close(); }
+        # if (exists(::SP->Close)) { ::SP->Close(); }
         
         # set the parameters and run
         ::input2 <<= ::CroppedInput->input_cropped[::speed2.GetExtent]
@@ -1133,9 +1153,13 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::InitialSpheres() \
     {
-      ::LS->input_name   = "::CroppedInput->input_cropped"
+      #::LS->input_name   = "::CroppedInput->input_cropped"
       #--- add initial spheres
-      ::CIS->CreateInitialSpheres(&::CroppedInput->input_cropped,"::lsinit",::sphereradii)
+      printn "call to ::CIS->CreateInitialSpheres"
+      ::lsinit <<= ::CIS->CreateInitialSpheres(&::ReadPoints,\
+                                  &::CroppedInput->input_cropped,\
+                                  "tmp_InitialSpheres",\
+                                  (FLOAT)::sphereradii)
     }
     
     #------------------------------------------
@@ -1220,28 +1244,28 @@ if (!exists(RunExperimentsClass)){
       ext_name = ::current_gtdir + "/ext" + ::datanumber_str + ".mhd"
       ::ext = ::itk->Read(ext_name)
       # read the level set results
-      imname = ::current_resultsdir+"/levelset_result.ami.gz"
+      #imname = ::current_resultsdir+"/levelset_result.ami.gz"
+      imname = ::current_resultsdir+"/levelset_result_from_paths.ami.gz"
       printn " reading " + imname
       ::lsres <<= Image imname
     
-      imname = ::current_resultsdir+"/levelset_result_calc.ami.gz"
-      printn " reading " + imname
-      ::lsres_calc <<= Image imname
+      #imname = ::current_resultsdir+"/levelset_result_calc.ami.gz"
+      #printn " reading " + imname
+      #::lsres_calc <<= Image imname
     
       # Show: the LS, LS with calc, GT, initial spheres
       if (exists(::ls_surf)) { del ::ls_surf; }
       ::ls_surf = isosurf(::lsres,0)
-      if (exists(::lscalc_surf)) { del ::lscalc_surf; }
-      ::lscalc_surf = isosurf(::lsres_calc,0)
-    
+      #if (exists(::lscalc_surf)) { del ::lscalc_surf; }
+      #::lscalc_surf = isosurf(::lsres_calc,0)
       ::InitialSpheres()
       ::spheres_surf = isosurf(::lsinit,0)
     
       show ::ls_surf
-      ::ls_surf_draw += ::lscalc_surf
+      #::ls_surf_draw += ::lscalc_surf
       ::ls_surf_draw += ::GTiso
       ::ls_surf_draw += ::spheres_surf
-      ::lscalc_surf.SetOpacity(0.4)
+      #::lscalc_surf.SetOpacity(0.4)
       ::GTiso.SetDiffuse(250,5,5)
       ::ls_surf.SetOpacity(0.6)
       ::spheres_surf.SetDiffuse(5,250,5)
