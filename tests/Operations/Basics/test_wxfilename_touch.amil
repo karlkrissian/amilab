@@ -6,7 +6,7 @@
 NoMessageDialog(1)
 
 # Hide main frame
-ami.MainFrame.ShowWin(0)
+ami.MainFrame.Show(0)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # test_wxfilename_touch.amil
@@ -41,7 +41,10 @@ printn "Constructor: MODE 0 (file=wx.wxFileName()).\n"
 file=wx.wxFileName()
 
 printn "Set the new path (file.AssignDir(\"/home/Francisco/proyectos/amilab/amilab-trunk/tests/Operations/Basics\"))\n"
-file.AssignDir("/home/Francisco/proyectos/amilab/amilab-trunk/tests/Operations/Basics")
+
+ami_import.System()
+currentdir=op_system.GetCurrentScriptDir()
+file.AssignDir(currentdir)
 
 printn "Set the name (file._SetName(\"TOUCH_FILE\"))\n"
 file._SetName("TOUCH_FILE")

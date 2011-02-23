@@ -6,7 +6,7 @@ func "Common/ScriptGui"
 
 if (!exists(DICOMClass)) {
   
-  ami_import->ITK()
+  ami_import.ITK()
   
   Class DICOMClass : public ScriptGui {
   
@@ -29,7 +29,7 @@ if (!exists(DICOMClass)) {
     #---------------------------
     proc ::Run() \
     {   
-      ::out = ::itk->DICOMRead(::dicom_folder+"/")
+      ::out <<= ::itk->DICOMRead(::dicom_folder+"/")
       eval "global::"+::image_name+"<<= ::out;"
     }
     

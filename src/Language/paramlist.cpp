@@ -26,6 +26,10 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "paramlist.h"
 class DessinImage;
 
@@ -42,7 +46,7 @@ BasicVariable::ptr ParamList::GetParam(int i)
 {
   int nbp = GetNumParam();
   if ((i<0)||(i>=nbp)) {
-      CLASS_ERROR(boost::format("Wrong parameter number %1% not in [0, %2%]") % i % (nbp-1));
+      CLASS_ERROR((boost::format("Wrong parameter number %1% not in [0, %2%]") % i % (nbp-1)).str().c_str());
       return BasicVariable::ptr();
   } else
     return params[i];

@@ -9,6 +9,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
 
 #include "wrap_SurfacePoly.h"
 #include "surface.hpp"
@@ -40,6 +43,7 @@ BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p)
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(SurfacePoly);
+AMI_DEFINE_VARFROMSMTPTR(SurfacePoly);
 
 //
 // static member for creating a variable from a pointer to SurfacePoly

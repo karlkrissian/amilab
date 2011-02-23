@@ -32,8 +32,8 @@
 #define MAX_PARAM 20
 
 #include <boost/shared_ptr.hpp>
-#include "chaine.hpp"
-#include "inrimage.hpp"
+//#include "chaine.hpp"
+//#include "inrimage.hpp"
 #include "paramlist.h"
 #include <string>
 #include "DefineClass.hpp"

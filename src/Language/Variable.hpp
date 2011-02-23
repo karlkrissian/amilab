@@ -10,12 +10,13 @@
 #include "DefineClass.hpp"
 
 #include <string>
-#include <iostream>
+//#include <iostream>
 #include "amilab_messages.h"
 #include "vartype.h"
 //#include "paramlist.h"
 #include "BasicVariable.h"
 #include <limits>
+#include "ami_format.h"
 
 //#include <vector>
 //#include <list>
@@ -32,7 +33,10 @@
 #define DYNAMIC_CAST_VARIABLE(newtype,initvar,resvar) \
     Variable<newtype>::ptr resvar( \
           boost::dynamic_pointer_cast<Variable<newtype> >(initvar)); \
-    if (!resvar.get()) std::cerr << "DYNAMIC_CAST_VARIABLE(" << #newtype << "," << #initvar << "," << # resvar << ") failed ..." << std::endl;
+    if (!resvar.get()) {\
+      ami::format f("DYNAMIC_CAST_VARIABLE( %1%,%2%,%3%) failed ...");\
+      PrintError( f % #newtype % #initvar % #resvar ); \
+    }
 
 
 /*! \def GET_WRAPPED_OBJECT
@@ -71,7 +75,7 @@ template<typename T>
 class AMILabType {
     public:
     static std::string name_as_string() { return std::string("unknown"); }
-    static boost::shared_ptr<T> GetValue(BasicVariable::ptr var)
+    static boost::shared_ptr<T> GetValue(BasicVariable::ptr var, bool noconstr=false)
     { return boost::shared_ptr<T>(); }
 
     static BasicVariable::ptr CreateVarFromSmtPtr(boost::shared_ptr<T>& val);
@@ -79,7 +83,7 @@ class AMILabType {
     static BasicVariable::ptr CreateVar(const T& val)
     { return BasicVariable::ptr(); }
 
-    static BasicVariable::ptr CreateVar(T* val)
+    static BasicVariable::ptr CreateVar(T* val, bool nodeleter=false)
     { return BasicVariable::ptr(); }
 };
 
@@ -89,16 +93,16 @@ class AMILabType {
   { \
     public: \
 	    static std::string name_as_string();\
-      static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
+      static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false);\
       static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
-      static BasicVariable::ptr CreateVar(type* val);\
+      static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
       static BasicVariable::ptr CreateVar(const type& val);\
   };
 
 #define AMI_DEFINE_BASICTYPE(type) \
 	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
     \
-    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr)  \
     { \
       if (!var.get()) \
       {\
@@ -111,7 +115,7 @@ class AMILabType {
       else {\
         BasicVariable::ptr converted = var->TryCast(AMILabType<type>::name_as_string());\
         if (!converted.get()) {\
-          FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<type>::name_as_string());\
+          /*FILE_ERROR(boost::format("Cannot be converted to type %1%.") % AMILabType<type>::name_as_string());*/\
           return boost::shared_ptr<type>(); \
         } else { \
           boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(converted)); \
@@ -128,9 +132,13 @@ class AMILabType {
       return Variable<type>::ptr( new Variable<type>(valptr));\
     }\
     \
-    BasicVariable::ptr AMILabType<type>::CreateVar(type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar(type* val, bool nodeleter)  \
     { \
-      boost::shared_ptr<type> valptr(val);\
+      boost::shared_ptr<type> valptr; \
+      if (nodeleter) \
+        valptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        valptr = boost::shared_ptr<type>(val);\
       return CreateVarFromSmtPtr(valptr); \
     } \
     \
@@ -141,12 +149,12 @@ class AMILabType {
 
 
 #define AMI_DEFINE_WRAPPEDTYPE_COMMON(type) \
-	std::string AMILabType<type>::name_as_string() { \
-	  std::string name = std::string("wrap_")+std::string(#type); \
+    std::string AMILabType<type>::name_as_string() { \
+    std::string name = std::string("wrap_")+std::string(#type); \
       return name; \
     } \
     \
-    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr)  \
     { \
       if (!var.get()) \
       {\
@@ -154,23 +162,23 @@ class AMILabType {
         return boost::shared_ptr<type>();\
       }\
       boost::shared_ptr<Variable<AMIObject> > tmp( boost::dynamic_pointer_cast<Variable<AMIObject> >(var)); \
-      if (!tmp.get()) {\
+      if ((!tmp.get()) && (!noconstr)) {\
         /* Try with the constructor */ \
         ParamList::ptr param(new ParamList()); \
         param->AddParam(var); \
         BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get());\
         tmp = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);\
-      } \
+      } else { FILE_MESSAGE("first cast ok"); }\
       if (tmp.get()) { \
         WrapClassBase::ptr object( tmp->Pointer()->GetWrappedObject()); \
         boost::shared_ptr<WrapClass<type> > wc( boost::dynamic_pointer_cast<WrapClass<type> >(object));\
         if (wc.get()) { \
           return wc->GetObj(); \
         } else { \
-          FILE_ERROR("Could not cast dynamically the variable.")\
+          /*FILE_ERROR("Could not cast dynamically the variable.")*/;\
         } \
       }  else { \
-        FILE_ERROR("Need a wrapped object or compatible variable as parameter.") \
+        /*FILE_ERROR("Need a wrapped object or compatible variable as parameter.")*/; \
       } \
       return boost::shared_ptr<type>();\
     } 
@@ -186,7 +194,7 @@ class AMILabType {
 
 
 #define AMI_DEFINE_WRAPPEDTYPE_NOCOPY_CREATEFROMPTR(type) \
-    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
     { \
       boost::shared_ptr<type> obj_ptr(val,smartpointer_nodeleter<type>());\
       return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
@@ -195,15 +203,38 @@ class AMILabType {
 #define AMI_DEFINE_WRAPPEDTYPE_HASCOPY(type) \
     AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
     \
-    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
     { \
-      boost::shared_ptr<type> obj_ptr(val);\
+      boost::shared_ptr<type> obj_ptr; \
+      if (nodeleter) \
+        obj_ptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        obj_ptr = boost::shared_ptr<type>(val);\
       return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
     } \
     \
     BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
     { \
       return AMILabType<type>::CreateVar(new type(val));\
+    } 
+
+// Abstract classes
+#define AMI_DEFINE_WRAPPEDTYPE_ABSTRACT(type) \
+    AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
+    { \
+      boost::shared_ptr<type> obj_ptr; \
+      if (nodeleter) \
+        obj_ptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        obj_ptr = boost::shared_ptr<type>(val);\
+      return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
+    } \
+    \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return BasicVariable::ptr();\
     } 
 
 #define AMI_DEFINE_VARFROMSMTPTR(type) \
@@ -222,6 +253,13 @@ class AMILabType {
         new WrapClass_##name1<type2>(obj_ptr));\
   } 
 
+#define AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2(type1,type2) \
+  BasicVariable::ptr AMILabType<type1 >::CreateVarFromSmtPtr(boost::shared_ptr<type1 >& obj_ptr) \
+  { \
+    return \
+      WrapClass<type1 >::CreateVar( \
+        new WrapClass_##type2(obj_ptr));\
+  } 
 
 template<typename> 
 struct to_string {
@@ -269,6 +307,7 @@ class AMIClass;
 class AMIObject;
 class VarArray;
 
+AMI_DECLARE_TYPE(bool);
 AMI_DECLARE_TYPE(float);
 AMI_DECLARE_TYPE(double);
 AMI_DECLARE_TYPE(long);
@@ -303,8 +342,6 @@ public:
 	//  typedef typename Variable<T> VariableType;
   typedef typename boost::shared_ptr<Variable<T> >    ptr;
   typedef typename boost::weak_ptr<Variable<T> >      wptr;
-  typedef typename std::vector<ptr>     ptr_vector;
-  typedef typename std::list<ptr>       ptr_list;
 
 
 private:
@@ -314,9 +351,9 @@ private:
 
   bool FreeMemory()
   {
-    if ((_pointer.use_count()>1)&&(GB_debug)) {
+/*    if ((_pointer.use_count()>1)&&(GB_debug)) {
       CLASS_ERROR( boost::format("variable %1% is referenced %2% times")  % _name % _pointer.use_count() );
-    }
+    }*/
     _pointer.reset();
     return true;
   }
@@ -351,9 +388,9 @@ public:
     */
   BasicVariable::ptr NewCopy() const
   {
+    ami::format f("No default copy of variable contents, need to be specialized for this type of variable ... for variable %1% ");
     // don't copy a file, keep a reference ...
-    CLASS_MESSAGE(boost::format("No default copy of variable contents, need to be specialized for this type of variable ... for variable %1% ")
-                        % Name());
+    CLASS_MESSAGE( (f % Name().c_str()).GetString());
     return NewReference();
 
 /*    std::string resname = _name+"_copy";
@@ -486,7 +523,7 @@ public:
   virtual BasicVariable::ptr TryCast(const std::string& type_string) const;
 
   //
-  void display() const;
+  void display(std::ostream& o) const;
 
   virtual double GetValueAsDouble() const;
   
@@ -508,8 +545,11 @@ public:
 
 #define VAR_UNARYOP(op) \
   BasicVariable::ptr operator op() \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
-    return this->NewReference(); }
+  { \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
+    return this->NewReference(); \
+  }
 
 /*
 #define VAR_OP_VAR(op) \
@@ -520,7 +560,9 @@ public:
 
 #define VAR_OP_BASICVAR(op) \
   BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+  {  \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
 /*
@@ -534,17 +576,23 @@ public:
 
 #define VAR_COMP_OP_BASICVAR(op) \
   BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+  { \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
 #define VAR_LOGIC_OP(op) \
   BasicVariable::ptr operator op() \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+  { \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
 #define VAR_LOGIC_OP_VAR(op) \
   BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+  { \
+    ami::format f(" %1%::operator %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
   /** @name ArithmeticOperators
@@ -560,8 +608,9 @@ public:
   /// postfix ++ operator T++ 
   BasicVariable::ptr operator ++(int)
   {
-     std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
-     return this->NewReference(); 
+    ami::format f(" %1%::operator %2% not defined.");
+    PrintWarning( f % get_name() % __func__ ); 
+    return this->NewReference(); 
   }
 
   /// -T
@@ -571,8 +620,9 @@ public:
   /// postfix -- operator T-- 
   BasicVariable::ptr operator --(int)
   {
-     std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
-     return this->NewReference(); 
+    ami::format f(" %1%::operator %2% not defined.");
+    PrintWarning( f % get_name() % __func__ );
+    return this->NewReference(); 
   }
 
   /// a+b
@@ -619,6 +669,8 @@ public:
    */
   //@{
     VAR_LOGIC_OP_VAR(^);
+    VAR_LOGIC_OP_VAR(|);
+    VAR_LOGIC_OP_VAR(&);
   //@}
 
   /** @name OtherOperators
@@ -634,8 +686,8 @@ public:
     */
     BasicVariable::ptr left_assign(const BasicVariable::ptr& b) 
     { 
-      std::cout << get_name() << " " 
-                << __func__ << " not defined." << std::endl; 
+      ami::format f(" %1%, %2% not defined.");
+      PrintWarning( f % get_name() % __func__ );
       return this->NewReference(); 
     }
 
@@ -643,21 +695,25 @@ public:
     /// Transpose
     BasicVariable::ptr Transpose()
     {
-       std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
+      ami::format f(" %1%::operator %2% not defined.");
+      PrintWarning( f % get_name() % __func__ ); 
       return this->NewReference();
     }
 
     /// Pointwise multiplication 
     BasicVariable::ptr PointWiseMult(const BasicVariable::ptr& b)
     {
-       std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
+      ami::format f(" %1%::operator %2% not defined.");
+      PrintWarning( f % get_name() % __func__ );
       return this->NewReference();
     }
   //@}
 
 #define VAR_FUNC(func) \
   BasicVariable::ptr m_##func() \
-  { std::cout << get_name() << " " << __func__ << " not defined." << std::endl; \
+  { \
+    ami::format f(" %1%, %2% not defined.");\
+    PrintWarning( f % get_name() % __func__ ); \
     return this->NewReference(); }
 
   /** @name Mathematical functions
@@ -683,20 +739,23 @@ public:
 
   BasicVariable::ptr BasicCast(const int& type) 
   {
-    std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
+    ami::format f(" %1% %2% not defined.");
+    PrintWarning( f % get_name() % __func__ );
     return this->NewReference(); 
   }
 
   BasicVariable::ptr operator[](const BasicVariable::ptr& v)
   {
-    std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
+    ami::format f(" %1%::operator %2% not defined.");
+    PrintWarning( f % get_name() % __func__ );
     return BasicVariable::empty_variable; 
   }
 
 
   BasicVariable::ptr TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2) 
   {
-    std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
+    ami::format f(" %1%, %2% not defined.");
+    PrintWarning( f % get_name() % __func__ );
     return this->NewReference(); 
   }
 
@@ -752,6 +811,7 @@ class VarArray;
 template<> BasicVariable::ptr Variable<type>::m_##fname();
 
 #include "Variable_float.h"
+#include "Variable_bool.h"   /// New (added: 19/11/2010)
 #include "Variable_double.h" /// New (added: 24/05/2010)
 #include "Variable_long.h"   /// New (added: 27/05/2010)
 #include "Variable_int.h"

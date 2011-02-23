@@ -38,6 +38,10 @@ if (!exists(MultipleLevelSetsClass)) {
         ::input_name = "::input"
         ::win.Update(-1)
       }
+      # force scalar input
+      if (::input.vdim>1) {
+        ::input <<= norm(::input)/sqrt(::input.vdim)
+      }
   
       ::viewer = DessinImage(&::input)
 

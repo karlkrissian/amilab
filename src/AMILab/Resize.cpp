@@ -270,8 +270,12 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
 
         // TODO: check consistency of coordinates !! what are the continuous limits of a voxel?
         x1 =  1.0 * x / (out->DimX() - 1) * (in->DimX() - 1);
-        y1 =  1.0 * y / (out->DimY() - 1) * (in->DimY() - 1);
-
+        if (out->DimY() > 1) {
+          y1 =  1.0 * y / (out->DimY() - 1) * (in->DimY() - 1);
+        } else {
+          y1 =  0;
+        }
+        
         if (out->DimZ() > 1) {
           z1 =  1.0 * z / (out->DimZ() - 1) * (in->DimZ() - 1);
         } else {

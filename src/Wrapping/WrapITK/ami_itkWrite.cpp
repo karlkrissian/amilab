@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "paramlist.h"
 
 
@@ -92,7 +96,7 @@ bool itkWrite(InrImage* input, const std::string& fname)
 {
 
   const WORDTYPE image_component_type = input->GetFormat();
-  FILE_MESSAGE( boost::format("Writing %1% z dim: %2%") % fname % input->DimZ());
+  FILE_MESSAGE((boost::format("Writing %1% z dim: %2%") % fname % input->DimZ()).str().c_str());
   
   // for scalar images
   if ((input->GetVDim())==1) {

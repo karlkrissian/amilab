@@ -21,7 +21,7 @@ using namespace std;
 
 #include "DessinImage.hpp"
 #include "wrap_DessinImage.h"
-#include "wrap_wxColour.h"
+//#include "wrap_wxColour.h"
 #include "AnalyticLine.h"
 #include "ComputePartialVolume.h"
 #include <wx/colour.h>

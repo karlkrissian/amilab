@@ -13,6 +13,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/include
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -57,6 +58,11 @@ SET(  WrapFilters_SRCS
   wrap_AnalyticTorus.cpp
   wrap_ComputePartialVolume.cpp
   wrap_ContinuousMorphology.cpp
+  wrap_TestClass.cpp
+  wrap_TemplateClass_int_.cpp
+  wrap_ClassBase1.cpp
+  wrap_ClassBase2.cpp
+  wrap_ClassBase3.cpp
 )
 
 SET(WrapFilters_HDRS
@@ -86,6 +92,11 @@ SET(WrapFilters_HDRS
   ../include/wrap_AnalyticSphere.h
   ../include/wrap_AnalyticTorus.h
   ../include/wrap_ComputePartialVolume.h
+  ../include/wrap_TestClass.h
+  ../include/wrap_TemplateClass_int_.h
+  ../include/wrap_ClassBase1.h
+  ../include/wrap_ClassBase2.h
+  ../include/wrap_ClassBase3.h
 )
 
 SET(WrapFilters_SRCS

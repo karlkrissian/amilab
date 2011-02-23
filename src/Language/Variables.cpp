@@ -26,11 +26,16 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "Variables.hpp"
 #include "style.hpp"
 #include <wx/arrstr.h>
 //#include "driver.h"
 
+#include <iostream>
 #include "amilab_messages.h"
 
 //extern unsigned char       GB_debug;
@@ -68,7 +73,7 @@ unsigned char Variables::deleteVar(int i)
 //--------------------------------------------------
 Variables::~Variables()
 {
-  CLASS_MESSAGE(boost::format("Deleting context %1% ") % _context_name.c_str());
+  CLASS_MESSAGE((boost::format("Deleting context %1% ") % _context_name.c_str()).str().c_str());
   EmptyVariables();
 }
 
@@ -101,7 +106,7 @@ BasicVariable::ptr Variables::AddVar(
           BasicVariable::ptr& val, 
           boost::shared_ptr<Variables> context)
 {
-  CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
+  CLASS_MESSAGE((boost::format(" %1%, in %2% ") % name % GetName()).str().c_str());
 
   std::string resname = this->CheckVarName(name.c_str());
   BasicVariable::ptr newvar(val);
@@ -109,7 +114,7 @@ BasicVariable::ptr Variables::AddVar(
 
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
-  _vars.push_front(newvar);
+  _vars.push_back(newvar);
 
   return newvar;
 }
@@ -120,7 +125,7 @@ BasicVariable::ptr Variables::AddVar(
 BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr context )
 {
 
-  CLASS_MESSAGE(boost::format(" %s ") % var->Name());
+  CLASS_MESSAGE((boost::format(" %s ") % var->Name()).str().c_str());
 
   std::string resname = this->CheckVarName(var->Name().c_str());
   // TODO: fix the following code, maybe not so easy ...
@@ -130,7 +135,7 @@ BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr co
 //  BasicVariable::ptr newvar(var->NewReference());
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
-  _vars.push_front(newvar);
+  _vars.push_back(newvar);
 
   return newvar;
 }
@@ -141,7 +146,7 @@ void Variables::SearchCompletions(const wxString& varname,
     boost::shared_ptr<wxArrayString>& completions)
 {
   wxString name;
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
 
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
@@ -159,7 +164,7 @@ void Variables::SearchVariables( const vartype& type,
                       const std::string& prepend)
 {
   wxString name;
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
 
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
@@ -175,7 +180,7 @@ void Variables::SearchVariables( const vartype& type,
 //--------------------------------------------------
 bool Variables::ExistVar(const char* varname)
 {
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -189,7 +194,7 @@ bool Variables::ExistVar(const char* varname)
 //--------------------------------------------------
 bool Variables::ExistVar(BasicVariable::ptr& var)
 {
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -201,7 +206,7 @@ bool Variables::ExistVar(BasicVariable::ptr& var)
 //--------------------------------------------------
 bool Variables::ExistVar(BasicVariable* var)
 {
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -214,7 +219,7 @@ bool Variables::ExistVar(BasicVariable* var)
 //--------------------------------------------------
 BasicVariable::ptr Variables::GetVar(const char* varname)
 {
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -222,6 +227,17 @@ BasicVariable::ptr Variables::GetVar(const char* varname)
       return BasicVariable::ptr(*Iter);
     }
   }
+
+  // if variable not found, try with default contexts
+  std::list<Variables::ptr>::iterator Iter2;
+  for (Iter2  = _defaults.begin();
+       Iter2 != _defaults.end()  ; Iter2++ )
+  {
+    // TODO: deal with possible loops !!!
+    BasicVariable::ptr res = (*Iter2)->GetVar(varname);
+    if (res.get()) return res;
+  }
+
   return BasicVariable::ptr();
 }
 
@@ -248,9 +264,9 @@ unsigned char Variables::GetVar(const char* varname, int* i)
 //--------------------------------------------------
 bool Variables::deleteVar(const char* varname)
 {
-  CLASS_MESSAGE( boost::format("Variables::deleteVar(%s) for %s") % varname % GetName());
+  CLASS_MESSAGE( (boost::format("Variables::deleteVar(%s) for %s") % varname % GetName()).str().c_str());
 
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -258,12 +274,12 @@ bool Variables::deleteVar(const char* varname)
       //delete (*Iter); // not needed anymore
       //(*Iter)->Delete();
 
-      CLASS_MESSAGE( boost::format("removing variable from the list (use_count = %1%)") %  (*Iter).use_count());
+      CLASS_MESSAGE( (boost::format("removing variable from the list (use_count = %1%)") %  (*Iter).use_count()).str().c_str());
       Iter = _vars.erase(Iter);
       return true;
     }
   }
-  CLASS_ERROR( boost::format("deleteVar(%s) variable not found") % varname);
+  CLASS_ERROR( (boost::format("deleteVar(%s) variable not found") % varname).str().c_str());
   return false;
 
 } // Variables::deleteVar()
@@ -276,7 +292,7 @@ int Variables::deleteVars(const std::string& varmatch)
   wxString wxvarmatch(varmatch.c_str(), wxConvUTF8);
   int count=0;
 
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   Iter  = _vars.begin();
   while(Iter != _vars.end())
   {
@@ -299,11 +315,11 @@ int Variables::deleteVars(const std::string& varmatch)
 void Variables::display()
 {
   printf("VARIABLES:\n");
-  std::list<BasicVariable::ptr>::iterator Iter;
+  std::vector<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
-    (*Iter)->display();
+    (*Iter)->display(std::cout);
     printf("\n");
   }
 } // Variables::display()
@@ -312,8 +328,8 @@ void Variables::display()
 //--------------------------------------------------
 void Variables::EmptyVariables()
 {
-  CLASS_MESSAGE(boost::format("  in %1% ") % GetName());
-  std::list<BasicVariable::ptr>::iterator Iter;
+  CLASS_MESSAGE((boost::format("  in %1% ") % GetName()).str().c_str());
+  std::vector<BasicVariable::ptr>::iterator Iter;
 /* useless now ???
   Iter  = _vars.begin();
   while (Iter != _vars.end() )

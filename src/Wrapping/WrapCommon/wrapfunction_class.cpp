@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "paramlist.h"
 #include "wrapfunction_class.h"
 
@@ -21,6 +25,8 @@ void WrapClassMember::ShowHelp()
   std::string paramlist_str;
   int nb_param = parameters_comments.size();
   
+  // We consider that, when the help is displayed, the argument failure flag is set to true
+  Set_arg_failure(true);
 
   for(int n=0;n<nb_param;n++) {
     //if ()

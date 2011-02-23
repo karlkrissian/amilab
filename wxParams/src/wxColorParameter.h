@@ -36,15 +36,14 @@
 
 #include "wxParamTypes.hpp"
 #include "ParamBox.hpp"
-#include "couleur.hpp"
-
+#include "wx/colour.h"
 
 //======================================================================
 class wxColorParameter : public wxButtonParameter
 //
 {
 
-  ClasseCouleur*	parametre;
+  wxColour*	parametre;
   wxColour      _wx_color;
 
  public:
@@ -52,7 +51,7 @@ class wxColorParameter : public wxButtonParameter
   ///
   wxColorParameter( wxWindow* parent, const char* libelle,
   //----------
-				 ClasseCouleur* couleur);
+				 wxColour* couleur);
   ///
   ~wxColorParameter();
   //---------

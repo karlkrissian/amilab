@@ -1,0 +1,117 @@
+#!/usr/bin/amilab
+
+#
+# Script that contains basic operations to work with the curve on the histogram.
+#
+
+comments="dwCurveIOClass: Contains basic operations to work with the curve on the histogram."
+
+if (!exists(dwCurveIOClass)) {
+
+  #-----------------------------------------------------
+  #  dwCurveIOClass
+  #-----------------------------------------------------
+  Class dwCurveIOClass  {
+
+    #----------------------------
+    proc ::Init() \
+    {
+      ::file_name  =  "", "name of the input/output file"
+    }
+
+    #----------------------------
+    proc ::SetFileName( STRING filename) \
+    {
+      ::file_name = filename
+    }
+    Comments(::SetFileName,"Set de file input name.")
+
+    #----------------------------
+    proc ::Save( OBJECT curve ) \
+    {
+      ctrlpts = curve.GetControlPoints()
+      numelem = ctrlpts.size()
+      if(numelem>0) {
+        #Open the file in write mode.
+        outputfile = File(::file_name)
+
+        text  = "# Create the curve"
+        outputfile._printn(text)
+
+        text  = "::curve = ami.dwControlledCurve()"
+        outputfile._printn(text)
+
+        for z=0 to (numelem-1) {
+          pt = ctrlpts[z];
+
+          text = "# %1% Point" %z
+          outputfile._printn(text)
+
+          text = "cp%1% = ami.dwControlPoint(" %z
+          text = text + "%1%," % pt.GetX()
+          text = text + "%1%)" % pt.GetY()
+          outputfile._printn(text)
+
+          text = "cp%1%.SetYLocked(" %z
+          text = text + "%1%)" %pt.GetYLocked()
+          outputfile._printn(text)
+
+          ptcolour = pt.GetColour()
+          text = "cp%1%.SetColour(wx.wxColour(" %z
+          text = text + "%1%," %ptcolour.Red()
+          text = text + "%1%," %ptcolour.Green()
+          text = text + "%1%))" %ptcolour.Blue()
+          outputfile._printn(text)
+
+          text = "::curve.GetControlPoints().push_back(&cp%1%)" %z
+          outputfile._printn(text)
+        }
+        text = "::curve.SetType(1) # solid"
+        outputfile._printn(text)
+
+        #Close the file.
+        outputfile.close()
+      }
+    }
+    Comments(::Save,"Save operation.")
+
+    #----------------------------
+    proc ::Load( STRING name ) \
+    {
+      func name
+    }
+    Comments(::Load,"Loads operation.")
+
+    #----------------------------
+    proc ::GetCurve() \
+    {
+      if (exists(::curve)) {
+        return = ::curve
+      } else {
+        InfoDialog "No curve available!"
+      }
+    }
+    Comments(::GetCurve,"Returns the loaded curve.")
+
+    #----------------------------
+    proc ::SaveCurve( STRING filename, OBJECT curve ) \
+    {
+      ::SetFileName(filename)
+      ::Save(&curve)
+    }
+    Comments(::SaveCurve,"Saves the curve of the histogram.")
+
+    #----------------------------
+    proc ::LoadCurve( STRING name ) \
+    {
+      ::Load(name)
+      return=::GetCurve()
+    }
+    Comments(::LoadCurve,"Loads the curve of the histogram.")
+
+    ::Init()
+  }
+  # Class dwCurveIOClass
+  Comments( dwCurveIOClass, comments)
+}
+# end if (!exists(dwCurveIOClass))

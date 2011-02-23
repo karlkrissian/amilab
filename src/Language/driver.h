@@ -111,6 +111,7 @@ public:
     void close_debug_stream();
 
     void init_err_output();
+    int  err_print(const char* st, const class location& l);
     int  err_print(const char* st);
     int  err_print(const std::string& st) 
     { 
@@ -145,6 +146,7 @@ public:
     /// kept for transition from C flex-bison code
     /// should be removed later
     int yyiplineno;
+    int yyiplineno_lastparser;
     std::string current_file;
 
     /// Access to last comments parsed

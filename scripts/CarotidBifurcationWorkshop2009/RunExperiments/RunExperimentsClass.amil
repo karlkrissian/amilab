@@ -83,7 +83,27 @@ if (!exists(RunExperimentsClass)){
 
       ::html_filename = curdir+"/Doc/carotidseg_challenge/index.html"
     }
-    
+
+    #------------------------------------------
+    proc ::SetDataCenter( NUM DataCenter) \
+    {
+      ::datacenter = DataCenter
+      printn "SetDataCenter->::datacenter==%1%" % ::datacenter
+    }
+
+    #------------------------------------------
+    proc ::SetDataNumber( NUM DataNumber) \
+    {
+      ::datanumber = DataNumber
+      printn "SetDataNumber->::datanumber==%1%" % ::datanumber
+    }
+
+    #------------------------------------------
+    proc ::SetDataType( NUM DataType) \
+    {
+      ::datatype = DataType
+      printn "SetDataType->::datatype==%1%" % ::datatype
+    }
         
     #------------------------------------------
     proc ::ReadData() \
@@ -96,7 +116,16 @@ if (!exists(RunExperimentsClass)){
       ::current_datadir    = ::CONFIG->data_dir       +"/challenge"+ ::datanumber_str
       ::current_resultsdir = ::CONFIG->results_dir    +"/challenge"+ ::datanumber_str
       ::current_gtdir      = ::CONFIG->groundtruth_dir+"/challenge"+ ::datanumber_str
-   
+
+      MyDir=wx.wxFileName()
+      MyDir.AssignDir(::current_resultsdir)
+      if(MyDir.DirExists()) {
+        printn "%1% directory exists" % ::current_resultsdir
+      } else {
+        MyDir.Mkdir()
+        printn "Created the directory: %1%" % ::current_resultsdir
+      }
+
       if (::datacenter==0) {
         ::cropmarginZtop = 5
         ::cropmarginZbot = 20
@@ -142,7 +171,7 @@ if (!exists(RunExperimentsClass)){
         # read GT image
         GTname = ::current_gtdir + "/pv"+::datanumber_str+".mhd"
         printn "Reading itk image "+GTname
-        if (FileExists(GTname)) {
+        if (wx.wxFileName(GTname).FileExists()) {
           ::GT <<= ::itk->Read(GTname)
       
           # read the ROI information
@@ -239,7 +268,7 @@ if (!exists(RunExperimentsClass)){
       ::ML->MultiLines_new
       //::win.Update(-1)
     }
-    
+
     #-----------------------------------------
     proc ::SaveVesselness() \
     {
@@ -253,10 +282,10 @@ if (!exists(RunExperimentsClass)){
     {
       vfilename  = ::current_resultsdir+"/vesselness_result.ami.gz"
     
-      if (FileExists(vfilename)) {
+      if (wx.wxFileName(vfilename).FileExists()) {
         # 1. Save Level Set resulting image
         ::ML->set_result(Image vfilename)
-        // check dimensions
+        # check dimensions
         if ((::ML->result.tx!=::CroppedInput->input_cropped.tx)|| \
             (::ML->result.ty!=::CroppedInput->input_cropped.ty)|| \
             (::ML->result.tz!=::CroppedInput->input_cropped.tz)) {
@@ -282,7 +311,7 @@ if (!exists(RunExperimentsClass)){
 
       vmfilename  = ::current_resultsdir+"/vesselness_maxima.ami.gz"
     
-      if (FileExists(vmfilename)) {
+      if (wx.wxFileName(vmfilename).FileExists()) {
         # 1. Save Level Set resulting image
         ::maxima <<= Image vmfilename
         // check dimensions
@@ -316,7 +345,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Creating paths ...")
       # load the shortest path script
-      morph = filters.ContinuousMorphology()
+      morph = ::filters.ContinuousMorphology()
       
       ::CIS->CheckInitialPoints(&::ReadPoints,::CroppedInput->input_cropped,::sphereradii)
       if (!::nointeraction) {
@@ -370,7 +399,7 @@ if (!exists(RunExperimentsClass)){
       ::SP->set_input(::CroppedInput->input_cropped)
       ::SP->set_speed(::speed)
       #::SP->load_speed()
-      //::win.Update(-1)
+      #::win.Update(-1)
     
       ::SP->SetStartPointWorld(::ReadPoints->p1x,::ReadPoints->p1y,::ReadPoints->p1z)
     
@@ -379,7 +408,7 @@ if (!exists(RunExperimentsClass)){
         SetStatusText(" Path from point 1 to point 2 ...")
         # path 1
         ::SP->SetEndPointWorld(::ReadPoints->p2x,::ReadPoints->p2y,::ReadPoints->p2z)
-        ::SP->Run
+        ::SP->Run()
         # path from Common to Internal Carotid Arteries
         if (exists(::pathCI)) { del ::pathCI; }
         ::pathCI = ::SP->path
@@ -409,12 +438,12 @@ if (!exists(RunExperimentsClass)){
     {
       # save the result to a file here ...
       if (exists(::pathCI)) {
-        ::pathCI.save ::current_resultsdir+"/pathCI.vtk"
-        ::pathCIs.save ::current_resultsdir+"/pathCIs.vtk"
+        ::pathCI._save(::current_resultsdir+"/pathCI.vtk")
+        ::pathCIs._save(::current_resultsdir+"/pathCIs.vtk")
       }
       if (exists(::pathCE)) {
-        ::pathCE.save ::current_resultsdir+"/pathCE.vtk"
-        ::pathCEs.save ::current_resultsdir+"/pathCEs.vtk"
+        ::pathCE._save(::current_resultsdir+"/pathCE.vtk")
+        ::pathCEs._save(::current_resultsdir+"/pathCEs.vtk")
       }      
       if (exists(::speed)) {
         ::speed.save ::current_resultsdir+"/speed.ami.gz"
@@ -425,7 +454,7 @@ if (!exists(RunExperimentsClass)){
     #-----------------------------------------
     proc ::ReadPaths() \
     {
-      if (FileExists(::current_resultsdir+"/pathCIs.vtk")) {
+      if (wx.wxFileName(::current_resultsdir+"/pathCIs.vtk").FileExists()) {
         if (exists(::pathCIs)) { del ::pathCIs; }
         ::pathCIs = Surface(::current_resultsdir+"/pathCIs.vtk")
       } else {
@@ -434,7 +463,7 @@ if (!exists(RunExperimentsClass)){
         }
       }
     
-      if (FileExists(::current_resultsdir+"/pathCEs.vtk")) {
+      if (wx.wxFileName(::current_resultsdir+"/pathCEs.vtk").FileExists()) {
         if (exists(::pathCEs)) { del ::pathCEs; }
         ::pathCEs = Surface(::current_resultsdir+"/pathCEs.vtk")
       } else {
@@ -443,7 +472,7 @@ if (!exists(RunExperimentsClass)){
         }
       }
       
-      if (FileExists(::current_resultsdir+"/speed.ami.gz")) {
+      if (wx.wxFileName(::current_resultsdir+"/speed.ami.gz").FileExists()) {
         if (exists(::speed)) { del ::speed; }
         ::speed = Image ::current_resultsdir+"/speed.ami.gz"
       } else {
@@ -509,7 +538,7 @@ if (!exists(RunExperimentsClass)){
         ::covered_distz_C = 0
         ::covered_distz_I = 0
         ::covered_distz_E = 0
-      
+
         # both lines start at the same point ...
         minC_z = ::ReadPoints->p1z
         ::covered_distz_C = ::Jz-minC_z;
@@ -578,7 +607,7 @@ if (!exists(RunExperimentsClass)){
         ::speed2 <<= ::speed[:,:,minz:maxz]
 
         # close and reload ShortestPath
-        if (exists(::SP->Close())) { ::SP->Close(); }
+        #if (exists(::SP->Close())) { ::SP->Close(); }
 
         # set the parameters and run
         ::input2 <<= ::CroppedInput->input_cropped[::speed2.GetExtent]
@@ -598,7 +627,7 @@ if (!exists(RunExperimentsClass)){
         ::SP->set_input(::input2)
         ::SP->set_speed(::speed2)
         ::SP->set_endmask(::endmask)
-        //::win.Update(-1)
+        # ::win.Update(-1)
     
         ::SP->SetStartPointWorld(::ReadPoints->p1x,::ReadPoints->p1y,::ReadPoints->p1z)
         ::SP->Run()
@@ -726,7 +755,7 @@ if (!exists(RunExperimentsClass)){
           ::speed2 = (discard<0.5)*::speed2
 
         # close and reload ShortestPath
-        if (exists(::SP->Close())) { ::SP->Close(); }
+        # if (exists(::SP->Close)) { ::SP->Close(); }
         
         # set the parameters and run
         ::input2 <<= ::CroppedInput->input_cropped[::speed2.GetExtent]
@@ -820,16 +849,16 @@ if (!exists(RunExperimentsClass)){
       # save the paths here if they have been inverted
       ::SavePaths()
       if (exists(::pathCEs_cut)) {
-        ::pathCEs_cut.save ::current_resultsdir+"/pathCEs_cut.vtk"
+        ::pathCEs_cut._save( ::current_resultsdir+"/pathCEs_cut.vtk")
       }
       if (exists(::pathCIs_cut)) {
-        ::pathCIs_cut.save ::current_resultsdir+"/pathCIs_cut.vtk"
+        ::pathCIs_cut._save (::current_resultsdir+"/pathCIs_cut.vtk")
       }
       if (exists(::pathCC_rems)) {
-        ::pathCC_rems.save ::current_resultsdir+"/pathCC_remaining_smoothed.vtk"
+        ::pathCC_rems._save (::current_resultsdir+"/pathCC_remaining_smoothed.vtk")
       }
       if (exists(::pathCI_rems)) {
-        ::pathCI_rems.save ::current_resultsdir+"/pathCI_remaining_smoothed.vtk"
+        ::pathCI_rems._save (::current_resultsdir+"/pathCI_remaining_smoothed.vtk")
       }
     }
     
@@ -977,7 +1006,7 @@ if (!exists(RunExperimentsClass)){
         //::win.Update(-1)
         ::LS->ReRun()
         ::pathCE_contours <<= ::LS->inls
-      
+
         # 1. Save Level Set resulting image
         ::LS->inls.save ::current_resultsdir+"/levelset_CC_CE.ami.gz"
         ::LS->SaveParams( ::current_resultsdir+"/levelset_CC_CE.amil" )
@@ -1084,7 +1113,7 @@ if (!exists(RunExperimentsClass)){
         //::win.Update(-1)
         ::LS->ReRun
         ::pathCI_contours <<= ::LS->inls
-      
+
         # 1. Save Level Set resulting image
         ::LS->inls.save ::current_resultsdir+"/levelset_CC_CI.ami.gz"
         ::LS->SaveParams( ::current_resultsdir+"/levelset_CC_CI.amil" )
@@ -1124,9 +1153,13 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::InitialSpheres() \
     {
-      ::LS->input_name   = "::CroppedInput->input_cropped"
+      #::LS->input_name   = "::CroppedInput->input_cropped"
       #--- add initial spheres
-      ::CIS->CreateInitialSpheres(&::CroppedInput->input_cropped,"::lsinit",::sphereradii)
+      printn "call to ::CIS->CreateInitialSpheres"
+      ::lsinit <<= ::CIS->CreateInitialSpheres(&::ReadPoints,\
+                                  &::CroppedInput->input_cropped,\
+                                  "tmp_InitialSpheres",\
+                                  (FLOAT)::sphereradii)
     }
     
     #------------------------------------------
@@ -1149,7 +1182,7 @@ if (!exists(RunExperimentsClass)){
         # create the image with partial volume effect
         # check if we need to resize ::inls
         if (::inls.trx!=::input_trx)||(::inls.try!=::input_try)||(::inls.trz!=::input_trz) {
-          InfoDialog "The result should be rescaled to the original image scale ! (TODO)"
+          #InfoDialog "The result should be rescaled to the original image scale ! (TODO)"
           #inls_rescaled = Resize(::inls,
         }
         pvim = ::filters->ComputePV_subdiv(::inls,4)
@@ -1168,20 +1201,20 @@ if (!exists(RunExperimentsClass)){
         # 2. Save ROI text file
         roi_file = File(::current_resultsdir+"/roi"+::datanumber_str+".txt","w")
         # compute the voxel position of the first point
-        ::ReadPoints->p1x=floor((pvim_big.trx-::inls.trx)/::CroppedInput->input_cropped.vx+0.5)
-        ::ReadPoints->p1y=floor((pvim_big.try-::inls.try)/::CroppedInput->input_cropped.vy+0.5)
-        ::ReadPoints->p1z=floor((pvim_big.trz-::inls.trz)/::CroppedInput->input_cropped.vz+0.5)
+        ::ReadPoints->p1x=floor(((FLOAT)pvim_big.trx-::input_trx)/::CroppedInput->input_cropped.vx+0.5)
+        ::ReadPoints->p1y=floor(((FLOAT)pvim_big.try-::input_try)/::CroppedInput->input_cropped.vy+0.5)
+        ::ReadPoints->p1z=floor(((FLOAT)pvim_big.trz-::input_trz)/::CroppedInput->input_cropped.vz+0.5)
       
-        ::ReadPoints->p2x=floor(::ReadPoints->p1x+(pvim_big.tx-1)*pvim_big.vx/::CroppedInput->input_cropped.vx+0.5)
-        ::ReadPoints->p2y=floor(::ReadPoints->p1y+(pvim_big.ty-1)*pvim_big.vy/::CroppedInput->input_cropped.vy+0.5)
-        ::ReadPoints->p2z=floor(::ReadPoints->p1z+(pvim_big.tz-1)*pvim_big.vz/::CroppedInput->input_cropped.vz+0.5)
-      
-        roi_file._print("%0.0f " % ::RP->p1x)
-        roi_file._print("%0.0f " % ::RP->p1y)
-        roi_file._print("%0.0f\n" % ::RP->p1z)
-        roi_file._print("%0.0f " % ::RP->p2x)
-        roi_file._print("%0.0f " % ::RP->p2y)
-        roi_file._print("%0.0f\n" % ::RP->p2z)
+        ::ReadPoints->p2x=floor(::ReadPoints->p1x+((FLOAT)pvim_big.tx-1)*pvim_big.vx/::CroppedInput->input_cropped.vx+0.5)
+        ::ReadPoints->p2y=floor(::ReadPoints->p1y+((FLOAT)pvim_big.ty-1)*pvim_big.vy/::CroppedInput->input_cropped.vy+0.5)
+        ::ReadPoints->p2z=floor(::ReadPoints->p1z+((FLOAT)pvim_big.tz-1)*pvim_big.vz/::CroppedInput->input_cropped.vz+0.5)
+
+        roi_file._print("%0.0f "  % ::ReadPoints->p1x)
+        roi_file._print("%0.0f "  % ::ReadPoints->p1y)
+        roi_file._print("%0.0f\n" % ::ReadPoints->p1z)
+        roi_file._print("%0.0f "  % ::ReadPoints->p2x)
+        roi_file._print("%0.0f "  % ::ReadPoints->p2y)
+        roi_file._print("%0.0f\n" % ::ReadPoints->p2z)
         if (!::nointeraction) { InfoDialog "Result is saved!"; }
       }
     }
@@ -1211,28 +1244,28 @@ if (!exists(RunExperimentsClass)){
       ext_name = ::current_gtdir + "/ext" + ::datanumber_str + ".mhd"
       ::ext = ::itk->Read(ext_name)
       # read the level set results
-      imname = ::current_resultsdir+"/levelset_result.ami.gz"
+      #imname = ::current_resultsdir+"/levelset_result.ami.gz"
+      imname = ::current_resultsdir+"/levelset_result_from_paths.ami.gz"
       printn " reading " + imname
       ::lsres <<= Image imname
     
-      imname = ::current_resultsdir+"/levelset_result_calc.ami.gz"
-      printn " reading " + imname
-      ::lsres_calc <<= Image imname
+      #imname = ::current_resultsdir+"/levelset_result_calc.ami.gz"
+      #printn " reading " + imname
+      #::lsres_calc <<= Image imname
     
       # Show: the LS, LS with calc, GT, initial spheres
       if (exists(::ls_surf)) { del ::ls_surf; }
       ::ls_surf = isosurf(::lsres,0)
-      if (exists(::lscalc_surf)) { del ::lscalc_surf; }
-      ::lscalc_surf = isosurf(::lsres_calc,0)
-    
+      #if (exists(::lscalc_surf)) { del ::lscalc_surf; }
+      #::lscalc_surf = isosurf(::lsres_calc,0)
       ::InitialSpheres()
       ::spheres_surf = isosurf(::lsinit,0)
     
       show ::ls_surf
-      ::ls_surf_draw += ::lscalc_surf
+      #::ls_surf_draw += ::lscalc_surf
       ::ls_surf_draw += ::GTiso
       ::ls_surf_draw += ::spheres_surf
-      ::lscalc_surf.SetOpacity(0.4)
+      #::lscalc_surf.SetOpacity(0.4)
       ::GTiso.SetDiffuse(250,5,5)
       ::ls_surf.SetOpacity(0.6)
       ::spheres_surf.SetDiffuse(5,250,5)

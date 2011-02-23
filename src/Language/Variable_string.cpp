@@ -1,4 +1,8 @@
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "amilab_messages.h"
 #include "DefineClass.hpp"
 #include "Variable.hpp"
@@ -116,7 +120,8 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator <(const B
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
-    RETURN_VARPTR(float,(float) (Value()<var_st2->Value()));
+//    RETURN_VARPTR(float,(float) (Value()<var_st2->Value()));
+    RETURN_VARPTR(bool,(Value()<var_st2->Value()));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -127,7 +132,8 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator <=(const 
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
-    RETURN_VARPTR(float,(float) (Value()<=var_st2->Value()));
+//    RETURN_VARPTR(float,(float) (Value()<=var_st2->Value()));
+    RETURN_VARPTR(bool,(Value()<=var_st2->Value()));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -138,7 +144,8 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator >(const B
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
-    RETURN_VARPTR(float,(float) (Value()>var_st2->Value()));
+//    RETURN_VARPTR(float,(float) (Value()>var_st2->Value()));
+    RETURN_VARPTR(bool,(Value()>var_st2->Value()));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -149,7 +156,8 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator >=(const 
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
-    RETURN_VARPTR(float, Value()>=var_st2->Value());
+//    RETURN_VARPTR(float, Value()>=var_st2->Value());
+    RETURN_VARPTR(bool, Value()>=var_st2->Value());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -160,7 +168,8 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator !=(const 
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
-    RETURN_VARPTR(float, Value()!=var_st2->Value());
+//    RETURN_VARPTR(float, Value()!=var_st2->Value());
+    RETURN_VARPTR(bool, Value()!=var_st2->Value());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -172,7 +181,8 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator ==(const 
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
-    RETURN_VARPTR(float, Value()==var_st2->Value());
+//    RETURN_VARPTR(float, Value()==var_st2->Value());
+    RETURN_VARPTR(bool, Value()==var_st2->Value());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 

@@ -187,6 +187,10 @@ public:
       return NULL;
   }
 
+  wxBoxSizer* GetCurrentSizer(){
+    return _current_sizer.top();
+  }
+
   int BeginBook();
 
   void EndBook();
@@ -451,7 +455,7 @@ public:
   unsigned char AddColor( int* id, 
   //            -------
                 const char* libelle, 
-                ClasseCouleur* couleur,
+                wxColour* couleur,
                 const std::string& tt=""
               );
 //@}
@@ -468,7 +472,7 @@ public:
     const std::string& tt="");
 //@}
   
-  void SetLabelValue(int id, char* value);
+  void SetLabelValue(int id, const char* value);
 
 /** @name Type Widget */
 //@{
@@ -519,7 +523,8 @@ public:
             const boost::shared_ptr<wxArrayString>& choicelist,
             void* update_cb,
             type_enum type=EnumOptionMenu,
-            const std::string& tooltip=""
+            const std::string& tooltip="",
+            bool allowdrop=false
             );
 
   ///

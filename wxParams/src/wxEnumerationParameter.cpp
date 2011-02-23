@@ -34,7 +34,9 @@
 #include "wxEnumerationParameter.h"
 #include "wxParamTypes.hpp"
 
-#include "slick/16x16/actions/reload.xpm"
+#include "DndChoiceTextDropTarget.h"
+
+//#include "slick/16x16/actions/reload.xpm"
 
 #ifdef _MSC_VER
   #define __func__ __FUNCTION__
@@ -48,9 +50,48 @@ wxString GetwxStr(const string& str);
 //==============================================================================
 
 BEGIN_EVENT_TABLE(myChoice, wxChoice)
+//BEGIN_EVENT_TABLE(myChoice, wxComboBox)
   EVT_CHOICE    (wxID_ANY,  myChoice::OnChoiceUpdate)
+  EVT_SET_FOCUS (myChoice::OnFocus)
+  EVT_LEFT_DOWN (myChoice::OnLeftDown)
 END_EVENT_TABLE()
 
+//---------------------------------------------------------------
+void myChoice::OnFocus(wxFocusEvent& event)
+{
+  std::cout << "Focus ..." << std::endl;
+  event.Skip();
+}
+
+//---------------------------------------------------------------
+void myChoice::OnLeftDown(wxMouseEvent& event)
+{
+  std::cout << "Left down ..." << std::endl;
+  this->UpdateListCallback();
+//void (*cbf)( void*) = (void (*)(void*)) this->_callback;
+//  cbf(this->_calldata);
+  event.Skip();
+}
+
+//---------------------------------------------------------------
+void myChoice::Callback()
+//
+{
+  if (this->_callback!=NULL) {
+    void (*pf)( void*) = (void (*)(void*)) this->_callback;
+    pf( this->_calldata);
+  }
+}
+
+//---------------------------------------------------------------
+void myChoice::UpdateListCallback()
+//
+{
+  if (this->_updatelist_callback!=NULL) {
+    void (*pf)( void*) = (void (*)(void*)) this->_updatelist_callback;
+    pf( this->_updatelist_calldata);
+  }
+}
 
 //---------------------------------------------------------------
 wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent, 
@@ -86,7 +127,8 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
 wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent, 
     string_ptr selection_param,
     const char* label,
-    const std::string& tooltip
+    const std::string& tooltip,
+    bool allowdrop
     ):  wxBoxSizer(wxHORIZONTAL), 
         _selection_param(selection_param)
 {
@@ -101,6 +143,10 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
   this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
+  if (allowdrop) {
+    DndChoiceTextDropTarget* ChoiceTextImage = new DndChoiceTextDropTarget(this);
+    this->_choice->SetDropTarget(ChoiceTextImage);
+  }
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);
 
   this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
@@ -125,9 +171,10 @@ wxEnumerationParameter::~wxEnumerationParameter()
   }
 
 //----------------------------------------------
-void wxEnumerationParameter::AddUpdateButton( void* update_cb,
+void wxEnumerationParameter::AddUpdateCallback( void* update_cb,
   const std::string& tooltip)
 {
+/*
   _update_button = new wxBitmapButtonParameter(
         this->_parent, 
         "update", 
@@ -136,12 +183,19 @@ void wxEnumerationParameter::AddUpdateButton( void* update_cb,
         (void*) this);
   _update_button->SetToolTip(GetwxStr(tooltip.c_str()));
   this->Add(this->_update_button,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+*/
+
+  _choice->SetUpdateListCallback(update_cb,(void*) this);
 }
 
 
 //----------------------------------------------
 void wxEnumerationParameter::AddChoice( int* choix_id, const char* label)
 {
+  int Pos = this->_choice->FindString(wxString::FromAscii(label), true);
+  if (Pos != wxNOT_FOUND)
+    *choix_id = Pos;
+  else
     *choix_id = this->_choice->Append(wxString::FromAscii(label));
 }
 
@@ -151,17 +205,29 @@ void wxEnumerationParameter::SetChoices( const boost::shared_ptr<wxArrayString>&
 {
   // get the current selected name
   wxString currentselection = GetStringSelection();
+  
+  std::cout << "wxEnumerationParameter::SetChoices"
+            << " Current Item: "
+            << currentselection << std::endl;
+
   this->_choice->Clear();
   for(int i=0;i<(int)choices->GetCount();i++) {
     this->_choice->Append((*choices)[i]);
+    std::cout << "wxEnumerationParameter::SetChoices"
+              << " Added Item:"
+              << (*choices)[i] << std::endl;
   }
 
   if (!this->_choice->SetStringSelection(currentselection))
     // if not able to set the same selection, set to the first item
     if (choices->GetCount()>0)
       SetSelection(0);
-}
 
+//   std::cout << "wxEnumerationParameter::SetChoices"
+//             << " Current Item: "
+//             << this->_choice->GetString(this->_choice->GetCurrentSelection())
+//             << std::endl;
+}
 
 //----------------------------------------------
 wxString wxEnumerationParameter::GetStringSelection()
@@ -227,4 +293,56 @@ void wxEnumerationParameter::EnableWidget(bool enable)
 //void wxEnumerationParameter::OnButtonUpdate( wxCommandEvent& data)
 //{
 //}
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,8,11)
+//---------------------------------------------
+wxString wxEnumerationParameter::GetAbsoluteName(const wxString& Name)
+{
+  wxString Result= wxT("");
+  wxString Text;
+  wxArrayString choices;
+  string Simb;
+  int Pos, Size;
+
+  // eventually call update button callback function
+  if (_update_button!=NULL)
+    _update_button->Callback();
+
+  choices = this->_choice->GetStrings();
+
+  for(int i=0;i<(int)choices.GetCount();i++) {
+      Text = choices[i];
+      Pos = Text.Find(Name);
+      if(Pos != wxNOT_FOUND)
+      {
+        Size = Pos + Name.Len();
+        Simb = Text.SubString(Pos-2, Pos-1).ToAscii();
+
+        if(Size == (int) Text.Len())
+        {
+          if(Simb == "::")
+          {
+            Result = Text;
+            break;
+          }
+          else
+          {
+            Simb = Text.SubString(Pos-1, Pos-1).ToAscii();
+            if(Simb == ".")
+            {
+              Result = Text;
+              break;
+            }
+          }
+        }
+      }
+  }
+  std::cout << "wxEnumerationParameter::GetAbsoluteName->Obtained name: "
+            << Result.ToAscii()
+            << std::endl;
+  return Result;
+}
+#endif
+/// @endcond
 

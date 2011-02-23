@@ -122,6 +122,7 @@ bool checkExtension( const char* checkFor)
    char *extensions  = (char*)glGetString(GL_EXTENSIONS);
    char *endOfStr;  
 
+//   std::cout << "OpenGL extensions :" << extensions << std::endl;
    if (!extensions) return false;
    int idx = 0;
    endOfStr = (char*)checkFor + strlen(checkFor);

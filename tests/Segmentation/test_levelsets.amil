@@ -3,18 +3,18 @@ func "ctest/ctest_config.amil"
 epsilon = 0.01
 
 # Create initial image
-func "SyntheticImages/create_torus_gui.amil"
-#CTClass CT
+func "SyntheticImages/CreateTorus/CreateTorusClass.amil"
+CreateTorusClass ctobject
 
-ctobject->dimx = 100
-ctobject->dimy = 100
-ctobject->dimz = 100
-ctobject->bg = 0
-ctobject->fg = 100
-ctobject->R = 20
-ctobject->r = 4
-ctobject->image_name = "global::ls_input"
-ctobject->Create()
+ctobject.dimx = 100
+ctobject.dimy = 100
+ctobject.dimz = 100
+ctobject.bg = 0
+ctobject.fg = 100
+ctobject.R = 20
+ctobject.r = 4
+ctobject.image_name = "global::ls_input"
+ctobject.Create()
 
 #ls_input = global::torus
 

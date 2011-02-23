@@ -50,6 +50,8 @@ private:
   /// other properties
   bool             horizontal_line;
   bool             vertical_line;
+  bool             x_locked;
+  bool             y_locked;
 
 public:
   dwControlPoint()
@@ -79,6 +81,8 @@ public:
     type = normal_point;
     horizontal_line = false;
     vertical_line = false;
+    x_locked=false;
+    y_locked=false;
   }
 
   void operator = (const dwPoint2D& p )
@@ -90,7 +94,7 @@ public:
   double GetY() const { return pos.GetY(); }
 
   void   SetX(double x)  { pos.SetX(x); }
-  void   SetY(double y)  { pos.SetY(y); }
+  void   SetY(double y)  { if (!y_locked) pos.SetY(y); }
 
   int GetRadius() const { return radius; }
   void SetRadius(const int& r) { radius = r; }
@@ -101,7 +105,10 @@ public:
   void SetPos(double x, double y) { pos.SetX(x); pos.SetY(y); }
 
   wxPoint GetwxPoint() const { return winpos; }
-  void SetwxPoint(const wxPoint& p) { winpos = p; }
+  void SetwxPoint(const wxPoint& p) { 
+    winpos = p; 
+//     winpos.y = p.y; 
+  }
 
   void SetFocus(bool act) { has_focus = act; }
   bool HasFocus()         { return has_focus; }
@@ -114,7 +121,13 @@ public:
   
   void SetVerticalLine(bool vl) { vertical_line = vl; }
   bool GetVerticalLine() const { return vertical_line; }
+
+  void SetYLocked(bool yl) { y_locked = yl; }
+  bool GetYLocked() const { return y_locked; }
+
 };
+
+#include <vector>
 
 typedef std::vector<dwControlPoint>    vector_dwControlPoint;
 

@@ -4,11 +4,31 @@
 # Adding main Gui scripts to the menu
 #
 
-category = "&Visualization"
-dir      = "Visualization/"
 
-ami.MainFrame.AddToMenu("&Scripts",category,"&Parametric Surfaces",  dir+"ParametricSurfaces")
-ami.MainFrame.AddToMenu("&Scripts",category,"2D &Function plot",  dir+"Functions2D")
-ami.MainFrame.AddToMenu("&Scripts",category,"Image &Grid",  dir+"ImageGrid")
-ami.MainFrame.AddToMenu("&Scripts",category,"Image &Histogram",  dir+"ImageHistogram")
+proc AddSegMenu() {
 
+  category = "&Visualization"
+  dir      = "Visualization/"
+
+  ami.MainFrame.AddToMenu("&Scripts",category,"&Parametric Surfaces",  dir+"ParametricSurfaces")
+  ami.MainFrame.AddToMenu("&Scripts",category,"2D &Function plot",  dir+"Functions2D")
+  ami.MainFrame.AddToMenu("&Scripts",category,"Image &Grid",  dir+"ImageGrid")
+  
+  
+  for subdir in  "RGBScale","VolRen","ImageHistogram", "vtkIsoSurface" \
+  {
+    curfile=GetScriptsDir+"/Visualization/"+subdir+"/Add2Menu.amil"
+    if wx.wxFileName(curfile).FileExists() {
+      func curfile
+    } else {
+      InfoDialog curfile+" does not exists"
+    }
+  }
+}
+
+AddSegMenu()
+del AddSegMenu
+
+if exists(global::scripts_toolbar) {
+  global::scripts_toolbar.AddSeparator()
+}

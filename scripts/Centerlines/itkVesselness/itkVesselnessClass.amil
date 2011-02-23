@@ -2,7 +2,7 @@
 func "Common/ScriptGui"
 
 if (!exists(itkVesselnessClass)) {
-  ami_import->ITK()
+  global::ami_import.ITK()
   
   Class itkVesselnessClass : public ScriptGui {
     
@@ -100,12 +100,9 @@ if (!exists(itkVesselnessClass)) {
     #-------------------------------------
     proc ::LaunchHelp() {
       import = &global::ami_import
-      wx1 = import->WxFunctions()
-      res = wx1->LaunchDefaultBrowser(::help1)
-      wx2 = import->WxFunctions()
-      res2 = wx2->LaunchDefaultBrowser(::help2)
-      wx3 = import->WxFunctions()
-      res3 = wx3->LaunchDefaultBrowser(::help3)
+      res  = wx.LaunchDefaultBrowser(::help1)
+      res2 = wx.LaunchDefaultBrowser(::help2)
+      res3 = wx.LaunchDefaultBrowser(::help3)
     }
     Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
     

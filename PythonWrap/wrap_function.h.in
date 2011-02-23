@@ -1,0 +1,31 @@
+/**
+ * C++ Interface: wrap_${FUNCTION}
+ *
+ * Description: wrapping ${FUNCTION}
+ * File generated automatically
+ *
+ * Author: Karl Krissian \<krissian@dis.ulpgc.es\>, (C) 2010
+ *
+ * Copyright: See COPYING file that comes with this distribution
+ *
+ **/
+
+#ifndef _wrap_${FUNCTION}_h_
+#define _wrap_${FUNCTION}_h_
+
+/*
+#include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
+#include "Variable.hpp"
+#include "paramlist.h"
+#include "ami_object.h"
+*/
+
+#include "${INCLUDEFILE}"
+
+
+// Standard function
+${WRAP_FUNCTION}
+
+
+#endif // _wrap_${FUNCTION}_h

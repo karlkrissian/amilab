@@ -114,6 +114,8 @@ class InrImage;
 #define VECTFIELDCOL_RGB    1
 #define VECTFIELDCOL_RGBCYM 2
 
+#include <list>
+
 class ParamZoom;
 class VolumeRender;
 class DessinImageBase;
@@ -268,7 +270,7 @@ public:
 
    amilab::Surface       _surf;
 
-   amilab::GLObject::ptr_list  _globject;
+   std::list<amilab::GLObject::ptr>  _globject;
    amilab::GLObject::ptr       _current_globject;
 
    int        _type_surface;

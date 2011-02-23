@@ -91,6 +91,12 @@ template<> BasicVariable::ptr Variable<int>::operator &&(const BasicVariable::pt
 
 template<> BasicVariable::ptr Variable<int>::operator ||(const BasicVariable::ptr& b);
 
+template<> BasicVariable::ptr Variable<int>::operator ^(const BasicVariable::ptr& b);
+
+template<> BasicVariable::ptr Variable<int>::operator |(const BasicVariable::ptr& b);
+
+template<> BasicVariable::ptr Variable<int>::operator &(const BasicVariable::ptr& b);
+
 // // Mathematical functions, 
 // #define VAR_DECL_FUNC(type,fname) 
 // template<> BasicVariable::ptr Variable<type>::m_##fname();

@@ -53,7 +53,7 @@
 
 
 ///
-wxColorParameter::wxColorParameter( wxWindow* parent, const char* libelle, ClasseCouleur* couleur)
+wxColorParameter::wxColorParameter( wxWindow* parent, const char* libelle, wxColour* couleur)
 //----------
   : wxButtonParameter(parent,libelle ,
 		      (void*) NULL,
@@ -107,7 +107,7 @@ void wxColorParameter::OnButton( wxCommandEvent& event)
       col = dialog.GetColourData().GetColour();
     }
 
-  parametre->FixeValeur(col.Red(),col.Green(),col.Blue());
+  parametre->Set(col.Red(),col.Green(),col.Blue());
   this->Update();
 
   //printf("wxColorParameter::OnLeftButton() \tthis->_callback != NULL ??\n");

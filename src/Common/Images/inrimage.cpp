@@ -82,6 +82,10 @@ extern "C" {
 }
 #endif
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "AMILabConfig.h"
 
 #ifdef AMI_USE_VTK
@@ -326,7 +330,7 @@ unsigned char InrImage :: ReadMagick( ) throw (ErreurLecture)
 
     tz = GetNumberScenes(image);
 
-    CLASS_MESSAGE(boost::format("tz = %d") % tz);
+    CLASS_MESSAGE((boost::format("tz = %d") % tz).str().c_str());
 
     _vdim = 3;
     _amimage = boost::shared_ptr<amimage>(new amimage());
@@ -400,7 +404,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
     vtkStructuredPoints* in;
     int       x,y,z,n;
 
-  CLASS_MESSAGE(boost::format("InrImage::ReadVTK()  begin "));
+  CLASS_MESSAGE((boost::format("InrImage::ReadVTK()  begin ")).str().c_str());
 
   reader->SetFileName((char*) _nom.c_str());
   reader->Update();
@@ -412,17 +416,17 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
   }
 
   _vdim = in->GetNumberOfScalarComponents();
-  CLASS_MESSAGE(boost::format("vdim = %d") % _vdim);
+  CLASS_MESSAGE((boost::format("vdim = %d") % _vdim).str().c_str());
 
   // Check for Tensor data
   vtkPointData* pd = in->GetPointData();
   if (pd==NULL) 
-    CLASS_ERROR(boost::format("not point data"));
+    CLASS_ERROR((boost::format("not point data")).str().c_str());
   vtkDataArray* tensor = pd->GetTensors();
 
   if (tensor!=NULL) {
     _vdim = tensor->GetNumberOfComponents();
-    CLASS_MESSAGE(boost::format("Reading Tensor data (size %d)") % _vdim)
+    CLASS_MESSAGE((boost::format("Reading Tensor data (size %d)") % _vdim).str().c_str())
   }
 
   switch ( (in->GetScalarType()) ){
@@ -441,7 +445,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
        case 1: _format = WT_UNSIGNED_CHAR; break;
        case 3: _format = WT_RGB; break;
        default: 
-          CLASS_ERROR(boost::format("Non-scalar UCHAR vdim=%1% !=3 not available")%_vdim);
+          CLASS_ERROR((boost::format("Non-scalar UCHAR vdim=%1% !=3 not available")%_vdim).str().c_str());
      }
     break;
 
@@ -450,8 +454,8 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
     break;
 
     default: 
-      CLASS_ERROR(boost::format("Scalar type %1% non available")
-                           % in->GetScalarType());
+      CLASS_ERROR((boost::format("Scalar type %1% non available")
+                           % in->GetScalarType()).str().c_str());
     _format = WT_FLOAT;
 
   } // end switch
@@ -465,7 +469,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
   _taille = (unsigned long) _tx * _ty * _tz;
 
 
-  CLASS_MESSAGE(boost::format(" %d %d %d ") % _tx % _ty % _tz);
+  CLASS_MESSAGE((boost::format(" %d %d %d ") % _tx % _ty % _tz).str().c_str());
 
     _amimage = boost::shared_ptr<amimage>(new amimage());
     _amimage->SetDim( _tx, _ty, _tz, _vdim);
@@ -649,7 +653,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
   _taille = (unsigned long) _tx * _ty * _tz;
 
 
-  CLASS_MESSAGE(boost::format(" image size: %d x %d x %d ") % _tx % _ty % _tz);
+  CLASS_MESSAGE((boost::format(" image size: %d x %d x %d ") % _tx % _ty % _tz).str().c_str());
 
     _amimage = boost::shared_ptr<amimage>(new amimage());
     _amimage->SetDim( _tx, _ty, _tz, _vdim);
@@ -923,11 +927,11 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
   _amimage->SetTranslation(_translation_x,
                _translation_y,
                _translation_z);
-  CLASS_MESSAGE(boost::format("Allocation of image %1%")%_nom);
+  CLASS_MESSAGE((boost::format("Allocation of image %1%")%_nom).str().c_str());
   bool ok = _amimage->allocate();
 
   if ( !ok ) {
-    CLASS_ERROR( boost::format(" Image allocation problem for image %1%") % _nom );
+    CLASS_ERROR( (boost::format(" Image allocation problem for image %1%") % _nom).str().c_str() );
     throw ErreurAllocation();
   } // end if
 
@@ -1160,7 +1164,7 @@ unsigned char InrImage :: Desalloue( )
 {
 
 //  printf("liberation de %s \n", (char*) _nom);
-  CLASS_MESSAGE(boost::format(" freeing image %s ") % (char*) _nom.c_str())
+  CLASS_MESSAGE((boost::format(" freeing image %s ") % (char*) _nom.c_str()).str().c_str())
 
 /*
   if ( (_amimage_allocated) && (_amimage != NULL) ) {
@@ -1313,7 +1317,7 @@ unsigned char InrImage :: InitPositions( )
       _positions = positions;}
     break;
     default:
-      CLASS_ERROR(boost::format(" format not processed %1% ... \n") % _format);
+      CLASS_ERROR((boost::format(" format not processed %1% ... \n") % _format).str().c_str());
       return false;
   }
 
@@ -1355,7 +1359,7 @@ unsigned char InrImage :: FreePositions( )
     case WT_DOUBLE :
       delete (ImagePositions<double> *)_positions;            break;
     default:
-      CLASS_ERROR(boost::format(" format not processed %1% ... \n") % _format);
+      CLASS_ERROR((boost::format(" format not processed %1% ... \n") % _format).str().c_str());
       return false;
   }
    
@@ -1450,7 +1454,7 @@ InrImageIteratorBase::ptr InrImage::CreateIterator()
       return InrImageIterator<double>::ptr(
           new InrImageIterator<double>(this));
     default:
-      CLASS_ERROR(boost::format(" format not processed ... (%1%) \n")%_format);
+      CLASS_ERROR((boost::format(" format not processed ... (%1%) \n")%_format).str().c_str());
   }
   return InrImageIteratorBase::ptr();
 
@@ -1501,7 +1505,7 @@ InrImageIteratorBase::ptr InrImage::CreateConstIterator() const
       return InrImageIteratorBase::ptr(
           new InrImageConstIterator<double>(this));
     default:
-      CLASS_ERROR(boost::format(" format not processed ... (%1%) \n")%_format);
+      CLASS_ERROR((boost::format(" format not processed ... (%1%) \n")%_format).str().c_str());
   }
   return InrImageIteratorBase::ptr();
 
@@ -1818,7 +1822,7 @@ InrImage ::  InrImage( vtkImageData* vtkim)
 
   _amimage = boost::shared_ptr<amimage>(new amimage());
   AMIFromWT(_vdim,_format,_amimage);
-  _amimage->SetDim(_tx,_ty,_tz);
+  _amimage->SetDim(_tx,_ty,_tz, _vdim);
   _amimage->allocate();
    
   //_amimage_allocated = true;
@@ -1859,6 +1863,7 @@ InrImage ::  InrImage( vtkImageData* vtkim)
     for(z=0;z<=_tz-1;z++) {
     for(y=0;y<=_ty-1;y++) {
     for(x=0;x<=_tx-1;x++) {
+//std::cout << boost::format("x,y= %1% %2% %3%/ %4% %5%")% x % y % z % _tx % _ty<< std::endl;
       for(n=0;n<=_vdim-1;n++) {
         val = vtkim->GetScalarComponentAsDouble(x,y,z,n);
 //        printf("val = %f \n",val);
@@ -1869,7 +1874,7 @@ InrImage ::  InrImage( vtkImageData* vtkim)
     } // endfor
     } // endfor
   } // end if
-
+//std::cout << "end" << std::endl;
     //  InitPositions();
 } // Constructor
 

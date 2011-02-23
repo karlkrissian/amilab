@@ -31,6 +31,7 @@ SET(  wxParams_SRCS
     wxDirnameParameter.cpp
     CoutwxString.cpp
     wxPropagateEvent.cpp
+    DndChoiceTextDropTarget.cpp
 )
 
 
@@ -61,6 +62,7 @@ SET(  wxParams_HDRS
   ParamInfo.h
   myButton.h
   wxPropagateEvent.h
+  DndChoiceTextDropTarget.h
 )
 
 

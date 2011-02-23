@@ -8,7 +8,8 @@
 //#include "paramlist.h"
 #include <string>
 #include <string.h>
-#include <iostream>
+//#include <iostream>
+#include "ami_format.h"
 
 #include "DefineClass.hpp"
 
@@ -155,7 +156,7 @@ public:
   virtual const std::string GetTypeName() const = 0;
 
   //
-  virtual void display() const = 0;
+  virtual void display(std::ostream& o) const = 0;
 
   virtual bool IsNumeric() const
   {
@@ -163,7 +164,8 @@ public:
             (_type==type_double)|| /// New (added: 24/05/2010)
             (_type==type_long)||   /// New (added: 27/05/2010)
             (_type==type_int)||
-            (_type==type_uchar);
+            (_type==type_uchar)||
+            (_type==type_bool);
   }
 
   virtual double GetValueAsDouble() const = 0;
@@ -183,29 +185,44 @@ public:
 
 #define BASICVAR_UNARYOP(op) \
   virtual BasicVariable::ptr operator op() \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
-    return this->NewReference(); }
+  { \
+    ami::format f(" %1%::operator %2% not defined."); \
+    PrintWarning( (f % get_name() % __func__).GetString() ); \
+    return this->NewReference(); \
+  }
 
 #define BASICVAR_OP_VAR(op) \
   virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
-    return this->NewReference(); }
+  { \
+    ami::format f(" %1%::operator %2% not defined."); \
+    PrintWarning( (f % get_name() % __func__).GetString() ); \
+    return this->NewReference(); \
+  }
 
 
 #define BASICVAR_COMP_OP_VAR(op) \
   virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
-    return this->NewReference(); }
+  { \
+    ami::format f(" %1%::operator %2% not defined."); \
+    PrintWarning( (f % get_name() % __func__).GetString() ); \
+    return this->NewReference(); \
+  }
 
 #define BASICVAR_LOGIC_OP(op) \
   virtual BasicVariable::ptr operator op() \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
-    return this->NewReference(); }
+  {\
+    ami::format f(" %1%::operator %2% not defined."); \
+    PrintWarning( (f % get_name() % __func__).GetString() ); \
+    return this->NewReference();  \
+  }
 
 #define BASICVAR_LOGIC_OP_VAR(op) \
   virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
-    return this->NewReference(); }
+  {\
+    ami::format f(" %1%::operator %2% not defined."); \
+    PrintWarning( (f % get_name() % __func__).GetString() ); \
+    return this->NewReference(); \
+  }
 
   /** @name ArithmeticOperators
    *  Variable Arithmetic Operators.
@@ -282,6 +299,8 @@ public:
    */
   //@{
     BASICVAR_LOGIC_OP_VAR(^);
+    BASICVAR_LOGIC_OP_VAR(|);
+    BASICVAR_LOGIC_OP_VAR(&);
   //@}
 
   /** @name OtherOperators
@@ -305,7 +324,8 @@ public:
     /// PointWise multiplication, included for matrices
     virtual BasicVariable::ptr PointWiseMult(const BasicVariable::ptr& b) 
     {
-      std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; 
+      ami::format f(" %1%::operator %2% not defined."); \
+      PrintWarning( (f % get_name() % __func__).GetString() ); \
       return this->NewReference(); 
     }
   //@}
@@ -313,8 +333,11 @@ public:
 
 #define BASICVAR_FUNC(func) \
   virtual BasicVariable::ptr m_##func() \
-  { std::cout << get_name() << " " << __func__ << " not defined." << std::endl; \
-    return this->NewReference(); }
+  { \
+    ami::format f(" %1%, %2% not defined."); \
+    PrintWarning( (f % get_name() % __func__).GetString() ); \
+    return this->NewReference(); \
+  }
 
   /** @name Mathematical functions
    *  Mathematical functions.

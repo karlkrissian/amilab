@@ -99,7 +99,7 @@ if (!exists(CreateSkeletonClass)) {
       ::smooth_data  = 0.01
       ::smooth_it    = INT(10)
   
-      ::3D_display = UCHAR(1)
+      ::display_3D = UCHAR(1)
   
       ::estimated_start = UCHAR(0)
   
@@ -390,7 +390,7 @@ if (!exists(CreateSkeletonClass)) {
       InitTime
       if (!exists(::res)) {
         ::res = Surface()
-        if (::3D_display) { show ::res; }
+        if (::display_3D) { show ::res; }
       }
     
       if (exists(::res)) {
@@ -439,7 +439,7 @@ if (!exists(CreateSkeletonClass)) {
           }
     
     
-          if ((::3D_display)&&\
+          if ((::display_3D)&&\
               (::show_starting_point)) {
             tmp = global::vtkSphere(1,10,10,Px1,Py1,Pz1)
             ::startpoint[vessel_number] = tmp
@@ -448,7 +448,7 @@ if (!exists(CreateSkeletonClass)) {
             ::res_draw += ::startpoint[vessel_number]
           }
     
-          if ((::3D_display)&&\
+          if ((::display_3D)&&\
               (::show_ending_point)) {
             tmp = global::vtkSphere(1,10,10,Px2,Py2,Pz2)
             ::endpoint[vessel_number] = tmp
@@ -605,7 +605,7 @@ if (!exists(CreateSkeletonClass)) {
             #path = ShortestPathImage(maxrepim_crop,maxrep-0.01,\
             #            Px2,Py2,Pz2,\
             #            Px1,Py1,Pz1)
-            if ((::3D_display)&&\
+            if ((::display_3D)&&\
                 (!exists(path))) {
               ::recons = Image "Images/recons_crop.vtk"
               recons1 = ::recons[maxrepim_crop]
@@ -631,7 +631,7 @@ if (!exists(CreateSkeletonClass)) {
               ::path[vessel_number] = path
             }
     
-            if (::3D_display) {
+            if (::display_3D) {
               if (!exists(::res_draw)) {
                 show ::res
               }
@@ -801,10 +801,7 @@ if (!exists(CreateSkeletonClass)) {
         #flux_id = ::win.AddButton("CreateLines", ::Lines)
         ::win.AddButton("Display",     ::Display)
       ::win.EndHorizontal()
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal()
+
     
       ::win.Update(-1)
       ::win.Display()

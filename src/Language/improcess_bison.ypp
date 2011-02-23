@@ -18,6 +18,10 @@
 // use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
 #define NOMINMAX
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #ifndef WIN32
 #include <unistd.h>
 #endif
@@ -59,6 +63,7 @@
 #include "wrapAMIFluid.h"
 #include "wrapVTK.h"
 #include "wrapITK.h"
+#include "wrap_wxfunctions.h"
 //#include "wrap_MainFrame.h"
 //#include "wrap_imagedraw.h"
 #include "itkCannyEdgeDetector.h"
@@ -363,7 +368,6 @@ void CB_update_imagelist( void* imagelist_gui);
   char*                   astring;
   AmiInstructionBlock*    ablock;
   float                   afloat;
-  long int                along;  /// New (added: 27/05/2010)
   double                  adouble;
   int                     aint;
   ParamList*              paramlist; // here smart pointer
@@ -489,7 +493,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_DiscMeanCurvature
 %token T_vtkMedian3D
 
-%token T_NULL
+//%token T_NULL
 
 %token T_RestartTime
 %token T_InitTime
@@ -665,6 +669,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_Xpos T_Ypos T_Zpos T_SpacePos
 
 %token T_CHAR T_UCHAR T_SHORT T_USHORT T_INT T_UINT
+%token T_BOOL   // New (added: 19/11/2010)
 %token T_LONG   // New (added: 27/05/2010)
 %token T_FLOAT T_DOUBLE
 %token T_RGB  T_FLOAT_VECTOR
@@ -845,6 +850,7 @@ loop_inst :
     instr_block end_instr
     {
       int  previous_lineno=driver.yyiplineno;
+      int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
       AmiInstructionBlock::ptr block($7);
       IdentifierInfo::ptr ident($2);
 
@@ -858,12 +864,14 @@ loop_inst :
         }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
+      driver.yyiplineno_lastparser=previous_lineno_lastparser;
     }
     |
     FOR identifier ASSIGN_OP expr TO expr STEP expr
     instr_block end_instr
     {
       int  previous_lineno=driver.yyiplineno;
+      int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
       AmiInstructionBlock::ptr block($9);
       IdentifierInfo::ptr ident($2);
 
@@ -878,6 +886,7 @@ loop_inst :
       }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
+      driver.yyiplineno_lastparser=previous_lineno_lastparser;
     }
     |
     FOR identifier T_IN exprstringlist
@@ -891,6 +900,7 @@ loop_inst :
       std::list<std::string>* sl = $4;
 
       int  previous_lineno=driver.yyiplineno;
+      int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
       AmiInstructionBlock::ptr block($5);
       IdentifierInfo::ptr ident($2);
 
@@ -920,6 +930,7 @@ loop_inst :
        std::cout << "**********" << std::endl;
       }
       driver.yyiplineno=previous_lineno;
+      driver.yyiplineno_lastparser=previous_lineno_lastparser;
 
       // forced to delete the pointer to the list here
       delete $4;
@@ -936,6 +947,7 @@ loop_inst :
         break
      **/
         int  previous_lineno=driver.yyiplineno;
+        int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
         AmiInstructionBlock::ptr block($2);
         int res;
     
@@ -947,6 +959,7 @@ loop_inst :
   
         } while (res);
         driver.yyiplineno = previous_lineno;
+        driver.yyiplineno_lastparser=previous_lineno_lastparser;
       }
       |
       T_WHILE variable instr_block
@@ -956,6 +969,7 @@ loop_inst :
           Repeats the block while the variable value is higher than 0.5
       **/
         int  previous_lineno=driver.yyiplineno;
+        int  previous_lineno_lastparser=driver.yyiplineno_lastparser;
         AmiInstructionBlock::ptr block($3);
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
   
@@ -974,6 +988,7 @@ loop_inst :
           res = var->GetValueAsDouble();
         } 
         driver.yyiplineno = previous_lineno;
+        driver.yyiplineno_lastparser = previous_lineno_lastparser;
       }
       ;
 
@@ -986,23 +1001,25 @@ cond_inst :
 
       // Pb with line numbers
       previous_lineno=driver.yyiplineno;
+      int  previous_lineno_lastparser = driver.yyiplineno_lastparser;
 
         if ($2>0.5)
         {
           //driver.yyiplineno=previous_lineno;
           if (!driver.parse_block(block)) YYABORT;
           driver.yyiplineno = previous_lineno;
+          driver.yyiplineno_lastparser = previous_lineno_lastparser;
         }
     }
     | IF expr  instr_block ELSE instr_block  end_instr
     {
-       int  previous_lineno = driver.yyiplineno;
 
       AmiInstructionBlock::ptr block_if(  $3);
       AmiInstructionBlock::ptr block_else($5);
 
       // Pb with line numbers
-      previous_lineno=driver.yyiplineno;
+      int  previous_lineno = driver.yyiplineno;
+      int  previous_lineno_lastparser = driver.yyiplineno_lastparser;
 
       bool res;
       if ($2>0.5)
@@ -1011,6 +1028,7 @@ cond_inst :
         res = driver.parse_block(block_else);
       if (!res) YYABORT;
       driver.yyiplineno = previous_lineno;
+      driver.yyiplineno_lastparser = previous_lineno_lastparser;
 
     };
 
@@ -1065,7 +1083,7 @@ proc_decl:
 //      int context = Vars.GetContext(boost::static_pointer_cast<BasicVariable>(var));
 //      Vars.deleteVar(var);
 
-      FILE_MESSAGE(boost::format("Redefining procedure %1%") % var->Name()); 
+      FILE_MESSAGE((boost::format("Redefining procedure %1%") % var->Name()).str().c_str()); 
 
 //      AMIFunction::ptr amifunc( new AMIFunction);
       AMIFunction::ptr amifunc(func);
@@ -1074,8 +1092,8 @@ proc_decl:
       amifunc->SetFileName(driver.current_file);
       amifunc->SetParamList($5);
       amifunc->SetBody(     body);
-      FILE_MESSAGE(boost::format("%1%: body = %2%")
-                    % var->Name()  % body->GetBody());
+      FILE_MESSAGE((boost::format("%1%: body = %2%")
+                    % var->Name()  % body->GetBody()).str().c_str());
 
       // add the variable in the same context ...
 //      BasicVariable::ptr newvar =
@@ -1216,7 +1234,7 @@ command:
             // TODO: only do it from the command line ???
             //cout << "display var info" << std::endl;
             if (driver.InConsole())
-              var->display();
+              var->display(std::cout);
           }
 
         }
@@ -1248,7 +1266,7 @@ command:
                 // TODO: only do it from the command line ???
                 //cout << "display var info" << std::endl;
                 if (driver.InConsole())
-                  var->display();
+                  var->display(std::cout);
             }
           }
 
@@ -1412,8 +1430,6 @@ command:
         IdentifierInfo::ptr ident($1);
         // check counter of the value, not of the variable ...
         if (var.get() && (var->HasPointer())  ) {
-          //cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< std::endl;
-          //cout << "use_count() == " <<  var.use_count() << std::endl;
           // only if both reference counters are equal to 1, we can avoid copy the variable
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
             //BasicVariable::ptr ref = var->NewReference();
@@ -1448,18 +1464,28 @@ command:
         boost::shared_array<char> comments( $5);
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         IdentifierInfo::ptr ident($1);
-        if (var->GetPtrCounter()==1) {
-          var->SetComments(comments.get());
-          Vars.AddVar(ident,var);
-        } else
-        {
-          if (var.get()) {
+        if (var.get() && (var->HasPointer())  ) {
+          // only if both reference counters are equal to 1, we can avoid copy the variable
+          if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
+            //BasicVariable::ptr ref = var->NewReference();
+            // need to run on reference to avoid renaming the own variable !!!
+            //Vars.AddVar(ident,ref);
+            var->SetComments(comments.get());
+            Vars.AddVar(ident,var);
+          } else
+          {
             BasicVariable::ptr copy = var->NewCopy();
-            copy->SetComments(comments.get());
-            Vars.AddVar(ident,copy);
-          } else {
-            driver.err_print("identifier = variable, no variable value");
+            if (copy.get()) {
+              copy->SetComments(comments.get());
+              Vars.AddVar(ident,copy);
+            } else {
+              driver.err_print("Copy failed for the variable in rule id = expr_var");
+              YYABORT;
+            }
           }
+        } else {
+          driver.err_print("identifier = expr_var, no variable value");
+          YYABORT;
         }
       }
       |
@@ -1708,6 +1734,37 @@ command:
       }
 */
       |
+      identifier ASSIGN_OP T_BOOL T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description:
+          Creates a variable of type boolean
+      **/
+        IdentifierInfo::ptr ident($1);
+
+        boost::shared_ptr<bool> varboolean (new bool((bool)$5));
+        Vars.AddVar<bool>(ident,varboolean);
+      }
+      |
+      identifier ASSIGN_OP T_BOOL T_OP_PAR expr T_CL_PAR T_COMMA expr_string
+      {
+      /**
+      Parameters:
+        - identifier: name of the new variable
+        - expr: value of the new variable
+        - expr_string: short description of the new variable
+        Description:
+          Creates a variable of type boolean
+      **/
+        IdentifierInfo::ptr ident($1);
+        boost::shared_array<char> comments( $8);
+
+        boost::shared_ptr<bool> varboolean (new bool((bool)$5));
+        BasicVariable::ptr var=Vars.AddVar<bool>(ident,varboolean);
+        if (var.get())
+          var->SetComments(comments.get());
+      }      
+      |
       identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR
       {
       /**
@@ -1718,6 +1775,33 @@ command:
 
         int_ptr varint (new int((int)$5));
         Vars.AddVar<int>(ident,varint);
+      }
+      |
+      identifier ASSIGN_OP T_DOUBLE T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Creates a variable of type int
+      **/
+        IdentifierInfo::ptr ident($1);
+
+        boost::shared_ptr<double> var (new double((double)$5));
+        Vars.AddVar<double>(ident,var);
+      }
+      |
+      identifier ASSIGN_OP T_DOUBLE T_OP_PAR expr T_CL_PAR T_COMMA expr_string
+      {
+      /**
+        Description: 
+          Creates a variable of type int
+      **/
+        IdentifierInfo::ptr ident($1);
+        boost::shared_array<char> comments( $8);
+
+        boost::shared_ptr<double> vard (new double((double)$5));
+        BasicVariable::ptr var=Vars.AddVar<double>(ident,vard);
+        if (var.get())
+          var->SetComments(comments.get());
       }
       |
       identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR T_COMMA expr_string
@@ -1975,7 +2059,7 @@ command:
 */
 
       titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
-      FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
+      FILE_MESSAGE((boost::format("SHOW var_image  title %s") % titre).str().c_str());
       //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
       var = context->GetVar(titre.c_str());
       if (var.get()) {
@@ -1999,7 +2083,7 @@ command:
         ParamList::ptr p(new ParamList());
         p->AddParam(imagevar);
         BasicVariable::ptr newvar = WrapClass<DessinImage>::CreateVar(p.get());
-        FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
+        FILE_MESSAGE((boost::format("SHOW var_image creating title %s ") % titre).str().c_str());
         if (newvar.get()) {
           newvar->Rename(titre.c_str());
           context->AddVar(newvar, context);
@@ -2070,7 +2154,7 @@ command:
               ParamList::ptr p(new ParamList());
               p->AddParam(Title);
               BasicVariable::ptr newvar = WrapClass<Viewer3D>::CreateVar(p.get());
-              FILE_MESSAGE(boost::format("SHOW var_ami_object creating title %s ") % titre);
+              FILE_MESSAGE((boost::format("SHOW var_ami_object creating title %s ") % titre).str().c_str());
 
               if (newvar.get()) {
                 newvar->Rename(titre.c_str());
@@ -2800,430 +2884,6 @@ command:
           driver.res_print(st.c_str());
         }
 */
-/*
-        | VAR_IMAGEDRAW T_POINT SETPOS T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-          DessinImageParametres* param;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          param = draw->GetParam();
-          param->_pos._x = (int) $5;
-          param->_pos._y = (int) $7;
-          param->_pos._z = (int) $9;
-          //      param->_pos.Check();
-          param->_MAJ.MAJCoupes();
-
-          draw->Paint();
-
-        }
-        | VAR_IMAGEDRAW T_POINT SHOWCURSOR T_OP_PAR expr T_CL_PAR
-        {
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-          DessinImageParametres* param;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          param = draw->GetParam();
-          param->_curseur._visible = (int) ($5>0.5);
-          //      param->_MAJ.MAJCoupes();
-
-          draw->Paint();
-        }
-        | VAR_IMAGEDRAW T_POINT T_update
-        {
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-          DessinImageParametres* param;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          param = draw->GetParam();
-          param->_MAJ.MAJCoupes();
-          draw->Paint();
-        }
-        | VAR_IMAGEDRAW T_POINT COMPARE T_OP_PAR var_image T_CL_PAR
-        {
-          GET_VARSTACK_VAR_VAL(InrImage,    varim,  im);
-          GET_VARSTACK_VAR_VAL(DessinImage, varimd, draw);
-          char title[255];
-
-            sprintf(title,"%s_draw",varim->Name().c_str());
-
-            BasicVariable::ptr var = Vars.GetCurrentContext()->GetVar(title);
-            if (var.get()) {
-              Variable<DessinImage>::ptr vardi ( boost::dynamic_pointer_cast<Variable<DessinImage> >(var));
-              DessinImage::ptr di(vardi->Pointer());
-              DessinImageParametres* param;
-              param = di->GetParam();
-              param->_MAJ.MAJCoupes();
-              di->Paint();
-
-              /* already done at window creation
-              std::string* varname = new std::string(title);
-              di->SetCloseFunction(
-                  (void*) CB_delete_imagedraw,
-                  (void*) varname);
-              * /
-              draw->CreeCompare2Image(di);
-            }
-            else
-            {
-              std::string varname(title);
-              DessinImage::ptr di = 
-                DessinImage::Create_ptr(CreateIDraw( varname, im));
-
-              Variable<DessinImage>::ptr newvar = Vars.AddVar<DessinImage>(title, di);
-
-              di->SetCloseFunction(
-                  (void*) CB_delete_variable,
-                  (void*) (newvar.get()));
-              // get the pointer to the newly created
-              // variable
-              //BasicVariable::ptr var = Vars.GetVar(title);
-              if (var.get())
-                draw->CreeCompare2Image(newvar->Pointer());
-              else
-                fprintf(stderr,"Image comparison: Variable %s not found !\n",title);
-            }
-
-        }
-        | VAR_IMAGEDRAW T_POINT COMPARE T_OP_PAR VAR_IMAGEDRAW T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(DessinImage, draw2);
-          GET_VARSTACK_VALUE(DessinImage, draw1);
-
-          draw1->CreeCompare2Image(draw2);
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetCompareDisplacement T_OP_PAR VAR_IMAGEDRAW T_COMMA var_image T_CL_PAR
-        {
-        /**
-        Parameters:
-            (1) Image Draw Window
-            (5)  comparison window
-            (7) Vectorial image
-
-        Description:
-            Defines a displacement to apply to the cursor when
-            comparing 2 image drawing windows
-        ** /
-          GET_VARSTACK_VALUE(InrImage,    displ);
-          GET_VARSTACK_VALUE(DessinImage, draw2);
-          GET_VARSTACK_VALUE(DessinImage, draw);
-
-          // TODO: check for SetCompareDisplacement, does it really work?
-          draw->SetCompareDisplacement(draw2,displ);
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetCompTransf T_OP_PAR
-           expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
-           expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
-           expr T_COMMA expr T_COMMA expr T_COMMA expr
-         T_CL_PAR
-        {
-
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-        driver.yyiperror( "SetCompTransf is not available at the moment");
-/*
-        DessinImage::ptr draw;
-        FloatMatrix* mat;
-
-        draw = *(DessinImage::ptr*) ($1->Pointer());
-
-        mat = new FloatMatrix(4,4);
-        (*mat)[0][0] = $5;
-        (*mat)[0][1] = $7;
-        (*mat)[0][2] = $9;
-        (*mat)[0][3] = $11;
-        (*mat)[1][0] = $13;
-        (*mat)[1][1] = $15;
-        (*mat)[1][2] = $17;
-        (*mat)[1][3] = $19;
-        (*mat)[2][0] = $21;
-        (*mat)[2][1] = $23;
-        (*mat)[2][2] = $25;
-        (*mat)[2][3] = $27;
-
-            if (draw->GetCompareWindow(0)!=NULL)
-          draw->GetCompareWindow(0)->SetTransformationMatrix(mat);
-        // PB: the matrix is never freed from memory ...
-        // TODO use smart pointer management !!!
-* /
-        }
-        | VAR_IMAGEDRAW T_POINT SETVECTOR T_OP_PAR NUMBER T_COMMA var_image T_CL_PAR
-        {
-          /**
-            Parameters:
-                (1) Image Drawing window
-                (5) Index of the vector field to be drawned (between 1 and 3)
-                (7) Vector field image
-            Description:
-                Assign a vector field to be draw in the given image drawing window.
-          ** /
-          GET_VARSTACK_VALUE(InrImage,    im);
-          GET_VARSTACK_VALUE(DessinImage, draw);
-
-          draw->LoadVectImage( (int) $5, im);
-        }
-        | VAR_IMAGEDRAW T_POINT T_DrawVector T_OP_PAR expr T_COMMA expr T_CL_PAR
-        {
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->SetVectorVisible( (int) $5, (int) $7);
-        }
-        | VAR_IMAGEDRAW T_POINT T_DisplayVectors
-        {
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->CB_AfficheChampVect(draw.get(),NULL);
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetVectParam T_OP_PAR expr T_COMMA expr T_CL_PAR
-        {
-          /**
-          Parameters:
-            (5) expression: vector size
-            (7) expression: vector spacing
-
-          Description:
-            Sets the size and spacing of the vector drawing interface in the given
-            image drawing window.
-          ** /
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-          float size    = $5;
-          int   spacing = (int)$7;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->SetVectParam( size, spacing);
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetVectColor T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-          /** 
-            Parameters:
-            (5)  expression: vector id
-            (7)  expression: red component (0-255)
-            (9)  expression: green component (0-255)
-            (11) expression: blue component (0-255)
-
-            Description:
-            Sets the color of the given vector field (given by vector id),
-            the color is set as (R,G,B) components, each component has a value
-            between 0 and 255.
-          ** /
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-          int vectid = (int) $5;
-          unsigned char red   = (unsigned char) $7;
-          unsigned char green = (unsigned char) $9;
-          unsigned char blue  = (unsigned char) $11;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->SetVectColor( vectid,red,green,blue);
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetVectStyle T_OP_PAR expr T_CL_PAR
-        {
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw= DessinImage::ptr(varimd->Pointer());
-          draw->SetVectType((int)$5);
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetLineThickness T_OP_PAR expr T_CL_PAR
-        {
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw= DessinImage::ptr(varimd->Pointer());
-          draw->SetLineThickness((int)$5);
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetZoom T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          int xmin = (int)  $5;
-          int ymin = (int)  $7;
-          int zmin = (int)  $9;
-          int xmax = (int) $11;
-          int ymax = (int) $13;
-          int zmax = (int) $15;
-
-          DessinImage::ptr draw= DessinImage::ptr(varimd->Pointer());
-          draw->SetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
-
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetWindowSize T_OP_PAR expr T_COMMA expr T_CL_PAR
-        {
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          int width  = (int) $5;
-          int height = (int) $7;
-
-          DessinImage::ptr draw= DessinImage::ptr(varimd->Pointer());
-          draw->SetSize(width,height);
-          draw->Update();
-
-
-        }
-        | VAR_IMAGEDRAW T_POINT T_drawcircle T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-          DessinImage::ptr draw;
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          ClasseCouleur c;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          c.FixeValeur((int)$11,(int)$13,(int)$15);
-          draw->DessineCercle( (int) $5, (int) $7, (int) $9, c);
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetColormap T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-        /**
-          Description: Set a user-defined colormap.
-         ** /
-          GET_VARSTACK_VALUE(InrImage, colmap);
-          GET_VARSTACK_VALUE(DessinImage, draw);
-
-          draw->SetUserColormap( colmap,  $7,  $9);
-        }
-        | VAR_IMAGEDRAW T_POINT T_setGLwin T_OP_PAR VAR_SURFDRAW T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(Viewer3D,    surfd);
-          GET_VARSTACK_VALUE(DessinImage, draw);
-
-          draw->SetGLWindow(surfd);
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetIsoContour T_OP_PAR expr T_COMMA var_image T_COMMA expr T_CL_PAR
-        {
-            /**
-            Parameters:
-                (5) isocontour index (0,1 or 2)
-                (7) image to use for the isocontour
-                (9) intensity value of the isocontour
-
-            Description:
-                Sets the image and intensity value of an isocontour in an 'image_draw' window.
-            ** /
-          GET_VARSTACK_VALUE(InrImage,    im);
-          GET_VARSTACK_VALUE(DessinImage, draw);
-
-          draw->InitIsoContour( im, $9 , (int) $5 );
-          draw->DrawIsoContour( (int) $5, true );
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetIsoContour T_OP_PAR var_image T_COMMA expr T_CL_PAR
-        {
-            /**
-            Parameters:
-                (5) image to use for the isocontour
-                (7) intensity value of the isocontour
-
-            Description:
-                Sets the image and intensity value of the isocontour number 0 in an 'image_draw' window.
-            ** /
-          GET_VARSTACK_VALUE(InrImage,    im);
-          GET_VARSTACK_VALUE(DessinImage, draw);
-
-          draw->InitIsoContour( im, $7 , 0 );
-          draw->DrawIsoContour( 0, true );
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetIsoContourParam T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-            /**
-            Parameters:
-                (5) isocontour index (0,1 or 2)
-                (7) isocontour thickness
-                (9) isocontour style
-
-            Description:
-                Sets the parameters (line style and thickeness)
-                of an isocontour in an 'image_draw' window.
-            ** /
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->SetIsoContourParam( (int)$5, (int)$7, (int)$9 );
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetIsoContourParam T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-            /**
-            Parameters:
-                (5)  isocontour index (0,1 or 2)
-                (7)  isocontour thickness
-                (9)  isocontour style (0,1,2 for LineSolid, LineOnOffDash, or LineDoubleDash)
-                (11) cap_style (0:CapNotLast, 1:CapButt, 2:CapRound, or 3:CapProjecting)
-                (13) join_style (0:JoinMiter, 1:JoinRound, or 2:JoinBevel)
-
-            Description:
-                Sets the parameters (line style and thickeness)
-                of an isocontour in an 'image_draw' window.
-            ** /
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->SetIsoContourParam( (int)$5, (int)$7, (int)$9 );
-          draw->SetLineAttributes( (int)$11, (int)$13);
-        }
-        | VAR_IMAGEDRAW T_POINT T_DrawIsoContour T_OP_PAR expr T_COMMA expr T_CL_PAR
-        {
-            /**
-            Parameters:
-                (5) isocontour index (0,1 or 2)
-                (7) visible or not (0 or 1)
-
-            Description:
-                Sets the visibility of an isocontour in an 'image_draw' window.
-            ** /
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->DrawIsoContour( (int) $5, (int) $7 );
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetIsoContourColor T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-            /**
-            Parameters:
-                (5) isocontour index (0,1 or 2)
-                (7)  Red   component in [0,255]
-                (9)  Green component in [0,255]
-                (11) Blue  component in [0,255]
-
-            Description:
-                Sets the color as RGB of an isocontour in an 'image_draw' window.
-            ** /
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->SetIsoContourColor( (int) $5, (unsigned char) $7,
-                                              (unsigned char) $9,
-                                              (unsigned char) $11);
-        }
-        | VAR_IMAGEDRAW T_POINT T_DrawAllContours T_OP_PAR expr T_CL_PAR
-        {
-            /**
-            Parameters:
-                (5) boolean parameter
-
-            Description:
-                Activates or desactivates the drawing of a series of isocontours.
-            ** /
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->SetDrawAllContours( (int) $5 );
-        }
-        | VAR_IMAGEDRAW T_POINT T_AllContoursParam T_OP_PAR expr  T_COMMA expr T_CL_PAR
-        {
-            /**
-            Parameters:
-                (5) intensity step between isocontours
-                (7) half size of the intensity range where to draw isocontours
-
-            Description:
-                Parameters for drawing a series of isocontours around the main isocontour.
-            ** /
-          Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-          DessinImage::ptr draw;
-          draw = DessinImage::ptr(varimd->Pointer());
-          draw->AllContoursParam(  $5 , $7 );
-        }*/
         | var_image T_POINT TInit
         {
           /**
@@ -3476,196 +3136,6 @@ command:
       GET_VARSTACK_VALUE(InrImage, im);
       im->FixeNom( name.get());
     }
-/*
-    |
-    AnisoGS T_POINT TInit  T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-        /**
-        Parameters:
-            (5)  var_image: input image
-            (7)  expr: sigma, standard deviation of the Gaussian smoothing used
-                        to compute the gradient and principal curvature directions
-            (9)  expr:  threshold on the magnitude of the gradient
-            (11) expr: data attachment coefficient
-
-        Description:
-            Sets parameters for the anisotropic diffusion algorithm using
-            Gauss-Seidel scheme.
-        **
-        GET_VARSTACK_VALUE(InrImage, im);
-        Func_InitAnisoGS( im.get(),
-                          $7,  $9, $11);
-        }
-        |
-        AnisoGS T_POINT TSetCoeff T_OP_PAR expr T_CL_PAR
-        {
-          Func_SetCoeffAnisoGS($5);
-        }
-        |
-        AnisoGS T_POINT T_SetDistMap T_OP_PAR expr T_CL_PAR
-        {
-          Func_AnisoGS_SetDistanceMap((int)$5);
-        }
-*/
-/*
-        |
-        AnisoGS T_POINT T_SetNoiseType T_OP_PAR expr T_CL_PAR
-        {
-          Func_AnisoGS_SetNoiseType((int)$5);
-        }
-*/
-/*
-        |
-        AnisoGS T_POINT T_SetNoiseSD T_OP_PAR expr T_CL_PAR
-        {
-          Func_AnisoGS_SetNoiseSD($5);
-        }
-*/
-/*
-        |
-        AnisoGS T_POINT T_SetMask T_OP_PAR var_image T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_AnisoGS_SetMask(im.get());
-        }
-*/
-/*
-        |
-        AnisoGS T_POINT T_SetSRADROI T_OP_PAR var_image T_CL_PAR
-        {
-        /**
-         Parameters:
-            (5) image which defines a region of interest used
-                to estimate the noise parameters in the
-                Oriented Speckle Reducing Anisotropic Diffusion
-         Description:
-            Sets the region of interest (region of constant tissue in the image)
-            and activates the Oriented Speckle Reducing Anisotropic Diffusion
-         **
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_AnisoGS_SetSRAD_ROI(im.get());
-        }
-*/
-/*
-        |
-        AnisoGS T_POINT T_SetRNRADROI T_OP_PAR var_image T_CL_PAR
-        {
-        /**
-         Parameters:
-            (5) image which defines a region of interest used
-                to estimate the noise parameters in the
-                Rician Noise Reducing Anisotropic Diffusion
-         Description:
-            Sets the region of interest (region of constant tissue in the image)
-            and activates the Rician Noise Reducing Anisotropic Diffusion
-            used to reduce noise in MRI data.
-         **
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_AnisoGS_SetRNRAD_ROI(im.get());
-        }
-*/
-/*
-        |
-        AnisoGS T_POINT T_SetRNRADROI_NEW T_OP_PAR var_image T_CL_PAR
-        {
-        /**
-         Parameters:
-            (5) image which defines a region of interest used
-                to estimate the noise parameters in the
-                Rician Noise Reducing Anisotropic Diffusion
-         Description:
-            Sets the region of interest (region of constant tissue in the image)
-            and activates the Rician Noise Reducing Anisotropic Diffusion
-            used to reduce noise in MRI data.
-            New version of the filter, using local directional mean and variance
-            for the diffusion matrix.
-         **
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_AnisoGS_SetRNRAD_ROI_NEW(im.get());
-        }
-*/
-/*
-        |
-        AnisoGS T_POINT T_SetLocalStruct T_OP_PAR expr T_CL_PAR
-        {
-        /**
-          Parameters:
-            (5) expr: determine the local structure description
-              0 for smoothed gradient and principal curv. directions
-              1 for the local structure tensor
-
-          Description:
-            Sets the local structure mode.
-         **
-      Func_SetLocalStructureMode((int)$5);
-        }
-*/
-/*
-        |
-    AnisoGS T_POINT T_SetEigenMode T_OP_PAR expr T_CL_PAR
-        {
-        /**
-          Parameters:
-            (5) expr: option for selecting the eigenvalues for the
-              diffusion matrix
-              0: sums the 3D, 2D and 1D diffusions
-                - lambda1 will depend on a coefficient based on a
-                    3D neighborhood
-                - lambda2 will be the sum of lambda1 + a coeff based
-                    on a 2D neighborhood
-                - lambda3 = lambda2 + coeff based on a linear neigh.
-              1: take the maximum instead of the sum
-
-          Description:
-            Choose a way to select the diffusion matrix eigenvalues.
-         **
-      Func_SetEigenvaluesMode((int)$5);
-        }
-*/
-/*
-        |
-    AnisoGS T_POINT T_Setdt T_OP_PAR expr T_CL_PAR
-        {
-      Func_AnisoGS_Setdt($5);
-        }
-*/
-/*
-        |
-    AnisoGS T_POINT T_Setneighborhood T_OP_PAR expr T_CL_PAR
-        {
-      Func_AnisoGS_Setneighborhood((int)$5);
-        }
-*/
-/*
-        |
-        AnisoGS T_POINT TSetCoeff T_OP_PAR expr T_COMMA expr T_CL_PAR
-        {
-
-      Func_SetCoeffAnisoGS3D($5,$7);
-
-    }
-*/
-/*
-        |
-        AnisoGS T_POINT TIterate
-        {
-      float  error;
-
-      error = Func_ItereAnisoGS();
-
-      //driver.res_print("Error in AnisoGS.Iterate ");
-    }
-*/
-/*
-        |
-    AnisoGS T_POINT TEnd
-        {
-      int res;
-
-      res = Func_EndAnisoGS();
-
-    }
-*/
         |
         T_AnisoWeickert T_POINT TIterate
         {
@@ -3688,242 +3158,6 @@ command:
         {
       Func_EndWeickert();
     }
-/* Deprecated
-        |
-        T_LevelSetsCURV T_POINT T_SetParam T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr  T_CL_PAR
-        {
-    //
-    // Parameters:
-    // 1. number of iterations
-    // 2. coefficient of the data attachment
-    // 3. curvature coefficient
-    // 4. reinitialization frequency for the distance map
-
-    Func_LevelSets_InitParam(
-                 0.8,
-                 (int) $5,
-                 $7,
-                 $9,
-                 1,
-                 (int) $11
-                 );
-
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetParam T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA
-                                           expr T_COMMA expr T_COMMA expr  T_CL_PAR
-        {
-    //
-    // Parameters:
-    // 1. threshold on the cumulative histo of the grad norm for data attachment
-    // 2. number of iterations
-    // 3. coefficient of the data attachment
-    // 4. curvature coefficient
-    // 5. evolution step dt
-    // 6. reinitialization frequency for the distance map
-
-
-      Func_LevelSets_InitParam(
-                   $5,
-                   (int) $7,
-                   $9,
-                   $11,
-                   $13,
-                   (int) $15
-                   );
-
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetMeanCurv T_OP_PAR expr T_CL_PAR
-        {
-      Func_LevelSets_SetMeanCurv( (int) $5);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetAffineCurv T_OP_PAR expr T_CL_PAR
-        {
-      Func_LevelSets_SetAffineCurvature( (int) $5);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetBalloonScheme T_OP_PAR expr T_CL_PAR
-        {
-      Func_LevelSets_SetBalloonScheme( (int) $5);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetDistMethod T_OP_PAR  expr T_CL_PAR
-        {
-      Func_LevelSets_SetDMmethod( (int) $5);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetThreads T_OP_PAR  expr T_CL_PAR
-        {
-      Func_LevelSets_SetThreads( (int) $5);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetProbThreshold T_OP_PAR  expr T_CL_PAR
-        {
-      Func_LevelSets_SetProbThreshold( $5);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetILowTh T_OP_PAR  expr T_CL_PAR
-        {
-      Func_LevelSets_SetIntensityLowThreshold( $5);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetIHighTh T_OP_PAR  expr T_CL_PAR
-        {
-      Func_LevelSets_SetIntensityHighThreshold( $5);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetProbHighTh T_OP_PAR  expr T_CL_PAR
-        {
-      Func_LevelSets_SetProbabilityHighThreshold( $5);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetNumGaussians T_OP_PAR  expr T_CL_PAR
-        {
-      Func_LevelSets_SetNumGaussians( (int) $5);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetGaussian T_OP_PAR  expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-      Func_LevelSets_SetGaussian( (int) $5, $7, $9);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetNumInitPoints T_OP_PAR  expr T_CL_PAR
-        {
-      Func_LevelSets_SetNumInitPoints( (int) $5);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetInitPoint T_OP_PAR  expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-      Func_LevelSets_SetInitPoint( (int) $5, (int) $7, (int) $9, (int) $11, (int) $13);
-    }
-        |
-        T_LevelSetsCURV T_POINT T_SetIsoContourBin T_OP_PAR  expr T_CL_PAR
-        {
-          Func_LevelSets_SetIsoContourBin( (int) $5);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetVelocity T_OP_PAR var_image T_COMMA expr T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_LevelSetsVelocity(im.get(),$7);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetExpansion T_OP_PAR  expr T_CL_PAR
-        {
-          Func_LevelSetsExpansion($5);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetExpansionImage T_OP_PAR  var_image T_CL_PAR
-        {
-          /** 
-            Parameters:
-              - input image: expansion image, expansion force for the level set evolution
-            Description:
-              Set the expansion to be the given image instead of a combination of Gaussian functions
-              The expansion will then be multiplied by the expansion coefficient during the evolution.
-              
-          **
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_LevelSetsExpansionImage( im.get());
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetBandTube T_OP_PAR  expr T_COMMA expr T_CL_PAR
-        {
-          Func_LevelSetsBandAndTube((int)$5,(int)$7);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetCurvWeights T_OP_PAR var_image T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_LevelSetsSetCurvWeights( im.get());
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SetAdvectionField T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_CL_PAR
-        {
-          Variable<InrImage>::ptr  varim3( driver.var_stack.GetLastVar<InrImage>());
-          Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
-          Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
-          Func_LevelSetsSetAdvectionField(
-                varim1->Pointer().get(),
-                varim2->Pointer().get(),
-                varim3->Pointer().get());
-        }
-        |
-        T_LevelSetsCURV T_POINT T_GetCurvature T_OP_PAR var_image T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_LevelSetsGetCurvatureData( im.get());
-        }
-        |
-        T_LevelSetsCURV T_POINT T_GetDistMap T_OP_PAR var_image T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_LevelSetsGetDistanceMap( im.get());
-        }
-*/
-/*
-        |
-        T_LevelSetsCURV T_POINT T_GetAdvection T_OP_PAR var_image T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-//          Func_LevelSetsGetAdvectionData( im.get());
-        }
-        |
-        T_LevelSetsCURV T_POINT T_GetSkeleton T_OP_PAR var_image T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_LevelSetsGetSkeleton( im.get());
-        }
-        |
-        T_LevelSetsCURV T_POINT T_GetVelocity T_OP_PAR var_image T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_LevelSetsGetVelocityData( im.get());
-        }
-        |
-        T_LevelSetsCURV T_POINT T_GetExpansion T_OP_PAR var_image T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-          Func_LevelSetsGetExpansionData( im.get());
-        }
-        |
-        T_LevelSetsCURV T_POINT T_GetCurvature T_OP_PAR T_NULL T_CL_PAR
-        {
-          Func_LevelSetsGetCurvatureData( NULL );
-        }
-        |
-        T_LevelSetsCURV T_POINT T_GetAdvection T_OP_PAR T_NULL T_CL_PAR
-        {
-          Func_LevelSetsGetAdvectionData( NULL);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_GetVelocity T_OP_PAR T_NULL T_CL_PAR
-        {
-          Func_LevelSetsGetVelocityData( NULL);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SaveDistMap T_OP_PAR expr T_CL_PAR
-        {
-          Func_LevelSetsSaveDistMap( (int) $5);
-        }
-        |
-        T_LevelSetsCURV T_POINT T_SaveSecDerGrad T_OP_PAR expr T_CL_PAR
-        {
-          Func_LevelSetsSaveSecDerGrad( (int) $5);
-        }
-        |
-        T_LevelSetsCURV T_POINT TIterate
-        {
-          Func_LevelSets_Iterate();
-        }
-        |
-        T_LevelSetsCURV T_POINT TEnd
-        {
-          Func_LevelSets_End();
-        }
-*/
         | var_image T_POINT T_save expr_string
         {
         /**
@@ -4090,253 +3324,6 @@ command:
       }
 
       }
-/*
-        | VAR_SURFDRAW T_POINT T_rotate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(Viewer3D,sdraw);
-
-          sdraw->GetCanvas()->UserRotate($5,$7,$9);
-          sdraw->Paint();
-        }
-
-        | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR expr_var T_CL_PAR
-        {
-          GET_VARSTACK_OBJECT(SurfacePoly,surf)
-          GET_VARSTACK_VALUE(Viewer3D,sdraw);
-
-          sdraw->GetCanvas()->AddSurface(surf);
-          sdraw->Paint();
-        }
-        | VAR_SURFDRAW ADD_ASSIGN expr_var
-        {
-          GET_VARSTACK_OBJECT(SurfacePoly,surf)
-          GET_VARSTACK_VALUE(Viewer3D,   sdraw);
-
-          sdraw->GetCanvas()->AddSurface( surf);
-          //sdraw->Paint();
-        }
-        | VAR_SURFDRAW SUB_ASSIGN expr_var
-        {
-          GET_VARSTACK_OBJECT(SurfacePoly,surf)
-          GET_VARSTACK_VALUE(Viewer3D,   sdraw);
-
-          sdraw->GetCanvas()->RemoveSurface(surf);
-          sdraw->Paint();
-        }
-        | VAR_SURFDRAW T_POINT T_Remove T_OP_PAR expr_var T_CL_PAR
-        {
-          /**
-            Description: Removes the surface without swapping the 3D buffer
-          ** /
-          GET_VARSTACK_OBJECT(SurfacePoly,surf)
-          GET_VARSTACK_VALUE(Viewer3D,   sdraw);
-
-          sdraw->GetCanvas()->RemoveSurface(surf);
-          sdraw->Paint(false);
-        }
-        | VAR_SURFDRAW T_POINT T_SwapBuffers
-        {
-          /**
-            Description:  Swaps the 3D buffer
-          ** /
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw(varsurfd->Pointer());
-
-          sdraw->GetCanvas()->AfficheBuffer();
-        }
-        | VAR_SURFDRAW T_POINT T_drawCC T_OP_PAR expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-
-          sdraw->GetCanvas()->DessineSurfaceCC ( (int) $5 );
-          sdraw->Paint();
-        }
-        | VAR_SURFDRAW T_POINT T_drawCC T_OP_PAR expr T_COMMA expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-
-          sdraw->GetCanvas()->DessineSurfaceCC( (int) $5, (int) $7);
-          sdraw->Paint();
-        }
-        | VAR_SURFDRAW T_POINT T_setcurrentobj T_OP_PAR expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-
-          Si sdraw->GetCanvas()->SetCurrentObject( (int) $5 ) Alors
-            sdraw->Paint();
-          Sinon
-            fprintf(stderr," Incorrect index \n");
-          FinSi
-        }
-        | VAR_SURFDRAW T_POINT COMPARE T_OP_PAR VAR_SURFDRAW T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(Viewer3D,sdraw2);
-          GET_VARSTACK_VALUE(Viewer3D,sdraw1);
-
-          sdraw1->AddCompSurf(sdraw2);
-        }
-        | VAR_SURFDRAW T_POINT SETVECTOR T_OP_PAR NUMBER T_COMMA var_image T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage,im);
-          GET_VARSTACK_VALUE(Viewer3D,draw);
-
-          switch ((int) $5) {
-          case 1:
-            draw->GetCanvas()->SetVectors1( im);
-            break;
-          case 2:
-            draw->GetCanvas()->SetVectors2( im);
-            break;
-          }
-        }
-        | VAR_SURFDRAW T_POINT T_ShowSection T_OP_PAR expr T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr draw (varsurfd->Pointer());
-          int num = (int) $5;
-          GET_VARSTACK_VALUE(InrImage,im);
-          int orientation = (int) $9;
-          int pos = (int) $11;
-          float Imin = $13;
-          float Imax = $15;
-
-          draw->GetCanvas()->ShowFreeSection(num,im.get(),orientation,pos,Imin,Imax);
-
-        }
-        | VAR_SURFDRAW T_POINT T_HideSection T_OP_PAR expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr draw (varsurfd->Pointer());
-          int num = (int) $5;
-    
-          draw->GetCanvas()->HideFreeSection(num);
-    
-        }
-        | VAR_SURFDRAW T_POINT T_PrintMatrices
-        {
-          GET_VARSTACK_VALUE(Viewer3D,v);
-          v->GetCanvas()->PrintMatrices();
-        }
-*/
-/* deprecated 
-        | VAR_SURFDRAW T_POINT T_SetTransform T_OP_PAR gltransform T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          sdraw->GetCanvas()->SetObjectTransform(*tr);
-              sdraw->Paint();
-          delete tr;
-        }
-        | VAR_SURFDRAW T_POINT T_SetTransform T_OP_PAR gltransform T_COMMA expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          sdraw->GetCanvas()->SetObjectTransform(*tr);
-          if ($7>0.5) sdraw->Paint();
-          delete tr;
-        }
-*/
-/*
-        | VAR_SURFDRAW T_POINT T_Paint
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          sdraw->Paint();
-          sdraw->Update();
-          //sdraw->Raise();
-          // process all pending events ...
-		  /*
-          while (GB_wxApp->Pending()) {
-            if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
-            GB_wxApp->Dispatch();
-          }
-		  * /
-        }
-        | VAR_SURFDRAW T_POINT T_SetLightAmbient T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          int lightnumber = (int) $5;
-          int r = (int) $7;
-          int g = (int) $9;
-          int b = (int) $11;
-          if (lightnumber<MAX_LIGHTS) {
-                sdraw->GetCanvas()->GetLight(lightnumber)._ambient.FixeValeur(r,g,b);
-            sdraw->Paint();
-          }
-        }
-        | VAR_SURFDRAW T_POINT T_SetLightDiffuse T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          int lightnumber = (int) $5;
-          int r = (int) $7;
-          int g = (int) $9;
-          int b = (int) $11;
-          if (lightnumber<MAX_LIGHTS) {
-                sdraw->GetCanvas()->GetLight(lightnumber)._diffuse.FixeValeur(r,g,b);
-            sdraw->Paint();
-          }
-        }
-        | VAR_SURFDRAW T_POINT T_SetLightSpecular T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          int lightnumber = (int) $5;
-          int r = (int) $7;
-          int g = (int) $9;
-          int b = (int) $11;
-          if (lightnumber<MAX_LIGHTS) {
-                sdraw->GetCanvas()->GetLight(lightnumber)._specular.FixeValeur(r,g,b);
-            sdraw->Paint();
-          }
-        }
-        | VAR_SURFDRAW T_POINT T_SetBackground T_OP_PAR expr T_COMMA expr T_COMMA expr  T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          sdraw->GetCanvas()->SetBG((int)$5,(int)$7,(int)$9);
-          sdraw->Paint();
-        }
-        | VAR_SURFDRAW T_POINT T_Normalize
-        {
-        /**
-          Description:
-            Normalizes the 3D view based on the limits in space of the current objects
-        ** /
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          sdraw->GetCanvas()->Normalize();
-        }
-        | VAR_SURFDRAW T_POINT T_Center
-        {
-        /**
-          Description:
-            Centers the 3D view based on the limits in space of the current objects
-        ** /
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          sdraw->GetCanvas()->Center();
-        }
-        | VAR_SURFDRAW T_POINT T_SetWindowSize T_OP_PAR expr T_COMMA expr   T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          sdraw->SetSize((int) $5, (int) $7);
-          sdraw->Paint();
-          sdraw->Update();
-          // process all pending events ...
-          while (GB_wxApp->Pending()) {
-            if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
-            GB_wxApp->Dispatch();
-          }
-        }
-*/
         |
         T_struct_tensor T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
@@ -6022,30 +5009,6 @@ float_variable:
       ADD_VARSTACK_FLOAT(val);
       delete [] $3;
     }
-/*
-    |
-    AnisoGS T_POINT T_GetNoiseSD
-    {
-      float val=Func_AnisoGS_GetNoiseSD();
-      ADD_VARSTACK_FLOAT(val);
-    }
-*/
-/*
-    |
-    AnisoGS T_POINT T_GetDAcoeff
-    {
-      float val=Func_AnisoGS_GetDAcoeff();
-      ADD_VARSTACK_FLOAT(val);
-    }
-*/
-/* Deprecated
-    |
-    T_LevelSetsCURV T_POINT T_UpdateResult
-    {
-      float val = Func_LevelSets_UpdateResult();
-      ADD_VARSTACK_FLOAT(val);
-    }
-*/
     | matrix_variable T_OP_PAR expr T_COMMA expr T_CL_PAR
     {
       Variable<FloatMatrix>::ptr varmat(driver.var_stack.GetLastVar<FloatMatrix>());
@@ -6088,18 +5051,20 @@ float_variable:
       float val=1;
       ADD_VARSTACK_FLOAT(val);
     }
+/*
     | T_FileExists T_OP_PAR expr_string T_CL_PAR
     {
-    /**
+    / **
     Parameters:
       string: input filename
     Description:
       Check for the existence of the given filename
-    **/
+    ** /
       boost::shared_array<char> name( $3);
       float val = wxFileExists(wxString(name.get(),wxConvUTF8));
       ADD_VARSTACK_FLOAT(val);
     }
+*/
     | basic_type T_POINT T_val
     {
       /**
@@ -6108,55 +5073,6 @@ float_variable:
       float val = (int) $1;
       ADD_VARSTACK_FLOAT(val);
     }
-/*
-    | VAR_FILE T_POINT T_scan_float T_OP_PAR expr_string T_CL_PAR
-    {
-    /**
-      Description:
-        Scans a float number in the given file and based on the
-        given formatting expression.
-    ** /
-      float res;
-      GET_VARSTACK_VALUE(FILE,file);
-      boost::shared_array<char> format( $5);
-
-      setlocale(LC_NUMERIC, "C");
-      fscanf(file.get(),format.get(),&res);
-      float val =  res;
-      ADD_VARSTACK_FLOAT(val);
-    }
-    | VAR_FILE T_POINT T_read T_OP_PAR PROCESSED_VAR T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(float,val_ptr);
-      if (!val_ptr.get()) {
-        driver.err_print("needs float variable");
-        YYABORT;
-      }
-      GET_VARSTACK_VALUE(FILE,file);
-
-      float*  var = val_ptr.get();
-      setlocale(LC_NUMERIC, "C");
-      float val = 0;
-      if (var!=NULL) {
-        val = fscanf(file.get(),"%f",var);
-      } else {
-        // TODO: error message here ...
-      }
-      ADD_VARSTACK_FLOAT(val);
-    }
-    | VAR_FILE T_POINT T_read T_OP_PAR VAR_STRING T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(std::string,st);
-      GET_VARSTACK_VALUE(FILE,file);
-      setlocale(LC_NUMERIC, "C");
-      // not safe, TODO: use iostream or boost for files here ...
-      char res[100];
-      float val = fscanf(file.get(),"%s",res);
-      //string_ptr var( new std::string(res));
-      (*st) = res;
-      ADD_VARSTACK_FLOAT(val);
-    }
-*/
     ;
 
 
@@ -6226,11 +5142,11 @@ expr_string: expr_var
 
 
 basic_type:
-         T_CHAR
-        {
-      driver.err_print(" char format is not available: use unsigned char \n");
-      $$=WT_UNSIGNED_CHAR;
-    }
+       T_CHAR
+       {
+         driver.err_print(" char format is not available: use unsigned char \n");
+         $$=WT_UNSIGNED_CHAR;
+       }
        | T_UCHAR
        {
           $$=WT_UNSIGNED_CHAR;
@@ -7480,102 +6396,6 @@ image:
     ADD_VARSTACK_PTR(InrImage,res);
       }
 */
-/*
-      |
-      T_LevelSetsCURV T_POINT TInit T_OP_PAR var_image  T_COMMA expr  T_CL_PAR
-      {
-    //
-    // Parameters:
-    // 1. input image
-    // 2. isosurface threshold on the input image
-
-      GET_VARSTACK_VALUE(InrImage, im);
-    InrImage::ptr res ( Func_LevelSets_Init( im.get(),
-                   $7));
-    Si !res.get() Alors
-      fprintf(stderr,"Func_LevelSets_Init() erreur ... \n");
-    FinSi
-    ADD_VARSTACK_PTR(InrImage,res);
-      }
-      |
-      T_LevelSetsCURV T_POINT TInit T_OP_PAR var_image T_COMMA var_image  T_CL_PAR
-      {
-    //
-    // Parameters:
-    // 1. input image
-    // 2. Initial position of the level set a the zero-crossing of
-    //    this image
-
-      Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
-      Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
-    InrImage::ptr res ( Func_LevelSets_Init(
-           varim1->Pointer().get(),
-           varim2->Pointer().get()
-                   ));
-
-    Si !res.get() Alors
-      fprintf(stderr,"Func_LevelSets_Init() erreur ... \n");
-    FinSi
-    ADD_VARSTACK_PTR(InrImage,res);
-    }
-    |
-    T_LevelSetsCURV T_POINT T_GetOutput
-    {
-
-    InrImage::ptr res ( Func_LevelSets_GetCurrentOutput());
-    Si (!res.get()) Alors
-      fprintf(stderr,"Func_LevelSets_GetOutput() error ... \n");
-    FinSi
-    ADD_VARSTACK_PTR(InrImage,res);
-      }
-      |
-      T_LevelSetsCURV T_POINT T_GetAttachVect  T_OP_PAR var_image T_CL_PAR
-      {
-
-      GET_VARSTACK_VALUE(InrImage, im);
-    InrImage::ptr res ( Func_LevelSets_GetAttachVectors( im.get()));
-    Si !res.get() Alors
-      fprintf(stderr,"Func_GetAttachVect() erreur ... \n");
-    FinSi
-    ADD_VARSTACK_PTR(InrImage,res);
-      }
-*/
-/*
-        |
-        AnisoGS
-        T_OP_PAR var_image
-        T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-      /**
-      Parameters:
-        (1) input image
-        (2) sigma: standard deviation of the Gaussian smoothing applied to compute the local structure orientations.
-        (3) k: diffusion parameter that controls the diffusion depending on the local gradients.
-        (4) beta: data attachment coefficient.
-        (5) number of iterations
-      Description:
-        Runs an anisotropic diffusion filter using Gauss-Seidel numerical scheme, based on the Flux-diffusion algorithm [Krissian,IEEE TMI 2002].
-      **
-      int        nb_iter,i;
-      float       error;
-      GET_VARSTACK_VALUE(InrImage, im);
-
-      Func_InitAnisoGS( im.get(),
-                  $5,  $7, $9);
-
-          nb_iter = (int) $11;
-      if (nb_iter < 1) nb_iter = 1;
-
-      Pour(i,1,nb_iter)
-        error = Func_ItereAnisoGS();
-      FinPour
-
-      ADD_VARSTACK(InrImage,InrImage::ptr(Func_AnisoGS_GetOutput()));
-      Func_EndAnisoGS();
-
-
-    }
-*/
         |
         T_FluxDiffusion
         T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8126,30 +6946,6 @@ image:
         FinPour
         ADD_VARSTACK_PTR(InrImage,res);
         }
-/*
-        |
-        VAR_SURFDRAW T_POINT T_getimage
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          ADD_VARSTACK(InrImage,InrImage::ptr(( varsurfd->Pointer())->GetCanvas()->GetGLImage()));
-        }
-        |
-        VAR_SURFDRAW T_POINT T_GetImageFromX
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          driver.yyiperror("Not available in new wxwidgets version of the 3D viewer ! ");
-          YYABORT;
-/*
-          ADD_VARSTACK(InrImage,(*(Viewer3D_ptr*) $1->Pointer())->GetInrImage());
-* /
-    }
-    |
-/*    VAR_IMAGEDRAW T_POINT T_getimage
-    {
-      //GET_VARSTACK_OBJECT(DessinImage, imdraw)
-      GET_VARSTACK_VALUE(DessinImage, imdraw)
-      ADD_VARSTACK(InrImage, imdraw->GetInrImage());
-    }*/
     |
     T_threscross T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
@@ -9215,6 +8011,10 @@ postfix_var:
           }
           AMIObject::ptr object(var->Pointer());
 
+          if (!object.get()) {
+            driver.err_print("operator . object points to NULL.");
+            YYABORT;
+          }
           // here, need to do our own checking ...
           BasicVariable::ptr newvar( 
             object->GetContext()->GetVar(ident->GetName().c_str()));
@@ -9293,6 +8093,7 @@ postfix_var:
         } else
         if (var->Type()==type_c_image_function) 
         {
+          // Cast to AMIObject variable
           DYNAMIC_CAST_VARIABLE(C_wrap_imagefunction,var, func);
           InrImage::ptr  im((*func->Pointer())(param.get()));
           if (!im.get()) {
@@ -9301,6 +8102,32 @@ postfix_var:
           }
           Variable<InrImage>::ptr res(new Variable<InrImage>(im));
           driver.var_stack.AddVar(res);
+        } else 
+        if (var->Type()==type_ami_object)
+        {
+          // Check for a constructor inside the context
+          ///    Call a wrapped C++ class member.
+          DYNAMIC_CAST_VARIABLE(AMIObject,var, obj);
+ 
+          // look for the variable
+          BasicVariable::ptr constr;
+          if (obj.get())  {
+            Variables::ptr objcontext = obj->Pointer()->GetContext();
+            //objcontext->display();
+            constr = objcontext->GetVar(var->Name().c_str());
+          }
+    
+          if (constr.get()) {
+            // Call the constructor with the given parameters
+            DYNAMIC_CAST_VARIABLE(WrapClassMember,constr, constr_member);
+            BasicVariable::ptr res =  (constr_member->Pointer())->CallMember(param.get());
+            driver.var_stack.AddVar(res);
+          } else {
+            // error message here
+            driver.yyiperror("failed to process () operator \n");
+            driver.var_stack.AddVar(BasicVariable::ptr());
+          }
+         
         } else
         {
           // error message here
@@ -9612,7 +8439,8 @@ and_var:
   | and_var T_AND equality_var
   {
     GET_CHECK_VARSTACK(var2)
-    driver.err_print("binary operator & between variables not defined at the moment ...\n");
+    GET_CHECK_VARSTACK(var1)
+    driver.var_stack.AddVar((*var1)&var2);
   }
   ;
 
@@ -9625,7 +8453,8 @@ inclusive_or_var:
   | inclusive_or_var T_OR exclusive_or_var
   {
     GET_CHECK_VARSTACK(var2)
-    driver.err_print("binary operator | between variables not defined at the moment ...\n");
+    GET_CHECK_VARSTACK(var1)
+    driver.var_stack.AddVar((*var1)|var2);
   }
   ;
 
@@ -10975,7 +9804,7 @@ void CB_update_imagelist( void* imagelist_gui)
   wxEnumerationParameter* imlist = (wxEnumerationParameter*) imagelist_gui;
   boost::shared_ptr<wxArrayString> imagelist;
 
-  imagelist = Vars.SearchVariables(type_image);
+  imagelist = Vars.SearchVariables(type_image,true);
   imagelist->Add(_T("BrowseImage"));
   imlist->SetChoices(imagelist);
 }
@@ -11023,12 +9852,12 @@ InrImage* ReadImage( const char* name)
     }
     catch (InrImage::ErreurLecture)
     {
-      FILE_ERROR(boost::format("Unable to read image %s") % name);
+      FILE_ERROR((boost::format("Unable to read image %s") % name).str().c_str());
       //AddImagePointer(NULL);
       return NULL;
     }
   } else {
-    FILE_ERROR(boost::format("Invalid image filename '%s'") % name);
+    FILE_ERROR((boost::format("Invalid image filename '%s'") % name).str().c_str());
     //AddImagePointer(NULL);
   }
   return res;

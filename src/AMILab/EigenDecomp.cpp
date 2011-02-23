@@ -24,13 +24,13 @@ using namespace std;
 //  eigenvalues and eigenvectors or empty pointers depending on flags
 // input should be a vectorial image of 3 (for symmetric matrices) 
 // or 6 components
-InrImage::ptr_vector EigenDecomp2D(InrImage* im, 
+InrImage_ptr_vector EigenDecomp2D(InrImage* im, 
         int value_flag, 
         int vector_flag,
         InrImage* mask)
 {
   // Create resulting images
-  InrImage::ptr_vector result;
+  InrImage_ptr_vector result;
 
   return result;
 }
@@ -40,13 +40,13 @@ InrImage::ptr_vector EigenDecomp2D(InrImage* im,
 //  eigenvalues and eigenvectors depending on flags
 // input should be a vectorial image of 6 (for symmetric matrices) 
 // or 9 components
-InrImage::ptr_vector EigenDecomp3D(InrImage* im, 
+InrImage_ptr_vector EigenDecomp3D(InrImage* im, 
         int value_flag, 
         int vector_flag,
         InrImage* mask)
 {
   // Create resulting images
-  InrImage::ptr_vector result(6);
+  InrImage_ptr_vector result(6);
 
   if (im==NULL) {
     std::cerr << "EigenDecomp3D()\t input image empty " << std::endl;
@@ -200,13 +200,13 @@ InrImage::ptr_vector EigenDecomp3D(InrImage* im,
 //  Return a vector of images including
 //  eigenvalues and eigenvectors depending on flags
 //  use image dimensions to call the 2D or the 3D versions
-InrImage::ptr_vector EigenDecomp(InrImage* im, 
+InrImage_ptr_vector EigenDecomp(InrImage* im, 
         int value_flag, 
         int vector_flag,
         InrImage* mask)
 {
   printf("starting EigenDecomp\n");
-  InrImage::ptr_vector result;
+  InrImage_ptr_vector result;
 
   if (im==NULL) {
     std::cerr << "EigenDecomp()\t input image empty " << std::endl;

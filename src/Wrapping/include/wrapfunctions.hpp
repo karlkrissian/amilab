@@ -15,6 +15,7 @@
 
 
 #include "message_dialog.h"
+#include "ami_format.h"
 
 class InrImage;
 //#include "inrimage.hpp"
@@ -164,9 +165,9 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 */
 #define HelpAndReturnVarPtr { \
   std::string mess; \
-  mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
-  mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
-  mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
+  mess = (ami::format("\n %s ( listofparameters )\n\n ")% functionname).GetString();\
+  mess = mess + (ami::format("Description:\n %s \n") % description).GetString(); \
+  mess = mess + (ami::format("Parameters:\n  %s \n") % parameters).GetString(); \
   MessageDialog(mess);\
   return BasicVariable::ptr(); }
 
@@ -175,9 +176,9 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 */
 #define HelpAndReturn { \
   std::string mess; \
-  mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
-  mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
-  mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
+  ami::format f("\n %s ( listofparameters )\n\n Description:\n %s \nParameters:\n  %s \n");\
+  mess = (f % functionname % description % parameters \
+          ).GetString();\
   MessageDialog(mess);\
   return; } \
 
@@ -189,10 +190,10 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 */
 #define HelpAndReturnNULL { \
   std::string mess; \
-  mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
-  mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
-  mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
-  MessageDialog(mess); \
+  ami::format f("\n %s ( listofparameters )\n\n Description:\n %s \nParameters:\n  %s \n");\
+  mess = (f % functionname % description % parameters \
+          ).GetString();\
+  MessageDialog(mess);\
   return NULL; } \
 
 
@@ -309,6 +310,19 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
  */
 int get_num_param(ParamList* p);
 
+
+/**
+ * Get the next parameter as a BasicVariablet::ptr if available
+ * @param var new variable
+ * @param p parameters list
+ * @param num current parameter position
+ * @param required 
+ * @return true is succes, false if failure
+ */
+bool get_next_param( BasicVariable::ptr& var, 
+                    ParamList*p, int& num, bool required = false, bool quiet=false);
+
+
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
  * @param var 
@@ -337,7 +351,7 @@ bool get_var_param( BasicVariable::ptr& var,
  */
 template<class T>
 bool get_val_param( T& arg, 
-                ParamList*p, int& num);
+                ParamList*p, int& num, bool required=false, bool quiet=false);
 
 
 /**
@@ -346,12 +360,15 @@ bool get_val_param( T& arg,
  * @param p list of parameters
  * @param num integer variable containing the argument number, it is incremented by one
  * @param required  default is true
+ * @param noconstr  if true does not try to convert variable using the class constructor
  * @return true/false for success/failure
  */
 template<class T>
 bool get_val_ptr_param( T*& arg, 
                     ParamList*p, int& num, 
-                    bool required=true);
+                    bool required=true,
+                    bool noconstr=false
+                      );
 
 
 /**
@@ -363,8 +380,11 @@ bool get_val_ptr_param( T*& arg,
  * @return true/false for success/failure
  */
 template<class T> bool get_val_smtptr_param( boost::shared_ptr<T>& arg, 
-                       ParamList*p, int& num, 
-                       bool required=true);
+                                              ParamList*p, int& num, 
+                                              bool required=true,
+                                             bool noconstr=false,
+                                             bool quiet=false
+                                           );
 
 /**
  * Returning the wrapped object of the given type and its corresponding variable

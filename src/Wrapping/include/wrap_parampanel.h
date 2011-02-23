@@ -24,6 +24,7 @@
 #include "ParamPanel.hpp"
 
 #include "wrap_wxWindow.h"
+#include "wrap_wxNotebook.h"
 
 AMI_DECLARE_TYPE(ParamPanel)
 
@@ -47,6 +48,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
 
     ADD_CLASS_CONSTRUCTOR( ParamPanel, "Wrapping of ParamPanel." );
 
+    ADD_CLASS_METHOD(GetBookCtrl,      "Returns the notebook.");
     ADD_CLASS_METHOD(BeginBook,        "Starts a notebook.");
     ADD_CLASS_METHOD(EndBook,          "Ends a notebook.");
     ADD_CLASS_METHOD(BeginHorizontal,  "Sets horizontal alignment for widgets.");
@@ -69,6 +71,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
     ADD_CLASS_METHOD(AddEnum,          "Adds an integer variable as an enumeration to the parameter window.");
     ADD_CLASS_METHOD(AddEnumChoice,    "Adds a choice for an enumeration created in the parameter window.");
     ADD_CLASS_METHOD(AddLabel,         "Adds a label display.");
+    ADD_CLASS_METHOD(SetLabelValue,    "Changes a label display string.");
     ADD_CLASS_METHOD(AddFilename,      "Adds a filename selection.");
     ADD_CLASS_METHOD(AddDirname,       "Adds a directory selection.");
     ADD_CLASS_METHOD(AddString,        "Adds a string selection.");
@@ -76,6 +79,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
     ADD_CLASS_METHOD(AddBoolean,       "Adds a boolean selection.");
     ADD_CLASS_METHOD(AddButton,        "Adds a button.");
     ADD_CLASS_METHOD(AddBitmapButton,  "Adds a bitmap button.");
+    ADD_CLASS_METHOD(AddColor,         "Adds a color parameter.");
     ADD_CLASS_METHOD(SetCallback,      "Sets a callback on the last parameter.");
     ADD_CLASS_METHOD(SetDragCallback,  "Activate/Desactivate the drag callback.");
     ADD_CLASS_METHOD(EnablePanel,      "Enable/Disable a panel.");
@@ -102,6 +106,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
       WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
       parent_obj->AddMethods(parent_obj);
 
+      AddVar_GetBookCtrl(       this_ptr);
       AddVar_BeginBook(         this_ptr);
       AddVar_EndBook(           this_ptr);
       AddVar_BeginHorizontal(   this_ptr);
@@ -122,12 +127,14 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
       AddVar_AddEnum(           this_ptr);
       AddVar_AddEnumChoice(     this_ptr);
       AddVar_AddLabel(          this_ptr);
+      AddVar_SetLabelValue(     this_ptr);
       AddVar_AddFilename(       this_ptr);
       AddVar_AddDirname(        this_ptr);
       AddVar_AddString(         this_ptr);
       AddVar_AddImageChoice(    this_ptr);
       AddVar_AddButton(         this_ptr);
       AddVar_AddBitmapButton(   this_ptr);
+      AddVar_AddColor(          this_ptr);
       AddVar_AddBoolean(        this_ptr);
       AddVar_SetCallback(       this_ptr);
       AddVar_SetDragCallback(   this_ptr);

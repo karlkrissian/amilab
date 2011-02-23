@@ -15,10 +15,10 @@ for dir in  "BasicFilters","Filtering","Denoising",\
   local_f = wx.wxFileName(GetScriptsDir)
   local_f.AppendDir(dir)
   local_f.SetFullName("Add2Menu.amil")
-  if local_f._FileExists() {
+  if local_f.FileExists() {
     func dir+"/Add2Menu.amil"
   } else {
-    InfoDialog local_f.GetFullPath()+" does not exists"
+    InfoDialog wx.FromWxString(local_f.GetFullPath())+" does not exists"
   }
   del local_f
 }

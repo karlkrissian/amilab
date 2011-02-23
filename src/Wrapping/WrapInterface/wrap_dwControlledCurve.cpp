@@ -10,9 +10,11 @@
  *
  **/
 
+#include <iostream>
+#include "AMILabConfig.h"
 #include "wrap_dwControlledCurve.h"
 
-#ifdef _AMIPREC_
+#ifdef AMI_USE_PRECOM_HEADERS
   #include "WrapInterface_header.h"
 #else
   #include "VarContexts.hpp"
@@ -118,7 +120,9 @@ BasicVariable::ptr WrapClass_dwControlledCurve::
   CLASS_GET_OBJECT_PARAM(dwControlledCurve,var,_obj);
 
   if (_obj.get()) {
-    this->_objectptr->_obj = _obj;
+    std::cout << "Begin->dwControlledCurve.assign" << std::endl;
+    *this->_objectptr->_obj = *_obj;
+    std::cout << "End->dwControlledCurve.assign" << std::endl;
   }
   return BasicVariable::ptr();
 }

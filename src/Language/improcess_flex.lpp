@@ -110,6 +110,11 @@ WS      [ \t]
 #define YY_USER_ACTION  yylloc->columns(yyleng);
 %}
 
+
+identifier [a-zA-Z_]([A-Za-z0-9_])*
+
+varid {identifier}(<{identifier}(,{identifier})*>)?
+
 %%
 
  /* code to place at the beginning of yylex() */
@@ -194,6 +199,7 @@ INT           return(token::T_INT); /*{INT,T_INT}*/
 UINT          return(token::T_UINT); /*{UINT,T_UINT}*/
 FLOAT         return(token::T_FLOAT); /*{FLOAT,T_FLOAT}*/
 LONG          return(token::T_LONG); /*{LONG,T_LONG}*/ /// New (added: 27/05/2010)
+BOOL          return(token::T_BOOL); /*{BOOL,T_BOOL}*/ /// New (added: 19/11/2010)
 DOUBLE        return(token::T_DOUBLE); /*{DOUBLE,T_DOUBLE}*/
 RGB           return(token::T_RGB); /*{RGB,T_RGB}*/
 FLOAT_VECTOR  return(token::T_FLOAT_VECTOR); /*{FLOAT_VECTOR,T_FLOAT_VECTOR}*/
@@ -292,12 +298,11 @@ quit               return(token::QUIT);
 Image              return(token::T_Image); /*{Image,T_Image}*/
 BrowseImage        return(token::T_BrowseImage); /*{BrowseImage,T_BrowseImage}*/
 
-ReadRawImages      return(token::T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}*/
+ReadRawImages      return(token::T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}
+Show               return(token::SHOW); */
 
-Show               return(token::SHOW); /*{Show,SHOW}*/
-show               return(token::SHOW);
+show               return(token::SHOW); /*Hide               return(token::T_HIDE); {Hide,T_HIDE}*/
 
-Hide               return(token::T_HIDE); /*{Hide,T_HIDE}*/
 hide               return(token::T_HIDE);
 Help               return(token::HELP); /*{Help,HELP}*/
 help               return(token::HELP);
@@ -390,9 +395,8 @@ Flip              return(token::T_Flip);  /*{Flip,T_Flip}*/// flips image in one
 RestartTime       return(token::T_RestartTime); /*{RestartTime,T_RestartTime}*/
 InitTime          return(token::T_InitTime); /*{InitTime,T_InitTime}*/
 TimeSpent         return(token::T_TimeSpent); /*{TimeSpent,T_TimeSpent}*/
-EndTime           return(token::T_EndTime); /*{EndTime,T_EndTime}*/
+EndTime           return(token::T_EndTime); /*{EndTime,T_EndTime}*/ 
 
-NULL              return(token::T_NULL); /*{NULL,T_NULL}*/
 
 
 ProcessXEvents    return(token::T_ProcessXEvents); /*{ProcessXEvents,T_ProcessXEvents}*/
@@ -600,8 +604,9 @@ amiOFVar2D        return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/
 vtkDicomRead      return(token::T_vtkDicomRead); /*{vtkDicomRead,T_vtkDicomRead}*/
 vtkMINCRead       return(token::T_vtkMINCRead);  /*{vtkMINCRead,T_vtkMINCRead}*/
 
-exists            return(token::T_exists);       /*{exists,T_exists}*/
-FileExists        return(token::T_FileExists);  /*{FileExists,T_FileExists}*/
+exists            { return(token::T_exists);       //FileExists        return(token::T_FileExists);  
+// {FileExists,T_FileExists} 
+} /*{exists,T_exists}*/
 
 InfoDialog        return(token::T_InfoDialog); /*{InfoDialog,T_InfoDialog}*/
 
@@ -611,7 +616,7 @@ argc              return(token::T_argc);         /*{argc,T_argc}*/
 emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 
-[0-9]+"."[0-9]+   {
+([0-9]+"."[0-9]+((e|E)("+"|"-")?[0-9]+)?)|([0-9]+((e|E)("+"|"-")?[0-9]+))   {
 //
 //============================ Parse float ====================
 //
@@ -861,7 +866,7 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   // sauver les commentaires dans une variable du driver??
 }
 
-local::([A-Za-z0-9_])*   {
+local::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -872,7 +877,7 @@ local::([A-Za-z0-9_])*   {
   return result;
 }
 
-global::([A-Za-z0-9_])*   {
+global::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -882,7 +887,7 @@ global::([A-Za-z0-9_])*   {
   return result;
 }
 
-this::([A-Za-z0-9_])*   {
+this::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -895,7 +900,7 @@ this::([A-Za-z0-9_])*   {
 }
 
 
-::([A-Za-z0-9_])*   {
+::{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -908,7 +913,7 @@ this::([A-Za-z0-9_])*   {
 }
 
 
-::([A-Za-z0-9_])*->([A-Za-z0-9_])*   {
+::{identifier}->{identifier}   {
 // TODO: can all the variable system to return only variable from lex !!!
 // this rule is a hack
 //
@@ -945,7 +950,7 @@ this::([A-Za-z0-9_])*   {
 }
 
 
-([A-Za-z0-9_])*->([A-Za-z0-9_])*   {
+{identifier}->{identifier}   {
 //
 //============================ Parse variable in a given context ====================
 //
@@ -982,7 +987,7 @@ this::([A-Za-z0-9_])*   {
 
 
 
-([A-Za-z0-9_])*   {
+{identifier}   {
 //
 //============================ Parse variable ====================
 //
@@ -1063,6 +1068,7 @@ yyip::Parser::token::yytokentype checkvar(
     switch(var->Type()) {
       case type_image:            return token::VAR_IMAGE;
         /*{$variable_image,VAR_IMAGE}*/
+      case type_bool:
       case type_float:
       case type_long:
       case type_double:

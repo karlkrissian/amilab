@@ -1,4 +1,8 @@
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "amilab_messages.h"
 #include "DefineClass.hpp"
 #include "Variable.hpp"
@@ -12,6 +16,7 @@
   return Variable<type>::ptr( new Variable<type>(newval));
 
 #include "inrimage.hpp"
+#include <boost/numeric/conversion/cast.hpp>  
 
 
 
@@ -48,10 +53,10 @@
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::NewCopy() const
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::NewCopy() const
 {
-  long_ptr newval( new long int(Value()));
-  Variable<long int>::ptr newvar(new Variable<long int>(newval));
+  boost::shared_ptr<long> newval( new long(Value()));
+  Variable<long>::ptr newvar(new Variable<long>(newval));
   return newvar;
 }
 
@@ -59,39 +64,39 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::NewCopy() const
 // Arithmetic operators
 
 /// +a
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator +()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator +()
 {  RETURN_VARPTR(long int,Value());}
 
 /// prefix ++ operator ++a
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ++()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator ++()
 {
   //std::cout << "**" << std::endl;
   RETURN_VARPTR(long int,++RefValue());
 }
 
 /// postfix ++ operator a++
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ++(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator ++(int)
 {
   //std::cout << "**" << std::endl;
   RETURN_VARPTR(long int,RefValue()++);
 }
 
 /// -a
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator -()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator -()
 {   RETURN_VARPTR(long int,-Value());}
 
 /// prefix -- operator --a
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator --()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator --()
 {  RETURN_VARPTR(long int,--RefValue()); }
 
 /// postfix -- operator a--
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator --(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator --(int)
 {  RETURN_VARPTR(long int,RefValue()--);  }
 
 
 
 /// a+b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator +(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator +(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(long int,Value()+b->GetValueAsDouble());
@@ -107,7 +112,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator +(const
 }
 
 /// a+=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator +=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator +=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() += b->GetValueAsDouble();
@@ -117,7 +122,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator +=(cons
 }
 
 /// a-b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator -(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator -(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(long int,Value()-b->GetValueAsDouble());
@@ -133,7 +138,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator -(const
 }
 
 /// a-=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator -=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator -=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() -= b->GetValueAsDouble();
@@ -143,7 +148,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator -=(cons
 }
 
 /// a*b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator *(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator *(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(long int,Value()*b->GetValueAsDouble());
@@ -159,7 +164,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator *(const
 }
 
 /// a*=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator *=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator *=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() *= b->GetValueAsDouble();
@@ -169,7 +174,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator *=(cons
 }
 
 /// a/b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator /(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator /(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(long int,Value()/b->GetValueAsDouble());
@@ -185,7 +190,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator /(const
 }
 
 /// a/=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator /=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator /=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() /= b->GetValueAsDouble();
@@ -195,7 +200,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator /=(cons
 }
 
 /// a%b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator %(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(long int, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
@@ -205,7 +210,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator %(const
 }
 
 /// a%=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator %=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator %=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() =  ((int) round(Value())) % ((int) round(b->GetValueAsDouble()));
@@ -217,50 +222,50 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator %=(cons
 //  Comparison Operators
 
 /// a<b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator <(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()<b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()<b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a<=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator <=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()<=b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()<=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a>b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator >(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()>b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()>b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a>=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator >=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()>=b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()>=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a!=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator !=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()!=b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()!=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -268,11 +273,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator !=(cons
 
 
 /// a==b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ==(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator ==(const BasicVariable::ptr& b)
 { 
   //std::cout << __func__ << std::endl;
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()==b->GetValueAsDouble());
+    RETURN_VARPTR(bool,Value()==b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -280,24 +285,24 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ==(cons
 
 // Logical operators
 
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator !() 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator !() 
 {
-  RETURN_VARPTR(long int,!(Value()>0.5));
+  RETURN_VARPTR(bool,!(Value()>0.5));
 }
 
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator &&(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator &&(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value()&& (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(bool,Value()&& (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::operator ||(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::operator ||(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(long int,Value() || (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(bool,Value() || (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -310,23 +315,61 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<type>::m_##fname() \
     RETURN_VARPTR(long int, func((double)Value())); \
 }
 
-VAR_IMPL_FUNC(long int,  sin,  sin)
-VAR_IMPL_FUNC(long int,  cos,  cos)
-VAR_IMPL_FUNC(long int,  tan,  tan)
-VAR_IMPL_FUNC(long int,  asin, asin)
-VAR_IMPL_FUNC(long int,  acos, acos)
-VAR_IMPL_FUNC(long int,  atan, atan)
-VAR_IMPL_FUNC(long int,  fabs, fabs)
-VAR_IMPL_FUNC(long int,  round,round)
-VAR_IMPL_FUNC(long int,  floor,floor)
-VAR_IMPL_FUNC(long int,  exp,  exp)
-VAR_IMPL_FUNC(long int,  log,  1.0/log(10.0)*log)
-VAR_IMPL_FUNC(long int,  ln,   log)
-VAR_IMPL_FUNC(long int,  norm, fabs)
-VAR_IMPL_FUNC(long int,  sqrt, sqrt)
+// VAR_IMPL_FUNC(long int,  sin,  sin)
+// VAR_IMPL_FUNC(long int,  cos,  cos)
+// VAR_IMPL_FUNC(long int,  tan,  tan)
+// VAR_IMPL_FUNC(long int,  asin, asin)
+// VAR_IMPL_FUNC(long int,  acos, acos)
+// VAR_IMPL_FUNC(long int,  atan, atan)
+// VAR_IMPL_FUNC(long int,  fabs, fabs)
+// VAR_IMPL_FUNC(long int,  round,round)
+// VAR_IMPL_FUNC(long int,  floor,floor)
+// VAR_IMPL_FUNC(long int,  exp,  exp)
+// VAR_IMPL_FUNC(long int,  log,  1.0/log(10.0)*log)
+// VAR_IMPL_FUNC(long int,  ln,   log)
+// VAR_IMPL_FUNC(long int,  norm, fabs)
+// VAR_IMPL_FUNC(long int,  sqrt, sqrt)
+
+//---------------------------------------------------
+template<> AMI_DLLEXPORT
+BasicVariable::ptr Variable<long>::TryCast(
+    const std::string& type_string) const
+{
+  if (type_string==AMILabType<long>::name_as_string()) 
+    return NewCopy();
+  try
+  {
+    // cast to double
+    if (type_string==AMILabType<double>::name_as_string()) {
+      RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
+    } else 
+    // cast to float
+    if (type_string==AMILabType<float>::name_as_string()) {
+      RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
+    } else 
+    // cast to int
+    if (type_string==AMILabType<long>::name_as_string()) {
+      RETURN_VARPTR(long, boost::numeric_cast<int>(Value()));
+    } else 
+    // cast to unsigned char
+    if (type_string==AMILabType<unsigned char>::name_as_string()) {
+      RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
+    } else 
+    {
+      // make default conversion to double??
+      CLASS_ERROR((boost::format("No convertion available for variable %1% from int to %2%") % _name % type_string).str().c_str());
+    }
+  } catch (std::bad_cast &e)
+  {
+    CLASS_ERROR((boost::format("%1%, for variable %2% from int to %3%") % e.what() % _name % type_string).str().c_str());
+    return BasicVariable::ptr();
+  }
+  return BasicVariable::ptr();
+}
+
 
 //
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::BasicCast(const int& type)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long>::BasicCast(const int& type)
 {
   long int res = Value();
 
@@ -339,30 +382,27 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<long int>::BasicCast(const 
     case WT_FLOAT:          { RETURN_VARPTR(float, (float) res); }
     case WT_DOUBLE:         { RETURN_VARPTR(double, res); } /// New (added: 24/05/2010)
     default:
-      std::cerr << boost::format("Conversion to type %1% not available")%((WORDTYPE)type) << std::endl;
+      CLASS_ERROR(( boost::format("Conversion to type %1% not available")%((WORDTYPE)type)).str().c_str());
   }
-  RETURN_VARPTR(float, res);
+  RETURN_VARPTR(long, res);
 }
 
 //
 template<> AMI_DLLEXPORT
-BasicVariable::ptr Variable<long int>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
+BasicVariable::ptr Variable<long>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
 {
+  if (Value()>0.5) {
+    return v1->NewReference();
+  } else {
+    return v2->NewReference();
+  }
 
-  if (IsNumeric()) {
-    if (GetValueAsDouble()>0.5) {
-      return v1->NewReference();
-    } else {
-      return v2->NewReference();
-    }
-  } else
-    CLASS_ERROR("operation not defined");
   return NewReference();
 }
 
 
 template<> AMI_DLLEXPORT 
-BasicVariable::ptr Variable<long int>::operator =(const BasicVariable::ptr& b)
+BasicVariable::ptr Variable<long>::operator =(const BasicVariable::ptr& b)
 {
   if (IsNumeric()) {
     RefValue() = b->GetValueAsDouble();

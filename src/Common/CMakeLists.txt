@@ -21,6 +21,8 @@ SET(Common_SRCS
   ficparam.cpp  
   StringUtils.cpp
   message_dialog.cpp
+  ami_format.cpp
+  amilab_messages.cpp
 
   # coming from previous Math dir
   CurvaturasPrincipales.cpp
@@ -47,6 +49,9 @@ SET(Common_SRCS
   #      inrimage_base.cpp
   #      inrimage_compressee.cpp
   #      inrimage_all.cpp
+
+  # from Plugin
+  wxPluginManager.cpp
 )
 
 SET(Common_HDRS
@@ -67,6 +72,7 @@ SET(Common_HDRS
 	include/Timing.hpp
 	include/Voisins27.hpp
   include/amilab_boost.h
+  include/ami_format.h
 
   # coming from previous Math dir
   include/complex.hpp
@@ -102,6 +108,11 @@ SET(Common_HDRS
   include/InrImageIterator.tpp
   include/InrImageConstIterator.h
   include/InrImageConstIterator.tpp
+
+  # from Plugin
+  include/wxPluginInterface.h
+  include/wxPluginManager.h
+  include/wxPluginBase.h
 )
 
 SET (Common_SRCS

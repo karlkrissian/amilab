@@ -9,12 +9,13 @@
 #include "BasicVariable.h"
 #include "Variable.hpp"
 #include "DefineClass.hpp"
+#include "ami_format.h"
 
 class wxString;
 class wxArrayString;
 
 #include "Variable.hpp"
-
+#include <vector>
 #include <boost/shared_ptr.hpp>
 
 
@@ -25,11 +26,14 @@ class Variables{
 
   DEFINE_CLASS(Variables);
 
-protected:
-  // TODO: avoid pointers here !!!
-  std::list<BasicVariable::ptr>  _vars;
-  std::string                  _context_name;
-  bool                      _global_new;
+ protected:
+  std::vector<BasicVariable::ptr> _vars;
+  std::string                     _context_name;
+  bool                            _global_new;
+
+  /// Default contexts to look for if the variable
+  /// is not found in this context
+  std::list<Variables::ptr>     _defaults;
 
  public:
 
@@ -40,8 +44,32 @@ protected:
 
   virtual ~Variables();
 
-//  Variable* operator [](int i) {  return _vars[i];  }
+  BasicVariable::ptr operator [](int i)
+  {
+    if ((i>=0)&&(i<GetSize()))
+      return _vars[i];
+    return BasicVariable::ptr();
+  }
 
+  //--------------------------------------------
+  void AddDefault( Variables::ptr& defcontext )
+  {
+    _defaults.push_back(defcontext);
+  }
+
+  //--------------------------------------------
+  void RemoveDefault( Variables::ptr& defcontext )
+  {
+    _defaults.remove(defcontext);
+  }
+
+  //--------------------------------------------
+  int GetSize()
+  {
+    return _vars.size();
+  }
+
+  
   std::string GetName() const { return _context_name; }
   void SetName( const std::string& name ) { _context_name = name; }
 
@@ -73,7 +101,10 @@ protected:
         boost::shared_ptr<Variable<T> >& val,
         boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() )
 {
-  CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
+  {
+    ami::format f(" %1%, in %2% ");
+    CLASS_MESSAGE((f % name.c_str() % GetName().c_str()).GetString());
+  }
 
   std::string resname = this->CheckVarName(name.c_str());
   boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val->Pointer()));
@@ -81,7 +112,7 @@ protected:
 
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
-  _vars.push_front(newvar);
+  _vars.push_back(newvar);
 
   return newvar;
 }
@@ -99,7 +130,7 @@ protected:
         boost::shared_ptr<T >& val,
         boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() )
   {
-    CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
+/*    CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());*/
   
     std::string resname = this->CheckVarName(name.c_str());
     boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val));
@@ -107,7 +138,7 @@ protected:
   
     newvar->Rename(resname.c_str());
     newvar->SetContext(context);
-    _vars.push_front(newvar);
+    _vars.push_back(newvar);
   
     return newvar;
   }
@@ -181,7 +212,7 @@ boost::shared_ptr<Variable<T> > Variables::AddVar(
 
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
-  _vars.push_front(newvar);
+  _vars.push_back(newvar);
 
   return newvar;
 }

@@ -65,6 +65,9 @@ bool Driver::parse_stream(std::istream& in,
   in_console   = inconsole;
 
   streamname = sname;
+//std::cout << "parse_stream" << std::endl;
+//std::cout << "yyiplineno" << yyiplineno << std::endl;
+  yyiplineno_lastparser = yyiplineno;
 
   previous_lexer = this->lexer;
   Scanner scanner(&in);
@@ -98,25 +101,29 @@ bool Driver::parse_stream(std::istream& in,
   this->lexer = previous_lexer;
 
   in_console   = in_console_bak;
-  CLASS_MESSAGE(boost::format(" parsing result = %1%")%res);
+  CLASS_MESSAGE((boost::format(" parsing result = %1%")%res).str().c_str());
   return ( res==0);
 }
 
 //-----------------------------------------------------------
 bool Driver::parse_file(const std::string &filename)
 {
+//  std::cout << "parse_file" << std::endl;
   std::ifstream in(filename.c_str());
   if (!in.good()) return false;
 
-  string current_file_bak = current_file;
-  int    yyiplineno_bak   = yyiplineno;
+  string current_file_bak          = current_file;
+  int    yyiplineno_bak            = yyiplineno;
+  int    yyiplineno_lastparser_bak = yyiplineno_lastparser;
   current_file = filename;
   yyiplineno   = 1;
+  yyiplineno_lastparser = yyiplineno;
 
   bool res = parse_stream(in, filename);
 
-  current_file = current_file_bak;
-  yyiplineno   = yyiplineno_bak;
+  current_file            = current_file_bak;
+  yyiplineno              = yyiplineno_bak;
+  yyiplineno_lastparser   = yyiplineno_lastparser_bak;
 
   return res;
 }
@@ -144,14 +151,15 @@ int Driver::error(const class location& l,
     tmpstr  << l 
             << std::endl
             << " current_file = " << current_file << std::endl
-            << " lineno = "  
-              << yyiplineno -1
-              << "-"
-              << yyiplineno 
-              << std::endl
+            << " from line: " << yyiplineno_lastparser - 1 + l.begin.line << ", column: " << l.begin.column
+            << " to   line: " << yyiplineno_lastparser - 1 + l.end.line   << ", column: " << l.end.column
+            << std::endl
+            << "yyiplineno = "            << yyiplineno
+            << "yyiplineno_lastparser = " << yyiplineno_lastparser
+            << std::endl
             << m 
             << std::endl;
-    return err_print(tmpstr.str().c_str());
+    return err_print(tmpstr.str().c_str(),l);
 }
 
 //-----------------------------------------------------------
@@ -189,6 +197,7 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 {
 
   int    previous_lineno   = yyiplineno;
+  int    previous_lineno_lastparser   = yyiplineno_lastparser;
   string previous_filename = this->current_file;
  // int    i;
  // char*  name;
@@ -231,6 +240,7 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 
   // Restore position and filename
   yyiplineno = previous_lineno;
+  yyiplineno_lastparser = previous_lineno_lastparser;
   this->current_file = previous_filename;
 }
 
@@ -239,6 +249,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
 //                        --------------------------
 {
   int    previous_lineno   = yyiplineno;
+  int    previous_lineno_lastparser   = yyiplineno_lastparser;
   string previous_filename = this->current_file;
   int    i;
   char*  name;
@@ -309,6 +320,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
 
   // Restore position and filename
   yyiplineno = previous_lineno;
+  yyiplineno_lastparser = previous_lineno_lastparser;
   this->current_file = previous_filename;
 
   return return_var;
@@ -322,7 +334,7 @@ bool Driver::parse_script(  const char* filename)
   string  fullname;
   string tmp_string;
 
-  CLASS_MESSAGE( boost::format("Switching to %1% ") % filename );
+  CLASS_MESSAGE( (boost::format("Switching to %1% ") % filename).str().c_str());
 
   // Looking for the filename
   wxFileName current_filename(GetwxStr(current_file.c_str()));
@@ -355,7 +367,7 @@ bool Driver::parse_script(  const char* filename)
 
   if (!newname.IsFileReadable()) 
   {
-    CLASS_MESSAGE(boost::format(" current_filename.GetPath() = %1%") 
+    CLASS_MESSAGE((boost::format(" current_filename.GetPath() = %1%").str().c_str()) 
                 % current_filename.GetPath().mb_str());
     // try in the directory of the runnning script
     newname.Assign(
@@ -512,6 +524,50 @@ int Driver::err_print(const char* st)
       // - go to specific line
       editor->ShowLineNumbers(true);
       editor->GotoLine(this->yyiplineno-1);
+    }
+    return res;
+  }
+
+  return wxID_YES;
+} // Driver::err_print()
+
+
+//--------------------------------------------------
+int Driver::err_print(const char* st, const class location& l) 
+//   -----------------
+{
+  if (GB_main_wxFrame)
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st,wxConvUTF8);
+  std::cout << "Error: " << st << std::endl;
+  string mess =  (format("Error %s \n") % st).str();
+  if (InConsole()) 
+    mess = mess + " Abort current parsing ?";
+  else 
+    mess = mess + " Abort current parsing and open file?";
+
+  if ((!nomessagedialog)&&(GB_main_wxFrame)) {
+    wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
+    int res = err_msg->ShowModal();
+    err_msg->Destroy();
+
+    if ((!InConsole())&&(res==wxID_YES)) {
+      // create application frame
+      wxStcFrame*  m_frame =  GB_main_wxFrame->GetAmilabEditor();
+      // open application frame
+      m_frame->Layout ();
+      m_frame->Show (true);
+      m_frame->FileOpen (wxString(this->current_file.c_str(),wxConvUTF8));
+      wxEditor* editor = m_frame->GetActiveEditor();
+      // TODO: 
+      // - set show line numbers
+      // - set highlight C++
+      // - go to specific line
+      editor->ShowLineNumbers(true);
+      int pos1 = editor->FindColumn(this->yyiplineno_lastparser-1+l.begin.line-1,l.begin.column-1);
+      int pos2 = editor->FindColumn(this->yyiplineno_lastparser-1+l.end  .line-1,l.end  .column-1);
+      editor->GotoPos(pos1);
+      editor->SetSelectionStart(pos1);
+      editor->SetSelectionEnd(pos2);
     }
     return res;
   }

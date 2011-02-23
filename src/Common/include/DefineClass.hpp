@@ -39,15 +39,15 @@
 //#include <iostream>
 #include <string>
 // need these includes to prevent conflicts with boost iostream ...
-#include <iomanip>
-#include <cassert>
-#include "boost/format.hpp"
+// #include <iomanip>
+// #include <cassert>
+// #include "boost/format/format_fwd.hpp"
 
 #include <boost/shared_ptr.hpp>
 //#include <boost/shared_array.hpp>
 #include <boost/weak_ptr.hpp>
-#include <list>
-#include <vector>
+/*#include <list>
+#include <vector>*/
 //#include <stdio.h>
  
 // TODO: deal with templates here ...
@@ -56,8 +56,6 @@ public:\
   virtual char const* get_name() const { return #class; } \
   typedef boost::shared_ptr<class>    ptr;              \
   typedef boost::weak_ptr<class>      wptr;             \
-  typedef std::vector<class::ptr>     ptr_vector;       \
-  typedef std::list<class::ptr>       ptr_list;         
 
 #define DEFINE_TEMPLATE_CLASS1(_class,_t) \
 public:\
@@ -65,8 +63,6 @@ public:\
   typedef _class<_t> ClassType; \
   typedef typename boost::shared_ptr<ClassType >    ptr; \
   typedef typename boost::weak_ptr<ClassType >      wptr; \
-  typedef typename std::vector<ClassType::ptr>     ptr_vector; \
-  typedef std::list<ClassType::ptr>       ptr_list; \
 
 
 template<class T>
@@ -117,8 +113,7 @@ using namespace MyNS_ForOutput;
 #ifdef  _MSC_VER
   #define AMI_DLLEXPORT __declspec( dllexport )
 #else 
-  #define AMI_DLLEXPORT 
+  #define AMI_DLLEXPORT
 #endif
-
 
 #endif // _DefineClass_hpp_

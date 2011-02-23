@@ -4,6 +4,21 @@
 # Adding main Gui scripts to the menu
 #
 
-ami.MainFrame.AddToMenu("&Scripts","&QualityMeasures","Image &Differences","QualityMeasures/MSE.amil")
 
 
+proc AddSegMenu() {
+
+  ami.MainFrame.AddToMenu("&Scripts","&QualityMeasures","Image &Differences", "QualityMeasures/MSE.amil" )
+
+  for dir in  "ROC" \
+  {
+    if wx.wxFileName(GetScriptsDir+"/QualityMeasures/"+dir+"/Add2Menu.amil").FileExists() {
+      func "/QualityMeasures/"+dir+"/Add2Menu.amil"
+    } else {
+      InfoDialog GetScriptsDir+"/QualityMeasures/"+dir+"/Add2Menu.amil does not exists"
+    }
+  }
+}
+
+AddSegMenu()
+del AddSegMenu

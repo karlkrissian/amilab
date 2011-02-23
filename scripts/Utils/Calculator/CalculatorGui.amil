@@ -5,10 +5,10 @@ func "CalculatorClass"
 # Main
 #----------------------------
 
-if (!exists(calc)) {
+if (!exists(Calc_obj)) {
 
-  CalculatorClass calc
-  calc.Gui()
+  CalculatorClass Calc_obj
+  Calc_obj.Gui()
   
 
 } else {

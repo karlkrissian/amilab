@@ -1,0 +1,593 @@
+#!/usr/bin/amilab
+
+#
+# Script for drawing 2D functions
+# or lines from an image
+#
+
+comments="ImageHistogramClass: this class allows to draw the histogram of an image."
+
+func "Common/ScriptGui"
+
+
+if (!exists(ImageHistogramClass)) {
+
+  Class ImageHistogramClass : public ScriptGui {
+
+    ::ami_import = &global::ami_import
+    #----------------------------
+    proc ::Init() \
+    {
+      ::input_name =  "", "name of the input image, the drawing window of this image will be used"
+      ::minval = 0, "minimal value of the histogram"
+      ::maxval = 255, "maximal value of the histogram"
+      ::step = 1, "histogram step"
+      ::standalone = 1, "1: runs standalone with input image selector, 0: runs within other Gui."
+      ::use_colormap_curve = 0, "Enable/Disable a second display limited to the colormap range"
+      ::InitColours()
+    }
+
+    #---------------------------
+    proc ::DrawIsoContours() \
+    {
+      ctrlpts = ::dw.GetControlPoints()
+      nc = ctrlpts.size()
+      nb_iso = 0
+      if (exists(::input)) {
+        for k=0 to nc-1 {
+          cp = ctrlpts[k].copy()
+          if (exists(::input_draw)) {
+            if (nb_iso<3)&&(cp.GetVerticalLine()) {
+              ::input_draw.SetIsoContour(nb_iso,&::input,cp.GetX())
+              col = cp.GetColour()
+              ::input_draw.SetIsoContourColor(nb_iso,col.Red(),col.Green(),col.Blue())
+              ::input_draw.DrawIsoContour(nb_iso,1)
+              nb_iso++
+            }
+          }
+        }
+        # don't draw other isocontours
+        for k=nb_iso-1 to 2 {
+          if (exists(::input_draw)) {
+            ::input_draw.DrawIsoContour(nb_iso,0)
+          }
+        }
+        ::dw._Paint()
+        #::dw.Refresh(1,wx.wxRect(0,0,400,400))
+        if (exists(::input_draw)) {
+          ::input_draw.Paint()
+        }
+      }
+    }
+
+
+    #---------------------------
+    proc ::DrawMinMax() \
+    {
+      SetStatusText("DrawMinMax")
+      ::ColormapMinMax()
+      if exists(::input) {
+        # force Y position in the middle
+        #hmax = max(::h[0])
+        #for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
+        #  cp = ::dw.GetCtrlPoint(k)
+          #if (cp.GetType()==1) {
+          #  cp.SetY(hmax/2.0)
+          #  ::dw.SetCtrlPoint(k,&cp)
+          #}
+        #}
+        if (exists(::input_draw)) {
+          ::input_draw.SetIntensityRange( ::cm_min, ::cm_max)
+        }
+  
+        ::dw._Paint()
+        #::dw.Refresh(1)
+        #if (::use_colormap_curve) {
+          ::UpdateCM()
+        #}
+
+        if (exists(::input_draw)) {
+          ::input_draw.Paint()
+        }
+      }
+    }
+
+    #---------------------------
+    proc ::OnCtrlPoint() \
+    {
+      ::DrawIsoContours();
+      ::DrawMinMax();
+    }
+
+    #---------------------------
+    proc ::InitColours() \
+    {
+      # set colors for the curves
+      # start with 6 values, if more will need to add new colors
+      ::ColoursVector = VarVector(6)
+      ::ColoursVector.push_back("#FF0000")
+      ::ColoursVector.push_back("#00FF00")
+      ::ColoursVector.push_back("#0000FF")
+      ::ColoursVector.push_back("#FFFF00")
+      ::ColoursVector.push_back("#FF00FF")
+      ::ColoursVector.push_back("#00FFFF")
+    }
+    
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      SetStatusText("LoadInput use a reference to the input image.")
+      if exists(::input) { del ::input; }
+      eval "::input = &"+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        #::win.update
+      }
+      #::win.update
+      ::UpdateImage()
+      ::Update()
+      SetStatusText("LoadInput Finished")
+    }
+    Comments(::LoadInput,"Load and initialize input image.")
+
+    #----------------------------
+    proc ::SetInput( IMAGE input_im) \
+    {
+      if exists(::input) { del ::input; }
+      ::input = &input_im
+      ::standalone = 0
+      ::UpdateImage()
+      ::Update()
+    }
+    Comments(::SetInput,"Manually sets the input image and the standalone mode is set to 0.")
+
+    #----------------------------
+    proc ::SetInput2( IMAGE input_im, NUM minval, NUM maxval) \
+    {
+      if exists(::input) { del ::input; }
+      ::input = &input_im
+      ::standalone = 0
+      ::UpdateLimits(minval,maxval)
+      ::Update()
+    }
+    Comments(::SetInput,"Manually sets the input image and the standalone mode is set to 0.")
+
+    #-------------------------------------------------------------------
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
+      ::standalone = 0
+    }
+    
+    #-------------------------------------------------------------------
+    proc ::UpdateLimits( NUM minval, NUM maxval) {
+      ::minval = minval
+      ::maxval = maxval
+      ::step = 1
+      if (exists(::minval_id)) {
+        ::win.FloatConstraints(::minval_id,minval,maxval,minval)
+        ::win.FloatConstraints(::maxval_id,minval,maxval,maxval)
+        ::win.FloatConstraints(::step_id,  0,(maxval-minval)/20,::step)
+      }
+    }
+
+    #-------------------------------------------------------------------
+    proc ::UpdateImage() {
+      SetStatusText("UpdateImage min")
+      Imin = min(::input[0])
+      SetStatusText("UpdateImage max")
+      Imax = max(::input[0])
+      SetStatusText("UpdateImage others")
+      for n=1 to ::input.vdim-1 {
+        Imin = -max(-Imin,-min(::input[n]))
+        Imax = max(Imax,max(::input[n]))          
+      }
+      ::UpdateLimits(Imin,Imax)
+      SetStatusText("UpdateImage OK")
+    }
+
+    #-------------------------------------------------------------------
+    proc ::Update() {
+      SetStatusText("Update")
+      if (exists(::input)) {
+        if (::maxval<::minval+0.00001) { ::maxval = ::minval+0.00001; ::win.Update(-1); }
+        if (::step<0.01) { ::step=0.01; ::win.Update(-1); }
+        # vector of histograms
+        if (exists(::h)) { del ::h; }
+        ::h = VarVector(::input.vdim)
+        for n=0 to ::input.vdim-1 {
+          ::h.push_back( histo(::input[n],::minval,::maxval,(::maxval-::minval)/::step+1))
+          ::dw->SetXLimits(::minval,::maxval)
+          ::dw->SetYLimits(min(::h[n]),max(::h[n]))
+          ::dw->SetCurve(::h[n],n)
+          ::dw->SetCurveProperties(n,::ColoursVector[n%6])
+        }
+
+        # clear control points and add standard colormap
+        hmax = max(::h[0])
+        curve = ami.dwControlledCurve()
+
+        cp0 = ami.dwControlPoint(::minval,hmax/2)
+        cp0.SetColour(wx.wxColour(0,0,0))
+        #cp0.SetType(1)
+        cp1 = ami.dwControlPoint(::maxval,hmax/2)
+        cp1.SetColour(wx.wxColour(255,255,255))
+        #cp1.SetType(1)
+        # remove all control points
+        curve.GetControlPoints().push_back(&cp0)
+        curve.GetControlPoints().push_back(&cp1)
+        curve.SetType(1)
+        ::dw.GetControlledCurves().clear()
+        ::dw.GetControlledCurves().push_back(&curve)
+      }
+    }
+    Comments(::Update,"Recomputes input image limits and resets the histogram.")
+
+    #--------------------------------------------------
+    proc ::ColormapMinMax() \
+    {
+      #printn "::ColormapMinMax()"
+      curves = ::dw.GetControlledCurves()
+      # declare variable to avoid references
+      for c=0 to curves.size()-1 {
+        if (exists(ctrlpts)) { del ctrlpts; }
+        ctrlpts = curves[c].GetControlPoints()
+        for k=0 to ctrlpts.size()-1 {
+          # avoid keeping a reference by copying
+          cp = ctrlpts[k].copy()
+          if (curves[c].GetType()==1) {
+            if (!exists(xmin)) {
+              xmin = cp.GetX();
+            } else {
+              xmin = -max(-xmin,-cp.GetX())
+            }
+            if (!exists(xmax)) {
+              xmax = cp.GetX();
+            } else {
+              xmax = max(xmax,cp.GetX())
+            }
+          }
+        }
+      }
+      if (exists(xmin)) { ::cm_min = xmin; } else { ::cm_min = 0; }
+      if (exists(xmax)) { ::cm_max = xmax; } else { ::cm_min = 255; }
+    }
+
+    #--------------------------------------------------
+    proc ::CreateOpacityMap() \
+    {
+      printn "::OpacityMap()"
+      curves = ::dw.GetControlledCurves()
+      checknext = 1
+      c = INT(0)
+      found = 0
+      while checknext {
+        if (c<curves.size()) { 
+          if (curves[c].GetType()==0) {
+            checknext = 0
+            found = 1
+          } else { c++; }
+        } else {
+          checknext = 0
+        }
+      }
+printn "found = %1%" % found
+      if (found) {
+        # first get min and max of curve
+        ctrlpts = curves[c].GetControlPoints()
+        for k=0 to ctrlpts.size()-1 {
+          cp = ctrlpts[k].copy()
+          if (!exists(xmin)) {
+            xmin = cp.GetX();
+          } else {
+            xmin = -max(-xmin,-cp.GetX())
+          } # end if
+          if (!exists(xmax)) {
+            xmax = cp.GetX();
+          } else {
+            xmax = max(xmax,cp.GetX())
+          } # end if
+        } # end for
+printn "xmin = %1%" % xmin
+printn "xmax = %1%" % xmax
+        if (xmax>xmin) {
+          # second create image
+          res = Image(FLOAT,256,1,1)
+          res.settranslation(xmin,0,0)
+          res.setvoxelsize((xmax-xmin)/255,1,1)
+          res = 0
+          pos = SpacePos(res)
+          # third map each segment
+          for k=1 to ctrlpts.size()-1 {
+            cp0 = ctrlpts[k-1].copy()
+            cp1 = ctrlpts[k].copy()
+            px  = pos[0]
+            p0x = cp0.GetX()
+            printn "p0x %1%" % p0x
+            p0y = cp0.GetY()
+            printn "p0y %1%" % p0y
+            p1x = cp1.GetX()
+            printn "p1x %1%" % p1x
+            p1y = cp1.GetY()
+            printn "p1y %1%" % p1y
+            if (p0x<p1x) {
+              slope = p0y+(px-p0x)*((p1y-p0y)/(p1x-p0x))
+              res = ((px<p0x)+(px>p1x))*res+ \
+                    (px>=p0x)*(px<=p1x)*slope
+            } else {
+              slope = p1y+(px-p1x)*((p0y-p1y)/(p0x-p1x))
+              res = ((px<p1x)+(px>p0x))*res+ \
+                    (px>=p1x)*(px<=p0x)*slope
+            }
+          }
+        }
+      } # end if found
+      if (exists(res)){
+        # rescale in Y to min/max of the window
+        if (exists(::h)) {
+          hmin = min(::h[0])
+          hmax = max(::h[0])
+          res = (res-hmin)/(hmax-hmin)
+          res = res*(res>0)
+          res = res*(res<1)+(res>=1)
+          ::opacity_map = res
+        }
+      }
+    }
+
+    #--------------------------------------------------
+    proc ::UpdateCM_old() \
+    {
+      ::cm.SetXLimits(-1,256)
+      ::cm.SetYLimits(-1,256)
+      # remove all control points
+      ::cm.GetControlledCurves().clear()
+      cm_range = ::cm_max-::cm_min
+      hmax = max(::h[0])
+
+      for i=0 to ::dw.GetControlledCurves().size()-1 {
+        if (exists(curve)) { del curve; }
+        if (exists(points)) { del points; }
+        curve = ::dw.GetControlledCurves()[i]
+        points = curve.GetControlPoints();
+        #printn "nb points %1% " % points.size()
+        for k=0 to points.size()-1 {
+          cp = points[k].copy()
+          newpos = (cp.GetX()-::cm_min)/cm_range*255
+          cp.SetX(newpos)
+          if (cp.GetType()==1) {
+            cp.SetY(127)
+          } else {
+            cp.SetY(cp.GetY()/hmax*255)
+          }
+          points.setelement(k,&cp)
+        }
+        ::cm.GetControlledCurves().push_back(&curve)
+      }
+
+      # add the corresponding histogram
+
+      #  rescale histogram
+      if (exists(::cm_min)&&exists(::cm_max)&&exists(::h)) {
+        #printn "xmax = %1% " % xmax
+        #printn "xmin = %1% " % xmin
+        ::h1 <<= (FLOAT)::h[0]
+
+        # rescale to the maximum in the current range
+        minpos = (::cm_min-::h1.trx)/::h1.vx
+        maxpos = (::cm_max-::h1.trx)/::h1.vx
+        subhist = ::h1[minpos:maxpos,0:0]
+        ::dw->SetCurve(subhist,2)
+        ::dw->SetCurveProperties(2,"#0000FF")
+
+        newpixelsize = ::h1.vx*255.0/cm_range
+        ::h1.settranslation(-(::cm_min-::h1.trx)*255.0/cm_range,0,0)
+        setvoxelsize(::h1,newpixelsize,1,1)
+        ::h1 = ::h1/max(subhist)*255
+
+        ::cm->SetCurve(::h1,0)
+        ::cm->SetCurveProperties(0,"#0000FF")
+        # update image colormap in image viewer
+        if (exists(::input_draw)) {
+          cm = ::dw.GetColormapImage()
+          ::input_draw.SetUserColormap(cm)
+          ::input_draw.UpdateColormap()
+        }
+      }
+      ::cm._Paint()
+      #::cm.Refresh(1)
+    }
+
+    #--------------------------------------------------
+    # don't rescale in X to simplify ...
+    #
+    proc ::UpdateCM() \
+    {
+      ::cm.SetYLimits(-5,255+5)
+      # remove all control points
+      ::cm.GetControlledCurves().clear()
+      cm_range = ::cm_max-::cm_min
+      hmax = max(::h[0])
+
+      for i=0 to ::dw.GetControlledCurves().size()-1 {
+        curve = ::dw.GetControlledCurves()[i].copy()
+        if (exists(points)) { del points; }
+        points = curve.GetControlPoints()
+        printn "nb points %1% " % points.size()
+        for k=0 to points.size()-1 {
+          if (exists(cp)) { del cp; }
+          cp = points[k].copy()
+          if (cp.GetType()==1) {
+            cp.SetY(127)
+          } else {
+            cp.SetY(cp.GetY()/hmax*255)
+          }
+          points.setelement(k,&cp)
+        }
+        ::cm.GetControlledCurves().push_back(&curve)
+      }
+
+      # add the corresponding histogram
+
+      #  rescale histogram
+      if (exists(::cm_min)&&exists(::cm_max)&&exists(::h)) {
+        #printn "xmax = %1% " % xmax
+        #printn "xmin = %1% " % xmin
+        ::h1 <<= (FLOAT)::h[0]
+
+        # rescale to the maximum in the current range
+        minpos = (::cm_min-::h1.trx)/::h1.vx
+        maxpos = (::cm_max-::h1.trx)/::h1.vx
+        cm_range = max(0.1,::cm_max-::cm_min)
+        ::cm.SetXLimits(::cm_min-0.02*cm_range,::cm_max+0.02*cm_range)
+
+        subhist = ::h1[minpos:maxpos,0:0]
+        ::dw->SetCurve(subhist,2)
+        ::dw->SetCurveProperties(2,"#0077FF")
+
+        subhmax = max(1,max(subhist))
+        #::dw->SetYLimits(0-0.02*subhmax,subhmax+0.02*subhmax)
+        ::h1 = ::h1/max(subhist)*255
+
+        ::cm->SetCurve(::h1,0)
+        ::cm->SetCurveProperties(0,"#0000FF")
+        # update image colormap in image viewer
+        if (exists(::input_draw)) {
+          cm = ::dw.GetColormapImage()
+          ::input_draw.SetUserColormap(cm)
+          ::input_draw.UpdateColormap()
+        }
+      }
+      ::cm._Paint()
+      #::cm.Refresh(1)
+    }
+
+    #----------------------------
+    proc ::ShowImage() {
+      if (!exists(::input)) {
+        InfoDialog "You must load the input image first!"
+      } else {
+        show ::input
+      }
+    }
+
+    #----------------------------
+    proc ::SimpleGui() {
+      # parameters window
+
+      # add Drawing Window
+      d = ::win.CurrentParent()
+      ::dw = global::ami_import.wxDrawingWindow(&d)
+      # sets minimal size here
+      ::dw.SetMinSize(&wx.wxSize(80,80));
+      ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
+      ::sizer_item = ::win.AddWidget(&::dw,0)
+
+      # add User Colormap Drawing Window
+      d = ::win.CurrentParent()
+      ::cm = global::ami_import.wxDrawingWindow(&d)
+      # sets minimal size here
+      ::cm.SetMinSize(&wx.wxSize(80,70));
+      ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
+      ::sizer_item = ::win.AddWidget(&::cm,0)
+
+    }
+
+    #----------------------------
+    proc ::StandardGui() {
+    
+      # parameters window
+      ::win.BeginBook()
+    
+        ::win.AddPage("Main")
+
+            # set the input image drawing window
+            ::win.BeginBoxPanel("Input")
+              ::win.BeginHorizontal()
+                ::win.AddImageChoice( &::input_name, "")
+                ::AddBitmapButton(&::win, &::icons._Copy,   32, "LoadInput")
+                ::win.SetPositionProp(-1,0)
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel()
+
+            ::win.BeginHorizontal()
+              ::AddBitmapButton(&::win, &::icons._Refresh,   32, "Update")
+              ::win.SetPositionProp(-1,0)
+              ::AddBitmapButton(&::win, &::icons._Show,   32, "ShowImage")
+              ::win.SetPositionProp(-1,0)
+            ::win.EndHorizontal()
+
+
+          # add Drawing Window
+          d = ::win.CurrentParent()
+          ::dw = global::ami_import.wxDrawingWindow(&d)
+          # sets minimal size here
+          ::dw.SetMinSize(&wx.wxSize(80,80));
+          ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
+          ::sizer_item = ::win.AddWidget(&::dw,0)
+
+          # add User Colormap Drawing Window
+          d = ::win.CurrentParent()
+          ::cm = global::ami_import.wxDrawingWindow(&d)
+          # sets minimal size here
+          ::cm.SetMinSize(&wx.wxSize(80,70));
+          ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
+          ::sizer_item = ::win.AddWidget(&::cm,0)
+
+        ::win.AddPage("Param")
+          ::win.BeginBoxPanel("Histogram calculation")
+            ::minval_id = ::win.AddFloat(&::minval,"min",0,255)
+            ::win.SetCallback(&::Update)
+            ::maxval_id = ::win.AddFloat(&::maxval,"max",0,255)
+            ::win.SetCallback(&::Update)
+            ::step_id   = ::win.AddFloat(&::step,"step",0,10)
+            ::win.SetCallback(&::Update)
+          ::win.EndBoxPanel()
+
+      ::win.EndBook()
+
+      #::AddStandardButtons(&::win)
+      
+    }
+
+    #----------------------------
+    proc ::Gui() {
+    
+      # parameters window
+      # parameters window
+      if (exists(::parent_panel)) {
+        ::win = global::ami_import.ParamPanel("ImHist",&::parent_panel)
+      } else {
+        ::win = global::ami_import.ParamPanel("ImHist")
+      }
+      
+      if (::standalone>0.5) {
+        ::StandardGui() 
+      } else {
+        ::SimpleGui()
+      }
+
+      if (::standalone>0.5) {
+        ::AddStandardButtons(&::win)
+      } else  {
+        #::AddLimitedButtons(&::win)
+      }
+      
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+      ::dw.SetCtrlPointCallback(&::OnCtrlPoint)
+   }
+
+    ::Init()
+  } 
+  # Class ImageHistogramClass
+  Comments( ImageHistogramClass, comments)
+} 
+# end if (!exists(ImageHistogramClass))
+  
+  

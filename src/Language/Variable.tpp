@@ -3,9 +3,9 @@
 #include "Variable.hpp"
 
 #include <string>
-#include <ostream>
-#include <sstream>
-#include <limits>
+//#include <ostream>
+//#include <sstream>
+//#include <limits>
 
 
 
@@ -45,7 +45,7 @@ void Variable<T>::Delete()
 {
   if (!FreeMemory()) 
   {
-    CLASS_MESSAGE(boost::format("Could not completely delete variable %s") % _name);
+/*    CLASS_MESSAGE(boost::format("Could not completely delete variable %s") % _name);*/
   }
   _type = type_void;
 }
@@ -55,29 +55,33 @@ template<class T>
 BasicVariable::ptr Variable<T>::TryCast(const std::string& type_string) const
 {
   // make default conversion to double??
-  CLASS_ERROR(boost::format("Could not convert variable %1% to type %2%") % _name % type_string);
+  /*CLASS_ERROR(boost::format("Could not convert variable %1% to type %2%") % _name % type_string);*/
   return BasicVariable::ptr();
 }
 
+void ToStream(std::ostream& o, const char* st);
 
 //---------------------------------------------------
 template<class T>
 std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
 //       -----------
 {
-  if (v.Type()==type_void) { o << "deleted"; return o;}
-  o << boost::format("%1%\t<%2%>") % v.Name() % v.GetTypeName();
+  if (v.Type()==type_void) { ToStream(o, "deleted"); return o;}
+  ami::format f("%1%\t<%2%>");
+  ToStream(o , (f % v.Name().c_str() % v.GetTypeName().c_str()).GetString());
+
 // TODO: take care of this functionality
 //  o << ;
 /*  switch(v.Type()) {
     //      case type_void     : printf("void";     break;
     case type_image           : o << "image    "; break;
+    case type_bool            : o << "bool     "; break;
     case type_float           : o << "float    "; break;
     case type_int             : o << "int      "; break;
     case type_uchar           : o << "uchar    "; break;
     case type_string          : o << "string   "; break;
     case type_surfdraw        : o << "surfdraw "; break;
-    case type_file            : o << "file     "; break;
+  //  case type_file            : o << "file     "; break;
   //  case type_c_function      : o << ("C function ";       break;
     case type_c_procedure     : o << "C procedure ";       break;
     case type_class_member : o << "C++ procedure member";       break;
@@ -105,9 +109,9 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
 } // operator << Variable
 
 template <class T>
-void Variable<T>::display() const
+void Variable<T>::display(std::ostream& o) const
 {
-  std::cout << (*this);
+  o << (*this);
 }
 
 /*

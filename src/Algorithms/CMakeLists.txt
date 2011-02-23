@@ -2,6 +2,7 @@
 # The extension is already found.  Any number of sources could be listed here.
 
 add_subdirectory (myVTK4)
+add_subdirectory (DerivAndOrient)
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
@@ -11,6 +12,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Wrapping/include
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}
   ${AMIFLUID_INCLUDE_DIR}
   ${PTHREADS_INCLUDE_DIR}

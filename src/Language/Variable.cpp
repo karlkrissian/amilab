@@ -1,4 +1,9 @@
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
+
 #include "DefineClass.hpp"
 #include "Variable.hpp"
 
@@ -46,6 +51,11 @@ class VarArray;
 
 #include "VarArray.h"
 
+#include <ostream>
+void ToStream(std::ostream& o, const char* st)
+{
+ o << st;
+}
 
 #define VARTYPE_PROP(type,name,isnum) \
   template<> AMI_DLLEXPORT vartype GetVarType<type>()  { return name;     } \
@@ -53,6 +63,7 @@ class VarArray;
 
 
 VARTYPE_PROP( InrImage,             type_image,           false);
+VARTYPE_PROP( bool,                 type_bool,            true);
 VARTYPE_PROP( float,                type_float,           true);
 VARTYPE_PROP( double,               type_double,          true); /// New (added: 24/05/2010)
 VARTYPE_PROP( long,                 type_long,            true); /// New (added: 27/05/2010)
@@ -60,7 +71,7 @@ VARTYPE_PROP( int,                  type_int,             true);
 VARTYPE_PROP( unsigned char,        type_uchar,           true)
 VARTYPE_PROP( std::string,          type_string,          false)
 //VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
-VARTYPE_PROP( FILE,                 type_file,            false)
+//VARTYPE_PROP( FILE,                 type_file,            false)
 VARTYPE_PROP( C_wrap_procedure,     type_c_procedure,     false)
 VARTYPE_PROP( WrapClassMember,      type_class_member,    false)
 VARTYPE_PROP( C_wrap_imagefunction, type_c_image_function,false)
@@ -85,12 +96,13 @@ VARTYPE_PROP( VarArray,             type_array,           false)
   template <> double Variable<type>::GetValueAsDouble() const { return 0.0; } 
 
 
-VARTYPE_STRING_DOUBLE( float,                Value(),               Value())
-VARTYPE_STRING_DOUBLE( double,               Value(),               Value())
-VARTYPE_STRING_DOUBLE( long,                 Value(),               Value()) /// New (added: 27/05/2010)
-VARTYPE_STRING_DOUBLE( int,                  Value(),               Value())
-VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),          Value())
-VARTYPE_STRING_DOUBLE( std::string,          Value(),               0)
+VARTYPE_STRING_DOUBLE( float,                Value(),                   Value())
+VARTYPE_STRING_DOUBLE( double,               Value(),                   Value())
+VARTYPE_STRING_DOUBLE( long,                 Value(),                   Value()) /// New (added: 27/05/2010)
+VARTYPE_STRING_DOUBLE( bool,                 (Value()?"true":"false"),  (Value()?1:0)) /// New (added: 19/11/2010)
+VARTYPE_STRING_DOUBLE( int,                  Value(),                   Value())
+VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),              Value())
+VARTYPE_STRING_DOUBLE( std::string,          Value(),                   0)
 
 // FloatMatrix
 template <> std::string Variable<FloatMatrix>::GetValueAsString() const 
@@ -176,6 +188,7 @@ BasicVariable::ptr operator +(const boost::shared_ptr<Variable<float> >& a,
 #include "wrapfunction_class.h"
 #include "ami_function.h"
 
+AMI_DEFINE_BASICTYPE(bool);
 AMI_DEFINE_BASICTYPE(float);
 AMI_DEFINE_BASICTYPE(double);
 AMI_DEFINE_BASICTYPE(long);
@@ -192,7 +205,7 @@ AMI_DEFINE_BASICTYPE(VarArray);
 #define AMI_DEFINE_BASICTYPE_NOCONSTRUCT(type) \
 	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
     \
-    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr)  \
     { \
       if (!var.get()) \
       {\
@@ -205,7 +218,7 @@ AMI_DEFINE_BASICTYPE(VarArray);
       else {\
         BasicVariable::ptr converted = var->TryCast(AMILabType<type>::name_as_string());\
         if (!converted.get()) {\
-          FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<type>::name_as_string().c_str());\
+          /*FILE_ERROR(boost::format("Cannot be converted to type %2%.") % AMILabType<type>::name_as_string().c_str());*/\
           return boost::shared_ptr<type>(); \
         } else { \
           boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(converted)); \

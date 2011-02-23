@@ -9,7 +9,7 @@ proc AddCarotidMenu() {
   curdir = op_system.GetCurrentScriptDir()
   for dir in  "RunExperiments" \
   {
-    if FileExists(curdir+"/"+dir+"/Add2Menu.amil") {
+    if wx.wxFileName(curdir+"/"+dir+"/Add2Menu.amil").FileExists() {
       func curdir+"/"+dir+"/Add2Menu.amil"
     } else {
       InfoDialog curdir+"/"+dir+"/Add2Menu.amil does not exists"

@@ -12,6 +12,10 @@
 
 #include "BasicVariable.h"
 #include "Variables.hpp"
+#include "ami_format.h"
+#include <iostream>
+
+
 
 BasicVariable::ptr BasicVariable::empty_variable;
 
@@ -29,7 +33,8 @@ const string BasicVariable::GetTypeName() const
   if (_type==type_void) { return string("deleted"); }
   switch(_type) {
     //      case type_void     : printf("void";     
-    case type_image           : return string( "image"); 
+    case type_image           : return string( "image");
+    case type_bool            : return string( "bool");
     case type_float           : return string( "float"); 
     case type_double          : return string( "double"); /// New (added: 24/05/2010)
     case type_long            : return string( "long int");  /// New (added: 27/05/2010)
@@ -50,10 +55,8 @@ const string BasicVariable::GetTypeName() const
     case type_gltransform     : return string( "gltransform");
     case type_array           : 
     {
-/* TODO
-      VarArray::ptr array =  *((VarArray::ptr*) Pointer());
-      return str( format("array \t %d \n") % array->Size());
-* /
+     // VarArray::ptr array =  *((VarArray::ptr*) Pointer());
+     // return str( format("array \t %d \n") % array->Size());
     }
     default                : 
       return string( "unknown type");
@@ -65,7 +68,8 @@ const string BasicVariable::GetTypeName() const
 
 void BasicVariable::Rename(const char* newname)
 {  
-  CLASS_MESSAGE(boost::format("Renaming %1% to %2%")%_name % newname);
+  ami::format f("Renaming %1% to %2%");
+  CLASS_MESSAGE((f%_name.c_str() % newname).GetString());
   _name=newname;
   if (_vars.get())
     _vars->SetName(newname);

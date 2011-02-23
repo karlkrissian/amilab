@@ -49,7 +49,7 @@ class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxWind
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( Viewer3D*);
 
-    ADD_CLASS_METHOD(reference,         "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
+    ADD_CLASS_METHOD(__reference__,         "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
 
     ADD_CLASS_METHOD(rotate,            "Applies a rotation to the objects displayed by the surface visualization window.");
     ADD_CLASS_METHOD(AddObject,         "Add a wrapped SurfacePoly object.");
@@ -112,7 +112,7 @@ class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxWind
       // Operators
       AddVar_add_assign(        this_ptr);
       AddVar_sub_assign(        this_ptr);
-      AddVar_reference(         this_ptr);
+      AddVar___reference__(         this_ptr);
     };
 };
 

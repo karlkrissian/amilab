@@ -8,6 +8,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
 )
 
 
@@ -25,3 +27,4 @@ SET(WrapViewer3D_SRCS
 )
 
 my_add_library ( WrapViewer3D)
+add_dependencies ( WrapViewer3D WrapWxWidgets )

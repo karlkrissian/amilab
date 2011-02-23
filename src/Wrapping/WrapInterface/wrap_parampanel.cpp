@@ -9,6 +9,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
 
 #include "paramlist.h"
 #include "VarContexts.hpp"
@@ -21,9 +24,11 @@
 #include "MainFrame.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
+#include "wrap_wxNotebook.h"
 #include "wrap_wxSizerItem.h"
 
 #include "wrap_wxBitmap.h"
+#include "wrap_wxColour.h"
 
 #define RETURN_VARINT(val,name)             \
   std::string varname = (boost::format("%1%_id")%name).str();\
@@ -151,6 +156,25 @@ BasicVariable::ptr WrapClass_ParamPanel::
 
 }
 
+
+//---------------------------------------------------
+//  GetBookCtrl
+//---------------------------------------------------
+void WrapClass_ParamPanel::wrap_GetBookCtrl::SetParametersComments() 
+{
+  return_comments = "The control book.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_GetBookCtrl::CallMember( ParamList* p)
+{
+  wxNotebook* b = this->_objectptr->GetObj()->GetBookCtrl();
+
+  if (b==NULL)
+    return BasicVariable::ptr();
+  else
+    return AMILabType<wxNotebook>::CreateVar(b);
+
+}
 
 
 //---------------------------------------------------
@@ -650,6 +674,34 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddLabel::CallMember( ParamList* p
 }
 
 
+//--------------------------------------------------
+// SetLabelValue
+//--------------------------------------------------
+void WrapClass_ParamPanel::wrap_SetLabelValue::SetParametersComments()
+{
+  ADDPARAMCOMMENT("int: index");
+  ADDPARAMCOMMENT("string expression: label value");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_SetLabelValue::CallMember( ParamList* p)
+{
+  BasicVariable::ptr var;
+  int label_id = 0;
+  std::string* label_val = NULL;
+  int  n = 0;
+  int  var_id;
+
+  if (!get_val_param<int>( label_id, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label_val, p, n)) ClassHelpAndReturn;
+
+  this->_objectptr->GetObj()->SetLabelValue( label_id,
+                label_val->c_str());
+
+  return BasicVariable::ptr();
+}
+
+
+
 
 //--------------------------------------------------
 // AddFilename
@@ -794,7 +846,9 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddImageChoice::CallMember( ParamL
       imagelist,
       (void*)CB_update_imagelist, // TODO: check declaration
       EnumOptionMenu,
-      tooltip);
+      tooltip,
+      true // allowing drop
+                              );
 
   // create integer variable to return
   RETURN_VARINT(var_id,var->Name());
@@ -900,7 +954,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddBitmapButton::CallMember( Param
 
   if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
   if (!get_var_param<AMIFunction>(varfunc, p, n))     ClassHelpAndReturn;
-  GET_OBJECT_PARAM(wxBitmap,bitmap,_obj);
+  GET_OBJECT_PARAM(wxBitmap,bitmap,GetObj());
   if (!bitmap.get())                              ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)")  % varfunc->GetComments() 
@@ -917,6 +971,37 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddBitmapButton::CallMember( Param
   // create integer variable to return
   RETURN_VARINT(var_id,varfunc->Name());
 }
+
+//--------------------------------------------------
+// AddColor
+//--------------------------------------------------
+void WrapClass_ParamPanel::wrap_AddColor::SetParametersComments()
+{
+  ADDPARAMCOMMENT("String: button label.");
+  ADDPARAMCOMMENT("wxColour parameter.");
+  return_comments = "Identifier of the new widget (int variable).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_AddColor::CallMember( ParamList* p)
+{
+  std::string* label = NULL;
+  int  n = 0;
+  int  var_id;
+
+  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+
+  GET_OBJECT_PARAM(wxColour,colour,GetObj());
+  if (!colour.get())                              ClassHelpAndReturn;
+
+  //cout << " button pointer  = "<<  ((AMIFunction::ptr*) var->Pointer())->get() << std::endl;
+  this->_objectptr->GetObj()->AddColor( &var_id, 
+                label->c_str(),
+                colour.get());
+
+  // create integer variable to return
+  RETURN_VAR(int,var_id);
+}
+
 
 
 //--------------------------------------------------
@@ -968,7 +1053,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_SetDragCallback::CallMember( Param
   if ((paramid>=0)&&(paramid<nbp))
     this->_objectptr->GetObj()->SetDragCallback(paramid,activate);
   else
-    FILE_ERROR(boost::format("bad parameter number %1%") % paramid);
+    FILE_ERROR((boost::format("bad parameter number %1%") % paramid).str().c_str());
 
   return BasicVariable::ptr();
 }
@@ -997,7 +1082,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_EnablePanel::CallMember( ParamList
   if ((id>=0)&&(id<nbp))
     this->_objectptr->GetObj()->EnablePanel(id,enable);
   else
-    FILE_ERROR(boost::format(" bad parameter number %1% ")%id);
+    FILE_ERROR((boost::format(" bad parameter number %1% ")%id).str().c_str());
 
   return BasicVariable::ptr();
 }
@@ -1092,7 +1177,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_Enable::CallMember( ParamList* p)
   if ((id>=0)&&(id<nb))
     this->_objectptr->GetObj()->Enable(id,enable);
   else
-    FILE_ERROR(boost::format(" %d  \t bad parameter number ")%id);
+    FILE_ERROR((boost::format(" %d  \t bad parameter number ")%id).str().c_str());
 
   return BasicVariable::ptr();
 }
@@ -1148,7 +1233,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddWidget::CallMember( ParamList* 
     WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
     if (obj.get()) {
 
-      res = this->_objectptr->GetObj()->AddWidget(obj->_obj.get(), proportion);
+      res = this->_objectptr->GetObj()->AddWidget(obj->GetObj().get(), proportion);
     } else {
       FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
       ClassHelpAndReturn;

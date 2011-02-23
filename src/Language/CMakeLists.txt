@@ -8,6 +8,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/include
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/wxParams
@@ -31,6 +33,7 @@ SET(Language_SRCS
     VarContexts.cpp
     BasicVariable.cpp
     Variable.cpp
+    Variable_bool.cpp
     Variable_long.cpp
     Variable_int.cpp
     Variable_uchar.cpp
@@ -66,6 +69,7 @@ SET(Language_HDRS
     VarContexts.tpp
     BasicVariable.h
     Variable.hpp
+    Variable_bool.h
     Variable_long.h
     Variable_int.h
     Variable_uchar.h
@@ -145,3 +149,4 @@ ENDIF(AMI_USE_FLEXBISON)
 #ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/DefineClass.hpp Language_SRCS)
 
 my_add_library ( Language)
+add_dependencies ( Language WrapWxWidgets )

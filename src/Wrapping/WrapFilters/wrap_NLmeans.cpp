@@ -10,6 +10,10 @@
 //
 //
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+
 #include "wrap_NLmeans.h"
 
 #include "AMILabConfig.h"
@@ -75,7 +79,7 @@ InrImage* NLmeans(ParamList* p)
     h = 10;
   }
 
-  FILE_MESSAGE(boost::format("Pattern weight factor = %1%")%pattern_weight_factor);
+  FILE_MESSAGE((boost::format("Pattern weight factor = %1%")%pattern_weight_factor).str().c_str());
 
   if (input->GetFormat()!=WT_FLOAT) {
    input_float = new InrImage(WT_FLOAT,"NLmeans_result.ami.gz",input);

@@ -24,8 +24,13 @@
 #include <boost/shared_ptr.hpp>
 //#include "wxParamTypes.hpp"
 
+
+
 typedef boost::shared_ptr<std::string>     string_ptr;
 
+#include <wx/choice.h>
+#include <wx/sizer.h>
+#include "widget.hpp"
 
 class wxBitmapButtonParameter;
 
@@ -44,18 +49,38 @@ class myChoice: public wxChoice
         long style = 0,
         const wxValidator& validator = wxDefaultValidator,
         const wxString& name = wxChoiceNameStr) :
-        wxChoice(parent,id,pos,size,n,choices,style,validator,name) 
-    {}
+        wxChoice(parent,id,pos,size,n,choices,style,validator,name)        
+  { 
+    _calldata = _callback = NULL;
+    _updatelist_calldata = _updatelist_callback = NULL;
+  }
     
   void SetCallback(void* cb, void* cd) { _callback=cb; _calldata=cd;}
+  void SetUpdateListCallback(void* cb, void* cd) 
+  {
+     _updatelist_callback=cb;
+     _updatelist_calldata=cd;
+  }
+
   void OnChoiceUpdate( wxCommandEvent &WXUNUSED(event) )
   {
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
   }
+
+  void Callback();
+
+  void UpdateListCallback();
+
+  void OnFocus( wxFocusEvent &event );
+  void OnLeftDown( wxMouseEvent& event );
+
 protected:
   void* _callback;
   void* _calldata;
+
+  void* _updatelist_callback;
+  void* _updatelist_calldata;
 private:
     DECLARE_EVENT_TABLE()
 };
@@ -87,7 +112,9 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   wxEnumerationParameter( wxWindow* parent,
     string_ptr selection_param,
     const char* label,
-    const std::string& tooltip="");
+    const std::string& tooltip="",
+    bool allowdrop=false
+                        );
   
   ~wxEnumerationParameter();
   
@@ -97,7 +124,7 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   
   wxString GetStringSelection();
 
-  void AddUpdateButton(void* update_cb,
+  void AddUpdateCallback(void* update_cb,
   const std::string& tooltip);
 
   void SetSelection(int n);
@@ -107,6 +134,12 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   static void OnEnumUpdate(void* data);
 
   void EnableWidget(bool enable = true);
+
+///@cond wxCHECK
+#if wxCHECK_VERSION(2,8,11)
+  wxString GetAbsoluteName(const wxString& Name);
+#endif
+/// @endcond
 
 //  void OnButtonUpdate( wxCommandEvent& data);
 

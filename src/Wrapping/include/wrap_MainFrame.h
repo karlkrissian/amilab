@@ -18,14 +18,14 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
-#include "wrap_wxWindow.h"
+#include "wrap_wxFrame.h"
 
 #include "MainFrame.h"
 //class MainFrame;
 
 AMI_DECLARE_TYPE(MainFrame);
 
-class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxWindow
+class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxFrame
 {
   DEFINE_CLASS(WrapClass_MainFrame);
 
@@ -37,7 +37,7 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxWind
   public:
 
     /// Constructor
-    WrapClass_MainFrame(boost::shared_ptr<MainFrame> si): WrapClass<MainFrame>(si), WrapClass_wxWindow(si)
+    WrapClass_MainFrame(boost::shared_ptr<MainFrame> si): WrapClass<MainFrame>(si), WrapClass_wxFrame(si)
     {}
 
     /// Wrapping of the constructor
@@ -51,15 +51,20 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxWind
     ADD_CLASS_METHOD(AddMenuScript,    "Adds a new link to a script from the 'Scripts' menu.");
     ADD_CLASS_METHOD(AddToMenu,        "Adds a new link to a script from any menu.");
 
+    ADD_CLASS_METHOD(GetAuiManager, "Gets the wxAuiManager");
+    ADD_CLASS_METHOD(GetMainBook,   "Gets the main notebook as wxAuiNotebook");
+
     void AddMethods(WrapClass<MainFrame>::ptr this_ptr )
     {
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
+      // Add members from wxFrame
+      WrapClass_wxFrame::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxFrame>(this_ptr));
       parent_obj->AddMethods(parent_obj);
 
       AddVar_GetAmilabEditor(  this_ptr);
       AddVar_AddMenuScript(    this_ptr);
       AddVar_AddToMenu(        this_ptr);
+      AddVar_GetAuiManager(    this_ptr);
+      AddVar_GetMainBook(      this_ptr);
     }
 
 };

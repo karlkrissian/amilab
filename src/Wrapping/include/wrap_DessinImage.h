@@ -26,7 +26,7 @@
 
 AMI_DECLARE_TYPE(DessinImage);
 
-class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual WrapClass_FenetreDessin
+class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_FenetreDessin
 {
   DEFINE_CLASS(WrapClass_DessinImage);
 
@@ -39,7 +39,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
     const boost::shared_ptr<DessinImage>& GetObj() const { return WrapClass<DessinImage>::GetObj(); }
 
     /// Constructor
-    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass_FenetreDessin(si), WrapClass<DessinImage>(si)
+    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si) 
     {}
 
     /// Destructor
@@ -55,7 +55,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( DessinImage*);
 
-    ADD_CLASS_METHOD(reference,       "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
+    ADD_CLASS_METHOD(__reference__,       "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
 
     ADD_CLASS_METHOD(setpos,                 "Set the cursor position on a imagedraw window");
     ADD_CLASS_METHOD(showcursor,             "Displays or hides the cursor of a imagedraw window");
@@ -66,7 +66,11 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
     ADD_CLASS_METHOD(SetCompTransf,          "SetCompTransf is not available at the moment.");
     ADD_CLASS_METHOD(setvector,              "This command allows to set one of the vector fields, specified by the given number");
     ADD_CLASS_METHOD(DrawVector,             "Enable/Disable the draw of a vector field.");
-    ADD_CLASS_METHOD(DisplayVectors,         "Display the vectors.");
+
+    ADD_CLASS_METHOD(DisplayVectors,         "Display the vectors once.");
+
+    ADD_CLASS_METHOD(SetDisplayVectors,         "Enable/Disable the display of the vectors.");
+
     ADD_CLASS_METHOD(SetVectParam,           "Sets the size and spacing of the vector drawing interface in the given image drawing window");
     ADD_CLASS_METHOD(SetVectColor,           "Sets the color of the given vector field (given by vector id),the color is set as (R,G,B) components, each component has a value between 0 and 255.");
     ADD_CLASS_METHOD(SetVectStyle,           "Specifies the type of vector.");
@@ -108,7 +112,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
         boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
       parent_obj->AddMethods(parent_obj);
 
-      AddVar_reference(             this_ptr);
+      AddVar___reference__(             this_ptr);
       AddVar_setpos(                this_ptr, "_setpos");
       AddVar_showcursor(            this_ptr);
       AddVar_update(                this_ptr);
@@ -119,6 +123,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
       AddVar_setvector(             this_ptr);
       AddVar_DrawVector(            this_ptr);
       AddVar_DisplayVectors(        this_ptr);
+      AddVar_SetDisplayVectors(     this_ptr);
       AddVar_SetVectParam(          this_ptr);
       AddVar_SetVectColor(          this_ptr);
       AddVar_SetVectStyle(          this_ptr);

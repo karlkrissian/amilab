@@ -28,6 +28,8 @@
 
 #cmakedefine AMI_USE_SSE
 
+#cmakedefine AMI_USE_PRECOMP_HEADERS
+
 #define AMI_BUILD_@AMI_BUILD_TYPE@
 
 #ifdef _MSC_VER

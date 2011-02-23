@@ -679,13 +679,14 @@ bool ParamPanel::AddListChoice( int* id,
           const boost::shared_ptr<wxArrayString>& choicelist,
           void* update_cb,
           type_enum type,
-          const std::string& tooltip
+          const std::string& tooltip,
+          bool allowdrop
           )
 {
   wxEnumerationParameter* wxe = new wxEnumerationParameter(
-      CurrentParent(), selection_param, libelle, tooltip);
+      CurrentParent(), selection_param, libelle, tooltip,allowdrop);
   std::string update_string = "Update list";
-  wxe->AddUpdateButton(update_cb,update_string);
+  wxe->AddUpdateCallback(update_cb,update_string);
   wxe->SetChoices(choicelist);
 
   ParamInfo pi( TYPE_PARAMETER_ENUMERATION,
@@ -766,7 +767,7 @@ unsigned char ParamPanel::AddBitmapButton( int* id,  const char* libelle,
 unsigned char ParamPanel::AddColor( int* id,
 //                      --------
                     const char* libelle,
-                    ClasseCouleur*  couleur,
+                    wxColour*  couleur,
                     const std::string& tt
                     )
 {
@@ -802,7 +803,7 @@ unsigned char ParamPanel::AddLabel( int* id, const char* libelle,
 
 
 ///--------------------------------------------------------------
-void ParamPanel::SetLabelValue( int id,  char* value)
+void ParamPanel::SetLabelValue( int id,  const char* value)
 //             -------------
 {
    ((wxLabelParameter*) _tab_param[id].GetWidget())->SetValue( value);
@@ -1247,6 +1248,11 @@ int ParamPanel::BeginBox( const char* boxname)
                                     wxID_ANY,
                                     wxString::FromAscii(boxname));
   _tab_boxes.push_back(sb);
+
+#if wxCHECK_VERSION(2,9,0)
+  _panels.push( sb);
+#endif
+  
   wxStaticBoxSizer* sizer  = new wxStaticBoxSizer( sb, wxVERTICAL );
   _current_sizer.top()->Add(sizer, 0,wxEXPAND | wxALL, BoxBorder);
   _current_sizer.push(sizer);
@@ -1259,6 +1265,9 @@ int ParamPanel::BeginBox( const char* boxname)
 void ParamPanel::EndBox()
 {
   _current_sizer.pop();
+#if wxCHECK_VERSION(2,9,0)
+  _panels.pop();
+#endif
 }
   
 //-----------------------------------------------------------

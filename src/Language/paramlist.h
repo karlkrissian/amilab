@@ -27,7 +27,7 @@ extern unsigned char GB_debug;
 
 
 #include <string>
-#include <list>
+#include <vector>
 //using namespace std;
 
 
@@ -171,7 +171,6 @@ class ParamListDecl {
     int       i;
     //void*     p;
     //vartype t;
-  
     if ( pl->GetNumParam() != GetNumParam() )
     {
       fprintf ( stderr,"Bad number of parameters \n" );

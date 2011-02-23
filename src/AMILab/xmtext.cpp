@@ -31,6 +31,9 @@
 // #include <X11/StringDefs.h>
 
 
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
 
 #include "xmtext.hpp"
 //#include "myscan.h"
@@ -219,7 +222,7 @@ void TextControl::ProcessTab()
   }
   
 //  wxRegEx last_variable_regex (wxT(".*((global::|)([_[:alpha:]][_[:alnum]]*->)*([_[:alpha:]][_[:alnum]]*))$"));
-  wxString expr = wxT(".*[^[:alnum:]_\\.\\:]((global\\:\\:|)?([_[:alpha:]][_[:alnum:]]*\\.)*([_[:alpha:]][_[:alnum:]]*)?)$");
+  wxString expr = wxT(".*[^[:alnum:]_\\.\\:]((global\\:\\:)?([_[:alpha:]][_[:alnum:]]*\\.)*([_[:alpha:]][_[:alnum:]]*)?)$");
   wxRegEx last_variable_regex (expr);
   wxString last_variable;
   if (!last_variable_regex.IsValid()) {
@@ -330,7 +333,7 @@ void TextControl::ProcessTab()
 } // ProcessTab()
 
 //--------------------------------------------------
-void TextControl::ProcessReturn()
+bool TextControl::ProcessReturn()
 {
   wxString   alltext;
   wxString   last_cmd;
@@ -358,7 +361,7 @@ void TextControl::ProcessReturn()
     if (!res) {
       GB_driver.yyiperror(" Need Image \n");
       in_changed_value = 0;
-      return;
+      return false;
     }
 
     wxFileName filename(wxString::FromAscii(name.c_str()));
@@ -384,7 +387,7 @@ void TextControl::ProcessReturn()
     if (!res) {
       GB_driver.yyiperror(" Need Image \n");
       in_changed_value = 0;
-      return;
+      return false;
     }
 
     wxFileName filename(wxString::FromAscii(name.c_str()));
@@ -428,9 +431,12 @@ void TextControl::ProcessReturn()
 
   // Add now the newline character ...
   in_changed_value = 0;
-  if (GB_main_wxFrame)
-    GB_main_wxFrame->UpdateVarsDisplay();
 
+  // Too slow now, need a clever way to update only visible information ...
+  //if (GB_main_wxFrame)
+  //  GB_main_wxFrame->UpdateVarsDisplay();
+
+  return parseok;
   // event.Skip();
 }
 
@@ -677,7 +683,4 @@ void TextControl::NextCommand()
         this->SetInsertionPointEnd();
     }
 }
-
-
-
 

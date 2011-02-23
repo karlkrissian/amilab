@@ -1,0 +1,197 @@
+#!/usr/bin/amilab
+
+
+#if (argc>=3) {
+  #input            = Image $1
+  #result = input
+  #threshold  = atof($2)
+  #input_filtered   = Image $3
+#} else {
+  #InfoDialog "Need at least 3 arguments"
+  #quit
+#}
+#KeepGui=1
+#if (argc==4) {
+  #if ($4=="-gui") {
+    #KeepGui=1
+  #}
+#}
+
+#printn "Import filters (ami_import->Filters()).\n"
+
+ami_import.Filters()
+func "Common/ScriptGui"
+
+if (!exists(GreyMorphoClass)) {
+
+  Class RemoveSpotsClass : public ScriptGui {
+
+    #----------------------------
+    proc ::Init() \
+    {
+      ::input_name =  ""
+
+      ::threshold     = 0, "Computes Connected Components of binary image 'input>threshold' to find the 'spots'"
+      ::filtersize    = 10, "Standard Deviation of the Gaussian filter used iteratively to fill the spots"
+      
+      ::crop_border   = INT(20), "Size of the border in pixels to maintain around the spot to process it"
+      ::dilation_size = 15, "Size of the initial dilation of the spot before filling"
+
+      ::minsize         = INT(10),  "Minimal size of the spots"
+      ::maxsize         = INT(200), "Maximal size of the spots"
+      #fill_iterations=20
+      ::fill_iterations = INT(400), "Maximal number of iterations to fill the intensities inside the spots"
+    }
+
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+      # set threshold min-max
+      ::win.FloatConstraints(::threshold_id, min(::input), max(::input),::threshold)
+      ::win.Update(-1)
+    }
+    
+    #----------------------------------------------
+    proc ::InPlaceFillMask( IMAGE _input, IMAGE _mask ) {
+    #      ---------------
+
+      m1 = (FLOAT) (_mask>0)
+
+      #  m1 = EDPdilate( m1,2,0.5)
+      morph = global::filters.ContinuousMorphology()
+      m1 = morph.Dilate(m1,::dilation_size,0.5)
+
+      test1 = _input
+      filtersize=10
+      #filtersize = (_input.vx+_input.vy+_input.vz)/3
+
+      _i=1
+      needsmore=1
+      while needsmore {
+        testf = filter(test1,filtersize,0,0,0)
+        test1_bak = test1
+        test1 = testf*m1+_input*(1-m1)
+        diff = test1_bak-test1
+        diff = diff*diff
+        diffval=sqrt(mean[m1>0.5](diff))
+        print "%1%\t" % diffval
+        #sprint(" %0.2f \t",sqrt(mean[m1>0.5](diff)))
+        _i = _i+1
+        needsmore = (_i<::fill_iterations)*(abs(diffval)>0.001)
+      }
+
+      print "\n"
+      _input = test1
+
+    } // InPlaceFillMask()
+
+    #----------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) { ::LoadInput(); }
+
+      # create resulting image
+      ::result = ::input
+
+      tmp = ((FLOAT) ::input)-::threshold
+      # CC() computes connected components information, and save it in several new image variables cc_sign, cc_size, inclusion, reorder
+      tmp_cc = CC(tmp)
+
+      cc_ok = (cc_sign==1)*(cc_size>=::minsize)*(cc_size<=::maxsize)
+      nb_components= count(cc_ok)
+
+      n = 1
+      for i=0 to cc_sign.tx-1 {
+        if cc_ok(i) {
+          # found a small connected component of high intensity
+          # --> remove it ...
+          print "Filling component %1% " % n +" / %1%" % nb_components
+          printn sprint(" of size %0.0f",cc_size(i))
+          comp <<= (tmp_cc == i)
+          comp_crop <<= autocrop(comp,::crop_border)
+          del comp
+          input_crop <<= (FLOAT) ::result[comp_crop.GetExtent]
+          ::InPlaceFillMask(&input_crop,comp_crop)
+          ::result.putimage(input_crop)
+          n=n+1
+          SetProgress((FLOAT)n/nb_components*100)
+        }
+      }
+      SetProgress(0)
+    }
+
+    #----------------------------------------------
+    proc ::Display() \
+    {
+      show ::input
+      if (exists(::result)) {
+        show ::result
+        ::input_draw.compare(&::result_draw)
+      }
+    }
+
+    #----------------------------------------------
+    proc ::Save2Disk() \
+    {
+      result.save ::input_name-".gz"-".ami"-".vtk"+"_CalcOut.ami.gz"
+    }
+
+
+    #----------------------------
+    proc ::Gui() {
+    
+      # parameters window
+      ::win = global::ami_import.ParamPanel("Spots")
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Input/Output")
+
+          # set the input image
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::LoadInput)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          ::threshold_id = ::win.AddFloat(&::threshold,"Threshold",0,100)
+          ::win.BeginBoxPanel("Spot size (in pixels/voxels)")
+            ::win.AddInt(&::minsize,"Min_size",0,100)
+            ::win.AddInt(&::maxsize,"Max_size",0,500)
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Spot initialization")
+            ::win.AddInt(&::crop_border,"Crop_Border",0,20)
+            ::win.AddFloat(&::dilation_size,"Dilation",0,20)
+          ::win.EndBoxPanel()
+          ::win.BeginBoxPanel("Spot filling parameters")
+            ::win.AddFloat(&::filtersize,"Filter_size",0.01,30)
+            ::win.AddInt(&::fill_iterations,"Fill_Iterations",1,200)
+          ::win.EndBoxPanel()
+
+          
+    
+        ::win.AddPage("Controls")
+          ::win.AddButton("Run",     ::Run)
+          ::win.AddButton("Display",    ::Display)
+
+      ::win.EndBook()
+      ::AddStandardButtons(&::win)
+      
+      ::win.Update(-1)
+      ::win.Display()
+    }
+
+    ::Init()
+
+  } # end Class RemoveSpotsClass
+
+} # end if
+

@@ -36,6 +36,7 @@ class wrap_##classname##methodname : public WrapClassMember { \
   public: \
     wrap_##classname##methodname(const classname::ptr& pp) : \
      _objectptr(pp) { \
+      Set_arg_failure(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -63,6 +64,7 @@ class wrap_##methodname : public WrapClassMember { \
   public: \
     wrap_##methodname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
+      Set_arg_failure(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -96,6 +98,7 @@ class wrap_Set##varname : public WrapClassMember { \
   public: \
     wrap_Set##varname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
+      Set_arg_failure(false);\
       ADDPARAMCOMMENT_TYPE(type,description_str); \
     } \
     BasicVariable::ptr CallMember(ParamList* p) { \
@@ -122,7 +125,9 @@ class wrap_Get##varname : public WrapClassMember { \
   public: \
     wrap_Get##varname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
-      return_comments = (boost::format("Returns a variable of type %1%.") % AMILabType<type>::name_as_string().c_str()).str(); \
+      Set_arg_failure(false);\
+      ami::format f("Returns a variable of type %1%."); \
+      return_comments = (f % AMILabType<type>::name_as_string().c_str()).GetString(); \
     } \
     BasicVariable::ptr CallMember(ParamList*) { \
       type val = this->_objectptr->GetObj()->Get##varname(); \
@@ -157,6 +162,7 @@ void AddVar_SetGet##varname(  _parentclass_ptr& pc) {\
 class wrap_##methodname : public WrapClassMember { \
   public: \
     wrap_##methodname() { \
+      Set_arg_failure(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -170,6 +176,32 @@ class wrap_##methodname : public WrapClassMember { \
 \
 static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
   boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
+  _context->AddVar<WrapClassMember>(newname, tmp, _context); \
+}
+
+/** Macro for adding the class static method with a static function
+  */
+#define ADD_CLASS_STATICMETHOD(methodname,description_str) \
+/**\
+ * description_str\
+ **/\
+class wrap_static_##methodname : public WrapClassMember { \
+  public: \
+    wrap_static_##methodname() { \
+      Set_arg_failure(false);\
+      SetParametersComments(); \
+    } \
+    void SetParametersComments(); \
+    BasicVariable::ptr CallMember(ParamList* p); \
+    static const std::string StaticDescription()  { return description_str; }\
+    static const std::string StaticFunctionName() \
+    { std::string classname(AMILabType<ObjectType>::name_as_string());\
+      return classname+"::"+#methodname; }\
+    STATIC_HELP\
+}; \
+\
+static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
+  boost::shared_ptr<WrapClassMember> tmp( new wrap_static_##methodname());\
   _context->AddVar<WrapClassMember>(newname, tmp, _context); \
 }
 
@@ -192,6 +224,12 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
     this->ShowHelp();\
     return BasicVariable::ptr();\
   }
+
+// simple return with empty variable for a class member
+#define ClassReturnEmptyVar  {\
+    Set_arg_failure(true);\
+    return BasicVariable::ptr();\
+    }
 
 /**
  * Add the comments for the next parameter for a wrapped class member.
@@ -345,6 +383,7 @@ class WrapClassMember {
     std::vector<std::string> paramtypes;
     std::string return_comments;
     std::string return_type;
+    bool arg_failure;
 
   public:
     virtual ~WrapClassMember() = 0;
@@ -356,6 +395,10 @@ class WrapClassMember {
      * Display the function help in an information dialog.
      */
     void ShowHelp();
+    //void ParamError(int n);
+    
+    void Set_arg_failure(bool const & f) { arg_failure=f;}
+    bool Get_arg_failure() { return arg_failure;}
     virtual const std::string GetDescription() = 0;
     virtual const std::string GetFunctionName() = 0;
 };

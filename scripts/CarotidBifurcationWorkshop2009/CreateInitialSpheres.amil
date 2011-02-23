@@ -60,29 +60,28 @@ if (!exists(CreateInitialSpheresClass)) {
     }
 
 
-    proc ::CreateInitialSpheres( IMAGE input, STRING resname, NUM size) \
+    proc ::CreateInitialSpheres( OBJECT rep, IMAGE input, STRING resname, NUM size) \
     {
+      printn "::CreateInitialSpheres begin"
       # create the resulting image as a global variable, with inital negative values of -10
      res = (FLOAT)input*0-10
 
-      ::CheckInitialPoints(&input,size)
+      ::CheckInitialPoints(&rep, &input,size)
 
       # add spheres
       res=-10
-      eval "pt1_ok = ::pt1_OK;"
-      eval "pt2_ok = ::pt2_OK;"
-      eval "pt3_ok = ::pt3_OK;"
-      if (pt1_ok) {
-        ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p1x,global::p1y,global::p1z,size,-10,10)
+      if (::pt1_OK) {
+        ::ASCIS->AddBrightSphereGlobal_mm(&res,rep.p1x,rep.p1y,rep.p1z,size,-10,10)
       }
-      if (pt2_ok) {
-        ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p2x,global::p2y,global::p2z,size,-10,10)
+      if (::pt2_OK) {
+        ::ASCIS->AddBrightSphereGlobal_mm(&res,rep.p2x,rep.p2y,rep.p2z,size,-10,10)
       }
-      if (pt3_ok) {
-        ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p3x,global::p3y,global::p3z,size,-10,10)
+      if (::pt3_OK) {
+        ::ASCIS->AddBrightSphereGlobal_mm(&res,rep.p3x,rep.p3y,rep.p3z,size,-10,10)
       }
 
-      eval "global"+resname+" <<= res;"
+      return = &res
+      printn "::CreateInitialSpheres end"
     }
     
   }
