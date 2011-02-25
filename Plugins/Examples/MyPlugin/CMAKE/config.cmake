@@ -9,12 +9,12 @@
 #==============================================================================
 
 SET(AMILAB_SOURCE_DIR
-    /home/proyectos/amilab/trunk-amilab/src
+    /home/karl/projects/Sourceforge/amilab/trunk/src
     CACHE STRING "AMILab source path"
 )
 
 SET(AMILAB_BINARY_DIR
-    /home/proyectos/amilab/trunk-amilab/build/release/
+    /home/karl/projects/Sourceforge/amilab/trunk/src/build_release/
     CACHE STRING "AMILab binary path"
 )
 

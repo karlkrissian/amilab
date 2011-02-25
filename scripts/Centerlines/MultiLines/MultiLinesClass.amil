@@ -76,6 +76,9 @@ if (!exists(MultiLinesClass)) {
       # this coefficient is recomputed at each scale
       ::rad2sigma_coeff = 1
 
+      # keep all scales
+      ::keep_all_scales = UCHAR(0), "Keep responses at all scales in memory"
+
       # Progress information
       ::current_progress = 0;
       ::current_step     = 0;
@@ -225,14 +228,14 @@ if (!exists(MultiLinesClass)) {
     
       response.initvalue(0)
     
-      // Computation of the direction
-      // the results are 
-      //
-      // 1. Gamma normalized with the coefficient _gamma
-      // 2. the eigenvalues are arranged into descending order of absolute values
-      //
+      # Computation of the direction
+      # the results are 
+      #
+      # 1. Gamma normalized with the coefficient _gamma
+      # 2. the eigenvalues are arranged into descending order of absolute values
+      #
     
-      // Compute Structure Tensor
+      # Compute Structure Tensor
       printn "Structure Tensor"
       sth = ::filters->StructureTensorH(&::input,sigma,1,&::mask)
     
@@ -250,8 +253,8 @@ if (!exists(MultiLinesClass)) {
       grad = gradient(::input,sigma)*sigma
       SetProgress(::current_progress+::current_step*0.75)
     
-      // create a region of interest
-      //_mask1 = (UCHAR) ((_mask>0)*(vap1<0)*(vap2<0)*255)
+      # create a region of interest
+      #_mask1 = (UCHAR) ((_mask>0)*(vap1<0)*(vap2<0)*255)
     
     
       response = CircleMinIntSdExc(grad,\
@@ -268,8 +271,8 @@ if (!exists(MultiLinesClass)) {
       # Integrate the border information on a circle of radius theta*sigma
     
       # Error: I did not comment this line for the challenge !!!!
-      #_response = CircleInt( grad, eig[3], eig[4],\
-      #                        _theta*sigma, _mask)
+      #response = CircleInt( grad, eig[3], eig[4],
+      #                        ::theta*sigma, ::mask)
     
       if (::local_maxima) {
         # copy the 2 eigenvectors
@@ -277,7 +280,9 @@ if (!exists(MultiLinesClass)) {
         ::current_v2 <<= eig[4]
       }
     
-    } // ::ComputeResponse_new
+    } 
+    # ::ComputeResponse_new
+
     #--------------------------------------------------
     #
     # mode is 0: use Hessian matrix
@@ -310,6 +315,10 @@ if (!exists(MultiLinesClass)) {
       response=Image(FLOAT,1,::input)
       response.initvalue(0)
     
+      if (::keep_all_scales) {
+        ::all_responses <<= Image(FLOAT,::input.tx,::input.ty,::input.tz,::numrad)
+      }
+
       v1=Image(FLOAT,3,::input)
       v1.initvalue(0,0,0)
       v2=Image(FLOAT,3,::input)
@@ -337,6 +346,9 @@ if (!exists(MultiLinesClass)) {
                             &v1, &v2,&v3)
 #        ::all_responses.push_back(response)
 
+        if (::keep_all_scales) {
+          ::all_responses.SetComponent(i,response)
+        }
     
         # save response to file
         #response_filename=result.GetName-".gz"-".inr"-".ami"-".vtk"
@@ -355,8 +367,8 @@ if (!exists(MultiLinesClass)) {
  #        ::all_maxresponses.push_back(max_response)
           
           prev_response=response
-          ::maxima = response*0
-          ::maxima = response*0
+          current_maxima <<= response*0
+          ::maxima <<= response*0
           v1_max=v1
           v2_max=v2
           v3_max=v3
@@ -365,7 +377,7 @@ if (!exists(MultiLinesClass)) {
           printn "get here"
           # Update the maxima
           # only keep the first maxima found
-          ::maxima = (::maxima!=0)*::maxima+(::maxima==0)*(::maxima>response)*::maxima
+          ::maxima = (::maxima!=0)*::maxima+(::maxima==0)*(current_maxima>response)*current_maxima
     
           v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
           v2_max = v2_max*(max_response>=response)+v2*(max_response<response)
@@ -374,8 +386,8 @@ if (!exists(MultiLinesClass)) {
           max_response=max(response,max_response)
  #        ::all_maxresponses.push_back(max_response)
          # Compute local maxima
-          ::maxima = LocalExtrema(response,v1,v2,::mask)
-          ::maxima = ::maxima*(response>prev_response)
+          current_maxima = LocalExtrema(response,v1,v2,::mask)
+          current_maxima = current_maxima*(response>prev_response)
         }
     
  #       ::all_radii.push_back(radius)
@@ -390,11 +402,10 @@ if (!exists(MultiLinesClass)) {
     #  v2_max.save sprint("v2_max_%01.0f.ami.gz",mode)
     
       # computing local maxima on the maximum response accross scales
-      real_maxima2 = LocalExtrema(max_response,v1_max,v2_max,::mask)
+      ::maxima2 = LocalExtrema(max_response,v1_max,v2_max,::mask)
     
       # save maximal response to file
       ::result    = max_response
-      ::maxima    <<= real_maxima2
       ::radii     <<= radius
     
       SetProgress(0)
@@ -435,8 +446,12 @@ if (!exists(MultiLinesClass)) {
       #
       # main loop 
       #
-      response=Image(FLOAT,1,::input)
+      response<<=Image(FLOAT,1,::input)
       response.initvalue(0)
+
+      if (::keep_all_scales) {
+        ::all_responses <<= Image(FLOAT,::input.tx,::input.ty,::input.tz,::numrad)
+      }
     
       for i=0 to ::numrad-1 {
         iteration_mess = " Iteration %1%" % i
@@ -453,7 +468,11 @@ if (!exists(MultiLinesClass)) {
     
         ::ComputeResponse_new(::current_sigma, &response)
     
-        // Compute and Update Local Maxima
+        if (::keep_all_scales) {
+          ::all_responses.SetComponent(i,response)
+        }
+
+        # Compute and Update Local Maxima
         SetStatusText( iteration_mess + \
                         "Compute and Update Local Maxima")
     
@@ -463,8 +482,8 @@ if (!exists(MultiLinesClass)) {
           if (::local_maxima) {
             # 3 more images in memory
             prev_response=response
-            ::maxima = response*0
-            ::maxima <<= response*0
+            current_maxima <<= response*0
+            ::maxima       <<= response*0
             if (::keep_orientations) {
               # check how to get the vectors here, or keep the symmetric matric??
               #v1_max=v1
@@ -480,7 +499,8 @@ if (!exists(MultiLinesClass)) {
           if (::local_maxima) {
             # Update the maxima
             # only keep the first maxima found
-            ::maxima = (::maxima!=0)*::maxima+(::maxima==0)*(::maxima>response)*::maxima
+            ::maxima =  (::maxima!=0)*::maxima+\
+                        (::maxima==0)*(current_maxima>response)*current_maxima
             if (::keep_orientations) {
               # to do
               #v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
@@ -491,8 +511,8 @@ if (!exists(MultiLinesClass)) {
               radius = (max_response>=response)*radius+(max_response<response)*::current_rad
             }
             # Compute local maxima
-            ::maxima = LocalExtrema(response,::current_v1,::current_v2,::mask)
-            ::maxima = ::maxima*(response>prev_response)
+            current_maxima = LocalExtrema(response,::current_v1,::current_v2,::mask)
+            current_maxima = current_maxima*(response>prev_response)
           } 
           # end if (::local_maxima)
           max_response=max(response,max_response)
@@ -582,6 +602,8 @@ if (!exists(MultiLinesClass)) {
           modeid = ::win.AddEnum( &::mode)
             ::win.AddEnumChoice(modeid,"Hessian Matrix")
             ::win.AddEnumChoice(modeid,"Structure Tensor")
+
+          ::win.AddBoolean( &::keep_all_scales, "Keep all scales")
 
           ::win.BeginBoxPanel("Controls")
             ::win.BeginHorizontal()
