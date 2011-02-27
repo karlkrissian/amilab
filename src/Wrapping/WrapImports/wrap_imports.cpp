@@ -58,6 +58,7 @@
 #include "wrap_wxToolBar.h"
 */
 #include "addwrap_wx.h"
+#include "addwrap_algorithms.h"
 
 #include "wrap_vtkLevelSets.h"
 
@@ -104,6 +105,7 @@ void AddWrapImports()
 {
 
   AddWrapWxWidgets();
+  AddWrapAlgorithms();
   AddWrapAmilab();
   AddWrapIO();
   AddWrapImage();
@@ -165,6 +167,23 @@ void AddWrapWxWidgets()
       amiobject,Vars.GetBuiltinContext());
 
 }
+
+void AddWrapAlgorithms()
+{
+
+  // Create a new context (or namespace)
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("algorithms");
+
+  // Add classes to wx context
+  wrap_algorithms_classes(amiobject->GetContext());
+
+  // Add wx context to builtin
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+      amiobject,Vars.GetBuiltinContext());
+
+}
+
 
 void AddWrapAmilab()
 {

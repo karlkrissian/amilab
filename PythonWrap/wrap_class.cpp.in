@@ -65,8 +65,6 @@ void WrapClass_${TEMPLATE}::AddMethods(WrapClass<${TEMPLATE}>::ptr this_ptr )
 
   ${AddPublicFields}
 
-  ${AddPublicEnums}
-
   ${METHODS_BASES}
 };
 
@@ -81,6 +79,9 @@ void WrapClass${TEMPLATE}_AddStaticMethods( Variables::ptr& context)
   amiobject->SetName("${TEMPLATE}");
   ${AddVar_constructor}
   ${AddVar_static_methods}
+  ${AddPublicEnums}
+
+
   //  add it to the given context
   context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   

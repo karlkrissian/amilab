@@ -148,14 +148,14 @@ if (!exists(MultiLinesClass)) {
     
       response.initvalue(0)
     
-      // Computation of the direction
-      // the results are 
-      // _input_Hvep1, _input_Hvep2, _input_Hvep3
-      // _input_Hvap1, _input_Hvap2, _input_Hvap3
-      //
-      // 1. Gamma normalized with the coefficient _gamma
-      // 2. the eigenvalues are arranged into descending order of absolute values
-      //
+      # Computation of the direction
+      # the results are 
+      # _input_Hvep1, _input_Hvep2, _input_Hvep3
+      # _input_Hvap1, _input_Hvap2, _input_Hvap3
+      #
+      # 1. Gamma normalized with the coefficient _gamma
+      # 2. the eigenvalues are arranged into descending order of absolute values
+      #
     
       # Old way: HessianMatrix(_input,sigma,_gamma)
       #
@@ -182,7 +182,7 @@ if (!exists(MultiLinesClass)) {
           del input_Hvep1
           del input_Hvep2
       
-          // create a region of interest
+          # create a region of interest
           mask1 = (UCHAR) ((::mask>0)*(vap1<0)*(vap2<0)*255)
       
           del vap1
@@ -191,7 +191,7 @@ if (!exists(MultiLinesClass)) {
     
       }  else {
     
-        // Compute Structure Tensor
+        # Compute Structure Tensor
         printn "Structure Tensor"
     
         StructTensorH(::input,sigma,1,::mask,1)
@@ -220,7 +220,7 @@ if (!exists(MultiLinesClass)) {
       # _response   = CircleIntSdExc( _input_grad,_v1,_v2,_theta*sigma,_mask1,1,1.5)
     
     
-    } // ComputeResponse
+    } # ComputeResponse
     
     #-------------------------------------------------------------
     proc ::ComputeResponse_new( NUM sigma, IMAGE response) {
@@ -257,16 +257,39 @@ if (!exists(MultiLinesClass)) {
       #_mask1 = (UCHAR) ((_mask>0)*(vap1<0)*(vap2<0)*255)
     
     
-      response = CircleMinIntSdExc(grad,\
-                          eig[3],\
-                          eig[4],\
-                          ::theta*sigma, \
-                          ::mask,\
-                          ::SD_th*::use_SD,\
-                          ::EXC_th*::use_EXC, \
-                          ::pairs_mode, \
-                          ::keephighest)
+      #response = CircleMinIntSdExc(grad,\
+                          #eig[3],\
+                          #eig[4],\
+                          #::theta*sigma, \
+                          #::mask,\
+                          #::SD_th*::use_SD,\
+                          #::EXC_th*::use_EXC, \
+                          #::pairs_mode, \
+                          #::keephighest)
     
+      # second response new way to do it
+      repcircle = algorithms.CalculRepCercle(&grad,algorithms.CalculRepCercle.circle_mean)
+      repcircle.SetGradient(&grad)
+      repcircle.SetNoLinearInterp(1)
+      repcircle.useSD(::SD_th*::use_SD)
+      repcircle.useEXC(::EXC_th*::use_EXC)
+      repcircle.ReducePairs(true,::pairs_mode)
+      repcircle.KeepHighest(::keephighest)
+      repcircle.FixeRayon(::theta*sigma,1)
+
+      cb3d = algorithms.CircleBoundaries3D()
+      cb3d.SetBoundaryComputationClass(&repcircle)
+      cb3d.SetMask(&::mask)
+      e3 = eig[3]
+      e4 = eig[4]
+      cb3d.SetOrientations(&e3,&e4)
+      #::grad0 = grad
+      #response
+      cb3d.Execute(&response)
+
+      #diff = max(norm(response-::response2))
+      #printn "Maximal difference = %1%" % diff
+
       # run the circle integration on a region of interest
       # Integrate the border information on a circle of radius theta*sigma
     
@@ -537,7 +560,8 @@ if (!exists(MultiLinesClass)) {
       SetProgress(0)
       SetStatusText( "Finished MultiLines_new" )
       EndTime
-    } // MultiLines_new
+    } # MultiLines_new
+
     #-----------------------------------------------
     proc ::CB_ROI() {
       if (exists(::input_draw)) {

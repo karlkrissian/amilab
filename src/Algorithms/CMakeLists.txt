@@ -53,6 +53,7 @@ SET(Algorithms_SRCS
 
   # files coming from previous Line directory
   reponse_cercle.cpp
+  CircleBoundaries3D.cpp
 
   # from Contours
   CalculAireSection.cpp
@@ -105,6 +106,7 @@ SET(Algorithms_HDRS
 
   # files coming from previous Line directory
   include/reponse_cercle.hpp
+  include/CircleBoundaries3D.h
 
   # from Contours
   include/CalculAireSection.hpp

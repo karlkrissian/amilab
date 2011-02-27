@@ -5833,7 +5833,7 @@ image:
           varim2 ->Pointer().get(),  // first  vector
           varim3 ->Pointer().get(),  // second vector
           (float)     $9,              // radius
-          CIRCLE_RESPONSE_MEAN,          // integration type
+          CalculRepCercle::circle_mean,          // integration type
           varim4->Pointer().get())); // mask
 
         Si !res.get() Alors
@@ -5854,7 +5854,7 @@ image:
         varim2 ->Pointer().get(),  // first  vector
         varim3 ->Pointer().get(),  // second vector
         (float)     $9,              // radius
-        CIRCLE_RESPONSE_MEAN,        // integration type
+        CalculRepCercle::circle_mean,        // integration type
         varim4->Pointer().get())); // mask
       Si !res.get() Alors
         driver.err_print("CircleInt() error ... \n");
@@ -5895,7 +5895,7 @@ image:
           (float) $15,
           2, // pairs mode MEAN
           100, // keeps all points
-          CIRCLE_RESPONSE_MEAN));
+          CalculRepCercle::circle_mean));
 
         Si !res.get() Alors
           driver.err_print("CircleIntSdExc() error ... \n");
@@ -5942,7 +5942,7 @@ image:
         (float) $15,
         (int) $17,
         (int) $19,
-        CIRCLE_RESPONSE_MEAN));
+        CalculRepCercle::circle_mean));
 
       Si !res.get() Alors
         driver.err_print("CircleIntSdExc() error ... \n");

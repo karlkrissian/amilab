@@ -191,9 +191,11 @@ unsigned char      Func_HessianVap( InrImage* image_initiale, const char* varnam
 
 InrImage* Func_2DFlux( InrImage* vectors, float radius);
 
+#include "reponse_cercle.hpp"
+
 InrImage*    Func_CircleIntegration( InrImage* grad, InrImage* vep0,
                      InrImage* vep1, float radius,
-                     int type,
+                     CalculRepCercle::CircleResponseType type,
                      InrImage* mask);
 
 // Compute the response along the circle using
@@ -207,7 +209,7 @@ InrImage*    Func_CircleIntSdExc( InrImage* grad, InrImage* vep0,
                   float th_exc,
                   int pairs_mode,
                   int highest_percentage,
-                  int mode);
+                  CalculRepCercle::CircleResponseType mode);
 
 InrImage*    Func_LocalExtrema( InrImage* im,
                 InrImage* vep0,

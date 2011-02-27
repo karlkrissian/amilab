@@ -14,6 +14,7 @@
  */
 
 #include "reponse_cercle.hpp"
+#include <iostream>
 
 #include <limits>
 using namespace std;
@@ -51,7 +52,7 @@ unsigned char  CalculRepCercle :: GradientCorrect( const Vect3D<double>& p)
 
 //----------------------------------------------------------------------
 ///
-CalculRepCercle ::  CalculRepCercle( InrImage* image, int type_reponse)
+CalculRepCercle ::  CalculRepCercle( InrImage* image, CircleResponseType type_reponse)
 //                           ------------
 {
 
@@ -233,6 +234,10 @@ void  CalculRepCercle::CalculReponses(  const int& x,
     // empty vector of responses
     responses.clear();
 
+    if ((x==20)&&(y==7)&&(z==35)) {
+      std::cout << " at 20,7,35" << std::endl;
+    }
+                   
     k         = 0;
 
     radius_x = _rayon/_image->_size_x;
@@ -257,12 +262,20 @@ void  CalculRepCercle::CalculReponses(  const int& x,
       pos = p + displacement;
       this->ComputeResponse(pos,vecteur, rep1);
 
-      //
+      if ((x==20)&&(y==7)&&(z==35)) {
+        std::cout << " k = " << k << " rep1 = " << rep1.radius_gradient << std::endl;
+      }
+
+//
       // Second point: opposite point for the circle
       //
       pos = p + (-1.0)*displacement;
       vecteur = -1.0*vecteur;
       this->ComputeResponse(pos,vecteur, rep2);
+
+      if ((x==20)&&(y==7)&&(z==35)) {
+        std::cout << " k = " << k << " rep2 = " << rep2.radius_gradient << std::endl;
+      }
 
       // if combining opposite point create only 1 response out of the 2 points
       if (_reduce_pairs) {
@@ -299,7 +312,7 @@ void  CalculRepCercle::CalculReponses(  const int& x,
 
 //----------------------------------------------------------------------
 ///
-double CalculRepCercle::Reponse ( int type_rep )
+double CalculRepCercle::Reponse ( )
 //                      -------
 {
   response_info rep;
@@ -319,9 +332,9 @@ double CalculRepCercle::Reponse ( int type_rep )
   }
 
   // here use vector iterators
-  switch ( type_rep )
+  switch ( GetResponseType() )
   {
-    case CIRCLE_RESPONSE_MIN:
+    case circle_min:
       // vector already sorted in decreasing order
       if (_keep_highest)
         return responses.back().radius_gradient;
@@ -338,7 +351,7 @@ double CalculRepCercle::Reponse ( int type_rep )
       result = rep.radius_gradient;
     break;
 
-    case CIRCLE_RESPONSE_MEAN:
+    case circle_mean:
       result = 0;
       for(Iter = responses.begin();
           Iter != responses.end();
@@ -347,7 +360,7 @@ double CalculRepCercle::Reponse ( int type_rep )
       result /= (1.0*responses.size());
     break;
 
-    case CIRCLE_RESPONSE_MEDIAN:
+    case circle_median:
       if (!_keep_highest) {
         sort(responses.begin(),responses.end());
       }

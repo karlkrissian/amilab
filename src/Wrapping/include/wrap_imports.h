@@ -26,6 +26,11 @@ void AddWrapImports();
 void AddWrapWxWidgets();
 
 /**
+ * Adding wrapped classes from Algorithms
+ */
+void AddWrapAlgorithms();
+
+/**
  * Adding wrapped classes from amilab.
  */
 void AddWrapAmilab();

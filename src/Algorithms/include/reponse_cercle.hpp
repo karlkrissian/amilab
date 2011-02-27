@@ -28,9 +28,12 @@
 #define PAIRS_MAX  1
 #define PAIRS_MEAN 2
 
+
+/*
 #define CIRCLE_RESPONSE_MIN            0
 #define CIRCLE_RESPONSE_MEAN           1
 #define CIRCLE_RESPONSE_MEDIAN         2
+*/
 
 #include <vector>
 
@@ -54,51 +57,59 @@ class CalculRepCercle
 //     ---------------
 {
 
-  InrImage*   _image;
-  double      _rayon;
+  public:
+    enum CircleResponseType {
+      circle_min,
+      circle_mean,
+      circle_median
+    };
 
-  CoordImage* _coord_image;
+  protected:
+    InrImage*   _image;
+    double      _rayon;
 
-  int         _type_reponse;
+    CoordImage* _coord_image;
 
-  bool        _reduce_pairs;
-  int         _pairs_type;
+    CircleResponseType  _type_reponse;
 
-  bool        _keep_highest;
-  int         _highest_percentage;
+    bool        _reduce_pairs;
+    int         _pairs_type;
 
-  std::vector<response_info> responses;
+    bool        _keep_highest;
+    int         _highest_percentage;
 
-  // Precompute cosinus and sinus
-  double*   coeff_cos;
-  double*   coeff_sin;
+    std::vector<response_info> responses;
 
-  /// nombre de points le long du cercle 
-  int       nb_points;
-  // nombre de points le long du cercle divise par 2
-  int       nb_points2;
-  /// pas de l'angle
-  double    d_alpha;
+    // Precompute cosinus and sinus
+    double*   coeff_cos;
+    double*   coeff_sin;
 
-  // If _filter is not NULL, we take the gradient field
-  // from it otherwise, we use the gradient image
+    /// nombre de points le long du cercle 
+    int       nb_points;
+    // nombre de points le long du cercle divise par 2
+    int       nb_points2;
+    /// pas de l'angle
+    double    d_alpha;
 
-  // filter to get the gradient image
-  GeneralGaussianFilter*   _filter;
+    // If _filter is not NULL, we take the gradient field
+    // from it otherwise, we use the gradient image
 
-  // gradient image
-  InrImage*         _grad;
+    // filter to get the gradient image
+    GeneralGaussianFilter*   _filter;
+
+    // gradient image
+    InrImage*         _grad;
 
 
-  unsigned char _NoLinearInterp; // Flag for trilinear interpolation
-  unsigned char _OptReponse;     // if true, reduce the number of points along the circle
+    unsigned char _NoLinearInterp; // Flag for trilinear interpolation
+    unsigned char _OptReponse;     // if true, reduce the number of points along the circle
 
-  bool      _use_SD;    // use standard deviation contraint
-  bool      _use_EXC;   // use excentricity constraint: compare radius 
-                        // and tangent gradients
+    bool      _use_SD;    // use standard deviation contraint
+    bool      _use_EXC;   // use excentricity constraint: compare radius 
+                          // and tangent gradients
 
-  float     _SeuilET;  // Threshold on the standard deviation along the circle
-  float     _SeuilEXC; // Threshold on Excentricity
+    float     _SeuilET;  // Threshold on the standard deviation along the circle
+    float     _SeuilEXC; // Threshold on Excentricity
 
 private:
 
@@ -108,7 +119,7 @@ private:
 public:
 
   ///
-   CalculRepCercle( InrImage* image, int type_reponse);
+   CalculRepCercle( InrImage* image, CircleResponseType type_reponse);
   //           ---------------
 
   ///
@@ -126,6 +137,11 @@ public:
 
   void SetGradient(InrImage* g )     { _grad = g; }
   //   -----------
+  
+  InrImage* GetGradient() { return _grad; }
+  //        -----------
+  
+  int GetResponseType() { return _type_reponse; }
 
   // if s<1E-5 desactivate SD
   void useSD(  float s=1 )   
@@ -176,7 +192,7 @@ public:
         const float& rap_ellipse  );
  
   ///
-  double Reponse( int type_rep);
+  double Reponse( );
   //     -------
 
 

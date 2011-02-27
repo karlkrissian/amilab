@@ -448,7 +448,7 @@ public:
     lissee deja obtenue, et non pas de l'image initiale,
     
   */
-  void CalculFiltresSuivants();
+//  void CalculFiltresSuivants();
   //   ---------------------
 
   ///

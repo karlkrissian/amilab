@@ -183,6 +183,7 @@ if __name__ == '__main__':
     # Create a parser
     parser = make_parser()
 
+    config.libmodule = None
     if args.val.libname=="wx":
       import wx_lib
       config.libmodule = wx_lib.config
@@ -192,7 +193,7 @@ if __name__ == '__main__':
 
     headerfile="{0}_includes.h".format(args.val.libname)
     
-    if args.val.libname != None:
+    if config.libmodule!=None:
       args.val.filter = config.libmodule.get_var_filter()
 
     # Tell the parser we are not interested in XML namespaces

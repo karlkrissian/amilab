@@ -11,6 +11,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapAlgorithms/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples/Generated
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}

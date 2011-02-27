@@ -623,6 +623,7 @@ SET(amilab_ownlibs
   WrapGLTransfMatrix
   WrapInterface
   WrapWxWidgets
+  WrapAlgorithms
   WrapBasicTypes
   WrapCommon
   WrapIO

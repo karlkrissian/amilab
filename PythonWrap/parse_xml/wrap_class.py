@@ -310,6 +310,7 @@ class ParsePublicMembers:
       return False
     
     context = attrs.get('context', None)
+    
     # don't process global context
     if context=='_1': return False
     
@@ -319,6 +320,7 @@ class ParsePublicMembers:
     else:
       #print "Name = {0}, context {1} not yet included in types".format(name,context)
       return False
+
     if (contextname not in self.class_list) or (access!="public"): return False
     
     # Context should be of class or struct type, and have a PublicMembers instance
@@ -966,12 +968,13 @@ def WrapClass(classname,include_file,inputfile):
       add_var_all += '\n'
 
     add_public_fields = ''
-    if not config.libmodule.wrap_public_fields(classname):
-      # clear public fields
-      fm.Fields=[]
+    if config.libmodule != None:
+      if not config.libmodule.wrap_public_fields(classname):
+        # clear public fields
+        fm.Fields=[]
       
     if len(fm.Fields)>0 or len(fm.Enumerations)>0 or len(dh.bases)>0:
-      add_public_fields = "// Add public fields and Enumerations\n"
+      add_public_fields = "// Add public fields \n"
       add_public_fields += indent+'AMIObject::ptr tmpobj(amiobject.lock());\n'
       add_public_fields += indent+'if (!tmpobj.get()) return;\n'
       add_public_fields += indent+'Variables::ptr context(tmpobj->GetContext());\n'
@@ -1025,6 +1028,7 @@ def WrapClass(classname,include_file,inputfile):
     add_public_enums = '\n'
     for e in fm.Enumerations:
       # TODO: ideally should check for a typedef here
+      add_public_enums = "// Add public enumerations \n"
       enum_usedname = e.name.replace('.','enum')
       # Create an amiobject
       add_public_enums += indent
@@ -1046,7 +1050,9 @@ def WrapClass(classname,include_file,inputfile):
       add_public_enums += "\n"
       add_public_enums += indent+"// Add enum to context\n"
       add_public_enums += indent
-      add_public_enums += "context->AddVar<AMIObject>(obj_{0}->GetName().c_str(),obj_{0},context);\n".format(enum_usedname)
+      add_public_enums += "amiobject->GetContext()->AddVar<AMIObject>(obj_{0}->GetName().c_str(),obj_{0},context);\n".format(enum_usedname)
+      add_public_enums += indent+"// Add as default context\n"
+      add_public_enums += indent+"amiobject->GetContext()->AddDefault(obj_{0}->GetContext());\n".format(enum_usedname)
          
          
     # Adding constructor to the user given context:
@@ -1083,8 +1089,15 @@ def WrapClass(classname,include_file,inputfile):
     # in place replace TEMPLATE by classname
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
-    local_include_file = config.libmodule.get_include_file(classname,\
-      config.files[dh.fileid])
+    if config.libmodule != None:
+      local_include_file = config.libmodule.get_include_file(classname,\
+        config.files[dh.fileid])
+    else:
+      filename = config.files[dh.fileid]
+      last = filename.rfind('/')
+      incfile=filename[last+1:]
+      local_include_file = '#include "{0}"'.format(incfile)
+
     
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
