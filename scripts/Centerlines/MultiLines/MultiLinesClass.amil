@@ -85,6 +85,8 @@ if (!exists(MultiLinesClass)) {
 
       ::output_name="Multilines-maxresponse.ami.gz"
 
+      ::normalize_gradient = UCHAR(1), "normalize gradient"
+
       #::Gui()
     }
 
@@ -250,7 +252,13 @@ if (!exists(MultiLinesClass)) {
     
       # do we get the gradient separately to avoid the mask here??
       # normalized gradient
-      grad = gradient(::input,sigma)*sigma
+      #grad = gradient(::input,sigma)
+      #if (::normalize_gradient) {
+      #  grad = grad*sigma
+      #}
+      grad_algo = algorithms.Gradient(&::input,sigma,::normalize_gradient)
+      grad = grad_algo.Execute()
+
       SetProgress(::current_progress+::current_step*0.75)
     
       # create a region of interest
@@ -628,6 +636,7 @@ if (!exists(MultiLinesClass)) {
             ::win.AddEnumChoice(modeid,"Structure Tensor")
 
           ::win.AddBoolean( &::keep_all_scales, "Keep all scales")
+          ::win.AddBoolean( &::normalize_gradient, "Normalize gradient")
 
           ::win.BeginBoxPanel("Controls")
             ::win.BeginHorizontal()

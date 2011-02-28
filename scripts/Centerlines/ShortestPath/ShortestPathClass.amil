@@ -232,7 +232,7 @@ if (!exists(ShortestPathClass)) {
       #::res.info
     
       if (::save_FM) {
-        ::FM = res
+        ::FM <<= res
       }
 
       # reset the maximum to limit gradient and lower side effects of linear interpolation

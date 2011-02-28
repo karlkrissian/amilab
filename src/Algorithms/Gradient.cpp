@@ -8,11 +8,12 @@ InrImage::ptr Gradient::Execute( )
 {
 
   InrImage*       image_entree;
-  InrImage*       image_der;
   InrImage*       image_res;
   GeneralGaussianFilter* filtre;
   std::string     resname;
   int             mode;
+  int             x,y,z;
+  Vect3D<double>   Grad;
 
   resname = (boost::format("%1%.normgrad") % input->GetName()).str();
 
@@ -35,14 +36,39 @@ InrImage::ptr Gradient::Execute( )
 
   resname = (boost::format("%1%.filter") % input->GetName()).str();
 
-  image_der = new InrImage(WT_FLOAT, resname.c_str() , input);
-
-
   filtre = new GeneralGaussianFilter( image_entree,  mode);
 
-  filtre->GammaNormalise(normalize);
-  filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
+  filtre->Utilise_Image(   false);
+  filtre->UtiliseHessien(  false);
+  filtre->UtiliseGradient( true);
 
+  std::cout << "normalize = " << normalize << std::endl;
+  filtre->GammaNormalise(normalize);
+  filtre->FixeGamma(1);
+  filtre->InitDerivees();
+
+  filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
+  filtre->CalculFiltres( );
+
+  
+  image_res->InitBuffer();
+  Pour( z, 0, image_res->_tz - 1)
+  Pour( y, 0, image_res->_ty - 1)
+  Pour( x, 0, image_res->_tx - 1)
+
+    Grad = filtre->Gradient(x,y,z);
+    image_res->VectFixeValeur(0, Grad.x);
+    image_res->VectFixeValeur(1, Grad.y);
+    image_res->VectFixeValeur(2, Grad.z);
+    image_res->IncBuffer();
+
+  FinPour
+  FinPour
+  FinPour
+
+/*
+  InrImage*       image_der;
+  image_der = new InrImage(WT_FLOAT, resname.c_str() , input);
 
   Si mode == MODE_2D Alors
 
@@ -99,10 +125,11 @@ InrImage::ptr Gradient::Execute( )
       image_der->IncBuffer();
     JusquA Non(image_res->IncBuffer()) FinRepeter
   FinSi
-  
+*/
+
   Si image_entree!=input AlorsFait delete image_entree;
   delete filtre;
-  delete image_der;
+//  delete image_der;
 
   return boost::shared_ptr<InrImage>(image_res);
 
