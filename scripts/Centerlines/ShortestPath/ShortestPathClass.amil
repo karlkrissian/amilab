@@ -70,11 +70,13 @@ if (!exists(ShortestPathClass)) {
       ::input <<= im
     }
     
+    #-----------------------------------------------
     proc ::set_speed( IMAGE im) \
     {
       ::speed <<= im
     }
     
+    #-----------------------------------------------
     proc ::set_endmask( IMAGE im) \
     {
       ::endmask <<= im

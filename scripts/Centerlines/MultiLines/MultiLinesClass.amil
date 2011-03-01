@@ -67,6 +67,8 @@ if (!exists(MultiLinesClass)) {
       ::keep_orientations = UCHAR(0), "Keep orientations image"
       ::keep_radii        = UCHAR(0), "Keep radii image"
 
+      ::use_linearinterp  = UCHAR(1), "Use linear interpolation"
+
       # 0: Hessian Matrix 1: Structure Tensor
       ::mode         = INT(0)
 
@@ -114,15 +116,23 @@ if (!exists(MultiLinesClass)) {
       ::mask_name = "::mask"
     }
     
+    #--------------------------------------------------
     proc ::set_input(IMAGE im)  \
     {
       ::input <<= im
       ::input_name = "::input"
     }
     
+    #--------------------------------------------------
     proc ::set_result(IMAGE im) \
     {
       ::result <<= im
+    }
+    
+    #--------------------------------------------------
+    proc ::set_maxima(IMAGE im) \
+    {
+      ::maxima <<= im
     }
     
     #--------------------------------------------------
@@ -278,7 +288,7 @@ if (!exists(MultiLinesClass)) {
       # second response new way to do it
       repcircle = algorithms.CalculRepCercle(&grad,algorithms.CalculRepCercle.circle_mean)
       repcircle.SetGradient(&grad)
-      repcircle.SetNoLinearInterp(1)
+      repcircle.SetNoLinearInterp(!::use_linearinterp)
       repcircle.useSD(::SD_th*::use_SD)
       repcircle.useEXC(::EXC_th*::use_EXC)
       repcircle.ReducePairs(true,::pairs_mode)
@@ -637,6 +647,7 @@ if (!exists(MultiLinesClass)) {
 
           ::win.AddBoolean( &::keep_all_scales, "Keep all scales")
           ::win.AddBoolean( &::normalize_gradient, "Normalize gradient")
+          ::win.AddBoolean( &::use_linearinterp, "Linear Interpolation")
 
           ::win.BeginBoxPanel("Controls")
             ::win.BeginHorizontal()

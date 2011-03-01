@@ -220,7 +220,7 @@ if (!exists(RunExperimentsClass)){
       ::input_try = ::input.try
       ::input_trz = ::input.trz
       # keep a reduced size input
-      ::input_reduced = (USHORT) MeanHalfSize(::input)
+      ::input_reduced <<= (USHORT) MeanHalfSize(::input)
       del ::input
     }
     
@@ -255,18 +255,24 @@ if (!exists(RunExperimentsClass)){
             vesselness_input*(vesselness_input<::maxvesselint)+\
             (vesselness_input>=::maxvesselint)*::maxvesselint
       }
-      ::ML->set_input(vesselness_input)
-      ::ML->set_mask(mask)
-      ::ML->radmin = 0.5
-      ::ML->radmax = 7
-      ::ML->numrad = 7
-      ::ML->mode = 1
+      ::ML.set_input(vesselness_input)
+      ::ML.set_mask(mask)
+      ::ML.radmin  = 0.5
+      ::ML.radmax  = 4
+      ::ML.numrad  = 6
+      ::ML.mode    = 1
+      #::ML.use_SD  = 1
+      ::ML.use_SD  = 0
+      ::ML.SD_th   = 0.5
+      #::ML.use_EXC = 1
+      ::ML.use_EXC = 0
+      ::ML.EXC_th  = 0.5
       # Keep the 80% highest values along the boundary
-      ::ML->keephighest = 80
+      ::ML.keephighest = 80
       # save multiscale local maxima
-      ::ML->local_maxima = 1
-      ::ML->MultiLines_new
-      //::win.Update(-1)
+      ::ML.local_maxima = 1
+      ::ML.win.Update(-1)
+      ::ML.MultiLines_new()
     }
 
     #-----------------------------------------
@@ -313,18 +319,18 @@ if (!exists(RunExperimentsClass)){
     
       if (wx.wxFileName(vmfilename).FileExists()) {
         # 1. Save Level Set resulting image
-        ::maxima <<= Image vmfilename
-        // check dimensions
-        if ((::maxima.tx!=::CroppedInput->input_cropped.tx)|| \
-            (::maxima.ty!=::CroppedInput->input_cropped.ty)|| \
-            (::maxima.tz!=::CroppedInput->input_cropped.tz)) {
-          maxima_bak = ::maxima
-          ::maxima <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
-          ::maxima.settranslation(::input_trx,::input_try,::input_trz)
-          ::maxima.setvoxelsize(::CroppedInput->input_cropped)
-          ::maxima.putimage(maxima_bak)
+        ::ML.set_maxima( Image vmfilename)
+        # check dimensions
+        if ((::ML->maxima.tx!=::CroppedInput->input_cropped.tx)|| \
+            (::ML->maxima.ty!=::CroppedInput->input_cropped.ty)|| \
+            (::ML->maxima.tz!=::CroppedInput->input_cropped.tz)) {
+          maxima_bak = ::ML.maxima
+          ::ML.maxima <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
+          ::ML.maxima.settranslation(::input_trx,::input_try,::input_trz)
+          ::ML.maxima.setvoxelsize(::CroppedInput->input_cropped)
+          ::ML.maxima.putimage(maxima_bak)
           del maxima_bak
-          ::maxima <<= ::maxima[::CroppedInput->input_cropped.GetExtent]
+          ::ML.maxima <<= ::ML.maxima[::CroppedInput->input_cropped.GetExtent]
           message = "CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted " % vmfilename 
           if (!::nointeraction) {
             InfoDialog message
@@ -357,15 +363,16 @@ if (!exists(RunExperimentsClass)){
       if (exists(::ML->result)) {
         if (exists(::CP->prob)) {
           # ensure that CP_prob is maximum around local maxima
-          if (exists(::maxima)) {
+          if (exists(::ML->maxima)) {
             # threshold to get maxima positions
-            maxima_neigh = (::maxima>::mlmax_threshold)
+            maxima_neigh = (::ML.maxima>::mlmax_threshold)
             # dilate a little
             #maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
             maxima_neigh = morph.Dilate(maxima_neigh,1,0.25)
 
-            ::speed <<=  max((maxima_neigh>=0.95)*maxima_neigh * ::ML->result, \
-                                      ::CP->prob*::ML->result)
+            ::speed_lmax <<= (maxima_neigh>=0.95)*maxima_neigh * ::ML->result * 1.2
+            ::speed_prob <<= ::CP->prob*::ML->result
+            ::speed <<=  max(::speed_lmax, ::speed_prob)
 
           } else {
             ::speed <<= ::CP->prob * ::ML->result
@@ -398,6 +405,7 @@ if (!exists(RunExperimentsClass)){
       #::SP->load_input()
       ::SP->set_input(::CroppedInput->input_cropped)
       ::SP->set_speed(::speed)
+      ::SP->end_mode        = 0 # no end mask
       #::SP->load_speed()
       #::win.Update(-1)
     
@@ -971,13 +979,13 @@ if (!exists(RunExperimentsClass)){
           ::LS->T = 60
         }
       
-        //::win.Update(-1)
-        ::LS->set_initial(&::pathCE_lsinit)
-        //::win.Update(-1)
+        ::LS.win.Update(-1)
+        ::LS.set_initial(&::pathCE_lsinit)
+        ::LS.win.Update(-1)
 
         #--- Computes the intensity statistics
-        ::LS->ComputeIntensityStats()
-        //::win.Update(-1)
+        ::LS.ComputeIntensityStats()
+        ::LS.win.Update(-1)
       
         #--- Compute the expansion force
         #     -- limit its range along Z axis based on the detected junction
@@ -1003,14 +1011,14 @@ if (!exists(RunExperimentsClass)){
         ::LS->set_expansion(&::pathCE_expforce)
       
         # Run the evolution
-        //::win.Update(-1)
-        ::LS->ReRun()
+        ::LS.win.Update(-1)
+        ::LS.ReRun()
         ::pathCE_contours <<= ::LS->inls
 
         # 1. Save Level Set resulting image
         ::LS->inls.save ::current_resultsdir+"/levelset_CC_CE.ami.gz"
         ::LS->SaveParams( ::current_resultsdir+"/levelset_CC_CE.amil" )
-		SetStatusText("ECA levelset done...")
+        SetStatusText("ECA levelset done...")
       }
     }
     
@@ -1391,16 +1399,16 @@ if (!exists(RunExperimentsClass)){
         ::config_advanced_page = ::win.AddPage("Adv")
           ::win.BeginBook()
           
-            ::CP->SetParentPanel(&::win)
-            ::CP->Gui
+            ::CP.SetParentPanel(&::win)
+            ::CP.Gui()
             ::win.AddPage("Local Stats",&::CP->win)
            
-            ::ML->SetParentPanel(&::win)
-            ::ML->Gui
+            ::ML.SetParentPanel(&::win)
+            ::ML.Gui()
             ::win.AddPage("Vesselness",&::ML->win)
             
-            ::LS->SetParentPanel(&::win)
-            ::LS->Gui
+            ::LS.SetParentPanel(&::win)
+            ::LS.Gui()
             ::win.AddPage("LevelSets",&::LS->win)
             
           ::win.EndBook()

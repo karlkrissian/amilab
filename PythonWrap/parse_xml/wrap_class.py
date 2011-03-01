@@ -75,6 +75,13 @@ def WxHelpLink(classname,method):
   return "http://docs.wxwidgets.org/stable/wx_{0}.html#{1}".format(classname.lower(),mname.lower())
 
 
+def IsSharedPtr(typename):
+  res = re.match(r"shared_ptr<(.*)>",typename)
+  if res!=None:
+    return res.group(1)
+  else:
+    return None
+
 #------------------------------
 def AvailableType(typename,typeid,missing_types,check_includes=False,return_type=False):
   if check_includes:
@@ -109,7 +116,11 @@ def MissingTypes(classname,method,check_includes=False):
   if method.returntype!=None:
     typename=config.types[method.returntype].GetString()
     typeid=config.types[method.returntype].GetMainTypeId()
-    avail = AvailableType(typename,typeid,missing_types,check_includes,True)
+    shared_type = IsSharedPtr(typename)
+    if shared_type!=None:
+      avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
+    else:
+      avail = AvailableType(typename,typeid,missing_types,check_includes,True)
   for a in method.args:
     typename=config.types[a.typeid].GetString()
     typefullname=config.types[a.typeid].GetFullString()
@@ -118,7 +129,11 @@ def MissingTypes(classname,method,check_includes=False):
       missing_types.append(typefullname)
     else:
       typeid=config.types[a.typeid].GetMainTypeId()
-      avail = AvailableType(typename,typeid,missing_types,check_includes)
+      shared_type = IsSharedPtr(typename)
+      if shared_type!=None:
+        avail = AvailableType(shared_type,typeid,missing_types,check_includes)
+      else:
+        avail = AvailableType(typename,typeid,missing_types,check_includes)
       if (not avail):
         utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
   res = ""
@@ -593,7 +608,11 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
             nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
             res += '  return AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
           else:
-            res += '  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
+            shared_type = IsSharedPtr(typename)
+            if shared_type==None:
+              res += '  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
+            else:
+              res += '  return AMILabType<{0} >::CreateVarFromSmtPtr(res);\n'.format(shared_type)
   res += "}\n"
   return res
   
