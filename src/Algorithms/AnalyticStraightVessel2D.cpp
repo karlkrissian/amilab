@@ -22,7 +22,7 @@ AnalyticStraightVessel2D::AnalyticStraightVessel2D(float x, float y, float g,
 //Destructor
 AnalyticStraightVessel2D::~AnalyticStraightVessel2D(){}
 
-//Redefinition of the operator parenthesis
+//Redefinition of the parenthesis operator
 double AnalyticStraightVessel2D::operator () (const double& x, const double& y, 
                                               const double& z) const
 {

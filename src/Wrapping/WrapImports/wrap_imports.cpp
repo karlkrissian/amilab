@@ -74,6 +74,8 @@
 #include "wrap_AnalyticCircle.h"
 #include "wrap_AnalyticStraightVessel2D.h"
 #include "wrap_AnalyticRing2D.h"
+#include "wrap_AnalyticPlane.h"
+#include "wrap_AnalyticCylinder.h"
 #include "wrap_AnalyticSphere.h"
 #include "wrap_AnalyticTorus.h"
 #include "wrap_ComputePartialVolume.h"
@@ -141,9 +143,11 @@ void AddWrapImports()
   WrapClass_AnalyticLine::AddVar_AnalyticLine(             amiobject->GetContext());
   WrapClass_AnalyticStraightVessel2D::AddVar_AnalyticStraightVessel2D( amiobject->GetContext());
   WrapClass_AnalyticRing2D::AddVar_AnalyticRing2D(           amiobject->GetContext());
+  WrapClass_AnalyticPlane::AddVar_AnalyticPlane(       amiobject->GetContext());
+  WrapClass_AnalyticCylinder::AddVar_AnalyticCylinder(       amiobject->GetContext());
   WrapClass_AnalyticSphere::AddVar_AnalyticSphere(           amiobject->GetContext());
-  WrapClass_AnalyticTorus::AddVar_AnalyticTorus(            amiobject->GetContext());
-  WrapClass_ComputePV:: AddVar_ComputePV(                amiobject->GetContext());
+  WrapClass_AnalyticTorus::AddVar_AnalyticTorus(             amiobject->GetContext());
+  WrapClass_ComputePV:: AddVar_ComputePV(                    amiobject->GetContext());
   
   WrapClass_SubPixel2D::AddVar_SubPixel2D(amiobject->GetContext());
 

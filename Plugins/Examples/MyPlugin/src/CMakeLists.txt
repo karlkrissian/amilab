@@ -39,9 +39,13 @@ SET(ExamplePlugin_SRCS
     ${ExamplePlugin_HDRS}
 )
 
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net media REQUIRED)
+FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
+include_directories (
+  ${Boost_INCLUDE_DIR}
+  )
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net REQUIRED)
 INCLUDE(${wxWidgets_USE_FILE})
 ADD_LIBRARY(ExamplePlugin SHARED ${ExamplePlugin_SRCS})
-TARGET_LINK_LIBRARIES(ExamplePlugin ${wxWidgets_LIBRARIES})
+TARGET_LINK_LIBRARIES(ExamplePlugin ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES})
 
 MESSAGE("TARGET: ExamplePlugin")

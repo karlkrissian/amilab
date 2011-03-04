@@ -18,7 +18,7 @@ AnalyticSphere::AnalyticSphere(float x, float y, float z, float r)
 //Destructor
 AnalyticSphere::~AnalyticSphere(){}
 
-//Redefinition of the operator parenthesis
+//Redefinition of the parenthesis operator 
 double AnalyticSphere::operator () (const double& x, const double& y, const double& z) const
 {
   double x1 = x - center[0]; 
