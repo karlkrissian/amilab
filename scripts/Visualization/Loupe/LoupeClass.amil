@@ -1,0 +1,124 @@
+
+func "Common/ScriptGui"
+
+if (!exists(LoupeClass)) {
+
+  #----------------------------
+  Class LoupeClass : public ScriptGui {
+
+    ::ami_import = &global::ami_import
+
+    #----------------------------
+    proc ::Init() {
+      ::input_name =  "", "name of the input image, the drawing window of this image will be used"
+      ::rad = INT(30), "loupe radius"
+      ::mag = 2, "magnification factor"
+      ::Active = UCHAR(1), "Activate/Desactivate loop"
+      ::in_update = false
+    }
+
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      SetStatusText("LoadInput use a reference to the input image.")
+      if exists(::input) { del ::input; }
+      eval "::input <<= "+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        #::win.update
+      }
+      if (exists(::input_draw)) { del ::input_draw}
+      show ::input
+      ::input_draw.PaintCallback(&::ShowLoupe)
+      SetStatusText("LoadInput Finished")
+    }
+    Comments(::LoadInput,"Load and initialize input image.")
+
+
+    #----------------------------
+    proc ::Update() \
+    {
+      if (!::in_update) {
+        ::in_update = true
+        ::input_draw.update()
+        ::in_update = false
+      }
+    }
+
+    #----------------------------
+    proc ::ShowLoupe() {
+      if (!::in_update && ::Active) { 
+        if (exists(::subim)) {
+          ::input.putimage(::subim)
+        }
+
+        xpos = ::input_draw.GetXPos()
+        ypos = ::input_draw.GetYPos()
+        ::subim <<= ::input[(xpos-::rad):(xpos+::rad),(ypos-::rad):(ypos+::rad)]
+        magnified_subim = Resize(::subim,::subim.tx*::mag,::subim.tx*::mag,1,1)
+        xp = (FLOAT) Xpos(::subim)- ::subim.tx/2
+        yp = (FLOAT) Ypos(::subim)- ::subim.ty/2
+        r2 = xp*xp+yp*yp
+        r = sqrt(r2)
+
+        diffx = magnified_subim.tx-::subim.tx
+        diffy = magnified_subim.ty-::subim.ty
+        subimm = magnified_subim[(diffx/2):(diffx/2+::subim.tx-1),(diffy/2):(diffy/2+::subim.ty-1)]
+        subim = ::subim*(r>::rad)+subimm*(r<=::rad)
+
+        ::input.putimage(subim)
+        schedule(3,::Update);
+      }
+    }
+
+    #----------------------------
+    proc ::ToggleLoupe() {
+      if (!::Active) {
+        if (exists(::subim)) {
+          ::input.putimage(::subim)
+        }
+        del ::subim
+        schedule(3,::Update);
+      }
+    }
+
+    #----------------------------
+    proc ::Gui() {
+      
+      ::win = global::ami_import.ParamPanel("Loupe")
+
+      ::win.BeginBook()
+    
+        ::win.AddPage("Main")
+
+            # set the input image drawing window
+            ::win.BeginBoxPanel("Input")
+              ::win.BeginHorizontal()
+                ::win.AddImageChoice( &::input_name, "")
+                ::AddBitmapButton(&::win, &::icons._Copy,   32, "LoadInput")
+                ::win.SetPositionProp(-1,0)
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel()
+
+            ::win.AddInt  (&::rad,"radius",10,200)
+            ::win.SetCallback(&::ShowLoupe)
+
+            ::win.AddFloat(&::mag,"factor",1,20)
+            ::win.SetCallback(&::ShowLoupe)
+
+            ::win.AddBoolean(&::Active,"Active")
+            ::win.SetCallback(&::ToggleLoupe)
+
+      ::win.EndBook()
+
+      
+
+      ::AddStandardButtons(&::win)
+      ::win.Display()
+      ::win.Update(-1)
+    }
+    ::Init()
+
+  }
+
+}

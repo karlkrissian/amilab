@@ -230,7 +230,7 @@ if (!exists(RunExperimentsClass)){
     
       ::CP->set_input(::CroppedInput->input_cropped)
       ::CP->lsd_erosion = 0
-      ::CP->Apply
+      ::CP->Apply()
     }
     
     #-----------------------------------------

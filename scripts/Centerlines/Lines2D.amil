@@ -79,7 +79,7 @@ Class Lines2D  : public ScriptGui \
       ::input = -::input
     }
     if ::keep_all {
-      ::all_responses=Image(FLOAT,::input.tx,::input.ty,::sigma_nb)
+      ::all_responses<<=Image(FLOAT,::input.tx,::input.ty,::sigma_nb)
     } else {
       if (exists(::all_responses)) { del ::all_responses;}
     }
@@ -92,7 +92,7 @@ Class Lines2D  : public ScriptGui \
       SetProgress(::current_progress)
 
       # Hessian matrix
-      sigma = ::sigma_min+n/(::sigma_nb-1)*(::sigma_max-::sigma_min)
+      sigma = ::sigma_min+(FLOAT)n/(::sigma_nb-1)*(::sigma_max-::sigma_min)
       sigma2 = sigma*sigma
       ixx = filter(::input,sigma,2,0,0)
       ixy = filter(::input,sigma,1,1,0)
@@ -108,6 +108,10 @@ Class Lines2D  : public ScriptGui \
       }
 
       if ::keep_all {
+        printn n
+        vep_max.info
+        printn max(vep_max)
+        printn min(vep_max)
         ::all_responses.putimage(vep_max,0,0,n)
       }
       if (!exists(lambda_max)) {

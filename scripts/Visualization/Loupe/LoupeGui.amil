@@ -1,0 +1,12 @@
+
+func "Visualization/Loupe/LoupeClass"
+
+#----------------------------
+if (!exists(Loupe_obj)) {
+  LoupeClass Loupe_obj
+  Loupe_obj.Gui()
+  
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
