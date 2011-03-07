@@ -59,7 +59,9 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxListCtrl::ResetCurrent',      # idem
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
-  'vtkPolyData::GetCellPoints', # idem
+  'vtkPolyData::GetCellPoints',  # idem
+  'vtkSource::GetOutputs',       # double pointer
+  'vtkProcessObject::GetInputs', # idem
   ]
 
 

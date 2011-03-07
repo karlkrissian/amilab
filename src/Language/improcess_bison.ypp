@@ -7384,7 +7384,13 @@ image:
           if (res->ScalarFormat())
             res->InitImage(0);
           else
-            res->InitImage(0,0,0);
+          {
+            double* initval = new double[res->GetVDim()];
+            for (int k=0;k<res->GetVDim(); k++) 
+             initval[k] = 0;
+            res->InitImage(initval,res->GetVDim());
+            delete [] initval;
+          }
     
           // im1 is a 1D image (colormap)
           //
@@ -7399,9 +7405,8 @@ image:
               Si (pos>=im1->DimX()) AlorsFait pos = im1->DimX()-1;
               im1->BufferPos(pos,0,0);
     
-              res->VectFixeValeurs(im1->VectValeurBuffer(0),
-                      im1->VectValeurBuffer(1),
-                      im1->VectValeurBuffer(2));
+              for(int k=0;k<=im1->GetVDim()-1;k++)
+                res->VectFixeValeur(k,im1->VectValeurBuffer(k));
     
               im2->IncBuffer();
                 JusquA Non(res->IncBuffer()) FinRepeter
@@ -7432,11 +7437,13 @@ image:
               // linear interpolation
               posx =  im1->SpaceToVoxelX(im2->VectValeurBuffer(0));
               posy =  im1->SpaceToVoxelY(im2->VectValeurBuffer(1));
-              posz =  im1->SpaceToVoxelZ(im2->VectValeurBuffer(2));
-              res->VectFixeValeurs(
-                im1->InterpLinIntensite(posx,posy,posz,0),
-                im1->InterpLinIntensite(posx,posy,posz,1),
-                im1->InterpLinIntensite(posx,posy,posz,2));
+              if (im2->GetVDim()>2)
+                posz =  im1->SpaceToVoxelZ(im2->VectValeurBuffer(2));
+              else
+                posz = 0;
+              for(int k=0;k<res->GetVDim();k++)
+                res->VectFixeValeur(k,
+                  im1->InterpLinIntensite(posx,posy,posz,k));
               im2->IncBuffer();
             JusquA Non(res->IncBuffer()) FinRepeter
           } else
@@ -7449,7 +7456,10 @@ image:
               // linear interpolation
               posx =  im1->SpaceToVoxelX(im2->VectValeurBuffer(0));
               posy =  im1->SpaceToVoxelY(im2->VectValeurBuffer(1));
-              posz =  im1->SpaceToVoxelZ(im2->VectValeurBuffer(2));
+              if (im2->GetVDim()>2)
+                posz =  im1->SpaceToVoxelZ(im2->VectValeurBuffer(2));
+              else
+                posz = 0;
               res->FixeValeur(im1->InterpLinIntensite(posx,posy,posz));
               im2->IncBuffer();
                 JusquA Non(res->IncBuffer()) FinRepeter

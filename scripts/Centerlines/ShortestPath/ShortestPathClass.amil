@@ -23,7 +23,7 @@ if (!exists(ShortestPathClass)) {
       ::speed_name = ""
 
       # save the Fast Marching image
-      ::save_FM = UCHAR(0)
+      ::save_FM = UCHAR(0), "keep the Fast Marching image as 'FM'"
 
       ::epsilon = 0.02
       ::maxcost = 1000
@@ -185,15 +185,15 @@ if (!exists(ShortestPathClass)) {
       ::load_speed
       show ::input
       show ::speed
-      ::input_draw.compare(::speed)
+      ::input_draw.compare(&::speed_draw)
       if (exists(::path)) { show ::path; }
     }  
 
     #-----------------------------------------------
     proc ::Run() \
     {
-      #::load_input()
-      #::load_speed()
+      if (!exists(::input)) {::load_input();}
+      if (!exists(::speed)) {::load_speed();}
     
       # force a minimal value of ::epsilon
       maxrepim_crop = ::speed+::epsilon
@@ -289,7 +289,7 @@ if (!exists(ShortestPathClass)) {
     
         ::win.AddPage("Param")
         
-          ::win.AddBoolean( &::save_FM)
+          ::win.AddBoolean( &::save_FM, "Save FastMarching")
     
           ::win.AddFloat( &::epsilon,  "::epsilon", 0.01,10)
           ::win.AddFloat( &::maxcost,  "::maxcost", 1,100000)

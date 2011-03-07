@@ -114,8 +114,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
   #MESSAGE("Processing classes ${ancestors_list} and addwrap")
   IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.h) OR
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.cpp))
+      (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.h) OR
+      (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp))
     # Go for python wrapping
     ADD_CUSTOM_COMMAND(
       OUTPUT  ${OUTPUT_LIST} ${WRAPVTK_OUTDIR}/addwrap_vtk.h ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
@@ -135,8 +135,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
       )
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.h) OR
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.cpp))
+      (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.h) OR
+      (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp))
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
