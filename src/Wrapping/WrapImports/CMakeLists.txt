@@ -13,12 +13,19 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAlgorithms/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples/Generated
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/src
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/include
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
   ${wxParams_INCLUDE_DIRS}
 )
 
+IF(AMI_WRAP_MICRONTRACKER)
+  include_directories(
+    ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/Generated
+  )
+ENDIF(AMI_WRAP_MICRONTRACKER)
 
 SET(  WrapImports_SRCS
   wrap_imports.cpp
@@ -35,3 +42,7 @@ SET(WrapImports_SRCS
 
 my_add_library ( WrapImports)
 add_dependencies ( WrapImports WrapWxWidgets )
+
+IF(AMI_WRAP_MICRONTRACKER)
+  add_dependencies( WrapImports WrapMicronTracker )
+ENDIF(AMI_WRAP_MICRONTRACKER)

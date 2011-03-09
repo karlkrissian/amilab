@@ -100,6 +100,7 @@ def ClassUsedName(classname):
   res = res.replace('<','__LT__')
   res = res.replace('>','__GT__')
   res = res.replace(',','__COMMA__')
+  res = res.replace('::','__NS__')
   return res
 
 #-------------------------------------------------------------
@@ -108,6 +109,7 @@ def ClassShortName(classname):
   res = res.replace('<','_')
   res = res.replace('>','')
   res = res.replace(',','_')
+  res = res.replace('::','_')
   return res
 
 #------------------------------------------------------------------

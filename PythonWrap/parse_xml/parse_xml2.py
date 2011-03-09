@@ -190,6 +190,9 @@ if __name__ == '__main__':
     if args.val.libname=="vtk":
       import vtk_lib
       config.libmodule = vtk_lib.config
+    if args.val.libname=="mt":
+      import mt_lib
+      config.libmodule = mt_lib.config
 
     headerfile="{0}_includes.h".format(args.val.libname)
     

@@ -40,6 +40,9 @@ import parse_function
 def IsTemplate(classname):
   return re.match(r"(.*)<(.*)>",classname)!=None
 
+def IsWithinContext(classname):
+  return config.types[config.classes[classname]].GetContext() != "_1"
+
 def ClassConstructor(classname):
   ctemp = re.match(r"(.*)<(.*)>",classname)
   if ctemp==None:
@@ -272,10 +275,10 @@ class ParsePublicMembers:
 
   #---------------------------------------------
   def CheckEnumDefault(self, default):
-    #print "default for {0}".format(default)
+    print "default for {0}".format(default)
     if default in config.enumvalues.keys():
       typeid = config.enumvalues[default]
-      if typeid in config.types.keys():
+      if typeid in config.types.keys() and typeid!="_1":
         print "replacing {0} by {1}::{0} ".format(default,config.types[typeid].GetString())
         return "{1}::{0}".format(default,config.types[typeid].GetString())
     return default
@@ -783,14 +786,17 @@ def WrapClass(classname,include_file,inputfile):
         implement_type += "AMI_DEFINE_WRAPPEDTYPE_ABSTRACT({0});\n".format(classname)
       else:
         implement_type += "AMI_DEFINE_WRAPPEDTYPE_HASCOPY({0});\n".format(classname)
-      if IsTemplate(classname) and args.val.templates:
+      if (IsTemplate(classname) and args.val.templates) or IsWithinContext(classname):
         implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(classname,config.ClassUsedName(classname))
       else:
         implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(classname)
     else:
       implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(classname)
       # need to implement CreateVar ...
-      implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(classname)
+      if (IsTemplate(classname) and args.val.templates) or IsWithinContext(classname):
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(classname,config.ClassUsedName(classname))
+      else:
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(classname)
       implement_type += "\n"
       implement_type += "// Implementing CreateVar for AMILabType\n"
       implement_type += "BasicVariable::ptr AMILabType<{0}>::CreateVar( {0}* val, bool nodeleter)\n".format(classname)
@@ -801,7 +807,7 @@ def WrapClass(classname,include_file,inputfile):
           
     # Create Header File
     header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(config.ClassUsedName(classname))
-    if IsTemplate(classname):
+    if IsTemplate(classname) or IsWithinContext(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.h.in",header_filename)
     else:
       shutil.copyfile(args.val.templatefile_dir+"/wrap_class.h.in",header_filename)
@@ -1155,7 +1161,7 @@ def WrapClass(classname,include_file,inputfile):
 
     # Create Implementation File
     impl_filename=args.val.outputdir+"/wrap_{0}.cpp.new".format(config.ClassUsedName(classname))
-    if IsTemplate(classname):
+    if IsTemplate(classname) or IsWithinContext(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.cpp.in",impl_filename)
     else:
       shutil.copyfile(args.val.templatefile_dir+"/wrap_class.cpp.in",impl_filename)

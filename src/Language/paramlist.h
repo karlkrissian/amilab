@@ -18,6 +18,7 @@
 
 //#include "inrimage.hpp"
 #include "DefineClass.hpp"
+#include "AMILabConfig.h"
 
 #include "BasicVariable.h"
 #include "amilab_messages.h"
@@ -30,11 +31,13 @@ extern unsigned char GB_debug;
 #include <vector>
 //using namespace std;
 
+template class AMI_DLLEXPORT std::vector<BasicVariable::ptr>;
+
 
 /**
  * Stores a list of parameters from the scripting language
  **/
-class ParamList {
+class AMI_DLLEXPORT ParamList {
 
   DEFINE_CLASS(ParamList);
 

@@ -2,6 +2,7 @@
 // C++ Implementation: wrap_imports
 //
 // Description: 
+// Description:
 //
 //
 // Author: Karl Krissian <>, (C) 2009
@@ -9,6 +10,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+
+#include "AMILabConfig.h"
 
 #include "paramlist.h"
 #include "wrapfunctions.hpp"
@@ -60,6 +63,11 @@
 #include "addwrap_wx.h"
 #include "addwrap_algorithms.h"
 
+#ifdef AMI_WRAP_MICRONTRACKER
+  #include "addwrap_mt.h"
+  #include "wrapMT.h"
+#endif
+
 #include "wrap_vtkLevelSets.h"
 
 #include "wrap_wxEditor.h"
@@ -92,7 +100,7 @@ Variable<int>::ptr nullvar(new Variable<int>(boost::shared_ptr<int>(new int(NULL
  **/
 bool CheckNullVar(ParamList* _p, int _n)
 {
-  if (_n>=_p->GetNumParam())  return false; 
+  if (_n>=_p->GetNumParam())  return false;
   boost::shared_ptr<Variable<int> > var = boost::dynamic_pointer_cast<Variable<int> >(_p->GetParam(_n));
   if (!var.get()) return false;
   return var->Pointer().get() == nullvar->Pointer().get();
@@ -105,7 +113,11 @@ void AddWrapImports()
 {
 
   AddWrapWxWidgets();
+
   AddWrapAlgorithms();
+#ifdef AMI_WRAP_MICRONTRACKER
+  AddWrapMicronTracker();
+#endif
   AddWrapAmilab();
   AddWrapIO();
   AddWrapImage();
@@ -163,7 +175,7 @@ void AddWrapWxWidgets()
   ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,"FromWxString", wrap_FromWxString);
 
   // Add wx context to builtin
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
       amiobject,Vars.GetBuiltinContext());
 
 }
@@ -185,15 +197,26 @@ void AddWrapAlgorithms()
 }
 
 
+#ifdef AMI_WRAP_MICRONTRACKER
+  void AddWrapMicronTracker()
+  {
+   
+    // Create Amilab images from MicronTracker
+    AddWrapMT();
+
+
+  }
+#endif
+
 void AddWrapAmilab()
 {
-  
+
   BasicVariable::ptr vartrue  = AMILabType<bool>::CreateVar(true);
   BasicVariable::ptr varfalse = AMILabType<bool>::CreateVar(false);
-  
+
   Vars.GetBuiltinContext()->AddVar( "true",vartrue,Vars.GetBuiltinContext());
   Vars.GetBuiltinContext()->AddVar( "false",varfalse,Vars.GetBuiltinContext());
-  
+
   // NULL variable
   Vars.GetBuiltinContext()->AddVar( "NULL",nullvar,Vars.GetBuiltinContext());
 
@@ -212,7 +235,7 @@ void AddWrapAmilab()
   WrapClass_dwControlledCurve::AddVar_dwControlledCurve( amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
       amiobject,Vars.GetBuiltinContext());
 
 
@@ -229,7 +252,7 @@ void AddWrapIO()
   AddVar_ReadRawVectImage3D(  amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
     amiobject,
     Vars.GetBuiltinContext());
 }
@@ -245,7 +268,7 @@ void AddWrapImage()
   AddVar_ImageExtent(     amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
     amiobject,
     Vars.GetBuiltinContext());
 }

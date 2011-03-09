@@ -30,6 +30,8 @@
 
 #cmakedefine AMI_USE_PRECOMP_HEADERS
 
+#cmakedefine AMI_WRAP_MICRONTRACKER
+
 #define AMI_BUILD_@AMI_BUILD_TYPE@
 
 #ifdef _MSC_VER

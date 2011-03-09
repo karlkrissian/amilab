@@ -39,9 +39,19 @@ SET(ExamplePlugin_SRCS
     ${ExamplePlugin_HDRS}
 )
 
+SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
+FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
+
 FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net media REQUIRED)
 INCLUDE(${wxWidgets_USE_FILE})
-ADD_LIBRARY(ExamplePlugin SHARED ${ExamplePlugin_SRCS})
-TARGET_LINK_LIBRARIES(ExamplePlugin ${wxWidgets_LIBRARIES})
+
+include_directories (
+  ${Boost_INCLUDE_DIR}
+)
+
+ADD_LIBRARY(ExamplePlugin MODULE ${ExamplePlugin_SRCS})
+TARGET_LINK_LIBRARIES(
+  ExamplePlugin ${wxWidgets_LIBRARIES}  ${Boost_LIBRARIES}
+)
 
 MESSAGE("TARGET: ExamplePlugin")

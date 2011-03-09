@@ -13,6 +13,7 @@
 #ifndef _wrap_imports_h_
 #define _wrap_imports_h_
 
+#include "AMILabConfig.h"
 #include "paramlist.h"
 
 
@@ -24,6 +25,10 @@ void AddWrapImports();
  * Adding wrapped classes from wxwidgets library.
  */
 void AddWrapWxWidgets();
+
+#ifdef AMI_WRAP_MICRONTRACKER
+  void AddWrapMicronTracker();
+#endif
 
 /**
  * Adding wrapped classes from Algorithms

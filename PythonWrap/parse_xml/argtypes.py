@@ -73,6 +73,13 @@ class ClassInfo(ArgTypeBase):
   def GetAbstract(self):
     return self.abstract=="1"
 
+# organize a little bit the information
+#------------------------------
+class NamespaceInfo(ArgTypeBase):
+  def __init__(self):
+    ArgTypeBase.__init__(self) 
+    self._type="Namespace"
+  
 
 #------------------------------
 class ArgumentInfo:
@@ -140,7 +147,7 @@ class EnumerationInfo(ArgTypeBase):
 
   def GetString(self):
     if self._context != None:
-      if self._context in config.types.keys():
+      if self._context in config.types.keys() and self._context!="_1":
         return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
       else:
         return self._name

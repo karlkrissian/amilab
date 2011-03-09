@@ -43,7 +43,11 @@ Class vtktest_TPlaneClass : public ScriptGui \
     ::PlaneActors = VarVector()
     ::ImResample = VarVector()
     ::vtkdir = vtk.vtkDirectory.New()
-    res = ::vtkdir.Open(::inputdir_name)
+    printn " inputdir_name = %1%" % ::inputdir_name
+    wxf = wx.wxFileName(::inputdir_name)
+    dirname=wxf.GetVolume().c_str()+":"+wxf.GetFullPath(wx.wxPATH_UNIX).c_str()+"/"
+    printn "dirname %1%" % dirname
+    res = ::vtkdir.Open(dirname)
     ::vtkreaderfactory = vtk.vtkImageReader2Factory.New()
     if (res==1) {
       nbfiles = ::vtkdir.GetNumberOfFiles()

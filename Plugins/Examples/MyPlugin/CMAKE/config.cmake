@@ -8,14 +8,16 @@
 # Copyright: See COPYING file that comes with this distribution
 #==============================================================================
 
-SET(AMILAB_SOURCE_DIR
-    /home/karl/projects/Sourceforge/amilab/trunk/src
-    CACHE STRING "AMILab source path"
+FIND_PATH(AMILAB_SOURCE_DIR
+    amilab.cpp
+    HINTS ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src
+    DOC "AMILab source path"
 )
 
-SET(AMILAB_BINARY_DIR
-    /home/karl/projects/Sourceforge/amilab/trunk/src/build_release/
-    CACHE STRING "AMILab binary path"
+FIND_PATH(AMILAB_BINARY_DIR
+    AMILabConfig.h
+    HINTS ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/build
+    DOC "AMILab binary path"
 )
 
 SET(AMILab_Header

@@ -309,6 +309,7 @@ IF(AMI_ENABLE_WRAPPING)
   OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" OFF)
   OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       OFF)
   OPTION(AMI_WRAP_EXAMPLES  "Enable Automatic Wrapping OF EXAMPLES"  OFF)
+  OPTION(AMI_WRAP_MICRONTRACKER "Enable Automatic Wrapping of MicronTracker library for stereo camera tracking" OFF)
 ENDIF(AMI_ENABLE_WRAPPING)
 
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
@@ -394,8 +395,6 @@ SET(Boost_USE_MULTITHREAD OFF)
 #MESSAGE(  CMAKE_HOST_SYSTEM=${CMAKE_HOST_SYSTEM} )
 
 SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
-
-
 FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
 #SET(Boost_USE_STATIC_LIBS ON)
 MESSAGE( "BOOST_LIBRARIES = ${BOOST_LIBRARIES}")
@@ -647,6 +646,12 @@ SET(amilab_ownlibs
   wxVTK
 )
 
+IF (AMI_WRAP_MICRONTRACKER)
+  SET(amilab_ownlibs
+    ${amilab_ownlibs}
+    WrapMicronTracker
+ )
+ENDIF(AMI_WRAP_MICRONTRACKER)
 
 # Test template class
 IF(AMI_WRAP_EXAMPLES)
@@ -700,6 +705,13 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
 #  ${WX_gl}
   ${Boost_LIBRARIES}
 )
+
+IF (AMI_WRAP_MICRONTRACKER)
+  FIND_LIBRARY( MTC_LIB mtc PATHS "$ENV{ProgramFiles}/Claron Technology/MicronTracker/Dist")
+  TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
+    ${MTC_LIB}
+  )
+ENDIF(AMI_WRAP_MICRONTRACKER)
 
 # is it needed or already included by boost?
 IF(AMI_USE_ZLIB)

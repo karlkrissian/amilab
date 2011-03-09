@@ -1,0 +1,141 @@
+#
+# Creates a torus within a volume data
+#
+
+func "Common/ScriptGui"
+
+if (!exists(CreateUltrasoundClass)) {
+
+  ami_import->Filters()
+  
+  Class CreateUltrasoundClass : public ScriptGui {
+
+    ::filters=&global::filters
+
+    
+   
+    #----------------------------
+    proc ::Init() {
+  	  ::ip = "localhost", "IP to connect"
+      ::folder_save = "", "Images save"
+      ::l = Image(UCHAR,640,480,1)
+      ::r = Image(UCHAR,640,480,1)
+      ::xpoint  = "0",  "Coordenada X"
+      ::ypoint  = "0",  "Coordenada Y"
+      ::zpoint  = "0",  "Coordenada Z"
+    }
+
+        
+    #------------------------------------
+    
+  proc ::ConnectUltrasonix() {
+     ::win.EnablePanel(::panel_ultrasound,1)
+  
+  }
+  
+  #connect, grab frame a read left and righ image
+  proc ::ConnectCamera() {
+    ::c = mt.Cameras()
+    res = ::c.AttachAvailableCameras()
+    if (res==0) {
+      ::win.EnablePanel(::panel_camera,1)
+      if (exists(::cam)) { del ::cam; }
+
+      ::cam = ::c.getCamera(0)
+      
+    }
+  }
+  
+  proc ::DisconnectCamera() {
+    ::c.Detach()
+    ::win.EnablePanel(::panel_camera,0)
+  
+  }
+  
+  proc ::ReadUltrasonix() {
+
+  }
+
+  proc ::ReadCamera() {
+    ok = ::cam.grabFrame()
+    if (ok==true) {
+      mt.GetImageMT(&::l,&::r,&::cam)
+    } else {
+      InfoDialog "grabFrame failed!"
+    }
+  }
+  
+  proc ::GetOutput() {
+
+  }
+
+  proc ::Show() {
+  
+
+  }
+  
+  proc ::RImageShow() {
+    show ::r
+  }
+  proc ::LImageShow() {
+    show ::l
+  }
+  
+  proc ::Gui() {
+    ::win = global::ami_import.ParamPanel("Ultrasound display")
+  
+    ::win.BeginBook()
+      ::win.AddPage("Param")
+
+        ::win.BeginBoxPanel("Connection params")
+          ::win.AddString( &::ip,"IP")
+          ::win.AddButton("Connect Ultrasonix",::ConnectUltrasonix)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Connect Camera",::ConnectCamera)
+            ::win.AddButton("Disconnect Camera",::DisconnectCamera)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+
+        ::win.BeginBoxPanel("Ultrasound folder")
+          ::win.AddDirname( &::folder_save, "Dir")
+        ::win.EndBoxPanel()
+        
+        ::panel_ultrasound = ::win.BeginBoxPanel("")
+          ::win.AddButton("Start ultrasonix",::ReadUltrasonix)		  
+          ::win.EnablePanel(::panel_ultrasound,0)
+        ::win.EndBoxPanel()
+        
+        ::panel_camera = ::win.BeginBoxPanel("")
+          ::win.AddButton("Start Camera",::ReadCamera)
+          ::win.EnablePanel(::panel_camera,0)
+        ::win.EndBoxPanel()
+        
+        ::win.BeginBoxPanel("Images")
+          ::win.AddButton("Show Left",::RImageShow)
+          ::win.AddButton("Show Right",::LImageShow)
+        ::win.EndBoxPanel()
+        ::win.BeginBoxPanel("Coordenadas")
+          ::win.BeginHorizontal()
+            ::win.AddLabel("X:",::xpoint)
+            ::win.AddLabel("Y:",::ypoint)
+            ::win.AddLabel("Z:",::zpoint) 
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        
+        
+      ::win.AddPage("Render")
+        
+    ::win.EndBook()
+
+    ::AddStandardButtons(&::win)
+  
+    ::win.Update(-1)
+    ::win.Display()
+  }
+  
+  ::Init()
+} #End of class
+  
+} # End of if
+
+      

@@ -11,7 +11,7 @@ import args
 import utils
 import wrap_class
 
-typelist=('Class','Typedef','Struct','FundamentalType','CvQualifiedType','ReferenceType','PointerType','Enumeration','ArrayType','Union','MethodType')
+typelist=('Class','Typedef','Struct','FundamentalType','CvQualifiedType','ReferenceType','PointerType','Enumeration','ArrayType','Union','MethodType','Namespace')
 
 variablelist = ('Variable')
 
@@ -68,7 +68,9 @@ class FindTypesAndVariables(handler.ContentHandler):
     self.argtype.SetId(classid)
     config.types[classid] = self.argtype
     # Find id from the class name
-    config.classes[classname]=classid
+    if classname!=demangled and demangled!=None and demangled.startswith("MT"):
+      print "classname != demangled : {0} {1}, using the demangled name".format(classname,demangled)
+    config.classes[demangled]=classid
     
     #print "in ", name, " ", classname, " id:",classid
     

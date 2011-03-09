@@ -54,7 +54,6 @@ class WrapClass_${TEMPLATENAME} : public WrapClass<${TEMPLATE} >
     /// Destructor
     ~WrapClass_${TEMPLATENAME}()
     {
-      std::cout << "~WrapClass_${TEMPLATE}()" << std::endl;
       CLASS_MESSAGE("*** Destroying ***");
     }
 
