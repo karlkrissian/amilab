@@ -1,0 +1,99 @@
+
+import_vtk
+
+#
+# usefull functions for the Fast Marching Geodesic Distance Transform
+#
+Class FastMarchingUtils \
+{
+
+  #---------------------------------------------
+  proc ::FastMarchingTarget(  IMAGE input, IMAGE initim, \
+                              NUM maxtime, NUM x, NUM y, NUM z) \
+  {
+    # convert images to VTK images
+    vtk_input  = global::ToVtkImageData(&input)
+    vtk_init   = global::ToVtkImageData(&initim)
+
+    vtk_FM = algorithms.vtkLevelSetFastMarching.New()
+
+    # initialize with the seed points
+    for i=-1 to 1 {
+      for j=-1 to 1 {
+        for k=-1 to 1 {
+          x1 = x+i
+          y1 = y+j
+          z1 = z+k
+          if  (x1>=0)&&(y1>=0)&&(z1>=0)&&\
+              (x1<input.tx)&&(y1<input.ty)&&(z1<input.tz) \
+          {
+            vtk_FM.AddTargetPoint( x1,y1,z1)
+          }
+        }
+      }
+    }
+
+    vtk_FM.SetInput(&vtk_input)
+    vtk_FM.Setinitimage(&vtk_init);
+    # if we set initiso to a different value than -1E10 (default value)
+    # the it will call InitIsoSurf which recomputes the distance close to the surface
+    # otherwise, it call InitWithImage which is much faster, and
+    # all values lower than initmaxdist will be accepted to start with.
+
+    vtk_FM.Setinitiso(   0);
+    vtk_FM.Setinitmaxdist(1+1E-3);
+    vtk_FM.SetmaxTime( maxtime);
+    vtk_FM.Update();
+
+    return = global::FromVtkImageData(&vtk_FM.GetOutput())
+    vtk_FM.Delete()
+  }
+  Comments(::FastMarchingTarget, "Fast Marching evolution from the initial contour up to the given target point, for 2D and 3D images.")
+
+  #---------------------------------------------
+  proc ::FastMarchingTarget4D(  IMAGE input, IMAGE initim, \
+                              NUM maxtime, NUM x, NUM y, NUM z, NUM t) \
+  {
+    # convert images to VTK images
+    vtk_input  = global::ToVtkImageData(&input)
+    vtk_init   = global::ToVtkImageData(&initim)
+
+    vtk_FM = algorithms.vtkFastMarching_nD_plus.New()
+
+    # initialize with the seed points
+    for i=-1 to 1 {
+      for j=-1 to 1 {
+        for k=-1 to 1 {
+          for l=-1 to 1 {
+            x1 = x+i
+            y1 = y+j
+            z1 = z+k
+            t1 = t+l
+            if  (x1>=0)&&(y1>=0)&&(z1>=0)&&(t1>=0)&&\
+                (x1<input.tx)&&(y1<input.ty)&&(z1<input.tz)&&(t1<input.vdim) \
+            {
+              vtk_FM.AddTargetPoint( x1,y1,z1,t1)
+            }
+          }
+        }
+      }
+    }
+
+    vtk_FM.SetInput(&vtk_input)
+    vtk_FM.Setinitimage(&vtk_init);
+    # if we set initiso to a different value than -1E10 (default value)
+    # the it will call InitIsoSurf which recomputes the distance close to the surface
+    # otherwise, it call InitWithImage which is much faster, and
+    # all values lower than initmaxdist will be accepted to start with.
+
+    vtk_FM.Setinitiso(   0);
+    vtk_FM.Setinitmaxdist(1+1E-3);
+    vtk_FM.SetmaxTime( maxtime);
+    vtk_FM.Update();
+
+    return = global::FromVtkImageData(&vtk_FM.GetOutput())
+    vtk_FM.Delete()
+  }
+  Comments(::FastMarchingTarget4D, "Fast Marching evolution from the initial contour up to the given target point, for 3D+t images.")
+
+}

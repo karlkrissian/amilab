@@ -3,3 +3,4 @@ GeneralGaussianFilter
 CircleBoundaries3D
 vtkLevelSetFastMarching
 Gradient
+vtkFastMarching_nD_plus
