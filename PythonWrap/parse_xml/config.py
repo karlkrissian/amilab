@@ -1,6 +1,7 @@
 
 
 import wrap_class
+import re
 
 # global dictionary of argument types
 types      = dict()
@@ -75,7 +76,7 @@ incomplete_classes=[]
 new_needed_classes=[]
 
 # available builtin type
-available_types       = ['int','float','double','unsigned char','long','long int','std::string','bool','void', 'AMIFunction', 'InrImage']
+available_types       = ['int','float','double','unsigned char','long','long int','std::string','bool','void', 'AMIFunction', 'InrImage', 'amilab::SurfacePoly']
 
 # not used
 #available_pointertypes= ['int','float','double','unsigned char','long','long int','std::string','bool']
@@ -142,3 +143,15 @@ def CreateIncludes():
     res += '  AMI_DECLARE_TYPE({0})\n'.format(f)
     res += '#endif\n'
   return res
+
+
+#------------------------------------------------------------------
+#  Check for boost shared pointer type
+#------------------------------------------------------------------
+def IsSharedPtr(typename):
+  res = re.match(r"boost::shared_ptr<(.*)>",typename)
+  if res!=None:
+    return res.group(1)
+  else:
+    return None
+

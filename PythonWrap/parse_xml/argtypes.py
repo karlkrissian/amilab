@@ -14,6 +14,7 @@ class ArgTypeBase:
     self._name=""
     self._id=0
     self._context=None
+    self.demangled=None
 
   def SetType(self,t):
     self._type=t
@@ -27,11 +28,21 @@ class ArgTypeBase:
   def GetAbstract(self):
     return None
     
+  def SetDemangled(self,d):
+    self.demangled = d
+
+  def GetDemangled(self):
+    if self.demangled!=None:
+      return self.demangled
+    else:
+      return self.GetString()
+
   def SetId(self,_id):
     self._id = _id
 
   def GetId(self):
     return self._id
+
   def SetRefTypeId(self,t):
     self._reftypeid=t
 
@@ -255,6 +266,13 @@ class ReferenceTypeInfo(ArgTypeBase):
       typename=self._reftypeid
     return typename
 
+  def GetDemangled(self):
+    if self._reftypeid in config.types.keys():
+      typename=config.types[self._reftypeid].GetDemangled()
+    else:
+      typename=self._reftypeid
+    return typename
+
   def GetAbstract(self):
     if self._reftypeid in config.types.keys():
       return config.types[self._reftypeid].GetAbstract()
@@ -281,6 +299,13 @@ class PointerTypeInfo(ArgTypeBase):
   def GetString(self):
     if self._reftypeid in config.types.keys():
       typename=config.types[self._reftypeid].GetString()
+    else:
+      typename=self._reftypeid
+    return typename
+
+  def GetDemangled(self):
+    if self._reftypeid in config.types.keys():
+      typename=config.types[self._reftypeid].GetDemangled()
     else:
       typename=self._reftypeid
     return typename

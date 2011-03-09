@@ -34,7 +34,7 @@ SET(Algorithms_SRCS
   ImageAddScalar.cpp
   ImageCos.cpp
   localstats.cpp
-  func_shortestpath.cpp
+  ShortestPathClass.cpp
 
   AnisoGS.cpp
   WrapOld_AnisoGS.cpp
@@ -87,7 +87,7 @@ SET(Algorithms_HDRS
   include/ImageAddScalar.h
   include/ImageCos.h
   include/localstats.h
-  include/func_shortestpath.h
+  include/ShortestPathClass.h
 
   include/AnisoGS.h
   include/WrapOld_AnisoGS.h

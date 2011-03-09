@@ -57,6 +57,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     
     demangled=attrs.get('demangled',None)
+    self.argtype.SetDemangled(demangled)
     
     #print classname
     #if (classname == self.search_classname)or(demangled==self.search_classname):
@@ -68,7 +69,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     self.argtype.SetId(classid)
     config.types[classid] = self.argtype
     # Find id from the class name
-    if classname!=demangled and demangled!=None and demangled.startswith("MT"):
+    if classname!=demangled and demangled!=None and (demangled.startswith("MT")or demangled.startswith("amilab")):
       print "classname != demangled : {0} {1}, using the demangled name".format(classname,demangled)
     config.classes[demangled]=classid
     

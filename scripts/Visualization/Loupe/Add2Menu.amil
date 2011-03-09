@@ -1,0 +1,36 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+# Scripts menu
+#ami.MainFrame.AddToMenu("&Scripts","&Visualization","&Volume Rendering","Visualization/Loupe/LoupeGui.amil")
+
+
+if (!exists(loupe_display)) {
+
+  proc AddScript() {
+    global
+    func "Common/ScriptDisplayClass"
+
+    ScriptDisplayClass loupe_display
+
+    loupe_display.SetScript("Visualization/Loupe/LoupeGui.amil")
+    loupe_display.SetScriptObjName("global::Loupe_obj")
+
+    loupe_display.SetDisplayedName("&Loupe effect")
+    loupe_display.SetHelp("Add a Loupe the image viewer.")
+    loupe_display.SetInMenus("Scripts","Visualization")
+
+    ami_import.System(); 
+    loupe_display.SetIcon16( op_system.GetCurrentScriptDir()+"/loupe_icon16.png")
+    loupe_display.SetIcon32( op_system.GetCurrentScriptDir()+"/loupe_icon32.png")
+
+    loupe_display.Add2Menu()
+    loupe_display.Add2Toolbar()
+  }
+  AddScript()
+  del AddScript
+
+}

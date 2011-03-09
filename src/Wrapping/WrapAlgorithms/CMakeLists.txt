@@ -7,12 +7,15 @@
 include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
+  ${wxParams_INCLUDE_DIRS}
 )
 
 INCLUDE( ${VTK_USE_FILE} )
+INCLUDE( ${wxWidgets_USE_FILE})
 
 
 # if automatic wrapping, generate source files
@@ -34,6 +37,34 @@ IF(AMI_ENABLE_WRAPPING)
      ENDIF(VTK_REQUIRED_CXX_FLAGS)
   ENDIF ( VTK_FOUND)
 
+  IF   (wxWidgets_FOUND)
+    IF   (wxWidgets_INCLUDE_DIRS)
+      FOREACH( inc ${wxWidgets_INCLUDE_DIRS})
+        SET( WX_INCLUDES  -I${inc}  ${WX_INCLUDES} )
+      ENDFOREACH(inc ${wxWidgets_INCLUDE_DIRS})
+    ENDIF(wxWidgets_INCLUDE_DIRS)
+    MESSAGE("WX_INCLUDES=${WX_INCLUDES}")
+
+    IF   (wxWidgets_DEFINITIONS)
+      FOREACH( def ${wxWidgets_DEFINITIONS})
+        SET( WX_DEFS  -D${def}  ${WX_DEFS} )
+      ENDFOREACH(def ${wxWidgets_DEFINITIONS})
+      MESSAGE("wxWidgets_DEFINITIONS=${wxWidgets_DEFINITIONS}")
+    ENDIF(wxWidgets_DEFINITIONS)
+
+    IF   (wxWidgets_DEFINITIONS_DEBUG)
+      FOREACH( def ${wxWidgets_DEFINITIONS_DEBUG})
+        SET( WX_DEFS  -D${def} ${WX_DEFS} )
+      ENDFOREACH(def ${wxWidgets_DEFINITIONS_DEBUG})
+      MESSAGE("wxWidgets_DEFINITIONS_DEBUG=${wxWidgets_DEFINITIONS_DEBUG}")
+    ENDIF(wxWidgets_DEFINITIONS_DEBUG)
+
+    IF   (wxWidgets_CXX_FLAGS)
+      SET(WX_FLAGS "${CMAKE_CXX_FLAGS} ${wxWidgets_CXX_FLAGS}")
+      MESSAGE("WX_FLAGS=${WX_FLAGS}")
+    ENDIF(wxWidgets_CXX_FLAGS)
+  ENDIF (wxWidgets_FOUND)
+
   #
   #
   # TODO: run gccxml_vcconfig.bat to allow visual studio 9
@@ -41,6 +72,8 @@ IF(AMI_ENABLE_WRAPPING)
   SET(WrapAlgorithms_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/Generated)
   CreateDirectory( ${WrapAlgorithms_OUTDIR})
 
+
+MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   SET(XML_OUTPUT "${WrapAlgorithms_OUTDIR}/algorithms_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/algorithms_includes.h")
   SET( GCCXML_result 0)
@@ -48,9 +81,9 @@ IF(AMI_ENABLE_WRAPPING)
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
-  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}    ${XML_INPUT}")
+  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}")
   execute_process(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${XML_INPUT}
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${WX_INCLUDES}  ${WX_DEFS} ${XML_INPUT}
   )
    
   # Generate the classes list

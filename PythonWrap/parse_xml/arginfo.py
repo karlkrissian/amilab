@@ -85,8 +85,14 @@ class ArgInfo:
         res += " = {0}".format(self.default)
         required="false"
       res += ";\n"
-      res += "  if (!get_val_param<{0} >({1},_p,_n,{3},{4})) {2};\n".format(\
-        self.typename,self.name,self.returnstring,required,self.quiet)
+      shared_type = config.IsSharedPtr(self.typename)
+      if shared_type==None:
+        res += "  if (!get_val_param<{0} >({1},_p,_n,{3},{4})) {2};\n".format(\
+          self.typename,self.name,self.returnstring,required,self.quiet)
+      else:
+        # false parameter value to keep smart pointer deleter
+        res += "  if (!get_val_smtptr_param<{0} >({1},_p,_n,{3},false,{4})) {2};\n".format(\
+          shared_type,self.name,self.returnstring,required,self.quiet)
     return res
   
   # Pointers
@@ -232,7 +238,7 @@ class ArgInfo:
             #print " {0} : {1} {2} {3} ".format(self.default,self.default in config.variables.keys(),config.types[config.variables[self.default]].GetString(),config.types[self.typeid].GetString())
           convertdefault=True
           if  self.default in config.variables.keys():
-            if config.types[config.variables[self.default]].GetString() == config.types[self.typeid].GetString():
+            if config.types[config.variables[self.default]].GetDemangled() == config.types[self.typeid].GetDemangled():
               convertdefault=False
           if not convertdefault:
             # no need to convert, same type
@@ -249,7 +255,7 @@ class ArgInfo:
     return res
   
   def WrapGetParam(self,noconstructor_call,returnstring,quiet):
-    self.typename = config.types[self.typeid].GetString()
+    self.typename = config.types[self.typeid].GetDemangled()
     #print "WrapGetParam {0}, {1}, '{2}'".format(self.name,config.types[self.typeid].GetType(), config.types[self.typeid].GetFullString())
     self.returnstring=returnstring
     self.quiet=quiet
@@ -274,7 +280,7 @@ class ArgInfo:
     return res
 
   def WrapGetParamPost_Pointer(self):
-    typename=config.types[self.typeid].GetString()
+    typename=config.types[self.typeid].GetDemangled()
     if typename in typesubst.type_substitute.keys():
       if typename=="bool":
         return self.WrapGetParamPost_Pointer_bool()

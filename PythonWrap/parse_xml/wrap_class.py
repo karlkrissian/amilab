@@ -78,15 +78,9 @@ def WxHelpLink(classname,method):
   return "http://docs.wxwidgets.org/stable/wx_{0}.html#{1}".format(classname.lower(),mname.lower())
 
 
-def IsSharedPtr(typename):
-  res = re.match(r"shared_ptr<(.*)>",typename)
-  if res!=None:
-    return res.group(1)
-  else:
-    return None
-
 #------------------------------
 def AvailableType(typename,typeid,missing_types,check_includes=False,return_type=False):
+  #print "AvailableType({0},...)".format(typename)
   if check_includes:
     if (typename in config.available_classes):
       config.AddDeclare(typename)
@@ -117,22 +111,22 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
 def MissingTypes(classname,method,check_includes=False):
   missing_types=[]
   if method.returntype!=None:
-    typename=config.types[method.returntype].GetString()
+    typename = config.types[method.returntype].GetDemangled()
     typeid=config.types[method.returntype].GetMainTypeId()
-    shared_type = IsSharedPtr(typename)
+    shared_type = config.IsSharedPtr(typename)
     if shared_type!=None:
       avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
     else:
       avail = AvailableType(typename,typeid,missing_types,check_includes,True)
   for a in method.args:
-    typename=config.types[a.typeid].GetString()
+    typename=config.types[a.typeid].GetDemangled()
     typefullname=config.types[a.typeid].GetFullString()
     # discard triple pointers or double pointers with const (TODO: improve this part)
     if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
       missing_types.append(typefullname)
     else:
       typeid=config.types[a.typeid].GetMainTypeId()
-      shared_type = IsSharedPtr(typename)
+      shared_type = config.IsSharedPtr(typename)
       if shared_type!=None:
         avail = AvailableType(shared_type,typeid,missing_types,check_includes)
       else:
@@ -489,10 +483,15 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
   res += "    wrap_{0}::SetParametersComments()\n".format(wrapmethod_name) 
   res += "{\n"
   for a in method.args:
-    typename=config.types[a.typeid].GetString()
+    typename=config.types[a.typeid].GetDemangled()
     if typename in typesubst.type_substitute.keys():
       typename=typesubst.type_substitute[typename]
-    res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(typename,a.name)
+    
+    shared_type = config.IsSharedPtr(typename)
+    if shared_type==None:
+      res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(typename,a.name)
+    else:
+      res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(shared_type,a.name)
     if a.default!=None:
       res+= ' (def:{0})'.format(FormatArgDefault(a.default))
     res += '")\n'
@@ -611,7 +610,7 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
             nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
             res += '  return AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
           else:
-            shared_type = IsSharedPtr(typename)
+            shared_type = config.IsSharedPtr(typename)
             if shared_type==None:
               res += '  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
             else:

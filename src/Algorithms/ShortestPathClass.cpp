@@ -19,7 +19,7 @@
 using namespace std;
 
 #include "dijkstra.h"
-#include "func_shortestpath.h"
+#include "ShortestPathClass.h"
 #include "inrimage.hpp"
 #include "amilab_messages.h"
 
@@ -31,7 +31,7 @@ using namespace std;
 #undef max
 #endif
 
-SurfacePoly* Func_shortestpath( SurfacePoly* lines, 
+SurfacePoly* ShortestPathClass::Func_shortestpath( SurfacePoly* lines, 
                                 float pt1_x, float pt1_y, float pt1_z,
                                 float pt2_x, float pt2_y, float pt2_z)
 {
@@ -235,7 +235,7 @@ public:
 // looks for shortest path within an image
 // where each voxel has a positive value
 // voxels of intensity value higher that the threshold are not taken into account
-SurfacePoly* Func_shortestpath_image( InrImage* imweights,
+SurfacePoly* ShortestPathClass::Func_shortestpath_image( InrImage* imweights,
                                       double threshold,
                                       float pt1_x, float pt1_y, float pt1_z,
                                       float pt2_x, float pt2_y, float pt2_z)
@@ -577,7 +577,7 @@ SurfacePoly* Func_shortestpath_image( InrImage* imweights,
 
 
 //-------------------------------------------------------
-SurfacePoly* Func_path_from_displ( InrImage* displ,
+SurfacePoly* ShortestPathClass::Func_path_from_displ( InrImage* displ,
                                    int startx, int starty, int startz)
 {
   int px = startx;
@@ -646,7 +646,7 @@ SurfacePoly* Func_path_from_displ( InrImage* displ,
 // delta is the small increment used to estimate the derivatives
 // based on linear interpolation
 // only for 3D images
-SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
+SurfacePoly* ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr displ,
                                         double start[3],
                                         double step_size,
                                         double max_length,
@@ -882,11 +882,270 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
 } // Func_path_from_vectfield()
 
 
+// need to interpolate at 4D position ...
+double IntensityInterpolation4D(InrImage::ptr& im, const float& x, const float& y, const float& z, const float& t) {
+  int t0 = floor(t);
+  int t1 = t0+1;
+  if(t0<=0) return im->InterpLinIntensite(x,y,z,0);
+  if(t1>=im->GetVDim()) return im->InterpLinIntensite(x,y,z,t0);
+  
+  double coeff0 = t1-t;
+  double coeff1 = t-t0;
+  double val0 = im->InterpLinIntensite(x,y,z,t0);
+  double val1 = im->InterpLinIntensite(x,y,z,t1);
+  return val0*coeff0+val1*coeff1;
+}
+
+bool CoordOK_4D(InrImage::ptr& im, const int& x, const int& y, const int& z, const int& t) 
+{
+  return ((im->CoordOK(x,y,z))&&(t>=0)&&(t<im->GetVDim()));
+}
+
+//-------------------------------------------------------
+SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
+                                                double start[4],
+                                                double step_size,
+                                                double max_length,
+                                                double delta)
+{
+  double p[4] = {start[0],start[1],start[2],start[3]};
+  double vox_p[4];
+
+  double vx,vy,vz,vt,nv;
+  double I,Ixp,Ixm,Iyp,Iym,Izp,Izm,Itm,Itp;
+  int num_points=0;
+  bool end_reached=false;
+  double distance = 0.0, prev_dist = 0.0;
+  double closest_point_intensity;
+
+  double voxel_size_t = 1;
+  // use simple scale dimension should not influence the result, hopefully, to check ...
+
+  vox_p[0] = speed->SpaceToVoxelX(p[0]);
+  vox_p[1] = speed->SpaceToVoxelY(p[1]);
+  vox_p[2] = speed->SpaceToVoxelZ(p[2]);
+  vox_p[3] = p[3]/voxel_size_t;
+
+  if (!CoordOK_4D(speed,(int)vox_p[0],
+                        (int)vox_p[1],
+                        (int)vox_p[2],
+                        (int)vox_p[3]
+                 )
+     )
+  {
+    std::cerr  << "Func_path_from_vectfield() \t "
+          << "initial point not within image domain "
+          << std::endl;
+    return NULL;
+  }
+
+  SurfacePoly* res = new SurfacePoly();
+  res->NewLine();
+
+  while (!end_reached) {
+
+    res->AddPoint(p[0],p[1],p[2]);
+    res->LineAddPointNumber(num_points);
+    num_points++;
+
+    double step = delta;
+    float vpx = vox_p[0];
+    float vpy = vox_p[1];
+    float vpz = vox_p[2];
+    float vpt = vox_p[3];    
+    
+    // Compute downwind gradient to ensure evolution toward lower intensities
+    I   = IntensityInterpolation4D(speed,vpx,     vpy,     vpz,     vpt);
+    Ixp = IntensityInterpolation4D(speed,vpx+step,vpy,     vpz,     vpt);
+    Ixm = IntensityInterpolation4D(speed,vpx-step,vpy,     vpz,     vpt);
+    Iyp = IntensityInterpolation4D(speed,vpx,     vpy+step,vpz,     vpt);
+    Iym = IntensityInterpolation4D(speed,vpx,     vpy-step,vpz,     vpt);
+    Izp = IntensityInterpolation4D(speed,vpx,     vpy,     vpz+step,vpt);
+    Izm = IntensityInterpolation4D(speed,vpx,     vpy,     vpz-step,vpt);
+    Itp = IntensityInterpolation4D(speed,vpx,     vpy,     vpz     ,vpt+step);
+    Itm = IntensityInterpolation4D(speed,vpx,     vpy,     vpz     ,vpt-step);
+
+
+    // go in the oposite direction of the gradient and towards lower values
+    if ((Ixp<=Ixm)&&(Ixp<I)) 
+      vx = (I-Ixp)/(step*speed->VoxSizeX());
+    else
+    if ((Ixm<Ixp)&&(Ixm<I)) 
+      vx = (Ixm-I)/(step*speed->VoxSizeX());
+    else
+      vx = 0;
+
+    if ((Iyp<=Iym)&&(Iyp<I)) 
+      vy = (I-Iyp)/(step*speed->VoxSizeY());
+    else
+    if ((Iym<Iyp)&&(Iym<I)) 
+      vy = (Iym-I)/(step*speed->VoxSizeY());
+    else
+      vy = 0;
+
+    if ((Izp<=Izm)&&(Izp<I)) 
+      vz = (I-Izp)/(step*speed->VoxSizeZ());
+    else
+    if ((Izm<Izp)&&(Izm<I)) 
+      vz = (Izm-I)/(step*speed->VoxSizeZ());
+    else
+      vz = 0;
+
+    if ((Itp<=Itm)&&(Itp<I)) 
+      vt = (I-Itp)/(step*voxel_size_t);
+    else
+    if ((Itm<Itp)&&(Itm<I)) 
+      vt = (Itm-I)/(step*voxel_size_t);
+    else
+      vt = 0;
+
+    nv = sqrt(vx*vx+vy*vy+vz*vz+vt*vt);
+    // if the gradient is strong enough, normalize it
+    if (nv>1E-4) {
+      vx /= nv;
+      vy /= nv;
+      vz /= nv;
+      vt /= nv;
+    } else {
+      FILE_ERROR((
+        boost::format(" local maximum found at %1% %2% %3% %4:") % vpx % vpy % vpz %vpt).str().c_str());
+      FILE_ERROR(( boost::format(" I I{x,y,z}{p,m} = %1% %2% %3% %4% %5% %6% %7%")
+        % I % Ixp % Ixm % Iyp % Iym % Izp % Izm
+        ).str().c_str());
+      // look for the minimal over the neighbors
+      int xpos = round(vpx);
+      int ypos = round(vpy);
+      int zpos = round(vpz);
+      int tpos = round(vpt);
+      float valmin = I,val;
+      bool  minfound = false;
+      int xmin,ymin,zmin,tmin;
+      for (int i=-1;i<=1;i++)
+      for (int j=-1;j<=1;j++)
+      for (int k=-1;k<=1;k++)
+      for (int l=-1;l<=1;l++)
+      {
+        if (CoordOK_4D(speed,xpos+i,ypos+j,zpos+k,tpos+l)) 
+        {
+          val = (*speed)(xpos+i,ypos+j,zpos+k,tpos+l);
+          if (val<valmin) 
+          {
+            valmin = val;
+            xmin = xpos+i;
+            ymin = ypos+j;
+            zmin = zpos+k;
+            tmin = tpos+l;
+            minfound = true;
+          }
+        }
+      }
+      if (minfound) {
+        // move toward the neighbor point with lower intensity
+        vx = (xmin-vpx)*speed->VoxSizeX();
+        vy = (ymin-vpy)*speed->VoxSizeY();
+        vz = (zmin-vpz)*speed->VoxSizeZ();
+        vt = (tmin-vpt)*voxel_size_t;
+        nv = sqrt(vx*vx+vy*vy+vz*vz+vt*vt);
+        FILE_ERROR((boost::format(" minimum found at  %1% %2% %3% %4% :") % xmin % ymin % zmin % tmin).str().c_str());
+        FILE_ERROR((format(" new vector %1% %2% %3% %4% norm %5%")
+        % vx % vy % vz % vt % nv
+        ).str().c_str());
+      } else  {
+        FILE_ERROR(" no minimum found among neighbors !");
+      }
+      if (nv>1E-4) {
+        /*
+        vx /= nv;
+        vy /= nv;
+        vz /= nv;
+        */
+        // jump to new point !!!
+        vx /=step_size;
+        vy /=step_size;
+        vz /=step_size;
+        vt /=step_size;
+      }
+    }
+
+    int xpos = round(vox_p[0]);
+    int ypos = round(vox_p[1]);
+    int zpos = round(vox_p[2]);
+    int tpos = round(vox_p[3]);
+
+    closest_point_intensity = (*speed)(xpos,ypos,zpos,tpos);
+    distance += step_size;
+
+    if ((distance>=prev_dist+10)||(distance<2)) {
+      prev_dist = distance;
+      FILE_MESSAGE((format(" point %1% ") % num_points).str().c_str());
+      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+                           % p[0] % p[1] % p[2]).str().c_str());
+      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+                           % vox_p[0] % vox_p[1] % vox_p[2] ).str().c_str());
+      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+                     % vx % vy % vz).str().c_str());
+      FILE_MESSAGE(( format("  nv %0.3f") %  nv ).str().c_str());
+      FILE_MESSAGE(( format("  current val %0.4f %0.4f")
+              % speed->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
+              % closest_point_intensity).str().c_str());
+      FILE_MESSAGE(( format("  d= %0.3f mm") %  distance ).str().c_str());
+    }
+
+    p[0] += vx*step_size;
+    p[1] += vy*step_size;
+    p[2] += vz*step_size;
+    p[3] += vt*step_size;
+
+    vox_p[0] = speed->SpaceToVoxelX(p[0]);
+    vox_p[1] = speed->SpaceToVoxelY(p[1]);
+    vox_p[2] = speed->SpaceToVoxelZ(p[2]);
+    vox_p[3] = p[3]/voxel_size_t;
+
+    end_reached = !CoordOK_4D(speed,(int)vox_p[0],
+                                    (int)vox_p[1],
+                                    (int)vox_p[2],
+                                    (int)vox_p[3]
+                             )
+                    || (nv<1E-5)
+                    || (distance>max_length)
+                    || (closest_point_intensity<0)
+                    ;
+    // small fix for stopping vessel in CTA challenge, need to be done more properly ...
+    end_reached = end_reached 
+                  || (vox_p[0]<0) 
+                  || (vox_p[1]<0) 
+                  || (vox_p[2]<0)
+                  || (vox_p[3]<0);
+
+  } // end while
+
+  res->EndLine();
+
+  // cannot check for end point here
+  std::cout  << " Finished point " << num_points 
+        << format(" ( %0.2f, %0.2f %0.2f %0.2f)") 
+              % p[0] % p[1] % p[2] %p[3]
+        << format(" ( %0.2f, %0.2f %0.2f %0.2f)") 
+              % vox_p[0] % vox_p[1] % vox_p[2] %vox_p[3]
+        << format(" ( %0.2f, %0.2f %0.2f %0.2f)") 
+              % vx % vy % vz %vt
+        << format("  nv %0.3f") %  nv
+        << format("  current val %0.2f %0.2f")
+          % speed->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2],vox_p[3])
+          % closest_point_intensity
+        << format("  d= %0.3f mm") %  distance
+        << std::endl;
+
+  return res;
+
+} // Func_path_4D()
+
+
 //-------------------------------------------------------
 // delta is the small increment used to estimate the derivatives
 // based on linear interpolation
 // only for 3D images
-SurfacePoly* Func_path_from_vectfield( InrImage::ptr displ,
+SurfacePoly* ShortestPathClass::Func_path_from_vectfield( InrImage::ptr displ,
                                       double start[3],
                                       double end[3],
                                       double step_size,
@@ -897,7 +1156,7 @@ SurfacePoly* Func_path_from_vectfield( InrImage::ptr displ,
   FILE_MESSAGE((format(" expected endpoint %0.2f %0.2f %0.2f ") 
                       % end[0] % end[1] % end[2] ).str().c_str());
 
-  SurfacePoly* res = Func_path_from_vectfield(displ,start,step_size,max_length,delta);
+  SurfacePoly* res = ShortestPathClass::Func_path_from_vectfield(displ,start,step_size,max_length,delta);
 
   // check that we are close to the expected endpoint
   if (res->GetNumberOfLines() !=1) {

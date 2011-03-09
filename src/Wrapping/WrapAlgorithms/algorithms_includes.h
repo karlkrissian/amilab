@@ -5,3 +5,4 @@
 #include "vtkLevelSetFastMarching.h"
 #include "vtkFastMarching_nD_plus.h"
 #include "Gradient.h"
+#include "ShortestPathClass.h"
