@@ -13,8 +13,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAlgorithms/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples/Generated
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/src
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/include
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -23,6 +21,8 @@ include_directories (
 
 IF(AMI_WRAP_MICRONTRACKER)
   include_directories(
+    ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/src
+    ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/include
     ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/Generated
   )
 ENDIF(AMI_WRAP_MICRONTRACKER)

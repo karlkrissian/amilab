@@ -231,7 +231,7 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
     nv = sqrt(vx*vx+vy*vy);
     if (input->GetImageDimension() == 3) nv = sqrt(vx*vx+vy*vy+vz*vz);
 
-    // If the gradient is stong enough, normalize it
+    // If the gradient is strong enough, normalize it
     if (nv>1E-4)
     {
       vx /= nv;

@@ -29,7 +29,7 @@ if (!exists(itkFastMarchingClass)) {
       ::lower = 0, "Set the lower threshold of the BinaryThreshold Filter."
       ::upper = 100, "Set the upper threshold of the BinaryThreshold Filter."
       ::stopping_time = 100, "Fast Marching algorithm is terminated when the value of the smallest trial point is greater than the stopping value."
-      ::seed = 0, "Set the container of Trial Points representing the initial front."
+      ::seed = 0, "Intensity value of the seed points."
       ::dim = INT(1), "The dimension of the image."
       
       ::inputmin = 0, "Minimal Intensity of the image."
