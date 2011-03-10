@@ -212,6 +212,7 @@ MACRO( ClassUsedName input_name output_name )
   STRING(REGEX REPLACE ">" "__GT__"     ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE "," "__COMMA__"  ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE "::" "__NS__"    ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE " " "__SPACE__"  ${output_name} ${${output_name}} )
 
 ENDMACRO( ClassUsedName)
 #-------------------------------------------------------------------------------
