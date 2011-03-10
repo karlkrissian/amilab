@@ -727,15 +727,13 @@ def ImplementCopyMethodWrap(classname, method):
 
 
 
-
-
 #----------------------------------------------------------------------
 #  WrapClass
 #----------------------------------------------------------------------
 def WrapClass(classname,include_file,inputfile):
   if (args.val.profile):
     t0 = time.clock()
-    print "WrapClass({0})".format(classname)
+    print "WrapClass({0},{1},{2})".format(classname,include_file,inputfile)
   
   parser = make_parser()
   # Create the handler
@@ -756,6 +754,7 @@ def WrapClass(classname,include_file,inputfile):
     # Create the handler
     #print "classname is ",classname
     #print "args.val.classes is ",config.parsed_classes
+
     if classname not in config.parsed_classes:
       fpm = FindPublicMembers([classname])
       # Tell the parser to use our handler
@@ -782,26 +781,26 @@ def WrapClass(classname,include_file,inputfile):
     implement_type="\n"
     if dh.has_copyconstr:
       if dh.abstract=='1':
-        implement_type += "AMI_DEFINE_WRAPPEDTYPE_ABSTRACT({0});\n".format(classname)
+        implement_type += "AMI_DEFINE_WRAPPEDTYPE_ABSTRACT({0});\n".format(config.ClassTypeDef(classname))
       else:
-        implement_type += "AMI_DEFINE_WRAPPEDTYPE_HASCOPY({0});\n".format(classname)
+        implement_type += "AMI_DEFINE_WRAPPEDTYPE_HASCOPY({0});\n".format(config.ClassTypeDef(classname))
       if (IsTemplate(classname) and args.val.templates) or IsWithinContext(classname):
-        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(classname,config.ClassUsedName(classname))
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(config.ClassTypeDef(classname),config.ClassUsedName(classname))
       else:
-        implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(classname)
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(config.ClassTypeDef(classname))
     else:
-      implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(classname)
+      implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(config.ClassTypeDef(classname))
       # need to implement CreateVar ...
       if (IsTemplate(classname) and args.val.templates) or IsWithinContext(classname):
-        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(classname,config.ClassUsedName(classname))
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(config.ClassTypeDef(classname),config.ClassUsedName(classname))
       else:
-        implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(classname)
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(config.ClassTypeDef(classname))
       implement_type += "\n"
       implement_type += "// Implementing CreateVar for AMILabType\n"
-      implement_type += "BasicVariable::ptr AMILabType<{0}>::CreateVar( {0}* val, bool nodeleter)\n".format(classname)
+      implement_type += "BasicVariable::ptr AMILabType<{0} >::CreateVar( {0}* val, bool nodeleter)\n".format(classname)
       implement_type += "{ \n"
-      implement_type += "  boost::shared_ptr<{0}> obj_ptr(val,smartpointer_nodeleter<{0}>());\n".format(classname)
-      implement_type += "  return AMILabType<{0}>::CreateVarFromSmtPtr(obj_ptr);\n".format(classname)
+      implement_type += "  boost::shared_ptr<{0} > obj_ptr(val,smartpointer_nodeleter<{0} >());\n".format(classname)
+      implement_type += "  return AMILabType<{0} >::CreateVarFromSmtPtr(obj_ptr);\n".format(classname)
       implement_type += "}\n"
           
     # Create Header File
@@ -814,6 +813,12 @@ def WrapClass(classname,include_file,inputfile):
     # add the class to the available ones
     if classname not in config.available_classes:
       config.available_classes.append(classname)
+
+    # Template case
+    include_typedef=''
+    if ( classname!=config.ClassTypeDef(classname) ):
+      include_typedef='/// Redefinition of the template class\n'
+      include_typedef+='typedef '+classname+' '+config.ClassTypeDef(classname)+";"
 
     # Create Inheritance information
     include_bases='\n'
@@ -1125,9 +1130,10 @@ def WrapClass(classname,include_file,inputfile):
     
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
+      line = line.replace("${INCLUDE_TYPEDEF}",   include_typedef)
       line = line.replace("${INHERIT_BASES}",     inherit_bases)
       line = line.replace("${CONSTRUCTOR_BASES}", constructor_bases)
-      line = line.replace("${TEMPLATE}",          classname)
+      line = line.replace("${TEMPLATE}",          config.ClassTypeDef(classname))
       line = line.replace("${TEMPLATENAME}",      config.ClassUsedName(classname))
       line = line.replace("${INCLUDEFILES}",      local_include_file)
       line = line.replace("${ADD_CLASS_CONSTRUCTORS}",constructors_decl)
@@ -1237,7 +1243,7 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${INCLUDES}",              config.CreateIncludes())
       line = line.replace("${IMPLEMENT_TYPE}",        implement_type)
       line = line.replace("${IMPLEMENT_CREATEVAR}",   implement_createvar)
-      line = line.replace("${TEMPLATE}",              classname)
+      line = line.replace("${TEMPLATE}",              config.ClassTypeDef(classname))
       line = line.replace("${TEMPLATENAME}",          config.ClassUsedName(classname))
       line = line.replace("${TEMPLATESHORTNAME}",     config.ClassShortName(classname))      
       line = line.replace("${METHODS_BASES}",         methods_bases)

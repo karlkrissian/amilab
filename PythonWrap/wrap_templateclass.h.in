@@ -26,6 +26,8 @@ ${INCLUDEFILES}
 // include what is needed for inheritence and for types ...
 ${INCLUDE_BASES}
 
+${INCLUDE_TYPEDEF}
+
 #ifndef ${TEMPLATENAME}_declared
   #define ${TEMPLATENAME}_declared
   AMI_DECLARE_TYPE(${TEMPLATE});

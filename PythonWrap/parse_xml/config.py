@@ -102,6 +102,7 @@ def ClassUsedName(classname):
   res = res.replace('>','__GT__')
   res = res.replace(',','__COMMA__')
   res = res.replace('::','__NS__')
+  res = res.replace(' ','__SPACE__')
   return res
 
 #-------------------------------------------------------------
@@ -111,7 +112,19 @@ def ClassShortName(classname):
   res = res.replace('>','')
   res = res.replace(',','_')
   res = res.replace('::','_')
+  res = res.replace(' ','')
   return res
+
+#-------------------------------------------------------------
+def IsMultipleTemplate(classname):
+  res=False
+  if( (classname.find('<')>=0) and (classname.find(',')>=0) ):
+    res=True
+  return res
+  
+#-------------------------------------------------------------
+def ClassTypeDef(classname):
+  return ClassShortName(classname)
 
 #------------------------------------------------------------------
 #  AddInclude

@@ -170,7 +170,7 @@ if __name__ == '__main__':
     for cl in args.val.available_classes:
       config.available_classes.append(cl)
     FindAvailableClasses()
-    #print "available classes:", config.available_classes
+    print "available classes:", config.available_classes
     
     if (args.val.profile):
       t1 = time.clock()

@@ -49,6 +49,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Name
     classname = attrs.get('name', None)
+    #print "Classname='{0}'".format(classname)
     self.argtype.SetName(classname)
     
     if classname!=None:
@@ -73,7 +74,9 @@ class FindTypesAndVariables(handler.ContentHandler):
       print "classname != demangled : {0} {1}, using the demangled name".format(classname,demangled)
     config.classes[demangled]=classid
     
-    #print "in ", name, " ", classname, " id:",classid
+    #print "'{0}' '{1}' {2} id:{3}".format(name, classname,demangled,classid)
+    found = classname in config.classes.keys()
+    #print "found is ", found
     
     # Incomplete
     incomplete = attrs.get('incomplete', '0')
