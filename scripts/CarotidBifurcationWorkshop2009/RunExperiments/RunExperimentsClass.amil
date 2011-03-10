@@ -751,9 +751,9 @@ if (!exists(RunExperimentsClass)){
             radii  = 3
             eca_tube <<= LineRecons(::pathCEs_cut,::speed2,radii)
           } else {
-            radii <<= Image(FLOAT,lE.NbPoints(),1,1)
+            radii <<= Image(FLOAT,lI.NbPoints(),1,1)
             radii  = 3
-            eca_tube <<= LineRecons(lE,::speed2,radii)
+            eca_tube <<= LineRecons(lI,::speed2,radii)
           }
 
           # set speed to 0 for point in eca tube but not in ica tube
