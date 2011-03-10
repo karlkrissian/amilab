@@ -21,36 +21,10 @@ AnalyticCylinder::AnalyticCylinder(float r, float xd, float yd, float zd)
 //Destructor
 AnalyticCylinder::~AnalyticCylinder(){}
 
-
-//inline int DentroCilindro (float qx, float qy, float qz)
-///* calculo si el el punto (qx,qy,qz) está dentro del cilindro.
-//  Para ello calculo la distancia del punto al eje del cilindro.
-//  Si es menor que el radio estoy dentro */
-//{
-//float pqx = qx - CENTRO;
-//float pqy = qy - CENTRO;
-//float pqz = qz - CENTRO; 
-//float vx, vy, vz;
-//float dist;
-//
-//vx = pqy*EJEZ - pqz*EJEY;
-//vy = pqz*EJEX - pqx*EJEZ;
-//vz = pqx*EJEY - pqy*EJEX;
-//dist = vx*vx + vy*vy +vz*vz;
-//return ((dist>=RADIO*RADIO)?0:1);
-//}
-
-
-
-
 //Redefinition of the parenthesis operator
 double AnalyticCylinder::operator () (const double& x, const double& y, 
                                       const double& z) const
-{
-  //return 0.0;
-  
-  //Usando lo de la función de Agustín
-  
+{  
   float mod   = sqrt(Xdir*Xdir + Ydir*Ydir + Zdir*Zdir);
   float xaxis = Xdir/mod;
   float yaxis = Ydir/mod;

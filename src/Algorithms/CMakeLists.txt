@@ -50,6 +50,7 @@ SET(Algorithms_SRCS
   AnalyticStraightVessel2D.cpp
   AnalyticRing2D.cpp
   AnalyticPlane.cpp
+  AnalyticCube.cpp
   AnalyticCylinder.cpp
   AnalyticSphere.cpp
   AnalyticTorus.cpp
@@ -111,6 +112,7 @@ SET(Algorithms_HDRS
   include/AnalyticStraightVessel2D.h
   include/AnalyticRing2D.h
   include/AnalyticPlane.h
+  include/AnalyticCube.h
   include/AnalyticCylinder.h
   include/AnalyticSphere.h
   include/AnalyticTorus.h

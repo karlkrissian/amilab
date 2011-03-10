@@ -55,6 +55,7 @@ SET(  WrapFilters_SRCS
   wrap_AnalyticStraightVessel2D.cpp
   wrap_AnalyticRing2D.cpp
   wrap_AnalyticPlane.cpp
+  wrap_AnalyticCube.cpp
   wrap_AnalyticCylinder.cpp
   wrap_AnalyticSphere.cpp
   wrap_AnalyticTorus.cpp
@@ -92,6 +93,7 @@ SET(WrapFilters_HDRS
   ../include/wrap_AnalyticStraightVessel2D.h
   ../include/wrap_AnalyticRing2D.h
   ../include/wrap_AnalyticPlane.h
+  ../include/wrap_AnalyticCube.h
   ../include/wrap_AnalyticCylinder.h
   ../include/wrap_AnalyticSphere.h
   ../include/wrap_AnalyticTorus.h
