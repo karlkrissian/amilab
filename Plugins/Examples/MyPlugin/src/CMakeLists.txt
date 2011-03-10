@@ -15,32 +15,34 @@ MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
 
 INCLUDE(${PROJECT_SOURCE_DIR}/../CMAKE/config.cmake)
+INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}
                     ${PROJECT_SOURCE_DIR}/Wrapping/Generated
                     ${AMILab_Header} )
 
+SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
+FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
+
 INCLUDE(${PROJECT_SOURCE_DIR}/../CMAKE/wrapping.cmake)
 
 SET(ExamplePlugin_HDRS
-    ${Example_HDRS}
+    Foo.h
     Plugin.h
     ExamplePlugin.h
+    ${Example_HDRS}
 )
 
 SET(ExamplePlugin_SRCS
-    ${Example_SRCS}
     Plugin.cpp
     ExamplePlugin.cpp
+    ${Example_SRCS}
 )
 
 SET(ExamplePlugin_SRCS
     ${ExamplePlugin_SRCS}
     ${ExamplePlugin_HDRS}
 )
-
-SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
-FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
 
 FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net media REQUIRED)
 INCLUDE(${wxWidgets_USE_FILE})

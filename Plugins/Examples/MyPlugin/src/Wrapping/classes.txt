@@ -1,1 +1,3 @@
+Foo<int, 10>
+Foo2<int, float, bool>
 ExamplePlugin

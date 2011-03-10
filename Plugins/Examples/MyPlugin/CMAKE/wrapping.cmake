@@ -86,24 +86,32 @@ ELSE(MYCOMMAND_RESULT)
     STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
 
     FOREACH( class ${ancestors_list})
-      SET(OUTPUT_LIST
-        ${GENERATED_DIR}/wrap_${class}.cpp ${GENERATED_DIR}/wrap_${class}.h
-        ${OUTPUT_LIST}
-    )
+      ClassUsedName( class m_class )
+      IF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.cpp) OR
+          (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.h) )
+        SET(OUTPUT_LIST
+          ${GENERATED_DIR}/wrap_${m_class}.cpp ${GENERATED_DIR}/wrap_${m_class}.h
+          ${OUTPUT_LIST}
+        )
+      ENDIF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.cpp) OR
+             (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.h) )
+      SET(CLASS_LIST ${CLASS_LIST} ${class})
     ENDFOREACH( class ${ancestors_list})
 
-    IF(${GCCXML_result} EQUAL 0)
+    IF( (${GCCXML_result} EQUAL 0) AND
+        (DEFINED OUTPUT_LIST ) )
       MESSAGE("Try to generate wrapping...")
 
       SET(MYCOMMAND_3 ${PYTHON_EXECUTABLE})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} ${AMI_WRAPPER})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} ${XML_OUTPUT})
-      SET(MYCOMMAND_3 ${MYCOMMAND_3} "--libname" "wx")
-      SET(MYCOMMAND_3 ${MYCOMMAND_3} "--filter" "\"wx*\"")
-      SET(MYCOMMAND_3 ${MYCOMMAND_3} "--classes" ${ancestors_list})
+      SET(MYCOMMAND_3 ${MYCOMMAND_3} "--libname" "myplugin")
+      #SET(MYCOMMAND_3 ${MYCOMMAND_3} "--filter" "\"wx*\"")
+      SET(MYCOMMAND_3 ${MYCOMMAND_3} "--classes" ${CLASS_LIST})
       #SET(MYCOMMAND_3 ${MYCOMMAND_3} "--wrap_includes" ${WrapWxWidgetsDir})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--outputdir" ${GENERATED_DIR})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--profile")
+      SET(MYCOMMAND_3 ${MYCOMMAND_3} "--templates")
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--templatefile_dir" ${AMILAB_SOURCE_DIR}/../PythonWrap/)
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "-q")
 
@@ -115,12 +123,15 @@ ELSE(MYCOMMAND_RESULT)
           ${MYCOMMAND_3}
         DEPENDS
           ${WRAP_DIR}/classes.txt
+        VERBATIM
       )
-    ENDIF(${GCCXML_result} EQUAL 0)
+    ENDIF( (${GCCXML_result} EQUAL 0) AND
+           (DEFINED OUTPUT_LIST ) )
 
     FOREACH( class ${ancestors_list} )
-      SET( Example_HDRS ${GENERATED_DIR}/wrap_${class}.h ${Example_HDRS})
-      SET( Example_SRCS ${GENERATED_DIR}/wrap_${class}.cpp ${Example_SRCS})
+      ClassUsedName( class m_class )
+      SET( Example_HDRS ${GENERATED_DIR}/wrap_${m_class}.h ${Example_HDRS})
+      SET( Example_SRCS ${GENERATED_DIR}/wrap_${m_class}.cpp ${Example_SRCS})
     ENDFOREACH( class ${ancestors_list} )
 
   ENDIF(MYCOMMAND_2_RESULT)

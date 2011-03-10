@@ -2,7 +2,8 @@
 // C++ File: ExamplePlugin.h
 //
 // Description: This file contains a class of example that contains methods to
-// calculate the factorial of a number and the series of Fibonacci.
+// calculate the factorial of a number and the series of Fibonacci. Also it
+// contains methods to create a sequence integers elements and a simple stack.
 //
 //
 // Author: xXx <xXx@xXx.com>, (C) YYYY
@@ -13,12 +14,21 @@
 #ifndef EXAMPLEPLUGIN_H
 #define EXAMPLEPLUGIN_H
 
+#define MAXELEMSEQUENCE 10  /// Maximum size of the sequence.
+
+#include "Foo.h"
+
 /**
  * @brief The ExamplePlugin class contains methods to calculate the factorial 
- *        of a number and the series of Fibonacci.
+ *        of a number and the series of Fibonacci. Also it contains methods to
+ *        create a sequence integers elements and a simple stack.
  **/
 class ExamplePlugin
 {
+private:
+  Foo3<int> _MyStack;  
+  Foo<int, MAXELEMSEQUENCE> _MySequence;
+  Foo2<int,float,bool> _MyFoo;
 public:
   /**
    * Default constructor.
@@ -26,6 +36,7 @@ public:
   ExamplePlugin()
   {
     //TODO
+    _MyFoo.Set(1,0.5,true);
   };
 
   /**
@@ -50,6 +61,32 @@ public:
    **/  
   int Fibonacci(int N);
 
+  /**
+   * Adds a value to the sequence of integers (nothing is done if the position
+   * is incorrect).
+   * @param Position  the position of element
+   * @param Value     the value of element
+   **/
+  void AddSequenceElement(int Position, int Value);
+
+  /**
+   * Obtains the element X of the sequence.
+   * @param Position  the position of element
+   * @return the element X of the sequence (-1 if the position is incorrect)
+   **/
+  int GetSequenceElement(int Position);
+
+  /**
+   * Adds a value to stack.
+   * @param Value the value of element
+   **/
+  void Push(int Value);
+
+  /**
+   * Extracts an element of stack.
+   * @return the element of stack
+   **/
+  int Pop(void);
 };
 
 #endif // EXAMPLEPLUGIN_H
