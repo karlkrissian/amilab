@@ -157,6 +157,7 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
           --profile
           -q
 #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/classes.txt
+        VERBATIM
       )
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_algorithms.h) OR

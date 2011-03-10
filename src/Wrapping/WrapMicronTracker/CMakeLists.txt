@@ -72,6 +72,7 @@ IF(AMI_ENABLE_WRAPPING)
       --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
       -q
   COMMENT "${PYTHON_EXECUTABLE} ${AMI_WRAPPER} ${XML_OUTPUT}"
+  VERBATIM
   #DEPENDS
   #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
   )

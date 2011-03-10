@@ -127,12 +127,12 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
       (${NB_MISSING_METHODS} GREATER 0) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
-    FOREACH( class ${MISSING_CLASSES})
-      SET(MISSING_CLASSES_STRINGLIST ${MISSING_CLASSES_STRINGLIST} \"${class}\")
-    ENDFOREACH( class ${MISSING_CLASSES})
-    FOREACH( class ${ancestors_list})
-      SET(ANCESTORS_STRINGLIST ${ANCESTORS_STRINGLIST} \"${class}\")
-    ENDFOREACH( class ${ancestors_list})
+#     FOREACH( class ${MISSING_CLASSES})
+#       SET(MISSING_CLASSES_STRINGLIST ${MISSING_CLASSES_STRINGLIST} \"${class}\")
+#     ENDFOREACH( class ${MISSING_CLASSES})
+#     FOREACH( class ${ancestors_list})
+#       SET(ANCESTORS_STRINGLIST ${ANCESTORS_STRINGLIST} \"${class}\")
+#     ENDFOREACH( class ${ancestors_list})
     # Go for python wrapping
     ADD_CUSTOM_COMMAND(
         OUTPUT ${OUTPUT_LIST}  ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
@@ -152,6 +152,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
             -q
         #DEPENDS
         #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+        VERBATIM
     )
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR
         (${NB_MISSING_METHODS} GREATER 0) OR

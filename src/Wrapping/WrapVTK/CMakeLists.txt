@@ -133,7 +133,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
           --profile
           -q
 #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
-      )
+      VERBATIM
+    )
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
       (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.h) OR
       (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp))
