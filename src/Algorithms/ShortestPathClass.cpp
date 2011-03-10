@@ -878,6 +878,7 @@ SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr dis
         << std::endl;
 
   SurfacePoly::ptr res_ptr(res);
+  std::cout << "Number of points = "<< res_ptr->GetNumberOfPoints() << std::endl;
   return res_ptr;
 
 } // Func_path_from_vectfield()
@@ -1157,7 +1158,9 @@ SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield( InrImage::ptr disp
   FILE_MESSAGE((format(" expected endpoint %0.2f %0.2f %0.2f ") 
                       % end[0] % end[1] % end[2] ).str().c_str());
 
-  SurfacePoly::ptr res = ShortestPathClass::Func_path_from_vectfield(displ,start,step_size,max_length,delta);
+  SurfacePoly::ptr res(ShortestPathClass::Func_path_from_vectfield(displ,start,step_size,max_length,delta));
+
+  std::cout << "Number of points = "<< res->GetNumberOfPoints() << std::endl;
 
   // check that we are close to the expected endpoint
   if (res->GetNumberOfLines() !=1) {

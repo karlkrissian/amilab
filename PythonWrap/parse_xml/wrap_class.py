@@ -526,7 +526,7 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
     # don't accept parameters if there is no argument to the function
     res +=  "  if (_p)  if (_p->GetNumParam()>0) {0};\n".format(returnstring)
   if method.returntype!=None:
-    returntypest=config.types[method.returntype].GetString()
+    returntypest=config.types[method.returntype].GetDemangled()
   else:
     returntypest="void"
   res += "\n"
@@ -598,7 +598,7 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
           res += '  return AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)
       #--- No type substitution before return
       else:
-        typename=config.types[method.returntype].GetString()
+        typename=config.types[method.returntype].GetDemangled()
         if typename in config.available_classes and returnpointer: 
           nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
           # don't delete returned pointer ...

@@ -1,5 +1,4 @@
 
-import_vtk
 
 #
 # usefull functions for the Fast Marching Geodesic Distance Transform
@@ -7,13 +6,16 @@ import_vtk
 Class FastMarchingUtils \
 {
 
+
   #---------------------------------------------
   proc ::FastMarchingTarget(  IMAGE input, IMAGE initim, \
                               NUM maxtime, NUM x, NUM y, NUM z) \
   {
+
+    import_vtk
     # convert images to VTK images
-    vtk_input  = global::ToVtkImageData(&input)
-    vtk_init   = global::ToVtkImageData(&initim)
+    vtk_input  = ToVtkImageData(&input)
+    vtk_init   = ToVtkImageData(&initim)
 
     vtk_FM = algorithms.vtkLevelSetFastMarching.New()
 
@@ -45,7 +47,7 @@ Class FastMarchingUtils \
     vtk_FM.SetmaxTime( maxtime);
     vtk_FM.Update();
 
-    return = global::FromVtkImageData(&vtk_FM.GetOutput())
+    return = FromVtkImageData(&vtk_FM.GetOutput())
     vtk_FM.Delete()
   }
   Comments(::FastMarchingTarget, "Fast Marching evolution from the initial contour up to the given target point, for 2D and 3D images.")
@@ -54,9 +56,10 @@ Class FastMarchingUtils \
   proc ::FastMarchingTarget4D(  IMAGE input, IMAGE initim, \
                               NUM maxtime, NUM x, NUM y, NUM z, NUM t) \
   {
+    import_vtk
     # convert images to VTK images
-    vtk_input  = global::ToVtkImageData(&input)
-    vtk_init   = global::ToVtkImageData(&initim)
+    vtk_input  = ToVtkImageData(&input)
+    vtk_init   = ToVtkImageData(&initim)
 
     vtk_FM = algorithms.vtkFastMarching_nD_plus.New()
 
@@ -91,7 +94,7 @@ Class FastMarchingUtils \
     vtk_FM.SetmaxTime( maxtime);
     vtk_FM.Update();
 
-    return = global::FromVtkImageData(&vtk_FM.GetOutput())
+    return = FromVtkImageData(&vtk_FM.GetOutput())
     vtk_FM.Delete()
   }
   Comments(::FastMarchingTarget4D, "Fast Marching evolution from the initial contour up to the given target point, for 3D+t images.")

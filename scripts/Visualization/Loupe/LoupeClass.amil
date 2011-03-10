@@ -14,6 +14,7 @@ if (!exists(LoupeClass)) {
       ::rad = INT(30), "loupe radius"
       ::mag = 2, "magnification factor"
       ::Active = UCHAR(1), "Activate/Desactivate loop"
+      ::morphing = UCHAR(0), "Continuous transition"
       ::in_update = false
     }
 
@@ -54,17 +55,61 @@ if (!exists(LoupeClass)) {
 
         xpos = ::input_draw.GetXPos()
         ypos = ::input_draw.GetYPos()
-        ::subim <<= ::input[(xpos-::rad):(xpos+::rad),(ypos-::rad):(ypos+::rad)]
-        magnified_subim = Resize(::subim,::subim.tx*::mag,::subim.tx*::mag,1,1)
-        xp = (FLOAT) Xpos(::subim)- ::subim.tx/2
-        yp = (FLOAT) Ypos(::subim)- ::subim.ty/2
-        r2 = xp*xp+yp*yp
-        r = sqrt(r2)
+        if (::input.tz==1) {
+          if (::morphing) {
+            ::subim <<= ::input[(xpos-::rad):(xpos+::rad),(ypos-::rad):(ypos+::rad)]
+            # spacial positions
+            pos = SpacePos(::subim)
+            # get limits
+            xmin = min(pos[0])
+            xmax = max(pos[0])
+            ymin = min(pos[1])
+            ymax = max(pos[1])
+            rad = -max(-(xmax-xmin),-(ymax-ymin))/2
+printn "rad = %1%" %rad
+            # position from the center
+            pos1 = pos
+            pos1.SetComponent(0,pos1[0]-(xmax+xmin)/2)
+            pos1.SetComponent(1,pos1[1]-(ymax+ymin)/2)
+            # Gaussian weights
+            pos2 = pos1/(rad/1.5)
+            pos2_2 = pos2*pos2
+            pos2_4 = pos2_2*pos2_2
+            pos2_8 = pos2_4*pos2_4
+            
+            w = exp(-(pos2_8)/2)*(::mag-1)/::mag
+printn "min w = %1%" % min(w)
+            # new image
+            subim = ::subim(pos-pos1*w)
+          } else {
+            ::subim <<= ::input[(xpos-::rad):(xpos+::rad),(ypos-::rad):(ypos+::rad)]
+            magnified_subim = Resize(::subim,::subim.tx*::mag,::subim.tx*::mag,1,1)
+            xp = (FLOAT) Xpos(::subim)- ::subim.tx/2
+            yp = (FLOAT) Ypos(::subim)- ::subim.ty/2
+            r2 = xp*xp+yp*yp
+            r = sqrt(r2)
 
-        diffx = magnified_subim.tx-::subim.tx
-        diffy = magnified_subim.ty-::subim.ty
-        subimm = magnified_subim[(diffx/2):(diffx/2+::subim.tx-1),(diffy/2):(diffy/2+::subim.ty-1)]
-        subim = ::subim*(r>::rad)+subimm*(r<=::rad)
+            diffx = magnified_subim.tx-::subim.tx
+            diffy = magnified_subim.ty-::subim.ty
+            subimm = magnified_subim[(diffx/2):(diffx/2+::subim.tx-1),(diffy/2):(diffy/2+::subim.ty-1)]
+            subim = ::subim*(r>::rad)+subimm*(r<=::rad)
+          }
+       } else {
+          zpos = ::input_draw.GetZPos()
+          ::subim <<= ::input[(xpos-::rad):(xpos+::rad),(ypos-::rad):(ypos+::rad),(zpos-::rad):(zpos+::rad)]
+          magnified_subim = Resize(::subim,::subim.tx*::mag,::subim.ty*::mag,::subim.tz*::mag,1)
+          xp = (FLOAT) Xpos(::subim)- ::subim.tx/2
+          yp = (FLOAT) Ypos(::subim)- ::subim.ty/2
+          zp = (FLOAT) Zpos(::subim)- ::subim.tz/2
+          r2 = xp*xp+yp*yp+zp*zp
+          r = sqrt(r2)
+
+          diffx = magnified_subim.tx-::subim.tx
+          diffy = magnified_subim.ty-::subim.ty
+          diffz = magnified_subim.tz-::subim.tz
+          subimm = magnified_subim[(diffx/2):(diffx/2+::subim.tx-1),(diffy/2):(diffy/2+::subim.ty-1),(diffz/2):(diffz/2+::subim.tz-1)]
+          subim = ::subim*(r>::rad)+subimm*(r<=::rad)
+        }
 
         ::input.putimage(subim)
         schedule(3,::Update);
@@ -107,6 +152,9 @@ if (!exists(LoupeClass)) {
             ::win.SetCallback(&::ShowLoupe)
 
             ::win.AddBoolean(&::Active,"Active")
+            ::win.SetCallback(&::ToggleLoupe)
+
+            ::win.AddBoolean(&::morphing,"Continuous")
             ::win.SetCallback(&::ToggleLoupe)
 
       ::win.EndBook()

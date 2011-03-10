@@ -7,8 +7,14 @@ if (!exists(ShortestPathClass)) {
   global::ami_import.ITK()
 
   func "Common/ScriptGui"
-    
+
   Class ShortestPathClass : public ScriptGui {
+
+    func "Centerlines/ShortestPath/ShortestPathUtils"
+    ShortestPathUtils ::SPU
+    
+    func "DistanceTransform/FastMarching/FastMarchingUtils"
+    FastMarchingUtils ::FMU
 
     func "SyntheticImages/AddSphere.amil"
 
@@ -228,8 +234,9 @@ if (!exists(ShortestPathClass)) {
     
       #maxrepim_crop = maxrepim_crop/10
       # running fast marching until the point 1 is reached
+
       printn "FMT"
-      res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,\
+      res = ::FMU.FastMarchingTarget(&maxrepim_crop,&fminit,::maxcost,\
                             ::startx+0.5,::starty+0.5,::startz+0.5)
       #::res.info
     
@@ -245,13 +252,24 @@ if (!exists(ShortestPathClass)) {
       printn "FMT done"
       if (exists(::path)) { del ::path; }
       if (::end_mode==0) {
-        ::path = PathFromVectField( res,\
+        #::path = PathFromVectField( res,\
+                                  #::step_size,\
+                                  #::maxlength,\
+                                  #::Px1,::Py1,::Pz1,\
+                                  #::Px2,::Py2,::Pz2)
+
+        ::path = ::SPU.SP_PathFromVectField( &res,\
                                   ::step_size,\
                                   ::maxlength,\
                                   ::Px1,::Py1,::Pz1,\
                                   ::Px2,::Py2,::Pz2)
+
       } else {
-        ::path = PathFromVectField( res,\
+        #::path = PathFromVectField( res,\
+                                  #::step_size,\
+                                  #::maxlength,\
+                                  #::Px1,::Py1,::Pz1)
+        ::path = ::SPU.SP_PathFromPotential( &res,\
                                   ::step_size,\
                                   ::maxlength,\
                                   ::Px1,::Py1,::Pz1)
