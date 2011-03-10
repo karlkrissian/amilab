@@ -646,7 +646,7 @@ SurfacePoly* ShortestPathClass::Func_path_from_displ( InrImage* displ,
 // delta is the small increment used to estimate the derivatives
 // based on linear interpolation
 // only for 3D images
-SurfacePoly* ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr displ,
+SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr displ,
                                         double start[3],
                                         double step_size,
                                         double max_length,
@@ -676,7 +676,7 @@ SurfacePoly* ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr displ,
     std::cerr  << "Func_path_from_vectfield() \t "
           << "initial point not within image domain "
           << std::endl;
-    return NULL;
+    return SurfacePoly::ptr();
   }
 
   SurfacePoly* res = new SurfacePoly();
@@ -877,7 +877,8 @@ SurfacePoly* ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr displ,
         << format("  d= %0.3f mm") %  distance
         << std::endl;
 
-  return res;
+  SurfacePoly::ptr res_ptr(res);
+  return res_ptr;
 
 } // Func_path_from_vectfield()
 
@@ -1145,7 +1146,7 @@ SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
 // delta is the small increment used to estimate the derivatives
 // based on linear interpolation
 // only for 3D images
-SurfacePoly* ShortestPathClass::Func_path_from_vectfield( InrImage::ptr displ,
+SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield( InrImage::ptr displ,
                                       double start[3],
                                       double end[3],
                                       double step_size,
@@ -1156,7 +1157,7 @@ SurfacePoly* ShortestPathClass::Func_path_from_vectfield( InrImage::ptr displ,
   FILE_MESSAGE((format(" expected endpoint %0.2f %0.2f %0.2f ") 
                       % end[0] % end[1] % end[2] ).str().c_str());
 
-  SurfacePoly* res = ShortestPathClass::Func_path_from_vectfield(displ,start,step_size,max_length,delta);
+  SurfacePoly::ptr res = ShortestPathClass::Func_path_from_vectfield(displ,start,step_size,max_length,delta);
 
   // check that we are close to the expected endpoint
   if (res->GetNumberOfLines() !=1) {
