@@ -30,30 +30,19 @@ AnalyticCube::~AnalyticCube(){}
 double AnalyticCube::operator () (const double& x, const double& y, 
                                   const double& z) const
 {
-  //Compute the distance between the given point and the cube center
-//  float xd = fabs(x - center[0]);
-//  float yd = fabs(y - center[1]);
-//  float zd = fabs(z - center[2]);
-//  
-//  //Compute the distance limits (x, y and z)
-//  float xm = dimx/2;
-//  float ym = dimy/2;
-//  float zm = dimz/2;
-//  
-//  //Return if the point is inside the cube or not
-//  if ((xd <= xm) && (yd <= ym) && (zd <= zm))
-//    cout << "Dentro. X = " << x << " Y = " << y << " Z = " << z << endl;
-////  else 
-////    cout << "Fuera. X = " << x << " Y = " << y << " Z = " << z  << endl;
-//  return ((xd <= xm) && (yd <= ym) && (zd <= zm));
+  //Compute the minimum and maximum limits of the image
   float xmin = center[0] - dimx/2;
   float xmax = center[0] + dimx/2;
   float ymin = center[1] - dimy/2;
   float ymax = center[1] + dimy/2;
   float zmin = center[2] - dimz/2;
   float zmax = center[2] + dimz/2;
-  
-  return ((x<=xmax && x>=xmin) && (y<=ymax && y>=ymin) && (z<=zmax && z>=zmin));
+
+  //Check if the point is inside of the limits
+  if ((x<=xmax && x>=xmin) && (y<=ymax && y>=ymin) && (z<=zmax && z>=zmin))
+    return 1.0;
+  else 
+    return -1.0;
 }
   
 void AnalyticCube::setDimX(float dx)

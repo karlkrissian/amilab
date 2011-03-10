@@ -54,11 +54,13 @@ double AnalyticPlane::operator () (const double& x, const double& y,
   float xp  = N1 * x;
   float yp  = N2 * y;
   float zp  = N3 * z;
-  float ind = N1*x1 + N2*y1 + N3*z1;
+  float ind = N1*-x1 + N2*-y1 + N3*-z1;
   
   //Devolvemos el valor de la ecuación del plano
-  return (xp + yp + zp + ind == 0);
-  
+  if (xp + yp + zp + ind == 0)
+    return 1.0;
+  else 
+    return -1.0;
 }
 
 

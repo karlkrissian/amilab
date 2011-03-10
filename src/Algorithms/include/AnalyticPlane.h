@@ -20,14 +20,6 @@ class AnalyticPlane : public AnalyticFunctionBase {
   DEFINE_CLASS(AnalyticPlane);
   
 private:
-//  //Plane Nx normal
-//  double Nx;
-//  //Plane Ny normal
-//  double Ny;
-//  //Plane Nz normal
-//  double Nz;
-//  //Separation
-//  int    sep;
   float x1, y1, z1;
   float x2, y2, z2;
   float x3, y3, z3;
@@ -40,11 +32,9 @@ public:
    *  @param Z normal. Default 0.
    *  @param Separation of the plane. Default 0.
    */
-//  AnalyticPlane(double normX = 0, double normY = 1, double normZ = 0, 
-//                int separation = 0);
-  AnalyticPlane(float a1 = 25, float b1 = 0, float c1 = 0,
-                float a2 = 0,  float b2 = 25,float c2 = 0,
-                float a3 = 0,  float b3 = 0, float c3 = 25);
+  AnalyticPlane(float a1 = 50, float b1 = 0, float c1 = 0,
+                float a2 = 0,  float b2 = 50,float c2 = 0,
+                float a3 = 0,  float b3 = 0, float c3 = 50);
   
   ~AnalyticPlane();
   
