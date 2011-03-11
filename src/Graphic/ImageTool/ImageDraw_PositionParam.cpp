@@ -86,16 +86,33 @@ void ImageDraw_PositionParam::CreateParameters ()
       ChangedValueCallback( _id_planZ,
                            (void*) ImageDraw_PositionParam::CB_PlanZ,
                            (void*) this);
+
+      AddInteger( &_id_component, &Param->_pos._v, "V", "Component");
+
+      if (img->GetVDim() > 1)
+      {
+        IntegerConstraints( _id_component,
+                          0,
+                          img->GetVDim() - 1,
+                          Param->_pos._v);
+      }
+
+      ChangedValueCallback( _id_component,
+                           (void*) ImageDraw_PositionParam::CB_component,
+                           (void*) this);
+
     EndPanel();
   EndBox();
   
-  FixeVisible(_id_planX, (img->_tx>1));
-  FixeVisible(_id_planY, (img->_ty>1));
-  FixeVisible(_id_planZ, (img->_tz>1));
+  FixeVisible(_id_planX,     (img->_tx>1));
+  FixeVisible(_id_planY,     (img->_ty>1));
+  FixeVisible(_id_planZ,     (img->_tz>1));
+  FixeVisible(_id_component, (img->GetVDim()>1));
   
-  SetDragCallback(_id_planX, true);
-  SetDragCallback(_id_planY, true);
-  SetDragCallback(_id_planZ, true);
+  SetDragCallback(_id_planX,     true);
+  SetDragCallback(_id_planY,     true);
+  SetDragCallback(_id_planZ,     true);
+  SetDragCallback(_id_component, true);
   
   EnleveBouttons();
   CreeDialogue();
@@ -198,3 +215,37 @@ void ImageDraw_PositionParam::CB_PlanZ (void* cd)
     di->Paint( );
   }
 } // CB_PlanZ()
+
+//----------------------------------------------------
+void ImageDraw_PositionParam::CB_component (void* cd)
+{
+  ImageDraw_PositionParam* _this = (ImageDraw_PositionParam*) cd;
+  if (!_this) {
+    CLASS_MESSAGE_STATIC(_this, "Invalid parameter");
+    return;
+  }
+  DessinImage*    di = (DessinImage*) _this->parent_class;
+  DessinImageParametres* Param = di->GetParam();
+  InrImage::ptr img = di->Get_image();
+
+  if ((Param->_option_traitement == OPTION_COUPE) ||
+      (Param->_option_traitement == OPTION_ANIM))
+  {
+    if (Param->_pos._v < 0)
+    {
+      Param->_pos._v = 0;
+      _this->UpdateParameter(_this->_id_component);
+    }
+
+    if (Param->_pos._v > img->GetVDim()-1)
+    {
+      Param->_pos._v = img->GetVDim()-1;
+      _this->UpdateParameter(_this->_id_component);
+    }
+
+    Param->_MAJ._planXY = true;
+    Param->_MAJ._planXZ = true;
+    Param->_MAJ._planZY = true;
+    di->Paint( );
+  }
+} // CB_component()

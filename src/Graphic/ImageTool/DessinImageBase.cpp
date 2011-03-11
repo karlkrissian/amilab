@@ -2139,6 +2139,7 @@ void DessinImageBase::DrawSlice( int slice_id )
   int   nincr_x = stepx*incr_x;
   int   maxy    = cmax_y-stepy+1; // max value in Y where we can draw using stepy
   int   maxx    = cmax_x-stepx+1; // max value in X where we can draw using stepx
+  int   component = Param._pos._v;
 
   CLASS_MESSAGE((boost::format(" vsx %1% vsy %2%") % vsx % vsy ).str().c_str());
   CLASS_MESSAGE((boost::format(" stepx %1% stepy %2%") % stepx % stepy ).str().c_str());
@@ -2163,7 +2164,7 @@ void DessinImageBase::DrawSlice( int slice_id )
       Si (image_format != WT_RGB)&&
          (image_format != WT_RGBA)
       Alors
-        couleur = colors[ LookUpTable(image->ValeurBuffer(),
+        couleur = colors[ LookUpTable(image->ValeurBuffer(component),
                           image_format) ];
       Sinon
         couleur = ClasseCouleur(
@@ -2426,8 +2427,6 @@ void DessinImageBase :: DessinePlanY( )
 void DessinImageBase :: DessinePlanX( )
 //                     ------------
 {
-
-
      register int             y,z;
      register float           py,pz;
      register float           py1,pz1;

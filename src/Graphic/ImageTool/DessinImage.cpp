@@ -4699,7 +4699,7 @@ void DessinImage::SetGLWindow( Viewer3D_ptr& glwin)
 
 //----------------------------------------------------------------
 void DessinImage::Paint( unsigned char affiche)
-//                            -----
+//                -----
 {
   //wxPaintDC pdc(_drawing_area);
   if (!this->IsShown()) {

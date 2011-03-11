@@ -1180,7 +1180,7 @@ inline unsigned char DessinImageBase::IntensiteBuffer( )
 //                                     ---------------
 {
 
-  return IntensiteBuffer( _image->ValeurBuffer());
+  return IntensiteBuffer( _image->ValeurBuffer(Param._pos._v));
 
 } // IntensiteBuffer()
 

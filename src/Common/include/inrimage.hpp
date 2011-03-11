@@ -1320,6 +1320,7 @@ inline void InrImage :: MinMax( float* min, float* max)
        long n,size;
 
   size = _tx*_ty*_tz;
+  int vdim = GetVDim();
 
   switch ( (WORDTYPE) _format ) {
 
@@ -1331,7 +1332,7 @@ inline void InrImage :: MinMax( float* min, float* max)
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_DOUBLE < *min AlorsFait *min =(float)  *buf_DOUBLE;
         Si *buf_DOUBLE > *max AlorsFait *max =(float)  *buf_DOUBLE;
-        buf_DOUBLE++;
+        buf_DOUBLE+=vdim;
       } // end for // n
 
     break;
@@ -1343,7 +1344,7 @@ inline void InrImage :: MinMax( float* min, float* max)
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_FLOAT < *min AlorsFait *min = *buf_FLOAT;
         Si *buf_FLOAT > *max AlorsFait *max = *buf_FLOAT;
-        buf_FLOAT++;
+        buf_FLOAT+=vdim;
       } // end for // n
 
     break;
@@ -1356,7 +1357,7 @@ inline void InrImage :: MinMax( float* min, float* max)
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_UNSIGNED_CHAR < *min AlorsFait *min = (float) *buf_UNSIGNED_CHAR;
         Si *buf_UNSIGNED_CHAR > *max AlorsFait *max = (float) *buf_UNSIGNED_CHAR;
-        buf_UNSIGNED_CHAR++;
+        buf_UNSIGNED_CHAR+=vdim;
       } // end for // n
 
     break;
@@ -1369,7 +1370,7 @@ inline void InrImage :: MinMax( float* min, float* max)
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_UNSIGNED_SHORT < *min AlorsFait *min = (float) *buf_UNSIGNED_SHORT;
         Si *buf_UNSIGNED_SHORT > *max AlorsFait *max = (float) *buf_UNSIGNED_SHORT;
-        buf_UNSIGNED_SHORT++;
+        buf_UNSIGNED_SHORT+=vdim;
       } // end for // n
 
     break;
@@ -1382,7 +1383,7 @@ inline void InrImage :: MinMax( float* min, float* max)
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_SIGNED_SHORT < *min AlorsFait *min = (float) *buf_SIGNED_SHORT;
         Si *buf_SIGNED_SHORT > *max AlorsFait *max = (float) *buf_SIGNED_SHORT;
-        buf_SIGNED_SHORT++;
+        buf_SIGNED_SHORT+=vdim;
       } // end for // n
 
     break;
@@ -1395,7 +1396,7 @@ inline void InrImage :: MinMax( float* min, float* max)
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_UNSIGNED_INT < *min AlorsFait *min = (float) *buf_UNSIGNED_INT;
         Si *buf_UNSIGNED_INT > *max AlorsFait *max = (float) *buf_UNSIGNED_INT;
-        buf_UNSIGNED_INT++;
+        buf_UNSIGNED_INT+=vdim;
       } // end for // n
 
     break;
@@ -1408,7 +1409,7 @@ inline void InrImage :: MinMax( float* min, float* max)
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_SIGNED_INT < *min AlorsFait *min = (float) (*buf_SIGNED_INT);
         Si *buf_SIGNED_INT > *max AlorsFait *max = (float) (*buf_SIGNED_INT);
-        buf_SIGNED_INT++;
+        buf_SIGNED_INT+=vdim;
       } // end for // n
 
     break;
