@@ -1,0 +1,208 @@
+/*
+ *  SubPixel3D.h
+ *  AMILab
+ */
+
+#ifndef SUBPIXEL3D
+#define SUBPIXEL3D
+
+#include "DessinImage.hpp"
+#include "inrimage.hpp"
+#include "DefineClass.hpp"
+#include <vector>
+using namespace std;
+
+/**
+ *  This class represent the information of a voxel that is a member of the edge.
+ *  Is used by the SubPixel3D class.
+ *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
+ *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
+ *  @author Karl Krissian (krissian@dis.ulpgc.es)
+ */
+class borderVoxel {
+public:
+  /**
+   *  Creates a new borderVoxel object. Default constructor.
+   */
+  borderVoxel() {}
+  
+  ~borderVoxel() {}
+  
+  /**
+   *  Set the border pixel values.
+   *  @param intA A intensity.
+   *  @param intB B intensity.
+   *  @param bord Edge type (X, Y or Z).
+   *  @param coef_a The 'a' coefficient of the equation.
+   *  @param coef_b The 'b' coefficient of the equation.
+   *  @param coef_c The 'c' coefficient of the equation.
+   *  @param coef_d The 'd' coefficient of the equation.
+   *  @param coef_f The 'f' coefficient of the equation.
+   *  @param coef_g The 'g' coefficient of the equation.
+   *  @param cu Curvature.
+   *  @param posx x position.
+   *  @param posy y position.
+   *  @param posz z position.
+   */
+  void setBorderVoxelValues(double intA, double intB, unsigned char bord,
+                            double coef_a, double coef_b, double coef_c,
+                            double coef_d, double coef_f, double coef_g,
+                            double cu, int posx, int posy, int posz);
+  
+  /**
+   *  Get the 'A' intensity value.
+   *  @return The intensity value under the edge.
+   */
+  double        getAIntensity();
+  
+  /**
+   *  Get the 'B' intensity value.
+   *  @return The intensity value over the edge.
+   */
+  double        getBIntensity();
+  
+  /**
+   *  Get the border type.
+   *  @return The value of the edge type (horizontal or vertical macros).
+   */
+  unsigned char getBorder();
+  
+  /**
+   *  Get the 'a' coefficient.
+   *  @return The value of the 'a' coefficient of the paraboloid equation.
+   */
+  double        getCoefficient_a();
+  
+  /**
+   *  Get the 'b' coefficient.
+   *  @return The value of the 'b' coefficient of the paraboloid equation.
+   */
+  double        getCoefficient_b();
+  
+  /**
+   *  Get the 'c' coefficient.
+   *  @return The value of the 'c' coefficient of the paraboloid equation.
+   */
+  double        getCoefficient_c();
+  
+  /**
+   *  Get the 'd' coefficient.
+   *  @return The value of the 'd' coefficient of the paraboloid equation.
+   */
+  double        getCoefficient_d();
+  
+  
+  /**
+   *  Get the 'f' coefficient.
+   *  @return The value of the 'f' coefficient of the paraboloid equation.
+   */
+  double        getCoefficient_f();
+  
+  
+  /**
+   *  Get the 'g' coefficient.
+   *  @return The value of the 'g' coefficient of the paraboloid equation.
+   */
+  double        getCoefficient_g();
+  
+  /**
+   *  Get the curvature.
+   *  @return The value of the curvature of the paraboloid equation.
+   */
+  double        getCurvature();
+  
+  /**
+   *  Get the x position.
+   *  @return The value of the x position of the voxel.
+   */
+  int           getPosX();
+  
+  /**
+   *  Get the y position.
+   *  @return The value of the y position of the voxel.
+   */
+  int           getPosY();
+  
+  /**
+   *  Get the z position.
+   *  @return The value of the z position of the voxel.
+   */
+  int           getPosZ();
+  
+  /**
+   *  Print the information of the voxel.
+   *  @param  linear_case Indicates if it is first or second order (line or parable).
+   *  @return Show in the screen the information of the voxel: The position of 
+   *  the voxel, the edge type, the 'A' and 'B' intensity value and the 
+   *  coefficients of the paraboloid. If linear_case is
+   *  equal to 1, it shows the angle of the line. Else, it shows the radius.
+   */
+  void          printBorderVoxel(int linear_case);
+  
+private:
+  //Intensity values
+  double A;
+  double B;
+  //Border type
+  unsigned char border;
+  //Paraboloid coefficients
+  double a;
+  double b;
+  double c;
+  double d;
+  double f;
+  double g;
+  //Curvature
+  double curvature;
+  //Position(x,y,z)
+  int px;
+  int py;
+  int pz;
+
+};
+
+
+/**
+ *  This class contains the methods of the SubPixel method for 3D images.
+ *  Also includes the method that draw the sub-pixel edge. **** eso está por ver *****
+ *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
+ *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
+ *  @author Karl Krissian (krissian@dis.ulpgc.es)
+ */
+class SubPixel3D {
+  
+  DEFINE_CLASS(SubPixel3D);
+  
+public:
+  /**
+   *  SubPixel3D constructor.
+   *  @param inp_image The input image.
+   *  @param thres     The threshold value.
+   *  @param lc        Linear case. Indicates if the border that will be processed
+   *                   is a plane (first order) or a paraboloid (second order).
+   */
+  SubPixel3D(InrImage* inp_image, float thres, int lc);
+  
+  virtual ~ SubPixel3D();
+  
+  /**
+   *  Get the vector that contains the pixels members of the edge.
+   *  @return A STL vector of borderPixel type.
+   */
+  vector<borderPixel> getBorderPixelVector();
+  
+private:
+  //Input image
+  InrImage* input;
+  //Denoised image
+  InrImage* denoised;
+  //borderPixel vector
+  vector<borderPixel> borderPixelVector;
+  //Gradient threshold
+  double threshold;
+  //Linear case (first or second order)
+  int linear_case;
+   
+};
+
+#endif //SUBPIXEL3D

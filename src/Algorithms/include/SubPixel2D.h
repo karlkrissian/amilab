@@ -15,9 +15,9 @@ using namespace std;
 /**
  *  This class represent the information of a pixel that is a member of the edge.
  *  Is used by the SubPixel2D class.
+ *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
- *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  */
 class borderPixel {
 public:
@@ -104,7 +104,7 @@ public:
    *  @return Show in the screen the information of the pixel: The position of 
    *  the pixel, the edge type, the 'A' and 'B' intensity value and the 
    *  coefficients of the curve. If linear_case is
-   *  equal to 1, it shows the angle of the line. Else, it shows the radius.p
+   *  equal to 1, it shows the angle of the line. Else, it shows the radius.
    */
   void          printBorderPixel(int linear_case);
   
@@ -130,9 +130,9 @@ private:
 /**
  *  This class contains the methods of the SubPixel method for 2D images.
  *  Also includes the method that draw the sub-pixel edge.
+ *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
- *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  */
 class SubPixel2D {
   
@@ -143,7 +143,6 @@ public:
    *  SubPixel2D constructor.
    *  @param inp_image The input image.
    *  @param thres     The threshold value.
-   *  @param lowThres  The low threshold for SubpixelDenoising
    *  @param lc        Linear case. Indicates if the border that will be processed
    *                   is a line (first order) or a parable (second order).
    */
