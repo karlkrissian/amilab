@@ -32,7 +32,7 @@ public:
 	inline int getHandle(){ return m_handle; };
 
 	int getTemplateFacets();
-	int restoreTemplate(int persistenceHandle, const char* name) {}
+	int restoreTemplate(int persistenceHandle, const char* name) { return 0;}
 	
 	char* getName();
 	void setName(char* name);

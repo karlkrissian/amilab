@@ -46,9 +46,15 @@ def IsWithinContext(classname):
 def ClassConstructor(classname):
   ctemp = re.match(r"(.*)<(.*)>",classname)
   if ctemp==None:
-    return classname
+    namenotemplate = classname
   else:
-    return ctemp.group(1)
+    namenotemplate = ctemp.group(1)
+  
+  no_ns = re.match(r"(.*)::([^:]*)",namenotemplate)
+  if no_ns==None:
+    return namenotemplate
+  else:
+    return no_ns.group(2)
 
 
 #------------------------------
@@ -328,7 +334,7 @@ class ParsePublicMembers:
     
     access  = attrs.get('access',  None)
     if context in config.types.keys():
-      contextname = config.types[context].GetString()
+      contextname = config.types[context].GetDemangled()
     else:
       #print "Name = {0}, context {1} not yet included in types".format(name,context)
       return False
@@ -344,7 +350,7 @@ class ParsePublicMembers:
       fname   = attrs.get('name',    None)
       ftype   = attrs.get('type',    None)
       bits    = attrs.get('bits',    None)
-      if "{0}::{1}".format(config.types[context].GetString(),fname) in config.members_blacklist:
+      if "{0}::{1}".format(config.types[context].GetDemangled(),fname) in config.members_blacklist:
         print "Discarded field ",fname, " which is in the backlist"
       else:
         field = FieldInfo()
@@ -361,7 +367,7 @@ class ParsePublicMembers:
       self.enum.name  =ename
       self.public_members.Enumerations.append(self.enum)
       self.inenum = True
-      print "found enumeration ", ename, " in ", config.types[context].GetString()
+      print "found enumeration ", ename, " in ", config.types[context].GetDemangled()
       return False # allow further processing of the enumeration
       
     # If it's not a method element, ignore it

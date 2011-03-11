@@ -47,7 +47,7 @@ class ArgTypeBase:
     self._reftypeid=t
 
   def GetFullString(self):
-    return self._name
+    return self.GetDemangled()
 
   def GetMainTypeId(self):
     return self._id
@@ -228,6 +228,13 @@ class CvQualifiedTypeInfo(ArgTypeBase):
   def GetString(self):
     if self._reftypeid in config.types.keys():
       typename=config.types[self._reftypeid].GetString()
+    else:
+      typename=self._reftypeid
+    return typename
+
+  def GetDemangled(self):
+    if self._reftypeid in config.types.keys():
+      typename=config.types[self._reftypeid].GetDemangled()
     else:
       typename=self._reftypeid
     return typename

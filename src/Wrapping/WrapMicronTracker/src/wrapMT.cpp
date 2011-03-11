@@ -20,6 +20,8 @@ extern VarContexts  Vars;
 #include "addwrap_mt.h"
 #include "wrap_MCamera.h"
 #include "wrap_Cameras.h"
+#include "wrap_XPoints.h"
+#include "wrap_MTXPoint.h"
 #include "wrapMT.h"
 
 //---------------------------------------------------------
@@ -30,8 +32,10 @@ void AddWrapMT() {
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("mt");
 
+  
   ADDLOCAL_OBJECTVAR_NAME( amiobject,C_wrap_varfunction, "GetImageMT",  GetImageMT);
-  //ADDVAR_NAME( C_wrap_procedure, "GetImageMT",  GetImageMT);
+  ADDLOCAL_OBJECTVAR_NAME( amiobject,C_wrap_varfunction, "GetStoreXpointMT",  GetStoreXpointMT);
+  
 
   // Add classes to mt context
   wrap_mt_classes(amiobject->GetContext());
@@ -145,3 +149,58 @@ BasicVariable::ptr  GetImageMT(ParamList* p) {
 
     return BasicVariable::ptr();
  } // GetImageMT()
+
+
+/** Get Xpoints and store it **/
+BasicVariable::ptr  GetStoreXpointMT(ParamList* p) {
+
+
+    char functionname[] = "GetStoreXpointMT";
+    char description[]=" \n\
+                       Gets Xpoints from current frame and store it\n\
+                       ";
+    char parameters[] =" \n\
+                       Parameters:\
+                       \n\
+                       Xpoints object\n\
+                       camera object\n\
+                       ";
+
+    XPoints* pXPoints = NULL;
+    MCamera* cam = NULL;
+    int n = 0; 
+    
+    
+    if (!get_val_ptr_param<XPoints>(  pXPoints,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<MCamera>(  cam,      p, n)) HelpAndReturnVarPtr;
+    if (pXPoints == NULL) printf("Error leyendo xpoint\n");
+    if (cam == NULL)printf("Error leyendo cam\n");
+    int res = pXPoints->processFrame(NULL);
+    if(res!= 0) printf("Error in process frame \n");
+    //Store detected Xpoints 
+    MTCollection::Collection* xpointsCollection = new MTCollection::Collection(pXPoints->detectedXPoints(cam)); 
+
+	  if (xpointsCollection->count() == 0) {
+		  delete xpointsCollection; 
+      printf("Empty Collection \n");
+      return BasicVariable::ptr();
+		  //return;
+	  }
+
+	  double x[3], y[3];
+	  double x3,y3,z3;
+	  int XPNum=1;
+	  MTXPoint* XP;
+	  double radius = 5;
+	  for (XPNum = 1; XPNum <= xpointsCollection->count(); XPNum++)
+		{
+		  XP = new MTXPoint(xpointsCollection->itemI(XPNum));
+			XP->Position2D(&x[0], &y[0], &x[1], &y[1], &x[2], &y[2]);
+			XP->Position3D(&x3, &y3, &z3);
+			XP->setIndex(XPNum);
+      //Imprimir los Xpoints detectados
+      cout << x3 <<" "<< y3<< " "<<z3<<endl;
+    }
+	  char s[100];
+    return BasicVariable::ptr();
+ } // GetStoreXpointMT()
