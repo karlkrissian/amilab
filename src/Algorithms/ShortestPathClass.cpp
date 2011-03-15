@@ -1144,6 +1144,57 @@ SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
 
 
 //-------------------------------------------------------
+SurfacePoly* ShortestPathClass::Func_path_4D_2points(   InrImage::ptr speed,
+                                                double start[4],
+                                                double end[4],
+                                                double step_size,
+                                                double max_length,
+                                                double delta)
+{
+  FILE_MESSAGE((format(" expected endpoint %0.2f %0.2f %0.2f %0.2f ") 
+      % end[0] % end[1] % end[2] % end[3] ).str().c_str());
+
+  SurfacePoly* res(ShortestPathClass::Func_path_4D(speed,start,step_size,max_length,delta));
+
+  std::cout << "Number of points = "<< res->GetNumberOfPoints() << std::endl;
+
+  // check that we are close to the expected endpoint
+  if (res->GetNumberOfLines() !=1) {
+    FILE_ERROR(" Polydata should contain exactly 1 line");
+    return res;
+  }
+
+  // get the last point of the line
+  T_Line&      l = res->GetLine(0);
+  if (l.NbElts()>0) {
+    Point3DPoly& pt = res->GetPoint(l[l.NbElts()-1]);
+    float p[3] = { pt.pt.x, pt.pt.y, pt.pt.z };
+
+    double dist_end;
+    dist_end = sqrt ( (p[0]-end[0])*(p[0]-end[0]) +
+                      (p[1]-end[1])*(p[1]-end[1]) +
+                      (p[2]-end[2])*(p[2]-end[2])
+                    );
+    double voxdis = sqrt( speed->VoxSizeX()*speed->VoxSizeX() +
+                          speed->VoxSizeY()*speed->VoxSizeY() +
+                          speed->VoxSizeZ()*speed->VoxSizeZ() 
+                        );
+    if (dist_end<voxdis) {
+     std::cout << "*** Could Add reached end point ***" << std::endl;
+    } else
+     std::cout << "*** End point not reached  ***" 
+            << format(" %1% > %2% ") % dist_end % voxdis
+            << std::endl;
+  
+  } else
+    FILE_ERROR("Resulting line has no point");
+
+  return res;
+
+}
+
+  
+//-------------------------------------------------------
 // delta is the small increment used to estimate the derivatives
 // based on linear interpolation
 // only for 3D images

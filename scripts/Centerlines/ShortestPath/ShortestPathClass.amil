@@ -43,6 +43,7 @@ if (!exists(ShortestPathClass)) {
       ::startx = 0
       ::starty = 0
       ::startz = 0
+      ::startv = 0
 
       # stop mode -- 0: point, 1: mask
       ::end_mode = INT(0) 
@@ -52,6 +53,7 @@ if (!exists(ShortestPathClass)) {
       ::endx = 0
       ::endy = 0
       ::endz = 0
+      ::endv = 0
     
       ::step_size = 0.1
       ::maxlength = 500
@@ -121,6 +123,7 @@ if (!exists(ShortestPathClass)) {
                         )
       }
     }
+
     #-----------------------------------------------
     proc ::SetStartPoint( NUM x, NUM y, NUM z) \
     {
@@ -132,6 +135,12 @@ if (!exists(ShortestPathClass)) {
       ::Pz1 = ::input.trz + z*::input.vz
     }
     
+    #-----------------------------------------------
+    proc ::SetStartScale( NUM s) \
+    {
+      ::startv = s
+      ::Pv1    = s
+    }
     
     #-----------------------------------------------
     proc ::SetStartPointWorld(NUM x, NUM y, NUM z) \
@@ -173,6 +182,12 @@ if (!exists(ShortestPathClass)) {
       ::Pz2 = ::input.trz + z*::input.vz
     }
     
+    #-----------------------------------------------
+    proc ::SetEndScale( NUM s) \
+    {
+      ::endv = s
+      ::Pv2  = s
+    }
     
     #-----------------------------------------------
     proc ::SetEndPointWorld(NUM x, NUM y, NUM z) \

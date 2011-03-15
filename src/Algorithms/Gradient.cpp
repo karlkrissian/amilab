@@ -41,6 +41,7 @@ InrImage::ptr Gradient::Execute( )
   filtre->Utilise_Image(   false);
   filtre->UtiliseHessien(  false);
   filtre->UtiliseGradient( true);
+  filtre->SetPointSpreadFunctionStandDev(PSF[0],PSF[1],PSF[2]);
 
   std::cout << "normalize = " << normalize << std::endl;
   filtre->GammaNormalise(normalize);

@@ -181,6 +181,11 @@ protected:
 
   ///
   unsigned char   _gamma_normalisation;
+  
+  /// Standard Deviation of a Gaussian kernel that simulates the point spread function of the system
+  /// given in pixels for each X,Y,Z direction
+  double          _point_spread_function_standard_deviation[3];
+  
   ///
   double    _gamma;
 
@@ -303,6 +308,14 @@ public:
     _vx = _vy = _vz = 1;
   }
 
+  ///
+  void SetPointSpreadFunctionStandDev(double psfx, double psfy, double psfz)
+  {
+    _point_spread_function_standard_deviation[0] = psfx;
+    _point_spread_function_standard_deviation[1] = psfy;
+    _point_spread_function_standard_deviation[2] = psfz;
+  }
+
   //
   void SetScaleUnit( scale_unit s) { _sigma_unit = s; }
 
@@ -407,9 +420,9 @@ public:
     _gamma = gamma; 
 
     Si _gamma_normalisation Alors
-      _normx = pow(_sigmax,_gamma);
-      _normy = pow(_sigmay,_gamma);
-      _normz = pow(_sigmaz,_gamma);
+      _normx = pow(_point_spread_function_standard_deviation[0]+_sigmax,_gamma);
+      _normy = pow(_point_spread_function_standard_deviation[1]+_sigmay,_gamma);
+      _normz = pow(_point_spread_function_standard_deviation[2]+_sigmaz,_gamma);
     FinSi
 
   }

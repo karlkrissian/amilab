@@ -78,6 +78,11 @@ if (!exists(RunExperimentsClass)){
       ::minvesselint = INT(1150), "Vessel min intensity range"
       ::maxvesselint = INT(1600), "Vessel max intensity range"
 
+      ::nD_plus = UCHAR(0), "Use 3D+scale processing of centerline paths"
+      ::use_EXC = UCHAR(0), "Enable Excentricity"
+      ::EXC_th  = 0.6,"Excentricity parameter"
+      ::PSF_stddev  = 2,"Gaussian Point Spread Function standard deviation in voxels (supposed isotropic)"
+
       global::ami_import.System()
       curdir = op_system.GetCurrentScriptDir()
 
@@ -265,13 +270,17 @@ if (!exists(RunExperimentsClass)){
       ::ML.use_SD  = 0
       ::ML.SD_th   = 0.5
       #::ML.use_EXC = 1
-      ::ML.use_EXC = 0
-      ::ML.EXC_th  = 0.5
+      ::ML.use_EXC = ::use_EXC
+      ::ML.EXC_th  = ::EXC_th
       # Keep the 80% highest values along the boundary
       ::ML.keephighest = 80
       # save multiscale local maxima
       ::ML.local_maxima = 1
+      ::ML.keep_radii = 1
       ::ML.win.Update(-1)
+
+      ::keep_all_scales = ::nD_plus
+      ::ML.PSF_stddev = ::PSF_stddev
       ::ML.MultiLines_new()
     }
 
@@ -363,19 +372,51 @@ if (!exists(RunExperimentsClass)){
       if (exists(::ML->result)) {
         if (exists(::CP->prob)) {
           # ensure that CP_prob is maximum around local maxima
-          if (exists(::ML->maxima)) {
-            # threshold to get maxima positions
-            maxima_neigh = (::ML.maxima>::mlmax_threshold)
-            # dilate a little
-            #maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
-            maxima_neigh = morph.Dilate(maxima_neigh,1,0.25)
+          
+          if (::nD_plus) {
+            #if (exists(::ML->maxima)) {
+              ## threshold to get maxima positions
+              #maxima_neigh = (::ML.maxima>::mlmax_threshold)
+              ## dilate a little
+              ##maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
+              #maxima_neigh = morph.Dilate(maxima_neigh,1,0.25)
 
-            ::speed_lmax <<= (maxima_neigh>=0.95)*maxima_neigh * ::ML->result * 1.2
-            ::speed_prob <<= ::CP->prob*::ML->result
-            ::speed <<=  max(::speed_lmax, ::speed_prob)
+              #::speed_lmax <<= (maxima_neigh>=0.95)*maxima_neigh * ::ML->result * 1.2
+              #::speed_prob <<= ::CP->prob*::ML->result
+              #::speed <<=  max(::speed_lmax, ::speed_prob)
 
+            #} else {
+              #::speed <<= ::CP->prob * ::ML->result
+            #}
+            ::speed <<= ::ML->all_responses
           } else {
-            ::speed <<= ::CP->prob * ::ML->result
+            #if (exists(::ML->maxima)) {
+              ## threshold to get maxima positions
+              ##maxima_neigh = (::ML.maxima>::mlmax_threshold)
+              ## dilate a little
+              ##maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
+              ##maxima_neigh = morph.Dilate(maxima_neigh,1,0.25)
+
+              ##::speed_lmax <<= (maxima_neigh>=0.95)*maxima_neigh * ::ML->result * 1.2
+
+
+              ## only apply probability weight of big enough scales to avoid lowering intensities of small vessels
+              #vsx = ::ML->result.vsx
+              #vsy = ::ML->result.vsy
+              #vsz = ::ML->result.vsz
+              #vmax = max(vsx,max(vsy,vsz))
+              #::speed <<= (::ML.radii>vmax*1.5)*(::CP->prob * ::ML->result)+((::ML.radii<vmax*1.5))*::ML->result
+              #::speed_prob <<= ::CP->prob*::ML->result
+              ##::speed <<=  max(::speed_lmax, ::speed_prob)
+
+            #} else {
+            # only apply probability weight of big enough scales to avoid lowering intensities of small vessels
+            vsx = ::ML->result.vsx
+            vsy = ::ML->result.vsy
+            vsz = ::ML->result.vsz
+            vmax = max(vsx,max(vsy,vsz))*1.5
+            ::speed <<= (::ML.radii>vmax*1.5)*(::CP->prob * ::ML->result)+((::ML.radii<vmax*1.5))*::ML->result
+            #}
           }
         } else {
           if (!::nointeraction) {
@@ -410,12 +451,34 @@ if (!exists(RunExperimentsClass)){
       #::win.Update(-1)
     
       ::SP->SetStartPointWorld(::ReadPoints->p1x,::ReadPoints->p1y,::ReadPoints->p1z)
+      if (::nD_plus) {
+        # Get the scale of the maximal value at the starting point
+        rmax = 0
+        smax = 0
+        for n=0 to ::ML->all_responses.vdim-1 {
+          rep = ::ML->all_responses(::SP.startx,::SP.starty,::SP.startz,n)
+          if (rep>rmax) { rmax=rep; smax=n;}
+        }
+        ::SP->SetStartScale(smax)
+      }
     
       if (exists(::CIS->pt2_OK)) \
       {
         SetStatusText(" Path from point 1 to point 2 ...")
         # path 1
         ::SP->SetEndPointWorld(::ReadPoints->p2x,::ReadPoints->p2y,::ReadPoints->p2z)
+
+        if (::nD_plus) {
+          # Get the scale of the maximal value at the starting point
+          rmax = 0
+          smax = 0
+          for n=0 to ::ML->all_responses.vdim-1 {
+            rep = ::ML->all_responses(::SP.endx,::SP.endy,::SP.endz,n)
+            if (rep>rmax) { rmax=rep; smax=n;}
+          }
+          ::SP->SetEndScale(smax)
+        }
+
         ::SP->Run()
         # path from Common to Internal Carotid Arteries
         if (exists(::pathCI)) { del ::pathCI; }
@@ -1290,8 +1353,8 @@ if (!exists(RunExperimentsClass)){
     
     #------------------------------------------
     proc ::ConfigEvent() {
-      ::win.EnablePanel(::config_crop_page, ::advanced==1)
-      ::win.EnablePanel(::config_dir_page, ::advanced==1)
+      ::win.EnablePanel(::config_crop_page,     ::advanced==1)
+      ::win.EnablePanel(::config_dir_page,      ::advanced==1)
       ::win.EnablePanel(::config_advanced_page, ::advanced==1)
       
     }
@@ -1352,6 +1415,10 @@ if (!exists(RunExperimentsClass)){
                       
           ::win.BeginBoxPanel("Vesselness")
             ::win.AddBoolean( &::ves_downsample)
+            ::win.AddBoolean(&::nD_plus,"4D vesselness response")
+            ::win.AddBoolean(&::use_EXC,"Enable Excentricity")
+            ::win.AddFloat(  &::EXC_th,"Excentricity parameter")
+            ::win.AddFloat(  &::PSF_stddev,"PSF")
             ::win.AddButton("Vesselness",     ::Vesselness)
             ::win.AddButton("Save",     ::SaveVesselness)
             ::win.AddButton("Read",     ::ReadVesselness)

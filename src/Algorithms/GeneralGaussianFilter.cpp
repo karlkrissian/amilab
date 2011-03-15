@@ -201,6 +201,10 @@ _vz = image->VoxSizeZ();
     _gamma = 1.0;
     _normx = _normy = _normz = 1.0;
 
+    _point_spread_function_standard_deviation[0] = 0;
+    _point_spread_function_standard_deviation[1] = 0;
+    _point_spread_function_standard_deviation[2] = 0;
+    
     _sigma = _sigmax = _sigmay = _sigmaz = 0.0;
 
 //    _sigma_unit = PIXEL_SPACE;
@@ -311,9 +315,9 @@ void GeneralGaussianFilter ::  InitFiltre(float sigma, int type)
        << " sigma z = " << _sigmaz  << std::endl;
 
   Si _gamma_normalisation Alors
-    _normx = pow(_sigmax,_gamma);
-    _normy = pow(_sigmay,_gamma);
-    _normz = pow(_sigmaz,_gamma);
+    _normx = pow(_point_spread_function_standard_deviation[0]+_sigmax,_gamma);
+    _normy = pow(_point_spread_function_standard_deviation[1]+_sigmay,_gamma);
+    _normz = pow(_point_spread_function_standard_deviation[2]+_sigmaz,_gamma);
   FinSi
 
   switch ( _type ){

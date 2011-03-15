@@ -5,36 +5,70 @@
 
 if (!exists(ShortestPathUtils))  \
 {
-Class ShortestPathUtils \
-{
-
-  #------------------------------------------------------------------
-  proc ::SP_PathFromVectField(IMAGE DT, NUM step_size, NUM maxlength,\
-                           NUM Px1, NUM Py1, NUM Pz1,\
-                           NUM Px2, NUM Py2, NUM Pz2) \
+  Class ShortestPathUtils \
   {
-    p1 = vector_double(3)
-    p1[0] = Px1
-    p1[1] = Py1
-    p1[2] = Pz1
-    p2 = vector_double(3)
-    p2[0] = Px2
-    p2[1] = Py2
-    p2[2] = Pz2
-    return=algorithms.ShortestPathClass.Func_path_from_vectfield_2(&DT,&p1[0],&p2[0],step_size,maxlength)
-  }
-  Comments(::SP_PathFromVectField,"")
 
-  #------------------------------------------------------------------
-  proc ::SP_PathFromPotential(IMAGE DT, NUM step_size, NUM maxlength,\
-                           NUM Px1, NUM Py1, NUM Pz1) \
-  {
-    p1 = vector_double(3)
-    p1[0] = Px1
-    P1[1] = Py1
-    P1[2] = Pz1
-    return=algorithms.ShortestPathClass.Func_path_from_vectfield_1(&DT,&p1[0],step_size,maxlength)
+    #------------------------------------------------------------------
+    proc ::SP_PathFromVectField(IMAGE DT, NUM step_size, NUM maxlength,\
+                            NUM Px1, NUM Py1, NUM Pz1,\
+                            NUM Px2, NUM Py2, NUM Pz2) \
+    {
+      p1 = vector_double(3)
+      p1[0] = Px1
+      p1[1] = Py1
+      p1[2] = Pz1
+      p2 = vector_double(3)
+      p2[0] = Px2
+      p2[1] = Py2
+      p2[2] = Pz2
+      return=algorithms.ShortestPathClass.Func_path_from_vectfield_2(&DT,&p1[0],&p2[0],step_size,maxlength)
+    }
+    Comments(::SP_PathFromVectField,"")
+
+    #------------------------------------------------------------------
+    proc ::SP_PathFromPotential(IMAGE DT, NUM step_size, NUM maxlength,\
+                            NUM Px1, NUM Py1, NUM Pz1) \
+    {
+      p1 = vector_double(3)
+      p1[0] = Px1
+      p1[1] = Py1
+      p1[2] = Pz1
+      return=algorithms.ShortestPathClass.Func_path_from_vectfield_1(&DT,&p1[0],step_size,maxlength)
+    }
+    Comments(::SP_PathFromPotential,"")
+
+    #------------------------------------------------------------------
+    proc ::SP_Path4D_1point(IMAGE DT, NUM step_size, NUM maxlength,\
+                            NUM Px1, NUM Py1, NUM Pz1, NUM Pv1) \
+    {
+      p1 = vector_double(4)
+      p1[0] = Px1
+      p1[1] = Py1
+      p1[2] = Pz1
+      p1[3] = Pv1
+      return=algorithms.ShortestPathClass.Func_path_4D(&DT,&p1[0],step_size,maxlength)
+    }
+    Comments(::SP_Path4D_1point,"")
+
+    #------------------------------------------------------------------
+    proc ::SP_Path4D_2points(IMAGE DT, NUM step_size, NUM maxlength,\
+                            NUM Px1, NUM Py1, NUM Pz1, NUM Pv1, \
+                            NUM Px2, NUM Py2, NUM Pz2, NUM Pv2) \
+    {
+      p1 = vector_double(4)
+      p1[0] = Px1
+      p1[1] = Py1
+      p1[2] = Pz1
+      p1[3] = Pv1
+      p2 = vector_double(4)
+      p2[0] = Px2
+      p2[1] = Py2
+      p2[2] = Pz2
+      p2[3] = Pv2
+      return=algorithms.ShortestPathClass.Func_path_4D_2points(&DT,&p2[0],step_size,maxlength)
+    }
+    Comments(::SP_Path4D_2points,"")
+
   }
-  Comments(::SP_PathFromPotential,"")
-}
+
 }

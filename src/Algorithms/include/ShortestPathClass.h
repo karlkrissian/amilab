@@ -52,6 +52,22 @@ public:
                                       double max_length,
                                       double delta = 0.05);
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// \brief Find path in 3D+T (4D) images, where the 4th dimension is encoded in the image vectorial components
+  /// \param displ      4D speed 
+  /// \param start      initial point for the path 
+  /// \param end        end point of the path
+  /// \param step_size  step size for the evolution 
+  /// \param max_length maximal length of the path
+  /// \param delta      step for computing local derivatives
+  /// \return resulting 3D path as a amilab::SurfacePoly object
+
+  static SurfacePoly* Func_path_4D_2points(   InrImage::ptr speed,
+                                      double start[4],
+                                      double end[4],
+                                      double step_size,
+                                      double max_length,
+                                      double delta = 0.05);
 
   //-------------------------------------------------------
   static SurfacePoly::ptr Func_path_from_vectfield(  InrImage::ptr displ,

@@ -375,6 +375,23 @@ double CalculRepCercle::Reponse ( )
     break;
   } // end switch type_rep
 
+
+   if ((_use_EXC)&&(GetResponseType()==circle_mean)) {
+    double res_tang = 0;
+    for(Iter = responses.begin();
+        Iter != responses.end();
+        Iter++)
+      res_tang += Iter->tangent_gradient;
+    res_tang /= (1.0*responses.size());
+
+    if (result>1E-3) {
+      double coeff_exc = fabs ( res_tang/result ) /_SeuilEXC;
+      coeff_exc =  exp ( -1.0 * coeff_exc*coeff_exc );
+
+      result *=  coeff_exc;
+    }
+  }
+
   if (_use_SD) {
     double mean = 0;
     double mean_squared = 0;
@@ -400,19 +417,6 @@ double CalculRepCercle::Reponse ( )
     coeff_sdv = fabs ( sdv/mean ) /_SeuilET;
     coeff_sdv = exp ( -1.0 * coeff_sdv*coeff_sdv );
     result *= coeff_sdv ;
-  }
-
-  if (_use_EXC) {
-    /* TODO: add this feature but is it really useful ?
-            moy2 = 0;
-            for ( i=0; i<nb_points; i++ ) moy2 += InfoExcentree[i];
-            moy2 /= nb_points;
-    
-            coeff_exc = fabs ( moy2/moy1 ) /_SeuilEXC;
-            coeff_exc =  exp ( -1.0 * coeff_exc*coeff_exc );
-    
-            resultat *=  coeff_exc;
-    */
   }
 
   return result;

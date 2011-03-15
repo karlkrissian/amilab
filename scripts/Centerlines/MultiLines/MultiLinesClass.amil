@@ -88,6 +88,7 @@ if (!exists(MultiLinesClass)) {
       ::output_name="Multilines-maxresponse.ami.gz"
 
       ::normalize_gradient = UCHAR(1), "normalize gradient"
+      ::PSF_stddev = 0, "Standard deviation (in voxels) of the point spread function"
 
       #::Gui()
     }
@@ -267,6 +268,7 @@ if (!exists(MultiLinesClass)) {
       #  grad = grad*sigma
       #}
       grad_algo = algorithms.Gradient(&::input,sigma,::normalize_gradient)
+      grad_algo.SetPSF(::PSF_stddev,::PSF_stddev,::PSF_stddev)
       grad = grad_algo.Execute()
 
       SetProgress(::current_progress+::current_step*0.75)
@@ -647,6 +649,7 @@ if (!exists(MultiLinesClass)) {
 
           ::win.AddBoolean( &::keep_all_scales, "Keep all scales")
           ::win.AddBoolean( &::normalize_gradient, "Normalize gradient")
+          ::win.AddFloat( &::PSF_stddev, "PSF")
           ::win.AddBoolean( &::use_linearinterp, "Linear Interpolation")
 
           ::win.BeginBoxPanel("Controls")
