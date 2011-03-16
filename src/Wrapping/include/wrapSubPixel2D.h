@@ -19,7 +19,7 @@ BasicVariable::ptr WrapClass<SubPixel2D>::CreateVar( ParamList* p);
 AMI_DECLARE_TYPE(SubPixel2D)
 
 //---------------------------------------------------
-//AnalyticFunctionBase Wrapping
+//SubPixel2D Wrapping
 class WrapClass_SubPixel2D : public WrapClass<SubPixel2D> {
   
   DEFINE_CLASS(WrapClass_SubPixel2D);

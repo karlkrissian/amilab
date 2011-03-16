@@ -10,6 +10,7 @@
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
 #include <vector>
+#include <iostream>
 using namespace std;
 
 /**
@@ -63,7 +64,7 @@ public:
   
   /**
    *  Get the border type.
-   *  @return The value of the edge type (horizontal or vertical macros).
+   *  @return The value of the edge type.
    */
   unsigned char getBorder();
   
@@ -131,7 +132,7 @@ public:
   
   /**
    *  Print the information of the voxel.
-   *  @param  linear_case Indicates if it is first or second order (line or parable).
+   *  @param  linear_case Indicates if it is first or second order (plane or paraboloid).
    *  @return Show in the screen the information of the voxel: The position of 
    *  the voxel, the edge type, the 'A' and 'B' intensity value and the 
    *  coefficients of the paraboloid. If linear_case is
@@ -164,7 +165,7 @@ private:
 
 /**
  *  This class contains the methods of the SubPixel method for 3D images.
- *  Also includes the method that draw the sub-pixel edge. **** eso está por ver *****
+ *  Also includes the method that draw the sub-pixel edge. ************************** eso está por ver *****
  *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
@@ -183,21 +184,49 @@ public:
    */
   SubPixel3D(InrImage* inp_image, float thres, int lc);
   
-  virtual ~ SubPixel3D();
+  ~SubPixel3D();
   
   /**
-   *  Get the vector that contains the pixels members of the edge.
-   *  @return A STL vector of borderPixel type.
+   *  Get the vector that contains the voxel members of the edge.
+   *  @return A STL vector of borderVoxel type.
    */
-  vector<borderPixel> getBorderPixelVector();
+  vector<borderVoxel> getBorderVoxelVector();
+  
+  /**
+   *
+   */
+  void GradienteCurvo3D();
+  
+    /**
+   *  Based on the content of the vector of the voxels members of the edge, this
+   *  procedure fill some images.
+   *  @param AIntensity Smart pointer to an InrImage for 'A' intensity values.
+   *  @param BIntensity Smart pointer to an InrImage for 'B' intensity values.
+   *  @param border     Smart pointer to an InrImage for the edge type.
+   *  @param a          Smart pointer to an InrImage for 'a' coefficients.
+   *  @param b          Smart pointer to an InrImage for 'b' coefficients.
+   *  @param c          Smart pointer to an InrImage for 'c' coefficients.
+   *  @param d          Smart pointer to an InrImage for 'd' coefficients.
+   *  @param f          Smart pointer to an InrImage for 'f' coefficients.
+   *  @param g          Smart pointer to an InrImage for 'g' coefficients.
+   *  @param curvature  Smart pointer to an InrImage for curvatures.
+   *  @param posx       Smart pointer to an InrImage for x positions.
+   *  @param posy       Smart pointer to an InrImage for y positions.
+   *  @param posz       Smart pointer to an InrImage for z positions.
+   */
+  void fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity, 
+                  InrImage::ptr border, InrImage::ptr a, InrImage::ptr b, 
+                  InrImage::ptr c, InrImage::ptr d, InrImage::ptr f, 
+                  InrImage::ptr g, InrImage::ptr curvature, InrImage::ptr posx, 
+                  InrImage::ptr posy, InrImage::ptr posz);
   
 private:
   //Input image
   InrImage* input;
   //Denoised image
-  InrImage* denoised;
-  //borderPixel vector
-  vector<borderPixel> borderPixelVector;
+  //InrImage* denoised;
+  //borderVoxel vector
+  vector<borderVoxel> borderVoxelVector;
   //Gradient threshold
   double threshold;
   //Linear case (first or second order)

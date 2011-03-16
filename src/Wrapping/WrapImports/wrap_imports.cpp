@@ -81,6 +81,7 @@
 #include "wrap_AnalyticTorus.h"
 #include "wrap_ComputePartialVolume.h"
 #include "wrapSubPixel2D.h"
+#include "wrap_SubPixel3D.h"
 #include "wrap_Viewer3D.h"
 #include "wrap_GLTransfMatrix.h"
 
@@ -152,6 +153,8 @@ void AddWrapImports()
   WrapClass_ComputePV:: AddVar_ComputePV(                     amiobject->GetContext());
   
   WrapClass_SubPixel2D::AddVar_SubPixel2D(amiobject->GetContext());
+  
+  WrapClass_SubPixel3D::AddVar_SubPixel3D(amiobject->GetContext());
 
   WrapClass_vtkLevelSets  ::AddVar_vtkLevelSets(amiobject->GetContext());
 
