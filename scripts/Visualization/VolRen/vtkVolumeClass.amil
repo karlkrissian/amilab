@@ -112,15 +112,25 @@ if (!exists(vtkVolumeClass)) {
         ::property.SetInterpolationTypeToLinear()
  
         #printn "CreateVTK 2"
+        import_vtk
         ::vol       = vtk.vtkVolume.New()
         # don't put the boxwidget for the moment
         # convert input to vtkimage
-        ::vtkinput  = global::ToVtkImageData(&input_image)
+        ::vtkinput  = ToVtkImageData(&input_image)
         ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
 
         #::volmapper.SetSampleDistance()
 
         # Check if the rendering is supported
+        ::renwin.MakeCurrent()
+        #InfoDialog "Supports OpenGL %1%" % ::renwin.SupportsOpenGL()
+        #InfoDialog "Capabilities %1%" % ::renwin.ReportCapabilities()
+
+        # Temporary code: BEGIN
+        # It solves temporarily the problem of OpenGL's initialization.
+        InfoDialog "Capabilities %1%" % ::renwin.ReportCapabilities()
+        # Temporary code: END
+
         supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
         #supported = 0
         if (!supported) {
@@ -138,7 +148,8 @@ if (!exists(vtkVolumeClass)) {
 
           # don't put the boxwidget for the moment
           # convert input to vtkimage
-          ::vtkinput  = global::ToVtkImageData(&input_image)
+          import_vtk
+          ::vtkinput  = ToVtkImageData(&input_image)
 
           #supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
           #if (!supported) {

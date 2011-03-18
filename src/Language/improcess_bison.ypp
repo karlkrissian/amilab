@@ -206,7 +206,7 @@ extern void CB_delete_varlist( void* var);
 
 //------------------------------------------------------
 void CB_update_imagelist( void* imagelist_gui);
-
+void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 
 #define GET_VARSTACK_VALUE(type,newvar) \
   boost::shared_ptr<type> newvar( \
@@ -9819,6 +9819,17 @@ void CB_update_imagelist( void* imagelist_gui)
   imlist->SetChoices(imagelist);
 }
 
+//------------------------------------------------------
+void CB_update_AMIObjectlist( void* AMIObjectlist_gui)
+//   -------------------
+{
+  wxEnumerationParameter* Objlist = (wxEnumerationParameter*) AMIObjectlist_gui;
+  boost::shared_ptr<wxArrayString> AMIObjectlist;
+
+  AMIObjectlist = Vars.SearchAMIObjectTypeVariables("SurfacePoly");
+  AMIObjectlist->Add(_T("Select surface image..."));
+  Objlist->SetChoices(AMIObjectlist);
+}
 
 //------------------------------------------------------
 void wxScheduleTimer::Notify()

@@ -40,7 +40,16 @@ if (!exists(VolRenClass)) {
       ::azimuth = INT(45), "Rotate camera angle along vertical axis (in degrees)"
       #::Gui()
     }
-    
+
+    #----------------------------
+    proc ::set_input(IMAGE image) {
+      ::input<<=image
+      ::UpdateImageInfo(&::input,&::input_size)
+      ::win.SetLabelValue(::input_size_id,::input_size)
+      ::UpdateVolPages()
+      ::win.Update(-1)
+    }
+
     #----------------------------
     proc ::load_input() {
       if (exists(::input)) { del ::input; }
@@ -276,7 +285,8 @@ if (!exists(VolRenClass)) {
       sbox_sizer.Add( &::flex_sizer, 1, wx.wxALL | wx.wxEXPAND,2)
       # create widget here
 
-      ::renwin_interact = global::wxVTKRenderWindowInteractor(&::panel,-1)
+      import_vtk
+      ::renwin_interact = wxVTKRenderWindowInteractor(&::panel,-1)
       #::renwin_interact = wxVTKFrame(&panel,-1)
 
       ::renwin_interact.UseCaptureMouseOn()
@@ -339,7 +349,8 @@ if (!exists(VolRenClass)) {
        capturefilter = vtk.vtkWindowToImageFilter.New()
        capturefilter.SetInput( &::renwin)
        capturefilter.Update()
-       resim = global::FromVtkImageData( &capturefilter.GetOutput())
+       import_vtk
+       resim = FromVtkImageData( &capturefilter.GetOutput())
        ::capture <<= Flip(resim,1)
     }
 

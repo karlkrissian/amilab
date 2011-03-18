@@ -135,6 +135,12 @@ if (!exists(MultiLinesClass)) {
     {
       ::maxima <<= im
     }
+
+    #--------------------------------------------------
+    proc ::set_radii(IMAGE im) \
+    {
+      ::radii <<= im
+    }
     
     #--------------------------------------------------
     proc ::h(NUM gamma, NUM theta, NUM res) {

@@ -33,6 +33,7 @@
 #include <wx/arrstr.h>
 
 #include "ami_object.h"
+#include "wrapfunction_class.h"
 
 extern unsigned char       GB_debug;
 
@@ -203,6 +204,48 @@ void VarContexts::SearchVariablesRecursive( const vartype& type,
     }
   }
 }
+
+//--------------------------------------------------
+boost::shared_ptr<wxArrayString> VarContexts::SearchAMIObjectTypeVariables(const std::string& type)
+{
+  boost::shared_ptr<wxArrayString> completions;
+  completions = boost::shared_ptr<wxArrayString>(new wxArrayString());
+
+  SearchAMIObjectTypeVariablesRecursive(type,completions,_context[0],_T("global::"));
+
+  return completions;
+}
+
+//--------------------------------------------------
+void VarContexts::SearchAMIObjectTypeVariablesRecursive( const std::string & type_string,
+                      boost::shared_ptr<wxArrayString>& variables,
+                      const Variables::ptr& context,
+                      wxString const & prefix) const
+{
+  wxString new_prefix;
+  
+  for(int i=0;i<(int)context->GetSize();i++) {
+    BasicVariable::ptr m_var = (*context)[i];
+    
+    if (m_var.get()) {              
+      if (m_var->Type() == type_ami_object) {
+        new_prefix = prefix + wxString(m_var->Name().c_str(), wxConvUTF8);
+        // get the pointer to the objet
+        DYNAMIC_CAST_VARIABLE(AMIObject,m_var,varobj);
+        AMIObject::ptr obj( varobj->Pointer());
+        boost::shared_ptr<WrapClassBase> TheObject( varobj->Pointer()->GetWrappedObject());
+        if(TheObject.get()) {
+          //Filter by type.
+          if(TheObject->get_name()==std::string("WrapClass_")+type_string) {
+            variables->Add(new_prefix);
+          }
+        }// if(TheObject.get())
+        new_prefix += wxT(".");
+        SearchAMIObjectTypeVariablesRecursive(type_string, variables, obj->GetContext(), new_prefix);
+      } // if (m_var->Type() == type_ami_object)      
+    } //if (m_var.get())
+  } //for
+} // SearchAMIObjectTypeVariables
 
 //--------------------------------------------------
 int VarContexts::GetNewVarContext()
