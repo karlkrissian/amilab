@@ -1536,11 +1536,11 @@ if (!exists(RunExperimentsClass)){
 
     #------------------------------------------
     proc ::DisplaySurfaceImage() {
+      if (exists(::TheSurfaceActor)) {
+        ::VolRen_obj.renderer.RemoveActor(&::TheSurfaceActor)
+        printn "Removed surface image actor"
+      }
       if(::input_object_render != "Select surface image...") {
-        if (exists(::TheSurfaceActor)) {
-          ::VolRen_obj.renderer.RemoveActor(&::TheSurfaceActor)
-          printn "Removed surface image actor"
-        }
         import_vtk
         eval "TheSurface = &"+::input_object_render+";"
         TheSurface_polydata = ToVtkPolyData(&TheSurface)
