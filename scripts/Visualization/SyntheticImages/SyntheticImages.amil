@@ -18,6 +18,7 @@ if (!exists(SyntheticImagesClass)) {
     ::reloadCircle   = UCHAR(0), "Reload the analytic circle"
     ::reloadVessel2D = UCHAR(0), "Reload the analytic vessel2D"
     ::reloadRing2D   = UCHAR(0), "Reload the analytic ring"
+    ::reloadCube     = UCHAR(0), "Reload the analytic cube"
     ::reloadSphere   = UCHAR(0), "Reload the analytic sphere"
     ::reloadTorus    = UCHAR(0), "Reload the analytic torus"
     
@@ -46,6 +47,14 @@ if (!exists(SyntheticImagesClass)) {
     ::ring_cy     = 50.0, "Y component of the center of the ring"
     ::ring_radius = 30.0, "Ring internal radius"
     ::ring_thick  = 2.0, "Thickness of the ring"
+    
+    #Cube parameters
+    ::cube_cx   = 50.0, "X component of the center of the cube"
+    ::cube_cy   = 50.0, "Y component of the center of the cube"
+    ::cube_cz   = 50.0, "Z component of the center of the cube"
+    ::cube_dimx = 30.0, "X size of the cube"
+    ::cube_dimy = 30.0, "Y size of the cube"
+    ::cube_dimz = 30.0, "Z size of the cube"
     
     #Sphere parameters
     ::sx = 50.0, "X component of sphere's center"
@@ -92,10 +101,11 @@ if (!exists(SyntheticImagesClass)) {
   proc ::NewType3D() {
     if (exists(::page_vec3D)) { del ::page_vec3D; }
     ::page_vec3D = VarVector();
+    ::page_vec3D.push_back(::page_cube)
     ::page_vec3D.push_back(::page_sphere)
     ::page_vec3D.push_back(::page_torus)
     
-    for n=0 to 1 {
+    for n=0 to 2 {
       ::win.EnablePanel(::page_vec3D[n], ::type3D==n)
     }
     ::win.SelectPage(::book3D,::type3D)
@@ -162,17 +172,21 @@ if (!exists(SyntheticImagesClass)) {
       
       #Analytic function recursive for a volume
       if(::pv_type == 1) {
-        if(!exists(::sphere) && !exists(::torus)) {
+        if(!exists(::sphere) && !exists(::torus) && !exists(::cube)) {
           InfoDialog "You must create a 3D analytic object (sphere or torus)"
         } else {
           ::pv->setInputImage(&::input)
           ::pv->setSubdiv(::subdiv)
           if(::dimz > 1) {
             if(::type3D == 0) {
-              ::pv->setAnalyticFunction(&::sphere)
+              ::pv->setAnalyticFunction(&::cube)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
             }
             if(::type3D == 1) {
+              ::pv->setAnalyticFunction(&::sphere)
+              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
+            }
+            if(::type3D == 2) {
               ::pv->setAnalyticFunction(&::torus)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
             }
@@ -294,6 +308,33 @@ if (!exists(SyntheticImagesClass)) {
     }
   }
   
+  #CUBE
+  #--------------------------------------------------------------
+  proc ::GenerateCube() {
+    import = &global::ami_import;
+    ::cube = import->AnalyticCube()
+    ::cube->setCenter(::cube_cx, ::cube_cy, ::cube_cz)
+    ::cube->setDimX(::cube_dimx)
+    ::cube->setDimY(::cube_dimy)
+    ::cube->setDimZ(::cube_dimz)
+    ::win.EnablePanel(::cm_id, 1)
+  }
+  Comments(::GenerateCube, "Generate analytic cube")
+  #--------------------------------------------------------------
+  proc ::ResetCube() {
+    ::cube_cx   = 50.0
+    ::cube_cy   = 50.0
+    ::cube_cz   = 50.0
+    ::cube_dimx = 30.0
+    ::cube_dimy = 30.0
+    ::cube_dimz = 30.0
+    ::win.Update(-1)
+    if (::reloadCube == 1) {
+      ::RecomputeCube()
+    }
+  }
+  Comments(::ResetCube, "Reset analytic cube parameters")
+  
   #SPHERE
   #--------------------------------------------------------------
   proc ::GenerateSphere() {
@@ -394,6 +435,22 @@ if (!exists(SyntheticImagesClass)) {
         ::ring2D->setThickness(::ring_thick)
         if(exists(::pv)) {
           ::pv->setAnalyticFunction(&::ring2D)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeCube() {
+    if(::reloadCube ==1) {
+      if(exists(::cube)) {
+        ::cube->setCenter(::cube_cx, ::cube_cy, ::cube_cz)
+        ::cube->setDimX(::cube_dimx)
+        ::cube->setDimY(::cube_dimy)
+        ::cube->setDimZ(::cube_dimz)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::cube)
           ::Compute()
           ::Display()
         }
@@ -570,12 +627,38 @@ if (!exists(SyntheticImagesClass)) {
           ::win.AddPage("3D")
             
             ::type_id3D = ::win.AddEnum(&::type3D, "Function type")
+              ::win.AddEnumChoice(::type_id3D, "Cube")
               ::win.AddEnumChoice(::type_id3D, "Sphere")
               ::win.AddEnumChoice(::type_id3D, "Torus")
             ::win.SetCallback(&::NewType3D)
             
             #Functions3D notebook
             ::book3D = ::win.BeginBook()
+            
+              ::page_cube = ::win.AddPage("Cube")
+                ::win.BeginBoxPanel("Cube parameters")
+                ::win.BeginBoxPanel("Center")
+                  ::win.AddFloat(&::cube_cx, "x", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                  ::win.AddFloat(&::cube_cy, "y", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                  ::win.AddFloat(&::cube_cz, "z", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                ::win.EndBoxPanel()
+                ::win.BeginBoxPanel("Dimensions")
+                  ::win.AddFloat(&::cube_dimx, "dimx", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                  ::win.AddFloat(&::cube_dimy, "dimy", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                  ::win.AddFloat(&::cube_dimz, "dimz", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateCube")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetCube")
+                  ::win.AddBoolean(&::reloadCube, "Reload")
+                ::win.EndHorizontal()
+            
               ::page_sphere = ::win.AddPage("Sphere")
                 ::win.BeginBoxPanel("Sphere parameters")
                   ::win.BeginBoxPanel("Center")
@@ -619,13 +702,14 @@ if (!exists(SyntheticImagesClass)) {
                 ::win.EndHorizontal()
                 
               ::win.EndBook()
+        ::win.EndBoxPanel()
         
         ::win.EnablePanel(::functions_page, 0)
         ::win.EndBook()
         ::win.BeginBoxPanel("Intensity")
           ::win.AddFloat(&::A, "A", 0, 255)
           ::win.AddFloat(&::B, "B", 0, 255)
-        ::win.EndBoxPanel()
+        #::win.EndBoxPanel()
       #Help tab
       ::AddHelpPage(&::win)
       

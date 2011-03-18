@@ -12,7 +12,7 @@
 
 //3D partials
 //Test if the indexes are inside the image, when calculate a partial
-double imval(InrImage* input, int x,int y, int z){
+double valim(InrImage* input, int x,int y, int z){
   if (input->CoordOK(x,y,z)) 
     return (*input)(x,y,z);
   else 
@@ -20,7 +20,7 @@ double imval(InrImage* input, int x,int y, int z){
   return 0;
 }
 //Access to a voxel
-#define F(x,y,z)    imval(input,x,y,z)
+#define F(x,y,z)    valim(input,x,y,z)
 //Partials
 #define fx(x,y,z)   (F(x+1,y,z) - F(x-1,y,z))
 #define fy(x,y,z)   (F(x,y+1,z) - F(x,y-1,z))
@@ -250,9 +250,10 @@ void SubPixel3D::GradienteCurvo3D()
     {
       for (int x = margin; x < input->DimX() - margin; x++)
       {
+//        cout << "Pos (" << x << ", " << y << ", " << z << ")" << endl;
         //We search the maximum partial (x, y or z)
         if ((fabs(fy(x,y,z)) > fabs(fx(x,y,z))) && (fabs(fy(x,y,z)) < fabs(fz(x,y,z))))
-        {
+        { //cout << "YMAX" << endl;
           //The maximum partial is in y
           partial = fabs(fy(x,y,z));
           
@@ -298,7 +299,7 @@ void SubPixel3D::GradienteCurvo3D()
         else
         {
           if (fabs(fx(x,y,z)) > fabs(fz(x,y,z)))
-          {
+          { //cout << "XMAX" << endl;
             //The maximum partial is in x
             partial = fabs(fx(x,y,z));
             
@@ -342,7 +343,7 @@ void SubPixel3D::GradienteCurvo3D()
             }
           }
           else 
-          {
+          { //cout << "ZMAX" << endl;
             //The maximum partial is in z
             partial = fabs(fz(x,y,z));
             
@@ -375,7 +376,7 @@ void SubPixel3D::GradienteCurvo3D()
             
             //We compute the column sums
             S1 = S2 = S3 = S4 = S5 = S6 = 0.0;
-            for (int zk = z-margin; z <= z+margin; z++)
+            for (int zk = z-margin; zk <= z+margin; zk++)
             {
               S1 += F(x+1,y,zk);
               S2 += F(x,y-1,zk);
@@ -412,6 +413,7 @@ void SubPixel3D::GradienteCurvo3D()
       } // end for x
     } // end for y
   } // end for z
+  cout << "termina el procedimiento GradienteCurvo3D" << endl;
 } //end GradienteCurvo3D
 
 

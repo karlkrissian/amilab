@@ -69,7 +69,11 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_GradienteCurvo3D
 {
   SubPixel3D::ptr sp(_objectptr->GetObj());
   
+  cout << "llamo a GradienteCurvo3D" << endl;
+  
   sp->GradienteCurvo3D();
+  
+  cout << "vuelvo de GradienteCurvo3D" << endl;
   
   //Create the AMIObject with the result
   AMIObject::ptr amiobject(new AMIObject);
