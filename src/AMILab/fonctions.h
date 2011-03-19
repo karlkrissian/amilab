@@ -59,6 +59,7 @@
 #include "Resize.hpp"
 
 #include "StructureTensor.h"
+#include "Curvatures.h"
 
 #include "Chamfer.h"
 //#include "vtkwrap.h"
@@ -217,7 +218,6 @@ InrImage*    Func_LocalExtrema( InrImage* im,
                 InrImage* mask,
                 int samples=16);
 
-unsigned char      Func_Curvatures(  InrImage* im, const char* varname, float sigma);
 InrImage*    Func_Laplacian(   InrImage* im);
 
 float         Func_PositiveArea(float val[4]);

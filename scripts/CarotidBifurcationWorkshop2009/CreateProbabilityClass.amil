@@ -12,7 +12,8 @@ if (!exists(CreateProbabilityClass)) {
   
   Class CreateProbabilityClass  : public ScriptGui\
   {
-    ::filters=&global::filters
+    import_filters
+    ::filters=&filters
     
     #--------------------------
     proc ::Init() \
@@ -82,6 +83,7 @@ if (!exists(CreateProbabilityClass)) {
 
     }
     
+    #--------------------------
     proc ::set_input(IMAGE im) {
       ::input <<= im
     }

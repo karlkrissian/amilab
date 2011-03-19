@@ -8,6 +8,45 @@ Class FastMarchingUtils \
 
 
   #---------------------------------------------
+  proc ::FastMarchingFromPoint( IMAGE speed, \
+                              NUM maxtime, NUM x, NUM y, NUM z) \
+  {
+
+
+    # Create initialization image
+    initim = (FLOAT) speed*0+maxtime
+    initim.setpos(x,y,z)
+    initim.set(-4)
+    
+
+    import_vtk
+
+
+    # convert images to VTK images
+    vtk_input  = ToVtkImageData(&speed)
+    vtk_init   = ToVtkImageData(&initim)
+
+    vtk_FM = algorithms.vtkLevelSetFastMarching.New()
+
+
+    vtk_FM.SetInput(&vtk_input)
+    vtk_FM.Setinitimage(&vtk_init);
+    # if we set initiso to a different value than -1E10 (default value)
+    # the it will call InitIsoSurf which recomputes the distance close to the surface
+    # otherwise, it call InitWithImage which is much faster, and
+    # all values lower than initmaxdist will be accepted to start with.
+
+    vtk_FM.Setinitiso(   0);
+    vtk_FM.Setinitmaxdist(1+1E-3);
+    vtk_FM.SetmaxTime( maxtime);
+    vtk_FM.Update();
+
+    return = FromVtkImageData(&vtk_FM.GetOutput())
+    vtk_FM.Delete()
+  }
+  Comments(::FastMarchingFromPoint, "Fast Marching evolution from the initial point up to the given maximal distance.")
+
+  #---------------------------------------------
   proc ::FastMarchingTarget(  IMAGE input, IMAGE initim, \
                               NUM maxtime, NUM x, NUM y, NUM z) \
   {

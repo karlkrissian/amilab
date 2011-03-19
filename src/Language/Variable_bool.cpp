@@ -173,7 +173,7 @@ BasicVariable::ptr Variable<bool>::TryCast(
     } else 
     {
       // make default conversion to bool??
-      CLASS_ERROR((boost::format("No convertion available for variable %1% from bool to %2%") % _name % type_string).str().c_str());
+      CLASS_ERROR((boost::format("No conversion available for variable %1% from bool to %2%") % _name % type_string).str().c_str());
     }
   } catch (std::bad_cast &e)
   {

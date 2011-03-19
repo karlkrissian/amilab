@@ -26,7 +26,6 @@ SET(AMILab_SRCS
     Chamfer.cpp
     CircleIntegration.cpp
     ConnectLines.cpp
-    Curvatures.cpp
     ContinuousMorphology.cpp
     Eigen3D.cpp
     EigenDecomp.cpp

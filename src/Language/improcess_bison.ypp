@@ -546,7 +546,6 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_HessianMatrix
 %token T_HessianEVal
 %token T_Derivatives
-%token T_curvatures
 %token T_Laplacian
 %token T_setvoxelsize
 %token T_settranslation
@@ -3557,12 +3556,13 @@ command:
               (int) $11 // eigenvalue number
               );
         }
-        |
+/*        |
         T_curvatures T_OP_PAR var_image T_COMMA expr  T_CL_PAR
         {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
           Func_Curvatures(im.get(), varim->Name().c_str(), $5);
         }
+        */
         |
         T_Eigen3D T_OP_PAR ASTRING T_COMMA
                       var_image T_COMMA var_image T_COMMA
@@ -4068,7 +4068,7 @@ param_list:
         | unprocessed_variable
         {
         /**
-          Description: temporary rule, added to simplify convertion of scripts.
+          Description: temporary rule, added to simplify conversion of scripts.
          **/
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           if (!var.get()) {
@@ -4084,7 +4084,7 @@ param_list:
         | param_list T_COMMA  unprocessed_variable
         {
         /**
-          Description: temporary rule, added to simplify convertion of scripts.
+          Description: temporary rule, added to simplify conversion of scripts.
          **/
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           if (!var.get()) {

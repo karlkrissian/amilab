@@ -180,7 +180,7 @@ class ParamListDecl {
       return false;
     }
 
-    // Can't be that strict since there can be automatic convertion ...
+    // Can't be that strict since there can be automatic conversion ...
     for ( i=0;i<GetNumParam();i++ )
     {
       //  pl->GetParam( i, p, t);

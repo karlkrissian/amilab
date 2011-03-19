@@ -5,3 +5,4 @@ vtkLevelSetFastMarching
 Gradient
 vtkFastMarching_nD_plus
 ShortestPathClass
+Curvatures

@@ -660,7 +660,7 @@ public:
         case WT_SIGNED_SHORT:   return (_vdim==1);
         case WT_UNSIGNED_INT:   return (_vdim==1);
         case WT_SIGNED_INT:     return (_vdim==1);
-        default: printf("InrImage::FormatScalaire()\t format non gere...\n");
+        default: printf("InrImage::ScalarFormat()\t format non gere %d ...\n",_format);
       } // end switch
 
       return false;
@@ -682,7 +682,7 @@ public:
         case WT_SIGNED_SHORT:
         case WT_UNSIGNED_INT:
         case WT_SIGNED_INT:     return (_vdim>1);
-        default: printf("InrImage::FormatScalaire()\t format non gere...\n");
+        default: printf("InrImage::ScalarFormat()\t format non gere %d ...\n",_format);
       } // end switch
 
       return false;

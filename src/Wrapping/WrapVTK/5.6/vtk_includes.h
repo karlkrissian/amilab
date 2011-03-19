@@ -40,3 +40,6 @@
 #include <vtkTexturedSphereSource.h>
 #include <vtkTransform.h>
 #include <vtkWindowToImageFilter.h>
+#include <vtkImageFFT.h>
+#include <vtkImageRFFT.h>
+#include <vtkImageFourierCenter.h>

@@ -1,0 +1,206 @@
+
+func "Common/ScriptGui"
+
+if (!exists(PropagateVesselsContoursClass)) {
+
+  Class PropagateVesselsContoursClass : public ScriptGui \
+  {
+    
+    # load the current configuration
+    func "Curvatures/Curvatures3DClass.amil"
+    Curvatures3DClass ::Curv3D
+
+    func "CarotidBifurcationWorkshop2009/CreateProbabilityClass.amil"
+    CreateProbabilityClass ::CProb
+    
+    func "Utils/ImageUtilitiesClass.amil"
+    ImageUtilitiesClass ::ImUtils
+
+    func "DistanceTransform/FastMarching/FastMarchingUtils.amil"
+    FastMarchingUtils ::FMUtils
+
+    #-----------------------------------------------
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::maxcurv_low = 0.01
+        ::maxcurv_high = 4
+
+        ::grad_stddev = 1
+        ::local_stdev_param = 50, "Parameter to select the response for high local standard deviations of intensity (image contours)."
+
+        ::maxdist = 1000, "Maximal distance to evolve the fast marching algorithm"
+        ::point_label = "0,0,0"
+
+        ::html_filename = GetScriptsDir+"/Vessels/PropagateVesselsContours/Doc/PropagateVesselsContours/index.html"
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      # force isotropic voxels for the moment
+      ::input_vsx = ::input.vx
+      ::input_vsy = ::input.vy
+      ::input_vsz = ::input.vz
+      ::input.setvoxelsize(1,1,1)
+
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+    #------------------------------------------
+    proc ::Curvatures() \
+    {
+    
+      ::Curv3D.set_input(&::input)
+      ::Curv3D.Run()
+    }
+
+    #------------------------------------------
+    proc ::LocalStats() \
+    {
+    
+      ::CProb.set_input(&::input)
+      ::CProb.lsd_erosion = 0
+      ::CProb.Apply()
+    }
+
+    //---------------------------------------------------
+    proc ::SetStartPoint() \
+    {
+      if (!exists(::input))        { ::load_input(); }
+      if (!exists(::viewer)) {
+        ::viewer = DessinImage(&::input)
+      }  else {
+        ::posx = ::viewer.GetXPos() 
+        ::posy = ::viewer.GetYPos()
+        ::posz = ::viewer.GetZPos()
+        print "cursor is at "
+        print " %1% "   % ::posx
+        print " %1% "   % ::posy
+        print " %1% \n" % ::posz
+        ::point_label = " %1%, "  % ::posx + "%1%, " % ::posy + " %1%, " % ::posz
+        ::win.SetLabelValue(::startpt_id,::point_label)
+        ::win.Update(-1)
+      }
+    }
+
+    #---------------------------------------------------
+    proc ::Run() {
+      if (!exists(::input)) { ::load_input(); }
+      if (!exists(::posx)) {
+        InfoDialog "Set the starting point first!"
+      } else {
+        ::LocalStats()
+        ::Curvatures() 
+        ::speed_curv = ::Curv3D.maxcurv
+        Comments(::speed_curv,"Curvature component of the speed")
+        ::speed_curv = ::ImUtils.Clamp(&::speed_curv,::maxcurv_low,::maxcurv_high)
+        ::lsd = ::CProb.lsd
+        grad = gradient(::input,::grad_stddev)
+        # normalize the gradient vector field
+        grad = grad/(0.01+norm(grad))
+        pos = SpacePos(::input)
+        lsd_p = ::lsd(pos+grad/2) 
+        lsd_m = ::lsd(pos-grad/2) 
+        # get local maxima in the gradient direction
+        ::lsd_max = ::lsd*(::lsd>lsd_p)*(::lsd>lsd_m)
+        # Compute final evolution speed
+        ::sp = (1-exp(-::lsd*::lsd/(2*::local_stdev_param*::local_stdev_param)))*::speed_curv*(::lsd_max>0)
+        
+        ::res = ::FMUtils.FastMarchingFromPoint(&::sp,::maxdist,::posx,::posy,::posz)
+
+        lsdgrad = gradient(::lsd,0.8)
+        ::zerocross = lsdgrad*grad
+        mask = (::res<(::maxdist-0.01))
+        sigma = 1
+        mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
+        mask <<= (UCHAR) (mask>0.3)*255
+        ::res_surf = isosurf(-::zerocross,0,mask)
+        show ::res_surf
+      }
+    }
+
+    #---------------------------------------------------
+    proc ::Display() \
+    {
+      show ::res
+      if (exists(::viewer)) {
+        ::viewer.compare(&::res_draw)
+      }
+    }
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("PropVessels",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("PropVessels")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          ::win.AddButton("Set Starting Point", &::SetStartPoint)
+          ::startpt_id = ::win.AddLabel("Selected Point",::point_label)
+          ::win.AddFloat(&::grad_stddev,"Grad smoothing",0,5)
+          ::win.AddFloat(&::local_stdev_param,"Local STD param",0,100)
+          ::win.AddFloat(&::maxdist,"Max. dist.",0,10000)
+          ::win.AddButton("Run",     &::Run)
+          ::win.AddButton("Display", &::Display)
+ 
+        ::config_advanced_page = ::win.AddPage("Adv")
+          ::win.BeginBook()
+          
+            ::Curv3D.SetParentPanel(&::win)
+            ::Curv3D.Gui()
+            ::win.AddPage("Curv3D",&::Curv3D.win)
+
+            ::CProb.SetParentPanel(&::win)
+            ::CProb.Gui()
+            ::win.AddPage("Stats",&::CProb.win)
+                       
+          ::win.EndBook()
+        ::AddHelpPage(&::win)
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

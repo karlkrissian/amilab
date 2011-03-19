@@ -352,7 +352,6 @@ StructTensorH      return(token::T_StructTensorH); /*{StructTensorH,T_StructTens
 HessianMatrix      return(token::T_HessianMatrix); /*{HessianMatrix,T_HessianMatrix}*/
 HessianEVal        return(token::T_HessianEVal); /*{HessianEVal,T_HessianEVal}*/
 Derivatives        return(token::T_Derivatives); /*{Derivatives,T_Derivatives}*/
-Curvatures         return(token::T_curvatures); /*{Curvatures,T_curvatures}*/
 DiscMeanCurvature  return(token::T_DiscMeanCurvature); /*{DiscMeanCurvature,T_DiscMeanCurvature}*/
 Laplacian          return(token::T_Laplacian); /*{Laplacian,T_Laplacian}*/
 setvoxelsize       return(token::T_setvoxelsize); /*{setvoxelsize,T_setvoxelsize}*/

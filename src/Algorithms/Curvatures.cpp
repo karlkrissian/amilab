@@ -34,28 +34,14 @@
 #include "DirPrincipales.hpp"
 //#include "gradiente3D.c"
 #include "FloatMatrix.hpp"
+#include "Curvatures.h"
+#include "ami_object.h"
 
-extern    VarContexts  Vars;
-extern    unsigned char GB_debug;
-
-
-// TODO: get rid of those static variables !!!
-static InrImage::ptr        im_graddir;
-static InrImage::ptr        im_gradnorm;
-
-static InrImage::ptr        im_maxcurv;
-static InrImage::ptr        im_mincurv;
-
-static InrImage::ptr        imdir_maxcurv;
-static InrImage::ptr        imdir_mincurv;
 
 //----------------------------------------------------------------------
-void EstimeCourbures( float gradient[3], float hessien[3][3], void* data)
-//   ---------------
+void CurvaturesFunctor::operator()(float gradient[3], float hessien[3][3], void* data)
+//               ---------------
 {
-
-  
-
     float vmax[3];
     float vmin[3];
     float lmin;
@@ -81,32 +67,32 @@ void EstimeCourbures( float gradient[3], float hessien[3][3], void* data)
   Si Non(fixe_zero) Alors
 
       Si CurvaturasPrincipales(  hessien, 
-				 (float*) gradient, 
-				 (float*) vmax, 
-				 (float*) vmin, 
-				 &lmax, &lmin,
-				 1E-2) != -1 Alors
+          (float*) gradient, 
+          (float*) vmax, 
+          (float*) vmin, 
+          &lmax, &lmin,
+          1E-2) != -1 Alors
 
-    	  im_mincurv->FixeValeur(lmin);
-   	  im_maxcurv->FixeValeur(lmax);
+        _curv->im_mincurv->FixeValeur(lmin);
+        _curv->im_maxcurv->FixeValeur(lmax);
 
-          imdir_mincurv->VectFixeValeurs(vmin[0], vmin[1], vmin[2]);
-    	  imdir_maxcurv->VectFixeValeurs(vmax[0], vmax[1], vmax[2]);
+        _curv->imdir_mincurv->VectFixeValeurs(vmin[0], vmin[1], vmin[2]);
+        _curv->imdir_maxcurv->VectFixeValeurs(vmax[0], vmax[1], vmax[2]);
 
-	  norm = sqrt(
-		      gradient[0]*gradient[0]+
-		      gradient[1]*gradient[1]+
-		      gradient[2]*gradient[2]
-		      );
-          im_gradnorm->FixeValeur( norm);
+        norm = sqrt(
+          gradient[0]*gradient[0]+
+          gradient[1]*gradient[1]+
+          gradient[2]*gradient[2]
+          );
+        _curv->im_gradnorm->FixeValeur( norm);
 
-          Si norm > 1E-2 Alors
-            im_graddir->VectFixeValeurs(gradient[0]/norm,
-					gradient[1]/norm,
-					gradient[2]/norm);
-          Sinon
-  	    im_graddir->VectFixeValeurs(0,0,0);
-          FinSi
+        Si norm > 1E-2 Alors
+          _curv->im_graddir->VectFixeValeurs(gradient[0]/norm,
+            gradient[1]/norm,
+            gradient[2]/norm);
+        Sinon
+          _curv->im_graddir->VectFixeValeurs(0,0,0);
+        FinSi
       Sinon
         fixe_zero = true;
       FinSi
@@ -115,30 +101,30 @@ void EstimeCourbures( float gradient[3], float hessien[3][3], void* data)
 
   Si fixe_zero Alors
 
-      im_gradnorm->FixeValeur(0.0);
-      im_graddir->VectFixeValeurs(0.0, 0.0, 0.0);
-      im_mincurv->FixeValeur(0.0);
-      im_maxcurv->FixeValeur(0.0);
+      _curv->im_gradnorm->FixeValeur(0.0);
+      _curv->im_graddir->VectFixeValeurs(0.0, 0.0, 0.0);
+      _curv->im_mincurv->FixeValeur(0.0);
+      _curv->im_maxcurv->FixeValeur(0.0);
 
-      imdir_mincurv->VectFixeValeurs(0.0, 0.0, 0.0);
-      imdir_maxcurv->VectFixeValeurs(0.0, 0.0, 0.0);
+      _curv->imdir_mincurv->VectFixeValeurs(0.0, 0.0, 0.0);
+      _curv->imdir_maxcurv->VectFixeValeurs(0.0, 0.0, 0.0);
 
   FinSi
 
-  im_gradnorm  ->IncBuffer();
-  im_graddir   ->IncBuffer();
-  im_mincurv   ->IncBuffer();
-  im_maxcurv   ->IncBuffer();
-  imdir_mincurv->IncBuffer();
-  imdir_maxcurv->IncBuffer();
+  _curv->im_gradnorm  ->IncBuffer();
+  _curv->im_graddir   ->IncBuffer();
+  _curv->im_mincurv   ->IncBuffer();
+  _curv->im_maxcurv   ->IncBuffer();
+  _curv->imdir_mincurv->IncBuffer();
+  _curv->imdir_maxcurv->IncBuffer();
 
 } // EstimeCourbures()
 
 
 //----------------------------------------------------------------------
-unsigned char  Func_Curvatures( InrImage* image_initiale, const char* varname, 
-//       ---------------
-			  float sigma)
+void Curvatures::ComputeCurvatures( InrImage* image_initiale,  
+//                             ---------------
+        float sigma)
 {
 
   
@@ -152,7 +138,7 @@ unsigned char  Func_Curvatures( InrImage* image_initiale, const char* varname,
   Sinon
     // conversion de l'image initiale en float
     image_entree = new InrImage( WT_FLOAT, "image_float.inr.gz", 
-				 image_initiale);
+          image_initiale);
     (*image_entree) = (*image_initiale);
   FinSi
 
@@ -165,11 +151,11 @@ unsigned char  Func_Curvatures( InrImage* image_initiale, const char* varname,
   im_maxcurv  = InrImage::ptr(new InrImage(WT_FLOAT, "curv-maxcurv.inr.gz", image_entree));
 
   im_graddir    = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-graddir.inr.gz", 
-			       image_entree));
+              image_entree));
   imdir_mincurv = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-dirmincurv.inr.gz", 
-			       image_entree));
+              image_entree));
   imdir_maxcurv = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-dirmaxcurv.inr.gz", 
-			       image_entree));
+              image_entree));
 
   //
   // Initialisation des buffers et calcul des courbures
@@ -183,38 +169,40 @@ unsigned char  Func_Curvatures( InrImage* image_initiale, const char* varname,
   imdir_maxcurv->InitBuffer();
 
 
-  DerLiss->CalculFonction3D( image_entree, 
-			     (void*) EstimeCourbures,
-			     (void*) NULL ); 
+  CurvaturesFunctor functor(this);
+  DerLiss->CalculFonction3D( image_entree, functor);
 
   delete DerLiss;
-
-
-  // Creation des nouvelles variables 
-  sprintf(resname,"%s_gnorm",varname);
-
-  Vars.AddVar<InrImage>(resname,im_gradnorm);
-
-  sprintf(resname,"%s_gdir",varname);
-  Vars.AddVar<InrImage>(resname,im_graddir);
-
-  sprintf(resname,"%s_mcurv",varname);
-  Vars.AddVar<InrImage>(resname,im_mincurv);
-
-  sprintf(resname,"%s_Mcurv",varname);
-  Vars.AddVar<InrImage>(resname,im_maxcurv);
-
-  sprintf(resname,"%s_mcurvdir",varname);
-  Vars.AddVar<InrImage>(resname,imdir_mincurv);
-
-  sprintf(resname,"%s_Mcurvdir",varname);
-  Vars.AddVar<InrImage>(resname,imdir_maxcurv);
-
 
   Si image_entree != image_initiale AlorsFait
     delete image_entree;
 
-
-  return true;
+//   // Create a context to put the results
+//   AMIObject::ptr amiobject (new AMIObject);
+//   amiobject->SetName("curv");
+//     
+//   // Creation des nouvelles variables 
+//   sprintf(resname,"%s_gnorm",varname);
+//   amiobject->GetContext()->AddVar<InrImage>(resname, im_gradnorm, amiobject->GetContext());
+// 
+//   sprintf(resname,"%s_gdir",varname);
+//   amiobject->GetContext()->AddVar<InrImage>(resname, im_graddir, amiobject->GetContext());
+// 
+//   sprintf(resname,"%s_mcurv",varname);
+//   amiobject->GetContext()->AddVar<InrImage>(resname, im_mincurv, amiobject->GetContext());
+// 
+//   sprintf(resname,"%s_Mcurv",varname);
+//   amiobject->GetContext()->AddVar<InrImage>(resname, im_maxcurv, amiobject->GetContext());
+// 
+//   sprintf(resname,"%s_mcurvdir",varname);
+//   amiobject->GetContext()->AddVar<InrImage>(resname, imdir_mincurv, amiobject->GetContext());
+// 
+//   sprintf(resname,"%s_Mcurvdir",varname);
+//   amiobject->GetContext()->AddVar<InrImage>(resname, imdir_maxcurv, amiobject->GetContext());
+// 
+//   // return the variable
+//   Variable<AMIObject>::ptr varres(
+//       new Variable<AMIObject>( amiobject));
+//   return varres;
 
 } // Func_Curvatures()

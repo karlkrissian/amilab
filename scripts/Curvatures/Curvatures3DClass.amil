@@ -1,0 +1,270 @@
+
+func "Common/ScriptGui"
+
+if (!exists(Curvatures3DClass)) {
+  
+  #------------------------------------
+  Class Curvatures3DClass : public ScriptGui {
+    
+    #------------------------------------
+    proc ::Init() {
+      ::input_name   = "", "Input image name"
+      ::colorim_name   = "", "Input color image name"
+      ::std_dev = 1 , "Gaussian Standard Deviation of the convolution kernel to compute image derivatives"
+      ::show_curvatures   =UCHAR(1), "Show the principal curvature values"
+      ::show_curvature_dir=UCHAR(0), "Show the principal curvature directions"
+
+      ::surfacecolor_mode = INT(0), "0: maximal curvature, 1: minimal curvature, 2: mean curvature, 3: input color image"
+      ::surfacecolor_min  = -3,     "Minimal value of the displayed information on the surface"
+      ::surfacecolor_max  = 3,      "Maximal value of the displayed information on the surface"
+      ::surfacecolor_auto = UCHAR(1), "Automatic set of the curvature range"
+
+      ::isosurface_threshold = 50, "Input isosurface threshold"
+    }
+
+    #------------------------------------
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
+    }
+    
+    #------------------------------------
+    proc ::LoadInput() {  
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+      }
+      # delete drawing in current context
+      if (exists(::input_draw))   {del ::input_draw;}
+      if (exists(::mincurv_draw)) {del ::mincurv_draw;}
+      if (exists(::maxcurv_draw)) {del ::maxcurv_draw;}
+      if (exists(::surf_draw))    {del ::surf_draw;}
+      ::UpdateImage()
+      ::win.Update(-1)
+    }
+
+    #--------------------------
+    proc ::set_input(IMAGE im) {
+      ::input <<= im
+      ::input_name = "::input"
+      if (exists(::input_draw))   {del ::input_draw;}
+      if (exists(::mincurv_draw)) {del ::mincurv_draw;}
+      if (exists(::maxcurv_draw)) {del ::maxcurv_draw;}
+      if (exists(::surf_draw))    {del ::surf_draw;}
+      ::UpdateImage()
+      ::win.Update(-1)
+    }
+
+    #------------------------------------
+    proc ::LoadColorImage() {  
+      eval "::colorim <<= (FLOAT)"+::colorim_name+";"
+      if (::colorim_name=="BrowseImage") {
+        ::colorim_name = "::colorim"
+      }
+      ::win.Update(-1)
+    }
+
+    #-------------------------------------------------------------------
+    proc ::UpdateLimits( NUM minval, NUM maxval) {
+      ::minval = minval
+      ::maxval = maxval
+      ::step = 1
+      if (exists(::isosurf_th_id)) {
+        ::win.FloatConstraints(::isosurf_th_id ,minval,maxval,minval)
+      }
+    }
+
+    #-------------------------------------------------------------------
+    proc ::UpdateImage() {
+      SetStatusText("UpdateImage min")
+      Imin = min(::input[0])
+      SetStatusText("UpdateImage max")
+      Imax = max(::input[0])
+      SetStatusText("UpdateImage others")
+      for n=1 to ::input.vdim-1 {
+        Imin = -max(-Imin,-min(::input[n]))
+        Imax = max(Imax,max(::input[n]))          
+      }
+      ::UpdateLimits(Imin,Imax)
+      SetStatusText("UpdateImage OK")
+    }
+
+    #------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) { ::LoadInput(); }
+      if (exists(::curv)) { del ::curv; }
+      ::curv =algorithms.Curvatures()
+      ::curv.ComputeCurvatures(&::input,::std_dev)
+      ::mincurv <<= ::curv.GetMinCurv()
+      ::maxcurv <<= ::curv.GetMaxCurv()
+    }
+
+    #------------------------------------
+    proc ::Display() {  
+      if (!exists(::maxcurv)) \
+      {
+         InfoDialog "You need to run the algorithm first!"
+      } else {
+        show ::input
+        show ::mincurv
+        show ::maxcurv
+        ::mincurv_draw.SetIntensityRange(-5,5)
+        ::maxcurv_draw.SetIntensityRange(-5,5)
+        ::input_draw.compare(&::mincurv_draw)
+        ::input_draw.compare(&::maxcurv_draw)
+      }
+    }
+
+    #------------------------------------
+    proc ::DisplaySurface() {  
+
+      if (!exists(::maxcurv)&&(::surfacecolor_mode!=3)) \
+      {
+         InfoDialog "You need to run the algorithm first!"
+      } else {
+        if (exists(::surf_draw)) { del ::surf_draw; }
+        if (exists(::surf)) { del ::surf; }
+        ::surf = isosurf(::input,::isosurface_threshold)
+        show ::surf
+        show ::input
+        ::input_draw.setGLwin(&::surf_draw)
+      }
+    }
+
+    #------------------------------------
+    proc ::DisplaySurfaceColors() {  
+
+      if (!exists(::maxcurv)&&(::surfacecolor_mode!=3)) \
+      {
+         InfoDialog "You need to run the algorithm first!"
+      } else {
+        
+        if (!exists(::surf_draw)) { ::DisplaySurface(); }
+
+        # get the colormap
+        global::ami_import.System(); 
+        colmap = Image op_system.GetCurrentScriptDir()+"/CMrainbow1.ami.gz"
+        # Flip in X
+        colmap = Flip(colmap,0)
+
+        # select the displayed image information
+        if (exists(::im_draw)) { del ::im_draw; }
+        if (exists(::im)) { del ::im; }
+
+        if (::surfacecolor_mode==0) {
+          ::im = &::maxcurv
+        }
+        if (::surfacecolor_mode==1) {
+          ::im = &::mincurv
+        }
+        if (::surfacecolor_mode==2) {
+          ::im = (::mincurv+::maxcurv)/2;
+        }
+        if (::surfacecolor_mode==3) {
+          ::im = &::colorim;
+        }
+
+        #show ::im
+        #::im_draw.SetIntensityRange(::surfacecolor_min,::surfacecolor_max)
+  
+        # get intensities at the surface poitns
+        pts = ::surf.GetIntensities(&::im)
+
+        if (::surfacecolor_auto) {
+          pts_mean = mean(pts)
+          pts_sdv = sqrt(mean((pts-pts_mean)*(pts-pts_mean)))
+          ::surfacecolor_min = pts_mean-2*pts_sdv
+          ::surfacecolor_max = pts_mean+2*pts_sdv
+          ::win.Update(-1)
+        }
+
+        diff = ::surfacecolor_max-::surfacecolor_min
+        # Create a grey level image between 0 and 255
+        grey = (pts-::surfacecolor_min)/diff*256
+        grey = (grey>=0)*(grey<=255)*grey+(grey>255)*255
+        grey1 = (UCHAR) grey
+
+        # Apply the color to the grey level image
+        c1 = colmap(grey1)
+        # store the images to figure out what the problem is
+        ::colmap = colmap
+        ::grey1 = grey1
+        ::c1 = c1
+
+        ::colmap1 = colmap
+        ::colmap1.settranslation(::surfacecolor_min,0,0)
+        ::colmap1.setvoxelsize(diff/256,diff/266*10,1)
+        show ::colmap1
+
+        # Apply the colors to the surface points
+        ::surf.SetPointsColors(&c1)
+        ::surf.SetColorMaterial(1)
+        
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::Gui() \
+    {
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("Curv3D",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("Curv3D")
+      }
+      ::win.BeginBook()
+        ::win.AddPage("Main")
+          # set the input image
+          ::win.BeginHorizontal()
+            ::win.AddImageChoice( &::input_name, "Input")
+            ::AddBitmapButton(&::win, &::icons._Copy,   32, "LoadInput")
+            ::win.SetPositionProp(-1,0)
+          ::win.EndHorizontal()
+
+          # set the input color image
+          ::win.BeginHorizontal()
+            ::win.AddImageChoice( &::colorim_name, "Color Image")
+            ::AddBitmapButton(&::win, &::icons._Copy,   32, "LoadColorImage")
+            ::win.SetPositionProp(-1,0)
+          ::win.EndHorizontal()
+
+          ::win.AddFloat(&::std_dev,"Gaussian STD",0.1,10)
+          ::win.AddBoolean(&::show_curvatures,"Principal Curvatures")
+          ::win.AddBoolean(&::show_curvature_dir,"Principal Curvature directions")
+
+          ::isosurf_th_id = ::win.AddFloat(&::isosurface_threshold,"Iso-surface",0,255)
+
+          surfmode_id = ::win.AddEnum( &::surfacecolor_mode,"Color mode")
+            ::win.AddEnumChoice(surfmode_id,"Maximal curvature")
+            ::win.AddEnumChoice(surfmode_id,"Minimal curvature")
+            ::win.AddEnumChoice(surfmode_id,"Mean    curvature")
+            ::win.AddEnumChoice(surfmode_id,"Color image")
+          ::win.AddFloat(&::surfacecolor_min, "Min",-5,5)
+          ::win.AddFloat(&::surfacecolor_max, "Max",-5,5)
+          ::win.AddBoolean(&::surfacecolor_auto,"Auto range")
+
+          ::win.BeginHorizontal()
+            ::win.AddButton("Run",            &::Run)
+            ::win.AddButton("Display",        &::Display)
+            ::win.AddButton("Surface",        &::DisplaySurface)
+            ::win.AddButton("Colors",         &::DisplaySurfaceColors)
+          ::win.EndHorizontal()
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+      
+    }
+    
+    ::Init()
+
+
+  }
+}

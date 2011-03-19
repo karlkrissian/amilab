@@ -1,0 +1,11 @@
+
+func "PropagateVesselsContoursClass"
+
+if (!exists(pvc_obj)) {
+  PropagateVesselsContoursClass pvc_obj
+  pvc_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

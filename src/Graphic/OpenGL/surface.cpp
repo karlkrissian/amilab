@@ -1960,8 +1960,8 @@ GLuint SurfacePoly::SetColorOpacity( float alpha)
 //----------------------------------------------------------------------
 //
 GLuint SurfacePoly :: SetPointsColors(InrImage* image, 
-						float min, 
-						float max)
+                                      float min, 
+                                      float max)
 //
 {
 
@@ -3938,9 +3938,9 @@ InrImage* SurfacePoly :: GetIntensities(  InrImage* image)
 
   res->InitBuffer();  
   for(i=0;i<n;i++) {
-    x = ((float) _tab_pts[i].X())/image->VoxSizeX()-image->TrX();
-    y = ((float) _tab_pts[i].Y())/image->VoxSizeY()-image->TrY();
-    z = ((float) _tab_pts[i].Z())/image->VoxSizeZ()-image->TrZ();
+    x = image->SpaceToVoxelX(_tab_pts[i].X());
+    y = image->SpaceToVoxelY(_tab_pts[i].Y());
+    z = image->SpaceToVoxelZ(_tab_pts[i].Z());
     if (res->ScalarFormat())
       res->FixeValeur( image->InterpLinIntensite(x,y,z));
     else
