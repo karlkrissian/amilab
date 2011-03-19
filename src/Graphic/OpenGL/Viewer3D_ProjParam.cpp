@@ -19,7 +19,7 @@ Viewer3D_ProjParam::Viewer3D_ProjParam(Viewer3D* parent):
 
 void Viewer3D_ProjParam::CreateParameters()
 {
-  ami_wxGLCanvas* mc = parent_class->m_canvas;
+  ami_wxGLCanvas::ptr mc = parent_class->m_canvas;
 
   AddEnumeration( &_id_type_proj, 
                   2, 
@@ -142,7 +142,7 @@ void Viewer3D_ProjParam::CB_proj_type(  void* cd)
   Viewer3D*  tgl = (Viewer3D*) cd;
   Viewer3D_ProjParam*  param = (Viewer3D_ProjParam*) tgl->_param_proj.get();
 
-  ami_wxGLCanvas* glc = tgl->m_canvas;
+  ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   param->FixeVisible( param->_id_basis_far, 
       (glc->_GLProjParam.type_proj==PROJ_PERSP));
@@ -158,7 +158,7 @@ void Viewer3D_ProjParam::CB_proj_param(  void* cd)
 //                       -------------
 {
   Viewer3D*  tgl = (Viewer3D*) cd;
-  ami_wxGLCanvas* glc = tgl->m_canvas;
+  ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   glc->Paint();
 } // CB_proj_param()

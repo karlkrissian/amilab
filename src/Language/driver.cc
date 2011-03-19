@@ -92,7 +92,9 @@ bool Driver::parse_stream(std::istream& in,
     }
   }
   catch(std::exception const& e) {
-    err_print( (boost::format("std::exception catched during parsing \n %1%") % e.what()).str().c_str());
+    err_print( "std::exception catched during parsing \n");
+    err_print( e.what());
+//    err_print( (boost::format("std::exception catched during parsing \n %1%") % e.what()).str().c_str());
   }
   catch(...) { 
     err_print("Unknown exception catched during parsing");
@@ -365,8 +367,8 @@ bool Driver::parse_script(  const char* filename)
 
   if (!newname.IsFileReadable()) 
   {
-    CLASS_MESSAGE((boost::format(" current_filename.GetPath() = %1%").str().c_str()) 
-                % current_filename.GetPath().mb_str());
+    CLASS_MESSAGE((boost::format(" current_filename.GetPath() = %1%")   
+                % current_filename.GetPath().mb_str() ) .str().c_str());
     // try in the directory of the runnning script
     newname.Assign(
             current_filename.GetPath() 

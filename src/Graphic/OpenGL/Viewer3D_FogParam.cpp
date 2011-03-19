@@ -18,7 +18,7 @@ Viewer3D_FogParam::Viewer3D_FogParam(Viewer3D* parent): ParamPanel(parent, "Fog"
 //----------------------------------------------------
 void Viewer3D_FogParam::CreateParameters()
 {
-  ami_wxGLCanvas* mc = parent_class->m_canvas;
+  ami_wxGLCanvas::ptr mc = parent_class->m_canvas;
 
   //-------------- Fog Enable/Disable
   AddBoolean( &_id_fog_enabled,
@@ -139,7 +139,7 @@ void Viewer3D_FogParam :: CB_fog_use_bg_color( void* cd)
 //                       -------------------
 {
    Viewer3D*  tgl = (Viewer3D*) cd;
-   ami_wxGLCanvas* glc = tgl->m_canvas;
+   ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
 //  tgl->_GLFogParam.SetUseBGColor( true, &tgl->_GLParam._background);
 //  (*tgl->_param_fog)[tgl->_id_fog_color]->MAJ();

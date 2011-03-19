@@ -715,7 +715,9 @@ void ami_wxGLCanvas::AddSurface( SurfacePoly::ptr surf)
   if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 3\n");
 
   if (_current_globject.use_count()) {
-    _current_globject->SetwxGLCanvas(this);
+    // Get the smart pointer to the current object from its parent ... (tricky)
+    _current_globject->SetwxGLCanvas(
+      this->_parent_window->GetCanvas());
     _SURFACE      =  _current_globject->GenerateGLList();
     _type_surface = SURFACE_POLY;
   }
@@ -763,6 +765,39 @@ void ami_wxGLCanvas::RemoveSurface( SurfacePoly::ptr surf)
       _current_globject = _globject.front();
 
 } // RemoveSurface()
+
+
+//----------------------------------------------
+void ami_wxGLCanvas::RemoveObject( GLObject* obj)
+//
+{
+  // Set OpenGL tasks to this drawing area
+  if (!this->SetCurrentContext()) return;
+
+  // Search for the surface
+  // use iterator
+  int n=0;
+  std::list<GLObject::ptr>::iterator Iter;
+
+  Iter  = _globject.begin();
+  while (((*Iter).get()!=obj)&& Iter!=_globject.end())
+  {
+    Iter++;
+    n++;
+  }
+
+  if (n==(int)_globject.size()) {
+    fprintf(stderr,"ami_wxGLCanvas::RemoveObject() \t object not found ...\n");
+    return;
+  }
+
+  _globject.erase(Iter);
+  //cout << "_globject.size() = " << _globject.size() << std::endl;
+  if (_current_globject.get()==obj)
+    if (_globject.size()>0)
+      _current_globject = _globject.front();
+
+} // RemoveObject()
 
 
 //----------------------------------------------
@@ -1392,7 +1427,9 @@ void ami_wxGLCanvas::DisplayObject(GLObject::ptr& obj)
       { // should lock the smart pointer here !
       SurfacePoly* surf = (SurfacePoly*) (obj.get());
       // absolutely not thread safe ...
-      surf->SetwxGLCanvas(this);
+      // Get the smart pointer to the current object from its parent ... (tricky)
+      surf->SetwxGLCanvas(
+        this->_parent_window->GetCanvas());
       surf->DisplayObject( &_GLMaterial);
       Si _GLParam._display_normals AlorsFait
         surf->DisplayNormals();
@@ -1405,7 +1442,9 @@ void ami_wxGLCanvas::DisplayObject(GLObject::ptr& obj)
 
     case OBJTYPE_USERLIST:
       {
-      obj->SetwxGLCanvas(this);
+      // Get the smart pointer to the current object from its parent ... (tricky)
+      obj->SetwxGLCanvas(
+        this->_parent_window->GetCanvas());
       obj->DisplayObject( &_GLMaterial);
       }
     break;

@@ -174,7 +174,7 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
       this->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
   #endif
 
-  m_canvas = NULL;
+//  m_canvas = NULL;
   CloseFunction = CloseData = NULL;
 
   CreateGLCanvas();
@@ -202,7 +202,7 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
   //    SetIcon(wxIcon(sample_xpm));
   // Add to AUI Manager
-  m_mgr.AddPane(this->m_canvas,
+  m_mgr.AddPane(this->m_canvas.get(),
                 wxAuiPaneInfo()
                 .Name(wxT("3D viewer"))
                 .Caption(wxT("OpenGL viewer"))
@@ -322,10 +322,10 @@ void Viewer3D::CompSurfPaint()
 void Viewer3D::CreateGLCanvas()
 {
   // not using the attributes because of some errors
-  this->m_canvas = new ami_wxGLCanvas(this, wxID_ANY, wxDefaultPosition,
+  this->m_canvas = ami_wxGLCanvas::ptr(new ami_wxGLCanvas(this, wxID_ANY, wxDefaultPosition,
       wxDefaultSize, 
       wxBORDER_SUNKEN,
-      _T("ami_wxGLCanvas"));
+      _T("ami_wxGLCanvas")));
 
 } // CreateGLCanvas()
 

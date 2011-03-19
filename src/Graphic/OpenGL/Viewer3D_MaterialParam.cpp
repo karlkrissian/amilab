@@ -198,7 +198,7 @@ void Viewer3D_MaterialParam::CreateParameters()
 //
 void Viewer3D_MaterialParam::UpdateGui()
 {
-  ami_wxGLCanvas* mcanv = parent_class->m_canvas;
+  ami_wxGLCanvas::ptr mcanv = parent_class->m_canvas;
   GLObject::ptr    current;
 
   // check for corrent _object_number
@@ -227,7 +227,7 @@ void Viewer3D_MaterialParam::CB_object_number( void* cd)
 {
     Viewer3D*       tgl = (Viewer3D*) cd;
     Viewer3D_MaterialParam* _this = tgl->_param_material.get();
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     GLObject::ptr    current;
   
   _this->_object_number = mcanv->SetCurrentObject(_this->_object_number);
@@ -249,7 +249,7 @@ void Viewer3D_MaterialParam::CB_material_update( void* cd)
 {
   Viewer3D* tgl = (Viewer3D*) cd;
   Viewer3D_MaterialParam* _this = tgl->_param_material.get();
-  ami_wxGLCanvas* mcanv = tgl->m_canvas;
+  ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
   GLObject::ptr   current;
 
   tgl->_param_material->RecupereValeurs( );

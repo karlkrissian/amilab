@@ -55,11 +55,16 @@ if (!exists(ScriptDisplayClass)) \
       func ::script
     }
 
-    # this method as to be overloaded ...
+    # this method has to be overloaded ...
     proc ::IsActive() \
     {
-      eval "return=exists(%1%);"%::script_obj
+printn "IsActive 1"
+      st = "return=exists(%1%);" % ::script_obj
+printn "IsActive 2"
+      eval st
+printn "IsActive 3"
       printn "IsActive returns %1%" % return
+printn "IsActive 4"
     }
 
     proc ::CB_Toolbar() \

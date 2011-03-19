@@ -2734,7 +2734,11 @@ DessinImage::~DessinImage()
 //                       -----------
 {
 //    int i;
-  
+  // Close GL window if owned
+  if (_GLWindow0.get())
+    CB_CloseGL(this);
+
+
   Si GB_debug AlorsFait printf("~DessinImage()  %s \n",
                    (char*)_name);
 

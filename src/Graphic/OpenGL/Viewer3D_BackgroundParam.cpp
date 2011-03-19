@@ -15,7 +15,7 @@ Viewer3D_BackgroundParam::Viewer3D_BackgroundParam(Viewer3D* parent): ParamPanel
 
 void Viewer3D_BackgroundParam::CreateParameters()
 {
-  ami_wxGLCanvas* mc = parent_class->m_canvas;
+  ami_wxGLCanvas::ptr mc = parent_class->m_canvas;
 
   //-------------- Background type
   AddEnumeration( &_id_backgroundtype,

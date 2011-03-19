@@ -19,7 +19,7 @@ Viewer3D_LightingParam::Viewer3D_LightingParam(Viewer3D* parent):
 
 void Viewer3D_LightingParam::CreateParameters()
 {
-  ami_wxGLCanvas* mc = parent_class->m_canvas;
+  ami_wxGLCanvas::ptr mc = parent_class->m_canvas;
 
 
   //-------------- Light Number
@@ -176,7 +176,7 @@ void Viewer3D_LightingParam::CB_light_number( void* cd)
 //                           ---------------
 {
    Viewer3D*  tgl = (Viewer3D*) cd;
-   ami_wxGLCanvas* glc = tgl->m_canvas;
+   ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   glc->_GLLight_display = glc->_GLLight[glc->_light_number];
   tgl->_param_light->MAJ();
@@ -189,7 +189,7 @@ void Viewer3D_LightingParam::CB_light_update(void* cd)
 //                           ----------------
 {
    Viewer3D*  tgl = (Viewer3D*) cd;
-   ami_wxGLCanvas* glc = tgl->m_canvas;
+   ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   tgl->_param_light->RecupereValeurs( );
   glc->_GLLight[glc->_light_number]=glc->_GLLight_display;
