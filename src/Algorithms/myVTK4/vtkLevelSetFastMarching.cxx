@@ -337,7 +337,8 @@ void vtkLevelSetFastMarching::InitParam()
 
   if (class_image!=NULL) {
     Class_buf = (short*) (this->class_image->GetScalarPointer());
-  }
+  } else
+    Class_buf = NULL;
     
   // Initialization of status image
   if (status==NULL)
@@ -757,7 +758,7 @@ void vtkLevelSetFastMarching::AddTrialPoints( short x, short y, short z, int pos
   if (mask!=NULL)
     mask_buf  = (unsigned char*) this->mask->GetScalarPointer();
   short origin_class = -1;
-  if (Class_buf!=NULL)
+  if (class_image!=NULL)
     origin_class = Class_buf[pos];
 
   // (x-1,y,z)
