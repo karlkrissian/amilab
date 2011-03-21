@@ -94,6 +94,7 @@ if (!exists(RunExperimentsClass)){
       ::showjunction = UCHAR(0), "Display Junction"
       ::RenderActive=false
       ::input_object_render=""
+      ::ActorsNumber="0", "The number of visible actors."
     }
 
     #------------------------------------------
@@ -1433,27 +1434,70 @@ if (!exists(RunExperimentsClass)){
     }
 
     #------------------------------------------
+    proc ::CreateVtkActor( OBJECT poly) \
+    {
+      import_vtk
+      polynormals = vtk.vtkPolyDataNormals.New()
+      polynormals.SetInput(&poly)
+      polynormals.SetFeatureAngle(60.0)
+      polymapper = vtk.vtkPolyDataMapper.New()
+      polymapper.SetInputConnection(&polynormals.GetOutputPort())
+      polymapper.ScalarVisibilityOff()
+      polyactor = vtk.vtkActor.New()
+      polyactor.SetMapper(&polymapper)
+      return=&polyactor
+    }
+    Comments( ::CreateVtkActor, "Create a VTK actor.")
+
+    #------------------------------------------
+    proc ::DisplayThePoint(NUM Radius, NUM Theta, NUM Phi, \
+                           NUM Xpoint, NUM Ypoint, NUM Zpoint, \
+                           NUM redColorValue,   \
+                           NUM greenColorValue, \
+                           NUM blueColorValue) {
+      import_vtk
+      ThePoint=vtkSphere(Radius,Theta,Phi,Xpoint,Ypoint,Zpoint)
+      ThePoint_polydata = ToVtkPolyData(&ThePoint)
+      ThePointActor = ::CreateVtkActor(&ThePoint_polydata)
+      ThePointActor.GetProperty().SetColor(redColorValue,greenColorValue,blueColorValue)
+      return=&ThePointActor
+    }
+    Comments( ::DisplayThePoint, "Create a point and actor.")
+
+    #------------------------------------------
+    proc ::DisplayThePath(OBJECT TheObject, \
+                          NUM redColorValue,   \
+                          NUM greenColorValue, \
+                          NUM blueColorValue, \
+                          NUM LineWidth) {
+      import_vtk
+      ThePath_polydata = ToVtkPolyData(&TheObject)
+      ThePathActor = ::CreateVtkActor(&ThePath_polydata)
+      ThePathActor.GetProperty().EdgeVisibilityOn()
+      ThePathActor.GetProperty().SetEdgeColor(redColorValue,greenColorValue,blueColorValue)
+      ThePathActor.GetProperty().SetColor(redColorValue,greenColorValue,blueColorValue)
+      ThePathActor.GetProperty().SetLineWidth(LineWidth)
+      return=&ThePathActor
+    }
+    Comments( ::DisplayThePath, "Create a path and actor.")
+
+    #------------------------------------------
     proc ::DisplayGroundTruth() {
       if (!exists(::GT)) { ::ReadGT(); }
       if (!exists(::GT)) {
         InfoDialog "Not found Ground Truth."
       } else {
-        import_vtk
-        threshold=0.5
-        vol1_isosurf = isosurf(::GT,threshold)
-        vol1_polydata = ToVtkPolyData(&vol1_isosurf)
-        vol1_normals = vtk.vtkPolyDataNormals.New()
-        vol1_normals.SetInput(&vol1_polydata)
-        vol1_normals.SetFeatureAngle(60.0)
-        vol1_mapper = vtk.vtkPolyDataMapper.New()
-        vol1_mapper.SetInputConnection(&vol1_normals.GetOutputPort())
-        vol1_mapper.ScalarVisibilityOff()
-        ::GroundTruthActor = vtk.vtkActor.New()
-        ::GroundTruthActor.GetProperty().SetOpacity(0.9)
-        ::GroundTruthActor.GetProperty().SetColor(0,0,1)
-        ::GroundTruthActor.SetMapper(&vol1_mapper)
-        ::VolRen_obj.renderer.AddActor(&::GroundTruthActor)
-        printn "Display Ground Truth"
+        if(!exists(::GroundTruthActor)) {
+          import_vtk
+          threshold=0.5
+          vol1_isosurf = isosurf(::GT,threshold)
+          vol1_polydata = ToVtkPolyData(&vol1_isosurf)
+          ::GroundTruthActor = ::CreateVtkActor(&vol1_polydata)
+          ::GroundTruthActor.GetProperty().SetOpacity(0.9)
+          ::GroundTruthActor.GetProperty().SetColor(0,0,1)
+          ::VolRen_obj.renderer.AddActor(&::GroundTruthActor)
+          printn "Display Ground Truth"
+        }
       }
     }
     Comments( ::DisplayGroundTruth, "Added the ground truth actor to the scene.")
@@ -1463,6 +1507,7 @@ if (!exists(RunExperimentsClass)){
     proc ::HideGroundTruth() {
       if(exists(::GroundTruthActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::GroundTruthActor)
+        del ::GroundTruthActor
         printn "Removed ground truth actor"
       }
     }
@@ -1471,46 +1516,29 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::DisplayPoints() {
       if(exists(::ReadPoints)) {
-        import_vtk
-        Firstpoint = vtkSphere(1,10,10,::ReadPoints.p1x,::ReadPoints.p1y,::ReadPoints.p1z)
-        Firstpoint_polydata = ToVtkPolyData(&Firstpoint)
-        Firstpoint_normals = vtk.vtkPolyDataNormals.New()
-        Firstpoint_normals.SetInput(&Firstpoint_polydata)
-        Firstpoint_normals.SetFeatureAngle(60.0)
-        Firstpoint_mapper = vtk.vtkPolyDataMapper.New()
-        Firstpoint_mapper.SetInputConnection(&Firstpoint_normals.GetOutputPort())
-        Firstpoint_mapper.ScalarVisibilityOff()
-        ::FirstpointActor = vtk.vtkActor.New()
-        ::FirstpointActor.GetProperty().SetColor(0,0,1);
-        ::FirstpointActor.SetMapper(&Firstpoint_mapper)
+        if(!exists(::FirstpointActor)) {
+          ::FirstpointActor = ::DisplayThePoint(1,10,10, \
+                                                ::ReadPoints.p1x,::ReadPoints.p1y,::ReadPoints.p1z, \
+                                                0,0,1)
+          ::VolRen_obj.renderer.AddActor(&::FirstpointActor)
+          printn "Display the first point"
+        }
 
-        Secondpoint = vtkSphere(1,10,10,::ReadPoints.p2x,::ReadPoints.p2y,::ReadPoints.p2z)
-        Secondpoint_polydata = ToVtkPolyData(&Secondpoint)
-        Secondpoint_normals = vtk.vtkPolyDataNormals.New()
-        Secondpoint_normals.SetInput(&Secondpoint_polydata)
-        Secondpoint_normals.SetFeatureAngle(60.0)
-        Secondpoint_mapper = vtk.vtkPolyDataMapper.New()
-        Secondpoint_mapper.SetInputConnection(&Secondpoint_normals.GetOutputPort())
-        Secondpoint_mapper.ScalarVisibilityOff()
-        ::SecondpointActor = vtk.vtkActor.New()
-        ::SecondpointActor.GetProperty().SetColor(0,0,1);
-        ::SecondpointActor.SetMapper(&Secondpoint_mapper)
+        if(!exists(::SecondpointActor)) {
+          ::SecondpointActor = ::DisplayThePoint(1,10,10, \
+                                                 ::ReadPoints.p2x,::ReadPoints.p2y,::ReadPoints.p2z, \
+                                                 0,0,1)
+          ::VolRen_obj.renderer.AddActor(&::SecondpointActor)
+          printn "Display the second point"
+        }
 
-        Thirdpoint = vtkSphere(1,10,10,::ReadPoints.p3x,::ReadPoints.p3y,::ReadPoints.p3z)
-        Thirdpoint_polydata = ToVtkPolyData(&Thirdpoint)
-        Thirdpoint_normals = vtk.vtkPolyDataNormals.New()
-        Thirdpoint_normals.SetInput(&Thirdpoint_polydata)
-        Thirdpoint_normals.SetFeatureAngle(60.0)
-        Thirdpoint_mapper = vtk.vtkPolyDataMapper.New()
-        Thirdpoint_mapper.SetInputConnection(&Thirdpoint_normals.GetOutputPort())
-        Thirdpoint_mapper.ScalarVisibilityOff()
-        ::ThirdpointActor = vtk.vtkActor.New()
-        ::ThirdpointActor.GetProperty().SetColor(0,0,1);
-        ::ThirdpointActor.SetMapper(&Thirdpoint_mapper)
-
-        ::VolRen_obj.renderer.AddActor(&::FirstpointActor)
-        ::VolRen_obj.renderer.AddActor(&::SecondpointActor)
-        ::VolRen_obj.renderer.AddActor(&::ThirdpointActor)
+        if(!exists(::ThirdpointActor)) {
+          ::ThirdpointActor = ::DisplayThePoint(1,10,10, \
+                                                ::ReadPoints.p3x,::ReadPoints.p3y,::ReadPoints.p3z, \
+                                                0,0,1)
+          ::VolRen_obj.renderer.AddActor(&::ThirdpointActor)
+          printn "Display the third point"
+        }
       } else {
         InfoDialog "The points have not been read."
       }
@@ -1521,14 +1549,17 @@ if (!exists(RunExperimentsClass)){
     proc ::HidePoints() {
       if(exists(::FirstpointActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::FirstpointActor)
+        del ::FirstpointActor
         printn "Removed first point actor"
       }
       if(exists(::SecondpointActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::SecondpointActor)
+        del ::SecondpointActor
         printn "Removed second point actor"
       }
       if(exists(::ThirdpointActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::ThirdpointActor)
+        del ::ThirdpointActor
         printn "Removed third point actor"
       }
     }
@@ -1538,25 +1569,19 @@ if (!exists(RunExperimentsClass)){
     proc ::DisplaySurfaceImage() {
       if (exists(::TheSurfaceActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::TheSurfaceActor)
+        del ::TheSurfaceActor
         printn "Removed surface image actor"
       }
       if(::input_object_render != "Select surface image...") {
         import_vtk
         eval "TheSurface = &"+::input_object_render+";"
         TheSurface_polydata = ToVtkPolyData(&TheSurface)
-        TheSurface_normals = vtk.vtkPolyDataNormals.New()
-        TheSurface_normals.SetInput(&TheSurface_polydata)
-        TheSurface_normals.SetFeatureAngle(60.0)
-        TheSurface_mapper = vtk.vtkPolyDataMapper.New()
-        TheSurface_mapper.SetInputConnection(&TheSurface_normals.GetOutputPort())
-        TheSurface_mapper.ScalarVisibilityOff()
-        ::TheSurfaceActor = vtk.vtkActor.New()
+        ::TheSurfaceActor = ::CreateVtkActor(&TheSurface_polydata)
         ::TheSurfaceActor.GetProperty().SetOpacity(0.9)
         ::TheSurfaceActor.GetProperty().EdgeVisibilityOn()
         ::TheSurfaceActor.GetProperty().SetEdgeColor(1,0.54902,0)
         ::TheSurfaceActor.GetProperty().SetColor(1,0.54902,0)
         ::TheSurfaceActor.GetProperty().SetLineWidth(3)
-        ::TheSurfaceActor.SetMapper(&TheSurface_mapper)
         ::VolRen_obj.renderer.AddActor(&::TheSurfaceActor)
         printn "Display surface image: %1%" % ::input_object_render
       }
@@ -1565,42 +1590,15 @@ if (!exists(RunExperimentsClass)){
 
     #------------------------------------------
     proc ::DisplayPaths() {
-      if (exists(::pathCIs)) {
-        import_vtk
-        pathCIs_polydata = ToVtkPolyData(&::pathCIs)
-        pathCIs_normals = vtk.vtkPolyDataNormals.New()
-        pathCIs_normals.SetInput(&pathCIs_polydata)
-        pathCIs_normals.SetFeatureAngle(60.0)
-        pathCIs_mapper = vtk.vtkPolyDataMapper.New()
-        pathCIs_mapper.SetInputConnection(&pathCIs_normals.GetOutputPort())
-        pathCIs_mapper.ScalarVisibilityOff()
-        ::PathCIsActor = vtk.vtkActor.New()
-        ::PathCIsActor.GetProperty().EdgeVisibilityOn()
-        ::PathCIsActor.GetProperty().SetEdgeColor(0,0,1)
-        ::PathCIsActor.GetProperty().SetColor(0,0,1)
-        ::PathCIsActor.GetProperty().SetLineWidth(3)
-        ::PathCIsActor.SetMapper(&pathCIs_mapper)
+      if (exists(::pathCIs) && (!exists(::PathCIsActor))) {
+        ::PathCIsActor = ::DisplayThePath(&::pathCIs,0,0,1,3)
         ::VolRen_obj.renderer.AddActor(&::PathCIsActor)
         printn "Display Path(pathCIs)"
       }
 
-      if (exists(::pathCEs)) {
-        import_vtk
-        pathCEs_polydata = ToVtkPolyData(&::pathCEs)
-        pathCEs_normals = vtk.vtkPolyDataNormals.New()
-        pathCEs_normals.SetInput(&pathCEs_polydata)
-        pathCEs_normals.SetFeatureAngle(60.0)
-        pathCEs_mapper = vtk.vtkPolyDataMapper.New()
-        pathCEs_mapper.SetInputConnection(&pathCEs_normals.GetOutputPort())
-        pathCEs_mapper.ScalarVisibilityOff()
-        ::PathCEsActor = vtk.vtkActor.New()
-        ::PathCEsActor.GetProperty().EdgeVisibilityOn()
-        ::PathCEsActor.GetProperty().SetEdgeColor(1,0,0)
-        ::PathCEsActor.GetProperty().SetColor(1,0,0)
-        ::PathCEsActor.GetProperty().SetLineWidth(3)
-        ::PathCEsActor.SetMapper(&pathCEs_mapper)
+      if (exists(::pathCEs) &&(!exists(::PathCEsActor))) {
+        ::PathCEsActor = ::DisplayThePath(&::pathCEs,1,0,0,3)
         ::VolRen_obj.renderer.AddActor(&::PathCEsActor)
-
         printn "Display Path(pathCEs)"
       }
 
@@ -1610,153 +1608,75 @@ if (!exists(RunExperimentsClass)){
     }
     Comments( ::DisplayPaths, "Added the paths actor to the scene.")
 
-
     #------------------------------------------
     proc ::HidePaths() {
       if(exists(::PathCIsActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::PathCIsActor)
+        del ::PathCIsActor
         printn "Removed pathCIs actor"
       }
       if(exists(::PathCEsActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::PathCEsActor)
+        del ::PathCEsActor
         printn "Removed pathCEs actor"
       }
     }
     Comments( ::HidePaths, "Removed the paths actor from the scene.")
-
-    #------------------------------------------
-    proc ::CreateVtkActor( OBJECT poly) \
-    {
-      polynormals = vtk.vtkPolyDataNormals.New()
-      polynormals.SetInput(&jpoly)
-      polynormals.SetFeatureAngle(60.0)
-      polymapper = vtk.vtkPolyDataMapper.New()
-      polymapper.SetInputConnection(&polynormals.GetOutputPort())
-      polymapper.ScalarVisibilityOff()
-      polyactor = vtk.vtkActor.New()
-      polyactor.SetMapper(&polymapper)
-      return=&polyactor
-    }
     
     #------------------------------------------
     proc ::DisplayJunction() {
       if (!exists(::Jx)) {
         InfoDialog "Find the junction first!"
       } else {
-        import_vtk
-        if (exists(::junc_sphere))        { del ::junc_sphere; }
-        if (exists(::Junc_sphereActor)) {
-          ::VolRen_obj.renderer.RemoveActor(&::Junc_sphereActor)
-          del ::Junc_sphereActor
+        if (!exists(::Junc_sphereActor)) {
+          ::Junc_sphereActor = ::DisplayThePoint(1,8,8, \
+                                                 ::Jx,::Jy,::Jz, \
+                                                 0,1,0)
+          ::VolRen_obj.renderer.AddActor(&::Junc_sphereActor)
+          printn "Display Junction"
         }
-        ::junc_sphere = vtkSphere(1,8,8,::Jx,::Jy,::Jz)
-        junc_sphere_polydata = ToVtkPolyData(&::junc_sphere)
-        ::Junc_sphereActor = ::CreateVtkActor(&junc_sphere_polydata)
-        ::Junc_sphereActor.GetProperty().SetColor(0,1,0)
-        ::VolRen_obj.renderer.AddActor(&::Junc_sphereActor)
-        printn "Display Junction"
 
         ::DisplayPaths()
 
-        if (exists(::pathCEs_cut)) {
-          pathCEs_cut_polydata = ToVtkPolyData(&::pathCEs_cut)
-          pathCEs_cut_normals = vtk.vtkPolyDataNormals.New()
-          pathCEs_cut_normals.SetInput(&pathCEs_cut_polydata)
-          pathCEs_cut_normals.SetFeatureAngle(60.0)
-          pathCEs_cut_mapper = vtk.vtkPolyDataMapper.New()
-          pathCEs_cut_mapper.SetInputConnection(&pathCEs_cut_normals.GetOutputPort())
-          pathCEs_cut_mapper.ScalarVisibilityOff()
-          ::PathCEs_cutActor = vtk.vtkActor.New()
-          ::PathCEs_cutActor.GetProperty().EdgeVisibilityOn()
-          ::PathCEs_cutActor.GetProperty().SetEdgeColor(1,0,0)
-          ::PathCEs_cutActor.GetProperty().SetColor(1,0,0)
-          ::PathCEs_cutActor.GetProperty().SetLineWidth(3)
-          ::PathCEs_cutActor.SetMapper(&pathCEs_cut_mapper)
+        if (exists(::pathCEs_cut) && (!exists(::PathCEs_cutActor))) {
+          ::PathCEs_cutActor = ::DisplayThePath(&::pathCEs_cut,1,0,0,3)
           ::VolRen_obj.renderer.AddActor(&::PathCEs_cutActor)
           printn "Display pathCEs_cut"
         }
 
-        if (exists(::pathCIs_cut)) {
-          pathCIs_cut_polydata = ToVtkPolyData(&::pathCIs_cut)
-          pathCIs_cut_normals = vtk.vtkPolyDataNormals.New()
-          pathCIs_cut_normals.SetInput(&pathCIs_cut_polydata)
-          pathCIs_cut_normals.SetFeatureAngle(60.0)
-          pathCIs_cut_mapper = vtk.vtkPolyDataMapper.New()
-          pathCIs_cut_mapper.SetInputConnection(&pathCIs_cut_normals.GetOutputPort())
-          pathCIs_cut_mapper.ScalarVisibilityOff()
-          ::PathCIs_cutActor = vtk.vtkActor.New()
-          ::PathCIs_cutActor.GetProperty().EdgeVisibilityOn()
-          ::PathCIs_cutActor.GetProperty().SetEdgeColor(0,0,1)
-          ::PathCIs_cutActor.GetProperty().SetColor(0,0,1)
-          ::PathCIs_cutActor.GetProperty().SetLineWidth(3)
-          ::PathCIs_cutActor.SetMapper(&pathCIs_cut_mapper)
+        if (exists(::pathCIs_cut) && (!exists(::PathCIs_cutActor))) {
+          ::PathCIs_cutActor = ::DisplayThePath(&::pathCIs_cut,0,0,1,3)
           ::VolRen_obj.renderer.AddActor(&::PathCIs_cutActor)
           printn "Display pathCIs_cut"
         }
 
-        if (exists(::pathCC_rems)) {
-          pathCC_rems_polydata = ToVtkPolyData(&::pathCC_rems)
-          pathCC_rems_normals = vtk.vtkPolyDataNormals.New()
-          pathCC_rems_normals.SetInput(&pathCC_rems_polydata)
-          pathCC_rems_normals.SetFeatureAngle(60.0)
-          pathCC_rems_mapper = vtk.vtkPolyDataMapper.New()
-          pathCC_rems_mapper.SetInputConnection(&pathCC_rems_normals.GetOutputPort())
-          pathCC_rems_mapper.ScalarVisibilityOff()
-          ::PathCC_remsActor = vtk.vtkActor.New()
-          ::PathCC_remsActor.GetProperty().EdgeVisibilityOn()
-          ::PathCC_remsActor.GetProperty().SetEdgeColor(0,1,0)
-          ::PathCC_remsActor.GetProperty().SetColor(0,1,0)
-          ::PathCC_remsActor.GetProperty().SetLineWidth(3)
-          ::PathCC_remsActor.SetMapper(&pathCC_rems_mapper)
+        if (exists(::pathCC_rems) && (!exists(::PathCC_remsActor))) {
+          ::PathCC_remsActor = ::DisplayThePath(&::pathCC_rems,0,1,0,3)
           ::VolRen_obj.renderer.AddActor(&::PathCC_remsActor)
           printn "Display pathCC_rems"
         }
 
-        if (exists(::pathCI_rems)) {
-          pathCI_rems_polydata = ToVtkPolyData(&::pathCI_rems)
-          pathCI_rems_normals = vtk.vtkPolyDataNormals.New()
-          pathCI_rems_normals.SetInput(&pathCI_rems_polydata)
-          pathCI_rems_normals.SetFeatureAngle(60.0)
-          pathCI_rems_mapper = vtk.vtkPolyDataMapper.New()
-          pathCI_rems_mapper.SetInputConnection(&pathCI_rems_normals.GetOutputPort())
-          pathCI_rems_mapper.ScalarVisibilityOff()
-          ::PathCI_remsActor = vtk.vtkActor.New()
-          ::PathCI_remsActor.GetProperty().EdgeVisibilityOn()
-          ::PathCI_remsActor.GetProperty().SetEdgeColor(0,1,0)
-          ::PathCI_remsActor.GetProperty().SetColor(0,1,0)
-          ::PathCI_remsActor.GetProperty().SetLineWidth(3)
-          ::PathCI_remsActor.SetMapper(&pathCI_rems_mapper)
+        if (exists(::pathCI_rems) && (!exists(::PathCI_remsActor))) {
+          ::PathCI_remsActor = ::DisplayThePath(&::pathCI_rems,0,1,0,3)
           ::VolRen_obj.renderer.AddActor(&::PathCI_remsActor)
           printn "Display pathCI_rems"
         }
 
-        if (exists(::GTiso)) {
+        if (exists(::GTiso) && (!exists(::GTisoActor))) {
+          import_vtk
           GTiso_polydata = ToVtkPolyData(&::GTiso)
-          GTiso_normals = vtk.vtkPolyDataNormals.New()
-          GTiso_normals.SetInput(&GTiso_polydata)
-          GTiso_normals.SetFeatureAngle(60.0)
-          GTiso_mapper = vtk.vtkPolyDataMapper.New()
-          GTiso_mapper.SetInputConnection(&GTiso_normals.GetOutputPort())
-          GTiso_mapper.ScalarVisibilityOff()
-          ::GTisoActor = vtk.vtkActor.New()
+          ::GTisoActor = ::CreateVtkActor(&GTiso_polydata)
           ::GTisoActor.GetProperty().SetOpacity(0.6)
           ::GTisoActor.GetProperty().SetColor(1,1,1)
-          ::GTisoActor.SetMapper(&GTiso_mapper)
           ::VolRen_obj.renderer.AddActor(&::GTisoActor)
           printn "Display GTiso"
         }
-        if (exists(::ext_surf)) {
+        if (exists(::ext_surf) && (!exists(::Ext_surfActor))) {
+          import_vtk
           ext_surf_polydata = ToVtkPolyData(&::ext_surf)
-          ext_surf_normals = vtk.vtkPolyDataNormals.New()
-          ext_surf_normals.SetInput(&ext_surf_polydata)
-          ext_surf_normals.SetFeatureAngle(60.0)
-          ext_surf_mapper = vtk.vtkPolyDataMapper.New()
-          ext_surf_mapper.SetInputConnection(&ext_surf_normals.GetOutputPort())
-          ext_surf_mapper.ScalarVisibilityOff()
-          ::Ext_surfActor = vtk.vtkActor.New()
+          ::Ext_surfActor = ::CreateVtkActor(&ext_surf_polydata)
           ::Ext_surfActor.GetProperty().SetOpacity(0.8)
           ::Ext_surfActor.GetProperty().SetColor(1,0,0)
-          ::Ext_surfActor.SetMapper(&ext_surf_mapper)
           ::VolRen_obj.renderer.AddActor(&::Ext_surfActor)
           printn "Display Ext_surf"
         }
@@ -1768,30 +1688,37 @@ if (!exists(RunExperimentsClass)){
     proc ::HideJunction() {
       if(exists(::Junc_sphereActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::Junc_sphereActor)
+        del ::Junc_sphereActor
         printn "Removed Junction sphere actor"
       }
       if(exists(::PathCEs_cutActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::PathCEs_cutActor)
+        del ::PathCEs_cutActor
         printn "Removed pathCEs_cut actor"
       }
       if(exists(::PathCIs_cutActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::PathCIs_cutActor)
+        del ::PathCIs_cutActor
         printn "Removed pathCIs_cut actor"
       }
       if(exists(::PathCC_remsActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::PathCC_remsActor)
+        del ::PathCC_remsActor
         printn "Removed pathCC_rems actor"
       }
       if(exists(::PathCI_remsActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::PathCI_remsActor)
+        del ::PathCI_remsActor
         printn "Removed pathCI_rems actor"
       }
       if(exists(::GTisoActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::GTisoActor)
+        del ::GTisoActor
         printn "Removed GTiso actor"
       }
       if(exists(::Ext_surfActor)) {
         ::VolRen_obj.renderer.RemoveActor(&::Ext_surfActor)
+        del ::Ext_surfActor
         printn "Removed Ext_surf actor"
       }
     }
@@ -1849,6 +1776,10 @@ if (!exists(RunExperimentsClass)){
 
       ::VolRen_obj.renwin.Render()
       ::VolRen_obj.renwin_interact.Render()
+
+      ::ActorsNumber = "%1%" % ::VolRen_obj.renderer.VisibleActorCount()
+      ::win.SetLabelValue(::input_actors_number,::ActorsNumber)
+      ::win.Update(-1)
     }
     Comments( ::Render, "Render the carotid scene.")
 
@@ -1994,6 +1925,7 @@ if (!exists(RunExperimentsClass)){
               ::win.AddBoolean( &::showpaths,"Display Paths")
               ::win.AddBoolean( &::showjunction,"Display Junction")
               ::win.AddAMIObjectChoice( &::input_object_render, "Display:")
+              ::input_actors_number=::win.AddLabel( "Actors number: ", &::ActorsNumber)
           ::win.EndBoxPanel
           ::win.AddButton("Render",      ::Render)
           
