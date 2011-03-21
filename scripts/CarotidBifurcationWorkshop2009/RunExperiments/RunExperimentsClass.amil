@@ -346,9 +346,9 @@ if (!exists(RunExperimentsClass)){
             (::ML->maxima.tz!=::CroppedInput->input_cropped.tz)) {
           maxima_bak = ::ML.maxima
           ::ML.maxima <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
-          ::ML.maxima.settranslation(::input_trx,::input_try,::input_trz)
-          ::ML.maxima.setvoxelsize(::CroppedInput->input_cropped)
-          ::ML.maxima.putimage(maxima_bak)
+          ::ML->maxima.settranslation(::input_trx,::input_try,::input_trz)
+          ::ML->maxima.setvoxelsize(::CroppedInput->input_cropped)
+          ::ML->maxima.putimage(maxima_bak)
           del maxima_bak
           ::ML.maxima <<= ::ML.maxima[::CroppedInput->input_cropped.GetExtent]
           message = "CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted " % vmfilename 
@@ -1625,23 +1625,34 @@ if (!exists(RunExperimentsClass)){
     Comments( ::HidePaths, "Removed the paths actor from the scene.")
 
     #------------------------------------------
+    proc ::CreateVtkActor( OBJECT poly) \
+    {
+      polynormals = vtk.vtkPolyDataNormals.New()
+      polynormals.SetInput(&jpoly)
+      polynormals.SetFeatureAngle(60.0)
+      polymapper = vtk.vtkPolyDataMapper.New()
+      polymapper.SetInputConnection(&polynormals.GetOutputPort())
+      polymapper.ScalarVisibilityOff()
+      polyactor = vtk.vtkActor.New()
+      polyactor.SetMapper(&polymapper)
+      return=&polyactor
+    }
+    
+    #------------------------------------------
     proc ::DisplayJunction() {
       if (!exists(::Jx)) {
         InfoDialog "Find the junction first!"
       } else {
         import_vtk
-        if (exists(::junc_sphere)) { del ::junc_sphere; }
+        if (exists(::junc_sphere))        { del ::junc_sphere; }
+        if (exists(::Junc_sphereActor)) {
+          ::VolRen_obj.renderer.RemoveActor(&::Junc_sphereActor)
+          del ::Junc_sphereActor
+        }
         ::junc_sphere = vtkSphere(1,8,8,::Jx,::Jy,::Jz)
         junc_sphere_polydata = ToVtkPolyData(&::junc_sphere)
-        junc_sphere_normals = vtk.vtkPolyDataNormals.New()
-        junc_sphere_normals.SetInput(&junc_sphere_polydata)
-        junc_sphere_normals.SetFeatureAngle(60.0)
-        junc_sphere_mapper = vtk.vtkPolyDataMapper.New()
-        junc_sphere_mapper.SetInputConnection(&junc_sphere_normals.GetOutputPort())
-        junc_sphere_mapper.ScalarVisibilityOff()
-        ::Junc_sphereActor = vtk.vtkActor.New()
+        ::Junc_sphereActor = ::CreateVtkActor(&junc_sphere_polydata)
         ::Junc_sphereActor.GetProperty().SetColor(0,1,0)
-        ::Junc_sphereActor.SetMapper(&junc_sphere_mapper)
         ::VolRen_obj.renderer.AddActor(&::Junc_sphereActor)
         printn "Display Junction"
 
