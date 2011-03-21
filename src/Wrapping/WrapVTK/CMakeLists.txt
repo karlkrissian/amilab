@@ -83,9 +83,9 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
-  MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
+  MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
   EXECUTE_PROCESS(
-    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
+    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
     OUTPUT_VARIABLE ancestors_result
     ERROR_VARIABLE ancestors_error
   )
@@ -101,13 +101,14 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
   # Wrap all classes at once since it is now fast
   FOREACH( class ${ancestors_list})
-    IF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp) OR
-        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.h))
-      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${OUTPUT_LIST})
-      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${class}.h ${OUTPUT_LIST})
+    ClassUsedName( class m_class )
+    IF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${m_class}.cpp) OR
+        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${m_class}.h))
+      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${m_class}.cpp ${OUTPUT_LIST})
+      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${m_class}.h ${OUTPUT_LIST})
       SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
-    ENDIF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp) OR
-        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.h))
+    ENDIF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${m_class}.cpp) OR
+        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${m_class}.h))
   ENDFOREACH( class ${ancestors_list}) 
 
   LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
@@ -142,8 +143,9 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
 FOREACH( class ${ancestors_list}  ) 
-  SET( vtk_HDRS ${WRAPVTK_OUTDIR}/wrap_${class}.h ${vtk_HDRS})
-  SET( vtk_SRCS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${vtk_SRCS})
+  ClassUsedName( class m_class )
+  SET( vtk_HDRS ${WRAPVTK_OUTDIR}/wrap_${m_class}.h ${vtk_HDRS})
+  SET( vtk_SRCS ${WRAPVTK_OUTDIR}/wrap_${m_class}.cpp ${vtk_SRCS})
 ENDFOREACH( class ${ancestors_list}  ) 
 SET( vtk_HDRS ${WRAPVTK_OUTDIR}/addwrap_vtk.h   ${vtk_HDRS})
 SET( vtk_SRCS ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp ${vtk_SRCS})

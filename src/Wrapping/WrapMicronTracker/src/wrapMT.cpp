@@ -199,7 +199,7 @@ BasicVariable::ptr  GetStoreXpointMT(ParamList* p) {
 			XP->Position3D(&x3, &y3, &z3);
 			XP->setIndex(XPNum);
       //Imprimir los Xpoints detectados
-      cout << x3 <<" "<< y3<< " "<<z3<<endl;
+      printf("XPoints detected  %f %f %f \n",x3,y3,z3);
     }
 	  char s[100];
     return BasicVariable::ptr();

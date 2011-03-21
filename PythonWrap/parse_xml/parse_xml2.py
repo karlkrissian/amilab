@@ -257,14 +257,18 @@ if __name__ == '__main__':
                 if  classes_dict[anc_id] not in ancestors and  \
                     classes_dict[anc_id] not in config.classes_blacklist and\
                     not wrap_class.IsTemplate(classes_dict[anc_id]):
-                  ancestors.append(classes_dict[anc_id])
-                  newlist.append(classes_dict[anc_id])
-                  bases=config.types[anc_id].bases
-                  #if b=="wxTopLevelWindow":
-                    #print bases
-                  if bases!=None:
-                    for newanc in bases:
-                      f_anc.append(newanc)
+                  m = re.match(args.val.filter, classes_dict[anc_id])
+                  print "Check ancestor {0} to match filter".format(classes_dict[anc_id])
+                  if m != None:
+                    print "OK"
+                    ancestors.append(classes_dict[anc_id])
+                    newlist.append(classes_dict[anc_id])
+                    bases=config.types[anc_id].bases
+                    #if b=="wxTopLevelWindow":
+                      #print bases
+                    if bases!=None:
+                      for newanc in bases:
+                        f_anc.append(newanc)
             #print "New ancestors of {0} are {1}".format(b,newlist)
       #print "All ancestors are   {0} ".format(ancestors)
       # write ancestors file

@@ -23,15 +23,44 @@ if (!exists(CreateUltrasoundClass)) {
       ::xpoint  = "0",  "Coordenada X"
       ::ypoint  = "0",  "Coordenada Y"
       ::zpoint  = "0",  "Coordenada Z"
+      
+      #-------------- Timer
+      ::interval = 0.1, "timer interval in seconds"
+      ::evh = wx.wxAmiEventHandler(&::CB_timer)
+      ::timer = wx.wxTimer(&::evh)
+      ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
+    }
+    
+    
+    #----------------- Timer
+    proc ::Start() {
+      ::inittime = wx.wxDateTime.UNow()
+      ::win.SetLabelValue(::startdate_id,::inittime.FormatISODate().c_str())
+      ::win.SetLabelValue(::starttime_id,::inittime.FormatISOTime().c_str())
+      ::timer.Start(::interval*1000)
+    }
+    
+    #----------------- Timer
+    proc ::Stop() {
+      ::timer.Stop()
     }
 
+    #----------------- Timer
+    proc ::CB_timer() {
+      currenttime = wx.wxDateTime.UNow()
+      diff=currenttime-::inittime
+      ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
+      ::ReadCamera()
+      ::RImageShow()
+      
+    }
         
     #------------------------------------
     
-  proc ::ConnectUltrasonix() {
+    proc ::ConnectUltrasonix() {
      ::win.EnablePanel(::panel_ultrasound,1)
   
-  }
+    }
   
   #connect, grab frame a read left and righ image
   proc ::ConnectCamera() {
@@ -114,6 +143,8 @@ if (!exists(CreateUltrasoundClass)) {
           ::win.AddButton("Show Left",::RImageShow)
           ::win.AddButton("Show Right",::LImageShow)
         ::win.EndBoxPanel()
+        
+                
         ::win.BeginBoxPanel("Coordenadas")
           ::win.BeginHorizontal()
             ::win.AddLabel("X:",::xpoint)
@@ -124,6 +155,27 @@ if (!exists(CreateUltrasoundClass)) {
         
         
       ::win.AddPage("Render")
+      
+      ::win.AddPage("Timer")
+        #---------------- Timer
+        ::win.AddFloat(&::interval,"Interval",0.01,100)
+        ::win.BeginHorizontal()
+            ::icons.LoadIconPNG("Play")
+            ::AddBitmapButton(&::win, &::icons._Play, 32, "Start")
+            ::win.SetPositionProp(-1,0)
+
+            ::icons.LoadIconPNG2("Stop playing","Stop_playing")
+            ::AddBitmapButton(&::win, &::icons._Stop_playing, 32, "Stop")
+            ::win.SetPositionProp(-1,0)
+       ::win.EndHorizontal()
+       ::win.BeginBoxPanel("Started At:")
+        ::startdate_id = ::win.AddLabel("Date:","")
+        ::starttime_id = ::win.AddLabel("Time:","")
+       ::win.EndBoxPanel()
+       ::win.BeginBoxPanel("Elapsed Time")
+        ::label_id = ::win.AddLabel("","")
+      ::win.EndBoxPanel()
+        #------------------ end Timer  
         
     ::win.EndBook()
 
