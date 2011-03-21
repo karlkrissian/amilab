@@ -17,7 +17,9 @@ if (!exists(PropagateVesselsContoursClass)) {
     ImageUtilitiesClass ::ImUtils
 
     func "DistanceTransform/FastMarching/FastMarchingUtils.amil"
-    FastMarchingUtils ::FMUtils
+    FastMarchingUtils     ::FMUtils
+
+    CompetingFastMarching ::FMCompeting
 
     #-----------------------------------------------
     proc ::Init() {
@@ -25,14 +27,19 @@ if (!exists(PropagateVesselsContoursClass)) {
         ::input_name   = "","Name of the input image variable"
         #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
 
-        ::maxcurv_low = 0.01
-        ::maxcurv_high = 4
+        ::maxcurv_low    = 0.01
+        ::maxcurv_lowcut = -0.2, "cut low values (negative) of the maximal curvature to prevent leaks"
+        ::maxcurv_high   = 1
 
         ::grad_stddev = 1
         ::local_stdev_param = 50, "Parameter to select the response for high local standard deviations of intensity (image contours)."
 
         ::maxdist = 1000, "Maximal distance to evolve the fast marching algorithm"
-        ::point_label = "0,0,0"
+        ::point1_label = "undefined"
+        ::point2_label = "undefined"
+
+        ::contour_minint = 1200, "minimal intensity allowed at half voxel distance of the contour in the direction of the gradient"
+        ::contour_maxint = 1650, "maximal intensity allowed at half voxel distance of the contour in the direction of the gradient"
 
         ::html_filename = GetScriptsDir+"/Vessels/PropagateVesselsContours/Doc/PropagateVesselsContours/index.html"
     }
@@ -76,21 +83,37 @@ if (!exists(PropagateVesselsContoursClass)) {
     }
 
     //---------------------------------------------------
-    proc ::SetStartPoint() \
+    proc ::SetStartPoint1() \
     {
       if (!exists(::input))        { ::load_input(); }
       if (!exists(::viewer)) {
         ::viewer = DessinImage(&::input)
       }  else {
-        ::posx = ::viewer.GetXPos() 
-        ::posy = ::viewer.GetYPos()
-        ::posz = ::viewer.GetZPos()
+        ::pos1x = ::viewer.GetXPos() 
+        ::pos1y = ::viewer.GetYPos()
+        ::pos1z = ::viewer.GetZPos()
+        ::point1_label = " %1%, "  % ::pos1x + "%1%, " % ::pos1y + " %1%, " % ::pos1z
+        ::win.SetLabelValue(::startpt1_id,::point1_label)
+        ::win.Update(-1)
+      }
+    }
+
+    //---------------------------------------------------
+    proc ::SetStartPoint2() \
+    {
+      if (!exists(::input))        { ::load_input(); }
+      if (!exists(::viewer)) {
+        ::viewer = DessinImage(&::input)
+      }  else {
+        ::pos2x = ::viewer.GetXPos() 
+        ::pos2y = ::viewer.GetYPos()
+        ::pos2z = ::viewer.GetZPos()
         print "cursor is at "
-        print " %1% "   % ::posx
-        print " %1% "   % ::posy
-        print " %1% \n" % ::posz
-        ::point_label = " %1%, "  % ::posx + "%1%, " % ::posy + " %1%, " % ::posz
-        ::win.SetLabelValue(::startpt_id,::point_label)
+        print " %1% "   % ::pos2x
+        print " %1% "   % ::pos2y
+        print " %1% \n" % ::pos2z
+        ::point2_label = " %1%, "  % ::pos2x + "%1%, " % ::pos2y + " %1%, " % ::pos2z
+        ::win.SetLabelValue(::startpt2_id,::point2_label)
         ::win.Update(-1)
       }
     }
@@ -98,7 +121,7 @@ if (!exists(PropagateVesselsContoursClass)) {
     #---------------------------------------------------
     proc ::Run() {
       if (!exists(::input)) { ::load_input(); }
-      if (!exists(::posx)) {
+      if (!exists(::pos1x)) {
         InfoDialog "Set the starting point first!"
       } else {
         ::LocalStats()
@@ -106,6 +129,7 @@ if (!exists(PropagateVesselsContoursClass)) {
         ::speed_curv = ::Curv3D.maxcurv
         Comments(::speed_curv,"Curvature component of the speed")
         ::speed_curv = ::ImUtils.Clamp(&::speed_curv,::maxcurv_low,::maxcurv_high)
+        ::speed_curv = ::speed_curv*(::Curv3D.maxcurv>::maxcurv_lowcut)
         ::lsd = ::CProb.lsd
         grad = gradient(::input,::grad_stddev)
         # normalize the gradient vector field
@@ -115,19 +139,54 @@ if (!exists(PropagateVesselsContoursClass)) {
         lsd_m = ::lsd(pos-grad/2) 
         # get local maxima in the gradient direction
         ::lsd_max = ::lsd*(::lsd>lsd_p)*(::lsd>lsd_m)
+        # Propagation area
+        # since FM does not go in diagonal, increase the propagation area of 1/2 voxel inside the vessel
+        ::test = ::lsd_max(pos-grad/2)
+        ::prop_voxels = ((::lsd_max>0)+(::lsd_max(pos-grad/2)>::local_stdev_param))>0
+        ::cont_int = ::input(pos+grad/2)
+        ::prop_voxels = ::prop_voxels*(::cont_int>=::contour_minint)*(::cont_int<=::contour_maxint)
         # Compute final evolution speed
-        ::sp = (1-exp(-::lsd*::lsd/(2*::local_stdev_param*::local_stdev_param)))*::speed_curv*(::lsd_max>0)
+        ::sp = (1-exp(-::lsd*::lsd/(2*::local_stdev_param*::local_stdev_param)))*::speed_curv*(::prop_voxels)
         
-        ::res = ::FMUtils.FastMarchingFromPoint(&::sp,::maxdist,::posx,::posy,::posz)
+        if (exists(::pos2x)) {
+          ::FMCompeting.SetSpeedImage(&::sp)
+          ::FMCompeting.SetPoint1(::pos1x,::pos1y,::pos1z)
+          ::FMCompeting.SetPoint2(::pos2x,::pos2y,::pos2z)
+          ::FMCompeting.Evolve(::maxdist)
+          ::res = &::FMCompeting.result
+          ::classim = &::FMCompeting.classim
+        } else {
+          ::res = ::FMUtils.FastMarchingFromPoint(&::sp,::maxdist,::pos1x,::pos1y,::pos1z)
+        }
 
         lsdgrad = gradient(::lsd,0.8)
         ::zerocross = lsdgrad*grad
-        mask = (::res<(::maxdist-0.01))
-        sigma = 1
-        mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
-        mask <<= (UCHAR) (mask>0.3)*255
-        ::res_surf = isosurf(-::zerocross,0,mask)
-        show ::res_surf
+
+        if (exists(::pos2x)) {
+          mask = (::res<(::maxdist-0.01))*(::classim==0)
+          sigma = 1
+          mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
+          mask <<= (UCHAR) (mask>0.3)*255
+          ::res1_surf = isosurf(-::zerocross,0,mask)
+          show ::res1_surf
+
+          del mask
+          mask = (::res<(::maxdist-0.01))*(::classim==1)
+          sigma = 1
+          mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
+          mask <<= (UCHAR) (mask>0.3)*255
+          ::res2_surf = isosurf(-::zerocross,0,mask)
+          ::res1_surf_draw += ::res2_surf
+          ::res1_surf.SetDiffuse(255,20,20)
+          ::res2_surf.SetDiffuse(20,20,255)
+        } else {
+          mask = (::res<(::maxdist-0.01))
+          sigma = 1
+          mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
+          mask <<= (UCHAR) (mask>0.3)*255
+          ::res_surf = isosurf(-::zerocross,0,mask)
+          show ::res_surf
+        }
       }
     }
 
@@ -161,14 +220,38 @@ if (!exists(PropagateVesselsContoursClass)) {
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
+          ::win.BeginBoxPanel("Select Starting Points")
+            ::win.BeginHorizontal()
+              ::win.AddButton("pt 1:", &::SetStartPoint1)
+              ::startpt1_id = ::win.AddLabel("",::point1_label)
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+              ::win.AddButton("pt 2:", &::SetStartPoint2)
+              ::startpt2_id = ::win.AddLabel("",::point2_label)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
         ::win.AddPage("Param")
-          ::win.AddButton("Set Starting Point", &::SetStartPoint)
-          ::startpt_id = ::win.AddLabel("Selected Point",::point_label)
+
+          ::win.BeginBoxPanel("Maximum curvature range")
+            ::win.AddFloat(&::maxcurv_lowcut,"lowcut",-1,0.2)
+            ::win.AddFloat(&::maxcurv_low,"low",0,5)
+            ::win.AddFloat(&::maxcurv_high,"high",0,5)
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Contour selection")
+            ::win.AddFloat(&::contour_minint,"Imin",0,3000)
+            ::win.AddFloat(&::contour_maxint,"Imax",0,3000)
+          ::win.EndBoxPanel()
+
+
           ::win.AddFloat(&::grad_stddev,"Grad smoothing",0,5)
           ::win.AddFloat(&::local_stdev_param,"Local STD param",0,100)
           ::win.AddFloat(&::maxdist,"Max. dist.",0,10000)
-          ::win.AddButton("Run",     &::Run)
-          ::win.AddButton("Display", &::Display)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Run",     &::Run)
+            ::win.AddButton("Display", &::Display)
+          ::win.EndHorizontal()
  
         ::config_advanced_page = ::win.AddPage("Adv")
           ::win.BeginBook()

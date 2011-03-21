@@ -145,8 +145,9 @@ vtkLevelSetFastMarching* vtkLevelSetFastMarching::New()
 vtkLevelSetFastMarching::vtkLevelSetFastMarching() : mh(100000)
 {
 
-  mask   = NULL;
-  track  = NULL;
+  mask        = NULL;
+  track       = NULL;
+  class_image = NULL;
   
   force  = NULL;
   T      = NULL;
@@ -267,6 +268,15 @@ void vtkLevelSetFastMarching::InitParam()
     }
   }
 
+  // The class_image must be short
+  if (class_image != NULL) {
+    type = class_image->GetScalarType();
+    if (type != VTK_SHORT) {
+      vtkDebugMacro("Class image must be SHORT, setting to NULL");
+      class_image = NULL;
+    }
+  }
+
   // Image size
   tx = force->GetDimensions()[0];
   ty = force->GetDimensions()[1];
@@ -325,6 +335,9 @@ void vtkLevelSetFastMarching::InitParam()
   T_buf     = (float*) (this->T    ->GetScalarPointer());
   force_buf = (float*) (this->force->GetScalarPointer());
 
+  if (class_image!=NULL) {
+    Class_buf = (short*) (this->class_image->GetScalarPointer());
+  }
     
   // Initialization of status image
   if (status==NULL)
@@ -419,6 +432,11 @@ void vtkLevelSetFastMarching::ExecuteData(vtkDataObject *outData)
       track_buf[p.impos] = (int) p.track;
     }
 
+    if (Class_buf!=NULL) {
+//      short* class_buf = (short*)class_image->GetScalarPointer();
+      Class_buf[p.impos] = (short) p._class;
+    }
+
     AddAcceptedPoint(p.x,p.y,p.z,p.impos);
 
     iterations++;
@@ -500,7 +518,8 @@ void vtkLevelSetFastMarching::AddAcceptedPoint( short x, short y, short z, int p
   double t,F,cost,val1;
   FM_TrialPoint   trial;
 
-  float      value; // time of the accepted point
+  float      value;        // time of the accepted point
+  short      origin_class; // class of the accepted point
 
   // setup the neighbors
   for ( nb=0; nb<=5; nb++ )
@@ -539,6 +558,10 @@ void vtkLevelSetFastMarching::AddAcceptedPoint( short x, short y, short z, int p
   }
 
   value = T_buf[pos];
+  if (Class_buf!=NULL)
+    origin_class = Class_buf[pos];
+  else
+    origin_class = -1;
 
   // Tag as trial all the neighbors of A that are Known
   // if the neighbor is far, remove and add to the set of Trial
@@ -593,6 +616,7 @@ void vtkLevelSetFastMarching::AddAcceptedPoint( short x, short y, short z, int p
         trial.Init ( nx,ny,nz,neighbors[n],val1 );
         trial.valmin[dir[n]] = value;
         trial.SetTrack(pos);
+        trial.SetClass(origin_class);
 
         this->mh += trial;
 
@@ -604,8 +628,10 @@ void vtkLevelSetFastMarching::AddAcceptedPoint( short x, short y, short z, int p
 
         // if the value has changed,
         // then update the Min Heap structure
-        if ( this->ComputeValue ( trial,value,dir[n] ) )
+        if ( this->ComputeValue ( trial,value,dir[n] ) ) {
+          trial.SetClass(origin_class);
           this->mh.ChangeValue ( mhPos[neighbors[n]],trial );
+        }
 
         break;
     } // end switch
@@ -730,6 +756,9 @@ void vtkLevelSetFastMarching::AddTrialPoints( short x, short y, short z, int pos
 
   if (mask!=NULL)
     mask_buf  = (unsigned char*) this->mask->GetScalarPointer();
+  short origin_class = -1;
+  if (Class_buf!=NULL)
+    origin_class = Class_buf[pos];
 
   // (x-1,y,z)
   npos = pos-1;
@@ -740,6 +769,7 @@ void vtkLevelSetFastMarching::AddTrialPoints( short x, short y, short z, int pos
   {
     status[npos] = VTK_VAL_TRIAL;
     trial.Init(x-1,y,z,npos,maxTime);
+    trial.SetClass(origin_class);
     // initialize the minimums in each direction
     trial.valmin[0]=macro_min(T_buf[npos-1], T_buf[npos+1]);
     trial.valmin[1]=macro_min(T_buf[npos-tx],T_buf[npos+tx]);
@@ -763,6 +793,7 @@ void vtkLevelSetFastMarching::AddTrialPoints( short x, short y, short z, int pos
   {
     status[npos] = VTK_VAL_TRIAL;
     trial.Init(x+1,y,z,npos,maxTime);
+    trial.SetClass(origin_class);
     // initialize the minimums in each direction
     trial.valmin[0]=macro_min(T_buf[npos-1], T_buf[npos+1]);
     trial.valmin[1]=macro_min(T_buf[npos-tx],T_buf[npos+tx]);
@@ -786,6 +817,7 @@ void vtkLevelSetFastMarching::AddTrialPoints( short x, short y, short z, int pos
   {
     status[npos] = VTK_VAL_TRIAL;
     trial.Init(x,y-1,z,npos,maxTime);
+    trial.SetClass(origin_class);
     // initialize the minimums in each direction
     trial.valmin[0]=macro_min(T_buf[npos-1], T_buf[npos+1]);
     trial.valmin[1]=macro_min(T_buf[npos-tx],T_buf[npos+tx]);
@@ -809,6 +841,7 @@ void vtkLevelSetFastMarching::AddTrialPoints( short x, short y, short z, int pos
   {
     status[npos] = VTK_VAL_TRIAL;
     trial.Init(x,y+1,z,npos,maxTime);
+    trial.SetClass(origin_class);
     // initialize the minimums in each direction
     trial.valmin[0]=macro_min(T_buf[npos-1], T_buf[npos+1]);
     trial.valmin[1]=macro_min(T_buf[npos-tx],T_buf[npos+tx]);
@@ -833,6 +866,7 @@ void vtkLevelSetFastMarching::AddTrialPoints( short x, short y, short z, int pos
       {
     status[npos] = VTK_VAL_TRIAL;
     trial.Init(x,y,z-1,npos,maxTime);
+    trial.SetClass(origin_class);
     // initialize the minimums in each direction
     trial.valmin[0]=macro_min(T_buf[npos-1], T_buf[npos+1]);
     trial.valmin[1]=macro_min(T_buf[npos-tx],T_buf[npos+tx]);
@@ -856,6 +890,7 @@ void vtkLevelSetFastMarching::AddTrialPoints( short x, short y, short z, int pos
       {
     status[npos] = VTK_VAL_TRIAL;
     trial.Init(x,y,z+1,npos,maxTime);
+    trial.SetClass(origin_class);
     // initialize the minimums in each direction
     trial.valmin[0]=macro_min(T_buf[npos-1], T_buf[npos+1]);
     trial.valmin[1]=macro_min(T_buf[npos-tx],T_buf[npos+tx]);

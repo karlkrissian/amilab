@@ -11,23 +11,18 @@ Class FastMarchingUtils \
   proc ::FastMarchingFromPoint( IMAGE speed, \
                               NUM maxtime, NUM x, NUM y, NUM z) \
   {
-
-
     # Create initialization image
     initim = (FLOAT) speed*0+maxtime
     initim.setpos(x,y,z)
     initim.set(-4)
-    
 
     import_vtk
-
 
     # convert images to VTK images
     vtk_input  = ToVtkImageData(&speed)
     vtk_init   = ToVtkImageData(&initim)
 
     vtk_FM = algorithms.vtkLevelSetFastMarching.New()
-
 
     vtk_FM.SetInput(&vtk_input)
     vtk_FM.Setinitimage(&vtk_init);
@@ -137,5 +132,98 @@ Class FastMarchingUtils \
     vtk_FM.Delete()
   }
   Comments(::FastMarchingTarget4D, "Fast Marching evolution from the initial contour up to the given target point, for 3D+t images.")
+
+}
+
+#---------------------------------------------------------
+# CompetingFastMarching
+#---------------------------------------------------------
+
+Class CompetingFastMarching {
+
+  ::vtk_FM = algorithms.vtkLevelSetFastMarching.New()
+
+  #---------------------------------------------
+  proc ::SetSpeedImage(IMAGE speed) \
+  {
+    ::speed  = &speed
+  }
+
+  #---------------------------------------------
+  proc ::SetPoint1(NUM px, NUM py, NUM pz) \
+  {
+    ::p1x = px
+    ::p1y = py
+    ::p1z = pz
+  }
+
+  #---------------------------------------------
+  proc ::SetPoint2(NUM px, NUM py, NUM pz) \
+  {
+    ::p2x = px
+    ::p2y = py
+    ::p2z = pz
+  }
+
+  #---------------------------------------------
+  proc ::Evolve( NUM maxtime) \
+  {
+    # Create initialization image
+    initim  = (FLOAT) ::speed*0+maxtime
+    ::classim = (SHORT) ::speed*0-1
+
+    # init first point
+    for i=-1 to 1 {
+      for j=-1 to 1 {
+        for k=-1 to 1 {
+          initim.setpos(::p1x+i,::p1y+j,::p1z+k)
+          initim.set(-4)
+          ::classim.setpos(::p1x+i,::p1y+j,::p1z+k)
+          ::classim.set(0)
+        }
+      }
+    }
+
+    # init second point
+    for i=-1 to 1 {
+      for j=-1 to 1 {
+        for k=-1 to 1 {
+          initim.setpos(::p2x+i,::p2y+j,::p2z+k)
+          initim.set(-4)
+          ::classim.setpos(::p2x+i,::p2y+j,::p2z+k)
+          ::classim.set(1)
+        }
+      }
+    }
+
+    import_vtk
+
+    SetStatusText("Converting inputs to vtkImageData")
+    # convert images to VTK images
+    vtk_speed   = ToVtkImageData(&::speed)
+    vtk_init    = ToVtkImageData(&initim)
+    vtk_class   = ToVtkImageData(&::classim)
+
+    ::vtk_FM.SetInput(      &vtk_speed)
+    ::vtk_FM.Setinitimage(  &vtk_init);
+    ::vtk_FM.Setclass_image(&vtk_class);
+    # if we set initiso to a different value than -1E10 (default value)
+    # the it will call InitIsoSurf which recomputes the distance close to the surface
+    # otherwise, it call InitWithImage which is much faster, and
+    # all values lower than initmaxdist will be accepted to start with.
+
+    #::vtk_FM.Setinitiso(   -1E-10);
+    ::vtk_FM.Setinitmaxdist(1+1E-3);
+    ::vtk_FM.SetmaxTime( maxtime);
+    SetStatusText("Running the Fast Marching algorithm")
+    ::vtk_FM.Update();
+
+    SetStatusText("Keeping the results")
+    ::result  = FromVtkImageData(&::vtk_FM.GetOutput())
+    ::classim = FromVtkImageData(&::vtk_FM.Getclass_image())
+    
+    ::vtk_FM.Delete()
+  }
+  Comments(::Evolve, "Fast Marching evolution from the initial two points up to the given maximal distance, partitioning the result in 2 classes.")
 
 }
