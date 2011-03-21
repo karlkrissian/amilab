@@ -141,9 +141,9 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
             ${AMI_WRAPPER} ${XML_OUTPUT}
             --libname wx
             --filter "wx*"
-            --classes ${MISSING_CLASSES_STRINGLIST}
+            --classes ${MISSING_CLASSES}
             --methodpointers ${MISSING_METHODS}
-            --available_classes ${ANCESTORS_STRINGLIST} ${methodpointers_list}
+            --available_classes ${ancestors_list} ${methodpointers_list}
             --outputdir "${WRAPWX_OUTDIR}"
             --addwrap
             --profile
