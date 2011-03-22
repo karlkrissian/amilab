@@ -1,0 +1,11 @@
+
+func "Visualization/SurfaceColor/SurfaceColorClass"
+
+#----------------------------
+if (!exists(SurfCol_obj)) {
+  SurfaceColorClass SurfCol_obj
+  SurfCol_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+

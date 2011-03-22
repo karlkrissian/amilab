@@ -1,0 +1,31 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+# Scripts menu
+ami.MainFrame.AddToMenu("&Scripts","&Visualization","&Surface Color","Visualization/SurfaceColor/SurfaceColorGui.amil")
+
+
+#if (!exists(SurfCol_display)) {
+
+  #proc AddScript() {
+    #global
+    #func "Common/ScriptDisplayClass"
+
+    #ScriptDisplayClass SurfCol_display
+
+    #SurfCol_display.SetScript("Visualization/SurfaceColor/SurfaceColorGui.amil")
+    #SurfCol_display.SetScriptObjName("global::SurfCol_obj")
+
+    #SurfCol_display.SetDisplayedName("&Surface Color")
+    #SurfCol_display.SetHelp("Visualizes a suface and the image with colors.")
+    #SurfCol_display.SetInMenus("Scripts","Visualization")
+
+    #SurfCol_display.Add2Menu()
+  #}
+  #AddScript()
+  #del AddScript
+
+#}

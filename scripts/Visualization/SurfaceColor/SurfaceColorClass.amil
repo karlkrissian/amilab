@@ -1,0 +1,179 @@
+func "Common/ScriptGui"
+
+if (!exists(SurfaceColorClass)) {
+
+  #------------------------------------
+  Class SurfaceColorClass : public ScriptGui {
+
+    #------------------------------------
+    proc ::Init() {
+      ::input_surface_name= "", "Surface image name"
+      ::input_image_name  = "", "Input image name"
+      ::surfacecolor_min  = -3, "Minimal value of the displayed information on the surface"
+      ::surfacecolor_max  = 3,  "Maximal value of the displayed information on the surface"
+      ::surfacecolor_auto= UCHAR(1), "Automatic set of the curvature range"
+    }
+    Comments( ::Init, "Initializes the SurfaceColorClass class.")
+
+    #------------------------------------
+    proc ::LoadSurface() {
+      if(::input_surface_name != "Select surface image...") {
+        if(exists(::input_surface))      { del ::input_surface;      }
+        if(exists(::input_surface_draw)) { del ::input_surface_draw; }
+        eval "::input_surface = &"+::input_surface_name+";"
+        msg="Load the image: %1%" % ::input_surface_name
+        SetStatusText(msg)
+      } else {
+        InfoDialog "First, select the surface image to load."
+      }
+    }
+    Comments( ::LoadSurface, "Loads the surface image input.")
+
+    #-------------------------------------------------------------------
+    proc ::UpdateImageLimits() {
+      if(exists(::input_image)) {
+        Imin = min(::input_image)
+        msg="UpdateImageLimits min: %1%" % Imin
+        SetStatusText(msg)
+        Imax = max(::input_image)
+        ::win.FloatConstraints(::surfacecolor_min_id,Imin,Imax,Imin)
+        ::win.FloatConstraints(::surfacecolor_max_id,Imin,Imax,Imax)
+        msg="UpdateImageLimits OK (min: %1%" % Imin
+        msg+=" max: %1%)" % Imax
+        SetStatusText(msg)
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::UpdateImageLimits, "Calculates the limits of the image.")
+
+    #------------------------------------
+    proc ::LoadImage() {
+      if(::input_image_name != "BrowseImage") {
+         if(exists(::input_image)) { del ::input_image; }
+         eval "::input_image <<= (FLOAT)"+::input_image_name+";"
+         ::UpdateImageLimits()
+      } else {
+        InfoDialog "First, select the image input to load."
+      }
+    }
+    Comments( ::LoadImage, "Loads the image input.")
+
+    #--------------------------
+    proc ::SetImage(IMAGE im) {
+      ::input_image <<= im
+    }
+    Comments( ::SetImage, "Sets the image input.")
+
+    #--------------------------
+    proc ::LoadColorMap() {
+      if (exists(::colormap)) { del ::colormap; }
+
+      global::ami_import.System();
+      ::colormap = Image op_system.GetCurrentScriptDir()+"/CMrainbow1.ami.gz"
+
+      # Flip in X
+      ::colormap = Flip(::colormap,0)
+    }
+    Comments( ::LoadColorMap, "Loads the color map.")
+
+    #--------------------------
+    proc ::Display() {
+      SetStatusText("Display: Init process...")
+
+      if (exists(::colmap_draw))    { del ::colmap_draw; }
+      if (!exists(::input_surface)) { ::LoadSurface();   }
+      if (!exists(::input_image))   { ::LoadImage();     }
+      if (!exists(::colormap))      { ::LoadColorMap();  }
+
+      #show the surface
+      show ::input_surface
+      
+      # Gets intensities at the surface points
+      pts = ::input_surface.GetIntensities(&::input_image)
+
+      # Calculates the range of colors.
+      if (::surfacecolor_auto) {
+        pts_mean = mean(pts)
+        pts_sdv = sqrt(mean((pts-pts_mean)*(pts-pts_mean)))
+        ::surfacecolor_min = pts_mean-2*pts_sdv
+        ::surfacecolor_max = pts_mean+2*pts_sdv
+        ::win.Update(-1)
+      }
+
+      diff = ::surfacecolor_max-::surfacecolor_min
+
+      # Create a grey level image between 0 and 255
+      grey = (pts-::surfacecolor_min)/diff*256
+      grey = (grey>=0)*(grey<=255)*grey+(grey>255)*255
+      grey1 = (UCHAR) grey
+
+      # Apply the color to the grey level image
+      c1 = ::colormap(grey1)
+
+      ::colmap = ::colormap
+      ::colmap.settranslation(::surfacecolor_min,0,0)
+      ::colmap.setvoxelsize(diff/256,diff/266*10,1)
+      show ::colmap
+
+      # Apply the colors to the surface points
+      ::input_surface.SetPointsColors(&c1)
+      ::input_surface.SetColorMaterial(1)
+      SetStatusText("Display: Ready.")
+    }
+    Comments( ::Display, "Displays the image and surface with colors.")
+
+    #------------------------------------
+    proc ::SetParentPanel(OBJECT thepanel) \
+    {
+      ::parent_panel = &thepanel
+    }
+    Comments( ::SetParentPanel, "Sets the panel showing the user interface.")
+
+    #-----------------------------------------------
+    proc ::Gui() \
+    {
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("SurfCol",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("SurfaceColor")
+      }
+      ::win.BeginBook()
+        ::win.AddPage("Main")
+
+          ::win.BeginBoxPanel("Input:")
+            # set the input surface image
+            ::win.BeginHorizontal()
+              ::win.AddAMIObjectChoice( &::input_surface_name, "Surface:")
+              ::AddBitmapButton16(&::win, &::icons._Refresh, "LoadSurface")
+            ::win.EndHorizontal()
+
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_image_name, "Image:")
+              ::AddBitmapButton16(&::win, &::icons._Refresh, "LoadImage")
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel
+          ::win.BeginBoxPanel("Displayed Information:")
+            ::surfacecolor_min_id = ::win.AddFloat(&::surfacecolor_min, "Min",-5,5)
+            ::surfacecolor_max_id = ::win.AddFloat(&::surfacecolor_max, "Max",-5,5)
+            ::win.AddBoolean(&::surfacecolor_auto,"Auto range")
+          ::win.EndBoxPanel
+          ::win.AddButton("Display",      ::Display)
+      ::win.EndBook()
+
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+    }
+    ::Init()
+
+  } # Class SurfaceColorClass
+  Comments( SurfaceColorClass, "Displays the image and surface with colors")
+  #------------------------------------------
+}
