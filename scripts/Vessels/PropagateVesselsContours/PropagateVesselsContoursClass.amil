@@ -161,6 +161,7 @@ if (!exists(PropagateVesselsContoursClass)) {
 
         lsdgrad = gradient(::lsd,0.8)
         ::zerocross = lsdgrad*grad
+        ::zerocross.setvoxelsize(::input_vsx,::input_vsy,::input_vsz)
 
         if (exists(::pos2x)) {
           mask = (::res<(::maxdist-0.01))*(::classim==0)
