@@ -98,6 +98,7 @@ if (!exists(Curvatures3DClass)) {
       ::curv.ComputeCurvatures(&::input,::std_dev)
       ::mincurv <<= ::curv.GetMinCurv()
       ::maxcurv <<= ::curv.GetMaxCurv()
+      del ::curv
     }
 
     #------------------------------------
@@ -190,7 +191,7 @@ if (!exists(Curvatures3DClass)) {
         # store the images to figure out what the problem is
         ::colmap = colmap
         ::grey1 = grey1
-        ::c1 = c1
+        ::c1 <<= c1
 
         ::colmap1 = colmap
         ::colmap1.settranslation(::surfacecolor_min,0,0)

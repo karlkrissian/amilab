@@ -209,6 +209,7 @@ class PublicMembers:
     self.OperatorMethods=[]
     self.Fields=[]
     self.Enumerations=[]
+    self.destructor=None
 
 
 # Store Class information
@@ -773,6 +774,17 @@ def WrapClass(classname,include_file,inputfile):
     
     fm = config.types[classid].public_members
 
+    # Smart Pointer Deleter
+    implement_deleter = ""
+    if (dh.abstract=='1') or (dh.public_members.destructor==None):
+      implement_deleter = ", smartpointer_nodeleter<{0} >()".format(config.ClassTypeDef(classname))
+    else:
+      if config.libmodule != None:
+        try:
+          implement_deleter = config.libmodule.implement_deleter(config.ClassTypeDef(classname))
+        except:
+          pass
+
     # Check for Copy Constructor
     pos=0
     dh.has_copyconstr = False
@@ -805,10 +817,10 @@ def WrapClass(classname,include_file,inputfile):
       implement_type += "// Implementing CreateVar for AMILabType\n"
       implement_type += "BasicVariable::ptr AMILabType<{0} >::CreateVar( {0}* val, bool nodeleter)\n".format(classname)
       implement_type += "{ \n"
-      implement_type += "  boost::shared_ptr<{0} > obj_ptr(val,smartpointer_nodeleter<{0} >());\n".format(classname)
+      implement_type += "  boost::shared_ptr<{0} > obj_ptr(val {1});\n".format(classname,implement_deleter)
       implement_type += "  return AMILabType<{0} >::CreateVarFromSmtPtr(obj_ptr);\n".format(classname)
       implement_type += "}\n"
-          
+              
     # Create Header File
     header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(config.ClassUsedName(classname))
     if IsTemplate(classname) or IsWithinContext(classname):
@@ -1249,6 +1261,7 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${INCLUDES}",              config.CreateIncludes())
       line = line.replace("${IMPLEMENT_TYPE}",        implement_type)
       line = line.replace("${IMPLEMENT_CREATEVAR}",   implement_createvar)
+      line = line.replace("${IMPLEMENT_DELETER}",     implement_deleter)
       line = line.replace("${TEMPLATE}",              config.ClassTypeDef(classname))
       line = line.replace("${TEMPLATENAME}",          config.ClassUsedName(classname))
       line = line.replace("${TEMPLATESHORTNAME}",     config.ClassShortName(classname))      
