@@ -960,6 +960,12 @@ public:
   //   ---------
 
   ///
+  /// Draw a circle in (x,y) coordinates  with radius r - MicronTracker Utility
+  ///
+  void DrawCircleR( int x, int y, int r);
+  //   ---------
+
+  ///
   void InitFenetre();
 
   int GetImageWidth(int i) {

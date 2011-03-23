@@ -118,8 +118,8 @@ if (!exists(CreateUltrasoundClass)) {
     
    
    
-    ::r_draw.DrawLineZ(_xmin,_ymin,_xmax,_ymax)
-   
+   # ::r_draw.DrawLineZ(_xmin,_ymin,_xmax,_ymax)
+    ::r_draw.DrawCircleR(_xmax/2,_ymax/2,20)
     ::r_draw->DrawingAreaDisplay()
     }else{
         InfoDialog "no hay draw!"

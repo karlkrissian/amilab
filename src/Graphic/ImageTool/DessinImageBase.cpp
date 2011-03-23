@@ -3554,8 +3554,30 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
             (int) round(pos_y2));
 
 } // DrawLineZ()
+// -------------------------------------------------------------------------
+///
+/// Draw a circle in (x,y) coordinates  with radius r - MicronTracker Utility
+///
+void DessinImageBase :: DrawCircleR( int x, int y, int r)
+{
 
+     register float          pos_x, pos_y;
+     
 
+     //  SetLineParameters( size, style, _cap_style, _join_style);
+     
+    // TODO: check why we need +/- 0.5 and create coordinate conversion functions
+     pos_x = _tab_ximage_pos_x[IMAGE_XY] +  (x+0.5 - Param._Zoom._xmin )*_size_x;
+     pos_y = _tab_ximage_pos_y[IMAGE_XY] +  (y+0.5 - Param._Zoom._ymin )*_size_y;
+
+     
+    FixeStyleRemplissage(wxTRANSPARENT);
+     Cercle( (int) round(pos_x),
+            (int) round(pos_y),
+            (int) r);
+    FixeStyleRemplissage(PENSTYLE_SOLID);
+
+} // DrawCircleR()
 // -------------------------------------------------------------------------
 //
 void DessinImageBase :: SetCoupe( int coupe)

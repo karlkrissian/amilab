@@ -647,6 +647,33 @@ BasicVariable::ptr WrapClass_DessinImage::
 }
 
 //---------------------------------------------------
+//  DrawCircleR - MicronTracker utility
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_DrawCircleR::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"X-coordinate.");
+  ADDPARAMCOMMENT_TYPE(int,"Y-coordinate.");
+  ADDPARAMCOMMENT_TYPE(int,"Radius.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_DrawCircleR::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->_obj);
+  int x = 0,y = 0,r = 0 ;
+  int n=0;
+  if (!p) ClassHelpAndReturn;
+  if (!get_val_param<int>( x, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<int>( y, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<int>( r, p, n)) ClassHelpAndReturn;
+  
+  di->DrawCircleR(x,y,r);
+  return BasicVariable::ptr();
+}
+
+
+//---------------------------------------------------
 //  SetUserColormap
 //---------------------------------------------------
 void WrapClass_DessinImage::
