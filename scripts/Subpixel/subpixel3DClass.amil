@@ -1,0 +1,173 @@
+#Interface for sub-pixel 3D detection
+
+func "Common/ScriptGui"
+
+#For use VTK
+import_vtk
+
+if (!exists(Subpixel3DClass)){
+
+	#Import filters
+  ami_import->Filters()
+
+	Class Subpixel3DClass : public ScriptGui{
+  
+    ::filters = &global::filters
+    
+    #-----------------------
+    proc ::Init(){
+      ::class_name  = "global::Subpixel3DClass"
+      ::input_name  = "",                "Input image"
+      ::output_name = "subpixel3D_edge", "Output image name"
+      ::threshold   = 25,                "Gradient threshold"
+      ::alg_type    = INT(0),            "Sub-pixel 3D algorithm type"
+      ::alg_enum    = INT(0),            "Enumeration of algorithms"
+      ::linear      = UCHAR(0),          "First or second order"
+      
+      ::CreateGui()
+    }
+    
+
+    #-----------------------
+    
+    proc ::load_input() {
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+    }
+    Comments(::load_input, "Load the input image")
+    
+    #-----------------------
+    
+    proc ::vtkExample() {
+      sphere = vtk.vtkSphereSource.New()
+      sphere.Update()
+      
+    }
+    
+    #-----------------------
+    
+    proc ::drawBorder() {
+      if(exists(::res) && exists(::sp3D)){
+        image_draw = &::input_draw
+
+        #InitTime
+        #Catch visualization region limits
+        xmin = image_draw.GetXmin()
+        xmax = image_draw.GetXmax()
+        ymin = image_draw.GetYmin()
+        ymax = image_draw.GetYmax()
+        zmin = image_draw.GetZmin()
+        zmax = image_draw.GetZmax()
+        #inside delimits the draw area inside the region defined by xmin,xmax,ymin and ymax
+        inside = (::res->xpos>=xmin)*(::res->xpos<=xmax)*(::res->ypos>=ymin)*(::res->ypos<=ymax)* \
+                 (::res->zpos>=zmin)*(::res->zpos<=zmax)
+        inside_crop = autocrop(inside,0)
+        x_crop = ::res->xpos[inside_crop.GetExtent]
+        y_crop = ::res->ypos[inside_crop.GetExtent]
+        z_crop = ::res->zpos[inside_crop.GetExtent]
+        #XY plane
+        image_draw.SetPenColor(&wx.wxColour(255,0,0))
+        for i=0 to inside_crop.tx-1 {
+          if (inside_crop(i,0) && z_crop(i,0) == 25) {
+            image_draw.DrawLineZ(x_crop(i,0), y_crop(i,0), x_crop(i,0), y_crop(i,0))
+          }
+        }
+        image_draw.DrawingAreaDisplay()
+        #XZ plane
+        #YZ plane
+        
+      } else {
+        InfoDialog "Before draw the border, you must apply the method."
+      }
+    }
+    Comments(::drawBorder, "Draw the sub-pixel border")
+    
+    #-----------------------
+    
+    proc ::Run() {
+    	::load_input()
+      #Erase the draw objects
+      if (exists(::input_draw))    { del ::input_draw; }
+      #
+      if (::input.vdim==1) {
+        ::input <<= (DOUBLE) ::input
+        ::norm_input <<= (::input<=1)*1 + (::input>1)*::input
+        ::norm_input.info
+      } else {
+      	::norm_input <<= (DOUBLE) norm(::input)
+        ::norm_input.info
+      }
+      #Erase the subpixel object and the result if it exists
+      if (exists(::res))  { del ::res; }
+      if (exists(::sp3D)) { del ::sp3D; }
+      #Build a SubPixel3D object
+      ::sp3D = ::import->SubPixel3D(&::norm_input,::threshold,::linear)
+      
+      if (::alg_type == 0) {
+        ::res = ::sp3D->GradienteCurvo3D()
+      }
+      
+      ::Display()
+      ::drawBorder()
+      
+      ::input_draw.PaintCallback(&::drawBorder)
+    }
+    Comments(::Run, "Detects edges with Subpixel3D methods")
+    
+    #-----------------------
+    
+    proc ::Display() {
+      #global
+      if (exists(::input)) {
+            show ::input
+      } 
+    }
+    Comments(::Display, "Show the result image")
+    
+    #-----------------------
+    
+    proc ::CreateGui() {
+      ::import = &global::ami_import;
+      ::win = ::import->ParamPanel("Subpixel 3D")
+      
+      ::win.BeginBook()
+        ::win.AddPage("Param.")
+        
+          #Global parameters panel
+          ::win.BeginBoxPanel("Global parameters")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice(&::input_name, "In.")
+              ::AddBitmapButton(&::win, &::icons._New_image, 16, "load_input")
+            ::win.EndHorizontal()
+            ::win.AddString(&::output_name, "Out.")
+            #Edge detection parameters
+            ::win.AddFloat(&::threshold, "Thr.", 0, 100)
+            ::win.AddBoolean(&::linear, "1st order")
+          ::win.EndBoxPanel()
+          
+          #Method panel
+          ::win.BeginBoxPanel("Subpixel detection method")
+            ::alg_enum = ::win.AddEnum(&::alg_type, "Method")
+              ::win.AddEnumChoice(::alg_enum, "Basic detector")
+          ::win.EndBoxPanel()
+          
+ 
+          ::icons.LoadIconPNG("Play")
+          ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+          
+      
+      ::win.EndBook()
+
+      ::AddStandardButtons(&::win)
+      ::win.Update(-1)
+      ::win.Display
+    }
+    
+    ::Init
+
+  } #end Class
+
+} #end If

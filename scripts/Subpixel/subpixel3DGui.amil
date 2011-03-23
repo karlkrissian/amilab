@@ -1,0 +1,11 @@
+
+func "subpixel3DClass.amil"
+
+#----------------
+# Main
+#----------------
+if (!exists(subp3D)) {
+  Subpixel3DClass subp3D
+} else {
+  InfoDialog "The script for subpixel edge detection in 3D images seems to be already loaded."
+}

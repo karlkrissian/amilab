@@ -83,3 +83,4 @@ vtkVolumeRayCastMapper
 vtkVolumeRayCastStaticInfo
 vtkWindow
 vtkWindowToImageFilter
+vtkGlyph3D

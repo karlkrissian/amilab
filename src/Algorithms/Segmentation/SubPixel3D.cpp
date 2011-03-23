@@ -413,7 +413,6 @@ void SubPixel3D::GradienteCurvo3D()
       } // end for x
     } // end for y
   } // end for z
-  cout << "termina el procedimiento GradienteCurvo3D" << endl;
 } //end GradienteCurvo3D
 
 

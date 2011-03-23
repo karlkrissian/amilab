@@ -159,18 +159,22 @@ if (!exists(SyntheticImagesClass)) {
             if(::type2D == 0){
               ::pv->setAnalyticFunction(&::line)
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+              ::output_name = "line"
             }
             if(::type2D == 1) {
               ::pv->setAnalyticFunction(&::circle)
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+              ::output_name = "circle"
             }
             if(::type2D == 2) {
               ::pv->setAnalyticFunction(&::vessel2D)
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+              ::output_name = "vessel2D"
             }
             if(::type2D == 3) {
               ::pv->setAnalyticFunction(&::ring2D)
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+              ::output_name = "ring2D"
             }
           }
         } else {
@@ -190,18 +194,22 @@ if (!exists(SyntheticImagesClass)) {
             if(::type3D == 0) {
               ::pv->setAnalyticFunction(&::cube)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
+              ::output_name = "cube"
             }
             if(::type3D == 1) {
               ::pv->setAnalyticFunction(&::cylinder)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
+              ::output_name = "cylinder"
             }
             if(::type3D == 2) {
               ::pv->setAnalyticFunction(&::sphere)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
+              ::output_name = "sphere"
             }
             if(::type3D == 3) {
               ::pv->setAnalyticFunction(&::torus)
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
+              ::output_name = "torus"
             }
           } else {
             InfoDialog "Compute analytic volume only in 3D images."
@@ -210,7 +218,7 @@ if (!exists(SyntheticImagesClass)) {
       }
       #Enable the save box
       ::win.EnablePanel(::save_box, 1)
-      
+      ::win.Update(-1)
     } else {
       InfoDialog "You must create an input image."
     }

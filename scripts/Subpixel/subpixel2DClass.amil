@@ -368,7 +368,7 @@ if (!exists(Subpixel2DClass)){
       }
      
     }
-    Comments(::Run, "Detects edges with Subpixel2D method")
+    Comments(::Run, "Detects edges with Subpixel2D methods")
     
     #-----------------------
     
