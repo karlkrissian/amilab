@@ -34,6 +34,11 @@ if (!exists(PropagateVesselsContoursClass)) {
         ::grad_stddev = 1
         ::local_stdev_param = 50, "Parameter to select the response for high local standard deviations of intensity (image contours)."
 
+        ::new_vsx = 1, "New voxel spacing in X (in mm)"
+        ::new_vsy = 1, "New voxel spacing in Y (in mm)"
+        ::new_vsz = 1, "New voxel spacing in Z (in mm)"
+        ::input_spacing_label = "undefined"
+
         ::maxdist = 1000, "Maximal distance to evolve the fast marching algorithm"
         ::point1_label = "undefined"
         ::point2_label = "undefined"
@@ -47,23 +52,67 @@ if (!exists(PropagateVesselsContoursClass)) {
 
     #-----------------------------------------------
     proc ::load_input() {
-      eval "::input <<= (FLOAT)"+::input_name+";"
-      if (::input_name=="BrowseImage") {
+      if (exists(::input0)) { del ::input0; }
+      eval "::input0 = &"+::input_name+";"
+      ::input <<= (FLOAT) ::input0
+ 
+     if (::input_name=="BrowseImage") {
         ::input_name = "::input"
         ::win.Update(-1)
       }
-  
+
       # force isotropic voxels for the moment
-      ::input_vsx = ::input.vx
-      ::input_vsy = ::input.vy
-      ::input_vsz = ::input.vz
-      ::input.setvoxelsize(1,1,1)
+      ::input_vsx = ::input0.vx
+      ::input_vsy = ::input0.vy
+      ::input_vsz = ::input0.vz
+
+      ::input_spacing_label = " %1% " % ::input_vsx + " x %1% " % ::input_vsy + " x %1% " % ::input_vsz + "mm"
+
+      ::new_vsx = ::input0.vx
+      ::new_vsy = ::input0.vy
+      ::new_vsz = ::input0.vz
 
       if (exists(::win)) {
+        ::win.SetLabelValue(::inspacing_id,::input_spacing_label)
         ::win.Update(-1)
       }
     }
     Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+    #------------------------------------------
+    proc ::SetMinSpacing() \
+    {
+      smin = -max(-::input_vsx,max(-::input_vsy,-::input_vsz))
+      ::new_vsx = smin
+      ::new_vsy = smin
+      ::new_vsz = smin
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+
+    #------------------------------------------
+    proc ::SetMaxSpacing() \
+    {
+      smax = max(::input_vsx,max(::input_vsy,::input_vsz))
+      ::new_vsx = smax
+      ::new_vsy = smax
+      ::new_vsz = smax
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+
+    #------------------------------------------
+    proc ::ResizeInput() \
+    {
+      # use VTK to allow bicubic interpolation ?
+      ::input <<= Resize( ::input0,\
+                          ::input_vsx*::input0.tx/::new_vsx,\
+                          ::input_vsy*::input0.ty/::new_vsy,\
+                          ::input_vsz*::input0.tz/::new_vsz,\
+                          1)
+    }
 
     #------------------------------------------
     proc ::Curvatures() \
@@ -126,11 +175,11 @@ if (!exists(PropagateVesselsContoursClass)) {
       } else {
         ::LocalStats()
         ::Curvatures() 
-        ::speed_curv = ::Curv3D.maxcurv
+        ::speed_curv <<= ::Curv3D.maxcurv
         Comments(::speed_curv,"Curvature component of the speed")
-        ::speed_curv = ::ImUtils.Clamp(&::speed_curv,::maxcurv_low,::maxcurv_high)
-        ::speed_curv = ::speed_curv*(::Curv3D.maxcurv>::maxcurv_lowcut)
-        ::lsd = ::CProb.lsd
+        ::speed_curv <<= ::ImUtils.Clamp(&::speed_curv,::maxcurv_low,::maxcurv_high)
+        ::speed_curv <<= ::speed_curv*(::Curv3D.maxcurv>::maxcurv_lowcut)
+        ::lsd <<= ::CProb.lsd
         grad = gradient(::input,::grad_stddev)
         # normalize the gradient vector field
         grad = grad/(0.01+norm(grad))
@@ -138,34 +187,37 @@ if (!exists(PropagateVesselsContoursClass)) {
         lsd_p = ::lsd(pos+grad/2) 
         lsd_m = ::lsd(pos-grad/2) 
         # get local maxima in the gradient direction
-        ::lsd_max = ::lsd*(::lsd>lsd_p)*(::lsd>lsd_m)
+        ::lsd_max <<= ::lsd*(::lsd>lsd_p)*(::lsd>lsd_m)
         # Propagation area
         # since FM does not go in diagonal, increase the propagation area of 1/2 voxel inside the vessel
-        ::test = ::lsd_max(pos-grad/2)
-        ::prop_voxels = ((::lsd_max>0)+(::lsd_max(pos-grad/2)>::local_stdev_param))>0
-        ::cont_int = ::input(pos+grad/2)
-        ::prop_voxels = ::prop_voxels*(::cont_int>=::contour_minint)*(::cont_int<=::contour_maxint)
+        ::test <<= ::lsd_max(pos-grad/2)
+        ::prop_voxels <<= ((::lsd_max>0)+(::lsd_max(pos-grad/2)>::local_stdev_param))>0
+        ::cont_int <<= ::input(pos+grad/2)
+        ::prop_voxels <<= ::prop_voxels*(::cont_int>=::contour_minint)*(::cont_int<=::contour_maxint)
         # Compute final evolution speed
-        ::sp = (1-exp(-::lsd*::lsd/(2*::local_stdev_param*::local_stdev_param)))*::speed_curv*(::prop_voxels)
+        ::sp <<= (1-exp(-::lsd*::lsd/(2*::local_stdev_param*::local_stdev_param)))*::speed_curv*(::prop_voxels)
         
         if (exists(::pos2x)) {
           ::FMCompeting.SetSpeedImage(&::sp)
           ::FMCompeting.SetPoint1(::pos1x,::pos1y,::pos1z)
           ::FMCompeting.SetPoint2(::pos2x,::pos2y,::pos2z)
           ::FMCompeting.Evolve(::maxdist)
-          ::res = &::FMCompeting.result
-          ::classim = &::FMCompeting.classim
+          ::res <<= &::FMCompeting.result
+          ::classim <<= &::FMCompeting.classim
         } else {
-          ::res = ::FMUtils.FastMarchingFromPoint(&::sp,::maxdist,::pos1x,::pos1y,::pos1z)
+          ::res <<= ::FMUtils.FastMarchingFromPoint(&::sp,::maxdist,::pos1x,::pos1y,::pos1z)
         }
 
-        lsdgrad = gradient(::lsd,0.8)
-        ::zerocross = lsdgrad*grad
-        ::zerocross.setvoxelsize(::input_vsx,::input_vsy,::input_vsz)
+        meanspacing = (::lsd.vx+::lsd.vy+::lsd.vz)/3;
+        maxspacing = max(::lsd.vx,max(::lsd.vy,::lsd.vz));
+
+        lsdgrad = gradient(::lsd,0.8*maxspacing)
+        ::zerocross <<= lsdgrad*grad
+        #::zerocross.setvoxelsize(::input_vsx,::input_vsy,::input_vsz)
 
         if (exists(::pos2x)) {
           mask = (::res<(::maxdist-0.01))*(::classim==0)
-          sigma = 1
+          sigma = meanspacing
           mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
           mask <<= (UCHAR) (mask>0.3)*255
           ::res1_surf = isosurf(-::zerocross,0,mask)
@@ -173,7 +225,7 @@ if (!exists(PropagateVesselsContoursClass)) {
 
           del mask
           mask = (::res<(::maxdist-0.01))*(::classim==1)
-          sigma = 1
+          sigma = meanspacing
           mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
           mask <<= (UCHAR) (mask>0.3)*255
           ::res2_surf = isosurf(-::zerocross,0,mask)
@@ -182,12 +234,15 @@ if (!exists(PropagateVesselsContoursClass)) {
           ::res2_surf.SetDiffuse(20,20,255)
         } else {
           mask = (::res<(::maxdist-0.01))
-          sigma = 1
+          sigma = meanspacing
           mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
           mask <<= (UCHAR) (mask>0.3)*255
           ::res_surf = isosurf(-::zerocross,0,mask)
           show ::res_surf
         }
+      }
+      if (exists(::res_surf)) {
+        ::res_surf.SetLightDiffuse(200,200,200)
       }
     }
 
@@ -218,6 +273,18 @@ if (!exists(PropagateVesselsContoursClass)) {
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Voxel size (mm)")
+            ::inspacing_id = ::win.AddLabel("Input spacing:",&::input_spacing_label)
+            ::win.AddFloat(&::new_vsx,"X",0,2)
+            ::win.AddFloat(&::new_vsy,"Y",0,2)
+            ::win.AddFloat(&::new_vsz,"Z",0,2)
+            ::win.BeginHorizontal()
+              ::win.AddButton("Set Max",&::SetMaxSpacing)
+              ::win.AddButton("Set Min",&::SetMinSpacing)
+              ::win.AddButton("ResizeInput",&::ResizeInput)
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
