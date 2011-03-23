@@ -156,7 +156,7 @@ BasicVariable::ptr WrapClass_AnalyticCylinder::
   
   if (!get_val_param<float>(zd, p, n)) ClassHelpAndReturn;
   
-  fd->setXdir(zd);
+  fd->setZdir(zd);
   return BasicVariable::ptr();
 }
 
