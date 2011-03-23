@@ -95,6 +95,7 @@ if (!exists(RunExperimentsClass)){
       ::RenderActive=false
       ::input_object_render=""
       ::ActorsNumber="0", "The number of visible actors."
+      ::color= wx.wxColour(255,165,50), "The surface image color."
     }
 
     #------------------------------------------
@@ -1579,8 +1580,8 @@ if (!exists(RunExperimentsClass)){
         ::TheSurfaceActor = ::CreateVtkActor(&TheSurface_polydata)
         ::TheSurfaceActor.GetProperty().SetOpacity(0.9)
         ::TheSurfaceActor.GetProperty().EdgeVisibilityOn()
-        ::TheSurfaceActor.GetProperty().SetEdgeColor(1,0.54902,0)
-        ::TheSurfaceActor.GetProperty().SetColor(1,0.54902,0)
+        ::TheSurfaceActor.GetProperty().SetEdgeColor((FLOAT)::color.Red()/255,(FLOAT)::color.Green()/255,(FLOAT)::color.Blue()/255)
+        ::TheSurfaceActor.GetProperty().SetColor((FLOAT)::color.Red()/255,(FLOAT)::color.Green()/255,(FLOAT)::color.Blue()/255)
         ::TheSurfaceActor.GetProperty().SetLineWidth(3)
         ::VolRen_obj.renderer.AddActor(&::TheSurfaceActor)
         printn "Display surface image: %1%" % ::input_object_render
@@ -1924,8 +1925,13 @@ if (!exists(RunExperimentsClass)){
               ::win.AddBoolean( &::showpoints,"Display Points")
               ::win.AddBoolean( &::showpaths,"Display Paths")
               ::win.AddBoolean( &::showjunction,"Display Junction")
-              ::win.AddAMIObjectChoice( &::input_object_render, "Display:")
-              ::input_actors_number=::win.AddLabel( "Actors number: ", &::ActorsNumber)
+          ::win.EndBoxPanel
+          ::win.BeginBoxPanel("Surface")
+              ::win.AddAMIObjectChoice( &::input_object_render, "")
+              ::win.AddColor("Color",&::color)
+          ::win.EndBoxPanel
+          ::win.BeginBoxPanel("Visible actors")
+            ::input_actors_number=::win.AddLabel( "Number: ", &::ActorsNumber)
           ::win.EndBoxPanel
           ::win.AddButton("Render",      ::Render)
           
