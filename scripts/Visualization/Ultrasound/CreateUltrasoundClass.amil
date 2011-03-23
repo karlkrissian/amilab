@@ -29,6 +29,7 @@ if (!exists(CreateUltrasoundClass)) {
       ::evh = wx.wxAmiEventHandler(&::CB_timer)
       ::timer = wx.wxTimer(&::evh)
       ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
+      ::processing_timer = false
     }
     
     
@@ -47,12 +48,15 @@ if (!exists(CreateUltrasoundClass)) {
 
     #----------------- Timer
     proc ::CB_timer() {
-      currenttime = wx.wxDateTime.UNow()
-      diff=currenttime-::inittime
-      ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
-      ::ReadCamera()
-      ::RImageShow()
-      
+      if (!::processing_timer)  {
+          ::processing_timer = true
+          currenttime = wx.wxDateTime.UNow()
+          diff=currenttime-::inittime
+          ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
+          ::ReadCamera()
+          ::RImageShow()
+          ::processing_timer =false
+      } 
     }
         
     #------------------------------------
@@ -102,10 +106,32 @@ if (!exists(CreateUltrasoundClass)) {
   
 
   }
+  proc ::Pinta() {
+  if(exists(::r_draw)){
+    ::r_draw.SetPenColor(wx.wxColour(255,0,0,255))
+    
+    # draw vertical
+    _xmin = (FLOAT)::r_draw.GetXmin()
+    _xmax = (FLOAT)::r_draw.GetXmax()
+    _ymin = (FLOAT)::r_draw.GetYmin()
+    _ymax = (FLOAT)::r_draw.GetYmax()
+    
+   
+   
+    ::r_draw.DrawLineZ(_xmin,_ymin,_xmax,_ymax)
+   
+    ::r_draw->DrawingAreaDisplay()
+    }else{
+        InfoDialog "no hay draw!"
+    }
+  }
   
   proc ::RImageShow() {
     show ::r
+    ::Pinta()
+    ::r_draw.PaintCallback(&::Pinta)
   }
+  
   proc ::LImageShow() {
     show ::l
   }
@@ -140,8 +166,8 @@ if (!exists(CreateUltrasoundClass)) {
         ::win.EndBoxPanel()
         
         ::win.BeginBoxPanel("Images")
-          ::win.AddButton("Show Left",::RImageShow)
-          ::win.AddButton("Show Right",::LImageShow)
+          ::win.AddButton("Show Left",::LImageShow)
+          ::win.AddButton("Show Right",::RImageShow)
         ::win.EndBoxPanel()
         
                 
