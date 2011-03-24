@@ -1,6 +1,7 @@
 
 func "Common/ScriptGui"
 
+#-------------------------------------------------------------------------
 if (!exists(PropagateVesselsContoursClass)) {
 
   Class PropagateVesselsContoursClass : public ScriptGui \
@@ -32,7 +33,7 @@ if (!exists(PropagateVesselsContoursClass)) {
         ::maxcurv_high   = 1
 
         ::grad_stddev = 1
-        ::local_stdev_param = 50, "Parameter to select the response for high local standard deviations of intensity (image contours)."
+        ::local_stdev_param = 30, "Parameter to select the response for high local standard deviations of intensity (image contours)."
 
         ::new_vsx = 1, "New voxel spacing in X (in mm)"
         ::new_vsy = 1, "New voxel spacing in Y (in mm)"
@@ -42,9 +43,12 @@ if (!exists(PropagateVesselsContoursClass)) {
         ::maxdist = 1000, "Maximal distance to evolve the fast marching algorithm"
         ::point1_label = "undefined"
         ::point2_label = "undefined"
+        ::point3_label = "undefined"
 
         ::contour_minint = 1200, "minimal intensity allowed at half voxel distance of the contour in the direction of the gradient"
         ::contour_maxint = 1650, "maximal intensity allowed at half voxel distance of the contour in the direction of the gradient"
+
+        ::stats_mode = INT(1), "0: local stats from direct neighbors, 1: local stats from Gaussian convolution"
 
         ::html_filename = GetScriptsDir+"/Vessels/PropagateVesselsContours/Doc/PropagateVesselsContours/index.html"
     }
@@ -167,6 +171,26 @@ if (!exists(PropagateVesselsContoursClass)) {
       }
     }
 
+    //---------------------------------------------------
+    proc ::SetStartPoint3() \
+    {
+      if (!exists(::input))        { ::load_input(); }
+      if (!exists(::viewer)) {
+        ::viewer = DessinImage(&::input)
+      }  else {
+        ::pos3x = ::viewer.GetXPos() 
+        ::pos3y = ::viewer.GetYPos()
+        ::pos3z = ::viewer.GetZPos()
+        print "cursor is at "
+        print " %1% "   % ::pos3x
+        print " %1% "   % ::pos3y
+        print " %1% \n" % ::pos3z
+        ::point3_label = " %1%, "  % ::pos3x + "%1%, " % ::pos3y + " %1%, " % ::pos3z
+        ::win.SetLabelValue(::startpt3_id,::point3_label)
+        ::win.Update(-1)
+      }
+    }
+
     #---------------------------------------------------
     proc ::Run() {
       if (!exists(::input)) { ::load_input(); }
@@ -179,7 +203,21 @@ if (!exists(PropagateVesselsContoursClass)) {
         Comments(::speed_curv,"Curvature component of the speed")
         ::speed_curv <<= ::ImUtils.Clamp(&::speed_curv,::maxcurv_low,::maxcurv_high)
         ::speed_curv <<= ::speed_curv*(::Curv3D.maxcurv>::maxcurv_lowcut)
-        ::lsd <<= ::CProb.lsd
+
+        meanspacing = (::input.vx+::input.vy+::input.vz)/3;
+        maxspacing = max(::input.vx,max(::input.vy,::input.vz));
+
+        if (::stats_mode==0) {
+          ::lsd <<= ::CProb.lsd
+        } else {
+          ::stats_sigma = maxspacing*0.7
+          in_s = filter(::input,::stats_sigma,0,0,0)
+          in2 = ::input*::input
+          in2_s = filter(in2,::stats_sigma,0,0,0)
+          ::lsd = sqrt(in2_s-in_s*in_s)
+        }
+
+
         grad = gradient(::input,::grad_stddev)
         # normalize the gradient vector field
         grad = grad/(0.01+norm(grad))
@@ -195,54 +233,94 @@ if (!exists(PropagateVesselsContoursClass)) {
         ::cont_int <<= ::input(pos+grad/2)
         ::prop_voxels <<= ::prop_voxels*(::cont_int>=::contour_minint)*(::cont_int<=::contour_maxint)
         # Compute final evolution speed
-        ::sp <<= (1-exp(-::lsd*::lsd/(2*::local_stdev_param*::local_stdev_param)))*::speed_curv*(::prop_voxels)
+        #prob_weight = (1-exp(-::lsd*::lsd/(2*::local_stdev_param*::local_stdev_param))) 
+        var = ::lsd*::lsd
+        prob_weight = (var-::local_stdev_param*::local_stdev_param)/var
+        prob_weight = prob_weight*(prob_weight>0)
+        ::sp <<= prob_weight*::speed_curv*(::prop_voxels)
+        del var; del prob_weight
         
         if (exists(::pos2x)) {
           ::FMCompeting.SetSpeedImage(&::sp)
           ::FMCompeting.SetPoint1(::pos1x,::pos1y,::pos1z)
           ::FMCompeting.SetPoint2(::pos2x,::pos2y,::pos2z)
+          if (exists(::pos3x)) {
+            ::FMCompeting.SetPoint3(::pos3x,::pos3y,::pos3z)
+          }
           ::FMCompeting.Evolve(::maxdist)
-          ::res <<= &::FMCompeting.result
-          ::classim <<= &::FMCompeting.classim
+          if (exists(::res)) { del ::res; }
+          ::res = &::FMCompeting.result
+          if (exists(::classim)) { del ::classim; }
+          ::classim = &::FMCompeting.classim
         } else {
           ::res <<= ::FMUtils.FastMarchingFromPoint(&::sp,::maxdist,::pos1x,::pos1y,::pos1z)
         }
 
-        meanspacing = (::lsd.vx+::lsd.vy+::lsd.vz)/3;
-        maxspacing = max(::lsd.vx,max(::lsd.vy,::lsd.vz));
 
-        lsdgrad = gradient(::lsd,0.8*maxspacing)
+        if (::stats_mode==0) {
+          lsdgrad = gradient(::lsd,0.8*maxspacing)
+        } else {
+          ing_s  = gradient(::input,::stats_sigma)
+          ing2_s = gradient(in2,::stats_sigma)
+          lsdgrad = ing2_s-2*in_s*ing_s
+          lsdgrad = lsdgrad/(2*::lsd)
+          del ing_s; del ing2_s
+        }
         ::zerocross <<= lsdgrad*grad
+        del lsdgrad
         #::zerocross.setvoxelsize(::input_vsx,::input_vsy,::input_vsz)
+
+        import_filters
+        morph = filters.ContinuousMorphology()
+        morph.SetLimits(0,1)
 
         if (exists(::pos2x)) {
           mask = (::res<(::maxdist-0.01))*(::classim==0)
-          sigma = meanspacing
-          mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
-          mask <<= (UCHAR) (mask>0.3)*255
+          #sigma = meanspacing
+          mask = morph.Dilate(mask,1,0.5)
+          mask <<= (UCHAR) (mask>0.5)*255
           ::res1_surf = isosurf(-::zerocross,0,mask)
+          # show only the main connected component to avoid artifacts
+          ::res1_surf.drawCC(0)
           show ::res1_surf
 
           del mask
           mask = (::res<(::maxdist-0.01))*(::classim==1)
-          sigma = meanspacing
-          mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
-          mask <<= (UCHAR) (mask>0.3)*255
+          mask = morph.Dilate(mask,1,0.5)
+          #sigma = meanspacing
+          #mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
+          mask <<= (UCHAR) (mask>0.5)*255
           ::res2_surf = isosurf(-::zerocross,0,mask)
+          # show only the main connected component to avoid artifacts
+          ::res2_surf.drawCC(0)
           ::res1_surf_draw += ::res2_surf
           ::res1_surf.SetDiffuse(255,20,20)
-          ::res2_surf.SetDiffuse(20,20,255)
+          ::res2_surf.SetDiffuse(30,160,250)
+          if (exists(::pos3x)) {
+            mask = (::res<(::maxdist-0.01))*(::classim==2)
+            mask = morph.Dilate(mask,1,0.5)
+            #sigma = meanspacing
+            #mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
+            mask <<= (UCHAR) (mask>0.5)*255
+            ::res3_surf = isosurf(-::zerocross,0,mask)
+            # show only the main connected component to avoid artifacts
+            ::res3_surf.drawCC(0)
+            ::res1_surf_draw += ::res3_surf
+            ::res3_surf.SetDiffuse(255,195,0)
+          }
+
         } else {
           mask = (::res<(::maxdist-0.01))
-          sigma = meanspacing
-          mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
-          mask <<= (UCHAR) (mask>0.3)*255
+          mask = morph.Dilate(mask,1,0.5)
+          #sigma = meanspacing
+          #mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
+          mask <<= (UCHAR) (mask>0.5)*255
           ::res_surf = isosurf(-::zerocross,0,mask)
           show ::res_surf
         }
       }
-      if (exists(::res_surf)) {
-        ::res_surf.SetLightDiffuse(200,200,200)
+      if (exists(::res_surf_draw)) {
+        ::res_surf_draw.SetLightDiffuse(0,200,200,200)
       }
     }
 
@@ -296,6 +374,10 @@ if (!exists(PropagateVesselsContoursClass)) {
             ::win.BeginHorizontal()
               ::win.AddButton("pt 2:", &::SetStartPoint2)
               ::startpt2_id = ::win.AddLabel("",::point2_label)
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+              ::win.AddButton("pt 3:", &::SetStartPoint3)
+              ::startpt3_id = ::win.AddLabel("",::point3_label)
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 

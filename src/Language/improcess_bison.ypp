@@ -7509,7 +7509,7 @@ image:
       float v;
       double total = 0;
 
-      InrImage::ptr res ( new InrImage(nint,1,1,WT_SIGNED_INT));
+      InrImage::ptr res ( new InrImage(nint,1,1,WT_FLOAT));
 
       numpts = new int[nint];
       Pour(n,0,nint-1)
@@ -7529,9 +7529,10 @@ image:
       res->InitBuffer();
       Pour(n,0,nint-1)
         total += numpts[n];
+        //printf(" %d %f \n",n,total);
         res->FixeValeur(1.0*total/im->Size());
         res->IncBuffer();
-          FinPour
+      FinPour
 
       delete [] numpts;
 

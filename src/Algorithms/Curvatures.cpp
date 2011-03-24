@@ -177,32 +177,4 @@ void Curvatures::ComputeCurvatures( InrImage* image_initiale,
   Si image_entree != image_initiale AlorsFait
     delete image_entree;
 
-//   // Create a context to put the results
-//   AMIObject::ptr amiobject (new AMIObject);
-//   amiobject->SetName("curv");
-//     
-//   // Creation des nouvelles variables 
-//   sprintf(resname,"%s_gnorm",varname);
-//   amiobject->GetContext()->AddVar<InrImage>(resname, im_gradnorm, amiobject->GetContext());
-// 
-//   sprintf(resname,"%s_gdir",varname);
-//   amiobject->GetContext()->AddVar<InrImage>(resname, im_graddir, amiobject->GetContext());
-// 
-//   sprintf(resname,"%s_mcurv",varname);
-//   amiobject->GetContext()->AddVar<InrImage>(resname, im_mincurv, amiobject->GetContext());
-// 
-//   sprintf(resname,"%s_Mcurv",varname);
-//   amiobject->GetContext()->AddVar<InrImage>(resname, im_maxcurv, amiobject->GetContext());
-// 
-//   sprintf(resname,"%s_mcurvdir",varname);
-//   amiobject->GetContext()->AddVar<InrImage>(resname, imdir_mincurv, amiobject->GetContext());
-// 
-//   sprintf(resname,"%s_Mcurvdir",varname);
-//   amiobject->GetContext()->AddVar<InrImage>(resname, imdir_maxcurv, amiobject->GetContext());
-// 
-//   // return the variable
-//   Variable<AMIObject>::ptr varres(
-//       new Variable<AMIObject>( amiobject));
-//   return varres;
-
 } // Func_Curvatures()

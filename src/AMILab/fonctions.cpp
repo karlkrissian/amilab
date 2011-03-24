@@ -1566,21 +1566,7 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
     float         transfmat[4][4];
 
   image->GetTranslation( translation[0], translation[1], translation[2]);
-
   image->GetTransfMatrix(transfmat);
-/*
-  {
-    int i,j;
-    printf("Transformation matrix of the image \n");
-    for(i=0;i<4;i++) {
-      for(j=0;j<4;j++) {
-    printf("\t%3.3f",transfmat[i][j]);
-      }
-      printf("\n");
-    }
-    printf("\n");
-  }
-*/
 
   isosurface = new IsoSurface( image);
   isosurface->CalculSurface( seuil, mask);
@@ -1648,7 +1634,7 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
   } // end switch
 
 
-  // Write the polygones
+  // Write the polygons
   Pour(p, 0, isosurface->tabPoly.NbElts()-1) 
 
     surf->NewPoly();
@@ -1661,21 +1647,6 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
     surf->EndPoly();
 
   FinPour 
-
-    // surf->NewGLSurface();
-    //  surf->EndGLSurface();
-
-   /*
-  _type_surface = SURFACE_POLY;
-
-  _xmin = _ymin = _zmin = 0;
-  _xmax = (image->_tx-1)*image->_size_x;
-  _ymax = (image->_ty-1)*image->_size_y;
-  _zmax = (image->_tz-1)*image->_size_z;
-  _limits_set = true;
-
-  _mode_affichage = MODE_SURFACE;
-  */
 
   delete isosurface;
 

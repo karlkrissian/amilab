@@ -147,6 +147,7 @@ Class CompetingFastMarching {
   proc ::SetSpeedImage(IMAGE speed) \
   {
     ::speed  = &speed
+    ::use_point3 = false
   }
 
   #---------------------------------------------
@@ -163,6 +164,15 @@ Class CompetingFastMarching {
     ::p2x = px
     ::p2y = py
     ::p2z = pz
+  }
+
+  #---------------------------------------------
+  proc ::SetPoint3(NUM px, NUM py, NUM pz) \
+  {
+    ::p3x = px
+    ::p3y = py
+    ::p3z = pz
+    ::use_point3 = true
   }
 
   #---------------------------------------------
@@ -192,6 +202,19 @@ Class CompetingFastMarching {
           initim.set(-4)
           ::classim.setpos(::p2x+i,::p2y+j,::p2z+k)
           ::classim.set(1)
+        }
+      }
+    }
+
+    if (::use_point3) {
+      for i=-1 to 1 {
+        for j=-1 to 1 {
+          for k=-1 to 1 {
+            initim.setpos(::p3x+i,::p3y+j,::p3z+k)
+            initim.set(-4)
+            ::classim.setpos(::p3x+i,::p3y+j,::p3z+k)
+            ::classim.set(2)
+          }
         }
       }
     }
