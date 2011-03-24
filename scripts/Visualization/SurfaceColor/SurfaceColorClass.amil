@@ -87,6 +87,7 @@ if (!exists(SurfaceColorClass)) {
 
       #show the surface
       show ::input_surface
+      ::input_surface_draw.SetLightDiffuse(200,200,200)
       
       # Gets intensities at the surface points
       pts = ::input_surface.GetIntensities(&::input_image)
