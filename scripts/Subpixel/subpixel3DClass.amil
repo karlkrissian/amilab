@@ -42,8 +42,57 @@ if (!exists(Subpixel3DClass)){
     #-----------------------
     
     proc ::vtkExample() {
-      sphere = vtk.vtkSphereSource.New()
-      sphere.Update()
+      sphereSource = vtk.vtkSphereSource.New()
+      sphereSource.Update()
+      
+      #vamos a probar a orientar con unos puntos
+      points = vtk.vtkPoints.New()
+      points.InsertNextPoint(0,0,0)
+      points.InsertNextPoint(1,1,1)
+      points.InsertNextPoint(2,2,2)
+      
+      polydata      = vtk.vtkPolyData.New()
+      polydata.ShallowCopy(&sphereSource.GetOutput())
+#      polydata.SetPoints(&points)
+      
+#      arrowSource = vtk.vtkArrowSource.New()
+      
+      planeSource = vtk.vtkPlaneSource.New()
+#      planeSource.SetXResolution(1)
+#      planeSource.SetYResolution(1)
+#      planeSource.SetNormal(1,2,3)
+      
+      glyph3D = vtk.vtkGlyph3D.New()
+#      glyph3D.SetOrient(1)
+      glyph3D.OrientOn()
+#      glyph3D.SetSource(&arrowSource.GetOutput())
+      glyph3D.SetSource(&planeSource.GetOutput())
+      glyph3D.SetVectorModeToUseVector()
+      glyph3D.SetInput(&polydata)
+      glyph3D.SetScaleFactor(0.2)
+      printn glyph3D.GetVectorModeAsString()
+      glyph3D.Update()
+      
+      #Visualize
+      mapper = vtk.vtkPolyDataMapper.New()
+      mapper.SetInputConnection(&glyph3D.GetOutputPort())
+      
+      actor = vtk.vtkActor.New()
+      actor.SetMapper(&mapper)
+      
+      renderer = vtk.vtkRenderer.New()
+      
+      renderWindow = vtk.vtkRenderWindow.New()
+      renderWindow.AddRenderer(&renderer)
+      
+      renderWindowInteractor = vtk.vtkRenderWindowInteractor.New()
+      renderWindowInteractor.SetRenderWindow(&renderWindow)
+      
+      renderer.AddActor(&actor)
+      renderer.SetBackground(0.3, 0.6, 0.3)
+      
+      renderWindow.Render()
+      renderWindowInteractor.Start()
       
     }
     
@@ -112,6 +161,7 @@ if (!exists(Subpixel3DClass)){
       
       ::Display()
       ::drawBorder()
+      ::vtkExample()
       
       ::input_draw.PaintCallback(&::drawBorder)
     }

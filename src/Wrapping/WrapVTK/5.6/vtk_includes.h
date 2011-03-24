@@ -41,3 +41,4 @@
 #include <vtkTransform.h>
 #include <vtkWindowToImageFilter.h>
 #include <vtkGlyph3D.h>
+#include <vtkArrowSource.h>
