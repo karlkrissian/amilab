@@ -1728,17 +1728,18 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::Render() {
 
-      if (!exists(::VolRen_obj)) {
-        #Load VolRenGui script
-        func "Visualization/VolRen/VolRenClass"
-        VolRenClass ::VolRen_obj
-        ::VolRen_obj.Gui()
-      }
-
       if(!::RenderActive){
         if (!exists(::input_reduced)) { ::ReadData(); }
+
+        if (!exists(::VolRen_obj)) {
+          func "Visualization/VolRen/VolRenClass"
+          VolRenClass ::VolRen_obj
+          ::VolRen_obj.Gui()
+        }
+
         ::VolRen_obj.set_input(::input_reduced)
         ::VolRen_obj.vtkvol1.opacity_attenuation=0.25
+        InfoDialog "Force get OpenGL current context"
         ::VolRen_obj.StartNew()
         ::RenderActive=true
       }

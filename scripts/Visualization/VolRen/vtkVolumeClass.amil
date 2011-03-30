@@ -121,16 +121,13 @@ if (!exists(vtkVolumeClass)) {
 
         #::volmapper.SetSampleDistance()
 
-        # Check if the rendering is supported
-        ::renwin.MakeCurrent()
-        #InfoDialog "Supports OpenGL %1%" % ::renwin.SupportsOpenGL()
-        #InfoDialog "Capabilities %1%" % ::renwin.ReportCapabilities()
-
         # Temporary code: BEGIN
         # It solves temporarily the problem of OpenGL's initialization.
-        InfoDialog "Capabilities %1%" % ::renwin.ReportCapabilities()
+        #InfoDialog "Force get OpenGL current context"
+        #InfoDialog "Capabilities %1%" % ::renwin.ReportCapabilities()
         # Temporary code: END
 
+        # Check if the rendering is supported
         supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
         #supported = 0
         if (!supported) {
