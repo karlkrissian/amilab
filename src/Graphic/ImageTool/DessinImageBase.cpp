@@ -151,13 +151,13 @@ void DessinImageBase::FixeImageCourante( int id_image )
 
   if (_tab_slices[id_image].image.use_count()) {
     if (GB_debug)
-      CLASS_MESSAGE(boost::format( "Selecting slice number %1%") % id_image);
-      CLASS_MESSAGE(boost::format( "use_count %1%") % _current_slice.use_count());
-      CLASS_MESSAGE(boost::format( "pointer =  %1%") % _current_slice.get());
+      CLASS_MESSAGE((boost::format( "Selecting slice number %1%") % id_image).str().c_str());
+      CLASS_MESSAGE((boost::format( "use_count %1%") % _current_slice.use_count()).str().c_str());
+      CLASS_MESSAGE((boost::format( "pointer =  %1%") % _current_slice.get()).str().c_str());
       // we should not use = here to increase the counter to the pointer
       _current_slice = wxImage_ptr(_tab_slices[id_image].image);
-      CLASS_MESSAGE(boost::format( "_tab_slices[id_image].image.get() =  %1%") % _tab_slices[id_image].image.get());
-      CLASS_MESSAGE(boost::format( "pointer =  %1%") % _current_slice.get());
+      CLASS_MESSAGE((boost::format( "_tab_slices[id_image].image.get() =  %1%") % _tab_slices[id_image].image.get()).str().c_str());
+      CLASS_MESSAGE((boost::format( "pointer =  %1%") % _current_slice.get()).str().c_str());
   } else {
       std::cerr << "DessinImageBase::FixeImageCourante( " << id_image
           << "\t image not allocated " << std::endl;
@@ -171,8 +171,8 @@ void DessinImageBase::FixeImageCourante( int id_image )
 void DessinImageBase :: CreeImage( int id_image, unsigned int largeur, unsigned int hauteur )
 //                                 ---------
 {
-  CLASS_MESSAGE(boost::format(" id_image %1% dim %2% x %3%") 
-                      % id_image % (int)largeur % (int) hauteur);
+  CLASS_MESSAGE((boost::format(" id_image %1% dim %2% x %3%") 
+                      % id_image % (int)largeur % (int) hauteur).str().c_str());
 
   // if the image with correct dimensions exists, keep it
   if (_tab_slices[id_image].image.use_count()) {
@@ -190,8 +190,8 @@ void DessinImageBase :: CreeImage( int id_image, unsigned int largeur, unsigned 
                               bool(false))
                 );
 
-  CLASS_MESSAGE(boost::format("swapping use_count = %1%")%_tab_slices[id_image].image.use_count());
-  CLASS_MESSAGE(boost::format("newim get = %1%")%newim.get());
+  CLASS_MESSAGE((boost::format("swapping use_count = %1%")%_tab_slices[id_image].image.use_count()).str().c_str());
+  CLASS_MESSAGE((boost::format("newim get = %1%")%newim.get()).str().c_str());
 
   if (!newim.get()) {
     CLASS_ERROR("allocation of image failed!")
@@ -425,7 +425,7 @@ void DessinImageBase :: AfficheImage( int id_image)
 {
   CLASS_MESSAGE("begin")
   if (!_tab_slices[id_image].image.use_count()) {
-    CLASS_ERROR(boost::format(" id_image=%1% not valid...") % id_image);
+    CLASS_ERROR((boost::format(" id_image=%1% not valid...") % id_image).str().c_str());
     return;
   }
 
@@ -2034,7 +2034,7 @@ void DessinImageBase :: DrawColorBar( )
 void DessinImageBase::DrawSlice( int slice_id )
 //                    ---------
 {
-  CLASS_MESSAGE(boost::format(" slice_id = %1%") % slice_id)
+  CLASS_MESSAGE((boost::format(" slice_id = %1%") % slice_id).str().c_str())
 
   register int             x,y;
   register double           px, py;
@@ -2095,7 +2095,7 @@ void DessinImageBase::DrawSlice( int slice_id )
 
     
   #ifdef AMI_BUILD_Debug
-    CLASS_MESSAGE(boost::format("displ_dimx = %1%, displ_dimy = %2%") % displ_dimx % displ_dimy );
+    CLASS_MESSAGE((boost::format("displ_dimx = %1%, displ_dimy = %2%") % displ_dimx % displ_dimy ).str().c_str());
   #endif
 
   CreeImage( slice_id, (int) (displ_dimx+1-1E-4), (int) (displ_dimy+1-1E-4));
@@ -2139,9 +2139,10 @@ void DessinImageBase::DrawSlice( int slice_id )
   int   nincr_x = stepx*incr_x;
   int   maxy    = cmax_y-stepy+1; // max value in Y where we can draw using stepy
   int   maxx    = cmax_x-stepx+1; // max value in X where we can draw using stepx
+  int   component = Param._pos._v;
 
-  CLASS_MESSAGE( boost::format(" vsx %1% vsy %2%") % vsx % vsy );
-  CLASS_MESSAGE( boost::format(" stepx %1% stepy %2%") % stepx % stepy );
+  CLASS_MESSAGE((boost::format(" vsx %1% vsy %2%") % vsx % vsy ).str().c_str());
+  CLASS_MESSAGE((boost::format(" stepx %1% stepy %2%") % stepx % stepy ).str().c_str());
 
   // if we have to step several image pixels, then each displayed pixel is drawn separately
   bool  pointlevel = (stepx>1)&&(stepy>1);
@@ -2163,7 +2164,7 @@ void DessinImageBase::DrawSlice( int slice_id )
       Si (image_format != WT_RGB)&&
          (image_format != WT_RGBA)
       Alors
-        couleur = colors[ LookUpTable(image->ValeurBuffer(),
+        couleur = colors[ LookUpTable(image->ValeurBuffer(component),
                           image_format) ];
       Sinon
         couleur = ClasseCouleur(
@@ -2180,12 +2181,12 @@ void DessinImageBase::DrawSlice( int slice_id )
           if (  (((int)px)>=image_width)||
                 (((int)py)>=_current_slice->GetHeight()) ) 
           {
-            CLASS_ERROR( boost::format(" cmin_{x,y} cmax_{x,y} %1% %2%, %3% %4%")
-                          % cmin_x % cmin_y % cmax_x % cmax_y );
-            CLASS_ERROR( boost::format(" px py = %1%, %2% --> %3%, %4% size is %3%x%4%")
+            CLASS_ERROR(( boost::format(" cmin_{x,y} cmax_{x,y} %1% %2%, %3% %4%")
+                          % cmin_x % cmin_y % cmax_x % cmax_y ).str().c_str());
+            CLASS_ERROR(( boost::format(" px py = %1%, %2% --> %3%, %4% size is %3%x%4%")
                           % px % py 
                           % ((int)px) % ((int)py) 
-                          % image_width % _current_slice->GetHeight() );
+                          % image_width % _current_slice->GetHeight() ).str().c_str());
           } else
         #endif
 
@@ -2200,10 +2201,10 @@ void DessinImageBase::DrawSlice( int slice_id )
           if (  (((int)px1)>image_width)||
                 (((int)py1)>_current_slice->GetHeight()) ) 
           {
-            CLASS_ERROR( boost::format(" cmin_{x,y} cmax_{x,y} %1% %2%, %3% %4%")
-                          % cmin_x % cmin_y % cmax_x % cmax_y );
-            CLASS_ERROR( boost::format(" px1, py1 = %1%, %2% size is %3%x%4%")
-                          % ((int)px1) % ((int)py1) % image_width % _current_slice->GetHeight() );
+            CLASS_ERROR(( boost::format(" cmin_{x,y} cmax_{x,y} %1% %2%, %3% %4%")
+                          % cmin_x % cmin_y % cmax_x % cmax_y ).str().c_str());
+            CLASS_ERROR(( boost::format(" px1, py1 = %1%, %2% size is %3%x%4%")
+                          % ((int)px1) % ((int)py1) % image_width % _current_slice->GetHeight() ).str().c_str());
           } else
         #endif
 
@@ -2426,8 +2427,6 @@ void DessinImageBase :: DessinePlanY( )
 void DessinImageBase :: DessinePlanX( )
 //                     ------------
 {
-
-
      register int             y,z;
      register float           py,pz;
      register float           py1,pz1;
@@ -3555,8 +3554,30 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
             (int) round(pos_y2));
 
 } // DrawLineZ()
+// -------------------------------------------------------------------------
+///
+/// Draw a circle in (x,y) coordinates  with radius r - MicronTracker Utility
+///
+void DessinImageBase :: DrawCircleR( int x, int y, int r)
+{
 
+     register float          pos_x, pos_y;
+     
 
+     //  SetLineParameters( size, style, _cap_style, _join_style);
+     
+    // TODO: check why we need +/- 0.5 and create coordinate conversion functions
+     pos_x = _tab_ximage_pos_x[IMAGE_XY] +  (x+0.5 - Param._Zoom._xmin )*_size_x;
+     pos_y = _tab_ximage_pos_y[IMAGE_XY] +  (y+0.5 - Param._Zoom._ymin )*_size_y;
+
+     
+    FixeStyleRemplissage(wxTRANSPARENT);
+     Cercle( (int) round(pos_x),
+            (int) round(pos_y),
+            (int) r);
+    FixeStyleRemplissage(PENSTYLE_SOLID);
+
+} // DrawCircleR()
 // -------------------------------------------------------------------------
 //
 void DessinImageBase :: SetCoupe( int coupe)

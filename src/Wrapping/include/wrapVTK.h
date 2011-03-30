@@ -24,6 +24,11 @@ void AddWrapVTK();
 
 
 InrImage* vtkAnisoGS                  (ParamList*);
+
+InrImage* wrap_vtkImageFFT                 (ParamList*);
+InrImage* wrap_vtkImageRFFT                (ParamList*);
+InrImage* wrap_vtkImageFourierCenter       (ParamList*);
+
 BasicVariable::ptr Wrap_vtkSkeleton2Lines  (ParamList* p);
 BasicVariable::ptr Wrap_vtkSphere          (ParamList* p);
 

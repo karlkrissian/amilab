@@ -27,6 +27,7 @@ private:
   int _id_planX;
   int _id_planY;
   int _id_planZ;
+  int _id_component;
   
 public:
   
@@ -37,6 +38,7 @@ public:
   static void CB_PlanX (void* cd);
   static void CB_PlanY (void* cd);
   static void CB_PlanZ (void* cd);
+  static void CB_component (void* cd);
   
 }; // class ImageDraw_PositionParam
 

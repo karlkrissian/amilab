@@ -19,6 +19,10 @@ class InrImage;
 
 InrImage*    Func_vtkMedianFilter3D( InrImage* im, int kx, int ky, int kz);
 
+InrImage*    Func_vtkImageFFT( InrImage* im);
+InrImage*    Func_vtkImageRFFT( InrImage* im);
+InrImage*    Func_vtkImageFourierCenter( InrImage* im);
+
 amilab::SurfacePoly* Func_vtkMarchingCubes( InrImage* im, float Threshold);
 
 amilab::SurfacePoly* Func_decimate( amilab::SurfacePoly* , float target_reduction=0.9);

@@ -33,9 +33,92 @@ using namespace amilab;
 #include "vtkConvexHull.h"
 #include "vtkAnisoGaussSeidel.h"
 
+#include "vtkImageFFT.h"
+#include "vtkImageRFFT.h"
+#include "vtkImageFourierCenter.h"
+
 #endif // AMI_USE_VTK
 
 extern unsigned char GB_debug;
+
+//---------------------------------------------------------------------------
+InrImage* Func_vtkImageFFT( InrImage* im)
+//        ----------------------
+{
+
+#ifdef AMI_USE_VTK
+  
+  vtkImageData_ptr           vtk_image;
+  vtkImageFFT*               vtk_fft;
+  InrImage*                  res;
+
+  // Convert InrImage to vtkImageData
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
+  vtk_fft = vtkImageFFT::New();
+  vtk_fft->SetInput(vtk_image.get());
+  vtk_fft->Update();
+  res = new InrImage( vtk_fft->GetOutput());
+  vtk_fft->Delete();
+  return res;
+#else
+  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
+  return NULL;
+#endif // AMI_USE_VTK
+
+} // Func_vtkImageFFT()
+
+//---------------------------------------------------------------------------
+InrImage* Func_vtkImageRFFT( InrImage* im)
+//        ----------------------
+{
+
+#ifdef AMI_USE_VTK
+  
+  vtkImageData_ptr           vtk_image;
+  vtkImageRFFT*              vtk_rfft;
+  InrImage*                  res;
+
+  // Convert InrImage to vtkImageData
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
+  vtk_rfft = vtkImageRFFT::New();
+  vtk_rfft->SetInput(vtk_image.get());
+  vtk_rfft->Update();
+  res = new InrImage( vtk_rfft->GetOutput());
+  vtk_rfft->Delete();
+  return res;
+#else
+  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
+  return NULL;
+#endif // AMI_USE_VTK
+
+} // Func_vtkImageRFFT()
+
+//---------------------------------------------------------------------------
+InrImage* Func_vtkImageFourierCenter( InrImage* im)
+//        ----------------------
+{
+
+#ifdef AMI_USE_VTK
+  
+  vtkImageData_ptr           vtk_image;
+  vtkImageFourierCenter*              vtk_fc;
+  InrImage*                  res;
+
+  // Convert InrImage to vtkImageData
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
+  vtk_fc = vtkImageFourierCenter::New();
+  vtk_fc->SetInput(vtk_image.get());
+  vtk_fc->Update();
+  res = new InrImage( vtk_fc->GetOutput());
+  vtk_fc->Delete();
+  return res;
+#else
+  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
+  return NULL;
+#endif // AMI_USE_VTK
+
+} // Func_vtkImageRFFT()
+
 
 //---------------------------------------------------------------------------
 InrImage* Func_vtkMedianFilter3D( InrImage* im, int kx, int ky, int kz)

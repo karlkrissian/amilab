@@ -718,9 +718,9 @@ void DessinImage::InitVoxelSize()
             _size_x = _size_y = _size_z = val2;
           FinSi
           #ifdef AMI_BUILD_Debug
-            CLASS_MESSAGE( boost::format(" avail_width, avail_height = %1% %2% size: %3% %4% %5% ")
+            CLASS_MESSAGE((boost::format(" avail_width, avail_height = %1% %2% size: %3% %4% %5% ")
                             % avail_width % avail_height 
-                            % _size_x % _size_y % _size_z )
+                            % _size_x % _size_y % _size_z).str().c_str() )
           #endif
 
         break;
@@ -774,8 +774,8 @@ void DessinImage::InitVoxelSize()
     _size_z = val1 * Param._dim._voxel_size_z;
   FinSi
 
-  CLASS_MESSAGE( boost::format("_size_x,y,z = %1% %2% %3% ") 
-                % _size_x % _size_y % _size_z );
+  CLASS_MESSAGE((boost::format("_size_x,y,z = %1% %2% %3% ") 
+                % _size_x % _size_y % _size_z ).str().c_str());
 
   CLASS_MESSAGE("End");
 
@@ -2212,8 +2212,8 @@ void DessinImage::Comparaisons_UpdateStatusInfo( const Point_3D<int>& imagepos, 
   Iter  = _tab_compare2_image.begin();
   while (Iter != _tab_compare2_image.end() )
  {
-  CLASS_MESSAGE(boost::format("(*Iter).di.use_count() = %d")
-                %(int)(*Iter).di.use_count());
+  CLASS_MESSAGE((boost::format("(*Iter).di.use_count() = %d")
+                %(int)(*Iter).di.use_count()).str().c_str());
     if (!(*Iter).di.expired()) {
       // need to convert spatial coordinates
       InrImage::ptr input = this->GetImage();
@@ -2734,7 +2734,11 @@ DessinImage::~DessinImage()
 //                       -----------
 {
 //    int i;
-  
+  // Close GL window if owned
+  if (_GLWindow0.get())
+    CB_CloseGL(this);
+
+
   Si GB_debug AlorsFait printf("~DessinImage()  %s \n",
                    (char*)_name);
 
@@ -3770,7 +3774,7 @@ void DessinImage::ApplyZoom( const ParamZoom& initial_zoom,
 {
 
   Si (z < initial_zoom._zmin) Ou (z > initial_zoom._zmax) Alors
-    CLASS_ERROR(boost::format("Wrong Z position for zoom."));
+    CLASS_ERROR((boost::format("Wrong Z position for zoom.")).str().c_str());
     return;
   FinSi
 
@@ -4699,7 +4703,7 @@ void DessinImage::SetGLWindow( Viewer3D_ptr& glwin)
 
 //----------------------------------------------------------------
 void DessinImage::Paint( unsigned char affiche)
-//                            -----
+//                -----
 {
   //wxPaintDC pdc(_drawing_area);
   if (!this->IsShown()) {
@@ -4730,7 +4734,7 @@ void DessinImage::Paint( unsigned char affiche)
              % _hauteur
              % _largeur
           << std::endl;
-  CLASS_MESSAGE(boost::format("position %1% %2% %3%")%Param._pos._x % Param._pos._y % Param._pos._z)
+  CLASS_MESSAGE((boost::format("position %1% %2% %3%")%Param._pos._x % Param._pos._y % Param._pos._z).str().c_str())
           
   Si Non(_vecteur_ON) Alors
   //    curseur = XCreateFontCursor( display, XC_watch);
@@ -5682,7 +5686,7 @@ void DessinImage::CB_CloseGL( void* cd)
   DessinImage*    di = (DessinImage*) cd;
 
   CLASS_MESSAGE_STATIC(di," call");
-  CLASS_MESSAGE_STATIC(di,format(" use_count() %1%") % di->_GLWindow0.use_count());
+  CLASS_MESSAGE_STATIC(di,(boost::format(" use_count() %1%") % di->_GLWindow0.use_count()).str().c_str());
 
   di->_GLWindow0->Close(true);
   di->_GLWindow0->Destroy();

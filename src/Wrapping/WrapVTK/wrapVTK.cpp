@@ -53,6 +53,8 @@ extern VarContexts  Vars;
 #include "vtkAnisoGaussSeidel.h"
 #include "vtkSkeleton2Lines.h"
 
+#include "vtkwrap.h"
+
 #endif // _WITHOUT_VTK_
 
 
@@ -62,6 +64,13 @@ void AddWrapVTK()
 {
 
   ADDVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
+
+  ADDVAR_NAME( C_wrap_imagefunction, "vtkImageFFT",   wrap_vtkImageFFT);
+  ADDVAR_NAME( C_wrap_imagefunction, "vtkImageRFFT",  wrap_vtkImageRFFT);
+  ADDVAR_NAME( C_wrap_imagefunction, "vtkImageFourierCenter",  wrap_vtkImageFourierCenter);
+
+  ADDVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
+  
   ADDVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
   ADDVAR_NAME(C_wrap_varfunction,    "vtkSphere",            Wrap_vtkSphere);
 
@@ -136,6 +145,84 @@ InrImage* vtkAnisoGS(ParamList* p)
 
 } // vtkAnisoGS()
 
+
+//
+InrImage* wrap_vtkImageFFT(ParamList* p)
+{
+
+#ifndef _WITHOUT_VTK_
+  char functionname[] = "vtkImageFFT";
+  char description[]=" \n\
+    Fast Fourier Transform      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+              input image\n\
+      ";
+    
+    InrImage* input;
+    int n=0;
+
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  return Func_vtkImageFFT(input);
+
+#else
+  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
+  return NULL;
+#endif // _WITHOUT_VTK_
+
+} // wrap_vtkImageFFT()
+
+//
+InrImage* wrap_vtkImageRFFT(ParamList* p)
+{
+
+#ifndef _WITHOUT_VTK_
+  char functionname[] = "vtkImageRFFT";
+  char description[]=" \n\
+    Inverse Fast Fourier Transform      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+              input image\n\
+      ";
+    
+    InrImage* input;
+    int n=0;
+
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  return Func_vtkImageRFFT(input);
+
+#else
+  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
+  return NULL;
+#endif // _WITHOUT_VTK_
+
+} // wrap_vtkImageRFFT()
+
+//
+InrImage* wrap_vtkImageFourierCenter(ParamList* p)
+{
+
+#ifndef _WITHOUT_VTK_
+  char functionname[] = "vtkImageFourierCenter";
+  char description[]=" \n\
+    Shift FFT results for display      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+              input image\n\
+      ";
+    
+    InrImage* input;
+    int n=0;
+
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  return Func_vtkImageRFFT(input);
+
+#else
+  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
+  return NULL;
+#endif // _WITHOUT_VTK_
+
+} // wrap_vtkImageFourierCenter()
 
 /** Read a 3D Flow from an ASCII file **/
 BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)

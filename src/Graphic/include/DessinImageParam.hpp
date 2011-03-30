@@ -694,17 +694,20 @@ class ParamPosition
 public:
 
 //@{
-/// Position x,y,z
+/// Position x,y,z,v
   int  _x;
   int  _y;
   int  _z;
+
+  // current component for multi-channel images
+  int  _v;
 //@}
 
   ///
    ParamPosition() 
   //
   {
-    _x = _y = _z = 0;
+    _x = _y = _z = _v = 0;
   }
 
   void Init( const InrImage* image)
@@ -712,6 +715,7 @@ public:
     _z = (int) ( image->_tz / 2.0);
     _y = (int) ( image->_ty / 2.0);
     _x = (int) ( image->_tx / 2.0);
+    _v = 0;
   }
 
   ///
@@ -726,6 +730,9 @@ public:
 
     Si _z < 0          AlorsFait  _z = 0;
     Si _z >= image->_tz AlorsFait _z = image->_tz-1;
+
+    Si _v < 0          AlorsFait  _v = 0;
+    Si _v >= image->GetVDim() AlorsFait _z = image->GetVDim()-1;
   }
 
   ///
@@ -736,6 +743,7 @@ public:
     _x = p._x;
     _y = p._y;
     _z = p._z;
+    _v = p._v;
 
   }
 
