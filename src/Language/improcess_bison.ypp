@@ -8703,7 +8703,7 @@ image:
       float v;
       double total = 0;
 
-      InrImage::ptr res ( new InrImage(nint,1,1,WT_SIGNED_INT));
+      InrImage::ptr res ( new InrImage(nint,1,1,WT_DOUBLE));
 
       numpts = new int[nint];
       Pour(n,0,nint-1)
