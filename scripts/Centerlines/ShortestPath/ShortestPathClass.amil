@@ -4,7 +4,6 @@
 # using a speed image
 #
 if (!exists(ShortestPathClass)) {
-  global::ami_import.ITK()
 
   func "Common/ScriptGui"
 
@@ -19,7 +18,10 @@ if (!exists(ShortestPathClass)) {
     func "SyntheticImages/AddSphere.amil"
 
     AddSphereClass ::AS
-    ::itk=&global::itk
+
+    global::ami_import.ITK()
+    ::itk=&itk
+
     
     #----------------------------
     proc ::init() {

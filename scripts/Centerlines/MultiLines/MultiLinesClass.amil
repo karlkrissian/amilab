@@ -28,7 +28,6 @@ func "Common/ScriptGui"
 # no interface here
 if (!exists(MultiLinesClass)) {
 
-  global::ami_import.Filters()
 #  if (argc==1) {
 #    inputname=$1
 #    emptyargs
@@ -38,7 +37,8 @@ if (!exists(MultiLinesClass)) {
   
   Class MultiLinesClass : public ScriptGui {
   
-    ::filters=&global::filters
+    global::ami_import.Filters()
+    ::filters=&filters
 
     #----------------------------
     proc ::Init() {

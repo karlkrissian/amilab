@@ -1,0 +1,260 @@
+func "Common/ScriptGui"
+
+if (!exists(AutoRunTrainingClass)) {
+
+  #------------------------------------
+  Class AutoRunTrainingClass : public ScriptGui {
+
+    #------------------------------------
+    proc ::Init() {
+      ::path             = "", "The Carotid Bifurcation Workshop script path"
+      ::results_dir      = "", "The result directory path"
+      ::erasmuscenter    = UCHAR(0), "The Erasmus MC data center"
+      ::hadassahdcenter  = UCHAR(0), "The Hadassah data center"
+      ::louispradelcenter= UCHAR(0), "The Louis Pradel data center"
+      ::noiteration      = UCHAR(0), "No iteration(no show messages)"
+      ::savedata         = UCHAR(0), "Save intermediate results."
+      ::loadvesselness   = UCHAR(0), "Load Vesselness data(not calculate data)."
+    }
+    Comments( ::Init, "Initializes the AutoRunTrainingClass class.")
+
+    #------------------------------------
+    proc ::CarotidScriptInit() {
+      if (!exists(::carotid_challenge)) {
+        if (::path=="") {
+          script="CarotidBifurcationWorkshop2009/RunExperiments/RunExperimentsClass.amil"
+          global::ami_import.System()
+          ::path=op_system.GetGlobalScriptDir()+script;
+        }
+        func ::path
+        RunExperimentsClass ::carotid_challenge
+        ::carotid_challenge.Gui()
+        printn "Loads the Carotid Bifurcation Workshop script"
+      }
+    }
+    Comments( ::CarotidScriptInit, "Loads the Carotid Bifurcation Workshop script")
+
+    #------------------------------------
+    proc ::SetPath(STRING ThePath) {
+      ::path=ThePath
+    }
+    Comments( ::SetPath, "Sets the Carotid Bifurcation Workshop script path")
+
+    #------------------------------------
+    proc ::SetResultsDir(STRING ThePath) {
+      ::results_dir=ThePath
+    }
+    Comments( ::SetResultsDir, "Sets the result directory path")
+
+    #------------------------------------
+    proc ::CheckInitialization() {
+      if (!exists(::carotid_challenge)) {
+        if(exists(global::carotid_challenge)) {
+          ::carotid_challenge=&global::carotid_challenge
+          printn "Sets the Carotid Bifurcation Workshop script"
+        } else {
+          ::CarotidScriptInit()
+        }
+      }
+    }
+    Comments( ::CheckInitialization, "Check the Carotid Bifurcation Workshop script initialization")
+
+    #------------------------------------
+    proc ::ProcessingData(NUM datacenter, NUM datatype, NUM datanumber) {
+      ::CheckInitialization()
+
+      ::carotid_challenge.SetDataCenter(datacenter)
+      ::carotid_challenge.SetDataType(datatype)
+      ::carotid_challenge.SetDataNumber(datanumber)
+
+      printn "IO: BEGIN"
+      ::carotid_challenge.ReadData()
+      ::carotid_challenge.ReadGT()
+      printn "IO: END"
+
+      printn "Speed: BEGIN"
+      ::carotid_challenge.LocalStats()
+      if(::loadvesselness) {
+        ::carotid_challenge.ReadVesselness()
+      } else {
+        ::carotid_challenge.Vesselness()
+      }
+      if(::savedata){ ::carotid_challenge.SaveVesselness(); }
+      printn "Speed: END"
+
+      printn "Run: BEGIN"
+      ::carotid_challenge.CreatePaths()
+      if(::savedata){ ::carotid_challenge.SavePaths(); }
+      ::carotid_challenge.JunctionFromPaths()
+      if(::savedata){ ::carotid_challenge.SaveJunction(); }
+
+      ::carotid_challenge.LevelSetsExternal()
+      ::carotid_challenge.LevelSetsInternal()
+      ::carotid_challenge.LevelSetsPathsSave()
+
+      ::carotid_challenge.Evaluation()
+      printn "Run: END"
+
+      printn "Reload Carotid Challenge script"
+      ::carotid_challenge.ReloadScript()
+    }
+    Comments( ::ProcessingData, "Processing the data of center")
+
+    #------------------------------------
+    proc ::ProcessingFile(STRING FileName, STRING outputString) {
+      if(wx.wxFileName(FileName).FileExists()) {
+        input=File(FileName, "r")
+        value1=input.read_string();
+        value2=input.read_string();
+        value3=input.read_string();
+        value4=input.read_string();
+        outputString+="\"%1%\"," % value1
+        outputString+="\"%1%\"," % value2
+        outputString+="\"%1%\"," % value3
+        outputString+="\"%1%\"," % value4
+        ::output._printn(outputString)
+        del input
+      }
+    }
+    Comments( ::ProcessingFile, "Processing the result files")
+
+    #------------------------------------
+    proc ::GetCVSFile() {
+      SetStatusText("Writting cvs file ...")
+
+      ::CheckInitialization()
+
+      ::results_dir=::carotid_challenge.CONFIG.results_dir
+      csvfile=::results_dir+"/Training.csv"
+      ::output=File(csvfile, "w")
+      msg="\"TRAINING\""
+      ::output._printn(msg)
+
+      printn "Get Erasmus MC results: BEGIN"
+      ::output._printn(",,,,,,")
+      ::output._printn("\"Erasmus MC\",,\"Dice\",\"Mean\",\"RMS\",\"Max\"")
+      for DataNumber=0 to 8 {
+        Path=::results_dir+"/challenge00%1%/" % DataNumber
+        Name="lumen-results00%1%.txt" % DataNumber
+        FileName=Path+Name
+        printn "Processing file: %1%" % FileName
+        OutputString="\"Challenge00%1%\",," % DataNumber
+        ::ProcessingFile(FileName, OutputString)
+      }
+      printn "Get Erasmus MC results: END"
+
+      printn "Get Hadassah results: BEGIN"
+      ::output._printn(",,,,,,")
+      ::output._printn("\"Hadassah\",,\"Dice\",\"Mean\",\"RMS\",\"Max\"")
+      for DataNumber=0 to 2 {
+        Path=::results_dir+"/challenge10%1%/" % DataNumber
+        Name="lumen-results10%1%.txt" % DataNumber
+        FileName=Path+Name
+        printn "Processing file: %1%" % FileName
+        OutputString="\"Challenge10%1%\",," % DataNumber
+        ::ProcessingFile(FileName, OutputString)
+      }
+      printn "Get Hadassah results: END"
+
+      printn "Get Louis Pradel results: BEGIN"
+      ::output._printn(",,,,,,")
+      ::output._printn("\"Louis Pradel\",,\"Dice\",\"Mean\",\"RMS\",\"Max\"")
+      for DataNumber=0 to 2 {
+        Path=::results_dir+"/challenge20%1%/" % DataNumber
+        Name="lumen-results20%1%.txt" % DataNumber
+        FileName=Path+Name
+        printn "Processing file: %1%" % FileName
+        OutputString="\"Challenge20%1%\",," % DataNumber
+        ::ProcessingFile(FileName, OutputString)
+      }
+      printn "Get Louis Pradel results: END"
+
+      SetStatusText("Writting cvs file Ready")
+    }
+    Comments( ::GetCVSFile, "Generate csv file with the results")
+
+    #------------------------------------
+    proc ::GetData() {
+      if (::noiteration) {
+        NoMessageDialog(1)
+      }
+      if(::erasmuscenter) {
+        printn "Training with Erasmus MC data center: BEGIN"
+        for DataNumber=0 to 8 {
+          printn "Processing Data: Challenge 00%1%" % DataNumber
+          ::ProcessingData(0,0,DataNumber)
+        }
+        printn "Training with Erasmus MC data center: END"
+      }
+      if(::hadassahdcenter) {
+        printn "Training with Hadassah data center: BEGIN"
+        for DataNumber=0 to 2 {
+          z=100+DataNumber
+          printn "Processing Data: Challenge %1%" % z
+          ::ProcessingData(1,0,DataNumber)
+        }
+        printn "Training with Hadassah data center: END"
+      }
+      if(::louispradelcenter) {
+        printn "Training with Louis Pradel data center: BEGIN"
+        for DataNumber=0 to 2 {
+          z=200+DataNumber
+          printn "Processing Data: Challenge %1%" % z
+          ::ProcessingData(2,0,DataNumber)
+        }
+        printn "Training with Louis Pradel data center: END"
+      }
+      NoMessageDialog(0)
+    }
+    Comments( ::GetData, "Gets results for training study case")
+
+    #------------------------------------
+    proc ::SetParentPanel(OBJECT thepanel) \
+    {
+      ::parent_panel = &thepanel
+    }
+    Comments( ::SetParentPanel, "Sets the panel showing the user interface.")
+
+    #-----------------------------------------------
+    proc ::Gui() \
+    {
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("Training",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("AutoRunTraining")
+      }
+      ::win.BeginBook()
+        ::win.AddPage("Main")
+
+          ::win.BeginBoxPanel("Data center:")
+              ::win.AddBoolean( &::erasmuscenter,"Erasmus MC")
+              ::win.AddBoolean( &::hadassahdcenter,"Hadassah")
+              ::win.AddBoolean( &::louispradelcenter,"Louis Pradel")
+          ::win.EndBoxPanel
+
+          ::win.BeginBoxPanel("Options:")
+              ::win.AddBoolean( &::noiteration,"No iteration(no show message)")
+              ::win.AddBoolean( &::savedata,"Save intermediate results")
+              ::win.AddBoolean( &::loadvesselness,"Load Vesselness(not calculate data)")
+          ::win.EndBoxPanel
+          ::win.AddButton("Start",             ::GetData)
+          ::win.AddButton("Generate CSV file", ::GetCVSFile)
+      ::win.EndBook()
+
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+    }
+    ::Init()
+
+  } # Class AutoRunTrainingClass
+  Comments( AutoRunTrainingClass, "Auto run the Carotid Bifurcation Workshop script for obtains the results for Training's case")
+  #------------------------------------------
+}

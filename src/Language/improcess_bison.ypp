@@ -735,8 +735,10 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_ConvexHull
 
 
-%token T_itk
-%token T_CannyEdgeDetector
+//%token T_itk
+//%token T_CannyEdgeDetector
+%token T_itkCannyEdgeDetector
+
 
 %token T_CreateFlatMesh
 %token T_CreateVolume
@@ -5674,10 +5676,10 @@ image:
         FinSi
         ADD_VARSTACK_PTR(InrImage,res);
       }
-      | T_itk T_POINT T_CannyEdgeDetector T_OP_PAR var_image T_COMMA expr T_COMMA expr  T_CL_PAR
+      | T_itkCannyEdgeDetector T_OP_PAR var_image T_COMMA expr T_COMMA expr  T_CL_PAR
       {
-        float var           = $7;
-        float lowthreshold  = $9;
+        float var           = $5;
+        float lowthreshold  = $7;
         //float highthreshold = $11;
         GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_itkCannyEdgeDetector(  im.get(), var, lowthreshold));

@@ -3,11 +3,7 @@ func "Common/ScriptGui"
 
 #!/usr/local/bin/amilab
 if (!exists(RunExperimentsClass)){
-
-  ami_import->ITK()
-  ami_import->Filters()
   
-
   Class RunExperimentsClass : public ScriptGui{
   
     maindir = "CarotidBifurcationWorkshop2009/"
@@ -38,8 +34,10 @@ if (!exists(RunExperimentsClass)){
     AddSphereClass            ::AS
     config                    ::CONFIG
 
-    ::itk=&global::itk
-    ::filters=&global::filters
+    global::ami_import.ITK()
+    ::itk=&itk
+    global::ami_import.Filters()
+    ::filters=&filters
     
     
     #------------------------------------------
@@ -1937,7 +1935,7 @@ if (!exists(RunExperimentsClass)){
           ::win.AddButton("Render",      ::Render)
           
         ::AddHelpPage(&::win)
-        
+
       ::win.EndBook()
       
       ::AddStandardButtons(&::win)

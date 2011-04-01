@@ -183,8 +183,7 @@ setpos           return(token::SETPOS);            /*{setpos,SETPOS}*/
 lininterp        return(token::T_lininterp);      /*{lininterp,T_lininterp}*/
 initvalue        return(token::T_initvalue);       /*{initvalue,T_initvalue}*/
 
-itk               return(token::T_itk); /*{itk,T_itk}*/
-CannyEdgeDetector return(token::T_CannyEdgeDetector); /*{CannyEdgeDetector,T_CannyEdgeDetector}*/
+itkCannyEdgeDetector  return(token::T_itkCannyEdgeDetector); /*{itk,T_itk}*/
 
 GetName        return(token::T_GetName); /*{GetName,T_GetName}*/
 GetObjectName  return(token::T_GetObjectName); /*{GetObjectName,T_GetObjectName}*/
