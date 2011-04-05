@@ -3,6 +3,7 @@
 #
 
 func "Common/ScriptGui"
+import_vtk
 
 if (!exists(CreateUltrasoundClass)) {
 
@@ -20,9 +21,18 @@ if (!exists(CreateUltrasoundClass)) {
       ::folder_save = "", "Images save"
       ::l = Image(UCHAR,640,480,1)
       ::r = Image(UCHAR,640,480,1)
-      ::xpoint  = "0",  "Coordenada X"
-      ::ypoint  = "0",  "Coordenada Y"
-      ::zpoint  = "0",  "Coordenada Z"
+  
+      
+      ::Xl=(DOUBLE)0
+      ::Yl=(DOUBLE)0
+      ::Xr=(DOUBLE)0
+      ::Yr=(DOUBLE)0
+      ::Xm=(DOUBLE)0
+      ::Ym=(DOUBLE)0
+      ::x3d=(DOUBLE)0
+      ::y3d=(DOUBLE)0
+      ::z3d=(DOUBLE)0
+      
       
       #-------------- Timer
       ::interval = 0.1, "timer interval in seconds"
@@ -30,6 +40,7 @@ if (!exists(CreateUltrasoundClass)) {
       ::timer = wx.wxTimer(&::evh)
       ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
       ::processing_timer = false
+      ::in_ReadCamera = false
     }
     
     
@@ -54,7 +65,7 @@ if (!exists(CreateUltrasoundClass)) {
           diff=currenttime-::inittime
           ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
           ::ReadCamera()
-          ::RImageShow()
+         
           ::processing_timer =false
       } 
     }
@@ -80,60 +91,136 @@ if (!exists(CreateUltrasoundClass)) {
   }
   
   proc ::DisconnectCamera() {
-    ::c.Detach()
-    ::win.EnablePanel(::panel_camera,0)
+    if(exists(::c)){
+        ::c.Detach()
+        ::win.EnablePanel(::panel_camera,0)
+    }
   
   }
   
   proc ::ReadUltrasonix() {
 
   }
-
-  proc ::ReadCamera() {
-    ok = ::cam.grabFrame()
-    if (ok==true) {
-      mt.GetImageMT(&::l,&::r,&::cam)
-    } else {
-      InfoDialog "grabFrame failed!"
-    }
-  }
   
-  proc ::GetOutput() {
-
-  }
-
-  proc ::Show() {
-  
-
-  }
   proc ::Pinta() {
-  if(exists(::r_draw)){
-    ::r_draw.SetPenColor(wx.wxColour(255,0,0,255))
+ #   if(exists(::l_draw)){
+  #      ::l_draw.SetPenColor(wx.wxColour(255,0,0,255))
+  #      ::l_draw.SetLineParameters(2,0)
+   #      for XPNum=1 to ::collect->count() { 
+    #    ::mtxp = mt.MTXPoint(::collect->itemI(XPNum))
+     #   ::mtxp.Position2D(&::Xl,&::Yl,&::Xr,&::Yr,&::Xm,&::Ym);
+      #  ::mtxp.Position3D(&::x3d, &::y3d, &::z3d);
+      #  ::mtxp.setIndex(XPNum)
+       # ::l_draw.DrawCircleR(::Xl,::Yl,3)
+        
+       # del ::mtxp
+      # }
+        
+       # ::l_draw->DrawingAreaDisplay()
+   # }else{
+    #    InfoDialog "There is not draw!"
+    #}
+  }
+  
+  proc ::ReadCamera() {
+    if (!::in_ReadCamera) {
+      ::in_ReadCamera=true
+    ok = ::cam.grabFrame()
+    ::xp = mt.XPoints()
+    ::collect=mt.GetStoreXpointMT(&::xp,&::cam)
+  
+    if (ok==true && ::collect!=NULL) {
+        mt.GetImageMT(&::l,&::r,&::cam)
     
-    # draw vertical
-    _xmin = (FLOAT)::r_draw.GetXmin()
-    _xmax = (FLOAT)::r_draw.GetXmax()
-    _ymin = (FLOAT)::r_draw.GetYmin()
-    _ymax = (FLOAT)::r_draw.GetYmax()
-    
-   
-   
-   # ::r_draw.DrawLineZ(_xmin,_ymin,_xmax,_ymax)
-    ::r_draw.DrawCircleR(_xmax/2,_ymax/2,20)
-    ::r_draw->DrawingAreaDisplay()
-    }else{
-        InfoDialog "no hay draw!"
+        if (!exists(l_draw)) { 
+          show ::l
+          ::l_draw.PaintCallback(&::ReadCamera)
+        }
+
+        ::l_draw.SetPenColor(wx.wxColour(255,0,0,255))
+        ::l_draw.SetLineParameters(2,0)
+        
+        if(exists(::collect)){
+            for XPNum=1 to ::collect->count() { 
+            ::mtxp = mt.MTXPoint(::collect->itemI(XPNum))
+            ::mtxp.Position2D(&::Xl,&::Yl,&::Xr,&::Yr,&::Xm,&::Ym);
+            ::mtxp.Position3D(&::x3d, &::y3d, &::z3d);
+            ::mtxp.setIndex(XPNum)
+            if(XPNum == 1){
+                ::win.SetLabelValue(::xpoint1," (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
+            }
+            if(XPNum == 2){
+                ::win.SetLabelValue(::xpoint2, " (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
+            
+            }
+            if(XPNum == 3){
+                ::win.SetLabelValue(::xpoint3, " (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
+            }
+            #sacar las dos rectas y hacer el producto vectorial. El resultado es la normal al plano
+           # ::RenderPlane(1.2,2.3,3.4)
+            
+            ::win.Update(-1)
+            ::l_draw.DrawCircleR(::Xl,::Yl,3)
+             
+            del ::mtxp
+            }
+       # del ::collect
+        }
+        
+        ::l_draw->DrawingAreaDisplay()
+
+            
+    } else {
+      InfoDialog "grabFrame failed! or collect NULL"
+      #del ::collect
+    }
+      del ::collect
+      ::in_ReadCamera = false
     }
   }
+  
   
   proc ::RImageShow() {
     show ::r
-    ::Pinta()
-    ::r_draw.PaintCallback(&::Pinta)
   }
   
   proc ::LImageShow() {
     show ::l
+  }
+  
+  proc ::RenderPlane(NUM xn,NUM yn,NUM zn) {
+
+ 
+ //Create a plane
+  planeSource = vtk.vtkPlaneSource.New();
+  planeSource.SetCenter(1.0, 0.0, 0.0);
+  planeSource.SetNormal(1.0, 0.0, 1.0);
+ 
+   plane = planeSource.GetOutput();
+
+      
+      #Visualize
+      mapper = vtk.vtkPolyDataMapper.New()
+     # mapper.SetInputConnection(&glyph3D.GetOutputPort())
+    mapper.SetInput(&planeSource.GetOutput())
+      
+      #basándome en vtkIsoSurfaceClass
+      renwin_interact = global::wxVTKFrame()
+      renwin = renwin_interact.GetRenderWindow()
+      renderer = vtk.vtkRenderer.New()
+      renwin.AddRenderer(&renderer)
+      interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      renwin_interact.SetInteractorStyle(&interact)
+      actor = vtk.vtkActor.New()
+      actor.SetMapper(&mapper)
+      renderer.AddActor(&actor)
+      renderer.ResetCameraClippingRange()
+      renderer.SetBackground(0.3, 0.6, 0.3)
+      renderer.ResetCamera()
+
+      
+      #renwin.Render()
+      renwin_interact.Start()
   }
   
   proc ::Gui() {
@@ -166,16 +253,24 @@ if (!exists(CreateUltrasoundClass)) {
         ::win.EndBoxPanel()
         
         ::win.BeginBoxPanel("Images")
-          ::win.AddButton("Show Left",::LImageShow)
-          ::win.AddButton("Show Right",::RImageShow)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Show Left",::LImageShow)
+            ::win.AddButton("Show Right",::RImageShow)
+            ::win.AddButton("Show VTK",::RenderPlane)
+          ::win.EndHorizontal()
         ::win.EndBoxPanel()
         
                 
         ::win.BeginBoxPanel("Coordenadas")
+                   
           ::win.BeginHorizontal()
-            ::win.AddLabel("X:",::xpoint)
-            ::win.AddLabel("Y:",::ypoint)
-            ::win.AddLabel("Z:",::zpoint) 
+                ::xpoint1 = ::win.AddLabel("XPoint1:","")
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
+                ::xpoint2 = ::win.AddLabel("XPoint2:","")
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
+                ::xpoint3 = ::win.AddLabel("XPoint3:","")
           ::win.EndHorizontal()
         ::win.EndBoxPanel()
         
@@ -215,5 +310,3 @@ if (!exists(CreateUltrasoundClass)) {
 } #End of class
   
 } # End of if
-
-      

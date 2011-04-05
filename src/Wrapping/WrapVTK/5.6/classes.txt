@@ -86,3 +86,4 @@ vtkWindowToImageFilter
 vtkImageFFT
 vtkImageRFFT
 vtkImageFourierCenter
+vtkGlyph3D

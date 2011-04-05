@@ -43,3 +43,4 @@
 #include <vtkImageFFT.h>
 #include <vtkImageRFFT.h>
 #include <vtkImageFourierCenter.h>
+#include <vtkGlyph3D.h>

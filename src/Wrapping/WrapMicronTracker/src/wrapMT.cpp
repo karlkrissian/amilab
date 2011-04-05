@@ -23,6 +23,28 @@ extern VarContexts  Vars;
 #include "wrap_XPoints.h"
 #include "wrap_MTXPoint.h"
 #include "wrapMT.h"
+#include "wrap_MTCollection__NS__Collection.h"
+
+extern Variable<int>::ptr nullvar;
+
+struct reg2D{
+  double Xl, Yl; //left image
+  double Xr, Yr; //right image
+  double Xm, Ym; //middle image
+};
+struct reg3D{
+  double X, Y, Z;
+
+};
+class StoreXPoint{
+  int count;
+
+  StoreXPoint(int size);
+  ~StoreXPoint();
+  
+  void ItemPos2D(int pos,double* Xl,double* Yl,double* Xr,double* Yr,double* Xm,double* Ym);
+  void ItemPos3D(int pos,double* X,double* Y,double* Z);
+};
 
 //---------------------------------------------------------
 void AddWrapMT() {
@@ -35,6 +57,7 @@ void AddWrapMT() {
   
   ADDLOCAL_OBJECTVAR_NAME( amiobject,C_wrap_varfunction, "GetImageMT",  GetImageMT);
   ADDLOCAL_OBJECTVAR_NAME( amiobject,C_wrap_varfunction, "GetStoreXpointMT",  GetStoreXpointMT);
+  ADDLOCAL_OBJECTVAR_NAME( amiobject,C_wrap_varfunction, "Get2DXpointMT",  Get2DXpointMT);
   
 
   // Add classes to mt context
@@ -164,26 +187,35 @@ BasicVariable::ptr  GetStoreXpointMT(ParamList* p) {
                        \n\
                        Xpoints object\n\
                        camera object\n\
+                       Collection object\n\
                        ";
 
     XPoints* pXPoints = NULL;
     MCamera* cam = NULL;
+    MTCollection::Collection* xpointsCollection;
+    
+    
     int n = 0; 
     
     
     if (!get_val_ptr_param<XPoints>(  pXPoints,      p, n)) HelpAndReturnVarPtr;
     if (!get_val_ptr_param<MCamera>(  cam,      p, n)) HelpAndReturnVarPtr;
+   
+    
+    
     if (pXPoints == NULL) printf("Error leyendo xpoint\n");
     if (cam == NULL)printf("Error leyendo cam\n");
     int res = pXPoints->processFrame(NULL);
     if(res!= 0) printf("Error in process frame \n");
+    printf("handle xpoints %d",pXPoints->detectedXPoints(cam));
     //Store detected Xpoints 
-    MTCollection::Collection* xpointsCollection = new MTCollection::Collection(pXPoints->detectedXPoints(cam)); 
+    xpointsCollection = new MTCollection::Collection(pXPoints->detectedXPoints(cam)); 
+    printf(" puntos count %d\n",xpointsCollection->count());
 
 	  if (xpointsCollection->count() == 0) {
 		  delete xpointsCollection; 
       printf("Empty Collection \n");
-      return BasicVariable::ptr();
+      return nullvar;
 		  //return;
 	  }
 
@@ -191,7 +223,7 @@ BasicVariable::ptr  GetStoreXpointMT(ParamList* p) {
 	  double x3,y3,z3;
 	  int XPNum=1;
 	  MTXPoint* XP;
-	  double radius = 5;
+
 	  for (XPNum = 1; XPNum <= xpointsCollection->count(); XPNum++)
 		{
 		  XP = new MTXPoint(xpointsCollection->itemI(XPNum));
@@ -200,7 +232,59 @@ BasicVariable::ptr  GetStoreXpointMT(ParamList* p) {
 			XP->setIndex(XPNum);
       //Imprimir los Xpoints detectados
       printf("XPoints detected  %f %f %f \n",x3,y3,z3);
+      // TODO guardar los Xpoints detectados en fichero?
     }
-	  char s[100];
-    return BasicVariable::ptr();
+    return WrapClass_MTCollection__NS__Collection::CreateVar(xpointsCollection);
  } // GetStoreXpointMT()
+
+/** Get a 2D Xpoint **/
+BasicVariable::ptr  Get2DXpointMT(ParamList* p) {
+
+
+    char functionname[] = "Get2DXpointMT";
+    char description[]=" \n\
+                       Gets Xpoints from current frame and store it\n\
+                       ";
+    char parameters[] =" \n\
+                       Parameters:\
+                       \n\
+                       Collection handle\n\
+                       Xl,Yl,Xr,Yr,Xm,Ym\n\
+                       Item position\n\
+                       ";
+
+    double* Xl,*Yl,*Xr,*Yr,*Xm,*Ym;
+    
+    int handle;
+    int n = 0; 
+    int itempos;
+      
+    if (!get_int_param(  handle,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<double>(  Xl,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<double>(  Yl,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<double>(  Xr,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<double>(  Yr,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<double>(  Xm,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<double>(  Ym,      p, n)) HelpAndReturnVarPtr;
+    if (!get_int_param(  itempos,      p, n)) HelpAndReturnVarPtr; 
+    
+    MTCollection::Collection* xpointsCollection = new MTCollection::Collection(handle); 
+    
+    int c = xpointsCollection->count();
+	  if (xpointsCollection->count() == 0) {
+		  delete xpointsCollection; 
+      printf("Empty Collection \n");
+      return BasicVariable::ptr();
+		  //return;
+	  }
+ 
+	  double x3,y3,z3;
+	  MTXPoint* XP;
+	  
+		  XP = new MTXPoint(xpointsCollection->itemI(itempos));
+			XP->Position2D(Xl, Yl, Xr, Yr, Xm, Ym);
+      XP->Position3D(&x3, &y3, &z3);
+			XP->setIndex(itempos);
+    
+    return BasicVariable::ptr();
+ } // Get2DXpointMT()
