@@ -1,0 +1,51 @@
+
+if (!exists(CTestClass)) {
+
+  #------------------------------------
+  Class CTestClass {
+    #------------------------------------
+    proc ::Init() {
+      ::ctest_success = "Test Succeeded !!!"
+      ::ctest_failure = "Test Failed !!!"
+    }
+    Comments( ::Init, "Initializes the CTestClass class.")
+
+    #------------------------------------
+    proc ::Enable() {
+      NoMessageDialog(1)    # Hide message dialog
+      ami.MainFrame.Show(0) # Hide main frame
+    }
+
+    #------------------------------------
+    proc ::SetPassesExpression(STRING Expression) {
+      ::ctest_success = Expression
+    }
+    Comments( ::SetPassesExpression, "Sets the test passes expression")
+
+    #------------------------------------
+    proc ::SetFailsExpression(STRING Expression) {
+      ::ctest_failure = Expression
+    }
+    Comments( ::SetFailsExpression, "Sets the test fails expression")
+
+    #------------------------------------
+    proc ::PrintTestResult( NUM _val ) {
+      print "\n  Test Result: "
+      if (_val) {
+        printn ::ctest_success
+      } else {
+        printn ::ctest_failure
+      }
+    }
+    Comments( ::PrintTestResult, "Shows the test result")
+
+    ::Init()
+  } # Class CTestClass
+  Comments( CTestClass, "Determines when the test fails or passes")
+  #------------------------------------------
+}
+
+#if (!exists(ctest)) {
+  #CTestClass ctest
+#}
+

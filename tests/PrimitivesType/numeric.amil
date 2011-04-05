@@ -1,0 +1,216 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# numeric.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the Numeric primitives type.
+# - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+if (!exists(NumericTestClass)) {
+
+  #------------------------------------
+  Class NumericTestClass {
+
+    func "ctest/CTestClass.amil" # Load regular expression to determine when the
+                                 # test fails or passes.
+
+    CTestClass  ::CTest
+
+    #------------------------------------
+    proc ::Init() {
+      ::OK = INT(1), "The test result"
+      ::CTest.Enable()
+    }
+    Comments( ::Init, "Initializes the NumericTestClass class.")
+
+    #------------------------------------
+    proc ::BinaryArithmeticOperations(STRING op, NUM A, NUM B) {
+      result=0
+      if(op=="+") { result=A+B; }
+      if(op=="-") { result=A-B; }
+      if(op=="*") { result=A*B; }
+      if(op=="/") { result=A/B; }
+      if(op=="%") { result=A%B; }
+      if(op=="^") { result=A^B; }
+      if(op=="&") { result=A&B; }
+      if(op=="|") { result=A|B; }
+      if(op=="&&") { result=A&&B; }
+      if(op=="||") { result=A||B; }
+      if(op=="+=") { A+=B; result=A; }
+      if(op=="-=") { A-=B; result=A; }
+      if(op=="*=") { A*=B; result=A; }
+      if(op=="/=") { A/=B; result=A; }
+      #if(op=="&=") {
+        #A&=B
+        #result=A
+      #}
+      #if(op=="^=") {
+        #A^=B
+        #result=A
+      #}
+      #if(op=="|=") {
+        #A|=B
+        #result=A
+      #}
+      return=&result
+    }
+    Comments( ::BinaryArithmeticOperations, "Binary arithmetic operations")
+
+    #------------------------------------
+    proc ::UnaryArithmeticOperations(STRING op, NUM A) {
+      result=0
+      if(op=="!") { result=!A; }
+      if(op=="p++") { A++; result=A; }
+      if(op=="p--") { A--; result=A; }
+      if(op=="++p") { ++A; result=A; }
+      if(op=="--p") { --A; result=A; }
+      return=&result
+    }
+    Comments( ::UnaryArithmeticOperations, "Unary arithmetic operations")
+
+    #------------------------------------
+    proc ::BinaryLogicalOperators(STRING op, NUM A, NUM B) {
+      result=0
+      if(op=="<") { result=A<B; }
+      if(op==">") { result=A>B; }
+      if(op=="<=") { result=A<=B; }
+      if(op==">=") { result=A>=B; }
+      if(op=="==") { result=A==B; }
+      if(op=="!=") { result=A!=B; }
+      return=&result
+    }
+    Comments( ::BinaryLogicalOperators, "Binary logicals operations")
+
+    #------------------------------------
+    proc ::TrigonometricOperators(STRING op, NUM A) {
+      result=0
+      if(op=="sin") { result=sin A; }
+      if(op=="cos") { result=cos A; }
+      if(op=="tan") { result=tan A; }
+      if(op=="asin") { result=asin A; }
+      if(op=="acos") { result=acos A; }
+      if(op=="atan") { result=atan A; }
+      return=&result
+    }
+    Comments( ::TrigonometricOperators, "Trigonometric operators")
+
+    #------------------------------------
+    proc ::FunctionsOperators(STRING op, NUM A) {
+      result=0
+      if(op=="exp") { result=exp A; }
+      if(op=="ln") { result=ln A; }
+      if(op=="log") { result=log A; }
+      if(op=="sqrt") { result=sqrt A; }
+      if(op=="abs") { result=abs A; }
+      if(op=="norm") { result=norm A; }
+      if(op=="round") { result=round A; }
+      if(op=="floor") { result=floor A; }
+      return=&result
+    }
+    Comments( ::FunctionsOperators, "Functions operators")
+
+    #------------------------------------
+    proc ::SimpleTest(NUM A, NUM B) {
+      for op in "+","-","*","/","%","^","&","|","&&","||","+=","-=","*=","/=","&=","^=","|=" {
+        result=::BinaryArithmeticOperations(op, A, B)
+        msg="Result %1% " % A
+        msg+="%1% " % op
+        msg+="%1% = " % B
+        msg+="%1%"%result
+        printn msg
+      }
+
+      for op in "!","p++","p--","++p","--p" {
+        msg="Result %1% " % op
+        msg+="%1% = " % A
+        msg+="%1%"%::UnaryArithmeticOperations(op, A)
+        printn msg
+      }
+
+      for op in "<",">","<=",">=","==","!=" {
+        msg="Result %1% " % A
+        msg+="%1% " % op
+        msg+="%1% = " % B
+        msg+="%1%"%::BinaryLogicalOperators(op, A, B)
+        printn msg
+      }
+
+      A=180
+      for op in "sin", "cos", "tan", "asin", "acos", "atan" {
+        msg="Result %1% " % op
+        msg+="%1% = " % A
+        msg+="%1%"%::TrigonometricOperators(op, A)
+        printn msg
+      }
+
+      for op in "exp","ln","log","sqrt","abs","norm","round","floor" {
+        msg="Result %1% " % op
+        msg+="%1% = " % B
+        msg+="%1%"%::FunctionsOperators(op, B)
+        printn msg
+      }
+    }
+    Comments( ::SimpleTest, "The simple test")
+
+    #------------------------------------
+    proc ::UcharTest() {
+      A=(UCHAR) 10
+      B=(UCHAR) 2
+      ::SimpleTest(A,B)
+    }
+    Comments( ::UcharTest, "The int type test")
+
+
+    #------------------------------------
+    proc ::IntTest() {
+      A=(INT) 10
+      B=(INT) 2
+      ::SimpleTest(A,B)
+    }
+    Comments( ::IntTest, "The int type test")
+
+    #------------------------------------
+    proc ::FloatTest() {
+      A=(FLOAT) 10
+      B=(FLOAT) 2
+      ::SimpleTest(A,B)
+    }
+    Comments( ::FloatTest, "The float type test")
+
+    #------------------------------------
+    proc ::DoubleTest() {
+      A=(DOUBLE) 10
+      B=(DOUBLE) 2
+
+      ::SimpleTest(A,B)
+    }
+    Comments( ::DoubleTest, "The double type test")
+
+    #------------------------------------
+    proc ::Execute(NUM Test) {
+      if(Test==0){
+        ::UcharTest()
+        ::IntTest()
+        ::FloatTest()
+        ::DoubleTest()
+      }
+      ::CTest.PrintTestResult(::OK)
+    }
+    Comments( ::Execute, "Execute the boolean test")
+
+    ::Init()
+  } # Class NumericTestClass
+  Comments( NumericTestClass, "Check the numeric primitives type.")
+  #------------------------------------------
+}
+
+if (!exists(NumericTest)) {
+  NumericTestClass NumericTest
+}
+NumericTest.Execute(0)
+
+quit
+

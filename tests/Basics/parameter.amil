@@ -1,0 +1,69 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# parameter.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the amilab paremeter system.
+# - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/CTestClass.amil" # Load regular expression to determine when the
+                             # test fails or passes.
+
+CTestClass CTest
+CTest.Enable()
+OK = 1
+
+printn "Number of parameters received: (%1%)" % argc
+if(argc>0) {
+  printn "Received parameters:"
+  # The first argument corresponds to the binary AMILAB.
+  for i=1 to argc{
+    print "\t Parameter(%1%): " % i
+    eval "printn $%0.0f;" % i
+  }
+
+  #
+  # It is verified that these parameters have been received:
+  #
+  # FirstParam  SecondParam  ThirdParam  FourthParam  FifthParam  (5 parameters)
+  #
+  printn "Now, check if they have received the following five parameters:"
+  printn "\tFirstParam  SecondParam  ThirdParam  FourthParam  FifthParam"
+
+  if(argc == 5) {
+    if($1 != "FirstParam"){
+      OK=0
+      printn "The first parameter is incorrect."
+    }
+    if($2 != "SecondParam"){
+      OK=0
+      printn "The second parameter is incorrect."
+    }
+    if($3 != "ThirdParam"){
+      OK=0
+      printn "The third parameter is incorrect."
+    }
+    if($4 != "FourthParam"){
+      OK=0
+      printn "The fourth parameter is incorrect."
+    }
+    if($5 != "FifthParam"){
+      OK=0
+      printn "The fifth parameter is incorrect."
+    }
+  } else {
+    OK=0
+    printn "Error: the parameter number is incorrect"
+  }
+} else {
+  OK=0
+  printn "Error: the parameter number is incorrect"
+}
+
+CTest.PrintTestResult( OK )
+
+quit
+

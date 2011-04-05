@@ -1,0 +1,153 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# routines.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the amilab routines system.
+# - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+if (!exists(RoutinesTestClass)) {
+
+  #------------------------------------
+  Class RoutinesTestClass {
+
+    func "ctest/CTestClass.amil" # Load regular expression to determine when the
+                                 # test fails or passes.
+
+    CTestClass  ::CTest
+
+    #------------------------------------
+    proc ::Init() {
+      ::OK    = INT(1), "The test result"
+      ::CTest.Enable()
+    }
+    Comments( ::Init, "Initializes the RoutinesTestClass class.")
+
+    #------------------------------------
+    proc ::CircleArea(NUM Radius) {
+      AREA=Pi*(Radius*Radius)
+      return=&AREA;
+    }
+    Comments( ::CircleArea, " Find the area of a circle")
+
+    #------------------------------------
+    proc ::Factorial(NUM Number) {
+      Prod=1
+      for i=2 to Number {
+        Prod*=i
+      }
+      return=&Prod;
+    }
+    Comments( ::Factorial, "Shows the factorial of a positive integer N")
+
+    #------------------------------------
+    proc ::Fibonacci(NUM N) {
+      i=1
+      j=0
+      t=0
+
+      for k=1 to N {
+        t=i+j
+        i=j
+        j=t
+      }
+      return=&j;
+    }
+    Comments( ::Fibonacci, "Shows the element of the Fibonacci numbers corresponding to the position N.")
+
+    #------------------------------------
+    proc ::GreatestCommonDivisor(NUM x, NUM y) {
+      x = (x < 0) ? (-x):x
+      y = (y < 0) ? (-y):y
+      t = (x < y) ? x:y
+
+      Condition=( (x % t) || (y % t) )
+
+      while Condition {
+        --t
+        Condition=( (x % t) || (y % t) )
+      }
+      return=&t;
+    }
+    Comments( ::GreatestCommonDivisor, "Shows the greatest common divisor of of two positive integers a and b")
+
+    #------------------------------------
+    proc ::PrimeNumber(NUM N) {
+      root=sqrt(N)
+      Result=1; # Indicates a prime number.
+      for i=2 to root{
+        if ((N % i) == 0) {
+          Result=0; # No prime number.
+        }
+      }
+      return=&Result;
+    }
+    Comments( ::PrimeNumber, "Determine whether a number is prime")
+
+    #------------------------------------
+    proc ::Execute() {
+      R=10
+      const_pi = 3.141592654
+
+      Result=::CircleArea(R)
+      if(Result != (const_pi*(R*R))) {
+        OK = 0
+        print "CircleArea?: Failed (%1% != " % Result
+        printn "%1%)" % (const_pi*(R*R))
+      } else {
+        print "CircleArea?: OK (%1% == " % Result
+        printn "%1%)" % (const_pi*(R*R))        
+      }
+
+      Result=::Factorial(5)
+      if(Result!=120) {
+        OK = 0
+        printn "Factorial?: Failed (%1% != 120)" % Result
+      } else {
+        printn "Factorial?: OK (%1% == 120)" % Result
+      }
+
+      Result=::Fibonacci(5)
+      if(Result!=5) {
+        OK = 0
+        printn "Fibonacci?: Failed (%1% != 5)" % Result
+      } else {
+        printn "Fibonacci?: OK (%1% == 5)" % Result
+      }
+
+      Result=::GreatestCommonDivisor(12,60)
+      if(Result!=12) {
+        OK = 0
+        printn "GreatestCommonDivisor?: Failed (%1% != 12)" % Result
+      } else {
+        printn "GreatestCommonDivisor?: OK (%1% == 12)" % Result
+      }
+
+      Result=::PrimeNumber(7)
+      if(Result!=1) {
+        OK = 0
+        printn "PrimeNumber?: Failed (%1% is prime)" % Result
+      } else {
+        printn "PrimeNumber?: OK (%1% is prime)" % Result
+      }
+
+      ::CTest.PrintTestResult(::OK)
+    }
+    Comments( ::Execute, "Execute the file test")
+
+    ::Init()
+  } # Class RoutinesTestClass
+  Comments( RoutinesTestClass, "Check the AMILab routines system.")
+  #------------------------------------------
+}
+
+if (!exists(RoutinesTest)) {
+  RoutinesTestClass RoutinesTest
+}
+RoutinesTest.Execute()
+
+quit
+

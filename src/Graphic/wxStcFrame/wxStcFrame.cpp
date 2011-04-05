@@ -270,7 +270,7 @@ wxStcFrame::wxStcFrame (wxWindow* parent,const wxString &title)
     SetBackgroundColour (_T("WHITE"));
 
     // about box shown for 1 seconds
-    AppAbout dlg(this, 1000);
+    //AppAbout dlg(this, 1000);
 
     // create menu
     m_menuBar = new wxMenuBar;

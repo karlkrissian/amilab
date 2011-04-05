@@ -1,0 +1,109 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# file.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the amilab file system.
+# - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+if (!exists(FileTestClass)) {
+
+  #------------------------------------
+  Class FileTestClass {
+
+    func "ctest/CTestClass.amil" # Load regular expression to determine when the
+                                 # test fails or passes.
+
+    CTestClass  ::CTest
+
+    #------------------------------------
+    proc ::Init() {
+      ::name_file_string="String_IO.txt","The file name for string case"
+      ::name_file_float="Float_IO.txt","The file name for float case"
+      ::OK    = INT(1), "The test result"
+      ::CTest.Enable()
+    }
+    Comments( ::Init, "Initializes the FileTestClass class.")
+
+    #------------------------------------
+    proc ::IOString() {
+      F=File(::name_file_string, "w")
+      F._printn("Hello!!!")
+      del F
+      F=File(::name_file_string, "r")
+      result=F.read_string()
+      del F
+      if(result=="Hello!!!") {
+        printn "IOString? OK"
+      } else {
+        ::OK=0
+        printn "IOString? FAILED"
+      }
+    }
+    Comments( ::IOString, "The IO string test")
+
+    #------------------------------------
+    proc ::IOFloat(NUM Value) {
+      F=File(::name_file_float, "w")
+      F._printn(Value)
+      del F
+      F=File(::name_file_float, "r")
+      result=F.read_float()
+      del F
+      if(result==Value) {
+        printn "IOFloat? OK"
+      } else {
+        ::OK=0
+        printn "IOFloat? FAILED"
+      }
+    }
+    Comments( ::IOFloat, "The IO float test")
+
+    #------------------------------------
+    proc ::Rewind(NUM Value) {
+      F=File(::name_file_float, "w")
+      F._printn(0.25)
+      F._printn(0.5)
+      F._printn(0.10)
+      F.rewind()
+      F._printn(Value)
+      del F
+      F=File(::name_file_float, "r")
+      result=F.read_float()
+      del F
+      if(result==Value) {
+        printn "Rewind? OK"
+      } else {
+        ::OK=0
+        printn "Rewind? FAILED"
+      }
+    }
+    Comments( ::Rewind, "The rewind test")
+
+    #------------------------------------
+    proc ::Execute() {
+
+      ::IOString()
+      ::IOFloat(3.14)
+      ::Rewind(3.14)
+
+      ::CTest.PrintTestResult(::OK)
+    }
+    Comments( ::Execute, "Execute the file test")
+
+    ::Init()
+  } # Class FileTestClass
+  Comments( FileTestClass, "Check the AMILab file system.")
+  #------------------------------------------
+}
+
+if (!exists(FileTest)) {
+  FileTestClass FileTest
+}
+FileTest.Execute()
+
+quit
+
