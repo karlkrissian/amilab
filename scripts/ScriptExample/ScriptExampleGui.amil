@@ -1,0 +1,11 @@
+
+func "ScriptExampleClass"
+
+if (!exists(pvc_obj)) {
+  ScriptExampleClass ScriptExample_obj
+  pvc_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
