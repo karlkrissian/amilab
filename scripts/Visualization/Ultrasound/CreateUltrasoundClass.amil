@@ -34,6 +34,11 @@ if (!exists(CreateUltrasoundClass)) {
       ::z3d=(DOUBLE)0
       
       
+      ::Px1 = vector_double(3,0)
+      ::Px2 = vector_double(3,0)
+      ::Px3 = vector_double(3,0)
+      
+      
       #-------------- Timer
       ::interval = 0.1, "timer interval in seconds"
       ::evh = wx.wxAmiEventHandler(&::CB_timer)
@@ -148,13 +153,22 @@ if (!exists(CreateUltrasoundClass)) {
             ::mtxp.setIndex(XPNum)
             if(XPNum == 1){
                 ::win.SetLabelValue(::xpoint1," (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
+                ::Px1[0] = ::x3d
+                ::Px1[1] = ::y3d
+                ::Px1[2] = ::z3d
             }
             if(XPNum == 2){
                 ::win.SetLabelValue(::xpoint2, " (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
+                ::Px2[0] = ::x3d
+                ::Px2[1] = ::y3d
+                ::Px2[2] = ::z3d
             
             }
             if(XPNum == 3){
                 ::win.SetLabelValue(::xpoint3, " (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
+                ::Px3[0] = ::x3d
+                ::Px3[1] = ::y3d
+                ::Px3[2] = ::z3d
             }
             #sacar las dos rectas y hacer el producto vectorial. El resultado es la normal al plano
            # ::RenderPlane(1.2,2.3,3.4)
@@ -193,8 +207,55 @@ if (!exists(CreateUltrasoundClass)) {
  
  //Create a plane
   planeSource = vtk.vtkPlaneSource.New();
-  planeSource.SetCenter(1.0, 0.0, 0.0);
-  planeSource.SetNormal(1.0, 0.0, 1.0);
+  
+    #Calcular módulo para saber cual es el origen del plano
+  #|Px1Px2|
+
+  vp = VarVector(3)
+  vp.push_back(&::Px1)
+  vp.push_back(&::Px2)
+  vp.push_back(&::Px3)
+
+  r = vector_int(3)
+
+  r[2] = 0
+  for k=0 to 2 {
+    tmp = ::Px2[k]-::Px1[k]
+    r[2] += tmp*tmp
+  }
+  r[1] = 0
+  for k=0 to 2 {
+    tmp = ::Px3[k]-::Px1[k]
+    r[1] += tmp*tmp
+  }
+  r[0] = 0
+  for k=0 to 2 {
+    tmp = ::Px3[k]-::Px2[k]
+    r[0] += tmp*tmp
+  }
+  
+  i0 = 0
+  i1 = 1
+  i2 = 2
+  if (r[i0]>r[i1]) {
+    tmp = i0; i0 = i1; i1 = tmp;
+  }
+  if (r[i1]>r[i2]) {
+    tmp = i1; i1 = i2; i2 = tmp;
+  }
+  if (r[i0]>r[i1]) {
+    tmp = i0; i0 = i1; i1 = tmp;
+  }
+  
+  
+  planeSource.SetOrigin( -vp[i2][0], vp[i2][1], vp[i2][2])
+  planeSource.SetPoint1( -vp[i0][0], vp[i0][1], vp[i0][2])
+  planeSource.SetPoint2( -vp[i1][0], vp[i1][1], vp[i1][2])
+  
+  
+ 
+#  planeSource.SetCenter(1.0, 0.0, 0.0);
+ # planeSource.SetNormal(1.0, 0.0, 1.0);
  
    plane = planeSource.GetOutput();
 
@@ -307,6 +368,8 @@ if (!exists(CreateUltrasoundClass)) {
   }
   
   ::Init()
-} #End of class
+}
+ #End of class
   
-} # End of if
+} 
+# End of if
