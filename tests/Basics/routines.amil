@@ -94,7 +94,7 @@ if (!exists(RoutinesTestClass)) {
 
       Result=::CircleArea(R)
       if(Result != (const_pi*(R*R))) {
-        OK = 0
+        ::OK = 0
         print "CircleArea?: Failed (%1% != " % Result
         printn "%1%)" % (const_pi*(R*R))
       } else {
@@ -104,7 +104,7 @@ if (!exists(RoutinesTestClass)) {
 
       Result=::Factorial(5)
       if(Result!=120) {
-        OK = 0
+        ::OK = 0
         printn "Factorial?: Failed (%1% != 120)" % Result
       } else {
         printn "Factorial?: OK (%1% == 120)" % Result
@@ -112,7 +112,7 @@ if (!exists(RoutinesTestClass)) {
 
       Result=::Fibonacci(5)
       if(Result!=5) {
-        OK = 0
+        ::OK = 0
         printn "Fibonacci?: Failed (%1% != 5)" % Result
       } else {
         printn "Fibonacci?: OK (%1% == 5)" % Result
@@ -120,7 +120,7 @@ if (!exists(RoutinesTestClass)) {
 
       Result=::GreatestCommonDivisor(12,60)
       if(Result!=12) {
-        OK = 0
+        ::OK = 0
         printn "GreatestCommonDivisor?: Failed (%1% != 12)" % Result
       } else {
         printn "GreatestCommonDivisor?: OK (%1% == 12)" % Result
@@ -128,7 +128,7 @@ if (!exists(RoutinesTestClass)) {
 
       Result=::PrimeNumber(7)
       if(Result!=1) {
-        OK = 0
+        ::OK = 0
         printn "PrimeNumber?: Failed (%1% is prime)" % Result
       } else {
         printn "PrimeNumber?: OK (%1% is prime)" % Result
