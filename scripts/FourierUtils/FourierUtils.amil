@@ -1,0 +1,80 @@
+
+if (exists(FourierUtilsClass)) {
+  del FourierUtilsClass
+}
+
+
+#--------------------------
+Class FourierUtilsClass \
+{
+  #--------------------------
+  proc ::FFT( IMAGE input) {
+    import_vtk
+    return=vtkImageFFT(&input)
+  }
+  Comments(::FFT,"Fast Fourier Transform of the input image, given as a double image of 2 components")
+
+  #--------------------------
+  proc ::RFFT( IMAGE input) {
+    import_vtk
+    return=vtkImageRFFT(&input)
+  }
+  Comments(::RFFT,"Inverse Fast Fourier Transform of the input image, given as a double image of 2 components")
+
+  #--------------------------
+  proc ::AmiCenter( IMAGE input) \
+  {
+    pos = ::CenterPosition(&input)
+    return=input(pos)
+  }
+  Comments(::AmiCenter,"Center the frequency image for visualization purpose")
+
+  #--------------------------
+  proc ::VtkCenter( IMAGE input) \
+  {
+    return=vtkImageFourierCenter(&input)
+  }
+  Comments(::VtkCenter,"Center the frequency image for visualization purpose")
+
+  #--------------------------
+  proc ::Spectrum( IMAGE in_fft) \
+  {
+    return=ln(1+norm(in_fft))
+  }
+  Comments(::Spectrum,"Image of the frequency spectrum")
+
+  #--------------------------
+  proc ::CenterPosition( IMAGE input) \
+  {
+    pos = SpacePos(input)
+    pos1 = pos
+    pos1.SetComponent(0,(pos[0]+pos.tx/2)%pos.tx)
+    pos1.SetComponent(1,(pos[1]+pos.ty/2)%pos.ty)
+    if (pos.tz>1) {
+      pos1.SetComponent(2,(pos[2]+pos.tz/2)%pos.tz)
+    }
+    return = &pos1
+  }
+
+  #--------------------------
+  proc ::Distance( IMAGE input) \
+  {
+    pos = SpacePos(input)
+    pos1 = pos
+    pos1.SetComponent(0,(pos[0]+pos.tx/2)%pos.tx-pos.tx/2)
+    pos1.SetComponent(1,(pos[1]+pos.ty/2)%pos.ty-pos.ty/2)
+    if (pos.tz>1) {
+      pos1.SetComponent(2,(pos[2]+pos.tz/2)%pos.tz-pos.tz/2)
+    }
+    return=norm(pos1)
+  }
+  Comments(::Distance,"Distance from the origin in the frequency domain")
+
+}
+
+if (exists(FourierUtils)) {
+  del  FourierUtils
+}
+
+FourierUtilsClass FourierUtils
+del FourierUtilsClass

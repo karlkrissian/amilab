@@ -8,3 +8,7 @@ category = "&PDI"
 dir      = "PDI/"
 
 
+ ami.MainFrame.AddToMenu("&PDI",category,"&FourierSpectrum",  dir+"FourierSpectrum/FourierSpectrumGui")
+
+ ami.MainFrame.AddToMenu("&PDI",category,"&ILPF",  dir+"ILPF/ILPFGui")
+

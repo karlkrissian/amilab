@@ -32,8 +32,13 @@ if (!exists(ScriptExampleClass)) {
 
 
     #-----------------------------------------------
-    proc ::Run() {
-      InfoDialog "Filtro fanstastico :) !!!"
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+        InfoDialog "Filtro fantastico :) !!!"
+      }
     }
 
     //---------------------------------------------------
