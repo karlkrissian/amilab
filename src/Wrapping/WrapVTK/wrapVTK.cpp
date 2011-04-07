@@ -215,7 +215,7 @@ InrImage* wrap_vtkImageFourierCenter(ParamList* p)
     int n=0;
 
   if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
-  return Func_vtkImageRFFT(input);
+  return Func_vtkImageFourierCenter(input);
 
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
