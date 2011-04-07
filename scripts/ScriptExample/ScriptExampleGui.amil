@@ -1,0 +1,11 @@
+
+func "ScriptExampleClass"
+
+if (!exists(ScriptExample_obj)) {
+  ScriptExampleClass ScriptExample_obj
+  ScriptExample_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
