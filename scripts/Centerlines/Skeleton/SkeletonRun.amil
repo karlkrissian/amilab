@@ -1,0 +1,33 @@
+
+func "SkeletonClass"
+
+SkeletonClass Skeleton_run
+
+if (argc>=2) {
+  input_name = $1
+  th = atof($2)
+  dataid = 0
+}
+
+if (argc>=3) {
+  dataid = atof($3)
+}
+
+if (argc>=4) {
+  maxrepfilename = $4
+}
+
+if (argc>=5) {
+  Skeleton_run.firstvessel = $5
+  Skeleton_run.lastvessel  = $5
+}
+
+Skeleton_run.input_name = input_name
+Skeleton_run.Threshold  = th
+Skeleton_run.datasetid  = dataid
+Skeleton_run.win.Update(-1)
+if (exists(maxrepfilename)) {
+  Skeleton_run.SetMaxRep(maxrepfilename)
+}
+
+# Run the filter??

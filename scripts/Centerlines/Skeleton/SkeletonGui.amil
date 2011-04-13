@@ -1,0 +1,11 @@
+
+func "SkeletonClass"
+
+if (!exists(Skeleton_obj)) {
+  SkeletonClass Skeleton_obj
+  Skeleton_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
