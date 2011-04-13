@@ -4,14 +4,14 @@
 # Adding main Gui scripts to the menu
 #
 
-proc AddMenuPropVesCont() \
+proc AddMenuScriptExample() \
 {
-  category = "&Vessels"
-  script = "Vessels/PropagateVesselsContours/PropagateVesselsContoursGui.amil"
+  category = "&PDI"
+  script = "PDI/ScriptExample/ScriptExampleGui.amil"
 
   # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&Propagate Contours",script)
+  ami.MainFrame.AddToMenu("&Scripts",category,"&ScriptExample",script)
 }
 
-AddMenuPropVesCont()
-del AddMenuPropVesCont
+AddMenuScriptExample()
+del AddMenuScriptExample

@@ -1,9 +1,9 @@
 
 func "ScriptExampleClass"
 
-if (!exists(pvc_obj)) {
+if (!exists(ScriptExample_obj)) {
   ScriptExampleClass ScriptExample_obj
-  pvc_obj.Gui()
+  ScriptExample_obj.Gui()
 } else {
   InfoDialog "The script seems to be already loaded." 
 }

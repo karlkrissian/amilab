@@ -16,28 +16,39 @@ if (!exists(ScriptExampleClass)) {
     }
 
 
-      #-----------------------------------------------
-      proc ::load_input() {
-        eval "::input <<= (FLOAT)"+::input_name+";"
-        if (::input_name=="BrowseImage") {
-          ::input_name = "::input"
-          ::win.Update(-1)
-        }
-    
-        if (exists(::win)) {
-          ::win.Update(-1)
-        }
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
       }
-      Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+        InfoDialog "Filtro fantastico :) !!!"
+      }
+    }
 
     //---------------------------------------------------
     proc ::Gui() {
     
       import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("Example",&::parent_panel)
+        ::win = import->ParamPanel("ScriptExample",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("Example")
+        ::win = import->ParamPanel("ScriptExample")
       }
       
       ::win.BeginBook()
@@ -52,8 +63,15 @@ if (!exists(ScriptExampleClass)) {
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
-    
-        ::AddHelpPage(&::win)
+        ::win.AddPage("Param")
+          ::win.AddLabel("Info:","Set your parameters here")
+
+        ::win.AddPage("Run")
+          ::win.AddButton("Run Filter",::Run)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
     
       ::win.EndBook()
     

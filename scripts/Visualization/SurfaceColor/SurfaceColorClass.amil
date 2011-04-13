@@ -123,13 +123,6 @@ if (!exists(SurfaceColorClass)) {
     }
     Comments( ::Display, "Displays the image and surface with colors.")
 
-    #------------------------------------
-    proc ::SetParentPanel(OBJECT thepanel) \
-    {
-      ::parent_panel = &thepanel
-    }
-    Comments( ::SetParentPanel, "Sets the panel showing the user interface.")
-
     #-----------------------------------------------
     proc ::Gui() \
     {

@@ -37,10 +37,17 @@ class Curvatures
 
     void EstimeCourbures( float gradient[3], float hessien[3][3], void* data);
 
-  public:
+    ///  true to compute the directions, false otherwise
+    bool compute_directions;
+
+public:
+    ///
     void  ComputeCurvatures( InrImage* image_initiale,
           float sigma);
 
+    void set_compute_directions( bool b) { compute_directions = b; }
+    bool get_compute_directions( ) { return compute_directions; }
+    
     InrImage::ptr GetGradDir()    { return im_graddir;    }
     InrImage::ptr GetGradNorm()   { return im_gradnorm;   }
     InrImage::ptr GetMaxCurv()    { return im_maxcurv;    }

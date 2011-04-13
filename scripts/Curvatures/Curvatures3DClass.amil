@@ -13,6 +13,7 @@ if (!exists(Curvatures3DClass)) {
       ::std_dev = 1 , "Gaussian Standard Deviation of the convolution kernel to compute image derivatives"
       ::show_curvatures   =UCHAR(1), "Show the principal curvature values"
       ::show_curvature_dir=UCHAR(0), "Show the principal curvature directions"
+      ::compute_directions = UCHAR(1), "Computes the principal directions of curvature"
 
       ::surfacecolor_mode = INT(0), "0: maximal curvature, 1: minimal curvature, 2: mean curvature, 3: input color image"
       ::surfacecolor_min  = -3,     "Minimal value of the displayed information on the surface"
@@ -22,12 +23,6 @@ if (!exists(Curvatures3DClass)) {
       ::isosurface_threshold = 50, "Input isosurface threshold"
     }
 
-    #------------------------------------
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
-    }
-    
     #------------------------------------
     proc ::LoadInput() {  
       eval "::input <<= (FLOAT)"+::input_name+";"
@@ -95,6 +90,7 @@ if (!exists(Curvatures3DClass)) {
       if (!exists(::input)) { ::LoadInput(); }
       if (exists(::curv)) { del ::curv; }
       ::curv =algorithms.Curvatures()
+      ::curv.set_compute_directions(::compute_directions)
       ::curv.ComputeCurvatures(&::input,::std_dev)
       ::mincurv <<= ::curv.GetMinCurv()
       ::maxcurv <<= ::curv.GetMaxCurv()
@@ -232,6 +228,7 @@ if (!exists(Curvatures3DClass)) {
 
           ::win.AddFloat(&::std_dev,"Gaussian STD",0.1,10)
           ::win.AddBoolean(&::show_curvatures,"Principal Curvatures")
+          ::win.AddBoolean(&::compute_directions,"Compute directions")
           ::win.AddBoolean(&::show_curvature_dir,"Principal Curvature directions")
 
           ::isosurf_th_id = ::win.AddFloat(&::isosurface_threshold,"Iso-surface",0,255)

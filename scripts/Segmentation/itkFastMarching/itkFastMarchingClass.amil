@@ -174,12 +174,6 @@ if (!exists(itkFastMarchingClass)) {
     }
     
     #----------------------------------------------------------------------
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
-    }
-    
-    #----------------------------------------------------------------------
     proc ::ConfigEventL() {
       ::win.EnablePanel(::config_manual, ::gradient_mode==1)
       ::win.EnablePanel(::config_gradient, ::gradient_mode==0)

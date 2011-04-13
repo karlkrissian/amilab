@@ -763,11 +763,6 @@ if (!exists(LevelSetsClass)) {
       ::win.EnablePanel(::smo_pid,::use_smoothing)
     }
     
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
-    }
-    
     //---------------------------------------------------
     proc ::GuiUpdateIntensityLimits( NUM _min, NUM _max) {
       ::win.FloatConstraints(::imean_id,_min,_max,::Imean)

@@ -153,13 +153,6 @@ if (!exists(ImageHistogramClass)) {
     Comments(::SetInput,"Manually sets the input image and the standalone mode is set to 0.")
 
     #-------------------------------------------------------------------
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
-      ::standalone = 0
-    }
-    
-    #-------------------------------------------------------------------
     proc ::UpdateLimits( NUM minval, NUM maxval) {
       ::minval = minval
       ::maxval = maxval
@@ -561,13 +554,13 @@ printn "xmax = %1%" % xmax
         ::win = global::ami_import.ParamPanel("ImHist")
       }
       
-      if (::standalone>0.5) {
+      if (::standalone)&&(!exists(::parent_panel)) {
         ::StandardGui() 
       } else {
         ::SimpleGui()
       }
 
-      if (::standalone>0.5) {
+      if (::standalone)&&(!exists(::parent_panel)) {
         ::AddStandardButtons(&::win)
       } else  {
         #::AddLimitedButtons(&::win)

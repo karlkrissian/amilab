@@ -68,12 +68,6 @@ if (!exists(NLmeansClass)) {
       #::Gui()
     }
     
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
-    }
-    
-    
     #----------------------------
     proc ::LoadInput() \
     {

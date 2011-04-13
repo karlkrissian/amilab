@@ -208,13 +208,6 @@ if (!exists(AutoRunTrainingClass)) {
     }
     Comments( ::GetData, "Gets results for training study case")
 
-    #------------------------------------
-    proc ::SetParentPanel(OBJECT thepanel) \
-    {
-      ::parent_panel = &thepanel
-    }
-    Comments( ::SetParentPanel, "Sets the panel showing the user interface.")
-
     #-----------------------------------------------
     proc ::Gui() \
     {

@@ -40,6 +40,9 @@ if (!exists(MultiLinesClass)) {
     global::ami_import.Filters()
     ::filters=&filters
 
+    func "Centerlines/Skeleton/SkeletonClass"
+    SkeletonClass ::skeleton_obj
+
     #----------------------------
     proc ::Init() {
       ::input_name   = "", "Input image name"
@@ -617,11 +620,6 @@ if (!exists(MultiLinesClass)) {
       ::result.save ::output_name
     }
     
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
-    }
-    
     #-----------------------------------------------
     proc ::OnLocalMaxima() \
     {
@@ -630,6 +628,57 @@ if (!exists(MultiLinesClass)) {
       ::win.Enable(::keep_or_id, ::local_maxima>0)
       ::win.Enable(::keep_rad_id,::local_maxima>0)
       ::win.Update(-1)
+    }
+
+    #-----------------------------------------------
+    proc ::CreateSkeleton() \
+    {
+      ::skeleton_obj.Execute()
+    }
+
+    #-----------------------------------------------
+    proc ::SmoothSkeleton() \
+    {
+      ::skeleton_obj.Smooth_Lines()
+    }
+
+    #-----------------------------------------------
+    proc ::DisplaySkeleton() \
+    {
+      ::skeleton_obj.Display()
+    }
+
+    #-----------------------------------------------
+    proc ::CreateReconstruction() \
+    {
+      # check existence of radius image or use constant radius
+      if (!exists(::radii)) { 
+        InfoDialog "Radii image has not been created, enable saving the radii !" 
+      } else {
+        # check existence of centerlines
+        if (!exists(::skeleton_obj->lines)) {
+          InfoDialog "No centerlines"
+        } else {
+          rad_info = ::skeleton_obj.lines.GetIntensities(&::radii)
+          if exists(::skeleton_obj->slines) { l = &::skeleton_obj.slines; } else { l = &::skeleton_obj.lines; }
+          ::recons <<= LineRecons(l, ::input, rad_info)
+        }
+      }
+      
+    }
+
+    #-----------------------------------------------
+    proc ::DisplayReconstruction() \
+    {
+      if (exists(::recons)) {
+        show ::recons
+        ::recons_surf = isosurf(::recons,255*exp(-0.5))
+        ::viewer = Viewer3D("Reconstruction")
+        if exists(::used_lines)  { del ::used_lines; }
+        if exists(::skeleton_obj->slines) { ::used_lines = &::skeleton_obj.slines; } else {  ::used_lines = &::skeleton_obj.lines; }
+        ::viewer += ::used_lines
+        ::viewer += ::recons_surf
+      }
     }
 
     #-----------------------------------------------
@@ -680,7 +729,7 @@ if (!exists(MultiLinesClass)) {
             ::win.AddEnumChoice(pairmodeid,"Min")
             ::win.AddEnumChoice(pairmodeid,"Max")
             ::win.AddEnumChoice(pairmodeid,"Mean")
-          ::win.AddFloat( &::keephighest,  "::keephighest", 0,100)
+          ::win.AddFloat( &::keephighest,  "Keephighest", 0,100)
 
         ::win.AddPage("Scales")
           ::win.BeginBoxPanel("Radii (or scales)")
@@ -694,6 +743,28 @@ if (!exists(MultiLinesClass)) {
           ::keep_or_id  = ::win.AddBoolean( &::keep_orientations,"Orientations")
           ::keep_rad_id = ::win.AddBoolean( &::keep_radii,"Radii")
 
+        ::recons_page = ::win.AddPage("Recons")
+
+          ::win.BeginBoxPanel("Skeleton")
+            ::win.BeginHorizontal()
+              ::win.AddButton("Create",&::CreateSkeleton)
+              ::win.AddButton("Smooth",&::SmoothSkeleton)
+              ::win.AddButton("Display",&::DisplaySkeleton)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Reconstruction")
+            ::win.BeginHorizontal()
+              ::win.AddButton("Create",&::CreateReconstruction)
+              ::win.AddButton("Display",&::DisplayReconstruction)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          ::win.BeginBook()
+            ::skeleton_obj.SetParentPanel(&::win)
+            ::skeleton_obj.Gui()
+            ::win.AddPage("Skeleton",&::skeleton_obj.win)
+          ::win.EndBook()
 
       ::win.EndBook()
     

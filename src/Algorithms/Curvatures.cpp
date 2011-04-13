@@ -76,8 +76,10 @@ void CurvaturesFunctor::operator()(float gradient[3], float hessien[3][3], void*
         _curv->im_mincurv->FixeValeur(lmin);
         _curv->im_maxcurv->FixeValeur(lmax);
 
-        _curv->imdir_mincurv->VectFixeValeurs(vmin[0], vmin[1], vmin[2]);
-        _curv->imdir_maxcurv->VectFixeValeurs(vmax[0], vmax[1], vmax[2]);
+        if (_curv->compute_directions) {
+          _curv->imdir_mincurv->VectFixeValeurs(vmin[0], vmin[1], vmin[2]);
+          _curv->imdir_maxcurv->VectFixeValeurs(vmax[0], vmax[1], vmax[2]);
+        }
 
         norm = sqrt(
           gradient[0]*gradient[0]+
@@ -86,13 +88,15 @@ void CurvaturesFunctor::operator()(float gradient[3], float hessien[3][3], void*
           );
         _curv->im_gradnorm->FixeValeur( norm);
 
-        Si norm > 1E-2 Alors
-          _curv->im_graddir->VectFixeValeurs(gradient[0]/norm,
-            gradient[1]/norm,
-            gradient[2]/norm);
-        Sinon
-          _curv->im_graddir->VectFixeValeurs(0,0,0);
-        FinSi
+        if (_curv->compute_directions) {
+          Si norm > 1E-2 Alors
+            _curv->im_graddir->VectFixeValeurs(gradient[0]/norm,
+              gradient[1]/norm,
+              gradient[2]/norm);
+          Sinon
+            _curv->im_graddir->VectFixeValeurs(0,0,0);
+          FinSi
+        }
       Sinon
         fixe_zero = true;
       FinSi
@@ -102,21 +106,25 @@ void CurvaturesFunctor::operator()(float gradient[3], float hessien[3][3], void*
   Si fixe_zero Alors
 
       _curv->im_gradnorm->FixeValeur(0.0);
-      _curv->im_graddir->VectFixeValeurs(0.0, 0.0, 0.0);
       _curv->im_mincurv->FixeValeur(0.0);
       _curv->im_maxcurv->FixeValeur(0.0);
 
-      _curv->imdir_mincurv->VectFixeValeurs(0.0, 0.0, 0.0);
-      _curv->imdir_maxcurv->VectFixeValeurs(0.0, 0.0, 0.0);
+      if (_curv->compute_directions) {
+        _curv->im_graddir->VectFixeValeurs(0.0, 0.0, 0.0);
+        _curv->imdir_mincurv->VectFixeValeurs(0.0, 0.0, 0.0);
+        _curv->imdir_maxcurv->VectFixeValeurs(0.0, 0.0, 0.0);
+      }
 
   FinSi
 
   _curv->im_gradnorm  ->IncBuffer();
-  _curv->im_graddir   ->IncBuffer();
   _curv->im_mincurv   ->IncBuffer();
   _curv->im_maxcurv   ->IncBuffer();
-  _curv->imdir_mincurv->IncBuffer();
-  _curv->imdir_maxcurv->IncBuffer();
+  if (_curv->compute_directions) {
+    _curv->im_graddir   ->IncBuffer();
+    _curv->imdir_mincurv->IncBuffer();
+    _curv->imdir_maxcurv->IncBuffer();
+  }
 
 } // EstimeCourbures()
 
@@ -150,23 +158,27 @@ void Curvatures::ComputeCurvatures( InrImage* image_initiale,
   im_mincurv  = InrImage::ptr(new InrImage(WT_FLOAT, "curv-mincurv.inr.gz", image_entree));
   im_maxcurv  = InrImage::ptr(new InrImage(WT_FLOAT, "curv-maxcurv.inr.gz", image_entree));
 
-  im_graddir    = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-graddir.inr.gz", 
-              image_entree));
-  imdir_mincurv = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-dirmincurv.inr.gz", 
-              image_entree));
-  imdir_maxcurv = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-dirmaxcurv.inr.gz", 
-              image_entree));
+  if (compute_directions) {
+    im_graddir    = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-graddir.inr.gz", 
+                image_entree));
+    imdir_mincurv = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-dirmincurv.inr.gz", 
+                image_entree));
+    imdir_maxcurv = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-dirmaxcurv.inr.gz", 
+                image_entree));
+  }
 
   //
   // Initialisation des buffers et calcul des courbures
   //
   image_entree ->InitBuffer();
   im_gradnorm  ->InitBuffer();
-  im_graddir   ->InitBuffer();
   im_mincurv   ->InitBuffer();
   im_maxcurv   ->InitBuffer();
-  imdir_mincurv->InitBuffer();
-  imdir_maxcurv->InitBuffer();
+  if (compute_directions) {
+    im_graddir   ->InitBuffer();
+    imdir_mincurv->InitBuffer();
+    imdir_maxcurv->InitBuffer();
+  }
 
 
   CurvaturesFunctor functor(this);

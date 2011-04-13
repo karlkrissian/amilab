@@ -89,12 +89,6 @@ if (!exists(CreateProbabilityClass)) {
     }
 
     #--------------------------
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
-    }
-    
-    #--------------------------
     proc ::Gui() \
     {
       import = &global::ami_import;
