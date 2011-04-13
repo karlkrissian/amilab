@@ -48,6 +48,7 @@ if (!exists(PropagateVesselsContoursClass)) {
         ::contour_minint = 1200, "minimal intensity allowed at half voxel distance of the contour in the direction of the gradient"
         ::contour_maxint = 1650, "maximal intensity allowed at half voxel distance of the contour in the direction of the gradient"
 
+        ::low_image_intensity = -90, "clamp low image intensity to better find the borders"
         ::stats_mode = INT(1), "0: local stats from direct neighbors, 1: local stats from Gaussian convolution"
 
         ::html_filename = GetScriptsDir+"/Vessels/PropagateVesselsContours/Doc/PropagateVesselsContours/index.html"
@@ -123,6 +124,7 @@ if (!exists(PropagateVesselsContoursClass)) {
     {
     
       ::Curv3D.set_input(&::input)
+      ::Curv3D.compute_directions = false
       ::Curv3D.Run()
     }
 
@@ -211,10 +213,12 @@ if (!exists(PropagateVesselsContoursClass)) {
           ::lsd <<= ::CProb.lsd
         } else {
           ::stats_sigma = maxspacing*0.7
-          in_s = filter(::input,::stats_sigma,0,0,0)
-          in2 = ::input*::input
+          in0 = ::ImUtils.ClampLow( &::input, ::low_image_intensity)
+          in_s = filter(in0,::stats_sigma,0,0,0)
+          in2 = in0*in0
           in2_s = filter(in2,::stats_sigma,0,0,0)
           ::lsd = sqrt(in2_s-in_s*in_s)
+          del in2_s
         }
 
 
@@ -260,11 +264,12 @@ if (!exists(PropagateVesselsContoursClass)) {
         if (::stats_mode==0) {
           lsdgrad = gradient(::lsd,0.8*maxspacing)
         } else {
-          ing_s  = gradient(::input,::stats_sigma)
+          ing_s  = gradient(in0,::stats_sigma)
           ing2_s = gradient(in2,::stats_sigma)
+          del in0; del in2;
           lsdgrad = ing2_s-2*in_s*ing_s
-          lsdgrad = lsdgrad/(2*::lsd)
           del ing_s; del ing2_s
+          lsdgrad = lsdgrad/(2*::lsd)
         }
         ::zerocross <<= lsdgrad*grad
         del lsdgrad
@@ -388,6 +393,8 @@ if (!exists(PropagateVesselsContoursClass)) {
             ::win.AddFloat(&::maxcurv_low,"low",0,5)
             ::win.AddFloat(&::maxcurv_high,"high",0,5)
           ::win.EndBoxPanel()
+
+          ::win.AddFloat(&::low_image_intensity,"Low I",-1000,1000)
 
           ::win.BeginBoxPanel("Contour selection")
             ::win.AddFloat(&::contour_minint,"Imin",0,3000)
