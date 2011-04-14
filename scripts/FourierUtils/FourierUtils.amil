@@ -11,6 +11,8 @@ Class FourierUtilsClass \
   proc ::FFT( IMAGE input) {
     import_vtk
     return=vtkImageFFT(&input)
+    return.settranslation(0,0,0)
+    return.setvoxelsize(1,1,1)
   }
   Comments(::FFT,"Fast Fourier Transform of the input image, given as a double image of 2 components")
 

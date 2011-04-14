@@ -111,6 +111,7 @@ public:
     void close_debug_stream();
 
     void init_err_output();
+    int  err_print(const char* st, const class location& l);
     int  err_print(const char* st);
     int  err_print(const std::string& st) 
     { 
@@ -145,6 +146,7 @@ public:
     /// kept for transition from C flex-bison code
     /// should be removed later
     int yyiplineno;
+    int yyiplineno_lastparser;
     std::string current_file;
 
     /// Access to last comments parsed
@@ -265,11 +267,20 @@ public:
     int error(const std::string& m);
 
     /** Return the current filename */
-    std::string& GetCurrentFilename() { return current_file; };
+    std::string GetCurrentFilename() 
+    { 
+      return current_file; 
+    }
 
     /** Pointer to the current lexer instance, this is used to connect the
      * parser to the scanner. It is used in the yylex macro. */
     class Scanner* lexer;
+
+    void SetCurrentFile( const char* cf )
+    {
+      //std::cout << "Setting current file to " << cf << std::endl;
+      this->current_file = cf;
+    }
 
     /** Reference to the calculator context filled during parsing of the
      * expressions. */

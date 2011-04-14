@@ -306,6 +306,12 @@ void wxBitmapButtonParameter :: ChangeLibelle( const char* libelle)
 } // wxBitmapButtonParameter :: ChangeLibelle()
 
 
+void wxBitmapButtonParameter::EnableWidget(bool enable)
+{
+  this->Enable(enable);
+  _enabled = enable;
+}
+
 /*
 //------------------------------------------------------------------------------
 void wxBitmapButtonParameter :: FixeCouleurFond( Pixel couleur)

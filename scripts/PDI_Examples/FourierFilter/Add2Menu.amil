@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuFourierFilter() \
+{
+  category = "&PDI"
+  script = "PDI/FourierFilter/FourierFilterGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&FourierFilter",script)
+}
+
+AddMenuFourierFilter()
+del AddMenuFourierFilter

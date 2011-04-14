@@ -285,6 +285,7 @@ public:
       _btn3callback = callback; _btn3data = calldata; 
   }
 
+  void EnableWidget(bool enable = true);
 
 
   virtual void OnButton( wxCommandEvent& );

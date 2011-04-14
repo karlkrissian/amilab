@@ -11,7 +11,8 @@ for dir in  "BasicFilters","Filtering","Denoising",\
             "OpticFlow", \
             "CarotidBifurcationWorkshop2009", \
             "Utils" , \
-            "PDI" \
+            "PDI" ,\
+            "PDI_Examples" \
 {
   local_f = wx.wxFileName(GetScriptsDir)
   local_f.AppendDir(dir)

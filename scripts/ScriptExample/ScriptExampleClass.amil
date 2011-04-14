@@ -68,8 +68,10 @@ if (!exists(ScriptExampleClass)) {
 
         ::win.AddPage("Run")
           ::win.AddButton("Run Filter",::Run)
-    
-        #::AddHelpPage(&::win)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
     
       ::win.EndBook()
     
