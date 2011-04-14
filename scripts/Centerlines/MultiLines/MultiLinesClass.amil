@@ -46,7 +46,10 @@ if (!exists(MultiLinesClass)) {
     #----------------------------
     proc ::Init() {
       ::input_name   = "", "Input image name"
-      ::mask_name    = "", "Mask of the pixels to process, this image must be of type UCHAR and the values > 127 are considered part of the mask"
+
+      ::mask_mode      = INT(0), "Mask mode 0: threshold from input image, 1: mask image"
+      ::mask_threshold = 0, "Low threshold for the mask"
+      ::mask_name      = "", "Mask of the pixels to process, this image must be of type UCHAR and the values > 127 are considered part of the mask"
 
       # circle integration
       # a value of 0 desactivates the SD feature
@@ -93,6 +96,8 @@ if (!exists(MultiLinesClass)) {
       ::normalize_gradient = UCHAR(1), "normalize gradient"
       ::PSF_stddev = 0, "Standard deviation (in voxels) of the point spread function"
 
+      ::upsample_recons = UCHAR(0), "Reconstruct the vessel in an image with double resolution compared to the input image"
+
       #::Gui()
     }
 
@@ -104,15 +109,35 @@ if (!exists(MultiLinesClass)) {
         ::input_name = "::input"
       }
     
-      if (::mask_name=="Image") {
-        ::mask <<= (UCHAR) ((::input>0.1)*255)
-        ::mask_name = "::mask"
-      } else {
-        eval "::mask <<="+::mask_name+";"
+      if (exists(::win)) {
+        ::inputmin          = min(::input)
+        ::inputmax          = max(::input)
+        ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
       }
-      ::win.Update(-1)
     }
     
+    //---------------------------------------------------
+    proc ::GuiUpdateIntensityLimits( NUM _min, NUM _max) {
+      ::win.FloatConstraints(::mask_threshold_id,_min,_max,(_max-_min)/2)
+      ::win.Update(-1)
+    }
+
+    #------------------------------------
+    proc ::update_mask() \
+    {  
+      if (::mask_mode==0) {
+        ::mask <<= (UCHAR) ((::input>::mask_threshold)*255)
+      }
+      if (::mask_mode==1) {
+        if (::mask_name=="Image") {
+          ::mask <<= (UCHAR) ((::input>0.1)*255)
+          ::mask_name = "::mask"
+        } else {
+          eval "::mask <<="+::mask_name+";"
+        }
+      }
+    }
+
     #-----------------------------------------------
     proc ::set_mask( IMAGE mask) \
     {
@@ -346,7 +371,12 @@ if (!exists(MultiLinesClass)) {
       InitTime
 
       #  Load input images
-      ::load_input()
+      if (!exists(::input)) {
+        ::load_input()
+      }
+      if (!exists(::mask)) {
+        ::update_mask()
+      }
 
       # Precompute coefficient of proportionality
       ::h(::gamma,::theta,&::rad2sigma_coeff)
@@ -481,7 +511,12 @@ if (!exists(MultiLinesClass)) {
       InitTime
 
       #  Load input images
-      ::load_input()
+      if (!exists(::input)) {
+        ::load_input()
+      }
+      if (!exists(::mask)) {
+        ::update_mask()
+      }
 
       # Precompute coefficient of proportionality
       ::h(::gamma,::theta,&::rad2sigma_coeff)
@@ -603,7 +638,7 @@ if (!exists(MultiLinesClass)) {
     }
 
     #-----------------------------------------------
-    proc ::Display() {
+    proc ::DisplayResult() {
       show ::input
       if (exists(::result)) {
         show ::result
@@ -615,6 +650,24 @@ if (!exists(MultiLinesClass)) {
       }
     }
     
+    #-----------------------------------------------
+    proc ::DisplayLMax() {
+      show ::input
+      if (exists(::maxima)) {
+        show ::maxima
+        ::input_draw.compare(&::maxima_draw)
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::DisplayRadii() {
+      show ::input
+      if (exists(::radii)) {
+        show ::radii
+        ::input_draw.compare(&::radii_draw)
+      }
+    }
+
     #-----------------------------------------------
     proc ::Save() {
       ::result.save ::output_name
@@ -661,7 +714,12 @@ if (!exists(MultiLinesClass)) {
         } else {
           rad_info = ::skeleton_obj.lines.GetIntensities(&::radii)
           if exists(::skeleton_obj->slines) { l = &::skeleton_obj.slines; } else { l = &::skeleton_obj.lines; }
-          ::recons <<= LineRecons(l, ::input, rad_info)
+          if (::upsample_recons) {
+            in2 = Resize(::input,::input.tx*2,::input.ty*2,::input.tz*2,0)
+            ::recons <<= LineRecons(l, in2, rad_info)            
+          } else {
+            ::recons <<= LineRecons(l, ::input, rad_info)
+          }
         }
       }
       
@@ -691,34 +749,27 @@ if (!exists(MultiLinesClass)) {
         ::win = import->ParamPanel("MultiLines")
       }
       ::win.BeginBook()
-        ::win.AddPage("Main")
+        ::win.AddPage("IO")
           # set the input image
-          ::win.AddImageChoice( &::input_name, "Input")
-          # set the mask image
-          ::win.AddImageChoice( &::mask_name, "Mask")
-        
+          ::win.BeginHorizontal()
+            ::win.AddImageChoice( &::input_name, "Input")
+            ::AddBitmapButton(&::win, &::icons._Copy,   32, "load_input")
+            ::win.SetPositionProp(-1,0)
+          ::win.EndHorizontal()
 
-          modeid = ::win.AddEnum( &::mode)
-            ::win.AddEnumChoice(modeid,"Hessian Matrix")
-            ::win.AddEnumChoice(modeid,"Structure Tensor")
+          ::win.BeginBoxPanel("Mask")
+            maskmode_id = ::win.AddEnum(&::mask_mode, "Mode")
+              ::win.AddEnumChoice(maskmode_id,"Threshold from input")
+              ::win.AddEnumChoice(maskmode_id,"Mask image")
 
-          ::win.AddBoolean( &::keep_all_scales, "Keep all scales")
-          ::win.AddBoolean( &::normalize_gradient, "Normalize gradient")
-          ::win.AddFloat( &::PSF_stddev, "PSF")
-          ::win.AddBoolean( &::use_linearinterp, "Linear Interpolation")
+            # set the mask threshold
+            ::mask_threshold_id = ::win.AddFloat(&::mask_threshold,"Threshold",0,100)
 
-          ::win.BeginBoxPanel("Controls")
-            ::win.BeginHorizontal()
-              ::win.AddButton("Select ROI", ::CB_ROI)
-              ::win.AddButton("Run",        ::MultiLines)
-              ::win.AddButton("Run new",    ::MultiLines_new)
-            ::win.EndHorizontal()
-            ::outputname_id = ::win.AddString( &::output_name, "Output")
-            ::win.BeginHorizontal()
-                display_id = ::win.AddButton("Display",    ::Display)
-                display_id = ::win.AddButton("Save",       ::Save)
-            ::win.EndHorizontal()
+            # set the mask image
+            ::win.AddImageChoice( &::mask_name, "Mask")
+            ::win.AddButton("Update",&::update_mask)
           ::win.EndBoxPanel()
+        
         ::win.AddPage("Circle")
 
           ::win.AddBoolean( &::use_SD,"Use StdDev")
@@ -743,6 +794,33 @@ if (!exists(MultiLinesClass)) {
           ::keep_or_id  = ::win.AddBoolean( &::keep_orientations,"Orientations")
           ::keep_rad_id = ::win.AddBoolean( &::keep_radii,"Radii")
 
+        ::run_page = ::win.AddPage("Run")
+          modeid = ::win.AddEnum( &::mode)
+            ::win.AddEnumChoice(modeid,"Hessian Matrix")
+            ::win.AddEnumChoice(modeid,"Structure Tensor")
+
+          ::win.AddBoolean( &::keep_all_scales, "Keep all scales")
+          ::win.AddBoolean( &::normalize_gradient, "Normalize gradient")
+          ::win.AddFloat( &::PSF_stddev, "PSF")
+          ::win.AddBoolean( &::use_linearinterp, "Linear Interpolation")
+
+          ::win.BeginBoxPanel("Controls")
+            ::win.BeginHorizontal()
+              ::win.AddButton("Select ROI", ::CB_ROI)
+              ::win.AddButton("Run",        ::MultiLines)
+              ::win.AddButton("Run new",    ::MultiLines_new)
+            ::win.EndHorizontal()
+            ::outputname_id = ::win.AddString( &::output_name, "Output")
+            ::win.BeginBoxPanel("Display")
+              ::win.BeginHorizontal()
+                display_id = ::win.AddButton("Result",    &::DisplayResult)
+                display_id = ::win.AddButton("Local max", &::DisplayLMax)
+                display_id = ::win.AddButton("Radii",     &::DisplayRadii)
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel
+            display_id = ::win.AddButton("Save",       ::Save)
+          ::win.EndBoxPanel()
+
         ::recons_page = ::win.AddPage("Recons")
 
           ::win.BeginBoxPanel("Skeleton")
@@ -754,6 +832,7 @@ if (!exists(MultiLinesClass)) {
           ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Reconstruction")
+            ::win.AddBoolean(&::upsample_recons,"Upsample x2")
             ::win.BeginHorizontal()
               ::win.AddButton("Create",&::CreateReconstruction)
               ::win.AddButton("Display",&::DisplayReconstruction)
