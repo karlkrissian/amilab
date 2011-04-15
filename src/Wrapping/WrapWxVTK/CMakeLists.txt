@@ -16,7 +16,6 @@ include_directories (
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE( ${wxWidgets_USE_FILE})
 
-
 SET(  WrapWxVTK_SRCS
   wrap_wxVTKRenderWindowInteractor.cpp
 )
@@ -31,4 +30,14 @@ SET(WrapWxVTK_SRCS
 )
 
 my_add_library ( WrapWxVTK)
+
+IF(Need_Find_GTK)
+  FIND_PACKAGE(GTK2 REQUIRED gtk)
+  IF(GTK2_FOUND)
+    MESSAGE("Find GTK2!!!")
+    INCLUDE_DIRECTORIES(${GTK2_INCLUDE_DIRS})
+    TARGET_LINK_LIBRARIES(WrapWxVTK ${GTK2_LIBRARIES})
+  ENDIF(GTK2_FOUND)
+ENDIF(Need_Find_GTK)
+
 add_dependencies ( WrapWxVTK WrapWxWidgets WrapVTK )
