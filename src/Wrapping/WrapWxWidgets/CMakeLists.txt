@@ -75,12 +75,23 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
-  MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
-  EXECUTE_PROCESS(
-    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
-    OUTPUT_VARIABLE ancestors_result
-    ERROR_VARIABLE ancestors_error
-  )
+  IF(GENERATE_HTML_HELP)
+    SET(CLASSES_URL_LIST "http://docs.wxwidgets.org/stable/")
+    SET(HTML_DIR "${WRAPWX_OUTDIR}")
+    MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --libname wx --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q")
+    EXECUTE_PROCESS(
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --libname wx --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
+      OUTPUT_VARIABLE ancestors_result
+      ERROR_VARIABLE ancestors_error
+    )
+  ELSE(GENERATE_HTML_HELP)
+    MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
+    EXECUTE_PROCESS(
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
+      OUTPUT_VARIABLE ancestors_result
+      ERROR_VARIABLE ancestors_error
+    )
+  ENDIF(GENERATE_HTML_HELP)
   MESSAGE(" ancestors_result = ${ancestors_result} ")
   MESSAGE(" ancestors_error = ${ancestors_error} ")
 

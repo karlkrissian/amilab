@@ -342,6 +342,14 @@ FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
 FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net )
 
+OPTION(GENERATE_HTML_HELP "Generate HTML file help")
+
+SET(Need_Find_GTK FALSE)
+STRING(REGEX MATCH "__WXGTK__" FindGTKLib ${wxWidgets_DEFINITIONS})
+IF(FindGTKLib)
+  SET(Need_Find_GTK TRUE)
+ENDIF(FindGTKLib)
+
 SET(AMI_WXWIDGETS_VERSION "AMI_WXWIDGETS_VERSION-NOTFOUND" )
 
 #-------------------------------------------------------------------------------
@@ -567,8 +575,6 @@ ENDIF(AMI_USE_VTK)
 INCLUDE(${wxWidgets_USE_FILE})
 INCLUDE( ${USE_ITK_FILE} )
 MESSAGE( "*** USE_ITK_FILE = ${USE_ITK_FILE}")
-
-
 
 SET(amilab_bin_SRCS 
   myDataViewModels.cpp
