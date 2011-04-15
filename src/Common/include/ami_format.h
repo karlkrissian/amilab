@@ -8,11 +8,16 @@
  */
 namespace ami
 {
+  
+  class AmiString; 
+    
   class format
   {
     // Trick here to avoid includes ...
     void* _boost_format;
-    public:
+    AmiString* _st;
+
+  public:
       format(const char* st);
       ~format();
       format& operator%(const char* st);
