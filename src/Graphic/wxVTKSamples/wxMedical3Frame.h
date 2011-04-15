@@ -19,6 +19,7 @@
 
 #include "vtkRenderer.h"
 #include "vtk_common.h"
+#include "wx/aui/aui.h"
 
 
 // Define a new frame type: this is going to be our main frame
@@ -52,6 +53,7 @@ private:
   vtkImageData_ptr  input;
 
 private:
+  wxAuiManager m_mgr;
     // any class wishing to process wxWindows events must use this macro
     DECLARE_EVENT_TABLE();
 };

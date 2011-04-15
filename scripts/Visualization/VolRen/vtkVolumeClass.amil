@@ -112,6 +112,7 @@ if (!exists(vtkVolumeClass)) {
         ::property.SetInterpolationTypeToLinear()
  
         #printn "CreateVTK 2"
+
         import_vtk
         ::vol       = vtk.vtkVolume.New()
         # don't put the boxwidget for the moment
@@ -124,7 +125,12 @@ if (!exists(vtkVolumeClass)) {
         # Temporary code: BEGIN
         # It solves temporarily the problem of OpenGL's initialization.
         #InfoDialog "Force get OpenGL current context"
-        #InfoDialog "Capabilities %1%" % ::renwin.ReportCapabilities()
+        ::renwin.MakeCurrent()
+        
+        cap = ::renwin.ReportCapabilities()
+        if (wx.wxString(cap).Find("version")==-1) {
+          InfoDialog "Capabilities %1%" % ::renwin.ReportCapabilities()
+        }
         # Temporary code: END
 
         # Check if the rendering is supported
@@ -159,6 +165,7 @@ if (!exists(vtkVolumeClass)) {
           ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
           ::win.Update(-1)
         }
+        ::win.SetLabelValue(::volmapper_classname_id,::volmapper.GetClassName())
         ::volmapper.SetInput(&::vtkinput)
 
         # connect up the volume to the property and the mapper
@@ -719,19 +726,21 @@ printn "point number %1%" %n
     #----------------------------
     proc ::OnTextureMemory() \
     {
-      if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
-          (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") \
-      {
-        # update volmapper GPU settings
-        ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
-        ::volmapper.SetMaxMemoryFraction(::maxmemoryfraction)
+      if (exists(::volmapper)) {
+        if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
+            (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") \
+        {
+          # update volmapper GPU settings
+          ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
+          ::volmapper.SetMaxMemoryFraction(::maxmemoryfraction)
 
-        # update GPU information
-        ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
-        ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
-        ::win.Update(-1)
-      } else {
-        InfoDialog "Wrong volume mapper ..."
+          # update GPU information
+          ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
+          ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
+          ::win.Update(-1)
+        } else {
+          InfoDialog "Wrong volume mapper ..."
+        }
       }
     }
 
@@ -869,6 +878,7 @@ printn "point number %1%" %n
           ::win.EndBoxPanel()
 
         ::GPU_page = ::win.AddPage("GPU")
+          ::volmapper_classname_id = ::win.AddLabel("VTK Class:","")
           ::win.BeginBoxPanel("3D texture memory")
             ::win.AddInt(&::maxmemory,"max",50,1000)
             ::win.SetCallback( &::OnTextureMemory)

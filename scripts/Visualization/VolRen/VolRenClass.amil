@@ -184,23 +184,24 @@ if (!exists(VolRenClass)) {
         #if (exists(::renwin_interact)) { del ::renwin_interact; }
         if (!exists(::renwin_interact)) {
           ::renwin_interact = global::wxVTKFrame()
+          ::renwin_interact.Initialize()
         }
-        #printn "1*"
+        printn "1*"
         ::renwin   = ::renwin_interact.GetRenderWindow()
         ::renderer = vtk.vtkRenderer.New()
         ::renwin.AddRenderer(&::renderer)
         interact = vtk.vtkInteractorStyleTrackballCamera.New()
         ::renwin_interact.SetInteractorStyle(&interact)
 
-        #printn "2*"
+        printn "2*"
         if (::vtkvol1.initialized>0.5) {
           ::vtkvol1.ResetVTK()
         }
-        #printn "2.1*"
+        printn "2.1*"
         ::vtkvol1.SetInteractor(&::renwin_interact)
         ::vtkvol1.SetRenderer(&::renderer)
         ::vtkvol1.SetRenderWindow(&::renwin)
-        #printn "2.2*"
+        printn "2.2*"
         volok = ::vtkvol1.CreateVTK( &::input)
 
         #printn "3*"
@@ -216,7 +217,7 @@ if (!exists(VolRenClass)) {
           ::renderer.AddVolume( &::vtkvol1.vol )
           ::renderer.ResetCamera()
           ::BackupView()
-          #::renwin_interact.Render()
+          ::renwin_interact.Render()
         }
       }
 
@@ -278,8 +279,9 @@ if (!exists(VolRenClass)) {
       mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
-      sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
-      sbox_sizer = wx.wxStaticBoxSizer(&sbox,wx.wxVERTICAL)
+      # StaticBox gives problems on XP ..., avoid it ...
+      # sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
+      sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel.SetSizer(&sbox_sizer)
       ::flex_sizer = wx.wxGridSizer(1)
       sbox_sizer.Add( &::flex_sizer, 1, wx.wxALL | wx.wxEXPAND,2)
@@ -287,14 +289,17 @@ if (!exists(VolRenClass)) {
 
       import_vtk
       ::renwin_interact = wxVTKRenderWindowInteractor(&::panel,-1)
+      #ren = vtk.vtkRenderer.New()
+      #::renwin_interact.GetRenderWindow().AddRenderer(&ren);
       #::renwin_interact = wxVTKFrame(&panel,-1)
-
       ::renwin_interact.UseCaptureMouseOn()
-      ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
+      ::renwin_interact.Enable(true)
       # Still drawing problem (missed exposed events???)
       ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
       #::panel_sizer.Add(&::renwin_interact, &wx.wxSizerFlags().Expand().Proportion(1) )
       ::flex_sizer.Add(&::renwin_interact, 1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
+      #sbox_sizer.Add(&::renwin_interact, 1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
+      
 
       
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
@@ -302,6 +307,7 @@ if (!exists(VolRenClass)) {
       # Add to main book
       mb.AddPage( &::panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
       ::volren_pageindex = mb.GetPageIndex(&::panel)
+      
       #mb.SetSelection(::volren_pageindex)
     }
 
