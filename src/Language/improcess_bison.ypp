@@ -9843,13 +9843,15 @@ void wxScheduleTimer::Notify()
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;
   for (Iter  = schedule_timers.begin();
-       Iter != schedule_timers.end()  ; Iter++ )
+       Iter != schedule_timers.end()  ;  )
   {
     if ((*Iter).use_count()) {
-      if (Iter->get() == this) {
+      if (Iter->get() == this) 
         Iter = schedule_timers.erase(Iter);
-     }
-    }
+      else
+        ++Iter;
+    } else
+      ++Iter;
   }
 } // wxScheduleTimer::Notify()
 
