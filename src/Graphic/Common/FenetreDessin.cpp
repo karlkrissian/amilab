@@ -204,7 +204,7 @@ void FenetreDessin::AfficheFenetre( )
   //----- Definition de la palette
   Si (!_palette.get()) Alors
     aff_err("new palette \n");
-    _palette = boost::shared_ptr<CPalette>(new CPalette(_drawing_window));
+    _palette = boost::shared_ptr<amilab::CPalette>(new amilab::CPalette(_drawing_window));
     aff_err("new palette OK \n");
   FinSi
 

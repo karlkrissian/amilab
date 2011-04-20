@@ -105,7 +105,7 @@ protected:
   int _hauteur;
   int _largeur;
 
-  boost::shared_ptr<CPalette>     _palette;
+  boost::shared_ptr<amilab::CPalette>     _palette;
 //s  unsigned char       _palette_allouee;
 
 //  Colormap  _color_map;

@@ -167,7 +167,7 @@ public:
 
    DessinHisto(Widget parent, char* libelle, InrImage* image, 
   //           -----------
-                           CPalette* palette, float min, float max);
+                           amilab::CPalette* palette, float min, float max);
 
 //  ~DessinHisto();
 

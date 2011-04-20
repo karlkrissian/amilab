@@ -98,6 +98,7 @@ if (!exists(MultiLinesClass)) {
 
       ::upsample_recons = UCHAR(0), "Reconstruct the vessel in an image with double resolution compared to the input image"
 
+      ::smoothradii_std = 1, "Gaussian standard deviation for smoothing the lines radii"
       #::Gui()
     }
 
@@ -690,6 +691,13 @@ if (!exists(MultiLinesClass)) {
     }
 
     #-----------------------------------------------
+    proc ::PruneSkeleton() \
+    {
+      ::skeleton_obj.SelectPrune()
+      ::skeleton_obj.RemovePrune()
+    }
+
+    #-----------------------------------------------
     proc ::SmoothSkeleton() \
     {
       ::skeleton_obj.Smooth_Lines()
@@ -699,6 +707,42 @@ if (!exists(MultiLinesClass)) {
     proc ::DisplaySkeleton() \
     {
       ::skeleton_obj.Display()
+    }
+
+    #-----------------------------------------------
+    proc ::SmoothedReconstruction() \
+    {
+      if (!exists(::radii)) { 
+        InfoDialog "Radii image has not been created, enable saving the radii !" 
+      } else {
+        if (!exists(::skeleton_obj->lines)) {
+          InfoDialog "No centerlines"
+        } else {
+          # smooth radii
+          ::radii_smoothed <<= ::radii
+          nl = ::skeleton_obj.lines.GetNumberOfLines()
+          for l=0 to nl-1 {
+            printn "Processing line %1%" % (l+1) + " of %1%" % nl
+            line <<= ::skeleton_obj.lines.GetLine(l)
+            line_radii <<= ::radii(line)
+            line_radii_smoothed <<= filter(line_radii,::smoothradii_std,0,0,0)
+            # put back the smooth values in the image
+            for k=0 to line.tx-1 {
+              ::radii_smoothed.setpos(line(k,0,0,0),line(k,0,0,1),line(k,0,0,2))
+              ::radii_smoothed.set(line_radii_smoothed(k,0,0,0))
+            }
+          }
+          # reconstruction
+          rad_info = ::skeleton_obj.lines.GetIntensities(&::radii_smoothed)
+          if exists(::skeleton_obj->slines) { l = &::skeleton_obj.slines; } else { l = &::skeleton_obj.lines; }
+          if (::upsample_recons) {
+            in2 = Resize(::input,::input.tx*2,::input.ty*2,::input.tz*2,0)
+            ::s_recons <<= LineRecons(l, in2, rad_info)            
+          } else {
+            ::s_recons <<= LineRecons(l, ::input, rad_info)
+          }
+        }
+      }
     }
 
     #-----------------------------------------------
@@ -731,11 +775,17 @@ if (!exists(MultiLinesClass)) {
       if (exists(::recons)) {
         show ::recons
         ::recons_surf = isosurf(::recons,255*exp(-0.5))
+        if (exists(::s_recons)) {
+          ::s_recons_surf = isosurf(::s_recons,255*exp(-0.5))
+        }
         ::viewer = Viewer3D("Reconstruction")
         if exists(::used_lines)  { del ::used_lines; }
         if exists(::skeleton_obj->slines) { ::used_lines = &::skeleton_obj.slines; } else {  ::used_lines = &::skeleton_obj.lines; }
         ::viewer += ::used_lines
         ::viewer += ::recons_surf
+        if (exists(::s_recons_surf)) {
+          ::viewer += ::s_recons_surf
+        }
       }
     }
 
@@ -825,17 +875,19 @@ if (!exists(MultiLinesClass)) {
 
           ::win.BeginBoxPanel("Skeleton")
             ::win.BeginHorizontal()
-              ::win.AddButton("Create",&::CreateSkeleton)
-              ::win.AddButton("Smooth",&::SmoothSkeleton)
+              ::win.AddButton("Create", &::CreateSkeleton)
               ::win.AddButton("Display",&::DisplaySkeleton)
+              ::win.AddButton("Prune",  &::PruneSkeleton)
+              ::win.AddButton("Smooth", &::SmoothSkeleton)
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Reconstruction")
             ::win.AddBoolean(&::upsample_recons,"Upsample x2")
             ::win.BeginHorizontal()
-              ::win.AddButton("Create",&::CreateReconstruction)
-              ::win.AddButton("Display",&::DisplayReconstruction)
+              ::win.AddButton("Create",   &::CreateReconstruction)
+              ::win.AddButton("Create Smoothed", &::SmoothedReconstruction)
+              ::win.AddButton("Display",  &::DisplayReconstruction)
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
