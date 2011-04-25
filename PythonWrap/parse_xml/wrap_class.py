@@ -35,6 +35,7 @@ import arginfo
 
 import parse_function
 
+import generate_html #HTML generate file functions
 
 
 def IsTemplate(classname):
@@ -733,6 +734,12 @@ def ImplementCopyMethodWrap(classname, method):
   return res
 
 
+#----------------------------------------------------------------------
+#  Initialize HTML module
+#----------------------------------------------------------------------
+def HTMLInitialization(createhtml,templatedir, outputdirectory, outputfilename, url, libraryname):
+  if(createhtml):
+    generate_html.Initialization(templatedir, outputdirectory, outputfilename, url, libraryname)
 
 #----------------------------------------------------------------------
 #  WrapClass
@@ -903,6 +910,7 @@ def WrapClass(classname,include_file,inputfile):
       pos=0
       for m in fm.Constructors:
         missingtypes = MissingTypes(classname,m)
+        m.iswrapped=(missingtypes=="")
         if missingtypes!="":
           constructors_decl+=  indent+"/* The following types are missing: "+missingtypes+"\n"
           fm.Constructors[pos].missingtypes=True
@@ -916,6 +924,7 @@ def WrapClass(classname,include_file,inputfile):
         else:
           wrapped_constructors = wrapped_constructors+1
         pos=pos+1
+        generate_html.AddClassMethod(m) # Adds the constructor
       constructors_decl+='\n'
 
     # Static Methods:
@@ -925,6 +934,7 @@ def WrapClass(classname,include_file,inputfile):
     utils.WarningMessage( "Number of static methods {0}".format(len(fm.StaticMethods)))
     for m in fm.StaticMethods:
       missingtypes = MissingTypes(classname,m)
+      m.iswrapped=(missingtypes=="")
       if missingtypes!="":
         staticmethods_decl+=  indent+"/* The following types are missing: "+missingtypes+"\n"
         fm.StaticMethods[pos].missingtypes=True
@@ -935,6 +945,7 @@ def WrapClass(classname,include_file,inputfile):
       if missingtypes!="":
         staticmethods_decl +=  indent+"*/\n"
       pos=pos+1
+      generate_html.AddClassMethod(m) # Adds the static methods
     staticmethods_decl+='\n'
 
     class_decl='\n'
@@ -948,6 +959,7 @@ def WrapClass(classname,include_file,inputfile):
     pos = 0
     for m in fm.Methods:
       missingtypes = MissingTypes(classname,m)
+      m.iswrapped=(missingtypes=="")
       if missingtypes!="":
         class_decl+= "/* The following types are missing: "+missingtypes+"\n"
         fm.Methods[pos].missingtypes=True
@@ -956,9 +968,14 @@ def WrapClass(classname,include_file,inputfile):
             WxHelpLink(classname,m))
       if missingtypes!="":
         class_decl += "*/\n"
+      generate_html.AddClassMethod(m)     
       pos = pos+1
     class_decl+='\n'
-    
+    print "\nBegin: {0}\n".format(classname)
+    #generate_html.GenerateHTMLStandardMethods(classname)
+    generate_html.GenerateHTMLClassFile(classname,generate_html.GetClassMethodList())
+    print "\nEnd: {0}\n".format(classname)
+        
     if len(fm.OperatorMethods)>0:
       class_decl+=indent+"// Operators:\n"
     pos = 0

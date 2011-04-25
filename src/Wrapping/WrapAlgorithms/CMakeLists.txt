@@ -71,6 +71,11 @@ IF(AMI_ENABLE_WRAPPING)
   #
   SET(WrapAlgorithms_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/Generated)
   CreateDirectory( ${WrapAlgorithms_OUTDIR})
+  IF(GENERATE_HTML_HELP)
+    SET(CLASSES_URL_LIST "http://serdis.dis.ulpgc.es/~krissian/HomePage/Software/AMILab/Release-3.0.0/html/")
+    SET(HTML_DIR "${WrapAlgorithms_OUTDIR}/html")
+    CreateDirectory( ${HTML_DIR} )
+  ENDIF(GENERATE_HTML_HELP)
 
 
 MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
@@ -103,8 +108,6 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
   IF(GENERATE_HTML_HELP)
-    SET(CLASSES_URL_LIST "http://serdis.dis.ulpgc.es/~krissian/HomePage/Software/AMILab/Release-3.0.0/html/")
-    SET(HTML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Generated/")
     MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q")
     EXECUTE_PROCESS(
       COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q
@@ -153,23 +156,48 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_algorithms.h) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_algorithms.cpp))
     # Go for python wrapping
-    ADD_CUSTOM_COMMAND(
-      OUTPUT  ${OUTPUT_LIST} ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp
-      COMMAND
-        ${PYTHON_EXECUTABLE} 
-          ${AMI_WRAPPER} ${XML_OUTPUT}
-#          --filter "*"
-          --libname algorithms
-          --classes ${MISSING_CLASSES}
-          --available_classes ${ancestors_list} ${vtk_ancestors_list}
-          --outputdir "${WrapAlgorithms_OUTDIR}"
-          --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-          --addwrap
-          --profile
-          -q
-#         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/classes.txt
-        VERBATIM
+    IF(GENERATE_HTML_HELP)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT  ${OUTPUT_LIST} ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp
+        COMMAND
+          ${PYTHON_EXECUTABLE}
+            ${AMI_WRAPPER} ${XML_OUTPUT}
+  #          --filter "*"
+            --libname algorithms
+            --classes ${MISSING_CLASSES}
+            --available_classes ${ancestors_list} ${vtk_ancestors_list}
+            --outputdir "${WrapAlgorithms_OUTDIR}"
+            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+            --addwrap
+            --profile
+            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+            --generate-html             #flag to generate html help
+            --url ${CLASSES_URL_LIST}   #base URL html help
+            --outputhtmldir ${HTML_DIR} #HTML directory
+            -q
+          #DEPENDS
+          #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+          VERBATIM
       )
+    ELSEIF(GENERATE_HTML_HELP)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT  ${OUTPUT_LIST} ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp
+        COMMAND
+          ${PYTHON_EXECUTABLE}
+            ${AMI_WRAPPER} ${XML_OUTPUT}
+  #          --filter "*"
+            --libname algorithms
+            --classes ${MISSING_CLASSES}
+            --available_classes ${ancestors_list} ${vtk_ancestors_list}
+            --outputdir "${WrapAlgorithms_OUTDIR}"
+            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+            --addwrap
+            --profile
+            -q
+  #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/classes.txt
+          VERBATIM
+        )
+    ENDIF(GENERATE_HTML_HELP)
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_algorithms.h) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_algorithms.cpp))

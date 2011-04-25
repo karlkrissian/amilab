@@ -281,6 +281,9 @@ if __name__ == '__main__':
       ancestors.sort()
       for a in ancestors:
         f.write(a+"\n")
+      if(args.val.generate_html):
+        wrap_class.generate_html.Initialization(args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
+        wrap_class.generate_html.GenerateHTMLClassesFile(ancestors)
       sys.exit(0)
 
     if (args.val.profile):
@@ -327,7 +330,7 @@ if __name__ == '__main__':
     if (args.val.profile):
       t3 = time.clock()
       print t3 - t2, "seconds process time"
-    
+  
     n=0
     nmax=args.val.max
     while (len(config.needed_classes)>0) and (n<nmax):
@@ -336,6 +339,7 @@ if __name__ == '__main__':
       #print "Class: {0} \t usedname: {1}".format(cl,wrap_class.ClassUsedName(cl))
       config.include_list = []
       config.declare_list = []
+      wrap_class.HTMLInitialization(args.val.generate_html,args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
       wrap_class.WrapClass(cl,include_file,inputfile)
       config.wrapped_classes.append(cl)
       if args.val.r:
@@ -360,6 +364,7 @@ if __name__ == '__main__':
         for cl in config.wrapped_classes:
           config.include_list = []
           config.declare_list = []
+          wrap_class.HTMLInitialization(args.val.generate_html,args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
           wrap_class.WrapClass(cl,include_file,inputfile)
 
     utils.WarningMessage( "Wrapped classes: {0}".format(config.wrapped_classes))

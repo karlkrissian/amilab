@@ -1,5 +1,4 @@
 
-
 import wrap_class
 import re
 
@@ -167,4 +166,3 @@ def IsSharedPtr(typename):
     return res.group(1)
   else:
     return None
-
