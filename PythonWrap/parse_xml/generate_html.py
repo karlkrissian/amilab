@@ -131,6 +131,7 @@ def GenerateHTMLClassFile(classname,methodslist):
     htmlbody+="<h2>Methods List</h2>"
     htmlbody+="Here are the methods with a link to the doxygen documentation:<br>"
     htmlbody+=GenerateList("Unordered","","begin")
+    # sort list of methods here
     for method in methodslist:
         if(method.iswrapped):
           if(not IsIgnored(method.usedname)):
@@ -332,6 +333,8 @@ def GenerateMethodFormat(classname, methodname, body, signature):
       res=methodname
   else:
     res = GenerateAnchor(url, methodname, methodname)
+    
+  res = res + " " + signature
   return res
 
 #-------------------------------------------------------------
