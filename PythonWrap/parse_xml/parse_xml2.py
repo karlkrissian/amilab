@@ -118,6 +118,7 @@ def WrapMethodTypePointer(typedefname,include_file):
         
 
   implement_type="\n"
+  implement_type += "AMI_DEFINE_GETVALPARAM({0});\n".format(typedefname)
   implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(typedefname)
   # need to implement CreateVar ...
   implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(typedefname)
@@ -238,12 +239,14 @@ if __name__ == '__main__':
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
       for b in args.val.ancestors:
-        #print "b=",b
+        print "b=",b
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:
+            print "ancestors to add?"
             # recursively add the ancestors to the list
             bases=config.types[f].bases
+            print bases
             if b=="wxTopLevelWindow":
               print bases
             f_anc=[]
@@ -253,13 +256,18 @@ if __name__ == '__main__':
             while f_anc != []:
               anc_id = f_anc.pop()[0]
               #if b=="wxTopLevelWindow":
-                #print anc_id
+              print anc_id
+              if not(anc_id in classes_dict.keys()):
+                print "not in classes_dict.keys() ..."
               if anc_id in classes_dict.keys():
                 #if b=="wxTopLevelWindow":
-                  #print classes_dict[anc_id]
+                print classes_dict[anc_id]," args.val.templates=",args.val.templates
+                print classes_dict[anc_id] not in ancestors
+                print classes_dict[anc_id] not in config.classes_blacklist
                 if  classes_dict[anc_id] not in ancestors and  \
                     classes_dict[anc_id] not in config.classes_blacklist and\
-                    not wrap_class.IsTemplate(classes_dict[anc_id]):
+                    ( (not wrap_class.IsTemplate(classes_dict[anc_id])) \
+                      or args.val.templates ):
                   m = re.match(args.val.filter, classes_dict[anc_id])
                   print "Check ancestor {0} to match filter".format(classes_dict[anc_id])
                   if m != None:
@@ -267,8 +275,9 @@ if __name__ == '__main__':
                     ancestors.append(classes_dict[anc_id])
                     newlist.append(classes_dict[anc_id])
                     bases=config.types[anc_id].bases
-                    #if b=="wxTopLevelWindow":
-                      #print bases
+                    if b.startswith("itk"):
+                      #if b=="wxTopLevelWindow":
+                      print "**** bases=",bases
                     if bases!=None:
                       for newanc in bases:
                         f_anc.append(newanc)

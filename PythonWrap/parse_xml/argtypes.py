@@ -59,7 +59,7 @@ class ArgTypeBase:
     return False
     
   def SetContext(self,context):
-    #utils.WarningMessage(" type {0} context {1} ".format(self._name,context) )
+    utils.WarningMessage(" type {0} context {1} ".format(self._name,context) )
     self._context = context
     
   def GetContext(self):
@@ -81,6 +81,17 @@ class ClassInfo(ArgTypeBase):
     self.fileid=""
     self.public_members=wrap_class.PublicMembers()
   
+  def GetString(self):
+    if self._context != None:
+      if self._context in config.types.keys() and self._context!="_1":
+        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
+      else:
+        #print "context = ",self._context," not recognized"
+        return self._name
+    else:
+      #print "no context for class ",self._name
+      return self._name
+  
   def GetAbstract(self):
     return self.abstract=="1"
 
@@ -90,6 +101,15 @@ class NamespaceInfo(ArgTypeBase):
   def __init__(self):
     ArgTypeBase.__init__(self) 
     self._type="Namespace"
+  
+  def GetString(self):
+    if self._context != None:
+      if self._context in config.types.keys() and self._context!="_1":
+        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
+      else:
+        return self._name
+    else:
+      return self._name
   
 
 #------------------------------

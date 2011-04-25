@@ -45,7 +45,7 @@ def IsWithinContext(classname):
   return config.types[config.classes[classname]].GetContext() != "_1"
 
 def ClassConstructor(classname):
-  ctemp = re.match(r"(.*)<(.*)>",classname)
+  ctemp = re.match(r"([^<]*)<(.*)>",classname)
   if ctemp==None:
     namenotemplate = classname
   else:
@@ -57,6 +57,26 @@ def ClassConstructor(classname):
   else:
     return no_ns.group(2)
 
+def FindIncludeFile(classname,fileid):
+  if config.libmodule != None:
+    include_file = config.libmodule.get_include_file(classname,\
+      config.files[fileid])
+  else:
+    if fileid in config.files.keys():
+      filename = config.files[fileid]
+      # check for vxl/core/vnl
+      vxl_pos = filename.find("vxl/core/vnl/")
+      if vxl_pos!=-1:
+        incfile=filename[vxl_pos+len("vxl/core/"):]
+      else:
+        last = filename.rfind('/')
+        incfile=filename[last+1:]
+      include_file = incfile
+    else:
+      include_file=""
+      print "Include file for {0} not found".format(classname)
+    #'#include "{0}"'.format(incfile)
+  return include_file
 
 #------------------------------
 class EnumInfo:
@@ -91,6 +111,11 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
   if check_includes:
     if (typename in config.available_classes):
       config.AddDeclare(typename)
+      if typename==config.types[typeid].GetDemangled():
+        fileid = config.types[typeid].fileid
+        to_include_file = FindIncludeFile(typename,fileid)
+        if to_include_file!="":
+          config.AddInclude(to_include_file)
       if args.val.overwrite and (typename not in config.wrapped_classes) \
           and (typename not in config.needed_classes) \
           and (typename not in config.new_needed_classes):
@@ -497,7 +522,10 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
     
     shared_type = config.IsSharedPtr(typename)
     if shared_type==None:
-      res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(typename,a.name)
+      if typename.count(",")>0:
+        res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(config.ClassTypeDef(typename),a.name)
+      else:
+        res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(typename,a.name)
     else:
       res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(shared_type,a.name)
     if a.default!=None:
@@ -552,8 +580,12 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
             res += '  (*this->_objectptr->GetObj()) [ '.format(method.name)
             res += AddParameters(method)+"];\n";
           else:
-            res += '  (*this->_objectptr->GetObj()) {0} '.format(method.name)
-            res += AddParameters(method)+";\n";
+            if method.name=='()':
+              res += '  (*this->_objectptr->GetObj()) '.format(method.name)
+              res += AddParameters(method)+";\n";
+            else:
+              res += '  (*this->_objectptr->GetObj()) {0} '.format(method.name)
+              res += AddParameters(method)+";\n";
         else:
           # operator without arguments: put it in front
           res += ' {0} (*this->_objectptr->GetObj());\n'.format(method.name)
@@ -568,6 +600,7 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
       returntypest = config.types[method.returntype].GetString()
       # create a string topointer to convert result to a pointer for calling WrapClass_...::CreateVar ...
       returnpointer= (config.types[method.returntype].GetType()=="PointerType")
+      pointercount = config.types[method.returntype].GetFullString().count("*")
       #if returnpointer:
       #  topointer=''
       #else:
@@ -579,8 +612,12 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
             res += '  (*this->_objectptr->GetObj()) [ '.format(method.name)
             res += AddParameters(method)+"];\n";
           else:
-            res += '  (*this->_objectptr->GetObj()) {0} '.format(method.name)
-            res += AddParameters(method)+";\n";
+            if method.name=='()':
+              res += '  (*this->_objectptr->GetObj()) '.format(method.name)
+              res += AddParameters(method)+";\n";
+            else:
+              res += '  (*this->_objectptr->GetObj()) {0} '.format(method.name)
+              res += AddParameters(method)+";\n";
         else:
           # operator without arguments: put it in front
           res += ' {0} (*this->_objectptr->GetObj());\n'.format(method.name)
@@ -616,7 +653,12 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
           if returnpointer:
             # Avoid deleting the returned pointer ...
             nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
-            res += '  return AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
+            if pointercount==1:
+              res += '  return AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
+            else:
+              print "Pointer count = {0}".format(pointercount)
+              # several pointers ... try to convert to a single one
+              res += '  return AMILabType<{0} >::CreateVar(({2}*){1},true);\n'.format(typename,nonconstres,config.types[method.returntype].GetString())
           else:
             shared_type = config.IsSharedPtr(typename)
             if shared_type==None:
@@ -747,8 +789,10 @@ def HTMLInitialization(createhtml,templatedir, outputdirectory, outputfilename, 
 def WrapClass(classname,include_file,inputfile):
   if (args.val.profile):
     t0 = time.clock()
+    print "\n**************"
+    print "   Wrapping: {0}",format(classname)
+    print "**************"
     print "WrapClass({0},{1},{2})".format(classname,include_file,inputfile)
-  
   parser = make_parser()
   # Create the handler
   #dh = parse_class.FindClass(classname)
@@ -803,7 +847,22 @@ def WrapClass(classname,include_file,inputfile):
           dh.has_copyconstr = True
           fm.Constructors[pos].is_copyconstr=True
       pos = pos+1
+    
+    # Check for =(T&) operator
+    pos=0
+    dh.has_copyassign = False
+    for m in fm.OperatorMethods:
+      if m.name == "=":
+        if len(m.args)==1:
+          typename = config.types[m.args[0].typeid].GetFullString()
+          if typename=="{0} const &".format(classname):
+            utils.WarningMessage( "Copy assign operator found: {0}".format(m.usedname))
+            dh.has_copyassign = True
+      pos = pos+1
+    
     implement_type="\n"
+    if dh.has_copyassign:
+        implement_type += "AMI_DEFINE_GETVALPARAM({0});\n".format(config.ClassTypeDef(classname))
     if dh.has_copyconstr:
       if dh.abstract=='1':
         implement_type += "AMI_DEFINE_WRAPPEDTYPE_ABSTRACT({0});\n".format(config.ClassTypeDef(classname))
@@ -862,7 +921,7 @@ def WrapClass(classname,include_file,inputfile):
     #print dh.bases
     for (base,virtual) in dh.bases:
       basename=config.types[base].GetString()
-      #print basename
+      print "base:",base," name:",basename
       virtualstring=''
       baseusedname=config.ClassUsedName(basename)
       wrapped_base='WrapClass_{0}'.format(baseusedname)
@@ -1153,16 +1212,26 @@ def WrapClass(classname,include_file,inputfile):
     # in place replace TEMPLATE by classname
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
-    if config.libmodule != None:
-      local_include_file = config.libmodule.get_include_file(classname,\
-        config.files[dh.fileid])
-    else:
-      filename = config.files[dh.fileid]
-      last = filename.rfind('/')
-      incfile=filename[last+1:]
-      local_include_file = '#include "{0}"'.format(incfile)
-
-    
+    local_include_file = FindIncludeFile(classname,dh.fileid)
+    local_include_file = '#include "{0}"'.format(local_include_file)
+    # in case of template, check template parameters for includes
+    m = re.match(r"([^<]*)<(.*)>",classname)
+    if m!=None:
+      template_params = m.group(2)
+      while template_params!="":
+        # list types inside
+        m1 = re.match(r"([^<,]+<[^>]*>)?(,.*)*",template_params)
+        template_param = m1.group(1).strip(' ')
+        print "To check for include: {0}".format(template_param)
+        if template_param in config.classes.keys():
+          fileid = config.types[config.classes[template_param]].fileid
+          filetoadd = FindIncludeFile(template_param,fileid)
+          local_include_file += '\n#include "{0}"'.format(filetoadd)
+        if m1.group(2)==None:
+          template_params=""
+        else:
+          template_params=m1.group(2).strip(', ')
+        
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
       line = line.replace("${INCLUDE_TYPEDEF}",   include_typedef)
@@ -1299,6 +1368,10 @@ def WrapClass(classname,include_file,inputfile):
     BackupFile(impl_filename)
   else:
     print "Class {0} not found".format(classname)
+    print "Classes are:"
+    print "****************************"
+    print  config.classes.keys()
+    print "****************************"
   
   if (args.val.profile):
     if not found: 

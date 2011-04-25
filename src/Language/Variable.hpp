@@ -68,6 +68,8 @@
         objname = wrapped_obj->GetObj(); \
     }
 
+class ParamList;
+
 /**
  * This class will be specialized for each variable type used by amilab, either builtin type or wrapped type, allowing more flexible wrapping code.
  */
@@ -85,6 +87,32 @@ class AMILabType {
 
     static BasicVariable::ptr CreateVar(T* val, bool nodeleter=false)
     { return BasicVariable::ptr(); }
+
+    // double pointer
+    static BasicVariable::ptr CreateVar(T** val, bool nodeleter=false)
+    { return BasicVariable::ptr(); }
+
+    /**
+    * Function used to parse a variable of generic type in a list of parameters, and to give back a pointer to its value.
+    */
+    static bool get_val_param( 
+                  T& arg,
+                  ParamList*p,
+                  int& num,
+                  bool required=false,
+                  bool quiet=false) 
+    { return false; }
+
+    /**
+    * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to its value.
+    */
+    static bool get_val_smtptr_param(
+                  boost::shared_ptr<T>& arg,
+                  ParamList*p, int& num,
+                  bool required=true,
+                  bool noconstr=false,
+                  bool quiet=false)
+    { return false;}
 };
 
 // forward declaration of the specialization
@@ -97,7 +125,68 @@ class AMILabType {
       static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
       static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
       static BasicVariable::ptr CreateVar(const type& val);\
+      static BasicVariable::ptr CreateVar(type** val);\
+      static bool get_val_param( \
+                    type& arg,\
+                    ParamList*p,\
+                    int& num,\
+                    bool required=false,\
+                    bool quiet=false);\
+      \
+      static bool get_val_smtptr_param(\
+                    boost::shared_ptr<type>& arg,\
+                    ParamList*p, int& num,\
+                    bool required=true,\
+                    bool noconstr=false,\
+                    bool quiet=false);\
   };
+
+#define AMI_DEFINE_GETVALPARAM(type) \
+    \
+    bool AMILabType<type>::get_val_param( \
+                    type& arg,\
+                    ParamList*p,\
+                    int& num,\
+                    bool required,\
+                    bool quiet)\
+    { \
+      BasicVariable::ptr varparam;\
+      bool res = get_next_param(varparam,p,num,required,quiet);\
+      if (!varparam.get())  return res;\
+      boost::shared_ptr<type> val_ptr = AMILabType<type>::GetValue(varparam);\
+      if (!val_ptr.get()) {\
+        if (!quiet) { \
+          ami::format f("Problem with %1% parameter.");\
+          FILE_ERROR( (f % num).GetString());\
+        }\
+        return false;\
+      } else {\
+        arg = *val_ptr;\
+      }\
+      return true;\
+    } \
+
+#define AMI_DEFINE_GETVALSMTPTRPARAM(type) \
+    \
+    bool AMILabType<type>::get_val_smtptr_param(\
+        boost::shared_ptr<type>& arg,\
+        ParamList*p, int& num,\
+        bool required, bool noconstr, bool quiet)\
+    {\
+      BasicVariable::ptr temp;\
+      bool res = get_next_param(temp,p,num,required,quiet);\
+      if (!temp.get()) return res;\
+      boost::shared_ptr<type> val_ptr = AMILabType<type>::GetValue(temp,noconstr);\
+      if (!val_ptr.get()) {\
+        if (!quiet) {\
+          ami::format f("Parameter %1% failed.");\
+          FILE_ERROR( ( f % num).GetString());\
+        }\
+        return false;\
+      }\
+      arg = val_ptr;\
+      return true;\
+    }
 
 #define AMI_DEFINE_BASICTYPE(type) \
 	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
@@ -145,8 +234,10 @@ class AMILabType {
     BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
     { \
       return AMILabType<type>::CreateVar(new type(val));\
-    } 
-
+    } \
+    \
+    AMI_DEFINE_GETVALPARAM(type) \
+    AMI_DEFINE_GETVALSMTPTRPARAM(type)
 
 #define AMI_DEFINE_WRAPPEDTYPE_COMMON(type) \
     std::string AMILabType<type>::name_as_string() { \
@@ -181,7 +272,9 @@ class AMILabType {
         /*FILE_ERROR("Need a wrapped object or compatible variable as parameter.")*/; \
       } \
       return boost::shared_ptr<type>();\
-    } 
+    } \
+    \
+    AMI_DEFINE_GETVALSMTPTRPARAM(type)
 
 
 #define AMI_DEFINE_WRAPPEDTYPE_NOCOPY(type) \
@@ -217,6 +310,7 @@ class AMILabType {
     { \
       return AMILabType<type>::CreateVar(new type(val));\
     } 
+
 
 // Abstract classes
 #define AMI_DEFINE_WRAPPEDTYPE_ABSTRACT(type) \

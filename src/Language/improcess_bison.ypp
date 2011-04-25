@@ -567,6 +567,8 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_ReadCTALine
 %token T_ReadCTALineRadii
 
+%token T_Matrix
+
 //%token T_SetIsoContour
 //%token T_SetIsoContourParam
 //%token T_DrawIsoContour
@@ -638,8 +640,6 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 //%token T_GetTransform T_SetTransform
 //%token T_Interpolate
 
-%token T_Matrix
-%token T_Invert
 
 //%token T_PrintMatrices
 
@@ -8118,27 +8118,34 @@ postfix_var:
         } else 
         if (var->Type()==type_ami_object)
         {
-          // Check for a constructor inside the context
           ///    Call a wrapped C++ class member.
           DYNAMIC_CAST_VARIABLE(AMIObject,var, obj);
- 
-          // look for the variable
+          // Check for () operator
+          // Check for a constructor inside the context
+          BasicVariable::ptr parop;
           BasicVariable::ptr constr;
           if (obj.get())  {
             Variables::ptr objcontext = obj->Pointer()->GetContext();
             //objcontext->display();
+            parop = objcontext->GetVar("__parenthesis__");
             constr = objcontext->GetVar(var->Name().c_str());
           }
-    
-          if (constr.get()) {
-            // Call the constructor with the given parameters
-            DYNAMIC_CAST_VARIABLE(WrapClassMember,constr, constr_member);
-            BasicVariable::ptr res =  (constr_member->Pointer())->CallMember(param.get());
+          if (parop.get()) {
+            // Call the () operator with the given parameters
+            DYNAMIC_CAST_VARIABLE(WrapClassMember,parop, parop_member);
+            BasicVariable::ptr res =  (parop_member->Pointer())->CallMember(param.get());
             driver.var_stack.AddVar(res);
           } else {
-            // error message here
-            driver.yyiperror("failed to process () operator \n");
-            driver.var_stack.AddVar(BasicVariable::ptr());
+            if (constr.get()) {
+              // Call the constructor with the given parameters
+              DYNAMIC_CAST_VARIABLE(WrapClassMember,constr, constr_member);
+              BasicVariable::ptr res =  (constr_member->Pointer())->CallMember(param.get());
+              driver.var_stack.AddVar(res);
+            } else {
+              // error message here
+              driver.yyiperror("failed to process () operator \n");
+              driver.var_stack.AddVar(BasicVariable::ptr());
+            }
           }
          
         } else
@@ -8642,126 +8649,8 @@ matrix_variable:
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         driver.var_stack.AddVar(var->NewReference());
       }
-      |
-      T_Invert T_OP_PAR expr_var T_CL_PAR
-      {
-        /**
-        Description:
-         Inversion of a symmetric matrix
-          TODO: make a real inversion, for now it is a tranpose ...
-        **/
-
-        BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
-        if (var->Type()==type_matrix)  {
-          DYNAMIC_CAST_VARIABLE(FloatMatrix,var,varmat) 
-          FloatMatrix::ptr res(varmat->Pointer()->Transpose());
-          ADD_VARSTACK_PTR(FloatMatrix,res);
-        } else {
-          driver.err_print("Expecting an matrix variable here ... \n");
-          YYABORT;
-        }
-
-      }
       ;
 
-/*
-primary_matrix: matrix | T_OP_PAR expr_matrix T_CL_PAR;
-
-postfix_matrix: primary_matrix;
-
-unary_matrix  :    postfix_matrix
-                | T_SUB  cast_matrix { UNARYOP_MATRIX(-)               }
-                | T_ADD  cast_matrix
-                | cast_matrix TRANSPOSE_OP
-                {
-          FloatMatrix* mat;
-          FloatMatrix* res;
-          mat=driver.matrix_stack.GetLastMatrix();
-          res = mat->Transpose();
-          delete mat;
-          driver.matrix_stack.AddMatrix(res);
-        }
-        | SIN   cast_matrix { UNARYOP_MATRIX(sin)             }
-        | COS   cast_matrix { UNARYOP_MATRIX(cos)             }
-        | SQRT  cast_matrix { UNARYOP_MATRIX(sqrt)            }
-        | ABS   cast_matrix { UNARYOP_MATRIX(fabs)            }
-        | ROUND cast_matrix { UNARYOP_MATRIX(round)           }
-        | FLOOR cast_matrix { UNARYOP_MATRIX(floor)           }
-        | TAN   cast_matrix { UNARYOP_MATRIX(tan)             }
-        | ASIN  cast_matrix { UNARYOP_MATRIX(asin)            }
-        | ACOS  cast_matrix { UNARYOP_MATRIX(acos)            }
-        | ATAN  cast_matrix { UNARYOP_MATRIX(atan)            }
-        | EXP   cast_matrix { UNARYOP_MATRIX(exp)             }
-        | LOG  cast_matrix { UNARYOP_MATRIX(1.0/log(10.0)*log) }
-        | LN   cast_matrix { UNARYOP_MATRIX(log)             }
-        ;
-
-cast_matrix:
-        unary_matrix;
-
-multiplicative_matrix: cast_matrix
-      | multiplicative_matrix T_MULT expr  { MATRIX_OP_EXPR(*,$3) }
-      | multiplicative_matrix POINTWISE_MULT cast_matrix { MATRIX_OP_MATRIX_2(*)   }
-      | multiplicative_matrix T_MULT cast_matrix
-        {
-         FloatMatrix* m2 = driver.matrix_stack.GetLastMatrix();
-         FloatMatrix* m1 = driver.matrix_stack.GetLastMatrix();
-             FloatMatrix* res = Multiply(m1, m2) ;
-         driver.matrix_stack.AddMatrix(res);
-         delete m1;
-         delete m2;
-        }
-
-additive_matrix: multiplicative_matrix
-       | additive_matrix T_ADD expr  { MATRIX_OP_EXPR(+,$3) }
-       | additive_matrix T_SUB expr  { MATRIX_OP_EXPR(-,$3) }
-       | additive_matrix T_ADD multiplicative_matrix { MATRIX_OP_MATRIX_2(+)   }
-       | additive_matrix T_SUB multiplicative_matrix { MATRIX_OP_MATRIX_2(-)   }
-;
-
-shift_matrix: additive_matrix
-;
-
-relational_matrix:
-       shift_matrix
-;
-
-equality_matrix:
-    relational_matrix
-        ;
-
-and_matrix:
-    equality_matrix
-        ;
-
-
-exclusive_or_matrix:
-    and_matrix
-    ;
-
-inclusive_or_matrix:
-    exclusive_or_matrix
-    ;
-
-logical_and_matrix:
-    inclusive_or_matrix
-    ;
-
-logical_or_matrix:
-    logical_and_matrix
-    ;
-
-conditional_matrix:
-    logical_or_matrix
-    ;
-
-assignment_matrix:
-    conditional_matrix
-    ;
-
-expr_matrix : assignment_matrix
-;
-*/
 
 /* Deprecated
 var_surface:

@@ -84,10 +84,15 @@ available_operators={ \
   '!=':'__not_equal__', \
   '==':'__equal__', \
   '[]':'__at__', \
+  '()':'__parenthesis__', \
   '=':'__assign__',\
   '-=':'__sub_assign__', \
-  '+=':'__add_assign__', \
   '+':'__add__', \
+  '+=':'__add_assign__', \
+  '*':'__mult__', \
+  '*=':'__mult_assign__', \
+  '/':'__div__', \
+  '/=':'__div_assign__', \
   '-':'__substract__'
   }
 
@@ -107,6 +112,9 @@ def ClassUsedName(classname):
 #-------------------------------------------------------------
 def ClassShortName(classname):
   res = classname
+  # keep std::string as is
+  if classname=="std::string":
+    return res
   res = res.replace('<','_')
   res = res.replace('>','')
   res = res.replace(',','_')
@@ -130,6 +138,7 @@ def ClassTypeDef(classname):
 #------------------------------------------------------------------
 def AddInclude(f):
   if not(f in include_list):
+    print "adding include file {0}".format(f)
     include_list.append(f)
 
 #------------------------------------------------------------------
@@ -152,7 +161,11 @@ def CreateIncludes():
     # avoid inclusion, just declare the type ...
     res += '#ifndef {0}_declared\n'.format(ClassUsedName(f))
     res += '  #define {0}_declared\n'.format(ClassUsedName(f))
-    res += '  AMI_DECLARE_TYPE({0})\n'.format(f)
+    if f.count(",")>0:
+      res += '  typedef {0} {1};\n'.format(f,ClassTypeDef(f))
+      res += '  AMI_DECLARE_TYPE({0})\n'.format(ClassTypeDef(f))
+    else:
+      res += '  AMI_DECLARE_TYPE({0})\n'.format(f)
     res += '#endif\n'
   return res
 

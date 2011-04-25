@@ -49,6 +49,10 @@ class FloatMatrix;
 class GLTransfMatrix;
 class VarArray;
 
+// declared in wrapfunction.cpp
+bool get_next_param( BasicVariable::ptr& var, 
+                    ParamList*p, int& num, bool required = false, bool quiet=false);
+
 #include "VarArray.h"
 
 #include <ostream>

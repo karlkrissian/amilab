@@ -53,7 +53,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariabl
 /// a-=b
 template<> BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b);
 */
-/*
+
 /// a*b
 template<> BasicVariable::ptr Variable<AMIObject>::operator *(const BasicVariable::ptr& b);
 
@@ -65,6 +65,8 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator /(const BasicVariabl
 
 /// a/=b
 template<> BasicVariable::ptr Variable<AMIObject>::operator /=(const BasicVariable::ptr& b);
+
+/*
 
 /// a%b
 template<> BasicVariable::ptr Variable<AMIObject>::operator %(const BasicVariable::ptr& b);

@@ -512,10 +512,6 @@ DisplayHisto      return(token::T_DisplayHisto); /*{DisplayHisto,T_DisplayHisto}
 
 GenRead           return(token::T_GenRead); /*{GenRead,T_GenRead}*/
 
-
-Matrix            return(token::T_Matrix); /*{Matrix,T_Matrix}*/
-Invert            return(token::T_Invert); /*{Invert,T_Invert}*/
-
 SaveStructuredGrid {return(token::T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
 
 //

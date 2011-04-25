@@ -69,7 +69,7 @@ class ArgInfo:
     else:
       res +=   "{0} {1}".format(substype,substvar)
     res += ";\n"
-    res +=  "  if (!get_val_param<{0} >({1},_p,_n,{3},{4})) {2};\n".format( \
+    res +=  "  if (!AMILabType<{0} >::get_val_param({1},_p,_n,{3},{4})) {2};\n".format( \
         substype,substvar,self.returnstring,required,self.quiet)
     res +=  "  "+typesubst.ConvertValTo(self.typeid,substvar,self.name)+"\n"
     #{1} {0} = ({1}) ({2}>0.5);\n".format(self.name,typename,substvar)
@@ -87,11 +87,11 @@ class ArgInfo:
       res += ";\n"
       shared_type = config.IsSharedPtr(self.typename)
       if shared_type==None:
-        res += "  if (!get_val_param<{0} >({1},_p,_n,{3},{4})) {2};\n".format(\
+        res += "  if (!AMILabType<{0} >::get_val_param({1},_p,_n,{3},{4})) {2};\n".format(\
           self.typename,self.name,self.returnstring,required,self.quiet)
       else:
         # false parameter value to keep smart pointer deleter
-        res += "  if (!get_val_smtptr_param<{0} >({1},_p,_n,{3},false,{4})) {2};\n".format(\
+        res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1},_p,_n,{3},false,{4})) {2};\n".format(\
           shared_type,self.name,self.returnstring,required,self.quiet)
     return res
   
@@ -100,7 +100,7 @@ class ArgInfo:
     substype = typesubst.type_substitute[self.typename]
     substvar = self.GetSubstName()
     res =  "  boost::shared_ptr<{0} > {1};\n".format(substype,substvar)
-    res += "  if (!get_val_smtptr_param<{0} >({1},_p,_n,true,false,{3})) {2};\n".format(\
+    res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1},_p,_n,true,false,{3})) {2};\n".format(\
       substype,substvar,self.returnstring,self.quiet)
     # Try to create pointer from smart pointer if available
     conv_res=typesubst.ConvertSmtPtrToPtr(self.typeid,substvar,self.name)
@@ -119,7 +119,7 @@ class ArgInfo:
     substype = typesubst.type_substitute[self.typename]
     substvar = self.GetSubstName()
     res =  "  boost::shared_ptr<{0} > {1};\n".format(substype,substvar)
-    res += "  if (!get_val_smtptr_param<{0} >({1},_p,_n,true,false,{3})) {2};\n".format(\
+    res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1},_p,_n,true,false,{3})) {2};\n".format(\
       substype,substvar,self.returnstring,self.quiet)
     # Try to create pointer from smart pointer if available
     conv_res= typesubst.ConvertSmtPtrToDoublePtr(self.typeid,substvar,self.name)
@@ -155,7 +155,7 @@ class ArgInfo:
       else:
         addparams+=',false'
       res += "    boost::shared_ptr<{0} > {1}_smtptr;\n".format(self.typename,self.name)
-      res += "    if (!get_val_smtptr_param<{0} >({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
+      res += "    if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
           self.typename,self.name,addparams,self.returnstring,self.quiet)
       res += "    local_{0} = {0}_smtptr.get();\n".format(self.name)
       res += "    {0} = &local_{0};\n".format(self.name)
@@ -185,7 +185,7 @@ class ArgInfo:
       else:
         addparams+=',false'
       res += "    boost::shared_ptr<{0} > {1}_smtptr;\n".format(self.typename,self.name)
-      res += "    if (!get_val_smtptr_param<{0} >({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
+      res += "    if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
           self.typename,self.name,addparams,self.returnstring,self.quiet)
       res += "    {0} = {0}_smtptr.get();\n".format(self.name)
       res += "  }\n"
@@ -202,14 +202,14 @@ class ArgInfo:
       noconst=',false'
     if self.default==None:
       # no default value
-      res += "  if (!get_val_smtptr_param<{0} >({1}_smtptr,_p,_n,true{2},{4})) {3};\n".format(\
+      res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n,true{2},{4})) {3};\n".format(\
         self.typename,self.name,noconst,self.returnstring,self.quiet)
       if ispointer:
         res += "  {0} {1} = {1}_smtptr.get();\n".format(fulltype,self.name)
       else:
         res += "  {0} {1} = *{1}_smtptr;\n".format(fulltype,self.name)
     else:
-      res += "  if (!get_val_smtptr_param<{0} >({1}_smtptr,_p,_n,false{2},{4})) {3};\n".format(\
+      res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n,false{2},{4})) {3};\n".format(\
         self.typename,self.name,noconst,self.returnstring,self.quiet)
       # deal with default value
       res += "  // Setting default value if no value is returned\n"

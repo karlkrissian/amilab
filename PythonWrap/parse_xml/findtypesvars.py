@@ -90,6 +90,11 @@ class FindTypesAndVariables(handler.ContentHandler):
     # Abstract
     self.argtype.abstract = attrs.get('abstract', '0')
     
+    # Set Context
+    context = attrs.get('context', None)
+    if context != None:
+      self.argtype.SetContext(context)
+    
     # File id
     self.argtype.fileid = attrs.get('file', None)
     

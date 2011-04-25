@@ -15,6 +15,14 @@ include_directories (
 )
 
 INCLUDE( ${VTK_USE_FILE} )
+
+INCLUDE( ${ITK_USE_FILE} )
+# allow direct include of vnl_matrix.h
+# include_directories(
+#   /usr/local/include/InsightToolkit/Utilities/vxl/core/vnl
+# )
+#MESSAGE( "*** dir = ${ITK_DIR}/Utilities/vxl/core/vnl/  ${ITK_CHECK_ITK_VXL_DIR}")
+
 INCLUDE( ${wxWidgets_USE_FILE})
 
 
@@ -31,11 +39,25 @@ IF(AMI_ENABLE_WRAPPING)
     ENDIF(VTK_INCLUDE_DIRS)
      IF   (VTK_REQUIRED_CXX_FLAGS)
        FOREACH( def ${VTK_REQUIRED_CXX_FLAGS})
-         SET( VTK_DEFS  ${def}  ${WX_DEFS} )
+         SET( VTK_DEFS  ${def}  ${VTK_DEFS} )
        ENDFOREACH(def ${VTK_REQUIRED_CXX_FLAGS})
        MESSAGE("VTK_DEFS=${VTK_DEFS}")
      ENDIF(VTK_REQUIRED_CXX_FLAGS)
   ENDIF ( VTK_FOUND)
+
+  IF   (ITK_FOUND)
+    IF   (ITK_INCLUDE_DIRS)
+      FOREACH( inc ${ITK_INCLUDE_DIRS})
+        SET( ITK_INCLUDES  -I${inc}  ${ITK_INCLUDES} )
+      ENDFOREACH(inc ${ITK_INCLUDE_DIRS})
+    ENDIF(ITK_INCLUDE_DIRS)
+     IF   (ITK_REQUIRED_CXX_FLAGS)
+       FOREACH( def ${ITK_REQUIRED_CXX_FLAGS})
+         SET( ITK_DEFS  ${def}  ${ITK_DEFS} )
+       ENDFOREACH(def ${ITK_REQUIRED_CXX_FLAGS})
+       MESSAGE("ITK_DEFS=${UTK_DEFS}")
+     ENDIF(ITK_REQUIRED_CXX_FLAGS)
+  ENDIF ( ITK_FOUND)
 
   IF   (wxWidgets_FOUND)
     IF   (wxWidgets_INCLUDE_DIRS)
@@ -86,9 +108,9 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
-  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}")
+  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${ITK_INCLUDES} ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}")
   execute_process(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${WX_INCLUDES}  ${WX_DEFS} ${XML_INPUT}
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${ITK_INCLUDES} ${WX_INCLUDES}  ${WX_DEFS} ${XML_INPUT}
   )
    
   # Generate the classes list
@@ -108,16 +130,16 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
   IF(GENERATE_HTML_HELP)
-    MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q")
+    MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q")
     EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q
       OUTPUT_VARIABLE ancestors_result
       ERROR_VARIABLE ancestors_error
     )
   ELSE(GENERATE_HTML_HELP)
-    MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
+    MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --templates --ancestors-file ${ANCESTORS_FILE} -q")
     EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --templates --ancestors-file ${ANCESTORS_FILE} -q
       OUTPUT_VARIABLE ancestors_result
       ERROR_VARIABLE ancestors_error
     )
@@ -135,18 +157,21 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
 
   # Wrap all classes at once since it is now fast
   FOREACH( class ${ancestors_list})
+
+    ClassUsedName( class m_class )
+
     # Check that the class is not already wrapped with VTK wrapping
-    IF ((NOT EXISTS ${VTK_OUTDIR}/wrap_${class}.h))
-      SET(compilation_list ${compilation_list} ${class})
-      IF ( (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${class}.cpp) OR
-            (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${class}.h))
-        SET(OUTPUT_LIST ${WrapAlgorithms_OUTDIR}/wrap_${class}.cpp ${OUTPUT_LIST})
-        SET(OUTPUT_LIST ${WrapAlgorithms_OUTDIR}/wrap_${class}.h ${OUTPUT_LIST})
+    IF ((NOT EXISTS ${VTK_OUTDIR}/wrap_${m_class}.h))
+      SET(compilation_list ${compilation_list} ${m_class})
+      IF ( (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.cpp) OR
+            (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.h))
+        SET(OUTPUT_LIST ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.cpp ${OUTPUT_LIST})
+        SET(OUTPUT_LIST ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.h ${OUTPUT_LIST})
         SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
-      ENDIF( (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${class}.cpp) OR
-          (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${class}.h))
+      ENDIF( (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.cpp) OR
+          (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.h))
 #    ELSE((NOT EXISTS ${VTK_OUTDIR}/wrap_${class}.h))
-    ENDIF((NOT EXISTS ${VTK_OUTDIR}/wrap_${class}.h))
+    ENDIF((NOT EXISTS ${VTK_OUTDIR}/wrap_${m_class}.h))
   ENDFOREACH( class ${ancestors_list}) 
 
   LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
@@ -190,6 +215,7 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
             --classes ${MISSING_CLASSES}
             --available_classes ${ancestors_list} ${vtk_ancestors_list}
             --outputdir "${WrapAlgorithms_OUTDIR}"
+          --templates 
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             --addwrap
             --profile
@@ -205,8 +231,9 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
 ENDIF(AMI_ENABLE_WRAPPING)
 
 FOREACH( class ${compilation_list}  ) 
-  SET( WrapAlgorithms_HDRS ${WrapAlgorithms_OUTDIR}/wrap_${class}.h ${WrapAlgorithms_HDRS})
-  SET( WrapAlgorithms_SRCS ${WrapAlgorithms_OUTDIR}/wrap_${class}.cpp ${WrapAlgorithms_SRCS})
+  ClassUsedName( class m_class )
+  SET( WrapAlgorithms_HDRS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.h ${WrapAlgorithms_HDRS})
+  SET( WrapAlgorithms_SRCS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.cpp ${WrapAlgorithms_SRCS})
 ENDFOREACH( class ${ancestors_list}  ) 
 SET( WrapAlgorithms_HDRS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h   ${WrapAlgorithms_HDRS})
 SET( WrapAlgorithms_SRCS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp ${WrapAlgorithms_SRCS})
