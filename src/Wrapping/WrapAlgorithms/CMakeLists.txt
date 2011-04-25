@@ -192,6 +192,7 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
             --classes ${MISSING_CLASSES}
             --available_classes ${ancestors_list} ${vtk_ancestors_list}
             --outputdir "${WrapAlgorithms_OUTDIR}"
+            --templates 
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             --addwrap
             --profile
@@ -215,7 +216,7 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
             --classes ${MISSING_CLASSES}
             --available_classes ${ancestors_list} ${vtk_ancestors_list}
             --outputdir "${WrapAlgorithms_OUTDIR}"
-          --templates 
+            --templates 
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             --addwrap
             --profile

@@ -1219,18 +1219,23 @@ def WrapClass(classname,include_file,inputfile):
     if m!=None:
       template_params = m.group(2)
       while template_params!="":
+        print "template_params = {0}".format(template_params)
         # list types inside
+        # this test is not really correct: need to be improved, but let's see if it allows to go on with template wrapping
         m1 = re.match(r"([^<,]+<[^>]*>)?(,.*)*",template_params)
-        template_param = m1.group(1).strip(' ')
-        print "To check for include: {0}".format(template_param)
-        if template_param in config.classes.keys():
-          fileid = config.types[config.classes[template_param]].fileid
-          filetoadd = FindIncludeFile(template_param,fileid)
-          local_include_file += '\n#include "{0}"'.format(filetoadd)
-        if m1.group(2)==None:
-          template_params=""
+        if m1!=None and m1.group(1)!=None:
+          template_param = m1.group(1).strip(' ')
+          print "To check for include: {0}".format(template_param)
+          if template_param in config.classes.keys():
+            fileid = config.types[config.classes[template_param]].fileid
+            filetoadd = FindIncludeFile(template_param,fileid)
+            local_include_file += '\n#include "{0}"'.format(filetoadd)
+          if m1.group(2)==None:
+            template_params=""
+          else:
+            template_params=m1.group(2).strip(', ')
         else:
-          template_params=m1.group(2).strip(', ')
+          template_params=""
         
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
