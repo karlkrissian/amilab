@@ -268,7 +268,11 @@ def GenerateDoxygenFileName(classname):
 
 #-------------------------------------------------------------
 def GenerateLocalURL(classname):
-  return classname+".html"
+  cname = classname
+  cname = cname.replace('::','_')
+  cname = cname.replace('<','_')
+  cname = cname.replace('>','_')
+  return cname+".html"
 
 #-------------------------------------------------------------
 def GenerateClassFormat(classname, isexternalanchor):

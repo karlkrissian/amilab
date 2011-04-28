@@ -292,6 +292,25 @@ if (!exists(ShortestPathClass)) {
                                   ::Px1,::Py1,::Pz1)
       }
     }
+
+    #-------------------------------------------
+    proc ::DrawPath() {
+      if (::input.tz==1)&&(exists(::input_draw)) {
+        line = ::path.GetLine(0)
+        p0x = line(0,0,0,0)
+        p0y = line(0,0,0,1)
+        for n=1 to line.tx-1 {
+          p1x = line(n,0,0,0)
+          p1y = line(n,0,0,1)
+          ::input_draw.DrawLineZ(p0x,p0y,p1x,p1y)
+          p0x = p1x
+          p0y = p1y
+        }
+        ::input_draw->DrawingAreaDisplay()
+      }
+      
+    }
+
     #-------------------------------------------
     proc ::Gui() \
     {
@@ -344,6 +363,7 @@ if (!exists(ShortestPathClass)) {
             ::win.AddButton("Run",      ::Run)
             # display
             ::win.AddButton("Display",  ::Display)
+            ::win.AddButton("DrawPath", ::DrawPath)
           ::win.EndHorizontal()  
       ::win.EndBook()
 
