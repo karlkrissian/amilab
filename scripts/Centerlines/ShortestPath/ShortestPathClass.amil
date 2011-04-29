@@ -59,6 +59,7 @@ if (!exists(ShortestPathClass)) {
     
       ::step_size = 0.1
       ::maxlength = 500
+      ::livewire = UCHAR(0), "Recompute and display the path at each draw callback"
       # Path mode 0 or 1
     
       #::Gui
@@ -95,7 +96,7 @@ if (!exists(ShortestPathClass)) {
     #-----------------------------------------------
     proc ::load_speed() \
     {
-      eval "::speed <<="+::speed_name+";"
+      eval "::speed <<="+::speed_name+"[0];"
       if (::speed_name=="Image") {
         ::speed_name = "::speed"
         ::win.Update(-1)
@@ -113,10 +114,35 @@ if (!exists(ShortestPathClass)) {
     }
 
     #-----------------------------------------------
+    proc ::DrawPoints() \
+    {
+      if (::livewire) {
+        ::SetEndPoint( \
+                          ::input_draw.GetXPos(), \
+                          ::input_draw.GetYPos(), \
+                          ::input_draw.GetZPos() \
+                        )
+        ::Run()
+      }
+      if (exists(::input_draw)) {
+        if exists(::startx) {
+          ::input_draw.DrawCircleR(::startx,::starty,1.5)
+        }
+        if exists(::endx) {
+          ::input_draw.DrawCircleR(::endx,::endy,1.5)
+        }
+        if exists(::path) {
+          ::DrawPath()
+        }
+      }
+    }
+
+    #-----------------------------------------------
     proc ::StartPoint() \
     {
       ::load_input
       show ::input
+      ::input_draw.PaintCallback(&::DrawPoints);
       if (exists(::input_draw)) {
         ::SetStartPoint( \
                           ::input_draw.GetXPos(), \
@@ -345,19 +371,20 @@ if (!exists(ShortestPathClass)) {
         
           ::win.AddBoolean( &::save_FM, "Save FastMarching")
     
-          ::win.AddFloat( &::epsilon,  "::epsilon", 0.01,10)
-          ::win.AddFloat( &::maxcost,  "::maxcost", 1,100000)
+          ::win.AddFloat( &::epsilon,  "epsilon", 0.01,10)
+          ::win.AddFloat( &::maxcost,  "maxcost", 1,100000)
       
           ::win.BeginBoxPanel("Input intensity-based speed")
             ::win.AddBoolean( &::use_input_speed)
-            ::win.AddFloat( &::input_Imin,  "::input_Imin", 0,10000)
-            ::win.AddFloat( &::input_Imax,  "::input_Imax", 0,10000)
-            ::win.AddFloat( &::input_speed,  "::input_speed", 0,100)
+            ::win.AddFloat( &::input_Imin,  "input_Imin", 0,10000)
+            ::win.AddFloat( &::input_Imax,  "input_Imax", 0,10000)
+            ::win.AddFloat( &::input_speed,  "input_speed", 0,100)
           ::win.EndBoxPanel()
     
-          ::win.AddFloat( &::step_size,  "::step_size", 0.01,1)
-          ::win.AddFloat( &::maxlength,  "::maxlength", 0,1000)
+          ::win.AddFloat( &::step_size,  "step_size", 0.01,1)
+          ::win.AddFloat( &::maxlength,  "maxlength", 0,1000)
     
+          ::win.AddBoolean(&::livewire,"LiveWire")
           ::win.BeginHorizontal()
             # run
             ::win.AddButton("Run",      ::Run)
