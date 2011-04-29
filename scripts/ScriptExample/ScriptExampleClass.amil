@@ -69,7 +69,7 @@ if (!exists(ScriptExampleClass)) {
         ::win.AddPage("Run")
           ::win.AddButton("Run Filter",::Run)
 
-        if wx.wxFileName(::html_filename).FileExists() {
+        if wx.wxFileName(::html_filename)._FileExists() {
           ::AddHelpPage(&::win)
         }
     

@@ -14,3 +14,5 @@ dir      = "PDI/"
 
  ami.MainFrame.AddToMenu("&PDI",category,"&FourierFilter",  dir+"FourierFilter/FourierFilterGui")
 
+ ami.MainFrame.AddToMenu("&PDI",category,"&PeronaMalik",  dir+"PeronaMalik/PeronaMalikGui")
+
