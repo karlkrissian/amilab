@@ -1981,10 +1981,16 @@ bool MainFrame::TryToOpenImage( const wxString& string_filename)
   possible_name.Replace(wxT(")"),wxT("_"));
   possible_name.Replace(wxT("-"),wxT("_"));
 
+  std::string st = std::string(possible_name.mb_str());
+  if (((st[0]<'A') || (st[0]>'Z')) &&
+      ((st[0]<'a') || (st[0]>'z')) &&
+      (st[0]!='_'))
+    st = std::string("_")+st;
+
   int res=AskVarName( this,
                   string("Image variable name"),
                   string("Enter name:"),
-                  string(possible_name.mb_str(wxConvUTF8)),
+                  st,
                   varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;

@@ -83,6 +83,7 @@ def CreateMacros(inputfile,outputfile):
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"treebase")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"textctrl")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"statusbr")
+  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"listbase")
 
   if wrapped_macros!="":
     # Create the macros context

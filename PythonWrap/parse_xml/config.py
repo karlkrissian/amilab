@@ -1,6 +1,8 @@
 
 import wrap_class
 import re
+import sys
+import string
 
 # global dictionary of argument types
 types      = dict()
@@ -9,30 +11,36 @@ variables  = dict()
 enumvalues = dict()
 files      = dict()
 
+
 classes_blacklist=[
   'wxHtmlWindowMouseHelper', # pb: no public constructor, destructor: can't be used with boost smart pointers
   ]
 
 # ignore specific members
-members_blacklist=['wxCreateObject','wxRect::Inside',\
-  'wxString::Strip', 'wxString::CompareTo',\
-  'wxAuiManager::SetFrame', 'wxAuiManager::GetFrame',\
-  'wxWindowBase::GetBestFittingSize', 'wxWindowBase::SetBestFittingSize', 'wxWindowBase::GetAdjustedMinSize', 'wxWindowBase::GetToolTipText', \
+members_blacklist=[
+  'wxCreateObject',
+  #'wxRect::Inside',
+  #'wxString::Strip', 
+  #'wxString::CompareTo',
+  #'wxAuiManager::SetFrame', deprecated
+  #'wxAuiManager::GetFrame', deprecated
+  #'wxWindowBase::GetHelpTextAtPoint', 
+  'wxWindowBase::GetToolTipText', # not implemented ...
   'wxStringBase::copy',
-  'wxFileName::GetHumanReadableSize', #invalid cast
+#  'wxFileName::GetHumanReadableSize', #invalid cast
   'wxString::FormatV', 
   'wxString::PrintfV', 
-  'wxString::mb_str', # default const reference to abstract class 
-  'wxWindow::ScrollDirFromOrient','wxWindow::OrientFromScrollDir',\
-  'wxSizerItem::SetOption','wxSizerItem::GetOption', \
-  'wxSizer::Remove(wxWindow*)',\
-  'wxBitmapButtonBase::SetLabel(const wxBitmap&)',\
-  'wxWindowBase::Navigate', # missing IsForward (enum) deal with enums ...
-  'wxWindowBase::NavigateIn', # idem
-  'wxWindowBase::GetHelpTextAtPoint', 
+  #'wxString::mb_str', # default const reference to abstract class 
+  #'wxWindow::ScrollDirFromOrient',
+  #'wxWindow::OrientFromScrollDir',
+  #'wxSizerItem::SetOption',
+  #'wxSizerItem::GetOption', 
+  #'wxSizer::Remove(wxWindow*)',
+  #'wxBitmapButtonBase::SetLabel(const wxBitmap&)',
   'wxFont::Unshare', 
-  'wxControlBase::GetLabelText', # problem with static and non-static methods
-  'wxStatusBar::SetBorderX', 'wxStatusBar::SetBorderY',
+  #'wxControlBase::GetLabelText', # problem with static and non-static methods
+  'wxStatusBar::SetBorderX', # not implemented ... 
+  'wxStatusBar::SetBorderY', # not implemented ...
   'wxMenuBase::New',
   'wxMenuItem::GetFactoryPath',
   'wxMenuItemBase::GetAccelFromString',
@@ -40,23 +48,23 @@ members_blacklist=['wxCreateObject','wxRect::Inside',\
   'wxColour::FromRGBColor', # pb with COLORREF
   'wxColour::m_pixel', # idem
   'wxCursor::GetHCURSOR',           # linking pb on macros
-  'wxDateTime::IsGregorianDate',    # idem
-  'wxToolBar::OnMouse',             # idem
-  'wxStatusBarGeneric::SetBorderX', # idem
-  'wxStatusBarGeneric::SetBorderY', # idem
-  'wxArrayString::resize',          # idem
+  'wxDateTime::IsGregorianDate',    # no implemented
+  #'wxToolBar::OnMouse',             # idem
+  #'wxStatusBarGeneric::SetBorderX', # idem
+  #'wxStatusBarGeneric::SetBorderY', # idem
+  'wxArrayString::resize',          # no defined
   'wxMenuBar::Create',              # idem
-  'wxButtonBase::GetDefaultSize',   # idem
+  #'wxButtonBase::GetDefaultSize',   # idem
   'wxIcon::SetOk',                  # idem
-  'wxWindow::FindItem',             # idem
+  #'wxWindow::FindItem',             # idem
   'wxPoint2DDouble::SetPolarCoordinates', # idem
   'wxPoint2DInt::SetPolarCoordinates', # idem
   'wxGenericListCtrl::Update(long)', # linking problem, don't know why ...
   'wxBitmap::GetSelectedInto', # not included in windows in release mode
   'wxBitmap::SetSelectedInto', # not included in windows in release mode
-  'wxListCtrl::ConvertToMSWStyle', # linking problem
-  'wxListCtrl::ChangeCurrent',     # idem
-  'wxListCtrl::ResetCurrent',      # idem
+  #'wxListCtrl::ConvertToMSWStyle', # linking problem
+  #'wxListCtrl::ChangeCurrent',     # idem
+  #'wxListCtrl::ResetCurrent',      # idem
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints',  # idem
@@ -90,10 +98,15 @@ available_operators={ \
   '+':'__add__', \
   '+=':'__add_assign__', \
   '*':'__mult__', \
+  '*()':'__indirection__', \
   '*=':'__mult_assign__', \
   '/':'__div__', \
   '/=':'__div_assign__', \
-  '-':'__substract__'
+  '-':'__substract__', \
+  '++':'__preinc__', \
+  '--':'__predec__', \
+  '++(int)':'__postinc__', \
+  '--(int)':'__postdec__', \
   }
 
 include_list = []
@@ -138,6 +151,9 @@ def ClassTypeDef(classname):
 #------------------------------------------------------------------
 def AddInclude(f):
   if not(f in include_list):
+    # temporary fix for <list>
+    if f=='#include "stl_list.h"':
+      f= '#include <list>'
     print "adding include file {0}".format(f)
     include_list.append(f)
 
@@ -155,7 +171,8 @@ def AddDeclare(f):
 def CreateIncludes():
   res='';
   for f in include_list:
-    res += '#include "{0}"\n'.format(f)
+    #res += '#include "{0}"\n'.format(f)
+    res += '{0}\n'.format(f)
   
   for f in declare_list:
     # avoid inclusion, just declare the type ...
@@ -179,3 +196,28 @@ def IsSharedPtr(typename):
     return res.group(1)
   else:
     return None
+
+#-------------------------------------------
+# Language tokens
+#-------------------------------------------
+
+improcess_flex_lpp      = sys.path[0]+"/../../src/Language/improcess_flex.lpp"
+
+def get_tokens():
+    lex_tokens={}
+    f = open (improcess_flex_lpp, "r")
+    fc = f.read()
+    parse_token=re.compile('/\*\{(.+),(.*)\}\*/')
+    f.seek(0)
+    #
+    lines=string.split(fc,'\n')
+    #
+    for l in lines:
+        t=parse_token.search(l)
+        if t:
+            lex_tokens[t.group(2)]=t.group(1)
+            # now split expression and lex token:
+    return lex_tokens
+
+ami_tokens = get_tokens()
+#print ami_tokens

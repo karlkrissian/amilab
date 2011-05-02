@@ -62,7 +62,7 @@ VarContexts::~VarContexts() {
 
 //--------------------------------------------------
 void VarContexts::EmptyVariables() {
-  CLASS_MESSAGE("");
+  //CLASS_MESSAGE("");
   for (int i=_context.size()-1; i>=0; i--)
     _context[i]->EmptyVariables();
 }

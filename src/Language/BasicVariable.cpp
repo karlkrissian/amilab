@@ -69,10 +69,12 @@ const string BasicVariable::GetTypeName() const
 void BasicVariable::Rename(const char* newname)
 {  
   // ami::format allow only one parameter at a time!!!
+  /*
   ami::format f("Renaming %1% ");
   CLASS_MESSAGE(( f %_name.c_str() ).GetString());
   ami::format f1("To %1% ");
   CLASS_MESSAGE(( f1 % newname ).GetString());
+  */
   _name=newname;
   if (_vars.get())
     _vars->SetName(newname);

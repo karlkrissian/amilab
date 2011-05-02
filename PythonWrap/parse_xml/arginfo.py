@@ -39,6 +39,7 @@ class ArgInfo:
     self.returnstring="ClassHelpAndReturn"
     self.quiet="false"
     self.default=None
+    self.implement_default=False
     
   # Standard Values
   
@@ -55,7 +56,7 @@ class ArgInfo:
     substvar = self.GetSubstName()
     res = "  "
     required="true"
-    if self.default!=None:
+    if self.default!=None and self.implement_default:
       if config.types[self.typeid].GetContext()!=None:
         contextid = config.types[self.typeid].GetContext()
         #if contextid in config.types.keys():
@@ -81,7 +82,7 @@ class ArgInfo:
     else:
       res =  "  {0} {1}".format(self.typename,self.name)
       required="true"
-      if self.default!=None:
+      if self.default!=None and self.implement_default:
         res += " = {0}".format(self.default)
         required="false"
       res += ";\n"
@@ -110,7 +111,7 @@ class ArgInfo:
     else:
       print "Smartpointer to pointer conversion failed for type {0}!".format(self.typename)
       # otherwise convert from value, but could only work for constants???
-      res += "  "+typesubst.ConvertValTo(self.typeid,"*{0}".format(substvar), "{0}_val".format(self.name))+"\n"
+      res += "  "+typesubst.ConvertValTo(self.typeid,"(*{0})".format(substvar), "{0}_val".format(self.name))+"\n"
       res += "  {1}* {0} = &{0}_val;\n".format(self.name,self.typename)
     return res
 
@@ -129,7 +130,7 @@ class ArgInfo:
     else:
       print "Smartpointer to pointer conversion failed for type {0}!".format(self.typename)
       # otherwise convert from value, but could only work for constants???
-      res += "  "+typesubst.ConvertValTo(self.typeid,"*{0}".format(substvar), "{0}_val".format(self.name))+"\n"
+      res += "  "+typesubst.ConvertValTo(self.typeid,"(*{0})".format(substvar), "{0}_val".format(self.name))+"\n"
       res += "  {1}* {0} = &{0}_val;\n".format(self.name,self.typename)
     return res
 
@@ -139,7 +140,7 @@ class ArgInfo:
     else:
       res = "  {0}* local_{1} = NULL;\n".format(self.typename,self.name)
       res += "  {0}** {1}".format(self.typename,self.name)
-      if self.default==None:
+      if self.default==None or not(self.implement_default):
         addparams=',true'
         res += ";\n"
       else:
@@ -169,7 +170,7 @@ class ArgInfo:
       return self.WrapGetParamPointer_subst()
     else:
       res = "  {0}* {1}".format(self.typename,self.name)
-      if self.default==None:
+      if self.default==None or not(self.implement_default):
         addparams=',true'
         res += ";\n"
       else:
@@ -200,7 +201,7 @@ class ArgInfo:
       noconst=',true'
     else:
       noconst=',false'
-    if self.default==None:
+    if self.default==None or not(self.implement_default):
       # no default value
       res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n,true{2},{4})) {3};\n".format(\
         self.typename,self.name,noconst,self.returnstring,self.quiet)
@@ -272,7 +273,7 @@ class ArgInfo:
 
   # Post-treatment for pointers and references in case of substitution
   def WrapGetParamPost_Pointer_bool(self):
-    res =  "  "+typesubst.ConvertValFrom_bool("*{0}".format(self.name),"*{0}_{1}".format(self.name,"int"))+"\n"
+    res =  "  "+typesubst.ConvertValFrom_bool("(*{0})".format(self.name),"*{0}_{1}".format(self.name,"int"))+"\n"
     return res
 
   def WrapGetParamPost_Pointer_uint(self):

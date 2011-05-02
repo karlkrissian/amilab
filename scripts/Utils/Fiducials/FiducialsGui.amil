@@ -1,0 +1,11 @@
+
+func "FiducialsClass"
+
+if (!exists(Fiducials_obj)) {
+  FiducialsClass Fiducials_obj
+  Fiducials_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

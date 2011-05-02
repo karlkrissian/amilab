@@ -286,6 +286,9 @@ class ReferenceTypeInfo(ArgTypeBase):
       typename=self._reftypeid
     return typename+" &"
 
+  def IsConst(self):
+    return config.types[self._reftypeid].IsConst()
+  
   def GetString(self):
     if self._reftypeid in config.types.keys():
       typename=config.types[self._reftypeid].GetString()

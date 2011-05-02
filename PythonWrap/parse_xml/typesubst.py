@@ -49,14 +49,14 @@ def RemovePointerConstness(typename,varname):
 def ConvertValFrom_uint(typevar,substvar):
   typename="unsigned int"
   substtype = type_substitute[typename]
-  config.AddInclude("boost/numeric/conversion/cast.hpp")
+  config.AddInclude('#include "boost/numeric/conversion/cast.hpp"\n')
   # should check limits
   res = "{1} {0} = boost::numeric_cast<{1} >((unsigned int){2});".format(substvar,substtype,typevar)
   return res
 
 def ConvertValTo_uint(substvar,typevar):
   typename="unsigned int"
-  config.AddInclude("boost/numeric/conversion/cast.hpp")
+  config.AddInclude('#include "boost/numeric/conversion/cast.hpp"\n')
   # should check limits
   res = "{1} {0} = boost::numeric_cast<{1} >({2});".format(typevar,typename,substvar)
   return res
@@ -67,14 +67,14 @@ def ConvertValTo_uint(substvar,typevar):
 def ConvertValFrom_llint(typevar,substvar):
   typename="long long int"
   substtype = type_substitute[typename]
-  config.AddInclude("boost/numeric/conversion/cast.hpp")
+  config.AddInclude('#include "boost/numeric/conversion/cast.hpp"\n')
   # should check limits
   res = "{1} {0} = boost::numeric_cast<{1} >((unsigned int){2});".format(substvar,substtype,typevar)
   return res
 
 def ConvertValTo_llint(substvar,typevar):
   typename="long long int"
-  config.AddInclude("boost/numeric/conversion/cast.hpp")
+  config.AddInclude('#include "boost/numeric/conversion/cast.hpp"\n')
   # should check limits
   res = "{1} {0} = boost::numeric_cast<{1} >({2});".format(typevar,typename,substvar)
   return res
@@ -85,14 +85,14 @@ def ConvertValTo_llint(substvar,typevar):
 def ConvertValFrom_suint(typevar,substvar):
   typename="short unsigned int"
   substtype = type_substitute[typename]
-  config.AddInclude("boost/numeric/conversion/cast.hpp")
+  config.AddInclude('#include "boost/numeric/conversion/cast.hpp"\n')
   # should check limits
   res = "{1} {0} = boost::numeric_cast<{1} >((unsigned int){2});".format(substvar,substtype,typevar)
   return res
 
 def ConvertValTo_suint(substvar,typevar):
   typename="short unsigned int"
-  config.AddInclude("boost/numeric/conversion/cast.hpp")
+  config.AddInclude('#include "boost/numeric/conversion/cast.hpp"\n')
   # should check limits
   res = "{1} {0} = boost::numeric_cast<{1} >({2});".format(typevar,typename,substvar)
   return res
@@ -117,14 +117,14 @@ def ConvertValTo_lint(substvar,typevar):
 def ConvertValFrom_luint(typevar,substvar):
   typename="long unsigned int"
   substtype = type_substitute[typename]
-  config.AddInclude("boost/numeric/conversion/cast.hpp")
+  config.AddInclude('#include "boost/numeric/conversion/cast.hpp"\n')
   # should check limits
   res = "{1} {0} = boost::numeric_cast<{1} >({2});".format(substvar,substtype,typevar)
   return res
 
 def ConvertValTo_luint(substvar,typevar):
   typename="long unsigned int"
-  config.AddInclude("boost/numeric/conversion/cast.hpp")
+  config.AddInclude('#include "boost/numeric/conversion/cast.hpp"\n')
   # should check limits
   res = "{1} {0} = boost::numeric_cast<{1} >({2});".format(typevar,typename,substvar)
   return res
@@ -178,7 +178,7 @@ def ConvertSmtPtrToDoublePtr_char(typeid,substvar,typevar):
 def ConvertValFrom_wchar_t(typevar,substvar):
   typename="wchar_t"
   substtype = type_substitute[typename]
-  config.AddInclude("stdlib.h")
+  config.AddInclude('#include "stdlib.h"\n')
   # convert to char
   res =  "{0} {1};\n".format(substtype,substvar)
   indent= "  "
@@ -196,8 +196,8 @@ def ConvertValFrom_wchar_t(typevar,substvar):
 def ConvertPtrFrom_wchar_t(typevar,substvar):
   typename="wchar_t"
   substtype = type_substitute[typename]
-  config.AddInclude("stdlib.h")
-  config.AddInclude("wchar.h")
+  config.AddInclude('#include "stdlib.h"\n')
+  config.AddInclude('#include "wchar.h"\n')
   # convert to char
   res =  "{0} {1};\n".format(substtype,substvar)
   indent= "  "
@@ -214,7 +214,7 @@ def ConvertPtrFrom_wchar_t(typevar,substvar):
 def ConvertValTo_wchar_t(substvar,typevar):
   typename="wchar_t"
   substtype = type_substitute[typename]
-  config.AddInclude("stdlib.h")
+  config.AddInclude('#include "stdlib.h"\n')
   # convert from char
   res =  "{0} {1} = 0;\n".format(typename,typevar)
   res += "  {\n" 
@@ -225,7 +225,7 @@ def ConvertValTo_wchar_t(substvar,typevar):
 
 def ConvertSmtPtrToPtr_wchar_t(typeid,substvar,typevar):
   #print "within ConvertSmtPtrToPtr_char()"
-  config.AddInclude("stdlib.h")
+  config.AddInclude('#include "stdlib.h"\n')
   fulltypename=config.types[typeid].GetFullString()
   res  = "wchar_t* {0} = new wchar_t[{1}->size()+1];\n".format(typevar,substvar)
   res += "mbstowcs({0},{1}->c_str(),{1}->size()+1);".format(typevar,substvar)

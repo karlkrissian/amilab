@@ -22,3 +22,6 @@ del AddUtilsMenu
 if exists(global::scripts_toolbar) {
   global::scripts_toolbar.AddSeparator()
 }
+
+ ami.MainFrame.AddToMenu("&Scripts","&Utils","&Fiducials",  "Utils/Fiducials/FiducialsGui")
+

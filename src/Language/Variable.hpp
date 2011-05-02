@@ -695,6 +695,9 @@ public:
   //@{
   // -------- Operators ---
 
+  /// *T
+  VAR_UNARYOP(*)
+
   /// +T
   VAR_UNARYOP(+)
   /// prefix ++ operator ++T 

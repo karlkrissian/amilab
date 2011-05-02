@@ -49,15 +49,19 @@ class WrapClass_FenetreDessin : public WrapClass<FenetreDessin>, public WrapClas
     ADD_CLASS_METHOD(SetPenColor,        "Sets the color of the drawing pen.");
     ADD_CLASS_METHOD(SetLineParameters,  "Sets the parameters of the line.");
 
+    // wrapping of other methods
+    ADD_CLASS_METHOD(GetDrawingWindow,"Returns the drawing window as a wxWindow.");
+
     void AddMethods(WrapClass<FenetreDessin>::ptr this_ptr )
     {
       // Add members from wxWindow
       WrapClass_wxFrame::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxFrame>(this_ptr));
       parent_obj->AddMethods(parent_obj);
 
-      AddVar_DrawingAreaDisplay(         this_ptr);
-      AddVar_SetPenColor(                this_ptr);
-      AddVar_SetLineParameters(          this_ptr);
+      AddVar_DrawingAreaDisplay( this_ptr);
+      AddVar_SetPenColor(        this_ptr);
+      AddVar_SetLineParameters(  this_ptr);
+      AddVar_GetDrawingWindow(   this_ptr);
     }
 
 };

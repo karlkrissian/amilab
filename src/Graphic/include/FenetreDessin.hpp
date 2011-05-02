@@ -188,6 +188,10 @@ public:
     _keypressed_data     = d;
   }
 
+  wxWindow* GetDrawingWindow() {
+    return _drawing_window;
+  }
+
 //  void ManageWidgets();
   virtual void  AfficheFenetre( );
 

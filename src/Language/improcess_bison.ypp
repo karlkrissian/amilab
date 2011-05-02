@@ -8155,14 +8155,6 @@ postfix_var:
           driver.var_stack.AddVar(BasicVariable::ptr());
         }
       }
-  | T_NOT primary_var 
-  {
-    /**
-      Description: Logical negation (NOT) operator.
-    **/
-    GET_CHECK_VARSTACK(var)
-    driver.var_stack.AddVar(!(*var));
-  }
   | postfix_var INC_OP %prec postfix
   {
     /**
@@ -8254,6 +8246,14 @@ prefix_var:
     driver.var_stack.AddVar(var->BasicCast( $2));
 
   }
+  | T_NOT primary_var %prec prefix
+  {
+    /**
+      Description: Logical negation (NOT) operator.
+    **/
+    GET_CHECK_VARSTACK(var)
+    driver.var_stack.AddVar(!(*var));
+  }
   | T_SUB  prefix_var %prec prefix
   {
     //cout << "T_SUB  cast_var  " << std::endl;
@@ -8274,6 +8274,11 @@ prefix_var:
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(--(*var));
+  }
+  | T_MULT  postfix_var %prec prefix
+  {
+    GET_CHECK_VARSTACK(var)
+    driver.var_stack.AddVar(*(*var));
   }
   | SIN    prefix_var %prec prefix
   {

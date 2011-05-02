@@ -44,6 +44,7 @@ def IsTemplate(classname):
 def IsWithinContext(classname):
   return config.types[config.classes[classname]].GetContext() != "_1"
 
+
 def ClassConstructor(classname):
   ctemp = re.match(r"([^<]*)<(.*)>",classname)
   if ctemp==None:
@@ -61,6 +62,7 @@ def FindIncludeFile(classname,fileid):
   if config.libmodule != None:
     include_file = config.libmodule.get_include_file(classname,\
       config.files[fileid])
+    return '{0}'.format(include_file)
   else:
     if fileid in config.files.keys():
       filename = config.files[fileid]
@@ -68,6 +70,9 @@ def FindIncludeFile(classname,fileid):
       vxl_pos = filename.find("vxl/core/vnl/")
       if vxl_pos!=-1:
         incfile=filename[vxl_pos+len("vxl/core/"):]
+      elif filename.find("/stl_"):
+        # keep stl files to avoid pb finding the path
+        incfile=filename
       else:
         last = filename.rfind('/')
         incfile=filename[last+1:]
@@ -75,8 +80,10 @@ def FindIncludeFile(classname,fileid):
     else:
       include_file=""
       print "Include file for {0} not found".format(classname)
+      return "";
     #'#include "{0}"'.format(incfile)
-  return include_file
+    #include_file
+  return '#include "{0}"'.format(include_file)
 
 #------------------------------
 class EnumInfo:
@@ -188,6 +195,7 @@ class MethodInfo:
     self.is_copyconstr=False
     self.static="0"
     self.deprecated=False
+    self.demangled=""
 
   def GetDescription(self,classname,constructor=False):
     res=''
@@ -272,33 +280,45 @@ class ParsePublicMembers:
       self.method.usedname=config.ClassUsedName(mname)
 
   #---------------------------------------------
-  def CheckOperatorMethodName(self,mname):
+  def CheckOperatorMethodName(self,method):
+    mname=method.name
     methodindex=''
     methodlist=self.public_members.OperatorMethodNames
-    num=methodlist.count(mname)
-    if num==1:
-      # rename initial method
-      pos=0
-      for m in self.public_members.OperatorMethods:
-        if m.name==mname and mname in config.available_operators.keys():
-          self.public_members.OperatorMethods[pos].usedname +="_1"
-        pos = pos+1
-      # add main method
-      method = MethodInfo()
-      method.name=mname
-      if mname in config.available_operators.keys():
-        method.usedname=config.available_operators[mname]
+    # deal with prefix ++ and -- operators
+    if mname=='++' or mname=='--':
+      if len(method.args)>0:
+        method.usedname=config.available_operators[mname+"(int)"]
       else:
-        method.usedname="operator not available"
-      method.duplicated=True
-      self.public_members.OperatorMethods.append(method)
-    methodlist.append(mname)
-    if num>=1:
-      methodindex="_{0}".format(num+1)
-    if mname in config.available_operators.keys():
-      self.method.usedname=config.available_operators[mname]+methodindex
+        method.usedname=config.available_operators[mname]
+      print "{0}: method.usedname = {1}".format(method.demangled,method.usedname)
+    elif mname=='*' and len(method.args)==0:
+      # indirection operator
+      method.usedname=config.available_operators[mname+'()']
     else:
-      self.method.usedname="operator not available"
+      num=methodlist.count(mname)
+      if num==1:
+        # rename initial method
+        pos=0
+        for m in self.public_members.OperatorMethods:
+          if m.name==mname and mname in config.available_operators.keys():
+            self.public_members.OperatorMethods[pos].usedname +="_1"
+          pos = pos+1
+        # add main method
+        method = MethodInfo()
+        method.name=mname
+        if mname in config.available_operators.keys():
+          method.usedname=config.available_operators[mname]
+        else:
+          method.usedname="operator not available"
+        method.duplicated=True
+        self.public_members.OperatorMethods.append(method)
+      methodlist.append(mname)
+      if num>=1:
+        methodindex="_{0}".format(num+1)
+      if mname in config.available_operators.keys():
+        self.method.usedname=config.available_operators[mname]+methodindex
+      else:
+        self.method.usedname="operator not available"
 
   #---------------------------------------------
   def CheckEnumDefault(self, default):
@@ -409,6 +429,7 @@ class ParsePublicMembers:
     demangled=attrs.get('demangled',None)
     static=attrs.get('static',"0")
     attributes=attrs.get('attributes',None)
+    
     #print context
     #print classname
     mname=attrs.get('name',None)
@@ -420,6 +441,7 @@ class ParsePublicMembers:
     self.method = MethodInfo()
     self.method.name=mname
     self.method.static=static
+    self.method.demangled=demangled
     # adapt names in case of multiple member with the same function name
     if name=='Constructor':
       # problem: for structure, the constructor name is something like '._12': not a valid nor usefull name:
@@ -434,8 +456,8 @@ class ParsePublicMembers:
         self.CheckMethodName(self.public_members.StaticMethodNames,self.public_members.StaticMethods,mname)
       else:
         self.CheckMethodName(self.public_members.MethodNames,self.public_members.Methods,mname)
-    if name=='OperatorMethod':
-      self.CheckOperatorMethodName(mname)
+    #if name=='OperatorMethod':
+    #  self.CheckOperatorMethodName(mname)
     self.method.returntype=attrs.get('returns',None)
     if name=='Method':
       if static=="1":
@@ -456,6 +478,8 @@ class ParsePublicMembers:
           
   def endElement(self, name):  
     if (self.inmethod==1) and (name in self.available_methods):
+      if name=='OperatorMethod':
+        self.CheckOperatorMethodName(self.method)
       self.inmethod=0
     if (self.inenum==True) and (name=="Enumeration"):
       self.inenum=False
@@ -474,34 +498,28 @@ class FindPublicMembers(handler.ContentHandler):
     self.parse_public_members.endElement(name)
 
 #------------------------------
-def AddParameters(method):
+def AddParameters(method,numparam=-1):
   res='('
   if (len(method.args)>0):
-    res += method.args[0].name
+    if numparam!=0:
+      res += method.args[0].name
     for i in range(1,len(method.args)):
-      res += ', {0}'.format(method.args[i].name)
+      if numparam==-1 or i<numparam:
+        res += ', {0}'.format(method.args[i].name)
   res += ')'
   return res
 
 
 #------------------------------------------------------------------
-#  ImplementMethodWrap
+#  ImplementMethodDescription
 #------------------------------------------------------------------
-def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
-
+def ImplementMethodDescription(classname, method, constructor=False, methodcount=1):
+  
   wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
   wrapmethod_name = method.usedname
   if method.static=="1":
      wrapmethod_name = "static_"+wrapmethod_name
-
-  # don't return help in case of duplicated method
-  if methodcount>1:
-    returnstring="ClassReturnEmptyVar"
-    quiet="true"
-  else:
-    returnstring="ClassHelpAndReturn"
-    quiet="false"
-
+  
   res = "\n"
   res += "//---------------------------------------------------\n"
   res += "//  Wrapping of "
@@ -540,62 +558,67 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
     if constructor:
       res += '  return_comments="returning a new variable of type {0};\n'.format(classname)
   res += "}\n"
-  #
-  #   Execution part
-  #
-  res += "\n"
-  res += "//---------------------------------------------------\n"
-  res += "BasicVariable::ptr {0}::\n".format(wrapclass_name)
-  res += "    wrap_{0}::CallMember( ParamList* _p)\n".format(wrapmethod_name) 
-  res += "{\n"
-  # check if there are arguments
-  if (len(method.args)):
-    res +=  "  if (!_p) {0};\n".format(returnstring)
-    # don't accept too many arguments
-    res +=  "  if (_p->GetNumParam()>{0}) {1};\n".format(len(method.args),returnstring)
-    res +=  "  int _n=0;\n"
-    for a in method.args:
-      noconstructor_call = constructor and (config.types[a.typeid].GetString()==classname)
-      res += "\n"
-      res += a.WrapGetParam(noconstructor_call,returnstring,quiet)
-  else:
-    # don't accept parameters if there is no argument to the function
-    res +=  "  if (_p)  if (_p->GetNumParam()>0) {0};\n".format(returnstring)
+  return res
+
+
+#------------------------------------------------------------------
+#  ImplementMethodCall
+#  with a given number of parameter, allowing to deal with default arguments
+#------------------------------------------------------------------
+def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''):
+  
+  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
+  wrapmethod_name = method.usedname
+  if method.static=="1":
+     wrapmethod_name = "static_"+wrapmethod_name
+  
+  methodparams = AddParameters(method,numparam)
   if method.returntype!=None:
     returntypest=config.types[method.returntype].GetDemangled()
   else:
     returntypest="void"
-  res += "\n"
-  if constructor:
-    res += '  {0}* _newobj = new {0}'.format(classname)
-    res += AddParameters(method)+";\n";
-    res += "  BasicVariable::ptr res = {0}::CreateVar(_newobj);\n".format(wrapclass_name)
-    res += "  return res;\n"
+  if numparam==-1:
+    numparam_text = "all"
+  elif numparam==0:
+    numparam_text = "no"
   else:
+    numparam_text = "{0}".format(numparam)
+  res = ident+"  // -------- Calling the class method with {0} parameter(s)\n".format(numparam_text)
+  
+  if constructor:
+    res += ident+'  {0}* _newobj = new {0}'.format(classname)
+    res += methodparams+";\n";
+    res += ident+"  BasicVariable::ptr res = {0}::CreateVar(_newobj);\n".format(wrapclass_name)
+    res += ident+"  return res;\n"
+  else:
+    
+    # Define the string containing the method call
+    obj_ptr='this->_objectptr->GetObj()'
+    if method.name in config.available_operators.keys():
+      if len(method.args)>0:
+        if method.name=='[]':
+          methodcall = '(*{0}) [{1}]'.format(obj_ptr,methodparams)
+        else:
+          if method.name=='()':
+            methodcall = '(*{0}) {1}'.format(obj_ptr,methodparams)
+          elif method.name in ['++','--']:
+            methodcall = '(*{0}){1}'.format(obj_ptr,method.name)
+          else:
+            methodcall = '(*{0}) {1}{2}'.format(obj_ptr,method.name,methodparams)
+      else:
+        # operator without arguments: put it in front
+        methodcall = '{0} (*{1})'.format(method.name,obj_ptr)
+    else:
+      if method.static=="1":
+        methodcall = "{0}::{1}".format(classname,method.name)
+      else:
+        methodcall = '{0}->{1}'.format(obj_ptr,method.name)
+      methodcall += methodparams;
+    
     # not in constructor and returning void
     if returntypest=="void":
-      if method.name in config.available_operators.keys():
-        if len(method.args)>0:
-          if method.name=='[]':
-            res += '  (*this->_objectptr->GetObj()) [ '.format(method.name)
-            res += AddParameters(method)+"];\n";
-          else:
-            if method.name=='()':
-              res += '  (*this->_objectptr->GetObj()) '.format(method.name)
-              res += AddParameters(method)+";\n";
-            else:
-              res += '  (*this->_objectptr->GetObj()) {0} '.format(method.name)
-              res += AddParameters(method)+";\n";
-        else:
-          # operator without arguments: put it in front
-          res += ' {0} (*this->_objectptr->GetObj());\n'.format(method.name)
-      else:
-        if method.static=="1":
-          res += "  {0}::{1}".format(classname,method.name)
-        else:
-          res += '  this->_objectptr->GetObj()->{0}'.format(method.name)
-        res += AddParameters(method)+";\n";
-      res += '  return BasicVariable::ptr();\n'
+      res += ident+'  {0};\n'.format(methodcall)
+      res += ident+'  return BasicVariable::ptr();\n'
     else:
       returntypest = config.types[method.returntype].GetString()
       # create a string topointer to convert result to a pointer for calling WrapClass_...::CreateVar ...
@@ -605,72 +628,115 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
       #  topointer=''
       #else:
       #  topointer='&'
-      if method.name in config.available_operators.keys():
-        res += '  {0} res = '.format(config.types[method.returntype].GetFullString())
-        if len(method.args)>0:
-          if method.name=='[]':
-            res += '  (*this->_objectptr->GetObj()) [ '.format(method.name)
-            res += AddParameters(method)+"];\n";
-          else:
-            if method.name=='()':
-              res += '  (*this->_objectptr->GetObj()) '.format(method.name)
-              res += AddParameters(method)+";\n";
-            else:
-              res += '  (*this->_objectptr->GetObj()) {0} '.format(method.name)
-              res += AddParameters(method)+";\n";
-        else:
-          # operator without arguments: put it in front
-          res += ' {0} (*this->_objectptr->GetObj());\n'.format(method.name)
-      else:
-        res += '  {0} res = '.format(config.types[method.returntype].GetFullString())
-        if method.static=="1":
-          res += "  {0}::{1}".format(classname,method.name)
-        else:
-          res += '  this->_objectptr->GetObj()->{0}'.format(method.name)
-        res += AddParameters(method)+";\n";
+      res += ident+'  {0} res = '.format(config.types[method.returntype].GetFullString())
+      res += methodcall+';\n';
       #--- Type substitution before return
       if returntypest in typesubst.type_substitute.keys():
         substtype=typesubst.type_substitute[returntypest]
         substvar="res_{0}".format(typesubst.GetShortName(substtype))
         if returnpointer:
-          res += '  '+typesubst.ConvertPtrFrom(method.returntype,'res',substvar)+"\n"
+          res += ident+'  '+typesubst.ConvertPtrFrom(method.returntype,'res',substvar)+"\n"
         else:
-          res += '  '+typesubst.ConvertValFrom(method.returntype,'res',substvar)+"\n"
+          res += ident+'  '+typesubst.ConvertValFrom(method.returntype,'res',substvar)+"\n"
         if (substtype in config.available_classes) and returnpointer:
-          res += '  BasicVariable::ptr res_var = WrapClass_{0}::CreateVar({1});\n'.format(substtype,substvar)
-          res += '  return res_var;\n'
+          res += ident+'  BasicVariable::ptr res_var = WrapClass_{0}::CreateVar({1});\n'.format(substtype,substvar)
+          res += ident+'  return res_var;\n'
         else:
-          res += '  return AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)
+          res += ident+'  return AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)
       #--- No type substitution before return
       else:
         typename=config.types[method.returntype].GetDemangled()
         if typename in config.available_classes and returnpointer: 
           nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
           # don't delete returned pointer ...
-          res += '  BasicVariable::ptr res_var = AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
+          res += ident+'  BasicVariable::ptr res_var = AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
           res += '  return res_var;\n'
         else:
           if returnpointer:
             # Avoid deleting the returned pointer ...
             nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
             if pointercount==1:
-              res += '  return AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
+              res += ident+'  return AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
             else:
               print "Pointer count = {0}".format(pointercount)
               # several pointers ... try to convert to a single one
-              res += '  return AMILabType<{0} >::CreateVar(({2}*){1},true);\n'.format(typename,nonconstres,config.types[method.returntype].GetString())
+              res += ident+'  return AMILabType<{0} >::CreateVar(({2}*){1},true);\n'.format(typename,nonconstres,config.types[method.returntype].GetString())
           else:
             shared_type = config.IsSharedPtr(typename)
             if shared_type==None:
-              res += '  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
+              if config.types[method.returntype].GetType() == "ReferenceType" and not(config.types[method.returntype].GetFullString().endswith('const &')):
+                # return a pointer that will not be deleted
+                res += ident+'  return AMILabType<{0} >::CreateVar(&res,true);\n'.format(typename)
+              else:
+                res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
             else:
-              res += '  return AMILabType<{0} >::CreateVarFromSmtPtr(res);\n'.format(shared_type)
+              res += ident+'  return AMILabType<{0} >::CreateVarFromSmtPtr(res);\n'.format(shared_type)
+  return res
+
+#------------------------------------------------------------------
+#  ImplementMethodWrap
+#------------------------------------------------------------------
+def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
+
+  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
+  wrapmethod_name = method.usedname
+  if method.static=="1":
+     wrapmethod_name = "static_"+wrapmethod_name
+
+  #
+  # Implement the description/help part
+  #
+  res = ImplementMethodDescription(classname,method,constructor)
+  
+  # don't return help in case of duplicated method
+  if methodcount>1:
+    returnstring="ClassReturnEmptyVar"
+    quiet="true"
+  else:
+    returnstring="ClassHelpAndReturn"
+    quiet="false"
+
+  #
+  #   Execution part
+  #
+  res += "\n"
+  res += "//---------------------------------------------------\n"
+  res += "BasicVariable::ptr {0}::\n".format(wrapclass_name)
+  res += "    wrap_{0}::CallMember( ParamList* _p)\n".format(wrapmethod_name) 
+  res += "{\n"
+  # check if there are arguments
+  # never use arguments for ++ and -- operators
+  if (len(method.args)) and (method.name not in ['++','--']):
+    res +=  "  if (!_p) {0};\n".format(returnstring)
+    # don't accept too many arguments
+    res +=  "  if (_p->GetNumParam()>{0}) {1};\n".format(len(method.args),returnstring)
+    res +=  "  int _n=0;\n"
+    argnum=0
+    for a in method.args:
+      argnum+=1
+      noconstructor_call = constructor and (config.types[a.typeid].GetString()==classname)
+      res += "\n"
+      if a.default!=None:
+        res += "  // Check the number of parameters here for default arguments\n"
+        res += '  if (_p->GetNumParam()<{0})\n'.format(argnum)
+        res += '  {\n'
+        res += ' {0}'.format(ImplementMethodCall(classname,method,argnum-1,constructor,'  '))
+        res += '  }\n'
+      res += a.WrapGetParam(noconstructor_call,returnstring,quiet)
+  else:
+    # don't accept parameters if there is no argument to the function
+    res +=  "  if (_p)  if (_p->GetNumParam()>0) {0};\n".format(returnstring)
+  
+  # Calling the method with its parameters
+  res += ImplementMethodCall(classname,method,-1,constructor)
   res += "}\n"
   return res
-  
 
+
+#-----------------------------------------------------------------
 # filename is the new file that should end with '.new'
 # it is copied to the original file only if they differ
+#-----------------------------------------------------------------
 def BackupFile(filename):
   # Check implementation file for backup
   if os.path.isfile(filename[:-4]):
@@ -1071,7 +1137,10 @@ def WrapClass(classname,include_file,inputfile):
       missingtypes = MissingTypes(classname,m)
       if missingtypes!="":
         add_var_all += "/* The following types are missing: "+missingtypes+"\n"
-      add_var_all += indent+'AddVar_'+m.usedname+'( this_ptr);\n'
+      if m.usedname in config.ami_tokens.values():
+        add_var_all += indent+'AddVar_{0}( this_ptr,"_{0}"); // it is a language token\n'.format(m.usedname)
+      else:
+        add_var_all += indent+'AddVar_'+m.usedname+'( this_ptr);\n'
       if missingtypes!="":
         add_var_all += "*/\n"
     add_var_all += '\n'
@@ -1213,7 +1282,8 @@ def WrapClass(classname,include_file,inputfile):
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     local_include_file = FindIncludeFile(classname,dh.fileid)
-    local_include_file = '#include "{0}"'.format(local_include_file)
+    print "local include file {0}".format(local_include_file)
+    #local_include_file = '#include "{0}"'.format(local_include_file)
     # in case of template, check template parameters for includes
     m = re.match(r"([^<]*)<(.*)>",classname)
     if m!=None:
@@ -1229,13 +1299,15 @@ def WrapClass(classname,include_file,inputfile):
           if template_param in config.classes.keys():
             fileid = config.types[config.classes[template_param]].fileid
             filetoadd = FindIncludeFile(template_param,fileid)
-            local_include_file += '\n#include "{0}"'.format(filetoadd)
+            #local_include_file += '\n#include "{0}"'.format(filetoadd)
+            local_include_file += '\n{0}'.format(filetoadd)
           if m1.group(2)==None:
             template_params=""
           else:
             template_params=m1.group(2).strip(', ')
         else:
           template_params=""
+    print "local include file {0}".format(local_include_file)
         
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)

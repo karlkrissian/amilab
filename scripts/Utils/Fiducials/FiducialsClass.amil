@@ -1,0 +1,182 @@
+
+func "Common/ScriptGui"
+
+if (!exists(FiducialsClass)) {
+
+  Class FiducialsClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::mode = INT(0), "0: float, 1: int"
+        ::px = 0, "X position"
+        ::py = 0, "Y position"
+        ::pz = 0, "Z position"
+        ::selected_point = INT(-1), "Current selected point"
+
+        ::html_filename = GetScriptsDir+"/Fiducials/Doc/Fiducials/index.html"
+
+        ::pointlist = VarVector()
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #-----------------------------------------------
+    proc ::UpdateListDisplay() \
+    {
+      printn "size = %1%" % ::pointlist.size()
+      for n=0 to ::pointlist.size()-1 {
+        text = "%1%" %n
+        res = ::listctrl.FindItem(0,text)
+        printn res
+        if res==-1 {
+          it = wx.wxListItem()
+          it.SetColumn(0)
+          it.SetText(text)
+          res = ::listctrl.InsertItem(&it)
+          del it
+        }
+#        printn it_id
+
+        it = wx.wxListItem()
+        it.SetId(res)
+        it.SetColumn(1)
+        it.SetText( \
+            "(%1%,"%::pointlist[n][0]+\
+            " %1%,"%::pointlist[n][1]+\
+            " %1%)"%::pointlist[n][2] )
+        it_id = ::listctrl.SetItem(&it)
+#        printn it_id
+        del it
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::AddFiducial() \
+    {
+      # using a std::vector of std::vector
+      v = vector_float(3)
+      v[0] = ::px
+      v[1] = ::py
+      v[2] = ::pz
+      ::pointlist.push_back(&v)
+      ::UpdateListDisplay()
+    }
+
+    #-----------------------------------------------
+    proc ::ChangeFiducial() \
+    {
+      if ::selected_point>=0 && ::selected_point<::pointlist.size() {
+        ::pointlist[::selected_point][0] = ::px
+        ::pointlist[::selected_point][1] = ::py
+        ::pointlist[::selected_point][2] = ::pz
+        ::UpdateListDisplay()
+      }
+    }
+
+    //---------------------------------------------------
+    proc ::UpdateSelected(  ) {
+      ::px = ::pointlist[::selected_point][0]
+      ::py = ::pointlist[::selected_point][1]
+      ::pz = ::pointlist[::selected_point][2]
+      ::win.Update(-1)
+    }
+
+    //---------------------------------------------------
+    proc ::CB_ListItemSelected( OBJECT event ) {
+      index = event.GetIndex()
+      pos = atof(event.GetItem().GetText().c_str())
+      printn "item text = %1%" % pos
+      ::selected_point = pos
+      ::UpdateSelected()
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("Fiducials",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("Fiducials")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          ::win.BeginBoxPanel("Position")
+            ::win.AddFloat(&::px,"X",0,1000)
+            ::win.AddFloat(&::py,"Y",0,1000)
+            ::win.AddFloat(&::pz,"Z",0,1000)
+          ::win.EndBoxPanel()
+
+          ::win.BeginHorizontal()
+            ::win.AddButton("Add",  &::AddFiducial)
+            ::win.AddButton("Apply",&::ChangeFiducial)
+          ::win.EndHorizontal()
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+
+      ::listctrl = wx.wxListCtrl(&::win)
+      ::win.AddWidget(&::listctrl,1)
+      ::listctrl.SetWindowStyle(wx.wxLC_REPORT)
+      ::listctrl.InsertColumn_2(0,"Point")
+      ::listctrl.InsertColumn_2(1,"Position")
+
+      # connect event
+      ::evh_selected = wx.wxAmiEventHandler(&::CB_ListItemSelected)
+      ::evh_selected.SetSendListEvent(true)
+      ::listctrl.Connect( wx.wxEVT_COMMAND_LIST_ITEM_SELECTED\
+                          ,&::evh_selected.GetEventFunction(),\
+                          &NULL,&::evh_selected)
+
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

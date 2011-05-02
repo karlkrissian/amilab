@@ -114,19 +114,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +()
   return NewReference();
 }
 
-/// prefix ++ operator ++a
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++()
-{
-  std::cout << "**" << std::endl;
-  RETURN_VARPTR(AMIObject,++RefValue());
-}
 
-/// postfix ++ operator a++
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++(int)
-{
-  std::cout << "**" << std::endl;
-  RETURN_VARPTR(AMIObject,RefValue()++);
-}
 
 /// -a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -()
@@ -138,12 +126,49 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -()
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --()
 {  RETURN_VARPTR(AMIObject,--RefValue()); }
 
-/// postfix -- operator a--
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --(int)
-{  RETURN_VARPTR(AMIObject,RefValue()--);  }
-
 
 */
+
+/// prefix * operator *a
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator *()
+{
+  APPLY_MEMBER_NOPARAM("__indirection__", varres)
+  if (varres.get()) return varres;
+  return BasicVariable::ptr();
+}
+
+/// prefix ++ operator ++a
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++()
+{
+  APPLY_MEMBER_NOPARAM("__preinc__", varres)
+  if (varres.get()) return varres;
+  return BasicVariable::ptr();
+}
+
+/// postfix ++ operator a++
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++(int)
+{
+  APPLY_MEMBER_NOPARAM("__postinc__", varres)
+  if (varres.get()) return varres;
+  return BasicVariable::ptr();
+}
+
+/// prefix -- operator --a
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --()
+{
+  APPLY_MEMBER_NOPARAM("__predec__", varres)
+  if (varres.get()) return varres;
+  return BasicVariable::ptr();
+}
+
+/// postfix -- operator a--
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --(int)
+{
+  APPLY_MEMBER_NOPARAM("__postdec__", varres)
+  if (varres.get()) return varres;
+  return BasicVariable::ptr();
+}
+
 /// a+b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +(const BasicVariable::ptr& b)
 {

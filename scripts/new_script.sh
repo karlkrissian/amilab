@@ -33,7 +33,7 @@ else
     fi
   done
 
-  echo " ami.MainFrame.AddToMenu(\"&",menu,"\",category,\"&${scriptname}\",  category+\"${scriptname}/${scriptname}Gui\")" >> tmp
+  echo " ami.MainFrame.AddToMenu(\"&"${menu}"\",\"&${category}\",\"&${scriptname}\",  \"${category}/${scriptname}/${scriptname}Gui\")" >> tmp
   echo "" >> tmp
   cat Add2Menu.amil tmp > Add2Menu.amil.new
   rm tmp

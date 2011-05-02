@@ -32,3 +32,10 @@ template class itk::DefaultPixelAccessor<float>;
 
 #include <itkImageRegion.h>
 template class itk::ImageRegion<2u>;
+
+
+// trying std
+#include <list>
+template class std::list<int, std::allocator<int> >;
+template class std::_List_const_iterator<int>;
+template class std::_List_iterator<int>;
