@@ -96,9 +96,9 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
       ERROR_VARIABLE ancestors_error
     )
   ELSE(GENERATE_HTML_HELP)
-    MESSAGE("COMMAND IS: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${CLASSES_LIST} --ancestors-file ${ANCESTORS_FILE} -q")
+    MESSAGE("COMMAND IS: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
     EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${CLASSES_LIST} --ancestors-file ${ANCESTORS_FILE} -q
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
       OUTPUT_VARIABLE ancestors_result
       ERROR_VARIABLE ancestors_error
     )
