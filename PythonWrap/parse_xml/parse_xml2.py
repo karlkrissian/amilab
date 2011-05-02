@@ -239,16 +239,16 @@ if __name__ == '__main__':
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
       for b in args.val.ancestors:
-        print "b=",b
+        #print "b=",b
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:
-            print "ancestors to add?"
+            #print "ancestors to add?"
             # recursively add the ancestors to the list
             bases=config.types[f].bases
             print bases
-            if b=="wxTopLevelWindow":
-              print bases
+            #if b=="wxTopLevelWindow":
+              #print bases
             f_anc=[]
             if bases!=None:
               f_anc = bases

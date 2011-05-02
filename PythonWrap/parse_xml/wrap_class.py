@@ -321,12 +321,14 @@ class ParsePublicMembers:
         self.method.usedname="operator not available"
 
   #---------------------------------------------
+  # Note: could be simplified since we don't need perfect default values anymore
+  #
   def CheckEnumDefault(self, default):
-    print "default for {0}".format(default)
+   #print "default for {0}".format(default)
     if default in config.enumvalues.keys():
       typeid = config.enumvalues[default]
       if typeid in config.types.keys() and typeid!="_1":
-        print "replacing {0} by {1}::{0} ".format(default,config.types[typeid].GetString())
+        #print "replacing {0} by {1}::{0} ".format(default,config.types[typeid].GetString())
         return "{1}::{0}".format(default,config.types[typeid].GetString())
     return default
 
@@ -664,11 +666,14 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
           else:
             shared_type = config.IsSharedPtr(typename)
             if shared_type==None:
-              if config.types[method.returntype].GetType() == "ReferenceType" and not(config.types[method.returntype].GetFullString().endswith('const &')):
+              if config.types[method.returntype].GetType() == "ReferenceType" and not(config.types[method.returntype].GetFullString().endswith('const &')) and not(config.types[method.returntype].GetFullString().endswith('* &')):
                 # return a pointer that will not be deleted
                 res += ident+'  return AMILabType<{0} >::CreateVar(&res,true);\n'.format(typename)
               else:
-                res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
+                if config.types[method.returntype].GetFullString().endswith('* &'):
+                  res += ident+'  return AMILabType<{0} >::CreateVar(res,true);\n'.format(typename)
+                else:
+                  res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
             else:
               res += ident+'  return AMILabType<{0} >::CreateVarFromSmtPtr(res);\n'.format(shared_type)
   return res
@@ -1096,10 +1101,10 @@ def WrapClass(classname,include_file,inputfile):
       generate_html.AddClassMethod(m)     
       pos = pos+1
     class_decl+='\n'
-    print "\nBegin: {0}\n".format(classname)
+    #print "\nBegin: {0}\n".format(classname)
     #generate_html.GenerateHTMLStandardMethods(classname)
     generate_html.GenerateHTMLClassFile(classname,generate_html.GetClassMethodList())
-    print "\nEnd: {0}\n".format(classname)
+    #print "\nEnd: {0}\n".format(classname)
         
     if len(fm.OperatorMethods)>0:
       class_decl+=indent+"// Operators:\n"

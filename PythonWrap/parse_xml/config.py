@@ -62,6 +62,7 @@ members_blacklist=[
   'wxGenericListCtrl::Update(long)', # linking problem, don't know why ...
   'wxBitmap::GetSelectedInto', # not included in windows in release mode
   'wxBitmap::SetSelectedInto', # not included in windows in release mode
+  'wxWindowList::front', # returning reference to pointer
   #'wxListCtrl::ConvertToMSWStyle', # linking problem
   #'wxListCtrl::ChangeCurrent',     # idem
   #'wxListCtrl::ResetCurrent',      # idem
@@ -154,7 +155,7 @@ def AddInclude(f):
     # temporary fix for <list>
     if f=='#include "stl_list.h"':
       f= '#include <list>'
-    print "adding include file {0}".format(f)
+    #print "adding include file {0}".format(f)
     include_list.append(f)
 
 #------------------------------------------------------------------
