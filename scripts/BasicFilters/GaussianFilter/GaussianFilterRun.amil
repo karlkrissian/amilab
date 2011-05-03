@@ -1,0 +1,17 @@
+
+
+#
+# Simply call the amilab 'filter' command
+#
+
+ami.MainFrame.Hide()
+inputname=$1
+sigma=atof($2)
+xder=atof($3)
+yder=atof($4)
+outputname=$5
+
+i = Image(inputname)
+res = filter(i,sigma,xder,yder,-1)
+res.save outputname
+quit
