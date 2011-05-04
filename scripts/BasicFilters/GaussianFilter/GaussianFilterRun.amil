@@ -4,6 +4,11 @@
 # Simply call the amilab 'filter' command
 #
 
+if (argc!=5) {
+  InfoDialog "This filter needs 5 arguments"
+  quit
+}
+
 ami.MainFrame.Hide()
 inputname=$1
 sigma=atof($2)

@@ -3,24 +3,24 @@ function writeami(im,filename)
 
   fid=fopen(filename,'w+');
   imtype = class(im);
-  im=rot90(im);
+  im = permute(im,[2 1]);
   dims=size(im);
-  sdims = size(dims);
-  if (sdims(2)>=1)
-    ydim = dims(1);
-  else
-    ydim = 1;
-  end
-  if (sdims(2)>=2)
-    xdim = dims(2);
+  sdims = size(dims)
+  if (sdims(1)>=1)
+    xdim = dims(1)
   else
     xdim = 1;
   end
-  if (sdims(2)>=3)
-    vdim = dims(3);
-  else 
-    vdim = 1;
+  if (sdims(2)>=1)
+    ydim = dims(2)
+  else
+    ydim = 1;
   end
+  %if (sdims(3)>=1)
+  %  vdim = dims(3);
+  %else 
+    vdim = 1;
+  %end
   
   fprintf(fid,'AMIMAGE 1.1\n');
   fprintf(fid,'(\n');

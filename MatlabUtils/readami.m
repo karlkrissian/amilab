@@ -18,8 +18,8 @@ function im=readami(filename)
     tr_z = fscanf(fid,'TranslZ = %f\n',1);
     repres = fscanf(fid,'Repres = %s\n',1);
     type   = fscanf(fid,'Type = %s\n',1);
-    endian = fscanf(fid,'Endianness = %s\n',1)
-    scanorder = fscanf(fid,'ScanOrder  = %s\n)\n',1)
+    endian = fscanf(fid,'Endianness = %s\n',1);
+    scanorder = fscanf(fid,'ScanOrder  = %s\n)\n',1);
 
   if strcmp(repres,'UCHAR')==1
     prec='uint8';
@@ -37,13 +37,13 @@ function im=readami(filename)
   elseif strcmp(endian,'BIG')==1
     mf = 'ieee-be';
   end
-  fseek(fid,-xdim*ydim*vdim*precsize,'eof')
+  fseek(fid,-xdim*ydim*vdim*precsize,'eof');
   [im,count]=fread(fid,xdim*ydim*vdim,prec,0,mf);
   count
   xdim*ydim*vdim
   if vdim==1
     im = reshape(im,[xdim ydim vdim]);
-    im=rot90(im,-1);
+    im= permute(im,[ 2 1]);
   else
     im = reshape(im,[vdim xdim ydim]);
   end

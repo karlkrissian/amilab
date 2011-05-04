@@ -334,6 +334,7 @@ bool MyApp::OnInit()
  // this was  main()
   int  n;
   bool no_interaction = false;
+  bool hide_mainframe = false;
   std::string cmd_line;
 
   GB_debug = false;
@@ -368,6 +369,13 @@ bool MyApp::OnInit()
   Alors
    std::cout << "Debug On" << std::endl;
     GB_debug = true;
+    GB_num_arg_parsed++;
+  FinSi
+
+  Si  argc>GB_num_arg_parsed Et
+      strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-hide")==0
+  Alors
+    hide_mainframe = true;
     GB_num_arg_parsed++;
   FinSi
 
@@ -427,7 +435,7 @@ bool MyApp::OnInit()
 
   ::wxInitAllImageHandlers();
 
-  mainframe->Show(true);
+  mainframe->Show(!hide_mainframe);
   SetTopWindow(mainframe);
 //  frame->Fit();
 //  frame->Show(true);
@@ -495,7 +503,8 @@ bool MyApp::OnInit()
         GB_driver.yyip_parse();
         GB_driver.yyip_popup_buffer();
         */
-        GB_driver.parse_file(string(input_file.mb_str(wxConvUTF8)));
+        // Use parse_script instead of parse_file to allow looking in the scripts directory
+        GB_driver.parse_script(string(input_file.mb_str(wxConvUTF8)).c_str());
         if (GB_main_wxFrame)
         {
           if (no_interaction)

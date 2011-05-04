@@ -2,13 +2,16 @@ function res=amilab_filter(im,std,xorder,yorder)
 %
 % calls the amilab filter command
 %
-  mydocdir='C:\Users\Karl\Documents\';
-  inputfilename=sprintf('%s%s',mydocdir,'amilab_filter_input.ami');
-  outputfilename=sprintf('%s%s',mydocdir,'amilab_filter_output.ami');
+  global amilab_tmpdir
+  global amilab_bindir
+  global amilab_bin
+
+  inputfilename=sprintf('%s%s',amilab_tmpdir,'amilab_filter_input.ami');
+  outputfilename=sprintf('%s%s',amilab_tmpdir,'amilab_filter_output.ami');
   writeami(im,inputfilename);
-  cd('C:\Program Files\AMILab_3.1.0\bin')
-  amilab_cmdline='amilab_3.1.0.exe';
-  amilab_cmdline=sprintf('%s %s',amilab_cmdline,'C:\Users\Karl\Documents\runfilter.amil');
+  cd(amilab_bindir)
+  amilab_cmdline=amilab_bin;
+  amilab_cmdline=sprintf('%s %s',amilab_cmdline,'BasicFilters/GaussianFilter/GaussianFilterRun.amil');
   amilab_cmdline=sprintf('%s %s',amilab_cmdline,inputfilename);
   amilab_cmdline=sprintf('%s %f',amilab_cmdline,std);
   amilab_cmdline=sprintf('%s %d',amilab_cmdline,xorder);
