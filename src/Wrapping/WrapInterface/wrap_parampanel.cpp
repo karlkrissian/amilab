@@ -26,6 +26,7 @@
 #include "wrap_wxWindow.h"
 #include "wrap_wxNotebook.h"
 #include "wrap_wxSizerItem.h"
+#include "wrap_wxBoxSizer.h"
 
 #include "wrap_wxBitmap.h"
 #include "wrap_wxColour.h"
@@ -149,6 +150,11 @@ BasicVariable::ptr WrapClass_ParamPanel::
     WrapClass<ParamPanel>::ptr obj( boost::dynamic_pointer_cast<WrapClass_ParamPanel>(object));
     if (obj.get()) {
       parent = obj->GetObj()->GetBookCtrl();
+    } else {
+      WrapClass<wxWindow>::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
+      if (obj.get()) {
+        parent = obj->GetObj().get();
+      }
     }
   }
 
@@ -1245,6 +1251,30 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_CurrentParent::CallMember( ParamLi
 
   // Create the AMIObject with its methods
   return WrapClass<wxWindow>::CreateVar(new WrapClass_wxWindow(wxw_ptr));
+
+}
+
+
+//--------------------------------------------------
+// GetCurrentSizer
+//--------------------------------------------------
+void WrapClass_ParamPanel::wrap_GetCurrentSizer::SetParametersComments()
+{
+  return_comments = "Returns the current wxBoxSizer for new parameters ).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_GetCurrentSizer::CallMember( ParamList* p)
+{
+  wxBoxSizer* bsizer = this->_objectptr->GetObj()->GetCurrentSizer();
+
+  // create the variable
+  // Smart pointer to the wxWindow
+  boost::shared_ptr<wxBoxSizer> wxw_ptr(
+      bsizer,
+      wxwindow_nodeleter<wxBoxSizer>()    );
+
+  // Create the AMIObject with its methods
+  return WrapClass<wxBoxSizer>::CreateVar(new WrapClass_wxBoxSizer(wxw_ptr));
 
 }
 

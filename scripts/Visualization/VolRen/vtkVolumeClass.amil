@@ -161,9 +161,11 @@ if (!exists(vtkVolumeClass)) {
 
         } else {
           # update GPU information
-          ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
+          ::maxmemory = 512
+//::volmapper.GetMaxMemoryInBytes()/(1024*1024)
           ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
-          ::win.Update(-1)
+          ::OnTextureMemory()
+          #::win.Update(-1)
         }
         ::win.SetLabelValue(::volmapper_classname_id,::volmapper.GetClassName())
         ::volmapper.SetInput(&::vtkinput)
@@ -551,22 +553,24 @@ printn "point number %1%" %n
                           ctf.GetBlueValue( xpos)*250 )
         }
         # position curves in ColorMap window of ::imhisto1
-        curves = ::imhisto1.cm.GetCurves()
-        numcurves = curves.size()
-        
-        if (!exists(::red_id)) {
-          ::red_id   = numcurves
-          ::green_id = numcurves+1
-          ::blue_id  = numcurves+2
+        if(exists( ::imhisto1->cm)){
+          curves = ::imhisto1.cm.GetCurves()
+          numcurves = curves.size()
+          
+          if (!exists(::red_id)) {
+            ::red_id   = numcurves
+            ::green_id = numcurves+1
+            ::blue_id  = numcurves+2
+          }
+
+          ::imhisto1.cm.SetCurve(::ctf_color[0],::red_id)
+          ::imhisto1.cm.SetCurve(::ctf_color[1],::green_id)
+          ::imhisto1.cm.SetCurve(::ctf_color[2],::blue_id)
+
+          ::imhisto1.cm.SetCurveProperties(::red_id,  "#FF0000")
+          ::imhisto1.cm.SetCurveProperties(::green_id,"#00FF00")
+          ::imhisto1.cm.SetCurveProperties(::blue_id, "#0000FF")
         }
-
-        ::imhisto1.cm.SetCurve(::ctf_color[0],::red_id)
-        ::imhisto1.cm.SetCurve(::ctf_color[1],::green_id)
-        ::imhisto1.cm.SetCurve(::ctf_color[2],::blue_id)
-
-        ::imhisto1.cm.SetCurveProperties(::red_id,  "#FF0000")
-        ::imhisto1.cm.SetCurveProperties(::green_id,"#00FF00")
-        ::imhisto1.cm.SetCurveProperties(::blue_id, "#0000FF")
         
       }
     }
@@ -587,21 +591,24 @@ printn "point number %1%" %n
         }
         ::ctf_color = ::ctf_color*250
         # position curves in ColorMap window of ::imhisto1
-        numcurves = ::imhisto1.cm.GetCurves().size()
-        printn numcurves
-        if (!exists(::red_id)) {
-          ::red_id   = numcurves
-          ::green_id = numcurves+1
-          ::blue_id  = numcurves+2
-        }
-        ::imhisto1.cm.SetCurve(&::ctf_color,::red_id)
-        ::imhisto1.cm.SetCurve(&::ctf_color,::green_id)
-        ::imhisto1.cm.SetCurve(&::ctf_color,::blue_id)
-
-        ::imhisto1.cm.SetCurveProperties(::red_id,  "#606060")
-        ::imhisto1.cm.SetCurveProperties(::green_id,"#606060")
-        ::imhisto1.cm.SetCurveProperties(::blue_id, "#606060")
+        if(exists( ::imhisto1->cm)){
+          numcurves = ::imhisto1.cm.GetCurves().size()
+          printn numcurves
+          if (!exists(::red_id)) {
+            ::red_id   = numcurves
+            ::green_id = numcurves+1
+            ::blue_id  = numcurves+2
+          }
         
+          ::imhisto1.cm.SetCurve(&::ctf_color,::red_id)
+          ::imhisto1.cm.SetCurve(&::ctf_color,::green_id)
+          ::imhisto1.cm.SetCurve(&::ctf_color,::blue_id)
+
+          ::imhisto1.cm.SetCurveProperties(::red_id,  "#606060")
+          ::imhisto1.cm.SetCurveProperties(::green_id,"#606060")
+          ::imhisto1.cm.SetCurveProperties(::blue_id, "#606060")
+    
+        }
       }
     }
 
@@ -620,14 +627,16 @@ printn "point number %1%" %n
           ::otf_im.set(otf.GetValue(pos(x)))
         }
         # position curves in ColorMap window of ::imhisto1
-        numcurves = ::imhisto1.cm.GetCurves().size()
-        printn numcurves
-        if (!exists(::otf_id)) {
-          ::otf_id   = numcurves
+        if(exists( ::imhisto1->cm)){
+          numcurves = ::imhisto1.cm.GetCurves().size()
+          printn numcurves
+          if (!exists(::otf_id)) {
+            ::otf_id   = numcurves
+          }
+          ::otf_im = ::otf_im*250
+          ::imhisto1.cm.SetCurve(::otf_im,::otf_id)
+          ::imhisto1.cm.SetCurveProperties(::otf_id,  "#202020")
         }
-        ::otf_im = ::otf_im*250
-        ::imhisto1.cm.SetCurve(::otf_im,::otf_id)
-        ::imhisto1.cm.SetCurveProperties(::otf_id,  "#202020")
       }
     }
 
@@ -639,7 +648,9 @@ printn "point number %1%" %n
         ::Draw_colorFun()
       }
       ::Draw_opacityFun()
-      ::imhisto1.cm._Paint()
+      if(exists( ::imhisto1->cm)){
+        ::imhisto1.cm._Paint()
+      }
     }
 
     #----------------------------
@@ -793,6 +804,7 @@ printn "point number %1%" %n
         ::win.BeginBook()
             # Adding histogram page
           ::imhisto1.SetParentPanel(&::win)
+::imhisto1.SetConf(1,0)
           ::imhisto1.Gui()
           ::win.AddPage("Hist", &::imhisto1->win)
           ::CurveLoad_page = ::win.AddPage("Load")

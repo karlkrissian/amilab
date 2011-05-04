@@ -15,3 +15,4 @@
 #include "wxPluginManager.h"
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
+#include <wx/splitter.h>

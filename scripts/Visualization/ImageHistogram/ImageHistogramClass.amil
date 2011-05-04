@@ -21,6 +21,8 @@ if (!exists(ImageHistogramClass)) {
       ::input_name =  "", "name of the input image, the drawing window of this image will be used"
       ::minval = 0, "minimal value of the histogram"
       ::maxval = 255, "maximal value of the histogram"
+      ::num_histograms = 2, "number of histograms (1 or 2(default))"
+      //::orientation =(INT)0, "orientation of the histograms (0(default) or 1)"
       ::step = 1, "histogram step"
       ::standalone = 1, "1: runs standalone with input image selector, 0: runs within other Gui."
       ::use_colormap_curve = 0, "Enable/Disable a second display limited to the colormap range"
@@ -331,64 +333,66 @@ printn "xmax = %1%" % xmax
     #--------------------------------------------------
     proc ::UpdateCM_old() \
     {
-      ::cm.SetXLimits(-1,256)
-      ::cm.SetYLimits(-1,256)
-      # remove all control points
-      ::cm.GetControlledCurves().clear()
-      cm_range = ::cm_max-::cm_min
-      hmax = max(::h[0])
+      if(exists(::cm)){
+        ::cm.SetXLimits(-1,256)
+        ::cm.SetYLimits(-1,256)
+        # remove all control points
+        ::cm.GetControlledCurves().clear()
+        cm_range = ::cm_max-::cm_min
+        hmax = max(::h[0])
 
-      for i=0 to ::dw.GetControlledCurves().size()-1 {
-        if (exists(curve)) { del curve; }
-        if (exists(points)) { del points; }
-        curve = ::dw.GetControlledCurves()[i]
-        points = curve.GetControlPoints();
-        #printn "nb points %1% " % points.size()
-        for k=0 to points.size()-1 {
-          cp = points[k].copy()
-          newpos = (cp.GetX()-::cm_min)/cm_range*255
-          cp.SetX(newpos)
-          if (cp.GetType()==1) {
-            cp.SetY(127)
-          } else {
-            cp.SetY(cp.GetY()/hmax*255)
+        for i=0 to ::dw.GetControlledCurves().size()-1 {
+          if (exists(curve)) { del curve; }
+          if (exists(points)) { del points; }
+          curve = ::dw.GetControlledCurves()[i]
+          points = curve.GetControlPoints();
+          #printn "nb points %1% " % points.size()
+          for k=0 to points.size()-1 {
+            cp = points[k].copy()
+            newpos = (cp.GetX()-::cm_min)/cm_range*255
+            cp.SetX(newpos)
+            if (cp.GetType()==1) {
+              cp.SetY(127)
+            } else {
+              cp.SetY(cp.GetY()/hmax*255)
+            }
+            points.setelement(k,&cp)
           }
-          points.setelement(k,&cp)
+          ::cm.GetControlledCurves().push_back(&curve)
         }
-        ::cm.GetControlledCurves().push_back(&curve)
-      }
 
-      # add the corresponding histogram
+        # add the corresponding histogram
 
-      #  rescale histogram
-      if (exists(::cm_min)&&exists(::cm_max)&&exists(::h)) {
-        #printn "xmax = %1% " % xmax
-        #printn "xmin = %1% " % xmin
-        ::h1 <<= (FLOAT)::h[0]
+        #  rescale histogram
+        if (exists(::cm_min)&&exists(::cm_max)&&exists(::h)) {
+          #printn "xmax = %1% " % xmax
+          #printn "xmin = %1% " % xmin
+          ::h1 <<= (FLOAT)::h[0]
 
-        # rescale to the maximum in the current range
-        minpos = (::cm_min-::h1.trx)/::h1.vx
-        maxpos = (::cm_max-::h1.trx)/::h1.vx
-        subhist = ::h1[minpos:maxpos,0:0]
-        ::dw->SetCurve(subhist,2)
-        ::dw->SetCurveProperties(2,"#0000FF")
+          # rescale to the maximum in the current range
+          minpos = (::cm_min-::h1.trx)/::h1.vx
+          maxpos = (::cm_max-::h1.trx)/::h1.vx
+          subhist = ::h1[minpos:maxpos,0:0]
+          ::dw->SetCurve(subhist,2)
+          ::dw->SetCurveProperties(2,"#0000FF")
 
-        newpixelsize = ::h1.vx*255.0/cm_range
-        ::h1.settranslation(-(::cm_min-::h1.trx)*255.0/cm_range,0,0)
-        setvoxelsize(::h1,newpixelsize,1,1)
-        ::h1 = ::h1/max(subhist)*255
+          newpixelsize = ::h1.vx*255.0/cm_range
+          ::h1.settranslation(-(::cm_min-::h1.trx)*255.0/cm_range,0,0)
+          setvoxelsize(::h1,newpixelsize,1,1)
+          ::h1 = ::h1/max(subhist)*255
 
-        ::cm->SetCurve(::h1,0)
-        ::cm->SetCurveProperties(0,"#0000FF")
-        # update image colormap in image viewer
-        if (exists(::input_draw)) {
-          cm = ::dw.GetColormapImage()
-          ::input_draw.SetUserColormap(cm)
-          ::input_draw.UpdateColormap()
+          ::cm->SetCurve(::h1,0)
+          ::cm->SetCurveProperties(0,"#0000FF")
+          # update image colormap in image viewer
+          if (exists(::input_draw)) {
+            cm = ::dw.GetColormapImage()
+            ::input_draw.SetUserColormap(cm)
+            ::input_draw.UpdateColormap()
+          }
         }
+        ::cm._Paint()
+        #::cm.Refresh(1)
       }
-      ::cm._Paint()
-      #::cm.Refresh(1)
     }
 
     #--------------------------------------------------
@@ -396,63 +400,65 @@ printn "xmax = %1%" % xmax
     #
     proc ::UpdateCM() \
     {
-      ::cm.SetYLimits(-5,255+5)
-      # remove all control points
-      ::cm.GetControlledCurves().clear()
-      cm_range = ::cm_max-::cm_min
-      hmax = max(::h[0])
+      if(exists(::cm)){
+        ::cm.SetYLimits(-5,255+5)
+        # remove all control points
+        ::cm.GetControlledCurves().clear()
+        cm_range = ::cm_max-::cm_min
+        hmax = max(::h[0])
 
-      for i=0 to ::dw.GetControlledCurves().size()-1 {
-        curve = ::dw.GetControlledCurves()[i].copy()
-        if (exists(points)) { del points; }
-        points = curve.GetControlPoints()
-        printn "nb points %1% " % points.size()
-        for k=0 to points.size()-1 {
-          if (exists(cp)) { del cp; }
-          cp = points[k].copy()
-          if (cp.GetType()==1) {
-            cp.SetY(127)
-          } else {
-            cp.SetY(cp.GetY()/hmax*255)
+        for i=0 to ::dw.GetControlledCurves().size()-1 {
+          curve = ::dw.GetControlledCurves()[i].copy()
+          if (exists(points)) { del points; }
+          points = curve.GetControlPoints()
+          printn "nb points %1% " % points.size()
+          for k=0 to points.size()-1 {
+            if (exists(cp)) { del cp; }
+            cp = points[k].copy()
+            if (cp.GetType()==1) {
+              cp.SetY(127)
+            } else {
+              cp.SetY(cp.GetY()/hmax*255)
+            }
+            points.setelement(k,&cp)
           }
-          points.setelement(k,&cp)
+          ::cm.GetControlledCurves().push_back(&curve)
         }
-        ::cm.GetControlledCurves().push_back(&curve)
-      }
 
-      # add the corresponding histogram
+        # add the corresponding histogram
 
-      #  rescale histogram
-      if (exists(::cm_min)&&exists(::cm_max)&&exists(::h)) {
-        #printn "xmax = %1% " % xmax
-        #printn "xmin = %1% " % xmin
-        ::h1 <<= (FLOAT)::h[0]
+        #  rescale histogram
+        if (exists(::cm_min)&&exists(::cm_max)&&exists(::h)) {
+          #printn "xmax = %1% " % xmax
+          #printn "xmin = %1% " % xmin
+          ::h1 <<= (FLOAT)::h[0]
 
-        # rescale to the maximum in the current range
-        minpos = (::cm_min-::h1.trx)/::h1.vx
-        maxpos = (::cm_max-::h1.trx)/::h1.vx
-        cm_range = max(0.1,::cm_max-::cm_min)
-        ::cm.SetXLimits(::cm_min-0.02*cm_range,::cm_max+0.02*cm_range)
+          # rescale to the maximum in the current range
+          minpos = (::cm_min-::h1.trx)/::h1.vx
+          maxpos = (::cm_max-::h1.trx)/::h1.vx
+          cm_range = max(0.1,::cm_max-::cm_min)
+          ::cm.SetXLimits(::cm_min-0.02*cm_range,::cm_max+0.02*cm_range)
 
-        subhist = ::h1[minpos:maxpos,0:0]
-        ::dw->SetCurve(subhist,2)
-        ::dw->SetCurveProperties(2,"#0077FF")
+          subhist = ::h1[minpos:maxpos,0:0]
+          ::dw->SetCurve(subhist,2)
+          ::dw->SetCurveProperties(2,"#0077FF")
 
-        subhmax = max(1,max(subhist))
-        #::dw->SetYLimits(0-0.02*subhmax,subhmax+0.02*subhmax)
-        ::h1 = ::h1/max(subhist)*255
+          subhmax = max(1,max(subhist))
+          #::dw->SetYLimits(0-0.02*subhmax,subhmax+0.02*subhmax)
+          ::h1 = ::h1/max(subhist)*255
 
-        ::cm->SetCurve(::h1,0)
-        ::cm->SetCurveProperties(0,"#0000FF")
-        # update image colormap in image viewer
-        if (exists(::input_draw)) {
-          cm = ::dw.GetColormapImage()
-          ::input_draw.SetUserColormap(cm)
-          ::input_draw.UpdateColormap()
+          ::cm->SetCurve(::h1,0)
+          ::cm->SetCurveProperties(0,"#0000FF")
+          # update image colormap in image viewer
+          if (exists(::input_draw)) {
+            cm = ::dw.GetColormapImage()
+            ::input_draw.SetUserColormap(cm)
+            ::input_draw.UpdateColormap()
+          }
         }
+        ::cm._Paint()
+        #::cm.Refresh(1)
       }
-      ::cm._Paint()
-      #::cm.Refresh(1)
     }
 
     #----------------------------
@@ -472,17 +478,29 @@ printn "xmax = %1%" % xmax
       d = ::win.CurrentParent()
       ::dw = global::ami_import.wxDrawingWindow(&d)
       # sets minimal size here
-      ::dw.SetMinSize(&wx.wxSize(80,80));
+      ::dw.SetMinSize(&wx.wxSize(80,80)); //(80,80));
       ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
-      ::sizer_item = ::win.AddWidget(&::dw,0)
+      ::dw_boxsizer = ::win.GetCurrentSizer()
+      ::sizer_item = ::win.AddWidget(&::dw,1)
 
       # add User Colormap Drawing Window
-      d = ::win.CurrentParent()
-      ::cm = global::ami_import.wxDrawingWindow(&d)
-      # sets minimal size here
-      ::cm.SetMinSize(&wx.wxSize(80,70));
-      ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
-      ::sizer_item = ::win.AddWidget(&::cm,0)
+       if(::num_histograms==2){
+        d = ::win.CurrentParent()
+        ::cm = global::ami_import.wxDrawingWindow(&d)
+        # sets minimal size here
+        ::cm.SetMinSize(&wx.wxSize(80,70));
+        ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
+        ::sizer_item = ::win.AddWidget(&::cm,1)
+      }
+
+    }
+
+    #----------------------------
+    proc ::SetConf(NUM nh, NUM o) {
+      # parameters window
+
+     ::num_histograms =nh
+     ::orientation = o
 
     }
 
@@ -517,15 +535,18 @@ printn "xmax = %1%" % xmax
           # sets minimal size here
           ::dw.SetMinSize(&wx.wxSize(80,80));
           ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
-          ::sizer_item = ::win.AddWidget(&::dw,0)
+          ::dw_boxsizer = ::win.GetCurrentSizer()
+          ::sizer_item = ::win.AddWidget(&::dw,1)
 
           # add User Colormap Drawing Window
-          d = ::win.CurrentParent()
-          ::cm = global::ami_import.wxDrawingWindow(&d)
-          # sets minimal size here
-          ::cm.SetMinSize(&wx.wxSize(80,70));
-          ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
-          ::sizer_item = ::win.AddWidget(&::cm,0)
+          if(::num_histograms==2){
+            d = ::win.CurrentParent()
+            ::cm = global::ami_import.wxDrawingWindow(&d)
+            # sets minimal size here
+            ::cm.SetMinSize(&wx.wxSize(80,70));
+            ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
+            ::sizer_item = ::win.AddWidget(&::cm,1)
+          }
 
         ::win.AddPage("Param")
           ::win.BeginBoxPanel("Histogram calculation")
@@ -549,6 +570,7 @@ printn "xmax = %1%" % xmax
       # parameters window
       # parameters window
       if (exists(::parent_panel)) {
+print "Creating window with panel '%1%'" % ::parent_panel._GetName().c_str()
         ::win = global::ami_import.ParamPanel("ImHist",&::parent_panel)
       } else {
         ::win = global::ami_import.ParamPanel("ImHist")

@@ -4,6 +4,8 @@
  */
 
 //-------------------------------------------------
+#include <wx/splash.h>
+#include "amilab_splash.xpm"
 
 // configuration information, including version number ..
 #include "AMILabConfig.h"
@@ -50,6 +52,7 @@
 
 #include <wx/apptrait.h>
 #include <wx/stdpaths.h>
+
 #include "wrap_imports.h"
 
 #include <wx/config.h>
@@ -89,6 +92,68 @@ unsigned char verbose;
 
 #include "xmtext.hpp"
 
+//-----------------------------------------
+bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookforfile = wxEmptyString)
+{
+
+  // Looking for the environment variable
+  bool foundenv = wxGetEnv(envname,&res);
+  if (!foundenv) {
+    std::cerr << "Environment variable " << envname << " not defined. " << std::endl;
+  } else
+  if (!wxDir::Exists(res)) {
+    std::cerr << "Error accessing directory " << res.mb_str();
+  } else
+    return true;
+
+  // First check relative to the executable path
+  wxFileName execpath(wxStandardPaths::Get().GetExecutablePath());
+  // if last directory is bin, remove it
+  wxString LastDir = execpath.GetDirs().Last();
+  if (LastDir.MakeUpper()==wxT("BIN")) {
+      execpath.RemoveLastDir();
+      execpath.AppendDir(_T("share"));
+      execpath.AppendDir(GetwxStr("amilab-")+GetwxStr(AMILAB_VERSION));
+  }
+  res = execpath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+ std::cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << std::endl;
+  wxDir directory(res);
+  if (lookforfile != wxEmptyString) {
+    wxString path = directory.FindFirst(res,lookforfile);
+    if (path!=wxEmptyString) {
+        res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+        return true;
+    }
+  }
+
+
+  std::cerr << "file not found, set the path manually from the interface." << std::endl;
+
+  res=::wxGetCwd();
+  std::cerr << " , set to " << res << std::endl
+        << "check the environment variable " << envname.mb_str() << std::endl;
+  return false;
+
+  // look  for the file needed
+  /*
+ std::cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << std::endl;
+  wxDir directory(res);
+  if (lookforfile != wxEmptyString) {
+    wxString path = directory.FindFirst(res,lookforfile);
+    if (path!=wxEmptyString)
+        res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    else {
+    */
+  /*
+    }
+  }
+  */
+
+
+}
+
+
+//-------------------------------------------
 
 DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
 {
@@ -110,7 +175,6 @@ DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
 }
 
 
-//-------------------------------------------
 void CB_ParamWin(void* cd)
 {
   AMIFunction* func_ptr = (AMIFunction*) (cd);
@@ -179,6 +243,7 @@ void CB_delete_varlist( void* var)
 class MyApp: public wxApp
 //    -----
 {
+
   virtual bool OnInitGui();
   virtual bool OnInit();
   virtual int  OnExit();
@@ -232,6 +297,10 @@ END_EVENT_TABLE();
 IMPLEMENT_APP(MyApp)
 
 
+
+
+
+
 // rewrite it to set the colors
 // wxwidget was recompiled ...
 // send email to wxwidgets to propose modification?
@@ -242,73 +311,28 @@ bool MyApp::OnInitGui()
 
 }
 
-
-//-----------------------------------------
-bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookforfile = wxEmptyString)
-{
-
-  // Looking for the environment variable
-  bool foundenv = wxGetEnv(envname,&res);
-  if (!foundenv) {
-    std::cerr << "Environment variable " << envname << " not defined. " << std::endl;
-  } else
-  if (!wxDir::Exists(res)) {
-    std::cerr << "Error accessing directory " << res.mb_str();
-  } else
-    return true;
-
-  // First check relative to the executable path
-  wxFileName execpath(wxStandardPaths::Get().GetExecutablePath());
-  // if last directory is bin, remove it
-  wxString LastDir = execpath.GetDirs().Last();
-  if (LastDir.MakeUpper()==wxT("BIN")) {
-      execpath.RemoveLastDir();
-      execpath.AppendDir(_T("share"));
-      execpath.AppendDir(GetwxStr("amilab-")+GetwxStr(AMILAB_VERSION));
-  }
-  res = execpath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
- std::cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << std::endl;
-  wxDir directory(res);
-  if (lookforfile != wxEmptyString) {
-    wxString path = directory.FindFirst(res,lookforfile);
-    if (path!=wxEmptyString) {
-        res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-        return true;
-    }
-  }
-
-
-  std::cerr << "file not found, set the path manually from the interface." << std::endl;
-
-  res=::wxGetCwd();
-  std::cerr << " , set to " << res << std::endl
-        << "check the environment variable " << envname.mb_str() << std::endl;
-  return false;
-
-  // look  for the file needed
-  /*
- std::cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << std::endl;
-  wxDir directory(res);
-  if (lookforfile != wxEmptyString) {
-    wxString path = directory.FindFirst(res,lookforfile);
-    if (path!=wxEmptyString)
-        res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    else {
-    */
-  /*
-    }
-  }
-  */
-
-
-}
-
-
-
 //-----------------------------------------
 bool MyApp::OnInit()
 {
 
+
+ ::wxInitAllImageHandlers();
+
+  //wxBitmap bitmap;
+  wxBitmap bitmap(amilab_splash_xpm );
+  if (bitmap.IsOk())
+  {
+  wxSplashScreen *splash;
+  splash = new wxSplashScreen(bitmap,
+      wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+      1500, NULL, -1, wxDefaultPosition, wxDefaultSize,
+      wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+  }
+  wxYield();
+ 
+  
+  
+  
   config = new wxConfig(wxT("AMILab"));
 /*
                         wxEmptyString,
@@ -521,7 +545,7 @@ bool MyApp::OnInit()
     #endif
   }
 
-
+mainframe->LoadToolBar();
 
   return true;
 

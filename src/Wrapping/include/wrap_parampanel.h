@@ -97,8 +97,9 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
     ADD_CLASS_METHOD(ShowSlider,       "Show/hide the slider if there is one.");
     ADD_CLASS_METHOD(Enable,           "Enable/Disable a parameter.");
 
-    ADD_CLASS_METHOD(CurrentParent,    "Get the wxWindow that contains the current parameters.");
-    ADD_CLASS_METHOD(AddWidget,         "Adds a wxWindow to the current sizer");
+    ADD_CLASS_METHOD(CurrentParent,    "Gets the wxWindow that contains the current parameters.");
+    ADD_CLASS_METHOD(GetCurrentSizer,  "Gets the wxBoxSizer that contains the current parameters.");
+    ADD_CLASS_METHOD(AddWidget,        "Adds a wxWindow to the current sizer");
 
 
     void AddMethods(WrapClass<ParamPanel>::ptr this_ptr )
@@ -152,6 +153,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
       AddVar_Enable(           this_ptr);
 
       AddVar_CurrentParent(    this_ptr);
+      AddVar_GetCurrentSizer(  this_ptr);
       AddVar_AddWidget(        this_ptr);
     }
 

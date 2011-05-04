@@ -155,3 +155,5 @@ wxWritableCharBuffer
 wxWritableWCharBuffer
 wxwxMenuItemListNode
 wxwxSizerItemListNode
+wxSplitterWindow
+
