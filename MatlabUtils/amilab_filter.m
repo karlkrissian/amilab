@@ -1,4 +1,4 @@
-function res=amilab_filter(im,std,xorder,yorder)
+function res=amilab_filter(im,std,xorder,yorder,display)
 %
 % calls the amilab filter command
 %
@@ -11,6 +11,7 @@ function res=amilab_filter(im,std,xorder,yorder)
   writeami(im,inputfilename);
   cd(amilab_bindir)
   amilab_cmdline=amilab_bin;
+  amilab_cmdline=sprintf('%s %s',amilab_cmdline,'-hide');
   amilab_cmdline=sprintf('%s %s',amilab_cmdline,'BasicFilters/GaussianFilter/GaussianFilterRun.amil');
   amilab_cmdline=sprintf('%s %s',amilab_cmdline,inputfilename);
   amilab_cmdline=sprintf('%s %f',amilab_cmdline,std);
@@ -19,4 +20,7 @@ function res=amilab_filter(im,std,xorder,yorder)
   amilab_cmdline=sprintf('%s %s',amilab_cmdline,outputfilename);
   system(amilab_cmdline);
   res = readami(outputfilename);
+  if display
+      figure(),imshow(res,[]);
+  end
   
