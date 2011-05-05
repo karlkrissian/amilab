@@ -4,7 +4,6 @@ CircleBoundaries3D
 vtkLevelSetFastMarching
 Gradient
 vtkFastMarching_nD_plus
-ShortestPathClass
 Curvatures
 vnl_matrix<double>
 vnl_vector<double>
@@ -16,6 +15,3 @@ itk::ImageRegion<2u>
 itk::Size<2u>
 itk::Index<2u>
 itk::DefaultPixelAccessor<float>
-std::list<int, std::allocator<int> >
-std::_List_const_iterator<int>
-std::_List_iterator<int>

@@ -68,7 +68,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   MESSAGE("COMMAND: ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}")
   EXECUTE_PROCESS(
     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
+    OUTPUT_VARIABLE gccxml_result
+    ERROR_VARIABLE gccxml_error
   )
+  MESSAGE(" gccxml_result = ${gccxml_result} ")
+  MESSAGE(" gccxml_error = ${gccxml_error} ")
 
   # Generate the classes list
 
@@ -242,6 +246,8 @@ ENDIF(AMI_USE_PRECOMP_HEADERS)
 SET(WrapWxWidgets_HDRS
   ../include/wrap_wxsamples.h
   ../include/wrap_wxfunctions.h
+  ${AMI_WXWIDGETS_VERSION}/wxAmiEventHandler.h
+  ${AMI_WXWIDGETS_VERSION}/wx_includes.h
   ${wx_HDRS}
 )
 

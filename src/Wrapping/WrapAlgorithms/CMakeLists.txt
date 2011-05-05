@@ -54,9 +54,12 @@ IF(AMI_ENABLE_WRAPPING)
      IF   (ITK_REQUIRED_CXX_FLAGS)
        FOREACH( def ${ITK_REQUIRED_CXX_FLAGS})
          SET( ITK_DEFS  ${def}  ${ITK_DEFS} )
-       ENDFOREACH(def ${ITK_REQUIRED_CXX_FLAGS})
-       MESSAGE("ITK_DEFS=${UTK_DEFS}")
+       ENDFOREACH(def ${ITK_REQUIRED_CXX_FLAGS})       
      ENDIF(ITK_REQUIRED_CXX_FLAGS)
+     # Add Cable configuration for gccxml compilation
+     SET(ITK_DEFS -DCABLE_CONFIGURATION )
+     MESSAGE("ITK_DEFS=${ITK_DEFS}")
+
   ENDIF ( ITK_FOUND)
 
   IF   (wxWidgets_FOUND)
@@ -108,10 +111,14 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
-  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${ITK_INCLUDES} ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}")
+  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${ITK_INCLUDES} ${WX_INCLUDES}  ${ITK_DEFS} ${WX_DEFS}  ${XML_INPUT}")
   execute_process(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${ITK_INCLUDES} ${WX_INCLUDES}  ${WX_DEFS} ${XML_INPUT}
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${ITK_INCLUDES} ${WX_INCLUDES} ${ITK_DEFS} ${WX_DEFS} ${XML_INPUT}
+    OUTPUT_VARIABLE gccxml_result
+    ERROR_VARIABLE gccxml_error
   )
+  MESSAGE(" gccxml_result = ${gccxml_result} ")
+  MESSAGE(" gccxml_error = ${gccxml_error} ")
    
   # Generate the classes list
 

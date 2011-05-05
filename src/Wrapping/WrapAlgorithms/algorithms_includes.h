@@ -5,7 +5,7 @@
 #include "vtkLevelSetFastMarching.h"
 #include "vtkFastMarching_nD_plus.h"
 #include "Gradient.h"
-#include "ShortestPathClass.h"
+//#include "ShortestPathClass.h"
 #include "Curvatures.h"
 
 // trying vnl_matrix ...
@@ -37,5 +37,7 @@ template class itk::ImageRegion<2u>;
 // trying std
 #include <list>
 template class std::list<int, std::allocator<int> >;
-template class std::_List_const_iterator<int>;
-template class std::_List_iterator<int>;
+std::list<int>::iterator __t;
+std::list<int>::const_iterator __t1;
+//template class std::list<int>::iterator;
+//template class std::list<int>::const_iterator;

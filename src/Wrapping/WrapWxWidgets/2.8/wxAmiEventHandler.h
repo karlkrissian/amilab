@@ -4,6 +4,7 @@
 
 #include "wx/wx.h"
 #include "ami_function.h"
+#include <wx/listctrl.h>
 
 #ifndef wxCommandEvent_declared
   #define wxCommandEvent_declared
