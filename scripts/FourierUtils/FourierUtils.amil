@@ -24,6 +24,28 @@ Class FourierUtilsClass \
   Comments(::RFFT,"Inverse Fast Fourier Transform of the input image, given as a double image of 2 components")
 
   #--------------------------
+  proc ::ComplexConj( IMAGE i) \
+  {
+    return = i
+    return.SetComponent(1,-i[1])
+  }
+  Comments(::ComplexConj,"Conjugate of a complex image")
+
+
+  #--------------------------
+  proc ::ComplexMult( IMAGE i1, IMAGE i2) \
+  {
+    return = i1
+    if (i1.vdim!=2)||(i2.vdim!=2) {
+      printn "Complex multiplication needs complex images (2 components)"
+    } else {
+      return.SetComponent(0, i1[0]*i2[0]-i1[1]*i2[1])
+      return.SetComponent(1, i1[1]*i2[0]+i1[0]*i2[1])
+    }
+  }
+  Comments(::ComplexMult,"Multiplication of complex images")
+
+  #--------------------------
   proc ::AmiCenter( IMAGE input) \
   {
     pos = ::CenterPosition(&input)
