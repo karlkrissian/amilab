@@ -414,27 +414,51 @@ if (!exists(vtkVolumeClass)) {
         #Fat   -50 - -100
         #Air   -1000
 
+        # default intensity values
+        px1 = 1080
+        px3 = 1130
+        px4 = 1390
+        px2 = 1100
+        o1 = 0
+        o2 = 0.005
+        o3 = 0.08
+        o4 = 0.5
+        imin = ::imhisto1.minval
+        imax = ::imhisto1.maxval
+        if  (imin>px1)||(imax<px1)||(imin>px2)||(imax<px2) \
+        { 
+          # set position within intensity range
+          px1 = imin+(imax-imin)*0.4
+          px2 = imin+(imax-imin)*0.5
+          px3 = imin+(imax-imin)*0.6
+          px4 = imin+(imax-imin)*0.9
+          o1 = 0
+          o2 = 0.3
+          o3 = 0.4
+          o4 = 0.9
+        }
+
         # Create the curve
         curve = ami.dwControlledCurve()
 
         # black point
-        cp0 = ami.dwControlPoint(1080,0)
+        cp0 = ami.dwControlPoint(px1,o1*hmax)
         cp0.SetYLocked(1)
         cp0.SetColour(wx.wxColour(0,0,0))
         curve.GetControlPoints().push_back(&cp0)
 
         # red point
-        cp1 = ami.dwControlPoint(1100,0.005*hmax)
+        cp1 = ami.dwControlPoint(px2,o2*hmax)
         cp1.SetColour(wx.wxColour(255,0,0))
         curve.GetControlPoints().push_back(&cp1)
 
         # yellow point
-        cp2 = ami.dwControlPoint(1130,0.08*hmax)
+        cp2 = ami.dwControlPoint(px3,o3*hmax)
         cp2.SetColour(wx.wxColour(255,255,0))
         curve.GetControlPoints().push_back(&cp2)
 
         # white point
-        cp3 = ami.dwControlPoint(1390,0.5*hmax)
+        cp3 = ami.dwControlPoint(px4,o4*hmax)
         cp3.SetColour(wx.wxColour(255,255,255))
         curve.GetControlPoints().push_back(&cp3)
 
@@ -804,7 +828,7 @@ printn "point number %1%" %n
         ::win.BeginBook()
             # Adding histogram page
           ::imhisto1.SetParentPanel(&::win)
-::imhisto1.SetConf(1,0)
+::imhisto1.SetConf(2,0)
           ::imhisto1.Gui()
           ::win.AddPage("Hist", &::imhisto1->win)
           ::CurveLoad_page = ::win.AddPage("Load")

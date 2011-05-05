@@ -8246,7 +8246,7 @@ prefix_var:
     driver.var_stack.AddVar(var->BasicCast( $2));
 
   }
-  | T_NOT primary_var %prec prefix
+  | T_NOT prefix_var %prec prefix
   {
     /**
       Description: Logical negation (NOT) operator.

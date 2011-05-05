@@ -200,10 +200,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 END_EVENT_TABLE()
 
 
-static int CompareStringLen(const wxString& first, const wxString& second)
-{
-    return second.CmpNoCase(first);
-}
+//static int CompareStringLen(const wxString& first, const wxString& second)
+//{
+//    return second.CmpNoCase(first);
+//}
 
 BEGIN_EVENT_TABLE(CustomStatusBar, wxStatusBar)
   EVT_SIZE(CustomStatusBar::OnSize)

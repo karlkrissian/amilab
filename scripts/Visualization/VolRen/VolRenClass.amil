@@ -167,12 +167,8 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::Show_Vol1() \
     {
-      if (::vtkvol1.imhisto1.win.IsShown()==true){
-        ::vtkvol1.imhisto1.win.Hide()
-
-      }else{
-        ::vtkvol1.imhisto1.win.Show()
-      }
+      wid = &::vtkvol1.imhisto1.dw
+      wid.Show(!wid.IsShown())
       ::win.Update()
     }
     Comments(::Show_Vol1,"Show histogram of Vol1")
@@ -180,11 +176,8 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::Show_Vol2() \
     {
-      if (::vtkvol2.imhisto1.win.IsShown()==true){
-        ::vtkvol2.imhisto1.win.Hide()
-      }else{
-        ::vtkvol2.imhisto1.win.Show()
-      }
+      wid = &::vtkvol2.imhisto1.dw
+      wid.Show(!wid.IsShown())
       ::win.Update()
     
     }
@@ -372,15 +365,19 @@ if (!exists(VolRenClass)) {
       ::sbox_sizerH = wx.wxBoxSizer(wx.wxHORIZONTAL)
       ::flex_sizer.Add(&::sbox_sizerH,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
 
-      ::vtkvol1.imhisto1.win.Reparent(&::panel)
-      ::sbox_sizerH.Add(&::vtkvol1.imhisto1.win,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+      obj1 = &::vtkvol1.imhisto1.dw
+      ::vtkvol1.imhisto1.dw_boxsizer.Detach(&obj1)
+      obj1.Reparent(&::panel)
+      ::sbox_sizerH.Add(&obj1,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
 
-      ::vtkvol2.imhisto1.win.Reparent(&::panel)
-      ::sbox_sizerH.Add(&::vtkvol2.imhisto1.win,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+      obj2 = &::vtkvol2.imhisto1.dw
+      ::vtkvol2.imhisto1.dw_boxsizer.Detach(&obj2)
+      obj2.Reparent(&::panel)
+      ::sbox_sizerH.Add(&obj2,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
 
       ::win.EnablePanel(::vol1_page , false)
       ::win.EnablePanel(::vol2_page , false)
-      ::vtkvol2.imhisto1.win.Hide()  
+      obj2.Hide()  
 
 
       # Add to main book
