@@ -21,6 +21,9 @@ class ArgTypeBase:
   
   def GetType(self):
     return self._type
+
+  def GetRealType(self):
+    return self._type
     
   def SetName(self,n):
     self._name=n
@@ -130,6 +133,12 @@ class TypedefInfo(ArgTypeBase):
     ArgTypeBase.__init__(self) 
     self._type="Typedef"
     
+  def GetRealType(self):
+    if self._reftypeid in config.types.keys():
+      return config.types[self._reftypeid].GetType()
+    else:
+      return self.GetType()
+
   def GetString(self):
     if self._reftypeid in config.types.keys():
       #print config.types[self._reftypeid].GetString()
@@ -138,6 +147,18 @@ class TypedefInfo(ArgTypeBase):
         typename=self._name
       else:
         typename=config.types[self._reftypeid].GetString()
+    else:
+      typename=self._reftypeid
+    return typename
+
+  def GetFullString(self):
+    if self._reftypeid in config.types.keys():
+      #print config.types[self._reftypeid].GetString()
+      # if member typedef (or function), keep the typedef name
+      if config.types[self._reftypeid].GetString()=="__MethodType__":
+        typename=self._name
+      else:
+        typename=config.types[self._reftypeid].GetFullString()
     else:
       typename=self._reftypeid
     return typename

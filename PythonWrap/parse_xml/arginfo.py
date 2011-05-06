@@ -260,14 +260,14 @@ class ArgInfo:
     #print "WrapGetParam {0}, {1}, '{2}'".format(self.name,config.types[self.typeid].GetType(), config.types[self.typeid].GetFullString())
     self.returnstring=returnstring
     self.quiet=quiet
-    if config.types[self.typeid].GetType()=="PointerType":
+    if config.types[self.typeid].GetRealType()=="PointerType":
       if config.types[self.typeid].GetFullString().endswith("* *"):
         res =  self.WrapGetParamDoublePointer(noconstructor_call)
         print "res= ",res
         return res
       else:
         return self.WrapGetParamPointer(noconstructor_call)
-    if config.types[self.typeid].GetType()=="ReferenceType":
+    if config.types[self.typeid].GetRealType()=="ReferenceType":
       return self.WrapGetParamRef(noconstructor_call)
     return self.WrapGetParamValue(noconstructor_call)
 
