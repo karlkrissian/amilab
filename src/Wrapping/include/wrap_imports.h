@@ -28,7 +28,14 @@ void AddWrapWxWidgets();
 
 #ifdef AMI_WRAP_MICRONTRACKER
   void AddWrapMicronTracker();
+  void AddWrapUltrasound();
 #endif
+
+
+#ifdef AMI_WRAP_ULTRASOUND
+  //void AddWrapUltrasound();
+#endif
+
 
 /**
  * Adding wrapped classes from Algorithms

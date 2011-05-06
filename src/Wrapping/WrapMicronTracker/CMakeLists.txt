@@ -1,4 +1,4 @@
-# Create a library called "Hello" which includes the source file "hello.cxx".
+# Create a library called "MT" which includes the source file "hello.cxx".
 # The extension is already found.  Any number of sources could be listed here.
 
 FIND_PATH( MT_DIR MTC.h PATHS "$ENV{ProgramFiles}/Claron Technology/MicronTracker/Dist")

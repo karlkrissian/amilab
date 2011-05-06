@@ -3,6 +3,8 @@
 
 INCLUDE( ${wxWidgets_USE_FILE})
 
+
+
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common/include
@@ -27,6 +29,28 @@ IF(AMI_WRAP_MICRONTRACKER)
   )
 ENDIF(AMI_WRAP_MICRONTRACKER)
 
+IF(AMI_WRAP_ULTRASOUND)
+  MESSAGE("\nInclude ultrasound... ${ULTRASOUND_DIR}\n")
+  include_directories(
+    ${AMILAB_SOURCE_DIR}/Wrapping/WrapUltrasound/src
+    ${AMILAB_SOURCE_DIR}/Wrapping/WrapUltrasound/include
+    ${AMILAB_SOURCE_DIR}/Wrapping/WrapUltrasound/Generated
+    ${AMILAB_SOURCE_DIR}/Wrapping/WrapUltrasound
+    ${ULTRASOUND_DIR}
+  )
+  #definiciones para dll
+  ADD_DEFINITIONS(-D_AFXDLL)
+  SET(CMAKE_MFC_FLAG 2)
+  
+  #microsoft visual params
+  IF(MSVC) 
+ 	  set_target_properties( ${FUSION_BIN}
+	  PROPERTIES LINK_FLAGS "/NODEFAULTLIB:msvcrtd.lib")
+
+  ENDIF(MSVC)
+ENDIF(AMI_WRAP_ULTRASOUND)
+  
+
 SET(  WrapImports_SRCS
   wrap_imports.cpp
 )
@@ -46,3 +70,7 @@ add_dependencies ( WrapImports WrapWxWidgets WrapAlgorithms)
 IF(AMI_WRAP_MICRONTRACKER)
   add_dependencies( WrapImports WrapMicronTracker )
 ENDIF(AMI_WRAP_MICRONTRACKER)
+
+IF(AMI_WRAP_ULTRASOUND)
+  add_dependencies( WrapImports WrapUltrasound )
+ENDIF(AMI_WRAP_ULTRASOUND)

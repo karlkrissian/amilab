@@ -36,3 +36,7 @@ add_subdirectory ( WrapAlgorithms     )
 IF (AMI_WRAP_MICRONTRACKER)
   add_subdirectory ( WrapMicronTracker  )
 ENDIF(AMI_WRAP_MICRONTRACKER)
+IF (AMI_WRAP_ULTRASOUND)
+  add_subdirectory ( WrapUltrasound  )
+ENDIF(AMI_WRAP_ULTRASOUND)
+

@@ -310,7 +310,10 @@ IF(AMI_ENABLE_WRAPPING)
   OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       OFF)
   OPTION(AMI_WRAP_EXAMPLES  "Enable Automatic Wrapping OF EXAMPLES"  OFF)
   OPTION(AMI_WRAP_MICRONTRACKER "Enable Automatic Wrapping of MicronTracker library for stereo camera tracking" OFF)
+  OPTION(AMI_WRAP_ULTRASOUND "Enable Automatic Wrapping of Ultrasound library for get ultrasound images" OFF)
 ENDIF(AMI_ENABLE_WRAPPING)
+
+
 
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
 
@@ -659,6 +662,13 @@ IF (AMI_WRAP_MICRONTRACKER)
  )
 ENDIF(AMI_WRAP_MICRONTRACKER)
 
+IF (AMI_WRAP_ULTRASOUND)
+  SET(amilab_ownlibs
+    ${amilab_ownlibs}
+    WrapUltrasound
+ )
+ENDIF(AMI_WRAP_ULTRASOUND)
+
 # Test template class
 IF(AMI_WRAP_EXAMPLES)
   SET(amilab_ownlibs WrapExamples ${amilab_ownlibs})
@@ -718,6 +728,19 @@ IF (AMI_WRAP_MICRONTRACKER)
     ${MTC_LIB}
   )
 ENDIF(AMI_WRAP_MICRONTRACKER)
+
+IF (AMI_WRAP_ULTRASOUND)
+  FIND_LIBRARY( ULTRASOUND_LIB research PATHS "$ENV{ProgramFiles}/EcoResearch/Research_Package/lib")
+  FIND_PATH( ULTRASOUND_DIR RPCore.h PATHS "$ENV{ProgramFiles}/EcoResearch/Research_Package/include")
+ 
+  TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
+    ${ULTRASOUND_LIB}
+   # comctl32.lib
+	 # wsock32.lib
+	 # odbc32.lib
+	 # odbccp32.lib 
+  )
+ENDIF(AMI_WRAP_ULTRASOUND)
 
 # is it needed or already included by boost?
 IF(AMI_USE_ZLIB)

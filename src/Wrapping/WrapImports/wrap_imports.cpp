@@ -11,7 +11,14 @@
 //
 //
 
+
+
 #include "AMILabConfig.h"
+
+#ifdef AMI_WRAP_MICRONTRACKER
+  //#include "wrap_Ultrasound.h"
+  #include "addwrap_us.h"
+#endif
 
 #include "paramlist.h"
 #include "wrapfunctions.hpp"
@@ -22,18 +29,25 @@
 #include "ami_object.h"
 //#include "wrap_imagedraw.h"
 
+
 #include "wrap_MainFrame.h"
 #include "wrap_wxDrawingWindow.h"
+
+
 #include "wrapSystem.h"
 #include "wrapITK.h"
 #include "wrapAMIFluid.h"
 #include "wrapFilters.h"
 #include "wrap_wxsamples.h"
 #include "wrap_wxfunctions.h"
+
+
 #include "wrap_parampanel.h"
 #include "wrap_varlist.h"
 #include "wrap_varvector.h"
 #include "wrap_File.h"
+
+
 
 /*
 #include "wrap_wxWindow.h"
@@ -67,6 +81,9 @@
   #include "addwrap_mt.h"
   #include "wrapMT.h"
 #endif
+
+
+
 
 #include "wrap_vtkLevelSets.h"
 
@@ -117,6 +134,9 @@ void AddWrapImports()
   AddWrapAlgorithms();
 #ifdef AMI_WRAP_MICRONTRACKER
   AddWrapMicronTracker();
+#endif
+#ifdef AMI_WRAP_MICRONTRACKER
+  AddWrapUltrasound();
 #endif
   AddWrapAmilab();
   AddWrapIO();
@@ -200,13 +220,23 @@ void AddWrapAlgorithms()
 #ifdef AMI_WRAP_MICRONTRACKER
   void AddWrapMicronTracker()
   {
-   
-    // Create Amilab images from MicronTracker
     AddWrapMT();
+  }
+  void AddWrapUltrasound()
+  {
+    wrap_us_classes( Vars.GetBuiltinContext());
 
-
+    //WrapClass_Ultrasound::AddVar_Ultrasound( Vars.GetBuiltinContext());
   }
 #endif
+
+/*#ifdef AMI_WRAP_MICRONTRACKER
+  void AddWrapUltrasound()
+  {
+    WrapClass_Ultrasound::AddVar_Ultrasound( Vars.GetBuiltinContext());
+  }
+#endif*/
+
 
 void AddWrapAmilab()
 {
