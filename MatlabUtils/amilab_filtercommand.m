@@ -1,4 +1,4 @@
-function res=amilab_filter(im,cmd,display)
+function res=amilab_filtercommand(im,cmd,display)
 %
 % calls an amilab command to process the input image im and return the processed image
 % the image in the command is called 'i'
