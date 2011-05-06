@@ -338,8 +338,9 @@ if (!exists(VolRenClass)) {
       sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel.SetSizer(&sbox_sizer)
       //::flex_sizer = wx.wxGridSizer(1)
-      ::flex_sizer =  wx.wxFlexGridSizer(1)
-      ::flex_sizer.AddGrowableRow(0,1)
+      ::flex_sizer =  wx.wxFlexGridSizer(2,1,0,0)
+      ::flex_sizer.AddGrowableRow(0,4)
+      ::flex_sizer.AddGrowableRow(1,1)
       ::flex_sizer.AddGrowableCol(0,1)
 
       sbox_sizer.Add( &::flex_sizer, 1, wx.wxALL | wx.wxEXPAND,2)

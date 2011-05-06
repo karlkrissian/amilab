@@ -55,8 +55,9 @@ template<> BasicVariable::ptr Variable<InrImage>::operator -=(const BasicVariabl
 /// a*b
 template<> BasicVariable::ptr Variable<InrImage>::operator *(const BasicVariable::ptr& b);
 
+
 /*
-/// a*=b
+ * /// a*=b
 template<> BasicVariable::ptr Variable<InrImage>::operator *=(const BasicVariable::ptr& b);
 */
 

@@ -257,11 +257,20 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator *(const
 }
 
 /*
-/// a*=b
+ * /// a*=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator *=(const BasicVariable::ptr& b)
 { 
-  if (b->IsNumeric()) {
-    RefValue() *= b->GetValueAsDouble();
+//  if (b->IsNumeric()) {
+//    RefValue() += b->GetValueAsDouble();
+
+  if (b->Type()==type_image) {
+    DYNAMIC_CAST_VARIABLE(InrImage,b,var_im2);
+    if (var_im2.get()) {
+      // copy option
+      (*Pointer())*=(*var_im2->Pointer());
+    } else {
+      GB_driver.err_print("Error, parameter of += operator points to NULL image\n");
+    }
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 

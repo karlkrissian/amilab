@@ -1,0 +1,43 @@
+
+#
+# This is a generic script that calls amilab command that run on an input image and returns an output image.
+# it takes 3 parameters as input:
+#  - input image name
+#  - command to run as a string, where the input image is called 'i', if the string contains the keyword 'return', 
+#      then it can combine several commands and it is interpreted as the body of an amilab function
+#  - output image name
+#
+
+
+helpstr ="\n"
+helpstr += "# This is a generic script that calls amilab command that run on an input image and returns an output image.\n"
+helpstr += "# it takes 3 parameters as input:\n"
+helpstr += "#  - input image name\n"
+helpstr += "#  - command to run as a string, where the input image is called 'i', if the string contains the keyword 'return', \n"
+helpstr += "#      then it can combine several commands and it is interpreted as the body of an amilab function\n"
+helpstr += "#  - output image name\n"
+helpstr += ""
+
+if (argc!=3) {
+  InfoDialog "This filter needs 3 arguments \n %1%" % helpstr
+}
+
+proc RunCommand( STRING s, IMAGE i) {
+  
+  if wx.wxString(s).Find("return")>=0 {
+    # the command contains return
+    eval s+";"
+  } else {
+    eval "return="+s+";"
+  }
+}
+
+ami.MainFrame.Hide()
+inputname=$1
+cmd=$2
+outputname=$3
+
+i = Image(inputname)
+res = RunCommand(s,i)
+res.save outputname
+quit

@@ -62,6 +62,9 @@ if (!exists(ShortestPathClass)) {
       ::livewire = UCHAR(0), "Recompute and display the path at each draw callback"
       # Path mode 0 or 1
     
+      # Path color 
+      ::path_color    = wx.wxColour(173,216,230)
+      ::points_color  = wx.wxColour(173,216,30)
       #::Gui
     }
     #-----------------------------------------------
@@ -125,6 +128,7 @@ if (!exists(ShortestPathClass)) {
         ::Run()
       }
       if (exists(::input_draw)) {
+        ::input_draw.SetPenColor(&::points_color)
         if exists(::startx) {
           ::input_draw.DrawCircleR(::startx,::starty,1.5)
         }
@@ -322,6 +326,7 @@ if (!exists(ShortestPathClass)) {
     #-------------------------------------------
     proc ::DrawPath() {
       if (::input.tz==1)&&(exists(::input_draw)) {
+        ::input_draw.SetPenColor(&::path_color)
         line = ::path.GetLine(0)
         p0x = line(0,0,0,0)
         p0y = line(0,0,0,1)
@@ -392,6 +397,11 @@ if (!exists(ShortestPathClass)) {
             ::win.AddButton("Display",  ::Display)
             ::win.AddButton("DrawPath", ::DrawPath)
           ::win.EndHorizontal()  
+          ::win.BeginHorizontal()
+            ::win.AddColor("Path   Color",&::path_color)
+            ::win.AddColor("Points Color",&::points_color)
+          ::win.EndHorizontal()  
+
       ::win.EndBook()
 
       ::AddStandardButtons(&::win)
