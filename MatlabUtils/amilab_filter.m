@@ -20,7 +20,9 @@ function res=amilab_filter(im,std,xorder,yorder,display)
   amilab_cmdline=sprintf('%s %s',amilab_cmdline,outputfilename);
   system(amilab_cmdline);
   res = readami(outputfilename);
-  if display
+  if exist('display','var') 
+    if display
       figure(),imshow(res,[]);
+    end
   end
   

@@ -38,6 +38,6 @@ cmd=$2
 outputname=$3
 
 i = Image(inputname)
-res = RunCommand(s,i)
+res = RunCommand(cmd,i)
 res.save outputname
 quit
