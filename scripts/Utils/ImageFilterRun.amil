@@ -32,7 +32,7 @@ proc RunCommand( STRING s, IMAGE i) {
   }
 }
 
-ami.MainFrame.Hide()
+#ami.MainFrame.Hide()
 inputname=$1
 cmd=$2
 outputname=$3
@@ -40,4 +40,4 @@ outputname=$3
 i = Image(inputname)
 res = RunCommand(cmd,i)
 res.save outputname
-quit
+#quit

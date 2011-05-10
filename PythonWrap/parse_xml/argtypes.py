@@ -134,7 +134,7 @@ class TypedefInfo(ArgTypeBase):
     self._type="Typedef"
     
   def GetRealType(self):
-    if self._reftypeid in config.types.keys():
+    if (self._name not in config.available_classes) and (self._reftypeid in config.types.keys()):
       return config.types[self._reftypeid].GetType()
     else:
       return self.GetType()
