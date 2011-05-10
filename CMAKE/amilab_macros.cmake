@@ -46,7 +46,7 @@ ENDMACRO(my_add_library)
 # Specifies the number of sources that will be packed in a file. By default, 10
 # files are packaged.
 #-------------------------------------------------------------------------------
-SET(NUMBER_SOURCES_TO_PACKAGE 10 CACHE STRING "Indicates the number of sources to package")
+SET(NUMBER_SOURCES_TO_PACKAGE 1 CACHE STRING "Indicates the number of sources to package")
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
