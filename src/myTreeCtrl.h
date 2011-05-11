@@ -30,9 +30,7 @@
 #include <boost/weak_ptr.hpp>
 
 class BasicVariable;
-
-template <class T>
-class Variable;
+//template <class T> class Variable;
 
 //#include "Variable.hpp"
 

@@ -247,16 +247,16 @@ if __name__ == '__main__':
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
       for b in args.val.ancestors:
-        print "b=",b
+        #print "b=",b
         # find the class corresponding to typedefs
-        for k in typedef_dict.keys():
-          if typedef_dict[k].replace(' ','')==b.replace(' ',''):
-            print "Found typedef {0}".format(b)
-            tid = config.types[k].GetRefTypeId()
-            print "with type {0}, {1}".format(config.types[tid].GetFullString(),config.types[tid].GetString())
-            newclass=config.types[tid].GetFullString()
-            ancestors.append(newclass)
-            newlist.append(newclass)
+        #for k in typedef_dict.keys():
+          #if typedef_dict[k].replace(' ','')==b.replace(' ',''):
+            #print "Found typedef {0}".format(b)
+            #tid = config.types[k].GetRefTypeId()
+            #print "with type {0}, {1}: {2}".format(config.types[tid].GetFullString(),config.types[tid].GetString(),config.types[k].GetFullString())
+            #newclass=config.types[tid].GetFullString()
+            #ancestors.append(newclass)
+            ##newlist.append(newclass)
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:
