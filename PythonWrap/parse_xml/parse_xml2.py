@@ -234,15 +234,29 @@ if __name__ == '__main__':
       # 1 create dictionnary of classes to speed-up ...
       print "Creating classes dict"
       classes_dict = dict()
+      typedef_dict = dict()
       for f in config.types.keys():
         if config.types[f].GetType()=="Class":
           classes_dict[f] = config.types[f].GetFullString()
+        if config.types[f].GetType()=="Typedef":
+          typedef_dict[f] = config.types[f].GetFullString()
+        #print "typedef : {0}".format(typedef_dict[f])
+      #print typedef_dict
       
       print "Creating ancestors"
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
       for b in args.val.ancestors:
-        #print "b=",b
+        print "b=",b
+        # find the class corresponding to typedefs
+        for k in typedef_dict.keys():
+          if typedef_dict[k].replace(' ','')==b.replace(' ',''):
+            print "Found typedef {0}".format(b)
+            tid = config.types[k].GetRefTypeId()
+            print "with type {0}, {1}".format(config.types[tid].GetFullString(),config.types[tid].GetString())
+            newclass=config.types[tid].GetFullString()
+            ancestors.append(newclass)
+            newlist.append(newclass)
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:

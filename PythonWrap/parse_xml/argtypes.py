@@ -23,6 +23,7 @@ class ArgTypeBase:
     return self._type
 
   def GetRealType(self):
+    #print "ArgTypeBase::GetRealType()"
     return self._type
     
   def SetName(self,n):
@@ -48,6 +49,9 @@ class ArgTypeBase:
 
   def SetRefTypeId(self,t):
     self._reftypeid=t
+  
+  def GetRefTypeId(self):
+    return self._reftypeid
 
   def GetFullString(self):
     return self.GetDemangled()
@@ -56,6 +60,7 @@ class ArgTypeBase:
     return self._id
 
   def GetString(self):
+    #print "ArgTypeBase::GetString()"
     return self._name
     
   def IsConst(self):
@@ -134,12 +139,17 @@ class TypedefInfo(ArgTypeBase):
     self._type="Typedef"
     
   def GetRealType(self):
+    print "TypedefInfo::GetRealType()"
     if (self._name not in config.available_classes) and (self._reftypeid in config.types.keys()):
       return config.types[self._reftypeid].GetType()
     else:
       return self.GetType()
 
   def GetString(self):
+    # deal with typedef inside a class ...
+    if self._context != None:
+      if self._context in config.types.keys() and self._context!="_1":
+        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
     if self._reftypeid in config.types.keys():
       #print config.types[self._reftypeid].GetString()
       # if member typedef (or function), keep the typedef name
@@ -150,6 +160,7 @@ class TypedefInfo(ArgTypeBase):
     else:
       typename=self._reftypeid
     return typename
+
 
   def GetFullString(self):
     if self._reftypeid in config.types.keys():
@@ -366,3 +377,4 @@ class PointerTypeInfo(ArgTypeBase):
       return config.types[self._reftypeid].GetMainTypeId()
     else:
       return self.GetId()
+

@@ -158,6 +158,12 @@ class FindTypesAndVariables(handler.ContentHandler):
     self.argtype.SetId(id)
     config.types[id] = self.argtype
 
+    # Store typedefs
+    if name=="Typedef":
+      name = attrs.get('name', None)
+      config.typedefs[name]=id
+      #print "Added typedef {0} {1} {2}".format(name,id,self.argtype.GetRealType())
+    
     typeid = attrs.get('type',None)
     if (typeid!=None):
       self.argtype.SetRefTypeId(typeid)

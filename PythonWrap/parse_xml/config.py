@@ -7,6 +7,7 @@ import string
 # global dictionary of argument types
 types      = dict()
 classes    = dict()
+typedefs   = dict()
 variables  = dict()
 enumvalues = dict()
 files      = dict()
