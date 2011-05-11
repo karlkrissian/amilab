@@ -105,6 +105,8 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
 
     ADD_CLASS_METHOD(SetIntensityRange, "Sets the lower and upper limits of the intensity look-up table.");
 
+    ADD_CLASS_METHOD(SetRGBTransform, "Sets a RGB transformation for visualization of color images");
+
     void AddMethods(WrapClass<DessinImage>::ptr this_ptr )
     {
       // Add members from wxWindow
@@ -154,6 +156,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
       AddVar_getimage(              this_ptr);
       AddVar_DrawLineZ(             this_ptr);
       AddVar_SetIntensityRange(     this_ptr);
+      AddVar_SetRGBTransform(       this_ptr);
     };
 };
 

@@ -27,6 +27,8 @@
 #include "MainFrame.h"
 #include "CallBackAMIFunction.h"
 
+#include "wrap_RGBTransformBase.h"
+
 extern yyip::Driver GB_driver;
 extern MainFrame* GB_main_wxFrame;
 
@@ -1293,5 +1295,31 @@ BasicVariable::ptr WrapClass_DessinImage::
   di->SetIntensityRange(Imin,Imax);
   return BasicVariable::ptr();
 }
+
+//---------------------------------------------------
+//  SetRGBTransform
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_SetRGBTransform::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(RGBTransformBase, "RGB transform for color images.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_SetRGBTransform::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  int n=0;
+  if (p->GetNumParam()==0) 
+  {
+    // reset
+    di->SetRGBTransform(RGBTransformBase::ptr());
+  } else {
+    CLASS_GET_OBJECT_PARAM(RGBTransformBase,vartransf,transf);
+    di->SetRGBTransform(transf);
+  }
+  return BasicVariable::ptr();
+}
+
 
 

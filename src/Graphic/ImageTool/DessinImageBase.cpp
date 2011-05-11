@@ -2161,18 +2161,28 @@ void DessinImageBase::DrawSlice( int slice_id )
     {
       px1=px+nvsx; // add epsilon ??
 
-      Si (image_format != WT_RGB)&&
-         (image_format != WT_RGBA)
-      Alors
+      if ((image_format != WT_RGB)&&
+         (image_format != WT_RGBA))
+      {
         couleur = colors[ LookUpTable(image->ValeurBuffer(component),
                           image_format) ];
-      Sinon
-        couleur = ClasseCouleur(
-        (unsigned char) image->VectValeurBuffer(0),
-        (unsigned char) image->VectValeurBuffer(1),
-        (unsigned char) image->VectValeurBuffer(2)
-                               );
-      FinSi
+      } else {
+        
+        if (_rgbtransform.get()) {
+          unsigned char r =  (unsigned char) image->VectValeurBuffer(0);
+          unsigned char g =  (unsigned char) image->VectValeurBuffer(1);
+          unsigned char b =  (unsigned char) image->VectValeurBuffer(2);
+          unsigned char r1,g1,b1;
+          _rgbtransform->Apply(r,g,b,r1,g1,b1);
+          couleur = ClasseCouleur(r1,g1,b1);
+        } else {
+          couleur = ClasseCouleur(
+          (unsigned char) image->VectValeurBuffer(0),
+          (unsigned char) image->VectValeurBuffer(1),
+          (unsigned char) image->VectValeurBuffer(2)
+                                );
+        }
+      }
 
       if (pointlevel) {
 

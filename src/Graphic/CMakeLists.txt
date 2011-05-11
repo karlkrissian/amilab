@@ -72,6 +72,8 @@ SET(Graphic_HDRS
     include/ImageDraw_VoxelSizeParam.h
     include/ImageDraw_InfoParam.h
     include/ImageDraw_CoupesXYParam.h
+    include/RGBTransformBase.h
+    include/RGBTransformComponent.h
 
     # from OpenGL
     include/Viewer3D_BackgroundParam.h

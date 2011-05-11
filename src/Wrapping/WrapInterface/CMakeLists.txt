@@ -28,6 +28,9 @@ SET(  WrapInterface_SRCS
   wrap_dwPoint2D.cpp
   wrap_dwCurve.cpp
   wrap_dwControlledCurve.cpp
+  wrap_RGBTransformBase.cpp
+  # PDI add the new class here
+  wrap_RGBTransformComponent.cpp
 )
 
 SET(WrapInterface_HDRS
@@ -42,6 +45,9 @@ SET(WrapInterface_HDRS
   ../include/wrap_dwPoint2D.h
   ../include/wrap_dwCurve.h
   ../include/wrap_dwControlledCurve.h
+  ../include/wrap_RGBTransformBase.h
+  # PDI add the new class here
+  ../include/wrap_RGBTransformComponent.h
 )
 
 SET(WrapInterface_SRCS

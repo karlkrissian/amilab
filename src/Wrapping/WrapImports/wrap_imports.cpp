@@ -57,6 +57,9 @@
 #include "wrap_dwCurve.h"
 #include "wrap_dwControlledCurve.h"
 
+// PDI: add your class here
+#include "wrap_RGBTransformComponent.h"
+
 #include "wrap_stdvector.h"
 
 extern VarContexts  Vars;
@@ -155,6 +158,9 @@ void AddWrapAmilab()
   WrapClass_dwControlPoint   ::AddVar_dwControlPoint(    amiobject->GetContext());
   WrapClass_dwCurve          ::AddVar_dwCurve(           amiobject->GetContext());
   WrapClass_dwControlledCurve::AddVar_dwControlledCurve( amiobject->GetContext());
+
+  // PDI: add your class here
+  WrapClass_RGBTransformComponent::AddVar_RGBTransformComponent( amiobject->GetContext());
 
   // 3. add the variables to this instance
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
