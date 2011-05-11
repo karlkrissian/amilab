@@ -182,7 +182,7 @@ protected:
 //  GLXDrawable             _drawable;
 //  GLXContext              _context;
 
-  ami_wxGLCanvas*             _wxGL_canvas;
+  boost::weak_ptr<ami_wxGLCanvas>      _wxGL_canvas;
 
 public:
 
@@ -218,7 +218,7 @@ public:
     _ownmaterial   = true;
     _enable_light  = true;
 
-    _wxGL_canvas   = NULL;
+//    _wxGL_canvas   = NULL;
 //    _glx_display   = NULL;
 //    _context       = NULL;
   }
@@ -237,12 +237,7 @@ public:
     }
   }
 
-  void SetwxGLCanvas( ami_wxGLCanvas* wxglc ) 
-  {
-    _wxGL_canvas = wxglc;
-//    _glx_display = NULL;
-//    _context     = NULL;
-  }
+  void SetwxGLCanvas( boost::shared_ptr<ami_wxGLCanvas> wxglc );
 
   int  MakeContextCurrent();
 

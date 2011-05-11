@@ -52,6 +52,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   #
   SET(WRAPWX_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated)
   CreateDirectory( ${WRAPWX_OUTDIR})
+  IF(GENERATE_HTML_HELP)
+    SET(CLASSES_URL_LIST "http://docs.wxwidgets.org/stable/")
+    SET(HTML_DIR "${WRAPWX_OUTDIR}/html")
+    CreateDirectory( ${HTML_DIR} )
+  ENDIF(GENERATE_HTML_HELP)
 
   SET(XML_OUTPUT "${WRAPWX_OUTDIR}/wx_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/wx_includes.h")
@@ -63,7 +68,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   MESSAGE("COMMAND: ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}")
   EXECUTE_PROCESS(
     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
+    OUTPUT_VARIABLE gccxml_result
+    ERROR_VARIABLE gccxml_error
   )
+  MESSAGE(" gccxml_result = ${gccxml_result} ")
+  MESSAGE(" gccxml_error = ${gccxml_error} ")
 
   # Generate the classes list
 
@@ -75,12 +84,21 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
-  MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
-  EXECUTE_PROCESS(
-    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
-    OUTPUT_VARIABLE ancestors_result
-    ERROR_VARIABLE ancestors_error
-  )
+  IF(GENERATE_HTML_HELP)
+    MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --libname wx --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q")
+    EXECUTE_PROCESS(
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --libname wx --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
+      OUTPUT_VARIABLE ancestors_result
+      ERROR_VARIABLE ancestors_error
+    )
+  ELSE(GENERATE_HTML_HELP)
+    MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
+    EXECUTE_PROCESS(
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
+      OUTPUT_VARIABLE ancestors_result
+      ERROR_VARIABLE ancestors_error
+    )
+  ENDIF(GENERATE_HTML_HELP)
   MESSAGE(" ancestors_result = ${ancestors_result} ")
   MESSAGE(" ancestors_error = ${ancestors_error} ")
 
@@ -127,32 +145,59 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
       (${NB_MISSING_METHODS} GREATER 0) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
-    FOREACH( class ${MISSING_CLASSES})
-      SET(MISSING_CLASSES_STRINGLIST ${MISSING_CLASSES_STRINGLIST} \"${class}\")
-    ENDFOREACH( class ${MISSING_CLASSES})
-    FOREACH( class ${ancestors_list})
-      SET(ANCESTORS_STRINGLIST ${ANCESTORS_STRINGLIST} \"${class}\")
-    ENDFOREACH( class ${ancestors_list})
+#     FOREACH( class ${MISSING_CLASSES})
+#       SET(MISSING_CLASSES_STRINGLIST ${MISSING_CLASSES_STRINGLIST} \"${class}\")
+#     ENDFOREACH( class ${MISSING_CLASSES})
+#     FOREACH( class ${ancestors_list})
+#       SET(ANCESTORS_STRINGLIST ${ANCESTORS_STRINGLIST} \"${class}\")
+#     ENDFOREACH( class ${ancestors_list})
     # Go for python wrapping
-    ADD_CUSTOM_COMMAND(
-        OUTPUT ${OUTPUT_LIST}  ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
-        COMMAND
-          ${PYTHON_EXECUTABLE}
-            ${AMI_WRAPPER} ${XML_OUTPUT}
-            --libname wx
-            --filter "wx*"
-            --classes ${MISSING_CLASSES_STRINGLIST}
-            --methodpointers ${MISSING_METHODS}
-            --available_classes ${ANCESTORS_STRINGLIST} ${methodpointers_list}
-            --outputdir "${WRAPWX_OUTDIR}"
-            --addwrap
-            --profile
-            --templates
-            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-            -q
-        #DEPENDS
-        #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-    )
+    IF(GENERATE_HTML_HELP)
+      ADD_CUSTOM_COMMAND(
+          OUTPUT ${OUTPUT_LIST}  ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
+          COMMAND
+            ${PYTHON_EXECUTABLE}
+              ${AMI_WRAPPER} ${XML_OUTPUT}
+              --libname wx
+              --filter "wx*"
+              --classes ${MISSING_CLASSES}
+              --methodpointers ${MISSING_METHODS}
+              --available_classes ${ancestors_list} ${methodpointers_list}
+              --outputdir "${WRAPWX_OUTDIR}"
+              --addwrap
+              --profile
+              --templates
+              --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+              --generate-html             #flag to generate html help
+              --url ${CLASSES_URL_LIST}   #base URL html help
+              --outputhtmldir ${HTML_DIR} #HTML directory
+              -q
+          #DEPENDS
+          #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+          VERBATIM
+      )
+    ELSE(GENERATE_HTML_HELP)
+      ADD_CUSTOM_COMMAND(
+          OUTPUT ${OUTPUT_LIST}  ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
+          COMMAND
+            ${PYTHON_EXECUTABLE}
+              ${AMI_WRAPPER} ${XML_OUTPUT}
+              --libname wx
+              --filter "wx*"
+              --classes ${MISSING_CLASSES}
+              --methodpointers ${MISSING_METHODS}
+              --available_classes ${ancestors_list} ${methodpointers_list}
+              --outputdir "${WRAPWX_OUTDIR}"
+              --addwrap
+              --profile
+              --templates
+              --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+              -q
+          #DEPENDS
+          #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+          VERBATIM
+      )
+    ENDIF(GENERATE_HTML_HELP)
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR
         (${NB_MISSING_METHODS} GREATER 0) OR
         (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
@@ -201,6 +246,8 @@ ENDIF(AMI_USE_PRECOMP_HEADERS)
 SET(WrapWxWidgets_HDRS
   ../include/wrap_wxsamples.h
   ../include/wrap_wxfunctions.h
+  ${AMI_WXWIDGETS_VERSION}/wxAmiEventHandler.h
+  ${AMI_WXWIDGETS_VERSION}/wx_includes.h
   ${wx_HDRS}
 )
 

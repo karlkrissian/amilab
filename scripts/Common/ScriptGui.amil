@@ -29,6 +29,13 @@ if (!exists(ScriptGui)) \
     # TODO: Create the link to the documentation
 
 
+    #------------------------------------
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
+    }
+    Comments( ::SetParentPanel, "Sets the panel showing the user interface.")
+    
     #----------------------------
     # Closes only the object instance
     #
@@ -85,7 +92,7 @@ if (!exists(ScriptGui)) \
     {
       size = 16
       bmp = wx.wxBitmap(&icon_im.Scale(size,size))
-      eval "win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
+      eval "::%1%_but_id = win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
     }
 
     #------------------------------------
@@ -94,12 +101,14 @@ if (!exists(ScriptGui)) \
       win.BeginHorizontal()
         ::AddBitmapButton16(&win, &::icons._Edit_page, "EditScript")
         win.SetPositionProp(-1,2)
-        ::AddBitmapButton16(&win, &::icons._Refresh, "ReloadScript")
-        win.SetPositionProp(-1,2)
-        ::AddBitmapButton16(&win, &::icons._Close,   "Close")
-        win.SetPositionProp(-1,2)
-        ::AddBitmapButton16(&win, &::icons._Delete,  "CloseAll")
-        win.SetPositionProp(-1,2)
+        if (!exists(::parent_panel)) {
+          ::AddBitmapButton16(&win, &::icons._Refresh, "ReloadScript")
+          win.SetPositionProp(-1,2)
+          ::AddBitmapButton16(&win, &::icons._Close,   "Close")
+          win.SetPositionProp(-1,2)
+          ::AddBitmapButton16(&win, &::icons._Delete,  "CloseAll")
+          win.SetPositionProp(-1,2)
+        }
       win.EndHorizontal()  
     }
 

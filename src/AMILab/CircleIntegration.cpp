@@ -69,7 +69,7 @@ InrImage* Func_2DFlux( InrImage* vectors, float radius)
 
 InrImage*    Func_CircleIntegration( InrImage* grad, InrImage* vep0, 
                      InrImage* vep1, float radius,
-                     int type,
+                     CalculRepCercle::CircleResponseType type,
                      InrImage* mask)
 {
 
@@ -113,7 +113,7 @@ InrImage*    Func_CircleIntegration( InrImage* grad, InrImage* vep0,
            vep1->VectValeurBuffer(2));
 
       rep->CalculReponses(x,y,z,v0,v1, 1);
-      out->FixeValeur(rep->Reponse(type));
+      out->FixeValeur(rep->Reponse());
 
     FinSi
 
@@ -143,7 +143,7 @@ InrImage*    Func_CircleIntSdExc( InrImage* grad, InrImage* vep0,
                   float th_exc,
                   int pairs_mode,
                   int highest_percentage,
-                  int mode )
+                  CalculRepCercle::CircleResponseType mode )
 {
     int              x,y,z;
     CalculRepCercle* rep;
@@ -188,7 +188,7 @@ InrImage*    Func_CircleIntSdExc( InrImage* grad, InrImage* vep0,
            vep1->VectValeurBuffer(2));
 
       rep->CalculReponses(x,y,z,v0,v1, 1);
-      out->FixeValeur(rep->Reponse(mode));
+      out->FixeValeur(rep->Reponse());
 
     FinSi
 

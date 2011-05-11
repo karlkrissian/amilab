@@ -119,6 +119,14 @@ class wxDirnameParameter : public wxBoxSizer, public wxGenericWidget
 
   void Update();
 
+  void EnableWidget(bool enable = true)
+  {
+    _label->Enable(enable);
+    _dir_ctrl->Enable(enable);
+    _enabled = enable;
+  }
+
+  
 }; // wxDirnameParameter
 
 

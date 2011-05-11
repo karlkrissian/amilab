@@ -16,6 +16,7 @@ wxAuiToolBar
 wxAuiToolBarArt
 wxAuiToolBarItem
 wxAuiToolBarItemArray
+wxArrayString
 wxBitmap
 wxBitmapButton
 wxBitmapHandler
@@ -90,6 +91,8 @@ wxKeyEvent
 wxLayoutConstraints
 wxList
 wxListCtrl
+wxListItem
+wxListEvent
 wxListKey
 wxLongLongNative
 wxMBConv
@@ -152,3 +155,5 @@ wxWritableCharBuffer
 wxWritableWCharBuffer
 wxwxMenuItemListNode
 wxwxSizerItemListNode
+wxSplitterWindow
+

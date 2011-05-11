@@ -64,25 +64,26 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
     ADD_CLASS_METHOD(SelectPage,       "Select the given page in the notebook.");
     
     
-    ADD_CLASS_METHOD(AddFloat,          "Adds a Float parameter.");
-    ADD_CLASS_METHOD(FloatConstraints,  "Sets the limits of the parameter.");
-    ADD_CLASS_METHOD(AddInt,            "Adds an Integer parameter.");
-    ADD_CLASS_METHOD(IntegerConstraints,"Sets the limits of the parameter.");
-    ADD_CLASS_METHOD(AddEnum,          "Adds an integer variable as an enumeration to the parameter window.");
-    ADD_CLASS_METHOD(AddEnumChoice,    "Adds a choice for an enumeration created in the parameter window.");
-    ADD_CLASS_METHOD(AddLabel,         "Adds a label display.");
-    ADD_CLASS_METHOD(SetLabelValue,    "Changes a label display string.");
-    ADD_CLASS_METHOD(AddFilename,      "Adds a filename selection.");
-    ADD_CLASS_METHOD(AddDirname,       "Adds a directory selection.");
-    ADD_CLASS_METHOD(AddString,        "Adds a string selection.");
-    ADD_CLASS_METHOD(AddImageChoice,   "Allows the user to choose among the current image global variables available.");
-    ADD_CLASS_METHOD(AddBoolean,       "Adds a boolean selection.");
-    ADD_CLASS_METHOD(AddButton,        "Adds a button.");
-    ADD_CLASS_METHOD(AddBitmapButton,  "Adds a bitmap button.");
-    ADD_CLASS_METHOD(AddColor,         "Adds a color parameter.");
-    ADD_CLASS_METHOD(SetCallback,      "Sets a callback on the last parameter.");
-    ADD_CLASS_METHOD(SetDragCallback,  "Activate/Desactivate the drag callback.");
-    ADD_CLASS_METHOD(EnablePanel,      "Enable/Disable a panel.");
+    ADD_CLASS_METHOD(AddFloat,           "Adds a Float parameter.");
+    ADD_CLASS_METHOD(FloatConstraints,   "Sets the limits of the parameter.");
+    ADD_CLASS_METHOD(AddInt,             "Adds an Integer parameter.");
+    ADD_CLASS_METHOD(IntegerConstraints, "Sets the limits of the parameter.");
+    ADD_CLASS_METHOD(AddEnum,            "Adds an integer variable as an enumeration to the parameter window.");
+    ADD_CLASS_METHOD(AddEnumChoice,      "Adds a choice for an enumeration created in the parameter window.");
+    ADD_CLASS_METHOD(AddLabel,           "Adds a label display.");
+    ADD_CLASS_METHOD(SetLabelValue,      "Changes a label display string.");
+    ADD_CLASS_METHOD(AddFilename,        "Adds a filename selection.");
+    ADD_CLASS_METHOD(AddDirname,         "Adds a directory selection.");
+    ADD_CLASS_METHOD(AddString,          "Adds a string selection.");
+    ADD_CLASS_METHOD(AddImageChoice,     "Allows the user to choose among the current image global variables available.");
+    ADD_CLASS_METHOD(AddAMIObjectChoice, "Allows the user to choose a certain AMIObject from global variables available.");
+    ADD_CLASS_METHOD(AddBoolean,         "Adds a boolean selection.");
+    ADD_CLASS_METHOD(AddButton,          "Adds a button.");
+    ADD_CLASS_METHOD(AddBitmapButton,    "Adds a bitmap button.");
+    ADD_CLASS_METHOD(AddColor,           "Adds a color parameter.");
+    ADD_CLASS_METHOD(SetCallback,        "Sets a callback on the last parameter.");
+    ADD_CLASS_METHOD(SetDragCallback,    "Activate/Desactivate the drag callback.");
+    ADD_CLASS_METHOD(EnablePanel,         "Enable/Disable a panel.");
     
     //ADD_CLASS_METHOD(EnablePanel,      "Enable/Disable a panel.");
     
@@ -96,8 +97,9 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
     ADD_CLASS_METHOD(ShowSlider,       "Show/hide the slider if there is one.");
     ADD_CLASS_METHOD(Enable,           "Enable/Disable a parameter.");
 
-    ADD_CLASS_METHOD(CurrentParent,    "Get the wxWindow that contains the current parameters.");
-    ADD_CLASS_METHOD(AddWidget,         "Adds a wxWindow to the current sizer");
+    ADD_CLASS_METHOD(CurrentParent,    "Gets the wxWindow that contains the current parameters.");
+    ADD_CLASS_METHOD(GetCurrentSizer,  "Gets the wxBoxSizer that contains the current parameters.");
+    ADD_CLASS_METHOD(AddWidget,        "Adds a wxWindow to the current sizer");
 
 
     void AddMethods(WrapClass<ParamPanel>::ptr this_ptr )
@@ -132,6 +134,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
       AddVar_AddDirname(        this_ptr);
       AddVar_AddString(         this_ptr);
       AddVar_AddImageChoice(    this_ptr);
+      AddVar_AddAMIObjectChoice(this_ptr);
       AddVar_AddButton(         this_ptr);
       AddVar_AddBitmapButton(   this_ptr);
       AddVar_AddColor(          this_ptr);
@@ -150,6 +153,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
       AddVar_Enable(           this_ptr);
 
       AddVar_CurrentParent(    this_ptr);
+      AddVar_GetCurrentSizer(  this_ptr);
       AddVar_AddWidget(        this_ptr);
     }
 

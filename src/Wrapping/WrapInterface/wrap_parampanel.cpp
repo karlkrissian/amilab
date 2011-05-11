@@ -26,6 +26,7 @@
 #include "wrap_wxWindow.h"
 #include "wrap_wxNotebook.h"
 #include "wrap_wxSizerItem.h"
+#include "wrap_wxBoxSizer.h"
 
 #include "wrap_wxBitmap.h"
 #include "wrap_wxColour.h"
@@ -42,6 +43,7 @@ extern VarContexts Vars;
 
 void CB_ParamWin( void* cd );
 void CB_update_imagelist( void* imagelist_gui);
+void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 
 
 
@@ -148,6 +150,11 @@ BasicVariable::ptr WrapClass_ParamPanel::
     WrapClass<ParamPanel>::ptr obj( boost::dynamic_pointer_cast<WrapClass_ParamPanel>(object));
     if (obj.get()) {
       parent = obj->GetObj()->GetBookCtrl();
+    } else {
+      WrapClass<wxWindow>::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
+      if (obj.get()) {
+        parent = obj->GetObj().get();
+      }
     }
   }
 
@@ -854,6 +861,47 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddImageChoice::CallMember( ParamL
   RETURN_VARINT(var_id,var->Name());
 }
 
+//--------------------------------------------------
+// AddAMIObjectChoice
+//--------------------------------------------------
+void WrapClass_ParamPanel::wrap_AddAMIObjectChoice::SetParametersComments()
+{
+  ADDPARAMCOMMENT("string variable that will contain the name of the selected AMIObject");
+  ADDPARAMCOMMENT("string label: description of the AMIObject to select");
+  return_comments = "Identifier of the new widget (int variable).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_AddAMIObjectChoice::CallMember( ParamList* p)
+{
+  Variable<string>::ptr var;
+  std::string* label = NULL;
+  int  n = 0;
+  boost::shared_ptr<wxArrayString> AMIObjectlist;
+  int  var_id;
+
+  if (!get_var_param<string>(var, p, n))          ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+
+  std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
+
+  AMIObjectlist = Vars.SearchAMIObjectTypeVariables("SurfacePoly");
+  AMIObjectlist->Add(_T("Select surface image..."));
+
+  // Get list of image names
+  this->_objectptr->GetObj()->AddListChoice( &var_id,
+      var->Pointer(),
+      label->c_str(), // TODO: check param type
+      AMIObjectlist,
+      (void*)CB_update_AMIObjectlist, // TODO: check declaration
+      EnumOptionMenu,
+      tooltip,
+      true // allowing drop
+                              );
+
+  // create integer variable to return
+  RETURN_VARINT(var_id,var->Name());
+}
+
 
 //--------------------------------------------------
 // AddBoolean
@@ -1203,6 +1251,30 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_CurrentParent::CallMember( ParamLi
 
   // Create the AMIObject with its methods
   return WrapClass<wxWindow>::CreateVar(new WrapClass_wxWindow(wxw_ptr));
+
+}
+
+
+//--------------------------------------------------
+// GetCurrentSizer
+//--------------------------------------------------
+void WrapClass_ParamPanel::wrap_GetCurrentSizer::SetParametersComments()
+{
+  return_comments = "Returns the current wxBoxSizer for new parameters ).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_ParamPanel::wrap_GetCurrentSizer::CallMember( ParamList* p)
+{
+  wxBoxSizer* bsizer = this->_objectptr->GetObj()->GetCurrentSizer();
+
+  // create the variable
+  // Smart pointer to the wxWindow
+  boost::shared_ptr<wxBoxSizer> wxw_ptr(
+      bsizer,
+      wxwindow_nodeleter<wxBoxSizer>()    );
+
+  // Create the AMIObject with its methods
+  return WrapClass<wxBoxSizer>::CreateVar(new WrapClass_wxBoxSizer(wxw_ptr));
 
 }
 

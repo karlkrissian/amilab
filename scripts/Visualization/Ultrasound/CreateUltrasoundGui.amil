@@ -1,0 +1,9 @@
+
+func "CreateUltrasoundClass.amil"
+
+if (!exists(ultrasonix_obj)) {
+  CreateUltrasoundClass ultrasound_obj
+  ultrasound_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

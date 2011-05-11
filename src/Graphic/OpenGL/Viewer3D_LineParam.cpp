@@ -16,7 +16,7 @@ Viewer3D_LineParam::Viewer3D_LineParam(Viewer3D* parent): ParamPanel(parent, "Li
 //----------------------------------------------------
 void Viewer3D_LineParam::CreateParameters()
 {
-  ami_wxGLCanvas* mc = parent_class->m_canvas;
+  ami_wxGLCanvas::ptr mc = parent_class->m_canvas;
 
   //--------------------------------------------------
   //  Line Action
@@ -107,7 +107,7 @@ void Viewer3D_LineParam :: CB_lines_connect(void* cd)
 //                       ----------------
 {
     Viewer3D*    tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     SurfacePoly* points;
 
   GLObject::ptr current(mcanv->_current_globject);
@@ -126,7 +126,7 @@ void Viewer3D_LineParam :: CB_lines_new(void* cd)
 //                       ---------------
 {
     Viewer3D*    tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     SurfacePoly* points;
 
   GLObject::ptr current(mcanv->_current_globject);
@@ -173,7 +173,7 @@ void Viewer3D_LineParam :: CB_lines_remove(void* cd)
 //                       ---------------
 {
     Viewer3D*    tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     SurfacePoly* points;
 
   GLObject::ptr current(mcanv->_current_globject);
@@ -193,7 +193,7 @@ void Viewer3D_LineParam :: CB_lines_remove_non_selected(void* cd)
 //                       ----------------------------
 {
     Viewer3D*    tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     SurfacePoly* points;
 
   GLObject::ptr current(mcanv->_current_globject);
@@ -213,7 +213,7 @@ void Viewer3D_LineParam :: CB_lines_undo(void* cd)
 //                       -------------
 {
     Viewer3D*    tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     SurfacePoly* points;
 
   GLObject::ptr current(mcanv->_current_globject);

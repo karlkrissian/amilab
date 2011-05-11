@@ -41,13 +41,14 @@ def get_include_file(classname, filename):
   if classname=="wxImageList": s = "wx_includes.h"
   if classname=="wxGDIImage": s = "wx/bitmap.h"
   if classname=="wxGDIImageHandler": s = "wx/bitmap.h"
-  print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)
-  s = '#include "{0}"'.format(s)
+  #print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)
+  s1 = '#include "{0}"'.format(s)
+  #print "s1 = ",s1
   if classname=="wxScopedCharTypeBuffer<char>":
-    s = '#include <wx/wx.h>\n'+s
+    s1 = '#include <wx/wx.h>\n'+s
   if classname=="wxFormatString":
-    s = '#include <wx/string.h>\n'+s
-  return s
+    s1 = '#include <wx/string.h>\n'+s
+  return s1
  
 def get_var_filter():
   return "wx*"
@@ -55,3 +56,6 @@ def get_var_filter():
 def wrap_public_fields(classname):
   # only wrap public fields for wxPoint
   return classname=="wxPoint"
+
+def implement_deleter(classname):
+  return ", smartpointer_nodeleter<{0} >()".format(classname)

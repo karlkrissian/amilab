@@ -243,6 +243,7 @@ if (!exists(vtkIsoSurfaceClass)) {
     {
       if (!exists(::renderer)) {
         ::StartNew()
+        ::renwin_interact.Render()
       } else {
         vol1_isosurf = isosurf(::input,::vol1_threshold)
         if exists(::vol1_polydata) {
@@ -255,6 +256,7 @@ if (!exists(vtkIsoSurfaceClass)) {
           ::vol1_mapper = vtk.vtkPolyDataMapper.New()
         }
         ::vol1_mapper.SetInput(&::vol1_polydata)
+        ::renderer.ResetCamera()
         ::renwin.Render()
         ::renwin_interact.Render()
       }
@@ -319,8 +321,8 @@ if (!exists(vtkIsoSurfaceClass)) {
       mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
-      sbox = wx.wxStaticBox(&::panel,-1,"VTK-based isosurface visualization.")
-      ::sbox_sizer = wx.wxStaticBoxSizer(&sbox,wx.wxVERTICAL)
+      #sbox = wx.wxStaticBox(&::panel,-1,"VTK-based isosurface visualization.")
+      ::sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel.SetSizer(&::sbox_sizer)
       # create widget here
 

@@ -48,8 +48,8 @@ ${IMPLEMENT_TYPE}
 Variable<AMIObject>::ptr WrapClass_${TEMPLATENAME}::CreateVar( ${TEMPLATE}* sp)
 {
   boost::shared_ptr<${TEMPLATE} > di_ptr(
-    sp,
-    wxwindow_nodeleter<${TEMPLATE} >()); // deletion will be done by wxwidgets;
+    sp 
+    ${IMPLEMENT_DELETER});
   Variable<AMIObject>::ptr res = 
     WrapClass<${TEMPLATE} >::CreateVar(
       new WrapClass_${TEMPLATENAME}(di_ptr)
@@ -65,8 +65,6 @@ void WrapClass_${TEMPLATENAME}::AddMethods(WrapClass<${TEMPLATE} >::ptr this_ptr
 
   ${AddPublicFields}
 
-  ${AddPublicEnums}
-
   ${METHODS_BASES}
 };
 
@@ -81,6 +79,8 @@ void WrapClass${TEMPLATENAME}_AddStaticMethods( Variables::ptr& context)
   amiobject->SetName("${TEMPLATESHORTNAME}");
   ${AddVar_constructor}
   ${AddVar_static_methods}
+  ${AddPublicEnums}
+
   //  add it to the given context
   context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   

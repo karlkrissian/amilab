@@ -1,0 +1,16 @@
+
+
+#
+# Simply call the amilab 'show' command to display the image with amilab
+#
+
+if (argc!=1) {
+  InfoDialog "This filter need 1 argument"
+  quit
+}
+
+ami.MainFrame.Hide()
+inputname=$1
+
+i = Image(inputname)
+show i

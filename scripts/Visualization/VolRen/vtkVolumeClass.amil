@@ -112,13 +112,26 @@ if (!exists(vtkVolumeClass)) {
         ::property.SetInterpolationTypeToLinear()
  
         #printn "CreateVTK 2"
+
+        import_vtk
         ::vol       = vtk.vtkVolume.New()
         # don't put the boxwidget for the moment
         # convert input to vtkimage
-        ::vtkinput  = global::ToVtkImageData(&input_image)
+        ::vtkinput  = ToVtkImageData(&input_image)
         ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
 
         #::volmapper.SetSampleDistance()
+
+        # Temporary code: BEGIN
+        # It solves temporarily the problem of OpenGL's initialization.
+        #InfoDialog "Force get OpenGL current context"
+        ::renwin.MakeCurrent()
+        
+        cap = ::renwin.ReportCapabilities()
+        if (wx.wxString(cap).Find("version")==-1) {
+          InfoDialog "Capabilities %1%" % ::renwin.ReportCapabilities()
+        }
+        # Temporary code: END
 
         # Check if the rendering is supported
         supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
@@ -138,7 +151,8 @@ if (!exists(vtkVolumeClass)) {
 
           # don't put the boxwidget for the moment
           # convert input to vtkimage
-          ::vtkinput  = global::ToVtkImageData(&input_image)
+          import_vtk
+          ::vtkinput  = ToVtkImageData(&input_image)
 
           #supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
           #if (!supported) {
@@ -147,10 +161,13 @@ if (!exists(vtkVolumeClass)) {
 
         } else {
           # update GPU information
-          ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
+          ::maxmemory = 512
+//::volmapper.GetMaxMemoryInBytes()/(1024*1024)
           ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
-          ::win.Update(-1)
+          ::OnTextureMemory()
+          #::win.Update(-1)
         }
+        ::win.SetLabelValue(::volmapper_classname_id,::volmapper.GetClassName())
         ::volmapper.SetInput(&::vtkinput)
 
         # connect up the volume to the property and the mapper
@@ -397,27 +414,51 @@ if (!exists(vtkVolumeClass)) {
         #Fat   -50 - -100
         #Air   -1000
 
+        # default intensity values
+        px1 = 1080
+        px3 = 1130
+        px4 = 1390
+        px2 = 1100
+        o1 = 0
+        o2 = 0.005
+        o3 = 0.08
+        o4 = 0.5
+        imin = ::imhisto1.minval
+        imax = ::imhisto1.maxval
+        if  (imin>px1)||(imax<px1)||(imin>px2)||(imax<px2) \
+        { 
+          # set position within intensity range
+          px1 = imin+(imax-imin)*0.4
+          px2 = imin+(imax-imin)*0.5
+          px3 = imin+(imax-imin)*0.6
+          px4 = imin+(imax-imin)*0.9
+          o1 = 0
+          o2 = 0.3
+          o3 = 0.4
+          o4 = 0.9
+        }
+
         # Create the curve
         curve = ami.dwControlledCurve()
 
         # black point
-        cp0 = ami.dwControlPoint(1080,0)
+        cp0 = ami.dwControlPoint(px1,o1*hmax)
         cp0.SetYLocked(1)
         cp0.SetColour(wx.wxColour(0,0,0))
         curve.GetControlPoints().push_back(&cp0)
 
         # red point
-        cp1 = ami.dwControlPoint(1100,0.005*hmax)
+        cp1 = ami.dwControlPoint(px2,o2*hmax)
         cp1.SetColour(wx.wxColour(255,0,0))
         curve.GetControlPoints().push_back(&cp1)
 
         # yellow point
-        cp2 = ami.dwControlPoint(1130,0.08*hmax)
+        cp2 = ami.dwControlPoint(px3,o3*hmax)
         cp2.SetColour(wx.wxColour(255,255,0))
         curve.GetControlPoints().push_back(&cp2)
 
         # white point
-        cp3 = ami.dwControlPoint(1390,0.5*hmax)
+        cp3 = ami.dwControlPoint(px4,o4*hmax)
         cp3.SetColour(wx.wxColour(255,255,255))
         curve.GetControlPoints().push_back(&cp3)
 
@@ -536,22 +577,24 @@ printn "point number %1%" %n
                           ctf.GetBlueValue( xpos)*250 )
         }
         # position curves in ColorMap window of ::imhisto1
-        curves = ::imhisto1.cm.GetCurves()
-        numcurves = curves.size()
-        
-        if (!exists(::red_id)) {
-          ::red_id   = numcurves
-          ::green_id = numcurves+1
-          ::blue_id  = numcurves+2
+        if(exists( ::imhisto1->cm)){
+          curves = ::imhisto1.cm.GetCurves()
+          numcurves = curves.size()
+          
+          if (!exists(::red_id)) {
+            ::red_id   = numcurves
+            ::green_id = numcurves+1
+            ::blue_id  = numcurves+2
+          }
+
+          ::imhisto1.cm.SetCurve(::ctf_color[0],::red_id)
+          ::imhisto1.cm.SetCurve(::ctf_color[1],::green_id)
+          ::imhisto1.cm.SetCurve(::ctf_color[2],::blue_id)
+
+          ::imhisto1.cm.SetCurveProperties(::red_id,  "#FF0000")
+          ::imhisto1.cm.SetCurveProperties(::green_id,"#00FF00")
+          ::imhisto1.cm.SetCurveProperties(::blue_id, "#0000FF")
         }
-
-        ::imhisto1.cm.SetCurve(::ctf_color[0],::red_id)
-        ::imhisto1.cm.SetCurve(::ctf_color[1],::green_id)
-        ::imhisto1.cm.SetCurve(::ctf_color[2],::blue_id)
-
-        ::imhisto1.cm.SetCurveProperties(::red_id,  "#FF0000")
-        ::imhisto1.cm.SetCurveProperties(::green_id,"#00FF00")
-        ::imhisto1.cm.SetCurveProperties(::blue_id, "#0000FF")
         
       }
     }
@@ -572,21 +615,24 @@ printn "point number %1%" %n
         }
         ::ctf_color = ::ctf_color*250
         # position curves in ColorMap window of ::imhisto1
-        numcurves = ::imhisto1.cm.GetCurves().size()
-        printn numcurves
-        if (!exists(::red_id)) {
-          ::red_id   = numcurves
-          ::green_id = numcurves+1
-          ::blue_id  = numcurves+2
-        }
-        ::imhisto1.cm.SetCurve(&::ctf_color,::red_id)
-        ::imhisto1.cm.SetCurve(&::ctf_color,::green_id)
-        ::imhisto1.cm.SetCurve(&::ctf_color,::blue_id)
-
-        ::imhisto1.cm.SetCurveProperties(::red_id,  "#606060")
-        ::imhisto1.cm.SetCurveProperties(::green_id,"#606060")
-        ::imhisto1.cm.SetCurveProperties(::blue_id, "#606060")
+        if(exists( ::imhisto1->cm)){
+          numcurves = ::imhisto1.cm.GetCurves().size()
+          printn numcurves
+          if (!exists(::red_id)) {
+            ::red_id   = numcurves
+            ::green_id = numcurves+1
+            ::blue_id  = numcurves+2
+          }
         
+          ::imhisto1.cm.SetCurve(&::ctf_color,::red_id)
+          ::imhisto1.cm.SetCurve(&::ctf_color,::green_id)
+          ::imhisto1.cm.SetCurve(&::ctf_color,::blue_id)
+
+          ::imhisto1.cm.SetCurveProperties(::red_id,  "#606060")
+          ::imhisto1.cm.SetCurveProperties(::green_id,"#606060")
+          ::imhisto1.cm.SetCurveProperties(::blue_id, "#606060")
+    
+        }
       }
     }
 
@@ -605,14 +651,16 @@ printn "point number %1%" %n
           ::otf_im.set(otf.GetValue(pos(x)))
         }
         # position curves in ColorMap window of ::imhisto1
-        numcurves = ::imhisto1.cm.GetCurves().size()
-        printn numcurves
-        if (!exists(::otf_id)) {
-          ::otf_id   = numcurves
+        if(exists( ::imhisto1->cm)){
+          numcurves = ::imhisto1.cm.GetCurves().size()
+          printn numcurves
+          if (!exists(::otf_id)) {
+            ::otf_id   = numcurves
+          }
+          ::otf_im = ::otf_im*250
+          ::imhisto1.cm.SetCurve(::otf_im,::otf_id)
+          ::imhisto1.cm.SetCurveProperties(::otf_id,  "#202020")
         }
-        ::otf_im = ::otf_im*250
-        ::imhisto1.cm.SetCurve(::otf_im,::otf_id)
-        ::imhisto1.cm.SetCurveProperties(::otf_id,  "#202020")
       }
     }
 
@@ -624,7 +672,9 @@ printn "point number %1%" %n
         ::Draw_colorFun()
       }
       ::Draw_opacityFun()
-      ::imhisto1.cm._Paint()
+      if(exists( ::imhisto1->cm)){
+        ::imhisto1.cm._Paint()
+      }
     }
 
     #----------------------------
@@ -711,19 +761,21 @@ printn "point number %1%" %n
     #----------------------------
     proc ::OnTextureMemory() \
     {
-      if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
-          (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") \
-      {
-        # update volmapper GPU settings
-        ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
-        ::volmapper.SetMaxMemoryFraction(::maxmemoryfraction)
+      if (exists(::volmapper)) {
+        if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
+            (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") \
+        {
+          # update volmapper GPU settings
+          ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
+          ::volmapper.SetMaxMemoryFraction(::maxmemoryfraction)
 
-        # update GPU information
-        ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
-        ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
-        ::win.Update(-1)
-      } else {
-        InfoDialog "Wrong volume mapper ..."
+          # update GPU information
+          ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
+          ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
+          ::win.Update(-1)
+        } else {
+          InfoDialog "Wrong volume mapper ..."
+        }
       }
     }
 
@@ -776,6 +828,7 @@ printn "point number %1%" %n
         ::win.BeginBook()
             # Adding histogram page
           ::imhisto1.SetParentPanel(&::win)
+::imhisto1.SetConf(2,0)
           ::imhisto1.Gui()
           ::win.AddPage("Hist", &::imhisto1->win)
           ::CurveLoad_page = ::win.AddPage("Load")
@@ -861,6 +914,7 @@ printn "point number %1%" %n
           ::win.EndBoxPanel()
 
         ::GPU_page = ::win.AddPage("GPU")
+          ::volmapper_classname_id = ::win.AddLabel("VTK Class:","")
           ::win.BeginBoxPanel("3D texture memory")
             ::win.AddInt(&::maxmemory,"max",50,1000)
             ::win.SetCallback( &::OnTextureMemory)

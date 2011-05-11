@@ -365,7 +365,7 @@ BasicVariable::ptr Variable<unsigned char>::TryCast(
     } else
     {
       // make default conversion to double??
-      CLASS_ERROR((boost::format("No convertion available for variable %1% from 'unsigned char' to %2%") % _name % type_string).str().c_str());
+      CLASS_ERROR((boost::format("No conversion available for variable %1% from 'unsigned char' to %2%") % _name % type_string).str().c_str());
     }
   } catch (std::bad_cast &e)
   {

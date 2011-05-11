@@ -177,13 +177,13 @@
 enum
 {
     ID_MenuImage = 100,
-    ID_MenuImage_Display,
+//    ID_MenuImage_Display,
     ID_MenuImage_Reload,
-    ID_MenuImage_Compare,
+//    ID_MenuImage_Compare,
     ID_MenuImage_VoxelSize,
-    ID_MenuImage_Save,
-      ID_MenuImage_Save_param,
-      ID_MenuImage_Save_image,
+//    ID_MenuImage_Save,
+//      ID_MenuImage_Save_param,
+//      ID_MenuImage_Save_image,
     ID_MenuImage_info,
     ID_MenuImage_close,
 
@@ -960,6 +960,12 @@ public:
   //   ---------
 
   ///
+  /// Draw a circle in (x,y) coordinates  with radius r - MicronTracker Utility
+  ///
+  void DrawCircleR( int x, int y, int r);
+  //   ---------
+
+  ///
   void InitFenetre();
 
   int GetImageWidth(int i) {
@@ -1180,7 +1186,7 @@ inline unsigned char DessinImageBase::IntensiteBuffer( )
 //                                     ---------------
 {
 
-  return IntensiteBuffer( _image->ValeurBuffer());
+  return IntensiteBuffer( _image->ValeurBuffer(Param._pos._v));
 
 } // IntensiteBuffer()
 

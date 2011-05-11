@@ -78,6 +78,9 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
     ADD_CLASS_METHOD(SetZoom,                "Zooms in on an area of the image.");
     ADD_CLASS_METHOD(SetWindowSize,          "Sets the dimension of the drawing window, for either images or surfaces");
     ADD_CLASS_METHOD(drawcircle,             "Draws a circle at coordinates: X, Y and Z with a specific color.");
+    //Microntracker utility
+    ADD_CLASS_METHOD(DrawCircleR,             "Draws a circle at coordinates: X, Y with radius R.");
+    //end
     ADD_CLASS_METHOD(SetUserColormap,       "Sets color map of an image.");
     ADD_CLASS_METHOD(UpdateColormap,        "Updates the colormap value.");
     ADD_CLASS_METHOD(setGLwin,              "Associates a 3D surface viewer to this image viewer.");
@@ -131,6 +134,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
       AddVar_SetZoom(               this_ptr);
       AddVar_SetWindowSize(         this_ptr);
       AddVar_drawcircle(            this_ptr);
+      AddVar_DrawCircleR(           this_ptr); //MicronTraker
       AddVar_SetUserColormap(       this_ptr);
       AddVar_UpdateColormap(        this_ptr);
       AddVar_setGLwin(              this_ptr);

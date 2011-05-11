@@ -83,6 +83,13 @@ class wxFilenameParameter : public wxBoxSizer, public wxGenericWidget
 
   void Update();
 
+  void EnableWidget(bool enable = true)
+  {
+    _label->Enable(enable);
+    _text->Enable(enable);
+    _enabled = enable;
+  }
+
 }; // wxFilenameParameter
 
 

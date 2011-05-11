@@ -11,7 +11,7 @@ import args
 import utils
 import wrap_class
 
-typelist=('Class','Typedef','Struct','FundamentalType','CvQualifiedType','ReferenceType','PointerType','Enumeration','ArrayType','Union','MethodType')
+typelist=('Class','Typedef','Struct','FundamentalType','CvQualifiedType','ReferenceType','PointerType','Enumeration','ArrayType','Union','MethodType','Namespace')
 
 variablelist = ('Variable')
 
@@ -49,6 +49,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Name
     classname = attrs.get('name', None)
+    #print "Classname='{0}'".format(classname)
     self.argtype.SetName(classname)
     
     if classname!=None:
@@ -57,6 +58,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     
     demangled=attrs.get('demangled',None)
+    self.argtype.SetDemangled(demangled)
     
     #print classname
     #if (classname == self.search_classname)or(demangled==self.search_classname):
@@ -68,9 +70,13 @@ class FindTypesAndVariables(handler.ContentHandler):
     self.argtype.SetId(classid)
     config.types[classid] = self.argtype
     # Find id from the class name
-    config.classes[classname]=classid
+    if classname!=demangled and demangled!=None and (demangled.startswith("MT")or demangled.startswith("amilab")):
+      print "classname != demangled : {0} {1}, using the demangled name".format(classname,demangled)
+    config.classes[demangled]=classid
     
-    #print "in ", name, " ", classname, " id:",classid
+    #print "'{0}' '{1}' {2} id:{3}".format(name, classname,demangled,classid)
+    found = classname in config.classes.keys()
+    #print "found is ", found
     
     # Incomplete
     incomplete = attrs.get('incomplete', '0')
@@ -83,6 +89,11 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Abstract
     self.argtype.abstract = attrs.get('abstract', '0')
+    
+    # Set Context
+    context = attrs.get('context', None)
+    if context != None:
+      self.argtype.SetContext(context)
     
     # File id
     self.argtype.fileid = attrs.get('file', None)
@@ -150,6 +161,13 @@ class FindTypesAndVariables(handler.ContentHandler):
     typeid = attrs.get('type',None)
     if (typeid!=None):
       self.argtype.SetRefTypeId(typeid)
+
+    # Store typedefs
+    if name=="Typedef":
+      name = attrs.get('name', None)
+      config.typedefs[name]=id
+      #print "Added typedef {0} {1} {2}".format(name,id,self.argtype.GetRealType())
+    
 
     context = attrs.get('context', None)
     if context != None:

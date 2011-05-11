@@ -25,22 +25,27 @@ template<> BasicVariable::ptr Variable<AMIObject>::NewReference() const;
 /// +a
 template<> BasicVariable::ptr Variable<AMIObject>::operator +();
 
+
+/// -a
+template<> BasicVariable::ptr Variable<AMIObject>::operator -();
+
+
+*/
+
+/// prefix ++ operator *a
+template<> BasicVariable::ptr Variable<AMIObject>::operator *();
+
 /// prefix ++ operator ++a
 template<> BasicVariable::ptr Variable<AMIObject>::operator ++();
 
 /// postfix ++ operator a++
 template<> BasicVariable::ptr Variable<AMIObject>::operator ++(int);
 
-/// -a
-template<> BasicVariable::ptr Variable<AMIObject>::operator -();
-
 /// prefix -- operator --a
 template<> BasicVariable::ptr Variable<AMIObject>::operator --();
 
 /// postfix -- operator a--
 template<> BasicVariable::ptr Variable<AMIObject>::operator --(int);
-
-*/
 
 /// a+b
 template<> BasicVariable::ptr Variable<AMIObject>::operator +(const BasicVariable::ptr& b);
@@ -53,7 +58,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariabl
 /// a-=b
 template<> BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b);
 */
-/*
+
 /// a*b
 template<> BasicVariable::ptr Variable<AMIObject>::operator *(const BasicVariable::ptr& b);
 
@@ -65,6 +70,8 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator /(const BasicVariabl
 
 /// a/=b
 template<> BasicVariable::ptr Variable<AMIObject>::operator /=(const BasicVariable::ptr& b);
+
+/*
 
 /// a%b
 template<> BasicVariable::ptr Variable<AMIObject>::operator %(const BasicVariable::ptr& b);

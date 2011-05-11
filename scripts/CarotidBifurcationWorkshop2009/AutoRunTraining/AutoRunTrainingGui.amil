@@ -1,0 +1,11 @@
+
+func "AutoRunTrainingClass"
+
+#----------------------------
+if (!exists(AutoRunTraining_obj)) {
+  AutoRunTrainingClass AutoRunTraining_obj
+  AutoRunTraining_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+

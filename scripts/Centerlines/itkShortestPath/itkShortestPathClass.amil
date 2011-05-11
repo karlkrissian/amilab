@@ -209,7 +209,9 @@ if (!exists(itkShortestPathClass)) {
         if (::endx<2) { ::endx=2; }
         if (::endy<2) { ::endy=2; }
         if (::endz<2) { ::endz=2; }
-        fminit._setpos(::endx,::endy,::endz)
+        if (fminit.tz==1) { ::endz = 0; }
+        
+        fminit.setpos(::endx,::endy,::endz)
         fminit.set(-::maxcost)
       } else {
         fminit = fminit*(::endmask<=0.5)+(::endmask>=0.5)*-::maxcost
@@ -243,11 +245,6 @@ if (!exists(itkShortestPathClass)) {
                                   ::step_size,\
                                   ::maxlength,\
                                   ::delta) 
-    }
-    
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
     }
     
     #-------------------------------------------

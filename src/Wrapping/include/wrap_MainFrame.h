@@ -54,6 +54,8 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxFram
     ADD_CLASS_METHOD(GetAuiManager, "Gets the wxAuiManager");
     ADD_CLASS_METHOD(GetMainBook,   "Gets the main notebook as wxAuiNotebook");
 
+    ADD_CLASS_METHOD(GetAuiPaneInfo, "Gets ....");
+
     void AddMethods(WrapClass<MainFrame>::ptr this_ptr )
     {
       // Add members from wxFrame
@@ -65,6 +67,7 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxFram
       AddVar_AddToMenu(        this_ptr);
       AddVar_GetAuiManager(    this_ptr);
       AddVar_GetMainBook(      this_ptr);
+      AddVar_GetAuiPaneInfo(   this_ptr);
     }
 
 };

@@ -35,7 +35,7 @@ SET(Algorithms_SRCS
   ImageAddScalar.cpp
   ImageCos.cpp
   localstats.cpp
-  func_shortestpath.cpp
+  ShortestPathClass.cpp
 
   AnisoGS.cpp
   WrapOld_AnisoGS.cpp
@@ -66,6 +66,10 @@ SET(Algorithms_SRCS
 
   # files coming from previous Line directory
   reponse_cercle.cpp
+  CircleBoundaries3D.cpp
+
+  Gradient.cpp
+  Curvatures.cpp
 
   # from Contours
   CalculAireSection.cpp
@@ -98,7 +102,7 @@ SET(Algorithms_HDRS
   include/ImageAddScalar.h
   include/ImageCos.h
   include/localstats.h
-  include/func_shortestpath.h
+  include/ShortestPathClass.h
 
   include/AnisoGS.h
   include/WrapOld_AnisoGS.h
@@ -130,6 +134,10 @@ SET(Algorithms_HDRS
 
   # files coming from previous Line directory
   include/reponse_cercle.hpp
+  include/CircleBoundaries3D.h
+
+  include/Gradient.h
+  include/Curvatures.h
 
   # from Contours
   include/CalculAireSection.hpp

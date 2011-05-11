@@ -896,16 +896,16 @@ void DessinImageBase :: CreateWxMenu()
 
     // Image Menu
     menuImage = new wxMenu;
-    menuImage->Append( ID_MenuImage_Display,   GetwxStr("&Display")         );
+//    menuImage->Append( ,   GetwxStr("&Display")         );
 //    menuImage->Append( ID_MenuImage_Reload,    GetwxStr("&Reload")          );
-    menuImage->Append( ID_MenuImage_Compare,   GetwxStr("&Compare")         );
+//    menuImage->Append( ,   GetwxStr("&Compare")         );
 //    menuImage->Append( ID_MenuImage_VoxelSize, GetwxStr("&Voxel Size")      );
 
     menuImage->AppendSeparator();
-    wxMenu* save_submenu = new wxMenu;
-    save_submenu->Append(ID_MenuImage_Save_param, GetwxStr("Save Parameters"));
+//    wxMenu* save_submenu = new wxMenu;
+//    save_submenu->Append(, GetwxStr("Save Parameters"));
 //    save_submenu->Append(ID_MenuImage_Save_image, GetwxStr("Save Image"));
-    menuImage->Append( ID_MenuImage_Save,      GetwxStr("&Save"),save_submenu  );
+//    menuImage->Append( ID_MenuImage_Save,      GetwxStr("&Save"),save_submenu  );
 
 //    menuImage->AppendSeparator();
 //    menuImage->Append( ID_MenuImage_info, GetwxStr("Image &Info" )     );
@@ -1021,6 +1021,7 @@ void DessinImageBase :: CreateWxMenu()
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Interpolation \n");
 
     menuOptions->Append( ID_MenuOptions_Interpolation, GetwxStr("&Interpolation")  ,interp_submenu  );
+    menuOptions->Enable(ID_MenuOptions_Interpolation,false);
     menuOptions->AppendSeparator();
 
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Vector Field \n");
@@ -2139,6 +2140,7 @@ void DessinImageBase::DrawSlice( int slice_id )
   int   nincr_x = stepx*incr_x;
   int   maxy    = cmax_y-stepy+1; // max value in Y where we can draw using stepy
   int   maxx    = cmax_x-stepx+1; // max value in X where we can draw using stepx
+  int   component = Param._pos._v;
 
   CLASS_MESSAGE((boost::format(" vsx %1% vsy %2%") % vsx % vsy ).str().c_str());
   CLASS_MESSAGE((boost::format(" stepx %1% stepy %2%") % stepx % stepy ).str().c_str());
@@ -2163,7 +2165,7 @@ void DessinImageBase::DrawSlice( int slice_id )
       Si (image_format != WT_RGB)&&
          (image_format != WT_RGBA)
       Alors
-        couleur = colors[ LookUpTable(image->ValeurBuffer(),
+        couleur = colors[ LookUpTable(image->ValeurBuffer(component),
                           image_format) ];
       Sinon
         couleur = ClasseCouleur(
@@ -2426,8 +2428,6 @@ void DessinImageBase :: DessinePlanY( )
 void DessinImageBase :: DessinePlanX( )
 //                     ------------
 {
-
-
      register int             y,z;
      register float           py,pz;
      register float           py1,pz1;
@@ -3555,8 +3555,30 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
             (int) round(pos_y2));
 
 } // DrawLineZ()
+// -------------------------------------------------------------------------
+///
+/// Draw a circle in (x,y) coordinates  with radius r - MicronTracker Utility
+///
+void DessinImageBase :: DrawCircleR( int x, int y, int r)
+{
 
+     register float          pos_x, pos_y;
+     
 
+     //  SetLineParameters( size, style, _cap_style, _join_style);
+     
+    // TODO: check why we need +/- 0.5 and create coordinate conversion functions
+     pos_x = _tab_ximage_pos_x[IMAGE_XY] +  (x+0.5 - Param._Zoom._xmin )*_size_x;
+     pos_y = _tab_ximage_pos_y[IMAGE_XY] +  (y+0.5 - Param._Zoom._ymin )*_size_y;
+
+     
+    FixeStyleRemplissage(wxTRANSPARENT);
+     Cercle( (int) round(pos_x),
+            (int) round(pos_y),
+            (int) r);
+    FixeStyleRemplissage(PENSTYLE_SOLID);
+
+} // DrawCircleR()
 // -------------------------------------------------------------------------
 //
 void DessinImageBase :: SetCoupe( int coupe)

@@ -69,7 +69,7 @@ if (!exists(AnisoSRADClass)) {
       InfoDialog "Please select the Region of Interest (ROI)"
     }
     numit = ::T/::dt
-    ::res = AnisoLeeAdd2(::input,::dt,numit,::roi)
+    ::res = AnisoLeeAdd2(::input,::dt,numit,::roi.GetExtent)
     eval ::output_name+" <<= ::res;"
   }
   

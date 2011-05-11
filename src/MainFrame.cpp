@@ -31,7 +31,6 @@
 #include <iostream>
 #include <cstring>
 #include "myTreeCtrl.h"
-
 #include <sys/stat.h>
 #ifndef WIN32
 #include <unistd.h>
@@ -95,14 +94,25 @@ enum
 //    ID_File_ScriptsHistory,
 
     ID_View_Reset,
-
+    ID_View_Output,
+    ID_View_Param_book,
+    ID_View_Main_book,
+    ID_View_Var_book,
+    ID_View_aui_Main_bar,
+    ID_View_aui_Script_bar,
     wxID_HelpTokens,
     wxID_HelpRules,
     wxID_HelpScripts,
     wxID_HelpBack,
     wxID_HelpForward,
+    
+    ID_Help_View,
+    ID_Help_Keywords,
+    ID_Help_About,
 
     wxID_ProgressBar,
+    
+    ID_kp_textCtrl,
 };
 
 enum {
@@ -127,6 +137,8 @@ enum {
 };
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
+
+/*EVT_TEXT_ENTER*/EVT_TEXT(ID_kp_textCtrl, MainFrame::OnFindKeywords)
     EVT_MENU(ID_File_OpenImage,    MainFrame::OnFileOpenImage)
     EVT_MENU_RANGE(wxID_Images_History, wxID_Images_History+8, MainFrame::OnFileOpenImageHistory)
 
@@ -138,12 +150,24 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(ID_Quit,              MainFrame::OnQuit)
 
     EVT_MENU(ID_View_Reset,        MainFrame::OnViewReset)
-
+    EVT_MENU(ID_View_Var_book,        MainFrame::OnViewVar_book)
+    EVT_MENU(ID_View_Main_book,        MainFrame::OnViewMain_book)
+    EVT_MENU(ID_View_Output,        MainFrame::OnViewOutput)
+    EVT_MENU(ID_View_Param_book,        MainFrame::OnViewParam_book)
+    
+    EVT_MENU(ID_View_aui_Main_bar, MainFrame::OnViewMain_bar)
+    EVT_MENU(ID_View_aui_Script_bar, MainFrame::OnViewScript_bar)
+    
+    EVT_MENU(ID_Help_Keywords, MainFrame::OnHelpKeywords)
+    
+    
     EVT_CLOSE(MainFrame::OnClose)
+    
+   EVT_UPDATE_UI(wxID_ANY,MainFrame::OnUpdate)
 
 //    EVT_BUTTON(wxID_ConsoleReset, MainFrame::ConsoleReset)
-    EVT_TOOL(         wxID_ToolLoadImage, MainFrame::OnFileOpenImage)
-    EVT_TOOL(         wxID_ConsoleClear, MainFrame::ConsoleClear)
+    EVT_TOOL(wxID_ToolLoadImage, MainFrame::OnFileOpenImage)
+    EVT_TOOL(wxID_ConsoleClear, MainFrame::ConsoleClear)
 #if (wxCHECK_VERSION(2,9,0))
     EVT_TOOL_RCLICKED(wxID_ConsoleClear, MainFrame::ConsoleReset)
 #else
@@ -176,13 +200,15 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 END_EVENT_TABLE()
 
 
-static int CompareStringLen(const wxString& first, const wxString& second)
-{
-    return second.CmpNoCase(first);
-}
+//static int CompareStringLen(const wxString& first, const wxString& second)
+//{
+//    return second.CmpNoCase(first);
+//}
 
 BEGIN_EVENT_TABLE(CustomStatusBar, wxStatusBar)
   EVT_SIZE(CustomStatusBar::OnSize)
+
+
 //  EVT_IDLE(OnIdle)
 END_EVENT_TABLE()
 
@@ -197,6 +223,7 @@ CustomStatusBar::CustomStatusBar(wxWindow* parent, wxWindowID id ) : wxStatusBar
         100);
   // set the initial position of the checkbox
   Reposition();
+  
 }
 
 void CustomStatusBar::SetProgress(int val)
@@ -269,10 +296,35 @@ void MainFrame::CreateMenu()
   menuFile->Append( ID_Quit, GetwxStr("E&xit") );
 
   menuView = new wxMenu;
+  menuView2 = new wxMenu;
+  menuView3 = new wxMenu;
+  
   menuView->Append( ID_View_Reset, GetwxStr("&Reset") );
+  menuView->InsertSeparator(1);
+    
+  menuView->AppendSubMenu(menuView2, GetwxStr("&Panels"));
+  menuView->AppendSubMenu(menuView3, GetwxStr("&Menu bars"));
+    
+  menuView2->AppendCheckItem(ID_View_Main_book,  GetwxStr("&Main book"));
+  menuView2->Check(ID_View_Main_book, true);
+  menuView2->AppendCheckItem(ID_View_Var_book,  GetwxStr("&Variables tree"));
+  menuView2->Check(ID_View_Var_book, true);
+  menuView2->AppendCheckItem(ID_View_Output,  GetwxStr("&Output"));
+  menuView2->Check(ID_View_Output, true);
+  menuView2->AppendCheckItem(ID_View_Param_book,  GetwxStr("&Param book"));
+  menuView2->Check(ID_View_Param_book, false);
+  menuView3->AppendCheckItem(ID_View_aui_Main_bar,  GetwxStr("&Main toolbar"));
+  menuView3->Check(ID_View_aui_Main_bar, true);
+  
+  menuView3->AppendCheckItem(ID_View_aui_Script_bar,  GetwxStr("&Script toolbar"));
+  menuView3->Check(ID_View_aui_Script_bar, true);
+  
 
-
-
+  menuHelp = new wxMenu;
+  menuHelp->Append( ID_Help_View, GetwxStr("What's This?") );
+  menuHelp->Append( ID_Help_Keywords, GetwxStr("Keywords") );  
+  menuHelp->Append( ID_Help_About, GetwxStr("About ...") );  
+  
   menuScripts = new wxMenu;
 
 
@@ -280,8 +332,11 @@ void MainFrame::CreateMenu()
   menuBar->Append( menuFile,    GetwxStr("&File") );
   menuBar->Append( menuView,    GetwxStr("&View") );
   menuBar->Append( menuScripts, GetwxStr("&Scripts") );
-
+  //menuBar->Append( menuScripts, GetwxStr("&Scripts") );
+  //menuBar->Append( menuScripts, GetwxStr("&Scripts") );
+  menuBar->Append( menuHelp, GetwxStr("&Help") );
   SetMenuBar( menuBar );
+  
 
 
 } // CreateMenu()
@@ -412,63 +467,83 @@ MainFrame::MainFrame( const wxString& title,
                   .Right().Layer(1)
                   .MaximizeButton(true)
                   .Hide());
-
+  
+  
+  
+  
+  CreateKeywordsPanel(this); //carlos
+  m_mgr.AddPane(_keywords_panel,
+                  wxAuiPaneInfo()
+                  .Name(wxT("Keywords"))
+                  .Caption(wxT("Keywords"))
+                  .MinSize(wxSize(220,300))
+                  .BestSize(wxSize(220,300))
+                  //.Right().Layer(1)
+		  .Floatable()
+                  .MaximizeButton(false)
+                  .Hide());
+  
   /// @cond wxCHECK
 
     // create some toolbars
   #if (wxCHECK_VERSION(2,9,0)) && !WIN32 && (!__WXMAC__)
-    wxAuiToolBar* tb1 = new wxAuiToolBar(this, wxID_ANY,
+    tb1 = new wxAuiToolBar(this, ID_View_aui_Main_bar,
                         wxDefaultPosition, wxDefaultSize,
                         wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW);
+    
+    
   #else
-    wxAuiToolBar* tb1 = new wxAuiToolBar(this, wxID_ANY,
+    tb1 = new wxAuiToolBar(this, ID_View_aui_Main_bar,//wxID_ANY,
                         wxDefaultPosition, wxDefaultSize,
                         wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW);
   #endif
   /// @endcond
-    tb1->SetToolBitmapSize(wxSize(32,32));
-//    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
-//    tb1->AddSeparator();
-    ::wxInitAllImageHandlers();
-    //wxImage loadim(wxT("MRA_32_39.png"));
-    tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap(LoadImage_Icon3_xpm),
-        wxT("Load Image"));
-
-    tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
-        wxT("Update variables"));
-    tb1->AddSeparator();
-    tb1->AddTool(wxID_ConsoleClear, wxT("Clear console"), wxBitmap(gtk_clear),
-        wxT("Console: left button -> clear last command, right button-> clear all"));
-
-//   wxBitmapButton* but_clear = new wxBitmapButton(_prompt_panel,
-//           wxID_ConsoleClear,
-//           wxBitmap(gtk_clear));
-//   wxToolTip::Enable(true);
-//   but_clear->SetToolTip(GetwxStr("Clear current line"));
-    tb1->AddSeparator();
-    tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_HELP),
-        wxT("Help (load in default browser)"));
-
-    tb1->AddTool(wxID_ToolQuit, wxT("Quit"), wxArtProvider::GetBitmap(wxART_QUIT),
-        wxT("Quit AMILab"));
-
-
-//    tb1->AddTool(ID_SampleItem+3, wxT("Test"), wxArtProvider::GetBitmap(wxART_INFORMATION));
-//    tb1->AddTool(ID_SampleItem+4, wxT("Test"), wxArtProvider::GetBitmap(wxART_WARNING));
-//    tb1->AddTool(ID_SampleItem+5, wxT("Test"), wxArtProvider::GetBitmap(wxART_MISSING_IMAGE));
-//    tb1->SetCustomOverflowItems(prepend_items, append_items);
-    tb1->Realize();
-
-    // add the toolbars to the manager
-    m_mgr.AddPane(tb1, wxAuiPaneInfo().
-                  Name(wxT("tb1")).Caption(wxT("Big Toolbar")).
-                  ToolbarPane().Top().
-                  LeftDockable(false).RightDockable(false));
-
-  // tell the manager to "commit" all the changes just made
-  m_mgr.Update();
+//     tb1->SetToolBitmapSize(wxSize(32,32));
+// //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
+// //    tb1->AddSeparator();
+//     ::wxInitAllImageHandlers();
+//     //wxImage loadim(wxT("MRA_32_39.png"));
+//     //wxBitmap a(_("/Icons/png/32x32/Wait.png"),wxBITMAP_TYPE_PNG/*wxBitmap(LoadImage_Icon3_xpm)*/ );
+//     //std::cout << a.IsOk()<<endl;
+//     tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap(GB_scripts_dir+_("/Icons/png/32x32/Add.png"),wxBITMAP_TYPE_PNG/*wxBitmap(LoadImage_Icon3_xpm)*/ ),
+//         wxT("Load Image"));
+// 
+//     tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
+//         wxT("Update variables"));
+//     tb1->AddSeparator();
+//    
+//     tb1->AddTool(wxID_ConsoleClear, wxT("Clear console"), wxBitmap(gtk_clear),
+//         wxT("Console: left button -> clear last command, right button-> clear all"));
+// 
+// //   wxBitmapButton* but_clear = new wxBitmapButton(_prompt_panel,
+// //           wxID_ConsoleClear,
+// //           wxBitmap(gtk_clear));
+// //   wxToolTip::Enable(true);
+// //   but_clear->SetToolTip(GetwxStr("Clear current line"));
+//     tb1->AddSeparator();
+//     tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_HELP),
+//         wxT("Help (load in default browser)"));
+// 
+//     tb1->AddTool(wxID_ToolQuit, wxT("Quit"), wxArtProvider::GetBitmap(wxART_QUIT),
+//         wxT("Quit AMILab"));
+// 
+// 
+// //    tb1->AddTool(ID_SampleItem+3, wxT("Test"), wxArtProvider::GetBitmap(wxART_INFORMATION));
+// //    tb1->AddTool(ID_SampleItem+4, wxT("Test"), wxArtProvider::GetBitmap(wxART_WARNING));
+// //    tb1->AddTool(ID_SampleItem+5, wxT("Test"), wxArtProvider::GetBitmap(wxART_MISSING_IMAGE));
+// //    tb1->SetCustomOverflowItems(prepend_items, append_items);
+//     tb1->Realize();
+// 
+//     // add the toolbars to the manager
+//     m_mgr.AddPane(tb1, wxAuiPaneInfo().
+//                   Name(wxT("tb1")).Caption(wxT("Big Toolbar")).
+//                   ToolbarPane().Top().
+//                   LeftDockable(false).RightDockable(false));
+// 
+//   // tell the manager to "commit" all the changes just made
+//   m_mgr.Update();
 
   _initial_perspective = m_mgr.SavePerspective();
 
@@ -520,8 +595,8 @@ void MainFrame::CreateMainBook(wxWindow* parent)
   CreateSettingsPanel(this);
   _main_book->AddPage( _settings_panel , wxT("Paths") );
 
-  CreateKeywordsPanel(this);
-  _main_book->AddPage( _keywords_panel , wxT("Keywords") );
+  //Carlos CreateKeywordsPanel(this);
+  //carlos _main_book->AddPage( _keywords_panel , wxT("Keywords") );
 
 //  CreateDrawingPanel(this);
 //  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
@@ -1087,12 +1162,42 @@ void MainFrame::CreateLogText( wxWindow* parent)
 } // CreateLogText()
 
 
+//-------------------------------------------------------
+void MainFrame::OnFindKeywords( wxCommandEvent& event )
+{
+
+  wxString aux;
+  wxString text=   textCtrl->GetStringSelection();
+  wxArrayString keywords;
+  cout << text.mb_str()  <<endl;
+  //if (text.size()>0)
+  {
+    int i = 0,j=0;
+    while (token_list[i]!=0) {
+      keywords.Add(GetwxStr(token_list[i]));
+      i++;
+    }
+    keywords.Sort(); 
+
+    while(j<i)
+    {
+      aux=keywords[j].SubString(0, text.size()-1);
+      int out=aux.Cmp(text);
+      if (out==0 )
+	  break;
+      j++;
+    }
+    cout << j<< text.mb_str() << endl;
+   //m_listBox->Selection(j);
+  }
+
+}
 
 //-------------------------------------------------------
 void MainFrame::CreateKeywordsPanel( wxWindow* parent)
 //            -----------------
 {
-  // Help Panel
+ // Help Panel
   //panel->SetBackgroundColour( wxColour( GetwxStr("MAROON") ) );
   _keywords_panel = new wxPanel(parent,
                             wxID_ANY,
@@ -1103,44 +1208,37 @@ void MainFrame::CreateKeywordsPanel( wxWindow* parent)
                             );
 
 
-  wxStaticBox* keywordspanel_box = new wxStaticBox(
-          _keywords_panel,
-          wxID_ANY,
-          GetwxStr("Here we should list the functions of the program")
-          );
+  wxBoxSizer *keywordspanel_sizer= new wxBoxSizer(wxVERTICAL);
 
-  wxStaticBoxSizer* keywordspanel_sizer  = new wxStaticBoxSizer(
-          keywordspanel_box,
-          wxVERTICAL
-          );
+
   _keywords_panel->SetSizer(keywordspanel_sizer);
 
+  
+  //textCtrl = new wxTextCtrl(_keywords_panel, ID_kp_textCtrl);
   // starts a list
-  wxListCtrl* m_listCtrl = new wxListCtrl(
-          _keywords_panel,
-          wxID_ANY,
-          wxDefaultPosition,
-          wxDefaultSize,
-          wxLC_LIST | wxSUNKEN_BORDER);
+  wxListBox* m_lbox = new wxListBox(_keywords_panel, wxID_ANY,
+                           wxDefaultPosition, wxDefaultSize,
+                           0, NULL,
+                           wxLB_HSCROLL);
 
+  
+
+  
   wxArrayString keywords;
 
   int i = 0;
   while (token_list[i]!=0) {
     keywords.Add(GetwxStr(token_list[i]));
-    //m_listCtrl->InsertItem(0,token_list[i]);
     i++;
   }
 
 
-  keywords.Sort(CompareStringLen);
-  i = 0;
-  while (i<(int)keywords.Count()) {
-    m_listCtrl->InsertItem(0,keywords[i]);
-    i++;
-  }
+  keywords.Sort();
 
-  keywordspanel_sizer->Add(m_listCtrl,  1, wxEXPAND | wxALL, 5);
+  m_lbox->InsertItems(keywords,0);
+  //keywordspanel_sizer->Add(textCtrl,  0, wxEXPAND | wxALL, 5);
+  keywordspanel_sizer->Add(m_lbox,  1, wxEXPAND | wxALL, 5);
+
 
 } // CreateKeywordsPanel()
 
@@ -1934,16 +2032,86 @@ void MainFrame::SetStatusText( const std::string& text )
 //---------------------------------------------------------------
 void MainFrame::OnViewReset( wxCommandEvent& event )
 {
-  m_mgr.GetPane(_main_book).Show();
-  m_mgr.GetPane(_log_text).Show();
-  m_mgr.GetPane(_var_panel).Show();
+ // m_mgr.GetPane(_main_book).Show(); carlos
+ // m_mgr.GetPane(_log_text).Show(); carlos
+ // m_mgr.GetPane(_var_panel).Show(); carlos
 
   m_mgr.LoadPerspective(_initial_perspective);
 
 // std::cout << _param_book->GetPageCount()>0 << std::endl;
-  m_mgr.GetPane(_param_book).Show(_param_book->GetPageCount()>0);
+ // m_mgr.GetPane(_param_book).Show(_param_book->GetPageCount()>0); carlos
   m_mgr.Update();
 }
+
+//---------------------------------------------------------------
+void MainFrame::OnViewOutput( wxCommandEvent& event )
+{
+  if ( !m_mgr.GetPane(_log_text).IsShown())
+     m_mgr.GetPane(_log_text).Show(); 
+  else
+     m_mgr.GetPane(_log_text).Hide(); 
+  m_mgr.Update();
+}
+
+//---------------------------------------------------------------
+void MainFrame::OnViewVar_book( wxCommandEvent& event )
+{
+  if ( !m_mgr.GetPane(_var_book).IsShown())
+     m_mgr.GetPane(_var_book).Show(); 
+  else
+     m_mgr.GetPane(_var_book).Hide(); 
+  m_mgr.Update();
+}
+
+//---------------------------------------------------------------
+void MainFrame::OnViewMain_bar( wxCommandEvent& event )
+{
+  if ( !m_mgr.GetPane(this->tb1).IsShown())
+  {
+     m_mgr.GetPane(this->tb1).Show(); 
+  
+    m_mgr.GetPane(this->tb1).Top();
+    m_mgr.GetPane(this->tb1).Dock(); 
+  }
+  else
+     m_mgr.GetPane(this->tb1).Hide(); 
+  m_mgr.Update();
+}
+
+//---------------------------------------------------------------
+void MainFrame::OnViewMain_book( wxCommandEvent& event )
+{
+  if ( !m_mgr.GetPane(_main_book).IsShown())
+    m_mgr.GetPane(_main_book).Show(); 
+  else
+     m_mgr.GetPane(_main_book).Hide(); 
+  m_mgr.Update();
+}
+
+//---------------------------------------------------------------
+void MainFrame::OnViewParam_book( wxCommandEvent& event )
+{
+  if ( !m_mgr.GetPane(this->_param_book).IsShown())
+    m_mgr.GetPane(this->_param_book).Show(); 
+  else
+     m_mgr.GetPane(_param_book).Hide(); 
+  m_mgr.Update();
+}
+
+void MainFrame::OnViewScript_bar( wxCommandEvent& event )
+{
+  if ( !m_mgr.GetPane(_("scripts_tb")).IsShown())
+  {
+    m_mgr.GetPane(_("scripts_tb")).Show(); 
+    m_mgr.GetPane(_("scripts_tb")).Right();
+    m_mgr.GetPane(_("scripts_tb")).Dock(); 
+  }
+  else
+     m_mgr.GetPane(_("scripts_tb")).Hide(); 
+  m_mgr.Update();
+}
+
+
 
 //-----------------------------------------------------
 void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
@@ -1981,10 +2149,16 @@ bool MainFrame::TryToOpenImage( const wxString& string_filename)
   possible_name.Replace(wxT(")"),wxT("_"));
   possible_name.Replace(wxT("-"),wxT("_"));
 
+  std::string st = std::string(possible_name.mb_str());
+  if (((st[0]<'A') || (st[0]>'Z')) &&
+      ((st[0]<'a') || (st[0]>'z')) &&
+      (st[0]!='_'))
+    st = std::string("_")+st;
+
   int res=AskVarName( this,
                   string("Image variable name"),
                   string("Enter name:"),
-                  string(possible_name.mb_str(wxConvUTF8)),
+                  st,
                   varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;
@@ -2295,7 +2469,7 @@ void MainFrame::VarListRightClick( wxListEvent& event)
 void MainFrame::OnScriptsPath( wxFileDirPickerEvent& event)
 {
  std::cout << "Scripts path changed" << std::endl;
-  GB_scripts_dir = event.GetPath();
+ GB_scripts_dir = event.GetPath();
 }
 
 //--------------------------------------------------
@@ -2356,7 +2530,7 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   int menuid = menuBar->FindMenu(wxString(menu_name.c_str(),wxConvUTF8));
   if (menuid == wxNOT_FOUND) {
     wxMenu* newmenu = new wxMenu;
-    menuBar->Append(newmenu,wxString(menu_name.c_str(),wxConvUTF8));
+    menuBar->Insert(menuBar->FindMenu(_("&Help")), newmenu, wxString(menu_name.c_str(),wxConvUTF8));
     menuid = menuBar->FindMenu(wxString(menu_name.c_str(),wxConvUTF8));
   }
   if (menuid ==wxNOT_FOUND) {
@@ -2401,6 +2575,9 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   Connect(usermenu_id,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnUserMenuScript));
 
+  
+
+  
 }
 
 //--------------------------------------------------
@@ -2412,11 +2589,94 @@ void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
   string cmd; // increment the command line string
 
   
-  //wxString filename(usermenu_scripts[event.GetId()].c_str(),wxConvUTF8);
-  //scripts_history->AddFileToHistory(filename);
+  wxString filename(usermenu_scripts[event.GetId()].c_str(),wxConvUTF8);
+  scripts_history->AddFileToHistory(filename);
+
 
   cmd = (boost::format("func \"%1%\" // from menu") % usermenu_scripts[event.GetId()]).str();
   TC->ConsoleClear();
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
+  
+}
+
+
+void MainFrame::OnUpdate(wxUpdateUIEvent& event)
+{
+
+  //Check Panels Status
+  menuView2->Check(ID_View_Output, m_mgr.GetPane(_log_text).IsShown());
+  menuView2->Check(ID_View_Param_book, m_mgr.GetPane(/*_param_book*/this->_param_book).IsShown());
+  menuView2->Check(ID_View_Main_book, m_mgr.GetPane(_main_book).IsShown());
+  menuView2->Check(ID_View_Var_book, m_mgr.GetPane(_var_book).IsShown());
+  menuView3->Check(ID_View_aui_Main_bar, m_mgr.GetPane(this->tb1).IsShown());  
+  menuView3->Check(ID_View_aui_Script_bar, m_mgr.GetPane(_("scripts_tb")).IsShown());  
+ 
+ //this->Refresh(-1); //repaint gnome
+  
+}
+
+
+//--------------------------------------------------
+void MainFrame::LoadToolBar   ( )
+{
+    tb1->SetToolBitmapSize(wxSize(16,16));
+//    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
+//    tb1->AddSeparator();
+    ::wxInitAllImageHandlers();
+    //wxImage loadim(wxT("MRA_32_39.png"));
+    //wxBitmap a(_("/Icons/png/32x32/Wait.png"),wxBITMAP_TYPE_PNG/*wxBitmap(LoadImage_Icon3_xpm)*/ );
+    //std::cout << a.IsOk()<<endl;
+    ;
+
+
+    tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Open.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)), wxT("Load Image"));
+
+    tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
+        wxT("Update variables"));
+    tb1->AddSeparator();
+   
+    tb1->AddTool(wxID_ConsoleClear, wxT("Clear console"), wxBitmap(gtk_clear),
+        wxT("Console: left button -> clear last command, right button-> clear all"));
+
+//   wxBitmapButton* but_clear = new wxBitmapButton(_prompt_panel,
+//           wxID_ConsoleClear,
+//           wxBitmap(gtk_clear));
+//   wxToolTip::Enable(true);
+//   but_clear->SetToolTip(GetwxStr("Clear current line"));
+    tb1->AddSeparator();
+    tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_HELP),
+        wxT("Help (load in default browser)"));
+
+    tb1->AddTool(wxID_ToolQuit, wxT("Quit"), wxArtProvider::GetBitmap(wxART_QUIT),
+        wxT("Quit AMILab"));
+
+
+//    tb1->AddTool(ID_SampleItem+3, wxT("Test"), wxArtProvider::GetBitmap(wxART_INFORMATION));
+//    tb1->AddTool(ID_SampleItem+4, wxT("Test"), wxArtProvider::GetBitmap(wxART_WARNING));
+//    tb1->AddTool(ID_SampleItem+5, wxT("Test"), wxArtProvider::GetBitmap(wxART_MISSING_IMAGE));
+//    tb1->SetCustomOverflowItems(prepend_items, append_items);
+    tb1->Realize();
+    
+     // add the toolbars to the manager
+    m_mgr.AddPane(tb1, wxAuiPaneInfo().
+                  Name(wxT("tb1")).Caption(wxT("Big Toolbar")).
+                  ToolbarPane().Top().
+                  LeftDockable(false).RightDockable(false));
+
+  // tell the manager to "commit" all the changes just made
+  m_mgr.Update();
+}
+
+//--------------------------------------------------
+void MainFrame::OnHelpKeywords( wxCommandEvent& event )
+{
+ if ( !m_mgr.GetPane(_keywords_panel).IsShown())
+  {
+     m_mgr.GetPane(_keywords_panel).Show(); 
+  
+  }
+  else
+     m_mgr.GetPane(_keywords_panel).Hide(); 
+  m_mgr.Update();
 }

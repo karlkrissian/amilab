@@ -15,7 +15,7 @@ Viewer3D_VectorsParam::Viewer3D_VectorsParam(Viewer3D* parent): ParamPanel(paren
 
 void Viewer3D_VectorsParam::CreateParameters()
 {
-  ami_wxGLCanvas* mc = parent_class->m_canvas;
+  ami_wxGLCanvas::ptr mc = parent_class->m_canvas;
 
 
 
@@ -209,7 +209,7 @@ void Viewer3D_VectorsParam::CB_vect1_image( void* cd)
 //                          --------------
 {
    Viewer3D*  tgl = (Viewer3D*) cd;
-   ami_wxGLCanvas* glc = tgl->m_canvas;
+   ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
    InrImage::ptr  im;
 
@@ -247,7 +247,7 @@ void Viewer3D_VectorsParam :: CB_vect2_image( void* cd)
 //                       --------------
 {
    Viewer3D*  tgl = (Viewer3D*) cd;
-   ami_wxGLCanvas* glc = tgl->m_canvas;
+   ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
     InrImage::ptr  im;
 
@@ -285,7 +285,7 @@ void Viewer3D_VectorsParam::CB_recompute_allvect( void* cd )
 //                          --------------------
 {
    Viewer3D*  tgl = (Viewer3D*) cd;
-   ami_wxGLCanvas* glc = tgl->m_canvas;
+   ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
    // should be a lock with weak pointers
    GLObject::ptr current = glc->_current_globject;
@@ -307,7 +307,7 @@ void Viewer3D_VectorsParam :: CB_recompute_vect1( void* cd )
 //                       ------------------
 {
    Viewer3D*  tgl = (Viewer3D*) cd;
-   ami_wxGLCanvas* glc = tgl->m_canvas;
+   ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   GLObject::ptr current = glc->_current_globject;
   if (!current.use_count()) return;
@@ -327,7 +327,7 @@ void Viewer3D_VectorsParam :: CB_recompute_vect2( void* cd )
 //                       ------------------
 {
    Viewer3D*  tgl = (Viewer3D*) cd;
-   ami_wxGLCanvas* glc = tgl->m_canvas;
+   ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   GLObject::ptr current = glc->_current_globject;
   if (!current.use_count()) return;

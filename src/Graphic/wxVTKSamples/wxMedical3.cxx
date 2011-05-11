@@ -103,6 +103,8 @@ wxMedical3Frame::wxMedical3Frame(vtkImageData_ptr image, const wxString& title, 
 
   SetInput(image);
 
+  m_mgr.SetManagedWindow(this);
+
     // create a menu bar
     wxMenu *menuFile = new wxMenu(_T(""), wxMENU_TEAROFF);
 
@@ -126,11 +128,59 @@ wxMedical3Frame::wxMedical3Frame(vtkImageData_ptr image, const wxString& title, 
     SetStatusText(_T("Drag the mouse here! (wxWindows 2.4.0)"));
 #endif // wxUSE_STATUSBAR
 
-    m_pVTKWindow = new wxVTKRenderWindowInteractor(this, MY_VTK_WINDOW);
-    //turn on mouse grabbing if possible
-    m_pVTKWindow->UseCaptureMouseOn();
+   wxSize client_size = GetClientSize();
+
+   wxAuiNotebook*_main_book = new wxAuiNotebook(this, wxID_ANY,
+                                    wxPoint(client_size.x, client_size.y),
+                                    wxDefaultSize,
+                                    wxAUI_NB_TOP          |
+                                    #ifndef __WXGTK__ 
+                                      wxAUI_NB_TAB_SPLIT    |
+                                    #endif
+                                    wxAUI_NB_TAB_MOVE     |
+                                    wxAUI_NB_SCROLL_BUTTONS
+                                  );
+
+//   wxBitmap page_bmp = wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16));
+
+  wxPanel* _prompt_panel = new wxPanel(_main_book, wxID_ANY,
+                    wxDefaultPosition, wxDefaultSize,
+                      wxCLIP_CHILDREN
+                    |
+                      wxTAB_TRAVERSAL
+                    |
+                      wxFULL_REPAINT_ON_RESIZE
+                    // | wxNO_FULL_REPAINT_ON_RESIZE
+                    );
+
+  wxBoxSizer* sbox_sizer  = new wxBoxSizer( wxVERTICAL );
+
+  _prompt_panel->SetSizer(sbox_sizer);
+
+  _main_book->AddPage( _prompt_panel,  wxT("Console"), false );
+
+  _main_book->Fit();
+  m_mgr.AddPane(_main_book,  wxAuiPaneInfo()
+                  .Name(wxT("Main Book"))
+                  //.MinSize(wxSize(200,200))
+                  .Center()
+                  .MaximizeButton(true));
+
+  m_mgr.Update();
+
+  m_pVTKWindow = new wxVTKRenderWindowInteractor(_prompt_panel, MY_VTK_WINDOW);
+  m_pVTKWindow->UseCaptureMouseOn();
+  vtkRenderer* ren  = vtkRenderer::New();
+  m_pVTKWindow->GetRenderWindow()->AddRenderer(ren);
+  m_pVTKWindow->Enable(1);
+
+  sbox_sizer->Add(m_pVTKWindow, 1, wxEXPAND | wxALL, 2);
+//  _prompt_panel->Layout();
+
+  //turn on mouse grabbing if possible
     ConstructVTK();
     ConfigureVTK();
+
 }
 
 wxMedical3Frame::~wxMedical3Frame()

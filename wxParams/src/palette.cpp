@@ -64,6 +64,8 @@
 //extern unsigned char      GB_debug;
 //#define aff_err(a) if (GB_debug)  fprintf(stderr,a);
 
+using namespace amilab;
+
 //----------------------------------------------------------------------------
 // Defaut int num=5
 CPalette::CPalette( wxWindow* window, int num )

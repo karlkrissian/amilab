@@ -8,9 +8,9 @@ MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
 cmake_minimum_required(VERSION 2.6.4)
 
-#if(COMMAND cmake_policy)
-#  cmake_policy(SET CMP0003 NEW)
-#endif(COMMAND cmake_policy)
+#if(POLICY CMP0017) 
+#  cmake_policy(SET CMP0017 NEW)
+#endif(POLICY CMP0017)
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
@@ -309,7 +309,11 @@ IF(AMI_ENABLE_WRAPPING)
   OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" OFF)
   OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       OFF)
   OPTION(AMI_WRAP_EXAMPLES  "Enable Automatic Wrapping OF EXAMPLES"  OFF)
+  OPTION(AMI_WRAP_MICRONTRACKER "Enable Automatic Wrapping of MicronTracker library for stereo camera tracking" OFF)
+  OPTION(AMI_WRAP_ULTRASOUND "Enable Automatic Wrapping of Ultrasound library for get ultrasound images" OFF)
 ENDIF(AMI_ENABLE_WRAPPING)
+
+
 
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
 
@@ -340,6 +344,14 @@ FIND_PACKAGE ( AMIFluid )
 FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
 FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net )
+
+OPTION(GENERATE_HTML_HELP "Generate HTML file help")
+
+SET(Need_Find_GTK FALSE)
+STRING(REGEX MATCH "__WXGTK__" FindGTKLib ${wxWidgets_DEFINITIONS})
+IF(FindGTKLib)
+  SET(Need_Find_GTK TRUE)
+ENDIF(FindGTKLib)
 
 SET(AMI_WXWIDGETS_VERSION "AMI_WXWIDGETS_VERSION-NOTFOUND" )
 
@@ -394,8 +406,6 @@ SET(Boost_USE_MULTITHREAD OFF)
 #MESSAGE(  CMAKE_HOST_SYSTEM=${CMAKE_HOST_SYSTEM} )
 
 SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
-
-
 FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
 #SET(Boost_USE_STATIC_LIBS ON)
 MESSAGE( "BOOST_LIBRARIES = ${BOOST_LIBRARIES}")
@@ -569,8 +579,6 @@ INCLUDE(${wxWidgets_USE_FILE})
 INCLUDE( ${USE_ITK_FILE} )
 MESSAGE( "*** USE_ITK_FILE = ${USE_ITK_FILE}")
 
-
-
 SET(amilab_bin_SRCS 
   myDataViewModels.cpp
   myDataViewCtrl.cpp
@@ -623,6 +631,7 @@ SET(amilab_ownlibs
   WrapGLTransfMatrix
   WrapInterface
   WrapWxWidgets
+  WrapAlgorithms
   WrapBasicTypes
   WrapCommon
   WrapIO
@@ -646,6 +655,19 @@ SET(amilab_ownlibs
   wxVTK
 )
 
+IF (AMI_WRAP_MICRONTRACKER)
+  SET(amilab_ownlibs
+    ${amilab_ownlibs}
+    WrapMicronTracker
+ )
+ENDIF(AMI_WRAP_MICRONTRACKER)
+
+IF (AMI_WRAP_ULTRASOUND)
+  SET(amilab_ownlibs
+    ${amilab_ownlibs}
+    WrapUltrasound
+ )
+ENDIF(AMI_WRAP_ULTRASOUND)
 
 # Test template class
 IF(AMI_WRAP_EXAMPLES)
@@ -699,6 +721,26 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
 #  ${WX_gl}
   ${Boost_LIBRARIES}
 )
+
+IF (AMI_WRAP_MICRONTRACKER)
+  FIND_LIBRARY( MTC_LIB mtc PATHS "$ENV{ProgramFiles}/Claron Technology/MicronTracker/Dist")
+  TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
+    ${MTC_LIB}
+  )
+ENDIF(AMI_WRAP_MICRONTRACKER)
+
+IF (AMI_WRAP_ULTRASOUND)
+  FIND_LIBRARY( ULTRASOUND_LIB research PATHS "$ENV{ProgramFiles}/EcoResearch/Research_Package/lib")
+  FIND_PATH( ULTRASOUND_DIR RPCore.h PATHS "$ENV{ProgramFiles}/EcoResearch/Research_Package/include")
+ 
+  TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
+    ${ULTRASOUND_LIB}
+   # comctl32.lib
+	 # wsock32.lib
+	 # odbc32.lib
+	 # odbccp32.lib 
+  )
+ENDIF(AMI_WRAP_ULTRASOUND)
 
 # is it needed or already included by boost?
 IF(AMI_USE_ZLIB)

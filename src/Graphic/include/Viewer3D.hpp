@@ -134,7 +134,7 @@ public:
 
   virtual ~Viewer3D();
 
-  ami_wxGLCanvas *m_canvas;
+  ami_wxGLCanvas::ptr m_canvas;
 
   wxAuiManager&  GetAuiManager() {return m_mgr; };
   wxAuiNotebook* GetParamBook()  { return _param_book; }
@@ -142,7 +142,7 @@ public:
   void AddCompSurf( Viewer3D_ptr comp_surf);
 
   void CreateGLCanvas();
-  ami_wxGLCanvas* GetCanvas() { return m_canvas;}
+  ami_wxGLCanvas::ptr GetCanvas() { return m_canvas;}
 
   void SetCloseFunction( void* function, void* data )
   {

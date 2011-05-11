@@ -4,6 +4,8 @@
  */
 
 //-------------------------------------------------
+#include <wx/splash.h>
+#include "amilab_splash.xpm"
 
 // configuration information, including version number ..
 //#include "/Users/administrador/Desktop/mi_rama_AMILab/Project/AMILabConfig.h"
@@ -51,6 +53,7 @@
 
 #include <wx/apptrait.h>
 #include <wx/stdpaths.h>
+
 #include "wrap_imports.h"
 
 #include <wx/config.h>
@@ -89,151 +92,6 @@ char program[80];
 unsigned char verbose;
 
 #include "xmtext.hpp"
-
-
-DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
-{
-  if (GB_debug)
-    fprintf(stderr,"CreateIDraw(%s, image) \n", title.c_str());
-
-    DessinParam::ptr parametres;
-
-    DessinImage* di = new DessinImage(
-            GB_main_wxFrame,
-            title,
-            image,
-            parametres,
-            400,400,
-            CREATE_TOPLEVEL_SHELL);
-
-  return di;
-
-}
-
-
-//-------------------------------------------
-void CB_ParamWin(void* cd)
-{
-  AMIFunction* func_ptr = (AMIFunction*) (cd);
-  //cout << "CB_ParamWin pointer is " << func_ptr << std::endl;
-  GB_driver.yyip_call_function(func_ptr);
-} // CB_ParamWin( void* cd )
-
-//-----------------------------------------
-void CB_delete_variable( void* var)
-{
-  BasicVariable* vartodelete = (BasicVariable*) var;
-
-  FILE_MESSAGE((boost::format("deleting %1%") % vartodelete->Name()).str().c_str());
-  if (!Vars.deleteVar(vartodelete))
-    FILE_ERROR("Could not delete variable "); 
-
-}
-
-//-----------------------------------------
-void CB_delete_varlist( void* var)
-{
-  if (!var) return;
-
-  std::list<BasicVariable::wptr>* varlist = (std::list<BasicVariable::wptr>*) var;
-
-  if (varlist) {
-    // iterate over the list
-    std::list<BasicVariable::wptr>::iterator it;
-    for(it=varlist->begin(); it!=varlist->end(); it++) {
-      BasicVariable::wptr vartodelete = *it;
-      if (BasicVariable::ptr lockedvar = vartodelete.lock()) 
-      {
-        bool deleted=false;
-        FILE_MESSAGE((boost::format("Pointer counter = %1%") % lockedvar->GetPtrCounter()).str().c_str());
-        std::string name = lockedvar->Name();
-        FILE_MESSAGE((boost::format("deleting %1%") % name).str().c_str());
-        Variables::ptr context = lockedvar->GetContext();
-
-        // free lock first
-        lockedvar.reset();
-        if (context.get()) {
-          deleted = context->deleteVar(name.c_str());
-        }
-        if (!deleted)
-          FILE_ERROR((boost::format("Could not delete variable %1%") % name).str().c_str()); 
-      }
-    }
-
-    // should be safe to delete varlist if the window is now closed!!!
-    delete varlist;
-  }
-}
-
-//----------------------------------------------------------------------
-// wxWidget specific ...
-//
-class MyApp: public wxApp
-//    -----
-{
-  virtual bool OnInitGui();
-  virtual bool OnInit();
-  virtual int  OnExit();
-
-  void OnChar(wxKeyEvent& event)
-  {
-    //std::cout << "MyApp::OnChar()" << std::endl;
-    switch( event.GetKeyCode() )
-    {
-    case 'h': 
-      if (event.ControlDown()) {
-        std::cout << "should hide window" << std::endl;
-      }
-      else
-        event.Skip();
-    break;
-    case 'i': 
-      if (event.AltDown()) {
-        std::cout << "should iconize window" << std::endl;
-        GB_main_wxFrame->Iconize(!GB_main_wxFrame->IsIconized());
-      }
-      else
-        event.Skip();
-    break;
-    default:
-        event.Skip();
-        return;
-    }
-  }
-
-
-  wxConfig* GetConfig() { return config; }
-
-private:
-  //MainFrame::ptr mainframe;
-  MainFrame* mainframe;
-
-  // Global configuration file
-  wxConfig * config;
-
-private:
-  DECLARE_EVENT_TABLE();
-};
-
-
-BEGIN_EVENT_TABLE(MyApp, wxApp)
-    EVT_CHAR        ( MyApp::OnChar       )
-END_EVENT_TABLE();
-
-
-IMPLEMENT_APP(MyApp)
-
-
-// rewrite it to set the colors
-// wxwidget was recompiled ...
-// send email to wxwidgets to propose modification?
-bool MyApp::OnInitGui()
-{
-  SetClassName(GetwxStr("amilab"));
-  return wxApp::OnInitGui();
-
-}
-
 
 //-----------------------------------------
 bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookforfile = wxEmptyString)
@@ -296,11 +154,186 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
 }
 
 
+//-------------------------------------------
+
+DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
+{
+  if (GB_debug)
+    fprintf(stderr,"CreateIDraw(%s, image) \n", title.c_str());
+
+    DessinParam::ptr parametres;
+
+    DessinImage* di = new DessinImage(
+            GB_main_wxFrame,
+            title,
+            image,
+            parametres,
+            400,400,
+            CREATE_TOPLEVEL_SHELL);
+
+  return di;
+
+}
+
+
+void CB_ParamWin(void* cd)
+{
+  AMIFunction* func_ptr = (AMIFunction*) (cd);
+  //cout << "CB_ParamWin pointer is " << func_ptr << std::endl;
+  GB_driver.yyip_call_function(func_ptr);
+} // CB_ParamWin( void* cd )
+
+
+//-------------------------------------------
+void CallAmiFunction(AMIFunction* f, const ParamList::ptr& p)
+{
+  //cout << "CB_ParamWin pointer is " << func_ptr << std::endl;
+  GB_driver.yyip_call_function(f,p);
+} // CB_ParamWin( void* cd )
+
+
+//-----------------------------------------
+void CB_delete_variable( void* var)
+{
+  BasicVariable* vartodelete = (BasicVariable*) var;
+
+  FILE_MESSAGE((boost::format("deleting %1%") % vartodelete->Name()).str().c_str());
+  if (!Vars.deleteVar(vartodelete))
+    FILE_ERROR("Could not delete variable "); 
+
+}
+
+//-----------------------------------------
+void CB_delete_varlist( void* var)
+{
+  if (!var) return;
+
+  std::list<BasicVariable::wptr>* varlist = (std::list<BasicVariable::wptr>*) var;
+
+  if (varlist) {
+    // iterate over the list
+    std::list<BasicVariable::wptr>::iterator it;
+    for(it=varlist->begin(); it!=varlist->end(); it++) {
+      BasicVariable::wptr vartodelete = *it;
+      if (BasicVariable::ptr lockedvar = vartodelete.lock()) 
+      {
+        bool deleted=false;
+        FILE_MESSAGE((boost::format("Pointer counter = %1%") % lockedvar->GetPtrCounter()).str().c_str());
+        std::string name = lockedvar->Name();
+        FILE_MESSAGE((boost::format("deleting %1%") % name).str().c_str());
+        Variables::ptr context = lockedvar->GetContext();
+
+        // free lock first
+        lockedvar.reset();
+        if (context.get()) {
+          deleted = context->deleteVar(name.c_str());
+        }
+        if (!deleted)
+          FILE_ERROR((boost::format("Could not delete variable %1%") % name).str().c_str()); 
+      }
+    }
+
+    // should be safe to delete varlist if the window is now closed!!!
+    delete varlist;
+  }
+}
+
+//----------------------------------------------------------------------
+// wxWidget specific ...
+//
+class MyApp: public wxApp
+//    -----
+{
+
+  virtual bool OnInitGui();
+  virtual bool OnInit();
+  virtual int  OnExit();
+
+  void OnChar(wxKeyEvent& event)
+  {
+    //std::cout << "MyApp::OnChar()" << std::endl;
+    switch( event.GetKeyCode() )
+    {
+    case 'h': 
+      if (event.ControlDown()) {
+        std::cout << "should hide window" << std::endl;
+      }
+      else
+        event.Skip();
+    break;
+    case 'i': 
+      if (event.AltDown()) {
+        std::cout << "should iconize window" << std::endl;
+        GB_main_wxFrame->Iconize(!GB_main_wxFrame->IsIconized());
+      }
+      else
+        event.Skip();
+    break;
+    default:
+        event.Skip();
+        return;
+    }
+  }
+
+
+  wxConfig* GetConfig() { return config; }
+
+private:
+  //MainFrame::ptr mainframe;
+  MainFrame* mainframe;
+
+  // Global configuration file
+  wxConfig * config;
+
+private:
+  DECLARE_EVENT_TABLE();
+};
+
+
+BEGIN_EVENT_TABLE(MyApp, wxApp)
+    EVT_CHAR        ( MyApp::OnChar       )
+END_EVENT_TABLE();
+
+
+IMPLEMENT_APP(MyApp)
+
+
+
+
+
+
+// rewrite it to set the colors
+// wxwidget was recompiled ...
+// send email to wxwidgets to propose modification?
+bool MyApp::OnInitGui()
+{
+  SetClassName(GetwxStr("amilab"));
+  return wxApp::OnInitGui();
+
+}
 
 //-----------------------------------------
 bool MyApp::OnInit()
 {
 
+
+ ::wxInitAllImageHandlers();
+
+  //wxBitmap bitmap;
+  wxBitmap bitmap(amilab_splash_xpm );
+  if (bitmap.IsOk())
+  {
+  wxSplashScreen *splash;
+  splash = new wxSplashScreen(bitmap,
+      wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+      1500, NULL, -1, wxDefaultPosition, wxDefaultSize,
+      wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+  }
+  wxYield();
+ 
+  
+  
+  
   config = new wxConfig(wxT("AMILab"));
 /*
                         wxEmptyString,
@@ -326,6 +359,7 @@ bool MyApp::OnInit()
  // this was  main()
   int  n;
   bool no_interaction = false;
+  bool hide_mainframe = false;
   std::string cmd_line;
 
   GB_debug = false;
@@ -360,6 +394,13 @@ bool MyApp::OnInit()
   Alors
    std::cout << "Debug On" << std::endl;
     GB_debug = true;
+    GB_num_arg_parsed++;
+  FinSi
+
+  Si  argc>GB_num_arg_parsed Et
+      strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-hide")==0
+  Alors
+    hide_mainframe = true;
     GB_num_arg_parsed++;
   FinSi
 
@@ -419,7 +460,7 @@ bool MyApp::OnInit()
 
   ::wxInitAllImageHandlers();
 
-  mainframe->Show(true);
+  mainframe->Show(!hide_mainframe);
   SetTopWindow(mainframe);
 //  frame->Fit();
 //  frame->Show(true);
@@ -487,7 +528,8 @@ bool MyApp::OnInit()
         GB_driver.yyip_parse();
         GB_driver.yyip_popup_buffer();
         */
-        GB_driver.parse_file(string(input_file.mb_str(wxConvUTF8)));
+        // Use parse_script instead of parse_file to allow looking in the scripts directory
+        GB_driver.parse_script(string(input_file.mb_str(wxConvUTF8)).c_str());
         if (GB_main_wxFrame)
         {
           if (no_interaction)
@@ -504,7 +546,7 @@ bool MyApp::OnInit()
     #endif
   }
 
-
+mainframe->LoadToolBar();
 
   return true;
 

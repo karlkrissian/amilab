@@ -90,6 +90,8 @@ def WrapMethodTypePointer(typedefname,include_file):
     config.available_classes.append(typedefname)
 
 
+  implement_deleter = ", smartpointer_nodeleter<{0} >()".format(typedefname)
+
   # now output the results:
   constructors_decl='\n'
 
@@ -116,6 +118,7 @@ def WrapMethodTypePointer(typedefname,include_file):
         
 
   implement_type="\n"
+  implement_type += "AMI_DEFINE_GETVALPARAM({0});\n".format(typedefname)
   implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(typedefname)
   # need to implement CreateVar ...
   implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(typedefname)
@@ -145,6 +148,7 @@ def WrapMethodTypePointer(typedefname,include_file):
   for line in fileinput.FileInput(impl_filename,inplace=1):
     line = line.replace("${TEMPLATE}",          typedefname)
     line = line.replace("${INCLUDES}",           "")
+    line = line.replace("${IMPLEMENT_DELETER}",  implement_deleter)
     line = line.replace("${IMPLEMENT_TYPE}",     implement_type)
     line = line.replace("${IMPLEMENT_CREATEVAR}",implement_createvar)
     line = line.replace("${METHODS_BASES}",     "")
@@ -170,7 +174,7 @@ if __name__ == '__main__':
     for cl in args.val.available_classes:
       config.available_classes.append(cl)
     FindAvailableClasses()
-    #print "available classes:", config.available_classes
+    print "available classes:", config.available_classes
     
     if (args.val.profile):
       t1 = time.clock()
@@ -183,16 +187,23 @@ if __name__ == '__main__':
     # Create a parser
     parser = make_parser()
 
+    config.libmodule = None
     if args.val.libname=="wx":
       import wx_lib
       config.libmodule = wx_lib.config
     if args.val.libname=="vtk":
       import vtk_lib
       config.libmodule = vtk_lib.config
+    if args.val.libname=="mt":
+      import mt_lib
+      config.libmodule = mt_lib.config
+    if args.val.libname=="us":
+      import us_lib
+      config.libmodule = us_lib.config
 
     headerfile="{0}_includes.h".format(args.val.libname)
     
-    if args.val.libname != None:
+    if config.libmodule!=None:
       args.val.filter = config.libmodule.get_var_filter()
 
     # Tell the parser we are not interested in XML namespaces
@@ -223,22 +234,38 @@ if __name__ == '__main__':
       # 1 create dictionnary of classes to speed-up ...
       print "Creating classes dict"
       classes_dict = dict()
+      typedef_dict = dict()
       for f in config.types.keys():
         if config.types[f].GetType()=="Class":
           classes_dict[f] = config.types[f].GetFullString()
+        if config.types[f].GetType()=="Typedef":
+          typedef_dict[f] = config.types[f].GetFullString()
+        #print "typedef : {0}".format(typedef_dict[f])
+      #print typedef_dict
       
       print "Creating ancestors"
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
       for b in args.val.ancestors:
         #print "b=",b
+        # find the class corresponding to typedefs
+        #for k in typedef_dict.keys():
+          #if typedef_dict[k].replace(' ','')==b.replace(' ',''):
+            #print "Found typedef {0}".format(b)
+            #tid = config.types[k].GetRefTypeId()
+            #print "with type {0}, {1}: {2}".format(config.types[tid].GetFullString(),config.types[tid].GetString(),config.types[k].GetFullString())
+            #newclass=config.types[tid].GetFullString()
+            #ancestors.append(newclass)
+            ##newlist.append(newclass)
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:
+            #print "ancestors to add?"
             # recursively add the ancestors to the list
             bases=config.types[f].bases
-            if b=="wxTopLevelWindow":
-              print bases
+            #print bases
+            #if b=="wxTopLevelWindow":
+              #print bases
             f_anc=[]
             if bases!=None:
               f_anc = bases
@@ -246,21 +273,31 @@ if __name__ == '__main__':
             while f_anc != []:
               anc_id = f_anc.pop()[0]
               #if b=="wxTopLevelWindow":
-                #print anc_id
+              #print anc_id
+              if not(anc_id in classes_dict.keys()):
+                print "not in classes_dict.keys() ..."
               if anc_id in classes_dict.keys():
                 #if b=="wxTopLevelWindow":
-                  #print classes_dict[anc_id]
+                #print classes_dict[anc_id]," args.val.templates=",args.val.templates
+                #print classes_dict[anc_id] not in ancestors
+                #print classes_dict[anc_id] not in config.classes_blacklist
                 if  classes_dict[anc_id] not in ancestors and  \
                     classes_dict[anc_id] not in config.classes_blacklist and\
-                    not wrap_class.IsTemplate(classes_dict[anc_id]):
-                  ancestors.append(classes_dict[anc_id])
-                  newlist.append(classes_dict[anc_id])
-                  bases=config.types[anc_id].bases
-                  #if b=="wxTopLevelWindow":
-                    #print bases
-                  if bases!=None:
-                    for newanc in bases:
-                      f_anc.append(newanc)
+                    ( (not wrap_class.IsTemplate(classes_dict[anc_id])) \
+                      or args.val.templates ):
+                  m = re.match(args.val.filter, classes_dict[anc_id])
+                  #print "Check ancestor {0} to match filter".format(classes_dict[anc_id])
+                  if m != None:
+                    #print "OK"
+                    ancestors.append(classes_dict[anc_id])
+                    newlist.append(classes_dict[anc_id])
+                    bases=config.types[anc_id].bases
+                    #if b.startswith("itk"):
+                      #if b=="wxTopLevelWindow":
+                      #print "**** bases=",bases
+                    if bases!=None:
+                      for newanc in bases:
+                        f_anc.append(newanc)
             #print "New ancestors of {0} are {1}".format(b,newlist)
       #print "All ancestors are   {0} ".format(ancestors)
       # write ancestors file
@@ -270,6 +307,9 @@ if __name__ == '__main__':
       ancestors.sort()
       for a in ancestors:
         f.write(a+"\n")
+      if(args.val.generate_html):
+        wrap_class.generate_html.Initialization(args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
+        wrap_class.generate_html.GenerateHTMLClassesFile(ancestors)
       sys.exit(0)
 
     if (args.val.profile):
@@ -316,7 +356,7 @@ if __name__ == '__main__':
     if (args.val.profile):
       t3 = time.clock()
       print t3 - t2, "seconds process time"
-    
+  
     n=0
     nmax=args.val.max
     while (len(config.needed_classes)>0) and (n<nmax):
@@ -325,6 +365,7 @@ if __name__ == '__main__':
       #print "Class: {0} \t usedname: {1}".format(cl,wrap_class.ClassUsedName(cl))
       config.include_list = []
       config.declare_list = []
+      wrap_class.HTMLInitialization(args.val.generate_html,args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
       wrap_class.WrapClass(cl,include_file,inputfile)
       config.wrapped_classes.append(cl)
       if args.val.r:
@@ -349,6 +390,7 @@ if __name__ == '__main__':
         for cl in config.wrapped_classes:
           config.include_list = []
           config.declare_list = []
+          wrap_class.HTMLInitialization(args.val.generate_html,args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
           wrap_class.WrapClass(cl,include_file,inputfile)
 
     utils.WarningMessage( "Wrapped classes: {0}".format(config.wrapped_classes))

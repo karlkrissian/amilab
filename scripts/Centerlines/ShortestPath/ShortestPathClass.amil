@@ -4,16 +4,24 @@
 # using a speed image
 #
 if (!exists(ShortestPathClass)) {
-  global::ami_import.ITK()
 
   func "Common/ScriptGui"
-    
+
   Class ShortestPathClass : public ScriptGui {
+
+    func "Centerlines/ShortestPath/ShortestPathUtils"
+    ShortestPathUtils ::SPU
+    
+    func "DistanceTransform/FastMarching/FastMarchingUtils"
+    FastMarchingUtils ::FMU
 
     func "SyntheticImages/AddSphere.amil"
 
     AddSphereClass ::AS
-    ::itk=&global::itk
+
+    global::ami_import.ITK()
+    ::itk=&itk
+
     
     #----------------------------
     proc ::init() {
@@ -23,7 +31,7 @@ if (!exists(ShortestPathClass)) {
       ::speed_name = ""
 
       # save the Fast Marching image
-      ::save_FM = UCHAR(0)
+      ::save_FM = UCHAR(0), "keep the Fast Marching image as 'FM'"
 
       ::epsilon = 0.02
       ::maxcost = 1000
@@ -37,6 +45,7 @@ if (!exists(ShortestPathClass)) {
       ::startx = 0
       ::starty = 0
       ::startz = 0
+      ::startv = 0
 
       # stop mode -- 0: point, 1: mask
       ::end_mode = INT(0) 
@@ -46,11 +55,16 @@ if (!exists(ShortestPathClass)) {
       ::endx = 0
       ::endy = 0
       ::endz = 0
+      ::endv = 0
     
       ::step_size = 0.1
       ::maxlength = 500
+      ::livewire = UCHAR(0), "Recompute and display the path at each draw callback"
       # Path mode 0 or 1
     
+      # Path color 
+      ::path_color    = wx.wxColour(173,216,230)
+      ::points_color  = wx.wxColour(173,216,30)
       #::Gui
     }
     #-----------------------------------------------
@@ -70,11 +84,13 @@ if (!exists(ShortestPathClass)) {
       ::input <<= im
     }
     
+    #-----------------------------------------------
     proc ::set_speed( IMAGE im) \
     {
       ::speed <<= im
     }
     
+    #-----------------------------------------------
     proc ::set_endmask( IMAGE im) \
     {
       ::endmask <<= im
@@ -83,7 +99,7 @@ if (!exists(ShortestPathClass)) {
     #-----------------------------------------------
     proc ::load_speed() \
     {
-      eval "::speed <<="+::speed_name+";"
+      eval "::speed <<="+::speed_name+"[0];"
       if (::speed_name=="Image") {
         ::speed_name = "::speed"
         ::win.Update(-1)
@@ -101,10 +117,36 @@ if (!exists(ShortestPathClass)) {
     }
 
     #-----------------------------------------------
+    proc ::DrawPoints() \
+    {
+      if (::livewire) {
+        ::SetEndPoint( \
+                          ::input_draw.GetXPos(), \
+                          ::input_draw.GetYPos(), \
+                          ::input_draw.GetZPos() \
+                        )
+        ::Run()
+      }
+      if (exists(::input_draw)) {
+        ::input_draw.SetPenColor(&::points_color)
+        if exists(::startx) {
+          ::input_draw.DrawCircleR(::startx,::starty,1.5)
+        }
+        if exists(::endx) {
+          ::input_draw.DrawCircleR(::endx,::endy,1.5)
+        }
+        if exists(::path) {
+          ::DrawPath()
+        }
+      }
+    }
+
+    #-----------------------------------------------
     proc ::StartPoint() \
     {
       ::load_input
       show ::input
+      ::input_draw.PaintCallback(&::DrawPoints);
       if (exists(::input_draw)) {
         ::SetStartPoint( \
                           ::input_draw.GetXPos(), \
@@ -113,6 +155,7 @@ if (!exists(ShortestPathClass)) {
                         )
       }
     }
+
     #-----------------------------------------------
     proc ::SetStartPoint( NUM x, NUM y, NUM z) \
     {
@@ -124,6 +167,12 @@ if (!exists(ShortestPathClass)) {
       ::Pz1 = ::input.trz + z*::input.vz
     }
     
+    #-----------------------------------------------
+    proc ::SetStartScale( NUM s) \
+    {
+      ::startv = s
+      ::Pv1    = s
+    }
     
     #-----------------------------------------------
     proc ::SetStartPointWorld(NUM x, NUM y, NUM z) \
@@ -165,6 +214,12 @@ if (!exists(ShortestPathClass)) {
       ::Pz2 = ::input.trz + z*::input.vz
     }
     
+    #-----------------------------------------------
+    proc ::SetEndScale( NUM s) \
+    {
+      ::endv = s
+      ::Pv2  = s
+    }
     
     #-----------------------------------------------
     proc ::SetEndPointWorld(NUM x, NUM y, NUM z) \
@@ -183,15 +238,15 @@ if (!exists(ShortestPathClass)) {
       ::load_speed
       show ::input
       show ::speed
-      ::input_draw.compare(::speed)
+      ::input_draw.compare(&::speed_draw)
       if (exists(::path)) { show ::path; }
     }  
 
     #-----------------------------------------------
     proc ::Run() \
     {
-      #::load_input()
-      #::load_speed()
+      if (!exists(::input)) {::load_input();}
+      if (!exists(::speed)) {::load_speed();}
     
       # force a minimal value of ::epsilon
       maxrepim_crop = ::speed+::epsilon
@@ -226,13 +281,14 @@ if (!exists(ShortestPathClass)) {
     
       #maxrepim_crop = maxrepim_crop/10
       # running fast marching until the point 1 is reached
+
       printn "FMT"
-      res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,\
+      res = ::FMU.FastMarchingTarget(&maxrepim_crop,&fminit,::maxcost,\
                             ::startx+0.5,::starty+0.5,::startz+0.5)
       #::res.info
     
       if (::save_FM) {
-        ::FM = res
+        ::FM <<= res
       }
 
       # reset the maximum to limit gradient and lower side effects of linear interpolation
@@ -243,18 +299,49 @@ if (!exists(ShortestPathClass)) {
       printn "FMT done"
       if (exists(::path)) { del ::path; }
       if (::end_mode==0) {
-        ::path = PathFromVectField( res,\
+        #::path = PathFromVectField( res,\
+                                  #::step_size,\
+                                  #::maxlength,\
+                                  #::Px1,::Py1,::Pz1,\
+                                  #::Px2,::Py2,::Pz2)
+
+        ::path = ::SPU.SP_PathFromVectField( &res,\
                                   ::step_size,\
                                   ::maxlength,\
                                   ::Px1,::Py1,::Pz1,\
                                   ::Px2,::Py2,::Pz2)
+
       } else {
-        ::path = PathFromVectField( res,\
+        #::path = PathFromVectField( res,\
+                                  #::step_size,\
+                                  #::maxlength,\
+                                  #::Px1,::Py1,::Pz1)
+        ::path = ::SPU.SP_PathFromPotential( &res,\
                                   ::step_size,\
                                   ::maxlength,\
                                   ::Px1,::Py1,::Pz1)
       }
     }
+
+    #-------------------------------------------
+    proc ::DrawPath() {
+      if (::input.tz==1)&&(exists(::input_draw)) {
+        ::input_draw.SetPenColor(&::path_color)
+        line = ::path.GetLine(0)
+        p0x = line(0,0,0,0)
+        p0y = line(0,0,0,1)
+        for n=1 to line.tx-1 {
+          p1x = line(n,0,0,0)
+          p1y = line(n,0,0,1)
+          ::input_draw.DrawLineZ(p0x,p0y,p1x,p1y)
+          p0x = p1x
+          p0y = p1y
+        }
+        ::input_draw->DrawingAreaDisplay()
+      }
+      
+    }
+
     #-------------------------------------------
     proc ::Gui() \
     {
@@ -287,27 +374,34 @@ if (!exists(ShortestPathClass)) {
     
         ::win.AddPage("Param")
         
-          ::win.AddBoolean( &::save_FM)
+          ::win.AddBoolean( &::save_FM, "Save FastMarching")
     
-          ::win.AddFloat( &::epsilon,  "::epsilon", 0.01,10)
-          ::win.AddFloat( &::maxcost,  "::maxcost", 1,100000)
+          ::win.AddFloat( &::epsilon,  "epsilon", 0.01,10)
+          ::win.AddFloat( &::maxcost,  "maxcost", 1,100000)
       
           ::win.BeginBoxPanel("Input intensity-based speed")
             ::win.AddBoolean( &::use_input_speed)
-            ::win.AddFloat( &::input_Imin,  "::input_Imin", 0,10000)
-            ::win.AddFloat( &::input_Imax,  "::input_Imax", 0,10000)
-            ::win.AddFloat( &::input_speed,  "::input_speed", 0,100)
+            ::win.AddFloat( &::input_Imin,  "input_Imin", 0,10000)
+            ::win.AddFloat( &::input_Imax,  "input_Imax", 0,10000)
+            ::win.AddFloat( &::input_speed,  "input_speed", 0,100)
           ::win.EndBoxPanel()
     
-          ::win.AddFloat( &::step_size,  "::step_size", 0.01,1)
-          ::win.AddFloat( &::maxlength,  "::maxlength", 0,1000)
+          ::win.AddFloat( &::step_size,  "step_size", 0.01,1)
+          ::win.AddFloat( &::maxlength,  "maxlength", 0,1000)
     
+          ::win.AddBoolean(&::livewire,"LiveWire")
           ::win.BeginHorizontal()
             # run
             ::win.AddButton("Run",      ::Run)
             # display
             ::win.AddButton("Display",  ::Display)
+            ::win.AddButton("DrawPath", ::DrawPath)
           ::win.EndHorizontal()  
+          ::win.BeginHorizontal()
+            ::win.AddColor("Path   Color",&::path_color)
+            ::win.AddColor("Points Color",&::points_color)
+          ::win.EndHorizontal()  
+
       ::win.EndBook()
 
       ::AddStandardButtons(&::win)

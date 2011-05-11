@@ -184,15 +184,35 @@ static const std::string glErrorString( GLenum err)
 
 
 //----------------------------------------------------------
+void GLObject::SetwxGLCanvas( boost::shared_ptr<ami_wxGLCanvas> wxglc ) 
+{
+  if (ami_wxGLCanvas::ptr glcanv = _wxGL_canvas.lock()) {
+    if (wxglc.get() != glcanv.get()) {
+      // Changing the glcanvas of the surface
+      printf("\n*** Changing the glcanvas of the surface, removing it from the previous glcanvas ...\n");
+      glcanv->RemoveObject(this);
+      // reset the GL list
+      if (_GL_list != 0) my_glDeleteLists( _GL_list, 1);
+      _GL_list=0;
+
+    }
+  }
+  _wxGL_canvas = ami_wxGLCanvas::wptr(wxglc);
+//    _glx_display = NULL;
+//    _context     = NULL;
+}
+
+//----------------------------------------------------------
 int  GLObject::MakeContextCurrent()
 //
 {
 
   GLint render_mode;
+  ami_wxGLCanvas::ptr glcanv = _wxGL_canvas.lock();
 
   if (GB_debug) std::cerr << " begin GLObject::MakeContextCurrent() " << std::endl;
 //  if (_context==NULL) return 0;
-  if (!_wxGL_canvas) {
+  if (!glcanv) {
     std::cerr << "GLObject::MakeContextCurrent() \t_wxGL_canvas not initialized " << std::endl;
     return 0;
   }
@@ -203,10 +223,10 @@ int  GLObject::MakeContextCurrent()
   glGetIntegerv(GL_RENDER_MODE,&render_mode);
   switch (render_mode) {
   case GL_RENDER: 
-    if (_wxGL_canvas) {
+    if (glcanv) {
       // TODO: use SetCurrentContext from myGLCanvas instead ???
 
-      bool res = _wxGL_canvas->SetCurrentContext();
+      bool res = glcanv->SetCurrentContext();
 
       if (GB_debug) std::cerr << " end 1 GLObject::MakeContextCurrent() " << std::endl;
       return res;
@@ -220,7 +240,7 @@ int  GLObject::MakeContextCurrent()
                 << " GL_SELECT =  " << GL_SELECT
                 << std::endl;
           glRenderMode(GL_RENDER);
-          bool res = _wxGL_canvas->SetCurrentContext();
+          bool res = glcanv->SetCurrentContext();
           if (GB_debug) std::cerr << " end 2 GLObject::MakeContextCurrent() " << std::endl;
           return res;
   }
@@ -298,7 +318,7 @@ void GLObject  :: DisplayObject(GLMaterialParam* mat)
     GLMaterialParam* theMat;
     GLboolean light_enabled;
 
-  Si GB_debug AlorsFait fprintf(stderr,"GLObject DisplayObject() begin\n");
+  Si GB_debug AlorsFait fprintf(stderr,"GLObject DisplayObject() %p begin\n",this);
   if (!MakeContextCurrent()) return;
   Si GB_debug AlorsFait fprintf(stderr,"GLObject DisplayObject() 1\n");
   if (GB_debug) fprintf(stderr,"ownmaterial %d \n",(int)_ownmaterial);
@@ -1940,8 +1960,8 @@ GLuint SurfacePoly::SetColorOpacity( float alpha)
 //----------------------------------------------------------------------
 //
 GLuint SurfacePoly :: SetPointsColors(InrImage* image, 
-						float min, 
-						float max)
+                                      float min, 
+                                      float max)
 //
 {
 
@@ -3918,9 +3938,9 @@ InrImage* SurfacePoly :: GetIntensities(  InrImage* image)
 
   res->InitBuffer();  
   for(i=0;i<n;i++) {
-    x = ((float) _tab_pts[i].X())/image->VoxSizeX()-image->TrX();
-    y = ((float) _tab_pts[i].Y())/image->VoxSizeY()-image->TrY();
-    z = ((float) _tab_pts[i].Z())/image->VoxSizeZ()-image->TrZ();
+    x = image->SpaceToVoxelX(_tab_pts[i].X());
+    y = image->SpaceToVoxelY(_tab_pts[i].Y());
+    z = image->SpaceToVoxelZ(_tab_pts[i].Z());
     if (res->ScalarFormat())
       res->FixeValeur( image->InterpLinIntensite(x,y,z));
     else

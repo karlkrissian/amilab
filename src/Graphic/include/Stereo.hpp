@@ -115,7 +115,7 @@ public:
   void Parametres( float d_yeux, float d_oeil_ecran, float d_ecran_objet,
                        float pixel_cm);
 
-  void CreeStereo( CPalette* palette,
+  void CreeStereo( amilab::CPalette* palette,
                    XImage* im1, XImage* im2, XImage** im_stereo);
 #endif
 #endif

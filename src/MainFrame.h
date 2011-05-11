@@ -127,6 +127,7 @@ public:
     amilab_editor = NULL;
   }
   
+  void LoadToolBar();
   wxAuiManager& GetAuiManager() {return m_mgr; };
 
   TextControl::ptr GetConsole() { return TC; }
@@ -154,10 +155,21 @@ public:
   void OnFileLoadScript   ( wxCommandEvent& event );
   void OnFileOpenScriptHistory  ( wxCommandEvent& event );
 
-  void OnViewReset        ( wxCommandEvent& event );
-
+  void OnViewReset ( wxCommandEvent& event );
+  void OnViewOutput ( wxCommandEvent& event );
+  void OnViewParam_book (wxCommandEvent& event );
+  void OnViewMain_book( wxCommandEvent& event );
+  void OnViewVar_book( wxCommandEvent& event );
+  void OnViewMain_bar( wxCommandEvent& event );
+  void OnViewScript_bar( wxCommandEvent& event );
+  
+  void OnHelpKeywords( wxCommandEvent& event );
+  
   void OnQuit ( wxCommandEvent& event );
   void OnClose ( wxCloseEvent& event );
+  void OnUpdate(wxUpdateUIEvent& event );
+  
+void OnFindKeywords( wxCommandEvent& event );
 
 /*
   void OnInternalIdle();
@@ -197,7 +209,8 @@ public:
   void UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context);  
 #endif
 /// @endcond
-
+  wxAuiNotebook* _param_book;
+  
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
   wxAuiNotebook* GetParamBook() { return _param_book; }
 
@@ -232,6 +245,7 @@ protected:
 //   void OnDropPossible( wxDataViewEvent &event );
 //   void OnDrop( wxDataViewEvent &event );
   //
+  wxAuiToolBar* tb1;
   wxStcFrame* amilab_editor;
   
   // history of opened images
@@ -245,8 +259,9 @@ protected:
   // menus
   wxMenuBar *menuBar;
   wxMenu *menuFile;
-  wxMenu *menuView;
+  wxMenu *menuView,*menuView2,*menuView3;
   wxMenu *menuScripts;
+  wxMenu *menuHelp;
   wxMenu *menuSegmentation;
   wxMenu *menuNoiseReduction;
   wxMenu *menuVisualization;
@@ -258,7 +273,7 @@ protected:
   CustomStatusBar* _status_bar;
 
   wxAuiNotebook* _main_book;
-  wxAuiNotebook* _param_book;
+  //wxAuiNotebook* _param_book;
   wxString       _initial_perspective;
   // store the smart pointers of the used param panels for protection
   std::list<boost::shared_ptr<ParamPanel> > _parampanel_ptrs;
@@ -287,6 +302,10 @@ protected:
   TextControl::ptr TC;
   wxTextCtrl*  _log_text;
   wxPanel*     _keywords_panel;
+  
+  wxTextCtrl *textCtrl;
+  //wxListBox* m_listBox; 
+ 
   wxPanel*     _var_panel;
   wxPanel*     _html_panel;
   wxPanel*     _drawing_panel;

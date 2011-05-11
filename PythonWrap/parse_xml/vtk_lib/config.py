@@ -14,3 +14,6 @@ def get_var_filter():
   
 def wrap_public_fields(classname):
   return False
+
+def implement_deleter(classname):
+  return ", smartpointer_nodeleter<{0} >()".format(classname)

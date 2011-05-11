@@ -17,7 +17,7 @@ Viewer3D_PointParam::Viewer3D_PointParam(Viewer3D* parent): ParamPanel(parent, "
 //----------------------------------------------------
 void Viewer3D_PointParam::CreateParameters()
 {
-  ami_wxGLCanvas* mc = parent_class->m_canvas;
+  ami_wxGLCanvas::ptr mc = parent_class->m_canvas;
 
 
   //--------------------------------------------------
@@ -100,7 +100,7 @@ void Viewer3D_PointParam::CB_points_connect(void* cd)
 //                       ----------------
 {
     Viewer3D*    tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     SurfacePoly* points;
 
   GLObject::ptr current(mcanv->_current_globject);
@@ -119,7 +119,7 @@ void Viewer3D_PointParam::CB_points_new(void* cd)
 //                       ---------------
 {
     Viewer3D*    tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     SurfacePoly* points;
 
   GLObject::ptr current(mcanv->_current_globject);
@@ -162,7 +162,7 @@ void Viewer3D_PointParam::CB_points_remove(void* cd)
 //                       ---------------
 {
     Viewer3D*    tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     SurfacePoly* points;
 
   GLObject::ptr current(mcanv->_current_globject);
@@ -181,7 +181,7 @@ void Viewer3D_PointParam::CB_points_remove_non_selected(void* cd)
 //                       ----------------------------
 {
     Viewer3D*    tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* mcanv = tgl->m_canvas;
+    ami_wxGLCanvas::ptr mcanv = tgl->m_canvas;
     SurfacePoly* points;
 
   GLObject::ptr current(mcanv->_current_globject);

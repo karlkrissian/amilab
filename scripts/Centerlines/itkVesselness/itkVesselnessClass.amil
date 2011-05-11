@@ -87,11 +87,6 @@ if (!exists(itkVesselnessClass)) {
     }
     
     #-------------------------------------
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
-    }
-    
     proc ::set_result(IMAGE im) \
     {
       ::result <<= im

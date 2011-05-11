@@ -1,0 +1,15 @@
+
+func "Curvatures3DClass.amil"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(Curvatures3D_obj)) {
+
+  Curvatures3DClass Curvatures3D_obj  
+  Curvatures3D_obj.Gui()
+   
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}

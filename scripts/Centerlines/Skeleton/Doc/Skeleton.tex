@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+\usepackage{url}
+
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+\begin{document}
+
+% Title Page
+\title{Skeletonization}
+\author{ Karl Krissian
+}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Centro de Tecnolog\'ias de la Imagen (CTIM)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es
+\url{http://www.ctm.ulpgc.es/joomla/index.php}
+}
+
+
+\maketitle
+
+\begin{abstract}
+Script to create skeleton from a 3D image.
+Especially tested on 3D tubular structures to create the associated centerlines.
+\end{abstract}
+
+
+\section{Quick Start}
+
+The different steps for obtaining the filter are:
+\begin{enumerate}
+  \item select the initial image
+  \item select the parameters
+    \begin{enumerate}
+      \item Image Threshold: creates the skeleton from the pixels higher than the given threshold.
+      \item Fill Holes: removes holes inside the structure before the skeletonization.
+    \end{enumerate}
+  \item run the filter
+\end{enumerate}
+
+
+\end{document}          

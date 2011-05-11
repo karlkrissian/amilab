@@ -1,0 +1,141 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+func "ctest/ctest_config.amil" # Load regular expression to determine when the
+                               # test fails or passes.
+
+ctest.Enable()
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# wxString.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the wxString wrapping.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#------------------------------------
+proc Summary(OBJECT obj) {
+  printn "Summary:"
+  printn " Contain:"
+  printn "  c_str: %1%" % obj.c_str()
+  printn " Length:" 
+  printn "  Len: %1%" % obj.Len()
+  printn "  Length: %1%" % obj.Length()
+  if(obj.IsNull()) {
+    printn "IsNull?: YES"
+  } else {
+    printn "IsNull?: No"
+  }
+  if(obj.IsAscii()) {
+    printn "IsAscii?: YES"
+  } else {
+    printn "IsAscii?: No"
+  }
+  if(obj.IsNumber()) {
+    printn "IsNumber?: YES"
+  } else {
+    printn "IsNumber?: No"
+  }
+  if(obj.IsWord()) {
+    printn "IsWord?: YES"
+  } else {
+    printn "IsWord?: No"
+  }
+  if(obj.IsEmpty()) {
+    printn "IsEmpty?: YES"
+  } else {
+    printn "IsEmpty?: No"
+  }
+}
+
+MyStringA=wx.wxString("1234567890")
+Summary(&MyStringA)
+MyStringB=wx.wxString("hello world !!!")
+Summary(&MyStringB)
+
+printn "Operations:"
+if(MyStringA.Cmp(MyStringB)==0) {
+  printn " MyStringA.Cmp(MyStringB)?: YES"
+  OK=0
+} else {
+  printn " MyStringA.Cmp(MyStringB)?: NO"
+}
+tmp=MyStringB
+printn " tmp=MyStringB?: YES"
+if(tmp.Cmp(MyStringB)==0) {
+  printn " tmp.Cmp(MyStringB)?: YES"
+} else {
+  OK=0
+  printn " tmp.Cmp(MyStringB)?: NO"
+}
+
+tmp.MakeUpper()
+printn " MakeUpper: %1%" % wx.FromWxString(tmp)
+cad=tmp.Upper()
+if(cad.Cmp(tmp)==0) {
+  printn " Upper: YES(%1%)" % wx.FromWxString(cad)
+} else {
+  OK=0
+  printn " Upper: NO(%1%)" % wx.FromWxString(cad)
+}
+
+tmp.MakeLower()
+printn " MakeLower: %1%" % wx.FromWxString(tmp)
+cad=tmp.Lower()
+if(cad.Cmp(tmp)==0) {
+  printn " Lower: YES(%1%)" % wx.FromWxString(cad)
+} else {
+  OK=0
+  printn " Lower: NO(%1%)" % wx.FromWxString(cad)
+}
+
+tmp.Append(" Added white-space    ")
+tmpLen= tmp.Len()
+printn "Append: Added white-space    (Len: %1%)" % tmpLen
+printn "Remove white-space with trim"
+tmp=tmp.Trim(true)
+if(tmpLen==tmp.Len()) {
+  OK=0
+  printn "Trim: FAILED"
+} else {
+  printn "Trim: OK"
+}
+pos=tmp.Find("world")
+if(pos<=0) {
+  OK=0
+  printn "Find \"world\": NO FOUND"
+} else {
+  printn "Find \"world\": FOUND"
+}
+
+cad=tmp.SubString(0,pos-1)
+if(cad.Cmp(tmp)) {
+  printn "Try to eliminate \"world\": NO"
+  OK=0
+} else {
+  printn "Try to eliminate \"world\": YES"
+}
+repnumber=tmp.Replace("o", "a")
+if(repnumber>0) {
+  printn "Replace \"o\" by \"a\": YES"
+} else {
+  printn "Replace \"o\" by \"a\": NO"
+  OK=0
+}
+
+tmp.Clear()
+if(tmp.Len()==0) {
+  printn "Clear: YES"
+} else {
+  OK=0
+  printn "Clear: NO"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK )
+
+quit
+

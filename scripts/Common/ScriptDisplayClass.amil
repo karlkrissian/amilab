@@ -55,11 +55,16 @@ if (!exists(ScriptDisplayClass)) \
       func ::script
     }
 
-    # this method as to be overloaded ...
+    # this method has to be overloaded ...
     proc ::IsActive() \
     {
-      eval "return=exists(%1%);"%::script_obj
+printn "IsActive 1"
+      st = "return=exists(%1%);" % ::script_obj
+printn "IsActive 2"
+      eval st
+printn "IsActive 3"
       printn "IsActive returns %1%" % return
+printn "IsActive 4"
     }
 
     proc ::CB_Toolbar() \
@@ -84,19 +89,19 @@ if (!exists(ScriptDisplayClass)) \
 
     proc ::Add2Menu() \
     {
-
       # get scripts menu
       mb = ami.MainFrame.GetMenuBar()
       menu_id = mb.FindMenu(::in_menu)
       menu = mb.GetMenu(menu_id)
-
-      submenu_id = menu.FindItem(::in_submenu)
+      submenu_id = menu.FindItem_1(::in_submenu)
       if (submenu_id==-1) {
+        printn "Adding submenu %1%" % ::in_submenu
         newsubmenu = wx.wxMenu()
         menu.AppendSubMenu( &newsubmenu, ::in_submenu);
-        submenu_id = menu.FindItem(::in_submenu)
+        submenu_id = menu.FindItem_1(::in_submenu)
       }
-      submenu_menuitem = menu.FindItem(submenu_id,&NULL)
+      submenu_menuitem = menu.FindItem_2(submenu_id,&NULL)
+      
       if (submenu_menuitem.IsSubMenu()) {
         submenu = submenu_menuitem.GetSubMenu()
       } else {
@@ -150,8 +155,7 @@ if (!exists(ScriptDisplayClass)) \
       # Add Callback
       ::evh_tb = wx.wxAmiEventHandler(&::CB_Toolbar)
       # wxEVT_COMMAND_TOOL_CLICKED event (a synonym for wxEVT_COMMAND_MENU_SELECTED)
-      tb.Connect( \
-                  ::tb_id,wx.wxEVT_COMMAND_MENU_SELECTED \
+      tb.Connect( ::tb_id, wx.wxEVT_COMMAND_MENU_SELECTED \
                   ,&::evh_tb.GetEventFunction(),\
                   &NULL,&::evh_tb)
     }

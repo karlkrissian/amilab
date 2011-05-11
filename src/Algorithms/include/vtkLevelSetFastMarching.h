@@ -93,6 +93,9 @@ public:
   float   valmin[3];
   float   value;
 
+  // Class at which the point belongs (optional)
+  unsigned short _class; 
+
   FM_TrialPoint()
   {
     x = y = z = impos = 0;
@@ -101,6 +104,7 @@ public:
     valmin[1] =
     valmin[2] = 1E5;
     track = -1;
+    _class = 0;
   }
 
   FM_TrialPoint(int px, int py, int pz, int im_pos, float val)
@@ -114,6 +118,7 @@ public:
     valmin[1] =
     valmin[2] = 1E5;
     track = -1;
+    _class = 0;
   }
 
 
@@ -128,6 +133,7 @@ public:
     valmin[1] = p.valmin[1];
     valmin[2] = p.valmin[2];
     track = p.track;
+    _class = p._class;
     return *this;
   }
 
@@ -146,6 +152,7 @@ public:
 
 
   void SetValue(float val) { value=val; }
+  void SetClass(const unsigned short& c) { _class=c; }
   void SetTrack(int t)     { track = t; }
 
 
@@ -217,6 +224,10 @@ public:
   //
   vtkSetObjectMacro(track,vtkImageData);
   vtkGetObjectMacro(track,vtkImageData);
+
+  //
+  vtkSetObjectMacro(class_image,vtkImageData);
+  vtkGetObjectMacro(class_image,vtkImageData);
 
   //
   vtkSetObjectMacro(initimage,vtkImageData);
@@ -309,6 +320,10 @@ protected:
   // Mask where to evolve the surface
   vtkImageData* track;
 
+  // Class image to partition the result based on the initial points
+  vtkImageData* class_image;
+  short* Class_buf;  
+
   // Initialize with an isosurface : threshold
   float                initiso;
 
@@ -317,7 +332,7 @@ protected:
   float                initmaxdist;
 
   // pointers to the first element of the images data
-  float* T_buf;  
+  float* T_buf;
   float* force_buf;
 
   // 0: Sethian

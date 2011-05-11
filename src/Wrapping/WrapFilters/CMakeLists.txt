@@ -113,3 +113,4 @@ SET(WrapFilters_SRCS
 )
 
 my_add_library ( WrapFilters)
+add_dependencies ( WrapFilters WrapWxWidgets )

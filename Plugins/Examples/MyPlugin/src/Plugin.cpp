@@ -30,8 +30,12 @@ bool Plugin::Execute(void)
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("plugins");
 
-  // Add classes to wx context
+  // Add classes to plugin context
   WrapClassExamplePlugin_AddStaticMethods(amiobject->GetContext());
+
+  WrapClassFoo__LT__int__COMMA____SPACE__10__GT___AddStaticMethods( amiobject->GetContext() );
+
+  WrapClassFoo2__LT__int__COMMA____SPACE__float__COMMA____SPACE__bool__GT___AddStaticMethods( amiobject->GetContext() );
 
   // Add wx context to builtin
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),

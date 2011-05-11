@@ -230,6 +230,9 @@ public:
   //@{
   // -------- Operators ---
 
+  /// *T
+  BASICVAR_UNARYOP(*)
+
   /// +T
   BASICVAR_UNARYOP(+)
 

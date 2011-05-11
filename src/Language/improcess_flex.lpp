@@ -183,8 +183,7 @@ setpos           return(token::SETPOS);            /*{setpos,SETPOS}*/
 lininterp        return(token::T_lininterp);      /*{lininterp,T_lininterp}*/
 initvalue        return(token::T_initvalue);       /*{initvalue,T_initvalue}*/
 
-itk               return(token::T_itk); /*{itk,T_itk}*/
-CannyEdgeDetector return(token::T_CannyEdgeDetector); /*{CannyEdgeDetector,T_CannyEdgeDetector}*/
+itkCannyEdgeDetector  return(token::T_itkCannyEdgeDetector); /*{itk,T_itk}*/
 
 GetName        return(token::T_GetName); /*{GetName,T_GetName}*/
 GetObjectName  return(token::T_GetObjectName); /*{GetObjectName,T_GetObjectName}*/
@@ -352,7 +351,6 @@ StructTensorH      return(token::T_StructTensorH); /*{StructTensorH,T_StructTens
 HessianMatrix      return(token::T_HessianMatrix); /*{HessianMatrix,T_HessianMatrix}*/
 HessianEVal        return(token::T_HessianEVal); /*{HessianEVal,T_HessianEVal}*/
 Derivatives        return(token::T_Derivatives); /*{Derivatives,T_Derivatives}*/
-Curvatures         return(token::T_curvatures); /*{Curvatures,T_curvatures}*/
 DiscMeanCurvature  return(token::T_DiscMeanCurvature); /*{DiscMeanCurvature,T_DiscMeanCurvature}*/
 Laplacian          return(token::T_Laplacian); /*{Laplacian,T_Laplacian}*/
 setvoxelsize       return(token::T_setvoxelsize); /*{setvoxelsize,T_setvoxelsize}*/
@@ -513,10 +511,6 @@ cumhisto          return(token::T_cumhisto); /*{cumhisto,T_cumhisto}*/
 DisplayHisto      return(token::T_DisplayHisto); /*{DisplayHisto,T_DisplayHisto}*/
 
 GenRead           return(token::T_GenRead); /*{GenRead,T_GenRead}*/
-
-
-Matrix            return(token::T_Matrix); /*{Matrix,T_Matrix}*/
-Invert            return(token::T_Invert); /*{Invert,T_Invert}*/
 
 SaveStructuredGrid {return(token::T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
 

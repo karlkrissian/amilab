@@ -92,7 +92,9 @@ bool Driver::parse_stream(std::istream& in,
     }
   }
   catch(std::exception const& e) {
-    err_print( (boost::format("std::exception catched during parsing \n %1%") % e.what()).str().c_str());
+    err_print( "std::exception catched during parsing \n");
+    err_print( e.what());
+//    err_print( (boost::format("std::exception catched during parsing \n %1%") % e.what()).str().c_str());
   }
   catch(...) { 
     err_print("Unknown exception catched during parsing");
@@ -108,14 +110,14 @@ bool Driver::parse_stream(std::istream& in,
 //-----------------------------------------------------------
 bool Driver::parse_file(const std::string &filename)
 {
-//  std::cout << "parse_file" << std::endl;
+  //std::cout << "parse_file for " << filename  << std::endl;
   std::ifstream in(filename.c_str());
   if (!in.good()) return false;
 
-  string current_file_bak          = current_file;
+  string current_file_bak          = this->current_file;
   int    yyiplineno_bak            = yyiplineno;
   int    yyiplineno_lastparser_bak = yyiplineno_lastparser;
-  current_file = filename;
+  this->SetCurrentFile( filename.c_str());
   yyiplineno   = 1;
   yyiplineno_lastparser = yyiplineno;
 
@@ -182,13 +184,15 @@ bool Driver::parse_block( const AmiInstructionBlock::ptr& b )
 //-----------------------------------------------------------
 void Driver::ParseClassBody(const AMIClass::ptr& oclass)
 {
+  string previous_filename = this->current_file;
   if (oclass.get()) {
     // recursive call to possible parent
     this->ParseClassBody(oclass->GetParentClass());
     // call to its body after setting the current filename
-    this->current_file = oclass->GetFileName();
+    this->SetCurrentFile(oclass->GetFileName().c_str());
     parse_block(oclass->GetBody());
   }
+  this->SetCurrentFile(previous_filename.c_str());
 }
 
 //-----------------------------------------------------------
@@ -198,7 +202,6 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 
   int    previous_lineno   = yyiplineno;
   int    previous_lineno_lastparser   = yyiplineno_lastparser;
-  string previous_filename = this->current_file;
  // int    i;
  // char*  name;
 
@@ -228,8 +231,6 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
   // Inheritence need to be recursive
   // Call the class body
   ParseClassBody(oclass);
-//this->current_file = oclass->GetFileName();
-//  parse_block(oclass->GetBody());
 
   // Remove the previous context from the list
   Vars.DeleteLastContext();
@@ -241,7 +242,6 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
   // Restore position and filename
   yyiplineno = previous_lineno;
   yyiplineno_lastparser = previous_lineno_lastparser;
-  this->current_file = previous_filename;
 }
 
 //-----------------------------------------------------------
@@ -302,7 +302,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
   }
 
   // Call the function
-  this->current_file = f->GetFileName();
+  this->SetCurrentFile(f->GetFileName().c_str());
   parse_block(f->GetBody());
 
   // check for a return variable
@@ -321,7 +321,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
   // Restore position and filename
   yyiplineno = previous_lineno;
   yyiplineno_lastparser = previous_lineno_lastparser;
-  this->current_file = previous_filename;
+  this->SetCurrentFile( previous_filename.c_str());
 
   return return_var;
 }
@@ -367,8 +367,8 @@ bool Driver::parse_script(  const char* filename)
 
   if (!newname.IsFileReadable()) 
   {
-    CLASS_MESSAGE((boost::format(" current_filename.GetPath() = %1%").str().c_str()) 
-                % current_filename.GetPath().mb_str());
+    CLASS_MESSAGE((boost::format(" current_filename.GetPath() = %1%")   
+                % current_filename.GetPath().mb_str() ) .str().c_str());
     // try in the directory of the runnning script
     newname.Assign(
             current_filename.GetPath() 

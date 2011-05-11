@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuPropVesCont() \
+{
+  category = "&Vessels"
+  script = "Vessels/PropagateVesselsContours/PropagateVesselsContoursGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&Propagate Contours",script)
+}
+
+AddMenuPropVesCont()
+del AddMenuPropVesCont

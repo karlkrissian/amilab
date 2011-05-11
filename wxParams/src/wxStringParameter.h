@@ -58,6 +58,14 @@ class wxStringParameter : public wxBoxSizer, public wxGenericWidget
 
   void SetToolTip( const wxString& tt);
 
+  void EnableWidget(bool enable = true)
+  {
+    _label->Enable(enable);
+    _text->Enable(enable);
+    _enabled = enable;
+  }
+
+  
 }; // wxStringParameter
 
 

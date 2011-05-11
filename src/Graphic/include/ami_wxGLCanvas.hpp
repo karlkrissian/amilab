@@ -343,6 +343,8 @@ public:
 
   void RemoveSurface( boost::shared_ptr<amilab::SurfacePoly> surf);
 
+  void RemoveObject( amilab::GLObject* obj);
+
   void SetVectors1( InrImage::ptr v1);
   void SetVectors2( InrImage::ptr v2);
 

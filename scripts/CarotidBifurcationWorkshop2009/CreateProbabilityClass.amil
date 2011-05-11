@@ -12,7 +12,8 @@ if (!exists(CreateProbabilityClass)) {
   
   Class CreateProbabilityClass  : public ScriptGui\
   {
-    ::filters=&global::filters
+    import_filters
+    ::filters=&filters
     
     #--------------------------
     proc ::Init() \
@@ -51,7 +52,7 @@ if (!exists(CreateProbabilityClass)) {
       #}
 
       # compute local mean intensity
-      ::lm = localmean2(::input,::localstats_winsize)
+      ::lm <<= localmean2(::input,::localstats_winsize)
 
       # Create local mean intensity map
       # will map intensity from 0 to 10000
@@ -61,10 +62,10 @@ if (!exists(CreateProbabilityClass)) {
       # smooth the mapping
       imap = filter(imap,::localmean_smoothing,0,-1,-1)
       # apply
-      ::lm_map = imap(::lm)
+      ::lm_map <<= imap(::lm)
 
       # Compute local standard deviations
-      ::lsd = localSD2(::input,::lm,::localstats_winsize)
+      ::lsd <<= localSD2(::input,::lm,::localstats_winsize)
 
       if (::lsd_erosion>0.01) {
         morph = filters.ContinuousMorphology()
@@ -73,25 +74,20 @@ if (!exists(CreateProbabilityClass)) {
       }
 
       # map with a "Gaussian"
-      ::lsd_map = exp(-(::lsd*::lsd)/ \
+      ::lsd_map <<= exp(-(::lsd*::lsd)/ \
                                 (::localsd_high*::localsd_high))
 
       # now combine both
-      ::prob = ::lm_map*::lsd_map
+      ::prob <<= ::lm_map*::lsd_map
       #eval "global::"+::prob+" = ::lm_map*::lsd_map;"
 
     }
     
+    #--------------------------
     proc ::set_input(IMAGE im) {
       ::input <<= im
     }
 
-    #--------------------------
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
-    }
-    
     #--------------------------
     proc ::Gui() \
     {

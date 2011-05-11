@@ -1,0 +1,66 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# inc_and_dec_operator.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the operations you can perform with the increment and decrement operator.
+#
+# Operations:   VARIABLE ++    VARIABLE --    ++ VARIABLE    -- VARIABLE
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/CTestClass.amil" # Load regular expression to determine when the
+                             # test fails or passes.
+
+CTestClass CTest
+CTest.Enable()
+OK = 1
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+A=(DOUBLE) 10
+B=(DOUBLE) 10
+printn "A=(DOUBLE) 10 --> A=%1% (ASSIGN_OP)" % A
+printn "B=(DOUBLE) 10 --> B=%1% (ASSIGN_OP)" % B
+
+printn "Postfix increment and decrement operator:"
+A++
+printn  "\tA++ --> A=%1% (INC_OP)" % A
+if(A != 11) {
+  OK = 0
+  printn "ERROR: The increment operator is not working properly."
+}
+
+A--
+printn  "\tA-- --> A=%1% (DEC_OP)" % A
+if(A != 10) {
+  OK = 0
+  printn "ERROR: The decrement operator is not working properly."
+}
+
+printn "Prefix increment and decrement operator:"
+++B
+printn "\t++B --> B=%1% (INC_OP)" % B
+
+if(B != 11) {
+  OK = 0
+  printn "ERROR: The increment operator is not working properly."
+}
+
+--B
+printn  "\t--B --> B=%1% (DEC_OP)" % B
+if(B != 10) {
+  OK = 0
+  printn "ERROR: The decrement operator is not working properly."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+CTest.PrintTestResult( OK )
+
+quit
+
+

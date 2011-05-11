@@ -46,7 +46,7 @@ ENDMACRO(my_add_library)
 # Specifies the number of sources that will be packed in a file. By default, 10
 # files are packaged.
 #-------------------------------------------------------------------------------
-SET(NUMBER_SOURCES_TO_PACKAGE 10 CACHE STRING "Indicates the number of sources to package")
+SET(NUMBER_SOURCES_TO_PACKAGE 1 CACHE STRING "Indicates the number of sources to package")
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -211,6 +211,8 @@ MACRO( ClassUsedName input_name output_name )
   STRING(REGEX REPLACE "<" "__LT__"     ${output_name} ${${input_name}} )
   STRING(REGEX REPLACE ">" "__GT__"     ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE "," "__COMMA__"  ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "::" "__NS__"    ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE " " "__SPACE__"  ${output_name} ${${output_name}} )
 
 ENDMACRO( ClassUsedName)
 #-------------------------------------------------------------------------------

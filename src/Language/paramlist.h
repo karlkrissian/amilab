@@ -18,6 +18,7 @@
 
 //#include "inrimage.hpp"
 #include "DefineClass.hpp"
+#include "AMILabConfig.h"
 
 #include "BasicVariable.h"
 #include "amilab_messages.h"
@@ -30,11 +31,15 @@ extern unsigned char GB_debug;
 #include <vector>
 //using namespace std;
 
+#ifndef __APPLE__
+  template class AMI_DLLEXPORT std::vector<BasicVariable::ptr>;
+#endif // __APPLE__
+
 
 /**
  * Stores a list of parameters from the scripting language
  **/
-class ParamList {
+class AMI_DLLEXPORT ParamList {
 
   DEFINE_CLASS(ParamList);
 
@@ -177,7 +182,7 @@ class ParamListDecl {
       return false;
     }
 
-    // Can't be that strict since there can be automatic convertion ...
+    // Can't be that strict since there can be automatic conversion ...
     for ( i=0;i<GetNumParam();i++ )
     {
       //  pl->GetParam( i, p, t);

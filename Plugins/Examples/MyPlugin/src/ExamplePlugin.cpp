@@ -2,7 +2,8 @@
 // C++ File: ExamplePlugin.cpp
 //
 // Description: This file contains a class of example that contains methods to
-// calculate the factorial of a number and the series of Fibonacci.
+// calculate the factorial of a number and the series of Fibonacci. Also it
+// contains methods to create a sequence integers elements and a simple stack.
 //
 //
 // Author: xXx <xXx@xXx.com>, (C) YYYY
@@ -35,3 +36,34 @@ int ExamplePlugin::Fibonacci(int N)
   return j;
 } // Fibonacci
 
+void ExamplePlugin::AddSequenceElement(int Position, int Value)
+{
+  if (Position < MAXELEMSEQUENCE) {
+    _MySequence.Set(Position,Value);
+  }
+} // AddSequenceElement
+
+int ExamplePlugin::GetSequenceElement(int Position)
+{
+  if ((Position >= 0) && (Position < MAXELEMSEQUENCE)) {
+    return _MySequence.Get(Position);
+  } else {
+    return -1;
+  }
+} // GetSequenceElement
+
+void ExamplePlugin::Push(int Value)
+{
+  _MyStack.Push(Value);
+} // Push
+
+int ExamplePlugin::Pop(void)
+{
+  if(_MyStack.empty()) {
+    return -1;
+  } else {
+    int Value=_MyStack.Top();
+    _MyStack.Pop();
+    return Value;
+  }
+} // Pop  

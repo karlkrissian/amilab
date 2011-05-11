@@ -1,0 +1,121 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+func "ctest/ctest_config.amil" # Load regular expression to determine when the
+                               # test fails or passes.
+
+ctest.Enable()
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# wxfilename.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the wxFileName wrapping.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+MyFileName = wx.wxFileName("c","/tmp/ticket", "ticket", "txt")
+
+printn "Summary:"
+printn "Full path: %1%" % wx.FromWxString(MyFileName.GetFullPath())
+printn "Number of directories: %1%" % MyFileName.GetDirCount()
+
+if(MyFileName.IsOk()) {
+  printn "IsOk?: YES"
+} else {
+  printn "IsOk?: NO"
+}
+
+if(MyFileName.IsRelative()) {
+  printn "IsRelative?: YES";
+} else {
+  printn "IsRelative?: NO"
+}
+
+if(MyFileName.IsAbsolute()) {
+  printn "IsAbsolute?: YES"
+} else {
+  printn "IsAbsolute?: NO"
+}
+
+if(MyFileName.HasVolume()) {
+  printn "HasVolume?: YES (%1%)" % wx.FromWxString(MyFileName.GetVolume())
+} else {
+  printn "HasVolume?: NO"
+}
+
+if(MyFileName.HasName()) {
+  printn "HasName?: YES"
+} else {
+  printn "HasName?: NO"
+}
+
+if(MyFileName.HasExt()) {
+  printn "HasExt?: YES (%1%)" % wx.FromWxString(MyFileName.GetExt())
+} else {
+  printn "HasExt?: NO"
+}
+
+if(MyFileName.DirExists()) {
+  printn "DirExists?: Yes"
+} else {
+  MyFileName.Mkdir(0777,0)
+  printn "DirExists?: NO(Created)"
+  if(MyFileName.DirExists()) {  OK=1; } else { OK=0; }
+}
+
+if(MyFileName.IsDirWritable()) {
+  printn "IsDirWritable?: YES"
+} else {
+  printn "IsDirWritable?: NO"
+}
+
+if(MyFileName.IsDirReadable()) {
+  printn "IsDirReadable?: YES"
+} else {
+  printn "IsDirReadable?: NO"
+}
+
+if(MyFileName.FileExists()) {
+  printn "FileExists?: YES"
+} else {
+  printn "FileExists?: NO"
+}
+
+if(MyFileName.IsFileWritable()) {
+  printn "IsFileWritable?: YES"
+} else {
+  printn "IsFileWritable?: NO"
+}
+
+if(MyFileName.IsFileReadable()) {
+  printn "IsFileReadable?: YES"
+} else {
+  printn "IsFileReadable?: NO"
+}
+
+if(MyFileName.IsFileExecutable()) {
+  printn "IsFileExecutable?: YES"
+} else {
+  printn "IsFileExecutable?: NO"
+}
+
+if(MyFileName.Rmdir()) {
+  printn "Remove dir?: YES"
+} else {
+  printn "Remove dir?: NO"
+  OK=0
+}
+
+MyFileName.Clear()
+printn "Clean the file name"
+
+del MyFileName
+printn "Destroy MyFileName object"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK )
+
+quit
+

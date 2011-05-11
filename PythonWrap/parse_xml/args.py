@@ -29,6 +29,15 @@ arg_parser.add_argument('--wrap_includes', nargs='*',  default=[],  \
 arg_parser.add_argument('--outputdir', default='wrap/',             \
   help='output directory' )
 
+arg_parser.add_argument('--outputhtmldir', default='html/',             \
+  help='Html output directory' )
+
+arg_parser.add_argument('--url', default='http:://',             \
+  help='Sets the URL' )
+
+arg_parser.add_argument('--generate-html',action='store_true',  \
+  help='Generates the html help file of the class(es) to wrap')
+
 arg_parser.add_argument('-r',       action='store_true',    \
   help='Recursively wrap needed classes')
 

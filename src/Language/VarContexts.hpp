@@ -138,6 +138,18 @@ public:
                         wxString const & prefix) const;
 
   /**
+   * \brief Search all AMIObject variables of a given type.
+   * \param type variable type
+   * \return shared pointer of the array of resulting strings
+   */
+  boost::shared_ptr<wxArrayString> SearchAMIObjectTypeVariables(const std::string & type);
+                        
+  void SearchAMIObjectTypeVariablesRecursive( const std::string & type_string,
+                        boost::shared_ptr<wxArrayString>& variables,
+                        const Variables::ptr& context,
+                        wxString const & prefix) const;
+
+  /**
   * 
   * @param type variable type
   * @param name variable name

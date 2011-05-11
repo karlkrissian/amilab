@@ -23,6 +23,7 @@
 
 #include "wrap_wxAuiManager.h"
 #include "wrap_wxAuiNotebook.h"
+#include "wrap_wxAuiPaneInfo.h"
 
 //
 // static member for creating a variable from a ParamList
@@ -162,4 +163,28 @@ BasicVariable::ptr WrapClass_MainFrame::
 {
   wxAuiNotebook* nb =   this->_objectptr->_obj->GetMainBook();
   return AMILabType<wxAuiNotebook>::CreateVar(nb);
+}
+
+//---------------------------------------------------
+//  GetAuiPaneInfo
+//---------------------------------------------------
+void WrapClass_MainFrame::
+      wrap_GetAuiPaneInfo::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(string,"Name of the menu."); 
+  return_comments = "Reference to the AuiPaneInfo";
+}
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_MainFrame::
+      wrap_GetAuiPaneInfo::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  GET_PARAM(string,paneinfo_name,"");
+
+  wxAuiPaneInfo* pi = &(this->_objectptr->_obj->GetAuiManager().GetPane(wxString(paneinfo_name.c_str(), wxConvUTF8)
+));
+  boost::shared_ptr<wxAuiPaneInfo> valptr = boost::shared_ptr<wxAuiPaneInfo>(pi,smartpointer_nodeleter<wxAuiPaneInfo>());
+  return AMILabType<wxAuiPaneInfo>::CreateVarFromSmtPtr(valptr);
 }

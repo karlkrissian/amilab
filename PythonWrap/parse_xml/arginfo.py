@@ -39,6 +39,7 @@ class ArgInfo:
     self.returnstring="ClassHelpAndReturn"
     self.quiet="false"
     self.default=None
+    self.implement_default=False
     
   # Standard Values
   
@@ -55,7 +56,7 @@ class ArgInfo:
     substvar = self.GetSubstName()
     res = "  "
     required="true"
-    if self.default!=None:
+    if self.default!=None and self.implement_default:
       if config.types[self.typeid].GetContext()!=None:
         contextid = config.types[self.typeid].GetContext()
         #if contextid in config.types.keys():
@@ -69,7 +70,7 @@ class ArgInfo:
     else:
       res +=   "{0} {1}".format(substype,substvar)
     res += ";\n"
-    res +=  "  if (!get_val_param<{0} >({1},_p,_n,{3},{4})) {2};\n".format( \
+    res +=  "  if (!AMILabType<{0} >::get_val_param({1},_p,_n,{3},{4})) {2};\n".format( \
         substype,substvar,self.returnstring,required,self.quiet)
     res +=  "  "+typesubst.ConvertValTo(self.typeid,substvar,self.name)+"\n"
     #{1} {0} = ({1}) ({2}>0.5);\n".format(self.name,typename,substvar)
@@ -81,12 +82,18 @@ class ArgInfo:
     else:
       res =  "  {0} {1}".format(self.typename,self.name)
       required="true"
-      if self.default!=None:
+      if self.default!=None and self.implement_default:
         res += " = {0}".format(self.default)
         required="false"
       res += ";\n"
-      res += "  if (!get_val_param<{0} >({1},_p,_n,{3},{4})) {2};\n".format(\
-        self.typename,self.name,self.returnstring,required,self.quiet)
+      shared_type = config.IsSharedPtr(self.typename)
+      if shared_type==None:
+        res += "  if (!AMILabType<{0} >::get_val_param({1},_p,_n,{3},{4})) {2};\n".format(\
+          self.typename,self.name,self.returnstring,required,self.quiet)
+      else:
+        # false parameter value to keep smart pointer deleter
+        res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1},_p,_n,{3},false,{4})) {2};\n".format(\
+          shared_type,self.name,self.returnstring,required,self.quiet)
     return res
   
   # Pointers
@@ -94,7 +101,7 @@ class ArgInfo:
     substype = typesubst.type_substitute[self.typename]
     substvar = self.GetSubstName()
     res =  "  boost::shared_ptr<{0} > {1};\n".format(substype,substvar)
-    res += "  if (!get_val_smtptr_param<{0} >({1},_p,_n,true,false,{3})) {2};\n".format(\
+    res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1},_p,_n,true,false,{3})) {2};\n".format(\
       substype,substvar,self.returnstring,self.quiet)
     # Try to create pointer from smart pointer if available
     conv_res=typesubst.ConvertSmtPtrToPtr(self.typeid,substvar,self.name)
@@ -104,7 +111,7 @@ class ArgInfo:
     else:
       print "Smartpointer to pointer conversion failed for type {0}!".format(self.typename)
       # otherwise convert from value, but could only work for constants???
-      res += "  "+typesubst.ConvertValTo(self.typeid,"*{0}".format(substvar), "{0}_val".format(self.name))+"\n"
+      res += "  "+typesubst.ConvertValTo(self.typeid,"(*{0})".format(substvar), "{0}_val".format(self.name))+"\n"
       res += "  {1}* {0} = &{0}_val;\n".format(self.name,self.typename)
     return res
 
@@ -113,7 +120,7 @@ class ArgInfo:
     substype = typesubst.type_substitute[self.typename]
     substvar = self.GetSubstName()
     res =  "  boost::shared_ptr<{0} > {1};\n".format(substype,substvar)
-    res += "  if (!get_val_smtptr_param<{0} >({1},_p,_n,true,false,{3})) {2};\n".format(\
+    res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1},_p,_n,true,false,{3})) {2};\n".format(\
       substype,substvar,self.returnstring,self.quiet)
     # Try to create pointer from smart pointer if available
     conv_res= typesubst.ConvertSmtPtrToDoublePtr(self.typeid,substvar,self.name)
@@ -123,7 +130,7 @@ class ArgInfo:
     else:
       print "Smartpointer to pointer conversion failed for type {0}!".format(self.typename)
       # otherwise convert from value, but could only work for constants???
-      res += "  "+typesubst.ConvertValTo(self.typeid,"*{0}".format(substvar), "{0}_val".format(self.name))+"\n"
+      res += "  "+typesubst.ConvertValTo(self.typeid,"(*{0})".format(substvar), "{0}_val".format(self.name))+"\n"
       res += "  {1}* {0} = &{0}_val;\n".format(self.name,self.typename)
     return res
 
@@ -133,7 +140,7 @@ class ArgInfo:
     else:
       res = "  {0}* local_{1} = NULL;\n".format(self.typename,self.name)
       res += "  {0}** {1}".format(self.typename,self.name)
-      if self.default==None:
+      if self.default==None or not(self.implement_default):
         addparams=',true'
         res += ";\n"
       else:
@@ -149,7 +156,7 @@ class ArgInfo:
       else:
         addparams+=',false'
       res += "    boost::shared_ptr<{0} > {1}_smtptr;\n".format(self.typename,self.name)
-      res += "    if (!get_val_smtptr_param<{0} >({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
+      res += "    if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
           self.typename,self.name,addparams,self.returnstring,self.quiet)
       res += "    local_{0} = {0}_smtptr.get();\n".format(self.name)
       res += "    {0} = &local_{0};\n".format(self.name)
@@ -163,7 +170,7 @@ class ArgInfo:
       return self.WrapGetParamPointer_subst()
     else:
       res = "  {0}* {1}".format(self.typename,self.name)
-      if self.default==None:
+      if self.default==None or not(self.implement_default):
         addparams=',true'
         res += ";\n"
       else:
@@ -179,7 +186,7 @@ class ArgInfo:
       else:
         addparams+=',false'
       res += "    boost::shared_ptr<{0} > {1}_smtptr;\n".format(self.typename,self.name)
-      res += "    if (!get_val_smtptr_param<{0} >({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
+      res += "    if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
           self.typename,self.name,addparams,self.returnstring,self.quiet)
       res += "    {0} = {0}_smtptr.get();\n".format(self.name)
       res += "  }\n"
@@ -194,16 +201,16 @@ class ArgInfo:
       noconst=',true'
     else:
       noconst=',false'
-    if self.default==None:
+    if self.default==None or not(self.implement_default):
       # no default value
-      res += "  if (!get_val_smtptr_param<{0} >({1}_smtptr,_p,_n,true{2},{4})) {3};\n".format(\
+      res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n,true{2},{4})) {3};\n".format(\
         self.typename,self.name,noconst,self.returnstring,self.quiet)
       if ispointer:
         res += "  {0} {1} = {1}_smtptr.get();\n".format(fulltype,self.name)
       else:
         res += "  {0} {1} = *{1}_smtptr;\n".format(fulltype,self.name)
     else:
-      res += "  if (!get_val_smtptr_param<{0} >({1}_smtptr,_p,_n,false{2},{4})) {3};\n".format(\
+      res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n,false{2},{4})) {3};\n".format(\
         self.typename,self.name,noconst,self.returnstring,self.quiet)
       # deal with default value
       res += "  // Setting default value if no value is returned\n"
@@ -232,7 +239,7 @@ class ArgInfo:
             #print " {0} : {1} {2} {3} ".format(self.default,self.default in config.variables.keys(),config.types[config.variables[self.default]].GetString(),config.types[self.typeid].GetString())
           convertdefault=True
           if  self.default in config.variables.keys():
-            if config.types[config.variables[self.default]].GetString() == config.types[self.typeid].GetString():
+            if config.types[config.variables[self.default]].GetDemangled() == config.types[self.typeid].GetDemangled():
               convertdefault=False
           if not convertdefault:
             # no need to convert, same type
@@ -249,24 +256,24 @@ class ArgInfo:
     return res
   
   def WrapGetParam(self,noconstructor_call,returnstring,quiet):
-    self.typename = config.types[self.typeid].GetString()
+    self.typename = config.types[self.typeid].GetDemangled()
     #print "WrapGetParam {0}, {1}, '{2}'".format(self.name,config.types[self.typeid].GetType(), config.types[self.typeid].GetFullString())
     self.returnstring=returnstring
     self.quiet=quiet
-    if config.types[self.typeid].GetType()=="PointerType":
+    if config.types[self.typeid].GetRealType()=="PointerType":
       if config.types[self.typeid].GetFullString().endswith("* *"):
         res =  self.WrapGetParamDoublePointer(noconstructor_call)
         print "res= ",res
         return res
       else:
         return self.WrapGetParamPointer(noconstructor_call)
-    if config.types[self.typeid].GetType()=="ReferenceType":
+    if config.types[self.typeid].GetRealType()=="ReferenceType":
       return self.WrapGetParamRef(noconstructor_call)
     return self.WrapGetParamValue(noconstructor_call)
 
   # Post-treatment for pointers and references in case of substitution
   def WrapGetParamPost_Pointer_bool(self):
-    res =  "  "+typesubst.ConvertValFrom_bool("*{0}".format(self.name),"*{0}_{1}".format(self.name,"int"))+"\n"
+    res =  "  "+typesubst.ConvertValFrom_bool("(*{0})".format(self.name),"*{0}_{1}".format(self.name,"int"))+"\n"
     return res
 
   def WrapGetParamPost_Pointer_uint(self):
@@ -274,7 +281,7 @@ class ArgInfo:
     return res
 
   def WrapGetParamPost_Pointer(self):
-    typename=config.types[self.typeid].GetString()
+    typename=config.types[self.typeid].GetDemangled()
     if typename in typesubst.type_substitute.keys():
       if typename=="bool":
         return self.WrapGetParamPost_Pointer_bool()

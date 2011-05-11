@@ -1333,6 +1333,7 @@ unsigned char InrImage :: FreePositions( )
 //                           ---------------
 {
 
+  if (!_positions_allocated) return false;
   //cout << "FreePositions() for " << GetName() << std::endl;
 
   // here we will initialize the ImagePositionBase* _positions member
@@ -1782,28 +1783,12 @@ InrImage ::  InrImage( vtkImageData* vtkim)
 
 
   switch ( (vtkim->GetScalarType()) ){
-    case VTK_DOUBLE:
-      if ( _vdim==1 ) { 
-        _format = WT_DOUBLE;
-      } else {
-        _format = WT_DOUBLE_VECTOR;
-      } // end if
-    break;
-    case VTK_FLOAT:
-        _format = WT_FLOAT;
-    break;
-    case VTK_SHORT:
-      _format = WT_SIGNED_SHORT;
-    break;
-    case VTK_UNSIGNED_SHORT:
-      _format = WT_UNSIGNED_SHORT;
-    break;
-    case VTK_INT:
-      _format = WT_SIGNED_INT;
-    break;
-    case VTK_UNSIGNED_INT:
-      _format = WT_UNSIGNED_INT;
-    break;
+    case VTK_DOUBLE:           _format = WT_DOUBLE;          break;
+    case VTK_FLOAT:            _format = WT_FLOAT;           break;
+    case VTK_SHORT:            _format = WT_SIGNED_SHORT;    break;
+    case VTK_UNSIGNED_SHORT:   _format = WT_UNSIGNED_SHORT;  break;
+    case VTK_INT:              _format = WT_SIGNED_INT;      break;
+    case VTK_UNSIGNED_INT:     _format = WT_UNSIGNED_INT;    break;
     case VTK_UNSIGNED_CHAR:
       if ( _vdim==1 ) { 
         _format = WT_UNSIGNED_CHAR;
@@ -1918,7 +1903,7 @@ unsigned char InrImage ::  GetFormatFromAMI(amimage* im, WORDTYPE& type)
      case AMI_VECTOR:
        _vdim = im->GetVDim();
        switch (im->repres) {
-       case AMI_FLOAT  : type = WT_FLOAT_VECTOR;  return 1;
+       case AMI_FLOAT  : type = WT_FLOAT;  return 1;
        case AMI_UNSIGNED_CHAR  : 
       if (_vdim==3) {
        type = WT_RGB;  

@@ -67,8 +67,6 @@ protected:
   Dimension	_hauteur;
   Dimension	_largeur;
 
-//  CPalette*     _palette;
-
   int	_pos_x;
   int	_pos_y;
 
@@ -102,7 +100,7 @@ public:
 
   unsigned char WidgetCreated() { return _widget_created; }
 
-  void  CreeWidget( CPalette* palette);
+//  void  CreeWidget( amilab::CPalette* palette);
 
   void  FreeWidget( );
 

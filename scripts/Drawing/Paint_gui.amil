@@ -33,7 +33,7 @@ Class PaintClass : public ScriptGui {
   
     show ::input
   
-    ::input_draw.PaintCallback(::Draw)
+    ::input_draw.PaintCallback(&::Draw)
   }
   Comments(::Display, "Display the current image")
   
@@ -59,7 +59,7 @@ Class PaintClass : public ScriptGui {
         printn y
         printn z
 
-        ::input._setpos(x,y,z)
+        ::input.setpos(x,y,z)
         ::input.set(::intensity)
         schedule(3,::Update);
       }

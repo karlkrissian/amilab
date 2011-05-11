@@ -1328,6 +1328,7 @@ public:
   // au point (x,y,z)  sur toutes les coupes
 
   ///
+  
   void     DessineChampCercles();
   //       -------------------
 

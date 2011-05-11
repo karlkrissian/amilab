@@ -1,0 +1,355 @@
+
+func "Common/ScriptGui"
+
+if (!exists(SkeletonClass)) {
+
+  Class SkeletonClass : public ScriptGui \
+  {
+    
+    func "ConnectedComponents/FillHoles"
+    func "SyntheticImages/AddSphere"
+    
+    
+    #-----------------------------------------------------------
+
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+      ::input_name   = "","Name of the input image variable"
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+"/Centerlines/Skeleton/Doc/Skeleton/index.html"
+
+      ::UseZoom      = UCHAR(1), "Apply the skeleton only to the current zoom of the input image viewer"
+    
+      ::Threshold    = 0, "Intensity threshold of the input image to select voxels of higher intensity for the skeleton"
+      ::FillHoles    = UCHAR(0), "Fill the holes in the binary image before skeletonization"
+  
+    
+      # choose the Euclidean distance transform algorithm:
+      #
+      ::InputIntensity = UCHAR(0), "Use input intensity for ordering the skeletonization, instead of Euclidean distance to the object borders"
+
+      # Ordering distance Transform
+      # 0: vtkPropDaniel2: can produce seg fault ??
+      # 1: Fast Marching
+      ::Ordering     = INT(1), "Type of ordering function"
+      ::DTmin        = -10, "minimal distance for Euclidean Distance Transform"
+      ::DTmax        = 10, "maximal distance for Euclidean Distance Transform"
+
+      ::endpoint_type = INT(0), "Type of endpoint criterion"
+
+      ::linemethod   = INT(0)
+  
+      #::prune        = UCHAR(0)
+      ::prunesize    = 2
+
+      ::connect_dist = 0.1
+      ::connect_dir  = 1
+  
+      ::UseFlux      = UCHAR(0)
+  
+  
+      ::path_mode = INT(1) # 0: use centerlines
+                              # 1: use maximal response
+      ::fm_mode = INT(1) # 0: dijkstra
+                            # 1: Sethian FM
+      ::smooth_paths = UCHAR(1)
+      ::smooth_coeff = 0.1
+      ::smooth_data  = 0.01
+      ::smooth_it    = INT(10)
+  
+      ::display_3D = UCHAR(1)
+  
+      ::estimated_start = UCHAR(0)
+  
+    }
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::inputmin          = min(::input)
+        ::inputmax          = max(::input)
+        ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
+      }
+
+
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    //---------------------------------------------------
+    proc ::GuiUpdateIntensityLimits( NUM _min, NUM _max) {
+      ::win.FloatConstraints(::Threshold_id,_min,_max,(_max-_min)/2)
+      ::win.Update(-1)
+    }
+
+    #--------------------------------------------------
+    proc ::SetMaxRep(STRING imname) {
+      ::maxrep = Image(imname)
+      printn "**** MAXREP loaded ******"
+    }
+    
+    #--------------------------------------------------
+    proc ::Execute() {
+
+      if (!exists(::input)) {
+        # load the input image
+        ::load_input()
+      }
+
+      print "Entering Skel_Execute\n"
+      if ((::UseZoom)&&(exists(::input_draw))) {
+        _i <<= ::input[::input_draw]
+      } else {
+        _i = ::input
+      }
+      _i   = _i-::Threshold
+    
+    
+      if (::FillHoles) {
+        _res = _i
+        FillHolesPositive(_i,&_res)
+        _i = _res
+        del _res
+      }
+    
+      ::i <<= _i
+      ::bin <<= (UCHAR) (_i>0)*255
+    
+      if (::InputIntensity) {
+        ::idist <<= _i
+      } else {
+        if (::Ordering==0) {
+          if (_i.tz==1) {
+            printn "vtkPropDanielsson2 not working well in 2D, canceled"
+            ::idist <<= _i
+          } else {
+            # compute distance inside the structure
+            print "Compute Danielsson distance\n"
+            ::idist <<= vtkPropDaniel2(_i,0,::DTmin,::DTmax)
+          }
+        } 
+
+        if (::Ordering==1) {
+            # compute distance inside the structure
+            printn "Compute Fast Marching distance"
+            initim = IsosurfDist(_i,0)
+            ::idist <<= vtkFastMarching((_i>0),initim,::DTmax)
+        } 
+
+        #::idist = vtkPropDanielsson(_res,-1,50)
+      }
+    
+    #  show ::idist
+      print "Compute Skeleton\n"
+      ::output <<= Skeleton(::bin,::idist,0,1000,\
+                                       ::endpoint_type+1)
+      
+      print "Leaving CreateSkeleton\n"
+    
+      ::Lines()
+    }
+    Comments(::Execute,"Run the skeletonization algorithm")
+
+
+    #---------------------------------------------------
+    proc ::Lines() \
+    {
+      if (exists(::lines))       { del ::lines; }
+      if (exists(::res_draw))    { del ::res_draw; }
+      if (exists(::res))         { del ::res; }
+    
+      if (::linemethod==0) {
+        ::lines = Skeleton2lines(::output)
+      } else {
+        ::lines = global::vtkSkeleton2Lines(::output)
+      }
+    
+      ::res = ::lines
+      ::res.SetColor(0,0,0)
+      #if (::prune) {
+      #  ::slines_prune = \
+      #    PruneLines(::slines,::prunesize)
+      #}
+    }
+    
+    #---------------------------------------------------
+    proc ::Smooth_Lines() {
+      if (exists(::res)) {
+        if (exists(::slines)) { 
+          if (exists(::res_draw)) {
+            ::res_draw -= ::slines; 
+          }
+          del ::slines;
+        }
+        ::slines  = SmoothLines(::res)
+        if (exists(::res_draw)) {
+          ::res_draw -= ::res
+        }
+        del ::res
+        ::res = ::slines
+        if (exists(::res_draw)) {
+          ::res_draw += ::res
+        }
+      }
+    }
+        
+    #---------------------------------------------------
+    proc ::SelectPrune() {
+      func "Centerlines/Prune"
+      if (exists(::res)) {
+        SelectPrune(&::res,::prunesize)
+        if (exists(::res_draw)) {
+          ::res_draw.Paint()
+        }
+      }
+    }
+    #---------------------------------------------------
+    proc ::RemovePrune() {
+      if (exists(::res)) {
+        ::res.RemoveSelection()
+        if (exists(::res_draw)) {
+          ::res_draw.Paint()
+        }
+      }
+    }
+    
+    #---------------------------------------------------
+    proc ::ConnectLines() {
+      ::res <<= ::res.ConnectLines(::connect_dist,::connect_dir)
+    }
+    
+    #---------------------------------------------------
+    proc ::Display() {
+        show ::input
+        if (exists(::output)) {
+          show ::output
+          ::output_draw.update()
+          ::input_draw.compare(&::output_draw)
+        }
+        #::res.save "skeleton_result.vtk"
+        if exists(::res) {
+          if (!exists(::res_draw)) {
+            show ::res
+          }
+          ::input_draw.setGLwin(&::res_draw)
+        }
+    }
+    Comments(::Display,"Displays the result")
+
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("Skeleton",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("Skeleton")
+      }
+      
+      ::win.BeginHorizontal()
+        ::AddBitmapButton(&::win, &::icons._Apply,     32, "Execute")
+        ::win.SetPositionProp(-1,0)
+        ::AddBitmapButton(&::win, &::icons._Show,      32, "Display")
+        ::win.SetPositionProp(-1,0)
+      ::win.EndHorizontal()
+
+      ::win.BeginBook()
+      ::win.AddPage("Init")
+    
+        # set the input image
+        ::win.BeginHorizontal()
+          ::win.AddImageChoice( &::input_name, "Input")
+          ::AddBitmapButton(&::win, &::icons._Copy,   32, "load_input")
+          ::win.SetPositionProp(-1,0)
+        ::win.EndHorizontal()
+
+        ::win.AddBoolean( &::UseZoom,"Use Zoom")
+        
+        # TODO: set the limits after reading the input image
+        ::Threshold_id = ::win.AddFloat( &::Threshold,  "Threshold",  -1000,1000)
+        ::win.AddBoolean( &::FillHoles, "Fill Holes")
+    
+        ept_id = ::win.AddEnum( &::endpoint_type, "Endpoint type")
+          ::win.AddEnumChoice(ept_id,"line")
+          ::win.AddEnumChoice(ept_id,"surface")
+          ::win.AddEnumChoice(ept_id,"line \& surface")
+      
+      ::win.AddPage("Ordering")
+    
+        ::win.AddBoolean( &::InputIntensity, "Use input intensity")
+    
+        ::win.BeginBoxPanel("Create sorting weights")
+          dt_id = ::win.AddEnum( &::Ordering,"Ordering")
+            ::win.AddEnumChoice(dt_id,"vtkPropDaniel2")
+            ::win.AddEnumChoice(dt_id,"Fast Marching")
+          ::win.AddFloat( &::DTmin,  "DTmin", -100,0)
+          ::win.AddFloat( &::DTmax,  "DTmax", 0,100)
+          flux_id = ::win.AddBoolean( &::UseFlux, "Use Flux")
+        ::win.EndBoxPanel()
+      
+      ::win.AddPage("Lines")
+        ::id = ::win.AddEnum( &::linemethod, "Line method")
+        ::win.AddEnumChoice(::id,"Skeleton2lines")
+        ::win.AddEnumChoice(::id,"vtkSkeleton2Lines")
+
+        ::win.BeginBook()
+          ::win.AddPage("Pruning")
+            prunesize_id = ::win.AddFloat( &::prunesize,  "Prune size", 0.1,20)
+            ::win.BeginHorizontal()
+              prunesel_id  = ::win.AddButton( "Select", ::SelectPrune)
+              prunerem_id  = ::win.AddButton( "Remove", ::RemovePrune)
+            ::win.EndHorizontal()
+
+          ::win.AddPage("Connecting")
+            ::win.BeginBoxPanel("Parameters")
+              ::win.AddFloat( &::connect_dist,  "Distance", 0,5)
+              ::win.AddFloat( &::connect_dir,  "Direction", -2,2)
+            ::win.EndBoxPanel()
+            ::win.AddButton("Connect Lines",  &::ConnectLines)
+
+          ::win.AddPage("Smoothing")
+            ::win.BeginBoxPanel("Parameters")
+              ::win.AddBoolean( &::smooth_paths)
+              ::win.AddFloat( &::smooth_coeff,  "smooth_coeff", 0.01,1)
+              ::win.AddFloat( &::smooth_data,  "data_attach_coeff", 0.01,1)
+              ::win.AddInt( &::smooth_it,  "Iterations", 1,100)
+            ::win.EndBoxPanel()
+            ::win.AddButton("Smooth Lines",  &::Smooth_Lines)
+          ::win.EndBook()
+    
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+
+    
+      ::win.EndBook()
+    
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

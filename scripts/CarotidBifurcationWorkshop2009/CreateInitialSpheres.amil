@@ -52,6 +52,12 @@ if (!exists(CreateInitialSpheresClass)) {
       }
       if ((s2_mean>1150)||((s1_mean+s3_mean)/2<(s2_mean+100))) {
         ::pt2_OK = 1
+      } else {
+        mess =  "s1_mean = %1%" % s1_mean
+        mess = mess+ "s2_mean = %1%" % s2_mean
+        mess = mess+ "s3_mean = %1%" % s3_mean
+        InfoDialog mess
+        #::pt2_OK = 1 # for now continue anyway
       }
       if ((s3_mean>1150)||((s2_mean+s1_mean)/2<(s3_mean+100))) {
         ::pt3_OK = 1

@@ -1,26 +1,39 @@
 
 #include "ami_format.h"
 #include <boost/format.hpp>
+#include <string>
+//#include <stdio.h>
 
 namespace ami {
+  
+  class AmiString {
+    public:
+      std::string _st;
+  };
+  
   //----------------------------------
   format::format(const char* st)
   {
-    _boost_format = (void*) new boost::format(st);
+     boost::format* f = new boost::format(st);
+    // avoid exceptions
+    f->exceptions( boost::io::all_error_bits ^ ( boost::io::too_many_args_bit | boost::io::too_few_args_bit )  );
+    _boost_format = (void*) f;
+    _st = new AmiString();
   }
 
   //----------------------------------
   format::~format()
   {
     delete static_cast<boost::format*>(_boost_format);
+    delete _st;
   }
 
   //----------------------------------
   format& format::operator%(const char* st)
   {
-    boost::format* f = (boost::format*)(_boost_format);
+    boost::format* f = static_cast<boost::format*>(_boost_format);
 
-    *f = *f % st;
+    (*f) = (*f) % st;
     return *this;
   }
 
@@ -51,7 +64,10 @@ namespace ami {
   //----------------------------------
   const char* format::GetString() const
   {
+//printf("GetString ..\n");
     boost::format* f = static_cast<boost::format*>(_boost_format);
-    return (*f).str().c_str();
+    _st->_st = (*f).str();
+//printf("GetString ok\n");
+    return _st->_st.c_str();
   }
 }

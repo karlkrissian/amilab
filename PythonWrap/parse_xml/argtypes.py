@@ -14,11 +14,16 @@ class ArgTypeBase:
     self._name=""
     self._id=0
     self._context=None
+    self.demangled=None
 
   def SetType(self,t):
     self._type=t
   
   def GetType(self):
+    return self._type
+
+  def GetRealType(self):
+    #print "ArgTypeBase::GetRealType()"
     return self._type
     
   def SetName(self,n):
@@ -27,28 +32,42 @@ class ArgTypeBase:
   def GetAbstract(self):
     return None
     
+  def SetDemangled(self,d):
+    self.demangled = d
+
+  def GetDemangled(self):
+    if self.demangled!=None:
+      return self.demangled
+    else:
+      return self.GetString()
+
   def SetId(self,_id):
     self._id = _id
 
   def GetId(self):
     return self._id
+
   def SetRefTypeId(self,t):
     self._reftypeid=t
+  
+  def GetRefTypeId(self):
+    return self._reftypeid
 
   def GetFullString(self):
-    return self._name
+    return self.GetDemangled()
 
   def GetMainTypeId(self):
     return self._id
 
   def GetString(self):
+    #print "ArgTypeBase::GetString()"
     return self._name
     
   def IsConst(self):
     return False
     
   def SetContext(self,context):
-    #utils.WarningMessage(" type {0} context {1} ".format(self._name,context) )
+    utils.WarningMessage(" type {0} context {1} ".format(self._name,context) )
     self._context = context
     
   def GetContext(self):
@@ -70,9 +89,36 @@ class ClassInfo(ArgTypeBase):
     self.fileid=""
     self.public_members=wrap_class.PublicMembers()
   
+  def GetString(self):
+    if self._context != None:
+      if self._context in config.types.keys() and self._context!="_1":
+        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
+      else:
+        #print "context = ",self._context," not recognized"
+        return self._name
+    else:
+      #print "no context for class ",self._name
+      return self._name
+  
   def GetAbstract(self):
     return self.abstract=="1"
 
+# organize a little bit the information
+#------------------------------
+class NamespaceInfo(ArgTypeBase):
+  def __init__(self):
+    ArgTypeBase.__init__(self) 
+    self._type="Namespace"
+  
+  def GetString(self):
+    if self._context != None:
+      if self._context in config.types.keys() and self._context!="_1":
+        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
+      else:
+        return self._name
+    else:
+      return self._name
+  
 
 #------------------------------
 class ArgumentInfo:
@@ -92,7 +138,18 @@ class TypedefInfo(ArgTypeBase):
     ArgTypeBase.__init__(self) 
     self._type="Typedef"
     
+  def GetRealType(self):
+    #print "TypedefInfo::GetRealType()"
+    if (self._name not in config.available_classes) and (self._reftypeid in config.types.keys()):
+      return config.types[self._reftypeid].GetType()
+    else:
+      return self.GetType()
+
   def GetString(self):
+    # deal with typedef inside a class ...
+    if self._context != None:
+      if self._context in config.types.keys() and self._context!="_1":
+        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
     if self._reftypeid in config.types.keys():
       #print config.types[self._reftypeid].GetString()
       # if member typedef (or function), keep the typedef name
@@ -100,6 +157,19 @@ class TypedefInfo(ArgTypeBase):
         typename=self._name
       else:
         typename=config.types[self._reftypeid].GetString()
+    else:
+      typename=self._reftypeid
+    return typename
+
+
+  def GetFullString(self):
+    if self._reftypeid in config.types.keys():
+      #print config.types[self._reftypeid].GetString()
+      # if member typedef (or function), keep the typedef name
+      if config.types[self._reftypeid].GetString()=="__MethodType__":
+        typename=self._name
+      else:
+        typename=config.types[self._reftypeid].GetFullString()
     else:
       typename=self._reftypeid
     return typename
@@ -140,7 +210,7 @@ class EnumerationInfo(ArgTypeBase):
 
   def GetString(self):
     if self._context != None:
-      if self._context in config.types.keys():
+      if self._context in config.types.keys() and self._context!="_1":
         return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
       else:
         return self._name
@@ -214,6 +284,13 @@ class CvQualifiedTypeInfo(ArgTypeBase):
       typename=self._reftypeid
     return typename
 
+  def GetDemangled(self):
+    if self._reftypeid in config.types.keys():
+      typename=config.types[self._reftypeid].GetDemangled()
+    else:
+      typename=self._reftypeid
+    return typename
+
   def GetAbstract(self):
     if self._reftypeid in config.types.keys():
       return config.types[self._reftypeid].GetAbstract()
@@ -241,9 +318,19 @@ class ReferenceTypeInfo(ArgTypeBase):
       typename=self._reftypeid
     return typename+" &"
 
+  def IsConst(self):
+    return config.types[self._reftypeid].IsConst()
+  
   def GetString(self):
     if self._reftypeid in config.types.keys():
       typename=config.types[self._reftypeid].GetString()
+    else:
+      typename=self._reftypeid
+    return typename
+
+  def GetDemangled(self):
+    if self._reftypeid in config.types.keys():
+      typename=config.types[self._reftypeid].GetDemangled()
     else:
       typename=self._reftypeid
     return typename
@@ -278,8 +365,16 @@ class PointerTypeInfo(ArgTypeBase):
       typename=self._reftypeid
     return typename
 
+  def GetDemangled(self):
+    if self._reftypeid in config.types.keys():
+      typename=config.types[self._reftypeid].GetDemangled()
+    else:
+      typename=self._reftypeid
+    return typename
+
   def GetMainTypeId(self):
     if self._reftypeid in config.types.keys():
       return config.types[self._reftypeid].GetMainTypeId()
     else:
       return self.GetId()
+

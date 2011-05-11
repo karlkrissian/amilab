@@ -1028,7 +1028,7 @@ void DessinImage::InitPositionImages( )
 BEGIN_EVENT_TABLE(DessinImage, DessinImageBase)
 //    EVT_MENU(ID_MenuImage_Display,   DessinImage::OnQuit)
 //    EVT_MENU(ID_MenuImage_Reload,    DessinImage::CB_relire)
-    EVT_MENU(ID_MenuImage_Compare,   DessinImage::CB_comparer)
+//    EVT_MENU(ID_MenuImage_Compare,   DessinImage::CB_comparer)
 //    EVT_MENU(ID_MenuImage_VoxelSize, DessinImage::CB_voxel)
 //    EVT_MENU(ID_MenuImage_info,      DessinImage::CB_image_info)
 //    EVT_MENU(ID_MenuImage_Save_param,DessinImage::CB_sauver_param)
@@ -2734,7 +2734,11 @@ DessinImage::~DessinImage()
 //                       -----------
 {
 //    int i;
-  
+  // Close GL window if owned
+  if (_GLWindow0.get())
+    CB_CloseGL(this);
+
+
   Si GB_debug AlorsFait printf("~DessinImage()  %s \n",
                    (char*)_name);
 
@@ -4699,7 +4703,7 @@ void DessinImage::SetGLWindow( Viewer3D_ptr& glwin)
 
 //----------------------------------------------------------------
 void DessinImage::Paint( unsigned char affiche)
-//                            -----
+//                -----
 {
   //wxPaintDC pdc(_drawing_area);
   if (!this->IsShown()) {

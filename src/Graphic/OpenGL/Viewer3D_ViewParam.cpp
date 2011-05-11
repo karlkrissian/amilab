@@ -184,7 +184,7 @@ void Viewer3D_ViewParam::CB_XY_proj( void* cd)
 //                        ---------
 {
     Viewer3D* tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* glc = tgl->m_canvas;
+    ami_wxGLCanvas::ptr glc = tgl->m_canvas;
     GLdouble    matrix[4][4];
 
   // Calcul de la nouvelle rotation de l'objet
@@ -213,7 +213,7 @@ void Viewer3D_ViewParam::CB_XZ_proj( void* cd)
 //                        ---------
 {
     Viewer3D* tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* glc = tgl->m_canvas;
+    ami_wxGLCanvas::ptr glc = tgl->m_canvas;
     GLdouble    matrix[4][4];
 
   // Calcul de la nouvelle rotation de l'objet
@@ -242,7 +242,7 @@ void Viewer3D_ViewParam::CB_YZ_proj( void* cd)
 //                        ---------
 {
     Viewer3D* tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* glc = tgl->m_canvas;
+    ami_wxGLCanvas::ptr glc = tgl->m_canvas;
     GLdouble    matrix[4][4];
 
   // Calcul de la nouvelle rotation de l'objet
@@ -270,7 +270,7 @@ void Viewer3D_ViewParam::CB_YZ_proj( void* cd)
 void Viewer3D_ViewParam::CB_rotX_plus( void* cd)
 {
   Viewer3D* tgl = (Viewer3D*) cd;
-  ami_wxGLCanvas* glc = tgl->m_canvas;
+  ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   glc->UserRotate(45,0,0);
   glc->Paint();
@@ -282,7 +282,7 @@ void Viewer3D_ViewParam::CB_rotX_plus( void* cd)
 void Viewer3D_ViewParam::CB_rotY_plus( void* cd)
 {
     Viewer3D* tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* glc = tgl->m_canvas;
+    ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   glc->UserRotate(0,45,0);
   glc->Paint();
@@ -293,7 +293,7 @@ void Viewer3D_ViewParam::CB_rotY_plus( void* cd)
 void Viewer3D_ViewParam::CB_rotZ_plus( void* cd)
 {
     Viewer3D* tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* glc = tgl->m_canvas;
+    ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   glc->UserRotate(0,0,45);
   glc->Paint();
@@ -305,7 +305,7 @@ void Viewer3D_ViewParam::CB_rotZ_plus( void* cd)
 void Viewer3D_ViewParam::CB_rotX_moins(  void* cd)
 {
     Viewer3D* tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* glc = tgl->m_canvas;
+    ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   glc->UserRotate(-45,0,0);
   glc->Paint();
@@ -317,7 +317,7 @@ void Viewer3D_ViewParam::CB_rotX_moins(  void* cd)
 void Viewer3D_ViewParam::CB_rotY_moins( void* cd)
 {
     Viewer3D* tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* glc = tgl->m_canvas;
+    ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   glc->UserRotate(0,-45,0);
   glc->Paint();
@@ -328,7 +328,7 @@ void Viewer3D_ViewParam::CB_rotY_moins( void* cd)
 void Viewer3D_ViewParam::CB_rotZ_moins( void* cd)
 {
     Viewer3D* tgl = (Viewer3D*) cd;
-    ami_wxGLCanvas* glc = tgl->m_canvas;
+    ami_wxGLCanvas::ptr glc = tgl->m_canvas;
 
   glc->UserRotate(0,0,-45);
   glc->Paint();

@@ -39,10 +39,15 @@ Class vtktest_TPlaneClass : public ScriptGui \
   #----------------------------
   proc ::ScanDir() \
   {
+    ::vtkReaders = VarVector()
     ::PlaneActors = VarVector()
     ::ImResample = VarVector()
     ::vtkdir = vtk.vtkDirectory.New()
-    res = ::vtkdir.Open(::inputdir_name)
+    printn " inputdir_name = %1%" % ::inputdir_name
+    wxf = wx.wxFileName(::inputdir_name)
+    dirname=wxf.GetVolume().c_str()+":"+wxf.GetFullPath(wx.wxPATH_UNIX).c_str()+"/"
+    printn "dirname %1%" % dirname
+    res = ::vtkdir.Open(dirname)
     ::vtkreaderfactory = vtk.vtkImageReader2Factory.New()
     if (res==1) {
       nbfiles = ::vtkdir.GetNumberOfFiles()
@@ -53,13 +58,17 @@ Class vtktest_TPlaneClass : public ScriptGui \
         # check if vtk can read the image
         #::vtkreaderfactory.CreateImageReader2(
         #          ::inputdir_name+"/"+file)
-        if (exists(::vtkreader)) { ::vtkreader.Delete(); del ::vtkreader; }
+        if (exists(::vtkreader)) {
+          #::vtkreader.Delete();
+          del ::vtkreader; 
+        }
         ::vtkreader = vtk.vtkJPEGReader.New()
         ::vtkreader.GetOutput().ReleaseDataFlagOn()
         filename=::inputdir_name+"/"+file
         ok = ::vtkreader.CanReadFile(filename)
         if (ok>0.5)\
         {
+          ::vtkReaders.push_back(&::vtkreader)
           SetStatusText("Reading image %1%" % file)
 
           # Read JPEG image
@@ -75,13 +84,16 @@ Class vtktest_TPlaneClass : public ScriptGui \
           printn " Downsample factor = %1%" % f
 
           # Rescale the image
-          if (exists(imresample)) { imresample.Delete(); del imresample; }
+          if (exists(imresample)) { 
+            #imresample.Delete(); 
+            del imresample; 
+          }
           imresample = vtk.vtkImageResample.New()
-          ::ImResample.push_back(&imresample)
           imresample.GetOutput().ReleaseDataFlagOn()
+          ::ImResample.push_back(&imresample)
           imresample.SetAxisMagnificationFactor(0,1.0/f)
           imresample.SetAxisMagnificationFactor(1,1.0/f)
-          imresample.SetInput(&::vtkreader.GetOutput())
+          imresample.SetInputConnection(&::vtkreader.GetOutputPort())
           imsize = ((FLOAT)::vtkreader.GetOutput().GetActualMemorySize())/1000
           total_imsize += imsize
           printn "input image size = %1% Mb" %  imsize
@@ -98,7 +110,8 @@ Class vtktest_TPlaneClass : public ScriptGui \
           print "dimensions %1% x" % dim[0] + " %1%" % dim[1]
           printn "--> %1% x" % newdim[0] + " %1%" % newdim[1]
           atext = vtk.vtkTexture.New()
-          atext.SetInput(&imresample.GetOutput())
+          
+          atext.SetInputConnection(&imresample.GetOutputPort())
           #atext.GetOutput().ReleaseDataFlagOn()
           #atext.SetInput(&vtkim1)
           #atext.InterpolateOn()
@@ -115,7 +128,10 @@ Class vtktest_TPlaneClass : public ScriptGui \
           del planeActor
           planeMapper.Delete(); del planeMapper
           plane.Delete(); del plane
-          atext.Delete(); del atext
+          atext.ReleaseDataFlagOn()
+          #atext.Delete();
+          printn "Texture ref count %1%" % atext.GetReferenceCount()
+          del atext
         } # end if
       } # end for
       SetProgress(0)
@@ -218,9 +234,12 @@ Class vtktest_TPlaneClass : public ScriptGui \
     # Add the actors to the renderer, set the background and size
     if (::PlaneActors.size()==0) {
       ::ren.AddActor(&planeActor)
+      planeActor.Delete()
     } else {
       for n = 0 to ::PlaneActors.size()-1 {
         ::ren.AddActor(&::PlaneActors[n])
+        # Decrease reference counter
+        ::PlaneActors[n].Delete()
       }
     }
     ::ren.SetBackground(0.1, 0.2, 0.4)
@@ -237,6 +256,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
     #iren.Initialize()
     interact = vtk.vtkInteractorStyleTrackballCamera.New()
     ::renwin_interact.SetInteractorStyle(&interact)
+    interact.Delete()
     ::renwin.Render()
     #iren.Start()
   }
@@ -277,54 +297,64 @@ Class vtktest_TPlaneClass : public ScriptGui \
   # 3 back to original position 0.5 sec.
   proc ::CB_Show() \
   {
-    currenttime = wx.wxDateTime.UNow()
-    diff=currenttime-::inittime
-    diffsec = diff.GetMilliseconds().ToDouble()/1000
-    current_scale = vector_double(3)
-    current_pos   = vector_double(3)
-    fx = ::ImResample[::selected_image].GetAxisMagnificationFactor(0)
-    fy = ::ImResample[::selected_image].GetAxisMagnificationFactor(1)
-    # initial phase
-    if (diffsec<0.5) {
-      for i=0 to 2  {
-        current_scale[i] = ::initscale[i]+ diffsec/0.5*(::finalscale[i]-::initscale[i])
-        current_pos[i] = ::initpos[i]+ diffsec/0.5*(::finalpos[i]-::initpos[i])
+    if (::showing) {
+      currenttime = wx.wxDateTime.UNow()
+      diff=currenttime-::inittime
+      diffsec = diff.GetMilliseconds().ToDouble()/1000
+      current_scale = vector_double(3)
+      current_pos   = vector_double(3)
+      #fx = ::ImResample[::selected_image].GetAxisMagnificationFactor(0)
+      #fy = ::ImResample[::selected_image].GetAxisMagnificationFactor(1)
+      # initial phase
+      if (diffsec<0.5) {
+        for i=0 to 2  {
+          current_scale[i] = ::initscale[i]+ diffsec/0.5*(::finalscale[i]-::initscale[i])
+          current_pos[i] = ::initpos[i]+ diffsec/0.5*(::finalpos[i]-::initpos[i])
+        }
+        ::cam_interp.InterpolateCamera(diffsec/0.5,&::ren.GetActiveCamera())
       }
-      ::cam_interp.InterpolateCamera(diffsec/0.5,&::ren.GetActiveCamera())
-    }
-    # 3 seconds pause
-    if (diffsec>=0.5)&&(diffsec<=3.5) {
-      if (fx!=1)||(fy!=1) {
-        ::ImResample[::selected_image].SetAxisMagnificationFactor(0,1)
-        ::ImResample[::selected_image].SetAxisMagnificationFactor(1,1)
+      # 3 seconds pause
+      if (diffsec>=0.5)&&(diffsec<=3.5) {
+        #if (fx!=1)||(fy!=1) {
+        #}
+        ::cam_interp.InterpolateCamera(1,&::ren.GetActiveCamera())
+        current_scale = ::finalscale
+        current_pos   = ::finalpos
       }
-      ::cam_interp.InterpolateCamera(1,&::ren.GetActiveCamera())
-      current_scale = ::finalscale
-      current_pos   = ::finalpos
-    }
-    # stop
-    if (diffsec>=4) {
-      diffsec = 4
-      ::timer.Stop()
-    }
-    # final phase
-    if (diffsec>3.5) {
-      if (fx!=::initfx)||(fy!=::initfy) {
-        ::ImResample[::selected_image].SetAxisMagnificationFactor(0,::initfx)
-        ::ImResample[::selected_image].SetAxisMagnificationFactor(1,::initfy)
+      # stop
+      if (diffsec>=4) {
+        printn "*"
+        diffsec = 4
+        ::timer.Stop()
+        n = ::selected_image
+        ::vtkreader.GetOutput().ReleaseDataFlagOn()
+        ::PlaneActors[n].SetTexture(&::inittexture)
+        ::fulltexture.RemoveInputConnection(0,&::vtkReaders[n].GetOutputPort())
+        ::fulltexture.ReleaseGraphicsResources(&::renwin)
+        ::fulltexture.Delete()
+        del ::inittexture
+        del ::fulltexture
+  
+        #::PlaneActors[::selected_image].GetTexture().RemoveInputConnection(0,&::vtkReaders[::selected_image].GetOutputPort())
+        #::PlaneActors[::selected_image].GetTexture().SetInputConnection(&::ImResample[::selected_image].GetOutputPort())
+        #::ImResample[::selected_image].SetAxisMagnificationFactor(0,::initfx)
+        #::ImResample[::selected_image].SetAxisMagnificationFactor(1,::initfy)
       }
-      for i=0 to 2  {
-        current_scale[i] = ::finalscale[i]+ (diffsec-3.5)/0.5*(::initscale[i]-::finalscale[i])
-        current_pos[i] = ::finalpos[i]+ (diffsec-3.5)/0.5*(::initpos[i]-::finalpos[i])
+      # final phase
+      if (diffsec>3.5) {
+        for i=0 to 2  {
+          current_scale[i] = ::finalscale[i]+ (diffsec-3.5)/0.5*(::initscale[i]-::finalscale[i])
+          current_pos[i] = ::finalpos[i]+ (diffsec-3.5)/0.5*(::initpos[i]-::finalpos[i])
+        }
+        ::cam_interp.InterpolateCamera(1.0-(diffsec-3.5)/0.5,&::ren.GetActiveCamera())
       }
-      ::cam_interp.InterpolateCamera(1.0-(diffsec-3.5)/0.5,&::ren.GetActiveCamera())
-   }
-    #::PlaneActors[::selected_image].RotateY(::rot_angle-prevangle)
-    ::PlaneActors[::selected_image].SetScale(   &current_scale[0])
-    ::PlaneActors[::selected_image].SetPosition(&current_pos[0])
-    ::renwin.Render()
-    if (diffsec==4) {
-      ::showing = false
+      #::PlaneActors[::selected_image].RotateY(::rot_angle-prevangle)
+      ::PlaneActors[::selected_image].SetScale(   &current_scale[0])
+      ::PlaneActors[::selected_image].SetPosition(&current_pos[0])
+      ::renwin.Render()
+      if (diffsec==4) {
+        ::showing = false
+      }
     }
   }
 
@@ -338,8 +368,6 @@ Class vtktest_TPlaneClass : public ScriptGui \
       ::timer = wx.wxTimer(&::evh)
       ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
       ::interval = 0.1
-      ::inittime = wx.wxDateTime.UNow()
-      ::timer.Start(::interval*1000)
       ::initpos = vector_double(3)
       ::initscale = vector_double(3)
       ::PlaneActors[::selected_image].GetPosition(&::initpos[0])
@@ -362,6 +390,30 @@ Class vtktest_TPlaneClass : public ScriptGui \
 
       ::initfx = ::ImResample[::selected_image].GetAxisMagnificationFactor(0)
       ::initfy = ::ImResample[::selected_image].GetAxisMagnificationFactor(1)
+      
+      t1 = ::PlaneActors[::selected_image].GetTexture()
+      printn "Texture ref count = %1% " % t1.GetReferenceCount()
+
+#      ::ImResample[::selected_image].SetAxisMagnificationFactor(0,1)
+#      ::ImResample[::selected_image].SetAxisMagnificationFactor(1,1)
+
+      n = ::selected_image
+      ::inittexture = ::PlaneActors[n].GetTexture()
+      ::fulltexture = vtk.vtkTexture.New()
+      ::vtkreader.GetOutput().ReleaseDataFlagOn()
+      ::vtkReaders[n].Update()
+      ::fulltexture.SetInputConnection(&::vtkReaders[n].GetOutputPort())
+      ::PlaneActors[n].SetTexture(&::fulltexture)
+
+#      ::PlaneActors[n].GetTexture().RemoveInputConnection(0,&::ImResample[n].GetOutputPort())
+#      ::PlaneActors[n].GetTexture().SetInputConnection(&::vtkReaders[n].GetOutputPort())
+#      ::vtkReaders[::selected_image].Modified()
+#      ::PlaneActors[::selected_image].GetTexture().Modified()
+      ::renwin.Render()
+
+      # Start time here ...
+      ::inittime = wx.wxDateTime.UNow()
+      ::timer.Start(::interval*1000)
     }
   }
 
@@ -369,6 +421,10 @@ Class vtktest_TPlaneClass : public ScriptGui \
     # Redefinition of Close to close the panel tab in main_book
     #
     proc ::Close() {
+      #for n=0 to ::PlaneActors.size()-1 {
+        #::ImResample [n].Delete()
+      #  ::PlaneActors[n].Delete()
+      #}
       if (exists(::PlaneActors)) {
         for n=0 to ::PlaneActors.size()-1 {
           ::PlaneActors[n].Delete()

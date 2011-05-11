@@ -11,6 +11,7 @@
 //
 
 #include "wrap_FenetreDessin.h"
+#include "wrap_wxWindow.h"
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
@@ -137,5 +138,22 @@ BasicVariable::ptr WrapClass_FenetreDessin::
   }
   fd->SetLineParameters( thickness, wxstyle, wxCAP_ROUND, wxJOIN_MITER);
   return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  GetDrawingWindow
+//---------------------------------------------------
+void WrapClass_FenetreDessin::
+      wrap_GetDrawingWindow::SetParametersComments() 
+{
+  return_comments="Return the drawing window as a wxWindow";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_FenetreDessin::
+      wrap_GetDrawingWindow::CallMember( ParamList* p)
+{
+  FenetreDessin::ptr fd(this->_objectptr->GetObj());
+  wxWindow* w = fd->GetDrawingWindow();
+  return AMILabType<wxWindow>::CreateVar(w,true);
 }
 

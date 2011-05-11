@@ -61,6 +61,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   #
   SET(WRAPVTK_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated)
   CreateDirectory( ${WRAPVTK_OUTDIR})
+  IF(GENERATE_HTML_HELP)
+    SET(CLASSES_URL_LIST "http://www.vtk.org/doc/release/5.6/html/")
+    SET(HTML_DIR "${WRAPVTK_OUTDIR}/html")
+    CreateDirectory( ${HTML_DIR} )
+  ENDIF(GENERATE_HTML_HELP)
 
   SET(XML_OUTPUT "${WRAPVTK_OUTDIR}/vtk_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/vtk_includes.h")
@@ -83,12 +88,22 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
-  MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
-  EXECUTE_PROCESS(
-    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
-    OUTPUT_VARIABLE ancestors_result
-    ERROR_VARIABLE ancestors_error
-  )
+  IF(GENERATE_HTML_HELP)
+    MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q")
+    EXECUTE_PROCESS(
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
+      OUTPUT_VARIABLE ancestors_result
+      ERROR_VARIABLE ancestors_error
+    )
+  ELSE(GENERATE_HTML_HELP)
+    MESSAGE("COMMAND IS: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
+    EXECUTE_PROCESS(
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
+      OUTPUT_VARIABLE ancestors_result
+      ERROR_VARIABLE ancestors_error
+    )
+  ENDIF(GENERATE_HTML_HELP)
+
   MESSAGE(" ancestors_result = ${ancestors_result} ")
   MESSAGE(" ancestors_error = ${ancestors_error} ")
 
@@ -101,48 +116,76 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
   # Wrap all classes at once since it is now fast
   FOREACH( class ${ancestors_list})
-    IF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp) OR
-        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.h))
-      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${OUTPUT_LIST})
-      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${class}.h ${OUTPUT_LIST})
+    ClassUsedName( class m_class )
+    IF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${m_class}.cpp) OR
+        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${m_class}.h))
+      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${m_class}.cpp ${OUTPUT_LIST})
+      SET(OUTPUT_LIST ${WRAPVTK_OUTDIR}/wrap_${m_class}.h ${OUTPUT_LIST})
       SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
-    ENDIF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp) OR
-        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${class}.h))
+    ENDIF( (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${m_class}.cpp) OR
+        (NOT EXISTS ${WRAPVTK_OUTDIR}/wrap_${m_class}.h))
   ENDFOREACH( class ${ancestors_list}) 
 
   LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
 
   #MESSAGE("Processing classes ${ancestors_list} and addwrap")
   IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.h) OR
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.cpp))
+      (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.h) OR
+      (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp))
     # Go for python wrapping
-    ADD_CUSTOM_COMMAND(
-      OUTPUT  ${OUTPUT_LIST} ${WRAPVTK_OUTDIR}/addwrap_vtk.h ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
-      COMMAND
-        ${PYTHON_EXECUTABLE} 
-          ${AMI_WRAPPER} ${XML_OUTPUT}
-          --libname vtk
-          --filter "vtk*"
-          --classes ${MISSING_CLASSES}
-          --constructor New
-          --available_classes ${ancestors_list} 
-          --outputdir "${WRAPVTK_OUTDIR}"
-          --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-          --addwrap
-          --profile
-          -q
-#         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+    IF(GENERATE_HTML_HELP)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT  ${OUTPUT_LIST} ${WRAPVTK_OUTDIR}/addwrap_vtk.h ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
+        COMMAND
+            ${PYTHON_EXECUTABLE}
+              ${AMI_WRAPPER} ${XML_OUTPUT}
+              --libname vtk
+              --filter "vtk*"
+              --classes ${MISSING_CLASSES}
+              --constructor New
+              --available_classes ${ancestors_list}
+              --outputdir "${WRAPVTK_OUTDIR}"
+              --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+              --addwrap
+              --profile
+              --generate-html             #flag to generate html help
+              --url ${CLASSES_URL_LIST}   #base URL html help
+              --outputhtmldir ${HTML_DIR} #HTML directory
+              -q
+          #DEPENDS
+          #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+          VERBATIM
       )
+    ELSE(GENERATE_HTML_HELP)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT  ${OUTPUT_LIST} ${WRAPVTK_OUTDIR}/addwrap_vtk.h ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp
+        COMMAND
+          ${PYTHON_EXECUTABLE}
+            ${AMI_WRAPPER} ${XML_OUTPUT}
+            --libname vtk
+            --filter "vtk*"
+            --classes ${MISSING_CLASSES}
+            --constructor New
+            --available_classes ${ancestors_list}
+            --outputdir "${WRAPVTK_OUTDIR}"
+            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+            --addwrap
+            --profile
+            -q
+  #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+        VERBATIM
+      )
+    ENDIF(GENERATE_HTML_HELP)
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.h) OR
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_vtk.cpp))
+      (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.h) OR
+      (NOT EXISTS ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp))
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
 FOREACH( class ${ancestors_list}  ) 
-  SET( vtk_HDRS ${WRAPVTK_OUTDIR}/wrap_${class}.h ${vtk_HDRS})
-  SET( vtk_SRCS ${WRAPVTK_OUTDIR}/wrap_${class}.cpp ${vtk_SRCS})
+  ClassUsedName( class m_class )
+  SET( vtk_HDRS ${WRAPVTK_OUTDIR}/wrap_${m_class}.h ${vtk_HDRS})
+  SET( vtk_SRCS ${WRAPVTK_OUTDIR}/wrap_${m_class}.cpp ${vtk_SRCS})
 ENDFOREACH( class ${ancestors_list}  ) 
 SET( vtk_HDRS ${WRAPVTK_OUTDIR}/addwrap_vtk.h   ${vtk_HDRS})
 SET( vtk_SRCS ${WRAPVTK_OUTDIR}/addwrap_vtk.cpp ${vtk_SRCS})

@@ -1,0 +1,87 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# trigonometric_functions.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the trigonometric functions (sine, cosine, and tangent).
+#
+# Operations:   sin, cos, tan, asin, acos, atan
+#
+# Note:
+#       DEGREES=RADIANS*180/Pi
+#       RADIANS=DEGREES*Pi/180
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/CTestClass.amil" # Load regular expression to determine when the
+                             # test fails or passes.
+
+CTestClass CTest
+CTest.Enable()
+OK = 1
+
+epsilon = 0.000001
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+printn "Trigonometric functions(sin, cos, tan): angle = Pi/4"
+ 
+R=sin (Pi/4)
+printn "R=sin (Pi/4) --> R=%1% (sin Pi/4 = 0.707107)" % R
+R1=sqrt(2/4)
+P=abs(R-R1)
+if(P > epsilon) {
+  OK = 0
+  printn "ERROR: Failed to calculate the sin Pi/4 (%1% != 0.707107)" % R
+}
+
+R=cos (Pi/4)
+printn "R=cos (Pi/4) --> R=%1% (cos Pi/4 = 0.707107)" % R
+R1=sqrt(2/4)
+P=abs(R-R1)
+if(P > epsilon) {
+  OK = 0
+  printn "ERROR: Failed to calculate the cos Pi/4 (%1% != 0.525321989)" % R
+}
+
+R=tan (Pi/4)
+printn "R=tan Pi/4 --> R=%1% (tan Pi/4 = 1)" % R
+R1=sqrt(2/2)
+P=abs(R-R1)
+if(P > epsilon) {
+  OK = 0
+  printn "ERROR: Failed to calculate the tan Pi/4 (%1% !=1)" % R
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Trigonometric functions(asin, acos, atan): angle = 0"
+
+R=asin 0
+printn "R=asin 0 --> R=%1% (asin 0 = 0)" % R
+if(R != 0) {
+  OK = 0
+  printn "ERROR: Failed to calculate the asin 0 (%1% != 0)" % R
+}
+
+R=acos 0
+printn "R=acos 0 --> R=%1% (acos 0 = 1.5707963267949 )" % R
+if(R != 1.5707963267949) {
+  OK = 0
+  printn "ERROR: Failed to calculate the acos 0 (%1% != 1.5707963267949)" % R
+}
+
+R=atan 0
+printn "R=atan 0 --> R=%1% (atan 0 = 0)" % R
+if(R != 0) {
+  OK = 0
+  printn "ERROR: Failed to calculate the atan 0 (%1% != 0)" % R
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+CTest.PrintTestResult( OK )
+
+quit
+

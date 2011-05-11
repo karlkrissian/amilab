@@ -188,6 +188,12 @@ public:
   void ChangeLibelle( const char* libelle);
   //   -------------
 
+  void EnableWidget(bool enable = true)
+  {
+    this->Enable(enable);
+    _enabled = enable;
+  }
+
 /*
 ///
   void FixeCouleurFond( Pixel couleur);
@@ -285,6 +291,11 @@ public:
       _btn3callback = callback; _btn3data = calldata; 
   }
 
+  void EnableWidget(bool enable = true)
+  {
+    this->Enable(enable);
+    _enabled = enable;
+  }
 
 
   virtual void OnButton( wxCommandEvent& );
@@ -320,6 +331,13 @@ class wxLabelParameter: public wxBoxSizer, public wxGenericWidget
 
   /// sets the tooltip to all its components
   void SetToolTip( const wxString& tt);
+
+  void EnableWidget(bool enable = true)
+  {
+    _wxlabel->Enable(enable);
+    _wxvalue->Enable(enable);
+    _enabled = enable;
+  }
 
 }; // wxLabelParameter
 

@@ -1,0 +1,146 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# logical.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the logical primitives type.
+# - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+if (!exists(LogicalTestClass)) {
+
+  #------------------------------------
+  Class LogicalTestClass {
+
+    func "ctest/CTestClass.amil" # Load regular expression to determine when the
+                                 # test fails or passes.
+
+    CTestClass  ::CTest
+
+    #------------------------------------
+    proc ::Init() {
+      ::ElemA = BOOL(true), "The first element of operation"
+      ::ElemB = BOOL(true), "The second element of operation"
+      ::OK    = INT(1), "The test result"
+      ::CTest.Enable()
+    }
+    Comments( ::Init, "Initializes the LogicalTestClass class.")
+
+    #------------------------------------
+    proc ::SetElemA(STRING Elem) {
+      ::ElemA = Elem
+    }
+    Comments( ::SetElemA, "Sets the first element of operation")
+
+    #------------------------------------
+    proc ::SetElemB(STRING Elem) {
+      ::ElemB = Elem
+    }
+    Comments( ::SetElemB, "Sets the second element of operation")
+
+    #------------------------------------
+    proc ::BinaryOperators(STRING op) {
+      result=false
+      if(op=="==") {
+        if(::ElemA==::ElemB) {
+          result=true
+        } else {
+          result=false
+        }
+      }
+      if(op=="!=") {
+        if(::ElemA!=::ElemB) {
+          result=true
+        } else {
+          result=false
+        }
+      }
+      if(op=="||") {
+        if(::ElemA||::ElemB) {
+          result=true
+        } else {
+          result=false
+        }
+      }
+      if(op=="&&") {
+        if(::ElemA&&::ElemB) {
+          result=true
+        } else {
+          result=false
+        }
+      }
+      return=&result
+    }
+    Comments( ::BinaryOperators, "Executes binary operations")
+
+    #------------------------------------
+    proc ::UnaryOperators(STRING op) {
+      result=false
+      if(op=="!") {
+        if(!::ElemA) {
+          result=true
+        } else {
+          result=false
+        }
+      }
+      return=&result
+    }
+    Comments( ::UnaryOperators, "Executes Unary operations")
+
+    #------------------------------------
+    proc ::SimpleTest() {
+      if(::BinaryOperators("==")) {
+        printn "Operator \"==\"? YES"
+      } else {
+        ::OK=0
+        printn "Operator \"==\"? NO"
+      }
+      if(::BinaryOperators("!=")) {
+        ::OK=0
+        printn "Operator \"!=\"? NO"
+      } else {
+        printn "Operator \"!=\"? YES"
+      } 
+      if(::BinaryOperators("&&")) {
+        printn "Operator \"&&\"? YES"
+      } else {
+        ::OK=0
+        printn "Operator \"&&\"? NO"
+      }
+      if(::BinaryOperators("||")) {
+        printn "Operator \"||\"? YES"
+      } else {
+        ::OK=0
+        printn "Operator \"||\"? NO"
+      }
+      if(::UnaryOperators("!")) {
+        printn "Operator \"!\"? NO"
+        ::OK=0
+      } else {
+        printn "Operator \"!\"? YES"
+      }
+    }
+    Comments( ::SimpleTest, "Execute the simple boolean test")
+
+    #------------------------------------
+    proc ::Execute(NUM Test) {
+      if(Test==0){ ::SimpleTest(); }
+      ::CTest.PrintTestResult(::OK)
+    }
+    Comments( ::Execute, "Execute the boolean test")
+
+    ::Init()
+  } # Class LogicalTestClass
+  Comments( LogicalTestClass, "Check the logical primitives type.")
+  #------------------------------------------
+}
+
+if (!exists(LogicalTest)) {
+  LogicalTestClass LogicalTest
+}
+LogicalTest.Execute(0)
+
+quit
+

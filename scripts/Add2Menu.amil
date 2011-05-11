@@ -10,7 +10,8 @@ for dir in  "BasicFilters","Filtering","Denoising",\
             "QualityMeasures", "Fitting", "Optimization", \
             "OpticFlow", \
             "CarotidBifurcationWorkshop2009", \
-            "Utils" \
+            "Utils", \
+            "Vessels" \
 {
   local_f = wx.wxFileName(GetScriptsDir)
   local_f.AppendDir(dir)

@@ -35,18 +35,55 @@ import arginfo
 
 import parse_function
 
+import generate_html #HTML generate file functions
 
 
 def IsTemplate(classname):
   return re.match(r"(.*)<(.*)>",classname)!=None
 
-def ClassConstructor(classname):
-  ctemp = re.match(r"(.*)<(.*)>",classname)
-  if ctemp==None:
-    return classname
-  else:
-    return ctemp.group(1)
+def IsWithinContext(classname):
+  return config.types[config.classes[classname]].GetContext() != "_1"
 
+
+def ClassConstructor(classname):
+  ctemp = re.match(r"([^<]*)<(.*)>",classname)
+  if ctemp==None:
+    namenotemplate = classname
+  else:
+    namenotemplate = ctemp.group(1)
+  
+  no_ns = re.match(r"(.*)::([^:]*)",namenotemplate)
+  if no_ns==None:
+    return namenotemplate
+  else:
+    return no_ns.group(2)
+
+def FindIncludeFile(classname,fileid):
+  if config.libmodule != None:
+    include_file = config.libmodule.get_include_file(classname,\
+      config.files[fileid])
+    return '{0}'.format(include_file)
+  else:
+    if fileid in config.files.keys():
+      filename = config.files[fileid]
+      # check for vxl/core/vnl
+      vxl_pos = filename.find("vxl/core/vnl/")
+      if vxl_pos!=-1:
+        incfile=filename[vxl_pos+len("vxl/core/"):]
+      elif filename.find("/stl_"):
+        # keep stl files to avoid pb finding the path
+        incfile=filename
+      else:
+        last = filename.rfind('/')
+        incfile=filename[last+1:]
+      include_file = incfile
+    else:
+      include_file=""
+      print "Include file for {0} not found".format(classname)
+      return "";
+    #'#include "{0}"'.format(incfile)
+    #include_file
+  return '#include "{0}"'.format(include_file)
 
 #------------------------------
 class EnumInfo:
@@ -77,9 +114,15 @@ def WxHelpLink(classname,method):
 
 #------------------------------
 def AvailableType(typename,typeid,missing_types,check_includes=False,return_type=False):
+  #print "AvailableType({0},...)".format(typename)
   if check_includes:
     if (typename in config.available_classes):
       config.AddDeclare(typename)
+      if typename==config.types[typeid].GetDemangled():
+        fileid = config.types[typeid].fileid
+        to_include_file = FindIncludeFile(typename,fileid)
+        if to_include_file!="":
+          config.AddInclude(to_include_file)
       if args.val.overwrite and (typename not in config.wrapped_classes) \
           and (typename not in config.needed_classes) \
           and (typename not in config.new_needed_classes):
@@ -107,18 +150,26 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
 def MissingTypes(classname,method,check_includes=False):
   missing_types=[]
   if method.returntype!=None:
-    typename=config.types[method.returntype].GetString()
+    typename = config.types[method.returntype].GetDemangled()
     typeid=config.types[method.returntype].GetMainTypeId()
-    avail = AvailableType(typename,typeid,missing_types,check_includes,True)
+    shared_type = config.IsSharedPtr(typename)
+    if shared_type!=None:
+      avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
+    else:
+      avail = AvailableType(typename,typeid,missing_types,check_includes,True)
   for a in method.args:
-    typename=config.types[a.typeid].GetString()
+    typename=config.types[a.typeid].GetDemangled()
     typefullname=config.types[a.typeid].GetFullString()
     # discard triple pointers or double pointers with const (TODO: improve this part)
     if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
       missing_types.append(typefullname)
     else:
       typeid=config.types[a.typeid].GetMainTypeId()
-      avail = AvailableType(typename,typeid,missing_types,check_includes)
+      shared_type = config.IsSharedPtr(typename)
+      if shared_type!=None:
+        avail = AvailableType(shared_type,typeid,missing_types,check_includes)
+      else:
+        avail = AvailableType(typename,typeid,missing_types,check_includes)
       if (not avail):
         utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
   res = ""
@@ -144,6 +195,7 @@ class MethodInfo:
     self.is_copyconstr=False
     self.static="0"
     self.deprecated=False
+    self.demangled=""
 
   def GetDescription(self,classname,constructor=False):
     res=''
@@ -158,6 +210,10 @@ class MethodInfo:
     else:
       res += classname+"::"+self.name+'('
     for a in self.args:
+      if a.name=='lpszHostname':
+        print "type for lpszHostname {0}".format(a.typeid)
+        print "type for lpszHostname {0}".format(config.types[a.typeid].GetType())
+        print "type for lpszHostname {0}".format(config.types[a.typeid].GetFullString())
       res +=  config.types[a.typeid].GetFullString()+" "+a.name
       if a.default!=None:
         res += " = {0}".format(FormatArgDefault(a.default))
@@ -191,6 +247,7 @@ class PublicMembers:
     self.OperatorMethods=[]
     self.Fields=[]
     self.Enumerations=[]
+    self.destructor=None
 
 
 # Store Class information
@@ -227,41 +284,55 @@ class ParsePublicMembers:
       self.method.usedname=config.ClassUsedName(mname)
 
   #---------------------------------------------
-  def CheckOperatorMethodName(self,mname):
+  def CheckOperatorMethodName(self,method):
+    mname=method.name
     methodindex=''
     methodlist=self.public_members.OperatorMethodNames
-    num=methodlist.count(mname)
-    if num==1:
-      # rename initial method
-      pos=0
-      for m in self.public_members.OperatorMethods:
-        if m.name==mname and mname in config.available_operators.keys():
-          self.public_members.OperatorMethods[pos].usedname +="_1"
-        pos = pos+1
-      # add main method
-      method = MethodInfo()
-      method.name=mname
-      if mname in config.available_operators.keys():
-        method.usedname=config.available_operators[mname]
+    # deal with prefix ++ and -- operators
+    if mname=='++' or mname=='--':
+      if len(method.args)>0:
+        method.usedname=config.available_operators[mname+"(int)"]
       else:
-        method.usedname="operator not available"
-      method.duplicated=True
-      self.public_members.OperatorMethods.append(method)
-    methodlist.append(mname)
-    if num>=1:
-      methodindex="_{0}".format(num+1)
-    if mname in config.available_operators.keys():
-      self.method.usedname=config.available_operators[mname]+methodindex
+        method.usedname=config.available_operators[mname]
+      print "{0}: method.usedname = {1}".format(method.demangled,method.usedname)
+    elif mname=='*' and len(method.args)==0:
+      # indirection operator
+      method.usedname=config.available_operators[mname+'()']
     else:
-      self.method.usedname="operator not available"
+      num=methodlist.count(mname)
+      if num==1:
+        # rename initial method
+        pos=0
+        for m in self.public_members.OperatorMethods:
+          if m.name==mname and mname in config.available_operators.keys():
+            self.public_members.OperatorMethods[pos].usedname +="_1"
+          pos = pos+1
+        # add main method
+        method = MethodInfo()
+        method.name=mname
+        if mname in config.available_operators.keys():
+          method.usedname=config.available_operators[mname]
+        else:
+          method.usedname="operator not available"
+        method.duplicated=True
+        self.public_members.OperatorMethods.append(method)
+      methodlist.append(mname)
+      if num>=1:
+        methodindex="_{0}".format(num+1)
+      if mname in config.available_operators.keys():
+        self.method.usedname=config.available_operators[mname]+methodindex
+      else:
+        self.method.usedname="operator not available"
 
   #---------------------------------------------
+  # Note: could be simplified since we don't need perfect default values anymore
+  #
   def CheckEnumDefault(self, default):
-    #print "default for {0}".format(default)
+   #print "default for {0}".format(default)
     if default in config.enumvalues.keys():
       typeid = config.enumvalues[default]
-      if typeid in config.types.keys():
-        print "replacing {0} by {1}::{0} ".format(default,config.types[typeid].GetString())
+      if typeid in config.types.keys() and typeid!="_1":
+        #print "replacing {0} by {1}::{0} ".format(default,config.types[typeid].GetString())
         return "{1}::{0}".format(default,config.types[typeid].GetString())
     return default
 
@@ -310,15 +381,17 @@ class ParsePublicMembers:
       return False
     
     context = attrs.get('context', None)
+    
     # don't process global context
     if context=='_1': return False
     
     access  = attrs.get('access',  None)
     if context in config.types.keys():
-      contextname = config.types[context].GetString()
+      contextname = config.types[context].GetDemangled()
     else:
       #print "Name = {0}, context {1} not yet included in types".format(name,context)
       return False
+
     if (contextname not in self.class_list) or (access!="public"): return False
     
     # Context should be of class or struct type, and have a PublicMembers instance
@@ -330,7 +403,7 @@ class ParsePublicMembers:
       fname   = attrs.get('name',    None)
       ftype   = attrs.get('type',    None)
       bits    = attrs.get('bits',    None)
-      if "{0}::{1}".format(config.types[context].GetString(),fname) in config.members_blacklist:
+      if "{0}::{1}".format(config.types[context].GetDemangled(),fname) in config.members_blacklist:
         print "Discarded field ",fname, " which is in the backlist"
       else:
         field = FieldInfo()
@@ -347,7 +420,7 @@ class ParsePublicMembers:
       self.enum.name  =ename
       self.public_members.Enumerations.append(self.enum)
       self.inenum = True
-      print "found enumeration ", ename, " in ", config.types[context].GetString()
+      print "found enumeration ", ename, " in ", config.types[context].GetDemangled()
       return False # allow further processing of the enumeration
       
     # If it's not a method element, ignore it
@@ -362,6 +435,7 @@ class ParsePublicMembers:
     demangled=attrs.get('demangled',None)
     static=attrs.get('static',"0")
     attributes=attrs.get('attributes',None)
+    
     #print context
     #print classname
     mname=attrs.get('name',None)
@@ -373,12 +447,14 @@ class ParsePublicMembers:
     self.method = MethodInfo()
     self.method.name=mname
     self.method.static=static
+    self.method.demangled=demangled
     # adapt names in case of multiple member with the same function name
     if name=='Constructor':
       # problem: for structure, the constructor name is something like '._12': not a valid nor usefull name:
       # replace it by the class or structure name ...
       # only if not template ... so check for '<' character
-      if mname != config.types[context].GetString() and config.types[context].GetString().find("<")==-1:
+      #if mname != config.types[context].GetString() and config.types[context].GetString().find("<")==-1:
+      if config.types[context].GetString().find(mname)==-1:
         utils.WarningMessage(" replacing constructor name {0} --> {1}".format(mname,config.types[context].GetString()))
         mname = config.types[context].GetString()
       self.CheckMethodName(self.public_members.ConstructorNames,self.public_members.Constructors,mname)
@@ -387,8 +463,8 @@ class ParsePublicMembers:
         self.CheckMethodName(self.public_members.StaticMethodNames,self.public_members.StaticMethods,mname)
       else:
         self.CheckMethodName(self.public_members.MethodNames,self.public_members.Methods,mname)
-    if name=='OperatorMethod':
-      self.CheckOperatorMethodName(mname)
+    #if name=='OperatorMethod':
+    #  self.CheckOperatorMethodName(mname)
     self.method.returntype=attrs.get('returns',None)
     if name=='Method':
       if static=="1":
@@ -409,6 +485,8 @@ class ParsePublicMembers:
           
   def endElement(self, name):  
     if (self.inmethod==1) and (name in self.available_methods):
+      if name=='OperatorMethod':
+        self.CheckOperatorMethodName(self.method)
       self.inmethod=0
     if (self.inenum==True) and (name=="Enumeration"):
       self.inenum=False
@@ -427,34 +505,28 @@ class FindPublicMembers(handler.ContentHandler):
     self.parse_public_members.endElement(name)
 
 #------------------------------
-def AddParameters(method):
+def AddParameters(method,numparam=-1):
   res='('
   if (len(method.args)>0):
-    res += method.args[0].name
+    if numparam!=0:
+      res += method.args[0].name
     for i in range(1,len(method.args)):
-      res += ', {0}'.format(method.args[i].name)
+      if numparam==-1 or i<numparam:
+        res += ', {0}'.format(method.args[i].name)
   res += ')'
   return res
 
 
 #------------------------------------------------------------------
-#  ImplementMethodWrap
+#  ImplementMethodDescription
 #------------------------------------------------------------------
-def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
-
+def ImplementMethodDescription(classname, method, constructor=False, methodcount=1):
+  
   wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
   wrapmethod_name = method.usedname
   if method.static=="1":
      wrapmethod_name = "static_"+wrapmethod_name
-
-  # don't return help in case of duplicated method
-  if methodcount>1:
-    returnstring="ClassReturnEmptyVar"
-    quiet="true"
-  else:
-    returnstring="ClassHelpAndReturn"
-    quiet="false"
-
+  
   res = "\n"
   res += "//---------------------------------------------------\n"
   res += "//  Wrapping of "
@@ -469,10 +541,18 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
   res += "    wrap_{0}::SetParametersComments()\n".format(wrapmethod_name) 
   res += "{\n"
   for a in method.args:
-    typename=config.types[a.typeid].GetString()
+    typename=config.types[a.typeid].GetDemangled()
     if typename in typesubst.type_substitute.keys():
       typename=typesubst.type_substitute[typename]
-    res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(typename,a.name)
+    
+    shared_type = config.IsSharedPtr(typename)
+    if shared_type==None:
+      if typename.count(",")>0:
+        res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(config.ClassTypeDef(typename),a.name)
+      else:
+        res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(typename,a.name)
+    else:
+      res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(shared_type,a.name)
     if a.default!=None:
       res+= ' (def:{0})'.format(FormatArgDefault(a.default))
     res += '")\n'
@@ -485,6 +565,147 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
     if constructor:
       res += '  return_comments="returning a new variable of type {0};\n'.format(classname)
   res += "}\n"
+  return res
+
+
+#------------------------------------------------------------------
+#  ImplementMethodCall
+#  with a given number of parameter, allowing to deal with default arguments
+#------------------------------------------------------------------
+def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''):
+  
+  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
+  wrapmethod_name = method.usedname
+  if method.static=="1":
+     wrapmethod_name = "static_"+wrapmethod_name
+  
+  methodparams = AddParameters(method,numparam)
+  if method.returntype!=None:
+    returntypest=config.types[method.returntype].GetDemangled()
+  else:
+    returntypest="void"
+  if numparam==-1:
+    numparam_text = "all"
+  elif numparam==0:
+    numparam_text = "no"
+  else:
+    numparam_text = "{0}".format(numparam)
+  res = ident+"  // -------- Calling the class method with {0} parameter(s)\n".format(numparam_text)
+  
+  if constructor:
+    res += ident+'  {0}* _newobj = new {0}'.format(classname)
+    res += methodparams+";\n";
+    res += ident+"  BasicVariable::ptr res = {0}::CreateVar(_newobj);\n".format(wrapclass_name)
+    res += ident+"  return res;\n"
+  else:
+    
+    # Define the string containing the method call
+    obj_ptr='this->_objectptr->GetObj()'
+    if method.name in config.available_operators.keys():
+      if len(method.args)>0:
+        if method.name=='[]':
+          methodcall = '(*{0}) [{1}]'.format(obj_ptr,methodparams)
+        else:
+          if method.name=='()':
+            methodcall = '(*{0}) {1}'.format(obj_ptr,methodparams)
+          elif method.name in ['++','--']:
+            methodcall = '(*{0}){1}'.format(obj_ptr,method.name)
+          else:
+            methodcall = '(*{0}) {1}{2}'.format(obj_ptr,method.name,methodparams)
+      else:
+        # operator without arguments: put it in front
+        methodcall = '{0} (*{1})'.format(method.name,obj_ptr)
+    else:
+      if method.static=="1":
+        methodcall = "{0}::{1}".format(classname,method.name)
+      else:
+        methodcall = '{0}->{1}'.format(obj_ptr,method.name)
+      methodcall += methodparams;
+    
+    # not in constructor and returning void
+    if returntypest=="void":
+      res += ident+'  {0};\n'.format(methodcall)
+      res += ident+'  return BasicVariable::ptr();\n'
+    else:
+      returntypest = config.types[method.returntype].GetString()
+      # create a string topointer to convert result to a pointer for calling WrapClass_...::CreateVar ...
+      returnpointer= (config.types[method.returntype].GetType()=="PointerType")
+      pointercount = config.types[method.returntype].GetFullString().count("*")
+      #if returnpointer:
+      #  topointer=''
+      #else:
+      #  topointer='&'
+      res += ident+'  {0} res = '.format(config.types[method.returntype].GetFullString())
+      res += methodcall+';\n';
+      #--- Type substitution before return
+      if returntypest in typesubst.type_substitute.keys():
+        substtype=typesubst.type_substitute[returntypest]
+        substvar="res_{0}".format(typesubst.GetShortName(substtype))
+        if returnpointer:
+          res += ident+'  '+typesubst.ConvertPtrFrom(method.returntype,'res',substvar)+"\n"
+        else:
+          res += ident+'  '+typesubst.ConvertValFrom(method.returntype,'res',substvar)+"\n"
+        if (substtype in config.available_classes) and returnpointer:
+          res += ident+'  BasicVariable::ptr res_var = WrapClass_{0}::CreateVar({1});\n'.format(substtype,substvar)
+          res += ident+'  return res_var;\n'
+        else:
+          res += ident+'  return AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)
+      #--- No type substitution before return
+      else:
+        typename=config.types[method.returntype].GetDemangled()
+        if typename in config.available_classes and returnpointer: 
+          nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
+          # don't delete returned pointer ...
+          res += ident+'  BasicVariable::ptr res_var = AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
+          res += '  return res_var;\n'
+        else:
+          if returnpointer:
+            # Avoid deleting the returned pointer ...
+            nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
+            if pointercount==1:
+              res += ident+'  return AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
+            else:
+              print "Pointer count = {0}".format(pointercount)
+              # several pointers ... try to convert to a single one
+              res += ident+'  return AMILabType<{0} >::CreateVar(({2}*){1},true);\n'.format(typename,nonconstres,config.types[method.returntype].GetString())
+          else:
+            shared_type = config.IsSharedPtr(typename)
+            if shared_type==None:
+              if config.types[method.returntype].GetType() == "ReferenceType" and not(config.types[method.returntype].GetFullString().endswith('const &')) and not(config.types[method.returntype].GetFullString().endswith('* &')):
+                # return a pointer that will not be deleted
+                res += ident+'  return AMILabType<{0} >::CreateVar(&res,true);\n'.format(typename)
+              else:
+                if config.types[method.returntype].GetFullString().endswith('* &'):
+                  res += ident+'  return AMILabType<{0} >::CreateVar(res,true);\n'.format(typename)
+                else:
+                  res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
+            else:
+              res += ident+'  return AMILabType<{0} >::CreateVarFromSmtPtr(res);\n'.format(shared_type)
+  return res
+
+#------------------------------------------------------------------
+#  ImplementMethodWrap
+#------------------------------------------------------------------
+def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
+
+  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
+  wrapmethod_name = method.usedname
+  if method.static=="1":
+     wrapmethod_name = "static_"+wrapmethod_name
+
+  #
+  # Implement the description/help part
+  #
+  res = ImplementMethodDescription(classname,method,constructor)
+  
+  # don't return help in case of duplicated method
+  if methodcount>1:
+    returnstring="ClassReturnEmptyVar"
+    quiet="true"
+  else:
+    returnstring="ClassHelpAndReturn"
+    quiet="false"
+
   #
   #   Execution part
   #
@@ -494,110 +715,38 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
   res += "    wrap_{0}::CallMember( ParamList* _p)\n".format(wrapmethod_name) 
   res += "{\n"
   # check if there are arguments
-  if (len(method.args)):
+  # never use arguments for ++ and -- operators
+  if (len(method.args)) and (method.name not in ['++','--']):
     res +=  "  if (!_p) {0};\n".format(returnstring)
     # don't accept too many arguments
     res +=  "  if (_p->GetNumParam()>{0}) {1};\n".format(len(method.args),returnstring)
     res +=  "  int _n=0;\n"
+    argnum=0
     for a in method.args:
+      argnum+=1
       noconstructor_call = constructor and (config.types[a.typeid].GetString()==classname)
       res += "\n"
+      if a.default!=None:
+        res += "  // Check the number of parameters here for default arguments\n"
+        res += '  if (_p->GetNumParam()<{0})\n'.format(argnum)
+        res += '  {\n'
+        res += ' {0}'.format(ImplementMethodCall(classname,method,argnum-1,constructor,'  '))
+        res += '  }\n'
       res += a.WrapGetParam(noconstructor_call,returnstring,quiet)
   else:
     # don't accept parameters if there is no argument to the function
     res +=  "  if (_p)  if (_p->GetNumParam()>0) {0};\n".format(returnstring)
-  if method.returntype!=None:
-    returntypest=config.types[method.returntype].GetString()
-  else:
-    returntypest="void"
-  res += "\n"
-  if constructor:
-    res += '  {0}* _newobj = new {0}'.format(classname)
-    res += AddParameters(method)+";\n";
-    res += "  BasicVariable::ptr res = {0}::CreateVar(_newobj);\n".format(wrapclass_name)
-    res += "  return res;\n"
-  else:
-    # not in constructor and returning void
-    if returntypest=="void":
-      if method.name in config.available_operators.keys():
-        if len(method.args)>0:
-          if method.name=='[]':
-            res += '  (*this->_objectptr->GetObj()) [ '.format(method.name)
-            res += AddParameters(method)+"];\n";
-          else:
-            res += '  (*this->_objectptr->GetObj()) {0} '.format(method.name)
-            res += AddParameters(method)+";\n";
-        else:
-          # operator without arguments: put it in front
-          res += ' {0} (*this->_objectptr->GetObj());\n'.format(method.name)
-      else:
-        if method.static=="1":
-          res += "  {0}::{1}".format(classname,method.name)
-        else:
-          res += '  this->_objectptr->GetObj()->{0}'.format(method.name)
-        res += AddParameters(method)+";\n";
-      res += '  return BasicVariable::ptr();\n'
-    else:
-      returntypest = config.types[method.returntype].GetString()
-      # create a string topointer to convert result to a pointer for calling WrapClass_...::CreateVar ...
-      returnpointer= (config.types[method.returntype].GetType()=="PointerType")
-      #if returnpointer:
-      #  topointer=''
-      #else:
-      #  topointer='&'
-      if method.name in config.available_operators.keys():
-        res += '  {0} res = '.format(config.types[method.returntype].GetFullString())
-        if len(method.args)>0:
-          if method.name=='[]':
-            res += '  (*this->_objectptr->GetObj()) [ '.format(method.name)
-            res += AddParameters(method)+"];\n";
-          else:
-            res += '  (*this->_objectptr->GetObj()) {0} '.format(method.name)
-            res += AddParameters(method)+";\n";
-        else:
-          # operator without arguments: put it in front
-          res += ' {0} (*this->_objectptr->GetObj());\n'.format(method.name)
-      else:
-        res += '  {0} res = '.format(config.types[method.returntype].GetFullString())
-        if method.static=="1":
-          res += "  {0}::{1}".format(classname,method.name)
-        else:
-          res += '  this->_objectptr->GetObj()->{0}'.format(method.name)
-        res += AddParameters(method)+";\n";
-      #--- Type substitution before return
-      if returntypest in typesubst.type_substitute.keys():
-        substtype=typesubst.type_substitute[returntypest]
-        substvar="res_{0}".format(typesubst.GetShortName(substtype))
-        if returnpointer:
-          res += '  '+typesubst.ConvertPtrFrom(method.returntype,'res',substvar)+"\n"
-        else:
-          res += '  '+typesubst.ConvertValFrom(method.returntype,'res',substvar)+"\n"
-        if (substtype in config.available_classes) and returnpointer:
-          res += '  BasicVariable::ptr res_var = WrapClass_{0}::CreateVar({1});\n'.format(substtype,substvar)
-          res += '  return res_var;\n'
-        else:
-          res += '  return AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)
-      #--- No type substitution before return
-      else:
-        typename=config.types[method.returntype].GetString()
-        if typename in config.available_classes and returnpointer: 
-          nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
-          # don't delete returned pointer ...
-          res += '  BasicVariable::ptr res_var = AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
-          res += '  return res_var;\n'
-        else:
-          if returnpointer:
-            # Avoid deleting the returned pointer ...
-            nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
-            res += '  return AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
-          else:
-            res += '  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
+  
+  # Calling the method with its parameters
+  res += ImplementMethodCall(classname,method,-1,constructor)
   res += "}\n"
   return res
-  
 
+
+#-----------------------------------------------------------------
 # filename is the new file that should end with '.new'
 # it is copied to the original file only if they differ
+#-----------------------------------------------------------------
 def BackupFile(filename):
   # Check implementation file for backup
   if os.path.isfile(filename[:-4]):
@@ -703,8 +852,12 @@ def ImplementCopyMethodWrap(classname, method):
   return res
 
 
-
-
+#----------------------------------------------------------------------
+#  Initialize HTML module
+#----------------------------------------------------------------------
+def HTMLInitialization(createhtml,templatedir, outputdirectory, outputfilename, url, libraryname):
+  if(createhtml):
+    generate_html.Initialization(templatedir, outputdirectory, outputfilename, url, libraryname)
 
 #----------------------------------------------------------------------
 #  WrapClass
@@ -712,8 +865,10 @@ def ImplementCopyMethodWrap(classname, method):
 def WrapClass(classname,include_file,inputfile):
   if (args.val.profile):
     t0 = time.clock()
-    print "WrapClass({0})".format(classname)
-  
+    print "\n**************"
+    print "   Wrapping: {0}",format(classname)
+    print "**************"
+    print "WrapClass({0},{1},{2})".format(classname,include_file,inputfile)
   parser = make_parser()
   # Create the handler
   #dh = parse_class.FindClass(classname)
@@ -733,6 +888,7 @@ def WrapClass(classname,include_file,inputfile):
     # Create the handler
     #print "classname is ",classname
     #print "args.val.classes is ",config.parsed_classes
+
     if classname not in config.parsed_classes:
       fpm = FindPublicMembers([classname])
       # Tell the parser to use our handler
@@ -745,6 +901,17 @@ def WrapClass(classname,include_file,inputfile):
     
     fm = config.types[classid].public_members
 
+    # Smart Pointer Deleter
+    implement_deleter = ""
+    if (dh.abstract=='1') or (dh.public_members.destructor==None):
+      implement_deleter = ", smartpointer_nodeleter<{0} >()".format(config.ClassTypeDef(classname))
+    else:
+      if config.libmodule != None:
+        try:
+          implement_deleter = config.libmodule.implement_deleter(config.ClassTypeDef(classname))
+        except:
+          pass
+
     # Check for Copy Constructor
     pos=0
     dh.has_copyconstr = False
@@ -756,31 +923,49 @@ def WrapClass(classname,include_file,inputfile):
           dh.has_copyconstr = True
           fm.Constructors[pos].is_copyconstr=True
       pos = pos+1
+    
+    # Check for =(T&) operator
+    pos=0
+    dh.has_copyassign = False
+    for m in fm.OperatorMethods:
+      if m.name == "=":
+        if len(m.args)==1:
+          typename = config.types[m.args[0].typeid].GetFullString()
+          if typename=="{0} const &".format(classname):
+            utils.WarningMessage( "Copy assign operator found: {0}".format(m.usedname))
+            dh.has_copyassign = True
+      pos = pos+1
+    
     implement_type="\n"
+    if dh.has_copyassign:
+        implement_type += "AMI_DEFINE_GETVALPARAM({0});\n".format(config.ClassTypeDef(classname))
     if dh.has_copyconstr:
       if dh.abstract=='1':
-        implement_type += "AMI_DEFINE_WRAPPEDTYPE_ABSTRACT({0});\n".format(classname)
+        implement_type += "AMI_DEFINE_WRAPPEDTYPE_ABSTRACT({0});\n".format(config.ClassTypeDef(classname))
       else:
-        implement_type += "AMI_DEFINE_WRAPPEDTYPE_HASCOPY({0});\n".format(classname)
-      if IsTemplate(classname) and args.val.templates:
-        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(classname,config.ClassUsedName(classname))
+        implement_type += "AMI_DEFINE_WRAPPEDTYPE_HASCOPY({0});\n".format(config.ClassTypeDef(classname))
+      if (IsTemplate(classname) and args.val.templates) or IsWithinContext(classname):
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(config.ClassTypeDef(classname),config.ClassUsedName(classname))
       else:
-        implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(classname)
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(config.ClassTypeDef(classname))
     else:
-      implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(classname)
+      implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(config.ClassTypeDef(classname))
       # need to implement CreateVar ...
-      implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(classname)
+      if (IsTemplate(classname) and args.val.templates) or IsWithinContext(classname):
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(config.ClassTypeDef(classname),config.ClassUsedName(classname))
+      else:
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(config.ClassTypeDef(classname))
       implement_type += "\n"
       implement_type += "// Implementing CreateVar for AMILabType\n"
-      implement_type += "BasicVariable::ptr AMILabType<{0}>::CreateVar( {0}* val, bool nodeleter)\n".format(classname)
+      implement_type += "BasicVariable::ptr AMILabType<{0} >::CreateVar( {0}* val, bool nodeleter)\n".format(classname)
       implement_type += "{ \n"
-      implement_type += "  boost::shared_ptr<{0}> obj_ptr(val,smartpointer_nodeleter<{0}>());\n".format(classname)
-      implement_type += "  return AMILabType<{0}>::CreateVarFromSmtPtr(obj_ptr);\n".format(classname)
+      implement_type += "  boost::shared_ptr<{0} > obj_ptr(val {1});\n".format(classname,implement_deleter)
+      implement_type += "  return AMILabType<{0} >::CreateVarFromSmtPtr(obj_ptr);\n".format(classname)
       implement_type += "}\n"
-          
+              
     # Create Header File
     header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(config.ClassUsedName(classname))
-    if IsTemplate(classname):
+    if IsTemplate(classname) or IsWithinContext(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.h.in",header_filename)
     else:
       shutil.copyfile(args.val.templatefile_dir+"/wrap_class.h.in",header_filename)
@@ -788,6 +973,12 @@ def WrapClass(classname,include_file,inputfile):
     # add the class to the available ones
     if classname not in config.available_classes:
       config.available_classes.append(classname)
+
+    # Template case
+    include_typedef=''
+    if ( classname!=config.ClassTypeDef(classname) ):
+      include_typedef='/// Redefinition of the template class\n'
+      include_typedef+='typedef '+classname+' '+config.ClassTypeDef(classname)+";"
 
     # Create Inheritance information
     include_bases='\n'
@@ -806,7 +997,7 @@ def WrapClass(classname,include_file,inputfile):
     #print dh.bases
     for (base,virtual) in dh.bases:
       basename=config.types[base].GetString()
-      #print basename
+      print "base:",base," name:",basename
       virtualstring=''
       baseusedname=config.ClassUsedName(basename)
       wrapped_base='WrapClass_{0}'.format(baseusedname)
@@ -854,6 +1045,7 @@ def WrapClass(classname,include_file,inputfile):
       pos=0
       for m in fm.Constructors:
         missingtypes = MissingTypes(classname,m)
+        m.iswrapped=(missingtypes=="")
         if missingtypes!="":
           constructors_decl+=  indent+"/* The following types are missing: "+missingtypes+"\n"
           fm.Constructors[pos].missingtypes=True
@@ -867,6 +1059,7 @@ def WrapClass(classname,include_file,inputfile):
         else:
           wrapped_constructors = wrapped_constructors+1
         pos=pos+1
+        generate_html.AddClassMethod(m) # Adds the constructor
       constructors_decl+='\n'
 
     # Static Methods:
@@ -876,6 +1069,7 @@ def WrapClass(classname,include_file,inputfile):
     utils.WarningMessage( "Number of static methods {0}".format(len(fm.StaticMethods)))
     for m in fm.StaticMethods:
       missingtypes = MissingTypes(classname,m)
+      m.iswrapped=(missingtypes=="")
       if missingtypes!="":
         staticmethods_decl+=  indent+"/* The following types are missing: "+missingtypes+"\n"
         fm.StaticMethods[pos].missingtypes=True
@@ -886,6 +1080,7 @@ def WrapClass(classname,include_file,inputfile):
       if missingtypes!="":
         staticmethods_decl +=  indent+"*/\n"
       pos=pos+1
+      generate_html.AddClassMethod(m) # Adds the static methods
     staticmethods_decl+='\n'
 
     class_decl='\n'
@@ -899,6 +1094,7 @@ def WrapClass(classname,include_file,inputfile):
     pos = 0
     for m in fm.Methods:
       missingtypes = MissingTypes(classname,m)
+      m.iswrapped=(missingtypes=="")
       if missingtypes!="":
         class_decl+= "/* The following types are missing: "+missingtypes+"\n"
         fm.Methods[pos].missingtypes=True
@@ -907,9 +1103,14 @@ def WrapClass(classname,include_file,inputfile):
             WxHelpLink(classname,m))
       if missingtypes!="":
         class_decl += "*/\n"
+      generate_html.AddClassMethod(m)     
       pos = pos+1
     class_decl+='\n'
-    
+    #print "\nBegin: {0}\n".format(classname)
+    #generate_html.GenerateHTMLStandardMethods(classname)
+    generate_html.GenerateHTMLClassFile(classname,generate_html.GetClassMethodList())
+    #print "\nEnd: {0}\n".format(classname)
+        
     if len(fm.OperatorMethods)>0:
       class_decl+=indent+"// Operators:\n"
     pos = 0
@@ -946,7 +1147,10 @@ def WrapClass(classname,include_file,inputfile):
       missingtypes = MissingTypes(classname,m)
       if missingtypes!="":
         add_var_all += "/* The following types are missing: "+missingtypes+"\n"
-      add_var_all += indent+'AddVar_'+m.usedname+'( this_ptr);\n'
+      if m.usedname in config.ami_tokens.values():
+        add_var_all += indent+'AddVar_{0}( this_ptr,"_{0}"); // it is a language token\n'.format(m.usedname)
+      else:
+        add_var_all += indent+'AddVar_'+m.usedname+'( this_ptr);\n'
       if missingtypes!="":
         add_var_all += "*/\n"
     add_var_all += '\n'
@@ -966,12 +1170,13 @@ def WrapClass(classname,include_file,inputfile):
       add_var_all += '\n'
 
     add_public_fields = ''
-    if not config.libmodule.wrap_public_fields(classname):
-      # clear public fields
-      fm.Fields=[]
+    if config.libmodule != None:
+      if not config.libmodule.wrap_public_fields(classname):
+        # clear public fields
+        fm.Fields=[]
       
     if len(fm.Fields)>0 or len(fm.Enumerations)>0 or len(dh.bases)>0:
-      add_public_fields = "// Add public fields and Enumerations\n"
+      add_public_fields = "// Add public fields \n"
       add_public_fields += indent+'AMIObject::ptr tmpobj(amiobject.lock());\n'
       add_public_fields += indent+'if (!tmpobj.get()) return;\n'
       add_public_fields += indent+'Variables::ptr context(tmpobj->GetContext());\n'
@@ -1025,6 +1230,7 @@ def WrapClass(classname,include_file,inputfile):
     add_public_enums = '\n'
     for e in fm.Enumerations:
       # TODO: ideally should check for a typedef here
+      add_public_enums = "// Add public enumerations \n"
       enum_usedname = e.name.replace('.','enum')
       # Create an amiobject
       add_public_enums += indent
@@ -1046,7 +1252,9 @@ def WrapClass(classname,include_file,inputfile):
       add_public_enums += "\n"
       add_public_enums += indent+"// Add enum to context\n"
       add_public_enums += indent
-      add_public_enums += "context->AddVar<AMIObject>(obj_{0}->GetName().c_str(),obj_{0},context);\n".format(enum_usedname)
+      add_public_enums += "amiobject->GetContext()->AddVar<AMIObject>(obj_{0}->GetName().c_str(),obj_{0},context);\n".format(enum_usedname)
+      add_public_enums += indent+"// Add as default context\n"
+      add_public_enums += indent+"amiobject->GetContext()->AddDefault(obj_{0}->GetContext());\n".format(enum_usedname)
          
          
     # Adding constructor to the user given context:
@@ -1083,14 +1291,40 @@ def WrapClass(classname,include_file,inputfile):
     # in place replace TEMPLATE by classname
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
-    local_include_file = config.libmodule.get_include_file(classname,\
-      config.files[dh.fileid])
-    
+    local_include_file = FindIncludeFile(classname,dh.fileid)
+    print "local include file {0}".format(local_include_file)
+    #local_include_file = '#include "{0}"'.format(local_include_file)
+    # in case of template, check template parameters for includes
+    m = re.match(r"([^<]*)<(.*)>",classname)
+    if m!=None:
+      template_params = m.group(2)
+      while template_params!="":
+        print "template_params = {0}".format(template_params)
+        # list types inside
+        # this test is not really correct: need to be improved, but let's see if it allows to go on with template wrapping
+        m1 = re.match(r"([^<,]+<[^>]*>)?(,.*)*",template_params)
+        if m1!=None and m1.group(1)!=None:
+          template_param = m1.group(1).strip(' ')
+          print "To check for include: {0}".format(template_param)
+          if template_param in config.classes.keys():
+            fileid = config.types[config.classes[template_param]].fileid
+            filetoadd = FindIncludeFile(template_param,fileid)
+            #local_include_file += '\n#include "{0}"'.format(filetoadd)
+            local_include_file += '\n{0}'.format(filetoadd)
+          if m1.group(2)==None:
+            template_params=""
+          else:
+            template_params=m1.group(2).strip(', ')
+        else:
+          template_params=""
+    print "local include file {0}".format(local_include_file)
+        
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
+      line = line.replace("${INCLUDE_TYPEDEF}",   include_typedef)
       line = line.replace("${INHERIT_BASES}",     inherit_bases)
       line = line.replace("${CONSTRUCTOR_BASES}", constructor_bases)
-      line = line.replace("${TEMPLATE}",          classname)
+      line = line.replace("${TEMPLATE}",          config.ClassTypeDef(classname))
       line = line.replace("${TEMPLATENAME}",      config.ClassUsedName(classname))
       line = line.replace("${INCLUDEFILES}",      local_include_file)
       line = line.replace("${ADD_CLASS_CONSTRUCTORS}",constructors_decl)
@@ -1123,7 +1357,7 @@ def WrapClass(classname,include_file,inputfile):
 
     # Create Implementation File
     impl_filename=args.val.outputdir+"/wrap_{0}.cpp.new".format(config.ClassUsedName(classname))
-    if IsTemplate(classname):
+    if IsTemplate(classname) or IsWithinContext(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.cpp.in",impl_filename)
     else:
       shutil.copyfile(args.val.templatefile_dir+"/wrap_class.cpp.in",impl_filename)
@@ -1200,7 +1434,8 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${INCLUDES}",              config.CreateIncludes())
       line = line.replace("${IMPLEMENT_TYPE}",        implement_type)
       line = line.replace("${IMPLEMENT_CREATEVAR}",   implement_createvar)
-      line = line.replace("${TEMPLATE}",              classname)
+      line = line.replace("${IMPLEMENT_DELETER}",     implement_deleter)
+      line = line.replace("${TEMPLATE}",              config.ClassTypeDef(classname))
       line = line.replace("${TEMPLATENAME}",          config.ClassUsedName(classname))
       line = line.replace("${TEMPLATESHORTNAME}",     config.ClassShortName(classname))      
       line = line.replace("${METHODS_BASES}",         methods_bases)
@@ -1220,6 +1455,10 @@ def WrapClass(classname,include_file,inputfile):
     BackupFile(impl_filename)
   else:
     print "Class {0} not found".format(classname)
+    print "Classes are:"
+    print "****************************"
+    print  config.classes.keys()
+    print "****************************"
   
   if (args.val.profile):
     if not found: 

@@ -1,0 +1,375 @@
+#
+# Creates a torus within a volume data
+#
+
+func "Common/ScriptGui"
+import_vtk
+
+if (!exists(CreateUltrasoundClass)) {
+
+  ami_import->Filters()
+  
+  Class CreateUltrasoundClass : public ScriptGui {
+
+    ::filters=&global::filters
+
+    
+   
+    #----------------------------
+    proc ::Init() {
+  	  ::ip = "localhost", "IP to connect"
+      ::folder_save = "", "Images save"
+      ::l = Image(UCHAR,640,480,1)
+      ::r = Image(UCHAR,640,480,1)
+  
+      
+      ::Xl=(DOUBLE)0
+      ::Yl=(DOUBLE)0
+      ::Xr=(DOUBLE)0
+      ::Yr=(DOUBLE)0
+      ::Xm=(DOUBLE)0
+      ::Ym=(DOUBLE)0
+      ::x3d=(DOUBLE)0
+      ::y3d=(DOUBLE)0
+      ::z3d=(DOUBLE)0
+      
+      
+      ::Px1 = vector_double(3,0)
+      ::Px2 = vector_double(3,0)
+      ::Px3 = vector_double(3,0)
+      
+      
+      #-------------- Timer
+      ::interval = 0.1, "timer interval in seconds"
+      ::evh = wx.wxAmiEventHandler(&::CB_timer)
+      ::timer = wx.wxTimer(&::evh)
+      ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
+      ::processing_timer = false
+      ::in_ReadCamera = false
+    }
+    
+    
+    #----------------- Timer
+    proc ::Start() {
+      ::inittime = wx.wxDateTime.UNow()
+      ::win.SetLabelValue(::startdate_id,::inittime.FormatISODate().c_str())
+      ::win.SetLabelValue(::starttime_id,::inittime.FormatISOTime().c_str())
+      ::timer.Start(::interval*1000)
+    }
+    
+    #----------------- Timer
+    proc ::Stop() {
+      ::timer.Stop()
+    }
+
+    #----------------- Timer
+    proc ::CB_timer() {
+      if (!::processing_timer)  {
+          ::processing_timer = true
+          currenttime = wx.wxDateTime.UNow()
+          diff=currenttime-::inittime
+          ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
+          ::ReadCamera()
+         
+          ::processing_timer =false
+      } 
+    }
+        
+    #------------------------------------
+    
+    proc ::ConnectUltrasonix() {
+     ::win.EnablePanel(::panel_ultrasound,1)
+  
+    }
+  
+  #connect, grab frame a read left and righ image
+  proc ::ConnectCamera() {
+    ::c = mt.Cameras()
+    res = ::c.AttachAvailableCameras()
+    if (res==0) {
+      ::win.EnablePanel(::panel_camera,1)
+      if (exists(::cam)) { del ::cam; }
+
+      ::cam = ::c.getCamera(0)
+      
+    }
+  }
+  
+  proc ::DisconnectCamera() {
+    if(exists(::c)){
+        ::c.Detach()
+        ::win.EnablePanel(::panel_camera,0)
+    }
+  
+  }
+  
+  proc ::ReadUltrasonix() {
+
+  }
+  
+  proc ::Pinta() {
+ #   if(exists(::l_draw)){
+  #      ::l_draw.SetPenColor(wx.wxColour(255,0,0,255))
+  #      ::l_draw.SetLineParameters(2,0)
+   #      for XPNum=1 to ::collect->count() { 
+    #    ::mtxp = mt.MTXPoint(::collect->itemI(XPNum))
+     #   ::mtxp.Position2D(&::Xl,&::Yl,&::Xr,&::Yr,&::Xm,&::Ym);
+      #  ::mtxp.Position3D(&::x3d, &::y3d, &::z3d);
+      #  ::mtxp.setIndex(XPNum)
+       # ::l_draw.DrawCircleR(::Xl,::Yl,3)
+        
+       # del ::mtxp
+      # }
+        
+       # ::l_draw->DrawingAreaDisplay()
+   # }else{
+    #    InfoDialog "There is not draw!"
+    #}
+  }
+  
+  proc ::ReadCamera() {
+    if (!::in_ReadCamera) {
+      ::in_ReadCamera=true
+    ok = ::cam.grabFrame()
+    ::xp = mt.XPoints()
+    ::collect=mt.GetStoreXpointMT(&::xp,&::cam)
+  
+    if (ok==true && ::collect!=NULL) {
+        mt.GetImageMT(&::l,&::r,&::cam)
+    
+        if (!exists(l_draw)) { 
+          show ::l
+          ::l_draw.PaintCallback(&::ReadCamera)
+        }
+
+        ::l_draw.SetPenColor(wx.wxColour(255,0,0,255))
+        ::l_draw.SetLineParameters(2,0)
+        
+        if(exists(::collect)){
+            for XPNum=1 to ::collect->count() { 
+            ::mtxp = mt.MTXPoint(::collect->itemI(XPNum))
+            ::mtxp.Position2D(&::Xl,&::Yl,&::Xr,&::Yr,&::Xm,&::Ym);
+            ::mtxp.Position3D(&::x3d, &::y3d, &::z3d);
+            ::mtxp.setIndex(XPNum)
+            if(XPNum == 1){
+                ::win.SetLabelValue(::xpoint1," (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
+                ::Px1[0] = ::x3d
+                ::Px1[1] = ::y3d
+                ::Px1[2] = ::z3d
+            }
+            if(XPNum == 2){
+                ::win.SetLabelValue(::xpoint2, " (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
+                ::Px2[0] = ::x3d
+                ::Px2[1] = ::y3d
+                ::Px2[2] = ::z3d
+            
+            }
+            if(XPNum == 3){
+                ::win.SetLabelValue(::xpoint3, " (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
+                ::Px3[0] = ::x3d
+                ::Px3[1] = ::y3d
+                ::Px3[2] = ::z3d
+            }
+            #sacar las dos rectas y hacer el producto vectorial. El resultado es la normal al plano
+           # ::RenderPlane(1.2,2.3,3.4)
+            
+            ::win.Update(-1)
+            ::l_draw.DrawCircleR(::Xl,::Yl,3)
+             
+            del ::mtxp
+            }
+       # del ::collect
+        }
+        
+        ::l_draw->DrawingAreaDisplay()
+
+            
+    } else {
+      InfoDialog "grabFrame failed! or collect NULL"
+      #del ::collect
+    }
+      del ::collect
+      ::in_ReadCamera = false
+    }
+  }
+  
+  
+  proc ::RImageShow() {
+    show ::r
+  }
+  
+  proc ::LImageShow() {
+    show ::l
+  }
+  
+  proc ::RenderPlane(NUM xn,NUM yn,NUM zn) {
+
+ 
+ //Create a plane
+  planeSource = vtk.vtkPlaneSource.New();
+  
+    #Calcular módulo para saber cual es el origen del plano
+  #|Px1Px2|
+
+  vp = VarVector(3)
+  vp.push_back(&::Px1)
+  vp.push_back(&::Px2)
+  vp.push_back(&::Px3)
+
+  r = vector_int(3)
+
+  r[2] = 0
+  for k=0 to 2 {
+    tmp = ::Px2[k]-::Px1[k]
+    r[2] += tmp*tmp
+  }
+  r[1] = 0
+  for k=0 to 2 {
+    tmp = ::Px3[k]-::Px1[k]
+    r[1] += tmp*tmp
+  }
+  r[0] = 0
+  for k=0 to 2 {
+    tmp = ::Px3[k]-::Px2[k]
+    r[0] += tmp*tmp
+  }
+  
+  i0 = 0
+  i1 = 1
+  i2 = 2
+  if (r[i0]>r[i1]) {
+    tmp = i0; i0 = i1; i1 = tmp;
+  }
+  if (r[i1]>r[i2]) {
+    tmp = i1; i1 = i2; i2 = tmp;
+  }
+  if (r[i0]>r[i1]) {
+    tmp = i0; i0 = i1; i1 = tmp;
+  }
+  
+  
+  planeSource.SetOrigin( -vp[i2][0], vp[i2][1], vp[i2][2])
+  planeSource.SetPoint1( -vp[i0][0], vp[i0][1], vp[i0][2])
+  planeSource.SetPoint2( -vp[i1][0], vp[i1][1], vp[i1][2])
+  
+  
+ 
+#  planeSource.SetCenter(1.0, 0.0, 0.0);
+ # planeSource.SetNormal(1.0, 0.0, 1.0);
+ 
+   plane = planeSource.GetOutput();
+
+      
+      #Visualize
+      mapper = vtk.vtkPolyDataMapper.New()
+     # mapper.SetInputConnection(&glyph3D.GetOutputPort())
+    mapper.SetInput(&planeSource.GetOutput())
+      
+      #basándome en vtkIsoSurfaceClass
+      renwin_interact = global::wxVTKFrame()
+      renwin = renwin_interact.GetRenderWindow()
+      renderer = vtk.vtkRenderer.New()
+      renwin.AddRenderer(&renderer)
+      interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      renwin_interact.SetInteractorStyle(&interact)
+      actor = vtk.vtkActor.New()
+      actor.SetMapper(&mapper)
+      renderer.AddActor(&actor)
+      renderer.ResetCameraClippingRange()
+      renderer.SetBackground(0.3, 0.6, 0.3)
+      renderer.ResetCamera()
+
+      
+      #renwin.Render()
+      renwin_interact.Start()
+  }
+  
+  proc ::Gui() {
+    ::win = global::ami_import.ParamPanel("Ultrasound display")
+  
+    ::win.BeginBook()
+      ::win.AddPage("Param")
+
+        ::win.BeginBoxPanel("Connection params")
+          ::win.AddString( &::ip,"IP")
+          ::win.AddButton("Connect Ultrasonix",::ConnectUltrasonix)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Connect Camera",::ConnectCamera)
+            ::win.AddButton("Disconnect Camera",::DisconnectCamera)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+
+        ::win.BeginBoxPanel("Ultrasound folder")
+          ::win.AddDirname( &::folder_save, "Dir")
+        ::win.EndBoxPanel()
+        
+        ::panel_ultrasound = ::win.BeginBoxPanel("")
+          ::win.AddButton("Start ultrasonix",::ReadUltrasonix)		  
+          ::win.EnablePanel(::panel_ultrasound,0)
+        ::win.EndBoxPanel()
+        
+        ::panel_camera = ::win.BeginBoxPanel("")
+          ::win.AddButton("Start Camera",::ReadCamera)
+          ::win.EnablePanel(::panel_camera,0)
+        ::win.EndBoxPanel()
+        
+        ::win.BeginBoxPanel("Images")
+          ::win.BeginHorizontal()
+            ::win.AddButton("Show Left",::LImageShow)
+            ::win.AddButton("Show Right",::RImageShow)
+            ::win.AddButton("Show VTK",::RenderPlane)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        
+                
+        ::win.BeginBoxPanel("Coordenadas")
+                   
+          ::win.BeginHorizontal()
+                ::xpoint1 = ::win.AddLabel("XPoint1:","")
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
+                ::xpoint2 = ::win.AddLabel("XPoint2:","")
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
+                ::xpoint3 = ::win.AddLabel("XPoint3:","")
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        
+        
+      ::win.AddPage("Render")
+      
+      ::win.AddPage("Timer")
+        #---------------- Timer
+        ::win.AddFloat(&::interval,"Interval",0.01,100)
+        ::win.BeginHorizontal()
+            ::icons.LoadIconPNG("Play")
+            ::AddBitmapButton(&::win, &::icons._Play, 32, "Start")
+            ::win.SetPositionProp(-1,0)
+
+            ::icons.LoadIconPNG2("Stop playing","Stop_playing")
+            ::AddBitmapButton(&::win, &::icons._Stop_playing, 32, "Stop")
+            ::win.SetPositionProp(-1,0)
+       ::win.EndHorizontal()
+       ::win.BeginBoxPanel("Started At:")
+        ::startdate_id = ::win.AddLabel("Date:","")
+        ::starttime_id = ::win.AddLabel("Time:","")
+       ::win.EndBoxPanel()
+       ::win.BeginBoxPanel("Elapsed Time")
+        ::label_id = ::win.AddLabel("","")
+      ::win.EndBoxPanel()
+        #------------------ end Timer  
+        
+    ::win.EndBook()
+
+    ::AddStandardButtons(&::win)
+  
+    ::win.Update(-1)
+    ::win.Display()
+  }
+  
+  ::Init()
+}
+ #End of class
+  
+} 
+# End of if

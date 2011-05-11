@@ -267,11 +267,20 @@ public:
     int error(const std::string& m);
 
     /** Return the current filename */
-    std::string& GetCurrentFilename() { return current_file; };
+    std::string GetCurrentFilename() 
+    { 
+      return current_file; 
+    }
 
     /** Pointer to the current lexer instance, this is used to connect the
      * parser to the scanner. It is used in the yylex macro. */
     class Scanner* lexer;
+
+    void SetCurrentFile( const char* cf )
+    {
+      //std::cout << "Setting current file to " << cf << std::endl;
+      this->current_file = cf;
+    }
 
     /** Reference to the calculator context filled during parsing of the
      * expressions. */

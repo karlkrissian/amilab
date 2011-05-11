@@ -28,7 +28,6 @@ func "Common/ScriptGui"
 # no interface here
 if (!exists(MultiLinesClass)) {
 
-  global::ami_import.Filters()
 #  if (argc==1) {
 #    inputname=$1
 #    emptyargs
@@ -38,12 +37,19 @@ if (!exists(MultiLinesClass)) {
   
   Class MultiLinesClass : public ScriptGui {
   
-    ::filters=&global::filters
+    global::ami_import.Filters()
+    ::filters=&filters
+
+    func "Centerlines/Skeleton/SkeletonClass"
+    SkeletonClass ::skeleton_obj
 
     #----------------------------
     proc ::Init() {
       ::input_name   = "", "Input image name"
-      ::mask_name    = "", "Mask of the pixels to process, this image must be of type UCHAR and the values > 127 are considered part of the mask"
+
+      ::mask_mode      = INT(0), "Mask mode 0: threshold from input image, 1: mask image"
+      ::mask_threshold = 0, "Low threshold for the mask"
+      ::mask_name      = "", "Mask of the pixels to process, this image must be of type UCHAR and the values > 127 are considered part of the mask"
 
       # circle integration
       # a value of 0 desactivates the SD feature
@@ -67,6 +73,8 @@ if (!exists(MultiLinesClass)) {
       ::keep_orientations = UCHAR(0), "Keep orientations image"
       ::keep_radii        = UCHAR(0), "Keep radii image"
 
+      ::use_linearinterp  = UCHAR(1), "Use linear interpolation"
+
       # 0: Hessian Matrix 1: Structure Tensor
       ::mode         = INT(0)
 
@@ -76,12 +84,21 @@ if (!exists(MultiLinesClass)) {
       # this coefficient is recomputed at each scale
       ::rad2sigma_coeff = 1
 
+      # keep all scales
+      ::keep_all_scales = UCHAR(0), "Keep responses at all scales in memory"
+
       # Progress information
       ::current_progress = 0;
       ::current_step     = 0;
 
       ::output_name="Multilines-maxresponse.ami.gz"
 
+      ::normalize_gradient = UCHAR(1), "normalize gradient"
+      ::PSF_stddev = 0, "Standard deviation (in voxels) of the point spread function"
+
+      ::upsample_recons = UCHAR(0), "Reconstruct the vessel in an image with double resolution compared to the input image"
+
+      ::smoothradii_std = 1, "Gaussian standard deviation for smoothing the lines radii"
       #::Gui()
     }
 
@@ -93,15 +110,35 @@ if (!exists(MultiLinesClass)) {
         ::input_name = "::input"
       }
     
-      if (::mask_name=="Image") {
-        ::mask <<= (UCHAR) ((::input>0.1)*255)
-        ::mask_name = "::mask"
-      } else {
-        eval "::mask <<="+::mask_name+";"
+      if (exists(::win)) {
+        ::inputmin          = min(::input)
+        ::inputmax          = max(::input)
+        ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
       }
-      ::win.Update(-1)
     }
     
+    //---------------------------------------------------
+    proc ::GuiUpdateIntensityLimits( NUM _min, NUM _max) {
+      ::win.FloatConstraints(::mask_threshold_id,_min,_max,(_max-_min)/2)
+      ::win.Update(-1)
+    }
+
+    #------------------------------------
+    proc ::update_mask() \
+    {  
+      if (::mask_mode==0) {
+        ::mask <<= (UCHAR) ((::input>::mask_threshold)*255)
+      }
+      if (::mask_mode==1) {
+        if (::mask_name=="Image") {
+          ::mask <<= (UCHAR) ((::input>0.1)*255)
+          ::mask_name = "::mask"
+        } else {
+          eval "::mask <<="+::mask_name+";"
+        }
+      }
+    }
+
     #-----------------------------------------------
     proc ::set_mask( IMAGE mask) \
     {
@@ -109,15 +146,29 @@ if (!exists(MultiLinesClass)) {
       ::mask_name = "::mask"
     }
     
+    #--------------------------------------------------
     proc ::set_input(IMAGE im)  \
     {
       ::input <<= im
       ::input_name = "::input"
     }
     
+    #--------------------------------------------------
     proc ::set_result(IMAGE im) \
     {
       ::result <<= im
+    }
+    
+    #--------------------------------------------------
+    proc ::set_maxima(IMAGE im) \
+    {
+      ::maxima <<= im
+    }
+
+    #--------------------------------------------------
+    proc ::set_radii(IMAGE im) \
+    {
+      ::radii <<= im
     }
     
     #--------------------------------------------------
@@ -145,14 +196,14 @@ if (!exists(MultiLinesClass)) {
     
       response.initvalue(0)
     
-      // Computation of the direction
-      // the results are 
-      // _input_Hvep1, _input_Hvep2, _input_Hvep3
-      // _input_Hvap1, _input_Hvap2, _input_Hvap3
-      //
-      // 1. Gamma normalized with the coefficient _gamma
-      // 2. the eigenvalues are arranged into descending order of absolute values
-      //
+      # Computation of the direction
+      # the results are 
+      # _input_Hvep1, _input_Hvep2, _input_Hvep3
+      # _input_Hvap1, _input_Hvap2, _input_Hvap3
+      #
+      # 1. Gamma normalized with the coefficient _gamma
+      # 2. the eigenvalues are arranged into descending order of absolute values
+      #
     
       # Old way: HessianMatrix(_input,sigma,_gamma)
       #
@@ -179,7 +230,7 @@ if (!exists(MultiLinesClass)) {
           del input_Hvep1
           del input_Hvep2
       
-          // create a region of interest
+          # create a region of interest
           mask1 = (UCHAR) ((::mask>0)*(vap1<0)*(vap2<0)*255)
       
           del vap1
@@ -188,7 +239,7 @@ if (!exists(MultiLinesClass)) {
     
       }  else {
     
-        // Compute Structure Tensor
+        # Compute Structure Tensor
         printn "Structure Tensor"
     
         StructTensorH(::input,sigma,1,::mask,1)
@@ -217,7 +268,7 @@ if (!exists(MultiLinesClass)) {
       # _response   = CircleIntSdExc( _input_grad,_v1,_v2,_theta*sigma,_mask1,1,1.5)
     
     
-    } // ComputeResponse
+    } # ComputeResponse
     
     #-------------------------------------------------------------
     proc ::ComputeResponse_new( NUM sigma, IMAGE response) {
@@ -225,14 +276,14 @@ if (!exists(MultiLinesClass)) {
     
       response.initvalue(0)
     
-      // Computation of the direction
-      // the results are 
-      //
-      // 1. Gamma normalized with the coefficient _gamma
-      // 2. the eigenvalues are arranged into descending order of absolute values
-      //
+      # Computation of the direction
+      # the results are 
+      #
+      # 1. Gamma normalized with the coefficient _gamma
+      # 2. the eigenvalues are arranged into descending order of absolute values
+      #
     
-      // Compute Structure Tensor
+      # Compute Structure Tensor
       printn "Structure Tensor"
       sth = ::filters->StructureTensorH(&::input,sigma,1,&::mask)
     
@@ -247,29 +298,59 @@ if (!exists(MultiLinesClass)) {
     
       # do we get the gradient separately to avoid the mask here??
       # normalized gradient
-      grad = gradient(::input,sigma)*sigma
+      #grad = gradient(::input,sigma)
+      #if (::normalize_gradient) {
+      #  grad = grad*sigma
+      #}
+      grad_algo = algorithms.Gradient(&::input,sigma,::normalize_gradient)
+      grad_algo.SetPSF(::PSF_stddev,::PSF_stddev,::PSF_stddev)
+      grad = grad_algo.Execute()
+
       SetProgress(::current_progress+::current_step*0.75)
     
-      // create a region of interest
-      //_mask1 = (UCHAR) ((_mask>0)*(vap1<0)*(vap2<0)*255)
+      # create a region of interest
+      #_mask1 = (UCHAR) ((_mask>0)*(vap1<0)*(vap2<0)*255)
     
     
-      response = CircleMinIntSdExc(grad,\
-                          eig[3],\
-                          eig[4],\
-                          ::theta*sigma, \
-                          ::mask,\
-                          ::SD_th*::use_SD,\
-                          ::EXC_th*::use_EXC, \
-                          ::pairs_mode, \
-                          ::keephighest)
+      #response = CircleMinIntSdExc(grad,\
+                          #eig[3],\
+                          #eig[4],\
+                          #::theta*sigma, \
+                          #::mask,\
+                          #::SD_th*::use_SD,\
+                          #::EXC_th*::use_EXC, \
+                          #::pairs_mode, \
+                          #::keephighest)
     
+      # second response new way to do it
+      repcircle = algorithms.CalculRepCercle(&grad,algorithms.CalculRepCercle.circle_mean)
+      repcircle.SetGradient(&grad)
+      repcircle.SetNoLinearInterp(!::use_linearinterp)
+      repcircle.useSD(::SD_th*::use_SD)
+      repcircle.useEXC(::EXC_th*::use_EXC)
+      repcircle.ReducePairs(true,::pairs_mode)
+      repcircle.KeepHighest(::keephighest)
+      repcircle.FixeRayon(::theta*sigma,1)
+
+      cb3d = algorithms.CircleBoundaries3D()
+      cb3d.SetBoundaryComputationClass(&repcircle)
+      cb3d.SetMask(&::mask)
+      e3 = eig[3]
+      e4 = eig[4]
+      cb3d.SetOrientations(&e3,&e4)
+      #::grad0 = grad
+      #response
+      cb3d.Execute(&response)
+
+      #diff = max(norm(response-::response2))
+      #printn "Maximal difference = %1%" % diff
+
       # run the circle integration on a region of interest
       # Integrate the border information on a circle of radius theta*sigma
     
       # Error: I did not comment this line for the challenge !!!!
-      #_response = CircleInt( grad, eig[3], eig[4],\
-      #                        _theta*sigma, _mask)
+      #response = CircleInt( grad, eig[3], eig[4],
+      #                        ::theta*sigma, ::mask)
     
       if (::local_maxima) {
         # copy the 2 eigenvectors
@@ -277,7 +358,9 @@ if (!exists(MultiLinesClass)) {
         ::current_v2 <<= eig[4]
       }
     
-    } // ::ComputeResponse_new
+    } 
+    # ::ComputeResponse_new
+
     #--------------------------------------------------
     #
     # mode is 0: use Hessian matrix
@@ -289,7 +372,12 @@ if (!exists(MultiLinesClass)) {
       InitTime
 
       #  Load input images
-      ::load_input()
+      if (!exists(::input)) {
+        ::load_input()
+      }
+      if (!exists(::mask)) {
+        ::update_mask()
+      }
 
       # Precompute coefficient of proportionality
       ::h(::gamma,::theta,&::rad2sigma_coeff)
@@ -310,6 +398,10 @@ if (!exists(MultiLinesClass)) {
       response=Image(FLOAT,1,::input)
       response.initvalue(0)
     
+      if (::keep_all_scales) {
+        ::all_responses <<= Image(FLOAT,::input.tx,::input.ty,::input.tz,::numrad)
+      }
+
       v1=Image(FLOAT,3,::input)
       v1.initvalue(0,0,0)
       v2=Image(FLOAT,3,::input)
@@ -337,6 +429,9 @@ if (!exists(MultiLinesClass)) {
                             &v1, &v2,&v3)
 #        ::all_responses.push_back(response)
 
+        if (::keep_all_scales) {
+          ::all_responses.SetComponent(i,response)
+        }
     
         # save response to file
         #response_filename=result.GetName-".gz"-".inr"-".ami"-".vtk"
@@ -355,8 +450,8 @@ if (!exists(MultiLinesClass)) {
  #        ::all_maxresponses.push_back(max_response)
           
           prev_response=response
-          ::maxima = response*0
-          ::maxima = response*0
+          current_maxima <<= response*0
+          ::maxima <<= response*0
           v1_max=v1
           v2_max=v2
           v3_max=v3
@@ -365,7 +460,7 @@ if (!exists(MultiLinesClass)) {
           printn "get here"
           # Update the maxima
           # only keep the first maxima found
-          ::maxima = (::maxima!=0)*::maxima+(::maxima==0)*(::maxima>response)*::maxima
+          ::maxima = (::maxima!=0)*::maxima+(::maxima==0)*(current_maxima>response)*current_maxima
     
           v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
           v2_max = v2_max*(max_response>=response)+v2*(max_response<response)
@@ -374,8 +469,8 @@ if (!exists(MultiLinesClass)) {
           max_response=max(response,max_response)
  #        ::all_maxresponses.push_back(max_response)
          # Compute local maxima
-          ::maxima = LocalExtrema(response,v1,v2,::mask)
-          ::maxima = ::maxima*(response>prev_response)
+          current_maxima = LocalExtrema(response,v1,v2,::mask)
+          current_maxima = current_maxima*(response>prev_response)
         }
     
  #       ::all_radii.push_back(radius)
@@ -390,11 +485,10 @@ if (!exists(MultiLinesClass)) {
     #  v2_max.save sprint("v2_max_%01.0f.ami.gz",mode)
     
       # computing local maxima on the maximum response accross scales
-      real_maxima2 = LocalExtrema(max_response,v1_max,v2_max,::mask)
+      ::maxima2 = LocalExtrema(max_response,v1_max,v2_max,::mask)
     
       # save maximal response to file
       ::result    = max_response
-      ::maxima    <<= real_maxima2
       ::radii     <<= radius
     
       SetProgress(0)
@@ -418,7 +512,12 @@ if (!exists(MultiLinesClass)) {
       InitTime
 
       #  Load input images
-      ::load_input()
+      if (!exists(::input)) {
+        ::load_input()
+      }
+      if (!exists(::mask)) {
+        ::update_mask()
+      }
 
       # Precompute coefficient of proportionality
       ::h(::gamma,::theta,&::rad2sigma_coeff)
@@ -435,8 +534,12 @@ if (!exists(MultiLinesClass)) {
       #
       # main loop 
       #
-      response=Image(FLOAT,1,::input)
+      response<<=Image(FLOAT,1,::input)
       response.initvalue(0)
+
+      if (::keep_all_scales) {
+        ::all_responses <<= Image(FLOAT,::input.tx,::input.ty,::input.tz,::numrad)
+      }
     
       for i=0 to ::numrad-1 {
         iteration_mess = " Iteration %1%" % i
@@ -453,7 +556,11 @@ if (!exists(MultiLinesClass)) {
     
         ::ComputeResponse_new(::current_sigma, &response)
     
-        // Compute and Update Local Maxima
+        if (::keep_all_scales) {
+          ::all_responses.SetComponent(i,response)
+        }
+
+        # Compute and Update Local Maxima
         SetStatusText( iteration_mess + \
                         "Compute and Update Local Maxima")
     
@@ -463,8 +570,8 @@ if (!exists(MultiLinesClass)) {
           if (::local_maxima) {
             # 3 more images in memory
             prev_response=response
-            ::maxima = response*0
-            ::maxima <<= response*0
+            current_maxima <<= response*0
+            ::maxima       <<= response*0
             if (::keep_orientations) {
               # check how to get the vectors here, or keep the symmetric matric??
               #v1_max=v1
@@ -480,7 +587,8 @@ if (!exists(MultiLinesClass)) {
           if (::local_maxima) {
             # Update the maxima
             # only keep the first maxima found
-            ::maxima = (::maxima!=0)*::maxima+(::maxima==0)*(::maxima>response)*::maxima
+            ::maxima =  (::maxima!=0)*::maxima+\
+                        (::maxima==0)*(current_maxima>response)*current_maxima
             if (::keep_orientations) {
               # to do
               #v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
@@ -491,8 +599,8 @@ if (!exists(MultiLinesClass)) {
               radius = (max_response>=response)*radius+(max_response<response)*::current_rad
             }
             # Compute local maxima
-            ::maxima = LocalExtrema(response,::current_v1,::current_v2,::mask)
-            ::maxima = ::maxima*(response>prev_response)
+            current_maxima = LocalExtrema(response,::current_v1,::current_v2,::mask)
+            current_maxima = current_maxima*(response>prev_response)
           } 
           # end if (::local_maxima)
           max_response=max(response,max_response)
@@ -517,7 +625,8 @@ if (!exists(MultiLinesClass)) {
       SetProgress(0)
       SetStatusText( "Finished MultiLines_new" )
       EndTime
-    } // MultiLines_new
+    } # MultiLines_new
+
     #-----------------------------------------------
     proc ::CB_ROI() {
       if (exists(::input_draw)) {
@@ -530,7 +639,7 @@ if (!exists(MultiLinesClass)) {
     }
 
     #-----------------------------------------------
-    proc ::Display() {
+    proc ::DisplayResult() {
       show ::input
       if (exists(::result)) {
         show ::result
@@ -543,13 +652,26 @@ if (!exists(MultiLinesClass)) {
     }
     
     #-----------------------------------------------
+    proc ::DisplayLMax() {
+      show ::input
+      if (exists(::maxima)) {
+        show ::maxima
+        ::input_draw.compare(&::maxima_draw)
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::DisplayRadii() {
+      show ::input
+      if (exists(::radii)) {
+        show ::radii
+        ::input_draw.compare(&::radii_draw)
+      }
+    }
+
+    #-----------------------------------------------
     proc ::Save() {
       ::result.save ::output_name
-    }
-    
-    proc ::SetParentPanel(OBJECT pp) \
-    {
-      ::parent_panel = &pp
     }
     
     #-----------------------------------------------
@@ -563,6 +685,111 @@ if (!exists(MultiLinesClass)) {
     }
 
     #-----------------------------------------------
+    proc ::CreateSkeleton() \
+    {
+      ::skeleton_obj.Execute()
+    }
+
+    #-----------------------------------------------
+    proc ::PruneSkeleton() \
+    {
+      ::skeleton_obj.SelectPrune()
+      ::skeleton_obj.RemovePrune()
+    }
+
+    #-----------------------------------------------
+    proc ::SmoothSkeleton() \
+    {
+      ::skeleton_obj.Smooth_Lines()
+    }
+
+    #-----------------------------------------------
+    proc ::DisplaySkeleton() \
+    {
+      ::skeleton_obj.Display()
+    }
+
+    #-----------------------------------------------
+    proc ::SmoothedReconstruction() \
+    {
+      if (!exists(::radii)) { 
+        InfoDialog "Radii image has not been created, enable saving the radii !" 
+      } else {
+        if (!exists(::skeleton_obj->lines)) {
+          InfoDialog "No centerlines"
+        } else {
+          # smooth radii
+          ::radii_smoothed <<= ::radii
+          nl = ::skeleton_obj.lines.GetNumberOfLines()
+          for l=0 to nl-1 {
+            printn "Processing line %1%" % (l+1) + " of %1%" % nl
+            line <<= ::skeleton_obj.lines.GetLine(l)
+            line_radii <<= ::radii(line)
+            line_radii_smoothed <<= filter(line_radii,::smoothradii_std,0,0,0)
+            # put back the smooth values in the image
+            for k=0 to line.tx-1 {
+              ::radii_smoothed.setpos(line(k,0,0,0),line(k,0,0,1),line(k,0,0,2))
+              ::radii_smoothed.set(line_radii_smoothed(k,0,0,0))
+            }
+          }
+          # reconstruction
+          rad_info = ::skeleton_obj.lines.GetIntensities(&::radii_smoothed)
+          if exists(::skeleton_obj->slines) { l = &::skeleton_obj.slines; } else { l = &::skeleton_obj.lines; }
+          if (::upsample_recons) {
+            in2 = Resize(::input,::input.tx*2,::input.ty*2,::input.tz*2,0)
+            ::s_recons <<= LineRecons(l, in2, rad_info)            
+          } else {
+            ::s_recons <<= LineRecons(l, ::input, rad_info)
+          }
+        }
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::CreateReconstruction() \
+    {
+      # check existence of radius image or use constant radius
+      if (!exists(::radii)) { 
+        InfoDialog "Radii image has not been created, enable saving the radii !" 
+      } else {
+        # check existence of centerlines
+        if (!exists(::skeleton_obj->lines)) {
+          InfoDialog "No centerlines"
+        } else {
+          rad_info = ::skeleton_obj.lines.GetIntensities(&::radii)
+          if exists(::skeleton_obj->slines) { l = &::skeleton_obj.slines; } else { l = &::skeleton_obj.lines; }
+          if (::upsample_recons) {
+            in2 = Resize(::input,::input.tx*2,::input.ty*2,::input.tz*2,0)
+            ::recons <<= LineRecons(l, in2, rad_info)            
+          } else {
+            ::recons <<= LineRecons(l, ::input, rad_info)
+          }
+        }
+      }
+      
+    }
+
+    #-----------------------------------------------
+    proc ::DisplayReconstruction() \
+    {
+      if (exists(::recons)) {
+        show ::recons
+        ::recons_surf = isosurf(::recons,255*exp(-0.5))
+        if (exists(::s_recons)) {
+          ::s_recons_surf = isosurf(::s_recons,255*exp(-0.5))
+        }
+        ::viewer = Viewer3D("Reconstruction")
+        if exists(::used_lines)  { del ::used_lines; }
+        if exists(::skeleton_obj->slines) { ::used_lines = &::skeleton_obj.slines; } else {  ::used_lines = &::skeleton_obj.lines; }
+        ::viewer += ::used_lines
+        ::viewer += ::recons_surf
+        if (exists(::s_recons_surf)) {
+          ::viewer += ::s_recons_surf
+        }
+      }
+    }
+
+    #-----------------------------------------------
     proc ::Gui() \
     {
       import = &global::ami_import;
@@ -572,29 +799,27 @@ if (!exists(MultiLinesClass)) {
         ::win = import->ParamPanel("MultiLines")
       }
       ::win.BeginBook()
-        ::win.AddPage("Main")
+        ::win.AddPage("IO")
           # set the input image
-          ::win.AddImageChoice( &::input_name, "Input")
-          # set the mask image
-          ::win.AddImageChoice( &::mask_name, "Mask")
-        
+          ::win.BeginHorizontal()
+            ::win.AddImageChoice( &::input_name, "Input")
+            ::AddBitmapButton(&::win, &::icons._Copy,   32, "load_input")
+            ::win.SetPositionProp(-1,0)
+          ::win.EndHorizontal()
 
-          modeid = ::win.AddEnum( &::mode)
-            ::win.AddEnumChoice(modeid,"Hessian Matrix")
-            ::win.AddEnumChoice(modeid,"Structure Tensor")
+          ::win.BeginBoxPanel("Mask")
+            maskmode_id = ::win.AddEnum(&::mask_mode, "Mode")
+              ::win.AddEnumChoice(maskmode_id,"Threshold from input")
+              ::win.AddEnumChoice(maskmode_id,"Mask image")
 
-          ::win.BeginBoxPanel("Controls")
-            ::win.BeginHorizontal()
-              ::win.AddButton("Select ROI", ::CB_ROI)
-              ::win.AddButton("Run",        ::MultiLines)
-              ::win.AddButton("Run new",    ::MultiLines_new)
-            ::win.EndHorizontal()
-            ::outputname_id = ::win.AddString( &::output_name, "Output")
-            ::win.BeginHorizontal()
-                display_id = ::win.AddButton("Display",    ::Display)
-                display_id = ::win.AddButton("Save",       ::Save)
-            ::win.EndHorizontal()
+            # set the mask threshold
+            ::mask_threshold_id = ::win.AddFloat(&::mask_threshold,"Threshold",0,100)
+
+            # set the mask image
+            ::win.AddImageChoice( &::mask_name, "Mask")
+            ::win.AddButton("Update",&::update_mask)
           ::win.EndBoxPanel()
+        
         ::win.AddPage("Circle")
 
           ::win.AddBoolean( &::use_SD,"Use StdDev")
@@ -605,7 +830,7 @@ if (!exists(MultiLinesClass)) {
             ::win.AddEnumChoice(pairmodeid,"Min")
             ::win.AddEnumChoice(pairmodeid,"Max")
             ::win.AddEnumChoice(pairmodeid,"Mean")
-          ::win.AddFloat( &::keephighest,  "::keephighest", 0,100)
+          ::win.AddFloat( &::keephighest,  "Keephighest", 0,100)
 
         ::win.AddPage("Scales")
           ::win.BeginBoxPanel("Radii (or scales)")
@@ -619,6 +844,58 @@ if (!exists(MultiLinesClass)) {
           ::keep_or_id  = ::win.AddBoolean( &::keep_orientations,"Orientations")
           ::keep_rad_id = ::win.AddBoolean( &::keep_radii,"Radii")
 
+        ::run_page = ::win.AddPage("Run")
+          modeid = ::win.AddEnum( &::mode)
+            ::win.AddEnumChoice(modeid,"Hessian Matrix")
+            ::win.AddEnumChoice(modeid,"Structure Tensor")
+
+          ::win.AddBoolean( &::keep_all_scales, "Keep all scales")
+          ::win.AddBoolean( &::normalize_gradient, "Normalize gradient")
+          ::win.AddFloat( &::PSF_stddev, "PSF")
+          ::win.AddBoolean( &::use_linearinterp, "Linear Interpolation")
+
+          ::win.BeginBoxPanel("Controls")
+            ::win.BeginHorizontal()
+              ::win.AddButton("Select ROI", ::CB_ROI)
+              ::win.AddButton("Run",        ::MultiLines)
+              ::win.AddButton("Run new",    ::MultiLines_new)
+            ::win.EndHorizontal()
+            ::outputname_id = ::win.AddString( &::output_name, "Output")
+            ::win.BeginBoxPanel("Display")
+              ::win.BeginHorizontal()
+                display_id = ::win.AddButton("Result",    &::DisplayResult)
+                display_id = ::win.AddButton("Local max", &::DisplayLMax)
+                display_id = ::win.AddButton("Radii",     &::DisplayRadii)
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel
+            display_id = ::win.AddButton("Save",       ::Save)
+          ::win.EndBoxPanel()
+
+        ::recons_page = ::win.AddPage("Recons")
+
+          ::win.BeginBoxPanel("Skeleton")
+            ::win.BeginHorizontal()
+              ::win.AddButton("Create", &::CreateSkeleton)
+              ::win.AddButton("Display",&::DisplaySkeleton)
+              ::win.AddButton("Prune",  &::PruneSkeleton)
+              ::win.AddButton("Smooth", &::SmoothSkeleton)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Reconstruction")
+            ::win.AddBoolean(&::upsample_recons,"Upsample x2")
+            ::win.BeginHorizontal()
+              ::win.AddButton("Create",   &::CreateReconstruction)
+              ::win.AddButton("Create Smoothed", &::SmoothedReconstruction)
+              ::win.AddButton("Display",  &::DisplayReconstruction)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          ::win.BeginBook()
+            ::skeleton_obj.SetParentPanel(&::win)
+            ::skeleton_obj.Gui()
+            ::win.AddPage("Skeleton",&::skeleton_obj.win)
+          ::win.EndBook()
 
       ::win.EndBook()
     

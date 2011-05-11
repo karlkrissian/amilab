@@ -83,5 +83,8 @@ vtkVolumeRayCastMapper
 vtkVolumeRayCastStaticInfo
 vtkWindow
 vtkWindowToImageFilter
+vtkImageFFT
+vtkImageRFFT
+vtkImageFourierCenter
 vtkGlyph3D
 vtkArrowSource

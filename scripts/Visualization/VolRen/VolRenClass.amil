@@ -20,6 +20,8 @@ if (!exists(VolRenClass)) {
 
     func "vtkVolumeClass.amil"
 
+    func "Visualization/ImageHistogram/ImageHistogramClass.amil"
+
     # volume 1
     vtkVolumeClass                  ::vtkvol1
     # volume 2
@@ -40,7 +42,16 @@ if (!exists(VolRenClass)) {
       ::azimuth = INT(45), "Rotate camera angle along vertical axis (in degrees)"
       #::Gui()
     }
-    
+
+    #----------------------------
+    proc ::set_input(IMAGE image) {
+      ::input<<=image
+      ::UpdateImageInfo(&::input,&::input_size)
+      ::win.SetLabelValue(::input_size_id,::input_size)
+      ::UpdateVolPages()
+      ::win.Update(-1)
+    }
+
     #----------------------------
     proc ::load_input() {
       if (exists(::input)) { del ::input; }
@@ -153,7 +164,54 @@ if (!exists(VolRenClass)) {
       ::load_input2()
     }
     Comments(::ImReload2,"(Re)Loads the second input image.")
+    #----------------------------
+    proc ::Show_Vol1() \
+    {
+      wid = &::vtkvol1.imhisto1.dw
+      wid.Show(!wid.IsShown())
+      ::win.Update()
+    }
+    Comments(::Show_Vol1,"Show histogram of Vol1")
 
+    #----------------------------
+    proc ::Show_Vol2() \
+    {
+      wid = &::vtkvol2.imhisto1.dw
+      wid.Show(!wid.IsShown())
+      ::win.Update()
+    
+    }
+    Comments(::Show_Vol2,"Show histogram of Vol2. If it is possible")
+
+    #----------------------------
+    proc ::Resize_Vol1() \
+    {
+      if (exists(::input)){
+        aux = Resize(::input, ::input.tx/2, ::input.ty/2, ::input.tz/2,1)
+        del ::input
+        ::input=aux
+        ::UpdateImageInfo(&::input,&::input_size)
+        ::win.SetLabelValue(::input_size_id,::input_size)
+        ::UpdateVolPages()
+        ::win.Update(-1)
+      }
+    }
+    Comments(::Resize_Vol1,"Resize Vol1 by half")
+
+    #----------------------------
+    proc ::Resize_Vol2() \
+    {
+      if (exists(::input2)){
+        aux = Resize(::input2, ::input2.tx/2, ::input2.ty/2, ::input2.tz/2,1)
+        del ::input
+        ::input=aux
+        ::UpdateImageInfo(&::input2,&::input2_size)
+        ::win.SetLabelValue(::input2_size_id,::input2_size)
+        ::UpdateVolPages()
+        ::win.Update(-1)
+      }
+    }
+    Comments(::Resize_Vol2,"Resize Vol2 by half")
     #----------------------------
     proc ::DeleteVariables() {
       del ::renwin_interact
@@ -175,23 +233,24 @@ if (!exists(VolRenClass)) {
         #if (exists(::renwin_interact)) { del ::renwin_interact; }
         if (!exists(::renwin_interact)) {
           ::renwin_interact = global::wxVTKFrame()
+          ::renwin_interact.Initialize()
         }
-        #printn "1*"
+        printn "1*"
         ::renwin   = ::renwin_interact.GetRenderWindow()
         ::renderer = vtk.vtkRenderer.New()
         ::renwin.AddRenderer(&::renderer)
         interact = vtk.vtkInteractorStyleTrackballCamera.New()
         ::renwin_interact.SetInteractorStyle(&interact)
 
-        #printn "2*"
+        printn "2*"
         if (::vtkvol1.initialized>0.5) {
           ::vtkvol1.ResetVTK()
         }
-        #printn "2.1*"
+        printn "2.1*"
         ::vtkvol1.SetInteractor(&::renwin_interact)
         ::vtkvol1.SetRenderer(&::renderer)
         ::vtkvol1.SetRenderWindow(&::renwin)
-        #printn "2.2*"
+        printn "2.2*"
         volok = ::vtkvol1.CreateVTK( &::input)
 
         #printn "3*"
@@ -207,8 +266,10 @@ if (!exists(VolRenClass)) {
           ::renderer.AddVolume( &::vtkvol1.vol )
           ::renderer.ResetCamera()
           ::BackupView()
-          #::renwin_interact.Render()
+          ::renwin_interact.Render()
         }
+        ::renwin_interact.Refresh()
+        ::win.Enable(::Show_Vol1_but_id,1)
       }
 
     }
@@ -258,7 +319,8 @@ if (!exists(VolRenClass)) {
           ::renwin_interact.Render()
         }
       }
-
+      ::renwin_interact.Refresh()
+      ::win.Enable(::Show_Vol2_but_id,1)
     }
     Comments(::AddVolume2,"Adds rendering of second volume.")
 
@@ -266,32 +328,64 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::MainBook_AddVolRenTab()  \
     {
-      mb = ami.MainFrame.GetMainBook()
+       mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
-      sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
-      sbox_sizer = wx.wxStaticBoxSizer(&sbox,wx.wxVERTICAL)
+      ::panel._SetName("VolRen panel")
+
+      # StaticBox gives problems on XP ..., avoid it ...
+      # sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
+      sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel.SetSizer(&sbox_sizer)
-      ::flex_sizer = wx.wxGridSizer(1)
+      //::flex_sizer = wx.wxGridSizer(1)
+      ::flex_sizer =  wx.wxFlexGridSizer(2,1,0,0)
+      ::flex_sizer.AddGrowableRow(0,4)
+      ::flex_sizer.AddGrowableRow(1,1)
+      ::flex_sizer.AddGrowableCol(0,1)
+
       sbox_sizer.Add( &::flex_sizer, 1, wx.wxALL | wx.wxEXPAND,2)
       # create widget here
-
-      ::renwin_interact = global::wxVTKRenderWindowInteractor(&::panel,-1)
+      import_vtk
+      ::renwin_interact = wxVTKRenderWindowInteractor(&::panel,-1)
+      #ren = vtk.vtkRenderer.New()
+      #::renwin_interact.GetRenderWindow().AddRenderer(&ren);
       #::renwin_interact = wxVTKFrame(&panel,-1)
-
       ::renwin_interact.UseCaptureMouseOn()
-      ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
+      ::renwin_interact.Enable(true)
       # Still drawing problem (missed exposed events???)
       ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
       #::panel_sizer.Add(&::renwin_interact, &wx.wxSizerFlags().Expand().Proportion(1) )
       ::flex_sizer.Add(&::renwin_interact, 1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
-
-      
+      #sbox_sizer.Add(&::renwin_interact, 1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
+      
+//carlos
+      ::win.EnablePanel(::vol1_page , true)
+      ::win.EnablePanel(::vol2_page , true)
+
+      ::sbox_sizerH = wx.wxBoxSizer(wx.wxHORIZONTAL)
+      ::flex_sizer.Add(&::sbox_sizerH,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
+
+      obj1 = &::vtkvol1.imhisto1.dw
+      ::vtkvol1.imhisto1.dw_boxsizer.Detach(&obj1)
+      obj1.Reparent(&::panel)
+      ::sbox_sizerH.Add(&obj1,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+
+      obj2 = &::vtkvol2.imhisto1.dw
+      ::vtkvol2.imhisto1.dw_boxsizer.Detach(&obj2)
+      obj2.Reparent(&::panel)
+      ::sbox_sizerH.Add(&obj2,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+
+      ::win.EnablePanel(::vol1_page , false)
+      ::win.EnablePanel(::vol2_page , false)
+      obj2.Hide()  
+
 
       # Add to main book
+      ::icons.LoadIconPNG2("Transparent background","Transparent_background")
       mb.AddPage( &::panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
       ::volren_pageindex = mb.GetPageIndex(&::panel)
+      
       #mb.SetSelection(::volren_pageindex)
     }
 
@@ -339,7 +433,8 @@ if (!exists(VolRenClass)) {
        capturefilter = vtk.vtkWindowToImageFilter.New()
        capturefilter.SetInput( &::renwin)
        capturefilter.Update()
-       resim = global::FromVtkImageData( &capturefilter.GetOutput())
+       import_vtk
+       resim = FromVtkImageData( &capturefilter.GetOutput())
        ::capture <<= Flip(resim,1)
     }
 
@@ -422,6 +517,9 @@ if (!exists(VolRenClass)) {
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload")
+
+              ::icons.LoadIconPNG2("Resize image","Resize_image")
+              ::AddBitmapButton16(&::win, &::icons._Resize_image, "Resize_Vol1")
               #::win.AddButton( "ImReload",&::ImReload)
             ::win.EndHorizontal()
             ::input_size_id = ::win.AddLabel("Size:",::input_size)
@@ -431,11 +529,23 @@ if (!exists(VolRenClass)) {
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input2_name, "")
               ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload2")
+              ::AddBitmapButton16(&::win, &::icons._Resize_image, "Resize_Vol2")
               #::win.AddButton( "ImReload",&::ImReload)
             ::win.EndHorizontal()
             ::input2_size_id = ::win.AddLabel("Size:",::input2_size)
           ::win.EndBoxPanel()
 
+          ::win.BeginBoxPanel("Histogram")
+            ::win.BeginHorizontal()
+              ::icons.LoadIconPNG2("Chart xy","Chart_xy")
+              ::AddBitmapButton16(&::win, &::icons._Chart_xy, "Show_Vol1")
+              ::AddBitmapButton16(&::win, &::icons._Chart_xy, "Show_Vol2")
+              ::win.Enable(::Show_Vol1_but_id,0)
+              ::win.Enable(::Show_Vol2_but_id,0)
+              //::win.Update()
+
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
         ::win.AddPage("Volumes")
 
