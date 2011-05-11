@@ -50,23 +50,23 @@ members_blacklist=[
   'wxColour::m_pixel', # idem
   'wxCursor::GetHCURSOR',           # linking pb on macros
   'wxDateTime::IsGregorianDate',    # no implemented
-  #'wxToolBar::OnMouse',             # idem
-  #'wxStatusBarGeneric::SetBorderX', # idem
-  #'wxStatusBarGeneric::SetBorderY', # idem
+  'wxToolBar::OnMouse',             # idem, MacOS linking error
+  'wxStatusBarGeneric::SetBorderX', # idem, MacOS linking error
+  'wxStatusBarGeneric::SetBorderY', # idem, MacOS linking error
   'wxArrayString::resize',          # no defined
   'wxMenuBar::Create',              # idem
-  #'wxButtonBase::GetDefaultSize',   # idem
+  'wxButtonBase::GetDefaultSize',   # idem, MacOS linking
   'wxIcon::SetOk',                  # idem
-  #'wxWindow::FindItem',             # idem
+  'wxWindow::FindItem',             # idem, MacOS error
   'wxPoint2DDouble::SetPolarCoordinates', # idem
   'wxPoint2DInt::SetPolarCoordinates', # idem
   'wxGenericListCtrl::Update(long)', # linking problem, don't know why ...
   'wxBitmap::GetSelectedInto', # not included in windows in release mode
   'wxBitmap::SetSelectedInto', # not included in windows in release mode
   'wxWindowList::front', # returning reference to pointer
-  #'wxListCtrl::ConvertToMSWStyle', # linking problem
-  #'wxListCtrl::ChangeCurrent',     # idem
-  #'wxListCtrl::ResetCurrent',      # idem
+  'wxListCtrl::ConvertToMSWStyle', # linking problem MacOS
+  'wxListCtrl::ChangeCurrent',     # idem
+  'wxListCtrl::ResetCurrent',      # idem
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints',  # idem

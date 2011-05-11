@@ -13,31 +13,44 @@
 #include "vnl/vnl_vector.h"
 #include "vnl/algo/vnl_symmetric_eigensystem.h"
 
-template class vnl_matrix<double>;
-template class vnl_vector<double>;
-template class vnl_symmetric_eigensystem<double>;
+#ifdef __GCCXML__
+  template class vnl_matrix<double>;
+  template class vnl_vector<double>;
+  template class vnl_symmetric_eigensystem<double>;
+#endif // __GCCXML__
 
 #include "vnl/vnl_vector_fixed.h"
-template class vnl_vector_fixed<double,3>;
+
+#ifdef __GCCXML__
+  template class vnl_vector_fixed<double,3>;
+#endif // __GCCXML__
 
 // trying itk
 #include <itkImage.h>
 #include <itkSmartPointer.h>
 
-template class itk::Image<float,2>;
-template class itk::SmartPointer<itk::Image<float, 2u> >;
+#ifdef __GCCXML__
+  template class itk::Image<float,2>;
+  template class itk::SmartPointer<itk::Image<float, 2u> >;
+#endif // __GCCXML__
 
 #include <itkDefaultPixelAccessor.h>
-template class itk::DefaultPixelAccessor<float>;
+#ifdef __GCCXML__
+  template class itk::DefaultPixelAccessor<float>;
+#endif // __GCCXML__
 
 #include <itkImageRegion.h>
-template class itk::ImageRegion<2u>;
+#ifdef __GCCXML__
+  template class itk::ImageRegion<2u>;
+#endif // __GCCXML__
 
 
 // trying std
 #include <list>
-template class std::list<int, std::allocator<int> >;
-std::list<int>::iterator __t;
-std::list<int>::const_iterator __t1;
-//template class std::list<int>::iterator;
-//template class std::list<int>::const_iterator;
+#ifdef __GCCXML__
+  template class std::list<int, std::allocator<int> >;
+  std::list<int>::iterator __t;
+  std::list<int>::const_iterator __t1;
+  //template class std::list<int>::iterator;
+  //template class std::list<int>::const_iterator;
+#endif // __GCCXML__

@@ -31,7 +31,9 @@ extern unsigned char GB_debug;
 #include <vector>
 //using namespace std;
 
-template class AMI_DLLEXPORT std::vector<BasicVariable::ptr>;
+#ifndef __APPLE__
+  template class AMI_DLLEXPORT std::vector<BasicVariable::ptr>;
+#endif // __APPLE__
 
 
 /**
