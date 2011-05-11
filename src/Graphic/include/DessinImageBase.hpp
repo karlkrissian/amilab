@@ -177,13 +177,13 @@
 enum
 {
     ID_MenuImage = 100,
-    ID_MenuImage_Display,
+//    ID_MenuImage_Display,
     ID_MenuImage_Reload,
-    ID_MenuImage_Compare,
+//    ID_MenuImage_Compare,
     ID_MenuImage_VoxelSize,
-    ID_MenuImage_Save,
-      ID_MenuImage_Save_param,
-      ID_MenuImage_Save_image,
+//    ID_MenuImage_Save,
+//      ID_MenuImage_Save_param,
+//      ID_MenuImage_Save_image,
     ID_MenuImage_info,
     ID_MenuImage_close,
 

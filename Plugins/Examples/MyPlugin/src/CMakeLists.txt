@@ -44,7 +44,7 @@ SET(ExamplePlugin_SRCS
     ${ExamplePlugin_HDRS}
 )
 
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net media REQUIRED)
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net  REQUIRED)
 INCLUDE(${wxWidgets_USE_FILE})
 
 include_directories (

@@ -896,16 +896,16 @@ void DessinImageBase :: CreateWxMenu()
 
     // Image Menu
     menuImage = new wxMenu;
-    menuImage->Append( ID_MenuImage_Display,   GetwxStr("&Display")         );
+//    menuImage->Append( ,   GetwxStr("&Display")         );
 //    menuImage->Append( ID_MenuImage_Reload,    GetwxStr("&Reload")          );
-    menuImage->Append( ID_MenuImage_Compare,   GetwxStr("&Compare")         );
+//    menuImage->Append( ,   GetwxStr("&Compare")         );
 //    menuImage->Append( ID_MenuImage_VoxelSize, GetwxStr("&Voxel Size")      );
 
     menuImage->AppendSeparator();
-    wxMenu* save_submenu = new wxMenu;
-    save_submenu->Append(ID_MenuImage_Save_param, GetwxStr("Save Parameters"));
+//    wxMenu* save_submenu = new wxMenu;
+//    save_submenu->Append(, GetwxStr("Save Parameters"));
 //    save_submenu->Append(ID_MenuImage_Save_image, GetwxStr("Save Image"));
-    menuImage->Append( ID_MenuImage_Save,      GetwxStr("&Save"),save_submenu  );
+//    menuImage->Append( ID_MenuImage_Save,      GetwxStr("&Save"),save_submenu  );
 
 //    menuImage->AppendSeparator();
 //    menuImage->Append( ID_MenuImage_info, GetwxStr("Image &Info" )     );
@@ -1021,6 +1021,7 @@ void DessinImageBase :: CreateWxMenu()
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Interpolation \n");
 
     menuOptions->Append( ID_MenuOptions_Interpolation, GetwxStr("&Interpolation")  ,interp_submenu  );
+    menuOptions->Enable(ID_MenuOptions_Interpolation,false);
     menuOptions->AppendSeparator();
 
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Vector Field \n");
