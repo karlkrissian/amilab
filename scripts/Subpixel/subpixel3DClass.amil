@@ -56,6 +56,13 @@ if (!exists(Subpixel3DClass)){
       vol_normals = vtk.vtkPolyDataNormals.New()
       vol_normals.SetInput(&vol_polydata)
       vol_normals.SetFeatureAngle(60.0)
+      ###
+      vol_mapper = vtk.vtkPolyDataMapper.New()
+      vol_mapper.SetInputConnection(&vol_normals.GetOutputPort())
+      vol_mapper.ScalarVisibilityOff()
+      #vol_mapper.InmediateModeRenderingOff()
+      vol_actor = vtk.vtkActor.New()
+      vol_actor.SetMapper(&vol_mapper)
       
       #arrowSource = vtk.vtkArrowSource.New() #esto quizás me sirva para las normales
       
@@ -103,6 +110,7 @@ if (!exists(Subpixel3DClass)){
       actor = vtk.vtkActor.New()
       actor.SetMapper(&mapper)
       renderer.AddActor(&actor)
+      renderer.AddActor(&vol_actor)
       renderer.ResetCameraClippingRange()
       renderer.SetBackground(0.3, 0.6, 0.3)
       renderer.ResetCamera()
