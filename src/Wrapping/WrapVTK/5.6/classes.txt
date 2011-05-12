@@ -88,3 +88,4 @@ vtkImageRFFT
 vtkImageFourierCenter
 vtkGlyph3D
 vtkArrowSource
+vtkDoubleArray

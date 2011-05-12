@@ -45,3 +45,4 @@
 #include <vtkImageRFFT.h>
 #include <vtkImageFourierCenter.h>
 #include <vtkGlyph3D.h>
+#include <vtkDoubleArray.h>
