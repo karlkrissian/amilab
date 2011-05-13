@@ -93,7 +93,7 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_GradienteCurvo3D
   InrImage::ptr f          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
                                                         "fcoef.inr.gz"));
   InrImage::ptr g          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
-                                                        "dcoef.inr.gz"));
+                                                        "gcoef.inr.gz"));
   InrImage::ptr curvature  = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
                                                         "curvature.inr.gz"));
   InrImage::ptr posx       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,

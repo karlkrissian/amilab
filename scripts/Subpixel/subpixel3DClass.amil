@@ -63,32 +63,14 @@ if (!exists(Subpixel3DClass)){
       #Create a new actor set the vol_mapper
       vol_actor = vtk.vtkActor.New()
       vol_actor.SetMapper(&vol_mapper)
-      ************
-      vtkSmartPointer<vtkDoubleArray> pointNormalsArray = 
-    vtkSmartPointer<vtkDoubleArray>::New();
-  pointNormalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
-  pointNormalsArray->SetNumberOfTuples(polydata->GetNumberOfPoints());
- 
-  // Construct the normal vectors
-  double pN1[3] = {1.0, 0.0, 0.0};
-  double pN2[3] = {0.0, 1.0, 0.0};
-  double pN3[3] = {0.0, 0.0, 1.0};
- 
-  // Add the data to the normals array
-  pointNormalsArray->SetTuple(0, pN1) ;
-  pointNormalsArray->SetTuple(1, pN2) ;
-  pointNormalsArray->SetTuple(2, pN3) ;
- 
-  // Add the normals to the points in the polydata
-  polydata->GetPointData()->SetNormals(pointNormalsArray);
-      ***************
       
+      #Array for the normals
       array = vtk.vtkDoubleArray.New()
       array.SetNumberOfComponents(3) #3D normals
-      array.SetNumberOfTuples(3);
-      #Cómo demonios inserto los puntos?? Hay que pasarle un vector de double
+      array.SetNumberOfTuples(::res->xpos.tx) #En este caso sería pillar el número de pixels borde
+      #Cómo demonios inserto los puntos?? Hay que pasarle un vector de double (puntero)
       
-      #NO SE PUEDE para hacer una prueba con lo de las normales
+      #Esto no va muy bien, no sé si es que no hereda GetPointData de vtkDataSet
       #vol_polydata.GetPointData.SetNormals(&vol_normals.GetOutputPort())
       
       #arrowSource = vtk.vtkArrowSource.New() #esto quizás me sirva para las normales
