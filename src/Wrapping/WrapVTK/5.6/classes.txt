@@ -87,3 +87,7 @@ vtkImageFFT
 vtkImageRFFT
 vtkImageFourierCenter
 vtkGlyph3D
+vtkImageRGBToHSI
+vtkImageHSIToRGB
+vtkImageRGBToHSV
+vtkImageHSVToRGB

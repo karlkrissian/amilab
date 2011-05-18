@@ -1413,6 +1413,15 @@ if (!exists(RunExperimentsClass)){
       ::GTiso.SetDiffuse(250,5,5)
       ::ls_surf.SetOpacity(0.6)
       ::spheres_surf.SetDiffuse(5,250,5)
+
+      if (exists(::pathCEs)) { 
+        ::ls_surf_draw += ::pathCEs; ::pathCEs.SetColor(255,0,0);
+      }
+      if (exists(::pathCIs)) { 
+        ::ls_surf_draw += ::pathCIs; ::pathCIs.SetColor(0,0,255);
+      }
+      
+      
     }
     
     #------------------------------------------

@@ -31,6 +31,8 @@ INCLUDE(${wxWidgets_USE_FILE})
 
 
 SET(Graphic_HDRS
+    #include/myAuiNotebook.h
+
     include/FenetreDessin.hpp
     include/fonction2D.hpp
     include/gnuplot.hpp

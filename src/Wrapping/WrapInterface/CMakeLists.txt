@@ -26,10 +26,12 @@ SET(  WrapInterface_SRCS
   wrap_wxEditor.cpp 
   wrap_wxStcFrame.cpp 
   wrap_FenetreDessin.cpp 
+  wrap_DessinImage.cpp
   wrap_dwControlPoint.cpp
   wrap_dwPoint2D.cpp
   wrap_dwCurve.cpp
   wrap_dwControlledCurve.cpp
+  wrap_Viewer3D.cpp
 )
 
 SET(WrapInterface_HDRS
@@ -40,10 +42,12 @@ SET(WrapInterface_HDRS
   ../include/wrap_wxEditor.h
   ../include/wrap_wxStcFrame.h 
   ../include/wrap_FenetreDessin.h
+  ../include/wrap_DessinImage.h
   ../include/wrap_dwControlPoint.h
   ../include/wrap_dwPoint2D.h
   ../include/wrap_dwCurve.h
   ../include/wrap_dwControlledCurve.h
+  ../include/wrap_Viewer3D.h
 )
 
 SET(WrapInterface_SRCS

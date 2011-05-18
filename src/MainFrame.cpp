@@ -406,7 +406,8 @@ MainFrame::MainFrame( const wxString& title,
                   wxAUI_MGR_ALLOW_FLOATING |
                   // Avoid problem with KDE desktop composing effect
                   #ifdef __WXGTK__ 
-                    wxAUI_MGR_RECTANGLE_HINT |
+                   wxAUI_MGR_VENETIAN_BLINDS_HINT |
+                    //wxAUI_MGR_RECTANGLE_HINT |
                   #else
                    wxAUI_MGR_TRANSPARENT_HINT |
                   #endif

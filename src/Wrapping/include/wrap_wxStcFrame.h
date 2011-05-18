@@ -18,13 +18,13 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
-#include "wrap_wxWindow.h"
+#include "wrap_wxFrame.h"
 
 #include "wxStcFrame.h"
 
 AMI_DECLARE_TYPE(wxStcFrame)
 
-class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxWindow
+class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxFrame
 {
   DEFINE_CLASS(WrapClass_wxStcFrame);
 
@@ -36,7 +36,7 @@ class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxWi
   public:
 
     /// Constructor
-    WrapClass_wxStcFrame(boost::shared_ptr<wxStcFrame> si):  WrapClass<wxStcFrame>(si), WrapClass_wxWindow(si)
+    WrapClass_wxStcFrame(boost::shared_ptr<wxStcFrame> si):  WrapClass<wxStcFrame>(si), WrapClass_wxFrame(si)
     {}
 
     /// Wrapping of the constructor

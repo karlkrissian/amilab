@@ -44,3 +44,7 @@
 #include <vtkImageRFFT.h>
 #include <vtkImageFourierCenter.h>
 #include <vtkGlyph3D.h>
+#include <vtkImageRGBToHSI.h>
+#include <vtkImageHSIToRGB.h>
+#include <vtkImageRGBToHSV.h>
+#include <vtkImageHSVToRGB.h>

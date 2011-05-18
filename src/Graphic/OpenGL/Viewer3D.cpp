@@ -50,6 +50,7 @@ extern unsigned char GB_debug;
 #include "Viewer3D_LineParam.h"
 #include "Viewer3D_PointParam.h"
 
+//#include "myAuiNotebook.h"
 
 /*
 // Pixmaps for setting 3D view

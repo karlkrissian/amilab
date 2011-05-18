@@ -857,11 +857,12 @@ loop_inst :
 
       int_ptr varint(new int);
       Vars.AddVar<int>(ident,varint);
+      bool goon=true;
 
       for(*varint = (int) $4; *varint <= (int) $6; (*varint)++)
         {
           driver.yyiplineno = block->GetStartingLine();
-          driver.parse_block(block);
+          goon=driver.parse_block(block);
         }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
@@ -878,12 +879,13 @@ loop_inst :
 
       float_ptr var(new float);
       Vars.AddVar<float>(ident,var);
+      bool goon=true;
 
-      for(*var = $4; *var <= $6; (*var)+=$8)
+      for(*var = $4; goon&&(*var <= $6); (*var)+=$8)
       {
         driver.yyiplineno = block->GetStartingLine();
         //driver.yyiplineno=previous_lineno;
-        driver.parse_block(block);
+        goon=driver.parse_block(block);
       }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
@@ -911,7 +913,9 @@ loop_inst :
       //cout << " *** Create temporary variable " << ident->GetName() << std::endl;
 
       std::list<std::string>::iterator sl_it;
-      for (sl_it=sl->begin(); sl_it!=sl->end(); sl_it++) {
+      bool goon=true;
+      
+      for (sl_it=sl->begin(); goon&&(sl_it!=sl->end()); sl_it++) {
 
         // assign new value to the variable
         //string_ptr newval( new std::string(*sl_it));
@@ -919,7 +923,7 @@ loop_inst :
 
         driver.yyiplineno = block->GetStartingLine();
         //driver.yyiplineno=previous_lineno;
-        driver.parse_block(block);
+        goon = driver.parse_block(block);
 
       }
       // should not delete based on the name !!!
@@ -975,6 +979,7 @@ loop_inst :
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
   
         float res;
+        bool goon=true;
         if (var->IsNumeric()) 
           res = var->GetValueAsDouble();
         else {
@@ -982,11 +987,13 @@ loop_inst :
           driver.yyiperror(" while needs a numerical variable as condition \n");
         }
   
-        while (res) {
+        while (goon) {
           //driver.yyiplineno=previous_lineno;
           driver.yyiplineno = block->GetStartingLine();
           res=driver.parse_block(block);
+          goon=res;
           res = var->GetValueAsDouble();
+          goon=goon&&(res!=0);
         } 
         driver.yyiplineno = previous_lineno;
         driver.yyiplineno_lastparser = previous_lineno_lastparser;

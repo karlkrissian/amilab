@@ -2544,13 +2544,15 @@ void DessinImage::CreateParamBook(wxWindow* parent)
    _param_book = new wxAuiNotebook(this, wxID_ANY,
                                     wxPoint(client_size.x, client_size.y),
                                     wxDefaultSize,
-                                    wxAUI_NB_TOP          |
+                                   wxAUI_NB_DEFAULT_STYLE);
+/*
+                                     wxAUI_NB_TOP          |
                                     wxAUI_NB_TAB_SPLIT    |
                                     wxAUI_NB_TAB_MOVE
                                     |wxAUI_NB_WINDOWLIST_BUTTON
                                     |wxAUI_NB_SCROLL_BUTTONS
                                   );
-
+*/
   _param_book->Fit();
 
 }  
@@ -2624,7 +2626,6 @@ DessinImage:: DessinImage(
   _voxelpos_statusid   = 1;
   _spatialpos_statusid = 2;
   
-  CreateParamBook(this);
   
   //Create image viewer toolbar
   Create_Toolbar();
@@ -2635,7 +2636,8 @@ DessinImage:: DessinImage(
                   wxAUI_MGR_ALLOW_FLOATING |
                   // Avoid problem with KDE desktop composing effect
                   #ifdef __WXGTK__ 
-                    wxAUI_MGR_RECTANGLE_HINT |
+                   wxAUI_MGR_VENETIAN_BLINDS_HINT |
+                   // wxAUI_MGR_RECTANGLE_HINT |
                   #else
                    wxAUI_MGR_TRANSPARENT_HINT |
                   #endif
@@ -2643,7 +2645,9 @@ DessinImage:: DessinImage(
                   wxAUI_MGR_NO_VENETIAN_BLINDS_FADE |
                   wxAUI_MGR_ALLOW_ACTIVE_PANE
                 ); 
-  
+
+    CreateParamBook(this);
+
   //Add image to manager
   manager.AddPane(this->_drawing_window, 
                 wxAuiPaneInfo()

@@ -8,9 +8,9 @@ MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
 cmake_minimum_required(VERSION 2.6.4)
 
-#if(POLICY CMP0017) 
-#  cmake_policy(SET CMP0017 NEW)
-#endif(POLICY CMP0017)
+if(POLICY CMP0017) 
+  cmake_policy(SET CMP0017 NEW)
+endif(POLICY CMP0017)
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
@@ -626,8 +626,8 @@ SET(amilab_ownlibs
   WrapSystem
   WrapAMIFluid
   WrapSurface
-  WrapDessinImage
-  WrapViewer3D
+#  WrapDessinImage
+#  WrapViewer3D
   WrapGLTransfMatrix
   WrapInterface
   WrapWxWidgets
