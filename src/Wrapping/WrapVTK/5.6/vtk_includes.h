@@ -6,6 +6,8 @@
 #include <vtkBMPReader.h>
 #include <vtkCamera.h>
 #include <vtkCameraInterpolator.h>
+#include <vtkCell.h>
+#include <vtkCellData.h>
 #include <vtkCommand.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkDirectory.h>
@@ -22,6 +24,7 @@
 #include <vtkPiecewiseFunction.h>
 #include <vtkPlanes.h>
 #include <vtkPlaneSource.h>
+#include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>

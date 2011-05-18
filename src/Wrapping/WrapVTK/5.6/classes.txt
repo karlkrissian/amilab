@@ -12,6 +12,8 @@ vtkBoxWidget
 vtkBMPReader
 vtkCamera
 vtkCameraInterpolator
+vtkCell
+vtkCellData
 vtkCellTypes
 vtkCollection
 vtkColorTransferFunction
@@ -47,6 +49,7 @@ vtkOpenGLGPUVolumeRayCastMapper
 vtkPiecewiseFunction
 vtkPlanes
 vtkPlaneSource
+vtkPointData
 vtkPointSet
 vtkPoints
 vtkPolyDataAlgorithm
