@@ -115,8 +115,14 @@ def WxHelpLink(classname,method):
 #------------------------------
 def AvailableType(typename,typeid,missing_types,check_includes=False,return_type=False):
   #print "AvailableType({0},...)".format(typename)
+  #if typename.find('SurfacePoly')!=-1:
+  #  print "**************** Checking for SurfacePoly *********************"
+  #  print "check_includes {0}".format(check_includes)
+  #  print "typename '{0}'".format(typename)
   if check_includes:
     if (typename in config.available_classes):
+      #if typename.find('SurfacePoly')!=-1:
+      #  print "AddDeclare..."
       config.AddDeclare(typename)
       if typename==config.types[typeid].GetDemangled():
         fileid = config.types[typeid].fileid

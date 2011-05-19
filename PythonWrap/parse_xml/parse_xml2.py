@@ -173,6 +173,10 @@ if __name__ == '__main__':
     # add the user defined classes
     for cl in args.val.available_classes:
       config.available_classes.append(cl)
+    for cl in args.val.available_external_classes:
+      config.available_classes.append(cl)
+    for cl in config.available_builtin_classes:
+      config.available_classes.append(cl)
     FindAvailableClasses()
     print "available classes:", config.available_classes
     
@@ -442,9 +446,10 @@ if __name__ == '__main__':
       # -- list the library classes (based on the filter)
       lib_classes = []
       for cl in config.available_classes:
-        m = re.match(args.val.filter, cl)
-        if m != None:
-          lib_classes.append(cl)
+        if  (cl not in args.val.available_external_classes) and (cl not in config.available_builtin_classes):
+          m = re.match(args.val.filter, cl)
+          if m != None:
+            lib_classes.append(cl)
 
       # sort alphabetically
       lib_classes.sort()

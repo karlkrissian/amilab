@@ -85,7 +85,8 @@ incomplete_classes=[]
 new_needed_classes=[]
 
 # available builtin type
-available_types       = ['int','float','double','unsigned char','long','long int','std::string','bool','void', 'AMIFunction', 'InrImage', 'amilab::SurfacePoly']
+available_types       = ['int','float','double','unsigned char','long','long int','std::string','bool','void', 'AMIFunction', 'InrImage']
+available_builtin_classes     = ['amilab::SurfacePoly']
 
 # not used
 #available_pointertypes= ['int','float','double','unsigned char','long','long int','std::string','bool']

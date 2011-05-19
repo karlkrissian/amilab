@@ -164,11 +164,11 @@ public:
   /**
     Acc�s � l'�l�ment n
    */
-#ifdef _MSC_VER
-  T& operator[](int n) const; //throw(OutOfArray);
-#else
+//#ifdef _MSC_VER
+//  T& operator[](int n) const; //throw(OutOfArray);
+//#else
   T& operator[](int n) const throw(OutOfArray);
-#endif
+//#endif
   // ----------
 
 

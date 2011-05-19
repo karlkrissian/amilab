@@ -5,6 +5,7 @@ vtkLevelSetFastMarching
 Gradient
 vtkFastMarching_nD_plus
 Curvatures
+ShortestPathClass
 vnl_matrix<double>
 vnl_vector<double>
 vnl_symmetric_eigensystem<double>

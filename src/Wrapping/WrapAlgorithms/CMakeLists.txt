@@ -90,6 +90,12 @@ IF(AMI_ENABLE_WRAPPING)
     ENDIF(wxWidgets_CXX_FLAGS)
   ENDIF (wxWidgets_FOUND)
 
+  SET(GCCXML_FLAGS "")
+  IF(WIN32)
+    SET(GCCXML_FLAGS ${GCCXML_FLAGS} -D_WIN32 -DWIN32 -D_MSC_VER)
+  ENDIF(WIN32)
+  MESSAGE("GCCXML_FLAGS='${GCCXML_FLAGS}'")
+
   #
   #
   # TODO: run gccxml_vcconfig.bat to allow visual studio 9
@@ -111,9 +117,9 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
-  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${ITK_INCLUDES} ${WX_INCLUDES}  ${ITK_DEFS} ${WX_DEFS}  ${XML_INPUT}")
+  MESSAGE("${GCCXML}  -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${ITK_INCLUDES} ${WX_INCLUDES}  ${ITK_DEFS} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}")
   execute_process(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${ITK_INCLUDES} ${WX_INCLUDES} ${ITK_DEFS} ${WX_DEFS} ${XML_INPUT}
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${ITK_INCLUDES} ${WX_INCLUDES} ${ITK_DEFS} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}
     OUTPUT_VARIABLE gccxml_result
     ERROR_VARIABLE gccxml_error
   )
@@ -200,7 +206,8 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   #          --filter "*"
             --libname algorithms
             --classes ${MISSING_CLASSES}
-            --available_classes ${ancestors_list} ${vtk_ancestors_list}
+            --available_classes ${ancestors_list} 
+            --available_external_classes ${vtk_ancestors_list}
             --outputdir "${WrapAlgorithms_OUTDIR}"
             --templates
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
@@ -223,7 +230,8 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   #          --filter "*"
             --libname algorithms
             --classes ${MISSING_CLASSES}
-            --available_classes ${ancestors_list} ${vtk_ancestors_list}
+            --available_classes ${ancestors_list} 
+            --available_external_classes ${vtk_ancestors_list}
             --outputdir "${WrapAlgorithms_OUTDIR}"
             --templates
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"

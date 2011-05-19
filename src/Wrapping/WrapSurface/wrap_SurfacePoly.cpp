@@ -42,7 +42,7 @@ BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE_NOCOPY(SurfacePoly);
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(SurfacePoly);
 AMI_DEFINE_VARFROMSMTPTR(SurfacePoly);
 
 //
@@ -56,6 +56,21 @@ Variable<AMIObject>::ptr WrapClass_SurfacePoly::CreateVar( SurfacePoly* sp)
       new WrapClass_SurfacePoly(_obj_ptr));
 }
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassamilab__NS__SurfacePoly_AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("SurfacePoly");
+  WrapClass_SurfacePoly::AddVar_SurfacePoly(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //---------------------------------------------------
 //  SurfacePoly Constructor

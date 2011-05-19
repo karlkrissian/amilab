@@ -17,6 +17,9 @@ arg_parser.add_argument('--classes', nargs='*',  default=[],  \
 arg_parser.add_argument('--available_classes', nargs='*',  default=[],  \
   help='Lists available classes' )
 
+arg_parser.add_argument('--available_external_classes', nargs='*',  default=[],  \
+  help='Lists available classes from other libraries' )
+
 arg_parser.add_argument('--functions', nargs='*', default=[],  \
   help='name of the function(s) to wrap' )
 
