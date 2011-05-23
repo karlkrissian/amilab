@@ -25,6 +25,7 @@ wxBrush
 wxButton
 wxCharBuffer
 wxChildFocusEvent
+wxChoice
 wxClassInfo
 wxClientData
 wxClientDataContainer
@@ -134,6 +135,7 @@ wxSizerItem
 wxSizerItemList
 wxStaticBox
 wxStaticBoxSizer
+wxStaticLine
 wxStatusBar
 wxStdDialogButtonSizer
 wxString

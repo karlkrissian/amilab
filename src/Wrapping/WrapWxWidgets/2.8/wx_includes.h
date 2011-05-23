@@ -16,3 +16,5 @@
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
 #include <wx/splitter.h>
+#include <wx/choice.h>
+#include <wx/statline.h>
