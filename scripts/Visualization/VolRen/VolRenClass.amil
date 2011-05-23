@@ -40,6 +40,7 @@ if (!exists(VolRenClass)) {
       ::background_color2 = wx.wxColour(144,238,144)
       ::UseGradientBackground = UCHAR(1)
       ::azimuth = INT(45), "Rotate camera angle along vertical axis (in degrees)"
+//::obj1,
       #::Gui()
     }
 
@@ -168,7 +169,17 @@ if (!exists(VolRenClass)) {
     proc ::Show_Vol1() \
     {
       wid = &::vtkvol1.imhisto1.dw
+      wid2 = &::vtkvol2.imhisto1.dw 
       wid.Show(!wid.IsShown())
+      if(!wid.IsShown()&& !wid2.IsShown()){
+        ::splitter.Unsplit();
+      }else{
+        ::splitter.Unsplit();
+        sizer=(::splitter.GetWindow1()).GetVirtualSize()
+        h=sizer.GetHeight()*0.8
+
+        ::splitter.SplitHorizontally(&::renwin_interact, &::panel2,h)
+      }
       ::win.Update()
     }
     Comments(::Show_Vol1,"Show histogram of Vol1")
@@ -177,7 +188,16 @@ if (!exists(VolRenClass)) {
     proc ::Show_Vol2() \
     {
       wid = &::vtkvol2.imhisto1.dw
+      wid2 = &::vtkvol1.imhisto1.dw 
       wid.Show(!wid.IsShown())
+      if(!wid.IsShown()&& !wid2.IsShown()){
+        ::splitter.Unsplit();
+      }else{
+        ::splitter.Unsplit();
+        sizer=(::splitter.GetWindow1()).GetVirtualSize()
+        h=sizer.GetHeight()*0.8
+        ::splitter.SplitHorizontally(&::renwin_interact, &::panel2,h)
+      }
       ::win.Update()
     
     }
@@ -219,7 +239,6 @@ if (!exists(VolRenClass)) {
       del ::renderer
       # etc ...
     }
-
 
     #----------------------------
     proc ::StartNew() \
@@ -264,6 +283,7 @@ if (!exists(VolRenClass)) {
           # Add the volume to the scene
           ::SetRendererBg()
           ::renderer.AddVolume( &::vtkvol1.vol )
+
           ::renderer.ResetCamera()
           ::BackupView()
           ::renwin_interact.Render()
@@ -337,16 +357,12 @@ if (!exists(VolRenClass)) {
       # sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
       sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel.SetSizer(&sbox_sizer)
-      //::flex_sizer = wx.wxGridSizer(1)
-      ::flex_sizer =  wx.wxFlexGridSizer(2,1,0,0)
-      ::flex_sizer.AddGrowableRow(0,4)
-      ::flex_sizer.AddGrowableRow(1,1)
-      ::flex_sizer.AddGrowableCol(0,1)
+      ::splitter =wx.wxSplitterWindow(&::panel,-1)
 
-      sbox_sizer.Add( &::flex_sizer, 1, wx.wxALL | wx.wxEXPAND,2)
+      sbox_sizer.Add( &::splitter, 1, wx.wxALL | wx.wxEXPAND,2)
       # create widget here
       import_vtk
-      ::renwin_interact = wxVTKRenderWindowInteractor(&::panel,-1)
+      ::renwin_interact = wxVTKRenderWindowInteractor(&::splitter,-1)
       #ren = vtk.vtkRenderer.New()
       #::renwin_interact.GetRenderWindow().AddRenderer(&ren);
       #::renwin_interact = wxVTKFrame(&panel,-1)
@@ -354,31 +370,36 @@ if (!exists(VolRenClass)) {
       ::renwin_interact.Enable(true)
       # Still drawing problem (missed exposed events???)
       ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
-      #::panel_sizer.Add(&::renwin_interact, &wx.wxSizerFlags().Expand().Proportion(1) )
-      ::flex_sizer.Add(&::renwin_interact, 1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
-      #sbox_sizer.Add(&::renwin_interact, 1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
       
 //carlos
+      ::panel2 = wx.wxPanel(&::splitter)
       ::win.EnablePanel(::vol1_page , true)
       ::win.EnablePanel(::vol2_page , true)
+      sbox_sizerH = wx.wxBoxSizer(wx.wxHORIZONTAL)
+      ::panel2.SetSizer(&sbox_sizerH)   
+      ::obj1 = &::vtkvol1.imhisto1.dw
+      ::vtkvol1.imhisto1.dw_boxsizer.Detach(&::obj1)
+      ::obj1.Reparent(&::panel2)
+      sbox_sizerH.Add(&::obj1,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
 
-      ::sbox_sizerH = wx.wxBoxSizer(wx.wxHORIZONTAL)
-      ::flex_sizer.Add(&::sbox_sizerH,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
-
-      obj1 = &::vtkvol1.imhisto1.dw
-      ::vtkvol1.imhisto1.dw_boxsizer.Detach(&obj1)
-      obj1.Reparent(&::panel)
-      ::sbox_sizerH.Add(&obj1,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
-
-      obj2 = &::vtkvol2.imhisto1.dw
-      ::vtkvol2.imhisto1.dw_boxsizer.Detach(&obj2)
-      obj2.Reparent(&::panel)
-      ::sbox_sizerH.Add(&obj2,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+      ::obj2 = &::vtkvol2.imhisto1.dw
+      ::vtkvol2.imhisto1.dw_boxsizer.Detach(&::obj2)
+      ::obj2.Reparent(&::panel2)
+      sbox_sizerH.Add(&::obj2,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
 
       ::win.EnablePanel(::vol1_page , false)
       ::win.EnablePanel(::vol2_page , false)
-      obj2.Hide()  
+      ::obj2.Hide()  
+
+
+
+     ::splitter.SetSashGravity(0.8)
+//::gravity= ::splitter.GetSashGravity()
+//      ::splitter.SetMinimumPaneSize(1)
+//sizer=(::).GetVirtualSize()
+//  ::h=sizer.GetHeight()/150
+    ::splitter.SplitHorizontally(&::renwin_interact, &::panel2)
 
 
       # Add to main book
@@ -574,6 +595,10 @@ if (!exists(VolRenClass)) {
 
           ::win.BeginBoxPanel("Camera control")
             ::win.AddInt(&::azimuth,"azimuth",-180,180)
+            //::win.SetCallback( &::OnWindow)
+
+            ::win.SetCallback( &::ChangeView)
+
             ::win.BeginHorizontal()
               ::win.AddButton("Apply",&::ChangeView)
               ::win.AddButton("Reset",&::ResetView)
