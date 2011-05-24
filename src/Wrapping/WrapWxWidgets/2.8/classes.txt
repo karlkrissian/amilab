@@ -155,7 +155,5 @@ wxWindowList
 wxWindowListNode
 wxWritableCharBuffer
 wxWritableWCharBuffer
-wxwxMenuItemListNode
-wxwxSizerItemListNode
 wxSplitterWindow
 
