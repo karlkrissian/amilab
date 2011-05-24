@@ -87,6 +87,16 @@ class wxStcFrame;
 #include "DefineClass.hpp"
 #include "wx/aui/aui.h"
 
+class CustomAboutMenu : public wxDialog
+{
+  public:
+    CustomAboutMenu(wxWindow* parent);
+    void OnClose(wxCommandEvent& event);
+ // DECLARE_EVENT_TABLE();
+}; // CustomAboutMenu
+
+
+//----------------------------------------------------------------
 class CustomStatusBar : public wxStatusBar
 {
   public:
@@ -161,6 +171,7 @@ public:
   void OnViewMain_book( wxCommandEvent& event );
   void OnViewVar_book( wxCommandEvent& event );
   void OnViewMain_bar( wxCommandEvent& event );
+  void OnViewMain_bar2( wxCommandEvent& event );
   void OnViewScript_bar( wxCommandEvent& event );
   
   void OnHelpKeywords( wxCommandEvent& event );
@@ -168,8 +179,10 @@ public:
   void OnQuit ( wxCommandEvent& event );
   void OnClose ( wxCloseEvent& event );
   void OnUpdate(wxUpdateUIEvent& event );
+  void OnAbout ( wxCommandEvent& event );
+  void OnCloseAboutPanel(wxCommandEvent& event );
   
-void OnFindKeywords( wxCommandEvent& event );
+  void OnFindKeywords( wxCommandEvent& event );
 
 /*
   void OnInternalIdle();
@@ -210,7 +223,6 @@ void OnFindKeywords( wxCommandEvent& event );
 #endif
 /// @endcond
   wxAuiNotebook* _param_book;
-  
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
   wxAuiNotebook* GetParamBook() { return _param_book; }
 
@@ -245,7 +257,8 @@ protected:
 //   void OnDropPossible( wxDataViewEvent &event );
 //   void OnDrop( wxDataViewEvent &event );
   //
-  wxAuiToolBar* tb1;
+  CustomAboutMenu *dialogAbout;
+  wxAuiToolBar* tb1, *tb2;
   wxStcFrame* amilab_editor;
   
   // history of opened images
@@ -356,6 +369,7 @@ protected:
   void CreateVarBook          ( wxWindow*);
   void CreateVarDirCtrl       ( wxWindow*);
   void CreateVarTreePanel     ( wxWindow*);
+  void CreateAboutPanel       (wxWindow* parent);
 
 ///@cond wxCHECK
 #if wxCHECK_VERSION(2,9,0)
@@ -379,6 +393,7 @@ protected:
   void OnFileActivated(wxCommandEvent& event);
 
 private:
+  bool toolbar_status;
   wxAuiManager m_mgr;
   DECLARE_EVENT_TABLE();
 
