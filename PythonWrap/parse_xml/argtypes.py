@@ -188,6 +188,7 @@ class StructInfo(ArgTypeBase):
     self.bases=[]
     self.incomplete="0"
     self.fileid=""
+    self.abstract='0'
     self.public_members=wrap_class.PublicMembers()
 
 #------------------------------

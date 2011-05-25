@@ -8,9 +8,6 @@ func "Common/ScriptGui"
 
 if (!exists(GreyMorphoClass)) {
 
-  printn "Import filters (ami_import->Filters()).\n"
-  ami_import.Filters()
-
   Class GreyMorphoClass  : public ScriptGui{
 
     #----------------------------
@@ -55,7 +52,7 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::ProcessImage( IMAGE input) \
     {
-      morph = global::filters.ContinuousMorphology()
+      morph = filters.ContinuousMorphology()
       morph.SetLimits(::Imin,::Imax)
 
       if (::operation==0) {
@@ -171,8 +168,7 @@ if (!exists(GreyMorphoClass)) {
     proc ::CreateWindow() {
     
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("GreyMorpho")
+      ::win = ParamPanel("GreyMorpho")
       
       ::win.BeginBook()
     

@@ -1,7 +1,6 @@
 
 func "Common/ScriptGui"
 
-import_vtk
 
 if (!exists(vtkVolumeClass)) {
 
@@ -113,11 +112,10 @@ if (!exists(vtkVolumeClass)) {
  
         #printn "CreateVTK 2"
 
-        import_vtk
         ::vol       = vtk.vtkVolume.New()
         # don't put the boxwidget for the moment
         # convert input to vtkimage
-        ::vtkinput  = ToVtkImageData(&input_image)
+        ::vtkinput  = vtktools.ToVtkImageData(&input_image)
         ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
 
         #::volmapper.SetSampleDistance()
@@ -151,8 +149,7 @@ if (!exists(vtkVolumeClass)) {
 
           # don't put the boxwidget for the moment
           # convert input to vtkimage
-          import_vtk
-          ::vtkinput  = ToVtkImageData(&input_image)
+          ::vtkinput  = vtktools.ToVtkImageData(&input_image)
 
           #supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
           #if (!supported) {
@@ -510,11 +507,15 @@ printn "--"
         hmax = max(::imhisto1.h[0])
         ctrlpoints = curves[::linearcurve1_id].GetControlPoints()
         for n=0 to ctrlpoints.size()-1 {
-printn "point number %1%" %n
+          printn "point number %1%" %n
           cp = ctrlpoints[n].copy()
           col = cp.GetColour()
           ::colorFun.AddRGBPoint( cp.GetX(), 1.0/255*col.Red(), 1.0/255*col.Green(),1.0/255*col.Blue() );
-          ::opacityFun.AddPoint(  cp.GetX(), ::opacity_attenuation/hmax*cp.GetY() );
+          y =  ::opacity_attenuation/hmax*cp.GetY()
+          y = -max(-y,-1)
+          ::opacityFun.AddPoint(  cp.GetX(), y );
+          #x = cp.GetX()
+          #printn " (%1%, " % x + " %1%)" % y
         }
         
         ::volmapper.SetBlendModeToComposite()

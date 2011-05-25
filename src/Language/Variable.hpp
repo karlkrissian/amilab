@@ -415,11 +415,11 @@ AMI_DECLARE_TYPE(C_wrap_imagefunction);
 AMI_DECLARE_TYPE(C_wrap_varfunction);
 AMI_DECLARE_TYPE(AMIFunction);
 AMI_DECLARE_TYPE(AMIClass);
-AMI_DECLARE_TYPE(AMIObject);
 AMI_DECLARE_TYPE( VarArray);
 
 // abstract classes
-AMI_DECLARE_TYPE(WrapClassMember)
+//AMI_DECLARE_TYPE(AMIObject);
+//AMI_DECLARE_TYPE(WrapClassMember)
 
 //----------------------------------------------------------------------
 /**
@@ -454,6 +454,10 @@ private:
 
 public:
 
+  static ptr DynCast(BasicVariable::ptr v) {
+    return boost::dynamic_pointer_cast<Variable<T> >(v);
+  }
+  
   Variable();
 
   Variable(const boost::shared_ptr<T>& p)
@@ -563,7 +567,7 @@ public:
     else return false;
   }
 
-  bool Equal(const BasicVariable::ptr& v) 
+  bool Equal( BasicVariable::ptr v) 
   {
     if (_type == v->Type()) {
       // convert pointer
@@ -594,7 +598,7 @@ public:
   T& RefValue() { return *_pointer; }
 
   void Init(const std::string& name, 
-            boost::shared_ptr<T>& p);
+            const boost::shared_ptr<T>& p);
 
   void Delete();
 
@@ -631,7 +635,7 @@ public:
    * 
    * @return A string containing the value of the variable.
    */
-  virtual std::string GetValueAsString() const;
+  virtual std::string GetValueAsString() const { return std::string(); }
 
   // allow access to private members of Variable class
 //  friend class VarArray;

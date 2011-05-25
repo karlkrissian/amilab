@@ -2,8 +2,6 @@
 
 id = atof($1)
 
-import_vtk
-
 datasetdir=sprint("dataset%02.0f/",id)
 
 i0 = Image(sprint(datasetdir+"image%02.0f_FastNLmeans.vtk",id))
@@ -66,12 +64,12 @@ proc Skel_ReadPoint(NUM vid, NUM ptid, \
 
 px=0; py=0; pz=0;
 ReadPoint(datasetdir+"/point1.txt", &px,&py,&pz)
-p1 = vtkSphere(0.5,10,10,px,py,pz)
+p1 = vtktools.vtkSphere(0.5,10,10,px,py,pz)
 p1.SetColor(0,0,255)
 rec_draw += p1
 
 ReadPoint(datasetdir+"/point2.txt", &px,&py,&pz)
-p2 = vtkSphere(0.5,10,10,px,py,pz)
+p2 = vtktools.vtkSphere(0.5,10,10,px,py,pz)
 p2.SetColor(0,0,255)
 rec_draw += p2
 
@@ -83,13 +81,13 @@ for i=0 to 3 {
   Skel_ReadPoint(i,2, &Px1,&Py1,&Pz1)
   Skel_ReadPoint(i,3, &Px2,&Py2,&Pz2)
 
-  tmp = vtkSphere(0.5,10,10,Px1,Py1,Pz1)
+  tmp = vtktools.vtkSphere(0.5,10,10,Px1,Py1,Pz1)
   pS[i] = tmp
   del tmp
   pS[i].SetColor(0,255,0)
   rec_draw += pS[i]
 
-  tmp = vtkSphere(0.5,10,10,Px2,Py2,Pz2)
+  tmp = vtktools.vtkSphere(0.5,10,10,Px2,Py2,Pz2)
   pE[i] = tmp
   del tmp
   pE[i].SetColor(0,0,255)

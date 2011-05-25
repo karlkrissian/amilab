@@ -130,7 +130,7 @@ public:
    * \param recursive recursively go through all the objects of the context
    * \return shared pointer of the array of resulting strings
    */
-  boost::shared_ptr<wxArrayString> SearchVariables(const vartype& type, bool recursive=false);
+  boost::shared_ptr<wxArrayString> SearchVariables(const vartype type, bool recursive=false);
 
   void SearchVariablesRecursive( const vartype& type,
                         boost::shared_ptr<wxArrayString>& variables,

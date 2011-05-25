@@ -6,11 +6,8 @@ func "Common/ScriptGui"
 
 if (!exists(CSPHClass)) {
 
-  ami_import->Filters()
   
   Class CSPHClass : public ScriptGui {
-
-    ::filters=&global::filters
 
     #----------------------------
     proc ::Init() {
@@ -49,7 +46,7 @@ if (!exists(CSPHClass)) {
       res=-sqrt(tmp_x*tmp_x+tmp_y*tmp_y+tmp_z*tmp_z)+::R
     
       # estimate partial volume effect based on linear interpolation
-      res = ::filters->ComputePV_subdiv(res)
+      res = filters.ComputePV_subdiv(res)
       res = res*(::fg-::bg)+::bg
       
       eval ::image_name+"<<=res;"
@@ -64,9 +61,10 @@ if (!exists(CSPHClass)) {
     Comments( ::Show, "Shows the resulting sphere")
     
     #------------------------------------
-    proc ::Gui() {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("CreateSphere")
+    proc ::Gui() 
+    {
+
+      ::win = ParamPanel("CreateSphere")
     
       ::win.BeginBook()
         ::win.AddPage("Param")

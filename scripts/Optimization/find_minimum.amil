@@ -155,8 +155,7 @@ if (!exists(MinSearchClass)) {
     proc ::CreateWindow() \
     {
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("MinSearch")
+      ::win = ParamPanel("MinSearch")
       
       ::win.BeginBook()
         ::win.AddPage("Parameters")

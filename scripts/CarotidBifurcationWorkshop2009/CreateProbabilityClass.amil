@@ -8,12 +8,8 @@ func "Common/ScriptGui"
 
 if (!exists(CreateProbabilityClass)) {
 
-  global::ami_import.Filters()
-  
   Class CreateProbabilityClass  : public ScriptGui\
   {
-    import_filters
-    ::filters=&filters
     
     #--------------------------
     proc ::Init() \
@@ -91,11 +87,10 @@ if (!exists(CreateProbabilityClass)) {
     #--------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("Local Stats",&::parent_panel)
+        ::win = ParamPanel("Local Stats",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("Local Stats")
+        ::win = ParamPanel("Local Stats")
       }
           
       ::win.BeginBook()

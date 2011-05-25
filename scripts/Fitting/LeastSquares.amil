@@ -7,8 +7,6 @@ func "Common/ScriptGui"
 if (!exists(LeastSquaresClass)) \
 {
 
-  ami_import.Filters()
-
   Class LeastSquaresClass : public ScriptGui \
   {
     #-------------------
@@ -63,7 +61,7 @@ if (!exists(LeastSquaresClass)) \
         #nwp = exp(-nwp*nwp/(gaussian_size*gaussian_size))
       }
       mask = ::input*0+1
-      ::res <<= global::filters.LeastSquares(::input,b,weights,mask)
+      ::res <<= filters.LeastSquares(::input,b,weights,mask)
     }
 
     proc ::Display() {
@@ -76,8 +74,7 @@ if (!exists(LeastSquaresClass)) \
     proc ::CreateWindow() {
 
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("LeastSqu")
+      ::win = ParamPanel("LeastSqu")
       
       ::win.BeginBook()
     

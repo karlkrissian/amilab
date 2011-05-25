@@ -94,8 +94,7 @@ if (!exists(WeightedLSCLass)) {
     #--------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Prob")
+      ::win = ParamPanel("Prob")
 
       ::win.BeginPanel("Parameters")
         ::win.AddImageChoice( &::_input_name,"Input")

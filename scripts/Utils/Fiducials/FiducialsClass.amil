@@ -112,11 +112,10 @@ if (!exists(FiducialsClass)) {
     //---------------------------------------------------
     proc ::Gui() {
     
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("Fiducials",&::parent_panel)
+        ::win = ParamPanel("Fiducials",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("Fiducials")
+        ::win = ParamPanel("Fiducials")
       }
       
       ::win.BeginBook()

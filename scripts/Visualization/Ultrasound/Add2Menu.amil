@@ -17,7 +17,6 @@ if (!exists(ultrasound_display)) {
     ultrasound_display.SetDisplayedName("&Ultrasound")
     ultrasound_display.SetHelp("Gets ultrasound images and position")
 
-    ami_import.System(); 
     ultrasound_display.SetIcon16( op_system.GetCurrentScriptDir()+"/ultrasonix_icon16.png")
     ultrasound_display.SetIcon32( op_system.GetCurrentScriptDir()+"/ultrasonix_icon32.png")
 

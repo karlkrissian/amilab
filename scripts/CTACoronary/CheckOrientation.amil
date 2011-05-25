@@ -2,7 +2,6 @@
 
 SetVerboseOn
 
-ami_import->Filters()
 
 i = Image "Images/initial_crop_FastNLmeans.vtk"
 recons = Image "Images/recons_crop.vtk"

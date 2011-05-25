@@ -20,7 +20,6 @@ if (!exists(timer_display)) {
     timer_display.SetHelp("Timer: measure elapsed time between two instants.")
     timer_display.SetInMenus("Scripts","Utils")
 
-    ami_import.System(); 
     timer_display.SetIcon16( op_system.GetCurrentScriptDir()+"/timer_icon16.png")
     timer_display.SetIcon32( op_system.GetCurrentScriptDir()+"/timer_icon32.png")
 

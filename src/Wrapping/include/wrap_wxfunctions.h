@@ -18,8 +18,6 @@
 class ParamList;
 
 AMIObject::ptr      AddWrap_wxfunctions();
-BasicVariable::ptr  wrap_wxfunctions( ParamList* p);
-
 
 /**
  * Launch the default browser with the given web page.
@@ -32,5 +30,8 @@ BasicVariable::ptr wrap_LaunchDefaultBrowser( ParamList* p);
  * @param p
  */
 BasicVariable::ptr wrap_FromWxString( ParamList* p);
+
+
+
 
 #endif // _wrap_wxfunctions_h_

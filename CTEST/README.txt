@@ -4,33 +4,18 @@
 
 1.  Copiar los ficheros en las carpetas correctas.
 
-    1.1 Colocamos en la carpeta donde se encuentra el fichero CMakeLists.txt
-        los siguientes ficheros:
-
-        - Fichero amilab_tests.cmake (contiene las llamadas a los tests).
-
-        - Fichero CTestConfig.cmake (contiene la configuración básica para
-          el envió de los test a CDash).
-
-    1.2 Colocamos en la carpeta donde se invoca a CMake (carpeta donde se 
+        Colocamos en la carpeta donde se invoca a CMake (carpeta donde se 
         construye el software) el siguiente fichero:
 
         - Fichero CTestCustom.cmake (contiene las personalizaciones realizadas
           sobre CTest).
 
-2.  Nos situamos en la carpeta donde se encuentra el fichero CMakeLists.txt y
-    lo modificamos, diciéndole que incluya el fichero amilab_tests.cmake en el
-    proyecto. Por ejemplo:
-
-    #Test for amilab.
-    INCLUDE(${PROJECT_SOURCE_DIR}/amilab_tests.cmake)
-
-3.  Nos situamos en la carpeta donde se construye el software e invocamos a
+2.  Nos situamos en la carpeta donde se construye el software e invocamos a
     CMake.
 
     $ ccmake ../../src
 
-4.  Una vez invocado a CMake, ejecutamos CTest para verificar que los cambios
+3.  Una vez invocado a CMake, ejecutamos CTest para verificar que los cambios
     se han realizado correctamente.
 
     $ ctest
@@ -58,7 +43,7 @@
 
     Total Test time (real) =  14.05 sec
 
-5.  A continuación, elaboramos un script para que ejecute CTest con las
+4.  A continuación, elaboramos un script para que ejecute CTest con las
     opciones necesarias para que genere y envié una nueva entrada en CDash.
 
     #!/bin/sh
@@ -71,7 +56,7 @@
     #Invocamos a ctests con la opción -D y el parámetro Nightly.
     xinit /usr/bin/xterm -title "Ejecutando CTest." -e bash -c "ctest -D Nightly" -- :1
 
-6.  Programamos el demonio cron para que lance el anterior script en el momento
+5.  Programamos el demonio cron para que lance el anterior script en el momento
     que deseemos. Para ello usamos el crontab.
 
     $ crontab -l

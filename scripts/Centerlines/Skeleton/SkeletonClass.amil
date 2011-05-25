@@ -170,7 +170,7 @@ if (!exists(SkeletonClass)) {
       if (::linemethod==0) {
         ::lines = Skeleton2lines(::output)
       } else {
-        ::lines = global::vtkSkeleton2Lines(::output)
+        ::lines = vtktools.vtkSkeleton2Lines(::output)
       }
     
       ::res = ::lines
@@ -249,11 +249,10 @@ if (!exists(SkeletonClass)) {
     //---------------------------------------------------
     proc ::Gui() {
     
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("Skeleton",&::parent_panel)
+        ::win = ParamPanel("Skeleton",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("Skeleton")
+        ::win = ParamPanel("Skeleton")
       }
       
       ::win.BeginHorizontal()

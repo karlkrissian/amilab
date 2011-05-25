@@ -14,7 +14,6 @@ if (!exists(ImageHistogramClass)) {
 
   Class ImageHistogramClass : public ScriptGui {
 
-    ::ami_import = &global::ami_import
     #----------------------------
     proc ::Init() \
     {
@@ -476,7 +475,7 @@ printn "xmax = %1%" % xmax
 
       # add Drawing Window
       d = ::win.CurrentParent()
-      ::dw = global::ami_import.wxDrawingWindow(&d)
+      ::dw = wxDrawingWindow(&d)
       # sets minimal size here
       ::dw.SetMinSize(&wx.wxSize(80,80)); //(80,80));
       ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
@@ -486,7 +485,7 @@ printn "xmax = %1%" % xmax
       # add User Colormap Drawing Window
        if(::num_histograms==2){
         d = ::win.CurrentParent()
-        ::cm = global::ami_import.wxDrawingWindow(&d)
+        ::cm = wxDrawingWindow(&d)
         # sets minimal size here
         ::cm.SetMinSize(&wx.wxSize(80,70));
         ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
@@ -531,7 +530,7 @@ printn "xmax = %1%" % xmax
 
           # add Drawing Window
           d = ::win.CurrentParent()
-          ::dw = global::ami_import.wxDrawingWindow(&d)
+          ::dw = wxDrawingWindow(&d)
           # sets minimal size here
           ::dw.SetMinSize(&wx.wxSize(80,80));
           ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
@@ -541,7 +540,7 @@ printn "xmax = %1%" % xmax
           # add User Colormap Drawing Window
           if(::num_histograms==2){
             d = ::win.CurrentParent()
-            ::cm = global::ami_import.wxDrawingWindow(&d)
+            ::cm = wxDrawingWindow(&d)
             # sets minimal size here
             ::cm.SetMinSize(&wx.wxSize(80,70));
             ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
@@ -570,10 +569,10 @@ printn "xmax = %1%" % xmax
       # parameters window
       # parameters window
       if (exists(::parent_panel)) {
-print "Creating window with panel '%1%'" % ::parent_panel._GetName().c_str()
-        ::win = global::ami_import.ParamPanel("ImHist",&::parent_panel)
+        print "Creating window with panel '%1%'" % ::parent_panel._GetName().c_str()
+        ::win = ParamPanel("ImHist",&::parent_panel)
       } else {
-        ::win = global::ami_import.ParamPanel("ImHist")
+        ::win = ParamPanel("ImHist")
       }
       
       if (::standalone)&&(!exists(::parent_panel)) {

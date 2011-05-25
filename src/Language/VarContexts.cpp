@@ -150,7 +150,7 @@ boost::shared_ptr<wxArrayString> VarContexts::SearchCompletions(const wxString& 
 
 
 //--------------------------------------------------
-boost::shared_ptr<wxArrayString> VarContexts::SearchVariables(const vartype& type, bool recursive)
+boost::shared_ptr<wxArrayString> VarContexts::SearchVariables(const vartype type, bool recursive)
 {
   boost::shared_ptr<wxArrayString> completions;
   completions = boost::shared_ptr<wxArrayString>(new wxArrayString());

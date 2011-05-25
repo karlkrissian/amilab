@@ -37,8 +37,6 @@ if (!exists(MultiLinesClass)) {
   
   Class MultiLinesClass : public ScriptGui {
   
-    global::ami_import.Filters()
-    ::filters=&filters
 
     func "Centerlines/Skeleton/SkeletonClass"
     SkeletonClass ::skeleton_obj
@@ -285,14 +283,14 @@ if (!exists(MultiLinesClass)) {
     
       # Compute Structure Tensor
       printn "Structure Tensor"
-      sth = ::filters->StructureTensorH(&::input,sigma,1,&::mask)
+      sth = filters.StructureTensorH(&::input,sigma,1,&::mask)
     
       SetProgress(::current_progress+::current_step*0.25)
     
       # EigenDecomp, parameters:  the structure tensor,
       # the eigenvalues flag: 0
       # the eigenvectors flag 3
-      eig = ::filters->EigenDecomp(&sth,0,3,&::mask)
+      eig = filters.EigenDecomp(&sth,0,3,&::mask)
       SetProgress(::current_progress+::current_step*0.5)
       del sth
     
@@ -792,11 +790,10 @@ if (!exists(MultiLinesClass)) {
     #-----------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("MultiLines",&::parent_panel)
+        ::win = ParamPanel("MultiLines",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("MultiLines")
+        ::win = ParamPanel("MultiLines")
       }
       ::win.BeginBook()
         ::win.AddPage("IO")

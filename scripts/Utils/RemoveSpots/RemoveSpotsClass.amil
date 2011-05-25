@@ -17,9 +17,7 @@
   #}
 #}
 
-#printn "Import filters (ami_import->Filters()).\n"
 
-ami_import.Filters()
 func "Common/ScriptGui"
 
 if (!exists(GreyMorphoClass)) {
@@ -63,7 +61,7 @@ if (!exists(GreyMorphoClass)) {
       m1 = (FLOAT) (_mask>0)
 
       #  m1 = EDPdilate( m1,2,0.5)
-      morph = global::filters.ContinuousMorphology()
+      morph = filters.ContinuousMorphology()
       m1 = morph.Dilate(m1,::dilation_size,0.5)
 
       test1 = _input
@@ -146,7 +144,7 @@ if (!exists(GreyMorphoClass)) {
     proc ::Gui() {
     
       # parameters window
-      ::win = global::ami_import.ParamPanel("Spots")
+      ::win = ParamPanel("Spots")
       
       ::win.BeginBook()
     

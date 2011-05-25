@@ -55,7 +55,8 @@
 extern VarContexts  Vars;
 
 //---------------------------------------------------------
-void AddWrapFilters(){
+void AddWrapFilters(AMIObject::ptr& obj)
+{
 
   // Create new instance of the class
   AMIObject::ptr amiobject (new AMIObject);
@@ -128,7 +129,7 @@ void AddWrapFilters(){
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
+  obj->GetContext()->AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject,obj->GetContext());
 
 }
 
@@ -137,18 +138,18 @@ void AddWrapFilters(){
  * Adds the Filters wrapping
  * @param p 
  */
-void wrap_Filters( ParamList* p)
-{
 /*
-  char functionname[] = "Filters";
-  char description[]=" \n\
-    Adds wrapping for Filters. \n\
-          ";
-  char parameters[] =" \n\
-          ";
-*/
-  AddWrapFilters();
-}
+ void wrap_Filters( ParamList* p)
+ {
+   char functionname[] = "Filters";
+   char description[]=" \n\
+     Adds wrapping for Filters. \n\
+           ";
+   char parameters[] =" \n\
+           ";
+   AddWrapFilters();
+ }
+ */
 
 
 /* neighborhood similarity ...

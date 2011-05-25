@@ -75,7 +75,7 @@ Class PaintClass : public ScriptGui {
   #-----------------------------------------
   proc ::CreateGui() {
     # parameters window
-    ::win = global::ami_import.ParamPanel("Paint")
+    ::win = ParamPanel("Paint")
   
     ::win.BeginBook()
       ::win.AddPage("Param")

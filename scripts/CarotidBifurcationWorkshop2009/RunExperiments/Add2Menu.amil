@@ -6,7 +6,6 @@
 
 proc AddMenuCarotidChallenge() \
 {
-  global::ami_import.System()
   curdir = op_system.GetCurrentScriptDir()
 
   menu = "&Apps"

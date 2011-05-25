@@ -43,7 +43,6 @@ func "Centerlines/test_divergence.amil"
 #SetVerboseOn
 #SetDebugOn
 
-ami_import->Filters()
 
 //----------------------------------------
 proc TC_init(IMAGE im, NUM minint, STRING datasetdir) {
@@ -361,8 +360,7 @@ proc TC_CreateWindow() {
   global
 
     # parameters window
-    import = &global::ami_import;
-    TC_win = import->ParamPanel("Circle integration for centerlines")
+    TC_win = ParamPanel("Circle integration for centerlines")
 
     TC_win.BeginBook()
 

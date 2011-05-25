@@ -6,13 +6,11 @@
 func "Common/ScriptGui"
 
 if (!exists(itkShortestPathClass)) {
-  global::ami_import.ITK()
   
   Class itkShortestPathClass : public ScriptGui {
 
     func "SyntheticImages/AddSphere.amil"
     AddSphereClass ::AS
-    ::itk=&global::itk
       
     #----------------------------
     proc ::Init() {
@@ -220,7 +218,7 @@ if (!exists(itkShortestPathClass)) {
       # running fast marching until the point 1 is reached
       printn "FMT"
       if (::end_mode == 0){
-        res = ::itk->FastMarchingImageFilter3D(maxrepim_crop,\
+        res = itk.FastMarchingImageFilter3D(maxrepim_crop,\
               ::endx,::endy,::endz,\
               ::maxcost,0)
         res = (res>::maxcost)*::maxcost+(res<=::maxcost)*res
@@ -240,7 +238,7 @@ if (!exists(itkShortestPathClass)) {
 
       printn "FMT done"
       if (exists(::path)) { del ::path; }
-      ::path = ::itk->BackTrackingMeshFilter3D( res,\
+      ::path = itk.BackTrackingMeshFilter3D( res,\
                                   ::Px1,::Py1,::Pz1,\
                                   ::step_size,\
                                   ::maxlength,\
@@ -250,11 +248,10 @@ if (!exists(itkShortestPathClass)) {
     #-------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("Path",&::parent_panel)
+        ::win = ParamPanel("Path",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("Path")
+        ::win = ParamPanel("Path")
       }
     
       ::win.BeginBook()

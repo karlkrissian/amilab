@@ -1,5 +1,3 @@
-printn "Import filters (ami_import->Filters()).\n"
-ami_import.Filters()
 
 # command line: amilab 
 i = Image "image_filteredmaskcrop.ami.gz"
@@ -11,7 +9,7 @@ sv = v[si]
 
 vl_s = Surface "selected_vessels.vtk"
 
-morph = global::filters.ContinuousMorphology()
+morph = filters.ContinuousMorphology()
 
 sv = sv*-100
 #svd  = EDPdilate(sv,1,0.5)

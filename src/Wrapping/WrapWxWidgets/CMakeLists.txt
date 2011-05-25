@@ -15,7 +15,9 @@ include_directories (
 
 # if automatic wrapping, generate source files
 IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
-  MESSAGE("\nWrapping wxWidgets...")
+  MESSAGE("\n*********************")
+  MESSAGE("Creating wxWidgets wrapping...")
+  MESSAGE("*********************\n")
 
   # Generate XML file
   MESSAGE("Generate XML file")
@@ -216,7 +218,10 @@ SET( wx_SRCS ${WRAPWX_OUTDIR}/addwrap_wx.cpp ${wx_SRCS})
 
 # MESSAGE("${wx_HDRS}")
 
-MESSAGE("\nWrapping wxWidgets...\n")
+MESSAGE("----------------------")
+MESSAGE("Wrapping wxWidgets... ")
+MESSAGE("----------------------")
+
 MESSAGE( "AMI_USE_PRECOMP_HEADERS = ${AMI_USE_PRECOMP_HEADERS} ")
 
 IF(NUMBER_SOURCES_TO_PACKAGE EQUAL 1)

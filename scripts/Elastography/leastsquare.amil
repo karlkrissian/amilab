@@ -1,5 +1,4 @@
 # command line: amilab OpticFlow/test_3dflow.amil 
-ami_import->Filters()
 
 #if ($#<3) {
 #  printn $0

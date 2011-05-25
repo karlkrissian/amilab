@@ -120,8 +120,7 @@ proc USML_DisplayLines() {
 proc USML_CreateWindow() {
   global
     # parameters window
-    import = &global::ami_import;
-    USML_win = import->ParamPanel("Multiscale response filter for centerlines")
+    USML_win = ParamPanel("Multiscale response filter for centerlines")
     
     USML_sigma_id = USML_win.AddFloat( &USML_sigma,  "USML_sigma", 0.6,3)
     USML_th_id    = USML_win.AddFloat( &USML_th,  "USML_th", 1,500)

@@ -343,7 +343,7 @@ FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net )
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net richtext)
 
 OPTION(GENERATE_HTML_HELP "Generate HTML file help")
 
@@ -632,6 +632,7 @@ SET(amilab_ownlibs
   WrapInterface
   WrapWxWidgets
   WrapAlgorithms
+  WrapLanguage
   WrapBasicTypes
   WrapCommon
   WrapIO

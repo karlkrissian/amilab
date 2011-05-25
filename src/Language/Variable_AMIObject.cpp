@@ -539,6 +539,9 @@ template<>  BasicVariable::ptr Variable<AMIObject>::operator[](const BasicVariab
 
   // looking for function member named at
   BasicVariable::ptr member = object->GetContext()->GetVar("at");
+  if (!member.get()) {
+    member = object->GetContext()->GetVar("__at__");
+  }
 
   if (member.get()) {
     // Create a paramlist from the parameter
@@ -553,7 +556,7 @@ template<>  BasicVariable::ptr Variable<AMIObject>::operator[](const BasicVariab
       BasicVariable::ptr res ((var1->Pointer())->CallMember(param.get()));
       return res;
     } else {
-      GB_driver.yyiperror(" operator[], class member 'at' of this type is not available. \n");
+      GB_driver.yyiperror(" operator[], class member 'at' (or '__at__') of this type is not available. \n");
       return BasicVariable::empty_variable; 
     }
   } else

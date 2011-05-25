@@ -9,7 +9,7 @@
 func "Common/ScriptGui"
 
 if (!exists(NLMweightsClass)) {
-  ami_import.Filters()
+
   func "Noise/AddRiceNoise.amil"
 
   Class NLMweightsClass : public ScriptGui {
@@ -46,9 +46,9 @@ if (!exists(NLMweightsClass)) {
       i_w <<= ::weights 
       if (::smoothing>0.001) {
         i1s = filter(::input,::smoothing,0,0,0)
-        i_w = global::filters.NSim(i1s,px,py,0,wsize)
+        i_w = filters.NSim(i1s,px,py,0,wsize)
       } else {
-        i_w = global::filters.NSim((FLOAT)::input,px,py,0,wsize)
+        i_w = filters.NSim((FLOAT)::input,px,py,0,wsize)
       }
       # get a smaller window around
       xmin = px-::winsize
@@ -132,8 +132,7 @@ if (!exists(NLMweightsClass)) {
     
     proc ::CreateWindow() {
 
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Weights for NLM")
+      ::win = ParamPanel("Weights for NLM")
       ::win.BeginBook()
     
         ::win.AddPage("Input/Output")

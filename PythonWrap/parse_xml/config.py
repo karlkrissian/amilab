@@ -196,7 +196,8 @@ def CreateIncludes():
 def IsSharedPtr(typename):
   res = re.match(r"boost::shared_ptr<(.*)>",typename)
   if res!=None:
-    return res.group(1)
+    # get rid of spaces with strip ...
+    return res.group(1).strip()
   else:
     return None
 

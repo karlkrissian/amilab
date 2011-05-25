@@ -131,7 +131,6 @@ if (!exists(ScriptGui)) \
     # needs to have the variable ::wiki_help defined
     #
     proc ::LaunchWiki() {
-      import = &global::ami_import
       if (exists(::wiki_help)) {
         res = wx.LaunchDefaultBrowser(::wiki_help)
       } else {

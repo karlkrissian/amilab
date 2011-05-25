@@ -63,7 +63,7 @@
 #include "wrapAMIFluid.h"
 #include "wrapVTK.h"
 #include "wrapITK.h"
-#include "wrap_wxfunctions.h"
+//#include "wrap_wxfunctions.h"
 //#include "wrap_MainFrame.h"
 //#include "wrap_imagedraw.h"
 #include "itkCannyEdgeDetector.h"
@@ -758,9 +758,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 
 %token T_SaveStructuredGrid
 
-%token T_import_vtk
 %token T_import_wii
-%token T_import_filters
 
 %token T_amiOFCorr2D
 %token T_amiOFVar2D
@@ -986,6 +984,7 @@ loop_inst :
           res = 0;
           driver.yyiperror(" while needs a numerical variable as condition \n");
         }
+        goon=(res!=0);
   
         while (goon) {
           //driver.yyiplineno=previous_lineno;
@@ -2350,6 +2349,14 @@ command:
           BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
           boost::shared_array<char> comments( $5);
           var->SetComments(comments.get());
+        }
+        | T_del identifier
+        {
+        /**
+          Description: 
+            Delete an identifier: nothing to do ...
+        **/
+          IdentifierInfo::ptr ident($2);
         }
         | T_del variable
         {
@@ -3910,21 +3917,25 @@ command:
           Func_SaveTransform(glmat.get(),filename.get());
         }
 */
-        |
+/*
+ *        |
         T_import_vtk
         {
           AddWrapVTK();
         }
+        */
         |
         T_import_wii
         {
           AddWrapWII();
         }
-        |
+/*
+ *        |
         T_import_filters
         {
           AddWrapFilters();
         }
+        */
         |
         T_amiOFCorr2D T_OP_PAR var_image T_COMMA var_image T_COMMA
         var_image  T_COMMA var_image T_COMMA

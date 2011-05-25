@@ -701,8 +701,7 @@ proc CB_mask() {
 }
 
 # Arrow Parameters
-win_import = &global::ami_import;
-arrow = import->ParamPanel("Arrow Parameters")
+arrow = ParamPanel("Arrow Parameters")
 arrowstyle_id     = win_arrow.AddInt( &arrow_style,  "arrow_style", 0,2)
 arrowbasesize_id  = win_arrow.AddFloat( &arrow_basesize,  "arrow_basesize", 0.01,0.4)
 arrowheadsize_id  = win_arrow.AddFloat( &arrow_headsize,  "arrow_headsize", 0.01,0.4)
@@ -712,8 +711,7 @@ win_arrow.Update()
 proc CB_ArrowParam() {  win_arrow.Display(); }
 
 # Vector Parameters
-win_import = &global::ami_import;
-vectors = import->ParamPanel("Vector Parameters")
+vectors = ParamPanel("Vector Parameters")
 dense_id           =  win_vectors.AddBoolean( &densevectors)
 vector_scale_id    =  win_vectors.AddInt( &vector_scale,  "vector_scale", 1,20)
 vectorspacingx_id  =  win_vectors.AddInt( &vector_spacing_x,  "vector_spacing_x", 1,20)

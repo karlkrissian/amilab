@@ -8,7 +8,6 @@ comments="vtkIsoSurface: VTK GPU RayCasting."
 
 func "Common/ScriptGui"
 
-import_vtk
 
 if (!exists(vtkIsoSurfaceClass)) {
 
@@ -160,7 +159,7 @@ if (!exists(vtkIsoSurfaceClass)) {
       #if (!exists(::input)) {
         #::load_input()
       #}
-      #::renwin_interact = vtk.vtkGPURayCasting(&::input, \
+      #::renwin_interact = vtktools.vtkGPURayCasting(&::input, \
         #::blend_type, ::opacitywindow, ::opacitylevel, ::clip)
       #::renwin   = ::renwin_interact.GetRenderWindow()
       #::renderer = ::renwin.GetRenderers().GetFirstRenderer()
@@ -188,7 +187,7 @@ if (!exists(vtkIsoSurfaceClass)) {
       } else {
         #if (exists(::renwin_interact)) { del ::renwin_interact; }
         if (!exists(::renwin_interact)) {
-          ::renwin_interact = global::wxVTKFrame()
+          ::renwin_interact = vtktools.wxVTKFrame()
         }
         ::renwin   = ::renwin_interact.GetRenderWindow()
         ::renderer = vtk.vtkRenderer.New()
@@ -209,7 +208,7 @@ if (!exists(vtkIsoSurfaceClass)) {
 
       # Create isosurface and vtkPolyData 
       vol1_isosurf = isosurf(::input,::vol1_threshold)
-      ::vol1_polydata = global::ToVtkPolyData(&vol1_isosurf)
+      ::vol1_polydata = vtktools.ToVtkPolyData(&vol1_isosurf)
 
       # compute normals
       ::vol1_normals = vtk.vtkPolyDataNormals.New()
@@ -249,7 +248,7 @@ if (!exists(vtkIsoSurfaceClass)) {
         if exists(::vol1_polydata) {
           del ::vol1_polydata
         }
-        ::vol1_polydata = global::ToVtkPolyData(&vol1_isosurf)
+        ::vol1_polydata = vtktools.ToVtkPolyData(&vol1_isosurf)
 
         # need a vtkPolyDataMapper here ...
         if (!exists(::vol1_mapper)) {
@@ -326,8 +325,8 @@ if (!exists(vtkIsoSurfaceClass)) {
       ::panel.SetSizer(&::sbox_sizer)
       # create widget here
 
-      ::renwin_interact = global::wxVTKRenderWindowInteractor(&::panel,-1)
-      #::renwin_interact = wxVTKFrame(&panel,-1)
+      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,-1)
+      #::renwin_interact = vtktools.wxVTKFrame(&panel,-1)
 
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
@@ -390,7 +389,7 @@ if (!exists(vtkIsoSurfaceClass)) {
        capturefilter = vtk.vtkWindowToImageFilter.New()
        capturefilter.SetInput( &::renwin)
        capturefilter.Update()
-       resim = global::FromVtkImageData( &capturefilter.GetOutput())
+       resim = vtktools.FromVtkImageData( &capturefilter.GetOutput())
        ::capture <<= Flip(resim,1)
     }
 
@@ -452,9 +451,9 @@ if (!exists(vtkIsoSurfaceClass)) {
     
       # parameters window
       if (exists(::parent_panel)) {
-        ::win = global::ami_import.ParamPanel("vtkIsoSurface",&::parent_panel)
+        ::win = ParamPanel("vtkIsoSurface",&::parent_panel)
       } else {
-        ::win = global::ami_import.ParamPanel("vtkIsoSurface")
+        ::win = ParamPanel("vtkIsoSurface")
       }
       
       ::win.BeginHorizontal()
@@ -532,7 +531,7 @@ if (!exists(vtkIsoSurfaceClass)) {
   
         #::win.AddPage("Viewer")
           #d = ::win.CurrentParent()
-          #::renwin_interact = global::wxVTKRenderWindowInteractor(&d)
+          #::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&d)
           #::renwin_interact.SetMinSize(&wx.wxSize(100,400));
           #::sizer_item = ::win.AddWidget(&::renwin_interact,0)
 
@@ -547,7 +546,7 @@ if (!exists(vtkIsoSurfaceClass)) {
         ::win.Display()
       }
       ::win.Update(-1)
-      #    ::renwin_interact = global::wxVTKFrame()
+      #    ::renwin_interact = vtktools.wxVTKFrame()
       ::MainBook_AddvtkIsoSurfaceTab()
    }
 

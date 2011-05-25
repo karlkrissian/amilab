@@ -318,17 +318,6 @@ bool MyApp::OnInit()
 
  ::wxInitAllImageHandlers();
 
-  //wxBitmap bitmap;
-  wxBitmap bitmap(amilab_splash_xpm );
-  if (bitmap.IsOk())
-  {
-  wxSplashScreen *splash;
-  splash = new wxSplashScreen(bitmap,
-      wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-      1500, NULL, -1, wxDefaultPosition, wxDefaultSize,
-      wxSIMPLE_BORDER|wxSTAY_ON_TOP);
-  }
-  wxYield();
  
   
   
@@ -359,6 +348,7 @@ bool MyApp::OnInit()
   int  n;
   bool no_interaction = false;
   bool hide_mainframe = false;
+  bool noscriptsmenu = false;
   std::string cmd_line;
 
   GB_debug = false;
@@ -404,6 +394,13 @@ bool MyApp::OnInit()
   FinSi
 
   Si  argc>GB_num_arg_parsed Et
+      strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-noscriptsmenu")==0
+  Alors
+    noscriptsmenu = true;
+    GB_num_arg_parsed++;
+  FinSi
+
+  Si  argc>GB_num_arg_parsed Et
       strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-nofile")==0
   Alors
     GB_nofile = true;
@@ -418,6 +415,21 @@ bool MyApp::OnInit()
     no_interaction = true;
     GB_num_arg_parsed++;
   FinSi
+
+  if (!hide_mainframe) {
+    //wxBitmap bitmap;
+    wxBitmap bitmap(amilab_splash_xpm );
+    if (bitmap.IsOk())
+    {
+    wxSplashScreen *splash;
+    splash = new wxSplashScreen(bitmap,
+        wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+        1500, NULL, -1, wxDefaultPosition, wxDefaultSize,
+        wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+    }
+    wxYield();
+  }
+
 
   // Get environment variables
   CheckEnvDir( _T("AMI_HELP"),    GB_help_dir,    _T("tokens.html"));
@@ -507,7 +519,7 @@ bool MyApp::OnInit()
     amilab_menuscripts.AssignDir(GB_scripts_dir);
     amilab_menuscripts.SetFullName(wxT("Add2Menu.amil"));
 
-    if (amilab_menuscripts.FileExists())
+    if (amilab_menuscripts.FileExists()&&(!noscriptsmenu))
     try {
         GB_driver.parse_file(string(amilab_menuscripts.GetFullPath().mb_str(wxConvUTF8)));
         GB_main_wxFrame->GetConsole()->ProcessReturn();

@@ -17,7 +17,6 @@ if (!exists(torus_display)) {
     torus_display.SetDisplayedName("&Torus")
     torus_display.SetHelp("Create a synthetic 3D torus volume.")
 
-    ami_import.System(); 
     torus_display.SetIcon16( op_system.GetCurrentScriptDir()+"/torus_icon16.png")
     torus_display.SetIcon32( op_system.GetCurrentScriptDir()+"/torus_icon32.png")
 

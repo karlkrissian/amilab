@@ -18,7 +18,6 @@ if (!exists(levelsets_menu)) {
     levelsets_display.SetHelp("Level-set active contour Segmentation script for 2D or 3D images.")
     levelsets_display.SetInMenus("Scripts","Segmentation")
 
-    ami_import.System(); 
     levelsets_display.SetIcon16( op_system.GetCurrentScriptDir()+"/levelset_icon_16x16.png")
     levelsets_display.SetIcon32( op_system.GetCurrentScriptDir()+"/levelset_icon.png")
 

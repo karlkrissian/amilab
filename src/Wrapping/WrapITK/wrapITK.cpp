@@ -57,7 +57,7 @@
 extern VarContexts  Vars;
 
 //---------------------------------------------------------
-void AddWrapITK(){
+void AddWrapITK(AMIObject::ptr& obj){
 
   // Create new instance of the class
   AMIObject::ptr amiobject (new AMIObject);
@@ -100,16 +100,6 @@ void AddWrapITK(){
   Vars.SetObjectContext(previous_ocontext);
 
   // Add the new object (namespace)
-  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
+  obj->GetContext()->AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject,obj->GetContext());
 }
 
-
-/**
- * Adds the ITK wrapping
- * @param p 
- */
-void wrap_ITK( ParamList* p)
-{
-
-  AddWrapITK();
-}

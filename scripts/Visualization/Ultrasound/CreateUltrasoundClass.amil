@@ -3,18 +3,12 @@
 #
 
 func "Common/ScriptGui"
-import_vtk
 
 if (!exists(CreateUltrasoundClass)) {
 
-  ami_import->Filters()
   
   Class CreateUltrasoundClass : public ScriptGui {
 
-    ::filters=&global::filters
-
-    
-   
     #----------------------------
     proc ::Init() {
   	  ::ip = "localhost", "IP to connect"
@@ -266,7 +260,7 @@ if (!exists(CreateUltrasoundClass)) {
     mapper.SetInput(&planeSource.GetOutput())
       
       #basándome en vtkIsoSurfaceClass
-      renwin_interact = global::wxVTKFrame()
+      renwin_interact = vtktools.wxVTKFrame()
       renwin = renwin_interact.GetRenderWindow()
       renderer = vtk.vtkRenderer.New()
       renwin.AddRenderer(&renderer)
@@ -285,7 +279,7 @@ if (!exists(CreateUltrasoundClass)) {
   }
   
   proc ::Gui() {
-    ::win = global::ami_import.ParamPanel("Ultrasound display")
+    ::win = ParamPanel("Ultrasound display")
   
     ::win.BeginBook()
       ::win.AddPage("Param")

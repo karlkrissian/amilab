@@ -87,8 +87,7 @@ if (!exists(SuperquadricClass)) {
     #------------------------------------
     proc ::Gui( ) \
     {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("SuperQuadrics")
+      ::win = ParamPanel("SuperQuadrics")
       ::win.BeginBook()
         ::win.AddPage("Resolution")
           ::win.BeginBoxPanel("Image dimensions")

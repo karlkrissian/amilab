@@ -24,14 +24,14 @@ template<class T>
 void Variable<T>::operator = (const Variable<T>& v)
 {
     _comments     = v._comments;
-    this->Init(v._type,v._name.c_str(), v._pointer);
+    this->Init(v._name, v._pointer);
 
 }
 
 
 //------------------------------------------------
 template<class T>
-void Variable<T>::Init(const std::string& name, boost::shared_ptr<T>& p)
+void Variable<T>::Init(const std::string& name, const boost::shared_ptr<T>& p)
 {
   _type         = GetVarType<T>();
   _name         = name;

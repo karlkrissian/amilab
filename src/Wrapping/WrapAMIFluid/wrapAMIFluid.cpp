@@ -53,7 +53,7 @@ static PDEOpticFlowParam ami_optic_flow_param;
 
 
 //---------------------------------------------------------
-void AddWrapFluid(){
+void AddWrapFluid(AMIObject::ptr& obj){
 
   // Create new instance of the class
   AMIObject::ptr amiobject( new AMIObject);
@@ -127,26 +127,9 @@ void AddWrapFluid(){
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar<AMIObject>( amiobject->GetName().c_str(),  amiobject);
+  obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),  amiobject, obj->GetContext());
 }
 
-
-/**
- * Adds the AMIFluid wrapping
- * @param p 
- */
-void wrap_AMIFluid(ParamList* p)
-{
-/*
-  char functionname[] = "AMIFluid";
-  char description[]=" \n\
-    Adds wrapping for AMIFLuid library. \n\
-          ";
-  char parameters[] =" \n\
-          ";
-*/
-  AddWrapFluid();
-}
 
 //---------------------------------------------------------
 void amiOpticFlowCorrelation2D(

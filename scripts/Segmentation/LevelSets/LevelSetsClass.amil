@@ -470,7 +470,7 @@ if (!exists(LevelSetsClass)) {
 
       # new level set object
       if (exists(::levelset)) { del ::levelset; }
-      ::levelset = global::ami_import.vtkLevelSets();
+      ::levelset = vtkLevelSets();
       ::levelset.SetParam(0.7,numit,adv_coeff,smo_coeff,::dt,::NBD_freq)
       ::levelset.SetDistMethod(::NBD_method)
       ::levelset.SetThreads(::threads)
@@ -774,11 +774,10 @@ if (!exists(LevelSetsClass)) {
     proc ::Gui() {
     
     #  ::win = ParamWin("Evolve Active Contours using Level Sets")
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("LevelSets",&::parent_panel)
+        ::win = ParamPanel("LevelSets",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("LevelSets")
+        ::win = ParamPanel("LevelSets")
       }
       
       ::win.BeginBook()
@@ -852,7 +851,7 @@ if (!exists(LevelSetsClass)) {
                   ::win.SetCallback( &::UpdateExpansionCurve)
                   ::win.AddBoolean( &::accept_high_intensity,"Accept high intensities")
                   # add a Curve Drawing Window
-                  ::dw = import->wxDrawingWindow(&::win.CurrentParent())
+                  ::dw = wxDrawingWindow(&::win.CurrentParent())
                   ::dw.SetMinSize(&wx.wxSize(50,100))
                   ::dw.SetBackgroundColour(\
                       &wx.wxColour(255,255,255))

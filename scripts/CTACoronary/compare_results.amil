@@ -240,8 +240,7 @@ proc CR_CreateWin() {
   global
 
     # parameters window
-    import = &global::ami_import;
-    CR_win = import->ParamPanel("Comparing results")
+    CR_win = ParamPanel("Comparing results")
 
     CR_win.BeginBook()
       CR_win.AddPage("Main")

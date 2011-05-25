@@ -83,6 +83,7 @@ int AskImage(std::string& name);
 int AskVarName(wxWindow*,const string title, const string label,const string def, std::string& name);
 int AskSurface(     std::string& name);
 
+
 enum
 {
     ID_Quit = 200,
@@ -135,6 +136,142 @@ enum {
   wxID_VarList,
   wxID_VarList_Filter,
 };
+
+//========================================================================
+// CustomAboutMenu Class
+//========================================================================
+
+//------------------------------------------------------------------------
+void CustomAboutMenu::OnClose(wxCommandEvent& event )
+{
+  this->Show(false);
+}
+
+//------------------------------------------------------------------------
+CustomAboutMenu::CustomAboutMenu(wxWindow* parent)
+{
+    wxBoxSizer *BoxSizer1,*BoxSizer2,*BoxSizer4,*BoxSizer5,*BoxSizer6,*BoxSizer7;
+
+    Create(parent, wxID_ANY, _("About ..."), wxDefaultPosition, wxSize(-1,-1), 
+           wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
+
+    //dialogAbout->SetSize(wxSize(200,400));
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+
+    wxStaticBitmap* StaticBitmap1 = new wxStaticBitmap( 
+          this,
+          wxID_ANY, wxBitmap(about_xpm),  
+          // wxBitmap((wxImage(amilab_splash_xpm)).Rescale(350,200))*/
+          wxDefaultPosition, wxDefaultSize,
+          0, 
+          _T("ID_STATICBITMAP1"));
+
+    BoxSizer2->Add(StaticBitmap1, 1, 
+                   wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 
+                   5);
+    
+    BoxSizer1->Add(BoxSizer2,     0, 
+                   wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,
+                   4);
+
+    wxNotebook* Notebook1 = new wxNotebook(this, wxID_ANY, 
+                                           wxDefaultPosition, wxSize(-1,260), 
+                                           1, _T("ID_NOTEBOOK1"));
+    wxPanel* Panel1 = new wxPanel(Notebook1, wxID_ANY, 
+                                  wxDefaultPosition, 
+                                  wxDefaultSize, 
+                                  wxTAB_TRAVERSAL|wxRESIZE_BORDER, 
+                                  _T("ID_PANEL1"));
+    wxPanel* Panel2 = new wxPanel(Notebook1, wxID_ANY, 
+                                  wxDefaultPosition, 
+                                  wxDefaultSize, 
+                                  wxTAB_TRAVERSAL|wxRESIZE_BORDER, 
+                                  _T("ID_PANEL2"));
+    wxPanel* Panel3 = new wxPanel(Notebook1, wxID_ANY, 
+                                  wxDefaultPosition, wxDefaultSize, 
+                                  wxTAB_TRAVERSAL|wxRESIZE_BORDER, 
+                                  _T("ID_PANEL3"));
+    wxPanel* Panel4 = new wxPanel(Notebook1, wxID_ANY, 
+                                  wxDefaultPosition, wxDefaultSize, 
+                                  wxTAB_TRAVERSAL|wxRESIZE_BORDER, 
+                                  _T("ID_PANEL4"));
+       
+    Notebook1->AddPage(Panel1, _("Description"), false);
+    Notebook1->AddPage(Panel2, _("Info"),        false);
+    Notebook1->AddPage(Panel3, _("Thanks"),      false);
+    Notebook1->AddPage(Panel4, _("License"),     false);
+
+    BoxSizer1->Add(Notebook1, 1, 
+                   wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 
+                   5);
+
+    wxButton* Button2 = new wxButton(this, ID_CloseAboutPanel, _("Quit"));
+
+    BoxSizer1->Add(Button2, 0, 
+                   wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 
+                   4);
+
+    this->SetSizer(BoxSizer1);
+    BoxSizer1->SetSizeHints(this);
+
+
+    BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *StaticText4 = new wxStaticText(Panel4, wxID_ANY, 
+          _("This program is licensed under the terms\nof the LGPL license"));
+    //GNU General Public License version 3\n\nAvailable online under:\nhttp://www.gnu.org/licenses/gpl-3.0.html"));
+    BoxSizer4->Add(StaticText4, 1, wxALL|wxVSCROLL, 5);
+    Panel4->SetSizer(BoxSizer4);
+    
+    BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *StaticText3 = new wxStaticText(Panel3, wxID_ANY, _(
+      "\n\
+    Active Developers:\n\
+        Karl Krissian      : Developer - Project leader\n\
+        Francisco Santana  : Developer\n\
+        Daniel E. Santana  : Developer\n\
+        Carlos M. Falcón   : Developer\n\
+        Sara Illeras       : Developer\n\
+        \n\
+    Contributors and previous developers:\n\
+        Luis Álvarez\n\
+        Sara Arencibia\n\
+        Claire Chalopin\n\
+        Agustín Trujillo\n\
+        "));
+    BoxSizer5->Add(StaticText3, 1, wxALL|wxVSCROLL, 5);
+    Panel3->SetSizer(BoxSizer5);
+
+    BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *StaticText2 = new wxStaticText(Panel2, wxID_ANY,
+                                                 GetwxStr("Name: AMIlab\n")+
+                                                 GetwxStr("Version:")+GetwxStr(AMILAB_VERSION)+GetwxStr("\n")+
+                                                 GetwxStr("Author: AMILab Team\n")+
+                                                 GetwxStr("Contact: amilab@ctim.es\n")+
+                                                 GetwxStr("         www.amilab.org\n"));
+    BoxSizer6->Add(StaticText2, 1, wxALL|wxVSCROLL, 5);
+    Panel2->SetSizer(BoxSizer6);
+    
+    BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *StaticText1 = new wxStaticText(Panel1, wxID_ANY, _(
+      "AMILab is an interpreted language for image processing designed using:\n\
+      - C/C++\n\
+      - Flex and Bison (gnu versions of Lex and Yacc)\n\
+      - wxWidgets\n\
+      - OpenGL\n\
+      - VTK\n\
+      - ITK\n\
+      AMILab has a lot a features, and has been especially used for academic research in medical image processing. The tool is under development.\n\
+      Visit amilab.org for more information about AMILab\n"));
+    BoxSizer7->Add(StaticText1, 1, wxALL|wxVSCROLL, 5);
+    Panel1->SetSizer(BoxSizer7);
+    
+    
+    Connect(ID_CloseAboutPanel,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CustomAboutMenu::OnClose);
+}
+
+
+
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
@@ -521,69 +658,6 @@ wxStcFrame* MainFrame::GetAmilabEditor()
     amilab_editor = new wxStcFrame ( this, wxT("AMILab Editor"));    
   }
   return amilab_editor;  
-}
-
-//------------------------------------------------------------------------
-void CustomAboutMenu::OnClose(wxCommandEvent& event )
-{
-  this->Show(false);
-}
-
-//------------------------------------------------------------------------
-#include "amilab_splash.xpm"
-CustomAboutMenu::CustomAboutMenu(wxWindow* parent)
-{
-    wxBoxSizer *BoxSizer1,*BoxSizer2,*BoxSizer3,*BoxSizer4,*BoxSizer5,*BoxSizer6,*BoxSizer7;
-
-    /*dialogAbout= new wxDialog*/Create(parent, wxID_ANY, _("About ..."), wxDefaultPosition, wxSize(-1,-1), wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
-    //dialogAbout->SetSize(wxSize(200,400));
-    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-    BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-    
-  
-    
-    wxStaticBitmap* StaticBitmap1 = new wxStaticBitmap(this, wxID_ANY, wxBitmap(about_xpm)  /*wxBitmap((wxImage(amilab_splash_xpm)).Rescale(350,200))*/, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICBITMAP1"));
-    BoxSizer2->Add(StaticBitmap1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(BoxSizer2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-    wxNotebook* Notebook1 = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxSize(-1,260), 1, _T("ID_NOTEBOOK1"));
-    wxPanel* Panel1 = new wxPanel(Notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL|wxRESIZE_BORDER, _T("ID_PANEL1"));
-    wxPanel* Panel2 = new wxPanel(Notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL|wxRESIZE_BORDER, _T("ID_PANEL2"));
-    wxPanel* Panel3 = new wxPanel(Notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL|wxRESIZE_BORDER, _T("ID_PANEL3"));
-    wxPanel* Panel4 = new wxPanel(Notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL|wxRESIZE_BORDER, _T("ID_PANEL4"));
-       
-    Notebook1->AddPage(Panel1, _("Description"), false);
-    Notebook1->AddPage(Panel2, _("Informations"), false);
-    Notebook1->AddPage(Panel3, _("Thanks to ..."), false);
-    Notebook1->AddPage(Panel4, _("License"), false);
-    BoxSizer1->Add(Notebook1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    wxButton* Button2 = new wxButton(this, ID_CloseAboutPanel, _("Quit"));
-    BoxSizer1->Add(Button2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-    this->SetSizer(BoxSizer1);
-    BoxSizer1->SetSizeHints(this);
-
-
-    BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-    wxStaticText *StaticText4 = new wxStaticText(Panel4, wxID_ANY, _("This program is licensed under the terms\nof the GNU General Public License version 3\n\nAvailable online under:\nhttp://www.gnu.org/licenses/gpl-3.0.html"));
-    BoxSizer4->Add(StaticText4, 1, wxALL|wxVSCROLL, 5);
-    Panel4->SetSizer(BoxSizer4);
-    
-    BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-    wxStaticText *StaticText3 = new wxStaticText(Panel3, wxID_ANY, _("Developers:\n--------------\nKarl Krissian            : Developer - Project leader\nFrancisco Santana  : Developer\nDaniel E. Santana  : Developer\nCarlos M. Falcón     : Developer\nSara Illeras             : Developer\n\nContributors (in no special order):\n--------------\nLuis Álvarez\nSara Arencibia\nClaire Chalopin\nAgustín Trujillo\n "));
-    BoxSizer5->Add(StaticText3, 1, wxALL|wxVSCROLL, 5);
-    Panel3->SetSizer(BoxSizer5);
-
-    BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-    wxStaticText *StaticText2 = new wxStaticText(Panel2, wxID_ANY,_("Name: AMIlab\nVersion: Release\nAuthor: AMILab Team\nE-mail: amilab@ctim.es\nWebside: amilab.org"));
-    BoxSizer6->Add(StaticText2, 1, wxALL|wxVSCROLL, 5);
-    Panel2->SetSizer(BoxSizer6);
-    
-    BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
-    wxStaticText *StaticText1 = new wxStaticText(Panel1, wxID_ANY, _("AMILab is an interpreted language for image processing designed using:\n   - C/C++\n   - Flex and Bison (gnu versions of Lex and Yacc)\n   - wxWidgets\n   - OpenGL\n   - VTK (not for rendering at the moment)\n   - ITK (not used much now, but will be more in the future)\nAMILab has a lot a features, and has been especially used for academic research in medical image processing. The tool is under development.\nVisit http://www.ctm.ulpgc.es/amilab_dokuwiki/ for more information about AMILab\n"));
-    BoxSizer7->Add(StaticText1, 1, wxALL|wxVSCROLL, 5);
-    Panel1->SetSizer(BoxSizer7);
-    
-    
-    Connect(ID_CloseAboutPanel,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CustomAboutMenu::OnClose);
 }
 
 //------------------------------------------------------------------------
@@ -2062,7 +2136,6 @@ void MainFrame::OnViewMain_bar( wxCommandEvent& event )
 {
   if ( !m_mgr.GetPane(this->tb1).IsShown())
   {
-    int pos=1;
     m_mgr.GetPane(this->tb1).Show(); 
     m_mgr.GetPane(this->tb1).Top();
     m_mgr.GetPane(this->tb1).Dock(); 
@@ -2080,7 +2153,6 @@ void MainFrame::OnViewMain_bar2( wxCommandEvent& event )
 {
   if ( !m_mgr.GetPane(this->tb2).IsShown())
   {
-    int pos=1;
     m_mgr.GetPane(this->tb2).Show(); 
     m_mgr.GetPane(this->tb2).Top();
     m_mgr.GetPane(this->tb2).Dock(); 
@@ -2555,7 +2627,7 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   }
   
   wxMenu* current_menu = menuBar->GetMenu(menuid); // current main menu
-  wxMenu* cat_menu; // category menu
+  wxMenu* cat_menu = NULL; // category menu
 
   usermenu_id++;
   usermenu_scripts[usermenu_id] = script_name;
@@ -2619,6 +2691,7 @@ void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
 
 void MainFrame::OnUpdate(wxUpdateUIEvent& event)
 {
+/*
   //Check Panels Status
   tb2->ToggleTool(ID_View_Output,m_mgr.GetPane(_log_text).IsShown());
   tb2->ToggleTool(ID_View_Param_book,m_mgr.GetPane(_param_book).IsShown());
@@ -2655,7 +2728,7 @@ void MainFrame::OnUpdate(wxUpdateUIEvent& event)
   
  
  this->Refresh(-1); //repaint gnome
-  
+ */ 
 }
 
 
@@ -2706,8 +2779,14 @@ void MainFrame::LoadToolBar   ( )
     //std::cout << a.IsOk()<<endl;
     ;
 
+  #define BITMAP_16x16(bmp_filename)\
+    wxBitmap((wxImage(GB_scripts_dir+_T(bmp_filename),\
+                      wxBITMAP_TYPE_PNG)).Rescale(16,16))
 
-  tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Open.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)), wxT("Load Image"));
+  tb1->AddTool( wxID_ToolLoadImage,
+                wxT("Load Image"),
+                BITMAP_16x16("/Icons/png/32x32/Open.png"),
+                wxT("Load Image"));
   tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),wxT("Update variables"));
   tb1->AddSeparator();
    
@@ -2741,25 +2820,53 @@ void MainFrame::LoadToolBar   ( )
     
 
   tb2->Realize();
- //carlos
-  tb2->AddTool(ID_View_Output,  wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Writing pencil.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)),
-    wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Writing pencil.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)) ,true,NULL,_("Show/Hide Output") );
-  tb2->AddTool(ID_View_Main_book,   wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Console.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)),
-    wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Console.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)),true,NULL,_("Show/Hide Main book") );
-  tb2->AddTool(ID_View_Var_book,   wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Flow block.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)),
-    wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Flow block.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)) ,true,NULL,_("Show/Hide Var book") );
-  tb2->AddTool(ID_View_Param_book,  wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Script.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)),
-    wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Script.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)) ,true,NULL,_("Show/Hide Param book") );
+
+  //carlos
+  tb2->AddTool( ID_View_Output, 
+                BITMAP_16x16("/Icons/png/32x32/Writing pencil.png"),
+                BITMAP_16x16("/Icons/png/32x32/Writing pencil.png"),
+                true,NULL,
+                _("Show/Hide Output") );
+  tb2->AddTool( ID_View_Main_book,   
+                BITMAP_16x16("/Icons/png/32x32/Console.png"),
+                BITMAP_16x16("/Icons/png/32x32/Console.png"),
+                true,NULL,
+                _("Show/Hide Main book") );
+  tb2->AddTool( ID_View_Var_book,
+                BITMAP_16x16("/Icons/png/32x32/Flow block.png"),
+                BITMAP_16x16("/Icons/png/32x32/Flow block.png"),
+                true,
+                NULL,
+                _("Show/Hide Var book") );
+  tb2->AddTool( ID_View_Param_book,
+                BITMAP_16x16("/Icons/png/32x32/Script.png"),
+                BITMAP_16x16("/Icons/png/32x32/Script.png"),
+                true,
+                NULL,
+                _("Show/Hide Param book") );
   tb2->AddSeparator();
-  tb2->AddTool(ID_View_aui_Main_bar,  wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Tools.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)),
-    wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Tools.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16))  ,true,NULL,_("Show/Hide Main toolbar") );
-  tb2->AddTool(ID_View_aui_Script_bar,  wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/ToolsScript.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)),
-    wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/ToolsScript.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16))  ,true,NULL,_("Show/Hide Script toolbar") );
-  tb2->AddTool(ID_View_aui_Status_bar,  wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/ToolsView.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)),
-    wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/ToolsView.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)) ,true,NULL,_("Show/Hide Status toolbar") );    
+  tb2->AddTool( ID_View_aui_Main_bar,
+                BITMAP_16x16("/Icons/png/32x32/Tools.png"),
+                BITMAP_16x16("/Icons/png/32x32/Tools.png"),
+                true,
+                NULL,
+                _("Show/Hide Main toolbar") );
+  tb2->AddTool( ID_View_aui_Script_bar,  
+                BITMAP_16x16("/Icons/png/32x32/ToolsScript.png"),
+                BITMAP_16x16("/Icons/png/32x32/ToolsScript.png"),
+               true,
+               NULL,
+               _("Show/Hide Script toolbar") );
+  tb2->AddTool( ID_View_aui_Status_bar,
+                BITMAP_16x16("/Icons/png/32x32/ToolsView.png"),
+                BITMAP_16x16("/Icons/png/32x32/ToolsView.png"),
+               true,NULL,_("Show/Hide Status toolbar") );
   tb2->AddSeparator();
-  tb2->AddTool(ID_View_Reset,  wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/ResetView.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)),
-    wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/ResetView.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)) ,true,NULL,_("Reset view") );    
+  tb2->AddTool( ID_View_Reset,  
+                BITMAP_16x16("/Icons/png/32x32/ResetView.png"),
+                BITMAP_16x16("/Icons/png/32x32/ResetView.png"),
+                true,NULL,
+                _("Reset view") );
 
      // add the toolbars to the manager
   m_mgr.AddPane(tb2, wxAuiPaneInfo().
@@ -2771,6 +2878,8 @@ void MainFrame::LoadToolBar   ( )
   // tell the manager to "commit" all the changes just made
   _initial_perspective = m_mgr.SavePerspective();
   m_mgr.Update();
+
+  #undef BITMAP_16x16
 }
 
 //--------------------------------------------------

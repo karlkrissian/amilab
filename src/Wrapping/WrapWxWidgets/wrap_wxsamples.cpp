@@ -28,11 +28,11 @@
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
 
-void AddWrapWXSamples()
+void AddWrapWXSamples(AMIObject::ptr & obj)
 {
   // Create new instance of the class
   AMIObject::ptr amiobject (new AMIObject);
-  amiobject->SetName("wx");
+  amiobject->SetName("wxutils");
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
@@ -45,25 +45,9 @@ void AddWrapWXSamples()
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
+  obj->GetContext()->AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject, obj->GetContext());
 }
 
-/**
- * Adds the wxwidgets sample wrapping
- * @param p 
- */
-void wrap_wxsamples( ParamList* p)
-{
-/*
-    char functionname[] = "wx";
-    char description[]=" \n\
-      Adds wrapping for the wxwidgets samples and functions. \n\
-            ";
-    char parameters[] =" \n\
-            ";
-*/
-  AddWrapWXSamples();
-}
 
 
 /**

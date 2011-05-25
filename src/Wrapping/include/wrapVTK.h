@@ -18,7 +18,7 @@
 /** function that add the wrapping of fluid function
  *  to the AMI language
  */
-void AddWrapVTK(); 
+void AddWrapVTK(AMIObject::ptr & obj); 
 
 // Wrapping functions:
 

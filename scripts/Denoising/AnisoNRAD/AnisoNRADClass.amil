@@ -26,7 +26,6 @@ func "Common/ScriptGui"
 
 if (!exists(AnisoNRADClass)) {
 
-  ami_import->Filters()
 
   Class AnisoNRADClass : public ScriptGui {
 
@@ -162,7 +161,7 @@ if (!exists(AnisoNRADClass)) {
       }
     
       if (exists(::NRADfilter)) { del ::NRADfilter; }
-      ::NRADfilter = global::filters.AnisoGS()
+      ::NRADfilter = filters.AnisoGS()
       # sigma = 0.7
       # threshold = 1 // not used
       # data attachment = 0
@@ -377,8 +376,7 @@ if (!exists(AnisoNRADClass)) {
     #------------------------------------
     proc ::CreateWindow() {
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("NRAD")
+      ::win = ParamPanel("NRAD")
   
       ::win.BeginBook()
         ::win.AddPage("Param")

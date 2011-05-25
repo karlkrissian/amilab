@@ -4,8 +4,6 @@
 
 func "Common/ScriptGui"
 
-import_filters
-
 if (!exists(Lines2D)) {
 
 Class Lines2D  : public ScriptGui \
@@ -53,7 +51,7 @@ Class Lines2D  : public ScriptGui \
     if (!exists(::input)) {
       InfoDialog "Load input image first!"
     } else {
-      morph = global::filters.ContinuousMorphology()
+      morph = filters.ContinuousMorphology()
       mask = morph.Close(&::input,::close_size,::close_step)
       ::mask <<= (UCHAR) (mask>::mask_threshold)
     }
@@ -186,8 +184,7 @@ Class Lines2D  : public ScriptGui \
   #----------------------------
   proc ::Gui() \
   {
-    import = &global::ami_import;
-    ::win = import->ParamPanel("Lines2D")
+    ::win = ParamPanel("Lines2D")
     ::win.BeginBook()
       ::win.AddPage("IO")
         ::win.BeginBoxPanel("Input Image")

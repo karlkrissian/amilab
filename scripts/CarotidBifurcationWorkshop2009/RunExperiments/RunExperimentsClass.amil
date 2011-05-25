@@ -33,11 +33,6 @@ if (!exists(RunExperimentsClass)){
     LevelSetsClass            ::LS
     AddSphereClass            ::AS
     config                    ::CONFIG
-
-    global::ami_import.ITK()
-    ::itk=&itk
-    global::ami_import.Filters()
-    ::filters=&filters
     
     
     #------------------------------------------
@@ -81,7 +76,6 @@ if (!exists(RunExperimentsClass)){
       ::EXC_th  = 0.6,"Excentricity parameter"
       ::PSF_stddev  = 2,"Gaussian Point Spread Function standard deviation in voxels (supposed isotropic)"
 
-      global::ami_import.System()
       curdir = op_system.GetCurrentScriptDir()
 
       ::html_filename = curdir+"/Doc/carotidseg_challenge/index.html"
@@ -159,7 +153,7 @@ if (!exists(RunExperimentsClass)){
         inputname = ::current_datadir + "/cta"+::datanumber_str+"r.mhd"
       }
       printn "inputname="+inputname
-      ::input <<= ::itk->Read(inputname)
+      ::input <<= itk->Read(inputname)
     
       # read input points
       pointsname = ::current_datadir + "/points"+::datanumber_str+".txt"
@@ -184,7 +178,7 @@ if (!exists(RunExperimentsClass)){
         GTname = ::current_gtdir + "/pv"+::datanumber_str+".mhd"
         printn "Reading itk image "+GTname
         if (wx.wxFileName(GTname).FileExists()) {
-          ::GT <<= ::itk->Read(GTname)
+          ::GT <<= itk->Read(GTname)
       
           # read the ROI information
           ROIname = ::current_gtdir + "/roi"+::datanumber_str+".txt"
@@ -197,7 +191,7 @@ if (!exists(RunExperimentsClass)){
       
           # Read the Exterior image
           extname = ::current_gtdir + "/ext"+::datanumber_str+".mhd"
-          ::ext <<= ::itk->Read(extname)
+          ::ext <<= itk->Read(extname)
       
           # Read the GT Isosurface
           isoname = ::current_gtdir + "/iso"+::datanumber_str+".vtp"
@@ -380,7 +374,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Creating paths ...")
       # load the shortest path script
-      morph = ::filters.ContinuousMorphology()
+      morph = filters.ContinuousMorphology()
       
       ::CIS->CheckInitialPoints(&::ReadPoints,::CroppedInput->input_cropped,::sphereradii)
       if (!::nointeraction) {
@@ -1010,7 +1004,6 @@ if (!exists(RunExperimentsClass)){
     #-----------------------------------------
     proc ::PathsDisplay() \
     {
-      import_vtk
       ::ReadGT()
     
       if (!exists(::Jx)) {
@@ -1020,7 +1013,7 @@ if (!exists(RunExperimentsClass)){
       } else {
         ::junction_display_size    = 0.6
         if (exists(::junc_sphere)) { del ::junc_sphere; }
-        ::junc_sphere = vtkSphere(::junction_display_size,8,8,::Jx,::Jy,::Jz)
+        ::junc_sphere = vtktools.vtkSphere(::junction_display_size,8,8,::Jx,::Jy,::Jz)
       
         # create empty surface for display
         if (exists(::surf)) { del ::surf; }
@@ -1329,7 +1322,7 @@ if (!exists(RunExperimentsClass)){
           #InfoDialog "The result should be rescaled to the original image scale ! (TODO)"
           #inls_rescaled = Resize(::inls,
         }
-        pvim = ::filters->ComputePV_subdiv(::inls,4)
+        pvim = filters.ComputePV_subdiv(::inls,4)
         if (0) {
           # put in bigger image
           pvim_big <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
@@ -1340,7 +1333,7 @@ if (!exists(RunExperimentsClass)){
           pvim_big = pvim
         }
         del pvim
-        ::itk->Write(&pvim_big,::current_resultsdir+"/pv"+::datanumber_str+".mhd")
+        itk->Write(&pvim_big,::current_resultsdir+"/pv"+::datanumber_str+".mhd")
     
         # 2. Save ROI text file
         roi_file = File(::current_resultsdir+"/roi"+::datanumber_str+".txt","w")
@@ -1386,7 +1379,7 @@ if (!exists(RunExperimentsClass)){
       }
       # read the mask image
       ext_name = ::current_gtdir + "/ext" + ::datanumber_str + ".mhd"
-      ::ext = ::itk->Read(ext_name)
+      ::ext = itk->Read(ext_name)
       # read the level set results
       #imname = ::current_resultsdir+"/levelset_result.ami.gz"
       imname = ::current_resultsdir+"/levelset_result_from_paths.ami.gz"
@@ -1444,7 +1437,6 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::CreateVtkActor( OBJECT poly) \
     {
-      import_vtk
       polynormals = vtk.vtkPolyDataNormals.New()
       polynormals.SetInput(&poly)
       polynormals.SetFeatureAngle(60.0)
@@ -1463,9 +1455,8 @@ if (!exists(RunExperimentsClass)){
                            NUM redColorValue,   \
                            NUM greenColorValue, \
                            NUM blueColorValue) {
-      import_vtk
-      ThePoint=vtkSphere(Radius,Theta,Phi,Xpoint,Ypoint,Zpoint)
-      ThePoint_polydata = ToVtkPolyData(&ThePoint)
+      ThePoint=vtktools.vtkSphere(Radius,Theta,Phi,Xpoint,Ypoint,Zpoint)
+      ThePoint_polydata = vtktools.ToVtkPolyData(&ThePoint)
       ThePointActor = ::CreateVtkActor(&ThePoint_polydata)
       ThePointActor.GetProperty().SetColor(redColorValue,greenColorValue,blueColorValue)
       return=&ThePointActor
@@ -1478,8 +1469,7 @@ if (!exists(RunExperimentsClass)){
                           NUM greenColorValue, \
                           NUM blueColorValue, \
                           NUM LineWidth) {
-      import_vtk
-      ThePath_polydata = ToVtkPolyData(&TheObject)
+      ThePath_polydata = vtktools.ToVtkPolyData(&TheObject)
       ThePathActor = ::CreateVtkActor(&ThePath_polydata)
       ThePathActor.GetProperty().EdgeVisibilityOn()
       ThePathActor.GetProperty().SetEdgeColor(redColorValue,greenColorValue,blueColorValue)
@@ -1496,10 +1486,9 @@ if (!exists(RunExperimentsClass)){
         InfoDialog "Not found Ground Truth."
       } else {
         if(!exists(::GroundTruthActor)) {
-          import_vtk
           threshold=0.5
           vol1_isosurf = isosurf(::GT,threshold)
-          vol1_polydata = ToVtkPolyData(&vol1_isosurf)
+          vol1_polydata = vtktools.ToVtkPolyData(&vol1_isosurf)
           ::GroundTruthActor = ::CreateVtkActor(&vol1_polydata)
           ::GroundTruthActor.GetProperty().SetOpacity(0.9)
           ::GroundTruthActor.GetProperty().SetColor(0,0,1)
@@ -1581,9 +1570,8 @@ if (!exists(RunExperimentsClass)){
         printn "Removed surface image actor"
       }
       if(::input_object_render != "Select surface image...") {
-        import_vtk
         eval "TheSurface = &"+::input_object_render+";"
-        TheSurface_polydata = ToVtkPolyData(&TheSurface)
+        TheSurface_polydata = vtktools.ToVtkPolyData(&TheSurface)
         ::TheSurfaceActor = ::CreateVtkActor(&TheSurface_polydata)
         ::TheSurfaceActor.GetProperty().SetOpacity(0.9)
         ::TheSurfaceActor.GetProperty().EdgeVisibilityOn()
@@ -1671,8 +1659,7 @@ if (!exists(RunExperimentsClass)){
         }
 
         if (exists(::GTiso) && (!exists(::GTisoActor))) {
-          import_vtk
-          GTiso_polydata = ToVtkPolyData(&::GTiso)
+          GTiso_polydata = vtktools.ToVtkPolyData(&::GTiso)
           ::GTisoActor = ::CreateVtkActor(&GTiso_polydata)
           ::GTisoActor.GetProperty().SetOpacity(0.6)
           ::GTisoActor.GetProperty().SetColor(1,1,1)
@@ -1680,8 +1667,7 @@ if (!exists(RunExperimentsClass)){
           printn "Display GTiso"
         }
         if (exists(::ext_surf) && (!exists(::Ext_surfActor))) {
-          import_vtk
-          ext_surf_polydata = ToVtkPolyData(&::ext_surf)
+          ext_surf_polydata = vtktools.ToVtkPolyData(&::ext_surf)
           ::Ext_surfActor = ::CreateVtkActor(&ext_surf_polydata)
           ::Ext_surfActor.GetProperty().SetOpacity(0.8)
           ::Ext_surfActor.GetProperty().SetColor(1,0,0)
@@ -1807,8 +1793,7 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Carotid09")
+      ::win = ParamPanel("Carotid09")
       ::win.BeginBook()
     
         #----- Input Page

@@ -23,8 +23,8 @@
 /** function that add the wrapping of different filters
  *  to the AMI language
  */
-void AddWrapFilters();
-void wrap_Filters( ParamList* p);
+void AddWrapFilters(AMIObject::ptr& obj);
+//void wrap_Filters( ParamList* p);
 
 
 // Wrapping functions:

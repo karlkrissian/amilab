@@ -14,7 +14,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAlgorithms/Generated
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapLanguage/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples/Generated
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapLanguage/Generated
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -65,7 +67,7 @@ SET(WrapImports_SRCS
 )
 
 my_add_library ( WrapImports)
-add_dependencies ( WrapImports WrapWxWidgets WrapAlgorithms)
+add_dependencies ( WrapImports WrapWxWidgets WrapAlgorithms WrapLanguage)
 
 IF(AMI_WRAP_MICRONTRACKER)
   add_dependencies( WrapImports WrapMicronTracker )

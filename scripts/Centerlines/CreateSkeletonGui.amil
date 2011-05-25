@@ -3,8 +3,6 @@
 #SetDebugOn
 if (!exists(CreateSkeletonClass)) {
 
-  import_vtk
-
   Class CreateSkeletonClass{
 
     ::useargs = UCHAR(0)
@@ -244,7 +242,7 @@ if (!exists(CreateSkeletonClass)) {
       if (::linemethod==0) {
         ::lines = Skeleton2lines(::output)
       } else {
-        ::lines = global::vtkSkeleton2Lines(::output)
+        ::lines = vtktools.vtkSkeleton2Lines(::output)
       }
     
       ::res = ::lines
@@ -441,7 +439,7 @@ if (!exists(CreateSkeletonClass)) {
     
           if ((::display_3D)&&\
               (::show_starting_point)) {
-            tmp = global::vtkSphere(1,10,10,Px1,Py1,Pz1)
+            tmp = vtktools.vtkSphere(1,10,10,Px1,Py1,Pz1)
             ::startpoint[vessel_number] = tmp
             del tmp
             ::startpoint[vessel_number].SetColor(0,255,0)
@@ -450,7 +448,7 @@ if (!exists(CreateSkeletonClass)) {
     
           if ((::display_3D)&&\
               (::show_ending_point)) {
-            tmp = global::vtkSphere(1,10,10,Px2,Py2,Pz2)
+            tmp = vtktools.vtkSphere(1,10,10,Px2,Py2,Pz2)
             ::endpoint[vessel_number] = tmp
             del tmp
             ::endpoint[vessel_number].SetColor(0,0,255)
@@ -692,8 +690,7 @@ if (!exists(CreateSkeletonClass)) {
     #---------------------------------------------------
     proc ::Gui( ) {
     
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Skeleton")
+      ::win = ParamPanel("Skeleton")
       ::win.BeginBook()
       ::win.AddPage("Init")
     

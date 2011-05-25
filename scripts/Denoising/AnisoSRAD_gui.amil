@@ -96,8 +96,7 @@ if (!exists(AnisoSRADClass)) {
   proc ::CreateGui() {
   
     # parameters window
-    import = &global::ami_import;
-    ::win = import->ParamPanel("SRAD")
+    ::win = ParamPanel("SRAD")
 
     ::win.BeginBook()
       ::win.AddPage("Param")

@@ -3,12 +3,9 @@
 
 if (!exists(sintheticRampClass)) {
 
-	#Import filters
-  ami_import->Filters()
 
 	Class sintheticRampClass{
   
-    ::filters = &global::filters
     #-----------------------
     proc ::Init(){
       ::class_name = "global::sintheticRampClass"
@@ -42,8 +39,8 @@ if (!exists(sintheticRampClass)) {
     #-----------------------
     
     proc ::Run() {
-			::res <<= ::filters->SintheticRamp(::angle, ::mesh, ::perfect, ::A, ::B, ::dispy)
-			::Display
+      ::res <<= filters.SintheticRamp(::angle, ::mesh, ::perfect, ::A, ::B, ::dispy)
+      ::Display()
     }
     
     #-----------------------
@@ -72,9 +69,9 @@ if (!exists(sintheticRampClass)) {
     
     #-----------------------
     
-    proc ::CreateGui() {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Sinthetic Ramp")
+    proc ::CreateGui() \
+    {
+      ::win = ParamPanel("Sinthetic Ramp")
       
       ::win.BeginBook()
         ::win.AddPage("Parameters")

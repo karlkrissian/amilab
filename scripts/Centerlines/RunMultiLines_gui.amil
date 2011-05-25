@@ -133,8 +133,7 @@ proc RML_CB_Save() {
 proc RML_gui() {
   global_new
 
-  RML_import = &global::ami_import;
-  win = import->ParamPanel("Vesselness")
+  win = ParamPanel("Vesselness")
 
   RML_win.BeginPanel("Parameters")
     # set the input image

@@ -6,11 +6,8 @@ func "Common/ScriptGui"
 
 if (!exists(CreateTorusClass)) {
 
-  ami_import->Filters()
   
   Class CreateTorusClass : public ScriptGui {
-
-    ::filters=&global::filters
 
     #----------------------------
     proc ::Init() {
@@ -66,7 +63,7 @@ if (!exists(CreateTorusClass)) {
     #printn "res.info"
     #res.info
     # estimate partial volume effect based on linear interpolation
-    res = ::filters->ComputePV_subdiv(res)
+    res = filters.ComputePV_subdiv(res)
     res = res*(::fg-::bg)+::bg
     
     ::dimx_prev = ::dimx
@@ -92,7 +89,7 @@ if (!exists(CreateTorusClass)) {
   }
   
   proc ::Gui() {
-    ::win = global::ami_import.ParamPanel("CreateTorus")
+    ::win = ParamPanel("CreateTorus")
   
     ::win.BeginBook()
       ::win.AddPage("Param")

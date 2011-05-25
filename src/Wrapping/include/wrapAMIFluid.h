@@ -18,8 +18,7 @@
 /** function that add the wrapping of fluid function
  *  to the AMI language
  */
-void AddWrapFluid(); 
-void wrap_AMIFluid(ParamList* p);
+void AddWrapFluid(AMIObject::ptr&); 
 
 // Wrapping functions:
 

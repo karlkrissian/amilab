@@ -203,8 +203,8 @@ AMI_DEFINE_BASICTYPE(std::string);
 AMI_DEFINE_BASICTYPE(FloatMatrix);
 AMI_DEFINE_BASICTYPE(AMIFunction);
 AMI_DEFINE_BASICTYPE(AMIClass);
-AMI_DEFINE_BASICTYPE(AMIObject);
 AMI_DEFINE_BASICTYPE(VarArray);
+
 
 #define AMI_DEFINE_BASICTYPE_NOCONSTRUCT(type) \
 	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
@@ -244,5 +244,6 @@ AMI_DEFINE_BASICTYPE_NOCONSTRUCT(C_wrap_imagefunction);
 AMI_DEFINE_BASICTYPE_NOCONSTRUCT(C_wrap_varfunction);
 
 
+//AMI_DEFINE_BASICTYPE(AMIObject);
 // abstract
-AMI_DEFINE_BASICTYPE_NOCONSTRUCT(WrapClassMember);
+//AMI_DEFINE_BASICTYPE_NOCONSTRUCT(WrapClassMember);

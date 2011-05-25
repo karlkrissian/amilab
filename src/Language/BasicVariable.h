@@ -93,7 +93,7 @@ public:
 //     (*this) = (*v);
 //  }
 
-  virtual bool Equal(const BasicVariable::ptr& v)  = 0;
+  virtual bool Equal( BasicVariable::ptr v)  = 0;
 
   virtual bool operator == (BasicVariable* v)  = 0;
 
@@ -153,7 +153,7 @@ public:
     return (strcmp(_name.c_str(), name)==0);
   }
 
-  virtual const std::string GetTypeName() const = 0;
+  virtual const std::string GetTypeName() const { return std::string(); };
 
   //
   virtual void display(std::ostream& o) const = 0;
@@ -176,7 +176,7 @@ public:
    * Virtual method to return the value of a variable.
    * @return a string containing the value of the variable.
    */
-  virtual std::string GetValueAsString() const = 0;
+  virtual std::string GetValueAsString() const  { return std::string(); }
 
   // allow access to private members of Variable class
 //  friend class VarArray;

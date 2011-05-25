@@ -1,9 +1,5 @@
 # command line: ./amilab 
 
-ami_import->AMIFluid()
-printn "Import filters (ami_import->Filters()).\n"
-ami_import->Filters()
-
 yos_mask ="Yosemite/Mask/mask%02.0f.bmp"
 
 
@@ -198,7 +194,7 @@ print "1\n"
     im.putimage(i,0,0,seq+1-seqmin)
     del i
 
-    d1 = AMIFluid->amiReadUV(sprint(yos_displ,seq))
+    d1 = AMIFluid.amiReadUV(sprint(yos_displ,seq))
 
     if (removelastline==1) {
       // get rid of last line
@@ -297,7 +293,7 @@ proc LoadImagesBarron() {
 
   # Read the ground truth
   if (use_clouds==1) {
-    displ89 = AMIFluid->amiReadBarronData("YosemiteBarron/yos_clouds.F")
+    displ89 = AMIFluid.amiReadBarronData("YosemiteBarron/yos_clouds.F")
     # set displacement to (2,0) in the clouds
     displ89_x = displ89[0]
     displ89_y = displ89[1]
@@ -317,7 +313,7 @@ proc LoadImagesBarron() {
     del displ89
     del mask89
   } else {
-    displ89 = AMIFluid->amiReadBarronData("YosemiteBarron/yos_noclouds.F")
+    displ89 = AMIFluid.amiReadBarronData("YosemiteBarron/yos_noclouds.F")
 
     # set mask to only 8-9 frame
     mask89 = mask[:,:,(8-seqmin):(8-seqmin)]
@@ -388,7 +384,7 @@ proc LoadImages2() {
 
 proc InverseFlow( IMAGE _flow, NUM scale_factor) {
   flow1 = Resize(_flow,_flow.tx*scale_factor,_flow.ty*scale_factor,1,2)
-  flow1 = AMIFluid->amiInverseFlow(flow1/2)
+  flow1 = AMIFluid.amiInverseFlow(flow1/2)
   _flow = Resize(flow1,_flow.tx,_flow.ty,_flow.tz,2)
 }
 
@@ -407,11 +403,11 @@ proc invert_flow_2d_t(IMAGE _flow) {
 #--------------------------------------------------
 proc call_amiOFPDE_temp(IMAGE _im, IMAGE _res) {
 
-  AMIFluid->amiOFSetSymmetric(symmetric)
+  AMIFluid.amiOFSetSymmetric(symmetric)
   
   Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
   Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
-  AMIFluid->amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+  AMIFluid.amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
   
   if (symmetric) {
     // invert flux
@@ -432,7 +428,7 @@ proc call_amiOFPDE_JavAgustin(IMAGE _im, IMAGE _res) {
   _im.info
   resx.info
   resy.info
-  AMIFluid->amiOpticFlow(_im,&resx,&resy, JA_zoom, JA_alfa, JA_beta, JA_gamma, JA_isotropy, JA_T, JA_dt, JA_Nu)
+  AMIFluid.amiOpticFlow(_im,&resx,&resy, JA_zoom, JA_alfa, JA_beta, JA_gamma, JA_isotropy, JA_T, JA_dt, JA_Nu)
   _res.SetComponent( 0, resx;)
   _res.SetComponent( 1, resy;)
 
@@ -445,7 +441,7 @@ proc call_amiOFPDE_Javier(IMAGE _im1, IMAGE _im2, IMAGE _res) {
 
   resx = _res[0]
   resy = _res[1]
-  AMIFluid->amiJavierHornSchunck(_im1,_im2,&resx,&resy, zoom, alfa_Javier, T, dt, Nu);
+  AMIFluid.amiJavierHornSchunck(_im1,_im2,&resx,&resy, zoom, alfa_Javier, T, dt, Nu);
   _res.SetComponent( 0, resx;)
   _res.SetComponent( 1, resy;)
 }
@@ -457,7 +453,7 @@ proc call_amiOFPDE_Zoom(IMAGE _im1,IMAGE _im2, IMAGE _res) {
   _resx=_res[0]
   _resy=_res[1]
 
-  AMIFluid->amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
+  AMIFluid.amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
 
   _res.SetComponent( 0, _resx)
   _res.SetComponent( 1, _resy)
@@ -474,7 +470,7 @@ proc call_amiOFPDE_Vorticity(IMAGE _im1,IMAGE _im2, IMAGE _res) {
   _resy=_res[1]
   _vort=_resx;
 
-  AMIFluid->amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
+  AMIFluid.amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
 
   _res.SetComponent( 0, _resx)
   _res.SetComponent( 1, _resy)
@@ -505,7 +501,7 @@ proc call_OFPDE(IMAGE _im1, IMAGE _im2, IMAGE _res) {
 #--------------------------------------------------
 proc call_amiOFPDE_GaussSc(IMAGE _im1, IMAGE _im2, IMAGE _res) {
 
-  AMIFluid->amiOFSetSymmetric(symmetric)
+  AMIFluid.amiOFSetSymmetric(symmetric)
   zoom_z = 1+_im1.tz>1;
   Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
   Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
@@ -521,8 +517,8 @@ proc call_amiOFPDE_GaussSc(IMAGE _im1, IMAGE _im2, IMAGE _res) {
     print sprint("\n sigma = %0.2f \n",_sigma)
     _im1s = filter(_im1,_sigma,0,0,0)
     _im2s = filter(_im2,_sigma,0,0,0)
-    AMIFluid->amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,1,Conv_Scales,gradtype,smoothfunction)
-    AMIFluid->amiOFPDE(_im1s,_im2s,&_res)
+    AMIFluid.amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,1,Conv_Scales,gradtype,smoothfunction)
+    AMIFluid.amiOFPDE(_im1s,_im2s,&_res)
   }
 
   if (symmetric==1) {
@@ -539,12 +535,12 @@ proc call_amiOFPDE(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   if (Gaussian_scales==1) {
     call_amiOFPDE_GaussSc(_im1,_im2,&_res)
   } else {
-    AMIFluid->amiOFSetSymmetric(symmetric)
+    AMIFluid.amiOFSetSymmetric(symmetric)
     zoom_z = 1+_im1.tz>1;
     Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
     Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
-    AMIFluid->amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
-    AMIFluid->amiOFPDE(_im1,_im2,&_res)
+    AMIFluid.amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+    AMIFluid.amiOFPDE(_im1,_im2,&_res)
 
     if (symmetric==1) {
       // inverse flow
@@ -560,11 +556,11 @@ proc call_amiOFPDE(IMAGE _im1, IMAGE _im2, IMAGE _res) {
 proc call_amiOFPDE_Javier_sym(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   resx = _res[0]
   resy = _res[1]
-  AMIFluid->amiJavierHornSchunckSym(_im1,_im2,&resx,&resy, zoom, alfa_Javier, T, dt, Nu);
+  AMIFluid.amiJavierHornSchunckSym(_im1,_im2,&resx,&resy, zoom, alfa_Javier, T, dt, Nu);
   _res.SetComponent( 0, resx;)
   _res.SetComponent( 1, resy;)
   // inverse flow
-  _res = AMIFluid->amiInverseFlow(_res)
+  _res = AMIFluid.amiInverseFlow(_res)
 }
 
 
@@ -742,14 +738,14 @@ proc CB_Iterate() {
   alpha_epsilon  = exp(ln(10)*alpha_norm_epsilon)
 
   #print sprint("global smoothing = %01.0f \n",global_smoothing)
-  AMIFluid->amiOFSetGlobalConstraint(global_smoothing)
-  AMIFluid->amiOFSetSmoothGradient(smoothgradient)
-  AMIFluid->amiOFSetGradient(gradcomputation)
-  AMIFluid->amiOFSetBoundaryType(boundarytype)
-  AMIFluid->amiOFSetAlphaNormEpsilon(alpha_epsilon)
-  AMIFluid->amiOFSetNormalizeAlpha(alpha_normalization)
+  AMIFluid.amiOFSetGlobalConstraint(global_smoothing)
+  AMIFluid.amiOFSetSmoothGradient(smoothgradient)
+  AMIFluid.amiOFSetGradient(gradcomputation)
+  AMIFluid.amiOFSetBoundaryType(boundarytype)
+  AMIFluid.amiOFSetAlphaNormEpsilon(alpha_epsilon)
+  AMIFluid.amiOFSetNormalizeAlpha(alpha_normalization)
 
-  AMIFluid->amiOFSetInterpolation(use_splines)
+  AMIFluid.amiOFSetInterpolation(use_splines)
   if (temporal==1) {
     CB_IterateTemporal()
   } else {
@@ -1014,8 +1010,7 @@ proc CB_RunAlphaTests() {
 #--------------------------------------------------
 # Input Images
 #
-import = &global::ami_import;
-winput = import->ParamPanel("Input")
+winput = ParamPanel("Input")
 winput.BeginBoxPanel("Yosemite sequence from M. Black")
 use_clouds_id      = winput.AddBoolean( &use_clouds)
 removelastline_id  = winput.AddBoolean( &removelastline)
@@ -1041,7 +1036,7 @@ winput.Update()
 # Parameters for libami's code
 #
 
-wamiOF = global::ami_import.ParamPanel("PDE Param")
+wamiOF = ParamPanel("PDE Param")
 
 presmoothing_id    = wamiOF.AddFloat( &presmoothing,  "presmoothing", 0,3)
 beta_id            = wamiOF.AddFloat( &beta,  "beta", 0.01,5)
@@ -1080,7 +1075,7 @@ wamiOF.Update()
 # Parameters for Javier's code
 #
 
-wJavOF = global::ami_import.ParamPanel("Javier PDE Param")
+wJavOF = ParamPanel("Javier PDE Param")
 zoom_id            = wJavOF.AddInt( &zoom,  "zoom",        0,5)
 alphaJ_id          = wJavOF.AddFloat( &alfa_Javier,  "alfa_Javier", 0.01,20)
 T_id               = wJavOF.AddFloat( &T,  "T",           0.01,2000)
@@ -1092,7 +1087,7 @@ wJavOF.Update()
 # Parameters for Javier and Agustin's code
 #
 
-wJAOF = global::ami_import.ParamPanel("Javier and Agustin PDE Param")
+wJAOF = ParamPanel("Javier and Agustin PDE Param")
 JA_zoom_id         = wJAOF.AddInt( &JA_zoom,  "JA_zoom",     0,   5)
 JA_alpha_id        = wJAOF.AddFloat( &JA_alfa,  "JA_alfa",     0.01,5)
 JA_beta_id         = wJAOF.AddFloat( &JA_beta,  "JA_beta",     0.01,5)
@@ -1107,7 +1102,7 @@ wJAOF.Update()
 # Parameters for Vorticity code
 #
 
-wVort = global::ami_import.ParamPanel("Vorticity OF param")
+wVort = ParamPanel("Vorticity OF param")
 vort_grid_id       = wVort.AddInt( &vort_grid,  "vort_grid",    1,10)
 vort_winsize_id    = wVort.AddInt( &vort_winsize,  "vort_winsize", 3,10)
 vort_sigma_id      = wVort.AddFloat( &vort_sigma,  "vort_sigma", 0.1,5)
@@ -1119,7 +1114,7 @@ wVort.Update()
 # Parameters for optic_flow_zoom code
 #
 
-wOFzoom = global::ami_import.ParamPanel("Optic Flow PDE 2D parameters")
+wOFzoom = ParamPanel("Optic Flow PDE 2D parameters")
 
 OFzoom_sigma_id    = wOFzoom.AddFloat( &OFzoom_sigma,  "OFzoom_sigma", 0.5,5)
 OFzoom_T_id        = wOFzoom.AddFloat( &OFzoom_T,  "OFzoom_T", 1,1000)
@@ -1136,7 +1131,7 @@ wOFzoom.Update()
 # Parameters for continous Gaussian multiscale
 #
 
-wGaussSc = global::ami_import.ParamPanel("Continous Gaussian Scales")
+wGaussSc = ParamPanel("Continous Gaussian Scales")
 sigma_min_id      = wGaussSc.AddFloat( &sigma_min,  "sigma_min", 0.01,5)
 sigma_max_id      = wGaussSc.AddFloat( &sigma_max,  "sigma_max", 0.01,15)
 sigma_N_id        = wGaussSc.AddInt( &sigma_N,  "sigma_N",   2,20)
@@ -1145,7 +1140,7 @@ wGaussSc.Update()
 #--------------------------------------------------
 # Main Parameters
 #
-w1 = global::ami_import.ParamPanel("Main")
+w1 = ParamPanel("Main")
 
 input_id = w1.AddButton("Input Images", CB_InputImages)
 
@@ -1188,7 +1183,7 @@ w1.Display()
 #-------------------------------------------------
 # Creating parameter window for test on alpha
 #-------------------------------------------------
-w2 = global::ami_import.ParamPanel("test sequence on alpha")
+w2 =  ParamPanel("test sequence on alpha")
 alfa_min_id     = w2.AddFloat( &alfa_min,  "alfa_min", 0.01,10)
 alfa_max_id     = w2.AddFloat( &alfa_max,  "alfa_max", 0.01,20)
 alfa_step_id    = w2.AddFloat( &alfa_step,  "alfa_step", 0.01,1)

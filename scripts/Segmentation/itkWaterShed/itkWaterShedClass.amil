@@ -7,15 +7,11 @@ func "Common/ScriptGui"
 
 if (!exists(itkWaterShedClass)){
 
-  ami_import->ITK()
-  
   Class itkWaterShedClass : public ScriptGui {
-  ::itk = &global::itk
   #------------------------------------
   
   
-  #------------------------
-  
+    #------------------------
     proc ::init() {
 
       ::input_name   = "","Name of the input image variable"
@@ -66,10 +62,10 @@ if (!exists(itkWaterShedClass)){
       }
       
       if (::dim==0) {
-        ::water = ::itk->WaterShedImageFilter2D(::grad,::lThreshold,::FloodLevel)
+        ::water = itk.WaterShedImageFilter2D(::grad,::lThreshold,::FloodLevel)
         ::w = 1
       } else {
-        ::water = ::itk->WaterShedImageFilter3D(::grad,::lThreshold,::FloodLevel)
+        ::water = itk.WaterShedImageFilter3D(::grad,::lThreshold,::FloodLevel)
         ::w = 1
       }
     }
@@ -113,9 +109,9 @@ if (!exists(itkWaterShedClass)){
     Comments( ::SaveR, "Saves the gradient image as ${::water_filename}_thresXX_lvlXX.ami.gz")
 
     #------------------------------------------------------------
-    proc ::Gui() {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("WaterShed")
+    proc ::Gui() \
+    {
+      ::win = ParamPanel("WaterShed")
       ::win.BeginBook()
       
         ::win.AddPage("Init")

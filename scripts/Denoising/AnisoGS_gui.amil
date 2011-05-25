@@ -108,8 +108,7 @@ if (!exists(AnisoGSClass)) {
   proc ::CreateWindow() {
 
     # parameters window
-    import = &global::ami_import;
-    ::win = import->ParamPanel("AnisoGS")
+    ::win = ParamPanel("AnisoGS")
 
     ::win.BeginBook() 
     ::win.AddPage("Param")

@@ -23,7 +23,6 @@ if (!exists(volren_display)) {
     volren_display.SetHelp("VTK-based Volume Rendering using GPU if available.")
     volren_display.SetInMenus("Scripts","Visualization")
 
-    ami_import.System(); 
     volren_display.SetIcon16( op_system.GetCurrentScriptDir()+"/volren_icon16.png")
     volren_display.SetIcon32( op_system.GetCurrentScriptDir()+"/volren_icon32.png")
 

@@ -275,7 +275,6 @@ if (!exists(PropagateVesselsContoursClass)) {
         del lsdgrad
         #::zerocross.setvoxelsize(::input_vsx,::input_vsy,::input_vsz)
 
-        import_filters
         morph = filters.ContinuousMorphology()
         morph.SetLimits(0,1)
 
@@ -340,11 +339,10 @@ if (!exists(PropagateVesselsContoursClass)) {
     //---------------------------------------------------
     proc ::Gui() {
     
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("PropVessels",&::parent_panel)
+        ::win = ParamPanel("PropVessels",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("PropVessels")
+        ::win = ParamPanel("PropVessels")
       }
       
       ::win.BeginBook()

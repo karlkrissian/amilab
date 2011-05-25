@@ -5,7 +5,6 @@
 #
 
 proc AddCarotidMenu() {
-  global::ami_import.System()
   curdir = op_system.GetCurrentScriptDir()
   for dir in  "RunExperiments" \
   {

@@ -140,7 +140,6 @@ if (!exists(Curvatures3DClass)) {
         if (!exists(::surf_draw)) { ::DisplaySurface(); }
 
         # get the colormap
-        global::ami_import.System(); 
         colmap = Image op_system.GetCurrentScriptDir()+"/CMrainbow1.ami.gz"
         # Flip in X
         colmap = Flip(colmap,0)
@@ -204,11 +203,10 @@ if (!exists(Curvatures3DClass)) {
     #-----------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("Curv3D",&::parent_panel)
+        ::win = ParamPanel("Curv3D",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("Curv3D")
+        ::win = ParamPanel("Curv3D")
       }
       ::win.BeginBook()
         ::win.AddPage("Main")

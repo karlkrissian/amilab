@@ -139,8 +139,7 @@ if (!exists(MSEClass)) {
     proc ::CreateWindow() {
     
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Quality")
+      ::win = ParamPanel("Quality")
       
       ::win.BeginBook()
     

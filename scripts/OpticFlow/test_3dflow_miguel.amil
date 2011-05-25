@@ -1,6 +1,5 @@
 # command line: ./amilab
 
-ami_import->AMIFluid()
 func "OpticFlow/vorticity_3D.amil"
 
 #func "find_minimum"
@@ -69,19 +68,19 @@ proc amicorr3D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   wsz = exp(ln(2)*winsize_z)
   print sprint("window size (%0.0f",wsx)+","+sprint("%0.0f",wsy)+","+sprint("%0.0f)\n",wsz)
   if (corr_downsample) {
-  	AMIFluid->amiOFCorr3DNew(_im1,_im2,&_res,wsx,wsy,wsz,step_x,step_y,step_z)
+  	AMIFluid.amiOFCorr3DNew(_im1,_im2,&_res,wsx,wsy,wsz,step_x,step_y,step_z)
   } else {
-    AMIFluid->amiOFCorr3D(_im1,_im2,&_res,wsx,wsy,wsz,windef,step_x,step_y,step_z)
-    #AMIFluid->amiOFCorr3D(_im1,_im2,&_res,wsx,wsy,wsz,windef,step_x,step_y,step_z,volume_radius,volume_radius,volume_radius)  
+    AMIFluid.amiOFCorr3D(_im1,_im2,&_res,wsx,wsy,wsz,windef,step_x,step_y,step_z)
+    #AMIFluid.amiOFCorr3D(_im1,_im2,&_res,wsx,wsy,wsz,windef,step_x,step_y,step_z,volume_radius,volume_radius,volume_radius)  
   }
   print "correlation computed\n"
   //print sprint("flow: (%f",_res(volume_radius,volume_radius,volume_radius,0))+","+sprint("%f",_res(volume_radius,volume_radius,volume_radius,1))+","+sprint("%f)\n",_res(volume_radius,volume_radius,volume_radius,2))
   if (!corr_downsample) { 
-	AMIFluid->amiOFExtrapol3D(&_res,step_x,step_y,step_z); 
-  #AMIFluid->amiOFExtrapol3D(&_res,step_x,step_y,step_z,volume_radius,volume_radius,volume_radius)
+	AMIFluid.amiOFExtrapol3D(&_res,step_x,step_y,step_z); 
+  #AMIFluid.amiOFExtrapol3D(&_res,step_x,step_y,step_z,volume_radius,volume_radius,volume_radius)
   }
   print "extrapolation computed\n"
-  if (solenoidal_cor) { AMIFluid->amiSolenoidalProj3D(&_res); print "solenoidal projection computed\n";}
+  if (solenoidal_cor) { AMIFluid.amiSolenoidalProj3D(&_res); print "solenoidal projection computed\n";}
   //_res = Flip(_res,1)
 }
 
@@ -94,17 +93,17 @@ proc call_amiOFPDE3D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   Conv_Scales    = exp(ln(10)*Conv_Scales_exp)  
   alpha_epsilon  = exp(ln(10)*alpha_norm_epsilon)
     
-  AMIFluid->amiPDESetSolenoidal(solenoidal_pde)
-  AMIFluid->amiOFSetGlobalConstraint(global_constraint)
-  AMIFluid->amiOFSetSmoothGradient(smoothgradient)
-  AMIFluid->amiOFSetAlphaNormEpsilon(alpha_epsilon)
-  AMIFluid->amiOFSetNormalizeAlpha(alpha_normalization)
-  AMIFluid->amiOFSetSymmetric(symmetric)
-  AMIFluid->amiOFPDE(_im1,_im2,&_res,beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype)
+  AMIFluid.amiPDESetSolenoidal(solenoidal_pde)
+  AMIFluid.amiOFSetGlobalConstraint(global_constraint)
+  AMIFluid.amiOFSetSmoothGradient(smoothgradient)
+  AMIFluid.amiOFSetAlphaNormEpsilon(alpha_epsilon)
+  AMIFluid.amiOFSetNormalizeAlpha(alpha_normalization)
+  AMIFluid.amiOFSetSymmetric(symmetric)
+  AMIFluid.amiOFPDE(_im1,_im2,&_res,beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype)
 
   if (symmetric) {
     // invert flux
-    _res = AMIFluid->amiInverseFlow(_res)
+    _res = AMIFluid.amiInverseFlow(_res)
   } 
 
 }
@@ -117,7 +116,7 @@ proc ComputeError(NUM _err) {
 	    _err = mean(n,posmask)    
 	} else {
 		i2_warped = i2*0;
-		AMIFluid->amiInterpolation3D(i2,u,&i2_warped)
+		AMIFluid.amiInterpolation3D(i2,u,&i2_warped)
     	n = abs(i1-i2_warped)		
 		_err=mean(n)     
 		
@@ -357,7 +356,7 @@ proc UpdateDisplay() {
   show i1
   #n = norm(u-u_o);
   i2_warped = i2*0;
-  AMIFluid->amiInterpolation3D(i2,u,&i2_warped)
+  AMIFluid.amiInterpolation3D(i2,u,&i2_warped)
   n = abs(i1-i2_warped)
   _mean=mean(n,mask) 
   if (last_error > _mean) {    
@@ -388,7 +387,7 @@ proc CB_Restart_corr() {
 proc CB_Iterate_corr() {
   for _n=1 to nbiterations {
     print "ITERATION \t"; print _n; print "\n"
-    AMIFluid->amicorr3D(i1,i2,&u);
+    AMIFluid.amicorr3D(i1,i2,&u);
     UpdateDisplay()
   }
 }
@@ -398,21 +397,21 @@ proc CB_RunSequence() {
   winsize_y=4
   winsize_z=4
   for _n=1 to 2 {
-    AMIFluid->amicorr3D(i1,i2,&u);
+    AMIFluid.amicorr3D(i1,i2,&u);
     UpdateDisplay()
   }
   winsize_x=3
   winsize_y=3
   winsize_z=3
   for _n=1 to 2 {
-    AMIFluid->amicorr3D(i1,i2,&u);
+    AMIFluid.amicorr3D(i1,i2,&u);
     UpdateDisplay()
   }
   winsize_x=2
   winsize_y=2
   winsize_z=2
   for _n=1 to 2 {
-    AMIFluid->amicorr3D(i1,i2,&u);
+    AMIFluid.amicorr3D(i1,i2,&u);
     UpdateDisplay()
   }
 }
@@ -432,7 +431,7 @@ proc CB_RunSequenceConv() {
 	Conv_Cor = exp(ln(10)*Conv_Cor_exp    )
 	max_iter = 100
 	for _iter=1 to max_iter { 
-		AMIFluid->amicorr3D(i1,i2,&u);
+		AMIFluid.amicorr3D(i1,i2,&u);
 		//u = u*(mask!=0)		
 		//show i1
 		ComputeError(&_error);		
@@ -679,7 +678,7 @@ proc CB_AlphaFindMin() {
 
 #-------------- CORRELATION INTERFACE ----------------
 
-w1 = global::ami_import.ParamPanel("3D Correlation parameters")
+w1 = ParamPanel("3D Correlation parameters")
 
 step_x_id = w1.AddInt( &step_x,  "step_x", 1,20)
 step_y_id = w1.AddInt( &step_y,  "step_y", 1,20)
@@ -708,7 +707,7 @@ proc CB_CorrInterf() {
 
 #------------------ PDE INTERFACE ---------------------
 
-w2 = global::ami_import.ParamPanel("PDE Optical Flow")
+w2 = ParamPanel("PDE Optical Flow")
 
 beta_id         = w2.AddFloat( &beta,  "beta", 0.01,5)
 alfa_id         = w2.AddFloat( &alfa,  "alfa", 0.01,40)
@@ -881,7 +880,7 @@ proc CB_JohanCorrVarTest() {
 
 #-------------- MAIN INTERFACE -----------------------
 
-w_main = global::ami_import.ParamPanel(" Flow Motion Estimation ")
+w_main = ParamPanel(" Flow Motion Estimation ")
 
 load_sphere_id     = w_main.AddButton("Load New Sphere 128",    CB_LoadNewSphereData)
 load_sphere64_id   = w_main.AddButton("Load New Sphere 64",     CB_LoadSphere64)
@@ -918,7 +917,7 @@ w_main.Display()
 # Creating parameter window for test on alpha
 #-------------------------------------------------
 
-alphatests_win = global::ami_import.ParamPanel("test sequence on alpha")
+alphatests_win = ParamPanel("test sequence on alpha")
 alfa_min_id        = alphatests_win.AddFloat( &alfa_min,  "alfa_min", 0.01,20)
 alfa_max_id        = alphatests_win.AddFloat( &alfa_max,  "alfa_max", 0.01,40)
 alfa_step_id       = alphatests_win.AddFloat( &alfa_step,  "alfa_step", 0.01,2)

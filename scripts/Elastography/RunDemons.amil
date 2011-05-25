@@ -193,8 +193,7 @@ proc MSD_stats() {
 proc MSD_gui() {
   global_new
 
-    MSD_import = &global::ami_import;
-win = global::ami_import.ParamPanel("MSD param")
+    MSD_win = ParamPanel("MSD param")
 
     id = MSD_win.AddInt( &MSD_NLevels,  "MSD_NLevels", 1,10)
     id = MSD_win.AddInt( &MSD_NSteps,  "MSD_NSteps", 1,50)

@@ -19,10 +19,6 @@ if (!exists(ShortestPathClass)) {
 
     AddSphereClass ::AS
 
-    global::ami_import.ITK()
-    ::itk=&itk
-
-    
     #----------------------------
     proc ::init() {
       # input image name
@@ -345,8 +341,7 @@ if (!exists(ShortestPathClass)) {
     #-------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Path")
+      ::win = ParamPanel("Path")
     
       ::win.BeginBook()
 

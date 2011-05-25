@@ -9,7 +9,6 @@ func "Common/ScriptGui.amil"
 
 comments="Functions2DClass: this class provides an interface for plotting 2D functions."
 
-#ami_import->MainFrame()
 
 if (!exists(Functions2DClass)) {
   
@@ -240,15 +239,14 @@ if (!exists(Functions2DClass)) {
     proc ::CreateWindow() {
     
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("2DFunc")
+      ::win = ParamPanel("2DFunc")
       
 
       # add Drawing Window
 
       d = ::win.CurrentParent()
 
-      ::dw = import->wxDrawingWindow(&d)
+      ::dw = wxDrawingWindow(&d)
 
       ::dw.SetMinSize(&wx.wxSize(50,100))
 

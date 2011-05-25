@@ -1,6 +1,5 @@
 #!/usr/bin/amilab
 
-ami_import->ITK()
 
 i = Image($1)
 

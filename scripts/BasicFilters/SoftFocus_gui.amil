@@ -97,8 +97,7 @@ if (!exists(SoftFocus)) {
     proc ::CreateGui() {
     
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("SoftFocus")
+      ::win = ParamPanel("SoftFocus")
     
       ::win.BeginBook()
         ::win.AddPage("Param")

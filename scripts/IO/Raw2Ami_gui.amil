@@ -52,9 +52,7 @@ if (!exists(Raw2AmiClass)) {
 
     proc ::Gui( ) {
     
-      import = &global::ami_import
-      
-      ::win = import->ParamPanel("Read Raw 2")
+      ::win = ParamPanel("Read Raw 2")
   
       ::win.BeginBook()
       ::win.AddPage("IO")

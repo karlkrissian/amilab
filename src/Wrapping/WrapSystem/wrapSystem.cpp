@@ -23,6 +23,7 @@
 extern yyip::Driver GB_driver;
 
 #include <wx/utils.h>
+//#include <improcess_bison.ypp>
 
 extern VarContexts  Vars;
 extern wxString  GB_scripts_dir;
@@ -32,7 +33,8 @@ using namespace std;
 
 
 //---------------------------------------------------------
-void AddWrapSystem(){
+void AddWrapSystem( AMIObject::ptr& obj)
+{
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("op_system");
@@ -58,27 +60,11 @@ void AddWrapSystem(){
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject,obj->GetContext());
 
 }
 
 
-/**
- * Adds the System wrapping
- * @param p 
- */
-void wrap_System(ParamList* p)
-{
-/*
-    char functionname[] = "System";
-    char description[]=" \n\
-      Adds wrapping for Operating System operations. \n\
-            ";
-    char parameters[] =" \n\
-            ";
-*/
-  AddWrapSystem();
-}
 
 
 /*

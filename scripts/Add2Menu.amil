@@ -11,7 +11,8 @@ for dir in  "BasicFilters","Filtering","Denoising",\
             "OpticFlow", \
             "CarotidBifurcationWorkshop2009", \
             "Utils", \
-            "Vessels" \
+            "Vessels",\
+            "Variable" \
 {
   local_f = wx.wxFileName(GetScriptsDir)
   local_f.AppendDir(dir)
@@ -25,4 +26,6 @@ for dir in  "BasicFilters","Filtering","Denoising",\
 }
 
 #quit
+
+
 

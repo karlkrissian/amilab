@@ -107,9 +107,9 @@ if (!exists(test_corr2DClass)) {
     }
     
     #--------------------------------------------------
-    proc ::InitGui() {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Test Corr 2D")
+    proc ::InitGui() \
+    {
+      ::win = ParamPanel("Test Corr 2D")
       
       ::win.BeginBook()
         ::win.AddPage("Inputs")

@@ -73,8 +73,7 @@ if (!exists(AddNoiseClass)){
   #------------------------------------
   proc ::CreateGui() {  
     # parameters window
-    import = &global::ami_import;
-    ::win = import->ParamPanel("Noise")
+    ::win = ParamPanel("Noise")
   
     ::win.BeginBook()
       ::win.AddPage("Param")

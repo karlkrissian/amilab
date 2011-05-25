@@ -8,8 +8,6 @@ comments="VolRen: VTK GPU RayCasting."
 
 func "Common/ScriptGui"
 
-import_vtk
-
 if (!exists(VolRenClass)) {
 
 
@@ -251,7 +249,7 @@ if (!exists(VolRenClass)) {
       } else {
         #if (exists(::renwin_interact)) { del ::renwin_interact; }
         if (!exists(::renwin_interact)) {
-          ::renwin_interact = global::wxVTKFrame()
+          ::renwin_interact = vtktools.wxVTKFrame()
           ::renwin_interact.Initialize()
         }
         printn "1*"
@@ -361,11 +359,11 @@ if (!exists(VolRenClass)) {
 
       sbox_sizer.Add( &::splitter, 1, wx.wxALL | wx.wxEXPAND,2)
       # create widget here
-      import_vtk
-      ::renwin_interact = wxVTKRenderWindowInteractor(&::splitter,-1)
+      #::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,-1)
+      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::splitter,-1)
       #ren = vtk.vtkRenderer.New()
       #::renwin_interact.GetRenderWindow().AddRenderer(&ren);
-      #::renwin_interact = wxVTKFrame(&panel,-1)
+      #::renwin_interact = vtktools.wxVTKFrame(&panel,-1)
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.Enable(true)
       # Still drawing problem (missed exposed events???)
@@ -454,8 +452,7 @@ if (!exists(VolRenClass)) {
        capturefilter = vtk.vtkWindowToImageFilter.New()
        capturefilter.SetInput( &::renwin)
        capturefilter.Update()
-       import_vtk
-       resim = FromVtkImageData( &capturefilter.GetOutput())
+       resim = vtktools.FromVtkImageData( &capturefilter.GetOutput())
        ::capture <<= Flip(resim,1)
     }
 
@@ -517,9 +514,9 @@ if (!exists(VolRenClass)) {
     
       # parameters window
       if (exists(::parent_panel)) {
-        ::win = global::ami_import.ParamPanel("VolRen",&::parent_panel)
+        ::win = ParamPanel("VolRen",&::parent_panel)
       } else {
-        ::win = global::ami_import.ParamPanel("VolRen")
+        ::win = ParamPanel("VolRen")
       }
       
       ::win.BeginHorizontal()
@@ -614,7 +611,7 @@ if (!exists(VolRenClass)) {
   
         #::win.AddPage("Viewer")
           #d = ::win.CurrentParent()
-          #::renwin_interact = global::wxVTKRenderWindowInteractor(&d)
+          #::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&d)
           #::renwin_interact.SetMinSize(&wx.wxSize(100,400));
           #::sizer_item = ::win.AddWidget(&::renwin_interact,0)
 
@@ -630,7 +627,7 @@ if (!exists(VolRenClass)) {
       }
       ::UpdateVolPages()
       ::win.Update(-1)
-      #    ::renwin_interact = global::wxVTKFrame()
+      #    ::renwin_interact = vtktools.wxVTKFrame()
       ::MainBook_AddVolRenTab()
    }
 

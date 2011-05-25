@@ -48,23 +48,27 @@ SET_TESTS_PROPERTIES(${name-test}
 
 ENDMACRO(ADD_AMILAB_TESTS)
 #-------------------------------------------------------------------------------
+
+SET(AMIOPTIONS -hide -noscriptsmenu -quit)
+
 #
 # Test: Segmentation.
 #
-ADD_AMILAB_TESTS(test_levelsets "-quit" "${PROJECT_SOURCE_DIR}/../tests/Segmentation/test_levelsets.amil")
+ADD_AMILAB_TESTS(test_levelsets ${AMIOPTIONS} "${PROJECT_SOURCE_DIR}/../tests/Segmentation/test_levelsets.amil")
 #
 # test: InputOutput.
 #
 SET(options ".vtk" ".mhd" ".ami" ".ami.gz")
 
+
 FOREACH(option ${options})
-  ADD_AMILAB_TESTS(test_readwrite${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/InputOutput/test_readwrite.amil" ${option})
+  ADD_AMILAB_TESTS(test_readwrite${option} ${AMIOPTIONS} "${PROJECT_SOURCE_DIR}/../tests/InputOutput/test_readwrite.amil" ${option})
 ENDFOREACH(option)
 
 SET(options ".png" ".jpg" ".tiff" ".bmp")
 
 FOREACH(option ${options})
-  ADD_AMILAB_TESTS(test_readwrite_picture${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/InputOutput/test_readwrite_picture.amil" ${option})
+  ADD_AMILAB_TESTS(test_readwrite_picture${option} ${AMIOPTIONS} "${PROJECT_SOURCE_DIR}/../tests/InputOutput/test_readwrite_picture.amil" ${option})
 ENDFOREACH(option)
 
 #
@@ -72,14 +76,14 @@ ENDFOREACH(option)
 #
 SET(options "FirstParam" "SecondParam" "ThirdParam" "FourthParam" "FifthParam")
 
-ADD_AMILAB_TESTS(parameter.amil "-quit" "${PROJECT_SOURCE_DIR}/../tests/Basics/parameter.amil" ${options})
+ADD_AMILAB_TESTS(parameter.amil ${AMIOPTIONS} "${PROJECT_SOURCE_DIR}/../tests/Basics/parameter.amil" ${options})
 
 SET(options "file.amil"     "inc_and_dec_operator.amil"
             "routines.amil" "trigonometric_functions.amil"
    )
 
 FOREACH(option ${options})
-  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Basics/${option}")
+  ADD_AMILAB_TESTS(${option} ${AMIOPTIONS} "${PROJECT_SOURCE_DIR}/../tests/Basics/${option}")
 ENDFOREACH(option)
 
 #
@@ -89,7 +93,7 @@ SET(options "logical.amil"
             "numeric.amil"
    )     
 FOREACH(option ${options})
-  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/PrimitivesType/${option}")
+  ADD_AMILAB_TESTS(${option} ${AMIOPTIONS} "${PROJECT_SOURCE_DIR}/../tests/PrimitivesType/${option}")
 ENDFOREACH(option)
 
 
@@ -100,6 +104,6 @@ SET(options "wxFileName.amil"
             "wxString.amil"
    )     
 FOREACH(option ${options})
-  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Wrapping/wxWidgets/${option}")
+  ADD_AMILAB_TESTS(${option} ${AMIOPTIONS} "${PROJECT_SOURCE_DIR}/../tests/Wrapping/wxWidgets/${option}")
 ENDFOREACH(option)
 

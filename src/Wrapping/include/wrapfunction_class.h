@@ -264,6 +264,20 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 
 class AMIObject;
 
+// needed to compare objects pointers
+class GenericPointer{
+  void* p;
+  public:
+    GenericPointer(void* p1)
+    {
+      p=p1;
+    }
+    void* GetPointer() const { return p;}
+    bool operator == ( const GenericPointer  & gp1){
+      return p==gp1.GetPointer();
+    }
+};
+
 /**
  Base class for class wrapping
  **/
@@ -285,6 +299,8 @@ class  WrapClassBase
     }
 
     virtual int GetObjCounter() { return 0; }
+    
+//    virtual GenericPointer GetGenericPointer() { return GenericPointer(NULL); }
 
 };
 
@@ -308,9 +324,12 @@ class WrapClass: public virtual WrapClassBase
     typedef boost::shared_ptr<WrapClass<T> > ptr;
 
 
-    /// Stores a pointer to an object of type File.
+    /// Return the pointer to the wrapped object
     boost::shared_ptr<T> _obj;
     const boost::shared_ptr<T>& GetObj() const { return _obj; }
+
+// ambiguity pb
+//    virtual GenericPointer GetGenericPointer() { return GenericPointer((void*)GetObj().get()); }
 
     virtual int GetObjCounter() const
     {
@@ -395,12 +414,19 @@ class WrapClassMember {
      * Display the function help in an information dialog.
      */
     void ShowHelp();
+    
+    // for access in scripting language
+    std::string get_return_comments() { return return_comments; }
+    std::string get_return_type() { return return_type;}
+    int get_parameters_comments_size() { return parameters_comments.size(); }
+    std::string get_parameters_comments( int n) { return parameters_comments[n]; }
+    std::string get_paramtypes( int n) { return paramtypes[n]; }
     //void ParamError(int n);
     
     void Set_arg_failure(bool const & f) { arg_failure=f;}
     bool Get_arg_failure() { return arg_failure;}
-    virtual const std::string GetDescription() = 0;
-    virtual const std::string GetFunctionName() = 0;
+    virtual const std::string GetDescription()  { return std::string();};
+    virtual const std::string GetFunctionName() { return std::string();};
 };
  
 inline WrapClassMember::~WrapClassMember() { }  // defined even though it's pure virtual; it's faster this way; 

@@ -86,42 +86,46 @@ extern VarContexts  Vars;
 
 
 //---------------------------------------------------------
-void AddWrapVTK() {
-
-  ADDVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
-  ADDVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
-  ADDVAR_NAME( C_wrap_varfunction,   "vtkSphere",            Wrap_vtkSphere);
-  ADDVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     wrap_vtkGPURayCasting);
-  ADDVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        wrap_wxVTKMedical3);
-  ADDVAR_NAME( C_wrap_varfunction,   "wxVTKFrame",           wrap_wxVTKFrame);
-
-  ADDVAR_NAME( C_wrap_varfunction,   "ToVtkImageData",   wrap_ToVtkImageData);
-  ADDVAR_NAME( C_wrap_varfunction,   "FromVtkImageData", wrap_FromVtkImageData);
-
-  ADDVAR_NAME( C_wrap_varfunction,   "ToVtkPolyData",   wrap_ToVtkPolyData);
-  ADDVAR_NAME( C_wrap_varfunction,   "FromVtkPolyData", wrap_FromVtkPolyData);
-
-// #include "wrap_vtkInteractorStyleTrackballCamera.h"
-// #include "wrap_vtkInteractorStyleTrackball.h"
-// #include "wrap_vtkInteractorStyleImage.h"
-
-  Variables::ptr context = Vars.GetCurrentContext();
-
-  WrapClass_wxVTKRenderWindowInteractor::AddVar_wxVTKRenderWindowInteractor(context);
-
+void AddWrapVTK(AMIObject::ptr& obj) {
 
   // Create vtk context
   AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("vtk");
+  amiobject->SetName("vtktools");
+  // Set the object context
+  Variables::ptr previous_ocontext = Vars.GetObjectContext();
+  Vars.SetObjectContext(amiobject->GetContext());
 
-  // Add classes to vtk context
-  wrap_vtk_classes(amiobject->GetContext());
+    ADDOBJECTVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "vtkSphere",            Wrap_vtkSphere);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     wrap_vtkGPURayCasting);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        wrap_wxVTKMedical3);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "wxVTKFrame",           wrap_wxVTKFrame);
 
-  // Add vtk context to builtin
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
-      amiobject,Vars.GetBuiltinContext());
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "ToVtkImageData",   wrap_ToVtkImageData);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "FromVtkImageData", wrap_FromVtkImageData);
+
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "ToVtkPolyData",   wrap_ToVtkPolyData);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "FromVtkPolyData", wrap_FromVtkPolyData);
+
+    WrapClass_wxVTKRenderWindowInteractor::AddVar_wxVTKRenderWindowInteractor(amiobject->GetContext());
+
+  // Restore the object context
+  Vars.SetObjectContext(previous_ocontext);
+  // Add vtktools context to builtin
+  obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+      amiobject,obj->GetContext());
+
   
-
+  // Create vtk context
+  AMIObject::ptr amiobject2(new AMIObject);
+  amiobject2->SetName("vtk");
+    // Add classes to vtk context
+    wrap_vtk_classes(amiobject2->GetContext());
+  // Add vtk context to builtin
+  obj->GetContext()->AddVar<AMIObject>( amiobject2->GetName().c_str(), 
+      amiobject2,obj->GetContext());
+  
 
 }
 

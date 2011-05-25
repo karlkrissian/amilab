@@ -1,6 +1,4 @@
 
-ami_import->AMIFluid()
-
 
 #
 # Set the parameters
@@ -33,8 +31,8 @@ proc call_amiOFPDE3D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   _im1_tmp = _im1
   _im2_tmp = _im2
   for l=1 to zoom_level-1  {
-	_im1_tmp2 = AMIFluid->amiZoomDown3D(_im1_tmp)
-	_im2_tmp2 = AMIFluid->amiZoomDown3D(_im2_tmp)
+	_im1_tmp2 = AMIFluid.amiZoomDown3D(_im1_tmp)
+	_im2_tmp2 = AMIFluid.amiZoomDown3D(_im2_tmp)
 	del _im1_tmp
 	del _im2_tmp
 	_im1_tmp = _im1_tmp2
@@ -45,14 +43,14 @@ proc call_amiOFPDE3D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   
   # intermediate flow
   _res_tmp = Image "u_johan_level2.ami" 
-  AMIFluid->amiPDESetSolenoidal(0)  
-  AMIFluid->amiOFSetSmoothGradient(1)
-  AMIFluid->amiOFSetGlobalConstraint(0)
+  AMIFluid.amiPDESetSolenoidal(0)  
+  AMIFluid.amiOFSetSmoothGradient(1)
+  AMIFluid.amiOFSetGlobalConstraint(0)
 
-  AMIFluid->amiOFPDE(_im1_tmp,_im2_tmp,&_res_tmp,beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype)
+  AMIFluid.amiOFPDE(_im1_tmp,_im2_tmp,&_res_tmp,beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype)
 
   for l=1 to zoom_level-1  {
-	_res_tmp2 = AMIFluid->amiZoomUpFlow3D(_res_tmp)
+	_res_tmp2 = AMIFluid.amiZoomUpFlow3D(_res_tmp)
 	del _res_tmp
 	_res_tmp = _res_tmp2
 	del _res_tmp2

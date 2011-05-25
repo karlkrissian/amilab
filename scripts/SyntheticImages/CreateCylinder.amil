@@ -3,7 +3,6 @@
 #
 # in development ...
 #
-ami_import->Filters()
 
 Class Cylinder {
 
@@ -113,7 +112,6 @@ Class Cylinder {
 
       if (::mode ==  ::PartialVolumeEffect) \
       {
-        filters=&global::filters
         ::resim = filters->ComputePV_subdiv(::resim)
       }
       return = ::resim

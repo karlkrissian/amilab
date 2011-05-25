@@ -143,6 +143,12 @@ class Variables{
     return newvar;
   }
 
+  /**
+   *  Adds a new variable to the context based on a smart pointer to a variable
+   * @param var 
+   * @param context 
+   * @return 
+   */
   BasicVariable::ptr AddVar(BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
 
   /**
@@ -151,7 +157,7 @@ class Variables{
    * @param context 
    * @return 
    */
-  BasicVariable::ptr AddVar(const BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
+//  BasicVariable::ptr AddVar(const BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
 
   bool ExistVar(const char* varname);
 

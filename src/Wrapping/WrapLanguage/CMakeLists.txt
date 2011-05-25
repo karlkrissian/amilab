@@ -5,23 +5,10 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${AMILAB_SOURCE_DIR}/Graphic/include
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/Generated
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
-  ${wxParams_INCLUDE_DIRS}
 )
 
-INCLUDE( ${VTK_USE_FILE} )
-
-INCLUDE( ${ITK_USE_FILE} )
-# allow direct include of vnl_matrix.h
-# include_directories(
-#   /usr/local/include/InsightToolkit/Utilities/vxl/core/vnl
-# )
-#MESSAGE( "*** dir = ${ITK_DIR}/Utilities/vxl/core/vnl/  ${ITK_CHECK_ITK_VXL_DIR}")
 
 INCLUDE( ${wxWidgets_USE_FILE})
 
@@ -29,40 +16,9 @@ INCLUDE( ${wxWidgets_USE_FILE})
 # if automatic wrapping, generate source files
 IF(AMI_ENABLE_WRAPPING)
   # Generate XML file
-  MESSAGE("********************************")
-  MESSAGE("Generate XML file for Algorithms")
-  MESSAGE("********************************")
-
-  IF   (VTK_FOUND)
-    IF   (VTK_INCLUDE_DIRS)
-      FOREACH( inc ${VTK_INCLUDE_DIRS})
-        SET( VTK_INCLUDES  -I${inc}  ${VTK_INCLUDES} )
-      ENDFOREACH(inc ${VTK_INCLUDE_DIRS})
-    ENDIF(VTK_INCLUDE_DIRS)
-     IF   (VTK_REQUIRED_CXX_FLAGS)
-       FOREACH( def ${VTK_REQUIRED_CXX_FLAGS})
-         SET( VTK_DEFS  ${def}  ${VTK_DEFS} )
-       ENDFOREACH(def ${VTK_REQUIRED_CXX_FLAGS})
-       MESSAGE("VTK_DEFS=${VTK_DEFS}")
-     ENDIF(VTK_REQUIRED_CXX_FLAGS)
-  ENDIF ( VTK_FOUND)
-
-  IF   (ITK_FOUND)
-    IF   (ITK_INCLUDE_DIRS)
-      FOREACH( inc ${ITK_INCLUDE_DIRS})
-        SET( ITK_INCLUDES  -I${inc}  ${ITK_INCLUDES} )
-      ENDFOREACH(inc ${ITK_INCLUDE_DIRS})
-    ENDIF(ITK_INCLUDE_DIRS)
-     IF   (ITK_REQUIRED_CXX_FLAGS)
-       FOREACH( def ${ITK_REQUIRED_CXX_FLAGS})
-         SET( ITK_DEFS  ${def}  ${ITK_DEFS} )
-       ENDFOREACH(def ${ITK_REQUIRED_CXX_FLAGS})       
-     ENDIF(ITK_REQUIRED_CXX_FLAGS)
-     # Add Cable configuration for gccxml compilation
-     SET(ITK_DEFS -DCABLE_CONFIGURATION )
-     MESSAGE("ITK_DEFS=${ITK_DEFS}")
-
-  ENDIF ( ITK_FOUND)
+  MESSAGE("*******************************")
+  MESSAGE("Generate XML file for Language")
+  MESSAGE("*******************************")
 
   IF   (wxWidgets_FOUND)
     IF   (wxWidgets_INCLUDE_DIRS)
@@ -102,26 +58,25 @@ IF(AMI_ENABLE_WRAPPING)
   #
   # TODO: run gccxml_vcconfig.bat to allow visual studio 9
   #
-  SET(WrapAlgorithms_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/Generated)
-  CreateDirectory( ${WrapAlgorithms_OUTDIR})
+  SET(WrapLanguage_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/Generated)
+  CreateDirectory( ${WrapLanguage_OUTDIR})
   IF(GENERATE_HTML_HELP)
     SET(CLASSES_URL_LIST "http://serdis.dis.ulpgc.es/~krissian/HomePage/Software/AMILab/Release-3.0.0/html/")
-    SET(HTML_DIR "${WrapAlgorithms_OUTDIR}/html")
+    SET(HTML_DIR "${WrapLanguage_OUTDIR}/html")
     CreateDirectory( ${HTML_DIR} )
   ENDIF(GENERATE_HTML_HELP)
 
 
-MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
-  SET(XML_OUTPUT "${WrapAlgorithms_OUTDIR}/algorithms_includes.xml")
-  SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/algorithms_includes.h")
+  SET(XML_OUTPUT "${WrapLanguage_OUTDIR}/language_includes.xml")
+  SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/language_includes.h")
   SET( GCCXML_result 0)
 #   add_custom_command(OUTPUT ${XML_OUTPUT}
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
-  MESSAGE("${GCCXML}  -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${ITK_INCLUDES} ${WX_INCLUDES}  ${ITK_DEFS} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}")
+  MESSAGE("${GCCXML}  -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language   -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}   ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}")
   execute_process(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${ITK_INCLUDES} ${WX_INCLUDES} ${ITK_DEFS} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${WX_INCLUDES} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}
     OUTPUT_VARIABLE gccxml_result
     ERROR_VARIABLE gccxml_error
   )
@@ -134,11 +89,11 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt" classes_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
 
-  # Read vtk ancestors list
-  SET( VTK_OUTDIR ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated)
+  # Read wx ancestors list
+  SET( WX_OUTDIR ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated)
 
-  FILE(READ "${VTK_OUTDIR}/ancestors.txt" vtk_ancestors_txt)
-  STRING(REGEX REPLACE "[\r\n]" ";" vtk_ancestors_list ${vtk_ancestors_txt} )
+  FILE(READ "${WX_OUTDIR}/ancestors.txt" wx_ancestors_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" wx_ancestors_list ${wx_ancestors_txt} )
 
 
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/Generated/ancestors.txt")
@@ -175,42 +130,42 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
 
     ClassUsedName( class m_class )
 
-    # Check that the class is not already wrapped with VTK wrapping
-    IF ((NOT EXISTS ${VTK_OUTDIR}/wrap_${m_class}.h))
+    # Check that the class is not already wrapped with wxWidgets wrapping
+    IF ((NOT EXISTS ${WX_OUTDIR}/wrap_${m_class}.h))
       SET(compilation_list ${compilation_list} ${m_class})
-      IF ( (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.cpp) OR
-            (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.h))
-        SET(OUTPUT_LIST ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.cpp ${OUTPUT_LIST})
-        SET(OUTPUT_LIST ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.h ${OUTPUT_LIST})
+      IF ( (NOT EXISTS ${WrapLanguage_OUTDIR}/wrap_${m_class}.cpp) OR
+            (NOT EXISTS ${WrapLanguage_OUTDIR}/wrap_${m_class}.h))
+        SET(OUTPUT_LIST ${WrapLanguage_OUTDIR}/wrap_${m_class}.cpp ${OUTPUT_LIST})
+        SET(OUTPUT_LIST ${WrapLanguage_OUTDIR}/wrap_${m_class}.h ${OUTPUT_LIST})
         SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
-      ENDIF( (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.cpp) OR
-          (NOT EXISTS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.h))
+      ENDIF( (NOT EXISTS ${WrapLanguage_OUTDIR}/wrap_${m_class}.cpp) OR
+          (NOT EXISTS ${WrapLanguage_OUTDIR}/wrap_${m_class}.h))
 #    ELSE((NOT EXISTS ${VTK_OUTDIR}/wrap_${class}.h))
-    ENDIF((NOT EXISTS ${VTK_OUTDIR}/wrap_${m_class}.h))
+    ENDIF((NOT EXISTS ${WX_OUTDIR}/wrap_${m_class}.h))
   ENDFOREACH( class ${ancestors_list}) 
 
   LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
 
   MESSAGE("Processing classes ${ancestors_list} and addwrap")
   MESSAGE(" NB_MISSING_CLASSES=${NB_MISSING_CLASSES}")
-  MESSAGE(" WrapAlgorithms_OUTDIR = ${WrapAlgorithms_OUTDIR} ")
+  MESSAGE(" WrapLanguage_OUTDIR = ${WrapLanguage_OUTDIR} ")
   MESSAGE(" GENERATE_HTML_HELP = ${GENERATE_HTML_HELP}")
   IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
-      (NOT EXISTS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h) OR
-      (NOT EXISTS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp))
+      (NOT EXISTS ${WrapLanguage_OUTDIR}/addwrap_language.h) OR
+      (NOT EXISTS ${WrapLanguage_OUTDIR}/addwrap_language.cpp))
     # Go for python wrapping
     IF(GENERATE_HTML_HELP)
       ADD_CUSTOM_COMMAND(
-        OUTPUT  ${OUTPUT_LIST} ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp
+        OUTPUT  ${OUTPUT_LIST} ${WrapLanguage_OUTDIR}/addwrap_language.h ${WrapLanguage_OUTDIR}/addwrap_language.cpp
         COMMAND
           ${PYTHON_EXECUTABLE}
             ${AMI_WRAPPER} ${XML_OUTPUT}
   #          --filter "*"
-            --libname algorithms
+            --libname language
             --classes ${MISSING_CLASSES}
             --available_classes ${ancestors_list} 
-            --available_external_classes ${vtk_ancestors_list}
-            --outputdir "${WrapAlgorithms_OUTDIR}"
+            --available_external_classes ${wx_ancestors_list}
+            --outputdir "${WrapLanguage_OUTDIR}"
             --templates
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             --addwrap
@@ -225,16 +180,16 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
       )
     ELSE(GENERATE_HTML_HELP)
       ADD_CUSTOM_COMMAND(
-        OUTPUT  ${OUTPUT_LIST} ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp
+        OUTPUT  ${OUTPUT_LIST} ${WrapLanguage_OUTDIR}/addwrap_language.h ${WrapLanguage_OUTDIR}/addwrap_language.cpp
         COMMAND
           ${PYTHON_EXECUTABLE}
             ${AMI_WRAPPER} ${XML_OUTPUT}
   #          --filter "*"
-            --libname algorithms
+            --libname language
             --classes ${MISSING_CLASSES}
             --available_classes ${ancestors_list} 
-            --available_external_classes ${vtk_ancestors_list}
-            --outputdir "${WrapAlgorithms_OUTDIR}"
+            --available_external_classes ${wx_ancestors_list}
+            --outputdir "${WrapLanguage_OUTDIR}"
             --templates
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             --addwrap
@@ -245,33 +200,33 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
         )
     ENDIF(GENERATE_HTML_HELP)
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
-      (NOT EXISTS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h) OR
-      (NOT EXISTS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp))
+      (NOT EXISTS ${WrapLanguage_OUTDIR}/addwrap_language.h) OR
+      (NOT EXISTS ${WrapLanguage_OUTDIR}/addwrap_language.cpp))
 
 ENDIF(AMI_ENABLE_WRAPPING)
 
 FOREACH( class ${compilation_list}  ) 
   ClassUsedName( class m_class )
-  SET( WrapAlgorithms_HDRS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.h ${WrapAlgorithms_HDRS})
-  SET( WrapAlgorithms_SRCS ${WrapAlgorithms_OUTDIR}/wrap_${m_class}.cpp ${WrapAlgorithms_SRCS})
+  SET( WrapLanguage_HDRS ${WrapLanguage_OUTDIR}/wrap_${m_class}.h ${WrapLanguage_HDRS})
+  SET( WrapLanguage_SRCS ${WrapLanguage_OUTDIR}/wrap_${m_class}.cpp ${WrapLanguage_SRCS})
 ENDFOREACH( class ${ancestors_list}  ) 
-SET( WrapAlgorithms_HDRS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h   ${WrapAlgorithms_HDRS})
-SET( WrapAlgorithms_SRCS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp ${WrapAlgorithms_SRCS})
+SET( WrapLanguage_HDRS ${WrapLanguage_OUTDIR}/addwrap_language.h   ${WrapLanguage_HDRS})
+SET( WrapLanguage_SRCS ${WrapLanguage_OUTDIR}/addwrap_language.cpp ${WrapLanguage_SRCS})
 
-# file(GLOB algorithms_HDRS  "*.h"  )
-# file(GLOB algorithms_SRCS  "*.cpp")
+# file(GLOB language_HDRS  "*.h"  )
+# file(GLOB language_SRCS  "*.cpp")
 
-MESSAGE("-----------------------")
-MESSAGE("Wrapping Algorithms ...")
-MESSAGE("-----------------------")
+MESSAGE("---------------------")
+MESSAGE("Wrapping Language ...")
+MESSAGE("---------------------")
 
 
-SET(WrapAlgorithms_SRCS
-     ${WrapAlgorithms_SRCS}
-     ${WrapAlgorithms_HDRS}
+SET(WrapLanguage_SRCS
+     ${WrapLanguage_SRCS}
+     ${WrapLanguage_HDRS}
 )
 
-#MESSAGE("WrapAlgorithms_SRCS =  ${WrapAlgorithms_SRCS}")
+#MESSAGE("WrapLanguage_SRCS =  ${WrapLanguage_SRCS}")
 
-my_add_library ( WrapAlgorithms)
-add_dependencies ( WrapAlgorithms WrapWxWidgets WrapVTK)
+my_add_library ( WrapLanguage)
+add_dependencies ( WrapLanguage WrapWxWidgets)

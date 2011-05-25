@@ -77,6 +77,15 @@
 #include "addwrap_wx.h"
 #include "addwrap_algorithms.h"
 
+// Includes and declarations needed for language
+#include "addwrap_language.h"
+
+#ifndef VarContexts_declared
+  #define VarContexts_declared
+  AMI_DECLARE_TYPE(VarContexts);
+#endif
+
+
 #ifdef AMI_WRAP_MICRONTRACKER
   #include "addwrap_mt.h"
   #include "wrapMT.h"
@@ -104,6 +113,9 @@
 
 #include "wrap_stdvector.h"
 
+#include "wrap_BasicVariable.h"
+#include "wrapVTK.h"
+
 //#include "wrap_TestTemplateClass__LT__int__GT__.h"
 
 extern VarContexts  Vars;
@@ -129,56 +141,126 @@ bool CheckNullVar(ParamList* _p, int _n)
 void AddWrapImports()
 {
 
-  AddWrapWxWidgets();
+  // Language
+  {
+    // Create new instance of the class
+    AMIObject::ptr amiobject(new AMIObject);
+    amiobject->SetName("Language");
 
-  AddWrapAlgorithms();
-#ifdef AMI_WRAP_MICRONTRACKER
-  AddWrapMicronTracker();
-#endif
-#ifdef AMI_WRAP_MICRONTRACKER
-  AddWrapUltrasound();
-#endif
-  AddWrapAmilab();
-  AddWrapIO();
-  AddWrapImage();
-  AddWrapSurface();
-  AddWrapDessinImage();
-  AddWrapViewer3D();
-  AddWrapGLTransfMatrix();
-  AddWrapBasicTypes();
-  AddWrapTestTemplateClass();
+    // Add Wrapped classes and functions
+    AddWrapLanguage(  amiobject);
+    AddWrapAmilab(    amiobject);
+    AddWrapSystem(    amiobject);
 
-  // Create new instance of the class
-  AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("ami_import");
+    // Add context to builtin as 'default' context
+    Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+                                                 amiobject,
+                                                 Vars.GetBuiltinContext());
+    Vars.GetBuiltinContext()->AddDefault(amiobject->GetContext());
+  }
 
-  // Set the object context
-  Variables::ptr previous_ocontext = Vars.GetObjectContext();
-  Vars.SetObjectContext(amiobject->GetContext());
+  // Graphical Interface
+  {
+    // Create new instance of the class
+    AMIObject::ptr amiobject(new AMIObject);
+    amiobject->SetName("Interface");
 
-//  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
+    // Add Wrapped classes and functions
+    AddWrapDessinImage( amiobject);
+    AddWrapViewer3D(    amiobject);
 
-  WrapClass_wxDrawingWindow::AddVar_wxDrawingWindow(amiobject->GetContext());
-  WrapClass_ParamPanel     ::AddVar_ParamPanel     (amiobject->GetContext());
+    WrapClass_wxDrawingWindow::AddVar_wxDrawingWindow(amiobject->GetContext());
+    WrapClass_ParamPanel     ::AddVar_ParamPanel     (amiobject->GetContext());
 
-  WrapClass_vtkLevelSets  ::AddVar_vtkLevelSets(amiobject->GetContext());
+    // Add context to builtin as 'default' context
+    Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+                                                 amiobject,
+                                                 Vars.GetBuiltinContext());
+    Vars.GetBuiltinContext()->AddDefault(amiobject->GetContext());
+  }
 
+  // Algorithms
+  {
+    // Create new instance of the class
+    AMIObject::ptr amiobject(new AMIObject);
+    amiobject->SetName("Algorithms");
 
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",      wrap_System);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "ITK",         wrap_ITK);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "AMIFluid",    wrap_AMIFluid);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "Filters",     wrap_Filters);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,  "WxSamples",   wrap_wxsamples);
-  //ADDOBJECTVAR_NAME(C_wrap_varfunction,"WxFunctions", wrap_wxfunctions);
+    // Add Wrapped classes and functions
+    AddWrapAlgorithms(  amiobject);
+    AddWrapFilters(     amiobject);
+    WrapClass_vtkLevelSets  ::AddVar_vtkLevelSets(amiobject->GetContext());
 
-  // Restore the object context
-  Vars.SetObjectContext(previous_ocontext);
+    // Add context to builtin as 'default' context
+    Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+                                                 amiobject,
+                                                 Vars.GetBuiltinContext());
+    Vars.GetBuiltinContext()->AddDefault(amiobject->GetContext());
+  }
+  
+  // Structures
+  {
+    // Create new instance of the class
+    AMIObject::ptr amiobject(new AMIObject);
+    amiobject->SetName("DataStructures");
 
-  // 3. add the variables to this instance
-  Vars.AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+    // Add Wrapped classes and functions
+    AddWrapIO(              amiobject);
+    AddWrapImage(           amiobject);
+    AddWrapSurface(         amiobject);
+    AddWrapGLTransfMatrix(  amiobject);
+    AddWrapBasicTypes(      amiobject);
+
+    // Add context to builtin as 'default' context
+    Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+                                                 amiobject,
+                                                 Vars.GetBuiltinContext());
+    Vars.GetBuiltinContext()->AddDefault(amiobject->GetContext());
+  }
+
+  // Libraries
+  {
+    // Create new instance of the class
+    AMIObject::ptr amiobject(new AMIObject);
+    amiobject->SetName("Libraries");
+
+    // Add Wrapped classes and functions
+    AddWrapWxWidgets( amiobject);
+    AddWrapWXSamples( amiobject);
+
+    AddWrapVTK(       amiobject);
+    AddWrapITK(       amiobject);
+    AddWrapFluid(     amiobject);
+
+    #ifdef AMI_WRAP_MICRONTRACKER
+      AddWrapMicronTracker();
+    #endif
+    #ifdef AMI_WRAP_MICRONTRACKER
+      AddWrapUltrasound();
+    #endif
+
+    // Add context to builtin as 'default' context
+    Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+                                                 amiobject,
+                                                 Vars.GetBuiltinContext());
+    Vars.GetBuiltinContext()->AddDefault(amiobject->GetContext());
+  }
+
+  // Others
+  {
+    // Create new instance of the class
+    AMIObject::ptr amiobject(new AMIObject);
+    amiobject->SetName("Others");
+
+    // Add context to builtin as 'default' context
+    Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+                                                 amiobject,
+                                                 Vars.GetBuiltinContext());
+    Vars.GetBuiltinContext()->AddDefault(amiobject->GetContext());
+  }
+
 }
 
-void AddWrapWxWidgets()
+void AddWrapWxWidgets(AMIObject::ptr& obj)
 {
 
   // Create a new context (or namespace)
@@ -195,12 +277,13 @@ void AddWrapWxWidgets()
   ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,"FromWxString", wrap_FromWxString);
 
   // Add wx context to builtin
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
-      amiobject,Vars.GetBuiltinContext());
+  obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
+      amiobject,obj->GetContext());
 
 }
 
-void AddWrapAlgorithms()
+//---------------------------------------------
+void AddWrapAlgorithms(AMIObject::ptr& obj)
 {
 
   // Create a new context (or namespace)
@@ -211,8 +294,62 @@ void AddWrapAlgorithms()
   wrap_algorithms_classes(amiobject->GetContext());
 
   // Add wx context to builtin
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
-      amiobject,Vars.GetBuiltinContext());
+  obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+      amiobject,obj->GetContext());
+
+}
+
+
+//---------------------------------------------
+BasicVariable::ptr wrap_WrapVariable( ParamList* p)
+{
+  char functionname[] = "WrapVariable";
+  char description[]=" \n\
+                    Convert a variable to a variable of variable\n\
+                    ";
+    char parameters[] =" \n\
+                       Parameters:\n\
+                       variable\n\
+                       Return:\n\
+                       Returns a variable of type Variable<BasicVariable>\n\
+                       ";
+
+  if (!p) HelpAndReturnVarPtr;
+  int n=0;
+  BasicVariable::ptr val;
+  if (p->GetNumParam()==1) val = p->GetParam(0);
+  if (val.get()) {
+    BasicVariable::ptr res = AMILabType<BasicVariable>::CreateVarFromSmtPtr(val);
+    return res;
+  }
+  return BasicVariable::ptr();
+}
+
+
+//---------------------------------------------
+void AddWrapLanguage(AMIObject::ptr& obj)
+{
+
+  // Create a new context (or namespace)
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("language");
+
+  // Add classes to language context
+  wrap_language_classes(amiobject->GetContext());
+
+  // Add Vars: all the variable contexts
+  BasicVariable::ptr vars = AMILabType<VarContexts>::CreateVar(Vars);
+  amiobject->GetContext()->AddVar("Vars", vars, Vars.GetBuiltinContext());
+
+  ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,
+                          "WrapVariable",
+                          wrap_WrapVariable);
+
+  // Add wx context to obj context
+  obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+      amiobject,obj->GetContext());
+
+  
 
 }
 
@@ -238,17 +375,19 @@ void AddWrapAlgorithms()
 #endif*/
 
 
-void AddWrapAmilab()
+void AddWrapAmilab(AMIObject::ptr& obj)
 {
 
+  Variables::ptr context = obj->GetContext();
+  
   BasicVariable::ptr vartrue  = AMILabType<bool>::CreateVar(true);
   BasicVariable::ptr varfalse = AMILabType<bool>::CreateVar(false);
 
-  Vars.GetBuiltinContext()->AddVar( "true",vartrue,Vars.GetBuiltinContext());
-  Vars.GetBuiltinContext()->AddVar( "false",varfalse,Vars.GetBuiltinContext());
+  context->AddVar( "true",vartrue,context);
+  context->AddVar( "false",varfalse,context);
 
   // NULL variable
-  Vars.GetBuiltinContext()->AddVar( "NULL",nullvar,Vars.GetBuiltinContext());
+  context->AddVar( "NULL",nullvar,context);
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -265,13 +404,13 @@ void AddWrapAmilab()
   WrapClass_dwControlledCurve::AddVar_dwControlledCurve( amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
-      amiobject,Vars.GetBuiltinContext());
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(),
+      amiobject,context);
 
 
 }
 
-void AddWrapIO()
+void AddWrapIO(AMIObject::ptr& obj)
 {
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -282,14 +421,14 @@ void AddWrapIO()
   AddVar_ReadRawVectImage3D(  amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
+  obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
     amiobject,
-    Vars.GetBuiltinContext());
+    obj->GetContext());
 }
 
 
 //--------------------------------------------
-void AddWrapImage()
+void AddWrapImage(AMIObject::ptr& obj)
 {
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -298,53 +437,47 @@ void AddWrapImage()
   AddVar_ImageExtent(     amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
+  obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
     amiobject,
-    Vars.GetBuiltinContext());
+    obj->GetContext());
 }
 
 //--------------------------------------------
-void AddWrapSurface()
+void AddWrapSurface(AMIObject::ptr& obj)
 {
-  WrapClass_SurfacePoly::AddVar_SurfacePoly( Vars.GetBuiltinContext());
+  WrapClass_SurfacePoly::AddVar_SurfacePoly( obj->GetContext());
 }
 
 //--------------------------------------------
-void AddWrapDessinImage()
+void AddWrapDessinImage(AMIObject::ptr& obj)
 {
-  WrapClass_DessinImage::AddVar_DessinImage( Vars.GetBuiltinContext());
+  WrapClass_DessinImage::AddVar_DessinImage( obj->GetContext());
 }
 
 //--------------------------------------------
-void AddWrapViewer3D()
+void AddWrapViewer3D(AMIObject::ptr& obj)
 {
-  WrapClass_Viewer3D::AddVar_Viewer3D( Vars.GetBuiltinContext());
+  WrapClass_Viewer3D::AddVar_Viewer3D( obj->GetContext());
 }
 
 //--------------------------------------------
-void AddWrapGLTransfMatrix()
+void AddWrapGLTransfMatrix(AMIObject::ptr& obj)
 {
-  WrapClass_GLTransfMatrix::AddVar_GLTransfMatrix( Vars.GetBuiltinContext());
+  WrapClass_GLTransfMatrix::AddVar_GLTransfMatrix( obj->GetContext());
 }
 
 //--------------------------------------------
-void AddWrapBasicTypes()
+void AddWrapBasicTypes(AMIObject::ptr& obj)
 {
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
-  WrapClass_VarVector::AddVar_VarVector( Vars.GetBuiltinContext());
+  WrapClass_VarVector::AddVar_VarVector( obj->GetContext());
 
-  WrapClass_StdVector<int>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_int");
-  WrapClass_StdVector<float>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_float");
-  WrapClass_StdVector<double>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_double");
+  WrapClass_StdVector<int>::AddVar_StdVector( obj->GetContext(), "vector_int");
+  WrapClass_StdVector<float>::AddVar_StdVector( obj->GetContext(), "vector_float");
+  WrapClass_StdVector<double>::AddVar_StdVector( obj->GetContext(), "vector_double");
 
-  WrapClass_File::AddVar_File( Vars.GetBuiltinContext());
+  WrapClass_File::AddVar_File( obj->GetContext());
 //  AddVar_VarList( Vars.GetBuiltinContext());
 }
 
-//--------------------------------------------
-void AddWrapTestTemplateClass()
-{
-//  WrapClassTestTemplateClass__LT__int__GT___AddStaticMethods( Vars.GetBuiltinContext());
-
-}

@@ -33,6 +33,7 @@ BasicVariable::ptr WrapClass<FenetreDessin>::CreateVar( ParamList* p)
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(FenetreDessin);
+AMI_DEFINE_VARFROMSMTPTR(FenetreDessin);
 
 //
 // static member for creating a variable from a pointer to wxHtmlWindow

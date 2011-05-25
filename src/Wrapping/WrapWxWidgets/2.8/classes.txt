@@ -124,6 +124,7 @@ wxPluginManager
 wxPoint
 wxRect
 wxRegion
+wxRichTextCtrl
 wxScrollHelper
 wxScrollWinEvent
 wxScrolledWindow
@@ -139,6 +140,7 @@ wxStaticLine
 wxStatusBar
 wxStdDialogButtonSizer
 wxString
+wxStyledTextCtrl
 wxSysColourChangedEvent
 wxThread
 wxTimeSpan

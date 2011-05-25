@@ -1,5 +1,4 @@
 
-ami_import.System()
 
 op_system.SetGlobalScriptDir(op_system.GetCurrentScriptDir()+"/../../scripts/")
 

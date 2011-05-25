@@ -204,7 +204,7 @@ proc CB_Stop() {
   wait(wait_time)
 }
 
-w1 = ami_import.ParamPanel("Cloud Evolution")
+w1 = ParamPanel("Cloud Evolution")
 
 cm_id=w1.AddInt( &colormaterial,  "colormaterial", 0,1)
 w1.SetCallback( &ChangeCM)
