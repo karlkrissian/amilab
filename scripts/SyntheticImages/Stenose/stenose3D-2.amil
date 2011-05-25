@@ -1,0 +1,110 @@
+i = Image(FLOAT,50,50,50)
+
+i.initvalue(0)
+
+cx=i.tx/2
+cy=i.ty/2
+cz=i.tz/2
+
+
+sub  = 5
+nsub = 2*sub+1
+
+for z=0  to i.tz-1   {
+
+  r = 2.1+3*exp(-5/(z-cz)/(z-cz))
+
+  for x=cx-5 to cx+5 {
+  for y=cy-5 to cy+5 {
+
+    np = 0
+
+    x1 = x-sub/nsub
+    y1 = y-sub/nsub
+    d00 = (x1-cx)*(x1-cx)+(y1-cy)*(y1-cy)
+    if (d00<r*r) { np=np+1; }
+
+    x1 = x-sub/nsub
+    y1 = y+sub/nsub
+    d01 = (x1-cx)*(x1-cx)+(y1-cy)*(y1-cy)
+    if (d01<r*r) { np=np+1; }
+
+    x1 = x+sub/nsub
+    y1 = y-sub/nsub
+    d10 = (x1-cx)*(x1-cx)+(y1-cy)*(y1-cy)
+    if (d10<r*r) { np=np+1; }
+
+    x1 = x+sub/nsub
+    y1 = y+sub/nsub
+    d11 = (x1-cx)*(x1-cx)+(y1-cy)*(y1-cy)
+    if (d11<r*r) { np=np+1; }
+
+    if (np==4) {
+      i.setpos(x,y,z)
+      i.set(100)
+    }
+
+    if (np<4)&&(np>0) {
+
+      n = 0
+      for xn=-sub to sub {
+        for yn=-sub to sub {
+          x1 = x+xn/nsub
+          y1 = y+yn/nsub
+          d =(x1-cx)*(x1-cx)+(y1-cy)*(y1-cy)
+          if (d<r*r) {  n=n+1; }
+        }
+      }
+      i.setpos(x,y,z)
+      i.set(100*n/nsub/nsub)
+    }
+  }
+  }
+  print z; print " "
+}
+
+i.save "stenose3D.ami.gz"
+
+Show i
+in = AddGaussNoise(i,0,30)
+i_draw.compare(in);
+inr = AnisoGS(in,1,5,0.1,20)
+i_draw.compare(isnr)
+
+print "\n Initial image \n"
+for z=0 to i.tz-1 {
+si = subimage(i,0,0,z,i.tx-1,i.ty-1,z);
+sjp = si-50
+surf=posarea(sjp)
+print z;  print "\t"; print sqrt(surf/Pi); print "\n"
+}
+
+id2 = EDPdilate(i,2,0.1)
+in2 = in*(id2>50)+(id2<50)*(-1)
+
+print "\n Noisy image \n"
+for z=0 to i.tz-1 {
+si = subimage(in2,0,0,z,i.tx-1,i.ty-1,z);
+sjp = si-50
+surf=posarea(sjp)
+print z;  print "\t"; print sqrt(surf/Pi); print "\n"
+}
+
+
+print "\n Restored image \n"
+for z=0 to I.tz-1 {
+si = subimage(inr,0,0,z,i.tx-1,i.ty-1,z);
+sjp = si-50
+surf=posarea(sjp)
+print z;  print "\t"; print sqrt(surf/Pi); print "\n"
+}
+
+
+print "\n Restored image 2 \n"
+for z=15 to 35 {
+si = subimage(in2r,0,0,in.tz-1-z,i.tx-1,i.ty-1,in.tz-1-z);
+sjp = si-50
+surf=posarea(sjp)
+print z;  print "\t"; print sqrt(surf/Pi); print "\n"
+}
+

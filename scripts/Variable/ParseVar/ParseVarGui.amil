@@ -1,0 +1,11 @@
+
+func "ParseVarClass"
+
+if (!exists(ParseVar_obj)) {
+  ParseVarClass ParseVar_obj
+  ParseVar_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

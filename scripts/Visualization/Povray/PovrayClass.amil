@@ -1,0 +1,110 @@
+
+func "Common/ScriptGui"
+
+if (!exists(PovrayClass)) {
+
+  Class PovrayClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+      ::povray_bin = "/usr/bin/povray", "POV-ray executable"
+
+      ::scene_dir = "/home/karl/projects/Devel/POVRAY", "Default scene directory"
+      ::scene_file = "scene.pov", "filename containing the scene description"
+      ::output_file = "scene.png", "output image filename"
+
+      ::height = INT(600), "Image Height in pixels"
+      ::width = INT(800), "Image width in pixels"
+
+      ::Use_Antialiasing = UCHAR(0), "Use Antialiasing"
+      ::Antialiasing_param = 0.2, "Perform antialiasing if color change is above n percent"
+
+      ::html_filename = GetScriptsDir+"/Povray/Doc/Povray/index.html"
+    }
+
+
+
+    //---------------------------------------------------
+    proc ::OutputAuto() {
+      f = wx.wxFileName(::scene_file)
+      f.SetPath("/tmp")
+      f.SetExt("png")
+      ::output_file = f.GetFullPath().c_str()
+      ::win.Update(-1)
+    }
+
+    //---------------------------------------------------
+    proc ::Run() {
+      cmd = ::povray_bin+" -I"+::scene_file+" +O"+::output_file+\
+              " +W%1%" % ::width+\
+              " +H%1%" % ::height
+      if (::Use_Antialiasing) {
+        cmd += " +A%1%" % ::Antialiasing_param
+      }
+      SetStatusText("Povray command : "+cmd)
+      sh cmd
+    }
+
+    //---------------------------------------------------
+    proc ::Show() {
+      ::res <<= Image(::output_file)
+      show ::res
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("POVRay",&::parent_panel)
+      } else {
+        ::win = ParamPanel("POVRay")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Config")
+          
+          ::win.AddFilename(&::povray_bin,"POV-Ray",".","*")
+          ::win.AddFilename(&::scene_file,"scene",::scene_dir,"*.pov")
+          ::win.AddButton("Set Output",&::OutputAuto)
+          ::win.AddFilename(&::output_file,"output",".","*.png")
+
+          ::win.BeginBoxPanel("Dimensions")
+            ::win.AddInt(&::width,"Width",10,1024)
+            ::win.AddInt(&::height,"Height",10,1024)
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Antialiasing")
+            ::win.AddBoolean(&::Use_Antialiasing,"Enable")
+            ::win.AddFloat(&::Antialiasing_param,"Threshold",0,1)
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Run")
+
+          ::win.AddButton("Run",&::Run)
+          ::win.AddButton("Show",&::Show)
+    
+        #::AddHelpPage(&::win)
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

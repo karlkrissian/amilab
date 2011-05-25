@@ -1,0 +1,103 @@
+
+func "Common/ScriptGui"
+
+if (!exists(SyntheticStenosis3DClass)) {
+
+  Class SyntheticStenosis3DClass : public ScriptGui {
+
+    #------------------------------------------------
+    proc ::Init() \
+    {
+      ::dimx = INT(50), "Image dimension in X"
+      ::dimy = INT(50), "Image dimension in Y"
+      ::dimz = INT(50), "Image dimension in Z"
+
+      ::normal_radius  = 5.1, "radius of the original vessel"
+      ::stenose_radius = 2.1, "radius of the stenosed part vessel"
+      ::stenose_gauss_std = 4, "standard deviation of the Gaussian function representing the stenosis"
+
+      ::obj_intensity = 100, "Object intensity"
+    }
+
+    #------------------------------------------------
+    proc ::radius(IMAGE zpos) \
+    {
+      z1 = (zpos-::cz)/::stenose_gauss_std
+      return = ::stenose_radius+(::normal_radius-::stenose_radius)*exp(-0.5/(z1*z1))
+    }
+    Comments(::radius,"Radius of the vessel as a function of the Z coordinate")
+
+    #------------------------------------------------
+    proc ::Create() \
+    {
+      ::res <<= Image(FLOAT,::dimx,::dimy,::dimz)
+      ::res.initvalue(0)
+      ::cx=::res.tx/2
+      ::cy=::res.ty/2
+      ::cz=::res.tz/2
+
+      xpos = ((FLOAT) Xpos(::res))-::cx
+      ypos = ((FLOAT) Ypos(::res))-::cy
+      d2 = xpos*xpos+ypos*ypos
+      zpos = (FLOAT) Zpos(::res)
+      radim = ::radius(zpos)
+      ::res = -sqrt(d2)+radim
+      ::res = filters.ComputePV_subdiv(::res)
+      ::res = ::res*::obj_intensity
+    }
+
+    #------------------------------------------------
+    proc ::Display() \
+    {
+      show ::res
+    }
+
+    #------------------------------------------------
+    proc ::Gui() \
+    {
+      
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("Stenosis",&::parent_panel)
+      } else {
+        ::win = ParamPanel("Stenosis")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Image Dimensions")
+            ::win.AddInt(&::dimx,"X",0,200)
+            ::win.AddInt(&::dimy,"Y",0,200)
+            ::win.AddInt(&::dimz,"Z",0,200)
+          ::win.EndBoxPanel()
+
+
+        ::win.AddPage("Exec")
+
+          ::win.BeginHorizontal()
+            ::win.AddButton("Run",     &::Create)
+            ::win.AddButton("Display", &::Display)
+          ::win.EndHorizontal()
+ 
+        #::AddHelpPage(&::win)
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+    }
+
+    ::Init()
+
+  }
+  # end Class
+}
+# end if

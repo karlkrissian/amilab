@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuParseVar() \
+{
+  category = "&PDI"
+  script = "PDI/ParseVar/ParseVarGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&ParseVar",script)
+}
+
+AddMenuParseVar()
+del AddMenuParseVar

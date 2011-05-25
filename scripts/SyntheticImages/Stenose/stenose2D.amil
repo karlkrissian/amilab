@@ -1,0 +1,41 @@
+i = Image(WT_FLOAT,100,100,1)
+i = Image(FLOAT,100,100,1)
+Help image
+i.initvalue(0)
+for x=10 to 90 {
+  ymax = 50 + 10*exp(-100/x/x)
+  for y=40 to ymax {
+    i.setpos(x,y,1)
+   i.set(100)
+}
+}
+Show i
+for x=10 to 90 {
+  ymax = 50 + 10*exp(-100/x/x)
+  for y=40 to ymax {
+    i.setpos(x,y,0)
+   i.set(100)
+}
+}
+Show i
+i.initvalue(0)
+for x=10 to 90 {
+  ymax = 50 + 10*exp(-100/(x-50)/(x-50))
+  for y=40 to ymax {
+    i.setpos(x,y,0)
+   i.set(100)
+}
+}
+i_draw.update
+i.initvalue(0)
+for x=1  to 99  {
+  ymax = 50 + 10*exp(-50/(x-50)/(x-50))
+  for y=40 to ymax {
+    i.setpos(x,y,0)
+   i.set(100)
+}
+}
+i_draw.update
+j = filter(i,1,0,0,0)
+Show j
+i.save "stenose2D.ami"

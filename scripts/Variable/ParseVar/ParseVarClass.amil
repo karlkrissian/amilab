@@ -1,0 +1,165 @@
+
+func "Common/ScriptGui"
+
+if (!exists(ParseVarClass)) {
+
+  Class ParseVarClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::var_name   = "","Name of the variable "
+        ::var_objname   = "","Name of the object variable typename"
+        ::var_type = INT(0), "Type id of the variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::maxlist = INT(100), "maximal number of elements in the list"
+        ::list_start = INT(0), "starting elt for the list"
+        ::html_filename = GetScriptsDir+"/ParseVar/Doc/ParseVar/index.html"
+    }
+
+
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+      }
+    }
+
+    #------------------------------------------------
+    proc ::DisplayStrings( OBJECT sa) \
+    {
+      ::listctrl.DeleteAllItems()
+
+      for n=::list_start to -max(-(sa.Count()-1),-(::list_start+::maxlist-1)) {
+        text = sa[n]
+        it = wx.wxListItem()
+        it.SetColumn(0)
+        it.SetText(text)
+        res = ::listctrl.InsertItem(&it)
+        del it
+      }
+      
+    }
+
+    #------------------------------------------------
+    proc ::SearchType() \
+    {
+      ::typ = language.Vars.SearchVariables(::var_type,true)
+      SetStatusText("found %1% results" % ::typ.Count())
+      ::DisplayStrings(&::typ)
+      
+    }
+
+    #------------------------------------------------
+    proc ::SearchObjectName() \
+    {
+      ::typ = language.Vars.SearchAMIObjectTypeVariables(::var_objname)
+      SetStatusText("found %1% results" % ::typ.Count())
+      ::DisplayStrings(&::typ)
+      
+    }
+
+    #------------------------------------------------
+    proc ::Completions() \
+    {
+      ::compl = language.Vars.SearchCompletions(::var_name)
+      SetStatusText("found %1% results" % ::compl.Count())
+      ::DisplayStrings(&::compl)
+    }
+
+    #------------------------------------------------
+    proc ::CB_ListItemSelected( OBJECT event ) \
+    {
+      index = event.GetIndex()
+      pos = atof(event.GetItem().GetText().c_str())
+      printn "item text = %1%" % pos
+      ::selected_point = pos
+      
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("ParseVar",&::parent_panel)
+      } else {
+        ::win = ParamPanel("ParseVar")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+        ::win.BeginBoxPanel("Variable Info")
+          ::win.AddString(&::var_name,"Name")
+          ::win.AddString(&::var_objname,"Object Name")
+          ::typeid = ::win.AddEnum(&::var_type,"Type")
+            ::win.AddEnumChoice(::typeid,"void")
+            ::win.AddEnumChoice(::typeid,"image")
+            ::win.AddEnumChoice(::typeid,"float")
+            ::win.AddEnumChoice(::typeid,"bool")
+            ::win.AddEnumChoice(::typeid,"double")
+            ::win.AddEnumChoice(::typeid,"long")
+            ::win.AddEnumChoice(::typeid,"int")
+            ::win.AddEnumChoice(::typeid,"uchar")
+            ::win.AddEnumChoice(::typeid,"string")
+            ::win.AddEnumChoice(::typeid,"C procedure")
+            ::win.AddEnumChoice(::typeid,"class_member")
+            ::win.AddEnumChoice(::typeid,"C image function")
+            ::win.AddEnumChoice(::typeid,"C var function")
+            ::win.AddEnumChoice(::typeid,"ami function")
+            ::win.AddEnumChoice(::typeid,"ami class")
+            ::win.AddEnumChoice(::typeid,"ami object")
+            ::win.AddEnumChoice(::typeid,"matrix")
+            ::win.AddEnumChoice(::typeid,"array")
+        ::win.EndBoxPanel()
+        ::win.BeginBoxPanel("Search")
+          ::win.BeginHorizontal()
+            ::win.AddButton("Completions",&::Completions)
+            ::win.AddButton("Type",&::SearchType)
+            ::win.AddButton("Object typename",&::SearchObjectName)
+          ::win.EndHorizontal()
+          ::win.AddInt(&::list_start,"Starting from",0,10000)
+        ::win.EndBoxPanel()
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+       ::win.EndBook()
+ 
+      ::listctrl = wx.wxListCtrl(&::win)
+      ::win.AddWidget(&::listctrl,1)
+      ::listctrl.SetWindowStyle(wx.wxLC_REPORT)
+      ::listctrl.InsertColumn_2(0,"Name")
+      ::listctrl.InsertColumn_2(1,"Comment")
+
+      # connect event
+      ::evh_selected = wx.wxAmiEventHandler(&::CB_ListItemSelected)
+      ::evh_selected.SetSendListEvent(true)
+      ::listctrl.Connect( wx.wxEVT_COMMAND_LIST_ITEM_SELECTED\
+                          ,&::evh_selected.GetEventFunction(),\
+                          &NULL,&::evh_selected)
+   
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If
