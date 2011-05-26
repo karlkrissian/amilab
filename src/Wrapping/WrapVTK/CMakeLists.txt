@@ -89,16 +89,16 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
   IF(GENERATE_HTML_HELP)
-    MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q")
+    MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q")
     EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
       OUTPUT_VARIABLE ancestors_result
       ERROR_VARIABLE ancestors_error
     )
   ELSE(GENERATE_HTML_HELP)
-    MESSAGE("COMMAND IS: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
+    MESSAGE("COMMAND IS: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE}  --templates --templatefile_dir ${AMILAB_SOURCE_DIR}/../PythonWrap/ -q")
     EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE}  --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
       OUTPUT_VARIABLE ancestors_result
       ERROR_VARIABLE ancestors_error
     )
@@ -145,6 +145,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
               --constructor New
               --available_classes ${ancestors_list}
               --outputdir "${WRAPVTK_OUTDIR}"
+              --templates
               --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
               --addwrap
               --profile
@@ -168,6 +169,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
             --constructor New
             --available_classes ${ancestors_list}
             --outputdir "${WRAPVTK_OUTDIR}"
+            --templates
             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
             --addwrap
             --profile

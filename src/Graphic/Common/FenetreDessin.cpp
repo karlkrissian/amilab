@@ -439,6 +439,11 @@ void FenetreDessin::SetPenColor(
 void FenetreDessin::SetPenColor(  const wxColour& couleur)
 //                  ----------------
 {
+  if (!_current_pen.get())
+  {
+    CLASS_ERROR("Pen not initialized");
+    return;
+  }
     _current_pen->SetColour(couleur);
     _memory_dc->SetPen(*_current_pen);
 } // SetPenColor()

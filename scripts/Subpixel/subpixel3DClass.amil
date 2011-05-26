@@ -54,6 +54,8 @@ if (!exists(Subpixel3DClass)){
       
       #Set point normals
       array = vtk.vtkDoubleArray.New()
+      if (exists(::array))  { del ::array;}
+      ::array = &array
       #3D normals
       array.SetNumberOfComponents(3)
       array.SetNumberOfTuples(polydata.GetNumberOfPoints())
@@ -73,21 +75,26 @@ if (!exists(Subpixel3DClass)){
       pN3.push_back(1.0)
       
       #Add the data to the normals array
-      array.SetTuple(0, &pN1[0])
-      array.SetTuple(1, &pN2[0])
-      array.SetTuple(2, &pN3[0])
+      array.SetTupleValue(0, &pN1[0])
+      array.SetTupleValue(1, &pN2[0])
+      array.SetTupleValue(2, &pN3[0])
       
       #Add the normals to the points in the polydata
-      polydata.GetPointData.SetNormals(array)
-      
+      #polydata.GetPointData().SetNormals(&array)
+      polydata.GetPointData().SetVectors(&array)
+      #polydata.GetPointData().GetArray(0)._SetName("vector")
+
       #We make a little test using the glyph3D
       planeSource = vtk.vtkPlaneSource.New() #We draw planes
       glyph3D = vtk.vtkGlyph3D.New()
       glyph3D.OrientOn()
+      #glyph3D.SetVectorModeToUseNormal()
+      glyph3D.SetVectorModeToUseVector()
       glyph3D.SetSource(&planeSource.GetOutput())
-      glyph3D.SetVectorModeToUseNormal()
       glyph3D.SetInput(&polydata)
-      glyph3D.SetScaleFactor(1)
+      #glyph3D.SetInputArrayToProcess(1,0,0, 0 , "vector");
+
+      glyph3D.SetScaleFactor(0.3)
       glyph3D.Update()
       
       #Draw the result
