@@ -7,7 +7,6 @@
 # Hide main frame
 ami.MainFrame.Show(0)
 
-ami_import->System()
 #InfoDialog l_script_dir
 
 func "ctest/ctest_config.amil"

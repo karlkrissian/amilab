@@ -2691,7 +2691,6 @@ void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
 
 void MainFrame::OnUpdate(wxUpdateUIEvent& event)
 {
-/*
   //Check Panels Status
   tb2->ToggleTool(ID_View_Output,m_mgr.GetPane(_log_text).IsShown());
   tb2->ToggleTool(ID_View_Param_book,m_mgr.GetPane(_param_book).IsShown());
@@ -2725,10 +2724,7 @@ void MainFrame::OnUpdate(wxUpdateUIEvent& event)
   }
   toolbar_status= m_mgr.GetPane(this->tb1).IsShown();
 
-  
- 
- this->Refresh(-1); //repaint gnome
- */ 
+// this->Refresh(-1); //repaint gnome
 }
 
 

@@ -102,6 +102,7 @@ WS      [ \t]
 
 %x str
 %x block
+%x block_str
 %x comment
 
 /* The following paragraph suffices to track locations accurately. Each time
@@ -747,24 +748,49 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
     if (GB_debug )std::cerr << "Starting block at " << *yylloc << std::endl;
     block_level++;
     BEGIN(block);
+    //printf("starting block level 0 at line %d\n",GB_driver.yyiplineno);
   }
 
-/*
+}
+
+<block>\"      {
+  ami_block->GetBody().append(YYText());
+  BEGIN(block_str);
+}
+
+<block_str>\" {
+  ami_block->GetBody().append(YYText());
+  BEGIN(block);
+}
+
+<block_str>[\n\r]  {
+  GB_driver.yyiperror(E_UNTERM_STRING);
+}
+
+<block_str>\\n          ami_block->GetBody().append(YYText());
+<block_str>\\t          ami_block->GetBody().append(YYText());
+<block_str>\\r          ami_block->GetBody().append(YYText());
+<block_str>\\b          ami_block->GetBody().append(YYText());
+<block_str>\\f          ami_block->GetBody().append(YYText());
+<block_str>\\(.|\n\r)   ami_block->GetBody().append(YYText());
+<block_str>\#           ami_block->GetBody().append(YYText());
+<block_str>[^\\\n\r\"]+ ami_block->GetBody().append(YYText());
+
+
 <block>\# {
 //============================ Parse comment ====================
 //
     comment_caller = block;
     BEGIN(comment);
-//    printf("begin comment in block \n");
+    //printf("begin comment in block at line %d\n",GB_driver.yyiplineno);
 }
 
 <block>"//"  {
     comment_caller = block;
     BEGIN(comment);
-//    printf("begin comment in block \n");
+    //    printf("begin comment in block \n");
 }
-*/
-}
+
 
 <block>\r\n|[\r\n] {
   // dealing with windows end-of-lines ...
@@ -775,6 +801,7 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 
 <block>\{      {
+  //printf("Enter block at line %d\n",GB_driver.yyiplineno);
   block_level++;
   ami_block->GetBody().append(1,'{');
 }
