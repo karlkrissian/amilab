@@ -835,6 +835,22 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
 #"*.amil" -o -name  "*.sh" -o -name "*.html"
         )
 
+# Install the Matlab utilities
+install(DIRECTORY ${AMILAB_SOURCE_DIR}/../MatlabUtils
+        DESTINATION share/amilab-${AMILAB_VERSION}
+        FILES_MATCHING PATTERN "*.m" PATTERN "*.amil"
+         PATTERN "*.sh"
+         PATTERN "*.py"
+         PATTERN "*.png"         
+         PATTERN "*.txt"
+         PATTERN "*.sh"
+         PATTERN "*.html"
+        PATTERN ".svn" EXCLUDE
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ
+        )
+
+
 # Install the documentation
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
         DESTINATION share/amilab-${AMILAB_VERSION}

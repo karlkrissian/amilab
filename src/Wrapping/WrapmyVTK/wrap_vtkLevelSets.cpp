@@ -16,6 +16,13 @@
 //#include "wrapfunctions_draw.h"
 #include "ami_class.h"
 #include "ami_object.h"
+
+#ifndef AMIObject_declared
+  #define AMIObject_declared
+  AMI_DECLARE_TYPE(AMIObject);
+#endif
+
+
 #include "vtkLevelSets.h"
 #include "wrap_vtkLevelSets.h"
 #include "MainFrame.h"

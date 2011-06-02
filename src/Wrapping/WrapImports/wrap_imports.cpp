@@ -48,32 +48,6 @@
 #include "wrap_File.h"
 
 
-
-/*
-#include "wrap_wxWindow.h"
-#include "wrap_wxSize.h"
-#include "wrap_wxColour.h"
-#include "wrap_wxImage.h"
-#include "wrap_wxBitmap.h"
-#include "wrap_wxHtmlWindow.h"
-#include "wrap_wxString.h"
-#include "wrap_wxFileName.h"
-#include "wrap_wxAuiPaneInfo.h"
-#include "wrap_wxAuiToolBar.h"
-#include "wrap_wxButton.h"
-#include "wrap_wxBitmapButton.h"
-#include "wrap_wxBoxSizer.h"
-#include "wrap_wxSizerFlags.h"
-#include "wrap_wxPanel.h"
-#include "wrap_wxStaticBox.h"
-#include "wrap_wxStaticBoxSizer.h"
-#include "wrap_wxAmiEventHandler.h"
-
-#include "wrap_wxRect.h"
-#include "wrap_wxPoint.h"
-#include "wrap_wxFrame.h"
-#include "wrap_wxToolBar.h"
-*/
 #include "addwrap_wx.h"
 #include "addwrap_algorithms.h"
 
@@ -85,14 +59,10 @@
   AMI_DECLARE_TYPE(VarContexts);
 #endif
 
-
 #ifdef AMI_WRAP_MICRONTRACKER
   #include "addwrap_mt.h"
   #include "wrapMT.h"
 #endif
-
-
-
 
 #include "wrap_vtkLevelSets.h"
 
@@ -113,7 +83,11 @@
 
 #include "wrap_stdvector.h"
 
-#include "wrap_BasicVariable.h"
+#ifndef BasicVariable_declared
+  #define BasicVariable_declared
+  AMI_DECLARE_TYPE(BasicVariable);
+#endif
+
 #include "wrapVTK.h"
 
 //#include "wrap_TestTemplateClass__LT__int__GT__.h"

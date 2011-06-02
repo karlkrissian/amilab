@@ -415,11 +415,18 @@ AMI_DECLARE_TYPE(C_wrap_imagefunction);
 AMI_DECLARE_TYPE(C_wrap_varfunction);
 AMI_DECLARE_TYPE(AMIFunction);
 AMI_DECLARE_TYPE(AMIClass);
-AMI_DECLARE_TYPE( VarArray);
+AMI_DECLARE_TYPE(VarArray);
 
-// abstract classes
-//AMI_DECLARE_TYPE(AMIObject);
-//AMI_DECLARE_TYPE(WrapClassMember)
+// abstract classes, is it OK?
+#ifndef AMIObject_declared
+  #define AMIObject_declared
+  AMI_DECLARE_TYPE(AMIObject);
+#endif
+
+#ifndef WrapClassMember_declared
+  #define WrapClassMember_declared
+  AMI_DECLARE_TYPE(WrapClassMember);
+#endif
 
 //----------------------------------------------------------------------
 /**

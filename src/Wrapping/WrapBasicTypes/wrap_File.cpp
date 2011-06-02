@@ -19,6 +19,11 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+#ifndef BasicVariable_declared
+  #define BasicVariable_declared
+  AMI_DECLARE_TYPE(BasicVariable);
+#endif
+
 //#include "vtkwrap.h"
 //#include "FluidProject.h"
 //#include "Func_ReadCTALine.h"

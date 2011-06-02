@@ -135,6 +135,7 @@ wxSizer
 wxSizerFlags
 wxSizerItem
 wxSizerItemList
+wxSplitterWindow
 wxStaticBox
 wxStaticBoxSizer
 wxStaticLine
@@ -158,4 +159,5 @@ wxWindowList
 wxWindowListNode
 wxWritableCharBuffer
 wxWritableWCharBuffer
-wxSplitterWindow
+wxwxMenuItemListNode
+wxwxSizerItemListNode
