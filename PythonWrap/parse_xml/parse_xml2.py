@@ -363,6 +363,7 @@ if __name__ == '__main__':
   
     n=0
     nmax=args.val.max
+    #print "Maximum classes set to {0}".format(nmax)
     while (len(config.needed_classes)>0) and (n<nmax):
       #print "\n\n needed classes:", config.needed_classes, "\n\n"
       cl = config.needed_classes.pop()
@@ -386,6 +387,9 @@ if __name__ == '__main__':
       utils.WarningMessage( "*** Wrapped Class Number: {0}".format(n))
       #print "*** "
       n = n+1
+
+    if n>=nmax:
+      print "WARNING: Exceeding the maximum number of classes to wrap which is set to {0} !!\n".format(nmax)
 
     utils.WarningMessage( "new classes: {0}".format(number_of_newclasses))
     if number_of_newclasses > 0:

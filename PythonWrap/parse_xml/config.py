@@ -26,6 +26,9 @@ members_blacklist=[
   #'wxAuiManager::SetFrame', deprecated
   #'wxAuiManager::GetFrame', deprecated
   #'wxWindowBase::GetHelpTextAtPoint', 
+  'wxCmdLineParser::SetCmdLine(int, wchar_t**)', # pb with wchar_t** ...
+  'wxCmdLineParser::wxCmdLineParser(wxCmdLineEntryDesc const*, int, wchar_t**)', # idem
+  'wxCmdLineParser::wxCmdLineParser(int, wchar_t**)', # idem
   'wxWindowBase::GetToolTipText', # not implemented ...
   'wxStringBase::copy',
 #  'wxFileName::GetHumanReadableSize', #invalid cast
@@ -85,29 +88,41 @@ incomplete_classes=[]
 new_needed_classes=[]
 
 # available builtin type
-available_types       = ['int','float','double','unsigned char','long','long int','std::string','bool','void', 'AMIFunction', 'InrImage']
+available_types       = [
+  'int',
+  'float',
+  'double',
+  'unsigned char',
+  'long',
+  'long int',
+  'std::string',
+  'bool',
+  'void',
+  'AMIFunction',
+  'InrImage'
+  ]
 available_builtin_classes     = ['amilab::SurfacePoly']
 
 # not used
 #available_pointertypes= ['int','float','double','unsigned char','long','long int','std::string','bool']
 
 available_operators={ \
-  '!=':'__not_equal__', \
-  '==':'__equal__', \
-  '[]':'__at__', \
-  '()':'__parenthesis__', \
-  '=':'__assign__',\
-  '-=':'__sub_assign__', \
-  '+':'__add__', \
-  '+=':'__add_assign__', \
-  '*':'__mult__', \
-  '*()':'__indirection__', \
-  '*=':'__mult_assign__', \
-  '/':'__div__', \
-  '/=':'__div_assign__', \
-  '-':'__substract__', \
-  '++':'__preinc__', \
-  '--':'__predec__', \
+  '!=' : '__not_equal__', \
+  '==' : '__equal__', \
+  '[]' : '__at__', \
+  '()' : '__parenthesis__', \
+  '='  : '__assign__',\
+  '-=' : '__sub_assign__', \
+  '+'  : '__add__', \
+  '+=' : '__add_assign__', \
+  '*'  : '__mult__', \
+  '*()': '__indirection__', \
+  '*=' : '__mult_assign__', \
+  '/'  : '__div__', \
+  '/=' : '__div_assign__', \
+  '-'  : '__substract__', \
+  '++' : '__preinc__', \
+  '--' : '__predec__', \
   '++(int)':'__postinc__', \
   '--(int)':'__postdec__', \
   }

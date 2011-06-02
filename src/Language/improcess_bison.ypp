@@ -1784,6 +1784,18 @@ command:
         Vars.AddVar<int>(ident,varint);
       }
       |
+      identifier ASSIGN_OP T_LONG T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Creates a variable of type long
+      **/
+        IdentifierInfo::ptr ident($1);
+
+        long_ptr varlong (new long((long)$5));
+        Vars.AddVar<long>(ident,varlong);
+      }
+      |
       identifier ASSIGN_OP T_DOUBLE T_OP_PAR expr T_CL_PAR
       {
       /**
@@ -1826,6 +1838,25 @@ command:
   
         int_ptr varint( new int((int)$5));
         BasicVariable::ptr var=Vars.AddVar<int>(ident,varint);
+        if (var.get())
+          var->SetComments(comments.get());
+      }
+      |
+      identifier ASSIGN_OP T_LONG T_OP_PAR expr T_CL_PAR T_COMMA expr_string
+      {
+      /**
+      Parameters:
+        - identifier: name of the new variable
+        - expr: value of the new variable
+        - expr_string: short description of the new variable
+        Description: 
+          Creates a variable of type long
+      **/
+        IdentifierInfo::ptr ident($1);
+        boost::shared_array<char> comments( $8);
+  
+        long_ptr varlong( new long((long)$5));
+        BasicVariable::ptr var=Vars.AddVar<long>(ident,varlong);
         if (var.get())
           var->SetComments(comments.get());
       }

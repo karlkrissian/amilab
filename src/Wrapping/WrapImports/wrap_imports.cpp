@@ -29,7 +29,7 @@
 #include "ami_object.h"
 //#include "wrap_imagedraw.h"
 
-
+#include "Variable_string.h"
 #include "wrap_MainFrame.h"
 #include "wrap_wxDrawingWindow.h"
 
@@ -120,6 +120,7 @@
 
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
+extern std::string  GB_cmdline;
 
 /// global Null variable
 Variable<int>::ptr nullvar(new Variable<int>(boost::shared_ptr<int>(new int(NULL))));
@@ -399,6 +400,10 @@ void AddWrapAmilab(AMIObject::ptr& obj)
   BasicVariable::ptr mainframe_var = WrapClass_MainFrame::CreateVar(GB_main_wxFrame);
   amiobject->GetContext()->AddVar("MainFrame", mainframe_var, amiobject->GetContext());
 
+  // Add the command line as a string, with a reference to the global variable and no deleter
+  BasicVariable::ptr cmdline_var = AMILabType<std::string>::CreateVar(&GB_cmdline,true);
+  amiobject->GetContext()->AddVar("CommandLine", cmdline_var, amiobject->GetContext());
+  
   WrapClass_dwControlPoint   ::AddVar_dwControlPoint(    amiobject->GetContext());
   WrapClass_dwCurve          ::AddVar_dwCurve(           amiobject->GetContext());
   WrapClass_dwControlledCurve::AddVar_dwControlledCurve( amiobject->GetContext());

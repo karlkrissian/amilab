@@ -75,7 +75,7 @@ arg_parser.add_argument('--addwrap',  action='store_true',  help='Generates the 
 arg_parser.add_argument('--update', action='store_true',   \
   help='re-generate all currently wrapped classes')
 
-arg_parser.add_argument('--max', type=int,default=200,   \
+arg_parser.add_argument('--max', type=int,default=500,   \
   help='maximum number of files generated')
 
 arg_parser.add_argument('-gccxml',       action='store_true',    \

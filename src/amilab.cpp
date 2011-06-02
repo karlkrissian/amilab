@@ -83,9 +83,10 @@ unsigned char DELETE_IDRAW;
 extern VarContexts  Vars;
 
 
-int        GB_argc;
-wxChar**   GB_argv;
-int        GB_num_arg_parsed;
+int         GB_argc;
+wxChar**    GB_argv;
+int         GB_num_arg_parsed;
+std::string GB_cmdline;
 
 char program[80];
 unsigned char verbose;
@@ -318,10 +319,6 @@ bool MyApp::OnInit()
 
  ::wxInitAllImageHandlers();
 
- 
-  
-  
-  
   config = new wxConfig(wxT("AMILab"));
 /*
                         wxEmptyString,
@@ -357,6 +354,7 @@ bool MyApp::OnInit()
 
   GB_argc  = argc;
   GB_argv  = argv;
+  GB_cmdline = "";
 
   // print the command line as a comment in the cmdhistory
   //  if (argv[0][0]!='/') {
@@ -374,8 +372,9 @@ bool MyApp::OnInit()
     }
   cmd_line += "\n";
 
-  std::cout << argc << std::endl;
-  std::cout << cmd_line << std::endl;
+  
+  std::cout << "Number of arguments: "<< argc << std::endl;
+  std::cout << "Command line: "<< cmd_line << std::endl;
 
   GB_num_arg_parsed = 1;
   Si  argc>GB_num_arg_parsed Et
@@ -532,6 +531,13 @@ bool MyApp::OnInit()
       try {
         wxString input_file(argv[GB_num_arg_parsed]);
         GB_num_arg_parsed++;
+
+        // Create command line arguments
+        for(n=GB_num_arg_parsed;n<argc;n++)
+          {
+            GB_cmdline += wxString(argv[n]).mb_str(wxConvUTF8);
+            GB_cmdline += " ";
+          }
 
         // run the file
         /*

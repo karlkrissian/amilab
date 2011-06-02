@@ -31,6 +31,7 @@ class CreateSmartPointer
 
 typedef boost::shared_ptr<float>           float_ptr;
 typedef boost::shared_ptr<int>             int_ptr;
+typedef boost::shared_ptr<long>            long_ptr;
 typedef boost::shared_ptr<unsigned char>   uchar_ptr;
 typedef boost::shared_ptr<std::string>     string_ptr;
 typedef boost::shared_ptr<FILE>            FILE_ptr;

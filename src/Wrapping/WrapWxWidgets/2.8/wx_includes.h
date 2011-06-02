@@ -20,3 +20,4 @@
 #include <wx/stc/stc.h>
 #include <wx/choice.h>
 #include <wx/statline.h>
+#include <wx/cmdline.h>

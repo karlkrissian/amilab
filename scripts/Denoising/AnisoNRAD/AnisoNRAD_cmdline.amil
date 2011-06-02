@@ -10,7 +10,7 @@ func "AnisoNRADClass.amil"
 
 # using the Structure Tensor mode with default values
 
-printn argc
+printn "Number of arguments = %1% " % argc
 
 if (argc>=4) {
   input_name = $1

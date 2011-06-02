@@ -5,10 +5,26 @@ import config
 type_equivalence={}
 
 # convenient shortname
-type_shortname={ 'unsigned char':'uchar', 'unsigned int':'uint', 'long int':'lint', 'long unsigned int':'luint', 'std::string':'string', 'long long int':'llint', 'short unsigned int':'suint'}
+type_shortname={
+  'unsigned char'      : 'uchar',
+  'unsigned int'       : 'uint',
+  'long int'           : 'lint',
+  'long unsigned int'  : 'luint',
+  'std::string'        : 'string',
+  'long long int'      : 'llint',
+  'short unsigned int' : 'suint'
+}
 
 # type substitution
-type_substitute={  'unsigned int':'long', 'long int':'long', 'long unsigned int':'long', 'char':'std::string', 'wchar_t':'std::string', 'long long int':'long', 'short unsigned int':'int'}
+type_substitute={
+  'unsigned int'       : 'long',
+#  'long int'          : 'long',
+  'long unsigned int'  : 'long',
+  'char'               : 'std::string',
+  'wchar_t'            : 'std::string',
+  'long long int'      : 'long',
+  'short unsigned int' : 'int'
+}
 #'bool':'int',
 
 def GetShortName(typename):

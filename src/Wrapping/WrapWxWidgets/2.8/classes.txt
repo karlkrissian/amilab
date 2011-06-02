@@ -29,6 +29,7 @@ wxChoice
 wxClassInfo
 wxClientData
 wxClientDataContainer
+wxCmdLineParser
 wxCloseEvent
 wxColour
 wxCommandEvent
@@ -158,4 +159,3 @@ wxWindowListNode
 wxWritableCharBuffer
 wxWritableWCharBuffer
 wxSplitterWindow
-
