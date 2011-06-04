@@ -38,6 +38,7 @@ import wrap_class
 import parse_function
 import wrap_function
 
+import generate_html #HTML generate file functions
 import pickle
   
 def FindAvailableClasses():
@@ -312,8 +313,12 @@ if __name__ == '__main__':
       for a in ancestors:
         f.write(a+"\n")
       if(args.val.generate_html):
-        wrap_class.generate_html.Initialization(args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
-        wrap_class.generate_html.GenerateHTMLClassesFile(ancestors)
+        generate_html.obj.Initialization( args.val.templatefile_dir, \
+                                          args.val.outputhtmldir,\
+                                          "index.html",\
+                                          args.val.url,\
+                                          args.val.libname)
+        generate_html.obj.GenerateHTMLClassesFile(ancestors)
       sys.exit(0)
 
     if (args.val.profile):
@@ -370,17 +375,25 @@ if __name__ == '__main__':
       #print "Class: {0} \t usedname: {1}".format(cl,wrap_class.ClassUsedName(cl))
       config.include_list = []
       config.declare_list = []
-      wrap_class.HTMLInitialization(args.val.generate_html,args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
+      wrap_class.HTMLInitialization(  args.val.generate_html, \
+                                      args.val.templatefile_dir, \
+                                      args.val.outputhtmldir, \
+                                      "index.html", \
+                                      args.val.url, \
+                                      args.val.libname)
       wrap_class.WrapClass(cl,include_file,inputfile)
       config.wrapped_classes.append(cl)
       if args.val.r:
         for c in config.new_needed_classes:
           # check if templates are discarded
           if (not wrap_class.IsTemplate(c)) or args.val.templates:
-            if (c != cl) and (c not in config.incomplete_classes) and (c not in config.needed_classes):
+            if  (c != cl) and \
+                (c not in config.incomplete_classes) and \
+                (c not in config.needed_classes):
               m = re.match(args.val.filter, c)
               if m != None:
-                if c not in config.available_classes: number_of_newclasses = number_of_newclasses + 1
+                if c not in config.available_classes: 
+                  number_of_newclasses = number_of_newclasses + 1
                 config.needed_classes.append(c)
         config.new_needed_classes=[]
       #print "*** "
@@ -398,7 +411,12 @@ if __name__ == '__main__':
         for cl in config.wrapped_classes:
           config.include_list = []
           config.declare_list = []
-          wrap_class.HTMLInitialization(args.val.generate_html,args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
+          wrap_class.HTMLInitialization(  args.val.generate_html,\
+                                          args.val.templatefile_dir, \
+                                          args.val.outputhtmldir, \
+                                          "index.html", \
+                                          args.val.url, \
+                                          args.val.libname)
           wrap_class.WrapClass(cl,include_file,inputfile)
 
     utils.WarningMessage( "Wrapped classes: {0}".format(config.wrapped_classes))

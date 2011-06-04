@@ -229,6 +229,44 @@ class MethodInfo:
     res += ')'
     return res
 
+  def GetHTMLDescription(self,classname,url):
+    if url!="":
+      mname = '<A title="Link to doxygen documentation" href="{0}"><i>Dox</i></A>&nbsp;{1}'.format(url,self.name)
+    else:
+      mname = self.name
+    mname='<b>{0}</b>'.format(mname)
+    res=''
+    if self.static==1:
+      res += "static "
+    if self.returntype!=None:
+      typestr = config.types[self.returntype].GetFullString()
+      typestr = typestr.replace('<','&lt;')
+      typestr = typestr.replace('>','&gt;')
+      typestr = generate_html.obj.CheckTypeLink(\
+                      config.types[self.returntype].GetString(),\
+                      typestr)
+      res += "<em>{0}</em> ".format(typestr)
+    if self.name in config.available_operators.keys():
+      res += "operator "+mname+'('
+    else:
+      res += mname+'('
+    paramlist=""
+    for a in self.args:
+      typestr = config.types[a.typeid].GetFullString()
+      typestr = typestr.replace('<','&lt;')
+      typestr = typestr.replace('>','&gt;')
+      typestr = generate_html.obj.CheckTypeLink(\
+                      config.types[a.typeid].GetString(),\
+                      typestr)
+      paramlist +=  "<em>{0}</em> <font color=\"#22AA22\">{1}</font>".format(typestr,a.name)
+      if a.default!=None:
+        paramlist += " = {0}".format(FormatArgDefault(a.default))
+      paramlist += ", "
+    if len(self.args)>0:
+      paramlist = paramlist[:-2]
+    res += paramlist+')'
+    return res
+
 
 def CheckBlackList(mname,demangled):
   if mname in config.members_blacklist:
@@ -282,7 +320,7 @@ class ParsePublicMembers:
       method.static = staticval
       method.usedname=config.ClassUsedName(mname)
       method.duplicated=True
-      methods.append(method)
+      methods.insert(len(methods)-1,method)
     methodlist.append(mname)
     if num>=1:
       self.method.usedname=config.ClassUsedName(mname)+"_{0}".format(num+1)
@@ -321,7 +359,8 @@ class ParsePublicMembers:
         else:
           method.usedname="operator not available"
         method.duplicated=True
-        self.public_members.OperatorMethods.append(method)
+        self.public_members.OperatorMethods.insert(\
+              len(self.public_members.OperatorMethods)-1,method)
       methodlist.append(mname)
       if num>=1:
         methodindex="_{0}".format(num+1)
@@ -863,7 +902,11 @@ def ImplementCopyMethodWrap(classname, method):
 #----------------------------------------------------------------------
 def HTMLInitialization(createhtml,templatedir, outputdirectory, outputfilename, url, libraryname):
   if(createhtml):
-    generate_html.Initialization(templatedir, outputdirectory, outputfilename, url, libraryname)
+    generate_html.obj.Initialization( templatedir,\
+                                      outputdirectory,\
+                                      outputfilename,\
+                                      url,\
+                                      libraryname)
 
 #----------------------------------------------------------------------
 #  WrapClass
@@ -906,6 +949,7 @@ def WrapClass(classname,include_file,inputfile):
       #print "Is part of args.val.classes"
     
     fm = config.types[classid].public_members
+    generate_html.obj.SetPublicMethods(fm) 
 
     # Smart Pointer Deleter
     implement_deleter = ""
@@ -1065,8 +1109,10 @@ def WrapClass(classname,include_file,inputfile):
         else:
           wrapped_constructors = wrapped_constructors+1
         pos=pos+1
-        generate_html.AddClassMethod(m) # Adds the constructor
       constructors_decl+='\n'
+    else:
+      for m in fm.Constructors:
+        m.iswrapped=False
 
     # Static Methods:
     staticmethods_decl='\n'
@@ -1086,7 +1132,6 @@ def WrapClass(classname,include_file,inputfile):
       if missingtypes!="":
         staticmethods_decl +=  indent+"*/\n"
       pos=pos+1
-      generate_html.AddClassMethod(m) # Adds the static methods
     staticmethods_decl+='\n'
 
     class_decl='\n'
@@ -1109,12 +1154,11 @@ def WrapClass(classname,include_file,inputfile):
             WxHelpLink(classname,m))
       if missingtypes!="":
         class_decl += "*/\n"
-      generate_html.AddClassMethod(m)     
+      generate_html.obj.AddClassMethod(m)
       pos = pos+1
     class_decl+='\n'
     #print "\nBegin: {0}\n".format(classname)
     #generate_html.GenerateHTMLStandardMethods(classname)
-    generate_html.GenerateHTMLClassFile(classname,generate_html.GetClassMethodList())
     #print "\nEnd: {0}\n".format(classname)
         
     if len(fm.OperatorMethods)>0:
@@ -1122,6 +1166,7 @@ def WrapClass(classname,include_file,inputfile):
     pos = 0
     for m in fm.OperatorMethods:
       missingtypes = MissingTypes(classname,m)
+      m.iswrapped=(missingtypes=="")
       if missingtypes!="":
         class_decl+= "/* The following types are missing: "+missingtypes+"\n"
         fm.OperatorMethods[pos].missingtypes=True
@@ -1129,6 +1174,7 @@ def WrapClass(classname,include_file,inputfile):
         class_decl+=indent+'// ADD_CLASS_METHOD('+m.usedname+',"{0} ({1})")\n'.format(\
             m.GetDescription(classname,False),\
             WxHelpLink(classname,m))
+        m.iswrapped=False
       else:
         class_decl+=indent+'ADD_CLASS_METHOD('+m.usedname+',\
             "{0} ({1})")\n'.format(\
@@ -1228,9 +1274,11 @@ def WrapClass(classname,include_file,inputfile):
       add_public_fields += indent+'    context->AddVar(var_{0},context);\n'.format(f.name)
       add_public_fields += indent+'  }\n'
       add_public_fields += indent+'}\n'
+      f.iswrapped = True
       if (not available_type) or (isconstpointer) or (fulltypename.endswith("void *")) or f.bits!=None or \
       config.types[f.typeid].GetType()=="ArrayType" :
         add_public_fields += indent+"*/\n"
+        f.iswrapped = False
               
     # Add public Enumerations
     add_public_enums = '\n'
@@ -1262,7 +1310,7 @@ def WrapClass(classname,include_file,inputfile):
       add_public_enums += indent+"// Add as default context\n"
       add_public_enums += indent+"amiobject->GetContext()->AddDefault(obj_{0}->GetContext());\n".format(enum_usedname)
          
-         
+
     # Adding constructor to the user given context:
     add_constructor=''
     if wrapped_constructors>0:
@@ -1293,6 +1341,8 @@ def WrapClass(classname,include_file,inputfile):
       pos=pos+1
     #add_static_methods+='\n'
 
+    # Generate HTML file
+    generate_html.obj.GenerateHTMLClassFile( classname)
 
     # in place replace TEMPLATE by classname
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
@@ -1443,7 +1493,7 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${IMPLEMENT_DELETER}",     implement_deleter)
       line = line.replace("${TEMPLATE}",              config.ClassTypeDef(classname))
       line = line.replace("${TEMPLATENAME}",          config.ClassUsedName(classname))
-      line = line.replace("${TEMPLATESHORTNAME}",     config.ClassShortName(classname))      
+      line = line.replace("${TEMPLATESHORTNAME}",     config.ClassShortName(classname))
       line = line.replace("${METHODS_BASES}",         methods_bases)
       line = line.replace("${AddVar_method_all}",     add_var_all)
       line = line.replace("${AddPublicFields}",       add_public_fields)
