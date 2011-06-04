@@ -137,7 +137,7 @@ if (!exists(vtkVolumeClass)) {
         if (!supported) {
           InfoDialog "vtkGPUVolumeRayCastMapper rendering is not supported, trying vtkVolumeRayCastMapper ..."
           if (exists(::volmapper)) {
-            ::volmapper->Delete()
+            #::volmapper->Delete()
             del ::volmapper
           }
           ::volmapper = vtk.vtkVolumeRayCastMapper.New()
@@ -206,15 +206,15 @@ if (!exists(vtkVolumeClass)) {
       del ::renwininter # it is a reference, no call to Delete()
       del ::input
 
-      ::vol.Delete() # here should do it with variable smart pointers
+      #::vol.Delete() # here should do it with variable smart pointers
       del ::vol
-      ::volmapper.Delete()
+      #::volmapper.Delete()
       del ::volmapper
-      ::colorFun.Delete()
+      #::colorFun.Delete()
       del ::colorFun
-      ::opacityFun.Delete()
+      #::opacityFun.Delete()
       del ::opacityFun
-      ::property.Delete()
+      #::property.Delete()
       del ::property
     }
 
@@ -528,9 +528,18 @@ printn "--"
     #----------------------------
     proc ::ReCompute() \
     {
-        if exists(::colorFun)   { ::colorFun.Delete(); del ::colorFun; }
-        if exists(::opacityFun) { ::opacityFun.Delete(); del ::opacityFun; }
-        if exists(::property)   { ::property.Delete(); del ::property; }
+        if exists(::colorFun)   { 
+          #::colorFun.Delete();
+          del ::colorFun; 
+        }
+        if exists(::opacityFun) { 
+          #::opacityFun.Delete();
+          del ::opacityFun;
+        }
+        if exists(::property)   { 
+          #::property.Delete();
+          del ::property; 
+        }
 
         ::colorFun=vtk.vtkColorTransferFunction.New()
         ::opacityFun=vtk.vtkPiecewiseFunction.New()
@@ -754,7 +763,7 @@ printn "--"
         planes = vtk.vtkPlanes.New()
         ::box.GetPlanes(&planes)
         ::volmapper.SetClippingPlanes(&planes)
-        planes.Delete()
+        #planes.Delete()
         ::renwininter.Render()
       }
     }

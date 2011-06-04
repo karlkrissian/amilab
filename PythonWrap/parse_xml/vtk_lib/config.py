@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 # in VTK, the header file is the same as the classname
 def get_include_file(classname,filename):
   last = filename.rfind('/')
@@ -15,5 +16,14 @@ def get_var_filter():
 def wrap_public_fields(classname):
   return False
 
+def deleter_includefile():
+  return '#include "vtk_common.h"'
+
 def implement_deleter(classname):
-  return ", smartpointer_nodeleter<{0} >()".format(classname)
+  # Ad-hoc trying to avoid classes that don't inherit from vtkObjectBase
+  if classname.endswith("Info") or \
+      classname in ["vtkVariant","vtkTimeStamp","vtkIndent"] or \
+      classname.endswith("String"):
+    return ", smartpointer_nodeleter<{0} >()".format(classname)
+  else:
+    return ", vtk_deleter<{0} >()".format(classname)

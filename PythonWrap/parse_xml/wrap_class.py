@@ -952,15 +952,25 @@ def WrapClass(classname,include_file,inputfile):
     generate_html.obj.SetPublicMethods(fm) 
 
     # Smart Pointer Deleter
-    implement_deleter = ""
-    if (dh.abstract=='1') or (dh.public_members.destructor==None):
-      implement_deleter = ", smartpointer_nodeleter<{0} >()".format(config.ClassTypeDef(classname))
-    else:
-      if config.libmodule != None:
+    failed = False
+    if config.libmodule != None:
+      try:
+        implement_deleter = config.libmodule.implement_deleter(config.ClassTypeDef(classname))
+      except:
+        failed=True
+      if not failed:
+        # Check if a file needs to be included
         try:
-          implement_deleter = config.libmodule.implement_deleter(config.ClassTypeDef(classname))
+          fileinc = config.libmodule.deleter_includefile()
+          config.AddInclude(fileinc)
         except:
           pass
+    else:
+      failed=True
+    if failed:
+      implement_deleter = ""
+      if (dh.abstract=='1') or (dh.public_members.destructor==None):
+        implement_deleter = ", smartpointer_nodeleter<{0} >()".format(config.ClassTypeDef(classname))
 
     # Check for Copy Constructor
     pos=0
@@ -1009,7 +1019,11 @@ def WrapClass(classname,include_file,inputfile):
       implement_type += "// Implementing CreateVar for AMILabType\n"
       implement_type += "BasicVariable::ptr AMILabType<{0} >::CreateVar( {0}* val, bool nodeleter)\n".format(classname)
       implement_type += "{ \n"
-      implement_type += "  boost::shared_ptr<{0} > obj_ptr(val {1});\n".format(classname,implement_deleter)
+      implement_type += "    boost::shared_ptr<{0} > obj_ptr;\n".format(classname)
+      implement_type += "  if (nodeleter)\n"
+      implement_type += "    obj_ptr = boost::shared_ptr<{0} >(val, smartpointer_nodeleter<{0} >());\n".format(classname)
+      implement_type += "  else\n"
+      implement_type += "    obj_ptr = boost::shared_ptr<{0} >(val {1});\n".format(classname,implement_deleter)
       implement_type += "  return AMILabType<{0} >::CreateVarFromSmtPtr(obj_ptr);\n".format(classname)
       implement_type += "}\n"
               

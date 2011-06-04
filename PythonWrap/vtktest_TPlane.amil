@@ -5,7 +5,7 @@
 
 # This simple example shows how to do basic texture mapping.
 
-import_vtk
+#import_vtk
 func "Common/ScriptGui"
 
 Class vtktest_TPlaneClass : public ScriptGui \
@@ -45,8 +45,10 @@ Class vtktest_TPlaneClass : public ScriptGui \
     ::vtkdir = vtk.vtkDirectory.New()
     printn " inputdir_name = %1%" % ::inputdir_name
     wxf = wx.wxFileName(::inputdir_name)
-    dirname=wxf.GetVolume().c_str()+":"+wxf.GetFullPath(wx.wxPATH_UNIX).c_str()+"/"
-    printn "dirname %1%" % dirname
+    volume = wxf.GetVolume().c_str()
+    if volume!="" { volume +=":"; } 
+    dirname=volume+wxf.GetFullPath(wx.wxPATH_UNIX).c_str()+"/"
+    printn "dirname '%1%'" % dirname
     res = ::vtkdir.Open(dirname)
     ::vtkreaderfactory = vtk.vtkImageReader2Factory.New()
     if (res==1) {
@@ -126,8 +128,10 @@ Class vtktest_TPlaneClass : public ScriptGui \
           planeActor.SetTexture(&atext)
           ::PlaneActors.push_back(&planeActor)
           del planeActor
-          planeMapper.Delete(); del planeMapper
-          plane.Delete(); del plane
+          #planeMapper.Delete(); 
+          del planeMapper
+          #plane.Delete(); 
+          del plane
           atext.ReleaseDataFlagOn()
           #atext.Delete();
           printn "Texture ref count %1%" % atext.GetReferenceCount()
@@ -145,7 +149,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
       printn n1
       for n=0 to size-1 {
         x = n % n1
-        y = floor(n/n1)
+        y = floor((FLOAT)n/n1)
         #::PlaneActors[n].RotateX(5*x)
         #::PlaneActors[n].RotateY(5*y)
         ::PlaneActors[n].SetPosition(1.05*x,1.05*y,0)
@@ -178,7 +182,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
     ::panel.SetSizer(&::sbox_sizer)
     # create widget here
 
-    ::renwin_interact = global::wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+    ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
       #::renwin_interact = wxVTKFrame(&panel,-1)
 
     ::renwin_interact.UseCaptureMouseOn()
@@ -234,12 +238,12 @@ Class vtktest_TPlaneClass : public ScriptGui \
     # Add the actors to the renderer, set the background and size
     if (::PlaneActors.size()==0) {
       ::ren.AddActor(&planeActor)
-      planeActor.Delete()
+      #planeActor.Delete()
     } else {
       for n = 0 to ::PlaneActors.size()-1 {
         ::ren.AddActor(&::PlaneActors[n])
         # Decrease reference counter
-        ::PlaneActors[n].Delete()
+        #::PlaneActors[n].Delete()
       }
     }
     ::ren.SetBackground(0.1, 0.2, 0.4)
@@ -256,7 +260,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
     #iren.Initialize()
     interact = vtk.vtkInteractorStyleTrackballCamera.New()
     ::renwin_interact.SetInteractorStyle(&interact)
-    interact.Delete()
+    #interact.Delete()
     ::renwin.Render()
     #iren.Start()
   }
@@ -331,7 +335,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
         ::PlaneActors[n].SetTexture(&::inittexture)
         ::fulltexture.RemoveInputConnection(0,&::vtkReaders[n].GetOutputPort())
         ::fulltexture.ReleaseGraphicsResources(&::renwin)
-        ::fulltexture.Delete()
+        #::fulltexture.Delete()
         del ::inittexture
         del ::fulltexture
   
@@ -426,9 +430,9 @@ Class vtktest_TPlaneClass : public ScriptGui \
       #  ::PlaneActors[n].Delete()
       #}
       if (exists(::PlaneActors)) {
-        for n=0 to ::PlaneActors.size()-1 {
-          ::PlaneActors[n].Delete()
-        }
+        #for n=0 to ::PlaneActors.size()-1 {
+        #  ::PlaneActors[n].Delete()
+        #}
         ::PlaneActors.clear()
       }
       if (exists(::ImResample)) {
@@ -444,7 +448,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
     #----------------------------
     proc ::Gui() {
     
-      ::win = global::ami_import.ParamPanel("vtkTexture 2D")
+      ::win = ParamPanel("vtkTexture 2D")
       
       ::win.BeginBook()
     
