@@ -1362,7 +1362,7 @@ def WrapClass(classname,include_file,inputfile):
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     local_include_file = FindIncludeFile(classname,dh.fileid)
-    print "local include file {0}".format(local_include_file)
+    #print "local include file {0}".format(local_include_file)
     #local_include_file = '#include "{0}"'.format(local_include_file)
     # in case of template, check template parameters for includes
     m = re.match(r"([^<]*)<(.*)>",classname)

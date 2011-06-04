@@ -224,7 +224,10 @@ class generate_html:
       if m.usedname=="operator not available":
         mtext = "not avail"
       else:
-        mtext = m.usedname
+        if m.usedname in config.ami_tokens.values():
+          mtext = '_'+m.usedname
+        else:
+          mtext = m.usedname
       if not m.iswrapped:
         mtext = "/{0}/".format(mtext)
       text += "<em>{0}</em></A>".format(mtext)
