@@ -73,9 +73,6 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
 
     void AddMethods(WrapClass<wxDrawingWindow>::ptr this_ptr )
     {
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
-      parent_obj->AddMethods(parent_obj);
 
       AddVar_SetXLimits(            this_ptr);
       AddVar_SetYLimits(            this_ptr);
@@ -101,6 +98,20 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
       AddVar_GetControlPoints(      this_ptr);
       AddVar_GetCurves(             this_ptr);
       AddVar_GetControlledCurves(   this_ptr);
+
+      // Add public fields 
+      AMIObject::ptr tmpobj(amiobject.lock());
+      if (!tmpobj.get()) return;
+      Variables::ptr context(tmpobj->GetContext());
+
+      // Add base parent wxWindow
+      boost::shared_ptr<wxWindow > parent_wxWindow(  boost::dynamic_pointer_cast<wxWindow >(this_ptr->GetObj()));
+      BasicVariable::ptr var_wxWindow = AMILabType<wxWindow>::CreateVarFromSmtPtr(parent_wxWindow);
+      context->AddVar("wxWindow",var_wxWindow);
+      // Set as a default context
+      Variable<AMIObject>::ptr obj_wxWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxWindow);
+      context->AddDefault(obj_wxWindow->Pointer()->GetContext());
+
     }
 
 };

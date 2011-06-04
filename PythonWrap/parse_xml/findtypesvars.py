@@ -131,21 +131,29 @@ class FindTypesAndVariables(handler.ContentHandler):
     if self.ParseClass(name,attrs):
       return
     
-    # Check for public members of user-given classes
-    if self.parse_public_members.startElement(name,attrs):
-      # if parsing has found the right contexts, and there is nothing else to process
-      return
+    # don't parse public members if only looking at the class hierarchy
+    if args.val.ancestors == []:
+      # Check for public members of user-given classes
+      if self.parse_public_members.startElement(name,attrs):
+        # if parsing has found the right contexts, and there is nothing else to process
+        return
     
-    # Deal with these enums after the possible classes enum members
-    if self.inenum and name =="EnumValue":
-      name = attrs.get('name', None)
-      val = attrs.get('init',0)
-      config.enumvalues[name]=self.argtype.GetContext()
-      self.argtype._values[name]=val
-      return
+    # don't parse enums if only looking at the class hierarchy
+    if args.val.ancestors == []:
+      # Deal with these enums after the possible classes enum members
+      if self.inenum and name =="EnumValue":
+        name = attrs.get('name', None)
+        val = attrs.get('init',0)
+        config.enumvalues[name]=self.argtype.GetContext()
+        self.argtype._values[name]=val
+        return
     
-    # ignore elements that cannot be argument types
-    if not (name in typelist): return
+    # don't parse non-classes types if only looking at the class hierarchy
+    if args.val.ancestors == []:
+      # ignore elements that cannot be argument types
+      if not (name in typelist): return
+    else:
+      if not (name in config.class_types): return
 
     # first check for variable
     if name =="Enumeration": self.inenum = True
@@ -193,5 +201,6 @@ class FindTypesAndVariables(handler.ContentHandler):
     if (self.inclass==True) and (name =="Class"):
       #print self.argtype.bases
       self.inclass=False
-    self.parse_public_members.endElement(name)
+    if args.val.ancestors == []:
+      self.parse_public_members.endElement(name)
 

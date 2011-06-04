@@ -11,6 +11,7 @@ Class VariablesUtilsClass {
   {
     del ::cv
     del ::const_builtin
+    del ::cc
     ::cc = &cc
   }
 
