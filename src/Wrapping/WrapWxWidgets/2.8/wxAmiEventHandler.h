@@ -28,6 +28,7 @@ class wxAmiEventHandler: public wxEvtHandler
   AMIFunction* callback_function;
 
   bool SendListEvent;
+  bool SendCommandEvent;
 
 //   Variable<AMIFunction>::ptr var;
 //   int  n = 0;
@@ -47,26 +48,35 @@ class wxAmiEventHandler: public wxEvtHandler
     {
       callback_function = f;
       SendListEvent=false;
+      SendCommandEvent=false;
     }
     
     void SetSendListEvent(bool v) { SendListEvent = v; }
     bool GetSendListEvent() { return SendListEvent;}
 
+    void SetSendCommandEvent(bool v) { SendCommandEvent = v; }
+    bool GetSendCommandEvent()       { return SendCommandEvent;}
+
     void OnEvent(wxCommandEvent& event)
     {
       if (callback_function!=NULL)
       {
-        if (!SendListEvent) {
-          // give the event in parameter (would be nice ...)!!!
-          CB_ParamWin((void*)callback_function);
-        } else {
+        if (SendCommandEvent){
+          ParamList::ptr p(new ParamList());
+          // Add the event to the list
+          BasicVariable::ptr v = AMILabType<wxCommandEvent>::CreateVar((wxCommandEvent*)&event,true);
+          p->AddParam(v);
+          CallAmiFunction(callback_function,p);
+        } else
+        if (SendListEvent) {
           ParamList::ptr p(new ParamList());
           // Add the event to the list
           BasicVariable::ptr v = AMILabType<wxListEvent>::CreateVar((wxListEvent*)&event,true);
           p->AddParam(v);
-
           CallAmiFunction(callback_function,p);
-        }
+        } else
+          // give the event in parameter (would be nice ...)!!!
+          CB_ParamWin((void*)callback_function);
       }
       else
         wxLogMessage(wxT("Callback function not available"));
