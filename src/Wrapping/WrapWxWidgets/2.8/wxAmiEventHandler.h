@@ -11,7 +11,17 @@
   AMI_DECLARE_TYPE(wxCommandEvent)
 #endif
 
-#ifndef wxListEvent_declared
+#ifndef wxMouseEvent_declared
+  #define wxMouseEvent_declared
+  AMI_DECLARE_TYPE(wxMouseEvent)
+#endif
+
+#ifndef wxKeyEvent_declared
+  #define wxKeyEvent_declared
+  AMI_DECLARE_TYPE(wxKeyEvent)
+#endif
+
+  #ifndef wxListEvent_declared
   #define wxListEvent_declared
   AMI_DECLARE_TYPE(wxListEvent)
 #endif
@@ -86,6 +96,35 @@ class wxAmiEventHandler: public wxEvtHandler
       event.Skip();
     }
     
+    void OnMouseEvent(wxMouseEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxMouseEvent>::CreateVar((wxMouseEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+    
+    
+    void OnKeyEvent(wxKeyEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxKeyEvent>::CreateVar((wxKeyEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+
 //     void OnListEvent(wxListEvent& event)
 //     {
 //       if (callback_function!=NULL)
@@ -113,6 +152,18 @@ class wxAmiEventHandler: public wxEvtHandler
     wxObjectEventFunction* GetEventFunction() {
       // TODO: delete the new allocation
       eventfunc = new wxObjectEventFunction(wxCommandEventHandler(wxAmiEventHandler::OnEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetMouseEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxMouseEventHandler(wxAmiEventHandler::OnMouseEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetKeyEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxCharEventHandler(wxAmiEventHandler::OnKeyEvent));
       return eventfunc;
     }
 
