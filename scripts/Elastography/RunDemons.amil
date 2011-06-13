@@ -4,8 +4,8 @@
 proc MSD_ReadGT() {
   global_new
 
-  D1u = IO.ReadRawImage3D(300,300,1,FLOAT,0,"D4uf.raw")
-  D1v = IO.ReadRawImage3D(300,300,1,FLOAT,0,"D4vf.raw")
+  D1u = IO.ReadRawImage3D(300,300,1,FLOAT.val,0,"D4uf.raw")
+  D1v = IO.ReadRawImage3D(300,300,1,FLOAT.val,0,"D4vf.raw")
 
   D1u_r = Resize(D1u,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
   D1v_r = Resize(D1v,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
@@ -81,8 +81,8 @@ proc MSD_run() {
   sh demon_cmd
 
   // Read the result
-  resx = IO.ReadRawImage3D(i1.tx,i1.ty,i1.tz,FLOAT,0,result_X_name)
-  resy = IO.ReadRawImage3D(i1.tx,i1.ty,i1.tz,FLOAT,0,result_Y_name)
+  resx = IO.ReadRawImage3D(i1.tx,i1.ty,i1.tz,FLOAT.val,0,result_X_name)
+  resy = IO.ReadRawImage3D(i1.tx,i1.ty,i1.tz,FLOAT.val,0,result_Y_name)
 
   res = Image(FLOAT,i1.tx,i1.ty,i1.tz,3)
   res.SetComponent( 0, resx)

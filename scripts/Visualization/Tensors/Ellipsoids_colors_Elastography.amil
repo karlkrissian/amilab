@@ -9,22 +9,22 @@ directory="/home/karl/projects/data/Elastography/Raw_Cub_41pt/"
 
 factor_init=10000000
 
-v1 = IO.ReadRawVectImage3D(dim,dim,dim,FLOAT,3,0,directory+"H1v.raw")
+v1 = IO.ReadRawVectImage3D(dim,dim,dim,FLOAT.val,3,0,directory+"H1v.raw")
 v1 = v1*factor_init
-v2 = IO.ReadRawVectImage3D(dim,dim,dim,FLOAT,3,0,directory+"H2v.raw")
+v2 = IO.ReadRawVectImage3D(dim,dim,dim,FLOAT.val,3,0,directory+"H2v.raw")
 v2 = v2*factor_init
-v3 = IO.ReadRawVectImage3D(dim,dim,dim,FLOAT,3,0,directory+"H3v.raw")
+v3 = IO.ReadRawVectImage3D(dim,dim,dim,FLOAT.val,3,0,directory+"H3v.raw")
 v3 = v3*factor_init
 
 #v1 = Image "v1data.vtk"
 #v2 = Image "v2data.vtk"
 #v3 = Image "v3data.vtk"
 
-D1 = IO.ReadRawImage3D(dim,dim,dim,FLOAT,0,directory+"D1.raw")
+D1 = IO.ReadRawImage3D(dim,dim,dim,FLOAT.val,0,directory+"D1.raw")
 D1 = D1*factor_init
-D2 = IO.ReadRawImage3D(dim,dim,dim,FLOAT,0,directory+"D2.raw")
+D2 = IO.ReadRawImage3D(dim,dim,dim,FLOAT.val,0,directory+"D2.raw")
 D2 = D2*factor_init
-D3 = IO.ReadRawImage3D(dim,dim,dim,FLOAT,0,directory+"D3.raw")
+D3 = IO.ReadRawImage3D(dim,dim,dim,FLOAT.val,0,directory+"D3.raw")
 D3 = D3*factor_init
 
 nv1 = norm(v1); 

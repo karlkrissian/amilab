@@ -5,8 +5,8 @@ gtname=$1
 
 i1_uchar = Image "input1.ami.gz"
 
-  D1u = IO.ReadRawImage2D(300,300,FLOAT,0,gtname+"uf.raw")
-  D1v = IO.ReadRawImage2D(300,300,FLOAT,0,gtname+"vf.raw")
+  D1u = IO.ReadRawImage2D(300,300,FLOAT.val,0,gtname+"uf.raw")
+  D1v = IO.ReadRawImage2D(300,300,FLOAT.val,0,gtname+"vf.raw")
 
   D1u_r = Resize(D1u,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
   D1v_r = Resize(D1v,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)

@@ -368,7 +368,9 @@ Class vtktest_TPlaneClass : public ScriptGui \
     if ((::selected_image>=0) && (::selected_image<::PlaneActors.size())) \
         && (::showing==false) {
       ::showing = true
+      del ::evh
       ::evh = wx.wxAmiEventHandler(&::CB_Show)
+      del ::timer
       ::timer = wx.wxTimer(&::evh)
       ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
       ::interval = 0.1
@@ -384,6 +386,7 @@ Class vtktest_TPlaneClass : public ScriptGui \
       ::finalpos[2] = 0.05
       ::finalscale = vector_double(3,scale)
 
+      del ::initcam
       ::initcam = vtk.vtkCamera.New()
       ::initcam.DeepCopy(&::ren.GetActiveCamera())
 
@@ -402,7 +405,9 @@ Class vtktest_TPlaneClass : public ScriptGui \
 #      ::ImResample[::selected_image].SetAxisMagnificationFactor(1,1)
 
       n = ::selected_image
+      del ::inittexture
       ::inittexture = ::PlaneActors[n].GetTexture()
+      del ::fulltexture
       ::fulltexture = vtk.vtkTexture.New()
       ::vtkreader.GetOutput().ReleaseDataFlagOn()
       ::vtkReaders[n].Update()

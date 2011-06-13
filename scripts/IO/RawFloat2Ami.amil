@@ -3,7 +3,7 @@ dimx = atof($2)
 dimy = atof($3)
 dimz = atof($4)
 
-i = IO.ReadRawImage3D(dimx,dimy,dimz,FLOAT,0,$1)
+i = IO.ReadRawImage3D(dimx,dimy,dimz,FLOAT.val,0,$1)
 
 i.save $1-".raw"+".ami.gz"
 quit

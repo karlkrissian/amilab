@@ -1,4 +1,3 @@
-i = Image(WT_FLOAT,100,100,1)
 i = Image(FLOAT,100,100,1)
 Help image
 i.initvalue(0)
