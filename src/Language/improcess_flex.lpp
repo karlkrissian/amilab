@@ -298,8 +298,6 @@ quit               return(token::QUIT);
 Image              return(token::T_Image); /*{Image,T_Image}*/
 BrowseImage        return(token::T_BrowseImage); /*{BrowseImage,T_BrowseImage}*/
 
-ReadRawImages      return(token::T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}
-Show               return(token::SHOW); */
 
 show               return(token::SHOW); /*Hide               return(token::T_HIDE); {Hide,T_HIDE}*/
 

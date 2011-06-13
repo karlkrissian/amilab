@@ -693,6 +693,8 @@ IF(AMI_USE_VTK)
     vtkRendering 
     vtkVolumeRendering 
     vtkWidgets
+    vtkViews
+    vtkCharts
   )
 
 ELSE(AMI_USE_VTK)

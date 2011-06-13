@@ -424,7 +424,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token END_INSTRUCTION
 
 %token T_Image T_BrowseImage
-%token T_ReadRawImages
+//%token T_ReadRawImages
 //%token T_Transform
 %token SHOW HELP QUIT T_HIDE
 %token PRINT PRINTN
