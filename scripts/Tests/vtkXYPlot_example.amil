@@ -1,0 +1,61 @@
+  # Create a table with some points in it
+  table = vtk.vtkTable.New()
+ 
+  arrX = vtk.vtkFloatArray.New()
+  arrX._SetName("X Axis")
+  table.AddColumn(&arrX)
+ 
+  arrC = vtk.vtkFloatArray.New()
+  arrC._SetName("Cosine")
+  table.AddColumn(&arrC)
+ 
+  arrS = vtk.vtkFloatArray.New()
+  arrS._SetName("Sine")
+  table.AddColumn(&arrS)
+ 
+ printn "Fill in the table with some example values"
+  # Fill in the table with some example values
+  numPoints = 69
+  _inc = 7.5 / (numPoints-1)
+  table.SetNumberOfRows(numPoints)
+  for  i = 0 to numPoints-1  {
+    printn "point %1%" % i
+    printn 0
+    table.SetValue(i, 0, &vtk.vtkVariant.vtkVariant_16((DOUBLE)i * _inc))
+    printn 1
+    table.SetValue(i, 1, &vtk.vtkVariant.vtkVariant_16(cos((FLOAT)i * _inc)))
+    printn 2
+    table.SetValue(i, 2, &vtk.vtkVariant.vtkVariant_16(sin((FLOAT)i * _inc)))
+  }
+ 
+  printn "Set up the view"
+  # Set up the view
+  view = vtk.vtkContextView.New()
+  view.GetRenderer().SetBackground(1.0, 1.0, 1.0)
+ 
+  printn "Add multiple line plots"
+  # Add multiple line plots, setting the colors etc
+  chart = vtk.vtkChartXY.New()
+  view.GetScene().AddItem(&chart)
+  printn "first line param"
+  line = chart.AddPlot(vtk.vtkChart.LINE)
+printn "set input"
+  line.SetInput_3(&table, 0, 1)
+printn "set color"
+  line.SetColor(0, 255, 0, 255)
+printn "set width"
+  line.SetWidth(1.0)
+  del line
+  printn "second line param"
+  line = chart.AddPlot(vtk.vtkChart.LINE)
+  line.SetInput_3(&table, 0, 2)
+  line.SetColor(255, 0, 0, 255)
+  line.SetWidth(5.0)
+ 
+  printn "Set up an interactor and start"
+  # Set up an interactor and start
+  renderWindowInteractor = vtk.vtkRenderWindowInteractor.New()
+  renderWindowInteractor.SetRenderWindow(&view.GetRenderWindow())
+  renderWindowInteractor.Initialize()
+  renderWindowInteractor.Start()
+ 

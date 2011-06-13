@@ -1,0 +1,205 @@
+
+func "Common/ScriptGui"
+
+if (!exists(vtkXYPlotClass)) {
+
+  Class vtkXYPlotClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::html_filename = GetScriptsDir+"/vtkXYPlot/Doc/vtkXYPlot/index.html"
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      ::RunChartXY()
+      #::RunXYPlot()
+    }
+
+    #-----------------------------------------------
+    proc ::RunChartXY() \
+    {
+      # Create a table with some points in it
+      ::table = vtk.vtkTable.New()
+    
+      arrX = vtk.vtkFloatArray.New()
+      arrX._SetName("X Axis")
+      ::table.AddColumn(&arrX)
+    
+      arrC = vtk.vtkFloatArray.New()
+      arrC._SetName("Cosine")
+      ::table.AddColumn(&arrC)
+    
+      arrS = vtk.vtkFloatArray.New()
+      arrS._SetName("Sine")
+      ::table.AddColumn(&arrS)
+    
+      printn "Fill in the table with some example values"
+      # Fill in the table with some example values
+      numPoints = 69
+      _inc = 7.5 / (numPoints-1)
+      ::table.SetNumberOfRows(numPoints)
+      for  i = 0 to numPoints-1  {
+        printn "point %1%" % i
+        printn 0
+        ::table.SetValue(i, 0, &vtk.vtkVariant.vtkVariant_16((DOUBLE)i * _inc))
+        printn 1
+        ::table.SetValue(i, 1, &vtk.vtkVariant.vtkVariant_16(cos((FLOAT)i * _inc)))
+        printn 2
+        ::table.SetValue(i, 2, &vtk.vtkVariant.vtkVariant_16(sin((FLOAT)i * _inc)))
+      }
+    
+      printn "Set up the view"
+
+      printn "Add multiple line plots"
+      # Add multiple line plots, setting the colors etc
+      ::chart = vtk.vtkChartXY.New()
+      ::view.GetScene().AddItem(&::chart)
+      printn "first line param"
+      line = ::chart.AddPlot(vtk.vtkChart.LINE)
+      printn "set input"
+      line.SetInput_3(&::table, 0, 1)
+      printn "set color"
+      line.SetColor(0, 255, 0, 255)
+      printn "set width"
+      line.SetWidth(1.0)
+      del line
+      printn "second line param"
+      line = ::chart.AddPlot(vtk.vtkChart.BAR)
+      line.SetInput_3(&::table, 0, 2)
+      line.SetColor(255, 0, 0, 255)
+      #line.SetWidth(5.0)
+    
+      printn "Set up an interactor and start"
+      # Set up an interactor and start
+#  renderWindowInteractor = vtk.vtkRenderWindowInteractor.New()
+#  renderWindowInteractor.UseCaptureMouseOn()
+#  renderWindowInteractor.Enable(true)
+#  renderWindowInteractor.SetRenderWindow(&::view.GetRenderWindow())
+#  renderWindowInteractor.Initialize()
+#  renderWindowInteractor.Start()
+
+    }
+
+    #-----------------------------------------------
+    proc ::RunXYPlot() \
+    {
+      ::plot = vtk.vtkXYPlotActor.New()
+      ::renwin   = ::renwin_interact2.GetRenderWindow()
+      ::renderer = vtk.vtkRenderer.New()
+      ::renderer.SetBackground(1,1,1)
+      ::renwin.AddRenderer(&::renderer)
+      ::renderer.SetViewport( 0.5, 0, 1, 1);
+      ::renderer.AddActor2D(&::plot)
+      ::plot.SetPlotRange(0,0,1,1)
+      #::plot.AddDataObjectInput(&::table)
+
+      arrX = vtk.vtkFloatArray.New()
+      arrX._SetName("X Axis")
+      arrC = vtk.vtkFloatArray.New()
+      arrC._SetName("Cosine")
+
+      numPoints = 69
+      _inc = 7.5 / (numPoints-1)
+      for  i = 0 to numPoints-1  {
+        arrX.InsertNextValue((DOUBLE)i * _inc)
+        arrC.InsertNextValue(cos((DOUBLE)i * _inc))
+      }
+      ::plot.AddInput_2(&arrX)
+      ::plot.AddInput_2(&arrC)
+      ::plot.SetTitle("Pressure vs. Arc Length (Zoomed View)")
+      ::plot.SetXValuesToIndex ()
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("vtkXYPlot",&::parent_panel)
+      } else {
+        ::win = ParamPanel("vtkXYPlot")
+      }
+      
+        # add Drawing Window
+        d = ::win.CurrentParent()
+        ::renwin_interact1 = vtktools.wxVTKRenderWindowInteractor(&d,-1)
+        ::renwin_interact1.SetMinSize(&wx.wxSize(100,200))
+        ::win.AddWidget(&::renwin_interact1,0)
+        ::view = vtk.vtkContextView.New()
+        ::view.SetInteractor(&::renwin_interact1)
+        #::view.SetInteractionModeTo2D()
+        ::renwin_interact1.UseCaptureMouseOn()
+        ::renwin_interact1.Enable(true)
+
+        #::renwin_interact2 = vtktools.wxVTKRenderWindowInteractor(&d,-1)
+        #interact = vtk.vtkXYPlotWidget.New()
+        #::renwin_interact2.SetInteractorStyle(&interact)
+        #::renwin_interact2.SetMinSize(&wx.wxSize(100,200))
+        #::win.AddWidget(&::renwin_interact2,0)
+        #::renwin_interact2.UseCaptureMouseOn()
+        #::renwin_interact2.Enable(true)
+
+      ::win.BeginBook()
+
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          ::win.AddLabel("Info:","Set your parameters here")
+
+        ::win.AddPage("Run")
+          ::win.AddButton("Run Filter",::Run)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

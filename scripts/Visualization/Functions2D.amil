@@ -243,15 +243,10 @@ if (!exists(Functions2DClass)) {
       
 
       # add Drawing Window
-
       d = ::win.CurrentParent()
-
       ::dw = wxDrawingWindow(&d)
-
       ::dw.SetMinSize(&wx.wxSize(50,100))
-
       ::win.AddWidget(&::dw,0)
-
       ::dw.SetBackgroundColour(&wx.wxColour(255,255,255))
 
 
