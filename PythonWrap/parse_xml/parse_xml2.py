@@ -562,6 +562,8 @@ if __name__ == '__main__':
       # Add variables and macros
       if args.val.libname=="wx":
         wx_lib.create_macros.CreateMacros(inputfile,f)
+      if args.val.libname=="vtk":
+        vtk_lib.create_macros.CreateMacros(inputfile,f)
       f.write("}\n")
       f.write("\n")
       

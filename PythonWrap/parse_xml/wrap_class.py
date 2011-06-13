@@ -1010,6 +1010,7 @@ def WrapClass(classname,include_file,inputfile):
         implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(config.ClassTypeDef(classname))
     else:
       implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(config.ClassTypeDef(classname))
+      print "{0} is template {1}".format(classname,IsTemplate(classname))
       # need to implement CreateVar ...
       if (IsTemplate(classname) and args.val.templates) or IsWithinContext(classname):
         implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(config.ClassTypeDef(classname),config.ClassUsedName(classname))

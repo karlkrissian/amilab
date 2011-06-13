@@ -75,6 +75,8 @@ members_blacklist=[
   'vtkPolyData::GetCellPoints',  # idem
   'vtkSource::GetOutputs',       # double pointer
   'vtkProcessObject::GetInputs', # idem
+  'vtkPlot::GetProperty', # seems not implemented
+  'vtkPlot::SetProperty', # seems not implemented
   ]
 
 
