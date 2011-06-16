@@ -37,7 +37,7 @@ extern void CB_delete_varlist( void* var);
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<DessinImage>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<DessinImage>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_DessinImage::wrap_DessinImage construct;
   return construct.CallMember(p);

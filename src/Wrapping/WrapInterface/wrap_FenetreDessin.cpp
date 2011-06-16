@@ -26,7 +26,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<FenetreDessin>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<FenetreDessin>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_FenetreDessin::wrap_FenetreDessin construct;
   return construct.CallMember(p);

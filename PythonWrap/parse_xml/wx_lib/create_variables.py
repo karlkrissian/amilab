@@ -13,16 +13,19 @@ import args
 
 
 def CreateVariables(outputfile,config):
-
   found_variables=[]
   for v in config.variables.keys():
     # conditions 1: start with wxEVT, 2: is constant, 3: is a direct supported type
     namecheck = re.match(r"wxEVT[a-zA-Z0-0_]*",v)
     argtype = config.types[config.variables[v]]
-    typeok  = argtype.IsConst() and argtype.GetString() in config.available_types
-    if (namecheck and typeok):
-      #print "Found variable : ", v, " of type : ", argtype.GetString()
-      found_variables.append(v)
+    typeok  = argtype.IsConst() and \
+      (argtype.GetString() in config.available_types or \
+       argtype.GetString() in config.available_classes)
+    if namecheck:
+      #print "Type '{0}' for var {1}".format(argtype.GetString(),v)
+      if typeok:
+        #print "Found variable : ", v, " of type : ", argtype.GetString()
+        found_variables.append(v)
     
   found_variables.sort()
   # Create the variables context
@@ -47,8 +50,14 @@ def CreateVariables(outputfile,config):
   # add all the values
   outputfile.write( "\n")
   for v in found_variables:
-    outputfile.write( "  ADD_{0}_VAR({1},{2});\n".format(args.val.libname.upper(),\
-      config.types[config.variables[v]].GetString(), v))
+    vartypename=config.types[config.variables[v]].GetString()
+    # avoid conversion to int for events ...
+    if vartypename.startswith("wxEventTypeTag"):
+      outputfile.write( "  ADD_{0}_VAR({1},{2});\n".format(args.val.libname.upper(),\
+                        'int', v))
+    else:
+      outputfile.write( "  ADD_{0}_VAR({1},{2});\n".format(args.val.libname.upper(),\
+                        vartypename, v))
   outputfile.write( "\n")
   outputfile.write( "  // Add variables to context, and add to default contexts\n")
   outputfile.write( "  context->AddVar<AMIObject>(obj_vars->GetName().c_str(),obj_vars,context);\n")

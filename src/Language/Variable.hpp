@@ -77,7 +77,7 @@ template<typename T>
 class AMILabType {
     public:
     static std::string name_as_string() { return std::string("unknown"); }
-    static boost::shared_ptr<T> GetValue(BasicVariable::ptr var, bool noconstr=false)
+    static boost::shared_ptr<T> GetValue(BasicVariable::ptr var, bool noconstr=false, bool quiet=false)
     { return boost::shared_ptr<T>(); }
 
     static BasicVariable::ptr CreateVarFromSmtPtr(boost::shared_ptr<T>& val);
@@ -100,6 +100,7 @@ class AMILabType {
                   ParamList*p,
                   int& num,
                   bool required=false,
+                  bool noconstr=false,
                   bool quiet=false) 
     { return false; }
 
@@ -121,7 +122,7 @@ class AMILabType {
   { \
     public: \
 	    static std::string name_as_string();\
-      static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false);\
+      static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false, bool quiet=false);\
       static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
       static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
       static BasicVariable::ptr CreateVar(const type& val);\
@@ -131,6 +132,7 @@ class AMILabType {
                     ParamList*p,\
                     int& num,\
                     bool required=false,\
+                    bool noconstr=false,\
                     bool quiet=false);\
       \
       static bool get_val_smtptr_param(\
@@ -148,12 +150,13 @@ class AMILabType {
                     ParamList*p,\
                     int& num,\
                     bool required,\
+                    bool noconstr,\
                     bool quiet)\
     { \
       BasicVariable::ptr varparam;\
       bool res = get_next_param(varparam,p,num,required,quiet);\
       if (!varparam.get())  return res;\
-      boost::shared_ptr<type> val_ptr = AMILabType<type>::GetValue(varparam);\
+      boost::shared_ptr<type> val_ptr = AMILabType<type>::GetValue(varparam,noconstr,quiet);\
       if (!val_ptr.get()) {\
         if (!quiet) { \
           ami::format f("Problem with %1% parameter.");\
@@ -176,7 +179,7 @@ class AMILabType {
       BasicVariable::ptr temp;\
       bool res = get_next_param(temp,p,num,required,quiet);\
       if (!temp.get()) return res;\
-      boost::shared_ptr<type> val_ptr = AMILabType<type>::GetValue(temp,noconstr);\
+      boost::shared_ptr<type> val_ptr = AMILabType<type>::GetValue(temp,noconstr,quiet);\
       if (!val_ptr.get()) {\
         if (!quiet) {\
           ami::format f("Parameter %1% failed.");\
@@ -191,7 +194,7 @@ class AMILabType {
 #define AMI_DEFINE_BASICTYPE(type) \
 	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
     \
-    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr)  \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr, bool quiet)  \
     { \
       if (!var.get()) \
       {\
@@ -245,7 +248,7 @@ class AMILabType {
       return name; \
     } \
     \
-    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr)  \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr,bool quiet)  \
     { \
       if (!var.get()) \
       {\
@@ -257,7 +260,7 @@ class AMILabType {
         /* Try with the constructor */ \
         ParamList::ptr param(new ParamList()); \
         param->AddParam(var); \
-        BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get());\
+        BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get(),quiet);\
         tmp = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);\
       } else { FILE_MESSAGE("first cast ok"); }\
       if (tmp.get()) { \

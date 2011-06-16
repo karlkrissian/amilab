@@ -37,6 +37,7 @@ class wrap_##classname##methodname : public WrapClassMember { \
     wrap_##classname##methodname(const classname::ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -65,6 +66,7 @@ class wrap_##methodname : public WrapClassMember { \
     wrap_##methodname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -99,6 +101,7 @@ class wrap_Set##varname : public WrapClassMember { \
     wrap_Set##varname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       ADDPARAMCOMMENT_TYPE(type,description_str); \
     } \
     BasicVariable::ptr CallMember(ParamList* p) { \
@@ -126,6 +129,7 @@ class wrap_Get##varname : public WrapClassMember { \
     wrap_Get##varname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       ami::format f("Returns a variable of type %1%."); \
       return_comments = (f % AMILabType<type>::name_as_string().c_str()).GetString(); \
     } \
@@ -163,6 +167,7 @@ class wrap_##methodname : public WrapClassMember { \
   public: \
     wrap_##methodname() { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -189,6 +194,7 @@ class wrap_static_##methodname : public WrapClassMember { \
   public: \
     wrap_static_##methodname() { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -228,6 +234,7 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 // simple return with empty variable for a class member
 #define ClassReturnEmptyVar  {\
     Set_arg_failure(true);\
+    Set_quiet(false);\
     return BasicVariable::ptr();\
     }
 
@@ -351,7 +358,7 @@ class WrapClass: public virtual WrapClassBase
     /// and avoid multiple smart pointers inside
 
     // Will call the constructor based on a ParamList
-    static BasicVariable::ptr CreateVar(ParamList*);
+    static BasicVariable::ptr CreateVar(ParamList*, bool quiet=false);
     
     //
     virtual void AddMethods(boost::shared_ptr<WrapClass<T> > this_ptr ) = 0;
@@ -403,6 +410,7 @@ class WrapClassMember {
     std::string return_comments;
     std::string return_type;
     bool arg_failure;
+    bool quiet;
 
   public:
     virtual ~WrapClassMember() = 0;
@@ -425,6 +433,9 @@ class WrapClassMember {
     
     void Set_arg_failure(bool const & f) { arg_failure=f;}
     bool Get_arg_failure() { return arg_failure;}
+
+    void Set_quiet(bool const & q) { quiet=q;}
+
     virtual const std::string GetDescription()  { return std::string();};
     virtual const std::string GetFunctionName() { return std::string();};
 };

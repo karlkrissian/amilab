@@ -220,7 +220,7 @@ CustomAboutMenu::CustomAboutMenu(wxWindow* parent)
     wxStaticText *StaticText4 = new wxStaticText(Panel4, wxID_ANY, 
           _("This program is licensed under the terms\nof the LGPL license"));
     //GNU General Public License version 3\n\nAvailable online under:\nhttp://www.gnu.org/licenses/gpl-3.0.html"));
-    BoxSizer4->Add(StaticText4, 1, wxALL|wxVSCROLL, 5);
+    BoxSizer4->Add(StaticText4, 1, wxALL, 5);
     Panel4->SetSizer(BoxSizer4);
     
     BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
@@ -239,7 +239,7 @@ CustomAboutMenu::CustomAboutMenu(wxWindow* parent)
         Claire Chalopin\n\
         Agustín Trujillo\n\
         "));
-    BoxSizer5->Add(StaticText3, 1, wxALL|wxVSCROLL, 5);
+    BoxSizer5->Add(StaticText3, 1, wxALL, 5);
     Panel3->SetSizer(BoxSizer5);
 
     BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
@@ -249,7 +249,7 @@ CustomAboutMenu::CustomAboutMenu(wxWindow* parent)
                                                  GetwxStr("Author: AMILab Team\n")+
                                                  GetwxStr("Contact: amilab@ctim.es\n")+
                                                  GetwxStr("         www.amilab.org\n"));
-    BoxSizer6->Add(StaticText2, 1, wxALL|wxVSCROLL, 5);
+    BoxSizer6->Add(StaticText2, 1, wxALL, 5);
     Panel2->SetSizer(BoxSizer6);
     
     BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
@@ -263,7 +263,7 @@ CustomAboutMenu::CustomAboutMenu(wxWindow* parent)
       - ITK\n\
       AMILab has a lot a features, and has been especially used for academic research in medical image processing. The tool is under development.\n\
       Visit amilab.org for more information about AMILab\n"));
-    BoxSizer7->Add(StaticText1, 1, wxALL|wxVSCROLL, 5);
+    BoxSizer7->Add(StaticText1, 1, wxALL, 5);
     Panel1->SetSizer(BoxSizer7);
     
     

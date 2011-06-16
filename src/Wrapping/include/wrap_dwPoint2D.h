@@ -25,7 +25,7 @@
 AMI_DECLARE_TYPE(dwPoint2D);
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<dwPoint2D>::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<dwPoint2D>::CreateVar( ParamList* p, bool quiet );
 
 
 class WrapClass_dwPoint2D: public WrapClass<dwPoint2D>

@@ -31,13 +31,13 @@
 AMI_DECLARE_TYPE(dwControlPoint);
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<dwControlPoint>::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<dwControlPoint>::CreateVar( ParamList* p, bool quiet );
 
 // allow wrapping of std::vector<dwControlPoint>
 AMI_DECLARE_TYPE(std::vector<dwControlPoint>);
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<std::vector<dwControlPoint> >::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<std::vector<dwControlPoint> >::CreateVar( ParamList* p, bool quiet );
 
 
 class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>

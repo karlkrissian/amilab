@@ -103,7 +103,7 @@ if (!exists(FiducialsClass)) {
     //---------------------------------------------------
     proc ::CB_ListItemSelected( OBJECT event ) {
       index = event.GetIndex()
-      pos = atof(event.GetItem().GetText().c_str())
+      pos = atof(wx.FromWxString(event.GetItem().GetText()))
       printn "item text = %1%" % pos
       ::selected_point = pos
       ::UpdateSelected()

@@ -41,13 +41,19 @@ def get_include_file(classname, filename):
   if classname=="wxImageList": s = "wx_includes.h"
   if classname=="wxGDIImage": s = "wx/bitmap.h"
   if classname=="wxGDIImageHandler": s = "wx/bitmap.h"
+  if classname=="wxTextEntry":       s = "wx_includes.h"
+  if classname=="wxTextEntryBase":   s = "wx_includes.h"
   #print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)
   s1 = '#include "{0}"'.format(s)
   #print "s1 = ",s1
   if classname=="wxScopedCharTypeBuffer<char>":
-    s1 = '#include <wx/wx.h>\n'+s
+    s1 = '#include <wx/wx.h>\n'+s1
+  if classname=="wxEventTypeTag<wxTimerEvent>":
+    s1 = '#include <wx/timer.h>\n'+s1
+  if classname=="wxEventTypeTag<wxListEvent>":
+    s1 = '#include <wx/listctrl.h>\n'+s1
   if classname=="wxFormatString":
-    s1 = '#include <wx/string.h>\n'+s
+    s1 = '#include <wx/string.h>\n'+s1
   return s1
  
 def get_var_filter():

@@ -26,6 +26,7 @@ vtkDataObject
 vtkDataSet
 vtkDirectory
 vtkFieldData
+vtkFixedPointVolumeRayCastMapper
 vtkFloatArray
 vtkGlyph3D
 vtkGPUVolumeRayCastMapper

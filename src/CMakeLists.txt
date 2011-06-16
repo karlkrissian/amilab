@@ -301,13 +301,13 @@ IF(AMI_CHECK_BRANCH)
   
 ENDIF(AMI_CHECK_BRANCH)
 
-OPTION(AMI_ENABLE_WRAPPING "Enable Automatic Wrapping: need gccxml, python, ..." OFF)
+OPTION(AMI_ENABLE_WRAPPING "Enable Automatic Wrapping: need gccxml, python, ..." ON)
 
 IF(AMI_ENABLE_WRAPPING)
   FIND_PACKAGE( GCCXML REQUIRED)
   FIND_PACKAGE( PythonInterp REQUIRED)
-  OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" OFF)
-  OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       OFF)
+  OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" ON)
+  OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       ON)
   OPTION(AMI_WRAP_EXAMPLES  "Enable Automatic Wrapping OF EXAMPLES"  OFF)
   OPTION(AMI_WRAP_MICRONTRACKER "Enable Automatic Wrapping of MicronTracker library for stereo camera tracking" OFF)
   OPTION(AMI_WRAP_ULTRASOUND "Enable Automatic Wrapping of Ultrasound library for get ultrasound images" OFF)

@@ -31,7 +31,7 @@ class FindTypesAndVariables(handler.ContentHandler):
 
   #---------------------------------------------
   def ParseClass(self, name, attrs):
-    #print name
+    #print "ParseClass", name
     # If it's not a comic element, ignore it
     if (self.inclass)and(name=='Base'):
       baseaccess  = attrs.get('access', None)
@@ -174,6 +174,8 @@ class FindTypesAndVariables(handler.ContentHandler):
     if name=="Typedef":
       name = attrs.get('name', None)
       config.typedefs[name]=id
+      # File id
+      self.argtype.fileid = attrs.get('file', None)
       #print "Added typedef {0} {1} {2}".format(name,id,self.argtype.GetRealType())
     
 

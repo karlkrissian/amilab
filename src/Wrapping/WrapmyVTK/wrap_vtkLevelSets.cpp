@@ -59,7 +59,7 @@ static vtkUpdateProgressBar update_progressbar;
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<vtkLevelSets>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<vtkLevelSets>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_vtkLevelSets::wrap_vtkLevelSets construct;
   return construct.CallMember(p);

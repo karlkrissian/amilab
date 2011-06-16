@@ -51,7 +51,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<ParamPanel>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<ParamPanel>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_ParamPanel::wrap_ParamPanel construct;
   return construct.CallMember(p);

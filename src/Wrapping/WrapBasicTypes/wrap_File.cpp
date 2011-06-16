@@ -38,7 +38,7 @@ extern yyip::Driver GB_driver;
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<FILE>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<FILE>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_File::wrap_File construct;
   return construct.CallMember(p);

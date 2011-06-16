@@ -42,7 +42,7 @@ extern void CB_delete_varlist( void* var);
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<Viewer3D>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<Viewer3D>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_Viewer3D::wrap_Viewer3D construct;
   return construct.CallMember(p);

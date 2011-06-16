@@ -15,6 +15,7 @@
 #include <vtkColorTransferFunction.h>
 #include <vtkDirectory.h>
 #include <vtkFieldData.h>
+#include <vtkFixedPointVolumeRayCastMapper.h>
 #include <vtkFloatArray.h>
 #include <vtkGlyph3D.h>
 #include <vtkGPUVolumeRayCastMapper.h>

@@ -38,6 +38,7 @@ if (!exists(VolRenClass)) {
       ::background_color2 = wx.wxColour(144,238,144)
       ::UseGradientBackground = UCHAR(1)
       ::azimuth = INT(45), "Rotate camera angle along vertical axis (in degrees)"
+      ::volrenmapper_type = INT(0), "Choose volume rendering mapper type, 0: GPU 1: Fixed Point 2: Standard"
 //::obj1,
       #::Gui()
     }
@@ -260,6 +261,7 @@ if (!exists(VolRenClass)) {
         ::renwin_interact.SetInteractorStyle(&interact)
 
         printn "2*"
+        ::vtkvol1.SetVolRenMapper(::volrenmapper_type)
         if (::vtkvol1.initialized>0.5) {
           ::vtkvol1.ResetVTK()
         }
@@ -320,6 +322,7 @@ if (!exists(VolRenClass)) {
       if (exists(::renwin_interact)) \
       {
 
+        ::vtkvol2.SetVolRenMapper(::volrenmapper_type)
         if (::vtkvol2.initialized>0.5) {
           ::vtkvol2.ResetVTK()
         }
@@ -526,6 +529,12 @@ if (!exists(VolRenClass)) {
         ::AddBitmapButton16(&::win, &::icons._Add, "AddVolume2")
         ::win.SetPositionProp(1)
       ::win.EndHorizontal()
+
+      ::volrentype_id = ::win.AddEnum(&::volrenmapper_type,"VolRen Mapper")
+        ::win.AddEnumChoice(::volrentype_id,"GPU mapper")
+        ::win.AddEnumChoice(::volrentype_id,"FixedPoint mapper")
+        ::win.AddEnumChoice(::volrentype_id,"Standard mapper")
+
 
       ::win.BeginBook()
         ::nb = ::win.GetBookCtrl()

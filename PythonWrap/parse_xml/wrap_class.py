@@ -60,8 +60,8 @@ def ClassConstructor(classname):
 
 def FindIncludeFile(classname,fileid):
   if config.libmodule != None:
-    include_file = config.libmodule.get_include_file(classname,\
-      config.files[fileid])
+    include_file = config.libmodule.get_include_file(classname, \
+                    config.files[fileid])
     return '{0}'.format(include_file)
   else:
     if fileid in config.files.keys():
@@ -125,6 +125,7 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
       #  print "AddDeclare..."
       config.AddDeclare(typename)
       if typename==config.types[typeid].GetDemangled():
+        print "{0}".format(typename)
         fileid = config.types[typeid].fileid
         to_include_file = FindIncludeFile(typename,fileid)
         if to_include_file!="":
@@ -865,7 +866,10 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, constr
         res += "  {0}::wrap_{1} m{2}(this->_objectptr);\n".format(wrapclass_name,usedname,n)
       res += "  res = m{0}.CallMember(_p);\n".format(n)
       res += "  if (!m{0}.Get_arg_failure()) return res;\n".format(n)
-  res += "  ClassHelpAndReturn;\n"
+  res += "  if (!quiet)\n"
+  res += "    ClassHelpAndReturn\n"
+  res += "  else\n"
+  res += "    return BasicVariable::ptr();\n"
   res += "}\n"
   return res
 
@@ -1413,6 +1417,7 @@ def WrapClass(classname,include_file,inputfile):
       #if len(fm.Constructors)>0:
       if wrapped_constructors>0:
         implement_createvar += "  WrapClass_{0}::wrap_{1} construct;\n".format(config.ClassUsedName(classname),ClassConstructor(classname))
+        implement_createvar += "  construct.Set_quiet(quiet);\n"
         implement_createvar += "  return construct.CallMember(p);\n"
       else:
         # check for possible other method
@@ -1421,6 +1426,7 @@ def WrapClass(classname,include_file,inputfile):
         if args.val.constructor != '' and \
           (args.val.constructor in fm.StaticMethodNames):
           implement_createvar += "  WrapClass_{0}::wrap_static_{1} construct;\n".format(config.ClassUsedName(classname),args.val.constructor)
+          implement_createvar += "  construct.Set_quiet(quiet);\n"
           implement_createvar += "  return construct.CallMember(p);\n"
         else:
           implement_createvar += "  // No constructor available !!\n"

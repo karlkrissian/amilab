@@ -32,13 +32,13 @@
 AMI_DECLARE_TYPE(dwCurve);
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<dwCurve>::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<dwCurve>::CreateVar( ParamList* p, bool quiet );
 
 // allow wrapping of std::vector<dwCurve>
 AMI_DECLARE_TYPE(std::vector<dwCurve>);
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<std::vector<dwCurve> >::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<std::vector<dwCurve> >::CreateVar( ParamList* p, bool quiet );
 
 
 class WrapClass_dwCurve: public WrapClass<dwCurve>

@@ -27,7 +27,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<wxDrawingWindow>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<wxDrawingWindow>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_wxDrawingWindow::wrap_wxDrawingWindow construct;
   return construct.CallMember(p);

@@ -26,7 +26,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<dwControlPoint>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<dwControlPoint>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_dwControlPoint::wrap_dwControlPoint construct;
   return construct.CallMember(p);
@@ -43,7 +43,7 @@ AMI_DEFINE_VARFROMSMTPTR_TEMPLATE(std::vector,StdVector,dwControlPoint);
 // need to instanciate for each type ...
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<std::vector<dwControlPoint> >::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<std::vector<dwControlPoint> >::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_StdVector<dwControlPoint>::wrap_StdVector construct;
   return construct.CallMember(p);

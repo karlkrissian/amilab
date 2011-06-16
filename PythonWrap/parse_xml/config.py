@@ -77,6 +77,8 @@ members_blacklist=[
   'vtkProcessObject::GetInputs', # idem
   'vtkPlot::GetProperty', # seems not implemented
   'vtkPlot::SetProperty', # seems not implemented
+  'vtkFixedPointVolumeRayCastMapper::LookupAndCombineIndependentColorsUC', # gives an error: to check
+  'vtkFixedPointVolumeRayCastMapper::GetGradientNormal', # double pointer pb
   ]
 
 
