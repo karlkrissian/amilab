@@ -80,16 +80,16 @@ if (!exists(Subpixel3DClass)){
       array.SetTupleValue(2, &pN3[0])
       
       #Add the normals to the points in the polydata
-      #polydata.GetPointData().SetNormals(&array)
-      polydata.GetPointData().SetVectors(&array)
+      polydata.GetPointData().SetNormals(&array)
+      #polydata.GetPointData().SetVectors(&array)
       #polydata.GetPointData().GetArray(0)._SetName("vector")
 
       #We make a little test using the glyph3D
       planeSource = vtk.vtkPlaneSource.New() #We draw planes
       glyph3D = vtk.vtkGlyph3D.New()
       glyph3D.OrientOn()
-      #glyph3D.SetVectorModeToUseNormal()
-      glyph3D.SetVectorModeToUseVector()
+      glyph3D.SetVectorModeToUseNormal()
+      #glyph3D.SetVectorModeToUseVector()
       glyph3D.SetSource(&planeSource.GetOutput())
       glyph3D.SetInput(&polydata)
       #glyph3D.SetInputArrayToProcess(1,0,0, 0 , "vector");

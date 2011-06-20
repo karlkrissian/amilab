@@ -77,6 +77,9 @@ if (!exists(Subpixel2DClass)){
     #-----------------------
     
     proc ::load_input() {
+      if (exists(::input_draw))    { del ::input_draw; }
+      if (exists(::averaged_draw)) { del ::averaged_draw; }
+      if (exists(::restored_draw)) { del ::restored_draw; }
       eval "::input <<="+::input_name+";"
       if (::input_name=="BrowseImage") {
         ::input_name = "::input"
@@ -316,12 +319,12 @@ if (!exists(Subpixel2DClass)){
     #-----------------------
     
     proc ::Run() {
-    	::load_input()
+    #	::load_input()
       ::thresholds_crossed = 0
       #Erase the draw objects
-      if (exists(::input_draw))    { del ::input_draw; }
-      if (exists(::averaged_draw)) { del ::averaged_draw; }
-      if (exists(::restored_draw)) { del ::restored_draw; }
+     # if (exists(::input_draw))    { del ::input_draw; }
+     # if (exists(::averaged_draw)) { del ::averaged_draw; }
+     # if (exists(::restored_draw)) { del ::restored_draw; }
       #
       if (::input.vdim==1) {
         ::input <<= (DOUBLE) ::input

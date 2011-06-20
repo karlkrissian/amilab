@@ -626,7 +626,8 @@ void FenetreDessin :: FixeFonctionDessin( int fonction)
 void FenetreDessin::Ligne( int x1, int y1, int x2, int y2)
 //                  -----
 {
-  _memory_dc->DrawLine(x1, y1, x2, y2);
+  if (_memory_dc.get())
+    _memory_dc->DrawLine(x1, y1, x2, y2);
 } // Ligne()
 
 
