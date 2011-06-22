@@ -41,85 +41,103 @@ if (!exists(Subpixel3DClass)){
     
     #-----------------------
     
-    proc ::vtkPruebita() {
-      #Create 3 points
-      points = vtk.vtkPoints.New()
-      points.InsertNextPoint(1.0, 0.0, 0.0)
-      points.InsertNextPoint(0.0, 0.0, 0.0)
-      points.InsertNextPoint(0.0, 1.0, 0.0)
-      
-      #Add points to a polydata
-      polydata = vtk.vtkPolyData.New()
-      polydata.SetPoints(&points)
-      
-      #Set point normals
-      array = vtk.vtkDoubleArray.New()
-      if (exists(::array))  { del ::array;}
-      ::array = &array
-      #3D normals
-      array.SetNumberOfComponents(3)
-      array.SetNumberOfTuples(polydata.GetNumberOfPoints())
-      
-      #Construct the normal vectors
-      pN1 = vector_double()
-      pN1.push_back(1.0)
-      pN1.push_back(0.0)
-      pN1.push_back(0.0)
-      pN2 = vector_double()
-      pN2.push_back(0.0)
-      pN2.push_back(1.0)
-      pN2.push_back(0.0)
-      pN3 = vector_double()
-      pN3.push_back(0.0)
-      pN3.push_back(0.0)
-      pN3.push_back(1.0)
-      
-      #Add the data to the normals array
-      array.SetTupleValue(0, &pN1[0])
-      array.SetTupleValue(1, &pN2[0])
-      array.SetTupleValue(2, &pN3[0])
-      
-      #Add the normals to the points in the polydata
-      polydata.GetPointData().SetNormals(&array)
-      #polydata.GetPointData().SetVectors(&array)
-      #polydata.GetPointData().GetArray(0)._SetName("vector")
-
-      #We make a little test using the glyph3D
-      planeSource = vtk.vtkPlaneSource.New() #We draw planes
-      glyph3D = vtk.vtkGlyph3D.New()
-      glyph3D.OrientOn()
-      glyph3D.SetVectorModeToUseNormal()
-      #glyph3D.SetVectorModeToUseVector()
-      glyph3D.SetSource(&planeSource.GetOutput())
-      glyph3D.SetInput(&polydata)
-      #glyph3D.SetInputArrayToProcess(1,0,0, 0 , "vector");
-
-      glyph3D.SetScaleFactor(0.3)
-      glyph3D.Update()
-      
-      #Draw the result
-      #Visualize
-      mapper = vtk.vtkPolyDataMapper.New()
-      mapper.SetInputConnection(&glyph3D.GetOutputPort())
-      #Create the wxVTKFrame
-      renwin_interact = global::wxVTKFrame()
-      renwin = renwin_interact.GetRenderWindow()
-      #Create and add the renderer
-      renderer = vtk.vtkRenderer.New()
-      renwin.AddRenderer(&renderer)
-      interact = vtk.vtkInteractorStyleTrackballCamera.New()
-      renwin_interact.SetInteractorStyle(&interact)
-      #This is the actor with the planes
-      actor = vtk.vtkActor.New()
-      actor.SetMapper(&mapper)
-      renderer.AddActor(&actor)
-      renderer.ResetCameraClippingRange()
-      renderer.SetBackground(0.3, 0.6, 0.3)
-      renderer.ResetCamera()
-      
-      #renwin.Render()
-      renwin_interact.Start()
-    }
+//    proc ::vtkPruebita() {
+//      #Create 3 points
+//      points = vtk.vtkPoints.New()
+//      points.InsertNextPoint(1.0, 0.0, 0.0)
+//      points.InsertNextPoint(0.0, 0.0, 0.0)
+//      points.InsertNextPoint(0.0, 1.0, 0.0)
+//      
+//      #Add points to a polydata
+//      polydata = vtk.vtkPolyData.New()
+//      polydata.SetPoints(&points)
+//      
+//      #Set point normals
+//      array = vtk.vtkDoubleArray.New()
+//      if (exists(::array))  { del ::array;}
+//      ::array = &array
+//      #3D normals
+//      array.SetNumberOfComponents(3)
+//      #array.SetNumberOfComponents(1)
+//      array.SetNumberOfTuples(polydata.GetNumberOfPoints())
+//      
+//      #Construct the normal vectors
+//      pN1 = vector_double()
+//      pN1.push_back(1.0)
+//      pN1.push_back(0.0)
+//      pN1.push_back(0.0)
+//      pN2 = vector_double()
+//      pN2.push_back(0.0)
+//      pN2.push_back(1.0)
+//      pN2.push_back(0.0)
+//      pN3 = vector_double()
+//      pN3.push_back(0.0)
+//      pN3.push_back(0.0)
+//      pN3.push_back(1.0)
+//      
+//      #Add the data to the normals array
+//      array.SetTupleValue(0, &pN1[0])
+//      array.SetTupleValue(1, &pN2[0])
+//      array.SetTupleValue(2, &pN3[0])
+//      
+//      #Add the normals to the points in the polydata
+//      polydata.GetPointData().SetNormals(&array)
+//      #polydata.GetPointData().SetVectors(&array)
+//      #polydata.GetPointData().GetArray(0)._SetName("vector")
+//
+//      #We make a little test using the glyph3D
+//      planeSource = vtk.vtkPlaneSource.New() #We draw planes
+//      glyph3D = vtk.vtkGlyph3D.New()
+//      glyph3D.OrientOn()
+//      glyph3D.SetVectorModeToUseNormal()
+//      #glyph3D.SetVectorModeToUseVector()
+//      glyph3D.SetSource(&planeSource.GetOutput())
+//      glyph3D.SetInput(&polydata)
+//      #glyph3D.SetInputArrayToProcess(1,0,0, 0 , "vector");
+//      
+//      #pintando tmb los vectorcitos
+//      arrowSource = vtk.vtkArrowSource.New()
+//      otroglyph = vtk.vtkGlyph3D.New()
+//      otroglyph.OrientOn()
+//      otroglyph.SetVectorModeToUseVector()
+//      otroglyph.SetSource(&arrowSource.GetOutput())
+//      otroglyph.SetInput(&polydata)
+//      otroglyph.SetScaleFactor(0.3)
+//      otroglyph.Update()
+//      otromapper = vtk.vtkPolyDataMapper.New()
+//      otromapper.SetInputConnection(&otroglyph.GetOutputPort())
+//      otroactor = vtk.vtkActor.New()
+//      otroactor.SetMapper(&otromapper)
+//      
+//      
+//
+//      glyph3D.SetScaleFactor(0.3)
+//      glyph3D.Update()
+//      
+//      #Draw the result
+//      #Visualize
+//      mapper = vtk.vtkPolyDataMapper.New()
+//      mapper.SetInputConnection(&glyph3D.GetOutputPort())
+//      #Create the wxVTKFrame
+//      renwin_interact = global::wxVTKFrame()
+//      renwin = renwin_interact.GetRenderWindow()
+//      #Create and add the renderer
+//      renderer = vtk.vtkRenderer.New()
+//      renwin.AddRenderer(&renderer)
+//      interact = vtk.vtkInteractorStyleTrackballCamera.New()
+//      renwin_interact.SetInteractorStyle(&interact)
+//      #This is the actor with the planes
+//      actor = vtk.vtkActor.New()
+//      actor.SetMapper(&mapper)
+//      renderer.AddActor(&actor)
+//      renderer.AddActor(&otroactor)
+//      renderer.ResetCameraClippingRange()
+//      renderer.SetBackground(0.3, 0.6, 0.3)
+//      renderer.ResetCamera()
+//      
+//      #renwin.Render()
+//      renwin_interact.Start()
+//    }
     
     proc ::vtkExample() {
       #Computing the edge normals
@@ -135,12 +153,41 @@ if (!exists(Subpixel3DClass)){
       ny = div * -1
       nz = div * ::res->ccoef
       
-      sphereSource = vtk.vtkSphereSource.New()
-      sphereSource.Update()
+      #sphereSource = vtk.vtkSphereSource.New()
+      #sphereSource.Update()
       
+      #Puntos donde se va a pintar
+      points = vtk.vtkPoints.New()
+      #rellenamos todos los puntos
+      for i = 0 to ::res->xpos.tx {
+        points.InsertNextPoint(::res->xpos(i), ::res->ypos(i), ::res->zpos(i))
+      }
+      
+      #Añadir los puntos al polydata
       polydata      = vtk.vtkPolyData.New()
-      polydata.ShallowCopy(&sphereSource.GetOutput())
+      polydata.SetPoints(&points)
+      #polydata.ShallowCopy(&sphereSource.GetOutput())
       #polydata.SetPoints(&points)
+      
+      
+      #Array para las normales
+      array = vtk.vtkDoubleArray.New()
+      array.SetNumberOfComponents(3)
+      array.SetNumberOfTuples(::res->xpos.tx)
+      #rellenamos el array de las normales
+      if(exists(i)) { del i; }
+      for i = 0 to ::res->xpos.tx {
+        if (exists(v)) { del v; }
+        v = vector_double()
+        v.push_back(nx(i))
+        v.push_back(ny(i))
+        v.push_back(nz(i))
+        array.SetTupleValue(i, &v[0])
+      }
+      
+      #Asignar las normales al polydata
+      polydata.GetPointData().SetNormals(&array)
+      
       
       #Drawing the input image
       ::vol_isosurf = isosurf(::input, (max(::input)+min(::input))/2)
@@ -167,7 +214,7 @@ if (!exists(Subpixel3DClass)){
       #Esto no va muy bien, no sé si es que no hereda GetPointData de vtkDataSet
       #vol_polydata.GetPointData.SetNormals(&array)
       
-      #arrowSource = vtk.vtkArrowSource.New() #esto quizás me sirva para las normales
+      arrowSource = vtk.vtkArrowSource.New() #esto quizás me sirva para las normales
       
       planeSource = vtk.vtkPlaneSource.New()
       
@@ -177,7 +224,7 @@ if (!exists(Subpixel3DClass)){
       glyph3D.SetSource(&planeSource.GetOutput())
       #glyph3D.SetVectorModeToUseVector()
       glyph3D.SetVectorModeToUseNormal()
-      glyph3D.SetInput(&vol_polydata)
+      glyph3D.SetInput(&polydata)
       glyph3D.SetScaleFactor(0.1)
       #printn glyph3D.GetVectorModeAsString()
       glyph3D.Update()
@@ -216,9 +263,9 @@ if (!exists(Subpixel3DClass)){
       actor.SetMapper(&mapper)
       renderer.AddActor(&actor)
       #This is the actor with the input image
-      renderer.AddActor(&vol_actor)
+      #renderer.AddActor(&vol_actor)
       renderer.ResetCameraClippingRange()
-      renderer.SetBackground(0.3, 0.6, 0.3)
+      renderer.SetBackground(0.3, 0.3, 0.6)
       renderer.ResetCamera()
       
       #renwin.Render()
@@ -255,8 +302,7 @@ if (!exists(Subpixel3DClass)){
           }
         }
         image_draw.DrawingAreaDisplay()
-        #XZ plane
-        #YZ plane
+        
         
       } else {
         InfoDialog "Before draw the border, you must apply the method."
@@ -291,8 +337,8 @@ if (!exists(Subpixel3DClass)){
       
       ::Display()
       ::drawBorder()
-      #::vtkExample() Esta es la función buena, ahora la sustituyo por una prueba
-      ::vtkPruebita()
+      ::vtkExample() #Esta es la función buena, ahora la sustituyo por una prueba
+      #::vtkPruebita()
       
       ::input_draw.PaintCallback(&::drawBorder)
     }
