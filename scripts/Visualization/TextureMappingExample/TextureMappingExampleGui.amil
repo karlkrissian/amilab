@@ -1,0 +1,11 @@
+
+func "TextureMappingExampleClass"
+
+if (!exists(TextureMappingExample_obj)) {
+  TextureMappingExampleClass TextureMappingExample_obj
+  TextureMappingExample_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

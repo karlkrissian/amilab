@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuTextureMappingExample() \
+{
+  category = "&PDI"
+  script = "PDI/TextureMappingExample/TextureMappingExampleGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&TextureMappingExample",script)
+}
+
+AddMenuTextureMappingExample()
+del AddMenuTextureMappingExample

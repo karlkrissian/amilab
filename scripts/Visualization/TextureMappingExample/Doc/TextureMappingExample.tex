@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+\usepackage{url}
+
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+\begin{document}
+
+% Title Page
+\title{Using Texture Mapping: Example with JPEG pictures}
+\author{ Karl Krissian}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Centro de Tecnolog\'ias de la Imagen (CTIM)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es
+\url{http://www.ctm.ulpgc.es/joomla/index.php}
+}
+
+
+\maketitle
+
+\begin{abstract}
+This program is an example of using Texture Mapping from VTK.
+It reads all the JPEG images from the given directory and places them within a single plane
+in 3D.
+The user can then apply effects for a given image number:
+\begin{itemize}
+  \item rotate the image once on 360 degrees,
+  \item show only this image in original resolution during a few seconds.
+\end{itemize}
+\end{abstract}
+
+
+
+
+\end{document}          

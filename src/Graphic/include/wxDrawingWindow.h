@@ -89,8 +89,10 @@ class wxDrawingWindow : public wxScrolledWindow
   bool _left_down;
   bool _previous_crosshair;
 
-  /// device context in memory
-  scoped_ptr<wxMemoryDC> _memory_dc;
+  /// Initial device context in memory
+  scoped_ptr<wxMemoryDC> _init_memory_dc;
+  /// device context in memory, is a Graphical Context if available
+  scoped_ptr<wxDC>       _memory_dc;
   /// device context in memory
   scoped_ptr<wxBitmap>   _bitmap; 
 
@@ -144,7 +146,7 @@ public:
   }
 */
 
-  void DrawingAreaDisplay( );
+  void DrawingAreaDisplay( bool in_paint=false);
 
   void World2Window( double x, double y, 
                       wxCoord& wx, wxCoord& wy) const;
@@ -333,7 +335,7 @@ public:
   void DrawControlPoints();
   void DrawControls();
 
-  void Paint( );
+  void Paint( bool in_paint=false);
   void OnSize( wxSizeEvent& event);
   //void OnChar(           wxKeyEvent&  event);
 

@@ -55,3 +55,12 @@
   //template class std::list<int>::iterator;
   //template class std::list<int>::const_iterator;
 #endif // __GCCXML__
+
+// trying iostream
+#include <iostream>
+#include <sstream>
+#include <string>
+
+#ifdef __GCCXML__
+  
+#endif // __GCCXML__

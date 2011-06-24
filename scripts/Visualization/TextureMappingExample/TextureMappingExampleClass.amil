@@ -1,0 +1,551 @@
+
+func "Common/ScriptGui"
+
+if (!exists(TextureMappingExampleClass)) {
+
+  Class TextureMappingExampleClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        ::inputdir_name = "", "input directory to scan all compatible images"
+        ::selected_image = INT(0), "Selected image"
+        ::showing = false
+       #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::html_filename = GetScriptsDir+"/Visualization/TextureMappingExample/Doc/TextureMappingExample/index.html"
+    }
+
+
+    #----------------------------
+    proc ::load_input() {
+      if (exists(::input)) { del ::input; }
+      eval "::input = &"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+      }
+      ::win.Update(-1)
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #----------------------------
+    proc ::ImReload() \
+    {
+      ::load_input()
+    }
+    Comments(::ImReload,"(Re)Loads the input image.")
+
+    #----------------------------
+    proc ::ScanDir() \
+    {
+      ::vtkReaders = VarVector()
+      ::PlaneActors = VarVector()
+      ::ImResample = VarVector()
+      ::vtkdir = vtk.vtkDirectory.New()
+      printn " inputdir_name = %1%" % ::inputdir_name
+      wxf = wx.wxFileName(::inputdir_name)
+      volume = wxf.GetVolume().c_str()
+      if volume!="" { volume +=":"; } 
+      dirname=volume+wxf.GetFullPath(wx.wxPATH_UNIX).c_str()+"/"
+      printn "dirname '%1%'" % dirname
+      res = ::vtkdir.Open(dirname)
+      ::vtkreaderfactory = vtk.vtkImageReader2Factory.New()
+      if (res==1) {
+        nbfiles = ::vtkdir.GetNumberOfFiles()
+        total_imsize = 0
+        for n=0 to nbfiles-1 {
+          SetProgress(100.0*n/nbfiles)
+          file = ::vtkdir.GetFile(n)
+          # check if vtk can read the image
+          #::vtkreaderfactory.CreateImageReader2(
+          #          ::inputdir_name+"/"+file)
+          if (exists(::vtkreader)) {
+            #::vtkreader.Delete();
+            del ::vtkreader; 
+          }
+          ::vtkreader = vtk.vtkJPEGReader.New()
+          ::vtkreader.GetOutput().ReleaseDataFlagOn()
+          filename=::inputdir_name+"/"+file
+          ok = ::vtkreader.CanReadFile(filename)
+          if (ok>0.5)\
+          {
+            ::vtkReaders.push_back(&::vtkreader)
+            SetStatusText("Reading image %1%" % file)
+
+            # Read JPEG image
+            ::vtkreader.SetFileName(filename)
+            ::vtkreader.Update()
+            dim = vector_int(3,1)
+
+            ::vtkreader.GetOutput().GetDimensions(&dim[0])
+
+            fx = round(((FLOAT)dim[0])/256+0.4999)
+            fy = round(((FLOAT)dim[1])/256+0.4999)
+            f = max(fx,fy)
+            printn " Downsample factor = %1%" % f
+
+            # Rescale the image
+            if (exists(imresample)) { 
+              #imresample.Delete(); 
+              del imresample; 
+            }
+            imresample = vtk.vtkImageResample.New()
+            imresample.GetOutput().ReleaseDataFlagOn()
+            ::ImResample.push_back(&imresample)
+            imresample.SetAxisMagnificationFactor(0,1.0/f)
+            imresample.SetAxisMagnificationFactor(1,1.0/f)
+            imresample.SetInputConnection(&::vtkreader.GetOutputPort())
+            imsize = ((FLOAT)::vtkreader.GetOutput().GetActualMemorySize())/1000
+            total_imsize += imsize
+            printn "input image size = %1% Mb" %  imsize
+            #im <<= Image(filename)
+            #im1 <<= Resize(im,256,256,1,0)
+            #if (exists(vtkim1)) { del vtkim1; }
+            #vtkim1 = global::ToVtkImageData(&im1)
+          
+            # Get Image dimensions
+            imresample.Update()
+            #imresample.RemoveAllInputs()
+            newdim = vector_int(3,1)
+            imresample.GetOutput().GetDimensions(&newdim[0])
+            print "dimensions %1% x" % dim[0] + " %1%" % dim[1]
+            printn "--> %1% x" % newdim[0] + " %1%" % newdim[1]
+            atext = vtk.vtkTexture.New()
+            
+            atext.SetInputConnection(&imresample.GetOutputPort())
+            #atext.GetOutput().ReleaseDataFlagOn()
+            #atext.SetInput(&vtkim1)
+            #atext.InterpolateOn()
+            
+            # Create a plane source and actor. The vtkPlanesSource generates
+            # texture coordinates.
+            plane = vtk.vtkPlaneSource.New()
+            planeMapper = vtk.vtkPolyDataMapper.New()
+            planeMapper.SetInputConnection(&plane.GetOutputPort())
+            planeActor = vtk.vtkActor.New()
+            planeActor.SetMapper(&planeMapper)
+            planeActor.SetTexture(&atext)
+            ::PlaneActors.push_back(&planeActor)
+            del planeActor
+            #planeMapper.Delete(); 
+            del planeMapper
+            #plane.Delete(); 
+            del plane
+            atext.ReleaseDataFlagOn()
+            #atext.Delete();
+            printn "Texture ref count %1%" % atext.GetReferenceCount()
+            del atext
+          } # end if
+        } # end for
+        SetProgress(0)
+        printn "total image size = %1% Mb" % total_imsize
+        SetStatusText("Placing the images")
+        # position the planes
+        size = ::PlaneActors.size()
+        ::win.IntegerConstraints(::selection_id,0,size-1,::selected_image)
+        ::win.Update(-1)
+        n1 = round(sqrt((FLOAT)size))
+        printn n1
+        for n=0 to size-1 {
+          x = n % n1
+          y = floor((FLOAT)n/n1)
+          #::PlaneActors[n].RotateX(5*x)
+          #::PlaneActors[n].RotateY(5*y)
+          ::PlaneActors[n].SetPosition(1.05*x,1.05*y,0)
+          scale  =vector_double(3,1)
+          ::PlaneActors[n].GetScale(&scale[0])
+          printn "Scale = %1%" % scale[0] + " %1%" % scale[1]+" %1%" % scale[2]
+        }
+      } else {
+        InfoDialog "Could not open directory %1%" % ::inputdir_name
+      }
+    }
+    Comments(::ScanDir,"Look for VTK readable images in the selected directory.")
+
+    #----------------------------
+    proc ::MainBook_AddVTKTab()  \
+    {
+       mb = ami.MainFrame.GetMainBook()
+
+      ::panel = wx.wxPanel(&ami.MainFrame)
+      ::panel._SetName("VTK Texture Mapping panel")
+
+      # StaticBox gives problems on XP ..., avoid it ...
+      # sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
+      ::sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      ::panel.SetSizer(&::sbox_sizer)
+
+      # create widget here
+      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,-1)
+      ::renwin_interact.UseCaptureMouseOn()
+      ::renwin_interact.Enable(true)
+      ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
+      ::AttachRenWinInt()
+
+      # Add to main book
+      #::icons.LoadIconPNG2("Transparent background","Transparent_background")
+      mb.AddPage( &::panel,  "VolRen",1 )
+      #, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+      ::pageindex = mb.GetPageIndex(&::panel)
+    }
+
+    #----------------------------
+    proc ::MainBook_CloseTab()  \
+    {
+      if (exists(::pageindex)){
+        mb = ami.MainFrame.GetMainBook()
+        mb.DeletePage(::pageindex)
+      }
+    }
+
+    #----------------------------
+    proc ::AttachRenWinInt()  \
+    {
+      ::renwin_interact.Reparent(&::panel)
+      ::sbox_sizer.Add(&::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1) )
+    }
+
+    #----------------------------
+    proc ::CreateFrame() \
+    {
+      ::frame = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Frame Title",\
+            wx.wxPoint(100,100),wx.wxSize(300,300),\
+            wx.wxRESIZE_BORDER,"test")
+      #|wx.wxCLOSE_BOX
+
+      ::sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      ::frame.SetSizer( &::sizer )      # use the sizer for layout
+
+      ::panel = wx.wxScrolledWindow(&::frame)
+      ::panel.SetScrollbars(20, 20, 50, 50);
+
+      sbox = wx.wxStaticBox(&::panel,wx.wxID_ANY,"VTK-test")
+      ::sbox_sizer = wx.wxStaticBoxSizer(&sbox,wx.wxVERTICAL)
+      ::panel.SetSizer(&::sbox_sizer)
+      # create widget here
+
+      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+        #::renwin_interact = wxVTKFrame(&panel,-1)
+
+      ::renwin_interact.UseCaptureMouseOn()
+      ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
+      # Still drawing problem (missed exposed events???)
+      ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
+
+      ::renwin_interact.Reparent(&::panel)
+      ::sbox_sizer.Add(&::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1) )
+
+      ::sizer.Add(&::panel, wx.wxSizerFlags().Expand().Proportion(1) )
+      ::frame.SetMinSize(wx.wxSize(100,100))
+      ::frame.Show()
+      #::panel.Fit()
+      ::frame.Fit()
+
+    }
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input))&&(::PlaneActors.size()==0) {
+        ::load_input()
+      }
+      if (!exists(::renwin_interact)) {
+        ::MainBook_AddVTKTab()
+        #::CreateFrame()
+      }
+      # Load in the texture map. A texture is any unsigned char image. If it
+      # is not of this type, you will have to map it through a lookup table
+      # or by using vtkImageShiftScale.
+
+      if (::PlaneActors.size()==0) {
+        vtkinput  = global::ToVtkImageData(&::input)
+    
+        #bmpReader = vtk.vtkBMPReader.New()
+        #bmpReader.SetFileName(::texture_filename)
+        atext = vtk.vtkTexture.New()
+        atext.SetInput(&vtkinput)
+        atext.InterpolateOn()
+        
+        # Create a plane source and actor. The vtkPlanesSource generates
+        # texture coordinates.
+        plane = vtk.vtkPlaneSource.New()
+        planeMapper = vtk.vtkPolyDataMapper.New()
+        planeMapper.SetInputConnection(&plane.GetOutputPort())
+        planeActor = vtk.vtkActor.New()
+        planeActor.SetMapper(&planeMapper)
+        planeActor.SetTexture(&atext)
+      }
+      
+      # Create the RenderWindow, Renderer and both Actors
+      ::ren = vtk.vtkRenderer.New()
+      ::renwin   = ::renwin_interact.GetRenderWindow()
+      ::renwin.AddRenderer(&::ren)
+      iren = &::renwin_interact
+      
+      # Add the actors to the renderer, set the background and size
+      if (::PlaneActors.size()==0) {
+        ::ren.AddActor(&planeActor)
+        #planeActor.Delete()
+      } else {
+        for n = 0 to ::PlaneActors.size()-1 {
+          ::ren.AddActor(&::PlaneActors[n])
+          # Decrease reference counter
+          #::PlaneActors[n].Delete()
+        }
+      }
+      ::ren.SetBackground(0.1, 0.2, 0.4)
+      ::renwin.SetSize(500, 500)
+      
+      ::ren.ResetCamera()
+      cam1 = ::ren.GetActiveCamera()
+      ::ren.ResetCameraClippingRange()
+      ::cam0 = vtk.vtkCamera.New()
+      ::cam0.DeepCopy(&cam1)
+      #cam1.Elevation(-30)
+      #cam1.Roll(-20)
+      
+      #iren.Initialize()
+      interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      ::renwin_interact.SetInteractorStyle(&interact)
+      #interact.Delete()
+      ::renwin.Render()
+      #iren.Start()
+    }
+
+    #----------------------------
+    proc ::CB_Rotate() {
+      if (!exists(::rot_angle)) { ::rot_angle = 0; }
+      currenttime = wx.wxDateTime.UNow()
+      diff=currenttime-::inittime
+      newangle = diff.GetMilliseconds().ToDouble()/1000*360
+      prevangle = ::rot_angle
+      ::rot_angle = newangle
+      if (::rot_angle>360) {
+        ::rot_angle = 360
+        ::rot_timer.Stop()
+      }
+      ::PlaneActors[::selected_image].RotateY(::rot_angle-prevangle)
+      ::renwin.Render()
+    }
+
+    #----------------------------
+    # use a timer ???
+    proc ::RotateSelection() {
+      if ((::selected_image>=0) && (::selected_image<::PlaneActors.size())) {
+        ::rot_evh = wx.wxAmiEventHandler(&::CB_Rotate)
+        ::rot_timer = wx.wxTimer(&::rot_evh)
+        ::rot_evh.Connect(wx.wxEVT_TIMER,&::rot_evh.GetEventFunction())
+        ::interval = 0.05
+        ::inittime = wx.wxDateTime.UNow()
+        ::rot_timer.Start(::interval*1000)
+      }
+    }
+
+    #----------------------------
+    # show the selection in 3 phases
+    # 1 zoom and position 0.5 sec.
+    # 2 wait 3 sec.
+    # 3 back to original position 0.5 sec.
+    proc ::CB_Show() \
+    {
+      if (::showing) {
+        currenttime = wx.wxDateTime.UNow()
+        diff=currenttime-::inittime
+        diffsec = diff.GetMilliseconds().ToDouble()/1000
+        current_scale = vector_double(3)
+        current_pos   = vector_double(3)
+        #fx = ::ImResample[::selected_image].GetAxisMagnificationFactor(0)
+        #fy = ::ImResample[::selected_image].GetAxisMagnificationFactor(1)
+        # initial phase
+        if (diffsec<0.5) {
+          for i=0 to 2  {
+            current_scale[i] = ::initscale[i]+ diffsec/0.5*(::finalscale[i]-::initscale[i])
+            current_pos[i] = ::initpos[i]+ diffsec/0.5*(::finalpos[i]-::initpos[i])
+          }
+          ::cam_interp.InterpolateCamera(diffsec/0.5,&::ren.GetActiveCamera())
+        }
+        # 3 seconds pause
+        if (diffsec>=0.5)&&(diffsec<=3.5) {
+          #if (fx!=1)||(fy!=1) {
+          #}
+          ::cam_interp.InterpolateCamera(1,&::ren.GetActiveCamera())
+          current_scale = ::finalscale
+          current_pos   = ::finalpos
+        }
+        # stop
+        if (diffsec>=4) {
+          printn "*"
+          diffsec = 4
+          ::timer.Stop()
+          n = ::selected_image
+          ::vtkreader.GetOutput().ReleaseDataFlagOn()
+          ::PlaneActors[n].SetTexture(&::inittexture)
+          ::fulltexture.RemoveInputConnection(0,&::vtkReaders[n].GetOutputPort())
+          ::fulltexture.ReleaseGraphicsResources(&::renwin)
+          #::fulltexture.Delete()
+          del ::inittexture
+          del ::fulltexture
+    
+          #::PlaneActors[::selected_image].GetTexture().RemoveInputConnection(0,&::vtkReaders[::selected_image].GetOutputPort())
+          #::PlaneActors[::selected_image].GetTexture().SetInputConnection(&::ImResample[::selected_image].GetOutputPort())
+          #::ImResample[::selected_image].SetAxisMagnificationFactor(0,::initfx)
+          #::ImResample[::selected_image].SetAxisMagnificationFactor(1,::initfy)
+        }
+        # final phase
+        if (diffsec>3.5) {
+          for i=0 to 2  {
+            current_scale[i] = ::finalscale[i]+ (diffsec-3.5)/0.5*(::initscale[i]-::finalscale[i])
+            current_pos[i] = ::finalpos[i]+ (diffsec-3.5)/0.5*(::initpos[i]-::finalpos[i])
+          }
+          ::cam_interp.InterpolateCamera(1.0-(diffsec-3.5)/0.5,&::ren.GetActiveCamera())
+        }
+        #::PlaneActors[::selected_image].RotateY(::rot_angle-prevangle)
+        ::PlaneActors[::selected_image].SetScale(   &current_scale[0])
+        ::PlaneActors[::selected_image].SetPosition(&current_pos[0])
+        ::renwin.Render()
+        if (diffsec==4) {
+          ::showing = false
+        }
+      }
+    }
+
+    #----------------------------
+    # use a timer ???
+    proc ::ShowSelection() {
+      if ((::selected_image>=0) && (::selected_image<::PlaneActors.size())) \
+          && (::showing==false) {
+        ::showing = true
+        del ::evh
+        ::evh = wx.wxAmiEventHandler(&::CB_Show)
+        del ::timer
+        ::timer = wx.wxTimer(&::evh)
+        ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
+        ::interval = 0.1
+        ::initpos = vector_double(3)
+        ::initscale = vector_double(3)
+        ::PlaneActors[::selected_image].GetPosition(&::initpos[0])
+        ::PlaneActors[::selected_image].GetScale(   &::initscale[0])
+        ::finalpos   = vector_double(3,0)
+        size = ::PlaneActors.size()
+        scale = 1.05*round(sqrt((FLOAT)size))
+        ::finalpos[0] = scale/2-0.5
+        ::finalpos[1] = scale/2-0.5
+        ::finalpos[2] = 0.05
+        ::finalscale = vector_double(3,scale)
+
+        del ::initcam
+        ::initcam = vtk.vtkCamera.New()
+        ::initcam.DeepCopy(&::ren.GetActiveCamera())
+
+        ::cam_interp = vtk.vtkCameraInterpolator.New()
+        ::cam_interp.SetInterpolationTypeToSpline()
+        ::cam_interp.AddCamera(0,&::initcam)
+        ::cam_interp.AddCamera(1,&::cam0)
+
+        ::initfx = ::ImResample[::selected_image].GetAxisMagnificationFactor(0)
+        ::initfy = ::ImResample[::selected_image].GetAxisMagnificationFactor(1)
+        
+        t1 = ::PlaneActors[::selected_image].GetTexture()
+        printn "Texture ref count = %1% " % t1.GetReferenceCount()
+
+        #      ::ImResample[::selected_image].SetAxisMagnificationFactor(0,1)
+        #      ::ImResample[::selected_image].SetAxisMagnificationFactor(1,1)
+
+        n = ::selected_image
+        del ::inittexture
+        ::inittexture = ::PlaneActors[n].GetTexture()
+        del ::fulltexture
+        ::fulltexture = vtk.vtkTexture.New()
+        ::vtkreader.GetOutput().ReleaseDataFlagOn()
+        ::vtkReaders[n].Update()
+        ::fulltexture.SetInputConnection(&::vtkReaders[n].GetOutputPort())
+        ::PlaneActors[n].SetTexture(&::fulltexture)
+
+        #      ::PlaneActors[n].GetTexture().RemoveInputConnection(0,&::ImResample[n].GetOutputPort())
+        #      ::PlaneActors[n].GetTexture().SetInputConnection(&::vtkReaders[n].GetOutputPort())
+        #      ::vtkReaders[::selected_image].Modified()
+        #      ::PlaneActors[::selected_image].GetTexture().Modified()
+        ::renwin.Render()
+
+        # Start time here ...
+        ::inittime = wx.wxDateTime.UNow()
+        ::timer.Start(::interval*1000)
+      }
+    }
+
+    #----------------------------
+    # Redefinition of Close to close the panel tab in main_book
+    #
+    proc ::Close() {
+      if (exists(::PlaneActors)) {
+        ::PlaneActors.clear()
+      }
+      if (exists(::ImResample)) {
+        ::ImResample.clear()
+      }
+
+      ::MainBook_CloseTab()
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("TextureMappingExample",&::parent_panel)
+      } else {
+        ::win = ParamPanel("TextureMappingExample")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("IO")
+          # set the input image drawing window
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload")
+              #::win.AddButton( "ImReload",&::ImReload)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          ::win.AddDirname( &::inputdir_name, "Dir")
+
+          ::win.AddButton("ScanDir",&::ScanDir)
+          ::win.AddButton("Run",&::Run)
+
+        ::win.AddPage("Effect")
+          ::selection_id = ::win.AddInt(&::selected_image,"Selection",0,100)
+          ::win.AddButton("Rotate Selection",&::RotateSelection)
+          ::win.AddButton("Show Selection",&::ShowSelection)
+
+          if wx.wxFileName(::html_filename).FileExists() {
+            ::AddHelpPage(&::win)
+          }
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+      ::MainBook_AddVTKTab()
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

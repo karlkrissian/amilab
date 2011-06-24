@@ -26,7 +26,18 @@
 
 #define macro_max(a,b) ((a)>(b)?(a):(b))
 
-#if ((wxMAJOR_VERSION==2)&&(wxMINOR_VERSION>=9))||(wxMAJOR_VERSION>=3)
+#if wxUSE_GRAPHICS_CONTEXT && wxCHECK_VERSION(2, 8, 11)
+  #define AMI_USE_wxGC 1
+#else
+  #define AMI_USE_wxGC 0
+#endif
+
+#if AMI_USE_wxGC
+  #include <wx/dcgraph.h> 
+  #include <wx/graphics.h>
+#endif
+
+#if wxCHECK_VERSION(2, 9, 0)
   #define PENSTYLE_SOLID wxPENSTYLE_SOLID 
 #else
   #define PENSTYLE_SOLID wxSOLID 
@@ -120,10 +131,28 @@ void wxDrawingWindow::DrawingAreaInit( )
   // wx way
   scoped_ptr<wxBitmap> bitmap(new wxBitmap( w,h,-1));
   swap(_bitmap,bitmap);
-  scoped_ptr<wxMemoryDC> memory_dc(new wxMemoryDC);
+
+  wxMemoryDC* mdc = new wxMemoryDC();
+  mdc->SelectObject(*_bitmap);
+
+/*#if wxUSE_GRAPHICS_CONTEXT
+  std::cout << "wxUSE_GRAPHICS_CONTEXT" << std::endl;
+#endif
+#if wxCHECK_VERSION(2, 8, 11)
+  std::cout << "version >= 2.8.11" << std::endl;
+#endif*/
+  #if AMI_USE_wxGC
+    // keep initial memory DC in a scoped pointer
+    scoped_ptr<wxMemoryDC> init_memory_dc(mdc);
+    swap(_init_memory_dc, init_memory_dc);
+    // use a Graphic Context to draw in memory
+    wxGCDC* gdc = new wxGCDC( *mdc );
+    scoped_ptr<wxDC> memory_dc(gdc);
+  #else
+    scoped_ptr<wxDC> memory_dc(mdc);
+  #endif
 
   swap(_memory_dc, memory_dc);
-  _memory_dc->SelectObject(*_bitmap);
   _memory_dc->SetBackgroundMode(wxTRANSPARENT);
 } // DrawingAreaInit( )
 
@@ -450,7 +479,7 @@ void wxDrawingWindow::DrawAxes(  )
   wxCoord x1,y1,x2,y2;
   double xpos,ypos;
 
-  scoped_ptr<wxPen> current_pen2( new wxPen( *wxLIGHT_GREY, 1, PENSTYLE_SOLID));
+  scoped_ptr<wxPen> current_pen2( new wxPen( *wxLIGHT_GREY, 1, wxDOT));// PENSTYLE_SOLID));
   _memory_dc->SetPen(*current_pen2);
 
   if (_draw_grid)
@@ -791,21 +820,35 @@ void wxDrawingWindow::DrawControls()
   DrawControlPoints();
 }
 //---------------------------------------------------------------------
-void wxDrawingWindow::DrawingAreaDisplay( )
+void wxDrawingWindow::DrawingAreaDisplay( bool in_paint)
 //                  ------------------
 {
   if (_memory_dc.get()) {
-    wxClientDC dc(this);
-    if (dc.IsOk()) {
-
-      dc.Blit(0,0,
-        _memory_dc->GetSize().GetWidth(),
-        _memory_dc->GetSize().GetHeight(),
-        _memory_dc.get(),
-        0,0);
-
-    } else 
-      CLASS_ERROR( "DC not OK");
+/*    #if AMI_USE_wxGC
+      wxGraphicsContext *gc = wxGraphicsContext::Create( this );
+      if (gc) {
+        gc->DrawBitmap(*_bitmap,0,0,_bitmap->GetWidth(),_bitmap->GetHeight());
+      }
+    #else*/
+      wxDC* dc;
+      if (in_paint)
+        dc = new wxPaintDC(this);
+      else
+        dc = new wxClientDC(this);
+      if (dc->IsOk()) {
+        #if AMI_USE_wxGC
+          dc->DrawBitmap(*_bitmap,0,0);
+        #else
+          dc->Blit(0,0,
+            _memory_dc->GetSize().GetWidth(),
+            _memory_dc->GetSize().GetHeight(),
+            _memory_dc.get(),
+            0,0);
+        #endif
+      } else 
+        CLASS_ERROR( "DC not OK");
+      delete dc;
+//     #endif
 
   } else {
     CLASS_ERROR("context not allocated" );
@@ -814,7 +857,7 @@ void wxDrawingWindow::DrawingAreaDisplay( )
 } // DrawingAreaDisplay( )
 
 //------------------------------------------------
-void wxDrawingWindow::Paint()
+void wxDrawingWindow::Paint( bool in_paint)
 {
 
   if (!_curves.get()) return;
@@ -843,7 +886,8 @@ void wxDrawingWindow::Paint()
   DrawCurves();
   DrawControls();
   DrawLinearCM();
-  DrawingAreaDisplay();
+  if (this->IsShown())
+    DrawingAreaDisplay(in_paint);
 }
 
 
@@ -854,7 +898,7 @@ void wxDrawingWindow::OnPaint(wxPaintEvent& event)
   PrepareDC(pdc);
 
   //DrawingAreaInit( );
-  Paint();
+  Paint(true);
   event.Skip();
 }
 
@@ -1152,7 +1196,8 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
   }
 
   Refresh(false);
-  event.Skip();
+  // capture event ...
+  //event.Skip();
 
 }
 
