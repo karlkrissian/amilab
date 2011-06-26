@@ -13,6 +13,7 @@ if (!exists(TextureMappingExampleClass)) {
         ::inputdir_name = "", "input directory to scan all compatible images"
         ::selected_image = INT(0), "Selected image"
         ::showing = false
+        ::scale_factor=1.5, "Scaling final factor for displaying a single image"
        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
 
         ::html_filename = GetScriptsDir+"/Visualization/TextureMappingExample/Doc/TextureMappingExample/index.html"
@@ -285,17 +286,47 @@ if (!exists(TextureMappingExampleClass)) {
       ::renwin.AddRenderer(&::ren)
       iren = &::renwin_interact
       
+      # Create Interactor 
+      ::interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      ::interact.SetPickColor(1,1,1)
+      ::renwin_interact.SetInteractorStyle(&::interact)
+
       # Add the actors to the renderer, set the background and size
       if (::PlaneActors.size()==0) {
         ::ren.AddActor(&planeActor)
         #planeActor.Delete()
       } else {
+        #bounds = vector_double(6)
         for n = 0 to ::PlaneActors.size()-1 {
           ::ren.AddActor(&::PlaneActors[n])
+          #::PlaneActors[n].GetBounds(&bounds[0])
+          #printn "actor bounds: %1%" % bounds[0] \
+                  #+ ":%1%" % bounds[1] \
+                  #+ ",%1%" % bounds[2] \
+                  #+ ":%1%" % bounds[3] \
+                  #+ ",%1%" % bounds[4] \
+                  #+ ":%1%" % bounds[5] 
           # Decrease reference counter
           #::PlaneActors[n].Delete()
         }
-      }
+        # outline selected picture
+        ::CB_Selected()
+        #::outlinefilter=vtk.vtkOutlineFilter.New()
+        #::outlinefilter.SetInput(&::PlaneActors[::selected_image].GetMapper().GetInput())
+        #::outlineMapper = vtk.vtkPolyDataMapper.New()
+        #::outlineMapper.SetInputConnection(&::outlinefilter.GetOutputPort())
+        #::outlineActor = vtk.vtkActor.New()
+        #::outlineActor.SetMapper(&::outlineMapper)
+        ## Get the position orientation and scale of the outline
+        #pos = vector_double(3)
+        #::PlaneActors[::selected_image].GetPosition(&pos[0])
+        #::outlineActor.SetPosition(pos[0],pos[1],pos[2])
+        #scale = vector_double(3)
+        #::PlaneActors[::selected_image].GetScale(&scale[0])
+        #::outlineActor.SetScale(scale[0],scale[1],scale[2])
+        ## Add outline actor to renderer
+        #::ren.AddActor(&::outlineActor)
+     }
       ::ren.SetBackground(0.1, 0.2, 0.4)
       ::renwin.SetSize(500, 500)
       
@@ -308,11 +339,53 @@ if (!exists(TextureMappingExampleClass)) {
       #cam1.Roll(-20)
       
       #iren.Initialize()
-      interact = vtk.vtkInteractorStyleTrackballCamera.New()
-      ::renwin_interact.SetInteractorStyle(&interact)
       #interact.Delete()
       ::renwin.Render()
       #iren.Start()
+      
+      # Create Picker
+      ::picker_cmd = vtk.vtkAmiCommand.New()
+      ::picker_cmd.SetAmiFunction(&::PickerSelect)
+      ::picker = vtk.vtkCellPicker.New()
+      ::picker.SetTolerance(0.005)
+      ::picker.AddObserver(vtk.vtkCommand.EndPickEvent, &::picker_cmd)
+      ::renwin_interact.SetPicker(&::picker)
+    }
+
+    #----------------------------
+    proc ::PickerSelect(OBJECT caller, NUM id) \
+    {
+      printn "PickerSelect"
+      picked_actor = &::picker.GetActor()
+      picked_pos = vector_double(3)
+      picked_actor.GetPosition(&picked_pos[0])
+      #w_pa = language.WrapVariable(&picked_actor)
+      #o_pa = language.Variable_AMIObject.DynCast(&w_pa)
+      #oc = ov.Pointer().GetContext()
+
+      # search the corresponding actor id
+      cont=true # continue condition
+      n=0
+      pos = vector_double(3)
+      while cont {
+        del v
+        v = &::PlaneActors[n]
+        v.GetPosition(&pos[0])
+        # checking for actor with the same 3D position ...
+        found = (pos[0]==picked_pos[0]) && (pos[1]==picked_pos[1]) && (pos[2]==picked_pos[2])
+        #del w_v
+        #w_v = language.WrapVariable(&v)
+        #found = w_pa.SameContents(&w_v)
+        n++
+        cont = (n<::PlaneActors.size()) && (!found)
+      }
+      if found {
+        ::selected_image = n-1
+        ::win.Update(-1)
+        ::CB_Selected()
+      } else {
+        SetStatusText("Actor not found")
+      }
     }
 
     #----------------------------
@@ -463,6 +536,24 @@ if (!exists(TextureMappingExampleClass)) {
         ::vtkReaders[n].Update()
         ::fulltexture.SetInputConnection(&::vtkReaders[n].GetOutputPort())
         ::PlaneActors[n].SetTexture(&::fulltexture)
+        # Get Full image dimensions
+        dim = vector_int(3)
+        ::vtkReaders[n].GetOutput().GetDimensions(&dim[0])
+        dimx = dim[0]
+        dimy = dim[1]
+        printn "Image Dimensions "+ "%1% x" % dimx + "%1%" % dimy
+        if (dimx>dimy) {
+          ::finalscale[1] *= 1.0*dimy/dimx
+        } else {
+          ::finalscale[0] *= 1.0*dimx/dimy
+        }
+        # increase final scale ??
+        ::finalscale[0] *=::scale_factor
+        ::finalscale[1] *=::scale_factor
+
+        printn "scale = %1%" % scale
+        ::finalpos[0] = scale/2
+        ::finalpos[1] = scale/2
 
         #      ::PlaneActors[n].GetTexture().RemoveInputConnection(0,&::ImResample[n].GetOutputPort())
         #      ::PlaneActors[n].GetTexture().SetInputConnection(&::vtkReaders[n].GetOutputPort())
@@ -494,6 +585,26 @@ if (!exists(TextureMappingExampleClass)) {
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
 
     //---------------------------------------------------
+    proc ::CB_Selected() \
+    {
+      if exists(::PlaneActors) {
+
+        selected_actor = &::PlaneActors[::selected_image]
+        ::interact.HighlightProp3D(&selected_actor)
+
+        #::outlinefilter.SetInput(&selected_actor.GetMapper().GetInput())
+        ## Get the position orientation and scale of the outline
+        #pos = vector_double(3)
+        #selected_actor.GetPosition(&pos[0])
+        #::outlineActor.SetPosition(pos[0],pos[1],pos[2])
+        #scale = vector_double(3)
+        #selected_actor.GetScale(&scale[0])
+        #::outlineActor.SetScale(scale[0],scale[1],scale[2])
+        ::renwin.Render()
+      }
+    }
+
+    //---------------------------------------------------
     proc ::Gui() {
     
       if (exists(::parent_panel)) {
@@ -521,8 +632,10 @@ if (!exists(TextureMappingExampleClass)) {
 
         ::win.AddPage("Effect")
           ::selection_id = ::win.AddInt(&::selected_image,"Selection",0,100)
+          ::win.SetCallback(&::CB_Selected)
           ::win.AddButton("Rotate Selection",&::RotateSelection)
           ::win.AddButton("Show Selection",&::ShowSelection)
+          ::win.AddFloat(&::scale_factor,"Scale Factor",0.8,3)
 
           if wx.wxFileName(::html_filename).FileExists() {
             ::AddHelpPage(&::win)

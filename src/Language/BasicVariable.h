@@ -97,6 +97,8 @@ public:
 
   virtual bool operator == (BasicVariable* v)  = 0;
 
+  virtual bool SameContents(BasicVariable* v)  = 0;
+
   /**
    * Gets the list of variables 
    * @return object context (contains its variables)

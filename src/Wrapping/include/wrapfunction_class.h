@@ -285,6 +285,8 @@ class GenericPointer{
     }
 };
 
+std::string GetPointerAsString(void*);
+
 /**
  Base class for class wrapping
  **/
@@ -306,6 +308,8 @@ class  WrapClassBase
     }
 
     virtual int GetObjCounter() { return 0; }
+
+//    virtual std::string ObjPointerAsString() { return ""; }
     
 //    virtual GenericPointer GetGenericPointer() { return GenericPointer(NULL); }
 
@@ -341,6 +345,11 @@ class WrapClass: public virtual WrapClassBase
     virtual int GetObjCounter() const
     {
       return _obj.use_count();
+    }
+
+    virtual std::string ObjPointerAsString()
+    {
+      return GetPointerAsString((void*)_obj.get());
     }
 
     /// Constructor

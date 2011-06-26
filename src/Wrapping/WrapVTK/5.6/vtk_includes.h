@@ -2,12 +2,14 @@
 //#include <vtkGPURayCasting.h>
 #include <vtkAlgorithm.h>
 #include <vtkAlgorithmOutput.h>
+#include "vtkAmiCommand.h"
 #include <vtkAxis.h>
 #include <vtkBoxWidget.h>
 #include <vtkBrush.h>
 #include <vtkBMPReader.h>
 #include <vtkCamera.h>
 #include <vtkCameraInterpolator.h>
+#include <vtkCellPicker.h>
 #include <vtkChartXY.h>
 #include <vtkCommand.h>
 #include <vtkContextScene.h>
@@ -35,8 +37,10 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkInteractorStyleTrackball.h>
 #include <vtkJPEGReader.h>
+#include <vtkOutlineFilter.h>
 #include <vtkPen.h>
 #include <vtkPiecewiseFunction.h>
+#include <vtkPicker.h>
 #include <vtkPlanes.h>
 #include <vtkPlaneSource.h>
 #include <vtkPlot.h>

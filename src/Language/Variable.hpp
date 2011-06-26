@@ -577,6 +577,18 @@ public:
     else return false;
   }
 
+  bool SameContents(BasicVariable* v)
+  {
+    if (_type == v->Type()) {
+      // convert pointer
+      Variable<T>* newvar = dynamic_cast<Variable<T>*>(v);
+      if (newvar)
+        return (_pointer.get()  == newvar->_pointer.get());
+      else return false;
+    }
+    else return false;
+  }
+
   bool Equal( BasicVariable::ptr v) 
   {
     if (_type == v->Type()) {

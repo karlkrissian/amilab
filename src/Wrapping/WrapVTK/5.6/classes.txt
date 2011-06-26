@@ -8,6 +8,7 @@ vtkActorCollection
 vtkActor
 vtkAlgorithm
 vtkAlgorithmOutput
+vtkAmiCommand
 vtkAxis
 vtkBoxWidget
 vtkBrush
@@ -15,6 +16,7 @@ vtkBMPReader
 vtkCamera
 vtkCameraInterpolator
 vtkCellTypes
+vtkCellPicker
 vtkChartXY
 vtkCollection
 vtkColorTransferFunction
@@ -60,8 +62,10 @@ vtkMatrix4x4
 vtkObjectBase
 vtkObject
 vtkOpenGLGPUVolumeRayCastMapper
+vtkOutlineFilter
 vtkPen
 vtkPiecewiseFunction
+vtkPicker
 vtkPlanes
 vtkPlaneSource
 vtkPlot

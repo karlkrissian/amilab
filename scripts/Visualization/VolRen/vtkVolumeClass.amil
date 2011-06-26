@@ -35,6 +35,7 @@ if (!exists(vtkVolumeClass)) {
 
       ::clip = UCHAR(0), "Enable/Disable clipping box"
       ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
+      ::clip_interactive = UCHAR(0), "Interactive clipping"
       ::initialized=0
 
       ::cm_active_blend_curves = 0, "Number of curves created for the current blend type in the Colormap  drawing area."
@@ -200,6 +201,16 @@ if (!exists(vtkVolumeClass)) {
     }
 
     #----------------------------
+    proc ::CB_Clip(OBJECT caller, NUM id) \
+    {
+      if (::clip_interactive) {
+        planes = vtk.vtkPlanes.New()
+        ::box.GetPlanes(&planes)
+        ::volmapper->SetClippingPlanes(&planes);
+      }
+    }
+
+    #----------------------------
     proc ::InitBoxWidget() \
     {
       ::box = vtk.vtkBoxWidget.New()
@@ -214,7 +225,9 @@ if (!exists(vtkVolumeClass)) {
         ::box.PlaceWidget()
         #vtkBoxWidgetCallback *callback = vtkBoxWidgetCallback::New();
         #callback->SetMapper(mapper);
-        #::box.AddObserver(vtkCommand::InteractionEvent, callback);
+        ::box_cmd = vtk.vtkAmiCommand.New()
+        ::box_cmd.SetAmiFunction(&::CB_Clip)
+        ::box.AddObserver(vtk.vtkCommand.InteractionEvent, &::box_cmd);
         #callback->Delete();
         ::box.SetRotationEnabled(::clip_enable_rotation)
         ::box.EnabledOn()
@@ -922,6 +935,7 @@ printn "--"
           ::win.AddBoolean(&::clip, "Clip")
           ::win.SetCallback( &::OnClip)
           ::win.AddBoolean(&::clip_enable_rotation,"Rotation")
+          ::win.AddBoolean(&::clip_interactive,"Interactive")
           ::win.SetCallback( &::OnClip)
           ::win.AddButton( "Apply Clip",&::ApplyClip)
 

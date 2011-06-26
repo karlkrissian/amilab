@@ -18,6 +18,16 @@
 #include "wrapfunction_class.h"
 
 #include <wx/msgdlg.h>
+#include <sstream>
+
+std::string GetPointerAsString(void* p)
+{
+  std::string res;
+  std::stringstream ss(res);
+  ss << p;
+  return res;
+}
+
 
 void WrapClassMember::ShowHelp() 
 {

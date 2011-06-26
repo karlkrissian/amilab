@@ -125,7 +125,7 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
       #  print "AddDeclare..."
       config.AddDeclare(typename)
       if typename==config.types[typeid].GetDemangled():
-        print "{0}".format(typename)
+        #print "{0}".format(typename)
         fileid = config.types[typeid].fileid
         to_include_file = FindIncludeFile(typename,fileid)
         if to_include_file!="":
@@ -472,9 +472,9 @@ class ParsePublicMembers:
     # If it's not a method element, ignore it
     if not(name in self.available_methods): return False
 
-    # skip pure virtual methods
+    # skip pure virtual methods, why??
     pure_virtual=attrs.get('pure_virtual',None)
-    if (pure_virtual=='1'): return False
+    #if (pure_virtual=='1'): return False
 
     # Look for the title and number attributes (see text)
     access=attrs.get('access',None)

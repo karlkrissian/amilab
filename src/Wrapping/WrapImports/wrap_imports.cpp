@@ -276,6 +276,35 @@ void AddWrapAlgorithms(AMIObject::ptr& obj)
 
 
 //---------------------------------------------
+BasicVariable::ptr wrap_GetObjPointerAsString( ParamList* p)
+{
+  char functionname[] = "GetObjPointerAsString";
+  char description[]=" \n\
+                    returns a string representation of the object pointer\n\
+                    ";
+    char parameters[] =" \n\
+                       Parameters:\n\
+                       variable\n\
+                       Return:\n\
+                       Returns a variable of type string\n\
+                       ";
+
+  if (!p) HelpAndReturnVarPtr;
+  BasicVariable::ptr val;
+  std::string res;
+  if (p->GetNumParam()==1) val = p->GetParam(0);
+  if (val.get()) {
+    // Convert to AMIObject
+    Variable<AMIObject>::ptr newvar (boost::dynamic_pointer_cast<Variable<AMIObject> >(val));
+// TODO Create virtual class member to obtain pointer information ...
+/*    if (newvar.get()) {
+      res = GetPointerAsString(newvar->Pointer()->GetWrappedObject().get());
+    }*/
+  }
+  return AMILabType<std::string>::CreateVar(res);
+}
+
+//---------------------------------------------
 BasicVariable::ptr wrap_WrapVariable( ParamList* p)
 {
   char functionname[] = "WrapVariable";
@@ -290,7 +319,7 @@ BasicVariable::ptr wrap_WrapVariable( ParamList* p)
                        ";
 
   if (!p) HelpAndReturnVarPtr;
-  int n=0;
+//  int n=0;
   BasicVariable::ptr val;
   if (p->GetNumParam()==1) val = p->GetParam(0);
   if (val.get()) {
@@ -299,6 +328,7 @@ BasicVariable::ptr wrap_WrapVariable( ParamList* p)
   }
   return BasicVariable::ptr();
 }
+
 
 
 //---------------------------------------------
@@ -319,6 +349,10 @@ void AddWrapLanguage(AMIObject::ptr& obj)
   ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,
                           "WrapVariable",
                           wrap_WrapVariable);
+
+  ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,
+                          "GetObjPointerAsString",
+                          wrap_GetObjPointerAsString);
 
   // Add wx context to obj context
   obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
