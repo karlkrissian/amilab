@@ -9,6 +9,7 @@ vtkActor
 vtkAlgorithm
 vtkAlgorithmOutput
 vtkAmiCommand
+vtkAnnotatedCubeActor
 vtkAxis
 vtkBoxWidget
 vtkBrush
@@ -62,6 +63,7 @@ vtkMatrix4x4
 vtkObjectBase
 vtkObject
 vtkOpenGLGPUVolumeRayCastMapper
+vtkOrientationMarkerWidget
 vtkOutlineFilter
 vtkPen
 vtkPiecewiseFunction
@@ -93,6 +95,7 @@ vtkTimeStamp
 vtkTransform
 vtkUnicodeString
 vtkUnsignedCharArray
+vtkUnstructuredGridVolumeRayCastMapper
 vtkVariant
 vtkViewport
 vtkVolumeCollection

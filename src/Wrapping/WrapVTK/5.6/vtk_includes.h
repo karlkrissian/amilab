@@ -3,6 +3,7 @@
 #include <vtkAlgorithm.h>
 #include <vtkAlgorithmOutput.h>
 #include "vtkAmiCommand.h"
+#include <vtkAnnotatedCubeActor.h>
 #include <vtkAxis.h>
 #include <vtkBoxWidget.h>
 #include <vtkBrush.h>
@@ -52,11 +53,13 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSphereSource.h>
+#include <vtkUnstructuredGridVolumeRayCastMapper.h>
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
 #include <vtkVolumeRayCastMapper.h>
 #include <vtkVolumeRayCastCompositeFunction.h> 
 #include <vtkOpenGLGPUVolumeRayCastMapper.h>
+#include <vtkOrientationMarkerWidget.h>
 #include <vtkProperty.h>
 #include <vtkTable.h>
 #include <vtkTexture.h>
