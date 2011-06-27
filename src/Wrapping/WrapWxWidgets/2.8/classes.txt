@@ -39,6 +39,7 @@ wxDC
 wxDateSpan
 wxDateTime
 wxDialog
+wxDir
 wxDrawObject
 wxDynamicLibrary
 wxDynamicLibraryDetails
