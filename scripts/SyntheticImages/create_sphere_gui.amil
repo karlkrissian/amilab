@@ -61,7 +61,7 @@ if (!exists(CSPHClass)) {
     Comments( ::Show, "Shows the resulting sphere")
     
     #------------------------------------
-    proc ::Gui() 
+    proc ::Gui() \
     {
 
       ::win = ParamPanel("CreateSphere")
