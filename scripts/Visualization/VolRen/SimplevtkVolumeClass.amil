@@ -1,0 +1,447 @@
+if (!exists(SimplevtkVolumeClass)) {
+  #-----------------------------------------------------
+  #  SimplevtkVolumeClass
+  #-----------------------------------------------------
+  Class SimplevtkVolumeClass {
+
+    #----------------------------
+    proc ::Init( ) {
+      ::blend_type = INT(5), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 6->RGB_Composite, 7->Linear Curve 1"
+      ::opacitywindow = 1000, "Opacity Window"
+      ::opacitylevel  = 1000, "Opacity Level"
+
+      ::clip = UCHAR(0), "Enable/Disable clipping box"
+      ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
+      ::initialized=0
+
+      ::opacity_attenuation = 1, "Attenuation factor for the opacity"
+
+      ::maxmemory = INT(0), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
+      ::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use."
+
+      ::SampleDistance = 1, "distance between samples used for rendering"
+      ::ImageSampleDistance = 1, "Sampling distance in the XY image dimensions. Default value of 1 meaning 1 ray cast per pixel. If set to 0.5, 4 rays will be cast per pixel. If set to 2.0, 1 ray will be cast for every 4 (2 by 2) pixels. This value will be adjusted to meet a desired frame rate when AutoAdjustSampleDistances is on. "
+      ::AutoAdjustSampleDistances = UCHAR(1), "Auto-adjust sample distances"
+
+      ::use_shade = UCHAR(1), "use shading"
+      ::ambient   = 0.15, "ambient coefficient"
+      ::diffuse   = 0.9, "diffuse coefficient"
+      ::specular  = 0.3, "specular coefficient"
+      ::specular_power = 15.0, "specular power"
+      ::scalar_opacity_unitdistance = 0.8919, "scalar opacity unit distance"
+
+      ::colorFun=vtk.vtkColorTransferFunction.New()
+      ::opacityFun=vtk.vtkPiecewiseFunction.New()
+      # Create the property and attach the transfer functions
+      ::property = vtk.vtkVolumeProperty.New()
+      ::property.SetIndependentComponents(1)
+      ::property.SetInterpolationTypeToLinear()
+    }
+
+    #----------------------------
+    proc ::SetInteractor( OBJECT inter ) {
+      //del ::renwininter
+      ::renwininter = &inter
+    }
+    #----------------------------
+    proc ::cpManager(OBJECT volume ){
+      #::renwininter = &volume.renwininter
+      #::renderer = &volume.renderer
+      #::camera=&volume.camera 
+      #::renwininter.GetRenderWindow().AddRenderer(&::renderer)
+      #::renwin   = &volume.renwin
+        ::SetInteractor(&volume.renwininter)
+        ::SetRenderer(&volume.renderer)
+        ::SetRenderWindow(&volume.renwin)
+    }
+    #----------------------------
+     proc ::InitCamera(){
+      ::camera=::renderer.GetActiveCamera()
+      ::camera.SetViewUp(0,0,1) //change orientation
+      ::camera.SetPosition(0,-100,0)
+    }
+    #----------------------------
+    #Initialize Iterator,Renderer, RendererWindow and variables
+    proc ::InitManager( OBJECT inter ) {
+      #reset
+      ::ResetVTK()
+      #Init
+      ::renwininter = &inter
+      ::renderer = vtk.vtkRenderer.New()
+      ::renderer.ResetCamera()   // carlos
+      ::InitCamera()
+      ::renwininter.GetRenderWindow().AddRenderer(&::renderer)
+      del interact
+      interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      ::renwininter.SetInteractorStyle(&interact)
+      #This is the actor with the planes
+      #renderer.AddVolume(&vol_actor)
+      ::renwin   = ::renwininter.GetRenderWindow()
+      ::renwininter.SetRenderWindow(&::renwin)
+      ::AddAnnotatedCube()
+    }
+    #----------------------------
+    proc ::AddAnnotatedCube(){
+      axesActor = vtk.vtkAnnotatedCubeActor.New()
+      axesActor.SetXPlusFaceText("L")
+      axesActor.SetXMinusFaceText("R")
+      axesActor.SetYMinusFaceText("A")
+      axesActor.SetYPlusFaceText("P")
+      axesActor.SetZMinusFaceText("I")
+      axesActor.SetZPlusFaceText("S")
+      axesActor.GetTextEdgesProperty().SetColor(1,1,0)
+      axesActor.GetTextEdgesProperty().SetLineWidth(2)
+      axesActor.GetCubeProperty().SetColor(0,0,1)
+      ::axes = vtk.vtkOrientationMarkerWidget.New()
+      ::axes.SetOrientationMarker(&axesActor)
+      ::axes.SetInteractor(&::renwininter)
+      ::axes.EnabledOn()
+      ::axes.InteractiveOff()
+      //::axes.InteractiveOn()
+    }
+
+    #Init renderer
+    proc ::InitRenderer(){
+      ::renderer.ResetCameraClippingRange()
+      #default ::renderer.SetBackground(0, 0, 0)
+      ::renderer.ResetCamera()
+    } 
+    #----------------------------
+    #Reset camera
+    proc ::ResetCamera(){
+      ::renderer.ResetCamera()
+    } 
+    #----------------------------
+    proc ::SetBackground(NUM r,NUM g, NUM b,NUM r2,NUM g2, NUM b2){
+      if (exists(::renderer)) {
+        ::renderer.SetBackground(r, g, b)
+        ::renderer.SetBackground(r2, g2, b2)
+        ::renderer.SetGradientBackground( 1)
+      }
+    } 
+    #----------------------------
+    proc ::SetRenderer( OBJECT ren ) {
+      del ::renderer
+      ::renderer = &ren
+      ::renderer.ResetCamera()   // carlos
+      ::camera=::renderer.GetActiveCamera()
+    }
+
+    #----------------------------
+    proc ::SetRenderWindow( OBJECT renwin ) {
+      del ::renwin
+      ::renwin = &renwin
+    }
+    #----------------------------
+    proc ::Rotate( ) {
+      ::camera.Azimuth( 10 )
+      ::OnRender()
+    }
+    #----------------------------
+    proc ::Azimuth( NUM x) {
+      ::camera.Azimuth( x )
+      ::OnRender()
+    }
+    #----------------------------
+    proc ::Elevation( NUM x) {
+      ::camera.Elevation( x )
+      ::OnRender()
+    }
+    #----------------------------
+    proc ::SetColorFun(OBJECT  f) {
+      del ::colorFun
+      ::colorFun  = &f
+    }
+    #----------------------------
+    proc ::SetOpacityFun(OBJECT  f) {
+      del ::opacityFun
+      ::opacityFun  = &f
+    }
+    #----------------------------
+    proc ::SetProperty(OBJECT  f) {
+       del ::property
+       # Create the property and attach the transfer functions
+      ::property=&f
+      ::property.SetIndependentComponents(1)
+      ::property.SetColor( &::colorFun )
+      ::property.SetScalarOpacity( &::opacityFun )
+      ::property.SetInterpolationTypeToLinear()
+    }
+    #----------------------------
+    # Inputs:
+    #   input_image : input InrImage volume
+    #
+    # Outputs:
+    #   vol        : vtkVolume
+    #   volmapper  : vtkGPUVolumeRayCastMapper
+    #   colorFun   : vtkColorTransferFunction
+    #   opacityFun : vtkPiecewiseFunction
+    #   property   : vtkVolumeProperty
+    #
+    proc ::CreateVTK( IMAGE input_image) {
+        #printn "CreateVTK 1"
+      del ::input
+      ::input = &input_image
+
+      # check that we have a volume
+      if (input_image.tx<2)||(input_image.ty<2)||(input_image.tz<2) {
+        InfoDialog "Input image is not a volume!"
+        return = false
+      } else {
+
+        # Create our transfer function
+        ::colorFun=vtk.vtkColorTransferFunction.New()
+        ::opacityFun=vtk.vtkPiecewiseFunction.New()
+        # Create the property and attach the transfer functions
+        ::property = vtk.vtkVolumeProperty.New()
+        ::property.SetIndependentComponents(1)
+        ::property.SetColor( &::colorFun )
+        ::property.SetScalarOpacity( &::opacityFun )
+        ::property.SetInterpolationTypeToLinear()
+ 
+        #printn "CreateVTK 2"
+
+        ::vol       = vtk.vtkVolume.New()
+        # don"t put the boxwidget for the moment
+        # convert input to vtkimage
+        ::vtkinput  = vtktools.ToVtkImageData(&input_image)
+        ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
+
+
+        # Check if the rendering is supported
+        supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
+        #supported = 0
+        if (!supported) {
+          InfoDialog "vtkGPUVolumeRayCastMapper rendering is not supported, trying vtkVolumeRayCastMapper ..."
+          del ::volmapper
+          ::volmapper = vtk.vtkVolumeRayCastMapper.New()
+          #printn "CreateVTK 3"
+          compositeFunction=vtk.vtkVolumeRayCastCompositeFunction.New()
+          ::volmapper.SetVolumeRayCastFunction(&compositeFunction)
+
+          # don"t put the boxwidget for the moment
+          # convert input to vtkimage
+          ::vtkinput  = vtktools.ToVtkImageData(&input_image)
+
+        } 
+        ::volmapper.SetInput(&::vtkinput)
+
+        # connect up the volume to the property and the mapper
+        ::vol.SetProperty( &::property )
+        ::vol.SetMapper( &::volmapper )
+        ::initialized = 1
+
+        #Add volume to renderer
+        if (exists(::renderer)){
+          ::renderer.AddVolume(&::vol)
+        }
+        return = true
+      }
+    }
+   #----------------------------
+   proc ::DelVTK( ) {
+      if (exists (::vol)){
+        ::renderer.RemoveVolume(&::vol)
+      }
+      del ::input
+      del ::colorFun
+      del ::opacityFun
+      del ::property 
+      del ::vol       
+      del ::volmapper
+      del ::vtkinput
+     ::renwininter.Render()
+     ::InitCamera()
+    }
+   #----------------------------
+   proc ::ChangeVol(IMAGE input_image){
+    #printn "CreateVTK 2"
+    del ::vol
+    ::vol       = vtk.vtkVolume.New()
+    # don"t put the boxwidget for the moment
+    # convert input to vtkimage
+    del ::vtkinput
+    ::vtkinput  = vtktools.ToVtkImageData(&input_image)
+    # connect up the volume to the property and the mapper
+    ::vol.SetProperty( &::property )
+    ::vol.SetMapper( &::volmapper )
+
+    ::volmapper.SetInput(&::vtkinput)
+    #Add volume to renderer
+    if (exists(::renderer)){
+      ::renderer.AddVolume(&::vol)
+    }
+   }
+
+    #----------------------------
+    proc ::InitBoxWidget() \
+    {
+      ::box = vtk.vtkBoxWidget.New()
+      if (::clip) \
+      {
+        ::box.SetInteractor(&::renwininter)
+        ::box.SetPlaceFactor(1.01)
+        ::box.SetInput(&::vtkinput) 
+        ::box.SetDefaultRenderer(&::renderer)
+        ::box.InsideOutOn()
+        ::box.PlaceWidget()
+        ::box.SetRotationEnabled(::clip_enable_rotation)
+        ::box.EnabledOn()
+      }
+    }
+
+    #----------------------------
+    proc ::ResetVTK() \
+    {
+      ::initialized = 0
+      del ::renwininter # it is a reference, no call to Delete()
+      del ::input
+      del ::vol
+      del ::volmapper
+      del ::colorFun
+      del ::opacityFun
+      del ::property
+    }
+
+    #----------------------------
+    proc ::BlendMIP() \
+    {
+      ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
+      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
+                             ::opacitylevel + 0.5*::opacitywindow, ::opacity_attenuation );
+      ::volmapper.SetBlendModeToMaximumIntensity();
+    }
+
+    #----------------------------
+    proc ::BlendCompositeRamp() \
+    {
+      ::colorFun.AddRGBSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, 0.0, 0.0, \
+                              ::opacitylevel + 0.5*::opacitywindow, 1.0, 1.0, 1.0 )
+
+      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
+                             ::opacitylevel + 0.5*::opacitywindow, ::opacity_attenuation )
+
+      ::volmapper.SetBlendModeToComposite()
+      ::property.ShadeOff()
+    }
+
+    #----------------------------
+    proc ::BlendCompositeShadeRamp() \
+    {
+      ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
+      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
+                               ::opacitylevel + 0.5*::opacitywindow, ::opacity_attenuation );
+      ::volmapper.SetBlendModeToComposite();
+      ::property.ShadeOn();
+    }
+    #----------------------------
+    proc ::SetShadingProperties() \
+    {
+      ::property.SetShade(::use_shade)
+      ::property.SetAmbient(::ambient)
+      ::property.SetDiffuse(::diffuse)
+      ::property.SetSpecular(::specular)
+      ::property.SetSpecularPower(::specular_power)
+      ::property.SetScalarOpacityUnitDistance(::scalar_opacity_unitdistance)
+    }
+
+    #----------------------------
+    proc ::BlendLinearCurve1() \
+    {
+      printn "BlendLinearCurve1"
+          # Create colors based on the curve
+        ::volmapper.SetBlendModeToComposite()
+        ::SetShadingProperties()
+    }
+    #----------------------------
+    proc ::ReCompute() \
+    {
+        # connect up the volume to the property and the mapper
+        if (exists(::property)){
+          ::vol.SetProperty( &::property )
+        }
+        
+        ::property.SetColor( &::colorFun )
+        ::property.SetScalarOpacity( &::opacityFun )
+
+        if (::blend_type==0) { ::BlendMIP();                }
+        if (::blend_type==1) { ::BlendCompositeRamp();      }
+        if (::blend_type==2) { ::BlendCompositeShadeRamp(); }
+        if (::blend_type==7) { ::BlendLinearCurve1();       }
+    }
+
+    #----------------------------
+    proc ::OnRender() \
+    {
+      if (exists(::renwininter)&&(::initialized>0.5)) { 
+        ::ReCompute()
+        if (exists(::renwininter)) {
+          ::renwininter.Render()
+        }
+      }
+    }
+    #----------------------------
+    proc ::OnWindow() \
+    {
+      ::OnRender()
+    }
+    #----------------------------
+    proc ::OnLevel() \
+    {
+      ::OnRender()
+    }
+    #----------------------------
+    proc ::OnClip() \
+    {
+      if (exists(::box)) {
+        ::box.SetEnabled(::clip)
+        ::box.SetRotationEnabled(::clip_enable_rotation)
+      } else {
+        ::InitBoxWidget()
+      }
+    }
+
+    #----------------------------
+    proc ::ApplyClip() \
+    {
+      if (::clip) {
+        # to do: vtkPlanes
+        planes = vtk.vtkPlanes.New()
+        ::box.GetPlanes(&planes)
+        ::volmapper.SetClippingPlanes(&planes)
+        ::renwininter.Render()
+      }
+    }
+
+    #----------------------------
+    proc ::OnTextureMemory() \
+    {
+      if (exists(::volmapper)) {
+        if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
+            (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") \
+        {
+          # update volmapper GPU settings
+          ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
+          ::volmapper.SetMaxMemoryFraction(::maxmemoryfraction)
+
+          # update GPU information
+          ::maxmemory = ::volmapper.GetMaxMemoryInBytes()/(1024*1024)
+          ::maxmemoryfraction = ::volmapper.GetMaxMemoryFraction()
+
+         } else {
+          InfoDialog "Wrong volume mapper ..."
+        }
+      }
+    }
+    #----------------------------
+    proc ::OnSampleDistance() \
+    {
+      ::volmapper.SetAutoAdjustSampleDistances(::AutoAdjustSampleDistances)
+      ::volmapper.SetSampleDistance(::SampleDistance)
+      ::volmapper.SetImageSampleDistance(::ImageSampleDistance)
+      ::renwininter.Render()
+    }
+
+ 
+  } # end Class
+}# end if

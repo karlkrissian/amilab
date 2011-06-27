@@ -1,0 +1,174 @@
+#!/usr/bin/amilab
+
+#
+# Script that contains basic operations to work with  curve
+#
+
+comments="vtkCurveClass: Contains basic operations to work with vtk curve"
+
+if (!exists(vtkCurveClass)) {
+
+  #-----------------------------------------------------
+  #  vtkCurveClass
+  #-----------------------------------------------------
+  Class vtkCurveClass  {
+
+    #----------------------------
+    proc ::Init() {
+      ::category  =  "", "name of the category"
+      ::type =  "", "type in category"
+      ::descripcion=  "", "general descripcion"
+      ::colorFun=vtk.vtkColorTransferFunction.New()
+      ::opacityFun=vtk.vtkPiecewiseFunction.New()
+      ::property=vtk.vtkVolumeProperty.New()
+    }
+    #----------------------------
+    proc ::SetCategory(STRING c) {
+      ::category  = c
+    }
+    #----------------------------
+    proc ::SetType(STRING t) {
+      ::type = t
+    }
+    #----------------------------
+    proc ::SetColorFun(OBJECT  f) {
+      del ::colorFun
+      ::colorFun  = &f
+    }
+    #----------------------------
+    proc ::SetOpacityFun(OBJECT  f) {
+      del ::opacityFun
+      ::opacityFun  = &f
+    }
+    #----------------------------
+    proc ::SetPropertyFun(OBJECT  f) {
+      del ::property
+      ::property  = &f
+    }
+    #----------------------------
+    proc ::GetPropertyFun() {
+      return= &::property
+    }
+    #----------------------------
+    proc ::GetColorFun() {
+      return= &::colorFun
+    }
+    #----------------------------
+    proc ::GetOpacityFun() {
+      return= &::opacityFun
+    }
+    #----------------------------
+    proc ::AddPoint(NUM i, NUM r, NUM g, NUM b, NUM o ,NUM m, NUM s ){
+      res = ::colorFun.AddRGBPoint( &i, &r, &g, &b, &m, &s )
+      if res==-1 {
+        printn "Error in adding point %1%" %i
+      }
+      ::opacityFun.AddPoint( &i, &o, &m , &s)
+    }
+
+    #----------------------------
+    #proc ::GetAmilabCurve() \
+    #{
+      #if (exists(::curve)) {
+        #return = ::curve
+      #} else {
+        #InfoDialog "No curve available!"
+      #}
+    #}
+    #Comments(::GetCurve,"Returns the loaded curve.")
+
+    #----------------------------
+    proc ::Save( STRING path){
+      numelem = ::colorFun.GetSize()
+      if(numelem>0) {
+        #Open the file in write mode.
+        outputfile = File(path+::type+".txt")
+        text  = "# Points (IRGBOMS)"
+        outputfile._printn(text)
+        text= "%1%" %numelem
+        outputfile._printn(text)
+
+        for z=0 to (numelem-1) {
+          del colorvector
+          colorvector=vector_double(6) 
+          ::colorFun.GetNodeValue(z,&colorvector[0])
+          del opacityvector
+          opacityvector=vector_double(4) 
+          ::opacityFun.GetNodeValue (z, &opacityvector[0])
+          text= "%1%" %colorvector[0]
+          text= text + "  %1%" %colorvector[1]
+          text= text + "  %1%" %colorvector[2]
+          text= text + "  %1%" %colorvector[3]
+          text= text + "  %1%" %opacityvector[1]
+          text= text + "  %1%" %colorvector[4]
+          text= text + "  %1%" %colorvector[5]
+
+          outputfile._printn(text)
+        }
+        text  = "# Property shadeon/off Ambient Diffuse Specular SpecularPower OpacityUnitDistance"
+        outputfile._printn(text)
+        text= "%1%" %::property.GetShade() 
+        text= text + "  %1%" %::property.GetAmbient() 
+        text= text + "  %1%" %::property.GetDiffuse()
+        text= text + "  %1%" %::property.GetSpecular()
+        text= text + "  %1%" %::property.GetSpecularPower()
+        text= text + "  %1%" %::property.GetScalarOpacityUnitDistance() 
+        outputfile._printn(text)
+        text  = "# Description"
+        outputfile._printn(text)
+        outputfile._printn(::descripcion)
+
+      }
+    }
+    Comments(::Save,"Save operation.")
+
+    #----------------------------
+    proc ::Load( STRING path){
+      inputfile = File(path,"r")
+      #comentario
+      inputfile.read_line()
+      #num elementos
+      nelem= inputfile.read_float()
+      for z=0 to (nelem-1) {
+        i= inputfile.read_float()
+        r= inputfile.read_float()
+        g= inputfile.read_float()
+        b= inputfile.read_float()
+        o= inputfile.read_float()
+        m= inputfile.read_float()
+        s= inputfile.read_float() 
+        ::AddPoint(&i,&r,&g,&b,&o,&m,&s)
+      }
+      #comentario property
+      inputfile.read_line()
+      inputfile.read_line()
+      
+      shon      = inputfile.read_float()
+      amb       = inputfile.read_float()
+      diff      = inputfile.read_float()
+      spec      = inputfile.read_float()
+      specpower = inputfile.read_float()
+      scalaropa = inputfile.read_float()
+
+      if (shon==1){
+        ::property.ShadeOn()
+      }else{
+        ::property.ShadeOff()
+      }
+      ::property.SetAmbient(amb)
+      ::property.SetDiffuse(diff)
+      ::property.SetSpecular(spec)
+      ::property.SetSpecularPower(specpower)
+      ::property.SetScalarOpacityUnitDistance(scalaropa)
+      inputfile.read_line()
+      inputfile.read_line()
+      ::descripcion=inputfile.read_line()
+printn ::descripcion
+
+    }
+    Comments(::Load,"Load operation.")
+
+    ::Init() 
+  }  # Class vtkCurveClass
+  Comments( vtkCurveClass, comments)
+}# end if (!exists(vtkCurveClass))
