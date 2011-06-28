@@ -444,8 +444,8 @@ void MainFrame::CreateMenu()
   menuView->AppendSubMenu(menuView2, GetwxStr("&Panels"));
   menuView->AppendSubMenu(menuView3, GetwxStr("&Tool bars"));
     
-  menuView2->AppendCheckItem(ID_View_Main_book,  GetwxStr("&Main book"));
-  menuView2->Check(ID_View_Main_book, true);
+  //menuView2->AppendCheckItem(ID_View_Main_book,  GetwxStr("&Main book"));
+  //menuView2->Check(ID_View_Main_book, true);
   menuView2->AppendCheckItem(ID_View_Var_book,  GetwxStr("&Variables tree"));
   menuView2->Check(ID_View_Var_book, true);
   menuView2->AppendCheckItem(ID_View_Output,  GetwxStr("&Output"));
@@ -563,6 +563,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Name(wxT("Main Book"))
                   //.MinSize(wxSize(200,200))
                   .Center()
+                  .CloseButton(false)
                   .MaximizeButton(true));
 
 /// @cond wxCHECK
@@ -587,7 +588,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Caption(wxT("Output"))
                   .Bottom()
                   .MaximizeButton(true)
-				  .MinSize(wxSize(100,50)));
+                  .MinSize(wxSize(100,50)));
 
   CreateParamBook(this);
   m_mgr.AddPane(_param_book,
@@ -600,9 +601,6 @@ MainFrame::MainFrame( const wxString& title,
                   .MaximizeButton(true)
                   .Hide());
   
-  
-  
-  
   CreateKeywordsPanel(this); 
   m_mgr.AddPane(_keywords_panel,
                   wxAuiPaneInfo()
@@ -610,8 +608,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Caption(wxT("Keywords"))
                   .MinSize(wxSize(220,300))
                   .BestSize(wxSize(220,300))
-                  //.Right().Layer(1)
-		  .Floatable()
+                  .Floatable()
                   .MaximizeButton(false)
                   .Hide());
   
@@ -630,11 +627,11 @@ MainFrame::MainFrame( const wxString& title,
                     wxAUI_TB_OVERFLOW);
     
   #else
-    tb1 = new wxAuiToolBar(this, ID_View_aui_Main_bar,//wxID_ANY,
+    tb1 = new wxAuiToolBar(this, ID_View_aui_Main_bar,
                         wxDefaultPosition, wxDefaultSize,
                         wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW);
-    tb2 = new wxAuiToolBar(this, ID_View_aui_Status_bar,//wxID_ANY,
+    tb2 = new wxAuiToolBar(this, ID_View_aui_Status_bar,
                         wxDefaultPosition, wxDefaultSize,
                         wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW); 
@@ -2691,10 +2688,11 @@ void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
 
 void MainFrame::OnUpdate(wxUpdateUIEvent& event)
 {
+
   //Check Panels Status
   tb2->ToggleTool(ID_View_Output,m_mgr.GetPane(_log_text).IsShown());
   tb2->ToggleTool(ID_View_Param_book,m_mgr.GetPane(_param_book).IsShown());
-  tb2->ToggleTool(ID_View_Main_book,m_mgr.GetPane(_main_book).IsShown());
+  //tb2->ToggleTool(ID_View_Main_book,m_mgr.GetPane(_main_book).IsShown());
   tb2->ToggleTool(ID_View_Var_book,m_mgr.GetPane(_var_book).IsShown());
 
   tb2->ToggleTool(ID_View_aui_Main_bar,m_mgr.GetPane(this->tb1).IsShown());
@@ -2703,28 +2701,31 @@ void MainFrame::OnUpdate(wxUpdateUIEvent& event)
   
   menuView2->Check(ID_View_Output, m_mgr.GetPane(_log_text).IsShown());
   menuView2->Check(ID_View_Param_book, m_mgr.GetPane(_param_book).IsShown());
-  menuView2->Check(ID_View_Main_book, m_mgr.GetPane(_main_book).IsShown());
+  //menuView2->Check(ID_View_Main_book, m_mgr.GetPane(_main_book).IsShown());
   menuView2->Check(ID_View_Var_book, m_mgr.GetPane(_var_book).IsShown());
 
   menuView3->Check(ID_View_aui_Main_bar, m_mgr.GetPane(this->tb1).IsShown());
   menuView3->Check(ID_View_aui_Script_bar, m_mgr.GetPane(_("scripts_tb")).IsShown());  
   menuView3->Check(ID_View_aui_Status_bar,m_mgr.GetPane(this->tb2).IsShown());
-  if (!toolbar_status ==m_mgr.GetPane(this->tb1).IsShown())
-  {
-    int pos=1;
-    if (!toolbar_status)
-    {
-       m_mgr.GetPane(this->tb1).Position(pos++);
-       m_mgr.GetPane(this->tb2).Position(pos++);
-    }
-    else
-       m_mgr.GetPane(this->tb2).Position(pos++);
-    m_mgr.Update();
-      
-  }
-  toolbar_status= m_mgr.GetPane(this->tb1).IsShown();
+//   if (!toolbar_status ==m_mgr.GetPane(this->tb1).IsShown())
+//   {
+//     int pos=1;
+//     if (!toolbar_status)
+//     {
+//        m_mgr.GetPane(this->tb1).Position(pos++);
+//        m_mgr.GetPane(this->tb2).Position(pos++);
+//     }
+//     else
+//        m_mgr.GetPane(this->tb2).Position(pos++);
+//     m_mgr.Update();
+//       
+//   }
+//   toolbar_status= m_mgr.GetPane(this->tb1).IsShown();
 
-// this->Refresh(-1); //repaint gnome
+  
+ 
+ //this->Refresh(-1); //repaint gnome
+  
 }
 
 
@@ -2823,11 +2824,11 @@ void MainFrame::LoadToolBar   ( )
                 BITMAP_16x16("/Icons/png/32x32/Writing pencil.png"),
                 true,NULL,
                 _("Show/Hide Output") );
-  tb2->AddTool( ID_View_Main_book,   
-                BITMAP_16x16("/Icons/png/32x32/Console.png"),
-                BITMAP_16x16("/Icons/png/32x32/Console.png"),
-                true,NULL,
-                _("Show/Hide Main book") );
+//   tb2->AddTool( ID_View_Main_book,   
+//                 BITMAP_16x16("/Icons/png/32x32/Console.png"),
+//                 BITMAP_16x16("/Icons/png/32x32/Console.png"),
+//                 true,NULL,
+//                 _("Show/Hide Main book") );
   tb2->AddTool( ID_View_Var_book,
                 BITMAP_16x16("/Icons/png/32x32/Flow block.png"),
                 BITMAP_16x16("/Icons/png/32x32/Flow block.png"),
@@ -2853,6 +2854,7 @@ void MainFrame::LoadToolBar   ( )
                true,
                NULL,
                _("Show/Hide Script toolbar") );
+  tb2->AddSeparator();
   tb2->AddTool( ID_View_aui_Status_bar,
                 BITMAP_16x16("/Icons/png/32x32/ToolsView.png"),
                 BITMAP_16x16("/Icons/png/32x32/ToolsView.png"),
@@ -2861,13 +2863,13 @@ void MainFrame::LoadToolBar   ( )
   tb2->AddTool( ID_View_Reset,  
                 BITMAP_16x16("/Icons/png/32x32/ResetView.png"),
                 BITMAP_16x16("/Icons/png/32x32/ResetView.png"),
-                true,NULL,
+                false,NULL,
                 _("Reset view") );
 
      // add the toolbars to the manager
   m_mgr.AddPane(tb2, wxAuiPaneInfo().
                   Name(wxT("tb2")).Caption(wxT("View Toolbar")).
-                  ToolbarPane().Top().Position(2).
+                  ToolbarPane().Bottom()./*Position(2).*/
                   LeftDockable(false).RightDockable(false));
   
 
