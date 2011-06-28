@@ -363,32 +363,6 @@ long wxVTKRenderWindowInteractor::GetHandleHack()
 //---------------------------------------------------------------------------
 void wxVTKRenderWindowInteractor::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
-//  //  must always be here
-//  wxPaintDC pDC(this);
-// 
-//   //do it here rather than in the cstor: this is safer.
-//   if(!Handle)
-//   {
-//     Handle = GetHandleHack();
-//     RenderWindow->SetWindowId(reinterpret_cast<void *>(Handle));
-// #ifdef __WXMSW__
-//     RenderWindow->SetParentId(reinterpret_cast<void *>(this->GetParent()->GetHWND()));
-// #endif //__WXMSW__
-//   }
-//   // get vtk to render to the wxWindows
-//   Render();
-// 
-// 
-//  #ifdef __WXMAC__
-//   // This solves a problem with repainting after a window resize
-//   // See also: http://sourceforge.net/mailarchive/forum.php?thread_id=31690967&forum_id=41789
-//   vtkCarbonRenderWindow* rwin = vtkCarbonRenderWindow::SafeDownCast(RenderWindow);
-//   if( rwin )
-//   {
-//     rwin->UpdateGLRegion();
-//   }
-// #endif
-
   //must always be here
   wxPaintDC pDC(this);
  //do it here rather than in the cstor: this is safer.
@@ -417,8 +391,6 @@ void wxVTKRenderWindowInteractor::OnPaint(wxPaintEvent& WXUNUSED(event))
       rwin->UpdateGLRegion(); 
     }
   #endif
-
-
 }
 //---------------------------------------------------------------------------
 void wxVTKRenderWindowInteractor::OnEraseBackground(wxEraseEvent &event)

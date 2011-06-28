@@ -20,8 +20,8 @@ if (!exists(ImageHistogramClass)) {
       ::input_name =  "", "name of the input image, the drawing window of this image will be used"
       ::minval = 0, "minimal value of the histogram"
       ::maxval = 255, "maximal value of the histogram"
-      ::num_histograms = 2, "number of histograms (1 or 2(default))"
-      //::orientation =(INT)0, "orientation of the histograms (0(default) or 1)"
+      ::num_histogram_viewer = 2, "number of histogram viewer(s) (1 or 2(default))"
+      #::orientation =0, "orientation of the histogram viewers (0(default) or 1)"
       ::step = 1, "histogram step"
       ::standalone = 1, "1: runs standalone with input image selector, 0: runs within other Gui."
       ::use_colormap_curve = 0, "Enable/Disable a second display limited to the colormap range"
@@ -211,8 +211,8 @@ if (!exists(ImageHistogramClass)) {
         curve.GetControlPoints().push_back(&cp0)
         curve.GetControlPoints().push_back(&cp1)
         curve.SetType(1)
-        ::dw.GetControlledCurves().clear()
-        ::dw.GetControlledCurves().push_back(&curve)
+       ::dw.GetControlledCurves().clear()
+       ::dw.GetControlledCurves().push_back(&curve)
       }
     }
     Comments(::Update,"Recomputes input image limits and resets the histogram.")
@@ -379,7 +379,6 @@ printn "xmax = %1%" % xmax
           ::h1.settranslation(-(::cm_min-::h1.trx)*255.0/cm_range,0,0)
           setvoxelsize(::h1,newpixelsize,1,1)
           ::h1 = ::h1/max(subhist)*255
-
           ::cm->SetCurve(::h1,0)
           ::cm->SetCurveProperties(0,"#0000FF")
           # update image colormap in image viewer
@@ -477,13 +476,12 @@ printn "xmax = %1%" % xmax
       d = ::win.CurrentParent()
       ::dw = wxDrawingWindow(&d)
       # sets minimal size here
-      ::dw.SetMinSize(&wx.wxSize(80,80)); //(80,80));
+      ::dw.SetMinSize(&wx.wxSize(80,80));
       ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
       ::dw_boxsizer = ::win.GetCurrentSizer()
       ::sizer_item = ::win.AddWidget(&::dw,1)
-
       # add User Colormap Drawing Window
-       if(::num_histograms==2){
+       if(::num_histogram_viewer==2){
         d = ::win.CurrentParent()
         ::cm = wxDrawingWindow(&d)
         # sets minimal size here
@@ -498,8 +496,8 @@ printn "xmax = %1%" % xmax
     proc ::SetConf(NUM nh, NUM o) {
       # parameters window
 
-     ::num_histograms =nh
-     ::orientation = o
+     ::num_histogram_viewer =nh
+     #::orientation = o
 
     }
 
@@ -536,9 +534,8 @@ printn "xmax = %1%" % xmax
           ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
           ::dw_boxsizer = ::win.GetCurrentSizer()
           ::sizer_item = ::win.AddWidget(&::dw,1)
-
           # add User Colormap Drawing Window
-          if(::num_histograms==2){
+          if(::num_histogram_viewer==2){
             d = ::win.CurrentParent()
             ::cm = wxDrawingWindow(&d)
             # sets minimal size here
