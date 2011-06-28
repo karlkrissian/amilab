@@ -205,8 +205,13 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::Resize_Vol1() \
     {
+      if (!exists(::input)) {
+        ::load_input()
+      }
       if (exists(::input)){
+        SetStatusText("Resizing ...")
         aux = Resize(::input, ::input.tx/2, ::input.ty/2, ::input.tz/2,1)
+        SetStatusText("Resizing done")
         del ::input
         ::input=aux
         ::UpdateImageInfo(&::input,&::input_size)
@@ -215,13 +220,18 @@ if (!exists(VolRenClass)) {
         ::win.Update(-1)
       }
     }
-    Comments(::Resize_Vol1,"Resize Vol1 by half")
+    Comments(::Resize_Vol1,"Resize Volume 1 by half")
 
     #----------------------------
     proc ::Resize_Vol2() \
     {
+      if (!exists(::input)) {
+        ::load_input()
+      }
       if (exists(::input2)){
+        SetStatusText("Resizing ...")
         aux = Resize(::input2, ::input2.tx/2, ::input2.ty/2, ::input2.tz/2,1)
+        SetStatusText("Resizing done")
         del ::input
         ::input=aux
         ::UpdateImageInfo(&::input2,&::input2_size)
@@ -230,7 +240,8 @@ if (!exists(VolRenClass)) {
         ::win.Update(-1)
       }
     }
-    Comments(::Resize_Vol2,"Resize Vol2 by half")
+    Comments(::Resize_Vol2,"Resize Volume 2 by half")
+
     #----------------------------
     proc ::DeleteVariables() {
       del ::renwin_interact

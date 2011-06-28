@@ -295,3 +295,21 @@ BasicVariable::ptr WrapClass_StdVector<T>::
   return BasicVariable::ptr();
 }
 
+//---------------------------------------------------
+//  copy
+//---------------------------------------------------
+template <class T>
+void WrapClass_StdVector<T>::
+      wrap_copy::SetParametersComments() 
+{
+  return_comments = "Copy of the std::vector within a new variable.";
+}
+//---------------------------------------------------
+template <class T>
+BasicVariable::ptr  WrapClass_StdVector<T>::
+      wrap_copy::CallMember( ParamList* p)
+{
+  return WrapClass_StdVector<T>::CreateVar( new std::vector<T>(*(_objectptr->_obj)));
+}
+
+

@@ -52,6 +52,11 @@ private:
   bool             vertical_line;
   bool             x_locked;
   bool             y_locked;
+  
+  /// midpoint as defined in vtkPiecewiseFunction
+  double midpoint;
+  /// sharpness as defined in vtkPiecewiseFunction
+  double sharpness;
 
 public:
   dwControlPoint()
@@ -74,15 +79,17 @@ public:
 
   void DefaultInit()
   {
-    selected = false;
+    selected  = false;
     has_focus = false;
-    radius = 3;
-    colour = *wxGREEN;
-    type = normal_point;
+    radius    = 3;
+    colour    = *wxGREEN;
+    type      = normal_point;
     horizontal_line = false;
-    vertical_line = false;
-    x_locked=false;
-    y_locked=false;
+    vertical_line   = false;
+    x_locked  = false;
+    y_locked  = false;
+    midpoint  = 0.5;
+    sharpness = 0.0;
   }
 
   void operator = (const dwPoint2D& p )
@@ -95,6 +102,12 @@ public:
 
   void   SetX(double x)  { pos.SetX(x); }
   void   SetY(double y)  { if (!y_locked) pos.SetY(y); }
+
+  double Getmidpoint() const { return midpoint; }
+  double Getsharpness() const { return sharpness; }
+
+  void Setmidpoint( double mp)  { midpoint=mp; }
+  void Setsharpness(double s)   { sharpness=s; }
 
   int GetRadius() const { return radius; }
   void SetRadius(const int& r) { radius = r; }

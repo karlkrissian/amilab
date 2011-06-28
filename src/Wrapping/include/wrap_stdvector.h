@@ -55,6 +55,7 @@ class WrapClass_StdVector : public WrapClass<std::vector<T> >, public virtual Wr
     /// <<= operator
 //    ADD_CLASS_METHOD( left_assign,  "Reassign operator <<=");
     ADD_CLASS_METHOD( assign,       "Assign operator =");
+    ADD_CLASS_METHOD( copy,         "Copy constructor.");
 
     void AddMethods(boost::shared_ptr<WrapClass<std::vector<T> > > this_ptr )
     {
@@ -71,6 +72,7 @@ class WrapClass_StdVector : public WrapClass<std::vector<T> >, public virtual Wr
       // operators
  //     AddVar_left_assign( this_ptr);
       AddVar_assign(      this_ptr);
+      AddVar_copy(        this_ptr);
 
     }
 

@@ -56,6 +56,9 @@ class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>
     ADD_CLASS_SETGET(float,X,"X position");
     ADD_CLASS_SETGET(float,Y,"Y position");
 
+    ADD_CLASS_SETGET(double,midpoint, "midpoint for curve interpolation (see vtkPiecewiseFunction)");
+    ADD_CLASS_SETGET(double,sharpness,"sharpness for curve interpolation (see vtkPiecewiseFunction)");
+
     ADD_CLASS_SETGET(unsigned char,HorizontalLine,
                       "horizontal line property: 0 or 1.");
     ADD_CLASS_SETGET(unsigned char,VerticalLine,  
@@ -76,6 +79,8 @@ class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>
     {
       AddVar_SetGetX(              this_ptr);
       AddVar_SetGetY(              this_ptr);
+      AddVar_SetGetmidpoint(       this_ptr);
+      AddVar_SetGetsharpness(      this_ptr);
       AddVar_SetGetHorizontalLine( this_ptr);
       AddVar_SetGetVerticalLine(   this_ptr);
       AddVar_SetGetType(           this_ptr);
