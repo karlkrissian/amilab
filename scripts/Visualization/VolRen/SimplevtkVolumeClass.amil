@@ -6,16 +6,16 @@ if (!exists(SimplevtkVolumeClass)) {
   Class SimplevtkVolumeClass {
 
     #----------------------------
-    proc ::Init( ) {
-      ::blend_type = INT(5), "Blend type: 0->MIP, 1->CompositeRamp, 2->CompositeShadeRamp, 6->RGB_Composite, 7->Linear Curve 1"
-      ::opacitywindow = 1000, "Opacity Window"
-      ::opacitylevel  = 1000, "Opacity Level"
+    proc ::Init( ) \
+    {
+      #::opacitywindow = 1000, "Opacity Window"
+      #::opacitylevel  = 1000, "Opacity Level"
 
       ::clip = UCHAR(0), "Enable/Disable clipping box"
       ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
       ::initialized=0
 
-      ::opacity_attenuation = 1, "Attenuation factor for the opacity"
+      #::opacity_attenuation = 1, "Attenuation factor for the opacity"
 
       ::maxmemory = INT(0), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
       ::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use."
@@ -101,12 +101,14 @@ if (!exists(SimplevtkVolumeClass)) {
       //::axes.InteractiveOn()
     }
 
+    #----------------------------
     #Init renderer
     proc ::InitRenderer(){
       ::renderer.ResetCameraClippingRange()
       #default ::renderer.SetBackground(0, 0, 0)
       ::renderer.ResetCamera()
     } 
+
     #----------------------------
     #Reset camera
     proc ::ResetCamera(){
@@ -305,70 +307,14 @@ if (!exists(SimplevtkVolumeClass)) {
     }
 
     #----------------------------
-    proc ::BlendMIP() \
-    {
-      ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
-      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
-                             ::opacitylevel + 0.5*::opacitywindow, ::opacity_attenuation );
-      ::volmapper.SetBlendModeToMaximumIntensity();
-    }
-
-    #----------------------------
-    proc ::BlendCompositeRamp() \
-    {
-      ::colorFun.AddRGBSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, 0.0, 0.0, \
-                              ::opacitylevel + 0.5*::opacitywindow, 1.0, 1.0, 1.0 )
-
-      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
-                             ::opacitylevel + 0.5*::opacitywindow, ::opacity_attenuation )
-
-      ::volmapper.SetBlendModeToComposite()
-      ::property.ShadeOff()
-    }
-
-    #----------------------------
-    proc ::BlendCompositeShadeRamp() \
-    {
-      ::colorFun.AddRGBSegment(0.0, 1.0, 1.0, 1.0, 255.0, 1.0, 1.0, 1.0 );
-      ::opacityFun.AddSegment( ::opacitylevel - 0.5*::opacitywindow, 0.0, \
-                               ::opacitylevel + 0.5*::opacitywindow, ::opacity_attenuation );
-      ::volmapper.SetBlendModeToComposite();
-      ::property.ShadeOn();
-    }
-    #----------------------------
-    proc ::SetShadingProperties() \
-    {
-      ::property.SetShade(::use_shade)
-      ::property.SetAmbient(::ambient)
-      ::property.SetDiffuse(::diffuse)
-      ::property.SetSpecular(::specular)
-      ::property.SetSpecularPower(::specular_power)
-      ::property.SetScalarOpacityUnitDistance(::scalar_opacity_unitdistance)
-    }
-
-    #----------------------------
-    proc ::BlendLinearCurve1() \
-    {
-      printn "BlendLinearCurve1"
-          # Create colors based on the curve
-        ::volmapper.SetBlendModeToComposite()
-        ::SetShadingProperties()
-    }
-    #----------------------------
     proc ::ReCompute() \
     {
         # connect up the volume to the property and the mapper
         if (exists(::property)){
           ::vol.SetProperty( &::property )
         }
-        
         ::property.SetColor( &::colorFun )
         ::property.SetScalarOpacity( &::opacityFun )
-
-        if (::blend_type==0) { ::BlendMIP();                }
-        if (::blend_type==1) { ::BlendCompositeRamp();      }
-        if (::blend_type==2) { ::BlendCompositeShadeRamp(); }
-        if (::blend_type==7) { ::BlendLinearCurve1();       }
     }
 
     #----------------------------

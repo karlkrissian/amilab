@@ -18,7 +18,6 @@ Class PreviewerClass \
   # curve
   ::vtkcurve = &vtkCurveClass 
 
-
   #-----------------------------
   proc ::Curve() \
   {
@@ -431,6 +430,7 @@ Class PreviewerClass \
     #::frame.Show()
   }
 
+  ::Init()
 }
 
 #if (exists(Previewer_obj)) { Previewer_obj.Close(); del Previewer_obj; }
