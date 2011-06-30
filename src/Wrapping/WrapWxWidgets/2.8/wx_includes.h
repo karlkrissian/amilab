@@ -19,6 +19,7 @@
 #include <wx/html/htmlwin.h>
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
+#include <wx/regex.h> 
 #include <wx/richtext/richtextctrl.h>
 #include <wx/splitter.h>
 #include <wx/stc/stc.h>

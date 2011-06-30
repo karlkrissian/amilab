@@ -647,6 +647,9 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
     
     # Define the string containing the method call
     obj_ptr='this->_objectptr->GetObj()'
+    # check for null object
+    if method.static!="1":
+      res += ident+"  if (!{0}.get()) return BasicVariable::ptr();\n".format(obj_ptr)
     if method.name in config.available_operators.keys():
       if len(method.args)>0:
         if method.name=='[]':
@@ -692,6 +695,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
         else:
           res += ident+'  '+typesubst.ConvertValFrom(method.returntype,'res',substvar)+"\n"
         if (substtype in config.available_classes) and returnpointer:
+          res += ident+'  if ({0}==NULL) return nullvar;\n'.format('res')
           res += ident+'  BasicVariable::ptr res_var = WrapClass_{0}::CreateVar({1});\n'.format(substtype,substvar)
           res += ident+'  return res_var;\n'
         else:
@@ -702,10 +706,12 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
         if typename in config.available_classes and returnpointer: 
           nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
           # don't delete returned pointer ...
+          res += ident+'  if ({0}==NULL) return nullvar;\n'.format(nonconstres)
           res += ident+'  BasicVariable::ptr res_var = AMILabType<{0} >::CreateVar({1},true);\n'.format(typename,nonconstres)
-          res += '  return res_var;\n'
+          res += ident+'  return res_var;\n'
         else:
           if returnpointer:
+            res += ident+'  if ({0}==NULL) return nullvar;\n'.format('res')
             # Avoid deleting the returned pointer ...
             nonconstres = typesubst.RemovePointerConstness(config.types[method.returntype].GetFullString(),"res")
             if pointercount==1:

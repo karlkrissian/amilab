@@ -5,6 +5,7 @@
 #include "wx/wx.h"
 #include "ami_function.h"
 #include <wx/listctrl.h>
+#include <wx/html/htmlwin.h>
 
 #ifndef wxCommandEvent_declared
   #define wxCommandEvent_declared
@@ -21,9 +22,24 @@
   AMI_DECLARE_TYPE(wxKeyEvent)
 #endif
 
-  #ifndef wxListEvent_declared
+#ifndef wxListEvent_declared
   #define wxListEvent_declared
   AMI_DECLARE_TYPE(wxListEvent)
+#endif
+
+#ifndef wxHtmlCellEvent_declared
+  #define wxHtmlCellEvent_declared
+  AMI_DECLARE_TYPE(wxHtmlCellEvent)
+#endif
+
+#ifndef wxHtmlLinkEvent_declared
+  #define wxHtmlLinkEvent_declared
+  AMI_DECLARE_TYPE(wxHtmlLinkEvent)
+#endif
+
+#ifndef wxCloseEvent_declared
+  #define wxCloseEvent_declared
+  AMI_DECLARE_TYPE(wxCloseEvent)
 #endif
 
 void CB_ParamWin( void* cd );
@@ -125,6 +141,48 @@ class wxAmiEventHandler: public wxEvtHandler
         wxLogMessage(wxT("Callback function not available"));
     }
 
+    void OnHtmlCellEvent(wxHtmlCellEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxHtmlCellEvent>::CreateVar((wxHtmlCellEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+
+    void OnHtmlLinkEvent(wxHtmlLinkEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxHtmlLinkEvent>::CreateVar((wxHtmlLinkEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+
+    void OnCloseEvent(wxCloseEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxCloseEvent>::CreateVar((wxCloseEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+
 //     void OnListEvent(wxListEvent& event)
 //     {
 //       if (callback_function!=NULL)
@@ -164,6 +222,24 @@ class wxAmiEventHandler: public wxEvtHandler
     wxObjectEventFunction* GetKeyEventFunction() {
       // TODO: delete the new allocation
       eventfunc = new wxObjectEventFunction(wxCharEventHandler(wxAmiEventHandler::OnKeyEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetHtmlCellEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxHtmlCellEventHandler(wxAmiEventHandler::OnHtmlCellEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetHtmlLinkEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxHtmlLinkEventHandler(wxAmiEventHandler::OnHtmlLinkEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetCloseEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxCloseEventHandler(wxAmiEventHandler::OnCloseEvent));
       return eventfunc;
     }
 

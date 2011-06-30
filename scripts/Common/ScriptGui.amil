@@ -40,6 +40,9 @@ if (!exists(ScriptGui)) \
     # Closes only the object instance
     #
     proc ::Close() {
+      if exists(::helpw) {
+        ::helpw.Destroy()
+      }
       ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
@@ -104,7 +107,14 @@ if (!exists(ScriptGui)) \
         if (!exists(::parent_panel)) {
           ::AddBitmapButton16(&win, &::icons._Refresh, "ReloadScript")
           win.SetPositionProp(-1,2)
-          ::AddBitmapButton16(&win, &::icons._Close,   "Close")
+          #::AddBitmapButton16(&win, &::icons._Close,   "Close")
+          #win.SetPositionProp(-1,2)
+          ::AddBitmapButton16(&win, &::icons._Help,   "HelpWindow")
+          if exists(::html_filename) {
+            if !wx.wxFileName(::html_filename).FileExists() {
+              win.Enable(::HelpWindow_but_id,false)
+            }
+          } else { win.Enable(::HelpWindow_but_id,false); }
           win.SetPositionProp(-1,2)
           ::AddBitmapButton16(&win, &::icons._Delete,  "CloseAll")
           win.SetPositionProp(-1,2)
@@ -159,6 +169,54 @@ if (!exists(ScriptGui)) \
     }
     Comments( ::HtmlForward, "Go to the forward page.")
   
+    #---------------------------------------------------
+    # needs ::html and ::html_filename
+    #
+    proc ::Html2Home() {
+      ::html2.LoadFile( ::html_filename)
+    }
+    Comments( ::Html2Home, "Back to the initial page.")
+  
+    #---------------------------------------------------
+    proc ::Html2Back() {
+      res = ::html2.HistoryBack()
+    }
+    Comments( ::Html2Back, "Back to the previous page.")
+  
+    #---------------------------------------------------
+    proc ::Html2Forward() {
+      res = ::html2.HistoryForward()
+    }
+    Comments( ::Html2Forward, "Go to the forward page.")
+
+    #---------------------------------------------------
+    proc ::Html2Hover(OBJECT event) \
+    {
+      cell = event.GetCell()
+      link = cell.GetLink()
+      if (language.WrapVariable(&link).GetTypeName()!="wrap_AMIObject"){
+        ref = "no link here ..."
+      } else {
+        ref = link.GetHref()
+      }
+      ::helpw._SetStatusText(ref)
+    }
+    Comments( ::Html2Hover, "Callback when going over a link.")
+
+    #---------------------------------------------------
+    proc ::OnHtmlLinkClicked(OBJECT event) \
+    {
+      http_link = wx.wxRegEx("[:blank:]*http://.*")
+      if (http_link.Matches(event.GetLinkInfo().GetHref())) \
+      {
+        wx.LaunchDefaultBrowser(wx.FromWxString(event.GetLinkInfo().GetHref()))
+      } else \
+      {
+        # skipping this event the default behaviour (load the clicked URL)
+        # will happen...
+        event.Skip()
+      }
+    }
 
     #------------------------------------
     # Add the standard help page for Gui scripts
@@ -192,7 +250,88 @@ if (!exists(ScriptGui)) \
         win.AddWidget(&::html,1)
     }
 
+    #------------------------------------
+    # closing help window
+    proc ::CloseHelp(OBJECT event) \
+    {
+      ::helpw.Destroy()
+      del ::helpw
+    }
 
+    #------------------------------------
+    # Opens Helps in a separate window
+    #
+    proc ::HelpWindow() \
+    {
+      if !exists(::helpw) {
+      ::helpw = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Help",\
+        wx.wxPoint(-1,-1),wx.wxSize(400,600),\
+        wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"test")
+      ::helpw.CreateStatusBar()
+      ::helpw.Show()
+      evh_close = wx.wxAmiEventHandler(&::CloseHelp)
+      ::helpw.Connect(wx.wxEVT_CLOSE_WINDOW,&evh_close.GetCloseEventFunction(),\
+                  &NULL,&evh_close)
+      topsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+
+      butsizer = wx.wxBoxSizer(wx.wxHORIZONTAL)
+
+      bb0 = wx.wxBitmapButton(&::helpw,wx.wxID_ANY,\
+                              &wx.wxBitmap(&::icons._DokuWiki.Scale(16,16)))
+      bb1 = wx.wxBitmapButton(&::helpw,wx.wxID_ANY,\
+                              &wx.wxBitmap(&::icons._Home    .Scale(16,16)))
+      bb2 = wx.wxBitmapButton(&::helpw,wx.wxID_ANY,\
+                              &wx.wxBitmap(&::icons._Back    .Scale(16,16)))
+      bb3 = wx.wxBitmapButton(&::helpw,wx.wxID_ANY,\
+                              &wx.wxBitmap(&::icons._Forward .Scale(16,16)))
+
+      bb0.SetToolTip("Wiki link")
+      bb1.SetToolTip("Initial page")
+
+      butsizer.Add(&bb0,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
+      butsizer.Add(&bb1,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
+      butsizer.Add(&bb2,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
+      butsizer.Add(&bb3,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
+
+      evh0 = wx.wxAmiEventHandler(&::LaunchWiki)
+      bb0.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh0.GetEventFunction(),\
+                  &NULL,&evh0)
+
+      evh1 = wx.wxAmiEventHandler(&::Html2Home)
+      bb1.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh1.GetEventFunction(),\
+                  &NULL,&evh1)
+      evh2 = wx.wxAmiEventHandler(&::Html2Back)
+      bb2.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh2.GetEventFunction(),\
+                  &NULL,&evh2)
+      evh3 = wx.wxAmiEventHandler(&::Html2Forward)
+      bb3.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh3.GetEventFunction(),\
+                  &NULL,&evh3)
+
+      topsizer.Add(&butsizer,wx.wxSizerFlags(0).Center())
+
+      del ::html2
+      ::html2 = wx.wxHtmlWindow(&::helpw)
+      ::html2.LoadFile( ::html_filename)
+      evh4 = wx.wxAmiEventHandler(&::Html2Hover)
+      ::html2.Connect(  wx.wxEVT_COMMAND_HTML_CELL_HOVER,\
+                        &evh4.GetHtmlCellEventFunction(),\
+                        &NULL,\
+                        &evh4)
+
+      evh5 = wx.wxAmiEventHandler(&::OnHtmlLinkClicked)
+      ::html2.Connect(  wx.wxEVT_COMMAND_HTML_LINK_CLICKED,\
+                        &evh5.GetHtmlLinkEventFunction(),\
+                        &NULL,\
+                        &evh5)
+
+      topsizer.Add(&::html2,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
+      ::helpw.SetSizer( &topsizer )      # use the sizer for layout
+      topsizer.SetSizeHints( &::helpw )   # set size hints to honour minimum size
+      ::helpw.SetSize(600,800)
+      } else {
+        ::html2.LoadFile( ::html_filename)
+      }
+    }
 
   }
 }

@@ -599,6 +599,7 @@ MainFrame::MainFrame( const wxString& title,
                   .BestSize(wxSize(300,100))
                   .Right().Layer(1)
                   .MaximizeButton(true)
+                  .PinButton(true)
                   .Hide());
   
   CreateKeywordsPanel(this); 

@@ -59,9 +59,11 @@ wxGDIObject
 wxGridSizer
 wxHelpEvent
 wxHtmlCell
+wxHtmlCellEvent
 wxHtmlContainerCell
 wxHtmlEntitiesParser
 wxHtmlFilter
+wxHtmlLinkEvent
 wxHtmlLinkInfo
 wxHtmlParser
 wxHtmlRenderingInfo
@@ -125,6 +127,7 @@ wxPluginInterface
 wxPluginManager
 wxPoint
 wxRect
+wxRegEx
 wxRegion
 wxRichTextCtrl
 wxScrollHelper
