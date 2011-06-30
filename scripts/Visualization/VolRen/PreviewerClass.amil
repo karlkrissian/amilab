@@ -5,10 +5,9 @@
 #
 
 
-if (exists(PreviewerClass)) { del PreviewerClass; }
+del PreviewerClass
 
-
-
+#-----------------------------------------------------------------
 Class PreviewerClass \
 {
   func "SimplevtkVolumeClass.amil"
@@ -18,76 +17,9 @@ Class PreviewerClass \
   func "vtkCurveClass.amil"
   # curve
   ::vtkcurve = &vtkCurveClass 
-  ::cols=2
-  ::files=2
-  #----------------------------
-  proc ::Gui() \
-  {
-    # Create a Frame
-    ::frame = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Previewer", \
-         wx.wxPoint(100,100),wx.wxSize(300,300),\
-         wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX|wx.wxMAXIMIZE_BOX,"test")
-    # Create a panel with a sizer
-    ::panel = wx.wxPanel(&::frame)
-    # Create a BoxSizer
-    ::boxsizerM = wx.wxBoxSizer(wx.wxVERTICAL)
-    gridsizer =wx.wxGridSizer(::cols)
-    boxsizerB = wx.wxBoxSizer(wx.wxHORIZONTAL)
-    #choice
-    ::choice1 = wx.wxChoice.wxChoice_2(&::panel, wx.wxID_ANY)
-    ::choice1.SetSelection(0)
-    #event choice
-    ::evh_selected = wx.wxAmiEventHandler(&::ChoiceSelected)
-    ::evh_selected.SetSendListEvent(true)
-    ::choice1.Connect( wx.wxEVT_COMMAND_CHOICE_SELECTED\
-                          ,&::evh_selected.GetEventFunction(),\
-                          &NULL,&::evh_selected)
-    #button
-    ::b_Apply = wx.wxButton(&::panel,wx.wxID_ANY,"Apply")
-    #button event 
-    evh1 = wx.wxAmiEventHandler(&::Apply)
-    ::b_Apply.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh1.GetEventFunction(),&NULL,&evh1)
-    #line separator
-    line=wx.wxStaticLine(&::panel,wx.wxID_ANY)
 
-    #wxVTKRenderWindowInteractor events
-    evh_cpV = wx.wxAmiEventHandler(&::cpView)
-    evh_EnterW1 = wx.wxAmiEventHandler(&::OnEnter1)
-    evh_ChoiceW = wx.wxAmiEventHandler(&::OnChoiceW)
 
-    #wxVTKRenderWindowInteractor
-    ::wxvtk_id = 10000
-    #wxvtkIterator vector
-    ::RWIVector= VarVector()
-    for n=0 to ::cols*::files-1 {
-      del wxvtkI
-      wxvtkI =  vtktools.wxVTKRenderWindowInteractor(&::panel,::wxvtk_id+n)
-      #event copy view
-      wxvtkI.Connect(wx.wxEVT_LEFT_UP,&evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
-      wxvtkI.Connect(wx.wxEVT_MOUSEWHEEL,&evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
-      #event onenter window
-      wxvtkI.Connect(wx.wxEVT_ENTER_WINDOW,&evh_EnterW1.GetMouseEventFunction(),&NULL,&evh_EnterW1)
-      #choice window
-      //wxvtkI.Connect(wx.wxEVT_RIGHT_DOWN,&evh_ChoiceW.GetMouseEventFunction(),&NULL,&evh_ChoiceW)
-      wxvtkI.Connect(wx.wxEVT_LEFT_DOWN,&evh_ChoiceW.GetMouseEventFunction(),&NULL,&evh_ChoiceW)
-      #add vector
-      ::RWIVector.push_back(&wxvtkI)
-      #add to gridsizer
-      gridsizer.Add(&::RWIVector[n],&wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
-    }
-    boxsizerB.Add(&::b_Apply,&wx.wxSizerFlags(0).Right())
-    ::boxsizerM.Add(&::choice1, 0, wx.wxALL | wx.wxEXPAND | wx.wxLEFT, 1)
-    ::boxsizerM.Add(&gridsizer, 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER, 1);    
-    ::boxsizerM.Add(&line, 0, wx.wxALL | wx.wxEXPAND | wx.wxCENTER, 1);
-    ::boxsizerM.Add(&boxsizerB, 0, wx.wxALL | wx.wxEXPAND | wx.wxCENTER, 1);
-    #panel
-    ::panel.SetSizer(&::boxsizerM ) 
-    ::frame.SetMinSize(wx.wxSize(300,300))
-    #Init
-    ::Init()
-    ::frame.Show()
-  }
-#-----
+  #-----------------------------
   proc ::Curve() \
   {
      del aux_curve2
@@ -95,18 +27,22 @@ Class PreviewerClass \
     aux_curve2.Load("/home/carlos/Devel/amilab_trunk/scripts/Visualization/VolRen/Curves/CT/Muscles.txt")
     aux_curve2.SetCategory("CT")
     aux_curve2.SetType("Muscles")
-//    aux_curve2.Save("/home/carlos/Escritorio/")
-
+    #    aux_curve2.Save("/home/carlos/Escritorio/")
   }
-
 
   #----------------------------
   proc ::Init() \
   {
+    printn "PreviewerClass::Init()"
+    ::LoadCurves()
+    ::cols=2
+    ::files=2
+    ::Gui()
+
     ::active_window=0
     ::apply_window=::active_window
     ::SVCVector= VarVector()
-    ::isAvaible=  vector_int(::files*::cols,0)
+    ::isAvailable=  vector_int(::files*::cols,0)
     for n=0 to ::RWIVector.size()-1 {
       del aux_svc
       ::svc aux_svc
@@ -115,20 +51,41 @@ Class PreviewerClass \
       #init renderer 
       ::SVCVector[n].InitManager(&::RWIVector[n])
     }
-   ::SVCVector[::apply_window].SetBackground(0,0,0,255,255,255)
-   ::LoadCurves()
+    ::SVCVector[::apply_window].SetBackground(0,0,0,255,255,255)
+    for n = 0 to ::listCategory.Count()-1 {
+      ::choice1.Append(::listCategory[n])
+    }
     ::choice1.SetSelection(0)
+    ::frame.Show()
   }
+
+  #----------------------------
+  proc ::ReduceImage(IMAGE im) \
+  {
+    numvox = im.tx*im.ty*im.tz
+    ratio = exp(ln(1000000.0/numvox)/3.0)
+    SetStatusText("Reduction factor = %1%" % ratio)
+    if (ratio<1) {
+      return = Resize(im, ratio*im.tx, ratio*im.ty, ratio*im.tz, 1)
+    } else {
+      return = &im
+    }
+  }
+
   #----------------------------
   proc ::SetInput(IMAGE image) {
-     del ::input
-    ::input<<= Resize (image, image.tx/3, image.ty/3, image.tz/3, 1)
-    //::Load()
+    printn "PreviewerClass::SetInput()"
+    del ::input
+    # limit the preview image size to 1 million voxels ?
+    ::input = ::ReduceImage(&image)
+    #::Load()
     ::Render()
   }
+
   #----------------------------
-  proc ::LoadCurves() {
-    //::pathname=wx.FromWxString(wx.wxFileName.GetCwd())
+  proc ::LoadCurves() \
+  {
+    #::pathname=wx.FromWxString(wx.wxFileName.GetCwd())
     pathname=GetScriptsDir+"Visualization/VolRen/"
     #printn pathname
     defaultdir= "Curves/"
@@ -141,6 +98,7 @@ Class PreviewerClass \
      list=wx.wxArrayString()
      nelem=wx.wxDir.GetAllFiles(path,&list,"*.txt")
     }
+
     list.Sort()
     #printn  "File(s) number %1%" %nelem 
     ::listCategory=wx.wxArrayString()
@@ -164,8 +122,8 @@ Class PreviewerClass \
       if (categoryPre!=category){
         ::numElemCategory.push_back(0)
         categoryPre=category
-       ::listCategory.Add(category)
-        ::choice1.Append(category)
+        ::listCategory.Add(category)
+        #::choice1.Append(category)
         i=i+1
       }
       ::numElemCategory[i] = ::numElemCategory[i]+1
@@ -180,9 +138,8 @@ Class PreviewerClass \
       aux_curve.SetType(type)
       ::CurveVector.push_back(&aux_curve)
     }
-
-
   }
+
   #----------------------------
   proc ::GetCurveIndex(NUM i){
     nelem=0
@@ -194,31 +151,32 @@ Class PreviewerClass \
     return= &(nelem)
   }
   #----------------------------
-  proc ::Render() {
+  proc ::Render() \
+  {
     if (exists(::input)) {
-      del ::isAvaible
-      ::isAvaible=  vector_int(::files*::cols,0)
-      index= ::choice1.GetCurrentSelection()
-      for n=0 to ::RWIVector.size()-1 {  
+      del ::isAvailable
+      ::isAvailable = vector_int(::files*::cols,0)
+      index = ::choice1.GetCurrentSelection()
+      for n=0 to ::RWIVector.size()-1 {
         ::SVCVector[n].DelVTK()
         if (n<::numElemCategory[index]){
-          ::isAvaible[n]=1
+          ::isAvailable[n]=1
           #printn index
           indexCurve= ::GetCurveIndex(index)+n
           #printn "Index of curve %1%" %indexCurve
-          ::SVCVector[n].SetColorFun(&::CurveVector[indexCurve].GetColorFun())
+          ::SVCVector[n].SetColorFun(  &::CurveVector[indexCurve].GetColorFun())
           ::SVCVector[n].SetOpacityFun(&::CurveVector[indexCurve].GetOpacityFun())
-          ::SVCVector[n].SetProperty(&::CurveVector[indexCurve].GetPropertyFun())
+          ::SVCVector[n].SetProperty(  &::CurveVector[indexCurve].GetPropertyFun())
           #Create & addvolume
           ::SVCVector[n].CreateVTK( &::input)
           ::SVCVector[n].OnRender()
           ::SVCVector[n].InitRenderer()
           ::RWIVector[n].Render()
-          ::RWIVector[n].Refresh()
-        }
-     }
-  }
- }
+          #::RWIVector[n].Refresh()
+        } # end if
+      } # end for
+    } # end if
+  } # end Render()
 
   #----------------------------
   proc ::Load() {
@@ -231,7 +189,7 @@ Class PreviewerClass \
       ::SVCVector[n].OnRender()
       ::SVCVector[n].InitRenderer()
       ::RWIVector[n].Render()
-      ::RWIVector[n].Refresh()
+      #::RWIVector[n].Refresh()
      }
   }
  }
@@ -239,62 +197,75 @@ Class PreviewerClass \
   #----------------------------
   proc ::AddVolume(IMAGE image, NUM n) \
   {
-     del a
-    a<<= Resize (image, image.tx/3, image.ty/3, image.tz/3, 1)
+    del a
+    a <<= ::ReduceImage(&image)
     del aux_svc
     ::svc aux_svc
 
-        aux_svc.SetInteractor(&::SVCVector[n].renwininter)
-        aux_svc.SetRenderer(&::SVCVector[n].renderer)
-        aux_svc.SetRenderWindow(&::SVCVector[n].renwin)
+    aux_svc.SetInteractor(&::SVCVector[n].renwininter)
+    aux_svc.SetRenderer(&::SVCVector[n].renderer)
+    aux_svc.SetRenderWindow(&::SVCVector[n].renwin)
 
-      aux_svc.Init()
-      #init renderer 
-      //aux_svc.cpManager(&::SVCVector[n])
-aux_svc.CreateVTK( &a)
-aux_svc.OnRender()
-      //::RWIVector[n].Render()
-      //::RWIVector[n].Refresh()
+    aux_svc.Init()
+    #init renderer 
+    #aux_svc.cpManager(&::SVCVector[n])
+    aux_svc.CreateVTK( &a)
+    aux_svc.OnRender()
+    #::RWIVector[n].Render()
+    #::RWIVector[n].Refresh()
   }
 
   #----------------------------
-  proc ::Show() \
+  proc ::Hide() \
   {
-    if (!::frame.IsShown()){
-      ::frame.Show()
-    }else {
-      ::frame.Hide()
-    }
+    ::frame.Hide()
   }
   #----------------------------
   proc ::Refresh() \
   {
     for n=0 to ::RWIVector.size()-1 {
-     ::RWIVector[n].Refresh()
-      
+     ::RWIVector[n].Render()
    }
   }
   #----------------------------
   proc ::ResetView() \
   {
     for n=0 to ::RWIVector.size()-1 {
-     ::SVCVector[n].ResetCamera()   
+     ::SVCVector[n].ResetCamera()
    }
    ::Refresh()
   }
+
   #----------------------------
   proc ::Close() \
   {
     ::frame.Destroy()
   }
+
+  #----------------------------
+  proc ::GetSelection(){
+    index= ::choice1.GetCurrentSelection()
+    indexCurve= ::GetCurveIndex(index)+::apply_window
+    ::Rotate(::apply_window)
+    return = &::CurveVector[indexCurve]
+    ::Hide()
+  }
+
+  #----------------------------
+  # sets an object that contains a method named call()
+  proc ::SetApplyCallback( VAR cb) \
+  {
+    ::apply_cb = &cb
+  }
+
   #----------------------------
   proc ::Apply(){
-     index= ::choice1.GetCurrentSelection()
-     indexCurve= ::GetCurveIndex(index)+::apply_window
-    ::Rotate(::apply_window)
-      return= &::CurveVector[indexCurve]
-    ::Show()
+    if exists(::apply_cb) {
+      ::apply_cb()
+    }
   }
+
+
   #----------------------------
   proc ::Rotate(NUM n){
    rend=::RWIVector[n].GetRenderWindow().GetRenderers().GetFirstRenderer()
@@ -305,6 +276,7 @@ aux_svc.OnRender()
     }
 
   }
+
   #----------------------------
   proc ::Rotate2(NUM n){
    for i=0 to 35 {
@@ -312,6 +284,7 @@ aux_svc.OnRender()
       ::SVCVector[n].Rotate()
     }
   }
+
   #----------------------------
   proc ::MultView(){
    del angle
@@ -325,13 +298,16 @@ aux_svc.OnRender()
    }
    ::Refresh()
   }
+
   #----------------------------
   proc ::ChangeViewConfiguration(NUM index){
     ::Render()
     ::Refresh()
   }
+
   #--------------------------- event procedures
-  proc ::ChoiceSelected( OBJECT event ) {
+  proc ::ChoiceSelected( OBJECT event ) \
+  {
     index = event.GetSelection()
     //pos = atof(event.GetItem().GetText().c_str())
    // printn "item  = %1%" % index
@@ -339,7 +315,9 @@ aux_svc.OnRender()
      event.Skip()
   }
 
-   proc ::cpView(OBJECT event){ 
+  #----------------------------
+  proc ::cpView(OBJECT event) \
+  { 
     del cam
     cam = vtk.vtkCamera.New()
     cam.DeepCopy(&::SVCVector[::active_window].camera)
@@ -350,30 +328,111 @@ aux_svc.OnRender()
     event.Skip()
    }
 
-   proc ::OnEnter1( OBJECT event){
+  #----------------------------
+  proc ::OnEnter1( OBJECT event) \
+  {
     ::active_window=event.GetId()-10000
     //printn "Event id = %1%" % ::active_window
     event.Skip()
-   }
+  }
 
-  
-   proc ::OnChoiceW(OBJECT event){
-    if (::isAvaible[::active_window]){
+  #----------------------------
+  proc ::OnChoiceW(OBJECT event) \
+  {
+    if (::isAvailable[::active_window]){
       if(::apply_window!=::active_window){
         for n=0 to ::RWIVector.size()-1 {
           ::SVCVector[n].SetBackground(0,0,0,0,0,0)
         }
         ::SVCVector[::active_window].SetBackground(0,0,0,255,255,255)
-        ::Refresh()    
+        ::Refresh()
         //::Rotate(::active_window)
         ::apply_window=::active_window
 
       }
         event.Skip()
       }
-   }
+  }
+
+  #----------------------------
+  proc ::Gui() \
+  {
+    printn "PreviewerClass::Gui()"
+    # Create a Frame
+    ::frame = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"Previewer", \
+                          wx.wxPoint(100,100),wx.wxSize(300,300),\
+                          wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX|wx.wxMAXIMIZE_BOX,\
+                          "test")
+    # Create a panel with a sizer
+    ::panel = wx.wxPanel(&::frame)
+    # Create a BoxSizer
+    ::boxsizerM = wx.wxBoxSizer(wx.wxVERTICAL)
+    gridsizer = wx.wxGridSizer(::cols)
+    boxsizerB = wx.wxBoxSizer(wx.wxHORIZONTAL)
+    #choice
+    ::choice1 = wx.wxChoice.wxChoice_2(&::panel, wx.wxID_ANY)
+    ::choice1.SetSelection(0)
+    #event choice
+    ::evh_selected = wx.wxAmiEventHandler(&::ChoiceSelected)
+    ::evh_selected.SetSendListEvent(true)
+    ::choice1.Connect( wx.wxEVT_COMMAND_CHOICE_SELECTED,\
+                       &::evh_selected.GetEventFunction(),\
+                       &NULL,&::evh_selected)
+    #button
+    ::b_Apply = wx.wxButton(&::panel,wx.wxID_ANY,"Apply")
+    #button event 
+    evh1 = wx.wxAmiEventHandler(&::Apply)
+    ::b_Apply.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,\
+                      &evh1.GetEventFunction(),&NULL,&evh1)
+    #line separator
+    line=wx.wxStaticLine(&::panel,wx.wxID_ANY)
+
+    #wxVTKRenderWindowInteractor events
+    evh_cpV     = wx.wxAmiEventHandler(&::cpView)
+    evh_EnterW1 = wx.wxAmiEventHandler(&::OnEnter1)
+    evh_ChoiceW = wx.wxAmiEventHandler(&::OnChoiceW)
+
+    #wxVTKRenderWindowInteractor
+    ::wxvtk_id = 10000
+    #wxvtkIterator vector
+    ::RWIVector= VarVector()
+    for n=0 to ::cols*::files-1 {
+      del wxvtkI
+      wxvtkI =  vtktools.wxVTKRenderWindowInteractor(&::panel,::wxvtk_id+n)
+      #event copy view
+      wxvtkI.Connect( wx.wxEVT_LEFT_UP,\
+                      &evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
+      wxvtkI.Connect( wx.wxEVT_MOUSEWHEEL,\
+                      &evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
+      #event onenter window
+      wxvtkI.Connect( wx.wxEVT_ENTER_WINDOW,\
+                      &evh_EnterW1.GetMouseEventFunction(),&NULL,&evh_EnterW1)
+      #choice window
+      #wxvtkI.Connect( wx.wxEVT_RIGHT_DOWN,\
+      #                  &evh_ChoiceW.GetMouseEventFunction(),&NULL,&evh_ChoiceW)
+      wxvtkI.Connect( wx.wxEVT_LEFT_DOWN,\
+                      &evh_ChoiceW.GetMouseEventFunction(),&NULL,&evh_ChoiceW)
+      #add vector
+      ::RWIVector.push_back(&wxvtkI)
+      #add to gridsizer
+      gridsizer.Add(  &::RWIVector[n],\
+                      &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
+    }
+    boxsizerB.Add(&::b_Apply,&wx.wxSizerFlags(0).Right())
+    ::boxsizerM.Add(&::choice1, 0, wx.wxALL | wx.wxEXPAND | wx.wxLEFT,    1)
+    ::boxsizerM.Add(&gridsizer, 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
+    ::boxsizerM.Add(&line,      0, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
+    ::boxsizerM.Add(&boxsizerB, 0, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
+    #panel
+    ::panel.SetSizer(&::boxsizerM ) 
+    ::frame.SetMinSize(wx.wxSize(300,300))
+    #Init
+    #::Init()
+    #::frame.Show()
+  }
+
 }
 
-if (exists(Previewer_obj)) { Previewer_obj.Close(); del Previewer_obj; }
-PreviewerClass Previewer_obj
-Previewer_obj.Gui()
+#if (exists(Previewer_obj)) { Previewer_obj.Close(); del Previewer_obj; }
+#PreviewerClass Previewer_obj
+#Previewer_obj.Gui()

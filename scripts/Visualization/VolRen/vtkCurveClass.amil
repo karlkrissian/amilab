@@ -15,13 +15,24 @@ if (!exists(vtkCurveClass)) {
 
     #----------------------------
     proc ::Init() {
-      ::category  =  "", "name of the category"
-      ::type =  "", "type in category"
-      ::descripcion=  "", "general descripcion"
-      ::colorFun=vtk.vtkColorTransferFunction.New()
-      ::opacityFun=vtk.vtkPiecewiseFunction.New()
-      ::property=vtk.vtkVolumeProperty.New()
+      ::category    = "", "name of the category"
+      ::type        = "", "type in category"
+      ::descripcion = "", "general descripcion"
+      ::colorFun    = vtk.vtkColorTransferFunction.New()
+      ::opacityFun  = vtk.vtkPiecewiseFunction    .New()
+      ::property    = vtk.vtkVolumeProperty       .New()
     }
+
+    #----------------------------
+    proc ::__assign__(OBJECT c1) {
+      ::category    = c1.category
+      ::type        = c1.type
+      ::description = c1.description
+      ::colorFun  .DeepCopy(&c1.colorFun)
+      ::opacityFun.DeepCopy(&c1.opacityFun)
+      ::property  .DeepCopy(&c1.property)
+    }
+
     #----------------------------
     proc ::SetCategory(STRING c) {
       ::category  = c

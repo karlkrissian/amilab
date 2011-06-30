@@ -32,7 +32,13 @@ extern yyip::Driver GB_driver;
     if (member->Type()==type_class_member) { \
       DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1); \
       resvar = (var1->Pointer())->CallMember(NULL); \
-    } else { \
+    } else \
+    if (member->Type()==type_ami_function) { \
+      DYNAMIC_CAST_VARIABLE(AMIFunction,member, var1); \
+      AMIFunction::ptr f(var1->Pointer()); \
+      resvar = GB_driver.yyip_call_function(f.get()); \
+    } else \
+    { \
       GB_driver.yyiperror((boost::format("Class member '%1%' for this type is not available. ") % member_name ).str().c_str()); \
     } \
   }
@@ -51,7 +57,13 @@ extern yyip::Driver GB_driver;
     if (member->Type()==type_class_member) { \
       DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1); \
       resvar = (var1->Pointer())->CallMember(param.get()); \
-    } else { \
+    } else \
+    if (member->Type()==type_ami_function) { \
+      DYNAMIC_CAST_VARIABLE(AMIFunction,member, var1); \
+      AMIFunction::ptr f(var1->Pointer()); \
+      resvar = GB_driver.yyip_call_function(f.get(),param); \
+    } else \
+    { \
       GB_driver.yyiperror((boost::format("Class member '%1%' for this type is not available. ") % member_name ).str().c_str()); \
     } \
   }

@@ -1,3 +1,4 @@
+
 if (!exists(SimplevtkVolumeClass)) {
   #-----------------------------------------------------
   #  SimplevtkVolumeClass
@@ -83,12 +84,12 @@ if (!exists(SimplevtkVolumeClass)) {
     #----------------------------
     proc ::AddAnnotatedCube(){
       axesActor = vtk.vtkAnnotatedCubeActor.New()
-      axesActor.SetXPlusFaceText("L")
+      axesActor.SetXPlusFaceText( "L")
       axesActor.SetXMinusFaceText("R")
       axesActor.SetYMinusFaceText("A")
-      axesActor.SetYPlusFaceText("P")
+      axesActor.SetYPlusFaceText( "P")
       axesActor.SetZMinusFaceText("I")
-      axesActor.SetZPlusFaceText("S")
+      axesActor.SetZPlusFaceText( "S")
       axesActor.GetTextEdgesProperty().SetColor(1,1,0)
       axesActor.GetTextEdgesProperty().SetLineWidth(2)
       axesActor.GetCubeProperty().SetColor(0,0,1)

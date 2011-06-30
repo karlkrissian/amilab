@@ -722,6 +722,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_STRING
 %token T_TRANSFORM
 %token T_OBJECT
+%token T_VAR
 
 %token T_PROC
 %token T_Class T_public
@@ -4247,6 +4248,13 @@ param_list_decl:
       pl->AddParam(ident->GetName(),type_ami_object);
       $$ = pl;
     }
+    | T_VAR IDENTIFIER
+    {
+      IdentifierInfo::ptr ident($2);
+      ParamListDecl* pl = new ParamListDecl;
+      pl->AddParam(ident->GetName(),type_any);
+      $$ = pl;
+    }
     | T_STRING IDENTIFIER
     {
       IdentifierInfo::ptr ident($2);
@@ -4282,6 +4290,13 @@ param_list_decl:
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
       pl->AddParam(ident->GetName(),type_ami_object);
+      $$ = pl;
+    }
+    | param_list_decl T_COMMA T_VAR IDENTIFIER
+    {
+      IdentifierInfo::ptr ident($4);
+      ParamListDecl* pl = (ParamListDecl*) $1;
+      pl->AddParam(ident->GetName(),type_any);
       $$ = pl;
     }
     | param_list_decl T_COMMA T_NUM IDENTIFIER

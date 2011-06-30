@@ -38,6 +38,7 @@ typedef enum {
   type_matrix,           /**< matrix */
 //  type_gltransform,      /**< OpenGL transformation */
   type_array,            /**< Array */
+  type_any,              /**< Any type */
 } vartype; //! types of variables
  
 
