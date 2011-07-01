@@ -9,6 +9,7 @@ vtkActorCollection
 vtkAlgorithm
 vtkAlgorithmOutput
 vtkArrowSource
+vtkAxesActor
 vtkBMPReader
 vtkBoxWidget
 vtkCamera
