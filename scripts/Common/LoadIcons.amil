@@ -40,6 +40,7 @@ if (!exists(LoadIcons)) \
       ::LoadIconPNG("Refresh")
       ::LoadIconPNG("Save")
       ::LoadIconPNG2("Save image","Save_image")
+      ::LoadIconPNG2("Search online","Search_online")
       ::LoadIconPNG2("New image","New_image")
       ::LoadIconPNG("Selection")
       ::LoadIconPNG("Show")

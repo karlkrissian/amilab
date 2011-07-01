@@ -1,0 +1,151 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+\usepackage{url}
+
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+\newcommand{\vep}[1]  {  \vec{ \bf v}_{#1} }
+\newcommand{\Vect}[1] {  \vec{\bf #1 } } % for vectors ...
+\newcommand{\Norm}[1] {\parallel #1 \parallel}
+
+\begin{document}
+
+% Title Page
+\title{Multiscale Detection of Tubular Structures}
+\author{ Karl Krissian
+}
+\thanks{Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+\url{http://www.ctm.ulpgc.es/joomla/index.php}\\
+Centro de Tecnolog\'ias de la Imagen (CTIM)\\
+\url{http://www.ctim.es}\\
+Universidad de Las Palmas de Gran Canaria\\
+Email: {\it krissian@dis.ulpgc.es}
+}
+
+
+\maketitle
+
+%\rawhtml
+%<HR>
+%\endrawhtml
+
+\begin{abstract}
+This script runs a multiscale algorithm to detect tubular structures in 3D images, it also includes post-processing algorithm to detect the corresponding 3D centerlines and to reconstruct the tubes based on their estimated radii.
+\end{abstract}
+
+\underline{References:} \cite{Krissian2000b,Krissian_al_2003,KA09}.
+
+%\rawhtml
+%<HR>
+%\endrawhtml
+\tableofchildlinks
+
+
+\section{User help}
+
+\subsection{Interface}
+The interface is composed of the following tabs (or pages):
+\begin{itemize}
+ \item the {\em IO} tab, to select the input volume and select or create the mask image.
+ \item the {\em Circle} tab, to select parameter of the 3D boundary integration along a circle.
+ \item the {\em Scales} tab, to select the multiscale analysis parameters.
+ \item the {\em Run} tab, to run the algorithm and display the results.
+ \item the {\em Recons} tab, to create associated skeleton and reconstruction based on the multiscale result.
+\end{itemize}
+
+\subsubsection{IO tab}
+This page allows:
+\begin{itemize}
+ \item Selecting the input image and loading it
+ \item Selecting the mask image or generating it from the input, the mask image allows to reduce the overall computation time and is currently required.
+\end{itemize}
+
+\subsubsection{Circle tab}
+The algorithm integrates the boundary information along a circle for each central point candidate. This integration can be a simple averaging of all the boundary values found along the circle or a more complex function.
+
+As described in \cite{Krissian2000b,Krissian_al_2003,KA09}
+For each scale $\sigma$, a response is computed as a combination of the boundary information
+along a circle in the estimated cross-section plane of the vessel.
+The {\em circle} $C_{{\bf x},\vep{1},\vep{2},\tau \sigma}$ is defined by its center ${\bf x}$,
+an estimate of the cross-section orientation given
+by the eigenvectors $\vep{1}$ and $\vep{2}$,
+and a radius proportional of the current scale $\tau \sigma$.
+
+The {\em boundary information}, denoted $B$, is obtained with the scalar product of the gradient and the radial direction.
+An initial version of this filter consisted in averaging the boundary values around the computed circle:
+\begin{equation}\label{eq:RepInt2}
+    M_\sigma({\bf x}) = mean_{{\bf y} \in C}  B({\bf y})
+    = \frac{1}{N}
+    \sum_{i=0}^{N-1} - \sigma \nabla_{\sigma} I \left( {\bf x}+ \tau \sigma\:
+    \Vect{v}_\alpha \right) . \Vect{v}_\alpha,
+\end{equation}
+with $\alpha = 2\pi i/N$,
+and $\Vect{v}_\alpha = cos(\alpha) \vep{1} + sin(\alpha) \vep{2}$, where $N$ is the number
+of points along the circle.
+%
+In all the experiments, the value  $\tau$ is set to $\sqrt{3}$, to maximize the selected response at the center in the case of a cylindrical circular vessel with Gaussian cross-section \cite{Krissian2000b},
+and the number of points $N$ around the integrating circle is set to $20$.
+
+In order to improve both the selectivity of the filter and its robustness to outliers, we introduce the modifications:
+\begin{enumerate}
+  \item we only keep the minimum of the boundary information in opposite directions,
+  \item we select the average over $80\%$ of the highest obtained values.
+\end{enumerate}
+The first modification allows reducing the response obtained at standard edges, where high gradients are present in only one side of the circle. The second modification prevents strong reduction of the vesselness response in the presence of junctions or similar intensity nearby structures.
+
+\subsubsection{Scales tab}
+\subsubsection{Run tab}
+\subsubsection{Recons tab}
+
+\section{Developer help}
+
+\subsection{Script}
+
+\subsubsection{List of parameters}
+The script has the following list of parameters:
+\begin{tabular}{lll}
+  \hline
+    input\_name     &         & Input image name \\
+    mask\_mode      &  INT(0) & Mask mode 0: threshold from input image, 1: mask image \\
+    mask\_threshold & 0       & Low threshold for the mask \\
+    mask\_name      & ""      & Mask of the pixels to process, this image must be of type UCHAR and the values > 127 are considered part of the mask \\
+    use\_SD         & UCHAR(0)& Take into account standard deviation of boundary information along the integration circle \\
+    SD\_th          & 2       & Standard Deviation Coefficient to weight the response function \\
+    use\_EXC        & UCHAR(0)&  Take into account the excentricity of the boundary vectors along the integration circle\\
+    EXC\_th         & 5       &  Excentricity coefficient to weight the response function \\
+    pairs\_mode        & INT(0)\\
+    keephighest       & 100 \\
+    radmin            & 0.5      & minimal radius.\\
+    radmax            & 5        & maximal radius\\
+    numrad            & INT(5)   & number of radii\\
+    local\_maxima      & UCHAR(0) & Compute local maxima\\
+    keep\_orientations & UCHAR(0) & Keep orientations image\\
+    keep\_radii        & UCHAR(0) & Keep radii image\\
+    use\_linearinterp  & UCHAR(1) & Use linear interpolation\\
+    mode              & INT(0)   & 0: Hessian Matrix 1: Structure Tensor\\
+    gamma             & 1        & normalization\\
+    theta             & sqrt(3)  \\
+    rad2sigma\_coeff   & 1 \\
+    keep\_all\_scales   & UCHAR(0) & Keep responses at all scales in memory\\
+    current\_progress  & 0\\
+    current\_step      & 0\\
+    output\_name       & "Multilines-maxresponse.ami.gz"\\
+    normalize\_gradient & UCHAR(1) & normalize gradient\\
+    PSF\_stddev         & 0 & Standard deviation (in voxels) of the point spread function\\
+    upsample\_recons & UCHAR(0)& Reconstruct the vessel in an image with double resolution compared to the input image\\
+    smoothradii\_std & 1& Gaussian standard deviation for smoothing the lines radii\\
+%  
+  \hline
+\end{tabular}
+
+\subsection{C++}
+
+\section{Tips, TODO list, etc ...}
+
+\bibliography{MultiLines}
+\bibliographystyle{plain}
+
+\end{document}

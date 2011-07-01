@@ -176,6 +176,14 @@ if (!exists(ScriptGui)) \
       ::html2.LoadFile( ::html_filename)
     }
     Comments( ::Html2Home, "Back to the initial page.")
+
+    #---------------------------------------------------
+    # needs ::html and ::html_filename
+    #
+    proc ::OpenInBrowser() {
+      wx.LaunchDefaultBrowser(::html_filename)
+    }
+    Comments( ::OpenInBrowser, "Open the file in the default browser.")
   
     #---------------------------------------------------
     proc ::Html2Back() {
@@ -188,6 +196,12 @@ if (!exists(ScriptGui)) \
       res = ::html2.HistoryForward()
     }
     Comments( ::Html2Forward, "Go to the forward page.")
+
+    #---------------------------------------------------
+    proc ::Html2Reload() {
+      res = ::html2.LoadPage(::html2.GetOpenedPage())
+    }
+    Comments( ::Html2Reload, "Reload the current page.")
 
     #---------------------------------------------------
     proc ::Html2Hover(OBJECT event) \
@@ -284,34 +298,49 @@ if (!exists(ScriptGui)) \
                               &wx.wxBitmap(&::icons._Back    .Scale(16,16)))
       bb3 = wx.wxBitmapButton(&::helpw,wx.wxID_ANY,\
                               &wx.wxBitmap(&::icons._Forward .Scale(16,16)))
+      bb4 = wx.wxBitmapButton(&::helpw,wx.wxID_ANY,\
+                              &wx.wxBitmap(&::icons._Refresh .Scale(16,16)))
+      bb5 = wx.wxBitmapButton(&::helpw,wx.wxID_ANY,\
+                              &wx.wxBitmap(&::icons._Search_online.Scale(16,16)))
 
       bb0.SetToolTip("Wiki link")
       bb1.SetToolTip("Initial page")
+      bb4.SetToolTip("Reload page")
+      bb5.SetToolTip("Open in default browser")
 
       butsizer.Add(&bb0,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
       butsizer.Add(&bb1,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
       butsizer.Add(&bb2,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
       butsizer.Add(&bb3,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
+      butsizer.Add(&bb4,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
+      butsizer.Add(&bb5,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
 
       evh0 = wx.wxAmiEventHandler(&::LaunchWiki)
       bb0.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh0.GetEventFunction(),\
                   &NULL,&evh0)
 
-      evh1 = wx.wxAmiEventHandler(&::Html2Home)
-      bb1.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh1.GetEventFunction(),\
-                  &NULL,&evh1)
-      evh2 = wx.wxAmiEventHandler(&::Html2Back)
-      bb2.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh2.GetEventFunction(),\
-                  &NULL,&evh2)
-      evh3 = wx.wxAmiEventHandler(&::Html2Forward)
-      bb3.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh3.GetEventFunction(),\
-                  &NULL,&evh3)
+      evh_bt1 = wx.wxAmiEventHandler(&::Html2Home)
+      bb1.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt1.GetEventFunction(),\
+                  &NULL,&evh_bt1)
+      evh_bt2 = wx.wxAmiEventHandler(&::Html2Back)
+      bb2.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt2.GetEventFunction(),\
+                  &NULL,&evh_bt2)
+      evh_bt3 = wx.wxAmiEventHandler(&::Html2Forward)
+      bb3.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt3.GetEventFunction(),\
+                  &NULL,&evh_bt3)
+      evh_bt4 = wx.wxAmiEventHandler(&::Html2Reload)
+      bb4.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt4.GetEventFunction(),\
+                  &NULL,&evh_bt4)
+      evh_bt5 = wx.wxAmiEventHandler(&::OpenInBrowser)
+      bb5.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt5.GetEventFunction(),\
+                  &NULL,&evh_bt5)
 
       topsizer.Add(&butsizer,wx.wxSizerFlags(0).Center())
 
       del ::html2
       ::html2 = wx.wxHtmlWindow(&::helpw)
       ::html2.LoadFile( ::html_filename)
+      ::html2.SetRelatedFrame(&::helpw,"HtmlHelp : %s")
       evh4 = wx.wxAmiEventHandler(&::Html2Hover)
       ::html2.Connect(  wx.wxEVT_COMMAND_HTML_CELL_HOVER,\
                         &evh4.GetHtmlCellEventFunction(),\

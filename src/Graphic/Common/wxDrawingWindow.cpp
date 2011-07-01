@@ -26,7 +26,7 @@
 
 #define macro_max(a,b) ((a)>(b)?(a):(b))
 
-#if wxUSE_GRAPHICS_CONTEXT && wxCHECK_VERSION(2, 8, 11)
+#if wxUSE_GRAPHICS_CONTEXT && wxCHECK_VERSION(2, 9, 0)
   #define AMI_USE_wxGC 1
 #else
   #define AMI_USE_wxGC 0

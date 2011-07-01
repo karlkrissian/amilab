@@ -98,6 +98,8 @@ if (!exists(MultiLinesClass)) {
 
       ::smoothradii_std = 1, "Gaussian standard deviation for smoothing the lines radii"
       #::Gui()
+      ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/MultiLines/index.html"
+
     }
 
         
@@ -114,6 +116,7 @@ if (!exists(MultiLinesClass)) {
         ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
       }
     }
+    Comments(::load_input,"Loads the selected input image, making a local copy in float voxel type.")
     
     //---------------------------------------------------
     proc ::GuiUpdateIntensityLimits( NUM _min, NUM _max) {
@@ -513,6 +516,7 @@ if (!exists(MultiLinesClass)) {
       if (!exists(::input)) {
         ::load_input()
       }
+      
       if (!exists(::mask)) {
         ::update_mask()
       }
@@ -800,7 +804,7 @@ if (!exists(MultiLinesClass)) {
           # set the input image
           ::win.BeginHorizontal()
             ::win.AddImageChoice( &::input_name, "Input")
-            ::AddBitmapButton(&::win, &::icons._Copy,   32, "load_input")
+            ::AddBitmapButton(&::win, &::icons._Copy,   16, "load_input")
             ::win.SetPositionProp(-1,0)
           ::win.EndHorizontal()
 
