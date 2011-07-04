@@ -762,6 +762,7 @@ printn "vals[3] %1%" % vals[3]
         curve.GetControlPoints().push_back(&cp)
       }
       curve.SetType(1) # solid
+      ::SetLinearCurve(&curve)
       ::ambient  = ::selected_curv.property.GetAmbient()
       ::diffuse  = ::selected_curv.property.GetDiffuse()
       ::specular = ::selected_curv.property.GetSpecular()

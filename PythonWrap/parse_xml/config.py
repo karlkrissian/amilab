@@ -79,6 +79,8 @@ members_blacklist=[
   'vtkPlot::SetProperty', # seems not implemented
   'vtkFixedPointVolumeRayCastMapper::LookupAndCombineIndependentColorsUC', # gives an error: to check
   'vtkFixedPointVolumeRayCastMapper::GetGradientNormal', # double pointer pb
+  'vtkCellArray::GetNextCell', # reference to pointer
+  'vtkCellArray::GetCell', # reference to pointer
   ]
 
 

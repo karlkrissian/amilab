@@ -109,12 +109,18 @@ if (!exists(ScriptGui)) \
           win.SetPositionProp(-1,2)
           #::AddBitmapButton16(&win, &::icons._Close,   "Close")
           #win.SetPositionProp(-1,2)
-          ::AddBitmapButton16(&win, &::icons._Help,   "HelpWindow")
+          #::AddBitmapButton16(&win, &::icons._Help,   "HelpWindow")
+          ::AddBitmapButton16(&win, &::icons._Help,     "OpenInBrowser")
+          ::AddBitmapButton16(&win, &::icons._DokuWiki, "LaunchWiki")
+          #::AddBitmapButton16(&win, &::icons._Help,   "HelpWindow")
+          if (!exists(::wiki_help)) {
+            win.Enable(::LaunchWiki_but_id,false)
+          }
           if exists(::html_filename) {
             if !wx.wxFileName(::html_filename).FileExists() {
-              win.Enable(::HelpWindow_but_id,false)
+              win.Enable(::OpenInBrowser_but_id,false)
             }
-          } else { win.Enable(::HelpWindow_but_id,false); }
+          } else { win.Enable(::OpenInBrowser_but_id,false); }
           win.SetPositionProp(-1,2)
           ::AddBitmapButton16(&win, &::icons._Delete,  "CloseAll")
           win.SetPositionProp(-1,2)
@@ -274,7 +280,8 @@ if (!exists(ScriptGui)) \
 
     #------------------------------------
     # Opens Helps in a separate window
-    #
+    # at the end not used because of problems with equations
+    # figure badly aligned in wxHTML widget
     proc ::HelpWindow() \
     {
       if !exists(::helpw) {

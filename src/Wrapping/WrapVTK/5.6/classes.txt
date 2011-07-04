@@ -16,6 +16,8 @@ vtkBrush
 vtkBMPReader
 vtkCamera
 vtkCameraInterpolator
+vtkCell
+vtkCellArray
 vtkCellTypes
 vtkCellPicker
 vtkChartXY

@@ -10,6 +10,8 @@
 #include <vtkBMPReader.h>
 #include <vtkCamera.h>
 #include <vtkCameraInterpolator.h>
+#include <vtkCell.h>
+#include <vtkCellArray.h>
 #include <vtkCellPicker.h>
 #include <vtkChartXY.h>
 #include <vtkCommand.h>
