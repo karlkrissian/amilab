@@ -48,7 +48,8 @@ public:
   void setBorderVoxelValues(double intA, double intB, unsigned char bord,
                             double coef_a, double coef_b, double coef_c,
                             double coef_d, double coef_f, double coef_g,
-                            double cu, int posx, int posy, int posz);
+                            double cu, int posx, int posy, int posz,
+                            double gradx, double grady, double gradz);
   
   /**
    *  Get the 'A' intensity value.
@@ -130,6 +131,11 @@ public:
    */
   int           getPosZ();
   
+  
+  double getGx();
+  double getGy();
+  double getGz();
+  
   /**
    *  Print the information of the voxel.
    *  @param  linear_case Indicates if it is first or second order (plane or paraboloid).
@@ -159,6 +165,10 @@ private:
   int px;
   int py;
   int pz;
+  //Gradient
+  double gx;
+  double gy;
+  double gz;
 
 };
 
@@ -218,7 +228,8 @@ public:
                   InrImage::ptr border, InrImage::ptr a, InrImage::ptr b, 
                   InrImage::ptr c, InrImage::ptr d, InrImage::ptr f, 
                   InrImage::ptr g, InrImage::ptr curvature, InrImage::ptr posx, 
-                  InrImage::ptr posy, InrImage::ptr posz);
+                  InrImage::ptr posy, InrImage::ptr posz,
+                  InrImage::ptr gx, InrImage::ptr gy, InrImage::ptr gz);
   
 private:
   //Input image

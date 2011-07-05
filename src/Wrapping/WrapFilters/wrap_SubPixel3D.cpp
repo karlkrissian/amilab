@@ -96,17 +96,23 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_GradienteCurvo3D
                                                         "gcoef.inr.gz"));
   InrImage::ptr curvature  = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
                                                         "curvature.inr.gz"));
-  InrImage::ptr posx       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+  InrImage::ptr posx       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
                                                         "xpos.inr.gz"));
-  InrImage::ptr posy       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+  InrImage::ptr posy       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
                                                         "ypos.inr.gz"));
-  InrImage::ptr posz       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+  InrImage::ptr posz       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
                                                         "zpos.inr.gz"));
+  InrImage::ptr gx       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
+                                                        "gx.inr.gz"));
+  InrImage::ptr gy       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
+                                                        "gy.inr.gz"));
+  InrImage::ptr gz       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
+                                                        "gz.inr.gz"));
   
   
   //Fill InrImages
   sp->fillImages(AIntensity, BIntensity, border, a, b, c, d, f, g, curvature,
-                 posx, posy,posz);
+                 posx, posy, posz, gx, gy, gz);
   //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
                                             amiobject->GetContext());
@@ -133,6 +139,12 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_GradienteCurvo3D
   amiobject->GetContext()->AddVar<InrImage>("ypos", posy,
                                             amiobject->GetContext());
   amiobject->GetContext()->AddVar<InrImage>("zpos", posz,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("gx", gx,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("gy", gy,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("gz", gz,
                                             amiobject->GetContext());
 
   Variable<AMIObject>::ptr result(

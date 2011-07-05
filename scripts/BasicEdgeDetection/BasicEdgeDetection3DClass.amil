@@ -44,7 +44,7 @@ if (!exists(BasicEdgeDetection3DClass)){
 
     #-----------------------
     
-    proc ::InitMask() {
+    proc ::InitMasks() {
       a = ::alpha
       b = ::beta
       #XMASK
@@ -230,18 +230,34 @@ if (!exists(BasicEdgeDetection3DClass)){
       
       ::zMask = ::zMask * (1/2)
     }
-    Comments(::InitMask, "Inits the mask asociated to the selected method.")
+    Comments(::InitMasks, "Inits the masks asociated to the selected method.")
     
     #-----------------------
     
     proc ::SetCoefficients(){
-      
+      #Prewitt
+      if (::mask_type == 0) {
+        ::alpha = 4/9
+        ::beta  = 4/9
+      }
+      #Sobel
+      if (::mask_type == 1) {
+        ::alpha = 8/15
+        ::beta  = 4/15
+      }
+      #Álvarez
+      if (::mask_type == 2) {
+        ::alpha = (2*sqrt(2)) - ((4/3) * sqrt(3))
+        ::beta  = 2 - (2*sqrt(2)) + (2/3) * sqrt(3)
+      }
     }
     
     #-----------------------
     
     proc ::Run() {
     	::load_input()
+      ::SetCoefficients()
+      ::InitMasks()
       #Compute the convolution between the input image and every one of the masks
       #First, if the image has more than one component, we normalize the input
       if (::input.vdim != 1) {
@@ -252,24 +268,27 @@ if (!exists(BasicEdgeDetection3DClass)){
 
       #Make the convolution
       #In x
-      ::resX = Convolve(::norm_input, ::xMask)
+      resX = Convolve(::norm_input, ::xMask)
       #In y
-      ::resY = Convolve(::norm_input, ::yMask)
+      resY = Convolve(::norm_input, ::yMask)
       #In z
-      ::resZ = Convolve(::norm_input, ::zMask)
+      resZ = Convolve(::norm_input, ::zMask)
       
-      #Compute the module?????
+      #Compute the module
+      ::res = sqrt(resX*resX + resY*resY + resZ*resZ)
+      
+      #Display the result
+      ::Display()
     }
     Comments(::Run, "Detects the edges using the selected method.")
     
     #-----------------------
     
     proc ::Display() {
-      #global OJO CUIDAO: aquí me falta preguntar si las quiere en compare
+      #Show the input image and the result in comparison
       if (::show_compare) {
         if (exists(::input) && exists(::res)) {
           show ::input
-          #OJO CUIDAO: res no está calculao
           show ::res
           ::input_draw.compare(&::res_draw)
         } else {
@@ -277,8 +296,7 @@ if (!exists(BasicEdgeDetection3DClass)){
         }
 
       } else {
-        #Tengo que mirar lo de si tengo que calcular el módulo, que creo que si
-        #y poner el resultado 
+        #Only show the result image
         if (exists(::res)) {
           show ::res
         } else {
@@ -309,13 +327,14 @@ if (!exists(BasicEdgeDetection3DClass)){
           #Method panel
           ::win.BeginBoxPanel("Edge detection method")
             ::alg_enum = ::win.AddEnum(&::mask_type, "Method")
-              ::win.AddEnumChoice(::alg_enum, "Basic detector")
+              ::win.AddEnumChoice(::alg_enum, "Prewitt")
+              ::win.AddEnumChoice(::alg_enum, "Sobel")
+              ::win.AddEnumChoice(::alg_enum, "Alvarez")
           ::win.EndBoxPanel()
       
+          #Visualization panel
           ::win.BeginBoxPanel("Visualization")
-            ::win.AddBoolean(&::show_vol, "Volume")
-            ::win.AddBoolean(&::show_planes, "Edges")
-            ::win.AddBoolean(&::show_normals, "Normals")
+            ::win.AddBoolean(&::show_compare, "Show in comparison.")
           ::win.EndBoxPanel()
           
  
@@ -329,7 +348,6 @@ if (!exists(BasicEdgeDetection3DClass)){
       ::win.Update(-1)
       ::win.Display
       
-      ::MainBook_AddVolRenTab()
     }
     
     ::Init

@@ -149,20 +149,27 @@ if (!exists(Subpixel3DClass)){
     
     proc ::vtkDrawEdges() {
       #Computing the edge normals
-      div = (::res->aintensity - ::res->bintensity)/ \
-            (sqrt(1 + (::res->bcoef*::res->bcoef) + (::res->ccoef*::res->ccoef)))
-      #Normal components
-      nx = div * ::res->bcoef
-      ny = div * -1
-      nz = div * ::res->ccoef
+//      div = (::res->aintensity - ::res->bintensity)/ \
+//            (sqrt(1 + (::res->bcoef*::res->bcoef) + (::res->ccoef*::res->ccoef)))
+//      #Normal components
+//      nx = div * ::res->bcoef
+//      ny = div * -1
+//      nz = div * ::res->ccoef
+      
+//      for x=0 to ::res->aintensity.tx-1 {
+//        print "A = "
+//        printn ::res->aintensity(x,0,0)
+//        print "B = "
+//        printn ::res->bintensity(x,0,0)
+//      }
       
       #Las normales se cambian en función del tipo de borde
-      #Caso XMAX
-      nx = (nx * (::res->border!=1)) + (ny * (::res->border==1))
-      ny = (ny * (::res->border!=1)) + (nx * (::res->border==1))
-      #Caso ZMAX
-      nz = (nz * (::res->border!=3)) + (ny * (::res->border==3))
-      ny = (ny * (::res->border!=3)) + (nz * (::res->border==3))
+//      #Caso XMAX
+//      nx = (nx * (::res->border!=1)) + (ny * (::res->border==1))
+//      ny = (ny * (::res->border!=1)) + (nx * (::res->border==1))
+//      #Caso ZMAX
+//      nz = (nz * (::res->border!=3)) + (ny * (::res->border==3))
+//      ny = (ny * (::res->border!=3)) + (nz * (::res->border==3))
       
       #modgrad = sqrt(nx*nx + ny*ny + nz*nz)
       #nx = (-1*nx) / modgrad
@@ -172,6 +179,41 @@ if (!exists(Subpixel3DClass)){
       #nx = ::res->acoef
       #ny = ::res->bcoef * -1
       #nz = ::res->ccoef
+      
+      #Voy a calcular los vectores normales como la diferencia entre el centro y el punto
+      #con la esfera centrada en 50 50 50
+      vnx = 50 - ::res->xpos
+      vny = 50 - ::res->ypos
+      vnz = 50 - ::res->zpos
+      
+      for i = 0 to ::res->xpos.tx-1 {
+        printn "-----"
+        printn vnx(i,0,0)
+        printn vny(i,0,0)
+        printn vnz(i,0,0)
+        printn "-----"
+      }
+
+      
+      #vamos a calcular el ángulo entre éstas y las que calculé antes
+      cosang = (::res->gx*vnx + ::res->gy*vny + ::res->gz*vnz) / (sqrt(::res->gx*::res->gx + ::res->gy*::res->gy + ::res->gz*::res->gz) * sqrt(vnx*vnx + vny*vny + vnz*vnz))
+      angulo = acos(cosang)
+      #paso a grados
+      angulo = (angulo * 180) / Pi
+      
+      
+      for x=0 to angulo.tx-1 {
+        if (angulo(x,0,0) > 10) {
+          print "posx = "
+          print ::res->xpos(x,0,0)
+          print "posy = "
+          print ::res->ypos(x,0,0)
+          print "posz = "
+          printn ::res->zpos(x,0,0)
+          print "angulo = "
+          printn angulo(x,0,0)
+        }
+      }
       
       #Edge points
       edge_points = vtk.vtkPoints.New()
@@ -192,12 +234,33 @@ if (!exists(Subpixel3DClass)){
       normals_array.SetNumberOfTuples(::res->xpos.tx)
       #We fill the array with the normals previously computed
       if(exists(i)) { del i; }
+      #Esto es antes de calcular las normales en el código C++
+//      for i = 0 to ::res->xpos.tx-1 {
+//        if (exists(v)) { del v; }
+//        v = vector_double()
+//        v.push_back(nx(i))
+//        v.push_back(ny(i))
+//        v.push_back(nz(i))
+//        normals_array.SetTupleValue(i, &v[0])
+//      }
+      
       for i = 0 to ::res->xpos.tx-1 {
         if (exists(v)) { del v; }
         v = vector_double()
-        v.push_back(nx(i))
-        v.push_back(ny(i))
-        v.push_back(nz(i))
+//        v.push_back(::res->gx(i))
+//        v.push_back(::res->gy(i))
+//        v.push_back(::res->gz(i))
+        v.push_back(vnx(i,0,0))
+        v.push_back(vny(i,0,0))
+        v.push_back(vnz(i,0,0))
+//        printn vnx(i,0,0)
+//        printn vny(i,0,0)
+//        printn vnz(i,0,0)
+//        printn "-----"
+//        printn ::res->xpos(i,0,0)
+//        printn ::res->ypos(i,0,0)
+//        printn ::res->zpos(i,0,0)
+//        printn "-----"
         normals_array.SetTupleValue(i, &v[0])
       }
       
@@ -228,7 +291,7 @@ if (!exists(Subpixel3DClass)){
         arrow_glyph3D.SetSource(&arrowSource.GetOutput())
         arrow_glyph3D.SetVectorModeToUseNormal()
         arrow_glyph3D.SetInput(&edges_polydata)
-        arrow_glyph3D.SetScaleFactor(0.5)
+        arrow_glyph3D.SetScaleFactor(1.0)
         arrow_glyph3D.Update()
         
         #Mapper for the visualization
@@ -248,7 +311,7 @@ if (!exists(Subpixel3DClass)){
         plane_glyph3D.SetSource(&planeSource.GetOutput())
         plane_glyph3D.SetVectorModeToUseNormal()
         plane_glyph3D.SetInput(&edges_polydata)
-        plane_glyph3D.SetScaleFactor(0.5)
+        plane_glyph3D.SetScaleFactor(1.0)
         plane_glyph3D.Update()
         
         #Mapper for the visualization

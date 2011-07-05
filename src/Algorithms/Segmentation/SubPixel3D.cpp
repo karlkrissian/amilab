@@ -4,6 +4,7 @@
  */
 
 #include "SubPixel3D.h"
+#include <cmath>
 
 //Border type macros
 #define XMAX	1
@@ -40,7 +41,8 @@ void borderVoxel::setBorderVoxelValues(double intA, double intB,
                                        double coef_b, double coef_c,
                                        double coef_d, double coef_f, 
                                        double coef_g, double cu, 
-                                       int posx, int posy, int posz)
+                                       int posx, int posy, int posz,
+                                       double gradx, double grady, double gradz)
 {
   //Intensities
   A         = intA;
@@ -60,6 +62,10 @@ void borderVoxel::setBorderVoxelValues(double intA, double intB,
   px        = posx;
   py        = posy;
   pz        = posz;
+  //Gradient
+  gx = gradx;
+  gy = grady;
+  gz = gradz;
 }
 
 double borderVoxel::getAIntensity()
@@ -127,6 +133,19 @@ int borderVoxel::getPosZ()
   return pz;
 }
 
+double borderVoxel::getGx()
+{
+  return gx;
+}
+double borderVoxel::getGy()
+{
+  return gy;
+}
+double borderVoxel::getGz()
+{
+  return gz;
+}
+
 void borderVoxel::printBorderVoxel(int linear_case)
 {
   cout << "----------------------------------" << endl;
@@ -174,7 +193,8 @@ void SubPixel3D::fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity,
                   InrImage::ptr border, InrImage::ptr a, InrImage::ptr b, 
                   InrImage::ptr c, InrImage::ptr d, InrImage::ptr f, 
                   InrImage::ptr g, InrImage::ptr curvature, InrImage::ptr posx, 
-                  InrImage::ptr posy, InrImage::ptr posz)
+                  InrImage::ptr posy, InrImage::ptr posz,
+                            InrImage::ptr gx, InrImage::ptr gy, InrImage::ptr gz)
 {
   int x = 0;
   int y = 0;
@@ -222,6 +242,15 @@ void SubPixel3D::fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity,
     //Z position
     posz->BufferPos(x,y,z);
     posz->FixeValeur(i->getPosZ());
+    
+    gx->BufferPos(x,y,z);
+    gx->FixeValeur(i->getGx());
+    
+    gy->BufferPos(x,y,z);
+    gy->FixeValeur(i->getGy());
+    
+    gz->BufferPos(x,y,z);
+    gz->FixeValeur(i->getGz());
   }
 }
 
@@ -250,9 +279,12 @@ void SubPixel3D::GradienteCurvo3D()
     {
       for (int x = margin; x < input->DimX() - margin; x++)
       {
+//        if (x == 52 && y == 53 && z == 70) {
+//          cout << "algo";
+//        }
 //        cout << "Pos (" << x << ", " << y << ", " << z << ")" << endl;
         //We search the maximum partial (x, y or z)
-        if ((fabs(fy(x,y,z)) > fabs(fx(x,y,z))) && (fabs(fy(x,y,z)) < fabs(fz(x,y,z))))
+        if ((fabs(fy(x,y,z)) > fabs(fx(x,y,z))) && (fabs(fy(x,y,z)) > fabs(fz(x,y,z))))
         { //cout << "YMAX" << endl;
           //The maximum partial is in y
           partial = fabs(fy(x,y,z));
@@ -288,12 +320,12 @@ void SubPixel3D::GradienteCurvo3D()
           S1 = S2 = S3 = S4 = S5 = S6 = 0.0;
           for (int yk = y-margin; yk<=y+margin ; yk++)
           {
-            S1 = F(x+1,yk,z);
-            S2 = F(x,yk,z-1);
-            S3 = F(x,yk,z);
-            S4 = F(x,yk,z+1);
-            S5 = F(x-1,yk,z);
-            S6 = F(x+1,yk,z-m) + F(x-1,yk,z+m);
+            S1 += F(x+1,yk,z);
+            S2 += F(x,yk,z-1);
+            S3 += F(x,yk,z);
+            S4 += F(x,yk,z+1);
+            S5 += F(x-1,yk,z);
+            S6 += F(x+1,yk,z-m) + F(x-1,yk,z+m);
           }
         }
         else
@@ -390,25 +422,58 @@ void SubPixel3D::GradienteCurvo3D()
         
         //At any case, we compute the paraboloid coefficients. We consider the
         //first order case
-        if (linear_case == 1) //****me da que esto no está bien, hay que tener en cuenta otras cosas para primer orden
-        {
-          a = (28*S3-S1-S2-S4-S5-84*A-84*B) / 24 / (A-B);
-          b = (S1-S5) / 2 / (A-B);
-          c = (S4-S2) / 2 / (A-B);
-          d = (S1+S5-2*S3) / 2 / (A-B);
-          f = g = 0.0;
+        if (A>105 && A<195) {
+          cout << "Entrooooooooooooooooooooooooooooooooo" << endl;
+          cout << "A = " << A << "B = " << B << endl;
+          cout << "posx = " << x << "posy = " << y << "posz = " << z << endl;
+          cout << "dx = " << dx << "dy = " << dy << endl;
+          
         }
-        else 
-        {
+//SIEMPRE CALCULO SEGUNDO ORDEN, PASANDO DE LO OTRO        
+//        if (linear_case == 1) //****me da que esto no está bien, hay que tener en cuenta otras cosas para primer orden
+//        {
+//          a = (28*S3-S1-S2-S4-S5-84*A-84*B) / 24 / (A-B);
+//          b = (S1-S5) / 2 / (A-B);
+//          c = (S4-S2) / 2 / (A-B);
+//          //d = (S1+S5-2*S3) / 2 / (A-B);
+//          d = f = g = 0.0;
+//        }
+//        else 
+//        {
           a = (28*S3-S1-S2-S4-S5-84*A-84*B) / 24 / (A-B);
           b = (S1-S5) / 2 / (A-B);
           c = (S4-S2) / 2 / (A-B);
           d = (S1+S5-2*S3) / 2 / (A-B);
           f = m * (S1+S2+S4+S5-S6-2*S3) / 2 / (A-B);
           g = (S2+S4-2*S3) / 2 / (A-B);
+        
+        
+        
+        double mod = (A-B) / sqrt(1+b*b+c*c);
+        double nx = mod*b;
+        double ny = -mod;
+        double nz = mod*c;
+        
+        if (edge_type==XMAX) {
+          double temp=nx; nx=ny; ny=temp;
         }
+        
+        if (edge_type==ZMAX) {
+          double temp=nz; nz=ny; ny=temp;
+        }
+        
+        double gx=50-x, gy=50-y, gz=50-z;
+        double prod=gx*nx+gy*ny+gz*nz;
+        prod /= sqrt(gx*gx+gy*gy+gz*gz) * sqrt(nx*nx+ny*ny+nz*nz);
+        double ang=acos(prod)/M_PI*180;
+        
+        if (ang>20)
+          cout << "error orientacion" << endl;
+        
+        
+//        }
         voxel.setBorderVoxelValues(A, B, edge_type, a, b, c, d, f, g, 0.0, 
-                                   x, y, z);
+                                   x, y, z, nx, ny, nz);
         borderVoxelVector.push_back(voxel);
       } // end for x
     } // end for y
