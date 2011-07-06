@@ -567,6 +567,11 @@ template<>  BasicVariable::ptr Variable<AMIObject>::operator[](const BasicVariab
       DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1);
       BasicVariable::ptr res ((var1->Pointer())->CallMember(param.get()));
       return res;
+    } else 
+    if (member->Type()==type_ami_function) { 
+      DYNAMIC_CAST_VARIABLE(AMIFunction,member, var1); 
+      AMIFunction::ptr f(var1->Pointer()); 
+      return GB_driver.yyip_call_function(f.get(),param); 
     } else {
       GB_driver.yyiperror(" operator[], class member 'at' (or '__at__') of this type is not available. \n");
       return BasicVariable::empty_variable; 
