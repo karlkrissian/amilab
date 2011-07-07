@@ -42,7 +42,7 @@ void borderVoxel::setBorderVoxelValues(double intA, double intB,
                                        double coef_d, double coef_f, 
                                        double coef_g, double cu, 
                                        int posx, int posy, int posz,
-                                       double gradx, double grady, double gradz)
+                                       double normx, double normy, double normz)
 {
   //Intensities
   A         = intA;
@@ -56,16 +56,16 @@ void borderVoxel::setBorderVoxelValues(double intA, double intB,
   d         = coef_d;
   f         = coef_f;
   g         = coef_g;
-  //Curvature (************esto no es así, porque aquí hay curvaturas principales)
+  //Curvature
   curvature = cu;
   //Position
   px        = posx;
   py        = posy;
   pz        = posz;
-  //Gradient
-  gx = gradx;
-  gy = grady;
-  gz = gradz;
+  //Normal
+  nx = normx;
+  ny = normy;
+  nz = normz;
 }
 
 double borderVoxel::getAIntensity()
@@ -133,17 +133,17 @@ int borderVoxel::getPosZ()
   return pz;
 }
 
-double borderVoxel::getGx()
+double borderVoxel::getNx()
 {
-  return gx;
+  return nx;
 }
-double borderVoxel::getGy()
+double borderVoxel::getNy()
 {
-  return gy;
+  return ny;
 }
-double borderVoxel::getGz()
+double borderVoxel::getNz()
 {
-  return gz;
+  return nz;
 }
 
 void borderVoxel::printBorderVoxel(int linear_case)
@@ -172,11 +172,10 @@ void borderVoxel::printBorderVoxel(int linear_case)
 //SubPixel3D class methods
 //---------------------------------------------
 //Constructor
-SubPixel3D::SubPixel3D(InrImage* inp_image, float thres, int lc)
+SubPixel3D::SubPixel3D(InrImage* inp_image, float thres)
 {
   input       = inp_image;
   threshold   = thres;
-  linear_case = lc;
 }
 
 //Destructor
@@ -192,9 +191,9 @@ vector<borderVoxel> SubPixel3D::getBorderVoxelVector()
 void SubPixel3D::fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity, 
                   InrImage::ptr border, InrImage::ptr a, InrImage::ptr b, 
                   InrImage::ptr c, InrImage::ptr d, InrImage::ptr f, 
-                  InrImage::ptr g, InrImage::ptr curvature, InrImage::ptr posx, 
-                  InrImage::ptr posy, InrImage::ptr posz,
-                            InrImage::ptr gx, InrImage::ptr gy, InrImage::ptr gz)
+                  InrImage::ptr g, InrImage::ptr curvature, 
+                  InrImage::ptr posx, InrImage::ptr posy, InrImage::ptr posz,
+                  InrImage::ptr nx, InrImage::ptr ny, InrImage::ptr nz)
 {
   int x = 0;
   int y = 0;
@@ -242,15 +241,15 @@ void SubPixel3D::fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity,
     //Z position
     posz->BufferPos(x,y,z);
     posz->FixeValeur(i->getPosZ());
-    
-    gx->BufferPos(x,y,z);
-    gx->FixeValeur(i->getGx());
-    
-    gy->BufferPos(x,y,z);
-    gy->FixeValeur(i->getGy());
-    
-    gz->BufferPos(x,y,z);
-    gz->FixeValeur(i->getGz());
+    //Normal x component
+    nx->BufferPos(x,y,z);
+    nx->FixeValeur(i->getNx());
+    //Normal y component
+    ny->BufferPos(x,y,z);
+    ny->FixeValeur(i->getNy());
+    //Normal z component
+    nz->BufferPos(x,y,z);
+    nz->FixeValeur(i->getNz());
   }
 }
 
@@ -279,9 +278,6 @@ void SubPixel3D::GradienteCurvo3D()
     {
       for (int x = margin; x < input->DimX() - margin; x++)
       {
-//        if (x == 52 && y == 53 && z == 70) {
-//          cout << "algo";
-//        }
 //        cout << "Pos (" << x << ", " << y << ", " << z << ")" << endl;
         //We search the maximum partial (x, y or z)
         if ((fabs(fy(x,y,z)) > fabs(fx(x,y,z))) && (fabs(fy(x,y,z)) > fabs(fz(x,y,z))))
@@ -420,58 +416,35 @@ void SubPixel3D::GradienteCurvo3D()
           } //end else z max
         } // end else y max
         
-        //At any case, we compute the paraboloid coefficients. We consider the
-        //first order case
-        if (A>105 && A<195) {
-          cout << "Entrooooooooooooooooooooooooooooooooo" << endl;
-          cout << "A = " << A << "B = " << B << endl;
-          cout << "posx = " << x << "posy = " << y << "posz = " << z << endl;
-          cout << "dx = " << dx << "dy = " << dy << endl;
-          
-        }
-//SIEMPRE CALCULO SEGUNDO ORDEN, PASANDO DE LO OTRO        
-//        if (linear_case == 1) //****me da que esto no está bien, hay que tener en cuenta otras cosas para primer orden
-//        {
-//          a = (28*S3-S1-S2-S4-S5-84*A-84*B) / 24 / (A-B);
-//          b = (S1-S5) / 2 / (A-B);
-//          c = (S4-S2) / 2 / (A-B);
-//          //d = (S1+S5-2*S3) / 2 / (A-B);
-//          d = f = g = 0.0;
-//        }
-//        else 
-//        {
-          a = (28*S3-S1-S2-S4-S5-84*A-84*B) / 24 / (A-B);
-          b = (S1-S5) / 2 / (A-B);
-          c = (S4-S2) / 2 / (A-B);
-          d = (S1+S5-2*S3) / 2 / (A-B);
-          f = m * (S1+S2+S4+S5-S6-2*S3) / 2 / (A-B);
-          g = (S2+S4-2*S3) / 2 / (A-B);
+        //At any case, we compute the paraboloid coefficients.
+        a = (28*S3-S1-S2-S4-S5-84*A-84*B) / 24 / (A-B);
+        b = (S1-S5) / 2 / (A-B);
+        c = (S4-S2) / 2 / (A-B);
+        d = (S1+S5-2*S3) / 2 / (A-B);
+        f = m * (S1+S2+S4+S5-S6-2*S3) / 2 / (A-B);
+        g = (S2+S4-2*S3) / 2 / (A-B);
         
-        
-        
+        //We compute the normal components
         double mod = (A-B) / sqrt(1+b*b+c*c);
         double nx = mod*b;
         double ny = -mod;
         double nz = mod*c;
-        
-        if (edge_type==XMAX) {
-          double temp=nx; nx=ny; ny=temp;
+        //Depending of the edge type, interchange the components of the normal
+        if (edge_type==XMAX)
+        {
+          double temp=nx;
+          nx=ny;
+          ny=temp;
         }
         
-        if (edge_type==ZMAX) {
-          double temp=nz; nz=ny; ny=temp;
+        if (edge_type==ZMAX)
+        {
+          double temp=nz;
+          nz=ny;
+          ny=temp;
         }
         
-        double gx=50-x, gy=50-y, gz=50-z;
-        double prod=gx*nx+gy*ny+gz*nz;
-        prod /= sqrt(gx*gx+gy*gy+gz*gz) * sqrt(nx*nx+ny*ny+nz*nz);
-        double ang=acos(prod)/M_PI*180;
-        
-        if (ang>20)
-          cout << "error orientacion" << endl;
-        
-        
-//        }
+        //Set the edge parameters
         voxel.setBorderVoxelValues(A, B, edge_type, a, b, c, d, f, g, 0.0, 
                                    x, y, z, nx, ny, nz);
         borderVoxelVector.push_back(voxel);

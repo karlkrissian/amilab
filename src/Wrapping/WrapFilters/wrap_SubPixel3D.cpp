@@ -46,15 +46,12 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_SubPixel3D::CallMember(ParamList* 
 {
   InrImage* input_image;
   float thres;
-  int lc;
   int num = 0;
   
   if (!get_val_ptr_param<InrImage>(input_image, p, num)) ClassHelpAndReturn;
   if (!get_val_param<float>(thres, p, num))    ClassHelpAndReturn;
-  if (!get_val_param<int>(lc, p, num))    ClassHelpAndReturn;
   
-  return AMILabType<SubPixel3D>::CreateVar(new SubPixel3D(input_image, thres, 
-                                                          lc));
+  return AMILabType<SubPixel3D>::CreateVar(new SubPixel3D(input_image, thres));
 }
 
 //---------------------------------------------------
@@ -102,17 +99,17 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_GradienteCurvo3D
                                                         "ypos.inr.gz"));
   InrImage::ptr posz       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
                                                         "zpos.inr.gz"));
-  InrImage::ptr gx       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
-                                                        "gx.inr.gz"));
-  InrImage::ptr gy       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
-                                                        "gy.inr.gz"));
-  InrImage::ptr gz       = InrImage::ptr(new InrImage(size, 1, 1, WT_SIGNED_SHORT,
-                                                        "gz.inr.gz"));
+  InrImage::ptr nx       = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "nx.inr.gz"));
+  InrImage::ptr ny       = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "ny.inr.gz"));
+  InrImage::ptr nz       = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "nz.inr.gz"));
   
   
   //Fill InrImages
   sp->fillImages(AIntensity, BIntensity, border, a, b, c, d, f, g, curvature,
-                 posx, posy, posz, gx, gy, gz);
+                 posx, posy, posz, nx, ny, nz);
   //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
                                             amiobject->GetContext());
@@ -140,11 +137,11 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_GradienteCurvo3D
                                             amiobject->GetContext());
   amiobject->GetContext()->AddVar<InrImage>("zpos", posz,
                                             amiobject->GetContext());
-  amiobject->GetContext()->AddVar<InrImage>("gx", gx,
+  amiobject->GetContext()->AddVar<InrImage>("nx", nx,
                                             amiobject->GetContext());
-  amiobject->GetContext()->AddVar<InrImage>("gy", gy,
+  amiobject->GetContext()->AddVar<InrImage>("ny", ny,
                                             amiobject->GetContext());
-  amiobject->GetContext()->AddVar<InrImage>("gz", gz,
+  amiobject->GetContext()->AddVar<InrImage>("nz", nz,
                                             amiobject->GetContext());
 
   Variable<AMIObject>::ptr result(
@@ -153,79 +150,3 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_GradienteCurvo3D
 
 }
 
-
-
-//---------------------------------------------------
-//drawBorder
-//void WrapClass_SubPixel2D::wrap_drawBorder::SetParametersComments()
-//{
-//  ADDPARAMCOMMENT_TYPE(AMIObject, "The image viewer.");
-//  ADDPARAMCOMMENT_TYPE(InrImage,  "Image that marks de view zone.");
-//  ADDPARAMCOMMENT_TYPE(InrImage,  "Points for draw the border.");
-//  ADDPARAMCOMMENT_TYPE(wxColour,  "Border color.");
-//  ADDPARAMCOMMENT_TYPE(int,       "Border thickness.");
-//  ADDPARAMCOMMENT_TYPE(int,       "Border style.");
-//  ADDPARAMCOMMENT_TYPE(int,       "Says if draw the border normals.");
-//  ADDPARAMCOMMENT_TYPE(InrImage,  "Points for draw normals.");
-//  ADDPARAMCOMMENT_TYPE(wxColour,  "Normals color.");
-//  ADDPARAMCOMMENT_TYPE(int,       "Normals thickness.");
-//  ADDPARAMCOMMENT_TYPE(int,       "Normals style.");
-//}
-//---------------------------------------------------
-//BasicVariable::ptr WrapClass_SubPixel2D::wrap_drawBorder::CallMember(ParamList* p)
-//{
-//  SubPixel2D::ptr sp(this->_objectptr->GetObj());
-//    
-//  DessinImage* viewer = NULL;
-//  InrImage* inside;
-//  InrImage* border_pts;
-//  InrImage* norm_pts;
-//  int draw_normals;
-//  int bthickness;
-//  int bstyle;
-//  int nthickness;
-//  int nstyle;
-//  int n = 0;
-//  //Get the viewer object
-//  CLASS_GET_OBJECT_PARAM(DessinImage, viewervar, viewerobj);
-//  if(viewerobj.get())
-//    viewer = viewerobj.get();
-//  else
-//    ClassHelpAndReturn;
-//  
-//  //Get params (inside, border points, color, thickness, style and normals control)
-//  if (!get_val_ptr_param<InrImage>(inside, p, n)) ClassHelpAndReturn;
-//  if (!get_val_ptr_param<InrImage>(border_pts, p, n)) ClassHelpAndReturn;
-//  CLASS_GET_OBJECT_PARAM(wxColour, bcolorvar, bcolorobj);
-//  if (bcolorobj.get()) {
-//    if (!get_int_param(bthickness, p, n)) ClassHelpAndReturn;
-//    if (!get_int_param(bstyle, p, n)) ClassHelpAndReturn;
-//    if (!get_int_param(draw_normals, p, n)) ClassHelpAndReturn;
-//  }
-//  else ClassHelpAndReturn;
-//  
-//  //If the user sets draw_normals, get the normal points image, and call to
-//  //drawBorder
-//  if (draw_normals) 
-//  {
-//    if (!get_val_ptr_param<InrImage>(norm_pts, p, n)) ClassHelpAndReturn;
-//    CLASS_GET_OBJECT_PARAM(wxColour, ncolorvar, ncolorobj);
-//    if (ncolorobj.get()) 
-//    {
-//      if (!get_int_param(nthickness, p, n)) ClassHelpAndReturn;
-//      if (!get_int_param(nstyle, p, n)) ClassHelpAndReturn;
-//      sp->drawBorder(viewer, inside, border_pts, bcolorobj.get(), bthickness, 
-//                     bstyle, draw_normals, norm_pts, ncolorobj.get(), nthickness, 
-//                     nstyle);
-//    }
-//    else ClassHelpAndReturn;
-//  }
-//  else 
-//  {
-//    //If it isn't set draw_normals, calls to drawBorder with a NULL value on
-//    //last parameters
-//    sp->drawBorder(viewer, inside, border_pts, bcolorobj.get(), bthickness, bstyle,
-//                   draw_normals, NULL, NULL, 0, 0);
-//  }
-//  return BasicVariable::ptr();
-//}

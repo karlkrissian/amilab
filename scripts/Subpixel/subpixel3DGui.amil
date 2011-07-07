@@ -6,6 +6,7 @@ func "subpixel3DClass.amil"
 #----------------
 if (!exists(subp3D)) {
   Subpixel3DClass subp3D
+  subp3D.CreateGui()
 } else {
   InfoDialog "The script for subpixel edge detection in 3D images seems to be already loaded."
 }

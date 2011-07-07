@@ -131,10 +131,23 @@ public:
    */
   int           getPosZ();
   
+  /**
+   *  Get the x component of the normal.
+   *  @return The value of the x component of the normal of the edge.
+   */
+  double getNx();
   
-  double getGx();
-  double getGy();
-  double getGz();
+  /**
+   *  Get the y component of the normal.
+   *  @return The value of the y component of the normal of the edge.
+   */
+  double getNy();
+  
+  /**
+   *  Get the z component of the normal.
+   *  @return The value of the z component  of the normal of the edge.
+   */
+  double getNz();
   
   /**
    *  Print the information of the voxel.
@@ -165,17 +178,16 @@ private:
   int px;
   int py;
   int pz;
-  //Gradient
-  double gx;
-  double gy;
-  double gz;
+  //Normal(x,y,z)
+  double nx;
+  double ny;
+  double nz;
 
 };
 
 
 /**
  *  This class contains the methods of the SubPixel method for 3D images.
- *  Also includes the method that draw the sub-pixel edge. ************************** eso está por ver *****
  *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
@@ -189,10 +201,8 @@ public:
    *  SubPixel3D constructor.
    *  @param inp_image The input image.
    *  @param thres     The threshold value.
-   *  @param lc        Linear case. Indicates if the border that will be processed
-   *                   is a plane (first order) or a paraboloid (second order).
    */
-  SubPixel3D(InrImage* inp_image, float thres, int lc);
+  SubPixel3D(InrImage* inp_image, float thres);
   
   ~SubPixel3D();
   
@@ -223,25 +233,24 @@ public:
    *  @param posx       Smart pointer to an InrImage for x positions.
    *  @param posy       Smart pointer to an InrImage for y positions.
    *  @param posz       Smart pointer to an InrImage for z positions.
+   *  @param nx         Smart pointer to an InrImage for the x components of the normal.
+   *  @param ny         Smart pointer to an InrImage for the y components of the normal.
+   *  @param nz         Smart pointer to an InrImage for the z components of the normal.
    */
   void fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity, 
                   InrImage::ptr border, InrImage::ptr a, InrImage::ptr b, 
                   InrImage::ptr c, InrImage::ptr d, InrImage::ptr f, 
                   InrImage::ptr g, InrImage::ptr curvature, InrImage::ptr posx, 
                   InrImage::ptr posy, InrImage::ptr posz,
-                  InrImage::ptr gx, InrImage::ptr gy, InrImage::ptr gz);
+                  InrImage::ptr nx, InrImage::ptr ny, InrImage::ptr nz);
   
 private:
   //Input image
   InrImage* input;
-  //Denoised image
-  //InrImage* denoised;
   //borderVoxel vector
   vector<borderVoxel> borderVoxelVector;
   //Gradient threshold
   double threshold;
-  //Linear case (first or second order)
-  int linear_case;
    
 };
 

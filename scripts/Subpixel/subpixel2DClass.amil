@@ -68,9 +68,7 @@ if (!exists(Subpixel2DClass)){
       ::s_mod       = "",                "Intensity difference"
       ::s_rad       = "",                "Radius"
       ::s_slope     = "",                "Slope"
-      ::s_disp      = "",                "Displacement (equation\'s a coefficient)"
-      
-      ::CreateGui()
+      ::s_disp      = "",                "Displacement (the a coefficient of the equation)"
     }
     
 
@@ -319,7 +317,7 @@ if (!exists(Subpixel2DClass)){
     #-----------------------
     
     proc ::Run() {
-    #	::load_input()
+      ::load_input()
       ::thresholds_crossed = 0
       #Erase the draw objects
      # if (exists(::input_draw))    { del ::input_draw; }
@@ -647,7 +645,7 @@ if (!exists(Subpixel2DClass)){
       ::win.Display
     }
     
-    ::Init
+    ::Init()
 
   } #end Class
 
