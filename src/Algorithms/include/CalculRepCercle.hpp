@@ -1,7 +1,7 @@
 /***************************************************************************
  * $Author: karl $
  * $Revision: 1.1.1.1 $
- * $Log: reponse_cercle.hpp,v $
+ * $Log: CalculRepCercle.hpp,v $
  * Revision 1.1.1.1  2004/02/02 20:47:09  karl
  * source code in C++
  *
@@ -52,64 +52,74 @@ public:
 bool sort_operator(const response_info& r1,const response_info& r2);
 
 
-//======================================================================
+/** Class to compute boundary information over a given circle at the specified
+ * voxel.
+ */
 class CalculRepCercle
 //     ---------------
 {
 
   public:
+    /// Type of integration for the boundary information along the circle.
     enum CircleResponseType {
-      circle_min,
-      circle_mean,
-      circle_median
+      circle_min,   /**< Minimal value along the circle. */
+      circle_mean,  /**< Maximal value along the circle. */
+      circle_median /**< Median  value along the circle. */
     };
 
   protected:
+    /// input image
     InrImage*   _image;
+    /// integration radius
     double      _rayon;
 
+    
     CoordImage* _coord_image;
 
+    /// Response type
     CircleResponseType  _type_reponse;
 
+    /// If pairing opposite points
     bool        _reduce_pairs;
     int         _pairs_type;
 
+    /// If selecting the highest values
     bool        _keep_highest;
     int         _highest_percentage;
 
+    /// vector containing the responses information
     std::vector<response_info> responses;
 
-    // Precompute cosinus and sinus
+    /// Precomputed cosinus and sinus value
     double*   coeff_cos;
     double*   coeff_sin;
 
-    /// nombre de points le long du cercle 
+    /// Number of points used along the circle 
     int       nb_points;
-    // nombre de points le long du cercle divise par 2
+    /// Number of points used along the circle divided by 2
     int       nb_points2;
-    /// pas de l'angle
+    /// Angle step
     double    d_alpha;
 
     // If _filter is not NULL, we take the gradient field
     // from it otherwise, we use the gradient image
 
-    // filter to get the gradient image
+    /// filter to get the gradient image
     GeneralGaussianFilter*   _filter;
 
-    // gradient image
+    /// gradient image
     InrImage*         _grad;
 
 
-    unsigned char _NoLinearInterp; // Flag for trilinear interpolation
-    unsigned char _OptReponse;     // if true, reduce the number of points along the circle
+    unsigned char _NoLinearInterp; /**< Flag for trilinear interpolation */
+    unsigned char _OptReponse;     /**< if true, reduce the number of points along the circle */
 
-    bool      _use_SD;    // use standard deviation contraint
-    bool      _use_EXC;   // use excentricity constraint: compare radius 
-                          // and tangent gradients
+    bool      _use_SD;    /**< use standard deviation contraint */
+    bool      _use_EXC;   /**< use excentricity constraint: compare radius 
+                               and tangent gradients */
 
-    float     _SeuilET;  // Threshold on the standard deviation along the circle
-    float     _SeuilEXC; // Threshold on Excentricity
+    float     _SeuilET;  /**< Threshold on the standard deviation along the circle */
+    float     _SeuilEXC; /**< Threshold on Excentricity */
 
 private:
 
@@ -118,28 +128,44 @@ private:
 
 public:
 
-  ///
+  /**
+   *  Constructor.
+   * Takes the input image and the response type as parameters.
+   * @param image input image
+   * @param type_reponse response type
+   */
    CalculRepCercle( InrImage* image, CircleResponseType type_reponse);
   //           ---------------
 
-  ///
+  /**
+   * Destructor.
+   */
   ~CalculRepCercle();
   //          ---------------
 
+  /**
+   * Sets the filter to compute the gradient information.
+   */
   void SetFilter(GeneralGaussianFilter* f ) { _filter = f; }
   //   ---------
 
+  /**
+   * Sets linear interpolation option.
+   */
   void SetNoLinearInterp(unsigned char b) { _NoLinearInterp = b; }
-  //   -----------------
 
   void SetOptReponse(unsigned char b) { _OptReponse = b; }
   //   -------------
 
+  /**
+   * Sets gradient image as a vector field.
+   */
   void SetGradient(InrImage* g )     { _grad = g; }
-  //   -----------
   
+  /**
+   *  Returns the gradient image.
+   */
   InrImage* GetGradient() { return _grad; }
-  //        -----------
   
   int GetResponseType() { return _type_reponse; }
 

@@ -52,7 +52,7 @@ SET(Algorithms_SRCS
   GeneralGaussianFilter.cpp
 
   # files coming from previous Line directory
-  reponse_cercle.cpp
+  CalculRepCercle.cpp
   CircleBoundaries3D.cpp
 
   Gradient.cpp
@@ -108,7 +108,7 @@ SET(Algorithms_HDRS
   include/filtre_param.hpp
 
   # files coming from previous Line directory
-  include/reponse_cercle.hpp
+  include/CalculRepCercle.hpp
   include/CircleBoundaries3D.h
 
   include/Gradient.h

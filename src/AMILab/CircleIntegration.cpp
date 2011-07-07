@@ -26,7 +26,7 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
-#include "reponse_cercle.hpp"
+#include "CalculRepCercle.hpp"
 
 //
 // integration over a circle of a vector field scalar the normal of a circle

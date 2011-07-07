@@ -99,7 +99,7 @@
 #include "CompareImage.hpp"
 #include "bruit.hpp"
 #include "CalculAireSection.hpp"
-#include "reponse_cercle.hpp"
+#include "CalculRepCercle.hpp"
 #include "ShortestPathClass.h"
 #include "WrapOld_AnisoGS.h"
 #include "LevelSetsCURVES.h"

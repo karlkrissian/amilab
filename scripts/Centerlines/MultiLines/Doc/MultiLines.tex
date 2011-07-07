@@ -61,11 +61,14 @@ The interface is composed of the following tabs (or pages):
 This page allows:
 \begin{itemize}
  \item Selecting the input image and loading it
- \item Selecting the mask image or generating it from the input, the mask image allows to reduce the overall computation time and is currently required.
+ \item Selecting the mask image or generating it from the input, the mask image allows to reduce the overall computation time and is currently required. This image must be of type UCHAR and the values > 127 are considered part of the mask.
 \end{itemize}
 
 \subsubsection{Circle tab}
 The algorithm integrates the boundary information along a circle for each central point candidate. This integration can be a simple averaging of all the boundary values found along the circle or a more complex function.
+
+The C++ class that compute the boundary information along a circle is
+\htmladdnormallink{CalculRepCercle}{http://www.ctm.ulpgc.es/amilab_doxygen/3.1.1/html/classCalculRepCercle.html}.
 
 As described in \cite{Krissian2000b,Krissian_al_2003,KA09}
 For each scale $\sigma$, a response is computed as a combination of the boundary information

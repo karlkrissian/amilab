@@ -1,7 +1,7 @@
 /***************************************************************************
  * $Author: karl $
  * $Revision: 1.1.1.1 $
- * $Log: reponse_cercle.cpp,v $
+ * $Log: CalculRepCercle.cpp,v $
  * Revision 1.1.1.1  2004/02/02 20:47:09  karl
  * source code in C++
  *
@@ -13,7 +13,7 @@
  *
  */
 
-#include "reponse_cercle.hpp"
+#include "CalculRepCercle.hpp"
 #include <iostream>
 
 #include <limits>

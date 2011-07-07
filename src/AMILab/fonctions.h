@@ -192,7 +192,7 @@ unsigned char      Func_HessianVap( InrImage* image_initiale, const char* varnam
 
 InrImage* Func_2DFlux( InrImage* vectors, float radius);
 
-#include "reponse_cercle.hpp"
+#include "CalculRepCercle.hpp"
 
 InrImage*    Func_CircleIntegration( InrImage* grad, InrImage* vep0,
                      InrImage* vep1, float radius,
