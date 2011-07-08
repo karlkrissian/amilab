@@ -434,7 +434,6 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token ASHELL LS
 
 %token T_SetName
-%token T_GetName
 %token T_GetObjectName
 
 %token ASTRING ABLOCK NUMBER
@@ -467,7 +466,6 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_schedule
 
 %token T_SetComponent
-%token T_GetExtent
 
 %token RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN
 %token SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN
@@ -517,7 +515,6 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token TInit TIterate TEnd TAddGaussNoise T_SNR
 %token T_info
 %token T_save
-%token T_normalize
 %token T_OrientField
 %token T_OrientPositive
 %token T_2DFlux
@@ -647,7 +644,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 //%token SET SETPOS COMPARE SETVECTOR
 %token SET SETPOS
 
-%token T_lininterp
+//%token T_lininterp
 //%token T_SetCompareDisplacement
 //%token T_DrawVector
 //%token T_DisplayVectors
@@ -672,7 +669,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_LONG   // New (added: 27/05/2010)
 %token T_FLOAT T_DOUBLE
 %token T_RGB  T_FLOAT_VECTOR
-%token T_GetFormat
+%token T_BasicType
 
 %token T_atof
 
@@ -705,11 +702,6 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token VARIABLES
 %token FUNCTION
 %token T_eval
-
-%token T_tx T_ty T_tz
-%token T_trx T_try T_trz
-%token T_vx T_vy T_vz
-%token T_vdim T_inc T_val
 
 %token T_exists
 %token T_FileExists
@@ -2774,64 +2766,6 @@ command:
       Si GB_debug AlorsFait fprintf(stderr,"6\n");
 
         }
-/* deprecated
-        | VAR_FILE T_POINT PRINT expr_string
-        {
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-          boost::shared_array<char> text( $4);
-
-          fprintf(file.get(),"%s",text.get());
-          fflush(file.get());
-        }
-      | VAR_FILE T_POINT PRINT expr_var
-      {
-          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-
-          if (var.get()) {
-            fprintf(file.get(),var->GetValueAsString().c_str());
-            fflush(file.get());
-          }
-          else
-            driver.err_print("empty variable");
-
-      }
-      | VAR_FILE T_POINT PRINTN expr_var
-      {
-          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-
-          if (var.get()) {
-            fprintf(file.get(),var->GetValueAsString().c_str());
-            fprintf(file.get(),"\n");
-            fflush(file.get());
-          }
-          else
-            driver.err_print("empty variable");
-
-      }
-
-      | VAR_FILE T_POINT PRINT expr
-      {
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-
-          fprintf(file.get(),"%5.10f",$4);
-          fflush(file.get());
-      }
-      | VAR_FILE T_POINT PRINTN expr_string
-      {
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-          boost::shared_array<char> text( $4);
-
-          fprintf(file.get(),"%s\n",text.get());
-          fflush(file.get());
-      }
-*/
         | PRINT expr_var
         {
          /**
@@ -2856,35 +2790,6 @@ command:
           else
             driver.err_print("empty variable");
         }
-/* Deprecated
-        | PRINT expr_string
-        {
-         /**
-          Description:
-            Print a string
-          **
-          driver.res_print($2);
-          delete [] $2;
-        }
-        | PRINTN expr_string
-          {
-         /**
-          Description:
-            Print a string and newline
-          **
-        driver.res_print($2);
-        driver.res_print("\n");
-        delete [] $2;
-      }
-*/
-/* Deprecated
-      | PRINT expr_matrix
-      {
-        FloatMatrix* mat=driver.matrix_stack.GetLastMatrix();
-        mat->PrintSelf();
-        delete mat;
-      }
-*/
       | T_InfoDialog expr_string
       {
          /**
@@ -2904,32 +2809,6 @@ command:
         delete mat;
       }
 
-        | VAR_FILE T_POINT T_CLOSE
-        {
-          driver.var_stack.GetLastBasicVar();
-          printf("Deprecated: No need to close files explicitly, since we use smart pointers, they will be closed when the variable is deleted. \n");
-        }
-
-        | PRINT expr
-        {
-        /**
-          Description:
-            Prints a numerical value.
-        **
-          string st;
-          st = str(format("%5.10f") % $2);
-          driver.res_print(st.c_str());
-        }
-        | PRINTN expr
-        {
-        /**
-          Description:
-            Prints a numerical value and a newline.
-        **
-          string st;
-          st = str(format("%5.10f\n") %$2);
-          driver.res_print(st.c_str());
-        }
 */
         | var_image T_POINT TInit
         {
@@ -3233,6 +3112,7 @@ command:
           boost::shared_array<char> filename($4);
           im->Sauve(filename.get());
         }
+/* deprecated
         | var_image T_POINT T_normalize
         {
         /**
@@ -3242,10 +3122,11 @@ command:
         Example(s):
           v1.normalize
 
-        **/
+        ** /
       GET_VARSTACK_VALUE(InrImage, im);
       Func_Normalize((im.get()));
     }
+    */
     |
     var_image T_POINT T_OrientField T_OP_PAR var_image T_CL_PAR
     {
@@ -4447,6 +4328,7 @@ primary_expr_string: ASTRING
       strcpy(reschar,res.c_str());
       $$= reschar;
     }
+/*
     |
     var_image T_POINT T_GetName {
       GET_VARSTACK_VALUE(InrImage, im);
@@ -4458,13 +4340,14 @@ primary_expr_string: ASTRING
     /**
       Description:
         Returns the name of the variable as a string
-    **/
+    ** /
       BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
       char* resstr = (char*) var->Name().c_str();
       char* res = new char[strlen(resstr)+1];
       strcpy(res,resstr);
       $$= res;
     }
+    */
     |
     T_GetObjectName T_OP_PAR variable T_CL_PAR {
     /**
@@ -4595,7 +4478,8 @@ float_variable:
           (int) round($7));
       ADD_VARSTACK_FLOAT(val);
     }
-    | var_image T_POINT T_lininterp T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+/*
+     | var_image T_POINT T_lininterp T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
       /**
         Parameters:
@@ -4604,7 +4488,7 @@ float_variable:
         Description:
           returns the pixel intensity at the given position
           the position using linear interpolation
-      **/
+      ** /
       GET_VARSTACK_VALUE(InrImage, im);
       float val=im->InterpLinIntensite(
           $5,
@@ -4612,6 +4496,7 @@ float_variable:
           $9);
       ADD_VARSTACK_FLOAT(val);
     }
+    */
     | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
       /**
@@ -4681,6 +4566,7 @@ float_variable:
       FinSi
       ADD_VARSTACK_FLOAT(val);
     }
+/* deprecated
     | var_image T_POINT T_tx
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
@@ -4717,7 +4603,9 @@ float_variable:
       float val = im->TrZ();
       ADD_VARSTACK_FLOAT(val);
     }
-    | var_image T_POINT T_vx
+    */
+/*
+ *    | var_image T_POINT T_vx
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->VoxSizeX();
@@ -4753,6 +4641,7 @@ float_variable:
       float val = im->ValeurBuffer();
       ADD_VARSTACK_FLOAT(val);
     }
+    */
     |
     T_SNR T_OP_PAR var_image  T_COMMA var_image T_CL_PAR
     {
@@ -5131,13 +5020,17 @@ float_variable:
       ADD_VARSTACK_FLOAT(val);
     }
 */
-    | basic_type T_POINT T_val
+    | basic_type T_POINT identifier
     {
       /**
-        Description: returns the value of the pixel format type in float format
+        Description: returns the value of the pixel format type in float format,
+        identifier must be equal to 'val'
       **/
-      float val = (int) $1;
-      ADD_VARSTACK_FLOAT(val);
+      IdentifierInfo::ptr ident($3);
+      if (ident->GetName()=="val") {
+        float val = (int) $1;
+        ADD_VARSTACK_FLOAT(val);
+      }
     }
     ;
 
@@ -5253,13 +5146,18 @@ basic_type:
        {
      $$=WT_FLOAT_VECTOR;
        }
-       | var_image T_POINT T_GetFormat
+       | T_BasicType T_OP_PAR expr T_CL_PAR
+       {
+        $$=(int)$3;
+       }
+/*
+ *       | var_image T_POINT T_GetFormat
       {
          //        printf("format %d \n",(int) ( *(InrImage::ptr*) $1->Pointer())->GetFormat());
         GET_VARSTACK_VALUE(InrImage, im);
         $$ = (int) im->GetFormat();
       };
-
+*/
 var_image:
         VAR_IMAGE
         |
@@ -8077,34 +7975,130 @@ postfix_var:
       |
         postfix_var T_POINT identifier
       {
+        /**
+           Description:
+           if the first variable is an AMIObject, then look for the variable
+             corresponding to the identifier in its context.
+           if the first variable is of IMAGE type, then apply on of the following
+             functions:
+             tx,ty,tz    : image dimensions
+             trx,try,trz : image translations
+             vx,vy,vz    : voxel size
+             vdim        : number of components
+             inc         : increment current buffer
+             val         : returns the value at the current buffer
+             GetName     : return image name on disk if available
+             GetFormat   : return image format
+             GetExtent   : return image extent
+         **/
           // todo ... 
           // 1. check if identifier belongs to the object
           // 2. if so return corresponding variable
           IdentifierInfo::ptr ident($3);
-          Variable<AMIObject>::ptr var(driver.var_stack.GetLastVar<AMIObject>());
-          if (!var.get()) {
-            driver.err_print("operator . (Element selection) is only available for variables of type AMIObject");
-            YYABORT;
-          }
-          AMIObject::ptr object(var->Pointer());
 
-          if (!object.get()) {
-            driver.err_print("operator . object points to NULL.");
+          BasicVariable::ptr bvar(driver.var_stack.GetLastBasicVar());
+          if (!bvar.get()) {
+            driver.err_print("operator . (Element selection) empty variable");
             YYABORT;
           }
-          // here, need to do our own checking ...
-          BasicVariable::ptr newvar( 
-            object->GetContext()->GetVar(ident->GetName().c_str()));
-    
-          if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
-            //cout << "returning variable" << std::endl;
-            //newvar->display();
-            driver.var_stack.AddVar(newvar);
+          
+          // try to convert to AMIObject
+          boost::shared_ptr<Variable<AMIObject> > var( boost::dynamic_pointer_cast<Variable<AMIObject> >(bvar));
+          if (var.get()) {
+            AMIObject::ptr object(var->Pointer());
+            if (!object.get()) {
+              driver.err_print("operator . object points to NULL.");
+              YYABORT;
+            }
+            // here, need to do our own checking ...
+            BasicVariable::ptr newvar( 
+              object->GetContext()->GetVar(ident->GetName().c_str()));
+      
+            if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
+              //cout << "returning variable" << std::endl;
+              //newvar->display();
+              driver.var_stack.AddVar(newvar);
+            } else {
+              // error message here
+              driver.yyiperror("Identifier does not belong to object context \n");
+              YYABORT;
+              //driver.var_stack.AddVar(BasicVariable::ptr());
+            }
           } else {
-            // error message here
-            driver.yyiperror("Identifier does not belong to object context \n");
-            YYABORT;
-            //driver.var_stack.AddVar(BasicVariable::ptr());
+            // try to convert of InrImage
+            boost::shared_ptr<Variable<InrImage> > var( boost::dynamic_pointer_cast<Variable<InrImage> >(bvar));
+            if (var.get()) {
+              // here need to process the rules with var_image.identifier
+              // for the moment, a hack ...
+              boost::shared_ptr<InrImage> im(var->Pointer());
+              if (!im.get()) {
+                driver.yyiperror("'image . identifier' image variable has null pointer.\n");
+                YYABORT;
+              }
+              std::string id = ident->GetName();
+              if (id=="tx") {
+                ADD_VARSTACK_FLOAT(im->DimX());
+              } else 
+              if (id=="ty") {
+                ADD_VARSTACK_FLOAT(im->DimY());
+              } else 
+              if (id=="tz") {
+                ADD_VARSTACK_FLOAT(im->DimZ());
+              } else 
+              if (id=="trx") {
+                ADD_VARSTACK_FLOAT(im->TrX());
+              } else 
+              if (id=="try") {
+                ADD_VARSTACK_FLOAT(im->TrY());
+              } else 
+              if (id=="trz") {
+                ADD_VARSTACK_FLOAT(im->TrZ());
+              } else 
+              if (id=="vx") {
+                ADD_VARSTACK_FLOAT(im->VoxSizeX());
+              } else
+              if (id=="vy") {
+                ADD_VARSTACK_FLOAT(im->VoxSizeY());
+              } else
+              if (id=="vz") {
+                ADD_VARSTACK_FLOAT(im->VoxSizeZ());
+              } else
+              if (id=="vdim") {
+                ADD_VARSTACK_FLOAT(im->GetVDim());
+              } else
+              if (id=="inc") {
+                ADD_VARSTACK_FLOAT(im->IncBuffer());
+              } else
+              if (id=="val") {
+                ADD_VARSTACK_FLOAT(im->ValeurBuffer());
+              } else
+              if (id=="GetName") {
+                ADD_VARSTACK(std::string,new std::string(im->GetName()));
+              } else
+              if (id=="GetFormat") {
+                ADD_VARSTACK(int,new int(im->GetFormat()));
+              } else
+              if (id=="GetExtent") {
+                ImageExtent<float>* extent=new ImageExtent<float>();
+                extent->SetMode(0); // absolute
+                extent->SetXmin( im->SpacePosX(0));
+                extent->SetXmax( im->SpacePosX(im->DimX()-1));
+                extent->SetYmin( im->SpacePosY(0));
+                extent->SetYmax( im->SpacePosY(im->DimY()-1));
+                extent->SetZmin( im->SpacePosZ(0));
+                extent->SetZmax( im->SpacePosZ(im->DimZ()-1));
+                //extent->print();
+                BasicVariable::ptr res(AMILabType<ImageExtent<float> >::CreateVar(extent));
+                driver.var_stack.AddVar(res);
+              } else
+              {
+                driver.yyiperror("'image . identifier' operation not available.\n");
+                YYABORT;
+              }
+            } else {
+              driver.err_print("operator . (Element selection) is only available for variables of type AMIObject");
+              YYABORT;
+            }
           }
         }
       |
@@ -9706,6 +9700,7 @@ image_extent:
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
       driver.var_stack.AddVar(res);
     }
+    /*
     |
     var_image T_POINT T_GetExtent
     {
@@ -9723,6 +9718,7 @@ image_extent:
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
       driver.var_stack.AddVar(res);
     }
+    */
 /*
     |
     VAR_IMAGEDRAW

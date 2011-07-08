@@ -450,7 +450,7 @@ if (!exists(NLmeansClass)) {
     #----------------------------
     proc ::DisplaySurfaces() \
     {
-      if (::input.tz==1)&&(::input.GetFormat.val != RGB.val) {
+      if (::input.tz==1)&&(::input.GetFormat != RGB.val) {
         if (exists(::input_surf_draw)) { del ::input_surf_draw; }
         if (exists(::res_surf_draw))   { del ::res_surf_draw; }
         if (exists(::input_surf)) { del ::input_surf; }

@@ -98,13 +98,14 @@ IF(AMI_USE_FLEXBISON)
   ENDIF(AMI_BISON_DEBUG)
 
   BISON_TARGET_option_extraopts(${bison_options})
+#BISON_${Name}_COMPILE_FLAGS
 
   BISON_TARGET(improcessbison
     ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
     ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
-  )
-    #COMPILE_FLAGS ${bison_options}
-
+    COMPILE_FLAGS ${bison_options}
+ )
+ 
   FLEX_TARGET(improcessflex
   ${AMILAB_SOURCE_DIR}/Language/improcess_flex.lpp
   ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp)

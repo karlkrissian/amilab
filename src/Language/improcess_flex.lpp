@@ -175,18 +175,17 @@ varid {identifier}(<{identifier}(,{identifier})*>)?
 ";"  return(token::T_SEMICOLON);  /*{;,T_SEMICOLON}*/
 
 SetComponent   return(token::T_SetComponent); /*{SetComponent,T_SetComponent}*/
-GetExtent      return(token::T_GetExtent); /*{GetExtent,T_GetExtent}*/
 
 LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
 
+
+BasicType        return(token::T_BasicType); /*{BasicType,T_BasicType}*/
 set              return(token::SET);               /*{set,SET}*/
 setpos           return(token::SETPOS);            /*{setpos,SETPOS}*/
-lininterp        return(token::T_lininterp);      /*{lininterp,T_lininterp}*/
 initvalue        return(token::T_initvalue);       /*{initvalue,T_initvalue}*/
 
 itkCannyEdgeDetector  return(token::T_itkCannyEdgeDetector); /*{itk,T_itk}*/
 
-GetName        return(token::T_GetName); /*{GetName,T_GetName}*/
 GetObjectName  return(token::T_GetObjectName); /*{GetObjectName,T_GetObjectName}*/
 SetName        return(token::T_SetName); /*{SetName,T_SetName}*/
 
@@ -203,7 +202,6 @@ BOOL          return(token::T_BOOL); /*{BOOL,T_BOOL}*/ /// New (added: 19/11/201
 DOUBLE        return(token::T_DOUBLE); /*{DOUBLE,T_DOUBLE}*/
 RGB           return(token::T_RGB); /*{RGB,T_RGB}*/
 FLOAT_VECTOR  return(token::T_FLOAT_VECTOR); /*{FLOAT_VECTOR,T_FLOAT_VECTOR}*/
-GetFormat     return(token::T_GetFormat); /*{GetFormat,T_GetFormat}*/
 Comments      return(token::T_Comments); /*{Comments,T_Comments}*/
 
 IMAGE         return(token::T_IMAGE); /*{IMAGE,T_IMAGE}*/
@@ -314,18 +312,6 @@ vars               return(token::VARIABLES); /*{vars,VARIABLES}*/
 func               return(token::FUNCTION); /*{func,FUNCTION}*/
 eval               return(token::T_eval); /*{eval,T_eval}*/
 
-tx                  return(token::T_tx); /*{tx,T_tx}*/
-ty                  return(token::T_ty); /*{ty,T_ty}*/
-tz                  return(token::T_tz); /*{tz,T_tz}*/
-trx                 return(token::T_trx); /*{trx,T_trx}*/
-try                 return(token::T_try); /*{try,T_try}*/
-trz                 return(token::T_trz); /*{trz,T_trz}*/
-vx                  return(token::T_vx); /*{vx,T_vx}*/
-vy                  return(token::T_vy); /*{vy,T_vy}*/
-vz                  return(token::T_vz); /*{vz,T_vz}*/
-vdim                return(token::T_vdim); /*{vdim,T_vdim}*/
-inc                 return(token::T_inc); /*{inc,T_inc}*/
-val                 return(token::T_val); /*{val,T_val}*/
 
 filter             return(token::FILTER); /*{filter,FILTER}*/
 vtkMedian3D        return(token::T_vtkMedian3D); /*{vtkMedian3D,T_vtkMedian3D}*/

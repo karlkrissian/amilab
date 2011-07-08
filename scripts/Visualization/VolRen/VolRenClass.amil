@@ -107,7 +107,7 @@ if (!exists(VolRenClass)) {
       format_size[10]=4 # RGBA
       format_name[10]="RGBA"
 
-      pixel_format = im.GetFormat.val
+      pixel_format = im.GetFormat
       if (pixel_format>10) {
         InfoDialog "Input: Wrong pixel format (%1%) !" % format
       }
